@@ -1,6 +1,6 @@
 const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
-const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl,control}=require('./main-menu');
+const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl,control,controlBox}=require('./main-menu');
 const {clickCreateMap}=require('./editor-controls');
 const snapshot=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await snapshot(page)).screen).toContain(name);
@@ -135,5 +135,48 @@ test.describe('responsive mixed input',()=>{
     await tapControl(page,'dock/tab/terrain');
     await control(page,'brush/terrain/grass');
     expect(await page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls).some(key=>key.startsWith('tray/')))).toBe(false);
+  });
+});
+
+
+test.describe('opaque WebGL settings panel', () => {
+  test.use({viewport: {width: 1280, height: 900}, deviceScaleFactor: 1, locale: 'bn-BD'});
+  test('antialiased Bengali text and icons keep the presented panel opaque', async ({page}, info) => {
+    test.skip(process.env.GLOB2_TEST_RENDERER !== 'webgl2', 'Checks actual WebGL canvas compositing');
+    await page.goto(gameURL()); await screen(page, 'MainMenuScreen');
+    await clickMainMenu(page, 'settings'); await screen(page, 'SettingsScreen');
+    expect((await snapshot(page)).renderer).toBe('webgl2');
+    // Native labels confirm the script font has actually reached the screen.
+    expect((await snapshot(page)).controls['nav.0'].label).toMatch(/[\u0980-\u09ff]/);
+    const first = await controlBox(page, 'nav.0', {fullyVisible: true});
+    const last = await controlBox(page, 'nav.7', {fullyVisible: true});
+    const clip = {x: first.x, y: first.y, width: first.width,
+      height: last.y + last.height - first.y};
+    const {hasDarkText, comparePresentedRGB} = require('./pixels');
+    await expect.poll(() => hasDarkText(page, clip)).toBe(true);
+    await page.mouse.move(1, 1);
+    const canvas = page.locator('#canvas');
+    const original = await canvas.evaluate(element => ({
+      value: element.style.getPropertyValue('background-color'),
+      priority: element.style.getPropertyPriority('background-color'),
+    }));
+    const captures = [];
+    try {
+      // Background behind opaque UI must never bleed through glyph coverage.
+      // glBlendFunc used SRC_ALPHA for framebuffer alpha too, leaving 0.75
+      // alpha at a half-covered glyph and washing it out over the page.
+      for (const [name, color] of [['black', '#000'], ['white', '#fff']]) {
+        await canvas.evaluate((element, color) => element.style.setProperty('background-color', color), color);
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        captures.push(await page.screenshot({path: info.outputPath('opaque-panel-' + name + '.png'), clip}));
+      }
+    } finally {
+      await canvas.evaluate((element, original) => {
+        if (original.value) element.style.setProperty('background-color', original.value, original.priority);
+        else element.style.removeProperty('background-color');
+      }, original);
+    }
+    const difference = await comparePresentedRGB(page, captures[0], captures[1]);
+    expect(difference.maximumChannelDifference, JSON.stringify(difference)).toBeLessThanOrEqual(2);
   });
 });

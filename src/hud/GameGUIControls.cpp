@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
+#include "InGameStatistics.h"
 #include "GameGUITouch.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -62,9 +63,11 @@ void GameGUI::prepareHudOwnership()
 												  connectionOverlayArea(),
 												  globalContainer->gfx->logicalUnitsPerPoint());
 	const bool modal = activeDialog() || (connectionOverlay && connectionOverlay->blocksGameplay());
-	std::vector<Rect> hudAbove, guideAbove;
-	if (modal)
+	std::vector<Rect> hudAbove, guideAbove, statisticsAbove;
+	if (modal) {
 		hudAbove.push_back(viewport);
+		statisticsAbove.push_back(viewport);
+	}
 	const bool hiveVisible = hiveCardsVisible();
 	if (hiveCards)
 	{
@@ -78,13 +81,14 @@ void GameGUI::prepareHudOwnership()
 		{
 			hudAbove.push_back(hiveCards->panelBounds());
 			guideAbove.push_back(hiveCards->panelBounds());
+			statisticsAbove.push_back(hiveCards->panelBounds());
 		}
 	}
 	if (tutorialGuidance)
 	{
 		auto &host = tutorialGuidance->host();
 		host.layoutIfNeeded();
-		if (modal)
+		if (modal || (touch && touch->obscuresTutorial()))
 		{
 			tutorialGuidance->cancelInput();
 			guideAbove = {viewport};
@@ -95,9 +99,24 @@ void GameGUI::prepareHudOwnership()
 			guideAbove.push_back({r.x, r.y, r.w, r.h});
 		}
 		host.setBlockedRegions(guideAbove);
-		if (!modal)
+		if (!modal && (!touch || !touch->obscuresTutorial())) {
 			hudAbove.push_back(tutorialGuidance->panelBounds());
+			statisticsAbove.push_back(tutorialGuidance->panelBounds());
+		}
 	}
+    if (connectionOverlay && !modal) {
+        const auto r = connectionOverlay->panelBounds();
+        statisticsAbove.push_back({r.x, r.y, r.w, r.h});
+    }
+    if (statisticsVisible()) {
+        auto &host = statisticsHost();
+        host.setBlockedRegions(std::move(statisticsAbove));
+        if (!modal)
+            hudAbove.push_back(host.popupOpen() ? viewport : statisticsBounds());
+    } else if (statisticsPanel) {
+        statisticsPanel->cancelEmbeddedInput();
+        statisticsPanel->host().setBlockedRegions({viewport});
+    }
 	// Connection cards live in the positioned HUD tree itself. Its current tree
 	// contains only their controls, so a network modal must not block that host.
 	if (connectionOverlay && connectionOverlay->blocksGameplay() && !activeDialog())
@@ -173,7 +192,8 @@ SDL_Rect GameGUI::connectionOverlayArea() const
 {
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint();
-	SDL_Rect area{0, 16, gfx->getW() - RIGHT_MENU_WIDTH, gfx->getH() - 16};
+	const int sidebar = touch && touch->usesHUD() ? 0 : RIGHT_MENU_WIDTH;
+	SDL_Rect area{0, 16, gfx->getW() - sidebar, gfx->getH() - 16};
 	if (touch && touch->usesHUD())
 	{
 		const auto ui = touch->hudLayout();
@@ -733,13 +753,6 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		};
 		controls.insert(controls.begin(), std::move(scroll));
 	}
-	const bool stats =
-		selectionMode == NO_SELECTION &&
-		(viewing ? replayDisplayMode == RDM_STAT_TEXT_VIEW : displayMode == STAT_TEXT_VIEW);
-	if (stats)
-		button("game/statistics/page", "Next statistics page",
-			   {left + RIGHT_MENU_OFFSET, YPOS_BASE_STAT + (viewing ? 15 : 0), 128, 16},
-			   [this] { measurementPage = (measurementPage + 1) % statisticsPages(); });
 	const bool graphs =
 		selectionMode == NO_SELECTION &&
 		(viewing ? replayDisplayMode == RDM_STAT_GRAPH_VIEW : displayMode == STAT_GRAPH_VIEW);
@@ -751,7 +764,7 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		for (int i = 0; i < 4; ++i)
 			button(
 				std::string("game/overlay/") + keys[i], labels[i],
-				{left + 8, YPOS_BASE_STAT + 140 + 64 + i * 24 + (viewing ? 15 : 0), 16, 16},
+				{left + 8, YPOS_BASE_STAT + 28 + i * 24 + (viewing ? 15 : 0), 16, 16},
 				[this, i, selected = values[i]]
 				{
 					showStarvingMap = i == 0 && !selected;

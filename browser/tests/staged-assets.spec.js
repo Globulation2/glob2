@@ -101,7 +101,23 @@ test('a Chinese interface downloads the full font before the game starts', async
   expect(await page.evaluate(() => FS.stat('/data/fonts/sans.ttf').size)).toBeGreaterThan(4e6);
 });
 
-test('an interface in another language downloads its translations before the game starts', async ({page, browserName}) => {
+for (const variant of ['serial', 'threaded']) {
+  test(`Malay first visit loads translated controls in the ${variant} runtime`, async ({page}, info) => {
+    const base = String(info.project.use.baseURL);
+    await page.context().addCookies([{name:'glob2_locale', value:'ms', url:base}]);
+    const url = new URL(gameURL(), base);
+    url.searchParams.set('threads', variant);
+    await page.goto(url.pathname + url.search);
+    await screen(page, 'MainMenuScreen');
+    expect((await snapshot(page)).assets.translations).toBe('ready');
+    await expect.poll(async () => Object.values((await snapshot(page)).controls)
+      .some(control => control.label === 'Tetapan')).toBe(true);
+    await page.screenshot({path:info.outputPath(`ms-${variant}-main.png`)});
+  });
+}
+
+for (const locale of ['de', 'ms']) {
+test(`${locale} downloads its translations before the game starts`, async ({page, browserName}) => {
   // Firefox under automation occasionally restores the profile from before the
   // test's direct preferences write (about 1 run in 10); the setting screen's own
   // save path is not involved here.
@@ -112,7 +128,7 @@ test('an interface in another language downloads its translations before the gam
   await screen(page, 'MainMenuScreen');
   await expect.poll(async () => (await labels()).length).toBeGreaterThan(0);
   const english = await labels();
-  await chooseLanguage(page, 'de');
+  await chooseLanguage(page, locale);
   await page.reload();
   await page.waitForTimeout(3000);
   expect((await snapshot(page)).screen).toBe('loading');
@@ -121,7 +137,9 @@ test('an interface in another language downloads its translations before the gam
   expect((await snapshot(page)).assets.translations).toBe('ready');
   await expect.poll(async () => (await labels()).length).toBeGreaterThan(0);
   expect(await labels()).not.toBe(english);
+  if (locale === 'ms') expect(await labels()).toContain('Tetapan');
 });
+}
 
 for (const variant of ['serial', 'threaded']) {
   test(`${variant} all soundtrack sets arrive as Opus in background packages`, async ({page}) => {

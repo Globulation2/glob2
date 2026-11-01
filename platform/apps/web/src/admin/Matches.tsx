@@ -1,4 +1,4 @@
-import { displayMessage } from '../i18n.tsx';
+import { displayMessage, statusLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import { request, api } from '../api.ts';
@@ -49,7 +49,9 @@ export function Matches() {
             <option value="">{t('Any')}</option>
             {['pending', 'failed', 'verified', 'diverged', 'unverifiable', 'not_applicable'].map(
               (v) => (
-                <option key={v}>{v}</option>
+                <option key={v} value={v}>
+                  {statusLabel(v)}
+                </option>
               ),
             )}
           </select>

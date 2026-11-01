@@ -843,7 +843,8 @@ class TextField : public Node
 	}
 	void commit(Host &host, std::string next, std::size_t nextCursor)
 	{
-		if (options.maxLength && glyphCount(next) > options.maxLength)
+		if ((options.maxLength && glyphCount(next) > options.maxLength) ||
+			(options.maxBytes && next.size() > options.maxBytes))
 			return;
 		cursor = std::min(nextCursor, next.size());
 		auto &state = host.state(key);
@@ -1009,7 +1010,9 @@ class TextField : public Node
 			SDL_Rect area{bounds.x, bounds.y, bounds.w, bounds.h};
 			SDL_Rect limit{clip.x, clip.y, clip.w, clip.h};
 			// Browser hosts edit natively; native hosts ignore this.
-			GAGCore::browserTextInput(this->browserOwner, area, surface->getW(), surface->getH(), value, options.password, options.maxLength, browserChange, &limit, options.selectForCopy);
+			// Bytes and Unicode codepoints have independent limits.
+			const std::size_t maximum = options.maxBytes ? options.maxBytes + 1 : 0;
+			GAGCore::browserTextInput(this->browserOwner, area, surface->getW(), surface->getH(), value, options.password, maximum, browserChange, &limit, options.selectForCopy, options.maxLength);
 		}
 		if (shown.empty() && !active)
 		{
@@ -1060,8 +1063,13 @@ class TextField : public Node
 		Host *h = &host;
 		const bool deferred = options.commitOnSubmit;
 		const std::string original = committed;
-		browserChange = [h, k, callback, submit, preview, deferred, original](const std::string &text, std::size_t at, int action)
+		const std::size_t maxBytes = options.maxBytes;
+		const std::size_t maxCharacters = options.maxLength;
+		browserChange = [h, k, callback, submit, preview, deferred, original, maxBytes, maxCharacters](const std::string &text, std::size_t at, int action)
 		{
+			if ((maxBytes && text.size() > maxBytes) ||
+				(maxCharacters && glyphCount(text) > maxCharacters))
+				return;
 			// Mirror commit(): the typed text is the draft (restored across rebuilds)
 			// and, for commit-on-submit fields, reaches the model on Enter or blur.
 			auto &state = h->state(k);
@@ -1328,6 +1336,21 @@ class TextEditor : public Node
 	{
 		lines.clear();
 		const int limit = std::max(1, width);
+		// Preserve the original byte offsets for editing while wrapping only at
+		// shaped boundaries. In particular, Bengali vowel signs and conjuncts
+		// must not become separate lines. Segment explicit paragraphs separately
+		// so a newline always remains a hard break, even if font layout fails.
+		std::vector<std::size_t> clusterEnds;
+		for (std::size_t paragraph = 0; paragraph < value.size();)
+		{
+			const auto newline = value.find('\n', paragraph);
+			const auto end = newline == std::string::npos ? value.size() : newline;
+			for (const auto offset : shapingClusterEnds(m, FontRole::Body, value.substr(paragraph, end - paragraph)))
+				clusterEnds.push_back(paragraph + offset);
+			if (end == value.size()) break;
+			clusterEnds.push_back(end + 1);
+			paragraph = end + 1;
+		}
 		std::size_t start = 0;
 		while (start <= value.size())
 		{
@@ -1335,7 +1358,7 @@ class TextEditor : public Node
 			std::size_t lastBreak = std::string::npos;
 			while (end < value.size() && value[end] != '\n')
 			{
-				const std::size_t next = nextGlyph(value, end);
+				const std::size_t next = *std::upper_bound(clusterEnds.begin(), clusterEnds.end(), end);
 				if (end > start && m.width(FontRole::Body, value.substr(start, next - start)) > limit)
 				{
 					if (lastBreak != std::string::npos && lastBreak > start)
@@ -1343,7 +1366,7 @@ class TextEditor : public Node
 					break;
 				}
 				if (value[end] == ' ')
-					lastBreak = end + 1;
+					lastBreak = next;
 				end = next;
 			}
 			lines.push_back({value.substr(start, end - start), start});

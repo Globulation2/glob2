@@ -412,10 +412,6 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		const auto stats = statsLayout();
 		if (stats.close.contains(point))
 			return 45;
-		if (stats.previous.contains(point))
-			return 46;
-		if (stats.next.contains(point))
-			return 47;
 		if (stats.sheet.contains(point))
 			return 48;
 	}
@@ -484,7 +480,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	if (statsOpen)
 	{
 		const auto stats = statsLayout();
-		return {stats.close, stats.previous, stats.next};
+		return {stats.close};
 	}
 	if (lensVisible())
 		return lensRects(layout());
@@ -1320,8 +1316,8 @@ void GameGUITouch::activateNavigation(int button)
 		// inspector restoration or pending invalidation before opening.
 		dismissMapPanels();
 		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
-		panelOpen = true;
-		panelScroll = 0;
+        gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+        statsOpen = true;
 		return;
 	}
 	// Touch opens dialogs by intent, never by synthesizing desktop pixels.
@@ -1649,17 +1645,16 @@ void GameGUITouch::menuAction(int action)
 		panelScroll = 0;
 		break;
 	case 3:
-		if (usesHUD() && !layout().persistentPanel && !globalContainer->isViewingGame())
-		{
-			statsCatalog = Stats::catalogForBuildings(*gui.drawnScene().buildingTypes);
-			statsOpen = true; // The compact statistics sheet.
-			break;
-		}
+        if (usesHUD()) {
+            gui.clearSelection();
+            statsOpen = true;
+            break;
+        }
 		showStatistics = true;
 		panelOpen = true;
 		gui.clearSelection();
-		gui.replayDisplayMode = GameGUI::RDM_STAT_GRAPH_VIEW;
-		gui.displayMode = GameGUI::STAT_GRAPH_VIEW;
+		gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
 		panelScroll = 0;
 		break;
 	case 4:

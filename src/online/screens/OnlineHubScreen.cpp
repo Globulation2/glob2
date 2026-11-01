@@ -807,7 +807,9 @@ Element OnlineHubScreen::accountChip(const Presentation &p)
 	std::vector<Element> words{label(name)};
 	if (!p.compact())
 		words.push_back(caption(guest ? tr("[hub guest kept on device]") : formatted("[hub signed in on %0]", hostOf(data.origin))));
-	auto initial = sized({p.pt(28), p.pt(28)}, canvas("", {p.pt(28), p.pt(28)}, [palette, letter = name.substr(0, 1)](Canvas &c, Rect r, const Frame &) {
+	auto initial = sized({p.pt(28), p.pt(28)}, canvas("", {p.pt(28), p.pt(28)}, [palette, name](Canvas &c, Rect r, const Frame &) {
+		const auto clusters = GAGGUI::ui::shapingClusterEnds(c.measurer(), FontRole::Body, name);
+		const std::string letter = clusters.empty() ? std::string() : name.substr(0, clusters.front());
 		c.fillRounded(r, r.w / 2, palette.neutral);
 		const int w = c.measurer().width(FontRole::Body, letter);
 		c.text({r.x + (r.w - w) / 2, r.y + (r.h - c.measurer().lineHeight(FontRole::Body)) / 2}, FontRole::Body, letter, palette.paper);

@@ -13,7 +13,7 @@ import {
 import { request } from '../api.ts';
 import { useLoad, useSession } from '../state.tsx';
 import { MeshPreview, type SceneView, type Tool } from '../skins/MeshPreview.tsx';
-import { ACTIONS, DEFAULT_CAMERA, type Camera } from '../skins/geometry.ts';
+import { ACTIONS, ACTION_LABELS, DEFAULT_CAMERA, type Camera } from '../skins/geometry.ts';
 import { MODELS, type Model } from '../skins/atlas.ts';
 import { SWARM_SHAPES, swarmModel } from '../skins/swarmShapes.ts';
 import { SkinStore } from '../skins/Store.tsx';
@@ -415,13 +415,13 @@ function SkinStudio() {
                   onClick={() => chooseModel(m)}
                 >
                   <img src={`/skins/thumbs/${m.mesh}.png`} alt="" />
-                  <span>{m.name}</span>
+                  <span>{t(m.name)}</span>
                 </button>
               ))}
             </div>
             {model.id === 'swarm' && (
               <button className="skin-shape-button skin-panel" onClick={() => showDialog('shapes')}>
-                {SWARM_SHAPES[d.swarmMesh].name}
+                {t(SWARM_SHAPES[d.swarmMesh].name)}
                 <span>{t('Change shape ⌄')}</span>
               </button>
             )}
@@ -770,7 +770,7 @@ function SkinStudio() {
                           }}
                         >
                           <img src={`/skins/thumbs/${model.id}-${a}.png`} alt="" />
-                          <span>{a[0]!.toUpperCase() + a.slice(1)}</span>
+                          <span>{t(ACTION_LABELS[a] ?? a)}</span>
                         </button>
                       ))}
                     </div>
@@ -920,8 +920,8 @@ function SkinStudio() {
                 onClick={() => selectShape(shape)}
               >
                 <img src={`/skins/thumbs/${swarmModel(shape)}.png`} alt="" />
-                <strong>{SWARM_SHAPES[shape].name}</strong>
-                <small>{SWARM_SHAPES[shape].description}</small>
+                <strong>{t(SWARM_SHAPES[shape].name)}</strong>
+                <small>{t(SWARM_SHAPES[shape].description)}</small>
               </button>
             ))}
           </div>

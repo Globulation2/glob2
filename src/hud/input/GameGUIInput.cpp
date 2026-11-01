@@ -129,7 +129,7 @@ void GameGUI::processEvent(SDL_Event *event)
     // Live diagnostic dumps and dialog construction are exceptional owner work.
     const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
     const bool ownerDialog = gameMenuScreen && inGameMenu != IGM_TELEMETRY
-        && inGameMenu != IGM_ALLIANCE && inGameMenu != IGM_OBJECTIVES;
+        && inGameMenu != IGM_ALLIANCE && inGameMenu != IGM_OBJECTIVES && inGameMenu != IGM_STATISTICS;
     if ((diagnostic || ownerDialog || hive || GAGGUI::ui::isSemanticEvent(*event)) && parkForClient([&]{processEvent(event);})) return;
 	ConnectionOverlay::InputSnapshot connectionInput(connectionOverlay.get());
 	if (!activeDialog()) updateTutorial();
@@ -145,7 +145,10 @@ void GameGUI::processEvent(SDL_Event *event)
 			processScrollableWidget(event);
 		else
 		{
-            if (tutorialGuidance && (!connectionOverlay || !connectionOverlay->blocksGameplay()) &&
+            if (statisticsVisible() && (!connectionOverlay || !connectionOverlay->blocksGameplay()) &&
+                statisticsHost().event(*event)) return;
+            if (tutorialGuidance && (!touch || !touch->obscuresTutorial()) &&
+                (!connectionOverlay || !connectionOverlay->blocksGameplay()) &&
                 tutorialGuidance->host().event(*event)) return;
 			hudInspectionHost().event(*event);
 			if (connectionOverlay && connectionOverlay->blocksGameplay()) suspendInput();
@@ -167,7 +170,9 @@ void GameGUI::processEvent(SDL_Event *event)
         if(connectionOverlay->blocksGameplay())suspendInput();
         if(connectionOverlay->handle(*event))return;
     }
-    if (tutorialGuidance && !activeDialog() && !typingInputScreen && tutorialGuidance->handle(*event)) return;
+    if (tutorialGuidance && !activeDialog() && !typingInputScreen &&
+        (!touch || !touch->obscuresTutorial()) && tutorialGuidance->handle(*event)) return;
+    if (handleStatisticsEvent(*event)) return;
     if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_MIDDLE) ||
         ((event->type >= SDL_EVENT_WINDOW_FIRST && event->type <= SDL_EVENT_WINDOW_LAST) && event->type == SDL_EVENT_WINDOW_FOCUS_LOST))

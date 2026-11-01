@@ -37,6 +37,10 @@ class GameGUITouch
 {
   public:
     bool needsStatisticsHistory() const { return statsOpen; }
+    // Foreground tools temporarily own painting and input above the world.
+    bool obscuresTutorial() const { return usesHUD() && (statsOpen || lensVisible() || peekOpen); }
+    void closeStatistics() { statsOpen = false; }
+    GAGCore::ViewRect statisticsContentRect() const { return statsLayout().body; }
 	explicit GameGUITouch(GameGUI &gui);
 	~GameGUITouch();
 	bool process(SDL_Event &event);
@@ -50,6 +54,8 @@ class GameGUITouch
 	void dismissMapPanels();
 	bool scrollAnimating() const;
 	void prepareDraw();
+	// Share the cached trophy artwork with the compact desktop statistics bar.
+	void drawPrestigeIcon(GAGCore::ViewPoint center, double logicalSize);
 	void drawControls();
 	void drawKeyboardFocus();
 	bool active() const { return touchActive || usesHUD(); }
@@ -187,16 +193,14 @@ class GameGUITouch
 	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in (thumb side last).
 	void navigatePeek(GAGCore::ViewPoint point);
 	void drawPeek();
-	// Compact statistics: a bottom sheet with the team's history chart (the
-	// end-game chart, own team only), a metric switcher and current counters.
+	// Statistics uses the same topics and metric list as the desktop sidebar.
+	// The header owns dismissal; the embedded host owns body scrolling.
 	bool statsOpen = false;
-	int statsMetric = 0;
-	std::vector<Stats::Metric> statsCatalog;
 	double statsDrag = 0;
 	void dragStatistics(double deltaPoints);
 	struct StatsLayout
 	{
-		GAGCore::ViewRect sheet, close, previous, next, title, counters, chart;
+		GAGCore::ViewRect sheet, close, title, body;
 	};
 	StatsLayout statsLayout() const;
 	void drawStats();

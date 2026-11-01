@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
+#include "tutorial/TutorialGuidance.h"
 #include <Environment.h>
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
@@ -57,6 +59,7 @@
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#include <source_location>
 
 static void require(bool condition, const char *message)
 {
@@ -152,9 +155,11 @@ class GameGUITouchHarness
 		act("touch/peek/done");
 		act("touch/lens/3");
 		REQUIRE(touch.statsOpen);
-		const int metric = touch.statsMetric;
-		act("touch/statistics/next");
-		CHECK(touch.statsMetric != metric);
+		auto &panel = gui.statistics();
+        gui.inspectionHosts();
+        REQUIRE(panel.host().find("stats/topic/2"));
+        REQUIRE(panel.host().act("stats/topic/2", {}, error));
+        CHECK(panel.topic() == InGameStatisticsPanel::Topic::Economy);
 		act("touch/statistics/sheet", {ActionKind::Scroll, -80});
 		CHECK(touch.statsOpen);
 		act("touch/statistics/sheet", {ActionKind::Scroll, 0});
@@ -309,14 +314,16 @@ class GameGUITouchHarness
 		CHECK(touch.keyboardFocus == -1);
 		CHECK_FALSE(focusedState());
 		gui.tutorialGuidance.reset();
-		// A higher surface covering even the opposite edge blocks the whole
-		// chart gesture, just as it blocks its semantic scroll target.
+		// Statistics temporarily hides guidance, so the sheet header remains
+        // actionable even if the suspended lesson occupied the same pixels.
 		touch.statsOpen = true;
 		const auto sheet = touch.statsLayout();
 		const auto sheetBounds = gui.hudInspectionHost().bounds("touch/statistics/sheet");
 		REQUIRE(sheetBounds.w > 20);
 		cover({sheetBounds.right() - 10, sheetBounds.y, 10, sheetBounds.h});
-		CHECK_FALSE(gui.hudInspectionHost().act("touch/statistics/sheet", {ActionKind::Scroll, 100}, error));
+		CHECK(gui.hudInspectionHost().act("touch/statistics/sheet", {ActionKind::Scroll, 100}, error));
+        CHECK_FALSE(touch.statsOpen);
+        touch.statsOpen = true;
 		const auto start = sheet.title;
 		for (const auto type : {SDL_EVENT_FINGER_DOWN, SDL_EVENT_FINGER_MOTION, SDL_EVENT_FINGER_UP})
 		{
@@ -326,7 +333,7 @@ class GameGUITouchHarness
 			finger.tfinger.y = float(start.y + start.h / 2 + (type == SDL_EVENT_FINGER_DOWN ? 0 : 80 * gfx->logicalUnitsPerPoint())) / gfx->getH();
 			CHECK(touch.process(finger));
 		}
-		CHECK(touch.statsOpen);
+		CHECK_FALSE(touch.statsOpen);
 		CHECK(touch.statsDrag == 0);
 		touch.statsOpen = false;
 		touch.cancel();
@@ -2301,6 +2308,8 @@ class GameGUITouchHarness
 				if (flagHere) continue;
 				foundEmptyGround = true;
 				gui.camera.setZoom(1.7, x, y);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				gui.mouseX = x; gui.mouseY = y;
 				gui.updateCamera();
 				const auto wheelAnchor = gui.camera.screenToWorld(x, y);
@@ -2643,29 +2652,41 @@ class GameGUITouchHarness
 				gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
 			}
 			// A visible map spot with nothing selectable around it.
-			auto emptyGround = [&]
+			auto emptyGround = [&](std::source_location at = std::source_location::current())
 			{
+                auto emptyTile = [&](int cx, int cy) {
+                    for (int dy = -1; dy <= 1; ++dy)
+                        for (int dx = -1; dx <= 1; ++dx) {
+                            const int mx=cx+dx, my=cy+dy;
+                            if (gui.game.map.getBuilding(mx,my)!=NOGBID || gui.game.map.isResource(mx,my) ||
+                                gui.game.map.getGroundUnit(mx,my)!=NOGUID || gui.game.map.getAirUnit(mx,my)!=NOGUID)
+                                return false;
+                        }
+                    return true;
+                };
+                std::optional<GAGCore::ViewPoint> mapSpot;
 				for (double y = world.y + 48 * unit; y < world.y + world.h - 24 * unit; y += 16 * unit)
 					for (double x = world.x + 24 * unit; x < world.x + world.w - 24 * unit; x += 16 * unit)
 					{
-						if (gui.touch->interfaceRegion({x, y}) != 0)
-							continue;
+						if (gui.touch->interfaceRegion({x, y}) != 0) continue;
+                        if (!mapSpot) mapSpot=GAGCore::ViewPoint{x,y};
 						const int cx = gui.mapMouseX(int(x)) / 32 + gui.viewportX,
 								  cy = gui.mapMouseY(int(y)) / 32 + gui.viewportY;
-						bool clear = true;
-						for (int dy = -1; dy <= 1; ++dy)
-							for (int dx = -1; dx <= 1; ++dx)
-							{
-								const int mx = cx + dx, my = cy + dy;
-								clear = clear && gui.game.map.getBuilding(mx, my) == NOGBID &&
-										!gui.game.map.isResource(mx, my) &&
-										gui.game.map.getGroundUnit(mx, my) == NOGUID &&
-										gui.game.map.getAirUnit(mx, my) == NOGUID;
-							}
-						if (clear)
-							return GAGCore::ViewPoint{x, y};
+                        if (emptyTile(cx,cy)) return GAGCore::ViewPoint{x,y};
 					}
-				throw std::runtime_error("No empty ground visible in the phone world");
+                // Earlier navigation and desktop framing can leave only occupied
+                // terrain outside an open phone sheet. Reframe this input fixture
+                // onto existing clear terrain, without changing the map or orders.
+                if (mapSpot) for (int cy=0;cy<gui.game.map.getH();++cy)
+                    for (int cx=0;cx<gui.game.map.getW();++cx) if (emptyTile(cx,cy)) {
+                        gui.camera.originX=cx*32+16-(mapSpot->x-gui.camera.offsetX)/gui.camera.zoom;
+                        gui.camera.originY=cy*32+16-(mapSpot->y-gui.camera.offsetY)/gui.camera.zoom;
+                        gui.camera.normalize();
+                        gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
+                        gui.prepareLocalPresentation();
+                        return *mapSpot;
+                    }
+                throw std::runtime_error("No empty ground visible in the phone world at line " + std::to_string(at.line()));
 			};
 			{
 				const auto checksum = gui.game.checkSum();
@@ -2804,6 +2825,8 @@ class GameGUITouchHarness
 				{
 					gui.camera = savedCamera;
 					gui.camera.setZoom(initial, spot.x, spot.y);
+					gui.viewportX = gui.camera.tileX();
+					gui.viewportY = gui.camera.tileY();
 					if (initial != 1.0)
 					{
 						gui.camera.originX = gui.camera.mapWidth - 8;
@@ -2850,6 +2873,8 @@ class GameGUITouchHarness
 				auto armedPress = [&]
 				{
 					gui.camera.setZoom(1, spot.x, spot.y);
+                    gui.viewportX = gui.camera.tileX();
+                    gui.viewportY = gui.camera.tileY();
 					quickTouches();
 					tap(spot.x, spot.y);
 					finger(SDL_EVENT_FINGER_DOWN, 1, spot.x, spot.y);
@@ -2913,7 +2938,10 @@ class GameGUITouchHarness
 				require(gui.viewportX != panX && std::abs(gui.camera.zoom - 1) < 1e-9,
 						"A sideways drag after a tap must pan, not zoom");
 				globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_PLATFORM;
-				gui.camera.setZoom(1, spot.x, spot.y);
+                // Keep later gesture scenarios independent of the pan above.
+				gui.camera = savedCamera;
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				noOrder();
 			}
 			{
@@ -2938,6 +2966,8 @@ class GameGUITouchHarness
 				require(forbidden(), "A paint tap must land after the double-tap window");
 				drain();
 				gui.camera.setZoom(1.5, spot.x, spot.y);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				quickTouches();
 				tap(spot.x, spot.y);
 				tap(spot.x, spot.y);
@@ -3209,15 +3239,18 @@ class GameGUITouchHarness
 				p = at(3);
 				tap(p.x, p.y);
 				require(gui.touch->statsOpen && !gui.touch->lensVisible(), "The statistics lens opens the sheet");
+                require(std::none_of(gui.statistics().metrics().begin(), gui.statistics().metrics().end(),
+                    [](const auto &m) { return m.winProbability; }), "Live players cannot see hidden-state win probabilities");
 				const auto stats = gui.touch->statsLayout();
-				require(stats.chart.h >= 100 * unit && stats.sheet.y + stats.sheet.h <= ui.actions.y + 0.5,
-						"The sheet sits above the toolbar with room for the chart");
-				tap(centre(stats.next).x, centre(stats.next).y);
-				require(gui.touch->statsMetric == 1, "The sheet's arrow shows the next metric");
-				tap(centre(stats.previous).x, centre(stats.previous).y);
-				tap(centre(stats.previous).x, centre(stats.previous).y);
-				require(gui.touch->statsMetric == int(Stats::catalog().size()) - 1, "Metrics wrap around");
-				gui.touch->statsMetric = 0;
+                require(stats.body.h >= 100 * unit && stats.sheet.y + stats.sheet.h <= ui.actions.y + 0.5,
+                        "The sheet sits above the toolbar with room for statistics");
+                glob2test::drawGUI(gui, 0);
+                auto &panel = gui.statistics();
+                require(panel.topic() == InGameStatisticsPanel::Topic::Overview, "Statistics starts on Overview");
+                panel.selectTopic(InGameStatisticsPanel::Topic::Economy);
+                glob2test::drawGUI(gui, 0);
+                require(panel.host().find("stats/metric/idle workers") != nullptr, "Economy exposes worker time");
+                panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
 				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-stats-portrait.bmp" : "touch-stats-landscape.bmp");
 				gfx->nextFrame();
@@ -3253,6 +3286,8 @@ class GameGUITouchHarness
 				const auto buttons = gui.touch->peekButtons();
 				gui.updateCamera();
 				gui.camera.setZoom(1, gfx->getW() / 2, gfx->getH() / 2);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				tap(centre(buttons[2]).x, centre(buttons[2]).y);
 				require(std::abs(gui.camera.zoom - InGameTouchTheme::peekZoomStep) < 0.01, "Peek + zooms in");
 				tap(centre(buttons[1]).x, centre(buttons[1]).y);
@@ -5095,10 +5130,10 @@ class GameGUITouchHarness
 			const auto bar = gui.touch->layout().actions;
 			tap(bar.x + bar.w * 4.5 / 6, bar.y + bar.h / 2);
 			glob2test::drawGUI(gui,0);
-			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->panelOpen &&
-				gui.displayMode == GameGUI::STAT_TEXT_VIEW && !gui.touch->restorePalette &&
-				!gui.touch->readOnlyPanelShown,
-				"Replay statistics replace every inspector and survive the next draw");
+			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->statsOpen &&
+                !gui.touch->panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW &&
+                !gui.touch->restorePalette && !gui.touch->readOnlyPanelShown,
+                "Replay statistics replace every inspector and survive the next draw");
 		}
 		gui.touch->dismissMapPanels();
 		gui.touch->select({center.x + 28, center.y});
@@ -5136,6 +5171,7 @@ class GameGUITouchHarness
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.adjustLocalTeam();
+		gui.prepareLocalPresentation();
 		auto *gfx = globalContainer->gfx;
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 		gfx->setResponsiveViewport(true, 800, 600);
@@ -6031,6 +6067,149 @@ class GameGUITouchHarness
 		gui.processEvent(&event);
 		REQUIRE(std::string(static_cast<LoadSaveDialog *>(dialog)->getName()) == "Scaled2");
 	}
+    static void compactTutorialStatistics()
+    {
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+        glob2test::HeadlessGlobals globals({.display=true, .loadStrings=true, .width=320, .height=640,
+            .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        auto *strings=GAGCore::Toolkit::getStringTable();
+        const int previousLanguage=strings->getLang();
+        struct RestoreLanguage { GAGCore::StringTable *strings; int value;
+            ~RestoreLanguage(){strings->setLang(value);} } restore{strings,previousLanguage};
+        strings->setLang(strings->getLangCode("bn"));
+        globals->settings.setTextSizePercent(150);
+        // Use the public fixture loader with the packaged lesson's authored
+        // players, team associations and AI configuration, as campaign init does.
+        GameGUI gui;
+        const auto source=(glob2test::sourceRoot()/Tutorial::IntroductionMap).string();
+        auto map=Engine::loadMapHeader(source);
+        auto players=Engine::loadGameHeader(source);
+        REQUIRE(map.getNumberOfTeams()==2);
+        REQUIRE(players.getNumberOfPlayers()==2);
+        REQUIRE(players.getBasePlayer(0).name=="Your colony");
+        REQUIRE(players.getBasePlayer(1).name=="Practice colony");
+        // Missions and the tutorial play as authored: never with experiments.
+        if (!map.getIsSavedGame()) players.getExperiments().clear();
+        REQUIRE(gui.loadFromHeaders(map,players,true,true,false,source));
+        gui.localPlayer=0; gui.localTeamNo=players.getBasePlayer(0).teamNumber;
+        gui.adjustLocalTeam();
+        gui.game.setWaitingOnMask(0);
+        for(int tick=0;tick<64;++tick)gui.game.step(0);
+        glob2test::drawGUI(gui,0);
+        auto *card=gui.tutorialGuidance.get(); REQUIRE(card);
+        const auto lesson=Tutorial::view(gui.drawnScene().panels.hud.state()); REQUIRE(lesson);
+        const auto tap=[&](GAGGUI::ui::Rect r) {
+            SDL_Event e{};e.type=SDL_EVENT_MOUSE_BUTTON_DOWN;e.button.button=SDL_BUTTON_LEFT;
+            e.button.x=r.x+r.w/2;e.button.y=r.y+r.h/2;gui.processEvent(&e);
+            e.type=SDL_EVENT_MOUSE_BUTTON_UP;gui.processEvent(&e);
+        };
+        tap(card->host().bounds("intro/collapse")); glob2test::drawGUI(gui,0);
+        CHECK_FALSE(card->host().find("intro/instruction"));
+        const auto compact=card->panelBounds();
+        REQUIRE(card->host().find("intro/title"));
+        CHECK(card->host().bounds("intro/title").h<=card->host().bounds("intro/collapse").h);
+        CHECK(compact.h<100);
+        card->host().focus("intro/help",true);
+        gui.touch->lensOpen=true;
+        gui.selectionMode=GameGUI::NO_SELECTION; gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+        glob2test::drawGUI(gui,0);
+        REQUIRE(gui.touch->lensVisible()); CHECK(gui.touch->obscuresTutorial());
+        CHECK_FALSE(card->host().keyboardFocused());
+        gui.touch->lensOpen=false; gui.touch->peekOpen=true;
+        glob2test::drawGUI(gui,0); CHECK(gui.touch->obscuresTutorial());
+        gui.touch->peekOpen=false; CHECK_FALSE(gui.touch->obscuresTutorial());
+        card->host().focus("intro/help",true);
+        gui.touch->menuAction(3); glob2test::drawGUI(gui,0);
+        REQUIRE(gui.touch->statsOpen);
+        CHECK_FALSE(card->host().keyboardFocused());
+        const auto sheet=gui.touch->statsLayout();
+        const auto mini=gui.touch->minimapRect();
+        const GAGCore::ViewPoint overlap{mini.x+mini.w-3, std::min(mini.y+mini.h-3,sheet.title.y+sheet.title.h-2)};
+        REQUIRE(mini.contains(overlap)); REQUIRE(sheet.sheet.contains(overlap));
+        CHECK(gui.touch->interfaceRegion(overlap)==48);
+        const auto cameraX=gui.viewportX,cameraY=gui.viewportY;
+        gui.touch->interfaceTap(overlap);
+        CHECK(gui.viewportX==cameraX); CHECK(gui.viewportY==cameraY);
+        auto *gfx=globalContainer->gfx;
+        // Request an actual backend readback; completedFrame may still refer
+        // to the unused software surface with the programmable renderer.
+        const auto capture=glob2test::profileDir()/"compact-bn-statistics.bmp";
+        gfx->printScreen(capture.filename().string());
+        gfx->nextFrame();
+        REQUIRE(std::filesystem::exists(capture));
+        std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(SDL_LoadBMP(capture.string().c_str()),SDL_DestroySurface);
+        REQUIRE(pixels);
+        Uint8 r=0,g=0,b=0,a=0;
+        REQUIRE(SDL_ReadSurfacePixel(pixels.get(),int(overlap.x),int(overlap.y),&r,&g,&b,&a));
+        const auto paper=InGameTouchTheme::readout();
+        const int tolerance=257-paper.a;
+        CHECK(std::abs(int(r)-int(paper.r))<=tolerance);
+        CHECK(std::abs(int(g)-int(paper.g))<=tolerance);
+        CHECK(std::abs(int(b)-int(paper.b))<=tolerance);
+        CHECK(glob2test::retainFromProfile(".bmp")==1);
+        auto &panel=gui.statistics();
+        for(int topic=0;topic<5;++topic) {
+            tap(panel.host().bounds("stats/topic/"+std::to_string(topic)));
+            glob2test::drawGUI(gui,0);
+            CHECK(panel.topic()==InGameStatisticsPanel::Topic(topic));
+        }
+        gui.touch->closeStatistics();glob2test::drawGUI(gui,0);
+        REQUIRE(gui.tutorialGuidance.get()==card);
+        CHECK_FALSE(card->host().find("intro/instruction"));
+        CHECK(card->panelBounds()==compact);
+        CHECK(Tutorial::view(gui.drawnScene().panels.hud.state())==lesson);
+        tap(card->host().bounds("intro/collapse"));glob2test::drawGUI(gui,0);
+        CHECK(card->host().find("intro/instruction"));
+        auto title=card->host().find("intro/title");REQUIRE(title);
+        CHECK(title->accessibleText()==std::to_string(lesson->index+1)+" / "+std::to_string(lesson->count)+"  "+Glob2UI::tr(lesson->title));
+    }
+	static void liveStatisticsProbability()
+    {
+        glob2test::HeadlessGlobals globals({.display=true, .loadStrings=true, .width=360, .height=720,
+            .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        REQUIRE(NET_Init());
+        struct NetworkCleanup { ~NetworkCleanup() { NET_Quit(); } } network;
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+        GameGUI gui;
+        auto map = Engine::loadMapHeader("maps/balanced.map");
+        GameHeader players;
+        players.setNumberOfPlayers(1);
+        players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+        REQUIRE(gui.loadFromHeaders(map, players, true, true));
+        gui.localTeamNo=gui.localPlayer=0;
+        gui.adjustLocalTeam();
+        gui.localTeam->stats.recordWinProbability(0, 900, "visibility-test");
+        auto *gfx=globalContainer->gfx;
+        gfx->setResponsiveViewport(true,800,600);
+        for (auto [width,height] : {std::pair{360,720},std::pair{720,360}})
+        {
+            const int oldW=gfx->getW(),oldH=gfx->getH();
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+            SDL_Event resize{};resize.type=SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resize);
+            gui.viewportResized(oldW,oldH,gfx->getW(),gfx->getH());
+            gui.prepareLocalPresentation();
+            const auto checksum=gui.game.checkSum();
+            gui.touch->menuAction(3);
+            REQUIRE(gui.touch->statsOpen);
+            auto &panel = gui.statistics();
+            REQUIRE_FALSE(panel.metrics().empty());
+            CHECK(std::none_of(panel.metrics().begin(), panel.metrics().end(),
+                [](const auto &m){return m.winProbability;}));
+            panel.selectTopic(InGameStatisticsPanel::Topic::World);
+            panel.update(0);
+            CHECK_FALSE(panel.host().find("stats/metric/win probability"));
+            glob2test::drawGUI(gui,0);
+            CHECK(gui.game.checkSum()==checksum);
+            const auto screenshot="live-stats-"+std::to_string(width)+"x"+std::to_string(height)+".bmp";
+            gfx->printScreen(screenshot);
+            gfx->nextFrame();
+            REQUIRE(std::filesystem::exists(glob2test::profileDir()/screenshot));
+            gui.touch->statsOpen=false;
+        }
+        CHECK(glob2test::retainFromProfile(".bmp")==2);
+    }
 };
 TEST_SUITE("GameGUITouch")
 {
@@ -6053,6 +6232,14 @@ TEST_SUITE("GameGUITouch")
 		NET_Quit();
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	}
+    GLOB2_TEST_CASE("compact Bengali tutorial yields to statistics and covers the minimap", "[display][artifacts]")
+    {
+        GameGUITouchHarness::compactTutorialStatistics();
+    }
+    GLOB2_TEST_CASE("live statistics hide post-game probability across topics", "[display][artifacts]")
+    {
+        GameGUITouchHarness::liveStatisticsProbability();
+    }
 
 	GLOB2_TEST_CASE("attack marks follow mobile minimaps without extra lifetime ticks", "[display][artifacts]")
 	{

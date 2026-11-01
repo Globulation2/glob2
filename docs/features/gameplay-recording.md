@@ -1,23 +1,32 @@
 # Gameplay footage
 
 Glob2 can record menus, loading screens, gameplay, in-game dialogs, and
-final statistics as compressed MP4 footage. The same recorder supports players,
+final statistics as compressed MP4 or WebM footage, depending on the build. The same recorder supports players,
 replay capture, LAN and online multiplayer, and internal feature demonstrations.
 It records the local client's visible perspective and mixed game audio, including
 received voice chat. It does not capture a new microphone input or other windows.
 
 ## Recording
 
-Recording uses embedded H.264 and AAC encoders; no FFmpeg executable is needed.
-Native builds prefer the platform hardware encoder and fall back to x264. Browser
+Default builds use embedded H.264 and AAC encoders; no FFmpeg executable is needed.
+Default native builds prefer the platform hardware encoder and fall back to x264. Browser
 builds lazily load a dedicated recording worker, prefer WebCodecs after testing the
 actual configuration, and fall back to the same embedded software pipeline.
+
+Linux distributions can build with `recording_codec=vp9` or
+`recording_codec=av1` to use WebM with Opus audio instead. These profiles exclude
+H.264, AAC and x264, and use software encoding for both `auto` and `software`.
+The codec is selected at build time; there is no automatic format change during
+a recording. See [recording codec builds](../development/build-options.md#recording-codec-builds).
+The examples below use the default MP4 build; use `.webm` paths in either WebM
+build. UI recordings and `--videoshot` choose the build's extension automatically,
+including numbered segments. Manifests identify the actual video and audio codecs.
 
 **Settings > Recording** shows recording controls, the hotkey and the output
 folder. The in-game menu offers **Start recording / Stop recording**, and the
 **Start or stop recording** hotkey (default **Ctrl+Shift+R**, rebindable under
 **Settings > Controls**) works on every screen. Encoder and storage errors appear
-in the recording controls. Each UI start creates a unique MP4 in
+in the recording controls. Each UI start creates a unique video in
 `videoshots/` beneath the current user profile. The window title reports recording,
 finalization, or failure; that status is outside the captured image. Capture
 errors also appear in the recording controls and application log.
@@ -38,7 +47,7 @@ replaced. Recording finishes when stopped or when the application exits normally
 | Option | Default | Meaning |
 | --- | --- | --- |
 | `--record-fps` | 30 | Fixed recording rate, 1–240 FPS |
-| `--record-crf` | 23 | Software H.264 quality, 0–51 |
+| `--record-crf` | 23 | Software video quality, 0–51 for H.264 or 0–63 for VP9/AV1 |
 | `--record-chapter-ticks` | 10000 | Gameplay chapter era length |
 | `--record-encoder` | auto | Hardware preference, or `software` for reproducibility |
 
@@ -46,7 +55,8 @@ replaced. Recording finishes when stopped or when the application exits normally
 Recording captures the full rendered framebuffer, including HiDPI pixels. Odd
 widths and heights are padded to even dimensions without scaling. Resolution
 changes settle for 250 ms before closing the current file and starting a numbered
-`.part0002.mp4` segment. Frame rate and quality remain fixed during a session.
+`.part0002.mp4` segment. WebM builds use `.part0002.webm`. Frame rate and quality
+remain fixed during a session.
 
 Output frame rate does not change game rendering cadence or simulation speed.
 When the game presents fewer unique frames, the recorder repeats its latest
@@ -64,7 +74,7 @@ storage produces an error. Do not clear browser site storage before exporting.
 
 ## Chapters and extraction
 
-Each completed segment has three files:
+Each completed segment has three files (replace `.mp4` with `.webm` in WebM builds):
 
 - `<name>.mp4`: compressed video/audio with embedded navigation chapters;
 - `<name>.mp4.json`: versioned manifest with chapter intervals and semantic context;
@@ -90,7 +100,10 @@ current gameplay era.
 Times use integer microseconds relative to the recorded video, not a conversion
 from simulation ticks. Chapter transitions take effect on the first recorded
 frame showing the context. Pauses and replay speed changes therefore keep both
-timestamps and tick labels meaningful. Structured metadata is authoritative for
+timestamps and tick labels meaningful. Control events retain their capture-clock
+timestamps while waiting for the matching video slots, so the journal stays
+chronological even when encoding falls behind. A resize transition is logged at
+time zero in the new segment. Structured metadata is authoritative for
 automation; embedded chapter presentation varies between video players.
 
 ```sh
@@ -116,9 +129,11 @@ existing clips or sidecars.
 
 During capture, `<name>.mp4.recording/` reserves the output and holds a fragmented
 MP4 containing both streams, an append-only event journal and incomplete metadata.
-Alternating metadata checkpoints preserve the previous valid copy when storage
+WebM builds use `.webm.recording/` with `capture.webm` and `final.webm` staging files;
+completed clusters are recoverable after interruption. Alternating metadata
+checkpoints preserve the previous valid copy when storage
 fills or a checkpoint write is interrupted.
-Finalization remuxes compressed packets into a fast-start MP4 with chapters.
+Finalization remuxes compressed packets into a fast-start MP4 or seekable WebM with chapters.
 Native publication uses no-replace hard links; browser publication commits a
 completion marker after streaming bounded chunks into final OPFS files. Failures
 retain staging files and diagnostics. Forced termination can leave a partial last
@@ -126,13 +141,16 @@ fragment, so recovery is best effort.
 
 The `libgag` session controller owns lifecycle, the shared monotonic timeline,
 three-frame capture budget, segments and semantic context. Video encoders return
-packets asynchronously through an interface with no FFmpeg types. AAC, audio
-alignment, MP4 writing and storage belong to the worker. Audio callbacks copy into
+packets asynchronously through an interface with no FFmpeg types. Audio encoding,
+alignment, container writing and storage belong to the worker. Audio callbacks copy into
 preallocated storage with a nonblocking lock; they neither allocate nor wait.
-Workers handle color conversion, encoding and file operations. Normal stop is
+Workers handle color conversion, encoding and file operations. The session orders
+journal entries in a bounded queue of 1024 entries; overflow, events arriving
+after their interval was committed, or controls beyond the final video interval
+fail recording with retained diagnostics. Normal stop is
 cooperative; native application shutdown joins outstanding workers.
 
-Software uses x264 ultrafast, CRF 23, one thread, zero latency, no B-frames and a
+Default software encoding uses x264 ultrafast, CRF 23, one thread, zero latency, no B-frames and a
 two-second keyframe interval. AAC is stereo at 48 kHz and 192 kbps. Hardware
 settings stay inside the adapters: low latency, no B-frames, two-second keyframes
 and variable bitrate starting at `max(1 Mbps, width × height × fps × 0.12)`.
@@ -146,12 +164,18 @@ and variable bitrate starting at `max(1 Mbps, width × height × fps × 0.12)`.
 | Browser | WebCodecs with advisory hardware preference |
 
 The pinned hashes are in `scons/recording-versions.json`; the minimal dependency
-recipe and cache validation are in `scons/recording_dependencies.py`. Only H.264
-encoders, AAC, MP4 muxing, MOV demuxing and required conversion/prerequisites are
-enabled. No decoders, filters, tools or network protocols are included. Release
+recipe and cache validation are in `scons/recording_dependencies.py`. Default builds
+enable H.264 encoders and AAC, with MP4/WebM muxing, MOV/Matroska demuxing and
+required conversion/prerequisites. No decoders, filters, tools or network protocols
+are included. Release
 source archives include the original dependency archives for offline rebuilds,
 and packages include their license notices. Dependencies retain native/WASM SIMD;
-encoder optimization flags do not alter simulation compiler flags.
+encoder optimization flags do not alter simulation compiler flags. WebM profiles instead
+enable only the selected VP9/AV1 encoder and Opus. Both container readers and
+writers are included to allow recovery of existing recordings across builds.
+WebM software settings use realtime mode, CPU-used 8, no lookahead, one thread,
+and a two-second keyframe interval. Opus uses the native client's existing library, with stereo audio at 48 kHz
+and 192 kbps. CRF values are codec-specific and do not imply equal quality across builds.
 
 Recording has no serialized state and changes no save, replay, or network version.
 Changes to recording still require simulation-checksum comparisons and platform

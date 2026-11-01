@@ -21,6 +21,7 @@
 #include "hive/LocalCommander.h"
 #include "hive/HiveDialog.h"
 #include "GameDiagnostics.h"
+#include "WarriorTacticsTrace.h"
 #include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
@@ -383,6 +384,7 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
         OwnerTickProfile::Scope ownerCapture(OwnerTickProfile::Phase::CaptureWorld);
         return gui.game.observeCompletedWorld(options);
     }();
+    if(warriorTactics) warriorTactics->capture(world);
     {
         OwnerTickProfile::Scope ownerSubmit(OwnerTickProfile::Phase::SubmitChecksum);
         checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
@@ -432,6 +434,7 @@ void Engine::flushChecksums()
     collectChecksums(true);
     // The normal stop path may leave its terminal completed world unobserved.
     const auto& world=gui.game.observeCompletedWorld();
+    if(warriorTactics) warriorTactics->capture(world);
     checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
     collectChecksums(true);
 }
@@ -1434,6 +1437,10 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     if (!session) throw std::logic_error("No active engine session");
     stopSimulationThread();
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
+    // Capture the partial interval on the owner, after joining it. Results
+    // screens only read history. The structured driver does this after writing
+    // continuation saves, so a report endpoint cannot change resumed sampling.
+    if (!globalContainer->structuredHeadless) gui.game.winProbabilitySyncStep(true);
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
     const auto &scene=gui.drawnScene();
     const auto lesson=scene.world.session ? Tutorial::view(*scene.world.session) : gui.game.mapscript.tutorialView();

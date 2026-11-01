@@ -8,6 +8,7 @@
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
+#include "EndGameScreen.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -372,9 +373,10 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
         GAGGUI::ScreenStack stack(*globals.gfx);
         if (screen == "main") {
             Preview<MainMenuScreen> preview; preview.render(); controls = preview.bounds();
-        } else if (screen == "settings" || screen == "settings-audio") {
+        } else if (screen == "settings" || screen == "settings-audio" || screen == "settings-player") {
             Preview<SettingsScreen> preview;
             if (screen == "settings-audio") preview.selectCategory(SettingsScreen::Category::Audio);
+            if (screen == "settings-player") preview.selectCategory(SettingsScreen::Category::Player);
             preview.render(); controls = preview.bounds();
         } else if (screen == "lobby" || screen == "lobby-players") {
             Preview<CustomGameScreen> preview(stack);
@@ -570,6 +572,40 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
         TranslationPreviewAccess::openMenu(gui);
         capture(captureKind + "-dialog");
         TranslationPreviewAccess::closeMenu(gui);
+        if (kind == "gameplay") {
+            // Use the real statistics screen and its public metric-picker action:
+            // compact layouts explain the selected metric in that picker.
+            const auto before = gui.game.checkSum();
+            FrontendScope frontend;
+            Preview<EndGameScreen> statistics(&gui);
+            const int metric = Stats::findMetric("win probability");
+            require(metric >= 0, "Win probability metric registered");
+            statistics.selectMetric(metric);
+            statistics.render();
+            auto captureStatistics = [&](const std::string &name) {
+                GAGCore::DrawableSurface image(globals.gfx->getW(), globals.gfx->getH());
+                image.drawSurface(0, 0, globals.gfx);
+                require(IMG_SavePNG(image.getSDLSurface(), (output / (name + ".png")).string().c_str()),
+                    "Save production statistics screen");
+                const auto after = gui.game.checkSum();
+                require(before == after, "Statistics UI must preserve simulation checksum");
+                result["captures"].push_back({{"name", name}, {"checksum_before_draw", before},
+                    {"checksum_after_draw", after}, {"image_width", image.getW()}, {"image_height", image.getH()}});
+            };
+            captureStatistics("gameplay-statistics");
+            statistics.activateResultControl(EndGameScreen::OPEN_METRIC_LIST);
+            const bool picker = statistics.metricPickerOpen();
+            if (picker) {
+                statistics.paintFrame(SDL_GetTicks());
+                statistics.paintFrame(SDL_GetTicks());
+                captureStatistics("gameplay-statistics-about");
+            }
+            result["statistics_probe"] = {{"metric", "win probability"}, {"metric_index", metric},
+                {"title", TeamStatChart::title(Stats::metricById("win probability"))},
+                {"about", TeamStatChart::about(Stats::metricById("win probability"))},
+                {"compact_metric_picker_opened", picker}, {"controls", statistics.bounds()},
+                {"limits", "Actual statistics UI on the local preview session; no claim of a completed match or calibrated prediction."}};
+        }
         gui.isRunning = false;
         engine.finishSession();
         abort.active = false;

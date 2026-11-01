@@ -386,6 +386,23 @@ static void run(int width,int height,bool gl,bool expanded)
 // sizes, one software renderer and the expanded English wording.
 TEST_SUITE("Settings")
 {
+    TEST_CASE("username byte limits reject whole Bengali edits without truncation")
+    {
+        Settings settings;
+        settings.setUsername("নাম");
+        std::string oversized;
+        for (int i = 0; i < 8; ++i) oversized += "ক";
+        oversized += "ক্ষ";
+        REQUIRE(oversized.size() == 33);
+        settings.setUsername(oversized);
+        CHECK(settings.getUsername() == "নাম");
+        settings.setUsername("ক্ষুদ্র");
+        CHECK(settings.getUsername() == "ক্ষুদ্র");
+        settings.setUsername(std::string(32, 'a'));
+        CHECK(settings.getUsername() == std::string(32, 'a'));
+        settings.setUsername(std::string(33, 'b'));
+        CHECK(settings.getUsername() == std::string(32, 'a'));
+    }
     TEST_CASE("all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]")
     {
         glob2test::ScopedEnvironment compact("GLOB2_MOBILE_UI", "1");

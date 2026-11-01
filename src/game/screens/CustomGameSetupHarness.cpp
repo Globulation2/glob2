@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 #include "GeneratorRegistry.h"
 #include <vector>
 #include <string>
@@ -320,7 +321,7 @@ struct CustomGameSetupHarness
         world.gui.prepareLocalPresentation(scene);
         world.gui.setPublishedScene(&scene);
         globalContainer->liveSpectating = true;
-        world.gui.measurementPage = world.gui.statisticsPages() - 1;
+        world.gui.statistics().selectTopic(InGameStatisticsPanel::Topic::World);
         globalContainer->gfx->drawFilledRect(0, 0, 640, 480, 0, 0, 32);
         world.gui.drawStatisticsPage(195);
         const auto path = glob2test::artifactDir() / "probability-sixteen-colonies.png";

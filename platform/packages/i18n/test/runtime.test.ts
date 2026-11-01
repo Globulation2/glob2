@@ -37,6 +37,27 @@ describe('online locale resolution', () => {
     expect(resolveLocale('xx, fr;q=0.2, de;q=0.8')).toBe('de');
     expect(resolveLocale('fr;q=0, de')).toBe('de');
   });
+  it('selects Bokmål for Norwegian preferences while preserving Nynorsk fallbacks', () => {
+    for (const tag of [
+      'nb',
+      'nb-NO',
+      'NB_no',
+      'no',
+      'no-NO',
+      'no-bok',
+      'no-u-ca-nyn',
+      'no-x-nyn',
+      'no-NO-u-ca-ny',
+    ])
+      expect(resolveLocale(tag)).toBe('nb');
+    expect(resolveLocale(['nn-NO', 'sv-SE'])).toBe('sv');
+    expect(resolveLocale(['no-nyn', 'da-DK'])).toBe('da');
+    expect(resolveLocale('nn-NO')).toBe('en');
+    expect(resolveLocale(['no_NO_NY', 'sv-SE'])).toBe('sv');
+    expect(resolveLocale(['no-NO-NY', 'fr'])).toBe('fr');
+    expect(resolveLocale('de;q=0.2, no-NO;q=0.8')).toBe('nb');
+    expect(localeFromCookie('glob2_locale=nb')).toBe('nb');
+  });
   it('accepts only supported cookie values', () => {
     expect(localeFromCookie('other=1; glob2_locale=pt-BR; theme=dark')).toBe('pt-BR');
     expect(localeFromCookie('glob2_locale=%')).toBeUndefined();
@@ -52,9 +73,30 @@ describe('online locale resolution', () => {
     expect(resolveLocale('sw-Latn-KE')).toBe('sw');
     expect(resolveLocale(['sw-Arab', 'de'])).toBe('de');
   });
+  it('resolves Bengali regions and script without claiming Latin transliteration', () => {
+    for (const tag of ['bn', 'bn-BD', 'bn-IN', 'bn-Beng-BD', 'bn_Beng_IN', 'bn-u-nu-latn'])
+      expect(resolveLocale(tag)).toBe('bn');
+    expect(resolveLocale(['bn-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale(['bn-Deva-IN', 'de'])).toBe('de');
+    expect(resolveLocale('bn-x-latn')).toBe('bn');
+  });
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
+  });
+  it.each(locales)('loads selectable $code through the default browser loader', async (locale) => {
+    vi.resetModules();
+    const runtime = await import('../src/index.ts');
+    await runtime.setLocale(locale.code);
+    expect(runtime.getLocale()).toBe(locale.code);
+    expect(runtime.hasMessage('Welcome to the colony')).toBe(true);
+  });
+  it('selects Malay Rumi and skips explicit Jawi requests', () => {
+    for (const tag of ['ms', 'ms-MY', 'ms-Latn-MY', 'ms_MY', 'ms-u-nu-arab', 'ms-x-arab'])
+      expect(resolveLocale(tag)).toBe('ms');
+    expect(resolveLocale(['ms-Arab-MY', 'fr'])).toBe('fr');
+    expect(resolveLocale(['ms-Latn-Arab', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ms')).toBe('ms');
   });
 });
 describe('message presentation', () => {
@@ -122,10 +164,21 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 36 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(36);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(36);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(36);
+  it('contains unique game catalog mappings including Malay', () => {
+    expect(locales).toContainEqual({
+      code: 'nb',
+      gameCode: 'nb',
+      name: 'Norsk bokmål',
+      dir: 'ltr',
+    });
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
+    expect(locales).toContainEqual({
+      code: 'ms',
+      gameCode: 'ms',
+      name: 'Bahasa Melayu',
+      dir: 'ltr',
+    });
   });
 });
 

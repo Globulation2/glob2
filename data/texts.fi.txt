@@ -4884,6 +4884,34 @@ Yksiköt, jotka ovat saarroksissa ilman vapaata ruutua, jolle astua.
 Raivatut resurssit
 [stat cleared about]
 Työläisten raivausalueilta poistamat resurssit tilan tekemiseksi.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Maine
 [stat prestige about]
@@ -5668,6 +5696,14 @@ Tumma vesi
 Kuoppa
 [chasm]
 Kuilu
+[lush_grass]
+Rehevä ruoho
+[dry_grass]
+Kuiva ruoho
+[dune_sand]
+Dyynihiekka
+[pale_sand]
+Vaalea hiekka
 [terrain group water]
 Vesi
 [terrain group sand]
@@ -6355,421 +6391,421 @@ Valintaa ei voitu tallentaa. Ääni on yhä pois päältä. Yritä uudelleen.
 [audio choices description]
 Hiljaisuus: mykistetty kaiutin. Ääni: kaiutin ja ääniaaltoja.
 [intro menu]
-
+Johdanto
 [intro briefing]
-
+Opi epäsuora ohjaus: tiedustele lipulla, huolla siirtokuntaa ja ohjaa hyökkäystä.
 [intro try]
-
+Aloita johdanto
 [intro preflight]
-
+Globulisi toimivat itsenäisesti. Valitset niiden tehtävät rakennuksilla ja lipuilla. Tässä lyhyessä johdannossa tiedustelet maamerkin, lisäät ruoantuotantoa, kasvatat työvoimaa ja ohjaat pientä hyökkäystä.
 [intro preflight save]
-
+Varaa noin 10 minuuttia. Voit tallentaa pelivalikosta ja jatkaa lataamalla pelin. Tavalliset nälkä- ja taistelusäännöt ovat voimassa. Harjoittele lisää valitsemalla päävalikosta opetusjaksot.
 [intro preference failed]
-
+Valintaasi ei voitu tallentaa. Voit jatkaa pelaamista; suositus saattaa näkyä taas ensi kerralla.
 [intro goal scout]
-
+Tiedustele kivinen maamerkki
 [intro goal build]
-
+Rakenna toinen majatalo
 [intro goal supply]
-
+Huolla uutta majataloa
 [intro goal grow]
-
+Kasvata työvoimaa
 [intro goal attack]
-
+Tuhoa vihollisen pesä
 [intro instruction scout]
-
+Avaa liput ja aseta tiedustelulippu siirtokuntasi itäpuoliselle kivikolle. Määrää yksi tiedustelija. Seuraa sen matkaa lipulle.
 [intro instruction build]
-
+Avaa rakentaminen ja sijoita majatalo vehnän lähelle. Määrää vapaita työläisiä rakentamaan se. Huolehdi vanhan majatalon huollosta.
 [intro instruction supply]
-
+Valitse valmistunut uusi majatalo ja määrää vähintään yksi huoltaja. Odota, että työläinen tuo vehnää.
 [intro instruction grow]
-
+Valitse pesä. Aseta työläistavoitteeksi vähintään 2 ja tuotanto tuottamaan vain työläisiä. Pidä molemmat majatalot huollettuina uuden työläisen syntyessä.
 [intro instruction attack]
-
+Etsi vihollisen pesä kauempaa idästä. Ohjaa soturisi sitä vastaan sotalipulla. Ohjeista saat tarvittaessa muistutuksen.
 [intro help]
-
+Ohje / miksi?
 [intro help scout]
-
+Siirrä näkymää pienoiskartalla itään ja etsi kivikko. Valitse lipuista tiedustelulippu, aseta se kivikolle ja lopeta sijoittaminen hiiren toissijaisella painikkeella. Valitse lippu ja pyydä 1 tiedustelija. Liput pyytävät yksiköitä; ne eivät siirrä niitä välittömästi. Tiedustelijat voivat pysähtyä syömään.
 [intro help build]
-
+Rakentaminen kuluttaa työläisten tuomaa puuta. Valitse rakennusvalikoimasta majatalo, sijoita se avoimelle maalle vehnän lähelle ja pyydä 2 rakentajaa. Työläistavoite on pyyntö, ei paikalla olevien työläisten määrä. Pidä huoltajia vanhassa majatalossa ja pesässä. Mikä tahansa kelvollinen paikka käy.
 [intro help supply]
-
+Rakentamisella ja päivittäisellä huollolla on eri työläistavoitteet. Valitse valmis majatalo ja nosta käyttötavoitetta. Huoltaja kerää vehnää ja tuo sen tänne. Nälkäiset globulit syövät majataloissa; ilman huoltajia varastot lopulta tyhjenevät. Pidä reitti vehnälle avoimena.
 [intro help grow]
-
+Pesä kuluttaa vehnää yksiköiden tuottamiseen. Aseta työläisten tuotannoksi 1 sekä tiedustelijoiden ja soturien tuotannoksi 0. Nosta pesän työläistavoite vähintään 2:een. Useampi huoltaja tuo vehnää nopeammin, mutta vie työvoimaa muista tehtävistä. Huolla molempia majataloja.
 [intro help attack]
-
+Avaa liput, valitse sotalippu ja aseta se kivikon itäpuolella olevan vihollispesän päälle. Valitse lippu ja pyydä enintään 4 soturia. Pieni säde pitää ne yhdessä. Lopeta sijoittaminen hiiren toissijaisella painikkeella ennen lipun valitsemista. Jos sotureita ei ole, tuota lisää pesässä. Soturit voivat pysähtyä syömään; huolla majataloja.
 [intro hint scout]
-
+Tiedustelijasi tarvitsee itäiselle kivikolle asetetun tiedustelulipun, johon on määrätty yksikkö. Tarkista kohde ja tiedustelijoiden määrä.
 [intro hint build]
-
+Jos poistit uuden majatalon, rakenna toinen. Muuten tarkista rakennustyömaa ja sen työläistavoite. Huoltotyöt voivat sitoa työläiset; pidä ruoan saanti käynnissä ja vapauta rakentajia.
 [intro hint supply]
-
+Valitse valmis uusi majatalo. Tarkista työläistavoite ja seuraa vehnän toimituksia. Työläiset tarvitsevat aikaa liikkumiseen ja syömiseen.
 [intro hint grow]
-
+Tarkista pesän huolto ja pelkkien työläisten tuotanto. Huolla majataloja odottaessasi uutta työläistä.
 [intro hint attack]
-
+Tarkista sotalippu, pyydetty soturimäärä ja ruokahuolto. Soturit tarvitsevat aikaa liikkumiseen ja hyökkäämiseen.
 [intro hint no scout flag]
-
+Miehitettyä tiedustelulippua ei löytynyt. Aseta lippu tukikohdan itäpuoliselle kivikolle ja pyydä 1 tiedustelija.
 [intro hint no suppliers]
-
+Uuden majatalon tai rakennustyömaan työläistavoite on 0. Valitse se ja pyydä työläisiä.
 [intro hint no war flag]
-
+Vihollistukikohdasta ei löytynyt miehitettyä sotalippua. Aseta lippu itäisen vihollispesän päälle ja pyydä sotureita.
 [intro hint retry]
-
+Tämän jakson tarvitsema yksikkö tai rakennus on menetetty. Lataa aiempi tallennus tai aloita jakso uudelleen pelivalikosta.
 [intro complete]
-
+Johdanto suoritettu
 [intro complete body]
-
+Ohjasit itsenäisiä globuleja, lisäsit ruokahuoltoa, kasvatit siirtokuntaa ja järjestit hyökkäyksen. Jatka opetusjaksoihin harjoittelemaan koulutusta, parannuksia ja puolustusta tai palaa päävalikkoon aloittamaan ottelu.
 [intro play again]
-
+Pelaa uudelleen
 [intro restart]
-
+Aloita johdanto uudelleen
 [intro restart body]
-
+Aloitetaanko uudelleen valmistellusta siirtokunnasta? Johdannon tallentamaton edistyminen menetetään.
 [intro help touch scout]
-
+Siirrä näkymää vetämällä tyhjää maata ennen lipun sijoittamista. Etsi kivikko siirtokunnan itäpuolelta. Avaa liput, valitse tiedustelulippu, aseta se kivikolle ja vahvista. Valitse lippu ja pyydä 1 tiedustelija yksikkötavoitteella. Globulit liikkuvat itsenäisesti ja voivat pysähtyä syömään.
 [intro help touch build]
-
+Valitse rakentamisesta majatalo. Sijoita se avoimelle maalle vehnän lähelle ja vahvista. Valitse työmaa ja pyydä 2 rakentajaa. Työläistavoite on pyyntö, ei paikalla olevien työläisten määrä. Huolla vanhaa majataloa ja pesää. Mikä tahansa kelvollinen paikka käy.
 [intro help touch supply]
-
+Valitse valmis uusi majatalo ja nosta työläistavoitetta. Rakentamisella ja päivittäisellä huollolla on eri tavoitteet. Huoltaja kerää vehnää ja tuo sen tänne. Nälkäiset globulit syövät majataloissa; ilman huoltajia varasto loppuu. Pidä reitti vehnälle avoimena.
 [intro help touch grow]
-
+Valitse pesä. Aseta työläisten tuotannoksi 1 sekä tiedustelijoiden ja soturien tuotannoksi 0. Nosta työläistavoite vähintään 2:een. Huoltajat tuovat vehnää uusille yksiköille, mutta kilpailevat muista töistä. Huolla molempia majataloja.
 [intro help touch attack]
-
+Avaa liput, valitse sotalippu, aseta se kivikon itäpuolella olevan vihollispesän päälle ja vahvista. Valitse lippu ja pyydä enintään 4 soturia. Pieni säde kokoaa ne yhteen. Jos sotureita ei ole, tuota niitä pesässä. Soturit voivat pysähtyä syömään; huolla majataloja.
 [intro show destination]
-
+Näytä kohde
 [intro scout destination]
-
+Tiedustele tästä
 [intro attack destination]
-
+Hyökkää tähän
 [intro compact scout]
-
+Liput → Tiedustelulippu. Aseta kivikolle; määrää 1 tiedustelija.
 [intro compact build]
-
+Rakenna → Majatalo. Vehnän lähelle; määrää 2 rakentajaa.
 [intro compact supply]
-
+Valitse uusi majatalo; määrää vähintään 1 huoltaja. Odota vehnää.
 [intro compact grow]
-
+Valitse pesä; määrää 2 huoltajaa. Tuota vain työläisiä.
 [intro compact attack]
-
+Liput → Sotalippu. Aseta vihollispesän päälle; määrää sotureita.
 [tutorial lessons]
-
+Opetusjaksot
 [tutorial restart]
-
+Aloita jakso uudelleen
 [tutorial restart body]
-
+Aloitetaanko tämä jakso uudelleen valmistellusta siirtokunnasta? Tallentamaton edistyminen menetetään.
 [tutorial complete]
-
+Jakso suoritettu
 [tutorial food title]
-
+Ruokahuollon harjoitus
 [tutorial food briefing]
-
+Harjoittele ruokahuollon laajentamista: rakenna toinen majatalo, määrää huoltajia ja seuraa vehnän saapumista.
 [tutorial food complete]
-
+Rakensit majatalon ja huolsit sitä vehnällä. Kokeile toista jaksoa tai palaa päävalikkoon.
 [tutorial unavailable]
-
+Opetusjaksoja ei voitu ladata.
 [lesson healing title]
-
+Sairaalat ja parantuminen
 [lesson healing briefing]
-
+Rakenna sairaala ja auta haavoittunutta työläistä toipumaan. Siirtokunta aloittaa kylläisenä, yksi työläinen on haavoittunut.
 [lesson healing complete]
-
+Sairaalasi paransi haavoittuneen globulin. Huolla majataloja: nälkä voi vahingoittaa yksiköitä uudelleen.
 [lesson healing build hint]
-
+Rakenna sairaala avoimelle maalle; määrää 2 rakentajaa. Jätä globuleille tilaa kulkea sisään ja ulos. Sairaalat parantavat vammoja, majatalot tarjoavat ruokaa. Tämä potilas on jo ruokittu.
 [lesson healing build title]
-
+Rakenna sairaala
 [lesson healing build instruction]
-
+Rakenna sairaala avoimelle maalle; määrää 2 rakentajaa.
 [lesson healing build help]
-
+Jätä globuleille tilaa kulkea sisään ja ulos. Sairaalat parantavat vammoja, majatalot tarjoavat ruokaa. Tämä potilas on jo ruokittu.
 [lesson healing build marker]
-
+Rakenna sairaala
 [lesson healing heal hint]
-
+Pidä sairaala saavutettavana. Seuraa haavoittuneen työläisen toipumista. Globulit hakeutuvat hoitoon itsenäisesti. Seuraa haavoittunutta työläistä, älä vastasyntynyttä yksikköä. Jos se kuolee, aloita uudelleen tai lataa tallennus.
 [lesson healing heal title]
-
+Anna potilaan toipua
 [lesson healing heal instruction]
-
+Pidä sairaala saavutettavana. Seuraa haavoittuneen työläisen toipumista.
 [lesson healing heal help]
-
+Globulit hakeutuvat hoitoon itsenäisesti. Seuraa haavoittunutta työläistä, älä vastasyntynyttä yksikköä. Jos se kuolee, aloita uudelleen tai lataa tallennus.
 [lesson healing heal marker]
-
+Anna potilaan toipua
 [lesson walking-training title]
-
+Kävelyharjoittelu
 [lesson walking-training briefing]
-
+Rakenna kilparata ja seuraa, kuinka olemassa oleva työläinen oppii kävelemään nopeammin.
 [lesson walking-training complete]
-
+Työläisesi oppivat kävelemään nopeammin. Harjoittelu kehittää nykyisiä työläisiä; se ei korvaa siirtokunnan ruokahuoltoa.
 [lesson walking-training build hint]
-
+Rakenna kilparata merkittyyn aukioon; määrää rakentajia. Kilparata tarvitsee puuta ja kiveä. Jätä reunoille tilaa kulkemista ja myöhempää laajentamista varten.
 [lesson walking-training build title]
-
+Rakenna kilparata
 [lesson walking-training build instruction]
-
+Rakenna kilparata merkittyyn aukioon; määrää rakentajia.
 [lesson walking-training build help]
-
+Kilparata tarvitsee puuta ja kiveä. Jätä reunoille tilaa kulkemista ja myöhempää laajentamista varten.
 [lesson walking-training build marker]
-
+Rakenna kilparata
 [lesson walking-training train hint]
-
+Pidä kilparata saavutettavana ja anna työläisen suorittaa harjoittelu. Sopivat globulit harjoittelevat automaattisesti. Pidä osa työläisistä vapaana huollosta ja molemmat majatalot varustettuina.
 [lesson walking-training train title]
-
+Kouluta nykyistä työläistä
 [lesson walking-training train instruction]
-
+Pidä kilparata saavutettavana ja anna työläisen suorittaa harjoittelu.
 [lesson walking-training train help]
-
+Sopivat globulit harjoittelevat automaattisesti. Pidä osa työläisistä vapaana huollosta ja molemmat majatalot varustettuina.
 [lesson swimming title]
-
+Uinti ja vesivarat
 [lesson swimming briefing]
-
+Kouluta uimareita ja rakenna sitten koulu lammen levällä.
 [lesson swimming complete]
-
+Uimari toimitti vesivaroja kouluasi varten. Pääsy veteen laajentaa siirtokuntasi mahdollisia tehtäviä.
 [lesson swimming build hint]
-
+Rakenna uima-allas lammen länsipuolelle; määrää rakentajia. Jätä altaan ympärille tilaa. Työläinen ei voi kerätä levää syvästä vedestä ennen kuin osaa uida.
 [lesson swimming build title]
-
+Rakenna uima-allas
 [lesson swimming build instruction]
-
+Rakenna uima-allas lammen länsipuolelle; määrää rakentajia.
 [lesson swimming build help]
-
+Jätä altaan ympärille tilaa. Työläinen ei voi kerätä levää syvästä vedestä ennen kuin osaa uida.
 [lesson swimming build marker]
-
+Rakenna uima-allas
 [lesson swimming train hint]
-
+Anna nykyisen työläisen suorittaa uintiharjoittelu. Yksiköt valitsevat harjoittelun automaattisesti. Jatka huoltoa ja päästä vapaat työläiset altaalle.
 [lesson swimming train title]
-
+Kouluta uimari
 [lesson swimming train instruction]
-
+Anna nykyisen työläisen suorittaa uintiharjoittelu.
 [lesson swimming train help]
-
+Yksiköt valitsevat harjoittelun automaattisesti. Jatka huoltoa ja päästä vapaat työläiset altaalle.
 [lesson swimming water-job hint]
-
+Rakenna koulu siirtokunnan lähelle; määrää rakentajia hakemaan puuta ja levää. Levä kasvaa lammessa. Koulutetun uimarin on mentävä veteen keräämään sitä. Sijoita koulu avoimelle maalle, jonne huoltajat pääsevät.
 [lesson swimming water-job title]
-
+Käytä lammen levää
 [lesson swimming water-job instruction]
-
+Rakenna koulu siirtokunnan lähelle; määrää rakentajia hakemaan puuta ja levää.
 [lesson swimming water-job help]
-
+Levä kasvaa lammessa. Koulutetun uimarin on mentävä veteen keräämään sitä. Sijoita koulu avoimelle maalle, jonne huoltajat pääsevät.
 [lesson swimming water-job marker]
-
+Käytä lammen levää
 [lesson schools title]
-
+Koulut ja työläisten taidot
 [lesson schools briefing]
-
+Rakenna koulu valmiiden uimareiden avulla ja seuraa työläisten rakennus- ja korjuutaitojen oppimista.
 [lesson schools complete]
-
+Koulusi paransi työläisten taitoja. Taitavat rakentajat mahdollistavat parannukset; parempi korjuu tukee kasvavaa taloutta.
 [lesson schools build hint]
-
+Rakenna koulu aukiolle; määrää rakentajia. Siirtokunnassa on jo uimareita levän keräämiseen. Pidä reitit puulle ja veteen avoimina. Hedelmäpuista saa arvostusvaroja; ruoka tulee yhä vehnästä.
 [lesson schools build title]
-
+Rakenna koulu
 [lesson schools build instruction]
-
+Rakenna koulu aukiolle; määrää rakentajia.
 [lesson schools build help]
-
+Siirtokunnassa on jo uimareita levän keräämiseen. Pidä reitit puulle ja veteen avoimina. Hedelmäpuista saa arvostusvaroja; ruoka tulee yhä vehnästä.
 [lesson schools build marker]
-
+Rakenna koulu
 [lesson schools learn hint]
-
+Anna nykyisen työläisen suorittaa koulun opetus. Koulu opettaa rakentamista ja korjuuta yhdessä. Pidä työläisiä vapaina; pelkkä rakennustyömaa ei kouluta ketään.
 [lesson schools learn title]
-
+Opeta rakentamista ja korjuuta
 [lesson schools learn instruction]
-
+Anna nykyisen työläisen suorittaa koulun opetus.
 [lesson schools learn help]
-
+Koulu opettaa rakentamista ja korjuuta yhdessä. Pidä työläisiä vapaina; pelkkä rakennustyömaa ei kouluta ketään.
 [lesson upgrades title]
-
+Rakennusten parantaminen
 [lesson upgrades briefing]
-
+Paranna kilparata valmiiden taitavien työläisten avulla ja harjoittele ensimmäistä tasoa pidemmälle.
 [lesson upgrades complete]
-
+Paransit rakennuksen ja käytit sen parempaa koulutusta. Seuraavat parannukset toistavat kierroksen paremmilla kouluilla, taidoilla, materiaaleilla ja tilalla aina tasolle 3 asti.
 [lesson upgrades upgrade hint]
-
+Valitse kilparata, valitse parannus ja määrää taitavia rakentajia. Nämä työläiset ovat jo oppineet koulun ensimmäisen tason taidot. Parannukset tarvitsevat lisätilaa ja materiaaleja ja keskeyttävät rakennuksen toiminnan. Perutut parannukset eivät kelpaa.
 [lesson upgrades upgrade title]
-
+Paranna kilparataa
 [lesson upgrades upgrade instruction]
-
+Valitse kilparata, valitse parannus ja määrää taitavia rakentajia.
 [lesson upgrades upgrade help]
-
+Nämä työläiset ovat jo oppineet koulun ensimmäisen tason taidot. Parannukset tarvitsevat lisätilaa ja materiaaleja ja keskeyttävät rakennuksen toiminnan. Perutut parannukset eivät kelpaa.
 [lesson upgrades upgrade marker]
-
+Paranna kilparataa
 [lesson upgrades train hint]
-
+Anna nykyisen työläisen oppia nopeampaa kävelyä parannetulla kilparadalla. Valmis parannus kehittää tarjolla olevaa koulutusta. Korkeammat rakennustasot vaativat parempia rakennustaitoja; pelaajalle näytettävä taso alkaa 1:stä.
 [lesson upgrades train title]
-
+Käytä parannettua koulutusta
 [lesson upgrades train instruction]
-
+Anna nykyisen työläisen oppia nopeampaa kävelyä parannetulla kilparadalla.
 [lesson upgrades train help]
-
+Valmis parannus kehittää tarjolla olevaa koulutusta. Korkeammat rakennustasot vaativat parempia rakennustaitoja; pelaajalle näytettävä taso alkaa 1:stä.
 [lesson warrior-training title]
-
+Soturien tuottaminen ja koulutus
 [lesson warrior-training briefing]
-
+Tuota sotureita pesässä ja kouluta heitä parakissa.
 [lesson warrior-training complete]
-
+Ohjasit sotilastuotantoa ja koulutit sotureita. Jatka ruokahuoltoa; myös taisteluyksiköiden täytyy syödä.
 [lesson warrior-training produce hint]
-
+Aseta pesä tuottamaan vain sotureita; määrää huoltajia ja odota 2 soturia. Aseta työläisten ja tiedustelijoiden suhde 0:aan ja soturien 1:een. Pesä kuluttaa vehnää syntymiin. Suhteet valitsevat tuotettavan yksikön; huoltajat ratkaisevat, voiko tuotanto toimia.
 [lesson warrior-training produce title]
-
+Tuota kaksi soturia
 [lesson warrior-training produce instruction]
-
+Aseta pesä tuottamaan vain sotureita; määrää huoltajia ja odota 2 soturia.
 [lesson warrior-training produce help]
-
+Aseta työläisten ja tiedustelijoiden suhde 0:aan ja soturien 1:een. Pesä kuluttaa vehnää syntymiin. Suhteet valitsevat tuotettavan yksikön; huoltajat ratkaisevat, voiko tuotanto toimia.
 [lesson warrior-training produce marker]
-
+Tuota kaksi soturia
 [lesson warrior-training build hint]
-
+Rakenna parakki aukiolle; määrää rakentajia. Lopeta tai vähennä soturituotantoa, kun sotureita on tarpeeksi. Parakit opettavat taistelutaitoja ja tarvitsevat vapaata tilaa reunoilleen.
 [lesson warrior-training build title]
-
+Rakenna parakki
 [lesson warrior-training build instruction]
-
+Rakenna parakki aukiolle; määrää rakentajia.
 [lesson warrior-training build help]
-
+Lopeta tai vähennä soturituotantoa, kun sotureita on tarpeeksi. Parakit opettavat taistelutaitoja ja tarvitsevat vapaata tilaa reunoilleen.
 [lesson warrior-training build marker]
-
+Rakenna parakki
 [lesson warrior-training train hint]
-
+Anna soturin suorittaa harjoittelu parakissa. Soturit hakeutuvat harjoitteluun automaattisesti. Huolla majataloja ja pidä parakki saavutettavana. Pelkkä parakin rakentaminen ei ole suoritettu harjoitus.
 [lesson warrior-training train title]
-
+Kouluta sotureitasi
 [lesson warrior-training train instruction]
-
+Anna soturin suorittaa harjoittelu parakissa.
 [lesson warrior-training train help]
-
+Soturit hakeutuvat harjoitteluun automaattisesti. Huolla majataloja ja pidä parakki saavutettavana. Pelkkä parakin rakentaminen ei ole suoritettu harjoitus.
 [lesson fortifications title]
-
+Tornit ja suojamuurit
 [lesson fortifications briefing]
-
+Rakenna huollettu torni ja suojamuurit, sitten kokeile niitä yhtä pientä hyökkäystä vastaan.
 [lesson fortifications complete]
-
+Huolletut puolustuksesi pysäyttivät harjoitushyökkäyksen. Tornit tarvitsevat kiveä ja muurit aukkoja, jotta huoltajat pääsevät perille.
 [lesson fortifications tower hint]
-
+Rakenna torni merkitylle alueelle; määrää rakentajia. Sijoita se kivilouhoksen lähelle ja jätä reitti huoltajille. Hyökkäys ei ala ennen valmistelutavoitteiden täyttymistä.
 [lesson fortifications tower title]
-
+Rakenna puolustustorni
 [lesson fortifications tower instruction]
-
+Rakenna torni merkitylle alueelle; määrää rakentajia.
 [lesson fortifications tower help]
-
+Sijoita se kivilouhoksen lähelle ja jätä reitti huoltajille. Hyökkäys ei ala ennen valmistelutavoitteiden täyttymistä.
 [lesson fortifications tower marker]
-
+Rakenna puolustustorni
 [lesson fortifications walls hint]
-
+Rakenna vähintään 2 muurinosaa tornin lähelle; pidä läntinen kulkuväylä avoimena. Muurit kuluttavat kiveä ja jokainen työmaa pyytää työläisiä. Älä sulje tornia sisään: huoltajat tarvitsevat reitin. Merkityn länsiväylän on pysyttävä avoimena.
 [lesson fortifications walls title]
-
+Suojaa torni muureilla
 [lesson fortifications walls instruction]
-
+Rakenna vähintään 2 muurinosaa tornin lähelle; pidä läntinen kulkuväylä avoimena.
 [lesson fortifications walls help]
-
+Muurit kuluttavat kiveä ja jokainen työmaa pyytää työläisiä. Älä sulje tornia sisään: huoltajat tarvitsevat reitin. Merkityn länsiväylän on pysyttävä avoimena.
 [lesson fortifications walls marker]
-
+Suojaa torni muureilla
 [lesson fortifications supply hint]
-
+Valitse torni ja pyydä huoltajia. Odota vähintään 2 kiveä. Valmis torni tarvitsee käyttötyöläistavoitteen ammusten tuomista varten. Se on eri tavoite kuin rakentamisen tavoite.
 [lesson fortifications supply title]
-
+Toimita ammuksia
 [lesson fortifications supply instruction]
-
+Valitse torni ja pyydä huoltajia. Odota vähintään 2 kiveä.
 [lesson fortifications supply help]
-
+Valmis torni tarvitsee käyttötyöläistavoitteen ammusten tuomista varten. Se on eri tavoite kuin rakentamisen tavoite.
 [lesson fortifications supply marker]
-
+Toimita ammuksia
 [lesson fortifications hold hint]
-
+Harjoitussoturi lähestyy. Pidä torni huollettuna ja saavutettavana. Pidä puolesi, kunnes hyökkääjä kukistuu tai vetäytyy. Huoltajat pysäyttävä muuri voi jättää tornin ilman ammuksia. Jos siirtokunta tuhoutuu, aloita uudelleen tai lataa aiempi tallennus.
 [lesson fortifications hold title]
-
+Kokeile linnoituksia
 [lesson fortifications hold instruction]
-
+Harjoitussoturi lähestyy. Pidä torni huollettuna ja saavutettavana.
 [lesson fortifications hold help]
-
+Pidä puolesi, kunnes hyökkääjä kukistuu tai vetäytyy. Huoltajat pysäyttävä muuri voi jättää tornin ilman ammuksia. Jos siirtokunta tuhoutuu, aloita uudelleen tai lataa aiempi tallennus.
 [lesson fortifications hold marker]
-
+Kokeile linnoituksia
 [lesson defensive-tactics title]
-
+Vartioalueet ja lipputaktiikka
 [lesson defensive-tactics briefing]
-
+Tiedustele harjoitusvihollinen, valmistele vartioalue, puolustaudu ja järjestä vastahyökkäys.
 [lesson defensive-tactics complete]
-
+Tiedustelit, puolustit vartioaluetta ja ohjasit vastahyökkäystä. Lippujen tavoitteet pyytävät yksiköitä; säde määrää niiden toiminta-alueen.
 [lesson defensive-tactics scout hint]
-
+Aseta tiedustelulippu vihollistukikohtaan; määrää 1 tiedustelija. Liput pyytävät yksiköitä itsenäisesti. Tiedustelija paljastaa ajankohtaisen toiminnan sodan sumusta; se voi pysähtyä syömään.
 [lesson defensive-tactics scout title]
-
+Tiedustele vihollistukikohta
 [lesson defensive-tactics scout instruction]
-
+Aseta tiedustelulippu vihollistukikohtaan; määrää 1 tiedustelija.
 [lesson defensive-tactics scout help]
-
+Liput pyytävät yksiköitä itsenäisesti. Tiedustelija paljastaa ajankohtaisen toiminnan sodan sumusta; se voi pysähtyä syömään.
 [lesson defensive-tactics scout marker]
-
+Tiedustele vihollistukikohta
 [lesson defensive-tactics guard hint]
-
+Maalaa vartioalue merkitylle alueelle ja anna 2 soturin saapua sinne. Avaa liput, valitse vartiointi ja maalaa vähintään 4 ruutua alueen sisälle. Vartioalueet houkuttelevat vapaita sotureita. Kielletyt alueet estävät kulkemisen; raivausalueet pyytävät varojen poistamista.
 [lesson defensive-tactics guard title]
-
+Valmistele vartioalue
 [lesson defensive-tactics guard instruction]
-
+Maalaa vartioalue merkitylle alueelle ja anna 2 soturin saapua sinne.
 [lesson defensive-tactics guard help]
-
+Avaa liput, valitse vartiointi ja maalaa vähintään 4 ruutua alueen sisälle. Vartioalueet houkuttelevat vapaita sotureita. Kielletyt alueet estävät kulkemisen; raivausalueet pyytävät varojen poistamista.
 [lesson defensive-tactics guard marker]
-
+Valmistele vartioalue
 [lesson defensive-tactics repel hint]
-
+Vihollinen hyökkää. Pidä vartioalue miehitettynä ja majatalot huollettuina. Pieni hyökkäys alkaa valmistelujesi jälkeen. Kukista tai aja pois molemmat hyökkääjät; haavoittuneet viholliset voivat vetäytyä. Soturit voivat poistua hetkeksi syömään. Jos puolustus epäonnistuu, lataa aiempi tallennus tai aloita uudelleen.
 [lesson defensive-tactics repel title]
-
+Torju harjoitushyökkäys
 [lesson defensive-tactics repel instruction]
-
+Vihollinen hyökkää. Pidä vartioalue miehitettynä ja majatalot huollettuina.
 [lesson defensive-tactics repel help]
-
+Pieni hyökkäys alkaa valmistelujesi jälkeen. Kukista tai aja pois molemmat hyökkääjät; haavoittuneet viholliset voivat vetäytyä. Soturit voivat poistua hetkeksi syömään. Jos puolustus epäonnistuu, lataa aiempi tallennus tai aloita uudelleen.
 [lesson defensive-tactics repel marker]
-
+Torju harjoitushyökkäys
 [lesson defensive-tactics counterattack hint]
-
+Aseta sotalippu vihollisen pesän päälle; pyydä 3 soturia ja käytä enintään sädettä 4. Vartioalueet ja sotaliput kilpailevat sotureista. Poista vartioruutuja, jos ne pidättelevät armeijaasi. Pidä ruokaa saatavilla soturien liikkuessa ja hyökätessä.
 [lesson defensive-tactics counterattack title]
-
+Ohjaa keskitetty vastahyökkäys
 [lesson defensive-tactics counterattack instruction]
-
+Aseta sotalippu vihollisen pesän päälle; pyydä 3 soturia ja käytä enintään sädettä 4.
 [lesson defensive-tactics counterattack help]
-
+Vartioalueet ja sotaliput kilpailevat sotureista. Poista vartioruutuja, jos ne pidättelevät armeijaasi. Pidä ruokaa saatavilla soturien liikkuessa ja hyökätessä.
 [lesson defensive-tactics counterattack marker]
-
+Ohjaa keskitetty vastahyökkäys
 [lesson healing build compact]
-
+Rakenna → Sairaala. Jätä kulkutilaa; määrää rakentajia.
 [lesson healing heal compact]
-
+Anna haavoittuneen työläisen parantua sairaalassa.
 [lesson walking-training build compact]
-
+Rakenna → Kilparata. Jätä reunoille tilaa.
 [lesson walking-training train compact]
-
+Anna työläisen suorittaa kilparadan harjoittelu.
 [lesson swimming build compact]
-
+Rakenna → Uima-allas, lammen länsipuolelle.
 [lesson swimming train compact]
-
+Anna työläisen oppia uimaan.
 [lesson swimming water-job compact]
-
+Rakenna → Koulu. Määrää rakentajia puulle ja levälle.
 [lesson schools build compact]
-
+Rakenna → Koulu. Määrää rakentajia puulle ja levälle.
 [lesson schools learn compact]
-
+Anna työläisen suorittaa koulun opetus.
 [lesson upgrades upgrade compact]
-
+Valitse kilparata → Paranna. Määrää taitavia rakentajia.
 [lesson upgrades train compact]
-
+Anna työläisen harjoitella parannetulla kilparadalla.
 [lesson warrior-training produce compact]
-
+Pesä → Vain sotureita. Toimita vehnää 2 soturille.
 [lesson warrior-training build compact]
-
+Rakenna → Parakki. Jätä reunoille tilaa.
 [lesson warrior-training train compact]
-
+Anna soturin suorittaa parakin harjoittelu.
 [lesson fortifications tower compact]
-
+Rakenna → Torni. Sijoita merkitylle alueelle.
 [lesson fortifications walls compact]
-
+Rakenna 2 muuria. Pidä tornin länsiväylä avoimena.
 [lesson fortifications supply compact]
-
+Valitse torni → Huoltajat. Odota 2 kiveä.
 [lesson fortifications hold compact]
-
+Huolla tornia hyökkääjää vastaan.
 [lesson defensive-tactics scout compact]
-
+Liput → Tiedustelu. Sijoita vihollisen luo; määrää 1 tiedustelija.
 [lesson defensive-tactics guard compact]
-
+Liput → Vartiointi. Maalaa 4 ruutua; odota 2 soturia.
 [lesson defensive-tactics repel compact]
-
+Pidä vartioalue hallussa. Huolla majataloja.
 [lesson defensive-tactics counterattack compact]
-
+Sotalippu → Vihollispesä. Pyydä 3 soturia; säde ≤4.
 [library GL only]
 Vain GL
 [Grassland]
@@ -6781,7 +6817,7 @@ Eläinpolut
 [Fish amount]
 Kalojen määrä
 [scenario messages]
-
+Viestit ▸
 [Camp-site amount]
 Leiripaikkojen määrä
 [AI for all computer colonies]

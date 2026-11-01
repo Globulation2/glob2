@@ -429,10 +429,12 @@ std::vector<ui::PositionedControl> GameGUITouch::describeControls()
 	if (statsOpen)
 	{
 		const auto stats = statsLayout();
-		// The sheet owns the area it covers, including its inert chart body.
+		// The sheet covers lower HUD controls; its embedded Host owns the body.
 		std::erase_if(result, [&](const auto &control)
 					  { return control.bounds.intersects(bounds(stats.sheet)); });
-		auto &sheet = add("statistics/sheet", "Statistics chart; pull down to close", stats.sheet);
+		const ViewRect header{stats.sheet.x, stats.sheet.y, stats.sheet.w,
+            std::max(0., stats.body.y - stats.sheet.y)};
+		auto &sheet = add("statistics/sheet", "Statistics sheet; pull header down to close", header);
 		sheet.role = "canvas";
 		sheet.actions = {ui::ActionKind::Scroll};
 		sheet.perform = [this, u](const ui::SemanticAction &action)
@@ -447,14 +449,6 @@ std::vector<ui::PositionedControl> GameGUITouch::describeControls()
 		};
 		add("statistics/close", "Close statistics", stats.close,
 			[this](ViewPoint) { statsOpen = false; });
-		for (const auto &[r, delta] : {std::pair{stats.previous, -1}, std::pair{stats.next, 1}})
-			add(delta < 0 ? "statistics/previous" : "statistics/next",
-				delta < 0 ? "Previous metric" : "Next metric", r,
-				[this, delta](ViewPoint)
-				{
-					const int count = std::max(1, int(statsCatalog.size()));
-					statsMetric = (statsMetric + delta + count) % count;
-				});
 	}
 	return result;
 }

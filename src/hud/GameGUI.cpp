@@ -3,6 +3,7 @@
 #include "hive/HiveClient.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
@@ -44,7 +45,7 @@ GameGUI::GameGUI(bool persistPreferences)
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
 	         (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()), // width of the screen
-	         20, // x offset
+	         RIGHT_MENU_OFFSET, // center the 128px minimap in the desktop sidebar
 	         10, // y offset
 	         128, // width
 	         128, //height
@@ -103,6 +104,7 @@ void GameGUI::init()
 	buildingGuiState.clear();
 	pendingBuildingReconciliations = {};
 	buildingInfoScrollTarget.reset();
+    statisticsPanel.reset();
     pendingSettings = false;
     tutorialGuidance.reset();
     tutorialHighlights.clear();
@@ -434,7 +436,10 @@ std::vector<GAGGUI::ui::Host *> GameGUI::inspectionHosts()
 	{
 		updateTutorial();
 		hosts.push_back(&hudInspectionHost());
-		if (tutorialGuidance && (!connectionOverlay || !connectionOverlay->blocksGameplay()))
+		if (statisticsVisible() && (!connectionOverlay || !connectionOverlay->blocksGameplay()))
+			hosts.push_back(&statisticsHost());
+		if (tutorialGuidance && (!touch || !touch->obscuresTutorial()) &&
+            (!connectionOverlay || !connectionOverlay->blocksGameplay()))
 			hosts.push_back(&tutorialGuidance->host());
 	}
 	if (hiveCardsVisible())

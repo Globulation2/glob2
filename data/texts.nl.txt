@@ -4884,6 +4884,34 @@ Ingesloten eenheden zonder vrij vakje om naartoe te stappen.
 Grondstoffen weggeruimd
 [stat cleared about]
 Grondstoffen die werkers in ontruimingsgebieden weghaalden om ruimte te maken.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Roem
 [stat prestige about]
@@ -5668,6 +5696,14 @@ Donker water
 Gat
 [chasm]
 Kloof
+[lush_grass]
+Weelderig gras
+[dry_grass]
+Droog gras
+[dune_sand]
+Duinzand
+[pale_sand]
+Licht zand
 [terrain group water]
 Water
 [terrain group sand]
@@ -6355,421 +6391,421 @@ Je keuze kon niet worden opgeslagen. Het geluid blijft uit. Probeer het opnieuw.
 [audio choices description]
 Stilte: een gedempte luidspreker. Geluid: een luidspreker met geluidsgolven.
 [intro menu]
-
+Introductie
 [intro briefing]
-
+Leer indirect besturen: verken met een vlag, bevoorraad je kolonie en leid een aanval.
 [intro try]
-
+Start de introductie
 [intro preflight]
-
+Je bolletjes handelen zelfstandig. Via gebouwen en vlaggen wijs je ze taken toe. In deze korte introductie verken je een herkenningspunt, breid je de voedselvoorziening uit, vergroot je het aantal arbeiders en leid je een kleine aanval.
 [intro preflight save]
-
+Reken op ongeveer 10 minuten. Je kunt via het spelmenu opslaan en verdergaan met Spel laden. De gewone honger- en gevechtsregels gelden. Kies Tutoriallessen in het hoofdmenu om meer vaardigheden te oefenen.
 [intro preference failed]
-
+Je keuze kon niet worden opgeslagen. Je kunt verder spelen; deze aanbeveling kan de volgende keer opnieuw verschijnen.
 [intro goal scout]
-
+Verken het stenen monument
 [intro goal build]
-
+Bouw nog een herberg
 [intro goal supply]
-
+Bevoorraad je nieuwe herberg
 [intro goal grow]
-
+Vergroot het aantal arbeiders
 [intro goal attack]
-
+Vernietig de vijandelijke zwerm
 [intro instruction scout]
-
+Open Vlaggen en plaats een Verkenningsvlag op de steenafzetting ten oosten van je kolonie. Wijs één verkenner toe en kijk hoe die naar de vlag gaat.
 [intro instruction build]
-
+Open Bouwen en plaats een Herberg bij tarwe. Wijs beschikbare arbeiders toe om de Herberg te bouwen. Houd je bestaande Herberg bevoorraad.
 [intro instruction supply]
-
+Selecteer je nieuwe voltooide Herberg en wijs minstens één leverancier toe. Wacht tot een arbeider tarwe brengt.
 [intro instruction grow]
-
+Selecteer de Zwerm. Vraag minstens 2 arbeiders aan voor de bevoorrading en stel de productie in op alleen arbeiders. Houd beide Herbergen bevoorraad terwijl er een nieuwe arbeider wordt geboren.
 [intro instruction attack]
-
+Zoek de vijandelijke Zwerm verder naar het oosten. Gebruik een Oorlogsvlag om je krijgers ertegen te sturen. Open Hulp als je een geheugensteuntje nodig hebt.
 [intro help]
-
+Hulp / waarom?
 [intro help scout]
-
+Gebruik de minikaart om het zicht naar het oosten te verplaatsen en de steenafzetting te vinden. Kies Verkenningsvlag in Vlaggen en plaats deze op de steen. Beëindig het plaatsen met de secundaire muisknop. Selecteer de vlag en vraag 1 verkenner aan. Vlaggen vragen eenheden aan; ze verplaatsen deze niet onmiddellijk. Verkenners kunnen stoppen om te eten.
 [intro help build]
-
+Bouwen kost hout dat arbeiders aanleveren. Kies Herberg in het gebouwenpalet, plaats deze op open grond bij tarwe en vraag 2 bouwers aan. Het ingestelde aantal arbeiders is een verzoek, niet het aantal dat al aanwezig is. Houd leveranciers bij je bestaande Herberg en Zwerm. Elke geldige locatie telt.
 [intro help supply]
-
+Voor bouwen en dagelijkse bevoorrading stel je aparte aantallen arbeiders in. Selecteer de voltooide Herberg en verhoog het aantal leveranciers. Een leverancier verzamelt tarwe en brengt die hierheen. Hongerige bolletjes eten in Herbergen; zonder leveranciers raken de voorraden op. Houd de route naar de tarwe vrij.
 [intro help grow]
-
+De Zwerm verbruikt tarwe om eenheden te produceren. Zet de productie van arbeiders op 1 en die van verkenners en krijgers op 0. Verhoog het aangevraagde aantal arbeiders bij de Zwerm naar minstens 2. Meer leveranciers brengen sneller tarwe, maar zijn dan niet beschikbaar voor andere taken. Bevoorraad beide Herbergen.
 [intro help attack]
-
+Open Vlaggen, kies Oorlogsvlag en plaats deze boven de vijandelijke Zwerm ten oosten van de steen. Selecteer de vlag en vraag maximaal 4 krijgers aan. Een kleine straal houdt ze bij elkaar. Beëindig het plaatsen met de secundaire muisknop voordat je de vlag selecteert. Zijn er geen krijgers meer, produceer er dan meer bij de Zwerm. Krijgers kunnen stoppen om te eten; bevoorraad de Herbergen.
 [intro hint scout]
-
+Je verkenner heeft een Verkenningsvlag met toegewezen eenheden nodig op de oostelijke steenafzetting. Controleer de locatie en het aangevraagde aantal verkenners.
 [intro hint build]
-
+Als je de nieuwe herberg hebt verwijderd, bouw dan een nieuwe. Controleer anders de bouwplaats en het daar gevraagde aantal arbeiders. Andere bevoorradingstaken kunnen je arbeiders in beslag nemen; zorg ervoor dat de kolonie van voedsel wordt voorzien en stel bouwers beschikbaar.
 [intro hint supply]
-
+Selecteer de voltooide nieuwe herberg. Controleer het gevraagde aantal arbeiders en let op tarweleveringen. Arbeiders hebben mogelijk tijd nodig om te reizen of te eten.
 [intro hint grow]
-
+Controleer of de Zwerm tarwe krijgt en alleen arbeiders produceert. Houd de Herbergen bevoorraad terwijl je op een nieuwe arbeider wacht.
 [intro hint attack]
-
+Controleer je oorlogsvlag, het gevraagde aantal krijgers en de voedselvoorraad. Je krijgers hebben tijd nodig om te reizen en aan te vallen.
 [intro hint no scout flag]
-
+Er is geen toegewezen verkenningsvlag gevonden. Plaats er één op de steen ten oosten van je basis en vraag 1 verkenner aan.
 [intro hint no suppliers]
-
+Bij je nieuwe Herberg of bouwplaats staat het aangevraagde aantal arbeiders op 0. Selecteer deze en vraag arbeiders aan.
 [intro hint no war flag]
-
+Er is geen Oorlogsvlag met toegewezen eenheden gevonden bij de vijandelijke basis. Plaats er een boven de vijandelijke Zwerm in het oosten en vraag krijgers aan.
 [intro hint retry]
-
+Een eenheid of gebouw voor deze les is verloren gegaan. Laad een eerder opgeslagen spel of herstart de les via het spelmenu.
 [intro complete]
-
+Introductie voltooid
 [intro complete body]
-
+Je bestuurde zelfstandige bolletjes, breidde de voedselvoorziening uit, vergrootte de kolonie en organiseerde een aanval. Ga verder met Tutoriallessen over training, verbeteringen en verdediging, of keer terug naar het hoofdmenu om een partij te starten.
 [intro play again]
-
+Speel opnieuw
 [intro restart]
-
+Start de introductie opnieuw
 [intro restart body]
-
+Opnieuw starten vanuit de voorbereide kolonie? Niet-opgeslagen voortgang in deze introductie gaat verloren.
 [intro help touch scout]
-
+Versleep lege grond om de weergave te verplaatsen voordat je een vlag plaatst. Zoek de steenafzetting ten oosten van de kolonie. Open Vlaggen, kies Verkenningsvlag, plaats deze op de steen en bevestig. Selecteer de vlag en stel het aantal toegewezen verkenners in op 1. Bolletjes gaan zelfstandig op pad en kunnen stoppen om te eten.
 [intro help touch build]
-
+Kies Herberg in Bouwen. Plaats deze op open grond bij tarwe en bevestig. Selecteer de bouwplaats en vraag 2 bouwers aan. Het ingestelde aantal arbeiders is een verzoek, niet het aantal dat al aanwezig is. Houd je bestaande Herberg en Zwerm bevoorraad. Elke geldige locatie telt.
 [intro help touch supply]
-
+Selecteer de nieuwe voltooide Herberg en verhoog het aangevraagde aantal arbeiders. Voor bouwen en dagelijkse bevoorrading stel je aparte aantallen in. Een leverancier verzamelt tarwe en brengt die hierheen. Hongerige bolletjes eten in Herbergen; zonder leveranciers raken de voorraden op. Houd de route naar de tarwe vrij.
 [intro help touch grow]
-
+Selecteer de Zwerm. Zet de productie van arbeiders op 1 en die van verkenners en krijgers op 0. Verhoog het aantal toegewezen arbeiders naar minstens 2. Leveranciers brengen tarwe voor nieuwe eenheden, maar zijn dan niet beschikbaar voor andere taken. Bevoorraad beide Herbergen.
 [intro help touch attack]
-
+Open Vlaggen, kies Oorlogsvlag, plaats deze boven de vijandelijke zwerm ten oosten van de steen en bevestig. Selecteer de vlag en vraag maximaal 4 krijgers aan. Een kleine straal concentreert ze. Als er geen overblijven, produceer dan krijgers bij je zwerm. Krijgers kunnen stoppen om te eten; houd de herbergen bevoorraad.
 [intro show destination]
-
+Toon bestemming
 [intro scout destination]
-
+Verken hier
 [intro attack destination]
-
+Val hier aan
 [intro compact scout]
-
+Vlaggen → Verkenningsvlag. Plaats deze op de steen; wijs 1 verkenner toe.
 [intro compact build]
-
+Bouwen → Herberg. Plaats in de buurt van tarwe; wijs 2 bouwers toe.
 [intro compact supply]
-
+Selecteer je nieuwe Herberg; wijs minstens 1 leverancier toe. Wacht op tarwe.
 [intro compact grow]
-
+Selecteer de Zwerm; wijs 2 leveranciers toe. Produceer alleen arbeiders.
 [intro compact attack]
-
+Vlaggen → Oorlogsvlag. Plaats deze boven de vijandelijke Zwerm; wijs krijgers toe.
 [tutorial lessons]
-
+Tutoriallessen
 [tutorial restart]
-
+Les opnieuw starten
 [tutorial restart body]
-
+Deze les opnieuw starten vanuit de voorbereide kolonie? Niet-opgeslagen voortgang gaat verloren.
 [tutorial complete]
-
+Les voltooid
 [tutorial food title]
-
+Voedselvoorziening oefenen
 [tutorial food briefing]
-
+Oefen met het uitbreiden van de voedselvoorziening: bouw nog een herberg, wijs vervolgens leveranciers toe en zie hoe de tarwe arriveert.
 [tutorial food complete]
-
+Je bouwde een herberg en voorzag hem van tarwe. Probeer een andere les of ga terug naar het hoofdmenu.
 [tutorial unavailable]
-
+Tutoriallessen konden niet worden geladen.
 [lesson healing title]
-
+Ziekenhuizen en genezing
 [lesson healing briefing]
-
+Bouw een Ziekenhuis en help een gewonde arbeider herstellen. De kolonie begint goed gevoed, met één gewonde arbeider.
 [lesson healing complete]
-
+Je ziekenhuis heeft een gewond bolletje genezen. Zorg ervoor dat de herbergen van voedsel worden voorzien: honger kan eenheden opnieuw verwonden.
 [lesson healing build hint]
-
+Bouw een ziekenhuis op open grond; wijs 2 bouwers toe. Laat ruimte vrij voor bolletjes om in en uit te gaan. Ziekenhuizen genezen verwondingen; Herbergen zorgen voor voedsel. Deze patiënt is al gevoed.
 [lesson healing build title]
-
+Bouw een ziekenhuis
 [lesson healing build instruction]
-
+Bouw een ziekenhuis op open grond; wijs 2 bouwers toe.
 [lesson healing build help]
-
+Laat ruimte vrij voor bolletjes om in en uit te gaan. Ziekenhuizen genezen verwondingen; Herbergen zorgen voor voedsel. Deze patiënt is al gevoed.
 [lesson healing build marker]
-
+Bouw een ziekenhuis
 [lesson healing heal hint]
-
+Houd het ziekenhuis bereikbaar. Kijk hoe de gewonde arbeider herstelt. Bolletjes zoeken zelfstandig genezing. Volg de gewonde arbeider, niet een pasgeboren eenheid. Als de arbeider sterft, herstart dan de les of laad een opgeslagen spel.
 [lesson healing heal title]
-
+Laat de patiënt herstellen
 [lesson healing heal instruction]
-
+Houd het ziekenhuis bereikbaar. Kijk hoe de gewonde arbeider herstelt.
 [lesson healing heal help]
-
+Bolletjes zoeken zelfstandig genezing. Volg de gewonde arbeider, niet een pasgeboren eenheid. Als de arbeider sterft, herstart dan de les of laad een opgeslagen spel.
 [lesson healing heal marker]
-
+Laat de patiënt herstellen
 [lesson walking-training title]
-
+Trainen om sneller te lopen
 [lesson walking-training briefing]
-
+Bouw een racebaan en kijk hoe een bestaande arbeider sneller leert lopen.
 [lesson walking-training complete]
-
+Je arbeiders leerden sneller lopen. Training verbetert je bestaande arbeiders; de kolonie blijft voedsel nodig hebben.
 [lesson walking-training build hint]
-
+Bouw een racebaan op de gemarkeerde open plek; wijs bouwers toe. Een Racebaan heeft hout en steen nodig. Laat rond het gebouw ruimte vrij voor de in- en uitgang en latere uitbreiding.
 [lesson walking-training build title]
-
+Bouw een racebaan
 [lesson walking-training build instruction]
-
+Bouw een racebaan op de gemarkeerde open plek; wijs bouwers toe.
 [lesson walking-training build help]
-
+Een Racebaan heeft hout en steen nodig. Laat rond het gebouw ruimte vrij voor de in- en uitgang en latere uitbreiding.
 [lesson walking-training build marker]
-
+Bouw een racebaan
 [lesson walking-training train hint]
-
+Houd de racebaan toegankelijk en laat een arbeider de training afmaken. Geschikte bolletjes trainen automatisch. Houd enkele arbeiders vrij van bevoorradingstaken en houd beide Herbergen bevoorraad.
 [lesson walking-training train title]
-
+Train een bestaande arbeider
 [lesson walking-training train instruction]
-
+Houd de racebaan toegankelijk en laat een arbeider de training afmaken.
 [lesson walking-training train help]
-
+Geschikte bolletjes trainen automatisch. Houd enkele arbeiders vrij van bevoorradingstaken en houd beide Herbergen bevoorraad.
 [lesson swimming title]
-
+Zwemmen en hulpbronnen in water
 [lesson swimming briefing]
-
+Train zwemmers en gebruik vervolgens algen uit de vijver om een school te bouwen.
 [lesson swimming complete]
-
+Een zwemmer heeft grondstoffen uit het water gehaald om je school te bouwen. Door toegang tot water kan je kolonie meer soorten taken uitvoeren.
 [lesson swimming build hint]
-
+Bouw een zwembad ten westen van de vijver; wijs bouwers toe. Laat ruimte rond het Zwembad vrij. Een arbeider kan pas algen in diep water verzamelen nadat die heeft leren zwemmen.
 [lesson swimming build title]
-
+Bouw een zwembad
 [lesson swimming build instruction]
-
+Bouw een zwembad ten westen van de vijver; wijs bouwers toe.
 [lesson swimming build help]
-
+Laat ruimte rond het Zwembad vrij. Een arbeider kan pas algen in diep water verzamelen nadat die heeft leren zwemmen.
 [lesson swimming build marker]
-
+Bouw een zwembad
 [lesson swimming train hint]
-
+Laat een bestaande arbeider de zwemtraining afmaken. Eenheden kiezen automatisch voor training. Houd de bevoorrading gaande en zorg dat vrije arbeiders het Zwembad kunnen bereiken.
 [lesson swimming train title]
-
+Train een zwemmer
 [lesson swimming train instruction]
-
+Laat een bestaande arbeider de zwemtraining afmaken.
 [lesson swimming train help]
-
+Eenheden kiezen automatisch voor training. Houd de bevoorrading gaande en zorg dat vrije arbeiders het Zwembad kunnen bereiken.
 [lesson swimming water-job hint]
-
+Bouw een school in de buurt van de kolonie; wijs bouwers toe om hout en algen te halen. De algen groeien in de vijver. Een getrainde zwemmer moet het water in om ze te verzamelen. Plaats de School op open land en houd de toegang voor leveranciers vrij.
 [lesson swimming water-job title]
-
+Gebruik algen uit de vijver
 [lesson swimming water-job instruction]
-
+Bouw een school in de buurt van de kolonie; wijs bouwers toe om hout en algen te halen.
 [lesson swimming water-job help]
-
+De algen groeien in de vijver. Een getrainde zwemmer moet het water in om ze te verzamelen. Plaats de School op open land en houd de toegang voor leveranciers vrij.
 [lesson swimming water-job marker]
-
+Gebruik algen uit de vijver
 [lesson schools title]
-
+Scholen en vaardigheden van arbeiders
 [lesson schools briefing]
-
+Gebruik de voorbereide zwemmers om een school te bouwen en kijk hoe de arbeiders leren bouwen en oogsten.
 [lesson schools complete]
-
+Je school heeft de vaardigheden van arbeiders verbeterd. Bekwame bouwers ontgrendelen verbeteringen; een betere oogst helpt een groeiende economie in stand te houden.
 [lesson schools build hint]
-
+Bouw een school op de open plek; wijs bouwers toe. De kolonie heeft al zwemmers die algen kunnen verzamelen. Houd de routes naar hout en water vrij. Fruitbomen leveren prestigegrondstoffen; voedsel komt nog steeds van tarwe.
 [lesson schools build title]
-
+Bouw een school
 [lesson schools build instruction]
-
+Bouw een school op de open plek; wijs bouwers toe.
 [lesson schools build help]
-
+De kolonie heeft al zwemmers die algen kunnen verzamelen. Houd de routes naar hout en water vrij. Fruitbomen leveren prestigegrondstoffen; voedsel komt nog steeds van tarwe.
 [lesson schools build marker]
-
+Bouw een school
 [lesson schools learn hint]
-
+Laat een bestaande arbeider de opleiding op de school voltooien. De School leert bolletjes zowel bouwen als oogsten. Houd arbeiders beschikbaar; alleen een bouwplaats leidt niemand op.
 [lesson schools learn title]
-
+Leer bouwen en oogsten
 [lesson schools learn instruction]
-
+Laat een bestaande arbeider de opleiding op de school voltooien.
 [lesson schools learn help]
-
+De School leert bolletjes zowel bouwen als oogsten. Houd arbeiders beschikbaar; alleen een bouwplaats leidt niemand op.
 [lesson upgrades title]
-
+Gebouwen verbeteren
 [lesson upgrades briefing]
-
+Gebruik goed opgeleide werkers om een racebaan te verbeteren en verder te trainen dan het eerste niveau.
 [lesson upgrades complete]
-
+Je hebt een gebouw verbeterd en de verbeterde training ervan gebruikt. Verdere verbeteringen herhalen deze cyclus met betere scholen, vaardigheden, materialen en ruimte, tot niveau 3.
 [lesson upgrades upgrade hint]
-
+Selecteer de Racebaan, kies Verbeter en wijs bekwame bouwers toe. Deze arbeiders hebben de vaardigheden van de School op niveau 1 al geleerd. Verbeteringen vragen extra ruimte en materialen en onderbreken de werking van het gebouw. Geannuleerde verbeteringen tellen niet mee.
 [lesson upgrades upgrade title]
-
+Verbeter de Racebaan
 [lesson upgrades upgrade instruction]
-
+Selecteer de Racebaan, kies Verbeter en wijs bekwame bouwers toe.
 [lesson upgrades upgrade help]
-
+Deze arbeiders hebben de vaardigheden van de School op niveau 1 al geleerd. Verbeteringen vragen extra ruimte en materialen en onderbreken de werking van het gebouw. Geannuleerde verbeteringen tellen niet mee.
 [lesson upgrades upgrade marker]
-
+Verbeter de Racebaan
 [lesson upgrades train hint]
-
+Laat een bestaande arbeider sneller leren lopen op de verbeterde racebaan. Een voltooide verbetering verbetert de beschikbare training. Hogere bouwniveaus vereisen hogere bouwvaardigheden; het niveau dat aan spelers wordt getoond, begint bij 1.
 [lesson upgrades train title]
-
+Gebruik de verbeterde training
 [lesson upgrades train instruction]
-
+Laat een bestaande arbeider sneller leren lopen op de verbeterde racebaan.
 [lesson upgrades train help]
-
+Een voltooide verbetering verbetert de beschikbare training. Hogere bouwniveaus vereisen hogere bouwvaardigheden; het niveau dat aan spelers wordt getoond, begint bij 1.
 [lesson warrior-training title]
-
+Krijgers produceren en trainen
 [lesson warrior-training briefing]
-
+Produceer krijgers bij de zwerm en train ze vervolgens bij een kazerne.
 [lesson warrior-training complete]
-
+Je controleerde de militaire productie en trainde krijgers. Houd hun voedselvoorziening draaiende; gevechtseenheden moeten nog steeds eten.
 [lesson warrior-training produce hint]
-
+Stel de zwerm alleen in op krijgers; wijs leveranciers toe en wacht op 2 krijgers. Stel de verhoudingen van werkers en verkenners in op 0 en de verhouding van krijgers op 1. De zwerm verbruikt tarwe voor geboorten. Verhoudingen bepalen wat er geproduceerd wordt; leveranciers bepalen of het kan draaien.
 [lesson warrior-training produce title]
-
+Produceer twee krijgers
 [lesson warrior-training produce instruction]
-
+Stel de zwerm alleen in op krijgers; wijs leveranciers toe en wacht op 2 krijgers.
 [lesson warrior-training produce help]
-
+Stel de verhoudingen van werkers en verkenners in op 0 en de verhouding van krijgers op 1. De zwerm verbruikt tarwe voor geboorten. Verhoudingen bepalen wat er geproduceerd wordt; leveranciers bepalen of het kan draaien.
 [lesson warrior-training produce marker]
-
+Produceer twee krijgers
 [lesson warrior-training build hint]
-
+Bouw een kazerne op de open plek; wijs bouwers toe. Stop of verminder de productie van krijgers zodra je er genoeg hebt. Kazernes leren gevechtsvaardigheden; laat er vrije ruimte omheen.
 [lesson warrior-training build title]
-
+Bouw een kazerne
 [lesson warrior-training build instruction]
-
+Bouw een kazerne op de open plek; wijs bouwers toe.
 [lesson warrior-training build help]
-
+Stop of verminder de productie van krijgers zodra je er genoeg hebt. Kazernes leren gevechtsvaardigheden; laat er vrije ruimte omheen.
 [lesson warrior-training build marker]
-
+Bouw een kazerne
 [lesson warrior-training train hint]
-
+Laat een krijger de kazerneoefening voltooien. Krijgers zoeken automatisch training. Houd de herbergen voorzien van voedsel en de kazernes toegankelijk. Het bouwen van de kazerne is niet voldoende: een krijger moet daar zijn training voltooien.
 [lesson warrior-training train title]
-
+Train je krijgers
 [lesson warrior-training train instruction]
-
+Laat een krijger de kazerneoefening voltooien.
 [lesson warrior-training train help]
-
+Krijgers zoeken automatisch training. Houd de herbergen voorzien van voedsel en de kazernes toegankelijk. Het bouwen van de kazerne is niet voldoende: een krijger moet daar zijn training voltooien.
 [lesson fortifications title]
-
+Torens en beschermende muren
 [lesson fortifications briefing]
-
+Bouw een toren, zorg ervoor dat deze van munitie wordt voorzien en bouw beschermende muren. Test vervolgens je verdediging tegen één kleine aanval.
 [lesson fortifications complete]
-
+Je verdediging beschikte over voldoende munitie om de oefenaanval te stoppen. Torens hebben steen nodig. Laat gaten in de muren vrij zodat leveranciers de torens kunnen bereiken.
 [lesson fortifications tower hint]
-
+Bouw een toren in het gemarkeerde gebied; wijs bouwers toe. Plaats de toren bij de steenafzetting en houd de toegang voor leveranciers vrij. De aanval begint pas als alle voorbereidingsdoelen zijn voltooid.
 [lesson fortifications tower title]
-
+Bouw een verdedigingstoren
 [lesson fortifications tower instruction]
-
+Bouw een toren in het gemarkeerde gebied; wijs bouwers toe.
 [lesson fortifications tower help]
-
+Plaats de toren bij de steenafzetting en houd de toegang voor leveranciers vrij. De aanval begint pas als alle voorbereidingsdoelen zijn voltooid.
 [lesson fortifications tower marker]
-
+Bouw een verdedigingstoren
 [lesson fortifications walls hint]
-
+Bouw minimaal 2 muurdelen nabij de toren; houd de westelijke toegangsweg open. Muren zijn van steen en elke locatie vraagt om arbeiders. Sluit de toren niet af: leveranciers hebben een route nodig. De gemarkeerde westelijke rijstrook moet vrij blijven.
 [lesson fortifications walls title]
-
+Bescherm de toren met muren
 [lesson fortifications walls instruction]
-
+Bouw minimaal 2 muurdelen nabij de toren; houd de westelijke toegangsweg open.
 [lesson fortifications walls help]
-
+Muren zijn van steen en elke locatie vraagt om arbeiders. Sluit de toren niet af: leveranciers hebben een route nodig. De gemarkeerde westelijke rijstrook moet vrij blijven.
 [lesson fortifications walls marker]
-
+Bescherm de toren met muren
 [lesson fortifications supply hint]
-
+Selecteer de toren en vraag leveranciers op. Wacht tot de toren minstens 2 steeneenheden heeft. Een voltooide Toren heeft arbeiders nodig om munitie aan te voeren. Stel dit aantal apart in van het aangevraagde aantal bouwers.
 [lesson fortifications supply title]
-
+Lever munitie
 [lesson fortifications supply instruction]
-
+Selecteer de toren en vraag leveranciers op. Wacht tot de toren minstens 2 steeneenheden heeft.
 [lesson fortifications supply help]
-
+Een voltooide Toren heeft arbeiders nodig om munitie aan te voeren. Stel dit aantal apart in van het aangevraagde aantal bouwers.
 [lesson fortifications supply marker]
-
+Lever munitie
 [lesson fortifications hold hint]
-
+Een vijandelijke krijger die voor deze oefening is gestuurd, nadert. Houd de toren voorzien van munitie en toegankelijk. Verdedig tot de aanvaller is verslagen of verdreven. Een muur die leveranciers blokkeert kan de toren zonder munitie laten zitten. Herstart de les of laad een eerder opgeslagen spel als de kolonie ten onder gaat.
 [lesson fortifications hold title]
-
+Test de vestingwerken
 [lesson fortifications hold instruction]
-
+Een vijandelijke krijger die voor deze oefening is gestuurd, nadert. Houd de toren voorzien van munitie en toegankelijk.
 [lesson fortifications hold help]
-
+Verdedig tot de aanvaller is verslagen of verdreven. Een muur die leveranciers blokkeert kan de toren zonder munitie laten zitten. Herstart de les of laad een eerder opgeslagen spel als de kolonie ten onder gaat.
 [lesson fortifications hold marker]
-
+Test de vestingwerken
 [lesson defensive-tactics title]
-
+Bewakingszones en vlagtactieken
 [lesson defensive-tactics briefing]
-
+Verken de oefenvijand, bereid een bewakingszone voor, verdedig en organiseer vervolgens een tegenaanval.
 [lesson defensive-tactics complete]
-
+Je verkende de vijand, verdedigde een bewakingszone en leidde een tegenaanval. Het aantal dat je voor een vlag instelt, bepaalt hoeveel eenheden er worden aangevraagd. De straal bepaalt waar deze eenheden werken.
 [lesson defensive-tactics scout hint]
-
+Plaats een verkenningsvlag op de vijandelijke basis; wijs 1 verkenner toe. Vlaggen vragen automatisch eenheden aan. Een verkenner onthult actuele activiteit achter de oorlogsmist en kan stoppen om te eten.
 [lesson defensive-tactics scout title]
-
+Verken de vijandelijke basis
 [lesson defensive-tactics scout instruction]
-
+Plaats een verkenningsvlag op de vijandelijke basis; wijs 1 verkenner toe.
 [lesson defensive-tactics scout help]
-
+Vlaggen vragen automatisch eenheden aan. Een verkenner onthult actuele activiteit achter de oorlogsmist en kan stoppen om te eten.
 [lesson defensive-tactics scout marker]
-
+Verken de vijandelijke basis
 [lesson defensive-tactics guard hint]
-
+Schilder een bewakingszone in het gemarkeerde gebied en laat 2 krijgers deze bereiken. Open Vlaggen, kies Bewaken en schilder minstens 4 vakken binnen het gebied. Bewakingszones trekken vrije krijgers aan. Verboden zones blokkeren het verkeer; opruimzones vragen om het verwijderen van grondstoffen.
 [lesson defensive-tactics guard title]
-
+Bereid een bewakingszone voor
 [lesson defensive-tactics guard instruction]
-
+Schilder een bewakingszone in het gemarkeerde gebied en laat 2 krijgers deze bereiken.
 [lesson defensive-tactics guard help]
-
+Open Vlaggen, kies Bewaken en schilder minstens 4 vakken binnen het gebied. Bewakingszones trekken vrije krijgers aan. Verboden zones blokkeren het verkeer; opruimzones vragen om het verwijderen van grondstoffen.
 [lesson defensive-tactics guard marker]
-
+Bereid een bewakingszone voor
 [lesson defensive-tactics repel hint]
-
+De vijand valt aan. Houd krijgers in de bewakingszone en houd de Herbergen bevoorraad. De kleine aanval begint na je voorbereidingen. Versla of verdrijf beide aanvallers; gewonde vijanden kunnen zich terugtrekken. Krijgers kunnen tijdelijk weggaan om te eten. Laad een eerder opgeslagen spel of herstart de les als de verdediging mislukt.
 [lesson defensive-tactics repel title]
-
+Weersta de oefenaanval
 [lesson defensive-tactics repel instruction]
-
+De vijand valt aan. Houd krijgers in de bewakingszone en houd de Herbergen bevoorraad.
 [lesson defensive-tactics repel help]
-
+De kleine aanval begint na je voorbereidingen. Versla of verdrijf beide aanvallers; gewonde vijanden kunnen zich terugtrekken. Krijgers kunnen tijdelijk weggaan om te eten. Laad een eerder opgeslagen spel of herstart de les als de verdediging mislukt.
 [lesson defensive-tactics repel marker]
-
+Weersta de oefenaanval
 [lesson defensive-tactics counterattack hint]
-
+Plaats een oorlogsvlag over de vijandelijke zwerm; vraag 3 krijgers en gebruik straal 4 of kleiner. Bewakingszones en Oorlogsvlaggen vragen om dezelfde krijgers. Wis bewakingsvakken als ze je leger tegenhouden. Houd voedsel beschikbaar terwijl krijgers reizen en aanvallen.
 [lesson defensive-tactics counterattack title]
-
+Voer een gerichte tegenaanval uit
 [lesson defensive-tactics counterattack instruction]
-
+Plaats een oorlogsvlag over de vijandelijke zwerm; vraag 3 krijgers en gebruik straal 4 of kleiner.
 [lesson defensive-tactics counterattack help]
-
+Bewakingszones en Oorlogsvlaggen vragen om dezelfde krijgers. Wis bewakingsvakken als ze je leger tegenhouden. Houd voedsel beschikbaar terwijl krijgers reizen en aanvallen.
 [lesson defensive-tactics counterattack marker]
-
+Voer een gerichte tegenaanval uit
 [lesson healing build compact]
-
+Bouwen → Ziekenhuis. Houd de toegang vrij; wijs bouwers toe.
 [lesson healing heal compact]
-
+Laat de gewonde arbeider genezen in het ziekenhuis.
 [lesson walking-training build compact]
-
+Bouwen → Racebaan. Laat ruimte vrij rond de randen.
 [lesson walking-training train compact]
-
+Laat een arbeider de training op de Racebaan voltooien.
 [lesson swimming build compact]
-
+Bouwen → Zwembad, ten westen van de vijver.
 [lesson swimming train compact]
-
+Laat een arbeider leren zwemmen.
 [lesson swimming water-job compact]
-
+Bouwen → School. Wijs bouwers toe voor hout en algen.
 [lesson schools build compact]
-
+Bouwen → School. Wijs bouwers toe voor hout en algen.
 [lesson schools learn compact]
-
+Laat een arbeider de opleiding op de school voltooien.
 [lesson upgrades upgrade compact]
-
+Selecteer Racebaan → Verbeter. Wijs bekwame bouwers toe.
 [lesson upgrades train compact]
-
+Laat een arbeider trainen op de verbeterde racebaan.
 [lesson warrior-training produce compact]
-
+Zwerm → alleen krijgers. Zorg voor tarwe om 2 krijgers te produceren.
 [lesson warrior-training build compact]
-
+Bouwen → Kazerne. Laat ruimte vrij rond de randen.
 [lesson warrior-training train compact]
-
+Laat een krijger de kazerneoefening afmaken.
 [lesson fortifications tower compact]
-
+Bouwen → Toren. Plaats in het gemarkeerde gebied.
 [lesson fortifications walls compact]
-
+Bouw 2 muren. Houd de westelijke rijstrook van de toren open.
 [lesson fortifications supply compact]
-
+Selecteer toren → leveranciers. Wacht op 2 stenen.
 [lesson fortifications hold compact]
-
+Houd de toren bevoorraad tegen de aanvaller.
 [lesson defensive-tactics scout compact]
-
+Vlaggen → Verkenning. Plaats de vlag op de vijandelijke basis; wijs 1 verkenner toe.
 [lesson defensive-tactics guard compact]
-
+Vlaggen → Bewaken. Schilder 4 vakken; laat 2 krijgers aankomen.
 [lesson defensive-tactics repel compact]
-
+Houd de bewakingszone vast. Houd herbergen bevoorraad.
 [lesson defensive-tactics counterattack compact]
-
+Oorlogsvlag → vijandelijke zwerm. Vraag 3 krijgers aan; straal ≤4.
 [library GL only]
 Alleen GL
 [Grassland]
@@ -6781,7 +6817,7 @@ Wildpaden
 [Fish amount]
 Hoeveelheid vis
 [scenario messages]
-
+Berichten ▸
 [Camp-site amount]
 Aantal kampeerplaatsen
 [AI for all computer colonies]

@@ -4884,6 +4884,34 @@ Enheder, der er lukket inde uden et ledigt felt at træde hen på.
 Ryddede ressourcer
 [stat cleared about]
 Ressourcer fjernet af arbejdere i rydningsområder for at skabe plads.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestige
 [stat prestige about]
@@ -5668,6 +5696,14 @@ Mørkt vand
 Hul
 [chasm]
 Afgrund
+[lush_grass]
+Frodigt græs
+[dry_grass]
+Tørt græs
+[dune_sand]
+Klitsand
+[pale_sand]
+Lyst sand
 [terrain group water]
 Vand
 [terrain group sand]
@@ -6355,421 +6391,421 @@ Dit valg kunne ikke gemmes. Lyden er stadig slået fra. Prøv igen.
 [audio choices description]
 Stilhed: en lydløs højttaler. Lyd: en højttaler med lydbølger.
 [intro menu]
-
+Introduktion
 [intro briefing]
-
+Lær indirekte styring: udforsk med et flag, forsyn kolonien, og led et angreb.
 [intro try]
-
+Start introduktion
 [intro preflight]
-
+Dine globuler handler selv. Du vælger deres opgaver gennem bygninger og flag. I denne korte introduktion udforsker du et kendemærke, udvider forsyningen, øger arbejdsstyrken og leder et lille angreb.
 [intro preflight save]
-
+Afsæt omkring 10 minutter. Du kan gemme fra spilmenuen og fortsætte via Indlæs spil. De normale regler for sult og kamp gælder. Vælg øvelseslektioner i hovedmenuen for at øve flere færdigheder.
 [intro preference failed]
-
+Dit valg kunne ikke gemmes. Du kan fortsætte med at spille; anbefalingen kan dukke op igen næste gang.
 [intro goal scout]
-
+Udforsk kendemærket af sten
 [intro goal build]
-
+Byg endnu en Kro
 [intro goal supply]
-
+Forsyn din nye Kro
 [intro goal grow]
-
+Øg arbejdsstyrken
 [intro goal attack]
-
+Ødelæg fjendens Sværm
 [intro instruction scout]
-
+Åbn Flag, og placer et Udforskningsflag på stenene øst for kolonien. Tildel én udforsker. Se den bevæge sig til flaget.
 [intro instruction build]
-
+Åbn Byg, og placer en Kro nær hveden. Tildel ledige arbejdere til byggeriet. Hold den eksisterende Kro forsynet.
 [intro instruction supply]
-
+Vælg den færdige nye Kro, og tildel mindst én forsyningsarbejder. Vent på, at en arbejder leverer hvede.
 [intro instruction grow]
-
+Vælg Sværmen. Sæt det ønskede antal arbejdere til mindst 2 og produktionsforholdene til kun arbejdere. Hold begge Kroer forsynet, mens en ny arbejder fødes.
 [intro instruction attack]
-
+Find fjendens Sværm længere mod øst. Brug et Krigsflag til at lede dine krigere imod den. Åbn hjælpen, hvis du har brug for en påmindelse.
 [intro help]
-
+Hjælp / hvorfor?
 [intro help scout]
-
+Brug minikortet til at flytte udsynet mod øst og finde stenene. Vælg Udforskningsflag under Flag, placer det på stenene, og afslut placeringen med den sekundære museknap. Vælg flaget, og anmod om 1 udforsker. Flag anmoder om enheder; de flytter dem ikke øjeblikkeligt. Udforskere kan stoppe for at spise.
 [intro help build]
-
+Byggeri bruger træ leveret af arbejdere. Vælg Kro i bygningspaletten, placer den på fri jord nær hvede, og anmod om 2 bygningsarbejdere. Det ønskede antal er en anmodning, ikke antallet af arbejdere, som allerede er til stede. Behold forsyningsarbejdere ved den eksisterende Kro og Sværmen. Enhver gyldig placering tæller.
 [intro help supply]
-
+Byggeri og daglig forsyning har separate ønskede antal arbejdere. Vælg den færdige Kro, og øg antallet til drift. En forsyningsarbejder høster hvede og bærer den hertil. Sultne globuler spiser på Kroer; uden forsyningsarbejdere slipper lageret op. Hold hveden tilgængelig.
 [intro help grow]
-
+Sværmen bruger hvede til at producere enheder. Sæt arbejderproduktion til 1 og udforsker- og krigerproduktion til 0. Øg Sværmens ønskede antal arbejdere til mindst 2. Flere forsyningsarbejdere leverer hurtigere, men konkurrerer med andre opgaver. Hold begge Kroer forsynet.
 [intro help attack]
-
+Åbn Flag, vælg Krigsflag, og placer det på fjendens Sværm øst for stenene. Vælg flaget, og anmod om op til 4 krigere. En lille radius holder dem samlet. Afslut placeringen med den sekundære museknap, før du vælger flaget. Hvis ingen krigere er tilbage, så producer flere i Sværmen. De kan stoppe for at spise; hold Kroerne forsynet.
 [intro hint scout]
-
+Din udforsker skal have et Udforskningsflag med tildelte enheder ved stenene mod øst. Kontrollér målet og antallet af udforskere.
 [intro hint build]
-
+Hvis du fjernede den nye Kro, så byg en anden. Kontrollér ellers byggepladsen og det ønskede antal arbejdere. Eksisterende forsyningsopgaver kan optage arbejderne; hold maden i gang, mens du frigør bygningsarbejdere.
 [intro hint supply]
-
+Vælg den færdige nye Kro. Kontrollér det ønskede antal arbejdere, og hold øje med hvedeleverancer. Arbejderne kan have brug for tid til at gå eller spise.
 [intro hint grow]
-
+Kontrollér Sværmens forsyning, og at den kun producerer arbejdere. Hold Kroerne forsynet, mens du venter på endnu en arbejder.
 [intro hint attack]
-
+Kontrollér Krigsflaget, det ønskede antal krigere og madforsyningen. Krigerne skal bruge tid til at gå og angribe.
 [intro hint no scout flag]
-
+Der blev ikke fundet et Udforskningsflag med tildelte enheder. Placer et på stenene øst for basen, og anmod om 1 udforsker.
 [intro hint no suppliers]
-
+Din nye Kro eller byggeplads anmoder om 0 arbejdere. Vælg den, og anmod om arbejdere.
 [intro hint no war flag]
-
+Der blev ikke fundet et Krigsflag med tildelte enheder ved fjendens base. Placer et på fjendens østlige Sværm, og anmod om krigere.
 [intro hint retry]
-
+En enhed eller bygning, som lektionen kræver, er gået tabt. Indlæs et tidligere gemt spil, eller genstart lektionen fra spilmenuen.
 [intro complete]
-
+Introduktion gennemført
 [intro complete body]
-
+Du har styret selvstændige globuler, udvidet forsyningen og kolonien og organiseret et angreb. Fortsæt med øvelseslektioner om træning, opgraderinger og forsvar, eller vend tilbage til hovedmenuen for at starte en kamp.
 [intro play again]
-
+Spil igen
 [intro restart]
-
+Genstart introduktion
 [intro restart body]
-
+Start forfra med den forberedte koloni? Ikke-gemte fremskridt i denne introduktion går tabt.
 [intro help touch scout]
-
+Træk på tom jord for at flytte udsynet, før du placerer et flag. Find stenene øst for kolonien. Åbn Flag, vælg Udforskningsflag, placer det på stenene, og bekræft. Vælg flaget, og anmod om 1 udforsker via antallet af tildelte enheder. Globuler går selv og kan stoppe for at spise.
 [intro help touch build]
-
+Vælg Kro under Byg. Placer den på fri jord nær hvede, og bekræft. Vælg byggepladsen, og anmod om 2 bygningsarbejdere. Det ønskede antal tæller ikke de allerede tilstedeværende arbejdere. Hold den eksisterende Kro og Sværmen forsynet. Enhver gyldig placering tæller.
 [intro help touch supply]
-
+Vælg den færdige nye Kro, og øg det ønskede antal arbejdere. Byggeri og forsyning har separate indstillinger. En forsyningsarbejder høster hvede og bærer den hertil. Sultne globuler spiser på Kroer; uden forsyningsarbejdere slipper lageret op. Hold hveden tilgængelig.
 [intro help touch grow]
-
+Vælg Sværmen. Sæt arbejderproduktion til 1 og udforsker- og krigerproduktion til 0. Anmod om mindst 2 arbejdere. Forsyningsarbejdere bringer hvede til nye enheder, men konkurrerer med andre opgaver. Hold begge Kroer forsynet.
 [intro help touch attack]
-
+Åbn Flag, vælg Krigsflag, placer det på fjendens Sværm øst for stenene, og bekræft. Vælg flaget, og anmod om op til 4 krigere. En lille radius samler dem. Hvis ingen er tilbage, så producer krigere i Sværmen. De kan stoppe for at spise; hold Kroerne forsynet.
 [intro show destination]
-
+Vis destination
 [intro scout destination]
-
+Udforsk her
 [intro attack destination]
-
+Angrib her
 [intro compact scout]
-
+Flag → Udforskningsflag. Placer på stenene; tildel 1 udforsker.
 [intro compact build]
-
+Byg → Kro. Placer nær hvede; tildel 2 bygningsarbejdere.
 [intro compact supply]
-
+Vælg den nye Kro; tildel mindst 1 forsyningsarbejder. Vent på hvede.
 [intro compact grow]
-
+Vælg Sværmen; tildel 2 forsyningsarbejdere. Producer kun arbejdere.
 [intro compact attack]
-
+Flag → Krigsflag. Placer på fjendens Sværm; tildel krigere.
 [tutorial lessons]
-
+Øvelseslektioner
 [tutorial restart]
-
+Genstart lektion
 [tutorial restart body]
-
+Genstart denne lektion med den forberedte koloni? Ikke-gemte fremskridt går tabt.
 [tutorial complete]
-
+Lektion gennemført
 [tutorial food title]
-
+Øvelse i madforsyning
 [tutorial food briefing]
-
+Øv udvidelse af madforsyningen: Byg endnu en Kro, tildel forsyningsarbejdere, og se hveden ankomme.
 [tutorial food complete]
-
+Du byggede en Kro og forsynede den med hvede. Prøv en anden lektion, eller vend tilbage til hovedmenuen.
 [tutorial unavailable]
-
+Øvelseslektionerne kunne ikke indlæses.
 [lesson healing title]
-
+Hospitaler og helbredelse
 [lesson healing briefing]
-
+Byg et Hospital, og hjælp en såret arbejder med at komme sig. Kolonien starter mæt med én såret arbejder.
 [lesson healing complete]
-
+Dit Hospital helbredte en såret globul. Hold Kroerne forsynet: Sult kan skade enhederne igen.
 [lesson healing build hint]
-
+Byg et Hospital på fri jord; tildel 2 bygningsarbejdere. Giv globulerne plads til at komme ind og ud. Hospitaler helbreder skader; Kroer leverer mad. Denne patient er allerede mæt.
 [lesson healing build title]
-
+Byg et Hospital
 [lesson healing build instruction]
-
+Byg et Hospital på fri jord; tildel 2 bygningsarbejdere.
 [lesson healing build help]
-
+Giv globulerne plads til at komme ind og ud. Hospitaler helbreder skader; Kroer leverer mad. Denne patient er allerede mæt.
 [lesson healing build marker]
-
+Byg et Hospital
 [lesson healing heal hint]
-
+Hold Hospitalet tilgængeligt. Se den sårede arbejder komme sig. Globuler søger selv helbredelse. Følg den sårede arbejder, ikke en nyfødt enhed. Hvis den dør, så genstart eller indlæs et gemt spil.
 [lesson healing heal title]
-
+Lad patienten komme sig
 [lesson healing heal instruction]
-
+Hold Hospitalet tilgængeligt. Se den sårede arbejder komme sig.
 [lesson healing heal help]
-
+Globuler søger selv helbredelse. Følg den sårede arbejder, ikke en nyfødt enhed. Hvis den dør, så genstart eller indlæs et gemt spil.
 [lesson healing heal marker]
-
+Lad patienten komme sig
 [lesson walking-training title]
-
+Gangtræning
 [lesson walking-training briefing]
-
+Byg en Træningsbane, og se en eksisterende arbejder lære at gå hurtigere.
 [lesson walking-training complete]
-
+Dine arbejdere lærte at gå hurtigere. Træning forbedrer de arbejdere, du har; den erstatter ikke koloniens madforsyning.
 [lesson walking-training build hint]
-
+Byg en Træningsbane i den markerede lysning; tildel bygningsarbejdere. En Træningsbane kræver træ og sten. Efterlad plads langs kanterne til indgang, udgang og senere udvidelse.
 [lesson walking-training build title]
-
+Byg en Træningsbane
 [lesson walking-training build instruction]
-
+Byg en Træningsbane i den markerede lysning; tildel bygningsarbejdere.
 [lesson walking-training build help]
-
+En Træningsbane kræver træ og sten. Efterlad plads langs kanterne til indgang, udgang og senere udvidelse.
 [lesson walking-training build marker]
-
+Byg en Træningsbane
 [lesson walking-training train hint]
-
+Hold Træningsbanen tilgængelig, og lad en arbejder afslutte træningen. Egnede globuler træner automatisk. Hold nogle arbejdere fri for forsyningsopgaver og begge Kroer forsynet.
 [lesson walking-training train title]
-
+Træn en eksisterende arbejder
 [lesson walking-training train instruction]
-
+Hold Træningsbanen tilgængelig, og lad en arbejder afslutte træningen.
 [lesson walking-training train help]
-
+Egnede globuler træner automatisk. Hold nogle arbejdere fri for forsyningsopgaver og begge Kroer forsynet.
 [lesson swimming title]
-
+Svømning og vandressourcer
 [lesson swimming briefing]
-
+Træn svømmere, og brug derefter alger fra dammen til at bygge en Skole.
 [lesson swimming complete]
-
+En svømmer leverede vandressourcer til din Skole. Adgang til vand udvider koloniens mulige opgaver.
 [lesson swimming build hint]
-
+Byg et Svømmebassin vest for dammen; tildel bygningsarbejdere. Efterlad plads omkring bassinet. En arbejder kan først samle alger på dybt vand, når den har lært at svømme.
 [lesson swimming build title]
-
+Byg et Svømmebassin
 [lesson swimming build instruction]
-
+Byg et Svømmebassin vest for dammen; tildel bygningsarbejdere.
 [lesson swimming build help]
-
+Efterlad plads omkring bassinet. En arbejder kan først samle alger på dybt vand, når den har lært at svømme.
 [lesson swimming build marker]
-
+Byg et Svømmebassin
 [lesson swimming train hint]
-
+Lad en eksisterende arbejder afslutte svømmetræningen. Enheder vælger træning automatisk. Hold forsyningen i gang, og lad ledige arbejdere nå bassinet.
 [lesson swimming train title]
-
+Træn en svømmer
 [lesson swimming train instruction]
-
+Lad en eksisterende arbejder afslutte svømmetræningen.
 [lesson swimming train help]
-
+Enheder vælger træning automatisk. Hold forsyningen i gang, og lad ledige arbejdere nå bassinet.
 [lesson swimming water-job hint]
-
+Byg en Skole nær kolonien; tildel bygningsarbejdere til at hente træ og alger. Algerne vokser i dammen. En trænet svømmer skal gå i vandet for at samle dem. Placer Skolen på fri jord med adgang for forsyningsarbejdere.
 [lesson swimming water-job title]
-
+Brug alger fra dammen
 [lesson swimming water-job instruction]
-
+Byg en Skole nær kolonien; tildel bygningsarbejdere til at hente træ og alger.
 [lesson swimming water-job help]
-
+Algerne vokser i dammen. En trænet svømmer skal gå i vandet for at samle dem. Placer Skolen på fri jord med adgang for forsyningsarbejdere.
 [lesson swimming water-job marker]
-
+Brug alger fra dammen
 [lesson schools title]
-
+Skoler og arbejderfærdigheder
 [lesson schools briefing]
-
+Brug de forberedte svømmere til at bygge en Skole, og se derefter arbejderne lære at bygge og høste.
 [lesson schools complete]
-
+Din Skole forbedrede arbejdernes færdigheder. Dygtige bygningsarbejdere muliggør opgraderinger; bedre høst understøtter en voksende økonomi.
 [lesson schools build hint]
-
+Byg en Skole i lysningen; tildel bygningsarbejdere. Kolonien har allerede svømmere til algerne. Hold adgang til træ og vand åben. Frugttræer leverer prestigeressourcer; maden kommer stadig fra hvede.
 [lesson schools build title]
-
+Byg en Skole
 [lesson schools build instruction]
-
+Byg en Skole i lysningen; tildel bygningsarbejdere.
 [lesson schools build help]
-
+Kolonien har allerede svømmere til algerne. Hold adgang til træ og vand åben. Frugttræer leverer prestigeressourcer; maden kommer stadig fra hvede.
 [lesson schools build marker]
-
+Byg en Skole
 [lesson schools learn hint]
-
+Lad en eksisterende arbejder afslutte sin Skoletræning. Skolen lærer byggeri og høst sammen. Hold arbejdere til rådighed; en byggeplads alene træner ingen.
 [lesson schools learn title]
-
+Lær byggeri og høst
 [lesson schools learn instruction]
-
+Lad en eksisterende arbejder afslutte sin Skoletræning.
 [lesson schools learn help]
-
+Skolen lærer byggeri og høst sammen. Hold arbejdere til rådighed; en byggeplads alene træner ingen.
 [lesson upgrades title]
-
+Opgradering af bygninger
 [lesson upgrades briefing]
-
+Brug de forberedte dygtige arbejdere til at opgradere en Træningsbane og træne ud over første niveau.
 [lesson upgrades complete]
-
+Du opgraderede en bygning og brugte dens forbedrede træning. Yderligere opgraderinger gentager cyklussen med bedre Skoler, færdigheder, materialer og mere plads op til niveau 3.
 [lesson upgrades upgrade hint]
-
+Vælg Træningsbanen, vælg Opgradér, og tildel dygtige bygningsarbejdere. Disse arbejdere har allerede lært færdigheder på Skolens første niveau. Opgraderinger kræver mere plads og materiale og afbryder bygningens tjeneste. Annullerede opgraderinger tæller ikke.
 [lesson upgrades upgrade title]
-
+Opgrader Træningsbanen
 [lesson upgrades upgrade instruction]
-
+Vælg Træningsbanen, vælg Opgradér, og tildel dygtige bygningsarbejdere.
 [lesson upgrades upgrade help]
-
+Disse arbejdere har allerede lært færdigheder på Skolens første niveau. Opgraderinger kræver mere plads og materiale og afbryder bygningens tjeneste. Annullerede opgraderinger tæller ikke.
 [lesson upgrades upgrade marker]
-
+Opgrader Træningsbanen
 [lesson upgrades train hint]
-
+Lad en eksisterende arbejder lære at gå hurtigere på den opgraderede Træningsbane. En færdig opgradering forbedrer den tilgængelige træning. Højere bygningsniveauer kræver bedre byggefærdigheder; det viste niveau starter ved 1.
 [lesson upgrades train title]
-
+Brug den forbedrede træning
 [lesson upgrades train instruction]
-
+Lad en eksisterende arbejder lære at gå hurtigere på den opgraderede Træningsbane.
 [lesson upgrades train help]
-
+En færdig opgradering forbedrer den tilgængelige træning. Højere bygningsniveauer kræver bedre byggefærdigheder; det viste niveau starter ved 1.
 [lesson warrior-training title]
-
+Produktion og træning af krigere
 [lesson warrior-training briefing]
-
+Producer krigere i Sværmen, og træn dem derefter i en Kaserne.
 [lesson warrior-training complete]
-
+Du styrede militær produktion og trænede krigere. Hold deres madforsyning i gang; kampenheder skal også spise.
 [lesson warrior-training produce hint]
-
+Sæt Sværmen til kun krigere; tildel forsyningsarbejdere, og vent på 2 krigere. Sæt arbejder- og udforskerforhold til 0 og krigerforhold til 1. Sværmen bruger hvede til fødsler. Forholdene vælger, hvad der produceres; forsyningsarbejdere gør produktionen mulig.
 [lesson warrior-training produce title]
-
+Producer to krigere
 [lesson warrior-training produce instruction]
-
+Sæt Sværmen til kun krigere; tildel forsyningsarbejdere, og vent på 2 krigere.
 [lesson warrior-training produce help]
-
+Sæt arbejder- og udforskerforhold til 0 og krigerforhold til 1. Sværmen bruger hvede til fødsler. Forholdene vælger, hvad der produceres; forsyningsarbejdere gør produktionen mulig.
 [lesson warrior-training produce marker]
-
+Producer to krigere
 [lesson warrior-training build hint]
-
+Byg en Kaserne i lysningen; tildel bygningsarbejdere. Stop eller sænk krigerproduktionen, når du har nok. Kaserner lærer kampfærdigheder og behøver fri plads langs kanterne.
 [lesson warrior-training build title]
-
+Byg en Kaserne
 [lesson warrior-training build instruction]
-
+Byg en Kaserne i lysningen; tildel bygningsarbejdere.
 [lesson warrior-training build help]
-
+Stop eller sænk krigerproduktionen, når du har nok. Kaserner lærer kampfærdigheder og behøver fri plads langs kanterne.
 [lesson warrior-training build marker]
-
+Byg en Kaserne
 [lesson warrior-training train hint]
-
+Lad en kriger afslutte øvelsen i Kasernen. Krigere søger træning automatisk. Hold Kroerne forsynet og Kasernen tilgængelig. At bygge en Kaserne er ikke i sig selv en afsluttet træning.
 [lesson warrior-training train title]
-
+Træn dine krigere
 [lesson warrior-training train instruction]
-
+Lad en kriger afslutte øvelsen i Kasernen.
 [lesson warrior-training train help]
-
+Krigere søger træning automatisk. Hold Kroerne forsynet og Kasernen tilgængelig. At bygge en Kaserne er ikke i sig selv en afsluttet træning.
 [lesson fortifications title]
-
+Tårne og beskyttende mure
 [lesson fortifications briefing]
-
+Byg et forsynet tårn og beskyttende mure, og afprøv dem mod et lille angreb.
 [lesson fortifications complete]
-
+Dit forsynede forsvar standsede øvelsesangrebet. Tårne kræver sten, og mure behøver åbninger, så forsyningsarbejdere kan komme frem.
 [lesson fortifications tower hint]
-
+Byg et tårn i det markerede område; tildel bygningsarbejdere. Placer det nær stenbruddet, og hold forsyningsadgangen åben. Intet angreb starter, før forberedelsesmålene er nået.
 [lesson fortifications tower title]
-
+Byg et Forsvarstårn
 [lesson fortifications tower instruction]
-
+Byg et tårn i det markerede område; tildel bygningsarbejdere.
 [lesson fortifications tower help]
-
+Placer det nær stenbruddet, og hold forsyningsadgangen åben. Intet angreb starter, før forberedelsesmålene er nået.
 [lesson fortifications tower marker]
-
+Byg et Forsvarstårn
 [lesson fortifications walls hint]
-
+Byg mindst 2 murstykker nær tårnet; hold adgangsvejen fra vest åben. Mure bruger sten, og hver byggeplads anmoder om arbejdere. Luk ikke tårnet inde: Forsyningsarbejdere skal have en vej. Den markerede vestlige passage skal forblive fri.
 [lesson fortifications walls title]
-
+Beskyt tårnet med mure
 [lesson fortifications walls instruction]
-
+Byg mindst 2 murstykker nær tårnet; hold adgangsvejen fra vest åben.
 [lesson fortifications walls help]
-
+Mure bruger sten, og hver byggeplads anmoder om arbejdere. Luk ikke tårnet inde: Forsyningsarbejdere skal have en vej. Den markerede vestlige passage skal forblive fri.
 [lesson fortifications walls marker]
-
+Beskyt tårnet med mure
 [lesson fortifications supply hint]
-
+Vælg tårnet, og anmod om forsyningsarbejdere. Vent på mindst 2 sten. Et færdigt tårn behøver et ønsket antal driftsarbejdere for at få ammunition. Dette er adskilt fra antallet til byggeri.
 [lesson fortifications supply title]
-
+Lever ammunition
 [lesson fortifications supply instruction]
-
+Vælg tårnet, og anmod om forsyningsarbejdere. Vent på mindst 2 sten.
 [lesson fortifications supply help]
-
+Et færdigt tårn behøver et ønsket antal driftsarbejdere for at få ammunition. Dette er adskilt fra antallet til byggeri.
 [lesson fortifications supply marker]
-
+Lever ammunition
 [lesson fortifications hold hint]
-
+En øvelseskriger nærmer sig. Hold tårnet forsynet og tilgængeligt. Hold stand, indtil angriberen er besejret eller drevet tilbage. En mur, som blokerer forsyningsarbejdere, kan afskære tårnets ammunition. Hvis kolonien fejler, så genstart eller indlæs et tidligere gemt spil.
 [lesson fortifications hold title]
-
+Afprøv befæstningen
 [lesson fortifications hold instruction]
-
+En øvelseskriger nærmer sig. Hold tårnet forsynet og tilgængeligt.
 [lesson fortifications hold help]
-
+Hold stand, indtil angriberen er besejret eller drevet tilbage. En mur, som blokerer forsyningsarbejdere, kan afskære tårnets ammunition. Hvis kolonien fejler, så genstart eller indlæs et tidligere gemt spil.
 [lesson fortifications hold marker]
-
+Afprøv befæstningen
 [lesson defensive-tactics title]
-
+Vagtområder og flagtaktik
 [lesson defensive-tactics briefing]
-
+Udforsk øvelsesfjenden, forbered et vagtområde, forsvar det, og organiser et modangreb.
 [lesson defensive-tactics complete]
-
+Du udforskede, forsvarede et vagtområde og ledte et modangreb. Flagenes ønskede antal anmoder om enheder; radius bestemmer, hvor enhederne arbejder.
 [lesson defensive-tactics scout hint]
-
+Placer et Udforskningsflag ved fjendens base; tildel 1 udforsker. Flag anmoder automatisk om enheder. En udforsker afslører den aktuelle aktivitet gennem krigstågen; den kan stoppe for at spise.
 [lesson defensive-tactics scout title]
-
+Udforsk fjendens base
 [lesson defensive-tactics scout instruction]
-
+Placer et Udforskningsflag ved fjendens base; tildel 1 udforsker.
 [lesson defensive-tactics scout help]
-
+Flag anmoder automatisk om enheder. En udforsker afslører den aktuelle aktivitet gennem krigstågen; den kan stoppe for at spise.
 [lesson defensive-tactics scout marker]
-
+Udforsk fjendens base
 [lesson defensive-tactics guard hint]
-
+Mal et vagtområde i det markerede område, og lad 2 krigere nå frem. Åbn Flag, vælg Vagt, og mal mindst 4 felter inde i området. Vagtområder tiltrækker ledige krigere. Forbudte områder blokerer færdsel; rydningsområder anmoder om fjernelse af ressourcer.
 [lesson defensive-tactics guard title]
-
+Forbered et vagtområde
 [lesson defensive-tactics guard instruction]
-
+Mal et vagtområde i det markerede område, og lad 2 krigere nå frem.
 [lesson defensive-tactics guard help]
-
+Åbn Flag, vælg Vagt, og mal mindst 4 felter inde i området. Vagtområder tiltrækker ledige krigere. Forbudte områder blokerer færdsel; rydningsområder anmoder om fjernelse af ressourcer.
 [lesson defensive-tactics guard marker]
-
+Forbered et vagtområde
 [lesson defensive-tactics repel hint]
-
+Fjenden angriber. Hold krigere i vagtområdet og Kroerne forsynet. Det lille angreb starter efter dine forberedelser. Besejr eller driv begge angribere tilbage; sårede fjender kan trække sig. Krigere kan forlade området midlertidigt for at spise. Hvis forsvaret fejler, så indlæs et tidligere gemt spil eller genstart.
 [lesson defensive-tactics repel title]
-
+Afværg øvelsesangrebet
 [lesson defensive-tactics repel instruction]
-
+Fjenden angriber. Hold krigere i vagtområdet og Kroerne forsynet.
 [lesson defensive-tactics repel help]
-
+Det lille angreb starter efter dine forberedelser. Besejr eller driv begge angribere tilbage; sårede fjender kan trække sig. Krigere kan forlade området midlertidigt for at spise. Hvis forsvaret fejler, så indlæs et tidligere gemt spil eller genstart.
 [lesson defensive-tactics repel marker]
-
+Afværg øvelsesangrebet
 [lesson defensive-tactics counterattack hint]
-
+Placer et Krigsflag på fjendens Sværm; anmod om 3 krigere, og brug radius 4 eller mindre. Vagtområder og Krigsflag konkurrerer om krigere. Fjern vagtfelter, hvis de holder hæren tilbage. Hold mad tilgængelig, mens krigerne går og angriber.
 [lesson defensive-tactics counterattack title]
-
+Led et koncentreret modangreb
 [lesson defensive-tactics counterattack instruction]
-
+Placer et Krigsflag på fjendens Sværm; anmod om 3 krigere, og brug radius 4 eller mindre.
 [lesson defensive-tactics counterattack help]
-
+Vagtområder og Krigsflag konkurrerer om krigere. Fjern vagtfelter, hvis de holder hæren tilbage. Hold mad tilgængelig, mens krigerne går og angriber.
 [lesson defensive-tactics counterattack marker]
-
+Led et koncentreret modangreb
 [lesson healing build compact]
-
+Byg → Hospital. Hold adgang åben; tildel bygningsarbejdere.
 [lesson healing heal compact]
-
+Lad den sårede arbejder blive helbredt på Hospitalet.
 [lesson walking-training build compact]
-
+Byg → Træningsbane. Efterlad plads langs kanterne.
 [lesson walking-training train compact]
-
+Lad en arbejder afslutte træningen på Træningsbanen.
 [lesson swimming build compact]
-
+Byg → Svømmebassin, vest for dammen.
 [lesson swimming train compact]
-
+Lad en arbejder lære at svømme.
 [lesson swimming water-job compact]
-
+Byg → Skole. Tildel bygningsarbejdere til træ og alger.
 [lesson schools build compact]
-
+Byg → Skole. Tildel bygningsarbejdere til træ og alger.
 [lesson schools learn compact]
-
+Lad en arbejder afslutte sin Skoletræning.
 [lesson upgrades upgrade compact]
-
+Træningsbane → Opgradér. Tildel dygtige bygningsarbejdere.
 [lesson upgrades train compact]
-
+Lad en arbejder træne på den opgraderede Træningsbane.
 [lesson warrior-training produce compact]
-
+Sværm → kun krigere. Lever hvede til 2 krigere.
 [lesson warrior-training build compact]
-
+Byg → Kaserne. Efterlad plads langs kanterne.
 [lesson warrior-training train compact]
-
+Lad en kriger afslutte øvelsen i Kasernen.
 [lesson fortifications tower compact]
-
+Byg → Tårn. Placer i det markerede område.
 [lesson fortifications walls compact]
-
+Byg 2 mure. Hold tårnets vestlige passage åben.
 [lesson fortifications supply compact]
-
+Tårn → forsyningsarbejdere. Vent på 2 sten.
 [lesson fortifications hold compact]
-
+Hold tårnet forsynet mod angriberen.
 [lesson defensive-tactics scout compact]
-
+Flag → Udforskning. Placer ved fjenden; tildel 1 udforsker.
 [lesson defensive-tactics guard compact]
-
+Flag → Vagt. Mal 4 felter; lad 2 krigere ankomme.
 [lesson defensive-tactics repel compact]
-
+Hold vagtområdet. Hold Kroerne forsynet.
 [lesson defensive-tactics counterattack compact]
-
+Krigsflag → fjendens Sværm. Anmod om 3 krigere; radius ≤4.
 [library GL only]
 Kun GL
 [Grassland]
@@ -6781,7 +6817,7 @@ Dyrestier
 [Fish amount]
 Fiskemængde
 [scenario messages]
-
+Beskeder ▸
 [Camp-site amount]
 Antal lejrpladser
 [AI for all computer colonies]

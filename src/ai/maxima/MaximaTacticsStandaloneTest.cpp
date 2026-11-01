@@ -162,3 +162,29 @@ TEST_SUITE("Maxima.Tactics")
 		REQUIRE(mission.lastTargetHp==-1);
 	}
 }
+
+TEST_SUITE("Maxima.Tactics")
+{
+TEST_CASE("flag proximity is disabled at zero and saturates beyond32 tiles")
+{
+    using AIMaxima::Tactics::flagProximityPenalty;
+    CHECK(flagProximityPenalty(0,1000)==0);
+    CHECK(flagProximityPenalty(4,0)==0);
+    CHECK(flagProximityPenalty(4,8)==32);
+    CHECK(flagProximityPenalty(4,32)==128);
+    CHECK(flagProximityPenalty(4,1000)==128);
+    CHECK(flagProximityPenalty(100,1000)==3200);
+}
+TEST_CASE("effective-arrival grace is bounded and requires a useful fraction of the force")
+{
+    using AIMaxima::Tactics::awaitingEffectiveArrival;
+    CHECK_FALSE(awaitingEffectiveArrival(0,0,0,20));
+    CHECK(awaitingEffectiveArrival(12000,11999,1,20));
+    CHECK_FALSE(awaitingEffectiveArrival(12000,12000,1,20));
+    CHECK(awaitingEffectiveArrival(12000,100,9,20));
+    CHECK_FALSE(awaitingEffectiveArrival(12000,100,10,20));
+    CHECK(awaitingEffectiveArrival(12000,100,1,2));
+    CHECK_FALSE(awaitingEffectiveArrival(12000,100,2,2));
+    CHECK(awaitingEffectiveArrival(12000,100,0,0));
+}
+}

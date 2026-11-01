@@ -78,8 +78,6 @@ inline int buildingExtraHeaderHeight(const BuildingType& type)
 // they take before the tick rate.
 #define TOP_BAR_CHEVRON_PITCH 7
 #define TOP_BAR_SPEED_WIDTH 40
-// Two coloured Glob-and-arrow counters before the speed control.
-#define TOP_BAR_CONVERSION_WIDTH 110
 
 // The sidebar on the right
 #include "GameGUIViewport.h"
@@ -95,7 +93,7 @@ inline int buildingExtraHeaderHeight(const BuildingType& type)
 // Three buttons (the default game) sit at a 40px pitch from 8px inside the brush
 // panel, exactly where they always have. A fourth (the farm-areas experiment) at
 // that pitch would run off the panel, so four are centred on it at a 38px
-// pitch: 7, 45, 83 and 121, leaving 7px at each edge of the 160px panel.
+// pitch. Both layouts remain centred when the sidebar width changes.
 constexpr int ZONE_STRIP_BUTTON_SIZE = 32;
 constexpr int ZONE_STRIP_PITCH_3 = 40;
 constexpr int ZONE_STRIP_PITCH_4 = 38;

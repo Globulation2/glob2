@@ -4876,6 +4876,34 @@ AI टेलीमेट्री
 हटाए गए संसाधन
 [stat cleared about]
 जगह बनाने के लिए सफ़ाई क्षेत्रों में श्रमिकों द्वारा हटाए गए संसाधन।
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 प्रतिष्ठा
 [stat prestige about]
@@ -6786,3 +6814,11 @@ MCP सर्वर चालू करें
 संदेश ▸
 [AI for all computer colonies]
 सभी कंप्यूटर कॉलोनियों के लिए एआई
+[lush_grass]
+हरी-भरी घास
+[dry_grass]
+सूखी घास
+[dune_sand]
+टीलों की रेत
+[pale_sand]
+हल्के रंग की रेत

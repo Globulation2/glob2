@@ -458,7 +458,7 @@ function Verification({ detail }: { detail: MatchDetail }) {
         {translate('Verification ')}
         <VerificationBadge match={detail.match} />
       </h2>
-      <p style={{ margin: '0 0 6px' }}>{VERDICT_TEXT[detail.match.verification]}</p>
+      <p style={{ margin: '0 0 6px' }}>{translate(VERDICT_TEXT[detail.match.verification])}</p>
       {v?.reason && (
         <p className="caption">
           <RichMessage source={'Reason: {slot0}'} slots={{ slot0: v.reason }} />

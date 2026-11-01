@@ -80,6 +80,9 @@
   font-weight: 650;
   font-size: var(--text-sm);
 }
+.library-page .library-field:has(> select) {
+  flex-basis: max-content;
+}
 .library-page .library-search {
   flex: 3 1 260px;
 }

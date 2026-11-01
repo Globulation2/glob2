@@ -355,8 +355,14 @@ function AccountChip() {
   if (account === undefined) return null;
   if (!account) {
     return (
-      <a className="btn primary small" href="/signin">
-        {t('Sign in')}
+      <a
+        className="btn primary small sidebar-auth"
+        href="/signin"
+        aria-label={t('Sign in')}
+        title={t('Sign in')}
+      >
+        <Icon name="users" size={20} className="sidebar-auth-icon" aria-hidden="true" />
+        <span className="sidebar-auth-label">{t('Sign in')}</span>
       </a>
     );
   }
@@ -373,8 +379,14 @@ function AccountChip() {
           <bdi dir="auto">{account.displayName}</bdi>
         </span>
       </Link>
-      <button className="small" onClick={() => void signOut()}>
-        {t('Sign out')}
+      <button
+        className="small sidebar-auth"
+        onClick={() => void signOut()}
+        aria-label={t('Sign out')}
+        title={t('Sign out')}
+      >
+        <Icon name="x" size={20} className="sidebar-auth-icon" aria-hidden="true" />
+        <span className="sidebar-auth-label">{t('Sign out')}</span>
       </button>
     </>
   );

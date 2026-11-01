@@ -194,7 +194,7 @@ void CustomGameScreen::useForRoom(const CustomGameSetup &draft, int tab)
 	setup = draft;
 	const auto nativeCatalog = CustomGameSetup::landscapeCatalog(true);
 	if (!nativeCatalog->find(setup.generator.method))
-		setup.generator.setMethodDefaults(nativeCatalog->methods(false).front(), nativeCatalog);
+		setup.generator.setMethodDefaults(nativeCatalog->defaultMethod(false), nativeCatalog);
 	else
 		setup.generator.catalog = nativeCatalog;
 	for (auto &colony : setup.colonies)

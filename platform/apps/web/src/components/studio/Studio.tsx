@@ -692,13 +692,13 @@ export function CreditPanel({
 }) {
   useLocale();
   return (
-    <section aria-label={t('{value0} credits', { value0: domain })}>
+    <section aria-label={t('{value0} credits', { value0: t(domain) })}>
       <h3>
         <RichMessage
           source={'{slot0}  {slot1} credits available'}
-          slots={{ slot0: available ?? '…', slot1: domain }}
+          slots={{ slot0: available ?? '…', slot1: t(domain) }}
           singular={'{slot0}  {slot1} credit available'}
-          count={Number(domain)}
+          count={available}
         />
       </h3>
       <p>

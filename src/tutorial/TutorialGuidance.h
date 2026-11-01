@@ -30,6 +30,11 @@ class Guidance : public Glob2UI::InGameDialog
         if (mobileArea == area) return;
         mobileArea=area; invalidate();
     }
+    void cancelInteraction()
+    {
+        capturedFingers.clear(); capturedMouseButtons.clear();
+        cancelInput(); host().focus("");
+    }
     void model(std::shared_ptr<const Model> next)
     {
         if (lesson==next) return;
@@ -72,7 +77,13 @@ class Guidance : public Glob2UI::InGameDialog
                     .flat=true,.minHeight=44,.tooltip=tr(name),.accessibleLabel=tr(name),
                     .icon=uiIcon(icon),.iconSize=18}));
             };
-            auto heading=row({expanded(paragraph(title,{FontRole::Support,true})),
+            // A collapsed title must not grow into a multi-line instruction card.
+            // label() ellipsizes at shaped-cluster boundaries and retains its full
+            // accessible text; expanding restores the complete wrapping title.
+            auto headingTitle=collapsed ? label(title,{FontRole::Support,true}) :
+                paragraph(title,{FontRole::Support,true});
+            headingTitle->key="intro/title";
+            auto heading=row({expanded(headingTitle),
                 lesson->destination ? action("intro/destination","[intro show destination]",UIIcon::Map,[this]{navigate(ShowDestination);}) : Element{},
                 action("intro/help","[intro help]",UIIcon::Info,[this]{help=!help; collapsed=false; invalidate();}),
                 width(p.pt(44),button("intro/collapse",collapsed ? "+" : "−",[this]{collapsed=!collapsed; help=false; invalidate();},
@@ -132,7 +143,7 @@ class Guidance : public Glob2UI::InGameDialog
             host().focus("");
         }
         if (e.type==SDL_EVENT_WINDOW_FOCUS_LOST) {
-            capturedFingers.clear(); capturedMouseButtons.clear(); cancelInput(); host().focus(""); return false;
+            cancelInteraction(); return false;
         }
         if (e.type == SDL_EVENT_FINGER_DOWN || e.type == SDL_EVENT_FINGER_MOTION || e.type == SDL_EVENT_FINGER_UP) {
             const auto key=std::make_pair(e.tfinger.touchID,e.tfinger.fingerID);
