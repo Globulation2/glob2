@@ -469,7 +469,8 @@ TEST_SUITE("GeneratorGroundConnectivity")
 		for (unsigned seed : {1u, 3u})
 			for (int roads : {0, 1})
 			{
-				CAPTURE(seed, roads);
+				CAPTURE(seed);
+				CAPTURE(roads);
 				GenerationRequest request;
 				request.setMethodDefaults(definition.legacyId);
 				request.wDec = request.hDec = 8;
