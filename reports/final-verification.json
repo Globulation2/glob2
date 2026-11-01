@@ -1,0 +1,203 @@
+{
+  "status": "passed",
+  "decision": "User explicitly requested adaptive mode as the new default; enabled=true/max_pipelines=4 for new strategies, active only with normal prestige victory. Saved canonical choices/missing older cap1 migration remain preserved.",
+  "source": {
+    "base": "f36de73aea50901a93d0c931bdd0fdb64c9d864c",
+    "archive": "artifacts/prestige/adaptive-v2/final-source.tar.gz",
+    "sha256": "a23344d41017274ab3f8edceb90fa4ca7090f44bf1ecc5252f9b36a5ad5ac7f8",
+    "sim_revision": 118,
+    "save_format": 193,
+    "net_protocol": 75,
+    "files": {
+      "data/maxima/base.strategy": "f79697af53194067f248c43926ff241145b0e0de54924cbcc795cba6742b2cc9",
+      "docs/ai/maxima/configuration.md": "37f920905ac36616e55d31c989d8490cd70a7f67de8ac1351da02712868044a2",
+      "docs/ai/maxima/economy.md": "c7fd8d19415f997e7ccc04ce9bddd134a73cbe34b4c8695bacb457c936c0dc03",
+      "scons/sources.py": "bd955eda5be582dc32c9fcf3d4174eb5c6f2269ee19a61eb5803a0f48d0c58e8",
+      "src/ai/AISavePortabilityHarness.cpp": "0ab7cd6658ddde86bff79b0acddbadbd20e11c03d2e3c7bc22ee7a3aaf2dcb0d",
+      "src/ai/maxima/AIMaxima.cpp": "54d1ba962ce2fd6e670933f447f5cbbba5ca48735b05d62cb38c11e299a91ea6",
+      "src/ai/maxima/AIMaxima.h": "f9c68775123e0d8b8356b31e1b2325db63973ef422f18ee88af85913eef1e543",
+      "src/ai/maxima/AIMaximaPrestige.cpp": "d9cb9d49830e96c122d5fce92fed2a7e13d9454fe4e55b53bce36cb65f15658b",
+      "src/ai/maxima/AIMaximaPrestige.h": "fd4af781e355c6f0580bd607cabb614ff9f21b43f1bfc6a6e0fbcb1a133ec455",
+      "src/ai/maxima/AIMaximaRuntime.cpp": "ba37ffa077252032a47c941142f6449dc3060de9d185fd9116b9e5d7ca022df0",
+      "src/ai/maxima/AIMaximaRuntime.h": "8c9215f0e8840ec25bcd1b4e8e38004f341c1cee22512925c40edefb720e0bcd",
+      "src/ai/maxima/AIMaximaState.cpp": "4f135ea3de8312df0bc18d2cfef8e4a4a94f8438c04007e453555db34d19b7ef",
+      "src/ai/maxima/AIMaximaStrategy.cpp": "707fd9b0c9ca739970f17a929d4a73011163d8a8f350135312506806d3f3aaac",
+      "src/ai/maxima/AIMaximaStrategy.h": "4efeb72d70e91a81c2762e87819834f8a973313fc029f81b50f67f77bedb1539",
+      "src/ai/maxima/MaximaCombatIntegrationTest.cpp": "fe36c9b5018a32bdc93cdfc4ebd72c174a54fc47e7a748ba74bb9d23a1ba1a74",
+      "src/ai/maxima/MaximaDirectorAuthorityTest.py": "527dd0028eff6406b44b268e77b73b84bb178a61d2d6569ff30d96ed406a1a8b",
+      "src/ai/maxima/MaximaDirectorRegressionTest.cpp": "9d59bc1e1b0e47a50b74440870fe10a704c8fa46b4dfaf496c3824353dff8dfa",
+      "src/ai/maxima/MaximaPrestigeStandaloneTest.cpp": "da16adc558717a0c56697fdc43f6bb4f6a1a88bc45a758631a9489999e29c0ec",
+      "src/ai/maxima/MaximaStrategyConfigTest.py": "e92f87087dc582a2ff38b8b2b6e0a49c4977f4c06e105f315f3b6474b6003372",
+      "src/ai/observation/AIWorldCapture.cpp": "40724e5279fb8b54701811270c9ac0ced8b4a1151119718cb2a309d32067116a",
+      "src/ai/observation/AIWorldView.h": "a3633aa5944142a1c2331dfa7a0cf75574e2a185074032c912dcc165e51c37da",
+      "src/ai/telemetry/AITelemetryAdapters.cpp": "1d372f7386f7af58b4d70f340afa51ebc81f1793b64ac9b54bb9421b140f1d96",
+      "src/app/FileFormatVersions.h": "2685c6b8dba9958d8513665eee9ac228be2480ec6e73cfb9aa63e5c17fbded85",
+      "src/app/Version.h": "389bc70ec3c3ca3040c467f4e4f311ec8fef0bf71bc48212feb929ebbf88cb05",
+      "src/engine/sim/snapshot/WorldCapture.cpp": "658215d6f2ab0510e0c828cb2a0e8fd62c8c20215ee75a4bc096faff3d6819ff",
+      "src/engine/sim/snapshot/WorldSnapshot.h": "e041edc57ea4baf766687272f9566318cdb5190faa6b2e793d1126d4d0be0843",
+      "src/game/SimRevision.h": "50014d78cbb0d23daa1e47d4cf9cdf7c4bf37edce4c4aa4516edacce1183e05d",
+      "test/fixtures/multiplayer/FourSquares1.g2mr": "ad0912c292e21effdc4ce88297d8996590fd3844fb46ec35ca2fcaa7507e60a6",
+      "test/maxima/README.md": "18033b5b5686ed8bd799c7a3cf448c1b1e81cbf61989018d138ddb8796727036",
+      "test/maxima/fixtures/save-continuation/README.md": "58d6312c30f1c288ada401f21277675398ab43e439076e9dc181f5903b604ee7",
+      "test/maxima/fixtures/save-continuation/maxima-groundlooks-v191.game.gz": "e8446a5ea21af2f622208f36f1809ddfff52db2e24223a493b8d9e526d52959e",
+      "test/tests.py": "9f4cccc464946c28ffcb6955ba395913587d23a1d87ae9f0e83bcf5909196b1a"
+    },
+    "binaries": {
+      "build/linux/client/release/src/glob2": "3ff0aa697a0d87cf27d45b5b78ef8762b796a7b7cc46b5f8c7f8f8b5d87df6b9",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2": "c4caa7cccc1fe792abad32fcee45178e9e8d9d7e0a8cd98f10f56d68b45de317",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests": "4c48a1f3bb235b658848656bf164c8b5047da4a874afa656c1150535256d1486",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-unit-tests": "e68bc355c620c0ed6fd5188f8313529d67856b6f0d05629807c3b821dd1415ae",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/MaximaStrategyDump": "a8d02090ac8ed4da8d4e3c2fb6387c355ed4784a981d78c16c234b9f20758d12"
+    }
+  },
+  "source_diff": {
+    "cohort_source_sha256": "8100dd19b42bdbf781ca1507b21e7e9717b1af3b700840dee6dbddd283b7d842",
+    "final_source_sha256": "a23344d41017274ab3f8edceb90fa4ca7090f44bf1ecc5252f9b36a5ad5ac7f8",
+    "changed_files": [
+      "data/maxima/base.strategy",
+      "docs/ai/maxima/configuration.md",
+      "docs/ai/maxima/economy.md",
+      "src/ai/maxima/MaximaDirectorRegressionTest.cpp",
+      "src/ai/maxima/MaximaStrategyConfigTest.py",
+      "src/game/SimRevision.h",
+      "test/fixtures/multiplayer/FourSquares1.g2mr"
+    ],
+    "prestige_algorithm_identical": true,
+    "new_default": {
+      "enabled": true,
+      "max_pipelines": 4
+    },
+    "sim_revision": 118
+  },
+  "checks": {
+    "native": {
+      "tests": "508",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "python": 76,
+    "docs": {
+      "documents": 310,
+      "errors": 0
+    },
+    "online_version": {
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "golden": {
+      "orderRejections": [],
+      "outcome": {
+        "finalTick": 841,
+        "replayHash": "a611b74f9bc2a36d48610073fe43c9dca770f0047712cd5512440038c58e21cb",
+        "resultHash": "61b6aa3596df27e0bedd19454c6016bc83d67bdcb1128cf3919b5001e3b7e379",
+        "teams": [
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 0
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 1
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 2
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 3
+          }
+        ]
+      },
+      "verdict": "verified"
+    },
+    "protocol_boundary": {
+      "status": "passed",
+      "mutation": "One payload byte: network75 to74 in golden record header, with record CRC regenerated. Save193, data hash, setup, map and orders unchanged.",
+      "current_key": "193-75-d3bea462d79a7c4ac63a13520a3fff8ed7e51dabc5b615c9e0284bc19c3c33c9",
+      "mutated_key": "193-74-d3bea462d79a7c4ac63a13520a3fff8ed7e51dabc5b615c9e0284bc19c3c33c9",
+      "verdict": {
+        "orderRejections": [],
+        "reason": "the record names sim version 193-74-d3bea462d79a7c4ac63a13520a3fff8ed7e51dabc5b615c9e0284bc19c3c33c9 but this verifier is 193-75-d3bea462d79a7c4ac63a13520a3fff8ed7e51dabc5b615c9e0284bc19c3c33c9",
+        "verdict": "unverifiable"
+      },
+      "command": [
+        "/home/bradley/.codex/worktrees/b174/glob2/build/linux/client/release/src/glob2",
+        "match",
+        "verify",
+        "/home/bradley/.codex/worktrees/b174/glob2/artifacts/prestige/adaptive-v2/protocol-boundary-sim118/network74.g2mr",
+        "--map-file",
+        "/home/bradley/.codex/worktrees/b174/glob2/maps/FourSquares1.map.gz",
+        "--compute-threads",
+        "1",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/b174/glob2/artifacts/prestige/adaptive-v2/protocol-boundary-sim118/verification"
+      ],
+      "exit": 0,
+      "scope": "Current golden accepted separately; protocol74 header cannot be verified as75. Replay format floor187/current193/future194 cases are in native suite."
+    },
+    "live_save_and_build_checksums": {
+      "status": "passed",
+      "case": "1v1:symmetric-arena:1004:0",
+      "checkpoint_tick": 20000,
+      "final_tick": 20128,
+      "active_race_observations": 28,
+      "last_active_race": {
+        "game_tick": 19859,
+        "state": 1,
+        "reason": 4
+      },
+      "last_director_plan": {
+        "game_tick": 19859,
+        "prestige_target_level": 3,
+        "prestige_pipeline_request": 1,
+        "school_level3": 0
+      },
+      "initialChecksum": 3507677847,
+      "finalChecksum": 2131679949,
+      "map_raw_sha256": "0684f263b6fde48cd606fd3a7817cbe5404b2eae4802aecbb3d45af16dd225ce",
+      "scope": "final integrated engine, current format193; no efficacy estimate",
+      "allowance_bytes": 536870912,
+      "reserve_bytes": 2147483648,
+      "matching_traces": [
+        "world.checksums",
+        "game.replay.checksums",
+        "snapshot.checksums"
+      ],
+      "checksum_segment_ticks": 128,
+      "platform": "Linux x86_64 GCC13.3, development/release only; other platforms unavailable"
+    },
+    "sim117_to118_checksum_comparison": {
+      "status": "passed",
+      "cohort_sim_revision": 117,
+      "final_sim_revision": 118,
+      "ticks": 128,
+      "matched_traces": [
+        "world.checksums",
+        "game.replay.checksums",
+        "snapshot.checksums"
+      ],
+      "initial_seed_orders_and_serialized_strategy_preserved": true,
+      "scope": "Version identity/default update; explicit persisted strategy values preserve the assessed algorithm and execution."
+    },
+    "sim_contract": "The sim version key matches the committed match record and follows every change of the golden trace"
+  },
+  "cohort": {
+    "sim_revision": 117,
+    "games": 288,
+    "failures": 0,
+    "source_sha256": "8100dd19b42bdbf781ca1507b21e7e9717b1af3b700840dee6dbddd283b7d842",
+    "report": "assessment-summary.md",
+    "same_prestige_algorithm": true,
+    "all_arm_parameters_explicitly_frozen": true
+  },
+  "platform": "Linux x86_64 GCC13.3 development and optimized builds; other supported platforms and manual play unavailable.",
+  "runtime_dependencies_added": false
+}

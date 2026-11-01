@@ -1,0 +1,199 @@
+{
+  "scope": "all fresh corrected v2 games only; no aborted v1 outcome used",
+  "checks": {
+    "exact_complete_team_histories": 960
+  },
+  "contrasts": {
+    "1v1": {
+      "adaptive_minus_baseline": {
+        "mean": 0.007226311902005298,
+        "interval95": [
+          -0.0290158346935948,
+          0.040057750986672164
+        ],
+        "seed_blocks": 16,
+        "draws": 10000,
+        "seed": 19
+      },
+      "single_minus_baseline": {
+        "mean": 0.007226311902005298,
+        "interval95": [
+          -0.0290158346935948,
+          0.040057750986672164
+        ],
+        "seed_blocks": 16,
+        "draws": 10000,
+        "seed": 19
+      },
+      "adaptive_minus_single": {
+        "mean": 0.0,
+        "interval95": [
+          0.0,
+          0.0
+        ],
+        "seed_blocks": 16,
+        "draws": 10000,
+        "seed": 19
+      }
+    },
+    "ffa": {
+      "adaptive_minus_baseline": {
+        "mean": 0.01087365933425323,
+        "interval95": [
+          -0.0014570809229805964,
+          0.02442691094266137
+        ],
+        "seed_blocks": 16,
+        "draws": 10000,
+        "seed": 19
+      },
+      "single_minus_baseline": {
+        "mean": 0.011143253837561127,
+        "interval95": [
+          -0.0011797445385517357,
+          0.02454312215475665
+        ],
+        "seed_blocks": 16,
+        "draws": 10000,
+        "seed": 19
+      },
+      "adaptive_minus_single": {
+        "mean": -0.0002695945033078977,
+        "interval95": [
+          -0.0009991880991068423,
+          0.00019040458918314924
+        ],
+        "seed_blocks": 16,
+        "draws": 10000,
+        "seed": 19
+      }
+    }
+  },
+  "equality": {
+    "1v1": {
+      "pairs": 32,
+      "same_initial_checksum": 32,
+      "same_final_checksum": 31,
+      "same_ticks": 32,
+      "same_all_team_probability_histories": 32
+    },
+    "ffa": {
+      "pairs": 64,
+      "same_initial_checksum": 64,
+      "same_final_checksum": 62,
+      "same_ticks": 62,
+      "same_all_team_probability_histories": 62
+    }
+  },
+  "higher_capacity": {
+    "1v1": {
+      "chosen_counts": {
+        "1": 6636,
+        "2": 1
+      },
+      "exposed_games": [
+        {
+          "pair": "1v1:islands:1012:1",
+          "chosen_capacity_observations": {
+            "1": 526,
+            "2": 1
+          },
+          "director_inferred": {
+            "0": 9,
+            "1": 72
+          }
+        }
+      ],
+      "games": 32,
+      "higher_capacity_events": 1
+    },
+    "ffa": {
+      "chosen_counts": {
+        "1": 7281,
+        "2": 8,
+        "3": 3
+      },
+      "exposed_games": [
+        {
+          "pair": "ffa:islands:1010:0",
+          "chosen_capacity_observations": {
+            "1": 506,
+            "2": 6,
+            "3": 3
+          },
+          "director_inferred": {
+            "0": 13,
+            "1": 64
+          }
+        },
+        {
+          "pair": "ffa:islands:1012:0",
+          "chosen_capacity_observations": {
+            "1": 406,
+            "2": 2
+          },
+          "director_inferred": {
+            "0": 14,
+            "1": 39,
+            "2": 1
+          }
+        }
+      ],
+      "games": 64,
+      "higher_capacity_events": 11
+    }
+  },
+  "changed_adaptive_pairs": [
+    {
+      "pair": "ffa:islands:1010:0",
+      "adaptive_minus_single": -0.02131601278094597,
+      "common_horizon_ticks": 84866,
+      "common_horizon_effect": -0.004630204988599618,
+      "tail_normalization_component": -0.016685807792346352,
+      "single_ticks": 89314,
+      "adaptive_ticks": 84866
+    },
+    {
+      "pair": "ffa:islands:1012:0",
+      "adaptive_minus_single": 0.004061964569240517,
+      "common_horizon_ticks": 57410,
+      "common_horizon_effect": -0.0010742495727007473,
+      "tail_normalization_component": 0.005136214141941264,
+      "single_ticks": 57410,
+      "adaptive_ticks": 58722
+    }
+  ],
+  "cancel_records": [
+    {
+      "pair": "ffa:islands:1010:2",
+      "arm": "single",
+      "job": "7435f1d12b6d492e7b4c5461d575dcaa",
+      "events": [
+        "MAXIMA_TELEMETRY\t44837\t0\tprestige_cancel_issued\tgid=56\treason=parallel_commitment\tgame_tick=49830",
+        "MAXIMA_TELEMETRY\t44841\t0\tprestige_cancel_resolved\tgid=56\tgame_tick=49839"
+      ]
+    },
+    {
+      "pair": "ffa:islands:1010:2",
+      "arm": "adaptive",
+      "job": "11c3091368c4eb625203b6091ed32955",
+      "events": [
+        "MAXIMA_TELEMETRY\t44837\t0\tprestige_cancel_issued\tgid=56\treason=parallel_commitment\tgame_tick=49830",
+        "MAXIMA_TELEMETRY\t44841\t0\tprestige_cancel_resolved\tgid=56\tgame_tick=49839"
+      ]
+    }
+  ],
+  "coverage": {
+    "team_streams": 960,
+    "start_gap_ticks": [
+      0
+    ],
+    "maximum_subject_director_tail_hold_ticks": 1231,
+    "race_alignment_missing_records": 0,
+    "helper_reconstruction_observations": 13845,
+    "helper_fields_unavailable_records": 0,
+    "terminal_safety_flags": 0,
+    "unresolved_cancellation_gids": 0,
+    "contract_violations": {}
+  }
+}

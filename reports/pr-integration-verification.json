@@ -1,0 +1,163 @@
+{
+  "status": "passed",
+  "source": {
+    "commit": "857761d70d6c5783d6ddda3ab3d769756e1ca916",
+    "tree": "95a69aed4b88af3ed7f390deab91c190836e1662",
+    "base": "8fd9edb0b413a9dc19618e75149458bf525506af",
+    "sim_revision": 120,
+    "save_format": 193,
+    "net_protocol": 75,
+    "archive": "pr-source.tar.gz",
+    "sha256": "0a473544f7a859f69ac66341b530832171d22cd48a0de14d30e3d0ecad6a157e",
+    "files": {
+      "data/maxima/base.strategy": "f8d369e2427d3c927829349566f325631df626cd1ee2bbfa05d4c8887cba5375",
+      "docs/ai/maxima/configuration.md": "87f2735b2833478584f2063b37b67f9ae209315529603f34ca07b5e620a187af",
+      "docs/ai/maxima/economy.md": "c7fd8d19415f997e7ccc04ce9bddd134a73cbe34b4c8695bacb457c936c0dc03",
+      "scons/sources.py": "4a2147ca3dcadbae536ea2a1466f228749d33f201f36abebb7487c377cdb67bd",
+      "src/ai/AISavePortabilityHarness.cpp": "0ab7cd6658ddde86bff79b0acddbadbd20e11c03d2e3c7bc22ee7a3aaf2dcb0d",
+      "src/ai/maxima/AIMaxima.cpp": "54d1ba962ce2fd6e670933f447f5cbbba5ca48735b05d62cb38c11e299a91ea6",
+      "src/ai/maxima/AIMaxima.h": "038b2577e09c9e9884236a9ed463a161135e22f9b21bca4057a1ffaaff049b83",
+      "src/ai/maxima/AIMaximaPrestige.cpp": "d9cb9d49830e96c122d5fce92fed2a7e13d9454fe4e55b53bce36cb65f15658b",
+      "src/ai/maxima/AIMaximaPrestige.h": "fd4af781e355c6f0580bd607cabb614ff9f21b43f1bfc6a6e0fbcb1a133ec455",
+      "src/ai/maxima/AIMaximaRuntime.cpp": "ba37ffa077252032a47c941142f6449dc3060de9d185fd9116b9e5d7ca022df0",
+      "src/ai/maxima/AIMaximaRuntime.h": "8c9215f0e8840ec25bcd1b4e8e38004f341c1cee22512925c40edefb720e0bcd",
+      "src/ai/maxima/AIMaximaState.cpp": "4f135ea3de8312df0bc18d2cfef8e4a4a94f8438c04007e453555db34d19b7ef",
+      "src/ai/maxima/AIMaximaStrategy.cpp": "f443e20bcbce3bc25765bb363894714a1b1b7c1494aed848a29772c60297ce47",
+      "src/ai/maxima/AIMaximaStrategy.h": "4efeb72d70e91a81c2762e87819834f8a973313fc029f81b50f67f77bedb1539",
+      "src/ai/maxima/MaximaCombatIntegrationTest.cpp": "fe36c9b5018a32bdc93cdfc4ebd72c174a54fc47e7a748ba74bb9d23a1ba1a74",
+      "src/ai/maxima/MaximaDirectorAuthorityTest.py": "527dd0028eff6406b44b268e77b73b84bb178a61d2d6569ff30d96ed406a1a8b",
+      "src/ai/maxima/MaximaDirectorRegressionTest.cpp": "96accc5ea60913c816322f889fbf3176af7100d43565671f9017dce403d19453",
+      "src/ai/maxima/MaximaPrestigeStandaloneTest.cpp": "da16adc558717a0c56697fdc43f6bb4f6a1a88bc45a758631a9489999e29c0ec",
+      "src/ai/maxima/MaximaStrategyConfigTest.py": "9ef3eec25f10dd8072e49f750d0a76a3a35b9d0fa598459a0848bda09045acb0",
+      "src/ai/observation/AIWorldCapture.cpp": "40724e5279fb8b54701811270c9ac0ced8b4a1151119718cb2a309d32067116a",
+      "src/ai/observation/AIWorldView.h": "a3633aa5944142a1c2331dfa7a0cf75574e2a185074032c912dcc165e51c37da",
+      "src/ai/telemetry/AITelemetryAdapters.cpp": "1d372f7386f7af58b4d70f340afa51ebc81f1793b64ac9b54bb9421b140f1d96",
+      "src/app/FileFormatVersions.h": "2685c6b8dba9958d8513665eee9ac228be2480ec6e73cfb9aa63e5c17fbded85",
+      "src/app/Version.h": "389bc70ec3c3ca3040c467f4e4f311ec8fef0bf71bc48212feb929ebbf88cb05",
+      "src/engine/sim/snapshot/WorldCapture.cpp": "658215d6f2ab0510e0c828cb2a0e8fd62c8c20215ee75a4bc096faff3d6819ff",
+      "src/engine/sim/snapshot/WorldSnapshot.h": "e041edc57ea4baf766687272f9566318cdb5190faa6b2e793d1126d4d0be0843",
+      "src/game/SimRevision.h": "11f557da1ea9b859132ae1d8a64fdf8970c838f076c4655193715e5c60725bb2",
+      "test/fixtures/multiplayer/FourSquares1.g2mr": "2550224ae939230a617cd5351ad899924ebd2abb686368d00fada938bd1882fc",
+      "test/maxima/README.md": "18033b5b5686ed8bd799c7a3cf448c1b1e81cbf61989018d138ddb8796727036",
+      "test/maxima/fixtures/save-continuation/README.md": "58d6312c30f1c288ada401f21277675398ab43e439076e9dc181f5903b604ee7",
+      "test/maxima/fixtures/save-continuation/maxima-groundlooks-v191.game.gz": "e8446a5ea21af2f622208f36f1809ddfff52db2e24223a493b8d9e526d52959e",
+      "test/tests.py": "1515e5f7784ff24b8edc436bdbd083db1fa3e9ceef622661a1eae45905014bc3"
+    },
+    "binaries": {
+      "build/linux/client/release/src/glob2": "4b22ac7b79d593723f611d4c4b9b06d2533b7192ddaf2ee7aba26a97f8cbea34",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2": "5caf63acdf6b3389b4264e786093d55f77a83a2389c6fc2cbf55535cd15053bb",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests": "3c3c7243d0cd03b74901cbd429d397136ec295e6df6540b722599487df217870"
+    }
+  },
+  "native": {
+    "tests": "516",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "python_tests": 77,
+  "docs": {
+    "files": 310,
+    "errors": 0
+  },
+  "live_save_and_build_checksums": {
+    "status": "passed",
+    "case": "1v1:symmetric-arena:1004:0",
+    "checkpoint_tick": 20000,
+    "final_tick": 20128,
+    "active_race_observations": 5,
+    "last_active_race": {
+      "game_tick": 19858,
+      "state": 1,
+      "reason": 4
+    },
+    "last_director_plan": {
+      "game_tick": 19653,
+      "prestige_target_level": 3,
+      "prestige_pipeline_request": 1,
+      "school_level3": 0
+    },
+    "initialChecksum": 3507677847,
+    "finalChecksum": 83504073,
+    "map_raw_sha256": "0684f263b6fde48cd606fd3a7817cbe5404b2eae4802aecbb3d45af16dd225ce",
+    "scope": "final integrated engine, current format193; no efficacy estimate",
+    "allowance_bytes": 536870912,
+    "reserve_bytes": 2147483648,
+    "matching_traces": [
+      "world.checksums",
+      "game.replay.checksums",
+      "snapshot.checksums"
+    ],
+    "checksum_segment_ticks": 128,
+    "platform": "Linux x86_64 GCC13.3, development/release only; other platforms unavailable"
+  },
+  "golden": {
+    "orderRejections": [],
+    "outcome": {
+      "finalTick": 841,
+      "replayHash": "a611b74f9bc2a36d48610073fe43c9dca770f0047712cd5512440038c58e21cb",
+      "resultHash": "ae508bf61edec1a636770fc120235d7bbe5188f4c1c3b5e2311828f7ea44bb30",
+      "teams": [
+        {
+          "outcome": "unresolved",
+          "prestige": 0,
+          "team": 0
+        },
+        {
+          "outcome": "unresolved",
+          "prestige": 0,
+          "team": 1
+        },
+        {
+          "outcome": "unresolved",
+          "prestige": 0,
+          "team": 2
+        },
+        {
+          "outcome": "unresolved",
+          "prestige": 0,
+          "team": 3
+        }
+      ]
+    },
+    "verdict": "verified"
+  },
+  "network_boundary": {
+    "status": "passed",
+    "mutation": "One payload byte: network75 to74 in golden record header, with record CRC regenerated. Save193, data hash, setup, map and orders unchanged.",
+    "current_key": "193-75-8d12fdc7040b17fd022b688a62aeef411fc0adc46fe07c2b16d3dcf39a42d27a",
+    "mutated_key": "193-74-8d12fdc7040b17fd022b688a62aeef411fc0adc46fe07c2b16d3dcf39a42d27a",
+    "verdict": {
+      "orderRejections": [],
+      "reason": "the record names sim version 193-74-8d12fdc7040b17fd022b688a62aeef411fc0adc46fe07c2b16d3dcf39a42d27a but this verifier is 193-75-8d12fdc7040b17fd022b688a62aeef411fc0adc46fe07c2b16d3dcf39a42d27a",
+      "verdict": "unverifiable"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/b174/glob2/build/linux/client/release/src/glob2",
+      "match",
+      "verify",
+      "/home/bradley/.codex/worktrees/b174/glob2/artifacts/prestige/adaptive-v2/pr-protocol-boundary/network74.g2mr",
+      "--map-file",
+      "/home/bradley/.codex/worktrees/b174/glob2/maps/FourSquares1.map.gz",
+      "--compute-threads",
+      "1",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/b174/glob2/artifacts/prestige/adaptive-v2/pr-protocol-boundary/verification"
+    ],
+    "exit": 0,
+    "scope": "Current golden accepted separately; protocol74 header cannot be verified as75. Replay format floor187/current193/future194 cases are in native suite."
+  },
+  "sim_contract": "The sim version key matches the committed match record and follows every change of the golden trace",
+  "current_default": {
+    "prestige.enabled": true,
+    "prestige.max_pipelines": 4
+  },
+  "integration": "Merged master renewable-wood changes and related source/test registries; both sides retained. Conflicts were simulation revision and golden record, regenerated as120.",
+  "cohort_scope": "All288 comparisons use frozenSIM117 before master integration. No claim of integratedSIM120 match effectiveness. Archived linear observed-time model analysis is historical; full raw histories are preserved for current-metric rescoring.",
+  "limits": [
+    "Only Linux x86_64 GCC13.3 development/optimized verified; Windows/macOS/Android/iOS/browser execution unavailable.",
+    "Manual play unavailable.",
+    "Capacity4 had scenario tests but no observed selection in the frozen cohort."
+  ],
+  "unrelated_worktree_changes": "Concurrent AGENTS/tournament-score edits were excluded from both feature commits."
+}

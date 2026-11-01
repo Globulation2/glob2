@@ -1,0 +1,19 @@
+{
+  "cohort_source_sha256": "8100dd19b42bdbf781ca1507b21e7e9717b1af3b700840dee6dbddd283b7d842",
+  "final_source_sha256": "a23344d41017274ab3f8edceb90fa4ca7090f44bf1ecc5252f9b36a5ad5ac7f8",
+  "changed_files": [
+    "data/maxima/base.strategy",
+    "docs/ai/maxima/configuration.md",
+    "docs/ai/maxima/economy.md",
+    "src/ai/maxima/MaximaDirectorRegressionTest.cpp",
+    "src/ai/maxima/MaximaStrategyConfigTest.py",
+    "src/game/SimRevision.h",
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "prestige_algorithm_identical": true,
+  "new_default": {
+    "enabled": true,
+    "max_pipelines": 4
+  },
+  "sim_revision": 118
+}

@@ -1,0 +1,518 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="516" failures="0" errors="0" skipped="0"><testsuite name="AISavePortability"><testcase classname="AISavePortability" name="runtime initialisation; area order serialisation and Maxima reserved telemetry" time="0.388036" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="0.272429" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="0.278297" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.019367" status="run" />
+  <testcase classname="MatchSetup" name="Scripted map sources preserve exact provenance and enforce team count" time="0.009979" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.287348" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.000254" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.267705" status="run" />
+  <testcase classname="MatchSetup" name="current files bind embedded migration catalogs as explicit authority [save-format]" time="3.32174" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="1.09056" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.3948" status="run" />
+  <testcase classname="MatchSetup" name="legacy resolved setup catalogs retain zero health privately and reject authoring escapes" time="0.291404" status="run" />
+  <testcase classname="MatchSetup" name="legacy turn setup validates recovered body catalogs before accepting the session [save-format]" time="4.12636" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.290944" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.016856" status="run" />
+  <testcase classname="MatchSetup" name="unit catalogs survive setup conversion and reject tampered identity" time="0.313034" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.274061" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.301132" status="run" />
+  </testsuite><testsuite name="Maxima.Combat"><testcase classname="Maxima.Combat" name="active offense credits only returning recipients or continuing members" time="1.89803" status="run" />
+  <testcase classname="Maxima.Combat" name="arrival grace protects a partial delivery and still expires for waves and streaming" time="0.735408" status="run" />
+  <testcase classname="Maxima.Combat" name="barracks are filled before attacking" time="0.48488" status="run" />
+  <testcase classname="Maxima.Combat" name="custom melee remains a reference when built-in combat is disabled" time="0.806411" status="run" />
+  <testcase classname="Maxima.Combat" name="defense coverage" time="0.713512" status="run" />
+  <testcase classname="Maxima.Combat" name="defense deadband preserves coverage" time="1.65041" status="run" />
+  <testcase classname="Maxima.Combat" name="defense wraps building origins" time="0.712833" status="run" />
+  <testcase classname="Maxima.Combat" name="economic recovery preserves military budget" time="0.371988" status="run" />
+  <testcase classname="Maxima.Combat" name="enemy commitment follows successive viable objectives and releases exhausted enemies" time="0.490855" status="run" />
+  <testcase classname="Maxima.Combat" name="fitted force uses only visible units" time="0.380183" status="run" />
+  <testcase classname="Maxima.Combat" name="fitted history survives save" time="0.388937" status="run" />
+  <testcase classname="Maxima.Combat" name="fitted power controls attack gate" time="0.38017" status="run" />
+  <testcase classname="Maxima.Combat" name="food posture does not veto combat" time="0.383783" status="run" />
+  <testcase classname="Maxima.Combat" name="forbidden defense zones" time="0.546567" status="run" />
+  <testcase classname="Maxima.Combat" name="format188 AI execution keeps ring40 without enabling the new proximity preference" time="0.390182" status="run" />
+  <testcase classname="Maxima.Combat" name="forward support adds independent demands and honors hunger upgrades and peaceful rules" time="0.390479" status="run" />
+  <testcase classname="Maxima.Combat" name="historical combat calibration remains private to imported race tables" time="0.509804" status="run" />
+  <testcase classname="Maxima.Combat" name="lowered flag level survives review" time="0.398359" status="run" />
+  <testcase classname="Maxima.Combat" name="minimum force gate" time="0.487635" status="run" />
+  <testcase classname="Maxima.Combat" name="nearby warriors count as rallied" time="0.538195" status="run" />
+  <testcase classname="Maxima.Combat" name="new flag proximity cannot make an unreachable nearby building viable" time="0.375843" status="run" />
+  <testcase classname="Maxima.Combat" name="offense follows destroyed targets" time="0.404736" status="run" />
+  <testcase classname="Maxima.Combat" name="offense uses effective mobile recruits and preserves already assigned custom fighters" time="0.48369" status="run" />
+  <testcase classname="Maxima.Combat" name="offensive control switches" time="1.77773" status="run" />
+  <testcase classname="Maxima.Combat" name="raid locations use the same preference for the current offensive flag" time="0.474023" status="run" />
+  <testcase classname="Maxima.Combat" name="raids outscore distant buildings" time="0.374047" status="run" />
+  <testcase classname="Maxima.Combat" name="rally assembles by movement" time="0.597074" status="run" />
+  <testcase classname="Maxima.Combat" name="rally rejects blocked ground" time="0.398691" status="run" />
+  <testcase classname="Maxima.Combat" name="recall telemetry emits numeric byte enums on one complete line" time="0.365775" status="run" />
+  <testcase classname="Maxima.Combat" name="replacement objectives favor the existing flag with wrapping and bounded preference" time="1.2377" status="run" />
+  <testcase classname="Maxima.Combat" name="retained attraction completes saved missions" time="1.05214" status="run" />
+  <testcase classname="Maxima.Combat" name="retirement preserves independent training" time="0.922932" status="run" />
+  <testcase classname="Maxima.Combat" name="sealed target opens route" time="0.710766" status="run" />
+  <testcase classname="Maxima.Combat" name="small wave keeps recruiting" time="0.408236" status="run" />
+  <testcase classname="Maxima.Combat" name="stalled target is quarantined" time="0.378265" status="run" />
+  <testcase classname="Maxima.Combat" name="stationary effective melee triggers local defense while inactive attacks do not" time="0.478612" status="run" />
+  <testcase classname="Maxima.Combat" name="streaming scales with army" time="4.82506" status="run" />
+  <testcase classname="Maxima.Combat" name="training reservations match different levels" time="0.364642" status="run" />
+  <testcase classname="Maxima.Combat" name="unavailable attraction has no placement" time="0.470796" status="run" />
+  <testcase classname="Maxima.Combat" name="unlearned combat estimates use configured tables at the shared strategy level" time="1.08143" status="run" />
+  <testcase classname="Maxima.Combat" name="untrained warriors fight at level one" time="0.47882" status="run" />
+  <testcase classname="Maxima.Combat" name="unusable training does not block attacks" time="0.59153" status="run" />
+  <testcase classname="Maxima.Combat" name="warrior eligibility" time="0.39486" status="run" />
+  <testcase classname="Maxima.Combat" name="wave assembly and pipeline" time="0.415795" status="run" />
+  <testcase classname="Maxima.Combat" name="wave assembly fallback" time="0.405073" status="run" />
+  <testcase classname="Maxima.Combat" name="wave delivery fallback" time="0.472822" status="run" />
+  </testsuite><testsuite name="Maxima.Diagnostics"><testcase classname="Maxima.Diagnostics" name="names; descriptions and two seeded diagnostic runs" time="26.5984" status="run" />
+  </testsuite><testsuite name="Maxima.Director"><testcase classname="Maxima.Director" name="ally prestige" time="0.368743" status="run" />
+  <testcase classname="Maxima.Director" name="cadence" time="0.365199" status="run" />
+  <testcase classname="Maxima.Director" name="disconnected army" time="0.38359" status="run" />
+  <testcase classname="Maxima.Director" name="flying defenders and nonexploring magic threats" time="0.386347" status="run" />
+  <testcase classname="Maxima.Director" name="fortification uses only spare labour" time="0.375026" status="run" />
+  <testcase classname="Maxima.Director" name="prestige adaptive cap and allocated demand continue after save [save-format]" time="0.491634" status="run" />
+  <testcase classname="Maxima.Director" name="prestige adaptive capacity credits builders and ordinary commitments once" time="0.626994" status="run" />
+  <testcase classname="Maxima.Director" name="prestige adaptive capacity releases proven completed ordinary work" time="0.381954" status="run" />
+  <testcase classname="Maxima.Director" name="prestige adaptive capacity respects materials and final steps" time="0.510061" status="run" />
+  <testcase classname="Maxima.Director" name="prestige adaptive capacity uses qualified spare crews" time="0.874939" status="run" />
+  <testcase classname="Maxima.Director" name="prestige allocated pipeline is bounded" time="0.856122" status="run" />
+  <testcase classname="Maxima.Director" name="prestige allocated plan continuation" time="0.5115" status="run" />
+  <testcase classname="Maxima.Director" name="prestige allocation at the building limit saves and reloads [save-format]" time="1.72826" status="run" />
+  <testcase classname="Maxima.Director" name="prestige cancellation cannot trigger a losing positive restoration" time="0.59771" status="run" />
+  <testcase classname="Maxima.Director" name="prestige cancellation resumes its queued command" time="0.501605" status="run" />
+  <testcase classname="Maxima.Director" name="prestige continuation and legacy defaults" time="0.501474" status="run" />
+  <testcase classname="Maxima.Director" name="prestige counts legacy new construction and repair completions" time="0.599448" status="run" />
+  <testcase classname="Maxima.Director" name="prestige dedicated route requires reversible zero-point origins" time="0.945641" status="run" />
+  <testcase classname="Maxima.Director" name="prestige economic decisions and cancellation" time="0.391371" status="run" />
+  <testcase classname="Maxima.Director" name="prestige serializes legacy queued and active commitments" time="0.36812" status="run" />
+  <testcase classname="Maxima.Director" name="prestige supply and victory condition order" time="0.385058" status="run" />
+  <testcase classname="Maxima.Director" name="proactive clearing respects wood quota" time="0.393777" status="run" />
+  <testcase classname="Maxima.Director" name="reconnaissance waits for eighty percent" time="0.377085" status="run" />
+  <testcase classname="Maxima.Director" name="release 190 and ground-looks 191 execution state migrate without reading prestige fields" time="0.623634" status="run" />
+  <testcase classname="Maxima.Director" name="release 191 Maxima and ground looks migrate through normal game loading [save-format]" time="1.19029" status="run" />
+  <testcase classname="Maxima.Director" name="reused own id" time="0.587637" status="run" />
+  <testcase classname="Maxima.Director" name="tactical quarantine budget survives current and legacy execution loads" time="0.734953" status="run" />
+  <testcase classname="Maxima.Director" name="third party tower" time="0.367233" status="run" />
+  <testcase classname="Maxima.Director" name="unified hospital capacity" time="0.375133" status="run" />
+  </testsuite><testsuite name="Maxima.Economy"><testcase classname="Maxima.Economy" name="Colony food traversal preserves ordered scalar reachability" time="0.013941" status="run" />
+  <testcase classname="Maxima.Economy" name="Food reach crosses passable nonfood deposits but respects resource obstruction" time="0.000103" status="run" />
+  <testcase classname="Maxima.Economy" name="aggregate feeding demand escapes a crop count cap during service shortage" time="1.41542" status="run" />
+  <testcase classname="Maxima.Economy" name="army births match platform checksums" time="0.538518" status="run" />
+  <testcase classname="Maxima.Economy" name="army demand funds training and birth mix" time="0.505798" status="run" />
+  <testcase classname="Maxima.Economy" name="barracks upgrades keep training open" time="0.368755" status="run" />
+  <testcase classname="Maxima.Economy" name="birth budget scales beyond twenty" time="0.524787" status="run" />
+  <testcase classname="Maxima.Economy" name="birth funding counts production packets without independent hybrid service costs" time="0.35689" status="run" />
+  <testcase classname="Maxima.Economy" name="colony startup and affordability" time="0.366816" status="run" />
+  <testcase classname="Maxima.Economy" name="completion reallocates colony" time="0.405008" status="run" />
+  <testcase classname="Maxima.Economy" name="corn pile interior is supply" time="0.456777" status="run" />
+  <testcase classname="Maxima.Economy" name="counted opponent records preserve slot fifteen and load the legacy twelve-record layout [save-format]" time="0.365574" status="run" />
+  <testcase classname="Maxima.Economy" name="crisis production pause" time="0.500421" status="run" />
+  <testcase classname="Maxima.Economy" name="custom construction supply counts reachable mixed yields and shore access" time="0.515649" status="run" />
+  <testcase classname="Maxima.Economy" name="distant wheat funds recovery" time="0.406755" status="run" />
+  <testcase classname="Maxima.Economy" name="explorer target always gets production" time="0.789338" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding budget scaling handles maximum seats without overflowing intermediate products" time="0.453446" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding candidates transfer funded meal shares through cache reload and replacement" time="0.005677" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding capacity preserves independently admitted recipient classes" time="0" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding colonies join overlapping catchments transitively and preserve independent training" time="0.473042" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding demand allocation conserves recipient classes and shared provider capacity" time="0" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding estimate shares resources and seats across capability combinations" time="0.780801" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding fallback uses enabled movement and retains compiled admissions" time="0.707922" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding farm claims follow one cohort while hybrid operating demand stays independent" time="0.018049" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding flow agrees with the exhaustive three-recipient oracle" time="0.176268" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding packet denominations preserve large stock rates and profile continuation" time="0.46997" status="run" />
+  <testcase classname="Maxima.Economy" name="food allocation does not retire reachable production but exhausted sites remain retirable" time="0.363868" status="run" />
+  <testcase classname="Maxima.Economy" name="food pressure increases planned feeding capacity without a permanent queue ratchet" time="0.37159" status="run" />
+  <testcase classname="Maxima.Economy" name="food retirement preserves the only explorer feeder despite surplus worker seats" time="0.472812" status="run" />
+  <testcase classname="Maxima.Economy" name="growing food funds capacity" time="0.373682" status="run" />
+  <testcase classname="Maxima.Economy" name="holiday harvest capacity" time="0.592402" status="run" />
+  <testcase classname="Maxima.Economy" name="labour continuation" time="0.37888" status="run" />
+  <testcase classname="Maxima.Economy" name="legacy planner rebuild replaces feeding providers without duplicating capacity" time="0.363051" status="run" />
+  <testcase classname="Maxima.Economy" name="mechanical production ceilings are separate from planned carrier throughput" time="0.361558" status="run" />
+  <testcase classname="Maxima.Economy" name="nearby corn determines staffing" time="0.446711" status="run" />
+  <testcase classname="Maxima.Economy" name="new buildings start staffed" time="0.582966" status="run" />
+  <testcase classname="Maxima.Economy" name="nominal service capacity uses unit feeding healing and training speeds" time="0.342066" status="run" />
+  <testcase classname="Maxima.Economy" name="observed hunger expands feeding for an opening colony mix beyond nominal forecasts" time="112.09" status="run" />
+  <testcase classname="Maxima.Economy" name="one training course credits independent movement and worker construction outcomes" time="0.522867" status="run" />
+  <testcase classname="Maxima.Economy" name="operating estimates use one production clock and packet denominators" time="0.53044" status="run" />
+  <testcase classname="Maxima.Economy" name="operating production claims preserve weighted recipe costs and shared carrier work" time="0" status="run" />
+  <testcase classname="Maxima.Economy" name="parallel training budgets separate compatible recipients and disabled services" time="0.54035" status="run" />
+  <testcase classname="Maxima.Economy" name="producer candidates enforce local feasibility alongside strategic target caps" time="0.002689" status="run" />
+  <testcase classname="Maxima.Economy" name="production ledger uses requested staffing ratios and target stage with continuation" time="0.01181" status="run" />
+  <testcase classname="Maxima.Economy" name="production observation keeps planned work despite temporarily absent carriers" time="0.522003" status="run" />
+  <testcase classname="Maxima.Economy" name="projectile profiles reserve ammunition workers and cache nominal feeding" time="0.534724" status="run" />
+  <testcase classname="Maxima.Economy" name="recipient meal demand follows saved hunger and external action clocks" time="0.37951" status="run" />
+  <testcase classname="Maxima.Economy" name="retained Maxima save compiles each feeding admission row once [save-format]" time="1.17271" status="run" />
+  <testcase classname="Maxima.Economy" name="schools do not require known algae" time="0.367837" status="run" />
+  <testcase classname="Maxima.Economy" name="service ceilings respect the engine action clock and crop funding avoids overflow" time="0.357356" status="run" />
+  <testcase classname="Maxima.Economy" name="service rate uses simulated visit ticks" time="0.349997" status="run" />
+  <testcase classname="Maxima.Economy" name="sole swarm staffs from its own stock" time="0.444577" status="run" />
+  <testcase classname="Maxima.Economy" name="stranded algae keeps pool demand" time="0.355728" status="run" />
+  <testcase classname="Maxima.Economy" name="sustained stock feeding reports capability estimates and historical strategy targets" time="95.2636" status="run" />
+  <testcase classname="Maxima.Economy" name="tracker logical cadence" time="4.11541" status="run" />
+  <testcase classname="Maxima.Economy" name="upgrade batches reuse baseline claims without changing food appraisals" time="0.033051" status="run" />
+  </testsuite><testsuite name="Maxima.FarmingIntegration"><testcase classname="Maxima.FarmingIntegration" name="aligned pattern transitions" time="0.541726" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="archipelago harvest does not seal wheat" time="0.650473" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="coastal wheat crosses fertility dips" time="0.495331" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="custom producers only reserve finite spreading seeds" time="2.45284" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="expansion leaves harvest lanes open" time="0.773795" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farm boundary geometry reads depleted secondary Food stocks" time="0.368453" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farm management radius" time="0.365645" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farm zones use the final wheat protection plan including empty frontier cells" time="0.367361" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farming eligibility snapshot refreshes after stock and catalog changes" time="0.407653" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farming respects discovery" time="0.630888" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="firebreak management radius" time="0.377625" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="indexed farm geometry matches scalar toroidal closing and seed adjacency" time="0.002291" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="initial flag staffing" time="0.477672" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="maintenance protection agreement" time="0.574955" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="mixed donor reserves its propagating wood without borrowing food renewal" time="0.374577" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="permanent wheat layout" time="0.940268" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="seed stability across maps" time="3.73387" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="seed survival" time="0.503339" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wheat frontiers and wood outlets follow actual donor habitat" time="0.552138" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wood reserve preserves live wheat donors" time="0.386011" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wood reserve survives own farm protection" time="0.401893" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wood reserve survives wheat pincer" time="1.00333" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wood reserve tracks ten percent of renewable capacity" time="0.816759" status="run" />
+  </testsuite><testsuite name="Maxima.Implementation"><testcase classname="Maxima.Implementation" name="Maxima food catchments and carrier discounts follow trail and ice travel costs" time="0.347335" status="run" />
+  <testcase classname="Maxima.Implementation" name="category maintenance capacity regressions" time="11.5843" status="run" />
+  <testcase classname="Maxima.Implementation" name="completed swarm budget regressions" time="0.367105" status="run" />
+  <testcase classname="Maxima.Implementation" name="director execution regressions" time="0.376789" status="run" />
+  <testcase classname="Maxima.Implementation" name="director upgrade priority regressions" time="0.365102" status="run" />
+  <testcase classname="Maxima.Implementation" name="director upgrade regressions" time="0.400118" status="run" />
+  <testcase classname="Maxima.Implementation" name="economic resource access regressions" time="0.3944" status="run" />
+  <testcase classname="Maxima.Implementation" name="economic worker priorities rank each role and boost emergency inn sites" time="0.369316" status="run" />
+  <testcase classname="Maxima.Implementation" name="economy staffing regressions" time="0.378269" status="run" />
+  <testcase classname="Maxima.Implementation" name="execution regressions" time="0.401637" status="run" />
+  <testcase classname="Maxima.Implementation" name="execution state save regression" time="0.361668" status="run" />
+  <testcase classname="Maxima.Implementation" name="explorer swarm staffing regressions" time="0.832072" status="run" />
+  <testcase classname="Maxima.Implementation" name="food relocation executor regression" time="0.413616" status="run" />
+  <testcase classname="Maxima.Implementation" name="fruit strategy regressions" time="0.434897" status="run" />
+  <testcase classname="Maxima.Implementation" name="fruit supply routes" time="0.254398" status="run" />
+  <testcase classname="Maxima.Implementation" name="gradient dependencies; payload round trips and cache expiry" time="1.08662" status="run" />
+  <testcase classname="Maxima.Implementation" name="inn completion staffing regressions" time="0.357436" status="run" />
+  <testcase classname="Maxima.Implementation" name="integration regressions" time="0.368202" status="run" />
+  <testcase classname="Maxima.Implementation" name="maxima bootstrap regression" time="0.374154" status="run" />
+  <testcase classname="Maxima.Implementation" name="mission force regressions" time="0.362158" status="run" />
+  <testcase classname="Maxima.Implementation" name="placement maintenance regressions" time="1.32215" status="run" />
+  <testcase classname="Maxima.Implementation" name="preemptive scheduling regression" time="0.368069" status="run" />
+  <testcase classname="Maxima.Implementation" name="prepared resource obstacles match scalar entity gradients" time="0.565633" status="run" />
+  <testcase classname="Maxima.Implementation" name="rejected placement upgrade regressions" time="0.419527" status="run" />
+  <testcase classname="Maxima.Implementation" name="repair labor contract regressions" time="0.614075" status="run" />
+  <testcase classname="Maxima.Implementation" name="review bug regressions" time="0.389329" status="run" />
+  <testcase classname="Maxima.Implementation" name="school population scaling regressions" time="0.363719" status="run" />
+  <testcase classname="Maxima.Implementation" name="strategy and maintenance share the deterministic queue" time="0.364201" status="run" />
+  <testcase classname="Maxima.Implementation" name="terrain travel fields serialize mode and retain stale snapshots" time="0.506978" status="run" />
+  <testcase classname="Maxima.Implementation" name="upgrade clearing regressions" time="0.575316" status="run" />
+  <testcase classname="Maxima.Implementation" name="upgrade worker priority regressions" time="0.371766" status="run" />
+  </testsuite><testsuite name="Maxima.Lifecycle"><testcase classname="Maxima.Lifecycle" name="names; descriptions and two seeded lifecycles" time="26.8759" status="run" />
+  </testsuite><testsuite name="Maxima.Relocation"><testcase classname="Maxima.Relocation" name="access retains isolated workers and ignores forbidden zones" time="0.485718" status="run" />
+  <testcase classname="Maxima.Relocation" name="deferred retry" time="0.421532" status="run" />
+  <testcase classname="Maxima.Relocation" name="deletion safety" time="1.19068" status="run" />
+  <testcase classname="Maxima.Relocation" name="lost replacement" time="0.577884" status="run" />
+  <testcase classname="Maxima.Relocation" name="saved relationships" time="1.18985" status="run" />
+  <testcase classname="Maxima.Relocation" name="sealed buildings are demolished and release their commitments" time="1.08502" status="run" />
+  <testcase classname="Maxima.Relocation" name="sealed construction and diagonal access survive save loading" time="1.2708" status="run" />
+  <testcase classname="Maxima.Relocation" name="wrapped and future swimming access remain usable" time="0.505023" status="run" />
+  </testsuite><testsuite name="Maxima.Strategy"><testcase classname="Maxima.Strategy" name="format188 strategies preserve ring40 and disable absent flag proximity" time="0.281735" status="run" />
+  <testcase classname="Maxima.Strategy" name="formats; canonical values and version gates" time="0.397669" status="run" />
+  <testcase classname="Maxima.Strategy" name="legacy strategy absence disables new tactical controls without masking missing old keys" time="0.286737" status="run" />
+  <testcase classname="Maxima.Strategy" name="new games use the accepted ring40 policy in every format and saved values remain exact" time="0.297588" status="run" />
+  </testsuite><testsuite name="ReplayTelemetry"><testcase classname="ReplayTelemetry" name="capture skips invalid fields and retains exact changes and disappearance" time="0.364662" status="run" />
+  <testcase classname="ReplayTelemetry" name="duplicate players compare with prior capture and schemas can return" time="0.361409" status="run" />
+  <testcase classname="ReplayTelemetry" name="legacy bytes preserve duplicate fields NUL order schemas copy and move" time="0.000326" status="run" />
+  <testcase classname="ReplayTelemetry" name="loader limits and incomplete-frame state keep the existing contract" time="0.004312" status="run" />
+  <testcase classname="ReplayTelemetry" name="logical byte budget and frame limit retain legacy truncation points" time="1.54959" status="run" />
+  <testcase classname="ReplayTelemetry" name="playback expands exact values stamps unavailability and reloaded history" time="0.370609" status="run" />
+  <testcase classname="ReplayTelemetry" name="schema lookup distinguishes prefixes and each metadata component" time="0.352637" status="run" />
+  <testcase classname="ReplayTelemetry" name="stable capture descriptors retain changing payloads and stamps" time="0.359606" status="run" />
+  </testsuite><testsuite name="TerrainProperties"><testcase classname="TerrainProperties" name="Trail retains legacy identities and terrain behavior" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="constrained explorer flag eligibility applies route accessibility and hunger distance" time="0.501265" status="run" />
+  <testcase classname="TerrainProperties" name="exclusive movement modes and bounded compile-time definitions" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="explorers ignore ice damage and no-permadeath applies to ground hazards" time="0.501772" status="run" />
+  <testcase classname="TerrainProperties" name="health modifiers clip healing and expose units that have found an exit" time="0.499117" status="run" />
+  <testcase classname="TerrainProperties" name="ice exposure includes stationary units and preserves fractional health in saves" time="0.966192" status="run" />
+  <testcase classname="TerrainProperties" name="projectile supercover tests intermediate cells corners and wrapped coordinates" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="retired terrain flags load from old headers without becoming experiments" time="0.986079" status="run" />
+  <testcase classname="TerrainProperties" name="same-size map replacement and terrain edits refresh ecology" time="0.258463" status="run" />
+  <testcase classname="TerrainProperties" name="terrain edits refresh escape costs after captured routes publish at their fixed deadline" time="0.525753" status="run" />
+  <testcase classname="TerrainProperties" name="terrain health profiles choose independent air and ground rates" time="0.504372" status="run" />
+  <testcase classname="TerrainProperties" name="vertex terrain survives tiling and batches snapshot invalidation" time="0.248756" status="run" />
+  </testsuite><testsuite name="TerrainRuntime"><testcase classname="TerrainRuntime" name="custom capabilities drive map queries health ecology and immutable match definitions" time="0.568627" status="run" />
+  <testcase classname="TerrainRuntime" name="each catalogue type shares its group profile" time="0.274286" status="run" />
+  <testcase classname="TerrainRuntime" name="eager resumed and worker gradients agree on custom slow swimming" time="0.254896" status="run" />
+  <testcase classname="TerrainRuntime" name="embedded registry restores custom state and pending gradients without source files" time="1.01533" status="run" />
+  <testcase classname="TerrainRuntime" name="format-137 saves with custom terrain load with remapped IDs and resave at the current format" time="1.07966" status="run" />
+  <testcase classname="TerrainRuntime" name="format-186 saves keep built-in IDs and move custom terrain behind the grass and sand looks" time="1.07664" status="run" />
+  <testcase classname="TerrainRuntime" name="grass and sand looks share every rule of grass and sand" time="0.245738" status="run" />
+  <testcase classname="TerrainRuntime" name="large embedded registry crosses the stream string limit" time="5.92351" status="run" />
+  <testcase classname="TerrainRuntime" name="maps isolate registries and reject failed imports atomically" time="0.247994" status="run" />
+  <testcase classname="TerrainRuntime" name="painted catalogue terrain survives save and reload with its checksum" time="3.21679" status="run" />
+  <testcase classname="TerrainRuntime" name="production pipeline captures custom movement and discards fields after reimport" time="1.39952" status="run" />
+  <testcase classname="TerrainRuntime" name="unused distinct costs do not expand map movement setup" time="0.472464" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="AI-only turn recordings replay through their terminal checksum [network-sim][artifacts]" time="3.46398" status="run" />
+  <testcase classname="TurnEngineHarness" name="Filipino registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="6.82211" status="run" />
+  <testcase classname="TurnEngineHarness" name="Marathi registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="6.82872" status="run" />
+  <testcase classname="TurnEngineHarness" name="Thai registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="6.88381" status="run" />
+  <testcase classname="TurnEngineHarness" name="Thai registration rejects published Telugu revision 113 without changing replay file floors [network-sim][artifacts]" time="6.93665" status="run" />
+  <testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="6.66245" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="46.6019" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="10.0375" status="run" />
+  <testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="4.40207" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" time="2.4532" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="5.5472" status="run" />
+  <testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="8.30096" status="run" />
+  <testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="11.7922" status="run" />
+  <testcase classname="TurnEngineHarness" name="combined Thai and Bulgarian registration rejects shared revision 115 without changing replay file floors [network-sim][artifacts]" time="7.13479" status="run" />
+  <testcase classname="TurnEngineHarness" name="combined Thai and Filipino registration rejects shared revision 114 without changing replay file floors [network-sim][artifacts]" time="7.03547" status="run" />
+  <testcase classname="TurnEngineHarness" name="combined Thai and Honeycomb integration rejects shared revision 116 without changing replay file floors [network-sim][artifacts]" time="6.81238" status="run" />
+  <testcase classname="TurnEngineHarness" name="embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]" time="6.86732" status="run" />
+  <testcase classname="TurnEngineHarness" name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" time="6.48343" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="11.0571" status="run" />
+  <testcase classname="TurnEngineHarness" name="map checksum coverage survives the last human quitting [network-sim]" time="1.61763" status="run" />
+  <testcase classname="TurnEngineHarness" name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" time="4.35919" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="4.28521" status="run" />
+  <testcase classname="TurnEngineHarness" name="shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts]" time="5.43415" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="2.45095" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="10.8894" status="run" />
+  <testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="7.62141" status="run" />
+  <testcase classname="TurnEngineHarness" name="without a pause limit a pause lasts until someone resumes it [network-sim]" time="2.66077" status="run" />
+  </testsuite><testsuite name="VertexTerrain"><testcase classname="VertexTerrain" name="a cell's four corners paint it uniform and its neighbours mixed" time="0.244011" status="run" />
+  <testcase classname="VertexTerrain" name="a vertex write re-derives the four cells around it" time="0.24483" status="run" />
+  <testcase classname="VertexTerrain" name="compiled CPU seed columns preserve frozen rules when mixed rules grow" time="0.242367" status="run" />
+  <testcase classname="VertexTerrain" name="equal corners keep their terrain's exact rules" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="every built-in pair combines into valid transition rules" time="0.001428" status="run" />
+  <testcase classname="VertexTerrain" name="grass directly against water is walkable and unbuildable" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="ground costs follow the walkable corners and hazards take the worst" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="mixed cells take the shore habitat and intersect explicit resource lists" time="0.241572" status="run" />
+  <testcase classname="VertexTerrain" name="mixed classic corners are exactly the retired shore profile" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="old cell terrain moves onto the vertices it covers" time="0.241842" status="run" />
+  <testcase classname="VertexTerrain" name="snapshots keep the rule table they were taken with" time="0.243373" status="run" />
+  <testcase classname="VertexTerrain" name="terrain IDs of older files skip the retired shores and follow the current built-ins" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="the rule table numbers uniform rules by terrain and interns mixed ones in order" time="0.241584" status="run" />
+  <testcase classname="VertexTerrain" name="vertex terrain round-trips through packed and text saves" time="3.30113" status="run" />
+  </testsuite><testsuite name="WorldSnapshot"><testcase classname="WorldSnapshot" name="AI boundary validates each captured map array before fast reads" time="0.251512" status="run" />
+  <testcase classname="WorldSnapshot" name="AI fast scalar reads preserve checked values and frozen lease isolation" time="0.381112" status="run" />
+  <testcase classname="WorldSnapshot" name="a retained consumer leaves the newest free buffer to absorb only later changes" time="0.343635" status="run" />
+  <testcase classname="WorldSnapshot" name="an established owner observation rejects uncaptured optional components" time="0.344703" status="run" />
+  <testcase classname="WorldSnapshot" name="building snapshots copy shared scalar records and freeze selected stock" time="0.392295" status="run" />
+  <testcase classname="WorldSnapshot" name="capture verification rejects writes that bypass the change trackers" time="0.365774" status="run" />
+  <testcase classname="WorldSnapshot" name="catalog refresh survives intervening projections and rules reuse independently" time="0.387223" status="run" />
+  <testcase classname="WorldSnapshot" name="compact population ranges preserve append order and canonical ID lookup" time="0.367683" status="run" />
+  <testcase classname="WorldSnapshot" name="component leases and weak control blocks outlive the owning store" time="0.344172" status="run" />
+  <testcase classname="WorldSnapshot" name="component mutation generations preserve isolation and reuse unchanged arrays" time="0.363701" status="run" />
+  <testcase classname="WorldSnapshot" name="coordinate wrapping preserves signed edges for power of two and general dimensions" time="0.000292" status="run" />
+  <testcase classname="WorldSnapshot" name="core materialization counts empty worlds and explicit paused revisions" time="0.368141" status="run" />
+  <testcase classname="WorldSnapshot" name="detailed accounting is optional while exact map bytes remain available" time="0.533696" status="run" />
+  <testcase classname="WorldSnapshot" name="entity copy accounting is separate from map traffic and logical verification includes presentation" time="0.352591" status="run" />
+  <testcase classname="WorldSnapshot" name="entity verification rejects incomplete records and changed relationship sidecars" time="0.345266" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit observation boundaries refresh paused state and retain old leases" time="0.350628" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit paused edit establishes another owner observation at the same tick" time="0.375127" status="run" />
+  <testcase classname="WorldSnapshot" name="farm paint queries match frozen growth and resource inputs" time="0.369345" status="run" />
+  <testcase classname="WorldSnapshot" name="flat relationship ranges preserve every building list in order" time="0.361738" status="run" />
+  <testcase classname="WorldSnapshot" name="map snapshots bulk copy authoritative records without translation" time="0.374116" status="run" />
+  <testcase classname="WorldSnapshot" name="memory metrics distinguish held epochs from reusable high water capacity" time="0.34018" status="run" />
+  <testcase classname="WorldSnapshot" name="named views retain only their standard inputs" time="0.537332" status="run" />
+  <testcase classname="WorldSnapshot" name="narrow component queries preserve combined tile values and projection defaults" time="0.384715" status="run" />
+  <testcase classname="WorldSnapshot" name="no-op map writes reuse components while changed values remain isolated" time="0.369253" status="run" />
+  <testcase classname="WorldSnapshot" name="nonadvancing real orders revise observations while advancing orders wait for the next tick" time="0.533952" status="run" />
+  <testcase classname="WorldSnapshot" name="on-demand construction feasibility matches live helpers and remains frozen" time="0.511836" status="run" />
+  <testcase classname="WorldSnapshot" name="optional additions preserve all established observation components" time="0.360205" status="run" />
+  <testcase classname="WorldSnapshot" name="ordinary boundaries always contain the complete simulation preset" time="0.354853" status="run" />
+  <testcase classname="WorldSnapshot" name="outcome reasons survive the read boundary without changing simulation state" time="0.534731" status="run" />
+  <testcase classname="WorldSnapshot" name="owner observation survives acknowledgements stalls and live advancement" time="0.523165" status="run" />
+  <testcase classname="WorldSnapshot" name="pooled captures never overwrite a held worker projection" time="0.382769" status="run" />
+  <testcase classname="WorldSnapshot" name="presentation upgrades refresh entities after each owner boundary change" time="0.847342" status="run" />
+  <testcase classname="WorldSnapshot" name="projected terrain lease cannot retain unrelated world components" time="0.368036" status="run" />
+  <testcase classname="WorldSnapshot" name="resource copy metrics include multi-material stock sidecars" time="0.356975" status="run" />
+  <testcase classname="WorldSnapshot" name="reused buffers copy sparse chunks and refresh dense changes contiguously" time="0.343025" status="run" />
+  <testcase classname="WorldSnapshot" name="same boundary entity reuse is excluded from copied byte accounting" time="0.389597" status="run" />
+  <testcase classname="WorldSnapshot" name="same boundary presentation additions reuse maps and remain outside simulation leases" time="0.369056" status="run" />
+  <testcase classname="WorldSnapshot" name="snapshot capability tables share authoritative immutable catalog data" time="0.367404" status="run" />
+  <testcase classname="WorldSnapshot" name="statistics inputs and entity records reuse buffers without changing held generations" time="0.345163" status="run" />
+  <testcase classname="WorldSnapshot" name="team record ranges preserve canonical addresses and empty teams" time="0.357427" status="run" />
+  <testcase classname="WorldSnapshot" name="unit snapshots share authoritative scalar state and remain frozen" time="0.367575" status="run" />
+  <testcase classname="WorldSnapshot" name="vertex changes preserve retained terrain and reuse unchanged versions" time="0.359994" status="run" />
+  <testcase classname="WorldSnapshot" name="warm component buffers stop allocating at a fixed population" time="0.373511" status="run" />
+  <testcase classname="WorldSnapshot" name="worker final lease release synchronizes owner buffer reuse" time="0.001216" status="run" />
+  </testsuite><testsuite name="Maxima.Continuation"><testcase classname="Maxima.Continuation" name="compact arrays preserve nested state and signed limits [save-format]" time="0.001311" status="run" />
+    <testcase classname="Maxima.Continuation" name="binary bytes; SHA1; text fallback; nested records; signed limits; 64-bit order; strings; container boundaries and interleaved writes are identical [save-format]" time="1.76693" status="run" />
+    <testcase classname="Maxima.Continuation" name="compact fields retain legacy binary and text encodings [save-format]" time="0.000379" status="run" />
+  </testsuite><testsuite name="Maxima.Defense"><testcase classname="Maxima.Defense" name="choke-point modes; distance fields and footprints" time="0.036443" status="run" />
+  </testsuite><testsuite name="Maxima.Farming"><testcase classname="Maxima.Farming" name="corridor protection and fertility caches" time="0.229774" status="run" />
+  </testsuite><testsuite name="Maxima.FoodLedger"><testcase classname="Maxima.FoodLedger" name="capped queries preserve order and scratch reuse" time="0.000441" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="supply is claimed nearest first" time="0.000159" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="quality outranks building age" time="0.000242" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="inns and swarms interleave" time="0.000408" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="removing a consumer releases its claim" time="0.000388" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="upgrade demand uses available supply" time="0.000296" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="upper bound never understates reach" time="0.002278" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="untraversable ground blocks supply" time="0.000115" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="supply beyond the radius is not counted" time="0.000447" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="demand and yield match engine rates" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="residual quality follows unclaimed supply" time="0.000264" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="prepared bounds match wrapped oracle" time="0.033904" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="equal total changes refresh the snapshot" time="0.00018" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="operating claims price the shared reachable supply curve without contested feedback" time="0.002135" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="operating supply tails retain positive demand and zero coverage for unreachable producers" time="0.000262" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="operating fractions preserve positive rates beneath a saturated recipe ceiling" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="equivalent feeders retain funded meal reservations before discretionary production" time="0.000867" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="feeding transfer credits are funded local and limited to the meal component" time="0.002232" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="hybrid service and production claims use separate spatial pools without double spending" time="0.000557" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="hybrid queries reserve constrained production before flexible services in either route order" time="0.000564" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="candidate ledger snapshots omit only final economic bounds" time="0.002115" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="feeding priority does not make a reachable producer unviable" time="0.000589" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="unreachable production remains a retirement candidate" time="0.000592" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="services without production retain allocation-based coverage" time="0.000618" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="mixed services use production viability without double funding" time="0.000591" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="zero-demand viability needs no food" time="0.000611" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="coordinate masks match modulo including negative and extreme inputs" time="0.000338" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="direct dimension changes cannot leave a stale wrapping mask" time="0.000619" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="masked food walks preserve modulo claims and query results" time="0.003518" status="run" />
+  </testsuite><testsuite name="Maxima.ForceModel"><testcase classname="Maxima.ForceModel" name="quantile forecasts and observation cadence" time="0.000236" status="run" />
+  </testsuite><testsuite name="Maxima.Labour"><testcase classname="Maxima.Labour" name="no training building means no reserve" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="reserve matches open seats" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="opening is left alone" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="swarms are the residual" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="trimming is fair and bounded" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="military is pulled by capacity" time="0" status="run" />
+  </testsuite><testsuite name="Maxima.Placement"><testcase classname="Maxima.Placement" name="templates; parcels; appraisal and continuation" time="2.55595" status="run" />
+    <testcase classname="Maxima.Placement" name="Explicit noncanonical neighborhood tables survive compact saves" time="0.000225" status="run" />
+    <testcase classname="Maxima.Placement" name="Catalog profiles share capabilities without sharing template identity" time="0.000146" status="run" />
+    <testcase classname="Maxima.Placement" name="Dynamic template identities retain mixed catalog roles and signed wire values" time="0.00088" status="run" />
+    <testcase classname="Maxima.Placement" name="Dynamic template campuses and pending selection continue with identical serialized state" time="5.15135" status="run" />
+    <testcase classname="Maxima.Placement" name="forward route diagnostics rejects the far side and routes with no friendly supply" time="0.006388" status="run" />
+    <testcase classname="Maxima.Placement" name="forward route diagnostics uses walk distance rather than closeness through a wall" time="0.002545" status="run" />
+    <testcase classname="Maxima.Placement" name="forward route diagnostics requires a safe return route and respects movement capability" time="0.011434" status="run" />
+    <testcase classname="Maxima.Placement" name="forward route diagnostics wraps routes and selects the same tied approach deterministically" time="0.002539" status="run" />
+    <testcase classname="Maxima.Placement" name="forward support has its own spatial pathway and leaves ordinary siting unchanged" time="0.045409" status="run" />
+    <testcase classname="Maxima.Placement" name="forward support uses catalog roles with nonlegacy type identities" time="0.006028" status="run" />
+    <testcase classname="Maxima.Placement" name="forward support constraints survive an incremental selection save and resume" time="8.33992" status="run" />
+    <testcase classname="Maxima.Placement" name="forward support never delays viable ordinary construction or maintenance" time="0.419403" status="run" />
+  </testsuite><testsuite name="Maxima.Prestige"><testcase classname="Maxima.Prestige" name="race decisions respect activation readiness and emergency" time="0" status="run" />
+    <testcase classname="Maxima.Prestige" name="catch up uses the shared threshold and accepts tied wins" time="0" status="run" />
+    <testcase classname="Maxima.Prestige" name="only surviving individual leaders win and alliance sharing is explicit" time="0" status="run" />
+    <testcase classname="Maxima.Prestige" name="catalog increments and wide arithmetic determine economic feasibility" time="0" status="run" />
+  </testsuite><testsuite name="Maxima.Recon"><testcase classname="Maxima.Recon" name="observation decay; estimates and building memory" time="0.000276" status="run" />
+  </testsuite><testsuite name="Maxima.StaffingControl"><testcase classname="Maxima.StaffingControl" name="empty building gains workers" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="full building sheds workers to the minimum" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="stock inside the band holds" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="understaffed building does not wind up" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="slack allows growth when nearly staffed" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="minimum is always honoured" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="request is capped at the engine limit" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="fill is relative to capacity" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="warmup delays the first adjustment" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="cooldown limits the adjustment rate" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="defaults are paced for delivery latency" time="0" status="run" />
+  </testsuite><testsuite name="Maxima.Tactics"><testcase classname="Maxima.Tactics" name="raid footprints; desired army and wave readiness" time="0" status="run" />
+    <testcase classname="Maxima.Tactics" name="flag proximity is disabled at zero and saturates beyond32 tiles" time="0" status="run" />
+    <testcase classname="Maxima.Tactics" name="effective-arrival grace is bounded and requires a useful fraction of the force" time="0" status="run" />
+  </testsuite><testsuite name="ReplayAppearance"><testcase classname="ReplayAppearance" name="only matching recordings and trusted origins restore appearance context" time="0.000584" status="run" />
+    <testcase classname="ReplayAppearance" name="companions survive copies but stale and oversized files are ignored" time="0.000864" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.00124" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="paused turns retain the first snapshot for their shared simulation tick" time="0.000118" status="run" />
+    <testcase classname="ReplayStepCounter" name="delayed replay checks validate their original source tick" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="delayed replay mismatch and missing terminal work fail validation" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="zero is a valid delayed checksum when explicitly present" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000434" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0.000255" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite><testsuite name="TerrainRegistry"><testcase classname="TerrainRegistry" name="imports preserve builtins and IDs and round trip resolved definitions" time="0.003704" status="run" />
+    <testcase classname="TerrainRegistry" name="appearance presets preserve snapshot names and resolved saved metadata" time="0.002329" status="run" />
+    <testcase classname="TerrainRegistry" name="farm material names support every material and import legacy crop slots" time="0.004524" status="run" />
+    <testcase classname="TerrainRegistry" name="invalid imports and saved registries are rejected without changing their owner" time="0.004189" status="run" />
+    <testcase classname="TerrainRegistry" name="catalogue groups share one profile, every paintable built-in is a preset and format-136 saved IDs remap behind the current built-ins" time="0.034446" status="run" />
+    <testcase classname="TerrainRegistry" name="large registries compile equivalent definitions into bounded movement profiles" time="23.5593" status="run" />
+    <testcase classname="TerrainRegistry" name="runtime SIMD propagation agrees with heap oracle across queue boundaries and thin grids" time="0.039077" status="run" />
+    <testcase classname="TerrainRegistry" name="many distinct hazard costs retain compact profile indices and exact propagation" time="0.055825" status="run" />
+    <testcase classname="TerrainRegistry" name="runtime searches reject undersized queues before changing the field" time="0.000546" status="run" />
+    <testcase classname="TerrainRegistry" name="unused large edge definitions preserve the 64 bucket path" time="0.001377" status="run" />
+    <testcase classname="TerrainRegistry" name="all legal speed factors preserve distinct cost collisions" time="0.194558" status="run" />
+  </testsuite><testsuite name="TurnHarness"><testcase classname="TurnHarness" name="two clients on clean links execute identical turns [network-sim]" time="0.244329" status="run" />
+    <testcase classname="TurnHarness" name="four clients with latency, jitter, loss and AI seats [network-sim]" time="0.895733" status="run" />
+    <testcase classname="TurnHarness" name="a stalled client stalls only itself and resumes from its horizon [network-sim]" time="0.328801" status="run" />
+    <testcase classname="TurnHarness" name="a restarted client reloads, replays the full log and rejoins [network-sim]" time="0.280759" status="run" />
+    <testcase classname="TurnHarness" name="a diverged client in a three-player match is repaired by rejoin [network-sim]" time="0.471203" status="run" />
+    <testcase classname="TurnHarness" name="two diverged clients are flagged and keep playing [network-sim]" time="0.067686" status="run" />
+    <testcase classname="TurnHarness" name="the input delay rises with jitter and returns when it subsides [network-sim][artifacts]" time="0.605319" status="run" />
+    <testcase classname="TurnHarness" name="input delay stays within bounds on loopback and at 50 ms [network-sim]" time="0.557382" status="run" />
+    <testcase classname="TurnHarness" name="players who quit or never return are sequenced out [network-sim]" time="0.059543" status="run" />
+    <testcase classname="TurnHarness" name="network telemetry follows injected latency, jitter, loss, an outage and a rejoin [network-sim][artifacts]" time="0.553705" status="run" />
+  </testsuite><testsuite name="TurnJitterBuffer"><testcase classname="TurnJitterBuffer" name="jitter is the p95 delay above the fastest delivery" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="the target rises at once and falls one tick per hold period" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="with bundles every few ticks the controller holds the sawtooth's mean" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="the delay controller nudges by at most five percent and catches up" time="0" status="run" />
+  </testsuite><testsuite name="TurnMatchRecord"><testcase classname="TurnMatchRecord" name="round-trips through bytes and files" time="0.00035" status="run" />
+    <testcase classname="TurnMatchRecord" name="rejects corruption, truncation, newer versions and disorder" time="0.000292" status="run" />
+    <testcase classname="TurnMatchRecord" name="CRC-32 matches the IEEE check value" time="0" status="run" />
+  </testsuite><testsuite name="TurnMessages"><testcase classname="TurnMessages" name="every message round-trips" time="0.00025" status="run" />
+    <testcase classname="TurnMessages" name="every truncation and any trailing byte is rejected" time="0.004232" status="run" />
+    <testcase classname="TurnMessages" name="malformed fields and non-turn types are rejected" time="0.000215" status="run" />
+    <testcase classname="TurnMessages" name="bundles split at tick boundaries under the frame limit" time="0.000212" status="run" />
+    <testcase classname="TurnMessages" name="the quit order matches PlayerQuitsGameOrder's encoding" time="0" status="run" />
+  </testsuite><testsuite name="TurnSequencer"><testcase classname="TurnSequencer" name="turn defaults use 30 TPS and retain fractional tick periods" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="bundles every tick by default, empty or not" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="bundles every two ticks from match start, empty or not" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="the load barrier holds the clock until every human seat has connected" time="0.000117" status="run" />
+    <testcase classname="TurnSequencer" name="the load barrier gives up after its timeout; the late seat gets grace from the start" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="without a barrier the clock starts when the sequencer is created" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="an order takes the earliest tick not yet broadcast, whatever the relay clock" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="orders execute the tick after arrival, one per seat per tick" time="0.000148" status="run" />
+    <testcase classname="TurnSequencer" name="a full tick spills orders to the next one" time="0.000215" status="run" />
+    <testcase classname="TurnSequencer" name="duplicates, nulls and latency adjustments are dropped; a flood is dropped, not the seat" time="0.002373" status="run" />
+    <testcase classname="TurnSequencer" name="admission: tickets, versions, first message and seat takeover" time="0.000239" status="run" />
+    <testcase classname="TurnSequencer" name="resume serves the log from the client's horizon, or from zero" time="0.000202" status="run" />
+    <testcase classname="TurnSequencer" name="grace expiry and explicit quits sequence PlayerQuitsGameOrder" time="0.000331" status="run" />
+    <testcase classname="TurnSequencer" name="an explicit Quit message leaves at once" time="0.000104" status="run" />
+    <testcase classname="TurnSequencer" name="one client's GameFinished decides nothing: the others keep their grace" time="0.000271" status="run" />
+    <testcase classname="TurnSequencer" name="a game is decided when every seat still playing reports it finished" time="0.000463" status="run" />
+    <testcase classname="TurnSequencer" name="the next wake: a bundle while connected, grace while empty, now for presence" time="0.000125" status="run" />
+    <testcase classname="TurnSequencer" name="arbitration stays incremental over a long match and the record keeps every report" time="0.971601" status="run" />
+    <testcase classname="TurnSequencer" name="three clients: the majority wins and the minority rejoins" time="0.000237" status="run" />
+    <testcase classname="TurnSequencer" name="two clients that disagree are flagged, not dropped" time="0.000104" status="run" />
+    <testcase classname="TurnSequencer" name="no strict majority is flagged; a silent seat times out of arbitration" time="0.00037" status="run" />
+    <testcase classname="TurnSequencer" name="presence reports lag, reconnecting and grace remaining" time="0.000139" status="run" />
+    <testcase classname="TurnSequencer" name="versions 1 and 2 are both served; only version 2 receives seat round trips" time="0.000107" status="run" />
+  </testsuite><testsuite name="TurnSession"><testcase classname="TurnSession" name="executes bundled human orders and local AI orders tick by tick" time="0.000195" status="run" />
+    <testcase classname="TurnSession" name="local orders are submitted, and resubmitted after a reconnect" time="0" status="run" />
+    <testcase classname="TurnSession" name="a gap asks for a resync, and a rejoin notice asks for a reload" time="0" status="run" />
+    <testcase classname="TurnSession" name="seat round trips from the relay reach the connection panel" time="0" status="run" />
+    <testcase classname="TurnSession" name="a silent link shows as lost within the stall threshold and reconnects after five seconds" time="0.000339" status="run" />
+    <testcase classname="TurnSession" name="a horizon that stops moving shows as lost even while pongs arrive" time="0.000263" status="run" />
+    <testcase classname="TurnSession" name="after a stall the delay estimate starts over instead of keeping the gap" time="0.002014" status="run" />
+    <testcase classname="TurnSession" name="an older relay that refuses version 2 is offered version 1 once" time="0.0001" status="run" />
+    <testcase classname="TurnSession" name="orders go out at one per tick after a burst; a later move of the same flag replaces a waiting one" time="0.000158" status="run" />
+    <testcase classname="TurnSession" name="orders that must all execute are paced but never merged" time="0.000137" status="run" />
+    <testcase classname="TurnSession" name="voice waits for gameplay orders and keeps its own gap" time="0" status="run" />
+    <testcase classname="TurnSession" name="the local queue is bounded and says so" time="0.000136" status="run" />
+    <testcase classname="TurnSession" name="quitting sends the orders still waiting, then Quit" time="0" status="run" />
+    <testcase classname="TurnSession" name="a flooding reject reconnects instead of ending the match" time="0" status="run" />
+    <testcase classname="TurnSession" name="a reject ends the session" time="0" status="run" />
+  </testsuite><testsuite name="TurnTelemetry"><testcase classname="TurnTelemetry" name="histogram quantiles are within a bin of the data [network]" time="0.000364" status="run" />
+    <testcase classname="TurnTelemetry" name="session telemetry measures stalls, catch-up, reconnects and input delay [network]" time="0.000549" status="run" />
+    <testcase classname="TurnTelemetry" name="the client network summary is one stable versioned object [network]" time="0.00079" status="run" />
+    <testcase classname="TurnTelemetry" name="relay telemetry counts per-seat orders, deferrals, bundles, lateness and arbitration [network]" time="0.001083" status="run" />
+    <testcase classname="TurnTelemetry" name="a seat that never returns uses its whole grace period [network]" time="0.000836" status="run" />
+  </testsuite><testsuite name="WinningConditionDecode"><testcase classname="WinningConditionDecode" name="RoundTrip" time="0" status="run" />
+    <testcase classname="WinningConditionDecode" name="SuddenDeathRoundTrip" time="0" status="run" />
+    <testcase classname="WinningConditionDecode" name="UnknownTypeTag" time="0" status="run" />
+    <testcase classname="WinningConditionDecode" name="TruncatedStream" time="0" status="run" />
+  </testsuite><testsuite name="WinningConditionPrestigeToggle"><testcase classname="WinningConditionPrestigeToggle" name="prestige toggle edits only the prestige entry at its default rank" time="0" status="run" />
+  </testsuite><testsuite name="WinningConditionSuddenDeathToggle"><testcase classname="WinningConditionSuddenDeathToggle" name="sudden death toggle appends last and retunes in place" time="0" status="run" />
+  </testsuite><testsuite name="WinningConditions"><testcase classname="WinningConditions" name="every predicate matches the golden record stream [golden]" time="0.005296" status="run" />
+    <testcase classname="WinningConditions" name="prestige and timer adjudication exclude eliminated leaders" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: before the buzzer nobody is decided" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a single winner wins and the rest lose" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a tie at the top across alliances is a draw and teams below still lose" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: allied teams tied at the top share a win" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: an ally of the sole leader shares its win" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: an alliance tied with an outsider is a draw for everyone at the top" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a one-way alliance does not turn a tie into a shared win" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a prestige finish tied at the top across alliances is a draw" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: empty seats count for nobody" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: two players tied next to empty seats still draw" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a real AI tied at the top is a draw; replays count every team" time="0" status="run" />
+  </testsuite></testsuites>

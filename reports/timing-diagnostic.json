@@ -1,0 +1,33 @@
+{
+  "scope": "Post-hoc mechanism diagnostic for both nonzero adaptive-single model differences; retains the original primary metric/CI unchanged. Common prefixes use only observed histories, exact rational linear interpolation, no extrapolation.",
+  "cases": [
+    {
+      "pair": "ffa:islands:1010:0",
+      "end_ticks": {
+        "single": 89314,
+        "adaptive": 84866
+      },
+      "common_prefix_end_tick": 84866,
+      "primary_change_pp": -2.131601278094592,
+      "common_prefix_change_pp": -0.4630204988599675,
+      "adaptive_endpoint_effect_pp": 0.0,
+      "single_endpoint_effect_pp": 1.6685807792346246,
+      "single_outcome": "won",
+      "adaptive_outcome": "won"
+    },
+    {
+      "pair": "ffa:islands:1012:0",
+      "end_ticks": {
+        "single": 57410,
+        "adaptive": 58722
+      },
+      "common_prefix_end_tick": 57410,
+      "primary_change_pp": 0.4061964569240517,
+      "common_prefix_change_pp": -0.1074249572700749,
+      "adaptive_endpoint_effect_pp": 0.5136214141941267,
+      "single_endpoint_effect_pp": 0.0,
+      "single_outcome": "lost",
+      "adaptive_outcome": "won"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+PASS glob2-unit-tests PlatformProtocol (1 cases) (0.0s)
+PASS glob2-unit-tests PlatformClient (1 cases) (0.0s)
+
+2 passed, 0 failed, 0 skipped (0.0s of test time)
+[run_tests] JUnit report: artifacts/prestige/adaptive-v2/pr-online-version.xml (2 cases)

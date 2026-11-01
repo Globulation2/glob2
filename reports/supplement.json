@@ -1,0 +1,1094 @@
+{
+  "scope": "Ancillary paired diagnostics; all games retained, bootstrap 10000 draws seed19 by whole seed block. Fractions are sampled director-state hold estimates, not measured output or causal spending.",
+  "bundle": "8c55351224b2eb50fd5995ee441b6b27d5f189441bf90a914f5ac906cdb58a89",
+  "manifest_sha256": "b8cb9e3f07adfd8b8d7c81e4dee6d2fe4a929d30f33461620505aa067a129680",
+  "formats": {
+    "1v1": {
+      "contrasts": {
+        "adaptive_minus_baseline": {
+          "schools": {
+            "mean": 0.03162452499666875,
+            "interval95": [
+              -0.15265987249392224,
+              0.22069375539204078
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "trained_workers": {
+            "mean": -2.615890192012838,
+            "interval95": [
+              -7.725212764545574,
+              1.9294682420321643
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "technology_workers": {
+            "mean": -0.013787116318700374,
+            "interval95": [
+              -0.05200547793244511,
+              0.015144684315245202
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "population": {
+            "mean": -4.718034770610446,
+            "interval95": [
+              -12.934155090402477,
+              3.355325792735074
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "workers": {
+            "mean": -3.5718124953289627,
+            "interval95": [
+              -8.768387672456214,
+              1.6862906917146543
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "building_sites": {
+            "mean": -0.02465946553332767,
+            "interval95": [
+              -0.10262591178526534,
+              0.05290081954546049
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "unserved_food_active_fraction": {
+            "mean": -1.6414119762083241,
+            "interval95": [
+              -4.554336422830146,
+              1.2987315625878564
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "critical_food_active_fraction": {
+            "mean": 0.3002093530668444,
+            "interval95": [
+              -0.9567496114698287,
+              1.821094560653893
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "sole_engine_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              -15.625,
+              15.625
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "shared_engine_win_percentage_points": {
+            "mean": 6.25,
+            "interval95": [
+              0.0,
+              18.75
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "sole_natural_prestige_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              -9.375,
+              9.375
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "shared_natural_prestige_win_percentage_points": {
+            "mean": 6.25,
+            "interval95": [
+              0.0,
+              18.75
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "any_engine_win_percentage_points": {
+            "mean": 6.25,
+            "interval95": [
+              -9.375,
+              21.875
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          }
+        },
+        "single_minus_baseline": {
+          "schools": {
+            "mean": 0.03162452499666875,
+            "interval95": [
+              -0.15265987249392224,
+              0.22069375539204078
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "trained_workers": {
+            "mean": -2.615890192012838,
+            "interval95": [
+              -7.725212764545574,
+              1.9294682420321643
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "technology_workers": {
+            "mean": -0.013787116318700374,
+            "interval95": [
+              -0.05200547793244511,
+              0.015144684315245202
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "population": {
+            "mean": -4.718034770610446,
+            "interval95": [
+              -12.934155090402477,
+              3.355325792735074
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "workers": {
+            "mean": -3.5718124953289627,
+            "interval95": [
+              -8.768387672456214,
+              1.6862906917146543
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "building_sites": {
+            "mean": -0.02465946553332767,
+            "interval95": [
+              -0.10262591178526534,
+              0.05290081954546049
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "unserved_food_active_fraction": {
+            "mean": -1.6414119762083241,
+            "interval95": [
+              -4.554336422830146,
+              1.2987315625878564
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "critical_food_active_fraction": {
+            "mean": 0.3002093530668444,
+            "interval95": [
+              -0.9567496114698287,
+              1.821094560653893
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "sole_engine_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              -15.625,
+              15.625
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "shared_engine_win_percentage_points": {
+            "mean": 6.25,
+            "interval95": [
+              0.0,
+              18.75
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "sole_natural_prestige_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              -9.375,
+              9.375
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "shared_natural_prestige_win_percentage_points": {
+            "mean": 6.25,
+            "interval95": [
+              0.0,
+              18.75
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "any_engine_win_percentage_points": {
+            "mean": 6.25,
+            "interval95": [
+              -9.375,
+              21.875
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          }
+        },
+        "adaptive_minus_single": {
+          "schools": {
+            "mean": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "trained_workers": {
+            "mean": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "technology_workers": {
+            "mean": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "population": {
+            "mean": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "workers": {
+            "mean": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "building_sites": {
+            "mean": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "unserved_food_active_fraction": {
+            "mean": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "critical_food_active_fraction": {
+            "mean": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "sole_engine_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "shared_engine_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "sole_natural_prestige_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "shared_natural_prestige_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          },
+          "any_engine_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 32,
+            "seed_blocks": 16
+          }
+        }
+      },
+      "coverage": {
+        "baseline": {
+          "games": 32,
+          "missing_games": 0,
+          "director_start_gap_ticks_max": 0,
+          "director_tail_hold_ticks_max": 1153,
+          "economic_coverage_ticks_total": 1960455
+        },
+        "single": {
+          "games": 32,
+          "missing_games": 0,
+          "director_start_gap_ticks_max": 0,
+          "director_tail_hold_ticks_max": 1231,
+          "economic_coverage_ticks_total": 1927045
+        },
+        "adaptive": {
+          "games": 32,
+          "missing_games": 0,
+          "director_start_gap_ticks_max": 0,
+          "director_tail_hold_ticks_max": 1231,
+          "economic_coverage_ticks_total": 1927045
+        }
+      },
+      "capacity_exposure": {
+        "baseline": {
+          "helper_chosen_observations": {},
+          "games_by_max_helper_choice": {
+            "0": 32
+          },
+          "sparse_director_game_maxima": {
+            "0": 32
+          }
+        },
+        "single": {
+          "helper_chosen_observations": {
+            "1": 6636
+          },
+          "games_by_max_helper_choice": {
+            "1": 22,
+            "0": 10
+          },
+          "sparse_director_game_maxima": {
+            "0": 10,
+            "1": 22
+          }
+        },
+        "adaptive": {
+          "helper_chosen_observations": {
+            "1": 6636,
+            "2": 1
+          },
+          "games_by_max_helper_choice": {
+            "1": 21,
+            "0": 10,
+            "2": 1
+          },
+          "sparse_director_game_maxima": {
+            "0": 10,
+            "1": 22
+          }
+        }
+      },
+      "largest_adaptive_vs_single_changes": {
+        "declines": [
+          {
+            "pair": "1v1:symmetric-arena:1001:0",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 54018,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 54018,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          },
+          {
+            "pair": "1v1:symmetric-arena:1001:1",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "lost",
+              "adjudicated_outcome": "loss",
+              "ticks": 46786,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "lost",
+              "adjudicated_outcome": "loss",
+              "ticks": 46786,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          },
+          {
+            "pair": "1v1:symmetric-arena:1002:0",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 61090,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 61090,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          }
+        ],
+        "gains": [
+          {
+            "pair": "1v1:hidden-oasis:1016:1",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "lost",
+              "adjudicated_outcome": "loss",
+              "ticks": 47618,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "lost",
+              "adjudicated_outcome": "loss",
+              "ticks": 47618,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          },
+          {
+            "pair": "1v1:hidden-oasis:1016:0",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 45026,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 45026,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          },
+          {
+            "pair": "1v1:hidden-oasis:1015:1",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 58338,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 58338,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          }
+        ]
+      },
+      "adaptive_vs_single_pair_signs": {
+        "improve": 0,
+        "decline": 0,
+        "same": 32
+      }
+    },
+    "ffa": {
+      "contrasts": {
+        "adaptive_minus_baseline": {
+          "schools": {
+            "mean": 0.12034334015347917,
+            "interval95": [
+              0.046428051626644505,
+              0.19873186780120825
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "trained_workers": {
+            "mean": -0.8904312026829989,
+            "interval95": [
+              -2.8223452365736295,
+              1.202145375559935
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "technology_workers": {
+            "mean": -0.0024726291940001923,
+            "interval95": [
+              -0.014357403230283878,
+              0.009132351923303866
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "population": {
+            "mean": 2.5689716201737287,
+            "interval95": [
+              -2.1980483133660997,
+              8.299027701765876
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "workers": {
+            "mean": 2.191151148428421,
+            "interval95": [
+              -1.6690632216426196,
+              7.19030319728326
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "building_sites": {
+            "mean": 0.06324377050057597,
+            "interval95": [
+              -0.04595866144973861,
+              0.1777579893297781
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "unserved_food_active_fraction": {
+            "mean": 2.8766676754255975,
+            "interval95": [
+              1.0329970165401838,
+              4.929600658656748
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "critical_food_active_fraction": {
+            "mean": 1.1627992963464038,
+            "interval95": [
+              -0.4998749290214641,
+              2.9838175286683652
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "sole_engine_win_percentage_points": {
+            "mean": 3.125,
+            "interval95": [
+              -4.6875,
+              14.0625
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "shared_engine_win_percentage_points": {
+            "mean": -3.125,
+            "interval95": [
+              -9.375,
+              0.0
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "sole_natural_prestige_win_percentage_points": {
+            "mean": 6.25,
+            "interval95": [
+              0.0,
+              15.625
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "shared_natural_prestige_win_percentage_points": {
+            "mean": -3.125,
+            "interval95": [
+              -9.375,
+              0.0
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "any_engine_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              -6.25,
+              7.8125
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          }
+        },
+        "single_minus_baseline": {
+          "schools": {
+            "mean": 0.11584290593317208,
+            "interval95": [
+              0.04376105934782117,
+              0.19292014056113707
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "trained_workers": {
+            "mean": -0.8208953694504456,
+            "interval95": [
+              -2.75648004353753,
+              1.2763634943567332
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "technology_workers": {
+            "mean": -0.0028296585924542893,
+            "interval95": [
+              -0.014266111380701807,
+              0.008160039291267102
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "population": {
+            "mean": 2.610694222913146,
+            "interval95": [
+              -2.1832252007439528,
+              8.361513002157968
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "workers": {
+            "mean": 2.2355823582485295,
+            "interval95": [
+              -1.662681969884314,
+              7.25515297623026
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "building_sites": {
+            "mean": 0.0612849431464046,
+            "interval95": [
+              -0.047258828252646885,
+              0.1755528719601544
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "unserved_food_active_fraction": {
+            "mean": 2.9474946024793782,
+            "interval95": [
+              1.0637521674545551,
+              5.018287725814567
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "critical_food_active_fraction": {
+            "mean": 1.1278062321378566,
+            "interval95": [
+              -0.5433082833975168,
+              2.9579922411823376
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "sole_engine_win_percentage_points": {
+            "mean": 1.5625,
+            "interval95": [
+              -6.25,
+              10.9375
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "shared_engine_win_percentage_points": {
+            "mean": -3.125,
+            "interval95": [
+              -9.375,
+              0.0
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "sole_natural_prestige_win_percentage_points": {
+            "mean": 4.6875,
+            "interval95": [
+              0.0,
+              12.5
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "shared_natural_prestige_win_percentage_points": {
+            "mean": -3.125,
+            "interval95": [
+              -9.375,
+              0.0
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "any_engine_win_percentage_points": {
+            "mean": -1.5625,
+            "interval95": [
+              -9.375,
+              6.25
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          }
+        },
+        "adaptive_minus_single": {
+          "schools": {
+            "mean": 0.00450043422030709,
+            "interval95": [
+              0.0,
+              0.011823492927759083
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "trained_workers": {
+            "mean": -0.0695358332325533,
+            "interval95": [
+              -0.27459862564395476,
+              0.06599112594629486
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "technology_workers": {
+            "mean": 0.000357029398454097,
+            "interval95": [
+              -0.0002474061381311501,
+              0.0013184943334934411
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "population": {
+            "mean": -0.04172260273941686,
+            "interval95": [
+              -0.1998826538308176,
+              0.07471484561256703
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "workers": {
+            "mean": -0.044431209820108064,
+            "interval95": [
+              -0.19472456720118725,
+              0.061430937740863056
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "building_sites": {
+            "mean": 0.001958827354171369,
+            "interval95": [
+              0.0,
+              0.005818207319665203
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "unserved_food_active_fraction": {
+            "mean": -0.0708269270537807,
+            "interval95": [
+              -0.1926258989364858,
+              0.0
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "critical_food_active_fraction": {
+            "mean": 0.03499306420854716,
+            "interval95": [
+              -0.03209862478326976,
+              0.13707781740891126
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "sole_engine_win_percentage_points": {
+            "mean": 1.5625,
+            "interval95": [
+              0.0,
+              4.6875
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "shared_engine_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "sole_natural_prestige_win_percentage_points": {
+            "mean": 1.5625,
+            "interval95": [
+              0.0,
+              4.6875
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "shared_natural_prestige_win_percentage_points": {
+            "mean": 0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          },
+          "any_engine_win_percentage_points": {
+            "mean": 1.5625,
+            "interval95": [
+              0.0,
+              4.6875
+            ],
+            "pairs": 64,
+            "seed_blocks": 16
+          }
+        }
+      },
+      "coverage": {
+        "baseline": {
+          "games": 64,
+          "missing_games": 0,
+          "director_start_gap_ticks_max": 0,
+          "director_tail_hold_ticks_max": 1049,
+          "economic_coverage_ticks_total": 4098495
+        },
+        "single": {
+          "games": 64,
+          "missing_games": 0,
+          "director_start_gap_ticks_max": 0,
+          "director_tail_hold_ticks_max": 1054,
+          "economic_coverage_ticks_total": 4135181
+        },
+        "adaptive": {
+          "games": 64,
+          "missing_games": 0,
+          "director_start_gap_ticks_max": 0,
+          "director_tail_hold_ticks_max": 1054,
+          "economic_coverage_ticks_total": 4132045
+        }
+      },
+      "capacity_exposure": {
+        "baseline": {
+          "helper_chosen_observations": {},
+          "games_by_max_helper_choice": {
+            "0": 64
+          },
+          "sparse_director_game_maxima": {
+            "0": 64
+          }
+        },
+        "single": {
+          "helper_chosen_observations": {
+            "1": 7304
+          },
+          "games_by_max_helper_choice": {
+            "1": 33,
+            "0": 31
+          },
+          "sparse_director_game_maxima": {
+            "0": 31,
+            "1": 33
+          }
+        },
+        "adaptive": {
+          "helper_chosen_observations": {
+            "1": 7281,
+            "2": 8,
+            "3": 3
+          },
+          "games_by_max_helper_choice": {
+            "1": 31,
+            "0": 31,
+            "3": 1,
+            "2": 1
+          },
+          "sparse_director_game_maxima": {
+            "0": 31,
+            "1": 32,
+            "2": 1
+          }
+        }
+      },
+      "largest_adaptive_vs_single_changes": {
+        "declines": [
+          {
+            "pair": "ffa:islands:1010:0",
+            "change_pp": -2.131601278094597,
+            "single": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 89314,
+              "sole_natural_prestige_win": true,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 84866,
+              "sole_natural_prestige_win": true,
+              "shared_natural_prestige_win": false
+            }
+          },
+          {
+            "pair": "ffa:symmetric-arena:1001:0",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "unresolved",
+              "adjudicated_outcome": "loss",
+              "ticks": 90000,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "unresolved",
+              "adjudicated_outcome": "loss",
+              "ticks": 90000,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          },
+          {
+            "pair": "ffa:symmetric-arena:1001:1",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "unresolved",
+              "adjudicated_outcome": "win",
+              "ticks": 90000,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "unresolved",
+              "adjudicated_outcome": "win",
+              "ticks": 90000,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          }
+        ],
+        "gains": [
+          {
+            "pair": "ffa:islands:1012:0",
+            "change_pp": 0.4061964569240517,
+            "single": {
+              "engine_outcome": "lost",
+              "adjudicated_outcome": "loss",
+              "ticks": 57410,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 58722,
+              "sole_natural_prestige_win": true,
+              "shared_natural_prestige_win": false
+            }
+          },
+          {
+            "pair": "ffa:hidden-oasis:1016:3",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 83714,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "won",
+              "adjudicated_outcome": "win",
+              "ticks": 83714,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          },
+          {
+            "pair": "ffa:hidden-oasis:1016:2",
+            "change_pp": 0.0,
+            "single": {
+              "engine_outcome": "unresolved",
+              "adjudicated_outcome": "loss",
+              "ticks": 90000,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            },
+            "adaptive": {
+              "engine_outcome": "unresolved",
+              "adjudicated_outcome": "loss",
+              "ticks": 90000,
+              "sole_natural_prestige_win": false,
+              "shared_natural_prestige_win": false
+            }
+          }
+        ]
+      },
+      "adaptive_vs_single_pair_signs": {
+        "improve": 1,
+        "decline": 1,
+        "same": 62
+      }
+    }
+  }
+}
