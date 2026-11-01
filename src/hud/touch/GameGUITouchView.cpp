@@ -494,7 +494,8 @@ void GameGUITouch::drawHUD()
 	gfx->drawHorzLine(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), InGameTouchTheme::border());
 	for (int i = 0; i < 6; ++i)
 	{
-		const double x = ui.actions.x + i * ui.actions.w / 6, width = ui.actions.w / 6;
+		const auto button = navigationButtonRect(ui, i);
+		const double x = button.x, width = button.w;
 		const bool selected = i == 0 ? panelOpen && !inspecting() && !inspectingReadOnly() && gui.displayMode == GameGUI::CONSTRUCTION_VIEW
 			: i == 1 ? panelOpen && !inspecting() && !inspectingReadOnly() && gui.displayMode == GameGUI::FLAG_VIEW
 			: i == 2 && (lensOpen || (panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW));
@@ -506,8 +507,8 @@ void GameGUITouch::drawHUD()
             if(i==1 && ((anchor>=GameGUI::HighlightForbiddenZoneOnPanel && anchor<=GameGUI::HighlightBrushSelector) ||
                 anchor==GameGUI::HighlightBuildingOnPanel+8 || anchor==GameGUI::HighlightBuildingOnPanel+9 || anchor==GameGUI::HighlightBuildingOnPanel+10)) guided=true;
         }
-        if(guided) gfx->drawRect(int(x+2*unit),int(ui.actions.y+2*unit),int(width-4*unit),int(ui.actions.h-4*unit),Color(255,220,80));
-		drawNavigationIcon(icon, {x + width / 2, ui.actions.y + 17 * unit}, selected);
+        if(guided) gfx->drawRect(int(x+2*unit),int(button.y+2*unit),int(width-4*unit),int(button.h-4*unit),Color(255,220,80));
+		drawNavigationIcon(icon, {x + width / 2, button.y + 17 * unit}, selected);
 		const auto rect = navigationLabelRect(ui, i);
 		const auto text = navigationLabel(i);
 		drawPointLabel(rect, text, .86, false,
@@ -531,7 +532,7 @@ int GameGUITouch::navigationLabelLineHeight(const std::vector<std::string> &line
 		height = std::max(height, font->getStringHeight(line));
 	return height;
 }
-double GameGUITouch::navigationLabelHeight(double width) const
+const GameGUITouch::NavigationMeasurement &GameGUITouch::measureNavigation(double width) const
 {
 	const auto unit = globalContainer->gfx->logicalUnitsPerPoint();
 	auto *font = globalContainer->standardFont;
@@ -559,25 +560,57 @@ double GameGUITouch::navigationLabelHeight(double width) const
 			last.growth == next.growth && last.language == next.language &&
 			last.replay == next.replay && last.lineHeight == next.lineHeight &&
 			last.labels == next.labels && last.metrics == next.metrics)
-			return last.height;
+			return last;
 	}
+	// Measure whole words only when the bounded layout cache changes. Keep
+	// normal captions in one row; use balanced rows before splitting words.
+	double wordWidth = 0;
+	for (const auto &label : next.labels)
+		for (size_t at = 0; at < label.size();)
+		{
+			const auto end = label.find_first_of(" \n\t", at);
+			wordWidth = std::max(wordWidth, double(font->getStringWidth(label.substr(at, end - at))));
+			at = end == std::string::npos ? label.size() : end + 1;
+		}
+	const double minimumWidth = (wordWidth + 8) * .86 * next.growth + 4;
+	for (const int columns : {6, 3, 2, 1})
+		if (width / columns >= minimumWidth || columns == 1)
+		{
+			next.columns = columns;
+			break;
+		}
+	const double labelWidth = width / next.columns - 4;
 	double height = 16;
 	for (int i = 0; i < 6; ++i)
 	{
-		const auto lines = pointLines(next.labels[i], width * unit, .86);
+		const auto lines = pointLines(next.labels[i], labelWidth * unit, .86);
 		height = std::max(height, lines.size() * navigationLabelLineHeight(lines) *
 			.86 * InGameTouchTheme::textGrowth());
 	}
 	next.height = std::ceil(height);
 	navigationMeasurement = std::move(next); // One bounded last result per HUD.
-	return navigationMeasurement->height;
+	return *navigationMeasurement;
+}
+ViewRect GameGUITouch::navigationButtonRect(const MobileLayout &ui, int index) const
+{
+	const int columns = navigationMeasurement ? navigationMeasurement->columns : 6;
+	const double width = ui.actions.w / columns, height = ui.actions.h / (6 / columns);
+	return {ui.actions.x + (index % columns) * width,
+		ui.actions.y + (index / columns) * height, width, height};
+}
+int GameGUITouch::navigationButtonAt(const MobileLayout &ui, ViewPoint point) const
+{
+	for (int index = 0; index < 6; ++index)
+		if (navigationButtonRect(ui, index).contains(point))
+			return index;
+	return -1;
 }
 ViewRect GameGUITouch::navigationLabelRect(const MobileLayout &ui, int index) const
 {
 	const auto unit = globalContainer->gfx->logicalUnitsPerPoint();
-	const auto width = ui.actions.w / 6;
-	return {ui.actions.x + index * width + 2 * unit, ui.actions.y + 32 * unit,
-		width - 4 * unit, std::max(0.0, ui.actions.h - (ui.actions.h > 48 * unit ? 36 : 32) * unit)};
+	const auto button = navigationButtonRect(ui, index);
+	return {button.x + 2 * unit, button.y + 32 * unit,
+		button.w - 4 * unit, std::max(0.0, button.h - (button.h > 48 * unit ? 36 : 32) * unit)};
 }
 
 ViewRect GameGUITouch::scenarioMessageRect() const
