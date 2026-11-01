@@ -5696,6 +5696,14 @@ Tumma vesi
 Kuoppa
 [chasm]
 Kuilu
+[lush_grass]
+Rehevä ruoho
+[dry_grass]
+Kuiva ruoho
+[dune_sand]
+Dyynihiekka
+[pale_sand]
+Vaalea hiekka
 [terrain group water]
 Vesi
 [terrain group sand]

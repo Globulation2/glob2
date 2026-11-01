@@ -513,6 +513,18 @@
         },
         "chasm": {
           "$ref": "#/$defs/coverage"
+        },
+        "lush_grass": {
+          "$ref": "#/$defs/coverage"
+        },
+        "dry_grass": {
+          "$ref": "#/$defs/coverage"
+        },
+        "dune_sand": {
+          "$ref": "#/$defs/coverage"
+        },
+        "pale_sand": {
+          "$ref": "#/$defs/coverage"
         }
       },
       "required": [

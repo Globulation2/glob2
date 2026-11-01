@@ -129,7 +129,8 @@ TEST_SUITE("BrushCatalog")
 		CHECK(catalog.front().section == BrushSection::Terrain);
 		CHECK(catalog.front().key == "classic");
 		CHECK(ids(catalog.front()) ==
-			  std::vector<std::string>{"terrain/water", "terrain/sand", "terrain/grass"});
+			  std::vector<std::string>{"terrain/water", "terrain/sand", "terrain/grass", "terrain/lush_grass",
+									   "terrain/dry_grass", "terrain/dune_sand", "terrain/pale_sand"});
 		// Every selectable built-in type is immediately available.
 		const auto &registry = editor.game.map.terrainRegistry();
 		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
@@ -147,8 +148,9 @@ TEST_SUITE("BrushCatalog")
 			CHECK_FALSE(entry->locked);
 			CHECK(entry->experiment.empty());
 			CHECK(entry->swatch.terrain == type);
-			if (id >= 3)
-				CHECK(entry->group == terrainGroupDefinition(terrainGroup(type)).key);
+			CHECK(entry->group == (terrainGroupIsClassic(terrainGroup(type))
+									   ? std::string("classic")
+									   : std::string(terrainGroupDefinition(terrainGroup(type)).key)));
 		}
 		const auto *obstacles = findBrushGroup(catalog, BrushSection::Terrain, "obstacles");
 		REQUIRE(obstacles);

@@ -5696,6 +5696,14 @@ Prado primaveril
 Buraco
 [chasm]
 Abismo
+[lush_grass]
+Grama viçosa
+[dry_grass]
+Grama seca
+[dune_sand]
+Areia de duna
+[pale_sand]
+Areia clara
 [terrain group water]
 Água
 [terrain group sand]

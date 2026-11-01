@@ -5696,6 +5696,14 @@ AI 生成ではない
 穴
 [chasm]
 深淵
+[lush_grass]
+青々とした草地
+[dry_grass]
+枯れた草地
+[dune_sand]
+砂丘の砂
+[pale_sand]
+白い砂
 [terrain group water]
 水
 [terrain group sand]
