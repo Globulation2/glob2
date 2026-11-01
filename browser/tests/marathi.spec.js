@@ -160,7 +160,11 @@ for (const device of [
     await page.screenshot({path: path.join(evidence, 'ai-profile-bottom.png')});
     await clickControl(page, 'profile/back');
     await screen(page, 'CustomGameScreen');
-    await page.locator('#canvas').press('Escape', {delay: 80});
+    // Touch setup is a wizard: Back first returns to its preceding step.
+    for (let step = 0; step < 3; ++step) {
+      if ((await snapshot(page)).screenClass.includes('MainMenuScreen')) break;
+      await clickControl(page, 'back');
+    }
     await screen(page, 'MainMenuScreen');
 
     if (device.name === 'desktop') {
