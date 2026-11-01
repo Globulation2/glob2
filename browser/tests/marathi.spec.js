@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {createHash} = require('node:crypto');
 const {
-  gameURL, clickMainMenu, clickControl, clickByLabel, clickSettingsDone,
+  gameURL, clickMainMenu, clickControl, clickSettingsDone,
   clickCustomAIProfile, clickListRow, control, controlBox, rootBox, readBrowserFile,
 } = require('./main-menu');
 const {hasDarkText} = require('./pixels');
@@ -34,20 +34,41 @@ async function initialMenu(page) {
   }, {timeout: 180000}).toBe(true);
 }
 
+async function choosePublishedPopupOption(page, text) {
+  let options;
+  await expect.poll(async () => {
+    options = await page.evaluate(() => Object.entries(glob2Diagnostics.snapshot().controls)
+      .filter(([key]) => /^popup\/\d+$/.test(key))
+      .sort(([a], [b]) => Number(a.split('/')[1]) - Number(b.split('/')[1]))
+      .map(([, value]) => value.label));
+    return options.includes(text);
+  }, {message: `popup option "${text}" is not available`}).toBe(true);
+  // The selector was opened by a real click and owns keyboard focus. Read its
+  // actual choices rather than assuming locale indices or popup wheel bounds.
+  const index = options.indexOf(text);
+  const fromEnd = index > options.length / 2;
+  const canvas = page.locator('#canvas');
+  await canvas.press(fromEnd ? 'End' : 'Home', {delay: 40});
+  const steps = fromEnd ? options.length - 1 - index : index;
+  for (let step = 0; step < steps; ++step)
+    await canvas.press(fromEnd ? 'ArrowUp' : 'ArrowDown', {delay: 40});
+  await canvas.press('Enter', {delay: 40});
+}
+
 async function playerCategory(page, currentLanguage) {
   await clickMainMenu(page, 'settings');
   await screen(page, 'SettingsScreen');
   if ((await snapshot(page)).controls['nav.5']) await clickControl(page, 'nav.5');
   else {
     await clickControl(page, 'nav.current');
-    await clickByLabel(page, /^popup\/\d+$/, currentLanguage === 'mr' ? 'भाषा आणि खेळाडू' : 'Language & player');
+    await choosePublishedPopupOption(page, currentLanguage === 'mr' ? 'भाषा आणि खेळाडू' : 'Language & player');
   }
   await control(page, 'player.language');
 }
 
 async function chooseLanguage(page, languageName) {
   await clickControl(page, 'player.language');
-  await clickByLabel(page, /^popup\/\d+$/, languageName);
+  await choosePublishedPopupOption(page, languageName);
   await expect.poll(() => label(page, 'player.language')).toBe(languageName);
   await clickSettingsDone(page);
   await screen(page, 'MainMenuScreen');
@@ -110,7 +131,7 @@ for (const device of [
     await screen(page, 'CustomGameChoiceScreen');
     if ((await snapshot(page)).controls['profile/select']) {
       await clickControl(page, 'profile/select');
-      await clickByLabel(page, /^popup\/\d+$/, 'Maxima');
+      await choosePublishedPopupOption(page, 'Maxima');
     } else await clickListRow(page, 'profile/list', /Maxima/);
     await expect.poll(() => label(page, 'profile/use')).toBe('वापरा Maxima');
     records.aiProfileTop = await snapshot(page);
