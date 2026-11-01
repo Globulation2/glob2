@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "CustomGameRules.h"
@@ -79,7 +80,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	void loadCatalogMap(const Online::MapPlayRequest &request);
 	void launchFailed()
 	{
-		message = "Could not launch this map. Your setup is retained; try again.";
+		message = Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[Could not launch this map. Your setup is retained; try again.]", "Could not launch this map. Your setup is retained; try again.") : "Could not launch this map. Your setup is retained; try again.";
 		invalidate();
 	}
 	int selectedSpeed() const { return setup.speed; }
@@ -119,13 +120,17 @@ class CustomGameScreen : public Glob2UI::Screen
 	void beginCatalogDownload();
 	MapHeader mapHeader;
 	GameHeader gameHeader;
+	Glob2UI::DiagnosticText validationError, mapDownloadError;
 	std::string username, source, message;
 	std::unique_ptr<Online::OnlineStorage> aiStorage;
 	std::unique_ptr<Script::Library> aiLibrary;
 	std::map<std::string, std::string> frozenAIs;
 	std::vector<std::string> aiChoices() const;
+	std::string aiChoicesIdentity() const;
 	int aiSelection(int colony) const;
 	void selectAI(int colony, int selection);
+	int commonAISelection() const; // -2: no active computer colony; -1: mixed.
+	void selectAIForComputers(int selection);
 	std::string aiLabel(int colony) const;
 	void freezeAIs();
 	// Serialized bytes of the last successfully generated map (see generateMap()), read
@@ -156,9 +161,6 @@ class CustomGameScreen : public Glob2UI::Screen
 	void finishPreview();
 	bool previewBusy() const { return previewPending || candidates != nullptr; }
 	bool validMap = false, userMaps = false;
-	// LandscapePickerScreen::SortOrder, kept as a plain int here so this header does not need
-	// that screen's full declaration; see CustomGamePreferences::landscapeSortOrder.
-	int landscapeSortOrder = 0;
 	bool separateMapLibraries = true;
 	int currentTab = 0;
 	bool forRoom = false;
@@ -174,7 +176,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	{
 		Glob2UI::Element identity, controller, ai, team;
 	};
-	ColonyFields colonyFields(int colony, const Glob2UI::Presentation &p);
+	ColonyFields colonyFields(int colony, const Glob2UI::Presentation &p, const std::string &catalogIdentity = {});
 	// Game Rules tab view state, and the one group a narrow layout shows in All rules.
 	RulesView rulesView = RulesView::Summary;
 	CustomGameRules::Group rulesGroup = CustomGameRules::Group::Match;

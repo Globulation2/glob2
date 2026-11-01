@@ -9,17 +9,22 @@
 #include <Toolkit.h>
 #include <TrueTypeFont.h>
 #include <BidiText.h>
+#include <StringTable.h>
+#include <ui/TextLayout.h>
+#include <fstream>
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <string>
 #include <vector>
+#include <utility>
 
 using GAGCore::TrueTypeFont;
 
 namespace
 {
+using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
 const char *const WORDS[] = {"Tutorial", "You", "Your delay", "Warrush", "Tools", "Teams", "Team 1",
 							 "You left the match"};
 const unsigned SIZES[] = {13, 16, 20, 26, 32};
@@ -80,7 +85,6 @@ int advance(TTF_Font *font, Uint32 ch)
 bool samePixels(SDL_Surface *first, SDL_Surface *second)
 {
 	if (first->w != second->w || first->h != second->h) return false;
-	using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
 	Surface a(SDL_ConvertSurface(first, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 	Surface b(SDL_ConvertSurface(second, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 	GLOB2_REQUIRE(a && b, SDL_GetError());
@@ -93,6 +97,314 @@ bool samePixels(SDL_Surface *first, SDL_Surface *second)
 
 TEST_SUITE("FontKerning")
 {
+	TEST_CASE("script run composition preserves straight-alpha antialiasing")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		TrueTypeFont font("data/fonts/sans.ttf", 20);
+		font.setStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, 173, 211, 239));
+		auto raster = font.rasterizeString("क्षत्रिय Glob2", 1.f);
+		REQUIRE(raster);
+		Surface rgba(SDL_ConvertSurface(raster->getSDLSurface(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+		REQUIRE(rgba);
+		bool antialiased = false;
+		for (int y = 0; y < rgba->h; ++y)
+			for (int x = 0; x < rgba->w; ++x)
+			{
+				const auto *pixel = static_cast<const Uint8 *>(rgba->pixels) + y * rgba->pitch + x * 4;
+				if (pixel[3] > 0 && pixel[3] < 255)
+				{
+					antialiased = true;
+					CHECK(pixel[0] == 173); CHECK(pixel[1] == 211); CHECK(pixel[2] == 239);
+				}
+			}
+		CHECK(antialiased);
+	}
+
+	TEST_CASE("shaping clusters keep conjuncts and combining marks together")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		TrueTypeFont font("data/fonts/sans.ttf", 20);
+		struct Sample { const char *text; std::vector<size_t> ends; };
+		const Sample samples[] = {
+			{"क्षिX", {12, 13}}, {"क्षत्रिX", {9, 21, 22}},
+			{"ক্ষিX", {12, 13}}, {"র্কিX", {12, 13}}, {"কৌX", {6, 7}},
+			{"က္ကX", {9, 10}}, {"ก้X", {6, 7}}, {"o\u0323\u0301X", {5, 6}},
+			{"கிX", {6, 7}}, {"கொX", {6, 7}}, {"க்X", {6, 7}}, {"கொX", {9, 10}},
+		};
+		for (const auto &sample : samples)
+		{
+			CAPTURE(sample.text);
+			const auto ends = font.getStringClusterEnds(sample.text);
+			CHECK(ends == sample.ends);
+		}
+		CHECK(font.getStringClusterEnds("").empty());
+	}
+
+	TEST_CASE("language changes refresh default line height and Arabic shaping caches")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		glob2test::TempDir files("script-language");
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		GAGCore::Toolkit::getFileManager()->addDir(files.path.string());
+		std::ofstream(files.path / "probe.keys.txt") << "[language-code]\n";
+		std::ofstream listing(files.path / "probe.list.txt");
+		listing << "probe.keys.txt\n";
+		for (const char *code : {"en", "hi", "bn", "ur", "sw", "ta", "nb", "ms", "gu", "pa-guru", "ar", "fa", "mr", "te", "fil"})
+		{
+			listing << "probe." << code << ".txt\n";
+			std::ofstream(files.path / (std::string("probe.") + code + ".txt")) << "[language-code]\n" << code << '\n';
+		}
+		listing.close();
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		REQUIRE(strings->load("probe.list.txt"));
+		for (unsigned size : {10u, 13u, 20u})
+		{
+			strings->setLang(strings->getLangCode("en"));
+			TrueTypeFont font("data/fonts/sans.ttf", size);
+			const int originalHeight = font.getStringHeight("");
+			auto original = font.rasterizeString("Menu", 1.f);
+			REQUIRE(original);
+			for (const char *code : {"hi", "bn", "ur", "sw", "ta", "nb", "ms", "gu", "pa-guru", "hi", "mr", "hi", "te", "fil"})
+			{
+				strings->setLang(strings->getLangCode(code));
+				const int lineHeight = font.getStringHeight("");
+				CHECK(lineHeight >= originalHeight);
+				CHECK(font.getStringHeight("Menu") == lineHeight);
+				auto menu = font.rasterizeString("Menu", 1.f);
+				REQUIRE(menu);
+				CHECK(menu->getH() == lineHeight);
+				CAPTURE(code); CAPTURE(size);
+				const char *sample = std::string(code) == "hi" ? "क्षत्रिय खिलाड़ी" :
+					std::string(code) == "ta" ? "தமிழ் வீரர் 12 / 100 Glob2" :
+					std::string(code) == "ms" ? "sendiri dibekalkan dengan makanan dan buah-buahan untuk mengekalkan" :
+					std::string(code) == "bn" ? "ক্ষুদ্র শ্রমিকের প্রস্তুতি: ১২ / ১০০ Glob2" :
+					std::string(code) == "mr" ? "खेळाडूची प्रगती: ळ ऱ ऍ ऑ क्ष ज्ञ श्र 12 / 100 Glob2" :
+					std::string(code) == "te" ? "తెలుగు క్రీడాకారుడు" :
+					std::string(code) == "gu" ? "ગુજરાતી ખેલાડી" :
+					std::string(code) == "pa-guru" ? "ਪੰਜਾਬੀ ਖਿਡਾਰੀ" :
+					std::string(code) == "nb" ? "Det gjennomsnittlige angrepsnivået til koloniens krigere, der angrepshastighet og angrepsstyrke teller likt, på skalaen fra 1" :
+					std::string(code) == "fil" ? "Nagtatayo at nagsasanay habang pinapanatili ang paglago na nakatali sa" :
+					std::string(code) == "sw" ? "Nina haki ya kushiriki rekodi hizi na michoro hii kwa leseni iliyochaguliwa." : "کھلاڑی 12 / 100";
+				CHECK(font.getStringHeight(sample) <= lineHeight);
+				// Include a Latin-only label in a script locale: it uses the same
+				// composed layout and must obey the authored logical advance too.
+				for (const char *text : {sample, "Menu", "V: Onyesha maeneo yanayoonekana"})
+					for (float scale : {1.f, 1.1f, 1.5f, 2.f, 3.f})
+					{
+						const int width = font.getStringWidth(text);
+						const auto drawn = font.getStringDrawSize(text, scale);
+						CHECK(drawn.first == doctest::Approx(width));
+						const auto axes = font.getStringDrawSize(text, scale, 2.1f, 2.f);
+						CHECK(axes.first * 2.1f == doctest::Approx(width * 2.f));
+						CHECK(axes.second * 2.f == doctest::Approx(drawn.second * 2.f));
+						const auto otherAxes = font.getStringDrawSize(text, scale, 2.f, 2.1f);
+						CHECK(otherAxes.first == doctest::Approx(width));
+						CHECK(otherAxes.second * 2.1f == doctest::Approx(drawn.second * 2.f));
+					}
+				REQUIRE(font.reload());
+				CHECK(font.getStringHeight("") == lineHeight);
+			}
+			for (const char *code : {"en", "ar", "fa"})
+			{
+				strings->setLang(strings->getLangCode(code));
+				CHECK(font.getStringHeight("") == originalHeight);
+				auto menu = font.rasterizeString("Menu", 1.f);
+				REQUIRE(menu);
+				CHECK(samePixels(original->getSDLSurface(), menu->getSDLSurface()));
+				for (float scale : {1.1f, 2.f})
+				{
+					auto raw = font.rasterizeString("Menu", scale);
+					REQUIRE(raw);
+					CHECK(font.getStringDrawSize("Menu", scale).first == doctest::Approx(raw->getW() / scale));
+				}
+			}
+			// Return to Tamil after the Latin/legacy path and a reload: empty
+			// row labels and actual Tamil text must agree on their line height.
+			strings->setLang(strings->getLangCode("ta"));
+			const int tamilHeight = font.getStringHeight("");
+			CHECK(tamilHeight >= originalHeight);
+			REQUIRE(font.reload());
+			CHECK(font.getStringHeight("") == tamilHeight);
+			CHECK(font.getStringHeight("தமிழ் வீரர்") <= tamilHeight);
+		}
+	}
+
+	TEST_CASE("Tamil vowels and pulli remain whole when a narrow label wraps")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		struct Measurer : GAGGUI::ui::TextMeasurer
+		{
+			TrueTypeFont &font;
+			explicit Measurer(TrueTypeFont &font) : font(font) {}
+			int width(GAGGUI::ui::FontRole, const std::string &text) const override { return font.getStringWidth(text); }
+			int lineHeight(GAGGUI::ui::FontRole) const override { return font.getStringHeight(""); }
+			std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &text) const override
+			{ return font.getStringClusterEnds(text); }
+		};
+		for (unsigned size : {10u, 13u, 20u})
+		{
+			TrueTypeFont font("data/fonts/sans.ttf", size);
+			Measurer measurer(font);
+			// Unicode-equivalent vowel spellings must be shaped identically,
+			// including pre-base signs whose display order differs from storage.
+			for (const auto &pair : {std::pair{"கொ", "கொ"}, std::pair{"கோ", "கோ"}, std::pair{"கௌ", "கௌ"}})
+				for (float scale : {1.f, 1.5f, 2.f})
+				{
+					CAPTURE(size); CAPTURE(scale); CAPTURE(pair.first);
+					auto composed = font.rasterizeString(pair.first, scale);
+					auto decomposed = font.rasterizeString(pair.second, scale);
+					REQUIRE(composed); REQUIRE(decomposed);
+					CHECK(samePixels(composed->getSDLSurface(), decomposed->getSDLSurface()));
+				}
+			for (const char *cluster : {"கி", "கீ", "கு", "கூ", "கெ", "கே", "கை", "கொ", "கோ", "கௌ", "க்", "கொ"})
+			{
+				CAPTURE(size); CAPTURE(cluster);
+				const std::string text = std::string(cluster) + "X";
+				CHECK(font.hasGlyphsFor(text));
+				const auto lines = GAGGUI::ui::wrapText(measurer, GAGGUI::ui::FontRole::Body, text, 1);
+				REQUIRE(lines.size() == 2);
+				CHECK(lines[0] == cluster);
+				CHECK(lines[1] == "X");
+				for (float scale : {1.f, 1.1f, 1.5f, 2.f})
+				{
+					CAPTURE(scale);
+					auto raster = font.rasterizeString(text, scale);
+					REQUIRE(raster);
+					CHECK(font.getStringDrawSize(text, scale).first == doctest::Approx(font.getStringWidth(text)));
+				}
+			}
+		}
+	}
+
+	TEST_CASE("high-DPI Hindi wrapping width is preserved without cropping the raw raster")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		TrueTypeFont font("data/fonts/sans.ttf", 13);
+		// A real 390px production preview line. Its pinned hinted raster at 26px
+		// was 754px wide even though its authored advance is only 362px.
+		const std::string text = "माउस के विंडो के किनारे पर पहुँचने पर खेल और संपादक के नक्शों को खिसकाएँ।";
+		const int width = font.getStringWidth(text);
+		REQUIRE(width <= 366);
+		auto raw = font.rasterizeString(text, 2.f);
+		REQUIRE(raw);
+		TrueTypeFont physical("data/fonts/sans.ttf", 26);
+		auto reference = physical.rasterizeString(text, 1.f);
+		REQUIRE(reference);
+		CHECK(samePixels(raw->getSDLSurface(), reference->getSDLSurface()));
+		const auto drawn = font.getStringDrawSize(text, 2.f);
+		CHECK(drawn.first == doctest::Approx(width));
+		CHECK(drawn.first * 2.f <= 732.f);
+		CHECK(font.getStringWidth(text) == width);
+		// Querying destination geometry does not crop or replace the cached raster.
+		auto unchanged = font.rasterizeString(text, 2.f);
+		REQUIRE(unchanged);
+		CHECK(samePixels(raw->getSDLSurface(), unchanged->getSDLSurface()));
+	}
+
+	TEST_CASE("Bulgarian scaled advances fit authored wrapping and locale switches preserve legacy geometry")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		glob2test::TempDir files("bg-authored-advance");
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		GAGCore::Toolkit::getFileManager()->addDir(files.path.string());
+		std::ofstream(files.path / "probe.keys.txt") << "[language-code]\n";
+		std::ofstream listing(files.path / "probe.list.txt");
+		listing << "probe.keys.txt\n";
+		for (const char *code : {"en", "bg", "ru"}) {
+			listing << "probe." << code << ".txt\n";
+			std::ofstream(files.path / (std::string("probe.") + code + ".txt")) << "[language-code]\n" << code << '\n';
+		}
+		listing.close();
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		REQUIRE(strings->load("probe.list.txt"));
+		TrueTypeFont font("data/fonts/sans.ttf", 20);
+		// Exact lines clipped by 1--6.5 logical pixels in the 1280px matrix at 2x.
+		// Their 40px hinted rasters expand by 14--18.5 logical pixels after /2.
+		const char *lines[] = {
+			"страни: Комбинира растеж, обучение, защита и няколко атаки. Унищожаването на снабдяването с храна и лечението",
+			"Играч, който е загубил връзката, има до 3 минути, за да се върне. Резултатът ще се покаже във вашата история и на",
+			"Преиграва мача по-бавно, отколкото протича самият мач, така че няма да навакса. Можете да напуснете мача или да",
+			"Снабдените ви укрепления спряха учебната атака. Кулите се нуждаят от камък, а стените — от пролуки, за да могат",
+		};
+		for (const auto *text : lines) {
+			CAPTURE(text);
+			strings->setLang(strings->getLangCode("en"));
+			const int authored = font.getStringWidth(text);
+			REQUIRE(authored > 0);
+			REQUIRE(authored <= 1256);
+			auto reference = font.rasterizeString(text, 2.f);
+			REQUIRE(reference);
+			// Use one font object and the same text across repeated language
+			// switches, so stale per-raster width policy cannot hide in its cache.
+			for (const char *code : {"bg", "en", "bg", "ru", "bg"}) {
+				CAPTURE(code);
+				strings->setLang(strings->getLangCode(code));
+				const auto drawn = font.getStringDrawSize(text, 2.f);
+				CHECK(font.getStringWidth(text) == authored);
+				if (std::string(code) == "bg") CHECK(drawn.first <= 1256.f);
+				CHECK(drawn.first == doctest::Approx(std::string(code) == "bg"
+					? float(authored) : reference->getW() / 2.f));
+				auto raster = font.rasterizeString(text, 2.f);
+				REQUIRE(raster);
+				CHECK(samePixels(reference->getSDLSurface(), raster->getSDLSurface()));
+			}
+		}
+		// The policy follows locale, not script detection or a special-cased
+		// Bulgarian string: existing English and Russian geometry stays raw.
+		for (const char *code : {"en", "ru"}) {
+			strings->setLang(strings->getLangCode(code));
+			for (const char *text : {"You can leave the match or reduce the graphics settings and keep waiting.",
+				"Вы можете покинуть матч или снизить настройки графики и продолжить ожидание."}) {
+				auto raster = font.rasterizeString(text, 2.f);
+				REQUIRE(raster);
+				CHECK(font.getStringDrawSize(text, 2.f).first == doctest::Approx(raster->getW() / 2.f));
+			}
+		}
+	}
+
+	TEST_CASE("script fonts shape clusters and preserve measured raster sizes after reload")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		const char *samples[] = {"क्षत्रिय खिलाड़ी", "বাংলা শ্রমিক", "ক্ষুদ্র শ্রমিকের প্রস্তুতি: ১২ / ১০০ Glob2",
+			"র্কি কৌ কি কী কু কূ কৃ কে কৈ কো কৌ", "ক\u200d্ষ ক\u200c্ষ Player-12 replay.glob2",
+			"ગુજરાતી ખેલાડી", "ਪੰਜਾਬੀ ਖਿਡਾਰੀ",
+			"தமிழ் வீரர்", "తెలుగు క్రీడాకారుడు", "ಕನ್ನಡ ಆಟಗಾರ", "മലയാളം കളിക്കാരൻ", "ଓଡ଼ିଆ ଖେଳାଳି",
+			"ไทย ผู้เล่น", "မြန်မာ ကစားသမား", "አማርኛ ተጫዋች", "کھلاڑی 12 / 100 Glob2", "پښتو لوبغاړی", "سنڌي رانديگر", "खेळाडूची प्रगती: ळ ऱ ऍ ऑ क्ष ज्ञ श्र"};
+		for (unsigned size : {10u, 13u, 20u})
+		{
+			TrueTypeFont font("data/fonts/sans.ttf", size);
+			for (bool reloaded : {false, true})
+			{
+				if (reloaded) REQUIRE(font.reload());
+				for (const auto *sample : samples)
+				{
+					CAPTURE(sample); CAPTURE(size); CAPTURE(reloaded);
+					CHECK(font.hasGlyphsFor(sample));
+					const int width = font.getStringWidth(sample), height = font.getStringHeight(sample);
+					REQUIRE(width > 0); REQUIRE(height > 0);
+					auto raster = font.rasterizeString(sample, 1.f);
+					REQUIRE(raster);
+					CHECK(raster->getW() == width); CHECK(raster->getH() == height);
+					auto scaled = font.rasterizeString(sample, 2.f);
+					REQUIRE(scaled);
+					CHECK(font.getStringWidth(sample) == width); CHECK(font.getStringHeight(sample) == height);
+				}
+			}
+		}
+	}
+
 	TEST_CASE("Arabic and Persian visual-order text is not reordered again by SDL_ttf")
 	{
 		TtfScope ttf;

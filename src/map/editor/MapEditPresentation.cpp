@@ -57,8 +57,9 @@ const char *editorPresentationName(EditorPresentation presentation)
 EditorPresentation MapEdit::wantedPresentation() const
 {
 	auto choice = currentEditorPresentation();
-	// The tray draws through the portable renderer's UI transforms.
-	if (!globalContainer->gfx || !globalContainer->gfx->hasPortableRenderer())
+	// Software and legacy GL also implement the tray's UI transforms. Only
+	// headless tools lack a drawing context and must retain the dock.
+	if (!globalContainer->gfx)
 		choice.presentation = EditorPresentation::Dock;
 	return choice.presentation;
 }

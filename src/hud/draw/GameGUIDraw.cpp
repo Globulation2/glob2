@@ -8,10 +8,13 @@
 #include "ConnectionOverlay.h"
 #include "DynamicClouds.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "../render/MapCopies.h"
 #include <iostream>
+#include <algorithm>
+#include <cmath>
 
 #include <ApplicationHost.h>
 #include <FormatableString.h>
@@ -36,6 +39,7 @@
 
 void GameGUI::drawPanelButtons(int y)
 {
+	HudControlPaint controls(*this);
 	if (!globalContainer->isViewingGame())
 	{
 		if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
@@ -98,7 +102,16 @@ void GameGUI::drawPanelButton(int y, int pos, int numButtons, int sprite)
 {
 	int dec = (RIGHT_MENU_WIDTH - numButtons*PANEL_BUTTON_WIDTH)/2;
 
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + dec + pos*PANEL_BUTTON_WIDTH, y, globalContainer->gamegui, sprite);
+	const auto control=hudControlBounds("game/panel/"+std::to_string(pos),{globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+pos*PANEL_BUTTON_WIDTH,y,PANEL_BUTTON_WIDTH,32});
+	globalContainer->gfx->drawSprite(control.x,control.y,globalContainer->gamegui,sprite);
+    if (sprite == 4 || sprite == 5) {
+        // Retain the classic button ring, replacing its obsolete graph glyph.
+        const auto &theme = Glob2UI::inGameTheme();
+        GAGGUI::ui::SurfaceCanvas canvas(*globalContainer->gfx, theme,
+            GAGGUI::ui::resolvePresentation(*globalContainer->gfx, theme.touchTextScale));
+        canvas.fillRounded({control.x + 5, control.y + 5, 22, 22}, 11, theme.palette.panel);
+        canvas.drawIcon({control.x + 7, control.y + 7, 18, 18}, *Glob2UI::uiIcon(Glob2UI::UIIcon::Map), theme.palette.ink);
+    }
 }
 
 void GameGUI::drawValueAlignedRight(int y, int v)
@@ -148,6 +161,7 @@ void GameGUI::drawRadioButton(int x, int y, bool isSet)
 
 void GameGUI::drawPanel(void)
 {
+	HudControlPaint controls(*this);
 	PERF_SCOPE_TIME(Panel);
 	// ensure we have a valid selection and associate pointers (with a simulation
 	// thread, threadedClientStep checks the immutable PresentationFrame)
@@ -196,6 +210,18 @@ void GameGUI::dispatchSelectionPanel(void)
 	}
 }
 
+void GameGUI::drawMapOverlayControls()
+{
+    const char *keys[] = {"starving", "damaged", "defense", "fertility"};
+    const char *labels[] = {"[Starving Map]", "[Damaged Map]", "[Defense Map]", "[Fertility Map]"};
+    const bool values[] = {showStarvingMap, showDamagedMap, showDefenseMap, showFertilityMap};
+    for (int i = 0; i < 4; ++i) {
+        const auto bounds = hudControlBounds(std::string("game/overlay/") + keys[i], {});
+        if (!bounds.empty())
+            drawCheckButton(bounds.x, bounds.y, Toolkit::getStringTable()->getString(labels[i]), values[i]);
+    }
+}
+
 void GameGUI::dispatchDisplayModePanel(void)
 {
 	switch(displayMode)
@@ -207,14 +233,11 @@ void GameGUI::dispatchDisplayModePanel(void)
 		drawFlagView();
 		break;
 	case STAT_TEXT_VIEW:
-		drawStatisticsPage(YPOS_BASE_STAT);
+		drawStatisticsPanel();
 		break;
 	case STAT_GRAPH_VIEW:
-		teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
+		drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, YPOS_BASE_STAT, "[stats map overlays]");
+		drawMapOverlayControls();
 		break;
 	default:
 		std::cout << "Was not expecting displayMode" << displayMode;
@@ -230,16 +253,12 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 		drawReplayPanel();
 		break;
 	case RDM_STAT_TEXT_VIEW:
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormattableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
-		drawStatisticsPage(YPOS_BASE_STAT + 15);
+        drawStatisticsPanel();
 		break;
 	case RDM_STAT_GRAPH_VIEW:
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormattableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
-		teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
+		drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, YPOS_BASE_STAT+15, "[stats map overlays]");
+		drawMapOverlayControls();
 		break;
 	default:
 		std::cout << "Was not expecting replayDisplayMode" << replayDisplayMode;
@@ -247,14 +266,53 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 	}
 }
 
+GameGUI::TopBarLayout GameGUI::topBarLayout() const
+{
+	TopBarLayout layout;
+	for (int i = 0; i < 3; ++i)
+		layout.values[i] = std::to_string(teamStats->getFreeUnits(i) -
+			(i == 0 ? teamStats->getWorkersNeeded() : 0)) + "/" +
+			std::to_string(teamStats->getTotalUnits(i));
+	const auto &colony = drawnScene().panels.local.state();
+	layout.values[3] = std::to_string(colony.prestige);
+	layout.values[4] = std::to_string(colony.unitConversionGained);
+	layout.values[5] = std::to_string(colony.unitConversionLost);
+	const auto rate = tickRate.rate();
+	layout.values[6] = rate ? TickRateMeter::format(*rate) : "-";
+	// Measure complete icon/value groups. Keep real gutters even when large
+	// counters require the compact bar's contents to shrink to fit.
+	auto *font = globalContainer->littleFont;
+	std::array<double, 7> widths;
+	double total = 0;
+	for (int i = 0; i < 7; ++i)
+	{
+		const double icon = i < 4 ? 16 : i < 6 ? 36 : 0;
+		const double text = i == 6 ? std::max(font->getStringWidth(layout.values[i]),
+			font->getStringWidth("999.9")) : font->getStringWidth(layout.values[i]);
+		widths[i] = icon + (icon ? 6 : 0) + text;
+		total += widths[i];
+	}
+	const double speed = canChangeGameSpeed() ? TOP_BAR_SPEED_WIDTH : 0;
+	const double available = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH - 20;
+	constexpr double gutter = 14;
+	layout.scale = std::clamp((available - 6 * gutter - speed) / total, .1, 1.);
+	double x = 10 + std::max(0., (available - total * layout.scale - 6 * gutter - speed) / 2);
+	for (int i = 0; i < 7; ++i)
+	{
+		layout.x[i] = std::round(x);
+		x += widths[i] * layout.scale + gutter;
+	}
+	return layout;
+}
+
 int GameGUI::topBarSpeedX() const
 {
-	// After the three unit counters, prestige and conversions.
-	return ((globalContainer->gfx->getW()-640)>>2) + 10 + 3*70 + 90 + TOP_BAR_CONVERSION_WIDTH;
+	return int(topBarLayout().x[6]);
 }
 
 void GameGUI::drawTopScreenBar(void)
 {
+	HudControlPaint controls(*this);
     if (touch->usesHUD()) return;
 	// bar background
 	if (!globalContainer->settings.translucentPanels)
@@ -268,19 +326,29 @@ void GameGUI::drawTopScreenBar(void)
 	Uint8 whiteC[]={200, 200, 200};
 	Uint8 yellowC[]={200, 200, 0};
 	Uint8 actC[3];
-	int free, tot;
+	int free;
 
-	int dec = (globalContainer->gfx->getW()-640)>>2;
-	dec += 10;
+	const auto layout = topBarLayout();
+	auto *gfx = globalContainer->gfx;
+	auto *font = globalContainer->littleFont;
+	const auto &colony = drawnScene().panels.local.state();
+	const double scale = layout.scale;
+	const auto drawValue = [&](int index, double x) {
+		SDL_Rect clip{0, 0, gfx->getW() - RIGHT_MENU_WIDTH, 16};
+		gfx->setUITransform(scale, x, (16 - font->getStringHeight("Ag") * scale) / 2, &clip);
+		gfx->drawString(0, 0, font, layout.values[index]);
+		gfx->setUITransform(); gfx->setClipRect();
+	};
+	int dec;
 
 	globalContainer->unitmini->setBaseColor(presentationColor(drawnScene().panels.local.state().color));
 	for (int i=0; i<3; i++)
 	{
+		dec = int(layout.x[i]);
 		free = teamStats->getFreeUnits(i);
 		// worker is a special case
 		if (i==0)
 			free -= teamStats->getWorkersNeeded();
-		tot = teamStats->getTotalUnits(i);
 		if (free<0)
 			memcpy(actC, redC, sizeof(redC));
 		else if (free>0)
@@ -288,9 +356,14 @@ void GameGUI::drawTopScreenBar(void)
 		else
 			memcpy(actC, whiteC, sizeof(whiteC));
 
-		globalContainer->gfx->drawSprite(dec+2, -1, globalContainer->unitmini, i);
+		const double spriteScale = 16 * scale / std::max(globalContainer->unitmini->getW(i), globalContainer->unitmini->getH(i));
+		SDL_Rect iconClip{dec, 0, int(std::ceil(16 * scale)), 16};
+		gfx->setUITransform(spriteScale, dec + (16 * scale - globalContainer->unitmini->getW(i) * spriteScale) / 2,
+			(16 - globalContainer->unitmini->getH(i) * spriteScale) / 2, &iconClip);
+		gfx->drawSprite(0, 0, globalContainer->unitmini, i);
+		gfx->setUITransform(); gfx->setClipRect();
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
-		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, FormattableString("%0 / %1").arg(free).arg(tot).c_str());
+		drawValue(i, dec + 22 * scale);
 		globalContainer->littleFont->popStyle();
 
 		// Tutorial highlight arrow for this counter. The sprite, the free/total
@@ -307,43 +380,32 @@ void GameGUI::drawTopScreenBar(void)
 		};
 		if(highlights.find(highlightForUnitType[i]) != highlights.end())
 		{
-			arrowPositions.push_back(HighlightArrowPosition(dec+22, 32, 39));
+			arrowPositions.push_back(HighlightArrowPosition(int(dec + 22 * scale), 32, 39));
 		}
 
-		dec += 70;
 	}
 
-	// draw prestige stats
-	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormattableString("%0 / %1 / %2").arg(drawnScene().panels.local.state().prestige).arg(drawnScene().panels.hud.totalPrestige()).arg(drawnScene().panels.hud.state().prestigeToReach).c_str());
-
-	dec += 90;
-
-	// Match the touch HUD: team-coloured Globs on either side of an arrow,
-	// followed by a left-aligned total. Centre each complete group in its cell.
-	auto *gfx = globalContainer->gfx;
-	auto *font = globalContainer->littleFont;
-	const auto &colony = drawnScene().panels.local.state();
-	const std::array<std::string, 2> conversions{
-		std::to_string(colony.unitConversionGained), std::to_string(colony.unitConversionLost)};
-	const double cellWidth = TOP_BAR_CONVERSION_WIDTH / 2., gap = 6;
-	const double maxTextWidth = std::max(font->getStringWidth(conversions[0]), font->getStringWidth(conversions[1]));
-	const double scale = std::min(1., (cellWidth - 8 - 4 - gap) / (32 + maxTextWidth));
-	const double iconHeight = 16 * scale, iconWidth = 2 * iconHeight + 4;
+	// Same primary prestige value and secondary victory progress as touch.
+	touch->drawPrestigeIcon({layout.x[3] + 8 * scale, 8}, 16 * scale);
+	drawValue(3, layout.x[3] + 22 * scale);
+	const auto &match = drawnScene().panels.hud;
+	if (match.state().prestigeWinCondition && match.state().prestigeToReach > 0)
+	{
+		const double width = (22 + font->getStringWidth(layout.values[3])) * scale;
+		const double progress = std::clamp(double(match.totalPrestige()) / match.state().prestigeToReach, 0., 1.);
+		gfx->drawFilledRect(int(layout.x[3]), 14, int(width), 2, Color(80, 70, 55));
+		gfx->drawFilledRect(int(layout.x[3]), 14, int(width * progress), 2, Color(232, 194, 107));
+	}
 	for (int side = 0; side < 2; ++side)
 	{
-		const double x = dec + side * cellWidth;
-		const double left = x + (cellWidth - iconWidth - gap - font->getStringWidth(conversions[side]) * scale) / 2;
+		const double x = layout.x[4 + side];
 		unitConversionIcon->draw(gfx, globalContainer->unitmini,
-			{left, (16 - iconHeight) / 2, iconWidth, iconHeight}, presentationColor(colony.color), side == 0);
-		SDL_Rect clip{int(x), 0, int(cellWidth), 16};
-		gfx->setUITransform(scale, left + iconWidth + gap,
-			(16 - font->getStringHeight("Ag") * scale) / 2, &clip);
-		gfx->drawString(0, 0, font, conversions[side]);
-		gfx->setUITransform(); gfx->setClipRect();
+			{x, (16 - 16 * scale) / 2, 36 * scale, 16 * scale}, presentationColor(colony.color), side == 0);
+		drawValue(4 + side, x + 42 * scale);
 	}
 
 	// draw the speed control and the simulation tick rate
-	dec = topBarSpeedX();
+	dec = int(layout.x[6]);
 	if (canChangeGameSpeed())
 	{
 		const int lit = litSpeedChevrons();
@@ -361,9 +423,8 @@ void GameGUI::drawTopScreenBar(void)
 	}
 	const int shortfall = tickRateShortfall();
 	memcpy(actC, shortfall==0 ? whiteC : shortfall==1 ? yellowC : redC, sizeof(actC));
-	const auto rate = tickRate.rate();
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
-	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, rate ? TickRateMeter::format(*rate).c_str() : "-");
+	drawValue(6, dec);
 	globalContainer->littleFont->popStyle();
 
 	// draw window bar
@@ -547,22 +608,31 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// Preserve authored messages from ordinary SGSL scenarios and old saves.
+		auto tutorialLineStep = [&](const std::vector<std::string> &lines) {
+			int step = std::max(20, globalContainer->standardFont->getStringHeight(""));
+			for (const auto &line : lines)
+				step = std::max(step, globalContainer->standardFont->getStringHeight(line));
+			return step;
+		};
 		if (hud.state().legacyScriptTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
 			setMultiLine(hud.state().legacyScriptText, &lines);
-			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
+			const int lineStep = tutorialLineStep(lines);
+			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*lineStep+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
 				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
-				yinc += 20;
+				yinc += lineStep;
 			}
 
 			if (swallowSpaceKey)
 			{
-				globalContainer->gfx->drawFilledRect(24, ymesg+yinc+8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, 20, 0,0,0,128);
-				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, Toolkit::getStringTable()->getString("[press space]"));
-				yinc += 20;
+				const auto prompt = Toolkit::getStringTable()->getString("[press space]");
+				const int promptStep = std::max(lineStep, globalContainer->standardFont->getStringHeight(prompt));
+				globalContainer->gfx->drawFilledRect(24, ymesg+yinc+8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, promptStep, 0,0,0,128);
+				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, prompt);
+				yinc += promptStep;
 			}
 			yinc += 8;
 		}
@@ -572,11 +642,12 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			std::vector<std::string> lines;
 			setMultiLine(scriptText, &lines);
-			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
+			const int lineStep = tutorialLineStep(lines);
+			globalContainer->gfx->drawFilledRect(24, ymesg+yinc-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*lineStep+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
 				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
-				yinc += 20;
+				yinc += lineStep;
 			}
 		}
 
@@ -587,7 +658,7 @@ void GameGUI::drawOverlayInfos(void)
 			yinc = std::max(yinc, 32);
 		}
 
-		ymesg += yinc+2;
+		ymesg = eventFeedStartY().value_or(ymesg+yinc+2);
 
 		ymesg = drawEventFeed(32, ymesg);
 		if (touch->usesHUD())
@@ -704,6 +775,8 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
     if (touch) touch->prepareDraw();
+	prepareHudOwnership();
+	HudControlPaint controls(*this);
     const int sidebar=touch->usesHUD() ? 0 : RIGHT_MENU_WIDTH;
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
@@ -720,7 +793,7 @@ void GameGUI::drawAll(int team)
 	arrowPositions.clear();
 	const bool drewTorus = torusView.active() &&
 		torusView.draw(scene,this,localTeamNo, drawOptions, viewportX, viewportY,
-			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(),
+			globalContainer->gfx->getW()-sidebar, globalContainer->gfx->getH(),
 			camera.zoom, camera.fractionX(), camera.fractionY());
 	GAGCore::ApplicationHost::overviewDrawn(drewTorus, drewTorus && torusView.overviewSettled());
 	if (!drewTorus)
@@ -732,7 +805,7 @@ void GameGUI::drawAll(int team)
 		if (globalContainer->settings.translucentPanels)
 			globalContainer->gfx->setClipRect();
 		else
-			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
+			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-sidebar, globalContainer->gfx->getH()-16);
 		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions,
 			globalContainer->settings.buildingParticles ? &visibleBuildings : nullptr, &buildingGuiState, gamePaused, cloudGridLimit);
 		if (globalContainer->settings.buildingParticles)
@@ -820,53 +893,31 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
     touch->drawHUD();
-	if (connectionOverlay)
-	{
-		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-		SDL_Rect area{0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16};
-		if (touch->usesHUD())
-		{
-			// Under the status strip, away from the thumb corner (layout is in drawable pixels).
-			const auto ui = touch->hudLayout();
-			area = {int(ui.world.x), int(ui.status.y+ui.status.h), int(ui.world.w), int(ui.world.y+ui.world.h-ui.status.y-ui.status.h)};
-			// Narrow portrait phones wrap the status strip onto a second row.
-			if (ui.world.h > ui.world.w)
-			{
-				area.y += int(28*unit);
-				area.h -= int(28*unit);
-			}
-		}
-		connectionOverlay->draw(touch->usesHUD(), area, unit);
-	}
 
-	if ((torusView.enabled() || !torusView.active()) && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
-	// draw menu if any
-	if (inGameMenu)
-	{
-		globalContainer->gfx->setClipRect();
-		drawInGameMenu();
-	}
+    // Painting follows the same ownership order as input: base HUD, guidance,
+    // connection panel, Hive cards, then modal dialogs and text input.
+    if ((torusView.enabled() || !torusView.active()) && !touch->usesHUD()) drawMapZoomControls(camera,true,true);
+    // Translucent modal panels must not reveal tutorial arrows underneath.
+    if(!activeDialog())
+        for(const auto &arrow:arrowPositions)
+            globalContainer->gfx->drawSprite(arrow.x,arrow.y,globalContainer->gamegui,arrow.sprite);
+    if(touch){touch->drawControls();touch->drawKeyboardFocus();}
+    const bool connectionModal=connectionOverlay && connectionOverlay->blocksGameplay();
+    const bool foregroundTools = touch && touch->obscuresTutorial();
+    if(!activeDialog() && !connectionModal && !foregroundTools)Tutorial::drawDestination(*this);
+    if(tutorialGuidance && !activeDialog() && !typingInputScreen && !connectionModal && !foregroundTools)
+        tutorialGuidance->draw(SDL_GetTicks());
+    if(connectionOverlay)
+        connectionOverlay->draw(touch->usesHUD(),connectionOverlayArea(),globalContainer->gfx->logicalUnitsPerPoint());
+    if(hiveCardsVisible())
+    {
+        hiveCards->setComposerOpen(bool(typingInputScreen));
+        hiveCards->draw(SDL_GetTicks());
+    }
+    if(inGameMenu){globalContainer->gfx->setClipRect();drawInGameMenu();}
+    if(typingInputScreen){globalContainer->gfx->setClipRect();drawInGameTextInput();}
+    if(scrollableText)drawInGameScrollableText();
 
-	if(hiveCards && !inGameMenu && !scrollableText && globalContainer->settings.hiveMindEnabled){hiveCards->setComposerOpen(bool(typingInputScreen));hiveCards->draw(SDL_GetTicks());}
-
-	// draw input box if any
-	if (typingInputScreen)
-	{
-		globalContainer->gfx->setClipRect();
-		drawInGameTextInput();
-	}
-	if (scrollableText)
-		drawInGameScrollableText();
-
-	// draw the highlight arrows
-	for(int i=0; i<(int)arrowPositions.size(); ++i)
-	{
-		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
-
-	}
-    if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
-    if (!activeDialog()) Tutorial::drawDestination(*this);
-    if (tutorialGuidance && !activeDialog() && !typingInputScreen) tutorialGuidance->draw(SDL_GetTicks());
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)
@@ -940,65 +991,67 @@ void GameGUI::drawXPProgressBar(int x, int y, int act, int max)
 	globalContainer->gfx->setClipRect();
 }
 
-void GameGUI::drawStatisticsPage(int y)
+InGameStatisticsPanel &GameGUI::statistics()
 {
-	// Page 0 is the colony summary, then one page per group of the metric catalog;
-	// spectators get the win chances as a last page.
-	const int x = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + RIGHT_MENU_OFFSET;
-	const int pages = statisticsPages();
-	const bool chances = globalContainer->liveSpectating && measurementPage == pages - 1;
-	auto *strings = Toolkit::getStringTable();
-	const std::string name = strings->getString(measurementPage == 0 ? "[stat page colony]"
-												: chances			   ? "[Win chance]"
-																	   : Stats::groupKey(Stats::Group(measurementPage - 1)));
-	const std::string counter = FormattableString(strings->getString("[stat page %0 of %1]")).arg(measurementPage + 1).arg(pages);
-	Font *font = globalContainer->littleFont;
-	const int width = RIGHT_MENU_WIDTH - 2 * RIGHT_MENU_OFFSET;
-	const int counterWidth = font->getStringWidth(counter);
-	globalContainer->gfx->drawString(x + 4, y, font, name, width - counterWidth - 12);
-	globalContainer->gfx->drawString(x + width - 4 - counterWidth, y, font, counter);
-	if (measurementPage == 0)
-		teamStats->drawText(x, y);
-	else if (chances)
-		drawWinProbabilities(x, y);
-	else if (drawnScene().world.history)
-		TeamStatChart::paintReadings(*globalContainer->gfx, x, y + 16, width, *drawnScene().world.history->teams.at(localTeamNo), Stats::Group(measurementPage - 1));
+    if (!statisticsPanel) {
+        statisticsPanel = std::make_unique<InGameStatisticsPanel>(*this);
+        if (!globalContainer->runNoX) statisticsPanel->attach(*globalContainer->gfx);
+    }
+    statisticsPanel->sync(drawnScene(), localTeamNo, globalContainer->isViewingGame(), globalContainer->liveSpectating);
+    return *statisticsPanel;
 }
 
-int GameGUI::statisticsPages() const
+bool GameGUI::statisticsVisible() const
 {
-	return 1 + TeamStatChart::readingGroups + (globalContainer->liveSpectating ? 1 : 0);
+    if (touch && touch->usesHUD()) return touch->needsStatisticsHistory();
+    return selectionMode == NO_SELECTION && (globalContainer->isViewingGame()
+        ? replayDisplayMode == RDM_STAT_TEXT_VIEW : displayMode == STAT_TEXT_VIEW);
 }
 
-void GameGUI::drawWinProbabilities(int x, int y)
+GAGGUI::ui::Rect GameGUI::statisticsBounds() const
 {
-	// Spectators can use the model to follow any AI-only game. Players do not
-	// receive an extra prediction about an outcome that the game may not use.
-	if (!globalContainer->liveSpectating)
-		return;
+    if (touch && touch->usesHUD()) {
+        const auto body = touch->statisticsContentRect();
+        return {int(body.x), int(body.y), int(body.w), int(body.h)};
+    }
+    auto *gfx = globalContainer->gfx;
+    const auto zoom = mapZoomControlsLayout(camera, true, true);
+    const bool showZoom = torusView.enabled() || !torusView.active();
+    const int bottom = showZoom && zoom.height ? zoom.y - 4 : gfx->getH();
+    return {gfx->getW() - RIGHT_MENU_WIDTH, YPOS_BASE_STAT, RIGHT_MENU_WIDTH,
+        std::max(0, bottom - YPOS_BASE_STAT)};
+}
 
+GAGGUI::ui::Host &GameGUI::statisticsHost()
+{
+    auto &panel = statistics();
+    panel.setBounds(statisticsBounds());
+    panel.host().layoutIfNeeded();
+    return panel.host();
+}
 
-	Font *font = globalContainer->littleFont;
-	globalContainer->gfx->drawString(x + 4, y, font,
-		Toolkit::getStringTable()->getString("[Win chance]"));
-	const int inc = 14;
-	int row = 0;
-	const PresentationFrame &scene = drawnScene();
-	for (const auto &chance : scene.panels.hud.winChances)
-	{
-		const int permille = chance.permille;
-		const int top = y + 16 + row * inc;
-		// The name is clipped rather than allowed to run into the figure: player
-		// names are arbitrary length and the panel is narrow.
-		const int percentX = x + RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET - 40;
-		globalContainer->gfx->drawFilledRect(x + 4, top + 3, 8, 8, chance.color);
-		globalContainer->gfx->drawString(x + 16, top, font, chance.name.c_str(),
-			percentX - (x + 16) - 4);
-		globalContainer->gfx->drawString(percentX, top, font,
-			FormattableString(chance.alive ? "%0%" : "-")
-				.arg(permille / 10).c_str());
-		++row;
-	}
+void GameGUI::drawStatisticsPanel()
+{
+    statisticsHost();
+    statisticsPanel->drawEmbedded(*globalContainer->gfx, Uint32(SDL_GetTicks()));
+}
+
+bool GameGUI::handleStatisticsEvent(const SDL_Event &event)
+{
+    if (!statisticsVisible() || activeDialog()) return false;
+    auto &panel = statistics();
+    const bool mobile = touch && touch->usesHUD();
+    if (event.type == SDL_EVENT_KEY_DOWN && (event.key.key == SDLK_ESCAPE || event.key.key == SDLK_AC_BACK) && !panel.host().popupOpen()) {
+        panel.cancelEmbeddedInput(); panel.host().focus("", false);
+        if (mobile) touch->closeStatistics();
+        // Desktop Escape retains its normal in-game menu action.
+        return mobile;
+    }
+    statisticsHost();
+    if (!panel.routeEvent(event)) return false;
+    viewportSpeedX = viewportSpeedY = 0;
+    mapPanPushed = false;
+    return true;
 }
 
 SceneRequest GameGUI::sceneRequest(bool includeTiming)
@@ -1006,7 +1059,7 @@ SceneRequest GameGUI::sceneRequest(bool includeTiming)
 	SceneRequest request;
 	request.localTeam = localTeamNo;
     request.includeTelemetry = inGameMenu == IGM_TELEMETRY;
-    request.includeHistory = (displayMode == STAT_GRAPH_VIEW && measurementPage > 0) || (touch && touch->needsStatisticsHistory());
+    request.includeHistory = ((!activeDialog() && statisticsVisible()) || inGameMenu == IGM_STATISTICS);
 	request.spectating = globalContainer->isViewingGame();
 	request.view = clientRequests.latest();
 	if (selectionMode == BUILDING_SELECTION)

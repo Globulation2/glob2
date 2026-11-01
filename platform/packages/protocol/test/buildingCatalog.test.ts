@@ -6,6 +6,7 @@ import {
   parse,
   simVersionKey,
   buildingCatalogExperimentKeys,
+  BUILTIN_EXPERIMENT_KEYS,
 } from '../src/index.ts';
 import { catalogRulesVersion, checkBuildingCatalogHash } from '../src/node/index.ts';
 import { SETUP_SAVE_SHARED, SIM_VERSION } from '../scripts/fixtureCases.ts';
@@ -59,7 +60,7 @@ describe('building catalog contracts', () => {
     expect(() =>
       buildingCatalogExperimentKeys(catalogWith([{ ...definition, help: '' }])),
     ).toThrow();
-    const definitions = Array.from({ length: 59 }, (_, i) => ({
+    const definitions = Array.from({ length: 64 - BUILTIN_EXPERIMENT_KEYS.length }, (_, i) => ({
       ...definition,
       key: `feature-${i}`,
     }));

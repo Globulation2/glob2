@@ -38,7 +38,7 @@ buildings, and growing means taking the next chamber down the tunnel.
   tunnel's mouth to the deposit, so no haul crosses the slow ground and a quarry is poor building
   land. Stone deposits never run out, so a quarry is a permanent supply; the contest is
   over holding one.
-- **Rock.** Every vertex of an uncarved tile is ridge rock or outcrop (`ridge-terrain` experiment),
+- **Rock.** Every vertex of an uncarved tile is ridge rock or outcrop,
   so an uncarved tile is as impassable as the stone it replaced, and towers still shoot over it.
   Outcrop takes the face where smooth noise is high and thins out behind it, so walls read broken at
   the face and solid within. Open tiles against the face are mixed: walkable, no building, no crop,

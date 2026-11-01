@@ -78,8 +78,6 @@ inline int buildingExtraHeaderHeight(const BuildingType& type)
 // they take before the tick rate.
 #define TOP_BAR_CHEVRON_PITCH 7
 #define TOP_BAR_SPEED_WIDTH 40
-// Two coloured Glob-and-arrow counters before the speed control.
-#define TOP_BAR_CONVERSION_WIDTH 110
 
 // The sidebar on the right
 #include "GameGUIViewport.h"
@@ -95,7 +93,7 @@ inline int buildingExtraHeaderHeight(const BuildingType& type)
 // Three buttons (the default game) sit at a 40px pitch from 8px inside the brush
 // panel, exactly where they always have. A fourth (the farm-areas experiment) at
 // that pitch would run off the panel, so four are centred on it at a 38px
-// pitch: 7, 45, 83 and 121, leaving 7px at each edge of the 160px panel.
+// pitch. Both layouts remain centred when the sidebar width changes.
 constexpr int ZONE_STRIP_BUTTON_SIZE = 32;
 constexpr int ZONE_STRIP_PITCH_3 = 40;
 constexpr int ZONE_STRIP_PITCH_4 = 38;
@@ -201,3 +199,11 @@ enum GameGUIGfxId
 };
 
 
+// Playback button geometry is one model shared by renderer, human input, and
+// the domain's framework controls. The progress track itself is informational.
+inline std::array<GAGGUI::ui::Rect, 3> replayPlaybackControlBounds()
+{
+    const int x=REPLAY_BAR_WIDTH-REPLAY_PROGRESS_BAR_X_OFFSET-REPLAY_PROGRESS_BAR_CAP_WIDTH;
+    const int y=REPLAY_BAR_Y+REPLAY_PROGRESS_BAR_Y_OFFSET,inc=REPLAY_PROGRESS_BAR_BUTTON_WIDTH;
+    return {{{x-3*inc,y,inc,20},{x-2*inc,y,inc,20},{x-inc,y,inc,20}}};
+}

@@ -1,0 +1,152 @@
+/* Reuse the game's pinned fonts. Vite emits the source files
+   with content hashes; no operating-system font installation is required. */
+@font-face {
+  font-family: 'Glob2 Bulgarian';
+  src: url('../../../browser/assets/sans-core.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* Use one font for Cyrillic and Latin within Bulgarian text. The existing
+   display and body subsets contain Latin only. */
+:root:lang(bg) {
+  --glob2-script-body: 'Glob2 Bulgarian', 'DejaVu Sans', Verdana, sans-serif;
+  --glob2-script-display: 'Glob2 Bulgarian', 'DejaVu Sans', Verdana, sans-serif;
+  --font-body: var(--glob2-script-body);
+  --font-display: var(--glob2-script-display);
+}
+
+option:lang(bg) {
+  font-family: 'Glob2 Bulgarian', 'DejaVu Sans', Verdana, sans-serif;
+}
+
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansDevanagari-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0900-097F, U+1CD0-1CFF, U+A8E0-A8FF;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansBengali-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0980-09FF;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansGurmukhi-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0A00-0A7F;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansGujarati-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0A80-0AFF;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansOriya-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0B00-0B7F;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansTamil-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0B80-0BFF;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansTelugu-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0C00-0C7F;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansKannada-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0C80-0CFF;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansMalayalam-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0D00-0D7F;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansThai-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0E00-0E7F;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansMyanmar-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+1000-109F, U+A9E0-A9FF, U+AA60-AA7F;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansEthiopic-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+1200-139F, U+2D80-2DDF, U+AB00-AB2F;
+}
+@font-face {
+  font-family: 'Glob2 Scripts';
+  src: url('../../../data/fonts/scripts/NotoSansArabic-Regular.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+/* Existing locales retain their typography. New script locales and their
+   language-picker options use the approved fonts before generic fallbacks. */
+:root:is(
+  :lang(hi),
+  :lang(bn),
+  :lang(ur),
+  :lang(mr),
+  :lang(te),
+  :lang(ta),
+  :lang(th),
+  :lang(gu),
+  :lang(pa),
+  :lang(kn),
+  :lang(am),
+  :lang(my),
+  :lang(ne),
+  :lang(ps),
+  :lang(bho),
+  :lang(ml),
+  :lang(or),
+  :lang(sd)
+) {
+  --glob2-script-body:
+    'Glob2 Scripts', 'Nunito Variable', 'Nunito', ui-rounded, system-ui, -apple-system, 'Segoe UI',
+    Roboto, sans-serif;
+  --glob2-script-display: 'Glob2 Scripts', 'Glob2 Sans', 'DejaVu Sans', Verdana, sans-serif;
+  --font-body: var(--glob2-script-body);
+  --font-display: var(--glob2-script-display);
+}
+
+option:is(
+  :lang(hi),
+  :lang(bn),
+  :lang(ur),
+  :lang(mr),
+  :lang(te),
+  :lang(ta),
+  :lang(th),
+  :lang(gu),
+  :lang(pa),
+  :lang(kn),
+  :lang(am),
+  :lang(my),
+  :lang(ne),
+  :lang(ps),
+  :lang(bho),
+  :lang(ml),
+  :lang(or),
+  :lang(sd)
+) {
+  font-family: 'Glob2 Scripts', sans-serif;
+}

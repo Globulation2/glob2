@@ -25,6 +25,7 @@ namespace glob2test
 // fixtures instead; silently dropping their state would weaken continuation tests.
 // PreservePending explicitly supports representable 164–168 warm-field jobs,
 // retaining every private array and deadline while rejecting new cold/cache state.
+// The appended probability history is omitted from pre-190 TeamStats records.
 // Other historical field differences remain the fixture author's responsibility.
 class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 {
@@ -40,7 +41,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
+    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY || formatVersion<FILE_FORMAT_VERSION_MAINLINE_TERRAINS || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
@@ -157,6 +158,10 @@ public:
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
+        if (formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY && name=="winProbability") {
+            suppressedAt=sections.size();
+            return;
+        }
         if (formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
             && (name=="adaptiveGradients" || name=="adaptiveCapture")) {
             suppressedAt=sections.size();
@@ -248,7 +253,17 @@ public:
         }
     }
     void write(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed() && !observationField(name) && !(name=="airLocked" && !hasUnifiedMovement(formatVersion))) BinaryOutputStream::write(data,size,name); }
+    {
+        if (suppressed() || observationField(name)
+            || (name=="airLocked" && !hasUnifiedMovement(formatVersion))) return;
+        BinaryOutputStream::write(data,size,name);
+        // Format187 retired this MapHeader word. Relabelled historical fixtures
+        // still need the empty requirement list before the resource definitions.
+        if (!injecting && name=="SHA1" && !sections.empty() && sections.back()=="MapHeader"
+            && formatVersion>=FILE_FORMAT_VERSION_TERRAIN_PROPERTIES
+            && formatVersion<FILE_FORMAT_VERSION_MAINLINE_TERRAINS)
+            BinaryOutputStream::writeUint32(0,"count");
+    }
     void writeEndianIndependent(const void* data, std::size_t size, std::string_view name) override
     { if (!suppressed() && !observationField(name) && !(name=="airLocked" && !hasUnifiedMovement(formatVersion))) BinaryOutputStream::writeEndianIndependent(data,size,name); }
     void writeUint32(Uint32 value, std::string_view name) override

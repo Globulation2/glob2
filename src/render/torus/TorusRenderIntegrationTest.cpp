@@ -61,6 +61,10 @@ static void tiledCapture(bool hd = false)
         frames << "GLOB2_HIGHRES 1\n";
         for (int variant = 0; variant < 16; ++variant)
             frames << "terrain" << variant << " 32 32 4 grass.webp -\n";
+        // Catalogue grass, sand and ice draw from their own 8x8-block banks.
+        for (const char *bank : {"terrain-grass", "terrain-sand", "terrain-ice"})
+            for (int variant = 0; variant < 256; ++variant)
+                frames << bank << variant << " 32 32 4 grass.webp -\n";
         frames.close();
         hdPath.emplace("GLOB2_EXPERIMENT_TEXTURE_DIR", directory.string().c_str());
     }
@@ -281,7 +285,10 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     probe->overlayFailure=false;
     gui.selectionMode=GameGUI::NO_SELECTION;
     bool initialized=false;
-    for(unsigned attempt=0;attempt<128 && !initialized;++attempt){
+    // Software Vulkan can hold the first terrain pages for seconds, so this
+    // setup waits on time rather than on a fixed number of frames.
+    const auto deadline=SDL_GetTicks()+60000;
+    for(unsigned attempt=0;(attempt<128 || SDL_GetTicks()<deadline) && !initialized;++attempt){
         int vx=17,vy=21;
         REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
         initialized=gfx->flushDeviceFrame() && probe->completedWorld;

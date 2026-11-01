@@ -3,6 +3,7 @@
 #include "hive/HiveClient.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
@@ -44,7 +45,7 @@ GameGUI::GameGUI(bool persistPreferences)
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
 	         (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()), // width of the screen
-	         20, // x offset
+	         RIGHT_MENU_OFFSET, // center the 128px minimap in the desktop sidebar
 	         10, // y offset
 	         128, // width
 	         128, //height
@@ -99,6 +100,11 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 
 void GameGUI::init()
 {
+	hudHost.reset();
+	buildingGuiState.clear();
+	pendingBuildingReconciliations = {};
+	buildingInfoScrollTarget.reset();
+    statisticsPanel.reset();
     pendingSettings = false;
     tutorialGuidance.reset();
     tutorialHighlights.clear();
@@ -279,6 +285,8 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
         { return font->getStringWidth(text.c_str()); }
         int lineHeight(GAGGUI::ui::FontRole) const override
         { return font->getStringHeight("M"); }
+        std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &text) const override
+        { return font->getStringClusterEnds(text); }
     } measurer(globalContainer->standardFont);
     // Reserve continuation indentation while wrapping. The shared UTF-8
     // wrapper also handles unspaced CJK text, long words and explicit newlines.
@@ -405,4 +413,36 @@ void GameGUI::updateCommander(bool caughtUp)
  hiveCards=std::make_unique<Hive::Dialog>(hive); hiveCards->compose=[this]{openCommander();}; hiveCards->attach(*globalContainer->gfx);
  }
  if(hiveCards)hiveCards->invalidate();
+}
+
+bool GameGUI::hiveCardsVisible() const
+{
+	return hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu &&
+		(!connectionOverlay || !connectionOverlay->blocksGameplay()) &&
+		(hiveCards->local() || globalContainer->settings.hiveMindEnabled);
+}
+
+std::vector<GAGGUI::ui::Host *> GameGUI::inspectionHosts()
+{
+	if (auto *dialog = activeDialog(); dialog && dialog != typingInputScreen.get())
+		return {&dialog->host()};
+	std::vector<GAGGUI::ui::Host *> hosts;
+	if (typingInputScreen)
+	{
+		prepareHudOwnership();
+		hosts.push_back(&typingInputScreen->host());
+	}
+	else
+	{
+		updateTutorial();
+		hosts.push_back(&hudInspectionHost());
+		if (statisticsVisible() && (!connectionOverlay || !connectionOverlay->blocksGameplay()))
+			hosts.push_back(&statisticsHost());
+		if (tutorialGuidance && (!touch || !touch->obscuresTutorial()) &&
+            (!connectionOverlay || !connectionOverlay->blocksGameplay()))
+			hosts.push_back(&tutorialGuidance->host());
+	}
+	if (hiveCardsVisible())
+		hosts.push_back(&hiveCards->host());
+	return hosts;
 }

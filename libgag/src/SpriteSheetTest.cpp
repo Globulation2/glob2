@@ -104,6 +104,231 @@ TEST_CASE("sheet tiles load as the frames they were packed from") {
 	}
 }
 
+TEST_CASE("deferred terrain HD loads native first and bounds frame windows across toggles [display]") {
+    glob2test::TempDir scratch("deferred-terrain-hd");
+    const auto artwork = scratch.path / "data/gfx";
+    const auto hd = scratch.path / "data/highres/v1";
+    std::filesystem::create_directories(artwork);
+    std::filesystem::create_directories(hd);
+    std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/native-sheet.webp",
+        artwork / "native-sheet.webp");
+    std::ofstream(artwork / "deferred-terrain.sheet") << "native-sheet.webp image 0 16 4 2\n";
+    std::ofstream frame(hd / "frame.webp", std::ios::binary);
+    frame.write(reinterpret_cast<const char*>(lossyAlphaFixture::webp), sizeof(lossyAlphaFixture::webp));
+    frame.close();
+    std::ofstream index(hd / "frames.txt");
+    index << "GLOB2_HIGHRES 1\n";
+    for (unsigned i = 0; i < 16; ++i)
+        index << "deferred-terrain" << i << " 4 2 4 "
+              << (i == 1 || i == 14 ? "frame.webp" : "missing.webp") << " -\n";
+    index.close();
+    glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ScopedEnvironment cooperative("GLOB2_ASSET_THREADS", "0");
+    glob2test::ToolkitScope toolkit;
+    GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "deferred terrain HD");
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite::deferHighResolution("data/gfx/deferred-terrain");
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/deferred-terrain"));
+    REQUIRE(sprite.getFrameCount() == 16);
+    const auto wait = [&] {
+        const auto deadline = SDL_GetTicks() + 10000;
+        while (!GAGCore::Toolkit::pollAssets(2) && SDL_GetTicks() < deadline) SDL_Delay(1);
+        REQUIRE(GAGCore::Sprite::pollHighResolution(1));
+    };
+    const auto resident = [&] {
+        return std::count_if(sprite.experimentImages.begin(), sprite.experimentImages.end(),
+            [](auto *image) { return image != nullptr; });
+    };
+    CHECK(resident() == 0);
+    for (unsigned i = 0; i < 16; ++i) CHECK(sprite.baseFrame(i) == sprite.nativeFrame(i));
+    const std::array<unsigned, 2> both{1, 14};
+    const std::array<unsigned, 1> one{14};
+    sprite.setHighResolutionFrames(both);
+    CHECK(sprite.baseFrame(1) == sprite.nativeFrame(1));
+    // Queue without executing the cooperative decoder, then advance the window.
+    // The overlapping endpoint must keep its original in-flight subscription.
+    CHECK_FALSE(GAGCore::Sprite::pollHighResolution(10));
+    const auto submitted = GAGCore::Toolkit::assets().metrics().submitted;
+    sprite.setHighResolutionFrames(one);
+    CHECK_FALSE(GAGCore::Sprite::pollHighResolution(10));
+    CHECK(GAGCore::Toolkit::assets().metrics().submitted == submitted);
+    sprite.setHighResolutionFrames(both);
+    wait();
+    CHECK(resident() == 2);
+    REQUIRE(sprite.baseFrame(1)->getW() == 16);
+    REQUIRE(sprite.baseFrame(14)->getW() == 16);
+    sprite.setHighResolutionFrames(one);
+    CHECK(resident() == 1);
+    CHECK(sprite.baseFrame(1) == sprite.nativeFrame(1));
+    GAGCore::Sprite::setHighResolution(false);
+    CHECK(resident() == 0);
+    GAGCore::Sprite::setHighResolution(true);
+    CHECK(resident() == 1);
+    CHECK(sprite.baseFrame(14)->getW() == 16);
+    CHECK(sprite.baseFrame(1) == sprite.nativeFrame(1));
+    // Cancel pending reads when the visible window disappears.
+    sprite.setHighResolutionFrames(both);
+    GAGCore::Sprite::pollHighResolution(1);
+    sprite.setHighResolutionFrames({});
+    wait();
+    CHECK(resident() == 0);
+    for (unsigned i = 0; i < 16; ++i) REQUIRE(sprite.nativeFrame(i));
+}
+
+static void checkShippedWaterHD(bool programmable) {
+    // Keep the configured packaged runtime asset root: source PNG paths are not
+    // the WebP inputs exercised by application startup.
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ToolkitScope toolkit;
+    auto *context = GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "shipped terrain HD window");
+#ifdef HAVE_OPENGL
+    if (programmable) {
+        REQUIRE(context->requestBackendSwitch(GAGCore::RendererBackend::ProgrammableGL));
+        const auto deadline = SDL_GetTicks() + 10000;
+        do { context->nextFrame(); SDL_Delay(1); }
+        while (context->backendSwitchStatus().active != GAGCore::RendererBackend::ProgrammableGL && SDL_GetTicks() < deadline);
+        REQUIRE(context->backendSwitchStatus().active == GAGCore::RendererBackend::ProgrammableGL);
+    }
+#endif
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite::deferHighResolution("data/gfx/terrain-water");
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/terrain-water"));
+    // Water is one 4x4 wave block: 16 variants in each of 16 phases.
+    constexpr unsigned variants = 16, frames = variants * 16;
+    REQUIRE(sprite.getFrameCount() == frames);
+    for (unsigned frame = 0; frame < frames; ++frame) {
+        REQUIRE(sprite.nativeFrame(frame));
+        CHECK(sprite.nativeFrame(frame)->getW() == 32);
+        CHECK(sprite.nativeFrame(frame)->getH() == 32);
+    }
+    const auto resident = [&] {
+        return std::count_if(sprite.experimentImages.begin(), sprite.experimentImages.end(),
+            [](auto *image) { return image != nullptr; });
+    };
+    const auto wait = [&] {
+        const auto deadline = SDL_GetTicks() + 30000;
+        while (!GAGCore::Toolkit::pollAssets(2) && SDL_GetTicks() < deadline) SDL_Delay(1);
+        REQUIRE(GAGCore::Sprite::pollHighResolution(1));
+    };
+    CHECK(resident() == 0);
+    const std::array<unsigned, 2> loopEndpoints{frames - 1, variants - 1};
+    sprite.setHighResolutionFrames(loopEndpoints);
+    wait();
+    REQUIRE(resident() == 2);
+    for (unsigned frame : loopEndpoints) {
+        REQUIRE(sprite.experimentImages[frame]);
+        CHECK(sprite.baseFrame(frame)->getW() == 128);
+        CHECK(sprite.baseFrame(frame)->getH() == 128);
+    }
+    const auto retained = sprite.baseFrame(variants - 1)->lifetimeIdentity();
+    const std::array<unsigned, 2> nextEndpoints{variants - 1, 2 * variants - 1};
+    sprite.setHighResolutionFrames(nextEndpoints);
+    CHECK(sprite.experimentImages[frames - 1] == nullptr);
+    CHECK(sprite.baseFrame(variants - 1)->lifetimeIdentity() == retained);
+    wait();
+    REQUIRE(resident() == 2);
+    CHECK(sprite.baseFrame(variants - 1)->lifetimeIdentity() == retained);
+    CHECK(sprite.baseFrame(2 * variants - 1)->getW() == 128);
+    CHECK(sprite.baseFrame(2 * variants - 1)->getH() == 128);
+    CHECK(sprite.nativeFrame(frames - 1)->getW() == 32);
+    CHECK(sprite.experimentImages[variants - 1]->preparedMips.empty());
+    context->drawFilledRect(0, 0, 64, 64, GAGCore::Color(0, 0, 0));
+    auto *native = sprite.nativeFrame(0), *hd = sprite.baseFrame(variants - 1);
+    context->drawSurface(0, 0, 32, 32, native, 0, 0, 32, 32);
+    context->drawSurface(32, 0, 32, 32, hd, 0, 0, 128, 128);
+    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(nullptr, SDL_DestroySurface);
+    if (context->renderDevice()) {
+        context->nextFrame();
+        GAGCore::CaptureRequest capture;
+        pixels.reset(context->renderDevice()->captureSynchronously(capture));
+    } else {
+        context->renderer->flush(); pixels.reset(context->renderer->capture());
+    }
+    REQUIRE(pixels);
+    for (int x : {16, 48}) {
+        Uint8 red, green, blue, alpha;
+        REQUIRE(SDL_ReadSurfacePixel(pixels.get(), x, 16, &red, &green, &blue, &alpha));
+        CHECK(blue > red); CHECK(blue > green); CHECK(alpha == 255);
+    }
+    // A complete current/next bank must eventually resolve under the ordinary
+    // polling budget, even when no animation time is allowed for warm-up.
+    std::vector<unsigned> fullWindow;
+    for (unsigned variant = 0; variant < variants; ++variant) {
+        fullWindow.push_back(variant); fullWindow.push_back(variants + variant);
+    }
+    sprite.setHighResolutionFrames(fullWindow);
+    wait();
+    REQUIRE(resident() == 2 * variants);
+    for (unsigned frame : fullWindow) {
+        REQUIRE(sprite.experimentImages[frame]);
+        CHECK(sprite.baseFrame(frame)->getW() == 128);
+    }
+    sprite.setHighResolutionFrames({});
+    wait();
+    CHECK(resident() == 0);
+    CHECK(sprite.nativeFrame(frames - 1)->getW() == 32);
+}
+
+TEST_CASE("shipped animated water bank streams only requested HD endpoints [display]") {
+    checkShippedWaterHD(false);
+}
+#ifdef HAVE_OPENGL
+TEST_CASE("shipped animated water bank source frames draw through programmable GL [display][writes-preferences]") {
+    checkShippedWaterHD(true);
+}
+#endif
+
+TEST_CASE("shipped water HD keeps up with moving full-variant animation windows [display][artifacts][benchmark]") {
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ToolkitScope toolkit;
+    GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "water HD cadence");
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite::deferHighResolution("data/gfx/terrain-water");
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/terrain-water"));
+    constexpr unsigned variants = 16, phases = 16, ticks = 6;
+    REQUIRE(sprite.getFrameCount() == variants * phases);
+    std::vector<unsigned> window;
+    window.reserve(variants * 2);
+    std::size_t readySum = 0, samples = 0, peak = 0, peakResident = 0;
+    for (unsigned tick = 0; tick < phases * ticks * 2; ++tick) {
+        const unsigned phase = tick / ticks % phases;
+        window.clear();
+        for (unsigned variant = 0; variant < variants; ++variant) {
+            window.push_back(phase * variants + variant);
+            window.push_back((phase + 1) % phases * variants + variant);
+        }
+        sprite.setHighResolutionFrames(window);
+        GAGCore::Toolkit::pollAssets(2);
+        const auto resident = std::count_if(sprite.experimentImages.begin(), sprite.experimentImages.end(),
+            [](auto *image) { return image != nullptr; });
+        CHECK(resident <= variants * 2);
+        peakResident = std::max(peakResident, std::size_t(resident));
+        if (tick >= phases * ticks) {
+            std::size_t ready = 0;
+            for (unsigned variant = 0; variant < variants; ++variant)
+                ready += sprite.experimentImages[phase * variants + variant] != nullptr;
+            readySum += ready; ++samples; peak = std::max(peak, ready);
+        }
+        SDL_Delay(16);
+    }
+    std::ofstream evidence(glob2test::artifactDir() / "water-hd-cadence.txt");
+    evidence << "variants " << variants << "\nphase_polls " << ticks << "\nmeasured_polls " << samples
+             << "\ncurrent_hd_average " << double(readySum) / samples
+             << "\ncurrent_hd_fraction " << double(readySum) / (samples * variants)
+             << "\ncurrent_hd_peak " << peak << "\nresident_peak " << peakResident
+             << "\nasset_peak_working_bytes " << GAGCore::Toolkit::assets().metrics().peakWorkingBytes << '\n';
+    // Coverage is diagnostic: fast development builds and CI hardware do not
+    // establish shipping throughput. Bounded residency and progress are required.
+    CHECK(readySum > 0);
+}
+
 TEST_CASE("portable HD uses standalone frames without requesting GL atlases [display]") {
     glob2test::TempDir scratch("portable-hd");
     const auto artwork = scratch.path / "data/gfx";
@@ -543,6 +768,13 @@ TEST_CASE("sprites without an index still load one file per frame") {
 	writePattern(fixture.scratch.path / "single0.webp", 0, 1, 1, 4);
 	writePattern(fixture.scratch.path / "single1r.webp", 1, 1, 1, 4);
 	writePattern(fixture.scratch.path / "single3.webp", 3, 1, 1, 4);
+    const auto shadow = fixture.scratch.path / "later-root";
+    std::filesystem::create_directories(shadow);
+    writePattern(shadow / "single0.webp", 3, 1, 1, 4);
+    writePattern(shadow / "single1r.webp", 3, 1, 1, 4);
+    writePattern(shadow / "single10.webp", 3, 1, 1, 4);
+    writePattern(shadow / "Single2.webp", 3, 1, 1, 4); // case-sensitive membership must not fill frame2
+    GAGCore::Toolkit::getFileManager()->addDir(shadow.string());
 	GAGCore::Sprite sprite;
 	REQUIRE(sprite.load("single"));
 	// Frame 2 is missing, so frame 3 is never reached.

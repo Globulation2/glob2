@@ -22,11 +22,36 @@ import { SetPreview } from './Preview.tsx';
 type Entry = Record<string, unknown>;
 const object = (v: unknown): Entry =>
   v && typeof v === 'object' && !Array.isArray(v) ? (v as Entry) : {};
-const name = (key: string) =>
-  key
-    .replace(/([A-Z])/g, ' $1')
-    .replaceAll('_', ' ')
-    .replace(/^./, (x) => x.toUpperCase());
+type FieldContext =
+  | 'terrain_properties'
+  | 'resource_properties'
+  | 'resource_yield'
+  | 'terrain_animation'
+  | 'resource_animation';
+// Reuse captions only when their meaning matches this schema context.
+// Remaining fields are advanced inspector identifiers, displayed exactly as stored.
+const FIELD_CAPTIONS: Partial<Record<FieldContext, Record<string, string>>> = {
+  terrain_properties: {
+    resourcesGrow: 'Resource growth enabled',
+    buildable: 'Buildings allowed',
+    groundSpeedQ8: 'Ground movement',
+    groundHealthQ8: 'Ground health change',
+    airHealthQ8: 'Air health change',
+    growthQ8: 'Resource growth',
+  },
+  resource_properties: {
+    primaryMaterial: 'Main material',
+    growthRate: 'Growth rate',
+    spreadRate: 'Spread rate',
+    farmable: 'Can be farmed',
+  },
+  resource_yield: { growthRate: 'Growth rate' },
+};
+function fieldCaption(context: FieldContext, key: string) {
+  const fields = FIELD_CAPTIONS[context];
+  const source = fields && Object.hasOwn(fields, key) ? fields[key] : undefined;
+  return source ? t(source) : undefined;
+}
 
 type JsonEdit = { text: string; error: string; value: string };
 const JsonEdits = createContext<{
@@ -38,17 +63,19 @@ function ObjectControls({
   value,
   onChange,
   idPrefix,
+  context,
 }: {
   value: Entry;
   onChange: (v: Entry) => void;
   idPrefix: string;
+  context: FieldContext;
 }) {
   useLocale();
   return (
     <div className="set-properties">
       {Object.entries(value).map(([key, v]) => (
         <label key={key}>
-          {name(key)}
+          {fieldCaption(context, key) ?? <code>{key}</code>}
           {typeof v === 'boolean' ? (
             <input
               type="checkbox"
@@ -236,7 +263,8 @@ export function SetEditor({
       if (account) {
         const abort = new AbortController();
         queueMicrotask(() => {
-          if (!abort.signal.aborted) setPack(newPackage(account.displayName));
+          if (!abort.signal.aborted)
+            setPack({ ...newPackage(account.displayName), title: t('New set') });
         });
         return () => abort.abort();
       }
@@ -370,12 +398,18 @@ export function SetEditor({
     if (!source) return;
     const added: Entry =
       kind === 'terrain'
-        ? { key, name: 'Custom ' + name(preset), base: preset, appearance: preset, properties: {} }
+        ? {
+            key,
+            name: t('Terrain') + ': ' + preset,
+            base: preset,
+            appearance: preset,
+            properties: {},
+          }
         : {
             ...structuredClone(source),
             key,
             requiredExperiment: '',
-            presentation: { ...source.presentation, name: 'Custom ' + source.presentation.name },
+            presentation: { ...source.presentation, name: t('Resource') + ': ' + resourcePreset },
           };
     change({ ...pack, [kind === 'terrain' ? 'terrains' : 'resources']: [...entries, added] });
     setSelected(entries.length);
@@ -597,7 +631,10 @@ export function SetEditor({
               </select>
             </label>
             <button disabled={busy || published} onClick={addEntry}>
-              <RichMessage source={'Add {slot0}'} slots={{ slot0: kind }} />
+              <RichMessage
+                source={'Add {slot0}'}
+                slots={{ slot0: kind === 'terrain' ? t('Terrain') : t('Resource') }}
+              />
             </button>
             <ul className="set-entry-list">
               {entries.map((e, i) => (
@@ -647,6 +684,7 @@ export function SetEditor({
                     </label>
                     <p>{t('Properties inherit this preset until you add an override.')}</p>
                     <ObjectControls
+                      context="terrain_properties"
                       idPrefix={String(entry['key']) + '/properties'}
                       value={object(entry['properties'])}
                       onChange={(v) => updateEntry({ ...entry, properties: v })}
@@ -672,7 +710,7 @@ export function SetEditor({
                           .filter((k) => !(k in object(entry['properties'])))
                           .map((p) => (
                             <option key={p} value={p}>
-                              {name(p)}
+                              {fieldCaption('terrain_properties', p) ?? p}
                             </option>
                           ))}
                       </select>
@@ -692,6 +730,7 @@ export function SetEditor({
                 ) : (
                   <>
                     <ObjectControls
+                      context="resource_properties"
                       idPrefix={String(entry['key']) + '/properties'}
                       value={object(entry['properties'])}
                       onChange={(v) => updateEntry({ ...entry, properties: v })}
@@ -722,10 +761,11 @@ export function SetEditor({
                                 updateEntry({ ...entry, yields: next });
                               }}
                             />
-                            {name(m)}
+                            <code>{m}</code>
                           </label>
                           {enabled && (
                             <ObjectControls
+                              context="resource_yield"
                               idPrefix={String(entry['key']) + '/yields/' + m}
                               value={object(yields[m])}
                               onChange={(v) =>
@@ -811,6 +851,7 @@ export function SetEditor({
                       onChange={(v) => updateMaterial({ ...material, variants: v })}
                     />
                     <ObjectControls
+                      context="terrain_animation"
                       idPrefix={String(entry['key']) + '/animation'}
                       value={{
                         animation_frames: material['animation_frames'] ?? 1,
@@ -914,6 +955,7 @@ export function SetEditor({
                       {t('Add stock level')}
                     </button>
                     <ObjectControls
+                      context="resource_animation"
                       idPrefix={String(entry['key']) + '/animation'}
                       value={{
                         animationFrames: presentation['animationFrames'] ?? 1,

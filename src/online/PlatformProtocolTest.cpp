@@ -45,6 +45,9 @@ TEST_SUITE("PlatformProtocol")
 		CHECK_EQ(localized.error.code, failed.error.code);
 		CHECK_EQ(localized.error.message, failed.error.message);
 		CHECK_EQ(localized.error.details, failed.error.details);
+		CHECK_EQ(localized.error.messageKey.value(), "Room {id} not found.");
+		CHECK_EQ(localized.error.messageParams["id"], "ABCDEF");
+		CHECK_FALSE(localized.error.invalidLocalization);
 
 		auto event = decodeServerMessage(
 			R"({"type":"event","event":"auth.handoff.failed","data":{"reason":"denied"},"extra":1})");

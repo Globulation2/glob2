@@ -10,6 +10,7 @@ import {
   t,
   tp,
   formatNumber,
+  formatDate,
   subscribe,
   translateError,
 } from '../src/index.ts';
@@ -34,17 +35,137 @@ describe('online locale resolution', () => {
     expect(resolveLocale('zh')).toBe('zh-Hans');
     expect(resolveLocale('sr-RS')).toBe('sr-Cyrl');
     expect(resolveLocale('in-ID')).toBe('id');
+    expect(resolveLocale('bg')).toBe('bg');
+    expect(resolveLocale('bg_BG')).toBe('bg');
+    expect(resolveLocale('bg-Cyrl-BG')).toBe('bg');
+    expect(resolveLocale(['bg-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('bg-u-nu-latn')).toBe('bg');
     expect(resolveLocale('xx, fr;q=0.2, de;q=0.8')).toBe('de');
     expect(resolveLocale('fr;q=0, de')).toBe('de');
   });
+  it('selects Bokmål for Norwegian preferences while preserving Nynorsk fallbacks', () => {
+    for (const tag of [
+      'nb',
+      'nb-NO',
+      'NB_no',
+      'no',
+      'no-NO',
+      'no-bok',
+      'no-u-ca-nyn',
+      'no-x-nyn',
+      'no-NO-u-ca-ny',
+    ])
+      expect(resolveLocale(tag)).toBe('nb');
+    expect(resolveLocale(['nn-NO', 'sv-SE'])).toBe('sv');
+    expect(resolveLocale(['no-nyn', 'da-DK'])).toBe('da');
+    expect(resolveLocale('nn-NO')).toBe('en');
+    expect(resolveLocale(['no_NO_NY', 'sv-SE'])).toBe('sv');
+    expect(resolveLocale(['no-NO-NY', 'fr'])).toBe('fr');
+    expect(resolveLocale('de;q=0.2, no-NO;q=0.8')).toBe('nb');
+    expect(localeFromCookie('glob2_locale=nb')).toBe('nb');
+  });
   it('accepts only supported cookie values', () => {
     expect(localeFromCookie('other=1; glob2_locale=pt-BR; theme=dark')).toBe('pt-BR');
+    expect(localeFromCookie('glob2_locale=te')).toBe('te');
     expect(localeFromCookie('glob2_locale=%')).toBeUndefined();
     expect(localeFromCookie('glob2_locale=<script>')).toBeUndefined();
+  });
+  it('respects written scripts for installed script-specific catalogs', () => {
+    expect(resolveLocale('hi-Deva-IN')).toBe('hi');
+    expect(resolveLocale('mr')).toBe('mr');
+    expect(resolveLocale('mr-IN')).toBe('mr');
+    expect(resolveLocale('mr-Deva-IN')).toBe('mr');
+    expect(resolveLocale(['mr-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('mr-u-nu-latn')).toBe('mr');
+    expect(resolveLocale('mr-x-arab')).toBe('mr');
+    expect(resolveLocale(['hi-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('hi-u-nu-latn')).toBe('hi');
+    expect(resolveLocale('hi-x-arab')).toBe('hi');
+    expect(resolveLocale('ur-Arab-PK')).toBe('ur');
+    expect(resolveLocale(['ur-Latn', 'hi-IN'])).toBe('hi');
+    expect(resolveLocale('te')).toBe('te');
+    expect(resolveLocale('te-IN')).toBe('te');
+    expect(resolveLocale('te-Telu-IN')).toBe('te');
+    expect(resolveLocale(['te-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale(['te-Telu-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('te-u-nu-latn')).toBe('te');
+    expect(resolveLocale('te-x-latn')).toBe('te');
+    expect(resolveLocale('sw-Latn-KE')).toBe('sw');
+    expect(resolveLocale(['sw-Arab', 'de'])).toBe('de');
+  });
+  it('resolves Filipino and Tagalog aliases only for the Latin script', () => {
+    for (const tag of ['fil', 'fil-PH', 'tl', 'tl-PH', 'TL_ph', 'fil-Latn-PH', 'tl-Latn'])
+      expect(resolveLocale(tag)).toBe('fil');
+    for (const tag of [
+      'fil-Tglg-PH',
+      'tl-Tglg',
+      'fil-Arab',
+      'tl-Cyrl',
+      'fil-Latn-Tglg',
+      'tl-Latn-Arab',
+    ])
+      expect(resolveLocale([tag, 'fr'])).toBe('fr');
+    expect(resolveLocale('fil-u-nu-latn')).toBe('fil');
+    expect(resolveLocale('tl-x-arab')).toBe('fil');
+    expect(resolveLocale('en-PH')).toBe('en');
+    expect(resolveLocale(['ceb-PH', 'de'])).toBe('de');
+  });
+  it('resolves Bengali regions and script without claiming Latin transliteration', () => {
+    for (const tag of ['bn', 'bn-BD', 'bn-IN', 'bn-Beng-BD', 'bn_Beng_IN', 'bn-u-nu-latn'])
+      expect(resolveLocale(tag)).toBe('bn');
+    expect(resolveLocale(['bn-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale(['bn-Deva-IN', 'de'])).toBe('de');
+    expect(resolveLocale('bn-x-latn')).toBe('bn');
   });
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
+  });
+  it('resolves Tamil regions and script without claiming Latin transliteration', () => {
+    for (const tag of ['ta', 'ta-IN', 'ta-LK', 'ta-Taml', 'ta-Taml-IN', 'ta-u-nu-latn'])
+      expect(resolveLocale(tag)).toBe('ta');
+    expect(resolveLocale(['ta-Latn', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ta')).toBe('ta');
+  });
+  it.each(locales)('loads selectable $code through the default browser loader', async (locale) => {
+    vi.resetModules();
+    const runtime = await import('../src/index.ts');
+    await runtime.setLocale(locale.code);
+    expect(runtime.getLocale()).toBe(locale.code);
+    expect(runtime.hasMessage('Welcome to the colony')).toBe(true);
+  });
+  it('selects Malay Rumi and skips explicit Jawi requests', () => {
+    for (const tag of ['ms', 'ms-MY', 'ms-Latn-MY', 'ms_MY', 'ms-u-nu-arab', 'ms-x-arab'])
+      expect(resolveLocale(tag)).toBe('ms');
+    expect(resolveLocale(['ms-Arab-MY', 'fr'])).toBe('fr');
+    expect(resolveLocale(['ms-Latn-Arab', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ms')).toBe('ms');
+  });
+});
+describe('Bulgarian presentation', () => {
+  it('uses Bulgarian counted player forms and locale number formatting', async () => {
+    registerCatalog('bg', {
+      '{count} player': { one: '{count} играч', other: '{count} играчи' },
+      'Something went wrong. Please try again.': 'Възникна грешка. Опитайте отново.',
+    });
+    await setLocale('bg');
+    for (const count of [0, 1, 2, 21, 1.5]) {
+      const number = new Intl.NumberFormat('bg').format(count);
+      expect(tp('{count} player', '{count} players', count)).toBe(
+        `${number} ${count === 1 ? 'играч' : 'играчи'}`,
+      );
+    }
+    expect(formatNumber(1234.5)).toBe(new Intl.NumberFormat('bg').format(1234.5));
+    expect(localeFromCookie('glob2_locale=bg')).toBe('bg');
+    for (const source of [
+      'Skin purchases are not available on this instance.',
+      'This creation tool is not available on this instance.',
+      'The skin designer is not available on this instance.',
+    ]) {
+      expect(translateError({ body: { messageKey: source } })).toBe(
+        'Възникна грешка. Опитайте отново.',
+      );
+    }
   });
 });
 describe('message presentation', () => {
@@ -89,6 +210,37 @@ describe('message presentation', () => {
       `many ${new Intl.NumberFormat('ar').format(11)}`,
     );
   });
+  it('uses Filipino plural branches and locale formatting', async () => {
+    registerCatalog('fil', {
+      '{count} item': { one: 'one {count}', other: 'other {count}' },
+    });
+    await setLocale('fil');
+    for (const count of [0, 1, 2, 4, 6, 9, 10, 14, 0.5]) {
+      const branch = new Intl.PluralRules('fil').select(count);
+      expect(tp('{count} item', '{count} items', count)).toBe(
+        `${branch} ${new Intl.NumberFormat('fil').format(count)}`,
+      );
+    }
+    expect(formatNumber(1234.5)).toBe(new Intl.NumberFormat('fil').format(1234.5));
+    const date = new Date('2026-10-31T00:00:00Z');
+    const options = { dateStyle: 'long', timeZone: 'UTC' } as const;
+    expect(formatDate(date, options)).toBe(new Intl.DateTimeFormat('fil', options).format(date));
+  });
+  it('uses Marathi plural categories and localized counts', async () => {
+    registerCatalog('mr', {
+      '{count} item': { one: '{count} एक', other: '{count} अनेक' },
+    });
+    await setLocale('mr');
+    expect(new Intl.PluralRules('mr').resolvedOptions().pluralCategories.sort()).toEqual([
+      'one',
+      'other',
+    ]);
+    for (const count of [0, 1, 2, 12, 1.5]) {
+      expect(tp('{count} item', '{count} items', count)).toBe(
+        `${new Intl.NumberFormat('mr').format(count)} ${count === 1 ? 'एक' : 'अनेक'}`,
+      );
+    }
+  });
   it('notifies subscribers and formats with the selected locale', async () => {
     registerCatalog('de', {});
     let updates = 0;
@@ -112,9 +264,27 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 33 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(33);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(33);
+  it('contains unique game catalog mappings including Bulgarian, Tamil, Bengali, Bokmål, Malay and Marathi', () => {
+    expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'bn', gameCode: 'bn', name: 'বাংলা', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'mr', gameCode: 'mr', name: 'मराठी', dir: 'ltr' });
+    expect(locales).toContainEqual({
+      code: 'nb',
+      gameCode: 'nb',
+      name: 'Norsk bokmål',
+      dir: 'ltr',
+    });
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
+    expect(locales).toContainEqual({
+      code: 'ms',
+      gameCode: 'ms',
+      name: 'Bahasa Melayu',
+      dir: 'ltr',
+    });
+    expect(locales).toContainEqual({ code: 'bg', gameCode: 'bg', name: 'Български', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'fil', gameCode: 'fil', name: 'Filipino', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'te', gameCode: 'te', name: 'తెలుగు', dir: 'ltr' });
   });
 });
 
@@ -152,6 +322,42 @@ describe('startup loading and presentation', () => {
     await runtime.setLocale('fr');
     expect(browserScope.document.cookie).toContain('glob2_locale=fr');
   });
+  it('persists an explicit Filipino choice and restores it before browser preferences', async () => {
+    const runtime = await fresh('glob2_locale=fil');
+    vi.stubGlobal('navigator', { languages: ['de'] });
+    runtime.configureCatalogLoader(async () => ({ Language: 'Wika' }));
+    await runtime.initialize();
+    expect(runtime.getLocale()).toBe('fil');
+    expect(browserScope.document.documentElement).toEqual({ lang: 'fil', dir: 'ltr' });
+    expect(runtime.t('Language')).toBe('Wika');
+    await runtime.setLocale('fil');
+    expect(browserScope.document.cookie).toContain('glob2_locale=fil');
+  });
+  it('restores Telugu and persists an explicit selection', async () => {
+    const runtime = await fresh('glob2_locale=te');
+    runtime.configureCatalogLoader(async () => ({ Language: 'భాష' }));
+    await runtime.initialize();
+    expect(runtime.getLocale()).toBe('te');
+    expect(runtime.t('Language')).toBe('భాష');
+    expect(browserScope.document.documentElement.lang).toBe('te');
+    expect(browserScope.document.documentElement.dir).toBe('ltr');
+    await runtime.setLocale('en');
+    await runtime.setLocale('te');
+    expect(browserScope.document.cookie).toContain('glob2_locale=te');
+  });
+  it('loads the Tamil catalog from a regional browser preference and formats credit counts', async () => {
+    const runtime = await fresh('other_cookie=1');
+    vi.stubGlobal('navigator', { languages: ['ta-LK'] });
+    await runtime.initialize();
+    expect(runtime.getLocale()).toBe('ta');
+    expect(browserScope.document.documentElement.lang).toBe('ta');
+    expect(browserScope.document.documentElement.dir).toBe('ltr');
+    expect(browserScope.document.cookie).toBe('other_cookie=1');
+    expect(runtime.t('Password')).toBe('கடவுச்சொல்');
+    expect(runtime.tp('{count} credit', '{count} credits', 1)).toBe('1 வரவு');
+    expect(runtime.tp('{count} credit', '{count} credits', 0)).toBe('0 வரவுகள்');
+    expect(runtime.tp('{count} credit', '{count} credits', 2)).toBe('2 வரவுகள்');
+  });
   it('a failed initial download cannot override a newer successful switch', async () => {
     const runtime = await fresh();
     let fail!: (reason: Error) => void;
@@ -176,9 +382,10 @@ describe('startup loading and presentation', () => {
     runtime.configureCatalogLoader(async () => ({}));
     await runtime.initialize();
     expect(browserScope.document.documentElement.dir).toBe('rtl');
-    await runtime.setLocale('en');
-    expect(browserScope.document.documentElement.lang).toBe('en');
+    await runtime.setLocale('mr');
+    expect(browserScope.document.documentElement.lang).toBe('mr');
     expect(browserScope.document.documentElement.dir).toBe('ltr');
+    expect(browserScope.document.cookie).toContain('glob2_locale=mr');
   });
   it('English also hides unknown raw diagnostics while showing known public errors', async () => {
     const runtime = await fresh('glob2_locale=en');

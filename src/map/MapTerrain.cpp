@@ -2,11 +2,25 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "TerrainTypeTable.h"
 #include "Utilities.h"
 #include <algorithm>
 #include <stdexcept>
 
 // Painting terrain on the vertex lattice.
+
+namespace
+{
+// Every built-in look of grass meets water across a sand beach, as grass does.
+bool grassLook(TerrainType type)
+{
+	return unsigned(type) < TERRAIN_COUNT && terrainGroup(type) == TerrainGroup::Grass;
+}
+bool beachClash(TerrainType painted, TerrainType neighbour)
+{
+	return painted == WATER ? grassLook(neighbour) : grassLook(painted) && neighbour == WATER;
+}
+} // namespace
 
 std::vector<size_t> Map::paintVertices(const std::vector<std::pair<int, int>> &vertices, TerrainType type,
 									   bool beaches)
@@ -25,9 +39,8 @@ std::vector<size_t> Map::paintVertices(const std::vector<std::pair<int, int>> &v
 			setVertexTerrain(vertex, type);
 			changed.push_back(vertex);
 		}
-	if (beaches && (type == GRASS || type == WATER))
+	if (beaches && (grassLook(type) || type == WATER))
 	{
-		const TerrainType clash = type == GRASS ? WATER : GRASS;
 		for (const auto vertex : written)
 		{
 			const int x = int(vertex & wMask), y = int(vertex >> wDec);
@@ -35,7 +48,7 @@ std::vector<size_t> Map::paintVertices(const std::vector<std::pair<int, int>> &v
 				for (int dx = -1; dx <= 1; ++dx)
 				{
 					const auto neighbour = size_t(coordToIndex(x + dx, y + dy));
-					if (vertexTerrain[neighbour] == clash &&
+					if (beachClash(type, vertexTerrain[neighbour]) &&
 						!std::binary_search(written.begin(), written.end(), neighbour))
 					{
 						setVertexTerrain(neighbour, SAND);
@@ -64,12 +77,11 @@ void Map::layBeaches()
 		for (int x = 0; x < w; ++x)
 		{
 			const auto type = vertexTerrainAt(x, y);
-			if (type != GRASS && type != WATER) continue;
-			const auto clash = type == GRASS ? WATER : GRASS;
+			if (!grassLook(type) && type != WATER) continue;
 			bool shore = false;
 			for (int dy = -1; dy <= 1 && !shore; ++dy)
 				for (int dx = -1; dx <= 1 && !shore; ++dx)
-					shore = vertexTerrainAt(x + dx, y + dy) == clash;
+					shore = beachClash(type, vertexTerrainAt(x + dx, y + dy));
 			if (shore)
 			{
 				next[coordToIndex(x, y)] = SAND;

@@ -4884,6 +4884,34 @@ Globuloj enfermitaj sen libera kvadrato por paŝi sur ĝin.
 Viŝitaj rimedoj
 [stat cleared about]
 Rimedoj forigitaj de laboristoj en viŝataj areoj por fari lokon.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestiĝo
 [stat prestige about]
@@ -5546,14 +5574,6 @@ Limigu desegnadon en la tuta aplikaĵo. Pli malaltaj valoroj reduktas la desegna
 Glacio
 [road]
 Pado
-[experiment ice-terrain]
-Glacia tereno
-[experiment ice-terrain help]
-Aldonas glacion al la mapredaktilo. Teraj unuoj moviĝas je duona rapido kaj perdas unu sanpoenton ĉiun 32-an simulpaŝon sur glacio. Glacio ne povas enhavi konstruaĵojn aŭ rimedojn.
-[experiment road-terrain]
-Pada tereno
-[experiment road-terrain help]
-Aldonas eluzitajn padojn al la mapredaktilo. Teraj unuoj moviĝas je duobla rapideco. Padoj permesas konstruaĵojn, sed ne rimedojn. Flugantaj unuoj ne estas influataj.
 [experiment markets-v2]
 Merkatoj V2
 [experiment markets-v2 help]
@@ -5676,6 +5696,14 @@ Malhela akvo
 Truo
 [chasm]
 Abismo
+[lush_grass]
+Abunda herbo
+[dry_grass]
+Seka herbo
+[dune_sand]
+Duna sablo
+[pale_sand]
+Pala sablo
 [terrain group water]
 Akvo
 [terrain group sand]
@@ -5702,42 +5730,6 @@ Fekunda grundo
 Profunda akvo
 [terrain group void]
 Malpleno
-[experiment obstacle-terrain]
-Obstakla tereno
-[experiment obstacle-terrain help]
-Aldonas rokegojn, heĝojn kaj densejojn al la mapredaktilo. Teraj unuoj ne povas trairi ilin, kaj ili haltigas pafaĵojn; flugantaj unuoj pasas super ili. Ili enhavas nek konstruaĵojn nek rimedojn.
-[experiment ridge-terrain]
-Kresta tereno
-[experiment ridge-terrain help]
-Aldonas rokajn krestojn kaj elstarajn rokojn al la mapredaktilo. Teraj unuoj ne povas trairi ilin, sed turoj pafas super ili kaj flugantaj unuoj pasas. Ili enhavas nek konstruaĵojn nek rimedojn.
-[experiment barren-terrain]
-Malfekunda grundo
-[experiment barren-terrain help]
-Aldonas teron, argilon, gruzon kaj florajn herbejojn al la mapredaktilo. Konstruaĵoj povas stari sur ili, nenio kreskas sur aŭ apud ili, kaj ili ne kalkuliĝas kiel bordo.
-[experiment rough-terrain]
-Malglata grundo
-[experiment rough-terrain help]
-Aldonas koton, marĉon, profundan neĝon kaj rokrompaĵojn al la mapredaktilo. Teraj unuoj moviĝas je ĉirkaŭ du trionoj de la rapido. Malglata grundo enhavas nek konstruaĵojn nek rimedojn.
-[experiment path-terrain]
-Pada tereno
-[experiment path-terrain help]
-Aldonas terpadojn kaj tabulpadojn al la mapredaktilo. Kiel sur vojetoj, teraj unuoj moviĝas je duobla rapido kaj konstruaĵoj estas permesataj, sed nenio kreskas.
-[experiment lava-terrain]
-Lafa tereno
-[experiment lava-terrain help]
-Aldonas lafon kaj braĝokampojn al la mapredaktilo. Teraj unuoj ne povas eniri ilin; flugantaj unuoj rapide perdas sanon dum la transiro. Pafaĵoj pasas super ili.
-[experiment fertile-terrain]
-Fekunda grundo
-[experiment fertile-terrain help]
-Aldonas argilhumusan grundon, muskon kaj printempajn herbejojn al la mapredaktilo. Ili subtenas konstruaĵojn kaj kultivaĵojn kaj irigacias la ĉirkaŭan teron pli forte ol akvo.
-[experiment deep-water-terrain]
-Profunda akvo
-[experiment deep-water-terrain help]
-Aldonas profundan kaj malhelan akvon al la mapredaktilo. Naĝantoj transiras ĝin pli malrapide, neniuj algoj kreskas en ĝi, kaj ĝi ankoraŭ irigacias proksimajn kampojn.
-[experiment void-terrain]
-Malplena tereno
-[experiment void-terrain help]
-Aldonas truojn kaj abismojn al la mapredaktilo. Nenio povas trairi ilin, eĉ ne flugantaj unuoj, kaj pafaĵoj haltas ĉe ilia rando.
 [terrain group custom]
 Propra
 [terrain group classic]
@@ -5770,8 +5762,6 @@ Vundas flugantajn unuojn
 Elektu penikon. La terenoj en ĉiu grupo havas la samajn regulojn kaj malsamas nur laŭ aspekto.
 [terrain rule algae grow]
 Algoj kreskas
-[terrain palette experiments hint]
-Elektu penikon. Pliaj terengrupoj aperas ĉi tie kiam iliaj eksperimentoj estas ŝaltitaj sub Agordoj > Eksperimentoj.
 [brush valid on %0]
 Valida sur: %0
 [brush valid nowhere]
@@ -6401,421 +6391,421 @@ Via elekto ne povis esti konservita. Sono restas malŝaltita. Bonvolu reprovi.
 [audio choices description]
 Silento: silentigita laŭtparolilo. Sono: laŭtparolilo kun sonondoj.
 [intro menu]
-
+Enkonduko
 [intro briefing]
-
+Lernu nerektan regadon: esploru per markilo, provizu vian kolonion kaj direktu atakon.
 [intro try]
-
+Komenci la enkondukon
 [intro preflight]
-
+Viaj globuloj agas memstare. Vi elektas iliajn taskojn per konstruaĵoj kaj markiloj. En ĉi tiu mallonga enkonduko, esploru orientilon, vastigu la manĝaĵprovizon, kreskigu la laboristaron kaj direktu malgrandan atakon.
 [intro preflight save]
-
+Rezervu ĉirkaŭ 10 minutojn. Vi povas konservi per la ludmenuo kaj daŭrigi per Ŝarĝi ludon. La kutimaj reguloj pri malsato kaj batalo validas. Elektu Lernolecionojn en la ĉefmenuo por ekzerci pliajn kapablojn.
 [intro preference failed]
-
+Ne eblis konservi vian elekton. Vi povas plu ludi; ĉi tiu rekomendo eble reaperos venontfoje.
 [intro goal scout]
-
+Esplori la ŝtonan orientilon
 [intro goal build]
-
+Konstrui plian Manĝejon
 [intro goal supply]
-
+Provizi vian novan Manĝejon
 [intro goal grow]
-
+Kreskigi la laboristaron
 [intro goal attack]
-
+Detrui la malamikan Globulejon
 [intro instruction scout]
-
+Malfermu Markilojn kaj metu Esplormarkilon sur la ŝtonareon oriente de via kolonio. Asignu unu esploriston. Observu ĝian vojon al la markilo.
 [intro instruction build]
-
+Malfermu Konstruadon kaj metu Manĝejon apud tritiko. Asignu disponeblajn laboristojn por konstrui ĝin. Daŭre provizu vian ekzistantan Manĝejon.
 [intro instruction supply]
-
+Elektu vian finkonstruitan novan Manĝejon kaj asignu al ĝi almenaŭ unu provizanton. Atendu, ĝis laboristo liveros tritikon.
 [intro instruction grow]
-
+Elektu la Globulejon. Agordu ĝian celan nombron de laboristoj al almenaŭ 2 kaj ĝiajn produktajn proporciojn al nur laboristoj. Daŭre provizu ambaŭ Manĝejojn dum naskiĝas nova laboristo.
 [intro instruction attack]
-
+Trovu la malamikan Globulejon pli oriente. Uzu Militmarkilon por direkti viajn militistojn kontraŭ ĝin. Helpo disponeblas por rememorigi la instrukciojn.
 [intro help]
-
+Helpo / kial?
 [intro help scout]
-
+Uzu la etmapon por movi la vidon orienten kaj trovi la ŝtonareon. Elektu Esplormarkilon en Markiloj, metu ĝin sur la ŝtonojn kaj finu la metadon per la duaranga musbutono. Elektu la markilon kaj petu 1 esploriston. Markiloj petas unuojn; ili ne movas ilin tuj. Esploristoj povas halti por manĝi.
 [intro help build]
-
+Konstruado konsumas lignon liveratan de laboristoj. Elektu Manĝejon el la konstruaĵa paletro, metu ĝin sur libera tereno apud tritiko kaj petu 2 konstruistojn. La cela nombro de laboristoj estas peto, ne la nombro de jam ĉeestantaj laboristoj. Lasu provizantojn ĉe viaj ekzistantaj Manĝejo kaj Globulejo. Ĉiu valida loko taŭgas.
 [intro help supply]
-
+Konstruado kaj ĉiutaga provizado havas apartajn celajn nombrojn de laboristoj. Elektu la finkonstruitan Manĝejon kaj pliigu ĝian funkcian celon. Provizanto rikoltas tritikon kaj portas ĝin ĉi tien. Malsataj globuloj manĝas ĉe Manĝejoj; sen provizantoj, konstruaĵo fine elĉerpos sian stokon. Konservu aliron al la tritiko.
 [intro help grow]
-
+La Globulejo konsumas tritikon por produkti unuojn. Agordu la produktadon de laboristoj al 1 kaj tiun de esploristoj kaj militistoj al 0. Pliigu la celan nombron de laboristoj ĉe la Globulejo al almenaŭ 2. Pli da provizantoj povas liveri tritikon pli rapide, sed ili konkuras kun aliaj taskoj. Daŭre provizu ambaŭ Manĝejojn per manĝaĵo.
 [intro help attack]
-
+Malfermu Markilojn, elektu Militmarkilon kaj metu ĝin sur la malamikan Globulejon oriente de la ŝtonoj. Elektu la markilon kaj petu ĝis 4 militistojn. Malgranda radiuso tenas ilin kune. Finu la metadon per la duaranga musbutono antaŭ ol elekti la markilon. Se ne restas militistoj, produktu pliajn ĉe la Globulejo. Militistoj povas halti por manĝi; daŭre provizu la Manĝejojn.
 [intro hint scout]
-
+Via esploristo bezonas Esplormarkilon kun asignita unuo ĉe la orienta ŝtonareo. Kontrolu ĝian lokon kaj la nombron de esploristoj.
 [intro hint build]
-
+Se vi forigis la novan Manĝejon, konstruu alian. Alie kontrolu la konstruejon kaj ĝian celan nombron de laboristoj. Ekzistantaj provizaj taskoj eble okupas viajn laboristojn; konservu la manĝaĵprovizon dum vi liberigas konstruistojn.
 [intro hint supply]
-
+Elektu la finkonstruitan novan Manĝejon. Kontrolu ĝian celan nombron de laboristoj kaj observu la tritikliverojn. Laboristoj eble bezonas tempon por vojaĝi aŭ manĝi.
 [intro hint grow]
-
+Kontrolu la provizadon de la Globulejo kaj la produktadon de nur laboristoj. Daŭre provizu la Manĝejojn dum vi atendas plian laboriston.
 [intro hint attack]
-
+Kontrolu vian Militmarkilon, la petitan nombron de militistoj kaj la manĝaĵprovizon. Viaj militistoj bezonas tempon por vojaĝi kaj ataki.
 [intro hint no scout flag]
-
+Neniu Esplormarkilo kun asignita unuo troviĝis. Metu unu sur la ŝtonojn oriente de via bazo kaj petu 1 esploriston.
 [intro hint no suppliers]
-
+Via nova Manĝejo aŭ ĝia konstruejo havas celan nombron de 0 laboristoj. Elektu ĝin kaj petu laboristojn.
 [intro hint no war flag]
-
+Neniu Militmarkilo kun asignitaj unuoj troviĝis ĉe la malamika bazo. Metu unu sur la orientan malamikan Globulejon kaj petu militistojn.
 [intro hint retry]
-
+Unuo aŭ konstruaĵo bezonata por ĉi tiu leciono perdiĝis. Ŝarĝu pli fruan konservaĵon aŭ rekomencu la lecionon per la ludmenuo.
 [intro complete]
-
+Enkonduko finita
 [intro complete body]
-
+Vi direktis memstarajn globulojn, vastigis la manĝaĵprovizon, kreskigis la kolonion kaj organizis atakon. Daŭrigu per Lernolecionoj por trejnado, plibonigoj kaj defendo, aŭ revenu al la ĉefmenuo por komenci matĉon.
 [intro play again]
-
+Ludi denove
 [intro restart]
-
+Rekomenci la enkondukon
 [intro restart body]
-
+Ĉu rekomenci de la preparita kolonio? Nekonservita progreso en ĉi tiu enkonduko perdiĝos.
 [intro help touch scout]
-
+Trenu malplenan terenon por movi la vidon antaŭ ol meti markilon. Trovu la ŝtonareon oriente de la kolonio. Malfermu Markilojn, elektu Esplormarkilon, metu ĝin sur la ŝtonojn kaj konfirmu. Elektu la markilon kaj petu 1 esploriston per ĝia agordo de asignitaj unuoj. Globuloj vojaĝas memstare kaj povas halti por manĝi.
 [intro help touch build]
-
+Elektu Manĝejon en Konstruado. Metu ĝin sur libera tereno apud tritiko kaj konfirmu. Elektu la konstruejon kaj petu 2 konstruistojn. La cela nombro de laboristoj estas peto, ne la nombro de jam ĉeestantoj. Daŭre provizu la ekzistantajn Manĝejon kaj Globulejon. Ĉiu valida loko taŭgas.
 [intro help touch supply]
-
+Elektu la finkonstruitan novan Manĝejon kaj pliigu ĝian celan nombron de asignitaj laboristoj. Konstruado kaj ĉiutaga provizado havas apartajn celojn. Provizanto rikoltas tritikon kaj portas ĝin ĉi tien. Malsataj globuloj manĝas ĉe Manĝejoj; sen provizantoj, la stoko fine elĉerpiĝas. Konservu aliron al la tritiko.
 [intro help touch grow]
-
+Elektu la Globulejon. Agordu la produktadon de laboristoj al 1 kaj tiun de esploristoj kaj militistoj al 0. Pliigu ĝian celan nombron de asignitaj laboristoj al almenaŭ 2. Provizantoj alportas tritikon por novaj unuoj, sed konkuras kun aliaj taskoj. Daŭre provizu ambaŭ Manĝejojn.
 [intro help touch attack]
-
+Malfermu Markilojn, elektu Militmarkilon, metu ĝin sur la malamikan Globulejon oriente de la ŝtonoj kaj konfirmu. Elektu la markilon kaj petu ĝis 4 militistojn. Malgranda radiuso kunigas ilin. Se neniu restas, produktu militistojn ĉe via Globulejo. Militistoj povas halti por manĝi; daŭre provizu la Manĝejojn.
 [intro show destination]
-
+Montri la celon
 [intro scout destination]
-
+Esplori ĉi tie
 [intro attack destination]
-
+Ataki ĉi tie
 [intro compact scout]
-
+Markiloj → Esplormarkilo. Metu ĝin sur la ŝtonojn; asignu 1 esploriston.
 [intro compact build]
-
+Konstruado → Manĝejo. Metu ĝin apud tritiko; asignu 2 konstruistojn.
 [intro compact supply]
-
+Elektu vian novan Manĝejon; asignu almenaŭ 1 provizanton. Atendu tritikon.
 [intro compact grow]
-
+Elektu la Globulejon; asignu 2 provizantojn. Produktu nur laboristojn.
 [intro compact attack]
-
+Markiloj → Militmarkilo. Metu ĝin sur la malamikan Globulejon; asignu militistojn.
 [tutorial lessons]
-
+Lernolecionoj
 [tutorial restart]
-
+Rekomenci la lecionon
 [tutorial restart body]
-
+Ĉu rekomenci ĉi tiun lecionon de ĝia preparita kolonio? Nekonservita progreso perdiĝos.
 [tutorial complete]
-
+Leciono finita
 [tutorial food title]
-
+Ekzerco pri manĝaĵprovizo
 [tutorial food briefing]
-
+Ekzercu vastigon de la manĝaĵprovizo: konstruu plian Manĝejon, poste asignu provizantojn kaj observu la alvenon de tritiko.
 [tutorial food complete]
-
+Vi konstruis Manĝejon kaj provizis ĝin per tritiko. Provu alian lecionon aŭ revenu al la ĉefmenuo.
 [tutorial unavailable]
-
+Ne eblis ŝarĝi la lernolecionojn.
 [lesson healing title]
-
+Malsanejoj kaj kuracado
 [lesson healing briefing]
-
+Konstruu Malsanejon kaj helpu vunditan laboriston resaniĝi. La kolonio komencas sata, kun unu vundita laboristo.
 [lesson healing complete]
-
+Via Malsanejo resanigis vunditan globulon. Daŭre provizu Manĝejojn: malsato povas denove vundi unuojn.
 [lesson healing build hint]
-
+Konstruu Malsanejon sur libera tereno; asignu 2 konstruistojn. Lasu spacon por eniro kaj eliro de globuloj. Malsanejoj kuracas vundojn; Manĝejoj provizas manĝaĵon. Ĉi tiu paciento jam manĝis.
 [lesson healing build title]
-
+Konstrui Malsanejon
 [lesson healing build instruction]
-
+Konstruu Malsanejon sur libera tereno; asignu 2 konstruistojn.
 [lesson healing build help]
-
+Lasu spacon por eniro kaj eliro de globuloj. Malsanejoj kuracas vundojn; Manĝejoj provizas manĝaĵon. Ĉi tiu paciento jam manĝis.
 [lesson healing build marker]
-
+Konstrui Malsanejon
 [lesson healing heal hint]
-
+Konservu aliron al la Malsanejo. Observu la resaniĝon de la vundita laboristo. Globuloj serĉas kuracadon memstare. Sekvu la vunditan laboriston, ne ĵus naskitan unuon. Se ĝi mortas, rekomencu aŭ ŝarĝu konservaĵon.
 [lesson healing heal title]
-
+Lasi la pacienton resaniĝi
 [lesson healing heal instruction]
-
+Konservu aliron al la Malsanejo. Observu la resaniĝon de la vundita laboristo.
 [lesson healing heal help]
-
+Globuloj serĉas kuracadon memstare. Sekvu la vunditan laboriston, ne ĵus naskitan unuon. Se ĝi mortas, rekomencu aŭ ŝarĝu konservaĵon.
 [lesson healing heal marker]
-
+Lasi la pacienton resaniĝi
 [lesson walking-training title]
-
+Marŝa trejnado
 [lesson walking-training briefing]
-
+Konstruu Kuregejon kaj observu ekzistantan laboriston lerni marŝi pli rapide.
 [lesson walking-training complete]
-
+Viaj laboristoj lernis pli rapidan marŝadon. Trejnado plibonigas viajn ekzistantajn laboristojn; ĝi ne anstataŭas la manĝaĵprovizon de la kolonio.
 [lesson walking-training build hint]
-
+Konstruu Kuregejon en la markita maldensejo; asignu konstruistojn. Kuregejo bezonas lignon kaj ŝtonojn. Lasu spacon ĉirkaŭ ĝiaj randoj por eniro, eliro kaj posta vastigo.
 [lesson walking-training build title]
-
+Konstrui Kuregejon
 [lesson walking-training build instruction]
-
+Konstruu Kuregejon en la markita maldensejo; asignu konstruistojn.
 [lesson walking-training build help]
-
+Kuregejo bezonas lignon kaj ŝtonojn. Lasu spacon ĉirkaŭ ĝiaj randoj por eniro, eliro kaj posta vastigo.
 [lesson walking-training build marker]
-
+Konstrui Kuregejon
 [lesson walking-training train hint]
-
+Konservu aliron al la Kuregejo kaj lasu laboriston fini la trejnadon. Trejnado estas aŭtomata por taŭgaj globuloj. Lasu kelkajn laboristojn liberaj de provizaj taskoj kaj konservu manĝaĵojn en ambaŭ Manĝejoj.
 [lesson walking-training train title]
-
+Trejni ekzistantan laboriston
 [lesson walking-training train instruction]
-
+Konservu aliron al la Kuregejo kaj lasu laboriston fini la trejnadon.
 [lesson walking-training train help]
-
+Trejnado estas aŭtomata por taŭgaj globuloj. Lasu kelkajn laboristojn liberaj de provizaj taskoj kaj konservu manĝaĵojn en ambaŭ Manĝejoj.
 [lesson swimming title]
-
+Naĝado kaj akvaj rimedoj
 [lesson swimming briefing]
-
+Trejnu naĝantojn, poste uzu algojn el la lageto por konstrui Lernejon.
 [lesson swimming complete]
-
+Naĝanto liveris akvajn rimedojn por via Lernejo. Aliro al akvo vastigas la taskojn fareblajn de via kolonio.
 [lesson swimming build hint]
-
+Konstruu Naĝejon okcidente de la lageto; asignu konstruistojn. Lasu spacon ĉirkaŭ la Naĝejo. Laboristo ne povas kolekti algojn en profunda akvo antaŭ ol lerni naĝi.
 [lesson swimming build title]
-
+Konstrui Naĝejon
 [lesson swimming build instruction]
-
+Konstruu Naĝejon okcidente de la lageto; asignu konstruistojn.
 [lesson swimming build help]
-
+Lasu spacon ĉirkaŭ la Naĝejo. Laboristo ne povas kolekti algojn en profunda akvo antaŭ ol lerni naĝi.
 [lesson swimming build marker]
-
+Konstrui Naĝejon
 [lesson swimming train hint]
-
+Lasu ekzistantan laboriston fini la naĝan trejnadon. Unuoj elektas trejnadon aŭtomate. Daŭrigu provizadon kaj permesu al liberaj laboristoj atingi la Naĝejon.
 [lesson swimming train title]
-
+Trejni naĝanton
 [lesson swimming train instruction]
-
+Lasu ekzistantan laboriston fini la naĝan trejnadon.
 [lesson swimming train help]
-
+Unuoj elektas trejnadon aŭtomate. Daŭrigu provizadon kaj permesu al liberaj laboristoj atingi la Naĝejon.
 [lesson swimming water-job hint]
-
+Konstruu Lernejon apud la kolonio; asignu konstruistojn por alporti lignon kaj algojn. La algoj kreskas en la lageto. Trejnita naĝanto devas eniri la akvon por kolekti ilin. Metu la Lernejon sur libera tero kun aliro por provizantoj.
 [lesson swimming water-job title]
-
+Uzi algojn el la lageto
 [lesson swimming water-job instruction]
-
+Konstruu Lernejon apud la kolonio; asignu konstruistojn por alporti lignon kaj algojn.
 [lesson swimming water-job help]
-
+La algoj kreskas en la lageto. Trejnita naĝanto devas eniri la akvon por kolekti ilin. Metu la Lernejon sur libera tero kun aliro por provizantoj.
 [lesson swimming water-job marker]
-
+Uzi algojn el la lageto
 [lesson schools title]
-
+Lernejoj kaj laboristaj kapabloj
 [lesson schools briefing]
-
+Uzu la preparitajn naĝantojn por konstrui Lernejon, poste observu laboristojn lerni konstruadon kaj rikoltadon.
 [lesson schools complete]
-
+Via Lernejo plibonigis la kapablojn de laboristoj. Lertaj konstruistoj ebligas plibonigojn; pli bona rikoltado helpas subteni kreskantan ekonomion.
 [lesson schools build hint]
-
+Konstruu Lernejon en la maldensejo; asignu konstruistojn. La kolonio jam havas naĝantojn por algoj. Lasu aliron al ligno kaj akvo. Fruktarboj liveras prestiĝajn rimedojn; manĝaĵo ankoraŭ venas de tritiko.
 [lesson schools build title]
-
+Konstrui Lernejon
 [lesson schools build instruction]
-
+Konstruu Lernejon en la maldensejo; asignu konstruistojn.
 [lesson schools build help]
-
+La kolonio jam havas naĝantojn por algoj. Lasu aliron al ligno kaj akvo. Fruktarboj liveras prestiĝajn rimedojn; manĝaĵo ankoraŭ venas de tritiko.
 [lesson schools build marker]
-
+Konstrui Lernejon
 [lesson schools learn hint]
-
+Lasu ekzistantan laboriston fini sian trejnadon ĉe la Lernejo. La Lernejo instruas konstruadon kaj rikoltadon kune. Tenu laboristojn disponeblaj; konstruejo sola trejnas neniun.
 [lesson schools learn title]
-
+Instrui konstruadon kaj rikoltadon
 [lesson schools learn instruction]
-
+Lasu ekzistantan laboriston fini sian trejnadon ĉe la Lernejo.
 [lesson schools learn help]
-
+La Lernejo instruas konstruadon kaj rikoltadon kune. Tenu laboristojn disponeblaj; konstruejo sola trejnas neniun.
 [lesson upgrades title]
-
+Plibonigado de konstruaĵoj
 [lesson upgrades briefing]
-
+Uzu preparitajn lertajn laboristojn por plibonigi Kuregejon kaj trejni preter la unua nivelo.
 [lesson upgrades complete]
-
+Vi plibonigis konstruaĵon kaj uzis ĝian pli bonan trejnadon. Pluaj plibonigoj ripetas ĉi tiun ciklon per pli bonaj Lernejoj, kapabloj, materialoj kaj spaco, ĝis nivelo 3.
 [lesson upgrades upgrade hint]
-
+Elektu la Kuregejon, elektu Plibonigi kaj asignu lertajn konstruistojn. Ĉi tiuj laboristoj jam lernis la unuanivelajn kapablojn de la Lernejo. Plibonigoj bezonas plian spacon kaj materialojn kaj interrompas la servon de la konstruaĵo. Nuligitaj plibonigoj ne kalkuliĝas.
 [lesson upgrades upgrade title]
-
+Plibonigi la Kuregejon
 [lesson upgrades upgrade instruction]
-
+Elektu la Kuregejon, elektu Plibonigi kaj asignu lertajn konstruistojn.
 [lesson upgrades upgrade help]
-
+Ĉi tiuj laboristoj jam lernis la unuanivelajn kapablojn de la Lernejo. Plibonigoj bezonas plian spacon kaj materialojn kaj interrompas la servon de la konstruaĵo. Nuligitaj plibonigoj ne kalkuliĝas.
 [lesson upgrades upgrade marker]
-
+Plibonigi la Kuregejon
 [lesson upgrades train hint]
-
+Lasu ekzistantan laboriston lerni pli rapidan marŝadon ĉe la plibonigita Kuregejo. Finita plibonigo altigas la disponeblan trejnadon. Pli altaj konstruaĵaj niveloj bezonas pli altajn konstruajn kapablojn; la nivelo montrata al ludantoj komenciĝas ĉe 1.
 [lesson upgrades train title]
-
+Uzi la plibonigitan trejnadon
 [lesson upgrades train instruction]
-
+Lasu ekzistantan laboriston lerni pli rapidan marŝadon ĉe la plibonigita Kuregejo.
 [lesson upgrades train help]
-
+Finita plibonigo altigas la disponeblan trejnadon. Pli altaj konstruaĵaj niveloj bezonas pli altajn konstruajn kapablojn; la nivelo montrata al ludantoj komenciĝas ĉe 1.
 [lesson warrior-training title]
-
+Produktado kaj trejnado de militistoj
 [lesson warrior-training briefing]
-
+Produktu militistojn ĉe la Globulejo, poste trejnu ilin ĉe Militistejo.
 [lesson warrior-training complete]
-
+Vi regis militan produktadon kaj trejnis militistojn. Daŭrigu ilian manĝaĵprovizon; batalunuoj ankoraŭ bezonas manĝi.
 [lesson warrior-training produce hint]
-
+Agordu la Globulejon al nur militistoj; asignu provizantojn kaj atendu 2 militistojn. Agordu la proporciojn de laboristoj kaj esploristoj al 0 kaj tiun de militistoj al 1. La Globulejo konsumas tritikon por naskiĝoj. Proporcioj elektas la produktaĵon; provizantoj determinas ĉu produktado povas daŭri.
 [lesson warrior-training produce title]
-
+Produkti du militistojn
 [lesson warrior-training produce instruction]
-
+Agordu la Globulejon al nur militistoj; asignu provizantojn kaj atendu 2 militistojn.
 [lesson warrior-training produce help]
-
+Agordu la proporciojn de laboristoj kaj esploristoj al 0 kaj tiun de militistoj al 1. La Globulejo konsumas tritikon por naskiĝoj. Proporcioj elektas la produktaĵon; provizantoj determinas ĉu produktado povas daŭri.
 [lesson warrior-training produce marker]
-
+Produkti du militistojn
 [lesson warrior-training build hint]
-
+Konstruu Militistejon en la maldensejo; asignu konstruistojn. Ĉesigu aŭ malpliigu militistan produktadon kiam vi havas sufiĉe da militistoj. Militistejoj instruas batalkapablojn; ili bezonas liberan spacon ĉirkaŭ siaj randoj.
 [lesson warrior-training build title]
-
+Konstrui Militistejon
 [lesson warrior-training build instruction]
-
+Konstruu Militistejon en la maldensejo; asignu konstruistojn.
 [lesson warrior-training build help]
-
+Ĉesigu aŭ malpliigu militistan produktadon kiam vi havas sufiĉe da militistoj. Militistejoj instruas batalkapablojn; ili bezonas liberan spacon ĉirkaŭ siaj randoj.
 [lesson warrior-training build marker]
-
+Konstrui Militistejon
 [lesson warrior-training train hint]
-
+Lasu militiston fini ekzercon ĉe la Militistejo. Militistoj serĉas trejnadon aŭtomate. Daŭre provizu Manĝejojn kaj konservu aliron al la Militistejo. Nura konstruado de Militistejo ne estas finita trejnado.
 [lesson warrior-training train title]
-
+Trejni viajn militistojn
 [lesson warrior-training train instruction]
-
+Lasu militiston fini ekzercon ĉe la Militistejo.
 [lesson warrior-training train help]
-
+Militistoj serĉas trejnadon aŭtomate. Daŭre provizu Manĝejojn kaj konservu aliron al la Militistejo. Nura konstruado de Militistejo ne estas finita trejnado.
 [lesson fortifications title]
-
+Turoj kaj protektaj muroj
 [lesson fortifications briefing]
-
+Konstruu provizatan turon kaj protektajn murojn, poste provu ilin kontraŭ unu malgranda atako.
 [lesson fortifications complete]
-
+Viaj provizataj defendoj haltigis la ekzercan atakon. Turoj bezonas ŝtonojn kaj muroj bezonas breĉojn por ke provizantoj plu povu atingi ilin.
 [lesson fortifications tower hint]
-
+Konstruu turon en la markita areo; asignu konstruistojn. Metu ĝin apud la ŝtonminejo kaj lasu aliron por provizantoj. Neniu atako komenciĝas ĝis la preparaj celoj estas plenumitaj.
 [lesson fortifications tower title]
-
+Konstrui Defendturon
 [lesson fortifications tower instruction]
-
+Konstruu turon en la markita areo; asignu konstruistojn.
 [lesson fortifications tower help]
-
+Metu ĝin apud la ŝtonminejo kaj lasu aliron por provizantoj. Neniu atako komenciĝas ĝis la preparaj celoj estas plenumitaj.
 [lesson fortifications tower marker]
-
+Konstrui Defendturon
 [lesson fortifications walls hint]
-
+Konstruu almenaŭ 2 mursekciojn apud la turo; lasu ĝian okcidentan alirvojon libera. Muroj konsumas ŝtonojn kaj ĉiu konstruejo petas laboristojn. Ne enfermu la turon: provizantoj bezonas vojon. La markita okcidenta vojo devas resti libera.
 [lesson fortifications walls title]
-
+Protekti la turon per muroj
 [lesson fortifications walls instruction]
-
+Konstruu almenaŭ 2 mursekciojn apud la turo; lasu ĝian okcidentan alirvojon libera.
 [lesson fortifications walls help]
-
+Muroj konsumas ŝtonojn kaj ĉiu konstruejo petas laboristojn. Ne enfermu la turon: provizantoj bezonas vojon. La markita okcidenta vojo devas resti libera.
 [lesson fortifications walls marker]
-
+Protekti la turon per muroj
 [lesson fortifications supply hint]
-
+Elektu la turon kaj petu provizantojn. Atendu almenaŭ 2 ŝtonojn. Finkonstruita turo bezonas funkcian celan nombron de laboristoj por alporti municion. Tio estas aparta de ĝia konstrua celo.
 [lesson fortifications supply title]
-
+Provizi municion
 [lesson fortifications supply instruction]
-
+Elektu la turon kaj petu provizantojn. Atendu almenaŭ 2 ŝtonojn.
 [lesson fortifications supply help]
-
+Finkonstruita turo bezonas funkcian celan nombron de laboristoj por alporti municion. Tio estas aparta de ĝia konstrua celo.
 [lesson fortifications supply marker]
-
+Provizi municion
 [lesson fortifications hold hint]
-
+Ekzerca militisto proksimiĝas. Konservu la provizadon de la turo kaj aliron al ĝi. Rezistu ĝis la atakanto estas venkita aŭ forpelita. Muro blokanta provizantojn povas senigi la turon je municio. Se la kolonio malvenkas, rekomencu aŭ ŝarĝu pli fruan konservaĵon.
 [lesson fortifications hold title]
-
+Provi la fortikaĵojn
 [lesson fortifications hold instruction]
-
+Ekzerca militisto proksimiĝas. Konservu la provizadon de la turo kaj aliron al ĝi.
 [lesson fortifications hold help]
-
+Rezistu ĝis la atakanto estas venkita aŭ forpelita. Muro blokanta provizantojn povas senigi la turon je municio. Se la kolonio malvenkas, rekomencu aŭ ŝarĝu pli fruan konservaĵon.
 [lesson fortifications hold marker]
-
+Provi la fortikaĵojn
 [lesson defensive-tactics title]
-
+Defendataj areoj kaj markilaj taktikoj
 [lesson defensive-tactics briefing]
-
+Esploru la ekzercan malamikon, preparu defendatan areon, defendu vin, poste organizu kontraŭatakon.
 [lesson defensive-tactics complete]
-
+Vi esploris, defendis areon kaj direktis kontraŭatakon. La celaj nombroj ĉe markiloj petas unuojn; la radiuso regas kie tiuj unuoj laboras.
 [lesson defensive-tactics scout hint]
-
+Metu Esplormarkilon ĉe la malamika bazo; asignu 1 esploriston. Markiloj petas unuojn aŭtomate. Esploristo rivelas la nunan agadon tra la militnebulo; ĝi povas halti por manĝi.
 [lesson defensive-tactics scout title]
-
+Esplori la malamikan bazon
 [lesson defensive-tactics scout instruction]
-
+Metu Esplormarkilon ĉe la malamika bazo; asignu 1 esploriston.
 [lesson defensive-tactics scout help]
-
+Markiloj petas unuojn aŭtomate. Esploristo rivelas la nunan agadon tra la militnebulo; ĝi povas halti por manĝi.
 [lesson defensive-tactics scout marker]
-
+Esplori la malamikan bazon
 [lesson defensive-tactics guard hint]
-
+Pentru defendatan areon en la markita areo kaj lasu 2 militistojn atingi ĝin. Malfermu Markilojn, elektu Defendatan areon kaj pentru almenaŭ 4 kahelojn interne. Defendataj areoj altiras senokupajn militistojn. Malpermesataj areoj blokas vojaĝadon; elviŝataj areoj petas forigon de rimedoj.
 [lesson defensive-tactics guard title]
-
+Prepari defendatan areon
 [lesson defensive-tactics guard instruction]
-
+Pentru defendatan areon en la markita areo kaj lasu 2 militistojn atingi ĝin.
 [lesson defensive-tactics guard help]
-
+Malfermu Markilojn, elektu Defendatan areon kaj pentru almenaŭ 4 kahelojn interne. Defendataj areoj altiras senokupajn militistojn. Malpermesataj areoj blokas vojaĝadon; elviŝataj areoj petas forigon de rimedoj.
 [lesson defensive-tactics guard marker]
-
+Prepari defendatan areon
 [lesson defensive-tactics repel hint]
-
+La malamiko atakas. Tenu militistojn en la defendata areo kaj daŭre provizu Manĝejojn. La malgranda atako komenciĝas post viaj preparoj. Venku aŭ forpelu ambaŭ atakantojn; vunditaj malamikoj povas retiriĝi. Militistoj povas provizore foriri por manĝi. Se la defendo malsukcesas, uzu pli fruan konservaĵon aŭ rekomencu.
 [lesson defensive-tactics repel title]
-
+Forpuŝi la ekzercan atakon
 [lesson defensive-tactics repel instruction]
-
+La malamiko atakas. Tenu militistojn en la defendata areo kaj daŭre provizu Manĝejojn.
 [lesson defensive-tactics repel help]
-
+La malgranda atako komenciĝas post viaj preparoj. Venku aŭ forpelu ambaŭ atakantojn; vunditaj malamikoj povas retiriĝi. Militistoj povas provizore foriri por manĝi. Se la defendo malsukcesas, uzu pli fruan konservaĵon aŭ rekomencu.
 [lesson defensive-tactics repel marker]
-
+Forpuŝi la ekzercan atakon
 [lesson defensive-tactics counterattack hint]
-
+Metu Militmarkilon sur la malamikan Globulejon; petu 3 militistojn kaj uzu radiuson de maksimume 4. Defendataj areoj kaj Militmarkiloj konkuras por militistoj. Forigu defendatajn kahelojn se ili retenas vian armeon. Konservu manĝaĵojn disponeblaj dum militistoj vojaĝas kaj atakas.
 [lesson defensive-tactics counterattack title]
-
+Direkti koncentritan kontraŭatakon
 [lesson defensive-tactics counterattack instruction]
-
+Metu Militmarkilon sur la malamikan Globulejon; petu 3 militistojn kaj uzu radiuson de maksimume 4.
 [lesson defensive-tactics counterattack help]
-
+Defendataj areoj kaj Militmarkiloj konkuras por militistoj. Forigu defendatajn kahelojn se ili retenas vian armeon. Konservu manĝaĵojn disponeblaj dum militistoj vojaĝas kaj atakas.
 [lesson defensive-tactics counterattack marker]
-
+Direkti koncentritan kontraŭatakon
 [lesson healing build compact]
-
+Konstruado → Malsanejo. Lasu aliron; asignu konstruistojn.
 [lesson healing heal compact]
-
+Lasu la vunditan laboriston resaniĝi ĉe la Malsanejo.
 [lesson walking-training build compact]
-
+Konstruado → Kuregejo. Lasu spacon ĉirkaŭ ĝiaj randoj.
 [lesson walking-training train compact]
-
+Lasu laboriston fini la trejnadon ĉe la Kuregejo.
 [lesson swimming build compact]
-
+Konstruado → Naĝejo, okcidente de la lageto.
 [lesson swimming train compact]
-
+Lasu laboriston lerni naĝi.
 [lesson swimming water-job compact]
-
+Konstruado → Lernejo. Asignu konstruistojn por ligno kaj algoj.
 [lesson schools build compact]
-
+Konstruado → Lernejo. Asignu konstruistojn por ligno kaj algoj.
 [lesson schools learn compact]
-
+Lasu laboriston fini la trejnadon ĉe la Lernejo.
 [lesson upgrades upgrade compact]
-
+Elektu Kuregejon → Plibonigi. Asignu lertajn konstruistojn.
 [lesson upgrades train compact]
-
+Lasu laboriston trejni ĉe la plibonigita Kuregejo.
 [lesson warrior-training produce compact]
-
+Globulejo → nur militistoj. Provizu tritikon por 2 militistoj.
 [lesson warrior-training build compact]
-
+Konstruado → Militistejo. Lasu spacon ĉirkaŭ ĝiaj randoj.
 [lesson warrior-training train compact]
-
+Lasu militiston fini ekzercon ĉe la Militistejo.
 [lesson fortifications tower compact]
-
+Konstruado → Turo. Metu ĝin en la markitan areon.
 [lesson fortifications walls compact]
-
+Konstruu 2 murojn. Lasu la okcidentan vojon al la turo libera.
 [lesson fortifications supply compact]
-
+Elektu turon → provizantoj. Atendu 2 ŝtonojn.
 [lesson fortifications hold compact]
-
+Daŭre provizu la turon kontraŭ la atakanto.
 [lesson defensive-tactics scout compact]
-
+Markiloj → Esplormarkilo. Metu ĝin ĉe la malamiko; asignu 1 esploriston.
 [lesson defensive-tactics guard compact]
-
+Markiloj → Defendata areo. Pentru 4 kahelojn; lasu 2 militistojn alveni.
 [lesson defensive-tactics repel compact]
-
+Tenu la defendatan areon. Daŭre provizu Manĝejojn.
 [lesson defensive-tactics counterattack compact]
-
+Militmarkilo → malamika Globulejo. Petu 3 militistojn; radiuso ≤4.
 [library GL only]
 Nur GL
 [Grassland]
@@ -6827,6 +6817,44 @@ Bestaj padoj
 [Fish amount]
 Kvanto da fiŝoj
 [scenario messages]
-
+Mesaĝoj ▸
 [Camp-site amount]
 Nombro de kampadejoj
+[script compilation success]
+Kompilo sukcesis
+[script error at %0:%1: %2]
+Eraro ĉe %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Kompila malsukceso: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilo malsukcesis: %0
+[script loading failed %0]
+Malsukcesis ŝargi la skripton el %0
+[script saving failed %0]
+Malsukcesis konservi la skripton al %0
+[script line %0 column %1]
+Linio: %0 Kolumno: %1
+[game stopped %0]
+Ludo haltigita: %0
+[game stopped script help]
+Kontrolu la enigitan JavaScript-kodon kaj ĝian rimeduzon antaŭ ol rekomenci ĉi tiun ludon.
+[missing map generator %0]
+Mankas mapgenerilo: %0. Enkonstruita pejzaĝo estis elektita.
+[hive standing order paused]
+Daŭra ordono bezonas atenton kaj estis paŭzita.
+[hive connection changed orders paused]
+La konekto ŝanĝiĝis. Kontrolu viajn paŭzitajn daŭrajn ordonojn antaŭ ol rekomenci ilin.
+[hive standing order fresh instruction]
+Daŭra ordono bezonas novan instrukcion post rekonekto. Vi povas nuligi ĝin aŭ peti la komandanton anstataŭigi ĝin.
+[hive order confirmation failed]
+Ordono ne povis esti konfirmita. Kontrolu viajn daŭrajn ordonojn antaŭ ol rekomenci ilin.
+[hive previous order sending]
+Via antaŭa ordono ankoraŭ estas sendata. Ĉi tiu mesaĝo estas konservita; malfermu la komandanton por sendi ĝin denove.
+[hive order received %0]
+Ordono ricevita: %0
+[hive order not confirmed]
+Ordono ne konfirmita. Malfermu la komandanton por reprovi; via mesaĝo estas konservita.
+[hive standing order update failed]
+Ĝisdatigo de daŭra ordono malsukcesis. Via ordono estas paŭzita sur ĉi tiu aparato; reprovu per la koncerna regilo.
+[AI for all computer colonies]
+AI por ĉiuj komputile regataj kolonioj

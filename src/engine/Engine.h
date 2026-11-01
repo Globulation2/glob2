@@ -38,15 +38,17 @@ using std::shared_ptr;
 
 /// Engine is the backend of the game. It is responsible for loading and setting up games and players,
 /// and its run function is meant to run the game that has been loaded.
-namespace GameDiagnostics { class Session; }
+namespace GameDiagnostics { class Session; class WarriorTacticsTrace; }
 class Engine
 {
+	friend struct TranslationPreviewAccess;
 	friend struct CustomGameSetupHarness;
 	friend struct HeadlessRunner;
 	friend class SimulationRunner;
 	friend struct MatchVerifier;
 	friend struct TurnClient;
 	std::shared_ptr<GameDiagnostics::Session> diagnostics;
+    std::unique_ptr<GameDiagnostics::WarriorTacticsTrace> warriorTactics;
 	bool headlessDiagnosticsPending() const;
 	std::string headlessOutput;
 	std::string initializationDiagnostic;
@@ -55,6 +57,7 @@ class Engine
 	friend class HighResolutionIntegrationHarness;
 	friend class SoftwareRenderBenchmark;
 public:
+	std::vector<GAGGUI::ui::Host*> inspectionHosts() { return gui.inspectionHosts(); }
 	//! Constructor
 	Engine();
 	//! Destructor. Also finalizes globalContainer->replayWriter (which

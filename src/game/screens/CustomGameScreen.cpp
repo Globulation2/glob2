@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/LibraryText.h"
 #include "CustomGameScreen.h"
@@ -7,6 +8,8 @@
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
 #include "InstanceConfig.h"
+#include "Sha256.h"
+#include <ui/PositionedControls.h>
 #include "ChooseMapScreen.h"
 #include "AINames.h"
 #include "CustomGamePreferences.h"
@@ -143,9 +146,8 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 	if (preferences.load(*files))
 	{
 		setup = preferences.setup;
-        if(!preferences.missingGeneratorId.empty())message="Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
+        if(!preferences.missingGeneratorId.empty())message=Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[missing map generator %0]", "Missing map generator: %0. A native landscape was selected."), {preferences.missingGeneratorId}) : "Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
 		userMaps = preferences.userMaps && separateMapLibraries;
-		landscapeSortOrder = preferences.landscapeSortOrder;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
 		listMaps();
 		if (setup.random)
@@ -192,7 +194,7 @@ void CustomGameScreen::useForRoom(const CustomGameSetup &draft, int tab)
 	setup = draft;
 	const auto nativeCatalog = CustomGameSetup::landscapeCatalog(true);
 	if (!nativeCatalog->find(setup.generator.method))
-		setup.generator.setMethodDefaults(nativeCatalog->methods(false).front(), nativeCatalog);
+		setup.generator.setMethodDefaults(nativeCatalog->defaultMethod(false), nativeCatalog);
 	else
 		setup.generator.catalog = nativeCatalog;
 	for (auto &colony : setup.colonies)
@@ -237,7 +239,7 @@ void CustomGameScreen::launch()
 		}
 		catch (const std::exception &e)
 		{
-			message = e.what();
+			message = Glob2UI::exceptionText(e);
 			invalidate();
 			return;
 		}
@@ -322,7 +324,6 @@ void CustomGameScreen::savePreferences()
 	CustomGamePreferences preferences;
 	preferences.setup = setup;
 	preferences.userMaps = userMaps;
-	preferences.landscapeSortOrder = landscapeSortOrder;
 	std::copy(std::begin(librarySelection), std::end(librarySelection),
 			  preferences.librarySelection);
 	std::copy(std::begin(expanded), std::end(expanded), preferences.expanded);
@@ -363,18 +364,15 @@ LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 		shown.push_back(std::move(entry));
 	}
 	auto picker = std::make_unique<LandscapePickerScreen>(
-		tr("Landscape"), std::move(shown), selected,
-		LandscapePickerScreen::SortOrder(landscapeSortOrder));
+		tr("Landscape"), std::move(shown), selected);
 	auto *result = picker.get(); // Non-owning; ScreenStack retains ownership through completion.
 	screens.push(std::move(picker),
 				 [this, entries](GAGGUI::Screen &screen, int result)
 				 {
 					 auto &picker = static_cast<LandscapePickerScreen &>(screen);
-					 // Persisted the next time preferences save, the way any other lobby choice on this screen is.
-					 landscapeSortOrder = int(picker.currentSortOrder());
 					 // Size and colony count are shared lobby settings the picker can also change (FEEDBACK
 					 // 2026-09-17); bring them back whether or not a landscape was actually picked, so backing
-					 // out still keeps what was chosen there, the same two-way relationship the sort order has.
+					 // out still keeps what was chosen there.
 					 if (picker.sharedWDec() != setup.generator.wDec ||
 						 picker.sharedHDec() != setup.generator.hDec ||
 						 picker.sharedTeams() != setup.capacity)
@@ -662,7 +660,9 @@ bool CustomGameScreen::generateMap()
 	previewPending = false;
 	if (!setup.validation().empty())
 	{
-		message = tr(setup.validation());
+		message = Glob2UI::bulgarianErrorLocale() ? validationError(setup.validation()) : tr(setup.validation());
+		if (setup.validation() == "Shared control needs a free controller slot (maximum %0).")
+			message = FormattableString(message).arg(Team::MAX_COUNT);
 		invalidate();
 		return false;
 	}
@@ -839,7 +839,7 @@ void CustomGameScreen::onTimer(Uint32 tick)
 			loadMap(path.string());
 		}
 		else
-			message = catalogDownload->error().empty() ? tr("maps download failed") : catalogDownload->error();
+			message = catalogDownload->error().empty() ? tr("maps download failed") : mapDownloadError(catalogDownload->error());
 		catalogDownload.reset();
 		invalidate();
 	}
@@ -985,7 +985,7 @@ void CustomGameScreen::showAIProfile(int colony)
 			}
 			catch (const std::exception &e)
 			{
-				message = e.what();
+				message = Glob2UI::exceptionText(e);
 			}
 		}
 		invalidate();
@@ -1024,7 +1024,7 @@ Element CustomGameScreen::build(const Presentation &p)
 		}
 		catch (const std::exception &e)
 		{
-			message = e.what();
+			message = Glob2UI::exceptionText(e);
 		}
 	}
 	GAGCore::ApplicationHost::customGameReady(validMap && !previewBusy() && setup.validation().empty());
@@ -1067,8 +1067,10 @@ Element CustomGameScreen::build(const Presentation &p)
 									? tr("Game speed") + " " + speed.getGameSpeedText()
 									: teamsLabel(setup.teamLayout()) + "  /  " + std::to_string(setup.activeColonies()) + " " +
 										  tr("colonies") + "  /  " + rulesetTitle + "  /  " + speed.getGameSpeedText();
-	const std::string note = !setup.random && !validMap && !message.empty() ? message
-		: error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : tr(error);
+	std::string note = !setup.random && !validMap && !message.empty() ? message
+		: error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : (Glob2UI::bulgarianErrorLocale() ? validationError(error) : tr(error));
+	if (Glob2UI::bulgarianErrorLocale() && error == "Shared control needs a free controller slot (maximum %0).")
+		note = FormattableString(note).arg(Team::MAX_COUNT);
 	bool ready = error.empty();
 	if (forRoom)
 		ready = setup.validation().empty() && (setup.random || validMap);
@@ -1102,10 +1104,7 @@ Element CustomGameScreen::build(const Presentation &p)
 	if (!note.empty())
 		summaryParts.push_back(fe::hint(note));
 	// Experiments come from Settings, not the lobby, so say which ones this match will carry.
-	ExperimentSet displayedExperiments = globalContainer->settings.experiments;
-	if (validMap)
-		for (const auto& definition : experimentDefinitions())
-			if (mapHeader.requiredTerrainExperiments.has(definition.id)) displayedExperiments.set(definition.id);
+	const auto& displayedExperiments = globalContainer->settings.experiments;
 	if (!displayedExperiments.empty())
 		summaryParts.push_back(fe::hint(tr("Experiments") + ": " + experimentLabelList(displayedExperiments)));
 	// Desktop: summary at the left, compact Back / Start at the right, as before.
@@ -1134,14 +1133,14 @@ Element CustomGameScreen::build(const Presentation &p)
 Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> left;
-	// Content-sized pills at the left on desktop, stretched segments on touch.
+	// The map pane can be narrow even when the window uses the desktop layout.
 	auto pills = [&](const std::string &key, const std::vector<std::string> &labels, const std::vector<fe::UIIcon> &icons,
 					 int selected, std::function<void(int)> change)
 	{
 		std::vector<fe::IconRef> iconRefs;
 		for (auto icon : icons)
 			iconRefs.push_back(rowIcon(p, icon));
-		if (p.touch)
+		if (p.touch || narrow)
 			return fe::segments(key, labels, selected, change, {}, iconRefs);
 		std::vector<Element> buttons;
 		for (int i = 0; i < int(labels.size()); ++i)
@@ -1153,7 +1152,13 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 											  fe::padding(fe::Insets::symmetric(p.pt(8), 0),
 														  fe::button(key + "/" + std::to_string(i), labels[std::size_t(i)], [change, i] { change(i); }, options))));
 		}
-		return fe::row(std::move(buttons), {p.pt(8), fe::CrossAlign::Center, fe::MainAlign::Start});
+		auto row = fe::row(std::move(buttons), {p.pt(8), fe::CrossAlign::Center, fe::MainAlign::Start});
+		return fe::adaptive([row, key, labels, selected, change, iconRefs](const fe::LayoutContext &ctx, fe::Size available)
+							{
+								if (row->measure(ctx, {}).w > available.w)
+									return fe::segments(key, labels, selected, change, {}, iconRefs);
+								return row;
+							});
 	};
 	left.push_back(pills("map/mode", localized({"Premade maps", "Random map"}), {fe::UIIcon::Map, fe::UIIcon::Dice}, setup.random, [this](int value) { setMapMode(value); }));
 	if (!setup.random)
@@ -1397,7 +1402,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				   {p.pt(16), fe::CrossAlign::Stretch});
 }
 
-CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Presentation &p)
+CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Presentation &p, const std::string &catalogIdentity)
 {
 	auto &c = setup.colonies[i];
 	const auto controllerNames = localized({"You", "AI", "You + AI", "Closed"});
@@ -1428,7 +1433,9 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 		const auto names = aiChoices();
 		const int selectedAI = aiSelection(i);
 		// The choice and its strategy button share a line only when both fit.
-		auto ai = fe::choice(id + "/ai", names, selectedAI, [this, i](int value) { selectAI(i, value); });
+		auto ai = fe::semanticContext(
+			fe::choice(id + "/ai", names, selectedAI, [this, i](int value) { selectAI(i, value); }),
+			(catalogIdentity.empty() ? aiChoicesIdentity() : catalogIdentity) + ":" + id + ":" + std::to_string(int(c.controller)));
 		// The strategy and counterplay behind the chosen AI, as a small (i) beside it.
 		fe::ButtonOptions infoOptions;
 		infoOptions.tooltip = tr("AI strategy");
@@ -1447,6 +1454,7 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> parts;
+	const auto catalogIdentity = aiChoicesIdentity();
 	// Teams: every shape the open colonies can take, read back from the alliances. A shape
 	// the list does not hold (set with the colonies' own Team choices) names itself.
 	const auto current = setup.teamLayout();
@@ -1476,6 +1484,26 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 	else
 		parts.push_back(fe::row({fe::label(tr("Teams")), fe::width(p.textPt(220), teams), controllers},
 								{p.pt(12), fe::CrossAlign::Center}));
+	// The same choice applies to every active computer-controlled colony. Keep
+	// individual strategies editable below, including mixed human/AI matches.
+	const int commonAI = commonAISelection();
+	if (commonAI != -2)
+	{
+		fe::ChoiceOptions aiOptions;
+		if (commonAI < 0)
+			aiOptions.compactLabel = tr("Mixed");
+		std::string subjects;
+		for (int i = 0; i < setup.capacity; ++i)
+			if (setup.colonies[i].controller == CustomGameSetup::Computer ||
+				setup.colonies[i].controller == CustomGameSetup::Shared)
+				subjects += ":" + std::to_string(i) + "/" + std::to_string(int(setup.colonies[i].controller));
+		auto allAI = fe::semanticContext(
+			fe::choice("players/ai", aiChoices(), commonAI,
+				[this](int value) { selectAIForComputers(value); }, aiOptions),
+			catalogIdentity + ":computer-colonies" + subjects);
+		parts.push_back(fe::maxWidth(p.textPt(720),
+			fe::field(tr("AI for all computer colonies"), allAI, {"", 280})));
+	}
 	if (!setup.humanColony())
 		parts.push_back(fe::caption(tr("You will watch this match.")));
 	for (int i = 0; i < setup.capacity; ++i)
@@ -1488,9 +1516,9 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 				: (c.ai == AI::JAVASCRIPT ? aiLabel(i) : AINames::getAISummary(c.ai));
 		// Side by side when the offered width holds the columns at the current
 		// text size (the desktop page is narrower than the window), else stacked.
-		auto layout = [this, i, p](bool stacked) -> Element
+		auto layout = [this, i, p, catalogIdentity](bool stacked) -> Element
 		{
-			auto f = colonyFields(i, p);
+			auto f = colonyFields(i, p, catalogIdentity);
 			if (stacked)
 				return fe::column({f.identity, f.controller, f.ai, f.team}, {p.pt(6)});
 			return fe::row({fe::width(p.textPt(150), f.identity), fe::width(p.textPt(150), f.controller), fe::expanded(f.ai),
@@ -1890,6 +1918,18 @@ std::vector<std::string> CustomGameScreen::aiChoices() const
 			names.push_back(entry.metadata.name + " · JavaScript #" + entry.id);
 	return names;
 }
+std::string CustomGameScreen::aiChoicesIdentity() const
+{
+	std::string catalog = forRoom ? "room" : "local";
+	for (const int id : AINames::selectionOrder())
+		catalog += ":" + std::to_string(id);
+	// The registry checkpoint carries stable IDs, ordered entries, source paths
+	// with their revisions, and downloaded package provenance. Names alone do
+	// not bind the meaning of an index when a strategy is replaced in place.
+	if (!forRoom && aiLibrary)
+		catalog += "\n" + aiLibrary->checkpoint();
+	return Online::Sha256::hex(catalog);
+}
 int CustomGameScreen::aiSelection(int colony) const
 {
 	const auto &c = setup.colonies[colony];
@@ -1919,6 +1959,34 @@ void CustomGameScreen::selectAI(int colony, int selection)
 		c.aiLibraryId = aiLibrary->entries()[selection - builtin].id;
 	}
 	frozenAIs.clear();
+}
+int CustomGameScreen::commonAISelection() const
+{
+	int selected = -2;
+	for (int i = 0; i < setup.capacity; ++i)
+	{
+		const auto controller = setup.colonies[i].controller;
+		if (controller != CustomGameSetup::Computer && controller != CustomGameSetup::Shared)
+			continue;
+		const int next = aiSelection(i);
+		if (selected == -2)
+			selected = next;
+		else if (selected != next)
+			return -1;
+	}
+	return selected;
+}
+void CustomGameScreen::selectAIForComputers(int selection)
+{
+	if (selection < 0 || std::size_t(selection) >= aiChoices().size())
+		return;
+	for (int i = 0; i < setup.capacity; ++i)
+	{
+		const auto controller = setup.colonies[i].controller;
+		if (controller == CustomGameSetup::Computer || controller == CustomGameSetup::Shared)
+			selectAI(i, selection);
+	}
+	invalidate();
 }
 std::string CustomGameScreen::aiLabel(int colony) const
 {

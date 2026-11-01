@@ -4884,6 +4884,34 @@ Unit yang terkurung tanpa petak kosong untuk dipijak.
 Sumber daya dibersihkan
 [stat cleared about]
 Sumber daya yang disingkirkan pekerja di area pembersihan untuk membuka ruang.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestise
 [stat prestige about]
@@ -5546,14 +5574,6 @@ Batasi penggambaran di seluruh aplikasi. Nilai yang lebih rendah mengurangi peke
 Es
 [road]
 Jalur setapak
-[experiment ice-terrain]
-Medan es
-[experiment ice-terrain help]
-Menambahkan es ke editor peta. Unit darat bergerak dengan setengah kecepatan dan kehilangan satu poin kesehatan setiap 32 langkah simulasi di atas es. Es tidak dapat memuat bangunan atau sumber daya.
-[experiment road-terrain]
-Medan jalur setapak
-[experiment road-terrain help]
-Menambahkan jalur setapak yang aus ke editor peta. Unit darat bergerak dengan kecepatan dua kali lipat. Jalur setapak mendukung bangunan, tetapi tidak sumber daya. Unit terbang tidak terpengaruh.
 [experiment markets-v2]
 Pasar V2
 [experiment markets-v2 help]
@@ -5676,6 +5696,14 @@ Air gelap
 Lubang
 [chasm]
 Jurang
+[lush_grass]
+Rumput lebat
+[dry_grass]
+Rumput kering
+[dune_sand]
+Pasir bukit
+[pale_sand]
+Pasir pucat
 [terrain group water]
 Air
 [terrain group sand]
@@ -5702,42 +5730,6 @@ Tanah subur
 Air dalam
 [terrain group void]
 Kehampaan
-[experiment obstacle-terrain]
-Medan penghalang
-[experiment obstacle-terrain help]
-Menambahkan batu besar, pagar tanaman, dan semak lebat ke editor peta. Unit darat tidak dapat melintasinya dan proyektil terhalang; unit terbang dapat melewatinya. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
-[experiment ridge-terrain]
-Medan punggung bukit
-[experiment ridge-terrain help]
-Menambahkan punggung batu dan singkapan batu ke editor peta. Unit darat tidak dapat melintasinya, tetapi tembakan menara dan unit terbang dapat lewat di atasnya. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
-[experiment barren-terrain]
-Tanah tandus
-[experiment barren-terrain help]
-Menambahkan tanah, tanah liat, kerikil, dan padang bunga ke editor peta. Bangunan dapat didirikan di sana, tetapi tidak ada yang tumbuh di atas atau di sekitarnya, dan medan ini tidak dianggap sebagai tepi air.
-[experiment rough-terrain]
-Tanah sulit dilalui
-[experiment rough-terrain help]
-Menambahkan lumpur, rawa, salju tebal, dan lereng berbatu ke editor peta. Unit darat bergerak dengan sekitar dua pertiga kecepatan normal. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
-[experiment path-terrain]
-Medan jalan
-[experiment path-terrain help]
-Menambahkan jalan tanah dan jalan papan ke editor peta. Seperti jalur, unit darat bergerak dua kali lebih cepat dan bangunan dapat didirikan, tetapi tidak ada yang tumbuh.
-[experiment lava-terrain]
-Medan lava
-[experiment lava-terrain help]
-Menambahkan lava dan padang bara ke editor peta. Unit darat tidak dapat masuk; unit terbang yang melintas kehilangan kesehatan dengan cepat. Proyektil dapat lewat di atasnya.
-[experiment fertile-terrain]
-Tanah subur
-[experiment fertile-terrain help]
-Menambahkan tanah lempung, lumut, dan padang musim semi ke editor peta. Mendukung bangunan dan tanaman serta mengairi tanah di sekitarnya lebih kuat daripada air.
-[experiment deep-water-terrain]
-Air dalam
-[experiment deep-water-terrain help]
-Menambahkan air dalam dan air gelap ke editor peta. Perenang melintas lebih lambat, ganggang tidak tumbuh, dan medan ini tetap mengairi lahan di sekitarnya.
-[experiment void-terrain]
-Medan kehampaan
-[experiment void-terrain help]
-Menambahkan lubang dan jurang ke editor peta. Tidak ada yang dapat melintasinya, termasuk unit terbang, dan proyektil berhenti di tepinya.
 [terrain group custom]
 Kustom
 [terrain group classic]
@@ -5770,8 +5762,6 @@ Melukai unit terbang
 Pilih kuas. Anggota kelompok memiliki aturan yang sama dan hanya berbeda tampilannya.
 [terrain rule algae grow]
 Ganggang tumbuh
-[terrain palette experiments hint]
-Pilih kuas. Kelompok medan tambahan muncul setelah eksperimennya diaktifkan di Pengaturan > Eksperimen.
 [brush valid on %0]
 Dapat ditempatkan di: %0
 [brush valid nowhere]
@@ -6401,421 +6391,421 @@ Pilihan Anda tidak dapat disimpan. Suara masih dimatikan. Silakan coba lagi.
 [audio choices description]
 Senyap: pengeras suara dibisukan. Suara: pengeras suara dengan gelombang suara.
 [intro menu]
-
+Pengenalan
 [intro briefing]
-
+Pelajari kendali tidak langsung: jelajahi dengan bendera, pasok koloni, dan arahkan serangan.
 [intro try]
-
+Mulai pengenalan
 [intro preflight]
-
+Globul bergerak sendiri. Anda memilih tugasnya melalui bangunan dan bendera. Dalam pengenalan singkat ini, jelajahi penanda, perluas pasokan makanan, tambah pekerja, dan arahkan serangan kecil.
 [intro preflight save]
-
+Luangkan sekitar 10 menit. Simpan melalui menu permainan dan lanjutkan lewat Muat permainan. Aturan lapar dan pertempuran biasa berlaku. Pilih Pelajaran tutorial di menu utama untuk melatih keterampilan lain.
 [intro preference failed]
-
+Pilihan Anda tidak dapat disimpan. Anda tetap bisa bermain; saran ini mungkin muncul lagi nanti.
 [intro goal scout]
-
+Jelajahi penanda batu
 [intro goal build]
-
+Bangun Penginapan lain
 [intro goal supply]
-
+Pasok Penginapan baru
 [intro goal grow]
-
+Tambah tenaga kerja
 [intro goal attack]
-
+Hancurkan Sarang musuh
 [intro instruction scout]
-
+Buka Bendera dan letakkan Bendera Penjelajahan pada batu di timur koloni. Tugaskan satu penjelajah. Amati perjalanannya menuju bendera.
 [intro instruction build]
-
+Buka Bangun dan letakkan Penginapan dekat gandum. Tugaskan pekerja yang tersedia untuk membangunnya. Tetap pasok Penginapan lama.
 [intro instruction supply]
-
+Pilih Penginapan baru yang selesai dan tugaskan sedikitnya satu pemasok. Tunggu pekerja mengantarkan gandum.
 [intro instruction grow]
-
+Pilih Sarang. Atur target pekerjanya minimal 2 dan rasio produksi hanya pekerja. Tetap pasok kedua Penginapan selama pekerja baru dilahirkan.
 [intro instruction attack]
-
+Temukan Sarang musuh lebih jauh ke timur. Gunakan Bendera Perang untuk mengarahkan prajurit menyerangnya. Bantuan tersedia jika perlu pengingat.
 [intro help]
-
+Bantuan / mengapa?
 [intro help scout]
-
+Gunakan peta mini untuk menggeser pandangan ke timur dan menemukan batu. Pilih Bendera Penjelajahan pada Bendera, letakkan di batu, lalu keluar dari penempatan dengan tombol tetikus sekunder. Pilih bendera dan minta 1 penjelajah. Bendera meminta unit, bukan memindahkannya seketika. Penjelajah dapat berhenti untuk makan.
 [intro help build]
-
+Pembangunan memakai kayu yang diantarkan pekerja. Pilih Penginapan dari palet bangunan, letakkan di lahan kosong dekat gandum, dan minta 2 pembangun. Target pekerja adalah permintaan, bukan jumlah yang sudah hadir. Pertahankan pemasok di Penginapan lama dan Sarang. Lokasi mana pun yang sah dihitung.
 [intro help supply]
-
+Pembangunan dan pasokan harian memiliki target pekerja terpisah. Pilih Penginapan yang selesai dan naikkan target operasinya. Pemasok mengumpulkan gandum dan membawanya kemari. Globul lapar makan di Penginapan; tanpa pemasok, persediaan akhirnya habis. Jaga akses ke gandum.
 [intro help grow]
-
+Sarang memakai gandum untuk menghasilkan unit. Atur produksi pekerja ke 1, penjelajah dan prajurit ke 0. Naikkan target pekerja Sarang menjadi minimal 2. Lebih banyak pemasok membawa gandum lebih cepat, tetapi bersaing dengan tugas lain. Pasok makanan ke kedua Penginapan.
 [intro help attack]
-
+Buka Bendera, pilih Bendera Perang, lalu letakkan pada Sarang musuh di timur batu. Pilih bendera dan minta hingga 4 prajurit. Radius kecil menjaga mereka berkumpul. Keluar dari penempatan dengan tombol tetikus sekunder sebelum memilih bendera. Jika prajurit habis, hasilkan lagi di Sarang. Prajurit bisa berhenti untuk makan; tetap pasok Penginapan.
 [intro hint scout]
-
+Penjelajah memerlukan Bendera Penjelajahan dengan penugasan pada batu di timur. Periksa target dan jumlah penjelajahnya.
 [intro hint build]
-
+Jika Penginapan baru dihapus, bangun lagi. Jika tidak, periksa lokasi pembangunan dan target pekerjanya. Pekerja mungkin sibuk memasok; pertahankan makanan sambil menyediakan pembangun.
 [intro hint supply]
-
+Pilih Penginapan baru yang selesai. Periksa target pekerjanya dan amati pengiriman gandum. Pekerja mungkin perlu waktu untuk berjalan atau makan.
 [intro hint grow]
-
+Periksa pasokan Sarang dan produksi khusus pekerja. Tetap pasok Penginapan sambil menunggu pekerja baru.
 [intro hint attack]
-
+Periksa Bendera Perang, jumlah prajurit yang diminta, dan makanan. Prajurit perlu waktu untuk berjalan dan menyerang.
 [intro hint no scout flag]
-
+Bendera Penjelajahan dengan penugasan tidak ditemukan. Letakkan pada batu di timur pangkalan dan minta 1 penjelajah.
 [intro hint no suppliers]
-
+Target pekerja Penginapan baru atau lokasi pembangunan Anda adalah 0. Pilih dan minta pekerja.
 [intro hint no war flag]
-
+Bendera Perang dengan penugasan tidak ditemukan di pangkalan musuh. Letakkan pada Sarang musuh di timur dan minta prajurit.
 [intro hint retry]
-
+Unit atau bangunan yang diperlukan pelajaran ini telah hilang. Muat simpanan sebelumnya atau mulai ulang pelajaran melalui menu permainan.
 [intro complete]
-
+Pengenalan selesai
 [intro complete body]
-
+Anda mengarahkan globul mandiri, memperluas pasokan makanan, mengembangkan koloni, dan mengatur serangan. Lanjutkan Pelajaran tutorial untuk pelatihan, peningkatan, dan pertahanan, atau kembali ke menu utama untuk memulai pertandingan.
 [intro play again]
-
+Main lagi
 [intro restart]
-
+Mulai ulang pengenalan
 [intro restart body]
-
+Mulai ulang dari koloni yang disiapkan? Kemajuan pengenalan yang belum disimpan akan hilang.
 [intro help touch scout]
-
+Seret lahan kosong untuk menggeser pandangan sebelum meletakkan bendera. Temukan batu di timur koloni. Buka Bendera, pilih Bendera Penjelajahan, letakkan di batu dan konfirmasi. Pilih bendera dan minta 1 penjelajah melalui target unitnya. Globul berjalan sendiri dan dapat berhenti untuk makan.
 [intro help touch build]
-
+Pilih Penginapan dari Bangun. Letakkan di lahan kosong dekat gandum dan konfirmasi. Pilih lokasinya dan minta 2 pembangun. Target pekerja adalah permintaan, bukan jumlah yang sudah hadir. Tetap pasok Penginapan lama dan Sarang. Semua lokasi yang sah dihitung.
 [intro help touch supply]
-
+Pilih Penginapan baru yang selesai dan naikkan target pekerjanya. Target pembangunan dan pasokan harian terpisah. Pemasok mengumpulkan gandum dan membawanya kemari. Globul lapar makan di Penginapan; bangunan tanpa pemasok akhirnya kehabisan makanan. Jaga akses ke gandum.
 [intro help touch grow]
-
+Pilih Sarang. Atur produksi pekerja ke 1, penjelajah dan prajurit ke 0. Naikkan target pekerjanya menjadi minimal 2. Pemasok membawa gandum untuk unit baru, tetapi bersaing dengan tugas lain. Tetap pasok kedua Penginapan.
 [intro help touch attack]
-
+Buka Bendera, pilih Bendera Perang, letakkan pada Sarang musuh di timur batu dan konfirmasi. Pilih bendera dan minta hingga 4 prajurit. Radius kecil mengumpulkan mereka. Jika habis, hasilkan prajurit di Sarang. Prajurit bisa berhenti untuk makan; tetap pasok Penginapan.
 [intro show destination]
-
+Tampilkan tujuan
 [intro scout destination]
-
+Jelajahi di sini
 [intro attack destination]
-
+Serang di sini
 [intro compact scout]
-
+Bendera → Bendera Penjelajahan. Letakkan di batu; tugaskan 1 penjelajah.
 [intro compact build]
-
+Bangun → Penginapan. Dekat gandum; tugaskan 2 pembangun.
 [intro compact supply]
-
+Pilih Penginapan baru; tugaskan minimal 1 pemasok. Tunggu gandum.
 [intro compact grow]
-
+Pilih Sarang; tugaskan 2 pemasok. Hasilkan hanya pekerja.
 [intro compact attack]
-
+Bendera → Bendera Perang. Pada Sarang musuh; tugaskan prajurit.
 [tutorial lessons]
-
+Pelajaran tutorial
 [tutorial restart]
-
+Mulai ulang pelajaran
 [tutorial restart body]
-
+Mulai ulang pelajaran dari koloni yang disiapkan? Kemajuan yang belum disimpan akan hilang.
 [tutorial complete]
-
+Pelajaran selesai
 [tutorial food title]
-
+Latihan pasokan makanan
 [tutorial food briefing]
-
+Latih perluasan pasokan makanan: bangun Penginapan lain, tugaskan pemasok, dan amati kedatangan gandum.
 [tutorial food complete]
-
+Anda membangun Penginapan dan memasoknya dengan gandum. Coba pelajaran lain atau kembali ke menu utama.
 [tutorial unavailable]
-
+Pelajaran tutorial tidak dapat dimuat.
 [lesson healing title]
-
+Rumah Sakit dan penyembuhan
 [lesson healing briefing]
-
+Bangun Rumah Sakit dan bantu pekerja terluka pulih. Koloni mulai dalam keadaan kenyang, dengan satu pekerja terluka.
 [lesson healing complete]
-
+Rumah Sakit memulihkan globul terluka. Tetap pasok Penginapan: kelaparan dapat melukai unit lagi.
 [lesson healing build hint]
-
+Bangun Rumah Sakit di lahan kosong; tugaskan 2 pembangun. Sisakan ruang keluar masuk globul. Rumah Sakit menyembuhkan luka; Penginapan memberi makanan. Pasien ini sudah kenyang.
 [lesson healing build title]
-
+Bangun Rumah Sakit
 [lesson healing build instruction]
-
+Bangun Rumah Sakit di lahan kosong; tugaskan 2 pembangun.
 [lesson healing build help]
-
+Sisakan ruang keluar masuk globul. Rumah Sakit menyembuhkan luka; Penginapan memberi makanan. Pasien ini sudah kenyang.
 [lesson healing build marker]
-
+Bangun Rumah Sakit
 [lesson healing heal hint]
-
+Jaga akses Rumah Sakit. Amati pekerja terluka pulih. Globul mencari penyembuhan sendiri. Pantau pekerja terluka, bukan unit yang baru lahir. Jika mati, mulai ulang atau muat simpanan.
 [lesson healing heal title]
-
+Biarkan pasien pulih
 [lesson healing heal instruction]
-
+Jaga akses Rumah Sakit. Amati pekerja terluka pulih.
 [lesson healing heal help]
-
+Globul mencari penyembuhan sendiri. Pantau pekerja terluka, bukan unit yang baru lahir. Jika mati, mulai ulang atau muat simpanan.
 [lesson healing heal marker]
-
+Biarkan pasien pulih
 [lesson walking-training title]
-
+Latihan berjalan
 [lesson walking-training briefing]
-
+Bangun Lintasan Lari dan amati pekerja yang sudah ada belajar berjalan lebih cepat.
 [lesson walking-training complete]
-
+Pekerja belajar berjalan lebih cepat. Pelatihan meningkatkan pekerja yang ada; tidak menggantikan pasokan makanan koloni.
 [lesson walking-training build hint]
-
+Bangun Lintasan Lari di lahan terbuka bertanda; tugaskan pembangun. Lintasan Lari memerlukan kayu dan batu. Sisakan celah di tepinya untuk keluar masuk dan perluasan nanti.
 [lesson walking-training build title]
-
+Bangun Lintasan Lari
 [lesson walking-training build instruction]
-
+Bangun Lintasan Lari di lahan terbuka bertanda; tugaskan pembangun.
 [lesson walking-training build help]
-
+Lintasan Lari memerlukan kayu dan batu. Sisakan celah di tepinya untuk keluar masuk dan perluasan nanti.
 [lesson walking-training build marker]
-
+Bangun Lintasan Lari
 [lesson walking-training train hint]
-
+Jaga akses Lintasan Lari dan biarkan pekerja menyelesaikan latihan. Globul yang memenuhi syarat berlatih otomatis. Bebaskan sebagian pekerja dari tugas pasokan dan isi kedua Penginapan.
 [lesson walking-training train title]
-
+Latih pekerja yang sudah ada
 [lesson walking-training train instruction]
-
+Jaga akses Lintasan Lari dan biarkan pekerja menyelesaikan latihan.
 [lesson walking-training train help]
-
+Globul yang memenuhi syarat berlatih otomatis. Bebaskan sebagian pekerja dari tugas pasokan dan isi kedua Penginapan.
 [lesson swimming title]
-
+Berenang dan sumber daya air
 [lesson swimming briefing]
-
+Latih perenang, lalu gunakan ganggang dari kolam untuk membangun Sekolah.
 [lesson swimming complete]
-
+Perenang mengantarkan sumber daya air untuk Sekolah. Akses air memperluas tugas yang bisa dilakukan koloni.
 [lesson swimming build hint]
-
+Bangun Kolam Renang di barat kolam; tugaskan pembangun. Sisakan ruang sekitar Kolam Renang. Pekerja tidak bisa mengambil ganggang di air dalam sebelum belajar berenang.
 [lesson swimming build title]
-
+Bangun Kolam Renang
 [lesson swimming build instruction]
-
+Bangun Kolam Renang di barat kolam; tugaskan pembangun.
 [lesson swimming build help]
-
+Sisakan ruang sekitar Kolam Renang. Pekerja tidak bisa mengambil ganggang di air dalam sebelum belajar berenang.
 [lesson swimming build marker]
-
+Bangun Kolam Renang
 [lesson swimming train hint]
-
+Biarkan pekerja yang sudah ada menyelesaikan latihan berenang. Unit memilih latihan otomatis. Pertahankan pasokan dan izinkan pekerja bebas mencapai Kolam Renang.
 [lesson swimming train title]
-
+Latih perenang
 [lesson swimming train instruction]
-
+Biarkan pekerja yang sudah ada menyelesaikan latihan berenang.
 [lesson swimming train help]
-
+Unit memilih latihan otomatis. Pertahankan pasokan dan izinkan pekerja bebas mencapai Kolam Renang.
 [lesson swimming water-job hint]
-
+Bangun Sekolah dekat koloni; tugaskan pembangun mengambil kayu dan ganggang. Ganggang tumbuh di kolam. Perenang terlatih harus masuk air untuk mengambilnya. Tempatkan Sekolah di lahan terbuka dengan akses pemasok.
 [lesson swimming water-job title]
-
+Gunakan ganggang dari kolam
 [lesson swimming water-job instruction]
-
+Bangun Sekolah dekat koloni; tugaskan pembangun mengambil kayu dan ganggang.
 [lesson swimming water-job help]
-
+Ganggang tumbuh di kolam. Perenang terlatih harus masuk air untuk mengambilnya. Tempatkan Sekolah di lahan terbuka dengan akses pemasok.
 [lesson swimming water-job marker]
-
+Gunakan ganggang dari kolam
 [lesson schools title]
-
+Sekolah dan keterampilan pekerja
 [lesson schools briefing]
-
+Gunakan perenang yang disiapkan untuk membangun Sekolah, lalu amati pekerja belajar membangun dan memanen.
 [lesson schools complete]
-
+Sekolah meningkatkan keterampilan pekerja. Pembangun terampil memungkinkan peningkatan; panen lebih baik menopang ekonomi yang berkembang.
 [lesson schools build hint]
-
+Bangun Sekolah di lahan terbuka; tugaskan pembangun. Koloni sudah memiliki perenang untuk ganggang. Jaga akses kayu dan air. Pohon buah menyediakan sumber daya prestise; makanan tetap berasal dari gandum.
 [lesson schools build title]
-
+Bangun Sekolah
 [lesson schools build instruction]
-
+Bangun Sekolah di lahan terbuka; tugaskan pembangun.
 [lesson schools build help]
-
+Koloni sudah memiliki perenang untuk ganggang. Jaga akses kayu dan air. Pohon buah menyediakan sumber daya prestise; makanan tetap berasal dari gandum.
 [lesson schools build marker]
-
+Bangun Sekolah
 [lesson schools learn hint]
-
+Biarkan pekerja yang sudah ada menyelesaikan pelatihan Sekolah. Sekolah mengajarkan pembangunan dan panen bersama. Sediakan pekerja bebas; lokasi pembangunan saja tidak melatih siapa pun.
 [lesson schools learn title]
-
+Ajarkan pembangunan dan panen
 [lesson schools learn instruction]
-
+Biarkan pekerja yang sudah ada menyelesaikan pelatihan Sekolah.
 [lesson schools learn help]
-
+Sekolah mengajarkan pembangunan dan panen bersama. Sediakan pekerja bebas; lokasi pembangunan saja tidak melatih siapa pun.
 [lesson upgrades title]
-
+Meningkatkan bangunan
 [lesson upgrades briefing]
-
+Gunakan pekerja terampil yang disiapkan untuk meningkatkan Lintasan Lari dan berlatih melampaui tingkat pertama.
 [lesson upgrades complete]
-
+Anda meningkatkan bangunan dan memakai pelatihan yang lebih baik. Peningkatan berikut mengulang siklus dengan Sekolah, keterampilan, bahan, dan ruang yang lebih baik, hingga tingkat 3.
 [lesson upgrades upgrade hint]
-
+Pilih Lintasan Lari, pilih Tingkatkan, dan tugaskan pembangun terampil. Pekerja ini sudah mempelajari keterampilan Sekolah tingkat pertama. Peningkatan butuh tambahan ruang dan bahan serta menghentikan layanan bangunan sementara. Peningkatan yang dibatalkan tidak dihitung.
 [lesson upgrades upgrade title]
-
+Tingkatkan Lintasan Lari
 [lesson upgrades upgrade instruction]
-
+Pilih Lintasan Lari, pilih Tingkatkan, dan tugaskan pembangun terampil.
 [lesson upgrades upgrade help]
-
+Pekerja ini sudah mempelajari keterampilan Sekolah tingkat pertama. Peningkatan butuh tambahan ruang dan bahan serta menghentikan layanan bangunan sementara. Peningkatan yang dibatalkan tidak dihitung.
 [lesson upgrades upgrade marker]
-
+Tingkatkan Lintasan Lari
 [lesson upgrades train hint]
-
+Biarkan pekerja yang sudah ada belajar berjalan lebih cepat di Lintasan Lari yang ditingkatkan. Peningkatan selesai memperbaiki pelatihan yang tersedia. Tingkat bangunan lebih tinggi butuh keterampilan membangun lebih tinggi; tingkat yang ditampilkan mulai dari 1.
 [lesson upgrades train title]
-
+Gunakan pelatihan yang ditingkatkan
 [lesson upgrades train instruction]
-
+Biarkan pekerja yang sudah ada belajar berjalan lebih cepat di Lintasan Lari yang ditingkatkan.
 [lesson upgrades train help]
-
+Peningkatan selesai memperbaiki pelatihan yang tersedia. Tingkat bangunan lebih tinggi butuh keterampilan membangun lebih tinggi; tingkat yang ditampilkan mulai dari 1.
 [lesson warrior-training title]
-
+Menghasilkan dan melatih prajurit
 [lesson warrior-training briefing]
-
+Hasilkan prajurit di Sarang, lalu latih di Barak.
 [lesson warrior-training complete]
-
+Anda mengatur produksi militer dan melatih prajurit. Pertahankan makanan; unit tempur tetap perlu makan.
 [lesson warrior-training produce hint]
-
+Atur Sarang hanya menghasilkan prajurit; tugaskan pemasok dan tunggu 2 prajurit. Atur rasio pekerja dan penjelajah ke 0, prajurit ke 1. Sarang memakai gandum untuk kelahiran. Rasio memilih hasil produksi; pemasok menentukan apakah produksi dapat berjalan.
 [lesson warrior-training produce title]
-
+Hasilkan dua prajurit
 [lesson warrior-training produce instruction]
-
+Atur Sarang hanya menghasilkan prajurit; tugaskan pemasok dan tunggu 2 prajurit.
 [lesson warrior-training produce help]
-
+Atur rasio pekerja dan penjelajah ke 0, prajurit ke 1. Sarang memakai gandum untuk kelahiran. Rasio memilih hasil produksi; pemasok menentukan apakah produksi dapat berjalan.
 [lesson warrior-training produce marker]
-
+Hasilkan dua prajurit
 [lesson warrior-training build hint]
-
+Bangun Barak di lahan terbuka; tugaskan pembangun. Hentikan atau kurangi produksi prajurit setelah cukup. Barak mengajarkan keterampilan tempur dan memerlukan ruang bebas di tepinya.
 [lesson warrior-training build title]
-
+Bangun Barak
 [lesson warrior-training build instruction]
-
+Bangun Barak di lahan terbuka; tugaskan pembangun.
 [lesson warrior-training build help]
-
+Hentikan atau kurangi produksi prajurit setelah cukup. Barak mengajarkan keterampilan tempur dan memerlukan ruang bebas di tepinya.
 [lesson warrior-training build marker]
-
+Bangun Barak
 [lesson warrior-training train hint]
-
+Biarkan prajurit menyelesaikan latihan Barak. Prajurit mencari latihan otomatis. Pasok Penginapan dan jaga akses Barak. Membangun Barak saja bukan berarti menyelesaikan latihan.
 [lesson warrior-training train title]
-
+Latih prajurit Anda
 [lesson warrior-training train instruction]
-
+Biarkan prajurit menyelesaikan latihan Barak.
 [lesson warrior-training train help]
-
+Prajurit mencari latihan otomatis. Pasok Penginapan dan jaga akses Barak. Membangun Barak saja bukan berarti menyelesaikan latihan.
 [lesson fortifications title]
-
+Menara dan dinding pelindung
 [lesson fortifications briefing]
-
+Bangun menara berpasokan dan dinding pelindung, lalu uji terhadap satu serangan kecil.
 [lesson fortifications complete]
-
+Pertahanan berpasokan Anda menghentikan serangan latihan. Menara butuh batu dan dinding butuh celah agar pemasok dapat menjangkaunya.
 [lesson fortifications tower hint]
-
+Bangun menara di area bertanda; tugaskan pembangun. Tempatkan dekat tambang batu dan sisakan akses pemasok. Serangan baru dimulai setelah sasaran persiapan selesai.
 [lesson fortifications tower title]
-
+Bangun Menara Pertahanan
 [lesson fortifications tower instruction]
-
+Bangun menara di area bertanda; tugaskan pembangun.
 [lesson fortifications tower help]
-
+Tempatkan dekat tambang batu dan sisakan akses pemasok. Serangan baru dimulai setelah sasaran persiapan selesai.
 [lesson fortifications tower marker]
-
+Bangun Menara Pertahanan
 [lesson fortifications walls hint]
-
+Bangun minimal 2 bagian dinding dekat menara; biarkan jalur baratnya terbuka. Dinding memakai batu dan tiap lokasi meminta pekerja. Jangan kurung menara: pemasok butuh jalan. Jalur barat bertanda harus tetap kosong.
 [lesson fortifications walls title]
-
+Lindungi menara dengan dinding
 [lesson fortifications walls instruction]
-
+Bangun minimal 2 bagian dinding dekat menara; biarkan jalur baratnya terbuka.
 [lesson fortifications walls help]
-
+Dinding memakai batu dan tiap lokasi meminta pekerja. Jangan kurung menara: pemasok butuh jalan. Jalur barat bertanda harus tetap kosong.
 [lesson fortifications walls marker]
-
+Lindungi menara dengan dinding
 [lesson fortifications supply hint]
-
+Pilih menara dan minta pemasok. Tunggu minimal 2 batu. Menara selesai memerlukan target pekerja operasional untuk membawa amunisi. Target ini terpisah dari target pembangunan.
 [lesson fortifications supply title]
-
+Pasok amunisi
 [lesson fortifications supply instruction]
-
+Pilih menara dan minta pemasok. Tunggu minimal 2 batu.
 [lesson fortifications supply help]
-
+Menara selesai memerlukan target pekerja operasional untuk membawa amunisi. Target ini terpisah dari target pembangunan.
 [lesson fortifications supply marker]
-
+Pasok amunisi
 [lesson fortifications hold hint]
-
+Prajurit latihan mendekat. Jaga menara tetap berpasokan dan dapat diakses. Bertahan sampai penyerang kalah atau dipukul mundur. Dinding yang menghalangi pemasok dapat membuat menara kehabisan amunisi. Jika koloni jatuh, mulai ulang atau muat simpanan sebelumnya.
 [lesson fortifications hold title]
-
+Uji benteng
 [lesson fortifications hold instruction]
-
+Prajurit latihan mendekat. Jaga menara tetap berpasokan dan dapat diakses.
 [lesson fortifications hold help]
-
+Bertahan sampai penyerang kalah atau dipukul mundur. Dinding yang menghalangi pemasok dapat membuat menara kehabisan amunisi. Jika koloni jatuh, mulai ulang atau muat simpanan sebelumnya.
 [lesson fortifications hold marker]
-
+Uji benteng
 [lesson defensive-tactics title]
-
+Zona penjagaan dan taktik bendera
 [lesson defensive-tactics briefing]
-
+Jelajahi musuh latihan, siapkan zona penjagaan, bertahan, lalu atur serangan balik.
 [lesson defensive-tactics complete]
-
+Anda menjelajah, mempertahankan zona penjagaan, dan mengarahkan serangan balik. Target bendera meminta unit; radius mengatur tempat unit bekerja.
 [lesson defensive-tactics scout hint]
-
+Letakkan Bendera Penjelajahan di pangkalan musuh; tugaskan 1 penjelajah. Bendera meminta unit secara otomatis. Penjelajah menyingkap aktivitas terkini dalam kabut perang; ia dapat berhenti untuk makan.
 [lesson defensive-tactics scout title]
-
+Jelajahi pangkalan musuh
 [lesson defensive-tactics scout instruction]
-
+Letakkan Bendera Penjelajahan di pangkalan musuh; tugaskan 1 penjelajah.
 [lesson defensive-tactics scout help]
-
+Bendera meminta unit secara otomatis. Penjelajah menyingkap aktivitas terkini dalam kabut perang; ia dapat berhenti untuk makan.
 [lesson defensive-tactics scout marker]
-
+Jelajahi pangkalan musuh
 [lesson defensive-tactics guard hint]
-
+Lukis zona penjagaan di area bertanda dan biarkan 2 prajurit mencapainya. Buka Bendera, pilih Penjagaan, dan lukis minimal 4 petak dalam area. Zona penjagaan menarik prajurit menganggur. Zona terlarang menghalangi perjalanan; zona pembersihan meminta penyingkiran sumber daya.
 [lesson defensive-tactics guard title]
-
+Siapkan zona penjagaan
 [lesson defensive-tactics guard instruction]
-
+Lukis zona penjagaan di area bertanda dan biarkan 2 prajurit mencapainya.
 [lesson defensive-tactics guard help]
-
+Buka Bendera, pilih Penjagaan, dan lukis minimal 4 petak dalam area. Zona penjagaan menarik prajurit menganggur. Zona terlarang menghalangi perjalanan; zona pembersihan meminta penyingkiran sumber daya.
 [lesson defensive-tactics guard marker]
-
+Siapkan zona penjagaan
 [lesson defensive-tactics repel hint]
-
+Musuh menyerang. Jaga zona penjagaan tetap terjaga dan Penginapan tetap berpasokan. Serangan kecil dimulai setelah persiapan. Kalahkan atau pukul mundur kedua penyerbu; musuh terluka bisa mundur. Prajurit mungkin pergi sementara untuk makan. Jika pertahanan gagal, muat simpanan sebelumnya atau mulai ulang.
 [lesson defensive-tactics repel title]
-
+Pukul mundur serangan latihan
 [lesson defensive-tactics repel instruction]
-
+Musuh menyerang. Jaga zona penjagaan tetap terjaga dan Penginapan tetap berpasokan.
 [lesson defensive-tactics repel help]
-
+Serangan kecil dimulai setelah persiapan. Kalahkan atau pukul mundur kedua penyerbu; musuh terluka bisa mundur. Prajurit mungkin pergi sementara untuk makan. Jika pertahanan gagal, muat simpanan sebelumnya atau mulai ulang.
 [lesson defensive-tactics repel marker]
-
+Pukul mundur serangan latihan
 [lesson defensive-tactics counterattack hint]
-
+Letakkan Bendera Perang pada Sarang musuh; minta 3 prajurit dan gunakan radius maksimal 4. Zona penjagaan dan Bendera Perang bersaing memperebutkan prajurit. Hapus petak penjagaan jika menahan pasukan. Sediakan makanan saat prajurit berjalan dan menyerang.
 [lesson defensive-tactics counterattack title]
-
+Arahkan serangan balik terpusat
 [lesson defensive-tactics counterattack instruction]
-
+Letakkan Bendera Perang pada Sarang musuh; minta 3 prajurit dan gunakan radius maksimal 4.
 [lesson defensive-tactics counterattack help]
-
+Zona penjagaan dan Bendera Perang bersaing memperebutkan prajurit. Hapus petak penjagaan jika menahan pasukan. Sediakan makanan saat prajurit berjalan dan menyerang.
 [lesson defensive-tactics counterattack marker]
-
+Arahkan serangan balik terpusat
 [lesson healing build compact]
-
+Bangun → Rumah Sakit. Sisakan akses; tugaskan pembangun.
 [lesson healing heal compact]
-
+Biarkan pekerja terluka sembuh di Rumah Sakit.
 [lesson walking-training build compact]
-
+Bangun → Lintasan Lari. Sisakan ruang di tepinya.
 [lesson walking-training train compact]
-
+Biarkan pekerja menuntaskan latihan Lintasan Lari.
 [lesson swimming build compact]
-
+Bangun → Kolam Renang, di barat kolam.
 [lesson swimming train compact]
-
+Biarkan pekerja belajar berenang.
 [lesson swimming water-job compact]
-
+Bangun → Sekolah. Tugaskan pembangun untuk kayu dan ganggang.
 [lesson schools build compact]
-
+Bangun → Sekolah. Tugaskan pembangun untuk kayu dan ganggang.
 [lesson schools learn compact]
-
+Biarkan pekerja menuntaskan pelatihan Sekolah.
 [lesson upgrades upgrade compact]
-
+Pilih Lintasan Lari → Tingkatkan. Tugaskan pembangun terampil.
 [lesson upgrades train compact]
-
+Latih pekerja di Lintasan Lari yang ditingkatkan.
 [lesson warrior-training produce compact]
-
+Sarang → Hanya prajurit. Pasok gandum untuk 2 prajurit.
 [lesson warrior-training build compact]
-
+Bangun → Barak. Sisakan ruang di tepinya.
 [lesson warrior-training train compact]
-
+Biarkan prajurit menuntaskan latihan Barak.
 [lesson fortifications tower compact]
-
+Bangun → Menara. Tempatkan di area bertanda.
 [lesson fortifications walls compact]
-
+Bangun 2 dinding. Biarkan jalur barat menara terbuka.
 [lesson fortifications supply compact]
-
+Pilih menara → Pemasok. Tunggu 2 batu.
 [lesson fortifications hold compact]
-
+Pertahankan pasokan menara melawan penyerang.
 [lesson defensive-tactics scout compact]
-
+Bendera → Penjelajahan. Pada musuh; tugaskan 1 penjelajah.
 [lesson defensive-tactics guard compact]
-
+Bendera → Penjagaan. Lukis 4 petak; datangkan 2 prajurit.
 [lesson defensive-tactics repel compact]
-
+Pertahankan zona penjagaan. Pasok Penginapan.
 [lesson defensive-tactics counterattack compact]
-
+Bendera Perang → Sarang musuh. Minta 3 prajurit; radius ≤4.
 [library GL only]
 Hanya GL
 [Grassland]
@@ -6827,6 +6817,44 @@ Jalur satwa
 [Fish amount]
 Jumlah ikan
 [scenario messages]
-
+Pesan ▸
 [Camp-site amount]
 Jumlah perkemahan
+[script compilation success]
+Kompilasi berhasil
+[script error at %0:%1: %2]
+Kesalahan pada %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Kegagalan kompilasi: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilasi gagal: %0
+[script loading failed %0]
+Gagal memuat skrip dari %0
+[script saving failed %0]
+Penyimpanan skrip ke %0 gagal.
+[script line %0 column %1]
+Baris: %0 Kolom: %1
+[game stopped %0]
+Permainan dihentikan: %0
+[game stopped script help]
+Periksa kode JavaScript yang tertanam dan penggunaan sumber dayanya sebelum memulai ulang permainan ini.
+[missing map generator %0]
+Generator peta tidak ditemukan: %0. Lanskap bawaan telah dipilih.
+[hive standing order paused]
+Sebuah perintah tetap memerlukan perhatian dan telah dijeda.
+[hive connection changed orders paused]
+Koneksi berubah. Tinjau perintah tetap Anda yang dijeda sebelum melanjutkannya.
+[hive standing order fresh instruction]
+Perintah tetap memerlukan instruksi baru setelah terhubung kembali. Anda dapat membatalkannya atau meminta komandan untuk menggantinya.
+[hive order confirmation failed]
+Sebuah perintah tidak dapat dikonfirmasi. Tinjau perintah tetap Anda sebelum melanjutkannya.
+[hive previous order sending]
+Perintah Anda sebelumnya masih dalam proses pengiriman. Pesan ini telah disimpan; buka komandan untuk mengirimnya lagi.
+[hive order received %0]
+Perintah diterima: %0
+[hive order not confirmed]
+Perintah belum dikonfirmasi. Buka komandan untuk mencoba lagi; pesan Anda telah disimpan.
+[hive standing order update failed]
+Pembaruan perintah tetap gagal. Perintah Anda dijeda pada perangkat ini; coba lagi menggunakan kontrol yang sesuai.
+[AI for all computer colonies]
+AI untuk semua koloni yang dikendalikan komputer

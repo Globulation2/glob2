@@ -8,6 +8,7 @@
 #include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <TouchText.h>
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -56,6 +57,19 @@ struct Text
 	{
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, color));
 		surface.drawString(x, y, font, text);
+		font->popStyle();
+	}
+	void status(int x, int y, int width, int availableHeight, const std::string &message) const
+	{
+		const int bottom = y + availableHeight;
+		font->pushStyle(Font::Style(Font::STYLE_NORMAL, TeamStatChart::ink));
+		for (const auto &line : wrapTouchText(font, message, width))
+		{
+			const int lineHeight = std::max(height, font->getStringHeight(line));
+			if (y + lineHeight > bottom) break;
+			surface.drawString(x, y, font, line);
+			y += lineHeight + 2;
+		}
 		font->popStyle();
 	}
 	//! `text` cut to fit `available` pixels.
@@ -378,7 +392,7 @@ struct ChartPainter
 	void paintLines(int y) const
 	{
 		// A share or percentage that fills most of the range reads best against 0-100.
-		const Stats::Axis axis = chart.percent && chart.high > 50 && chart.low >= 0
+		const Stats::Axis axis = chart.percent && (metric.winProbability || chart.high > 50) && chart.low >= 0
 									 ? Stats::Axis{0, 100, 25}
 									 : Stats::niceAxis(chart.low, chart.high, std::max(2, (top + height - y) / 44), !chart.decimals);
 		const int labelW = valueLabelWidth(text, axis, chart.percent, chart.decimals);
@@ -536,6 +550,7 @@ std::string TeamStatChart::about(const Stats::Metric &metric)
 
 std::string TeamStatChart::axisTitle(const Stats::Metric &metric, const Stats::View &requested)
 {
+	if (metric.winProbability) return tr("[stat win probability]") + " (%)";
 	const Stats::View view = Stats::validView(metric, requested);
 	const std::string unit = tr(metric.unitKey);
 	const bool rate = metric.kind == Stats::Metric::Counter && !view.total;
@@ -631,14 +646,15 @@ void TeamStatChart::paint(const std::vector<Stats::TeamHistory>& histories, Uint
 	{
 		// Either the match was too short, or this save predates the measurement.
 		const bool recorded = std::any_of(histories.begin(), histories.end(), [](const auto &h) { return h.points.size() > 1; });
-		text.draw(left + pad, top + pad, tr(recorded ? "[stat not recorded for this match]" : "[Not enough recorded history yet.]"), TeamStatChart::ink);
+		text.status(left + pad, top + pad, width - 2 * pad, height - 2 * pad,
+			tr(recorded ? "[stat not recorded for this match]" : "[Not enough recorded history yet.]"));
 		return;
 	}
 
 	if (!chart.any)
 	{
 		// Recorded, and nothing to draw: no trade, no prestige, nobody stranded.
-		text.draw(left + pad, top + pad, tr("[stat nothing to show]"), TeamStatChart::ink);
+		text.status(left + pad, top + pad, width - 2 * pad, height - 2 * pad, tr("[stat nothing to show]"));
 		return;
 	}
 	// Markers belong to teams; a map-wide series has none.

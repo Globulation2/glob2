@@ -66,7 +66,10 @@ fallback and `threaded/index.js`/`threaded/index.wasm`. Both load the same game
 data packages from `assets/` (see below). Keep `index.html`, `loader.js`, both
 runtime directories and `assets/` together when publishing. `python3 browser/package-static.py` produces
 the versioned release package with verified gzip sidecars for both runtimes, the
-independent music backend, and its Opus license notices. `web-tests` additionally builds serial and
+independent music backend and its Opus license notices, and the same-origin
+launcher fonts with their license notices. Static package verification requires
+the Bulgarian starter font as well as the script-specific fonts; fonts inside
+the game's virtual filesystem cannot render the HTML startup page. `web-tests` additionally builds serial and
 threaded `script-tests.js` harnesses.
 
 The loader prefers real shared-memory threads when isolation and worker startup

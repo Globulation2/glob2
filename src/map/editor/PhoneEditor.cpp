@@ -16,6 +16,7 @@
 #include <cmath>
 #include <cstdio>
 #include <set>
+#include <sstream>
 using namespace GAGCore;
 namespace
 {
@@ -24,6 +25,23 @@ constexpr double headerHeight = 48;
 constexpr double modeHeight = 44;
 constexpr double dragThreshold = 8;
 constexpr double previewLift = 40;
+const char *modeCaptionKeys[] = {"[Terrain]", "[Resources]", "[Buildings]", "[Flags]", "[Teams]"};
+
+std::vector<std::string> modeCaptionLines(int index, double width)
+{
+	auto *gfx = globalContainer->gfx;
+	return wrapTouchText(globalContainer->standardFont,
+		Toolkit::getStringTable()->getString(modeCaptionKeys[index]),
+		std::max(1., (width - 8 * gfx->logicalUnitsPerPoint()) / gfx->textUnitsPerPoint()));
+}
+double modeCaptionLineHeight(const std::vector<std::string> &lines)
+{
+	auto *font = globalContainer->standardFont;
+	double height = font->getStringHeight("Ag");
+	for (const auto &line : lines)
+		height = std::max(height, double(font->getStringHeight(line)));
+	return height * globalContainer->gfx->textUnitsPerPoint();
+}
 } // namespace
 
 PhoneEditor::PhoneEditor(MapEdit &editor) : editor(editor) {}
@@ -81,11 +99,87 @@ void PhoneEditor::prepare()
 	}
 	// Short landscape phones keep more of the map: the strips tighten.
 	const bool tight = safe.h < 480 * unit;
-	const double modes = tight ? 38 : modeHeight, cardsHeight = tight ? cardHeight - 6 : cardHeight;
+	double modes = tight ? 38 : modeHeight;
+	modeColumns = modeCount;
+	if (tools && !inspecting())
+	{
+		// Every word must fit a cell before wrapping the caption. A balanced
+		// three-plus-two grid keeps enlarged text readable without tiny type.
+		double wordWidth = 1;
+		for (const auto *key : modeCaptionKeys)
+		{
+			std::istringstream words(Toolkit::getStringTable()->getString(key));
+			for (std::string word; words >> word;)
+				wordWidth = std::max(wordWidth,
+					double(globalContainer->standardFont->getStringWidth(word)) * gfx->textUnitsPerPoint());
+		}
+		modeColumns = std::clamp(int(safe.w / (wordWidth + 9 * unit)), 1, modeCount);
+		if (modeColumns == 4)
+			modeColumns = 3;
+		const int rows = (modeCount + modeColumns - 1) / modeColumns;
+		for (int i = 0; i < modeCount; ++i)
+		{
+			const int cells = std::min(modeColumns, modeCount - (i / modeColumns) * modeColumns);
+			const auto lines = modeCaptionLines(i, safe.w / cells - unit);
+			modes = std::max(modes, modeCaptionLineHeight(lines) * lines.size() / unit + 8);
+		}
+		modes *= rows;
+	}
+	const double cardsHeight = tight ? cardHeight - 6 : cardHeight;
 	const double chipsHeight = cards && chips.size() > 1 ? (tight ? chipHeight - 4 : chipHeight) : 0;
 	const double dock = (modes + (tools ? cardsHeight + chipsHeight : 0)) * unit;
-	content = {safe.x, safe.y + headerHeight * unit, safe.w,
-			   std::max(0., safe.h - headerHeight * unit - dock)};
+	const auto captions = headerLabels();
+	std::array<double, 4> widths{}, minimumWidths{};
+	widths.fill(safe.w / 4);
+	double minimumTotal = 0;
+	bool needsWidth = false;
+	for (int i = 0; i < 4; ++i)
+	{
+		double wordWidth = 0;
+		std::istringstream words(captions[i]);
+		for (std::string word; words >> word;)
+			wordWidth = std::max(wordWidth,
+				double(globalContainer->standardFont->getStringWidth(word)) * gfx->textUnitsPerPoint());
+		minimumWidths[i] = std::max(InGameTouchTheme::target * unit, wordWidth + 9 * unit);
+		minimumTotal += minimumWidths[i];
+		needsWidth = needsWidth || minimumWidths[i] > widths[i];
+	}
+	int columns = 4;
+	if (needsWidth)
+	{
+		// Keep the usual quarters when they fit. Otherwise lend space from
+		// short actions before resorting to two rows; never shrink the type.
+		if (minimumTotal <= safe.w)
+			for (int i = 0; i < 4; ++i)
+				widths[i] = minimumWidths[i] + (safe.w - minimumTotal) / 4;
+		else
+		{
+			columns = 2;
+			widths.fill(safe.w / 2);
+		}
+	}
+	std::array<double, 2> rowHeights{headerHeight * unit, headerHeight * unit};
+	for (int i = 0; i < 4; ++i)
+	{
+		const auto lines = wrapTouchText(globalContainer->standardFont, captions[i],
+			std::max(1., (widths[i] - 9 * unit) / gfx->textUnitsPerPoint()));
+		rowHeights[i / columns] = std::max(rowHeights[i / columns],
+			modeCaptionLineHeight(lines) * lines.size() + 8 * unit);
+	}
+	double header = 0;
+	for (int row = 0; row < 4 / columns; ++row)
+	{
+		double x = safe.x;
+		for (int column = 0; column < columns; ++column)
+		{
+			const int i = row * columns + column;
+			headerButtons[i] = {x, safe.y + header, widths[i], rowHeights[row]};
+			x += widths[i];
+		}
+		header += rowHeights[row];
+	}
+	content = {safe.x, safe.y + header, safe.w,
+			   std::max(0., safe.h - header - dock)};
 	modeBar = {safe.x, safe.y + safe.h - dock, safe.w, modes * unit};
 	tray = {safe.x, modeBar.y + modeBar.h, safe.w, tools ? (cardsHeight + chipsHeight) * unit : 0};
 	chipBar = {tray.x, tray.y, tray.w, chipsHeight * unit};
@@ -97,6 +191,14 @@ void PhoneEditor::prepare()
 	}
 	if (cards)
 		prepareTray(unit);
+}
+ViewRect PhoneEditor::modeRect(int index) const
+{
+	const int row = index / modeColumns;
+	const int cells = std::min(modeColumns, modeCount - row * modeColumns);
+	const int rows = (modeCount + modeColumns - 1) / modeColumns;
+	return {modeBar.x + (index % modeColumns) * modeBar.w / cells,
+		modeBar.y + row * modeBar.h / rows, modeBar.w / cells, modeBar.h / rows};
 }
 void PhoneEditor::syncTray()
 {
@@ -179,77 +281,15 @@ void PhoneEditor::chooseMode(int mode)
 									"switch to teams view"};
 	editor.performAction(modes[mode]);
 }
-int PhoneEditor::hit(ViewPoint p) const
+int PhoneEditor::hit(ViewPoint point)
 {
-	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	if (!safe.contains(p))
-		return -1;
-	if (peekOpen)
-	{
-		// The map peek owns every touch until it closes.
-		if (peekRect().contains(p))
-			return -300;
-		const auto buttons = peekButtons();
-		for (int i = 0; i < int(buttons.size()); ++i)
-			if (buttons[i].contains(p))
-				return -301 - i;
-		return -304;
-	}
-	if (showsMapButton() && mapButton().contains(p))
-		return -305;
-	if (inspecting())
-	{
-		if (ViewRect{inspector.x + inspector.w - 48 * unit, inspector.y + 4 * unit, 44 * unit,
-					 44 * unit}
-				.contains(p))
-			return -20;
-		if (inspectorBody.contains(p))
-			for (size_t i = 0; i < properties.size(); ++i)
-			{
-				auto r = properties[i].rect;
-				if (r.y < inspectorBody.y || r.y + r.h > inspectorBody.y + inspectorBody.h)
-					continue;
-				if (r.contains(p) && p.y >= r.y + 24 * unit)
-					return 1000 + int(i) * 3 +
-						   (p.x < r.x + 44 * unit          ? 0
-							: p.x >= r.x + r.w - 44 * unit ? 2
-														   : 1);
-			}
-		if (inspector.contains(p))
-			return -22;
-		return ViewRect{safe.x, safe.y, 88 * unit, 44 * unit}.contains(p) ? -2 : -1;
-	}
-	if (editor.panelMode == MapEdit::Teams && tray.contains(p))
-		return -21;
-	if (p.y < safe.y + headerHeight * unit)
-		return -2 - std::clamp(int((p.x - safe.x) * 4 / safe.w), 0, 3);
-	if (!tools && modeBar.contains(p))
-		return -6;
-	if (tools && modeBar.contains(p))
-		return -10 - std::clamp(int((p.x - modeBar.x) * modeCount / modeBar.w), 0, modeCount - 1);
-	if (tools && chipBar.contains(p))
-	{
-		for (size_t i = 0; i < chips.size(); ++i)
-			if (chips[i].rect.contains(p))
-				return -400 - int(i);
-		return -23; // Between chips: inert.
-	}
-	if (tools && tray.contains(p))
-		for (size_t i = 0; i < rows.size(); ++i)
-			if (rows[i].rect.contains(p))
-				return int(i);
-	if (paintMode())
-	{
-		const auto railHit = BrushHUD::hit(rail(), p);
-		if (railHit.part == BrushHUD::Part::Detent)
-			return -200 - railHit.index;
-		if (railHit.part == BrushHUD::Part::Pan)
-			return -210;
-		if (railHit.part == BrushHUD::Part::Mode)
-			return -211;
-		if (railHit.part == BrushHUD::Part::Undo)
-			return -213;
-	}
+	// The same positioned model supplies ordinary pointer targets and semantic
+	// targets. The map remains a canvas with its existing gesture handling.
+	const GAGGUI::ui::Point p{int(point.x), int(point.y)};
+	const auto targets = controlTargets();
+	for (auto it = targets.rbegin(); it != targets.rend(); ++it)
+		if (it->control.contains(p))
+			return it->id;
 	return -1;
 }
 void PhoneEditor::placeAt(ViewPoint p)
@@ -280,8 +320,23 @@ BrushHUD::Layout PhoneEditor::rail() const
 	// Paint/Erase applies to every brush except deletion: zones, areas,
 	// no-growth areas, resources and terrain (Erase reverts it to grass).
 	const bool mode = editor.selectionMode != MapEdit::RemoveObject;
-	return BrushHUD::layout({content.x + inset, content.y + inset, content.w - 2 * inset, content.h - 2 * inset},
-							ThumbSide::left(), unit, mode, true, bool(undo));
+	ViewRect area{content.x + inset, content.y + inset, content.w - 2 * inset, content.h - 2 * inset};
+	if (showsMapButton())
+	{
+		// Reserve the opposite-edge button for every rail row. The thumb-side
+		// anchor stays unchanged, so ordinary one/two-column layouts do too.
+		const auto map = mapButton();
+		const double gap = InGameTouchTheme::gap * unit;
+		if (ThumbSide::left())
+			area.w = std::max(0., std::min(area.x + area.w, map.x - gap) - area.x);
+		else
+		{
+			const double right = area.x + area.w;
+			area.x = std::max(area.x, map.x + map.w + gap);
+			area.w = std::max(0., right - area.x);
+		}
+	}
+	return BrushHUD::boundedLayout(area, ThumbSide::left(), unit, mode, true, bool(undo));
 }
 // Zone, area and no-growth strokes only change tile masks, so their tiles (and
 // the displayed zone bits) are restored exactly. Terrain and delete strokes
@@ -503,63 +558,68 @@ void PhoneEditor::act(const TouchAction &action)
 	}
 	if (action.kind != TouchActionKind::Select || hit(p) != held)
 		return;
-	if (held == -20)
+	activateTarget(held, p);
+}
+void PhoneEditor::activateTarget(int target, ViewPoint p)
+{
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	if (target == -20)
 	{
 		clearTool();
 		return;
 	}
-	if (held == -21)
+	if (target == -21)
 	{
 		editor.suspendInput();
 		editor.performAction("open teams editor");
 		return;
 	}
-	if (held == -300)
+	if (target == -300)
 	{
 		navigatePeek(p);
 		return;
 	}
-	if (held == -302 || held == -303)
+	if (target == -302 || target == -303)
 	{
-		editor.zoomMap((held == -303 ? 1 : -1) * std::log(InGameTouchTheme::peekZoomStep) / std::log(1.1),
+		editor.zoomMap((target == -303 ? 1 : -1) * std::log(InGameTouchTheme::peekZoomStep) / std::log(1.1),
 					   content.x + content.w / 2, content.y + content.h / 2);
 		return;
 	}
-	if (held == -301 || held == -304)
+	if (target == -301 || target == -304)
 	{
 		peekOpen = false; // Done, or a tap outside the peek.
 		return;
 	}
-	if (held == -305)
+	if (target == -305)
 	{
 		cancel();
 		peekOpen = true;
 		return;
 	}
-	if (held <= -200 && held > -200 - int(BrushTool::BRUSH_COUNT))
+	if (target <= -200 && target > -200 - int(BrushTool::BRUSH_COUNT))
 	{
-		editor.brush.setFigure(unsigned(-200 - held));
+		editor.brush.setFigure(unsigned(-200 - target));
 		return;
 	}
-	if (held == -210)
+	if (target == -210)
 	{
 		pan = !pan;
 		return;
 	}
-	if (held == -211)
+	if (target == -211)
 	{
 		editor.brush.setType(editor.brush.getType() == BrushTool::MODE_DEL ? BrushTool::MODE_ADD
 																			: BrushTool::MODE_DEL);
 		return;
 	}
-	if (held == -213)
+	if (target == -213)
 	{
 		applyUndo();
 		return;
 	}
-	if (held >= 1000 && inspecting())
+	if (target >= 1000 && inspecting())
 	{
-		const int index = (held - 1000) / 3, part = (held - 1000) % 3;
+		const int index = (target - 1000) / 3, part = (target - 1000) % 3;
 		if (index < int(properties.size()))
 		{
 			auto &property = properties[index];
@@ -576,33 +636,33 @@ void PhoneEditor::act(const TouchAction &action)
 		}
 		return;
 	}
-	if (held == -6)
+	if (target == -6)
 	{
 		tools = true;
 		return;
 	}
-	if (held <= -400 && held > -400 - int(chips.size()))
+	if (target <= -400 && target > -400 - int(chips.size()))
 	{
-		jumpToChip(-400 - held);
+		jumpToChip(-400 - target);
 		return;
 	}
-	if (held <= -10 && held > -10 - modeCount)
+	if (target <= -10 && target > -10 - modeCount)
 	{
-		if (paletteMode == -10 - held)
+		if (paletteMode == -10 - target)
 		{
 			tools = false;
 			return;
 		}
-		chooseMode(-10 - held);
+		chooseMode(-10 - target);
 		return;
 	}
-	if (held == -2)
+	if (target == -2)
 	{
 		editor.suspendInput();
 		editor.performAction("open menu screen");
 		return;
 	}
-	if (held == -5)
+	if (target == -5)
 	{
 		if (editor.selectionMode != MapEdit::PlaceNothing)
 			clearTool();
@@ -614,14 +674,14 @@ void PhoneEditor::act(const TouchAction &action)
 		return;
 	}
 	const bool objects = paletteMode >= 2;
-	if (held == -3)
+	if (target == -3)
 	{
 		// Brush modes show their size here; the rail changes it.
 		if (objects)
 			editor.selectActiveTeam((editor.team + 1) % editor.view.scene->entities.teamCount);
 		return;
 	}
-	if (held == -4)
+	if (target == -4)
 	{
 		if (objects)
 		{
@@ -640,9 +700,9 @@ void PhoneEditor::act(const TouchAction &action)
 									 : BrushTool::MODE_DEL);
 		return;
 	}
-	if (held >= 0 && held < int(rows.size()))
+	if (target >= 0 && target < int(rows.size()))
 	{
-		const Row row = rows[held]; // Activation may rebuild the tray.
+		const Row row = rows[target]; // Activation may rebuild the tray.
 		activateRow(row, p);
 		pan = false;
 		return;
@@ -677,6 +737,8 @@ bool PhoneEditor::event(SDL_Event event)
 		return false;
 	}
 	prepare();
+	if (GAGGUI::ui::isSemanticEvent(event))
+		return inspectionHost().event(event);
 	if (auto sample = scrollGesture(event))
 	{
 		if (!editor.inputState.hasFocus()) return true;
@@ -769,12 +831,12 @@ bool PhoneEditor::event(SDL_Event event)
 		const double steps = (event.wheel.y - event.wheel.x) * flip;
 		if (inspecting() && inspector.contains(at))
 		{
-			inspectorScroll = std::clamp(inspectorScroll - event.wheel.y * flip * 72 * u, 0., inspectorMaximum);
+			scrollSurface(true, int(-event.wheel.y * flip * 72 * u));
 			return true;
 		}
 		if (tools && cardBar.contains(at))
 		{
-			offset = std::clamp(offset - steps * 56 * u, 0., maximum);
+			scrollSurface(false, int(-steps * 56 * u));
 			return true;
 		}
 		if (content.contains(at) && !peekOpen && event.wheel.y != 0)
@@ -919,7 +981,7 @@ bool PhoneEditor::event(SDL_Event event)
 		if (key == touchKey && held == -300 && peekOpen)
 			navigatePeek(p);
 		if (key == touchKey && railTouched >= 0)
-			if (const int detent = BrushHUD::detentAt(rail(), p); detent >= 0)
+			if (const int detent = BrushHUD::detentAt(rail(), p, content); detent >= 0)
 			{
 				editor.brush.setFigure(unsigned(detent));
 				railTouched = detent;
@@ -957,9 +1019,11 @@ void PhoneEditor::label(ViewRect r, const std::string &text)
 	auto *font = globalContainer->standardFont;
 	const double unit = gfx->logicalUnitsPerPoint(), scale = gfx->textUnitsPerPoint();
 	font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255, 249, 229)));
-	SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
+	SDL_Rect clip{int(r.x + 4 * unit), int(r.y), int(std::max(0., r.w - 8 * unit)), int(r.h)};
 	gfx->setUITransform(scale, r.x + 4 * unit, r.y + (r.h - 16 * scale) / 2, &clip);
-	gfx->drawString(0, 0, font, text, std::max(1, int((r.w - 8 * unit) / scale)));
+	// The transform already clips in screen coordinates. A second font-width
+	// clip mixes those bounds with local x=0 in the legacy GL path.
+	gfx->drawString(0, 0, font, text);
 	gfx->setUITransform();
 	gfx->setClipRect();
 	font->popStyle();
@@ -1004,7 +1068,96 @@ void PhoneEditor::draw()
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint();
 	const bool objects = paletteMode >= 2;
-	std::string labels[] = {
+	const auto labels = headerLabels();
+	for (int i = 0; i < 4; ++i)
+	{
+		auto r = headerButtons[i];
+		r.w -= unit;
+		r.h -= 4 * unit;
+		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper());
+		const auto lines = wrapTouchText(globalContainer->standardFont, labels[i],
+			std::max(1., (r.w - 8 * unit) / gfx->textUnitsPerPoint()));
+		if (lines.size() == 1)
+			label(r, labels[i]); // Preserve the authored one-line header alignment.
+		else
+		{
+			const double lineHeight = modeCaptionLineHeight(lines);
+			double y = r.y + (r.h - lineHeight * lines.size()) / 2;
+			for (const auto &line : lines)
+			{
+				centredLabel({r.x, y, r.w, lineHeight}, line);
+				y += lineHeight;
+			}
+		}
+		if (i == 1 && objects)
+			gfx->drawFilledRect(int(r.x + 4 * unit), int(r.y + r.h - 5 * unit), int(r.w - 8 * unit),
+								int(3 * unit), presentationColor(editor.view.scene->entities.teams[editor.team].color));
+	}
+	drawInteractionPreview();
+	if (undo && (!paintMode() || SDL_GetTicks() >= undo->expires))
+		undo.reset();
+	if (paintMode())
+	{
+		auto *strings = Toolkit::getStringTable();
+		BrushHUD::State state;
+		state.figure = editor.brush.getFigure();
+		state.erase = editor.brush.getType() == BrushTool::MODE_DEL;
+		state.pan = pan;
+		state.touched = railTouched;
+		state.modeLabel = state.erase ? strings->getString("[Erase]") : strings->getString("[Paint]");
+		state.panLabel = strings->getString("[Pan]");
+		state.undoLabel = strings->getString("[Undo stroke]");
+		BrushHUD::draw(rail(), state, content);
+	}
+	drawZoomReadout();
+	drawPeek(); // The Map button, or the open peek over everything.
+	if (!tools)
+	{
+		gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h),
+							InGameTouchTheme::paper());
+		label(modeBar, GAGCore::Toolkit::getStringTable()->getString("[Show palette]"));
+		drawStatusToast();
+		return;
+	}
+	// The mode strip and tray are opaque: cards read against one backdrop.
+	Color backdrop = InGameTouchTheme::paper();
+	backdrop.a = 255;
+	gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h + tray.h), backdrop);
+	for (int i = 0; i < modeCount; ++i)
+	{
+		auto r = modeRect(i);
+		r.w -= unit;
+		if (i == paletteMode)
+			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::selected());
+		const auto lines = modeCaptionLines(i, r.w);
+		const double lineHeight = modeCaptionLineHeight(lines);
+		double y = r.y + (r.h - lineHeight * lines.size()) / 2;
+		for (const auto &line : lines)
+		{
+			centredLabel({r.x, y, r.w, lineHeight}, line);
+			y += lineHeight;
+		}
+	}
+	if (editor.panelMode == MapEdit::Teams)
+	{
+		// One wide card opens the teams editor.
+		const ViewRect card{tray.x + 8 * unit, tray.y + 6 * unit, tray.w - 16 * unit, tray.h - 14 * unit};
+		gfx->drawFilledRect(int(card.x), int(card.y), int(card.w), int(card.h), InGameTouchTheme::field());
+		for (int i = 0; i < editor.view.scene->entities.teamCount && i < 16; ++i)
+			gfx->drawFilledRect(int(card.x + (10 + 22 * i) * unit), int(card.y + card.h - 12 * unit), int(16 * unit),
+								int(5 * unit), presentationColor(editor.view.scene->entities.teams[i].color));
+		centredLabel({card.x, card.y, card.w, card.h - 10 * unit},
+					 GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Manage teams (%0)]"))
+						 .arg(editor.view.scene->entities.teamCount));
+	}
+	drawTray();
+	drawStatusToast();
+}
+
+std::vector<std::string> PhoneEditor::headerLabels() const
+{
+	const bool objects = paletteMode >= 2;
+	std::vector<std::string> labels = {
 		GAGCore::Toolkit::getStringTable()->getString("[Menu]"),
 		objects
 			? GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
@@ -1045,69 +1198,5 @@ void PhoneEditor::draw()
 						: GAGCore::Toolkit::getStringTable()->getString("[Paint]");
 		labels[3] = GAGCore::Toolkit::getStringTable()->getString("[Done]");
 	}
-	for (int i = 0; i < 4; ++i)
-	{
-		ViewRect r{safe.x + i * safe.w / 4, safe.y, safe.w / 4 - unit, 44 * unit};
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper());
-		label(r, labels[i]);
-		if (i == 1 && objects)
-			gfx->drawFilledRect(int(r.x + 4 * unit), int(r.y + r.h - 5 * unit), int(r.w - 8 * unit),
-								int(3 * unit), presentationColor(editor.view.scene->entities.teams[editor.team].color));
-	}
-	drawInteractionPreview();
-	if (undo && (!paintMode() || SDL_GetTicks() >= undo->expires))
-		undo.reset();
-	if (paintMode())
-	{
-		auto *strings = Toolkit::getStringTable();
-		BrushHUD::State state;
-		state.figure = editor.brush.getFigure();
-		state.erase = editor.brush.getType() == BrushTool::MODE_DEL;
-		state.pan = pan;
-		state.touched = railTouched;
-		state.modeLabel = state.erase ? strings->getString("[Erase]") : strings->getString("[Paint]");
-		state.panLabel = strings->getString("[Pan]");
-		state.undoLabel = strings->getString("[Undo stroke]");
-		BrushHUD::draw(rail(), state);
-	}
-	drawZoomReadout();
-	drawPeek(); // The Map button, or the open peek over everything.
-	if (!tools)
-	{
-		gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h),
-							InGameTouchTheme::paper());
-		label(modeBar, GAGCore::Toolkit::getStringTable()->getString("[Show palette]"));
-		drawStatusToast();
-		return;
-	}
-	// The mode strip and tray are opaque: cards read against one backdrop.
-	Color backdrop = InGameTouchTheme::paper();
-	backdrop.a = 255;
-	gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h + tray.h), backdrop);
-	const std::string modes[modeCount] = {Toolkit::getStringTable()->getString("[Terrain]"),
-										  Toolkit::getStringTable()->getString("[Resources]"),
-										  Toolkit::getStringTable()->getString("[Buildings]"),
-										  Toolkit::getStringTable()->getString("[Flags]"),
-										  Toolkit::getStringTable()->getString("[Teams]")};
-	for (int i = 0; i < modeCount; ++i)
-	{
-		ViewRect r{modeBar.x + i * modeBar.w / modeCount, modeBar.y, modeBar.w / modeCount - unit, modeBar.h};
-		if (i == paletteMode)
-			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::selected());
-		centredLabel(r, modes[i]);
-	}
-	if (editor.panelMode == MapEdit::Teams)
-	{
-		// One wide card opens the teams editor.
-		const ViewRect card{tray.x + 8 * unit, tray.y + 6 * unit, tray.w - 16 * unit, tray.h - 14 * unit};
-		gfx->drawFilledRect(int(card.x), int(card.y), int(card.w), int(card.h), InGameTouchTheme::field());
-		for (int i = 0; i < editor.view.scene->entities.teamCount && i < 16; ++i)
-			gfx->drawFilledRect(int(card.x + (10 + 22 * i) * unit), int(card.y + card.h - 12 * unit), int(16 * unit),
-								int(5 * unit), presentationColor(editor.view.scene->entities.teams[i].color));
-		centredLabel({card.x, card.y, card.w, card.h - 10 * unit},
-					 GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Manage teams (%0)]"))
-						 .arg(editor.view.scene->entities.teamCount));
-	}
-	drawTray();
-	drawStatusToast();
+	return labels;
 }

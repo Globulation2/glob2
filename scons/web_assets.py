@@ -16,6 +16,9 @@ the game reads at run time into content-addressed packages under `assets/`, and
 - `font-cjk`: the full font, replacing the core copy. A startup package for a
   Chinese, Japanese or Korean interface; otherwise it follows in the background so
   CJK player names and language names get their glyphs.
+- Script-specific fonts under `data/fonts/scripts/` stay in `core`, retaining
+  their shaping tables. Every language selector can therefore show those scripts
+  before optional packages arrive, including on a first visit without saved data.
 - `translations`: the full catalogs of every language but English. Core has
   each language's name and code only; a startup package for an interface in
   another language, otherwise the game reloads its string table when it arrives.
@@ -33,12 +36,37 @@ import hashlib
 import importlib.util
 import json
 import os
+import shutil
 from pathlib import Path
 import re
 import sys
 import zlib
 
 ROOTS = ('data', 'maps', 'campaigns', 'scripts')
+
+
+def launcher_script_fonts(root, output):
+    """Stage HTTP fonts for the HTML launcher, separately from the game's VFS."""
+    root, output = Path(root), Path(output)
+    font_root = root / 'data/fonts'
+    manifest = json.loads((font_root / 'scripts/manifest.json').read_text())
+    destination = output / 'fonts'
+    destination.mkdir(parents=True, exist_ok=True)
+    for font in manifest['fonts']:
+        name = font['name'] + '-Regular.ttf'
+        if Path(name).name != name:
+            raise ValueError('Invalid launcher font name')
+        source = font_root / 'scripts' / name
+        if hashlib.sha256(source.read_bytes()).hexdigest() != font['sha256']:
+            raise ValueError('Launcher font checksum mismatch: ' + name)
+        shutil.copyfile(source, destination / name)
+    shutil.copyfile(font_root / 'LICENSE-Noto.txt', destination / 'LICENSE-Noto.txt')
+    shutil.copyfile(root / 'browser/assets/sans-core.ttf', destination / 'sans-core.ttf')
+    shutil.copyfile(font_root / 'LICENSE-DejaVu.txt', destination / 'LICENSE-DejaVu.txt')
+    shutil.copyfile(font_root / 'LICENSE-Droid.txt', destination / 'LICENSE-Droid.txt')
+    css = (root / 'platform/packages/i18n/script-fonts.css').read_text()
+    (output / 'script-fonts.css').write_text(css.replace('../../../data/fonts/scripts/', 'fonts/')
+                                            .replace('../../../browser/assets/', 'fonts/'))
 # Never read by the game: build and packaging files, documentation, store metadata,
 # desktop icons, release screenshots and files no code path refers to.
 EXCLUDED_NAMES = {'SConscript'}
@@ -47,6 +75,7 @@ EXCLUDED_FILES = {
     'data/glob2.desktop',
     'data/org.globulation2.Globulation2.metainfo.xml',
     'data/texts.pending.txt',     # read by data/check_translations.py only
+    'data/fonts/script-probes.json',  # developer readiness diagnostics, not runtime text
 }
 # Images the runtime export may re-encode (PNG to WebP), matched without suffix.
 EXCLUDED_IMAGES = {

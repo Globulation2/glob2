@@ -12,6 +12,7 @@ its default.
 | --- | --- | --- |
 | `GLOB2_DOMAIN` | `localhost` | Site name Caddy serves and certifies |
 | `GLOB2_ADDITIONAL_DOMAIN` | unset | Optional second served hostname during cutover; does not change the canonical origin |
+| `GLOB2_AUTH_REDIRECT_DOMAIN` | `auth-redirect.invalid` | Former hostname whose sign-in requests redirect to the canonical origin; unset or empty uses the inactive placeholder |
 | `GLOB2_WEBSITE_URL`, `GLOB2_DOWNLOAD_URL` | unset | Web app links to a separately hosted public website and its download page (build-time) |
 | `GLOB2_PUBLIC_ORIGIN` | `https://localhost:8443` | Origin clients use; also the relays' URL base |
 | `GLOB2_BIND`, `GLOB2_HTTP_PORT`, `GLOB2_HTTPS_PORT` | `127.0.0.1`, `8080`, `8443` | Published address and ports |

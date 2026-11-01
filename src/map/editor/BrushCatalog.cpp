@@ -2,7 +2,6 @@
 #include "BrushCatalog.h"
 #include "ExperimentalFeatures.h"
 #include "FormatableString.h"
-#include "TerrainExperiments.h"
 #include "map/TerrainRegistry.h"
 #include "resource/ResourceRegistry.h"
 #include <algorithm>
@@ -89,10 +88,7 @@ BrushEntry terrainEntry(const BrushCatalogInputs &inputs, const Text &text, Terr
 	entry.swatch.terrain = type;
 	entry.swatch.key = registry.key(type);
 	entry.action = "select terrain " + registry.key(type);
-	entry.experiment = terrainExperimentKey(type).value_or("");
-	entry.locked = !enabled(inputs, entry.experiment);
-	entry.tooltip = joinLines({entry.label, entry.rules.empty() ? groupRules : entry.rules,
-							   lockedLine(text, entry.experiment, entry.locked)});
+	entry.tooltip = joinLines({entry.label, entry.rules.empty() ? groupRules : entry.rules});
 	return entry;
 }
 
@@ -109,7 +105,13 @@ void addTerrain(const BrushCatalogInputs &inputs, const Text &text, std::vector<
 	};
 	{
 		BrushGroup classic{"classic", BrushSection::Terrain, text.tr("[terrain group classic]"), "", {}};
-		for (auto type : {WATER, SAND, GRASS})
+		// Water, sand, grass, then the other looks of sand and grass.
+		std::vector<TerrainType> types{WATER, SAND, GRASS};
+		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
+			if (terrainGroupIsClassic(terrainGroup(TerrainType(id))) &&
+				std::find(types.begin(), types.end(), TerrainType(id)) == types.end())
+				types.push_back(TerrainType(id));
+		for (auto type : types)
 			if (selectable(type))
 				classic.entries.push_back(terrainEntry(inputs, text, type, classic.key,
 													   terrainRuleSummary(registry.properties(type), translate), ""));
@@ -327,27 +329,12 @@ const BrushGroup *findBrushGroup(const std::vector<BrushGroup> &catalog, BrushSe
 	return nullptr;
 }
 
-std::optional<std::string> terrainExperimentKey(TerrainType type)
-{
-	if (const auto id = terrainExperiment(type))
-		return std::string(experimentDefinition(*id).key);
-	return std::nullopt;
-}
-
-bool terrainBrushOffered(const TerrainRegistry &registry, TerrainType type, const ExperimentGate &enabled)
-{
-	if (!registry.valid(type) || !registry.presentation(type).editorSelectable)
-		return false;
-	const auto experiment = terrainExperimentKey(type);
-	return !experiment || (enabled && enabled(*experiment));
-}
-
-std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group,
-											   const ExperimentGate &enabled)
+std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group)
 {
 	std::vector<TerrainType> brushes;
 	for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
-		if (terrainGroup(TerrainType(id)) == group && terrainBrushOffered(registry, TerrainType(id), enabled))
+		if (terrainGroup(TerrainType(id)) == group && registry.valid(TerrainType(id)) &&
+			registry.presentation(TerrainType(id)).editorSelectable)
 			brushes.push_back(TerrainType(id));
 	return brushes;
 }

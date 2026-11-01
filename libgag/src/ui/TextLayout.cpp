@@ -12,6 +12,23 @@ const std::string closingPunctuation = "。、，．！？：；）］｝〉》�
 const std::string openingPunctuation = "（［｛〈《「『【〔〖〘〚";
 } // namespace
 
+// Malformed/unknown font segmentation must not fall back to splitting marks.
+std::vector<std::size_t> shapingClusterEnds(const TextMeasurer &measurer, FontRole role,
+                                           const std::string &text)
+{
+    if (text.empty()) return {};
+    auto ends = measurer.clusterEnds(role, text);
+    std::size_t previous = 0;
+    for (const auto end : ends) {
+        if (end <= previous || end > text.size() ||
+            (end < text.size() && continuation(static_cast<unsigned char>(text[end]))))
+            return {text.size()};
+        previous = end;
+    }
+    if (ends.empty() || ends.back() != text.size()) ends.push_back(text.size());
+    return ends;
+}
+
 int FixedTextMeasurer::width(FontRole, const std::string &text) const
 {
 	return int(glyphCount(text)) * glyphWidth;
@@ -45,6 +62,16 @@ std::size_t glyphCount(const std::string &text)
 	return count;
 }
 
+std::vector<std::size_t> TextMeasurer::clusterEnds(FontRole, const std::string &text) const
+{
+    std::vector<std::size_t> ends;
+    for (std::size_t at = 0; at < text.size();) {
+        at = nextGlyph(text, at);
+        ends.push_back(at);
+    }
+    return ends;
+}
+
 std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 								  const std::string &text, int width)
 {
@@ -56,15 +83,16 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 		lines.push_back(line);
 		line.clear();
 	};
-	auto appendGlyphs = [&](const std::string &run)
+	auto appendClusters = [&](const std::string &run)
 	{
-		for (std::size_t at = 0; at < run.size();)
+		std::size_t at = 0;
+		for (const auto end : shapingClusterEnds(measurer, role, run))
 		{
-			const std::size_t end = nextGlyph(run, at);
 			const std::string glyph = run.substr(at, end - at);
 			if (!line.empty() && measurer.width(role, line + glyph) > width)
 			{
-				const std::size_t last = previousGlyph(line, line.size());
+				const auto lineEnds = shapingClusterEnds(measurer, role, line);
+				const std::size_t last = lineEnds.size() > 1 ? lineEnds[lineEnds.size() - 2] : 0;
 				const std::string tail = line.substr(last);
 				if (last > 0 && (closingPunctuation.find(glyph) != std::string::npos ||
 								 openingPunctuation.find(tail) != std::string::npos))
@@ -96,7 +124,7 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 				line.pop_back();
 			if (!line.empty() && measurer.width(role, line + " ") <= width)
 				line += ' ';
-			appendGlyphs(word);
+			appendClusters(word);
 		}
 		word.clear();
 	};
@@ -126,9 +154,14 @@ std::string ellipsize(const TextMeasurer &measurer, FontRole role, const std::st
 	// A slot too narrow for even the ellipsis shows nothing rather than overflow.
 	if (measurer.width(role, ellipsis) > width)
 		return {};
+	const auto ends = shapingClusterEnds(measurer, role, text);
+	std::size_t count = ends.size();
 	std::string value = text;
 	while (!value.empty() && measurer.width(role, value + ellipsis) > width)
-		value.resize(previousGlyph(value, value.size()));
+	{
+		--count;
+		value.resize(count ? ends[count - 1] : 0);
+	}
 	return value + ellipsis;
 }
 
@@ -140,7 +173,7 @@ TextBlock layoutText(const TextMeasurer &measurer, FontRole role, const std::str
 	const int height = measurer.lineHeight(role);
 	for (const auto &line : block.lines)
 		block.width = std::max(block.width, measurer.width(role, line));
-	block.width = std::min(block.width, std::max(1, maxWidth));
+	// An indivisible cluster can be wider than its slot; expose the real extent.
 	block.height = int(block.lines.size()) * height + int(block.lines.size() - 1) * lineGap;
 	return block;
 }

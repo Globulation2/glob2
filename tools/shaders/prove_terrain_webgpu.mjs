@@ -39,9 +39,9 @@ try {
   const weights=[51200,8192,4096,2048],alpha=paints.reduce((n,p,i)=>n+p[3]*weights[i],0);
   const straight=[0,1,2].map(c=>Math.floor(paints.reduce((n,p,i)=>n+p[c]*p[3]*weights[i],0)/alpha)).concat(Math.floor((alpha+32768)/65536));
   const pma=p=>p.slice(0,3).map(v=>Math.floor((v*p[3]+127)/255)).concat(p[3]);
-  for(const[flags,name,expected]of[[0,'source',paints[0]],[1,'weighted',straight],[3,'weighted-PMA',pma(straight)]]){const params=new Uint32Array(36);params.set([1,4,15,flags]);expect(name,await draw('terrain-compose',params,entries),expected);}
+  for(const[flags,name,expected]of[[0,'source',paints[0]],[1,'weighted',straight],[3,'weighted-PMA',pma(straight)]]){const params=new Uint32Array(88);params.set([1,4,15,flags]);expect(name,await draw('terrain-compose',params,entries),expected);}
   // All alpha levels and a missing material retain unsigned integer rounding.
-  for(const mask of[0,1,3,7]){const params=new Uint32Array(36);params.set([1,4,mask,1]);const a=paints.reduce((n,p,i)=>n+((mask>>i)&1)*p[3]*weights[i],0);const expected=[0,1,2].map(c=>a?Math.floor(paints.reduce((n,p,i)=>n+((mask>>i)&1)*p[c]*p[3]*weights[i],0)/a):0).concat(Math.floor((a+32768)/65536));expect('presence-'+mask,await draw('terrain-compose',params,entries),expected);}
+  for(const mask of[0,1,3,7]){const params=new Uint32Array(88);params.set([1,4,mask,1]);const a=paints.reduce((n,p,i)=>n+((mask>>i)&1)*p[3]*weights[i],0);const expected=[0,1,2].map(c=>a?Math.floor(paints.reduce((n,p,i)=>n+((mask>>i)&1)*p[c]*p[3]*weights[i],0)/a):0).concat(Math.floor((a+32768)/65536));expect('presence-'+mask,await draw('terrain-compose',params,entries),expected);}
   const rawPixels=[[100,20,200,255],[200,80,30,128],[10,250,90,64],[255,255,255,0]],raw=texture('rgba8unorm',new Uint8Array(rawPixels.flat()),2,2);
   const sumAlpha=rawPixels.reduce((n,p)=>n+p[3],0),reduced=[0,1,2].map(c=>Math.floor((rawPixels.reduce((n,p)=>n+p[c]*p[3],0)+Math.floor(sumAlpha/2))/sumAlpha)).concat(Math.floor((sumAlpha+2)/4));
   for(const encoded of[false,true])expect('reduce-'+(encoded?'PMA':'straight'),await draw('terrain-reduce',new Uint32Array([2|(encoded?65536:0),0,0,0]),[{binding:0,resource:raw.createView()}]),encoded?pma(reduced):reduced);

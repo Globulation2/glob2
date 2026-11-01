@@ -22,6 +22,7 @@ class MapEditorScreen : public GAGGUI::Screen
 	void beginAdditionalInput(std::shared_ptr<GAGCore::InputDispatchReceipt>) override;
 	void endAdditionalInput(std::size_t enqueued) override;
 	void drawExecution() override;
+	std::vector<GAGGUI::ui::Host *> inspectionHosts() override;
 	Uint32 executionDelay(Uint32 now, Uint32) override;
 
 	// Follows the editor's live presentation; ScreenStack re-reads it each frame.

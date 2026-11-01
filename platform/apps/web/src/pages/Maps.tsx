@@ -26,9 +26,9 @@ import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 
 const VISIBILITY_TEXT: Record<MapVisibility, string> = {
-  public: 'Public: listed in the catalog',
-  unlisted: 'Unlisted: anyone with the link',
-  private: 'Private: only you',
+  public: 'Public — listed for everyone',
+  unlisted: 'Unlisted — accessible by link',
+  private: 'Private — only you',
 };
 
 function MapCard({ map }: { map: MapInfo }) {
@@ -516,7 +516,7 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
           >
             {(Object.keys(VISIBILITY_TEXT) as MapVisibility[]).map((v) => (
               <option key={v} value={v}>
-                {VISIBILITY_TEXT[v]}
+                {t(VISIBILITY_TEXT[v])}
               </option>
             ))}
           </select>
@@ -1035,7 +1035,7 @@ export function MapUpload() {
           >
             {(Object.keys(VISIBILITY_TEXT) as MapVisibility[]).map((v) => (
               <option key={v} value={v}>
-                {VISIBILITY_TEXT[v]}
+                {t(VISIBILITY_TEXT[v])}
               </option>
             ))}
           </select>

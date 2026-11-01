@@ -8,8 +8,12 @@
 #include "HttpServer.h"
 #include "UIService.h"
 #include <ScreenStack.h>
+#include <ui/Controls.h>
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
+#include "hive/LocalCommander.h"
+#include "hive/HiveWorker.h"
+#include "Player.h"
 #include <algorithm>
 #include <thread>
 #include <fstream>
@@ -47,7 +51,7 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(discover.status == 200);
 	CHECK(discover.body["result"]["resultType"] == "complete");
 	auto listed = p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""});
-	CHECK(listed.body["result"]["tools"].size() == 12);
+	CHECK(listed.body["result"]["tools"].size() == 21);
 	CHECK(listed.body["result"].contains("cacheScope"));
 	CHECK(
 		p.receive(modern("tools/list").dump(), {"2026-07-28", "wrong", ""}).body["error"]["code"] ==
@@ -365,6 +369,7 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 		return completed(result);
 	};
 	auto acquired = execute("ui_acquire_control");
+	CHECK_FALSE(acquired.data.contains("inspection"));
 	const auto token = acquired.data["token"].get<std::string>();
 	CHECK_FALSE(execute("ui_acquire_control").error.empty());
 	CHECK_FALSE(execute("ui_move", {{"token", "wrong"}, {"x", 10}, {"y", 20}}).error.empty());
@@ -433,6 +438,61 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	service.configure(true, port);
 	waitForListener(service, ListenerState::Running);
 	auto lease = execute("ui_acquire_control").data["token"].get<std::string>();
+	service.renewed -= std::chrono::seconds(299);
+	const auto beforeAnonymous = service.renewed;
+	CHECK(execute("ui_inspect").error.empty());
+	CHECK(service.renewed == beforeAnonymous);
+	CHECK(execute("ui_inspect", {{"token", lease}}).error.empty());
+	CHECK(Clock::now() - service.renewed < std::chrono::seconds(1));
+	service.renewed -= std::chrono::seconds(299);
+	auto duringHumanInput = service.submit("ui_inspect", {{"token", lease}}, "test");
+	auto inspectedDuringInput = duringHumanInput->completion.get_future();
+	events.clear();
+	SDL_Event humanMotion{};
+	humanMotion.type = SDL_EVENT_MOUSE_MOTION;
+	humanMotion.motion.x = 10;
+	humanMotion.motion.y = 20;
+	events.push_back(humanMotion);
+	service.pump(events, true, false); // Buffered human frames do not admit remote actions.
+	CHECK(completed(inspectedDuringInput).error.empty());
+	CHECK(Clock::now() - service.renewed < std::chrono::seconds(1));
+	auto renewalDuringInput = service.submit("ui_renew_control", {{"token", lease}}, "test");
+	auto renewedDuringInput = renewalDuringInput->completion.get_future();
+	service.pump(events, true, false);
+	CHECK(completed(renewedDuringInput).error.empty());
+	events.clear();
+	SDL_Event focusLost{};
+	focusLost.type = SDL_EVENT_WINDOW_FOCUS_LOST;
+	events.push_back(focusLost);
+	service.pump(events, true);
+	service.afterDispatch();
+	CHECK(execute("ui_renew_control", {{"token", lease}}).error.empty());
+	auto scaled =
+		service.submit("ui_screenshot", {{"max_width", 320}, {"max_height", 240}}, "test");
+	auto scaledPixels = scaled->completion.get_future();
+	events.clear();
+	service.pump(events, true);
+	gfx.nextFrame();
+	auto scaledResult = completed(scaledPixels);
+	REQUIRE(scaledResult.error.empty());
+	CHECK(scaledResult.data["width"] == 320);
+	CHECK(scaledResult.data["height"] == 240);
+	CHECK(scaledResult.pixels->w == 640); // Resizing/encoding belongs to the HTTP worker.
+	const auto captureId = scaledResult.data.at("capture_id");
+	auto mapped = service.submit(
+		"ui_move", {{"token", lease}, {"capture_id", captureId}, {"x", 50}, {"y", 30}}, "test");
+	auto mappedDone = mapped->completion.get_future();
+	events.clear();
+	service.pump(events, true);
+	REQUIRE(events.size() == 1);
+	CHECK(events[0].motion.x == 100);
+	CHECK(events[0].motion.y == 60);
+	service.afterDispatch();
+	CHECK(completed(mappedDone).error.empty());
+	CHECK_FALSE(
+		execute("ui_move", {{"token", lease}, {"capture_id", captureId}, {"x", 320}, {"y", 0}})
+			.error.empty());
+
 	execute("ui_key", {{"token", lease}, {"key", "Left Ctrl"}, {"action", "down"}});
 	service.keys[SDL_SCANCODE_LCTRL] -= std::chrono::seconds(6);
 	events.clear();
@@ -448,10 +508,10 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	CHECK(events.empty()); // The human still owns A: revocation must not emit its key-up.
 	service.humanKeys.clear();
 	lease = execute("ui_acquire_control").data["token"].get<std::string>();
-	service.renewed -= std::chrono::seconds(59);
+	service.renewed -= std::chrono::seconds(299);
 	REQUIRE(execute("ui_key", {{"token", lease}, {"key", "A"}}).error.empty());
 	CHECK(Clock::now() - service.renewed < std::chrono::seconds(1));
-	service.renewed -= std::chrono::seconds(61);
+	service.renewed -= std::chrono::seconds(301);
 	CHECK_FALSE(execute("ui_key", {{"token", lease}, {"key", "A"}}).error.empty());
 	std::vector<std::future<Result>> queued;
 	for (int i = 0; i < 65; ++i)
@@ -1106,5 +1166,279 @@ TEST_CASE("MCP/OpenGL capture dimensions orientation cancellation [display][arti
 TEST_CASE("MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts]")
 {
 	verifyCapture(GAGCore::RendererBackend::SDLGPU);
+}
+
+TEST_CASE("MCP/semantic consumption independent waits and target revisions [network]")
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .width = 640, .height = 480, .beforeLoad = [](GlobalContainer &g) {
+			 g.settings.rendererBackend = GAGCore::RendererBackend::Software;
+		 }});
+	GAGGUI::ui::Theme theme;
+	GAGGUI::ui::FixedTextMeasurer measurer(8, 16);
+	int count = 0;
+	bool enabled = true;
+	GAGGUI::ui::Host host(theme,
+						  [&](const auto &)
+						  {
+							  GAGGUI::ui::ButtonOptions options;
+							  options.enabled = enabled;
+							  return GAGGUI::ui::button("act", "Act " + std::to_string(count), [&] { ++count; host.invalidate(); }, options);
+						  });
+	host.setMeasurer(&measurer);
+	host.setPresentation(GAGGUI::ui::Presentation::forSurface(640, 480));
+	host.layoutIfNeeded();
+	UIService service(*globalContainer->gfx);
+	service.inspectionHosts = [&] { return std::vector<GAGGUI::ui::Host *>{&host}; };
+	service.inspectionScreen = [] { return std::string("fixture"); };
+	service.configure(true, unusedLoopbackPort());
+	waitForListener(service, ListenerState::Running);
+	auto execute = [&](const std::string &tool, Json args)
+	{
+		auto request = service.submit(tool, std::move(args), "test");
+		auto future = request->completion.get_future();
+		std::vector<SDL_Event> events;
+		service.pump(events, true);
+		for (const auto &event : events)
+			host.event(event);
+		service.afterDispatch();
+		return completed(future);
+	};
+	const auto acquired = execute("ui_acquire_control", {{"inspect", true}});
+	CHECK(acquired.data["lease_seconds"] == 300);
+	CHECK(acquired.data["inspection"]["screen"] == "fixture");
+	CHECK(acquired.data["inspection"]["surfaces"][0]["controls"][0]["label"] == "Act 0");
+	const auto token = acquired.data.at("token");
+	CHECK(execute("ui_renew_control", {{"token", token}}).error.empty());
+	CHECK_FALSE(execute("ui_inspect", {{"token", "wrong"}}).error.empty());
+	auto inspected = execute("ui_inspect", {{"token", token}});
+	REQUIRE(inspected.error.empty());
+	const auto surface = inspected.data["inspection"]["surfaces"][0];
+	const auto control = surface["controls"][0];
+	auto waiting = service.submit(
+		"ui_wait",
+		{{"surface", surface["instance"]}, {"condition", {{"key", "act"}, {"enabled", false}}}},
+		"observer");
+	auto observed = waiting->completion.get_future();
+	auto action = Json{{"surface", surface["instance"]},
+					   {"key", "act"},
+					   {"revision", control["revision"]},
+					   {"action", "activate"},
+					   {"token", token}};
+	const auto performed = execute("ui_act", action);
+	CHECK(performed.error.empty());
+	CHECK(performed.data["inspection"]["screen"] == "fixture");
+	const auto updated = performed.data["inspection"]["surfaces"][0]["controls"][0];
+	CHECK(updated["label"] == "Act 1");
+	CHECK(updated["revision"] != control["revision"]);
+	action["revision"] = updated["revision"];
+	CHECK(count == 1);
+	CHECK(observed.wait_for(std::chrono::seconds(0)) != std::future_status::ready);
+	auto stale = service.submit("ui_act", action, "test");
+	auto completion = stale->completion.get_future();
+	std::vector<SDL_Event> events;
+	service.pump(events, true);
+	REQUIRE(events.size() == 1);
+	enabled = false;
+	host.invalidate();
+	host.event(events[0]);
+	service.afterDispatch();
+	CHECK_FALSE(completed(completion).error.empty());
+	CHECK(count == 1);
+	events.clear();
+	service.pump(events, true);
+	service.afterDispatch();
+	CHECK(completed(observed).data["satisfied"] == true);
+
+	// A failing post-action read cannot turn confirmed delivery into a failed
+	// mutation that callers might replay after uncertain acknowledgement.
+	enabled = true;
+	host.invalidate();
+	const auto refreshed = execute("ui_inspect", {{"token", token}});
+	action["revision"] = refreshed.data["inspection"]["surfaces"][0]["controls"][0]["revision"];
+	service.inspectionHosts = [&]() -> std::vector<GAGGUI::ui::Host *>
+	{
+		if (count > 1)
+			throw std::runtime_error("Fixture inspection failed after consumption");
+		return {&host};
+	};
+	const auto consumed = execute("ui_act", action);
+	CHECK(consumed.error.empty());
+	CHECK(consumed.data["dispatched"] == true);
+	CHECK(consumed.data["input_started"] == true);
+	CHECK(consumed.data["inspection_error"] == "Fixture inspection failed after consumption");
+	CHECK(count == 2);
+	CHECK(execute("ui_release_control", {{"token", token}}).error.empty());
+	const auto granted = execute("ui_acquire_control", {{"inspect", true}});
+	CHECK(granted.error.empty());
+	CHECK(granted.data["inspection_error"] == "Fixture inspection failed after consumption");
+	CHECK(granted.data.contains("token"));
+	CHECK(execute("ui_renew_control", {{"token", granted.data["token"]}}).error.empty());
+}
+TEST_CASE("MCP/HTTP wait admission reserves connections for satisfying actions [network]")
+{
+	namespace asio = boost::asio;
+	namespace http = boost::beast::http;
+	using Tcp = asio::ip::tcp;
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .width = 320, .height = 240, .beforeLoad = [](GlobalContainer &g) {
+			g.settings.rendererBackend = GAGCore::RendererBackend::Software;
+		}});
+	GAGGUI::ui::Theme theme;
+	GAGGUI::ui::FixedTextMeasurer measurer(8, 16);
+	int count = 0;
+	GAGGUI::ui::Host host(theme, [&](const auto &) {
+		GAGGUI::ui::ButtonOptions options; options.enabled = count == 0;
+		return GAGGUI::ui::button("act", "Act", [&] { ++count; host.invalidate(); }, options);
+	});
+	host.setMeasurer(&measurer);
+	host.setPresentation(GAGGUI::ui::Presentation::forSurface(320, 240));
+	host.layoutIfNeeded();
+	UIService service(*globalContainer->gfx);
+	service.inspectionHosts = [&] { return std::vector<GAGGUI::ui::Host *>{&host}; };
+	service.inspectionScreen = [] { return std::string("wait-admission"); };
+	const auto port = unusedLoopbackPort();
+	service.configure(true, port);
+	waitForListener(service, ListenerState::Running);
+	auto pump = [&] {
+		std::vector<SDL_Event> events;
+		service.pump(events, true);
+		for (const auto &event : events) host.event(event);
+		service.afterDispatch();
+	};
+	auto acquisition = service.submit("ui_acquire_control", {}, "HTTP fixture");
+	auto granted = acquisition->completion.get_future();
+	pump();
+	const auto token = completed(granted).data.at("token");
+	const auto snapshot = host.inspect();
+	const auto target = snapshot.controls.at(0);
+	asio::io_context clients;
+	struct Client
+	{
+		Tcp::socket socket;
+		boost::beast::flat_buffer buffer;
+		http::response_parser<http::string_body> parser;
+		std::optional<Json> response;
+		explicit Client(asio::io_context &io) : socket(io) {}
+		void poll()
+		{
+			if (response) return;
+			boost::system::error_code error;
+			http::read(socket, buffer, parser, error);
+			if (error == asio::error::would_block || error == asio::error::try_again) return;
+			if (error) throw boost::system::system_error(error);
+			response = Json::parse(parser.get().body());
+		}
+	};
+	auto send = [&](const std::string &tool, Json args) {
+		auto client = std::make_unique<Client>(clients);
+		client->socket.connect({asio::ip::make_address_v4("127.0.0.1"),
+			static_cast<unsigned short>(port)});
+		http::request<http::string_body> request(http::verb::post, "/mcp", 11);
+		request.set(http::field::host, "localhost:" + std::to_string(port));
+		request.set(http::field::content_type, "application/json");
+		request.set(http::field::accept, "application/json, text/event-stream");
+		request.set("MCP-Protocol-Version", "2025-11-25");
+		request.body() = Json{{"jsonrpc", "2.0"}, {"id", 1}, {"method", "tools/call"},
+			{"params", {{"name", tool}, {"arguments", std::move(args)}}}}.dump();
+		request.prepare_payload();
+		http::write(client->socket, request);
+		client->socket.non_blocking(true);
+		return client;
+	};
+	std::vector<std::unique_ptr<Client>> waits;
+	for (int i = 0; i < 16; ++i)
+		waits.push_back(send("ui_wait", {{"timeout_ms", 30000},
+			{"condition", {{"key", "act"}, {"enabled", false}}}}));
+	auto finished = [&] { return std::count_if(waits.begin(), waits.end(),
+		[](const auto &client) { return client->response.has_value(); }); };
+	auto deadline = Clock::now() + std::chrono::seconds(10);
+	while (finished() < 8 && Clock::now() < deadline)
+	{
+		pump();
+		for (auto &client : waits) client->poll();
+		SDL_Delay(1);
+	}
+	REQUIRE(finished() == 8);
+	for (const auto &client : waits)
+		if (client->response)
+		{
+			CHECK(client->response->at("result").at("isError") == true);
+			CHECK(client->response->at("result").at("structuredContent").at("error").get<std::string>().find("maximum 8") != std::string::npos);
+		}
+	CHECK(count == 0); // Eight admitted waits still await this exact mutation.
+	auto action = send("ui_act", {{"token", token}, {"surface", snapshot.instance},
+		{"key", "act"}, {"revision", target.revision}, {"action", "activate"}});
+	deadline = Clock::now() + std::chrono::seconds(10);
+	while ((!action->response || finished() < 16) && Clock::now() < deadline)
+	{
+		pump();
+		action->poll();
+		for (auto &client : waits) client->poll();
+		SDL_Delay(1);
+	}
+	REQUIRE(action->response);
+	CHECK(action->response->at("result").at("isError") == false);
+	CHECK(count == 1);
+	REQUIRE(finished() == 16);
+	int satisfied = 0;
+	for (const auto &client : waits)
+		if (!client->response->at("result").at("isError").get<bool>())
+		{
+			CHECK(client->response->at("result").at("structuredContent").at("satisfied") == true);
+			++satisfied;
+		}
+	CHECK(satisfied == 8);
+}
+
+TEST_CASE("MCP/standing orders survive idle control lease expiry [network]")
+{
+	glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480});
+	glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true});
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> result;
+		result.set_value(Hive::invoke(input));
+		return result.get_future();
+	});
+	UIService service(*globalContainer->gfx);
+	service.domainHandler = [&](const auto &tool, const auto &arguments)
+	{
+		Result result;
+		result.data = commander.call(tool, arguments);
+		return result;
+	};
+	service.configure(true, unusedLoopbackPort());
+	waitForListener(service, ListenerState::Running);
+	auto execute = [&](const std::string &tool, Json args)
+	{
+		auto request = service.submit(tool, std::move(args), "standing-order client");
+		auto future = request->completion.get_future();
+		std::vector<SDL_Event> events;
+		service.pump(events, true);
+		service.afterDispatch();
+		return completed(future);
+	};
+	const auto token = execute("ui_acquire_control", Json::object()).data.at("token");
+	const auto session = commander.status().at("session");
+	REQUIRE(execute("hive_program", {{"token", token}, {"session", session},
+		{"action", "install"}, {"operation_key", "expiry-install"}, {"name", "Continue"},
+		{"interval_ticks", 25}, {"source", "function step(ctx){return {output:{tick:ctx.tick},orders:[]}}"}}).error.empty());
+	commander.update();
+	commander.update();
+	REQUIRE(commander.standingOrders().size() == 1);
+	service.renewed -= std::chrono::seconds(301);
+	CHECK_FALSE(execute("ui_renew_control", {{"token", token}}).error.empty());
+	CHECK(service.token.empty());
+	world.game.stepCounter += 25;
+	world.game.finishOrderPhase(false);
+	commander.update();
+	commander.update();
+	const auto program = commander.standingOrders().at(0);
+	CHECK_FALSE(program.at("paused").get<bool>());
+	CHECK(program.at("recent").at("status") == "completed");
+	CHECK(program.at("recent").at("observation_tick") == world.game.stepCounter);
 }
 #endif

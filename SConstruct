@@ -38,6 +38,7 @@ def establish_options(env):
     opts.Add(BoolVariable("pch", "Experimental development precompiled headers", 0))
     opts.Add(BoolVariable("unity", "Experimental selective development unity compilation", 0))
     opts.Add("linker", "Development linker: default, auto, lld", "default")
+    opts.Add("recording_codec", "Recording codec: h264, vp9, av1 (WebM: native Linux only)", "h264")
     opts.Add("dependency_jobs", "Dependency build parallelism (defaults to SCons -j)", GetOption("num_jobs"))
     opts.Add(BoolVariable("release", "Build for release", 0))
     opts.Add(BoolVariable("retain_symbols", "Keep native release symbols for distro debug packages", 0))
@@ -484,11 +485,12 @@ def main():
 
     if not server_only and env['recording'] == 'system':
         from recording_config import attach_system
-        attach_system(env)
+        attach_system(env, env['recording_codec'])
     if not server_only and env['recording'] == 'bundled':
-        from recording_dependencies import build as build_recording, attach as attach_recording
+        from recording_dependencies import build as build_recording, attach as attach_recording, native_opus_configuration
+        recording_opus = native_opus_configuration(env['ENV']) if env['recording_codec'] != 'h264' else None
         recording_target = 'mingw32' if env['mingw'] or env['mingwcross'] or isWindowsPlatform else 'darwin' if isDarwinPlatform else 'linux'
-        shared_recording = Path(sdl_prefix) / 'recording' if sdl_prefix else None
+        shared_recording = Path(sdl_prefix) / 'recording' if sdl_prefix and env['recording_codec'] == 'h264' else None
         recording_prefix = Path(os.environ['GLOB2_RECORDING_PREFIX']) if os.environ.get('GLOB2_RECORDING_PREFIX') else shared_recording if shared_recording and (shared_recording/'recording-manifest.json').exists() else Path(bdir)/'recording/prefix'
         # Variant SConscript files resolve relative CPPPATH entries locally.
         # Keep pinned headers and archives rooted at the dependency installation.
@@ -496,8 +498,8 @@ def main():
         recording_prefix = ensure_dependency(build_recording, recording_prefix, Path(bdir) / 'recording/sources',
                 explicit=bool(os.environ.get('GLOB2_RECORDING_PREFIX') or (shared_recording and (shared_recording/'recording-manifest.json').exists())), execute=build_dependencies,
                 cc=env['CC'], cxx=env['CXX'], ar=env['AR'], ranlib=env.get('RANLIB', 'ranlib'),
-                target=recording_target, environment=env['ENV'], jobs=jobs)
-        attach_recording(env, recording_prefix, recording_target)
+                target=recording_target, video_codec=env['recording_codec'], opus_configuration=recording_opus, environment=env['ENV'], jobs=jobs)
+        attach_recording(env, recording_prefix, recording_target, env['recording_codec'])
         env['RECORDING_PREFIX'] = str(recording_prefix.resolve())
         for notice in (recording_prefix / 'share/licenses/recording').glob('*'):
             env.Alias('install', env.Install(str(Path(env['INSTALLDIR']) / 'glob2/licenses/recording'), str(notice)))
@@ -594,7 +596,8 @@ def main():
             BUNDLE_NAME=bdir+"/Glob2",
             BUNDLE_SYMBOL_DIR=bdir+"/symbols",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
-            BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts"],
+            BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts",
+                                 "darwin/en.lproj", "darwin/mr.lproj", "darwin/ta.lproj", "darwin/te.lproj", "darwin/bg.lproj"],
             BUNDLE_PLIST="darwin/Info.plist",
             BUNDLE_ICON="darwin/Glob2.icns" )
         # Go through the builders rather than calling their actions directly.

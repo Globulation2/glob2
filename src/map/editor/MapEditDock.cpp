@@ -6,8 +6,11 @@
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "PhoneEditor.h"
+#include "MapZoomControls.h"
+#include <ui/PositionedControls.h>
 #include "ui/FrontendUI.h"
 #include <FormatableString.h>
+#include <iterator>
 
 void MapEdit::createDock()
 {
@@ -55,8 +58,8 @@ void MapEdit::drawStatus()
 		return;
 	const auto &theme = Glob2UI::inGameTheme();
 	const int pad = 5, gap = 4;
-	// Beside the zoom controls (MapZoomControls.h: 144 pixels from x 8, 22 high
-	// ending 4 above the bottom), on their baseline.
+	// Beside the zoom controls (MapZoomControls.h: at most 144 pixels from x 8),
+	// sharing their bottom margin; caption metrics determine their height.
 	const int margin = phone ? 8 : 8 + 144 + 8;
 	const int mapRight = gfx->getW() - dockWidth();
 	int bottom = gfx->getH() - 4;
@@ -76,4 +79,43 @@ void MapEdit::drawStatus()
 		pill(coordinates, theme.hud.border);
 	if (!statusText.empty() && SDL_GetTicks() < statusUntil)
 		pill(statusText, theme.hud.ink);
+}
+
+std::vector<GAGGUI::ui::Host *> MapEdit::inspectionHosts()
+{
+	if (auto *dialog = activeDialog())
+		return {&dialog->host()};
+	if (phone)
+		return {&phone->inspectionHost()};
+	// A dock popup captures pointer/key input over the map as well.
+	if (dock && dock->host().popupOpen())
+		return {&dock->host()};
+	if (!mapControlsHost)
+		mapControlsHost = std::make_unique<GAGGUI::ui::Host>(Glob2UI::inGameTheme(),
+			[this](const GAGGUI::ui::Presentation &p)
+			{
+				using namespace GAGGUI::ui;
+				PositionedControl map;
+				map.key = "editor/map";
+				map.role = "canvas";
+				map.label = "Map canvas";
+				map.bounds = {0, 16, p.viewport.w - dockWidth(), std::max(0, p.viewport.h - 16)};
+				map.actions.clear();
+				std::vector<PositionedControl> controls{std::move(map)};
+				auto zoom = mapZoomControls(camera, "editor/zoom", [this](int index)
+				{
+					const auto at = mapZoomControlBounds(camera)[index].center();
+					clickMapZoomControls(camera, at.x, at.y);
+					viewportX = camera.tileX();
+					viewportY = camera.tileY();
+				});
+				controls.insert(controls.end(), std::make_move_iterator(zoom.begin()), std::make_move_iterator(zoom.end()));
+				return positionedControls(std::move(controls));
+			});
+	mapControlsHost->setPresentation(GAGGUI::ui::resolvePresentation(*globalContainer->gfx));
+	mapControlsHost->invalidate();
+	mapControlsHost->layoutIfNeeded();
+	std::vector<GAGGUI::ui::Host *> result{mapControlsHost.get()};
+	if (dock) result.push_back(&dock->host());
+	return result;
 }

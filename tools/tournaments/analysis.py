@@ -9,15 +9,17 @@ import statistics
 from .common import atomic_json, digest
 from .fairness_statistics import share_table, squared_bias, bias_interval, rms_points, seed_for, benjamini_hochberg, holm
 from .results import Results
+from .probability import group_summary, stopping_threshold
 
-POLICY_VERSION = 1
-POLICIES = ('prestige', 'survivor_draw', 'military')
+POLICY_VERSION = 2
+POLICIES = ('win_probability', 'prestige', 'survivor_draw', 'military')
 
 
-def adjudicate(result, policy='prestige', alliances=False):
+def adjudicate(result, policy='win_probability', alliances=False):
     if policy not in POLICIES:
         raise ValueError('unknown adjudication policy')
     teams = result['teams']
+    engine_outcome = any(t['outcome'] == 'won' or t['team'] in result.get('winning_teams', []) for t in teams)
     groups = defaultdict(list)
     for team in teams:
         groups[team['alliance'] if alliances else team['team']].append(team)
@@ -29,8 +31,17 @@ def adjudicate(result, policy='prestige', alliances=False):
         if won:
             score = (3,)
         elif alive:
-            if result.get('termination') != 'tick_cap' or policy == 'survivor_draw':
+            if (result.get('termination') != 'tick_cap' or policy == 'survivor_draw'
+                    or (policy == 'win_probability' and engine_outcome)):
                 score = (2,)
+            elif policy == 'win_probability':
+                terminal_tick = result.get('ticks')
+                probability = group_summary(colonies, terminal_tick)
+                if probability is None:
+                    raise ValueError('win_probability adjudication requires automatic probability statistics; use an explicit legacy policy for older results')
+                if terminal_tick is None or probability['end_tick'] != terminal_tick:
+                    raise ValueError('win_probability adjudication requires a prediction at the terminal tick')
+                score = (2, probability['final'])
             else:
                 fields = ('warrior_attack', 'warrior_hp', 'warriors') if policy == 'military' else ('prestige', 'units', 'buildings')
                 score = (2, *(sum(t[k] for t in colonies if t['alive']) for k in fields))
@@ -44,7 +55,7 @@ def adjudicate(result, policy='prestige', alliances=False):
         placements[group] = 1 + better + (tied - 1) / 2
     best = max(scores.values())
     return {'policy': policy, 'version': POLICY_VERSION, 'alliances': alliances,
-            'engine_outcome': bool(result.get('winning_teams')), 'placements': placements,
+            'engine_outcome': engine_outcome, 'placements': placements,
             'winners': [key for key, score in scores.items() if score == best], 'scores': scores}
 
 
@@ -82,6 +93,8 @@ def observations(records, policy):
             groups[team['alliance'] if fmt == '2v2' else team['team']].append(players.get(team['team'], 'unknown'))
         keys = sorted(groups)
         competitors = ['+'.join(sorted(groups[key])) for key in keys]
+        probabilities = [group_summary([t for t in result['teams']
+                         if (t['alliance'] if fmt == '2v2' else t['team']) == key], result['ticks']) for key in keys]
         rows.append({'job_id': job['id'], 'format': fmt, 'block': str(labels.get('block', digest(job['inputs']))),
                      'map': labels.get('map', labels.get('map_seed')), 'build': job['build'],
                      'seeds': job['seeds'],
@@ -91,8 +104,9 @@ def observations(records, policy):
                      'symmetric_control': labels.get('symmetric_control', False),
                      'ticks': result['ticks'], 'cap': result['termination'] == 'tick_cap',
                      'termination': result['termination'],
+                     'win_probability_permille': stopping_threshold(result, job['config']),
                      'engine_outcome': outcome['engine_outcome'], 'groups': keys,
-                     'competitors': competitors, 'placements': [outcome['placements'][key] for key in keys],
+                     'competitors': competitors, 'probabilities': probabilities, 'placements': [outcome['placements'][key] for key in keys],
                      'winners': outcome['winners'], 'policy': outcome['policy'], 'teams': result['teams']})
     return rows
 
@@ -198,6 +212,20 @@ def fairness(rows):
     return {'maps': output, 'aggregates': aggregate}
 
 
+def _block_mean_interval(blocks, draws, rng):
+    """Bootstrap an equal-game mean, keeping each seed's rotations together."""
+    keys = sorted(blocks)
+    if len(keys) < 2 or draws < 1:
+        return None
+    estimates = []
+    for _ in range(draws):
+        values = []
+        for _ in keys:
+            values.extend(blocks[rng.choice(keys)])
+        estimates.append(statistics.mean(values))
+    return [percentile(estimates, .025), percentile(estimates, .975)]
+
+
 def paired_effects(rows, draws=1000, seed=1):
     paired = defaultdict(dict)
     for row in rows:
@@ -210,18 +238,76 @@ def paired_effects(rows, draws=1000, seed=1):
         if not baseline: continue
         for name, row in variants.items():
             if name == 'baseline': continue
-            for metric in ('ticks', 'placement'):
+            for metric in ('ticks', 'placement', 'win_probability_mean'):
+                if metric == 'win_probability_mean':
+                    a = row.get('probabilities', [None] * len(row['groups']))[row['groups'].index(row['subject_group'])]
+                    b = baseline.get('probabilities', [None] * len(baseline['groups']))[baseline['groups'].index(baseline['subject_group'])]
+                    if (not a or not b or not a['whole_game'] or not b['whole_game'] or a['model'] != b['model']
+                            or row.get('win_probability_permille', 0) != baseline.get('win_probability_permille', 0)):
+                        continue
+                    differences[(build, held_out, name, metric, a['model'], row.get('win_probability_permille', 0))].append((pair, a['mean'] - b['mean'], row['block']))
+                    continue
                 effect = (row['ticks'] - baseline['ticks']) if metric == 'ticks' else (row['placements'][row['groups'].index(row.get('subject_group',row['groups'][0]))] - baseline['placements'][baseline['groups'].index(baseline.get('subject_group',baseline['groups'][0]))])
-                differences[(build, held_out, name, metric)].append((pair, effect))
+                differences[(build, held_out, name, metric, None, None)].append((pair, effect, row['block']))
     rng = random.Random(seed)
     output = []
-    for (build, held_out, variant, metric), pairs in sorted(differences.items()):
-        values = [value for _, value in pairs]
-        estimates = [statistics.mean(rng.choices(values, k=len(values))) for _ in range(draws)] if len(values) > 1 else []
+    for (build, held_out, variant, metric, model, threshold), pairs in sorted(differences.items(), key=lambda item: str(item[0])):
+        values = [value for _, value, _ in pairs]
+        blocks = defaultdict(list)
+        for _, value, block in pairs:
+            blocks[block].append(value)
+        if metric == 'win_probability_mean':
+            interval = _block_mean_interval(blocks, draws, rng)
+        else:
+            estimates = [statistics.mean(rng.choices(values, k=len(values))) for _ in range(draws)] if len(values) > 1 else []
+            interval = [percentile(estimates, .025), percentile(estimates, .975)] if estimates else None
         output.append({'build': build, 'held_out': held_out, 'variant': variant, 'metric': metric,
+                       **({'model': model, 'win_probability_permille': threshold, 'blocks': len(blocks),
+                           'resampling': 'seed_block'} if metric == 'win_probability_mean' else {}),
                        'pairs': len(values), 'mean_effect': statistics.mean(values),
-                       'interval': [percentile(estimates, .025), percentile(estimates, .975)] if estimates else None,
-                       'raw_pairs': pairs})
+                       'interval': interval,
+                       'raw_pairs': [(pair, value) for pair, value, _ in pairs]})
+    return output
+
+
+def probability_scores(rows, draws=1000, seed=1):
+    """Standard continuous AI score beside W/L/D, with seed-block uncertainty.
+
+    Average each game's normalized integral, rather than pooling raw area (which
+    would give longer games more weight). Keep model/threshold cohorts separate.
+    """
+    groups = defaultdict(list)
+    for row in rows:
+        for i, competitor in enumerate(row['competitors']):
+            value = row.get('probabilities', [None] * len(row['competitors']))[i]
+            # In an ablation both sides may run the same AI implementation.
+            # Pooling subject and opponent would cancel every improvement.
+            role = ('subject' if row['groups'][i] == row['subject_group'] else 'opponent') if row.get('pair') is not None else 'competitor'
+            key = (row['format'], row['build'], row['variant'], competitor, role,
+                   value['model'] if value else None, row.get('win_probability_permille', 0))
+            best = min(row['placements'])
+            leading = row['placements'][i] == best
+            outcome = 'draws' if leading and row['placements'].count(best) > 1 else 'wins' if leading else 'losses'
+            groups[key].append((row['block'], value, outcome, row.get('termination')))
+    output = []
+    for (fmt, build, variant, competitor, role, model, threshold), entries in sorted(groups.items(), key=lambda item: str(item[0])):
+        usable = [(block, value) for block, value, _, _ in entries if value and value['whole_game']]
+        outcomes = Counter(outcome for _, _, outcome, _ in entries)
+        blocks = defaultdict(list)
+        for block, value in usable:
+            blocks[block].append(value['mean'])
+        rng = random.Random(seed_for(seed, fmt, build, variant, competitor, role, model, threshold))
+        output.append({'format': fmt, 'build': build, 'variant': variant, 'competitor': competitor,
+                       'role': role,
+                       'model': model, 'win_probability_permille': threshold, 'games': len(entries),
+                       **{name: outcomes[name] for name in ('wins', 'losses', 'draws')},
+                       'probability_ended_games': sum(end == 'win_probability' for _, _, _, end in entries),
+                       'capped_games': sum(end == 'tick_cap' for _, _, _, end in entries),
+                       'scored_games': len(usable), 'unavailable': len(entries) - len(usable),
+                       'blocks': len(blocks),
+                       'mean': statistics.mean(v['mean'] for _, v in usable) if usable else None,
+                       'mean_area_probability_ticks': statistics.mean(v['area'] for _, v in usable) if usable else None,
+                       'interval': _block_mean_interval(blocks, draws, rng)})
     return output
 
 
@@ -253,7 +339,7 @@ def write_csv(path, rows):
         writer.writerows({key: json.dumps(value, sort_keys=True) if isinstance(value, (dict,list,tuple)) else value for key,value in row.items()} for row in rows)
 
 
-def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=None):
+def reanalyze(directory, policy='win_probability', draws=1000, seed=1, k=32, output=None):
     source = Results(directory)
     records = list(source)
     attempts = list(source.attempts())
@@ -267,6 +353,7 @@ def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=Non
               'committed_results': len(records), 'planned_jobs': len(source.manifest['jobs']),
               'matchups': matchup, 'map_start_breakdown': breakdown, 'observations': rows,
               'fairness': fairness(rows) if source.manifest.get('kind') == 'fairness' else None,
+              'probability_scores': probability_scores(rows,draws,seed),
               'paired_effects': paired_effects(rows,draws,seed), 'generators': generator_distributions(records),
               'generator_attempts': generator_distributions(attempts),
               'failure_groups': [{'type':t,'build':b,'host':h,'category':c,'stack_signature':s,'count':n} for (t,b,h,c,s),n in failure_groups.items()],
@@ -297,7 +384,7 @@ def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=Non
     write_csv(out/'map-telemetry-records.csv', report['map_telemetry']['records'])
     write_csv(out/'map-metrics.csv', report['map_telemetry']['maps'])
     write_csv(out/'map-telemetry-groups.csv', report['map_telemetry']['groups'])
-    for name in ('observations','matchups','map_start_breakdown','paired_effects','generators','configurations'):
+    for name in ('observations','matchups','map_start_breakdown','paired_effects','probability_scores','generators','configurations'):
         write_csv(out/(name+'.csv'),report[name])
     lines = [f'# {source.manifest["id"]}', '', f'Policy: {policy}, version {POLICY_VERSION}. Results: {len(records)}/{len(source.manifest["jobs"])}.',
              '', 'Duels: order-independent Bradley–Terry fit, mean 1500, 400 points per tenfold odds, draws scored 0.5. No prior or K factor. Other formats retain sequential Elo with K='+str(k)+'.',
@@ -308,6 +395,15 @@ def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=Non
     lines += ['', f'Uncertainty uses {report["uncertainty"]["complete_blocks"]} complete map/seed blocks, seed {seed}.',
               'Duel intervals resample whole swapped-side pairs within each generator. Missing/unidentifiable fits are explicit in duel_rating_fit; sequential diagnostics are retained separately.',
               'Raw observations, failures, configurations, pairing and distribution summaries are in the adjacent JSON and CSV files.']
+    if report['probability_scores']:
+        lines += ['', '## Mean whole-game win probability', '',
+                  'Trapezoidal area divided by observed duration; allies counted once. Higher is better.',
+                  'Early stopping changes the observed duration. Compare matched stopping rules and models.',
+                  '', '| Format | Build | Variant | Competitor | Role | Stop (permille) | W / L / D | Scored / games | Mean | 95% block interval |',
+                  '| --- | --- | --- | --- | --- | ---: | --- | ---: | ---: | --- |']
+        for score in report['probability_scores']:
+            mean = f"{score['mean']:.4f}" if score['mean'] is not None else 'unavailable'
+            lines.append(f"| {score['format']} | {score['build'][:12]} | {score['variant']} | {score['competitor']} | {score['role']} | {score['win_probability_permille']} | {score['wins']} / {score['losses']} / {score['draws']} | {score['scored_games']} / {score['games']} | {mean} | {score['interval']} |")
     if report['map_telemetry']['groups']:
         lines += ['', '## Map telemetry', '',
                   '| Generator | Revision | Maps | Missing traces | Incomplete traces |',

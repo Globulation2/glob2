@@ -51,6 +51,21 @@ class RecordingConfigTests(unittest.TestCase):
         env.ParseConfig.assert_called_once_with(
             'pkg-config --cflags --libs libavformat libavcodec libswscale libswresample libavutil')
 
+    def test_system_codecs_select_the_encoder_without_private_dependencies(self):
+        for codec in ('h264', 'vp9', 'av1'):
+            env = Mock()
+            attach_system(env, codec)
+            if codec == 'h264':
+                env.Append.assert_not_called()
+            else:
+                env.Append.assert_called_once_with(CPPDEFINES=['GLOB2_RECORDING_' + codec.upper()])
+
+    def test_recording_library_and_codec_combinations_have_distinct_directories(self):
+        identities = [build_identity({'recording': mode, 'recording_codec': codec}, 'linux')
+                      for mode in ('bundled', 'system', 'disabled')
+                      for codec in ('h264', 'vp9', 'av1')]
+        self.assertEqual(len({default_directory(identity) for identity in identities}), 9)
+
     def test_installed_paths_are_a_native_linux_client_path_choice(self):
         build_identity({'installed_paths': '1'}, 'linux')
         for arguments, host in [({'installed_paths': '1'}, 'darwin'),

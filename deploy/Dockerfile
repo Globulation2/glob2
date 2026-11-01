@@ -73,7 +73,7 @@ RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,
     scons release=1 server=0 -j${JOBS} build/linux/client/release/src/glob2 && \
     mkdir -p /output/bin /output/lib/glob2 /output/share && \
     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 && \
-    cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ && \
+    cp -a build/sdl3/prefix/lib/libSDL3* build/sdl3/prefix/lib/libharfbuzz* /output/lib/glob2/ && \
     cp -a build/sdl3/prefix/share/licenses /output/licenses && \
     cp -a build/linux/client/release/runtime-assets/. /output/share/ && \
     find /output/share -name SConscript -delete && \
@@ -128,6 +128,11 @@ ARG GLOB2_DOWNLOAD_URL=
 COPY platform/ ./
 COPY examples/javascript /app/examples/javascript
 COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
+COPY data/fonts/scripts /app/data/fonts/scripts
+COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
+COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt
+COPY data/fonts/LICENSE-Droid.txt /app/data/fonts/LICENSE-Droid.txt
+COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libgag/shaders /app/libgag/shaders
 # Set authoring and Terrain Studio import the shared resource registry.
@@ -150,6 +155,12 @@ COPY platform/apps/ai-map-worker apps/ai-map-worker
 COPY platform/apps/ai-music-worker apps/ai-music-worker
 COPY platform/apps/ai-terrain-worker apps/ai-terrain-worker
 COPY platform/apps/ai-building-worker apps/ai-building-worker
+# Server-rendered account and invite pages use the approved script fonts.
+COPY data/fonts/scripts /app/data/fonts/scripts
+COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
+COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt
+COPY data/fonts/LICENSE-Droid.txt /app/data/fonts/LICENSE-Droid.txt
+COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -167,6 +178,8 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
     chown -R 10001:10001 /var/lib/glob2 && \
     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
 COPY --from=platform-runtime-deps /app/platform /app/platform
+COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
 COPY examples/javascript /app/examples/javascript
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
@@ -216,6 +229,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     && chmod 700 /var/lib/glob2/engine-agent
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
+COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
 COPY examples/javascript /app/examples/javascript
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
@@ -334,6 +349,8 @@ COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
     mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
 COPY --from=platform-runtime-deps /app/platform /app/platform
+COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
 # Shared protocol set-authoring imports the registry when the worker starts.
 COPY data/resources/registry.json /app/data/resources/registry.json
 ENV NODE_ENV=production BLOB_STORE=fs BLOB_DIR=/var/lib/glob2/blobs

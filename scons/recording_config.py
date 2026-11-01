@@ -23,7 +23,9 @@ def sources(entries, mode):
     return [source for source in entries if source not in CODEC_SOURCES] + ['RecordingDisabled.cpp']
 
 
-def attach_system(env):
+def attach_system(env, video_codec='h264'):
     # FFmpeg owns its encoder dependencies (including libx264). Do not link a
     # second codec implementation or look for the private pinned prefix.
     env.ParseConfig('pkg-config --cflags --libs libavformat libavcodec libswscale libswresample libavutil')
+    if video_codec != 'h264':
+        env.Append(CPPDEFINES=['GLOB2_RECORDING_' + video_codec.upper()])

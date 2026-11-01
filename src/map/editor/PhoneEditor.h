@@ -5,7 +5,10 @@
 #include <GestureScroll.h>
 #include <TouchInput.h>
 #include "BrushHUD.h"
+#include <ui/Host.h>
+#include <ui/PositionedControls.h>
 #include <memory>
+#include <array>
 #include <optional>
 #include <set>
 #include <cstdint>
@@ -34,6 +37,8 @@ class PhoneEditor
 	// Per-frame momentum for the map, the tool tray and the inspector.
 	void advance(Uint32 tick);
 	bool animating() const;
+	// Shared custom-control surface used by inspection and ordinary hit testing.
+	GAGGUI::ui::Host &inspectionHost();
 
   private:
 	friend class GameGUITouchHarness;
@@ -61,7 +66,7 @@ class PhoneEditor
 	// Group headers of the Terrain and Resources trays; a tap jumps to the group.
 	struct Chip
 	{
-		std::string title;
+		std::string title, id;
 		int first = 0; // first row of the group
 		double x = 0, width = 0;
 		GAGCore::ViewRect rect;
@@ -71,9 +76,12 @@ class PhoneEditor
 	std::vector<Row> rows;
 	std::vector<Chip> chips;
 	GAGCore::ViewRect safe, content;
+	std::array<GAGCore::ViewRect, 4> headerButtons{};
 	bool tools = true, pan = false, onMap = false;
 	// Terrain, resources, buildings, flags/units, teams.
 	static constexpr int modeCount = 5;
+	int modeColumns = modeCount;
+	GAGCore::ViewRect modeRect(int index) const;
 	// Points: the card strip, and the group chips above it in Terrain and Resources.
 	static constexpr double cardHeight = 68, chipHeight = 36;
 	int paletteMode = 2;
@@ -93,7 +101,18 @@ class PhoneEditor
 	// Read-only diagnostic for browser tests (ApplicationHost::controlsChanged):
 	// "tray/mode/<n>", "tray/chip/<n>" and "tray/<catalogue id>" bounds.
 	void publishControls(bool shown);
+	GAGGUI::ui::SurfaceSnapshot browserControls();
 	std::string publishedControls;
+	std::unique_ptr<GAGGUI::ui::Host> controlsHost;
+	struct Target
+	{
+		int id;
+		GAGGUI::ui::PositionedControl control;
+	};
+	std::vector<Target> controlTargets();
+	GAGGUI::ui::Element buildControls();
+	void activateTarget(int target, GAGCore::ViewPoint point);
+	std::vector<std::string> headerLabels() const;
 	void jumpToChip(int chip);
 	// Whether a card's brush is placed by dragging it onto the map.
 	bool dragPlaces(const Row &row);
@@ -148,17 +167,19 @@ class PhoneEditor
 	void syncTray();
 	void syncInspector();
 	void stopScrolling();
+	void scrollSurface(bool propertySheet, int pixels);
 	int held = -1;
 	struct Property
 	{
 		ValueScrollBox *value;
-		std::string caption;
+		std::string caption, key;
 		GAGCore::ViewRect rect;
 	};
 	std::vector<Property> properties;
 	GAGCore::ViewRect inspector, inspectorBody;
 	double inspectorScroll = 0, inspectorMaximum = 0;
 	int inspectorIdentity = -1;
+	std::uint32_t inspectorGeneration = 0;
 	bool inspecting() const;
 	void prepareInspector();
 	void drawInspector();
@@ -190,6 +211,6 @@ class PhoneEditor
 	void drawInteractionPreview();
 	void clearTool();
 	void prepare();
-	int hit(GAGCore::ViewPoint point) const;
+	int hit(GAGCore::ViewPoint point);
 	void act(const GAGCore::TouchAction &action);
 };

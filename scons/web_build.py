@@ -16,6 +16,7 @@ from shared_dependencies import ensure as ensure_dependency
 from dev_compile import objects as development_objects, unique
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 import web_assets
+from online_error_catalog import configure as configure_online_error_catalog, bind_objects as bind_online_error_objects, bind_consumer as bind_online_error_consumer
 import skin_materials
 
 PORTS = ['--use-port=zlib']
@@ -150,7 +151,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     else:
         assets, asset_manifest, asset_root = packaged
     env.Append(LINKFLAGS=['--pre-js', str(asset_manifest), '--pre-js', 'browser/asset-loader.js'])
-    env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
+    # SDL_ttf's static archive requires HarfBuzz; HarfBuzz in turn uses FreeType.
+    env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'harfbuzz', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
     env.Append(LIBS=[env.File(str(opus_prefix / 'lib' / ('lib' + name + '.a'))) for name in OPUS_LIBRARIES])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
     def prepare_ports(target, source, env):
@@ -174,6 +176,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
     env['BUILDDIR'] = str(output)
+    online_error_catalog = configure_online_error_catalog(env, output / 'include')
+    from hive_api import configure as configure_hive_api
+    hive_contract = configure_hive_api(env, output)
     configure_development(env, identity)
     if ccache.enabled():
         ccache.enable(env)
@@ -186,6 +191,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     entry = env.Clone()
     entry.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
     by_source.update(development_objects(entry, ['src/app/Glob2.cpp'], lambda name: str(output / 'obj' / (name + '.o'))))
+    bind_online_error_objects(env, by_source, online_error_catalog)
     objects = unique([by_source[f] for f in files])
     numeric_guard(strict, [by_source[name] for name in files if guarded_numeric_source(name)])
     script_objects = javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
@@ -214,7 +220,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                                '--preload-file', 'examples/javascript@/examples/javascript',
                                '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
-        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/field/WebGPUGradientTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp', '#src/replay/ReplayTelemetryTest.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
+        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp', '#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/field/WebGPUGradientTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp', '#src/replay/ReplayTelemetryTest.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp',
                 ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/map/gradient/InitialBuildingGradientHarness.cpp',
@@ -244,6 +250,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             if source.endswith('TestMain.cpp'):
                 local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
             targets = local.Object(str(output / 'obj/tests' / (path + '.o')), path)
+            bind_online_error_consumer(local, targets, source, online_error_catalog)
             if source.endswith('TestMain.cpp'):
                 local.Depends(targets, provenance_header)
             test_objects += targets
@@ -381,7 +388,26 @@ def build_web(directory, identity, arguments):
     presentation_surface = env.Install(directory, 'browser/presentation-surface.js')
     localization = env.Install(directory, 'browser/i18n.js')
     localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('platform/packages/i18n/locales').glob('*.json'))])
-    env.Depends(page, [loader, presentation_surface, localization])
+    # The pre-Wasm HTML launcher cannot use fonts inside Emscripten's VFS.
+    # Keep its same-origin, lazy HTTP font faces available on standalone hosts.
+    script_font_manifest = json.loads(Path('data/fonts/scripts/manifest.json').read_text())
+    script_font_files = ['data/fonts/scripts/' + font['name'] + '-Regular.ttf'
+                         for font in script_font_manifest['fonts']]
+    script_font_targets = [str(Path(directory) / 'script-fonts.css'),
+                           str(Path(directory) / 'fonts/sans-core.ttf'),
+                           str(Path(directory) / 'fonts/LICENSE-DejaVu.txt'),
+                           str(Path(directory) / 'fonts/LICENSE-Droid.txt'),
+                           str(Path(directory) / 'fonts/LICENSE-Noto.txt')] + [
+        str(Path(directory) / 'fonts' / Path(name).name) for name in script_font_files]
+    def launcher_fonts(target, source, env):
+        web_assets.launcher_script_fonts(Path.cwd(), directory)
+        return 0
+    script_fonts = env.Command(script_font_targets,
+        ['platform/packages/i18n/script-fonts.css', 'data/fonts/scripts/manifest.json',
+         'data/fonts/LICENSE-Noto.txt', 'data/fonts/LICENSE-DejaVu.txt', 'data/fonts/LICENSE-Droid.txt',
+         'browser/assets/sans-core.ttf', 'scons/web_assets.py'] + script_font_files,
+        Action(launcher_fonts, 'Packaging launcher script fonts'))
+    env.Depends(page, [loader, presentation_surface, localization, script_fonts])
     env.Alias('web-package', [page, loader, presentation_surface])
     if threaded: env.Alias('web-threaded', threaded)
     if serial: env.Alias('web-serial', serial)

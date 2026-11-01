@@ -7,11 +7,12 @@
 <title>Globulation 2</title>
 <script src="/theme.js"></script>
 <script src="i18n.js"></script>
+<link rel="stylesheet" href="script-fonts.css">
 <style>
 /* Match the website's Meadow / Night colony tokens and shared brand assets. */
 @font-face{font-family:'Nunito Variable';src:url('/signin/assets/nunito.woff2') format('woff2-variations');font-weight:200 1000;font-display:swap}
 :root{color-scheme:light;--bg:#f1f1e1;--surface:#fbfbf3;--surface-2:#eaedda;--ink:#1d4530;--ink-2:#4b604c;--line:#ccd5bf;--accent:#e3c077;--accent-hover:#ecce8f;--accent-edge:#c69e4c;--accent-ink:#142a1f;--focus:#9a5a0c;
-  font-family:'Nunito Variable',ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif}
+  font-family:var(--glob2-script-body,'Nunito Variable',ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif)}
 @media (prefers-color-scheme:dark){:root:not([data-theme='light']){color-scheme:dark;--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--accent-hover:#ecd08f;--accent-edge:#c7a557;--accent-ink:#1e1228;--focus:#ffd678}}
 :root[data-theme='dark']{color-scheme:dark;--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--accent-hover:#ecd08f;--accent-edge:#c7a557;--accent-ink:#1e1228;--focus:#ffd678}
 html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg)}
@@ -112,7 +113,7 @@ function refreshBrowserLanguage() {
 if (globalThis.Glob2I18n) {
   for (const locale of Glob2I18n.locales) {
     const option = document.createElement('option');
-    option.value = locale.code; option.textContent = locale.name; option.dir = locale.dir;
+    option.value = locale.code; option.textContent = locale.name; option.dir = locale.dir; option.lang = locale.code;
     languagePicker.append(option);
   }
   Glob2I18n.initialize().then(refreshBrowserLanguage);
@@ -634,6 +635,26 @@ addEventListener('unhandledrejection', event => {
 Module.textBridge = (() => {
   const fields = new Map();
   const encoder = new TextEncoder();
+  const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter(undefined, {granularity:'grapheme'}) : null;
+  const fits = (text, maximum, maxCharacters) => (!maximum || encoder.encode(text).length < maximum) &&
+    (!maxCharacters || Array.from(text).length <= maxCharacters);
+  function limited(text, maximum, maxCharacters, accepted) {
+    if (fits(text, maximum, maxCharacters)) return text;
+    if (segmenter) {
+      let prefix = '';
+      for (const {segment} of segmenter.segment(text)) {
+        if (!fits(prefix + segment, maximum, maxCharacters)) break;
+        prefix += segment;
+      }
+      return prefix;
+    }
+    // Older browsers cannot safely infer Unicode graphemes. Reject an
+    // overflowing Unicode edit rather than leave a broken conjunct/joiner.
+    // Single-line ASCII input can still be truncated without splitting glyphs.
+    for (let i = 0; i < text.length; ++i)
+      if (text.charCodeAt(i) > 127) return fits(accepted, maximum, maxCharacters) ? accepted : '';
+    return text.slice(0, Math.min(maximum ? Math.max(0, maximum - 1) : text.length, maxCharacters || text.length));
+  }
   function remove(id) { fields.get(id)?.element.remove(); fields.delete(id); }
   return {
     remove,
@@ -647,20 +668,22 @@ Module.textBridge = (() => {
       const action=field.action || 0;field.action=0;
       return {value:field.element.value,cursor:field.element.selectionEnd ?? 0,action};
     },
-    field(id,rect,width,height,value,password,maximum,clip,selectAll) {
+    field(id,rect,width,height,value,password,maximum,clip,selectAll,maxCharacters=0) {
       let field=fields.get(id);
       if (!field) {
         const element=document.createElement('input');
         element.type=password ? 'password' : 'text';
         element.autocomplete='off';element.spellcheck=false;
-        element.setAttribute('aria-label',password ? 'Password' : 'Game text field');
-        element.style.cssText='position:fixed;z-index:2;box-sizing:border-box;min-width:0;border:1px solid #657363;border-radius:3px;padding:4px 8px;background:#e8edcf;color:#173226;font:16px system-ui';
-        field={element,dirty:false,composing:false,seen:true,maximum};fields.set(id,field);
+        element.dir='auto';
+        element.dataset.i18nAria=password ? 'Password' : 'Game text field';
+        element.setAttribute('aria-label',password ? browserText('Password') : browserText('Game text field'));
+        element.style.cssText='position:fixed;z-index:2;box-sizing:border-box;min-width:0;border:1px solid #657363;border-radius:3px;padding:4px 8px;background:#e8edcf;color:#173226;font:16px var(--glob2-script-body,system-ui)';
+        field={element,dirty:false,composing:false,seen:true,maximum,maxCharacters,accepted:fits(value,maximum,maxCharacters) ? value : ''};fields.set(id,field);
         const update=() => {
-          if (!field.composing && field.maximum) {
-            let text=element.value;
-            while (text && encoder.encode(text).length>=field.maximum) text=Array.from(text).slice(0,-1).join('');
+          if (!field.composing) {
+            const text=limited(element.value,field.maximum,field.maxCharacters,field.accepted);
             if (text!==element.value) element.value=text;
+            field.accepted=element.value;
           }
           field.dirty=true;
         };
@@ -681,9 +704,12 @@ Module.textBridge = (() => {
         // selected, ready for Ctrl+C or the phone's Copy menu.
         if (selectAll) { element.readOnly=true; element.focus({preventScroll:true}); element.select(); }
       }
-      field.seen=true;field.maximum=maximum;
+      field.seen=true;field.maximum=maximum;field.maxCharacters=maxCharacters;
       const element=field.element;
-      if (!field.dirty && !field.composing && element.value!==value) element.value=value;
+      if (!field.dirty && !field.composing && element.value!==value) {
+        element.value=value;
+        if (fits(value,maximum,maxCharacters)) field.accepted=value;
+      }
       const bounds=canvas.getBoundingClientRect();
       element.style.left=(bounds.left+rect.x*bounds.width/width)+'px';
       element.style.top=(bounds.top+rect.y*bounds.height/height)+'px';

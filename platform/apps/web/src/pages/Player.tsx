@@ -62,11 +62,14 @@ function WinRates({ title, rows }: { title: string; rows: WinRate[] }) {
           {rows.slice(0, 6).map((row) => (
             <tr key={row.key}>
               <td className="ell" style={{ maxWidth: 180 }}>
-                {row.mapId ? (
-                  <Link to={`/maps/${row.mapId}`}>{row.label ?? row.key}</Link>
-                ) : (
-                  (row.label ?? (row.dimension === 'map' ? t('Private or uploaded map') : row.key))
-                )}
+                <bdi dir="auto">
+                  {row.mapId ? (
+                    <Link to={`/maps/${row.mapId}`}>{row.label ?? row.key}</Link>
+                  ) : (
+                    (row.label ??
+                    (row.dimension === 'map' ? t('Private or uploaded map') : row.key))
+                  )}
+                </bdi>
               </td>
               <td className="num">
                 <RichMessage
@@ -85,7 +88,7 @@ function WinRates({ title, rows }: { title: string; rows: WinRate[] }) {
   );
 }
 
-function Economy({ curve }: { curve: EconomyCurve | AiEconomyCurve }) {
+function Economy({ curve, name }: { curve: EconomyCurve | AiEconomyCurve; name: string }) {
   useLocale();
   const { theme } = useTheme();
   const at = (pick: (p: EconomyCurve['points'][number]) => number) =>
@@ -95,9 +98,9 @@ function Economy({ curve }: { curve: EconomyCurve | AiEconomyCurve }) {
       <LineChart
         title={t('Units: latest verified match against recent average')}
         series={[
-          { name: 'This match', color: seriesInk(0, theme), points: at((p) => p.units) },
+          { name: t('This match'), color: seriesInk(0, theme), points: at((p) => p.units) },
           {
-            name: 'Average',
+            name: t('{value0}’s average', { value0: name }),
             color: seriesInk(1, theme),
             points: at((p) => p.averageUnits),
             dashed: true,
@@ -109,9 +112,9 @@ function Economy({ curve }: { curve: EconomyCurve | AiEconomyCurve }) {
       <LineChart
         title={t('Buildings: latest verified match against recent average')}
         series={[
-          { name: 'This match', color: seriesInk(0, theme), points: at((p) => p.buildings) },
+          { name: t('This match'), color: seriesInk(0, theme), points: at((p) => p.buildings) },
           {
-            name: 'Average',
+            name: t('{value0}’s average', { value0: name }),
             color: seriesInk(1, theme),
             points: at((p) => p.averageBuildings),
             dashed: true,
@@ -124,7 +127,13 @@ function Economy({ curve }: { curve: EconomyCurve | AiEconomyCurve }) {
   );
 }
 
-function Aggregates({ aggregates }: { aggregates: PlayerAggregates | AiProfile['aggregates'] }) {
+function Aggregates({
+  aggregates,
+  name,
+}: {
+  aggregates: PlayerAggregates | AiProfile['aggregates'];
+  name: string;
+}) {
   useLocale();
   const by = (dimension: WinRate['dimension']) =>
     aggregates.winRates.filter((r) => r.dimension === dimension);
@@ -157,7 +166,7 @@ function Aggregates({ aggregates }: { aggregates: PlayerAggregates | AiProfile['
               }}
             />
           </h2>
-          <Economy curve={aggregates.economy} />
+          <Economy curve={aggregates.economy} name={name} />
         </>
       )}
     </>
@@ -182,7 +191,9 @@ function Tiles({
       {profile.ratings.map((r) => (
         <div className="tile" key={r.ladder} data-testid="rating-tile">
           <GameArt name="warFlag" className="art" size={64} />
-          <div className="caption">{queueName(instance?.queues, r.ladder)}</div>
+          <div className="caption">
+            <bdi dir="auto">{queueName(instance?.queues, r.ladder)}</bdi>
+          </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
             <span className="v">{rating(r.rating)}</span>
             {(r.overallRank ?? r.rank) !== undefined && (
@@ -239,7 +250,17 @@ function Tiles({
         <div className="tile">
           <GameArt name="clearingFlag" className="art" size={64} />
           <div className="caption">
-            <RichMessage source={'Best {slot0}'} slots={{ slot0: best.dimension }} />
+            <RichMessage
+              source={'Best {slot0}'}
+              slots={{
+                slot0:
+                  best.dimension === 'map'
+                    ? t('Map')
+                    : best.dimension === 'generator'
+                      ? t('Generator')
+                      : (best.label ?? best.key),
+              }}
+            />
           </div>
           <div
             style={{ fontSize: 'var(--text-lg)', fontWeight: 750, margin: '4px 0' }}
@@ -289,9 +310,9 @@ function Matches({
           ? first
           : [];
   const filters = [
-    { id: '', name: 'All' },
+    { id: '', name: t('All matches') },
     ...(instance?.queues.map((q) => ({ id: q.id, name: q.name })) ?? []),
-    ...(!aiVersion ? [{ id: 'room', name: 'Rooms' }] : []),
+    ...(!aiVersion ? [{ id: 'room', name: t('Rooms') }] : []),
   ];
   return (
     <>
@@ -311,7 +332,7 @@ function Matches({
                 setCursor(undefined);
               }}
             >
-              {f.name}
+              <bdi dir="auto">{f.name}</bdi>
             </button>
           ))}
         </span>
@@ -408,7 +429,7 @@ export function Player({ id }: { id: string }) {
                   </>
                 )}
                 {profile.aggregates && profile.aggregates.games > 0 && (
-                  <Aggregates aggregates={profile.aggregates} />
+                  <Aggregates aggregates={profile.aggregates} name={profile.account.displayName} />
                 )}
               </>
             )}
@@ -473,7 +494,9 @@ export function AiPlayer({ id }: { id: string }) {
               />
             </>
           )}
-          {profile.aggregates.games > 0 && <Aggregates aggregates={profile.aggregates} />}
+          {profile.aggregates.games > 0 && (
+            <Aggregates aggregates={profile.aggregates} name={profile.displayName} />
+          )}
           {!profile.recentMatches.length && (
             <p className="notice">
               {t('No games yet. This AI’s results will appear here after it plays.')}

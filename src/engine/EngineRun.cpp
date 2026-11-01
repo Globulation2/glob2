@@ -18,7 +18,10 @@
 #include "tutorial/TutorialModel.h"
 #include "sim/snapshot/SnapshotChecksum.h"
 #include "hive/HiveClient.h"
+#include "hive/LocalCommander.h"
+#include "hive/HiveDialog.h"
 #include "GameDiagnostics.h"
+#include "WarriorTacticsTrace.h"
 #include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
@@ -381,6 +384,7 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
         OwnerTickProfile::Scope ownerCapture(OwnerTickProfile::Phase::CaptureWorld);
         return gui.game.observeCompletedWorld(options);
     }();
+    if(warriorTactics) warriorTactics->capture(world);
     {
         OwnerTickProfile::Scope ownerSubmit(OwnerTickProfile::Phase::SubmitChecksum);
         checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
@@ -430,6 +434,7 @@ void Engine::flushChecksums()
     collectChecksums(true);
     // The normal stop path may leave its terminal completed world unobserved.
     const auto& world=gui.game.observeCompletedWorld();
+    if(warriorTactics) warriorTactics->capture(world);
     checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
     collectChecksums(true);
 }
@@ -907,7 +912,9 @@ void Engine::printTeamTimeline()
 // stays alive for a possible reload.
 void Engine::teardownSession()
 {
-    // Complete private jobs before session-owned telemetry/diagnostic sinks
+	gui.hiveCards.reset();
+	gui.localHive.reset();
+	// Complete private jobs before session-owned telemetry/diagnostic sinks
     // close. Logical deadlines and queued commands remain game-owned.
     flushChecksums();
     gui.game.drainAI();
@@ -1096,7 +1103,16 @@ void Engine::beginSession(Uint64 now)
     st.startTime = now;
     teamEliminatedTick.clear();
     session = st;
-    automaticGameStartTick = now;
+#ifndef __EMSCRIPTEN__
+	if (!turn && !globalContainer->replaying && !globalContainer->liveSpectating &&
+		!gui.game.gameHeader.hasNetworkPlayer() &&
+		gui.localPlayer >= 0 && gui.localPlayer < gui.game.gameHeader.getNumberOfPlayers() &&
+		gui.game.players[gui.localPlayer] &&
+		gui.game.players[gui.localPlayer]->type == BasePlayer::P_LOCAL &&
+		!gui.game.players[gui.localPlayer]->ai)
+		gui.localHive = std::make_shared<Hive::LocalCommander>(gui);
+#endif
+	automaticGameStartTick = now;
 	if (!globalContainer->runNoX)
 		GAGCore::Recording::recorder().beginMatch(
 			globalContainer->replaying ? "replay" : (turn ? "multiplayer" : "single_player"),
@@ -1228,7 +1244,22 @@ bool Engine::serialClientFrame(Uint64 now, const std::vector<SDL_Event>& events,
 void Engine::clientStep(const std::vector<SDL_Event>& events)
 {
     if (!session) throw std::logic_error("No active engine session");
-    // Headless sessions never run the GUI step; they only take the notices.
+	if (gui.localHive)
+	{
+		gui.localHive->update();
+		if (!gui.hiveCards && gui.localHive->available() &&
+			!gui.localHive->standingOrders().empty() && !globalContainer->runNoX)
+		{
+			gui.hiveCards = std::make_unique<Hive::Dialog>(gui.localHive);
+			gui.hiveCards->attach(*globalContainer->gfx);
+		}
+		if (gui.hiveCards)
+		{
+			gui.hiveCards->invalidate();
+			gui.hiveCards->update(SDL_GetTicks());
+		}
+	}
+	// Headless sessions never run the GUI step; they only take the notices.
     if (globalContainer->runNoX)
         gui.consumeClientEvents();
     else
@@ -1406,6 +1437,10 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     if (!session) throw std::logic_error("No active engine session");
     stopSimulationThread();
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
+    // Capture the partial interval on the owner, after joining it. Results
+    // screens only read history. The structured driver does this after writing
+    // continuation saves, so a report endpoint cannot change resumed sampling.
+    if (!globalContainer->structuredHeadless) gui.game.winProbabilitySyncStep(true);
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
     const auto &scene=gui.drawnScene();
     const auto lesson=scene.world.session ? Tutorial::view(*scene.world.session) : gui.game.mapscript.tutorialView();

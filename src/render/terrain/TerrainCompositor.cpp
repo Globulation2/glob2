@@ -27,7 +27,8 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 	}
 	for (const auto &m : definitions.materials)
 	{
-		auto *sprite = customSprites.resolve(m.sprite);
+		if (m.variantBlocks > 1) GAGCore::Sprite::deferHighResolution(m.sprite);
+        auto *sprite = customSprites.resolve(m.sprite);
 		if (!sprite)
 			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
 		for (const auto &v : m.variants)
@@ -46,7 +47,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			auto *decor = customSprites.resolve(m.decor.sprite);
 			if (!decor)
 				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
-			for (const auto &frames : {m.decor.full, m.decor.edge})
+			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior})
 				for (int frame : frames)
 					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
 						decor->getH(frame) > 64)
@@ -67,6 +68,27 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 		materialRevisions.push_back(0);
 	}
     if (mixedDecorSprites) sharedDecorSprite = nullptr;
+	// Shore calm pulls waves toward one colour per material, so the fade
+	// stays continuous across variants and does not shift the shore's tone.
+	for (unsigned id = 0; id < definitions.materials.size(); ++id)
+	{
+		auto &m = definitions.materials[id];
+		m.shoreCalm = m.surf.period > 0 && m.animationFrames > 1;
+		if (!m.shoreCalm)
+			continue;
+		std::uint64_t sum[3] = {}, count = 0;
+		for (const auto &v : m.variants)
+		{
+			Texture t;
+			readTexture(t, sprites[id]->nativeFrame(v.frame));
+			for (const auto &p : t.pixels)
+				for (int k = 0; k < 3; ++k)
+					sum[k] += p[k];
+			count += t.pixels.size();
+		}
+		for (int k = 0; k < 3; ++k)
+			m.calmMean[k] = static_cast<unsigned char>((sum[k] + count / 2) / count);
+	}
 }
 void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
 {
@@ -109,26 +131,35 @@ std::size_t Compositor::sourceBytes() const
         bytes += cpuPublicationBytes();
 	return bytes;
 }
-bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target)
+bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target,
+                                 const std::vector<unsigned char> *wanted)
 {
 	const auto &m = definitions.materials[id];
-	bool refresh = false;
+    bool refresh = false, changed = false;
 	for (unsigned i = 0; i < m.variants.size(); ++i)
 	{
+		if (wanted && !(*wanted)[i]) continue;
 		const int frame = m.variants[i].frame + phase * m.animationStride;
 		auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
 		if (!source)
 			throw std::runtime_error("Missing terrain texture: " + m.key);
 		auto &t = target[i];
-		refresh |= t.source != source || t.identity != source->lifetimeIdentity() ||
-				   t.revision != source->contentRevision();
+        const bool sourceChanged = t.source != source || t.identity != source->lifetimeIdentity() ||
+                                   t.revision != source->contentRevision();
+        // Residency is independent of content: revisiting unchanged art must
+        // not invalidate already composed pages elsewhere in the map.
+        changed |= t.identity != 0 && sourceChanged;
+        refresh |= sourceChanged || t.pixels.empty();
 	}
 	if (!refresh)
 		return false;
+    publishedCpu.reset();
 	bool packaged = pack != nullptr;
 	if (packaged)
-		for (const auto &variant : m.variants)
+		for (unsigned i = 0; i < m.variants.size(); ++i)
 		{
+            if (wanted && !(*wanted)[i]) continue;
+            const auto &variant = m.variants[i];
 			const int frame = variant.frame + phase * m.animationStride;
 			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
 			const auto clean = cleanSources.find(source->lifetimeIdentity());
@@ -140,6 +171,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 		}
 	for (unsigned i = 0; i < m.variants.size(); ++i)
 	{
+		if (wanted && !(*wanted)[i]) continue;
 		const int frame = m.variants[i].frame + phase * m.animationStride;
 		auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
 		auto &t = target[i];
@@ -155,7 +187,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 			readTexture(t, source);
 	}
 	if (packaged || m.periodicEdges)
-		return true; // Sources already have their shared variant borders.
+		return changed; // Sources already have their shared variant borders.
 	// One periodic master boundary per material, not a different edge for
 	// each variant. Blend premultiplied color and alpha together so
 	// translucent variants cannot reintroduce rectangular seams.
@@ -182,36 +214,135 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 										   : 0;
 				destination[3] = alpha / band;
 			}
-	return true;
+	return changed;
 }
 void Compositor::prepare(bool hd, int time)
 {
+    // The complete catalogue is for one-shot callers: wait for deferred HD
+    // windows, then read the published frames.
+    prepareSelected(hd, time, nullptr);
+    if (!hd) return;
+    GAGCore::Sprite::finishHighResolution();
+    prepareSelected(hd, time, nullptr);
+}
+void Compositor::prepareForRecipes(bool hd, int time, std::span<const Recipe> recipes)
+{
+    Usage usage;
+    for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
+    for (const auto &r : recipes)
+        for (const auto id : r.corners)
+            usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+    prepareSelected(hd, time, &usage);
+}
+void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
+                                int left, int top, int right, int bottom)
+{
+    Usage usage;
+    for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
+    const int width = std::min(map.getW(), std::max(0, right - left + 1));
+    const int height = std::min(map.getH(), std::max(0, bottom - top + 1));
+    for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x)
+        {
+            const auto r = describe(map, left + x, top + y);
+            for (const auto id : r.corners)
+                usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+        }
+    prepareSelected(hd, time, &usage);
+}
+void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
+{
+    // Nonperiodic custom art uses variant zero as its shared boundary source.
+    Usage normalized;
+    if (requested)
+    {
+        normalized = *requested;
+        for (unsigned id = 0; id < normalized.size(); ++id)
+            if (!definitions.materials[id].periodicEdges &&
+                std::any_of(normalized[id].begin(), normalized[id].end(), [](auto v) { return v != 0; }))
+                normalized[id][0] = 1;
+        requested = &normalized;
+    }
+    // A sprite can back several materials: declare the union before any reads.
+    std::map<GAGCore::Sprite *, std::vector<unsigned>> windows;
+    for (unsigned id = 0; id < definitions.materials.size(); ++id)
+    {
+        const auto &m = definitions.materials[id];
+        auto &window = windows[sprites[id]];
+        if (!hd) continue;
+        const unsigned phase = unsigned(time) / m.animationTicks % m.animationFrames;
+        for (unsigned i = 0; i < m.variants.size(); ++i)
+            if (!requested || (*requested)[id][i])
+            {
+                window.push_back(m.variants[i].frame + phase * m.animationStride);
+                if (m.animationFrames > 1 && m.animationTicks > 1)
+                    window.push_back(m.variants[i].frame + (phase + 1) % m.animationFrames * m.animationStride);
+            }
+    }
+    for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
+
 	int nextResolution = 1;
+	// Surf moves once per `ticks`, so entering a new step invalidates its pages
+	// too, also when the texture itself is still (dark water).
+	const unsigned previousTime = preparedTime;
+	preparedTime = unsigned(time);
 	for (unsigned id = 0; id < definitions.materials.size(); ++id)
 	{
 		const auto &m = definitions.materials[id];
+		const auto revision = materialRevisions[id];
+        const auto *wanted = requested ? &(*requested)[id] : nullptr;
+        bool evicted = false;
+        const auto evict = [&](auto &set) {
+            for (unsigned i = 0; i < set.size(); ++i)
+                if (wanted && !(*wanted)[i] && set[i].size)
+                {
+                    // Keep only source stamps so a later identical reload is
+                    // distinguished from an actual artwork/HD revision.
+                    set[i].pixels = MaterialPixels{};
+                    set[i].size = 0;
+                    evicted = true;
+                }
+        };
+        evict(textures[id]);
+        evict(animationTextures[id].current);
+        evict(animationTextures[id].next);
+        if (evicted)
+        {
+            publishedCpu.reset();
+            if (id < publishedPixels.size()) publishedPixels[id].pixels.clear();
+        }
+        if (wanted && std::none_of(wanted->begin(), wanted->end(), [](auto v) { return v != 0; }))
+        {
+            continue;
+        }
 		const int phase = unsigned(time) / m.animationTicks % m.animationFrames;
 		auto &animation = animationTextures[id];
 		if (animation.current.empty())
 		{
-			if (prepareMaterial(id, hd, phase, textures[id])) ++materialRevisions[id];
+			if (prepareMaterial(id, hd, phase, textures[id], wanted)) ++materialRevisions[id];
 		}
 		else
 		{
 			// Reuse the previous next phase as the current endpoint on ordinary advances.
-			const int frame = m.variants.front().frame + phase * m.animationStride;
+			const unsigned first = wanted ? std::find(wanted->begin(), wanted->end(), 1) - wanted->begin() : 0;
+            const int frame = m.variants[first].frame + phase * m.animationStride;
 			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
-			const bool advanced = animation.next.front().source == source;
+			const bool advanced = animation.next[first].source == source;
 			if (advanced) animation.current.swap(animation.next);
-			const bool currentChanged = prepareMaterial(id, hd, phase, animation.current);
-			const bool nextChanged = prepareMaterial(id, hd, (phase + 1) % m.animationFrames, animation.next);
+			const bool currentChanged = prepareMaterial(id, hd, phase, animation.current, wanted);
+			const bool nextChanged = prepareMaterial(id, hd, (phase + 1) % m.animationFrames, animation.next, wanted);
 			const unsigned blend = unsigned(time) % m.animationTicks;
-			if (advanced || currentChanged || nextChanged || animation.blend != blend)
+            bool missingOutput = false;
+            for (unsigned i = 0; i < m.variants.size(); ++i)
+                if ((!wanted || (*wanted)[i]) && textures[id][i].pixels.empty()) missingOutput = true;
+            const bool animationChanged = advanced || currentChanged || nextChanged || animation.blend != blend;
+			if (animationChanged || missingOutput)
 			{
-				++materialRevisions[id];
+                if (animationChanged) ++materialRevisions[id];
 				animation.blend = blend;
 				for (unsigned i = 0; i < m.variants.size(); ++i)
 				{
+					if (wanted && !(*wanted)[i]) continue;
 					const auto &a = animation.current[i], &b = animation.next[i];
 					auto &out = textures[id][i];
 					out.size = std::max(a.size, b.size);
@@ -246,6 +377,10 @@ void Compositor::prepare(bool hd, int time)
 				}
 			}
 		}
+		const unsigned ticks = unsigned(m.surf.ticks);
+		if (m.surf.period && unsigned(time) / ticks != previousTime / ticks &&
+			materialRevisions[id] == revision)
+			++materialRevisions[id];
 		for (const auto &texture : textures[id])
 			if (texture.size > 32) nextResolution = 4;
 	}
@@ -290,9 +425,15 @@ int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 	x &= map.getMaskW();
 	y &= map.getMaskH();
 	const auto [best, count] = decorMaterial(map, x, y);
-	if (count < 2)
-		return -1;
-	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed());
+	const auto &decor = definitions.materials[best].decor;
+	if (count == 0 || (count < 2 && decor.connected.empty())) return -1;
+	unsigned mask = 0;
+	const auto corners = map.cellCorners(x, y);
+	for (unsigned k = 0; k < corners.size(); ++k)
+		if (const auto id = materialFor(map, corners[k]); id == best ||
+			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty())) mask |= 1u << k;
+	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed(), mask,
+		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
@@ -305,6 +446,7 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	const auto corners = map.cellCorners(r.x, r.y);
 	for (unsigned k = 0; k < corners.size(); ++k)
 		r.corners[k] = materialFor(map, corners[k]);
+	describeShoreCalm(map, r);
 	const auto first = r.corners[0];
 	MaterialId other = first;
 	for (const auto id : r.corners)
@@ -319,6 +461,45 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 			r.neighborhood[(y + 1) * 4 + x + 1] =
 				materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
 	return r;
+}
+void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
+{
+	if (std::none_of(r.corners.begin(), r.corners.end(),
+					 [&](auto id) { return definitions.materials[id].shoreCalm; }))
+		return;
+	// Vertices around the cell, enough to reach land within the fade of every corner.
+	constexpr int R = ShoreCalmSearch, W = 2 * R + 2;
+	std::array<bool, W * W> land{};
+	for (int y = 0; y < W; ++y)
+		for (int x = 0; x < W; ++x)
+			land[y * W + x] = definitions.materials[materialFor(
+				map, map.vertexTerrainAt(r.x + x - R, r.y + y - R))].surf.period == 0;
+	for (int k = 0; k < 4; ++k)
+	{
+		const int cx = R + (k & 1), cy = R + (k >> 1);
+		if (land[cy * W + cx])
+		{
+			r.calm[k] = 255; // The shoreline runs beside every land corner.
+			continue;
+		}
+		int nearest = 0;
+		for (int y = cy - R; y <= cy + R; ++y)
+			for (int x = cx - R; x <= cx + R; ++x)
+				if (land[y * W + x])
+				{
+					const int d2 = (x - cx) * (x - cx) + (y - cy) * (y - cy);
+					if (!nearest || d2 < nearest)
+						nearest = d2;
+				}
+		r.calm[k] = static_cast<std::uint8_t>(shoreCalmAt(nearest));
+	}
+	// A cell whose liquid corners are all far from land needs no calm at all;
+	// land corners alone keep their ordinary uniform and seam composition.
+	bool liquidCalm = false;
+	for (int k = 0; k < 4; ++k)
+		liquidCalm |= definitions.materials[r.corners[k]].shoreCalm && r.calm[k];
+	if (!liquidCalm)
+		r.calm = {};
 }
 Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &recipe, MaterialId id) const
 {
@@ -336,15 +517,41 @@ std::size_t Compositor::cpuPublicationBytes() const
     std::size_t bytes = sizeof(CpuMaterials) + sizeof(Catalog) + 256 +
         textures.capacity() * (sizeof(CpuPublication) + sizeof(std::uint64_t));
     for (const auto &set : textures)
-        bytes += set.size() * (sizeof(std::weak_ptr<const MaterialPixels>) + 64);
+    {
+        bytes += set.size() * sizeof(std::weak_ptr<const MaterialPixels>);
+        // Empty slots have no shared pixel allocation or control block.
+        for (const auto &texture : set) if (!texture.pixels.empty()) bytes += 64;
+    }
     return bytes;
 }
+Compositor::Usage Compositor::recipeUsage(std::span<const Recipe> recipes) const
+{
+    Usage usage;
+    for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
+    for (const auto &r : recipes)
+        for (auto id : r.corners)
+            usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+    return usage;
+}
+std::size_t Compositor::cpuMaterialBytesForRecipes(std::span<const Recipe> recipes) const
+{
+    const auto usage = recipeUsage(recipes);
+    return cpuMaterialBytesSelected({}, &usage);
+}
+std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsForRecipes(std::span<const Recipe> recipes)
+{
+    const auto usage = recipeUsage(recipes);
+    return cpuMaterialsSelected({}, &usage);
+}
 std::size_t Compositor::cpuMaterialBytes(std::span<const MaterialId> needed) const
+{
+    return cpuMaterialBytesSelected(needed, nullptr);
+}
+std::size_t Compositor::cpuMaterialBytesSelected(std::span<const MaterialId> needed, const Usage *usage) const
 {
     // Capacity accounting includes the catalog's nested allocations and
     // shared ownership/control storage; allocator headers receive headroom.
     std::size_t bytes = cpuPublicationBytes() + sizeof(CpuMaterials) + sizeof(Catalog) + 256 +
-                        definitions.serialized.capacity() + definitions.compiledPack.capacity() +
                         definitions.profiles.capacity() * sizeof(Profile) +
                         definitions.materials.capacity() * sizeof(Material) +
                         definitions.treatments.capacity() * sizeof(PairTreatment) +
@@ -359,28 +566,53 @@ std::size_t Compositor::cpuMaterialBytes(std::span<const MaterialId> needed) con
     for (const auto &material : definitions.materials)
         bytes += material.key.capacity() + material.sprite.capacity() +
                  material.variants.capacity() * sizeof(Variant) + material.decor.sprite.capacity() +
-                 (material.decor.full.capacity() + material.decor.edge.capacity()) * sizeof(int) +
+                 (material.decor.full.capacity() + material.decor.edge.capacity() + material.decor.connected.capacity() +
+                  material.decor.connectedInterior.capacity()) * sizeof(int) +
                  256;
     for (const auto &binding : definitions.bindings)
         bytes += sizeof(binding) + binding.first.capacity() + 128;
     bytes += textures.size();
     for (std::size_t id = 0; id < textures.size(); ++id)
-        if (needed.empty() || std::find(needed.begin(),needed.end(),id) != needed.end())
-            for (const auto& texture : textures[id])
-                bytes += sizeof(CpuMaterials::Texture)*2 + 128 + texture.pixels.capacity()*sizeof(MaterialPixels::value_type);
+        if (usage ? std::any_of((*usage)[id].begin(), (*usage)[id].end(), [](auto v) { return v != 0; })
+                  : needed.empty() || std::find(needed.begin(), needed.end(), id) != needed.end())
+        {
+            bytes += textures[id].size() * sizeof(CpuMaterials::Texture) * 2;
+            for (unsigned variant = 0; variant < textures[id].size(); ++variant)
+                if ((!usage || (*usage)[id][variant]) && !textures[id][variant].pixels.empty())
+                    bytes += 128 + textures[id][variant].pixels.capacity() * sizeof(MaterialPixels::value_type);
+        }
     return bytes;
 }
 std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::span<const MaterialId> needed)
 {
+    return cpuMaterialsSelected(needed, nullptr);
+}
+std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected(std::span<const MaterialId> needed,
+                                                                             const Usage *usage)
+{
     auto previous = publishedCpu.lock();
-    std::vector<char> included(textures.size(),needed.empty());
+    std::vector<char> included(textures.size(), !usage && needed.empty());
     for (const auto id : needed) included.at(id) = true;
-    if (previous && previous->included == included && publishedRevisions == materialRevisions)
+    if (usage)
+        for (unsigned id = 0; id < usage->size(); ++id)
+            included[id] = std::any_of((*usage)[id].begin(), (*usage)[id].end(), [](auto v) { return v != 0; });
+    if (!usage && !publishedSubset && previous && previous->included == included && publishedRevisions == materialRevisions)
         return previous;
     auto next = std::make_shared<CpuMaterials>();
     next->definitions = publishedCatalog.lock();
     if (!next->definitions)
-        next->definitions = std::make_shared<const Catalog>(definitions);
+    {
+        // Copy only composition fields: even transient manifest-string copies
+        // would exceed the slim snapshot's reserved allocation.
+        auto copy = std::make_shared<Catalog>();
+        copy->version = definitions.version;
+        copy->boundaryWarp = definitions.boundaryWarp;
+        copy->profiles = definitions.profiles;
+        copy->materials = definitions.materials;
+        copy->treatments = definitions.treatments;
+        copy->bindings = definitions.bindings;
+        next->definitions = std::move(copy);
+    }
     publishedCatalog = next->definitions;
     publishedPixels.resize(textures.size());
     next->textures.resize(textures.size());
@@ -400,6 +632,11 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::sp
         for (std::size_t variant = 0; variant < textures[id].size(); ++variant)
         {
             const auto &texture = textures[id][variant];
+            if ((usage && !(*usage)[id][variant]) || texture.pixels.empty())
+            {
+                next->textures[id].push_back({});
+                continue;
+            }
             auto pixels = record.pixels[variant].lock();
             if (!pixels)
             {
@@ -409,7 +646,9 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::sp
             next->textures[id].push_back({texture.size, std::move(pixels)});
         }
     }
-    next->bytes = cpuMaterialBytes(needed);
+    next->bytes = cpuMaterialBytesSelected(needed, usage);
+    publishedSubset = usage != nullptr;
+    next->surfTime = preparedTime;
     publishedRevisions = materialRevisions;
     publishedCpu = next;
     return next;
@@ -438,7 +677,7 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
         buildMask(*definitions, recipe, scale, scratch.mask);
         mask = &scratch.mask;
     }
-    composePixels(*definitions, recipe, target, 0, 0, scale, sources, mask);
+    composePixels(*definitions, recipe, target, 0, 0, scale, sources, mask, surfTime);
 }
 Compositor::CellMask Compositor::CpuMaterials::mask(const Recipe &recipe, int scale) const
 {
@@ -456,11 +695,12 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
         sources[id] = preparedMaterial(r, id);
         sources[id].step = sources[id].size % (32 * scale) ? 0 : sources[id].size / (32 * scale);
     }
-    composePixels(definitions, r, target, ox, oy, scale, sources, mask);
+    composePixels(definitions, r, target, ox, oy, scale, sources, mask, preparedTime);
 }
 void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_Surface *target,
                                int ox, int oy, int scale,
-                               std::span<const PreparedMaterialView> prepared, const CellMask *mask)
+                               std::span<const PreparedMaterialView> prepared, const CellMask *mask,
+                               unsigned surfTime)
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain compositor requires ARGB8888");
@@ -470,9 +710,34 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
     const auto *sources = prepared.data();
 	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
 									 [&](auto id) { return id == r.corners[0]; });
+	// Q8 shore calm of a sample, for animated liquids near land.
+	const unsigned calmStrength = 256 - ShoreCalmContrastQ8;
+	const auto calmAt = [&](int x, int y)
+	{
+		return shoreCalm(r.calm, unsigned(2 * x + 1) * 128 / size, unsigned(2 * y + 1) * 128 / size);
+	};
 	if (uniform)
 	{
 		const auto &texture = sources[r.corners[0]];
+		const auto &material = definitions.materials[r.corners[0]];
+		if (material.shoreCalm && r.calmed() && !texture.pixels.empty())
+		{
+			for (int y = 0; y < size; ++y)
+			{
+				auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
+					(oy + y) * target->pitch) + ox;
+				for (int x = 0; x < size; ++x)
+				{
+					const int sx = texture.step ? x * texture.step : x * texture.size / size;
+					const int sy = texture.step ? y * texture.step : y * texture.size / size;
+					const auto *p = texture.pixels[sy * texture.size + sx].data();
+					unsigned rgb[3] = {p[0], p[1], p[2]};
+					applyShoreCalm(calmAt(x, y), calmStrength, material.calmMean, rgb);
+					row[x] = (unsigned(p[3]) << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+				}
+			}
+			return;
+		}
 		// Native and HD sources usually divide the composition grid exactly.
 		// Walk their texels directly instead of dividing twice per output pixel.
         if (!texture.pixels.empty() && texture.step)
@@ -545,8 +810,12 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 					const auto *p = t.pixels[sy * t.size + sx].data();
 					const unsigned a = weights[slot] * p[3];
 					alpha += a;
+					unsigned source[3] = {p[0], p[1], p[2]};
+					const auto &material = definitions.materials[cell.palette[slot]];
+					if (material.shoreCalm && r.calmed())
+						applyShoreCalm(calmAt(x, y), calmStrength, material.calmMean, source);
 					for (int k = 0; k < 3; ++k)
-						rgb[k] += std::uint64_t(p[k]) * a;
+						rgb[k] += std::uint64_t(source[k]) * a;
 				}
 			auto *p = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
 												 (oy + y) * target->pitch) +
@@ -562,7 +831,11 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 			int shade = 256, tint = 0;
 			if (neighbor != dominant)
 			{
-				if (other.cast && other.height > self.height && margin < other.castWidth)
+				// Connected canopies supply their own raised edge and contact shadow.
+				// Casting again from the rough undergrowth contour makes teeth and
+				// hairlines protrude beyond the foliage.
+				if (definitions.materials[neighbor].decor.connected.empty() && other.cast &&
+					other.height > self.height && margin < other.castWidth)
 					shade = 256 - other.cast * (other.castWidth - margin) / other.castWidth;
 				if (other.fringe && margin < other.fringeWidth)
 					tint = other.fringe * (other.fringeWidth - margin) / other.fringeWidth;
@@ -578,8 +851,18 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 				unsigned value = blended * shade >> 8;
 				return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
 			};
-			*p = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) | (channel(1) << 8) |
-				 channel(2);
+			unsigned value[3] = {channel(0), channel(1), channel(2)};
+			const auto &selfSurf = definitions.materials[dominant].surf;
+			const auto &otherSurf = definitions.materials[neighbor].surf;
+			if ((selfSurf.period > 0) != (otherSurf.period > 0))
+			{
+				// Q8 world pixels of the sample centre, as the coverage samples it.
+				const int wx = r.x * 8192 + (2 * x + 1) * 4096 / size;
+				const int wy = r.y * 8192 + (2 * y + 1) * 4096 / size;
+				applySurf(selfSurf.period ? selfSurf : otherSurf, selfSurf.period > 0, margin, wx,
+						  wy, surfTime, value);
+			}
+			*p = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) | (value[1] << 8) | value[2];
 		}
 }
 Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const

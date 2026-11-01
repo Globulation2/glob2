@@ -1,3 +1,4 @@
+#include "ui/ApiErrorText.h"
 #include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
@@ -215,7 +216,7 @@ void OnlineMapsScreen::onTimer(Uint32)
 				status = tr("[maps saved for next room]");
 			}
 			else
-				status = download->error().empty() ? tr("[maps download failed]") : download->error();
+				status = download->error().empty() ? tr("[maps download failed]") : onlineProblemText(download->error());
 			download.reset();
 			downloading.reset();
 			invalidate();
@@ -243,7 +244,7 @@ void OnlineMapsScreen::reload()
 			loading = false;
 			if (!response.ok)
 			{
-				problem = response.error.message.empty() ? tr("[online connection problem]") : response.error.message;
+				problem = response.error.message.empty() ? tr("[online connection problem]") : apiErrorText(response.error);
 				invalidate();
 				return;
 			}
@@ -445,7 +446,7 @@ void OnlineMapsScreen::toggleLike()
 					 {
 						 status = response.error.code == "forbidden"
 									  ? tr("[maps like needs account]")
-									  : response.error.message;
+									  : apiErrorText(response.error);
 						 invalidate();
 						 return;
 					 }
@@ -485,7 +486,7 @@ void OnlineMapsScreen::sendReport(int reason)
 		Online::Json{{"reason", REPORT_REASONS[std::clamp(reason, 0, 3)]}, {"details", ""}},
 		[this](const Online::PlatformClient::Response &response)
 		{
-			status = response.ok ? tr("[maps report sent]") : response.error.message;
+			status = response.ok ? tr("[maps report sent]") : apiErrorText(response.error);
 			invalidate();
 		});
 	invalidate();
@@ -543,7 +544,7 @@ void OnlineMapsScreen::setVisibility(const std::string &mapId, const std::string
 				 {
 					 if (!response.ok)
 					 {
-						 status = response.error.message;
+						 status = apiErrorText(response.error);
 						 reload();
 					 }
 					 invalidate();
@@ -563,7 +564,7 @@ void OnlineMapsScreen::remove(const std::string &mapId)
 				 {
 					 if (!response.ok)
 					 {
-						 status = response.error.message;
+						 status = apiErrorText(response.error);
 						 reload();
 					 }
 					 invalidate();
@@ -912,13 +913,13 @@ MapShareScreen::~MapShareScreen() = default;
 
 void MapShareScreen::setTitle(const std::string &value)
 {
-	title = value.substr(0, 128);
+	title = value;
 	invalidate();
 }
 
 void MapShareScreen::setDescription(const std::string &value)
 {
-	description = value.substr(0, 4000);
+	description = value;
 	invalidate();
 }
 
@@ -1034,7 +1035,7 @@ Element MapShareScreen::build(const Presentation &p)
 			break;
 		case Online::MapShare::Stage::Failed:
 			headline = tr("[maps upload failed]");
-			detail = share && !share->error().message.empty() ? share->error().message : tr("[online connection problem]");
+			detail = share && !share->error().message.empty() ? apiErrorText(share->error()) : tr("[online connection problem]");
 			color = frontendTheme().palette.danger;
 			break;
 		}

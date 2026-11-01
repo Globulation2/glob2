@@ -6,6 +6,7 @@
 #include "TouchInteractionSession.h"
 #include "TouchDial.h"
 #include "BrushHUD.h"
+#include <ui/PositionedControls.h>
 #include "MetricCatalog.h"
 #include <SDL3/SDL.h>
 #include <string>
@@ -13,6 +14,7 @@
 #include <memory>
 #include <vector>
 #include <utility>
+#include <array>
 namespace GAGGUI::ui
 {
 class UIDialog;
@@ -21,6 +23,7 @@ namespace GAGCore
 {
 class DrawableSurface;
 class Sprite;
+class Font;
 }
 #include "sim/EntityRef.h"
 class GameGUI;
@@ -34,6 +37,10 @@ class GameGUITouch
 {
   public:
     bool needsStatisticsHistory() const { return statsOpen; }
+    // Foreground tools temporarily own painting and input above the world.
+    bool obscuresTutorial() const { return usesHUD() && (statsOpen || lensVisible() || peekOpen); }
+    void closeStatistics() { statsOpen = false; }
+    GAGCore::ViewRect statisticsContentRect() const { return statsLayout().body; }
 	explicit GameGUITouch(GameGUI &gui);
 	~GameGUITouch();
 	bool process(SDL_Event &event);
@@ -47,6 +54,8 @@ class GameGUITouch
 	void dismissMapPanels();
 	bool scrollAnimating() const;
 	void prepareDraw();
+	// Share the cached trophy artwork with the compact desktop statistics bar.
+	void drawPrestigeIcon(GAGCore::ViewPoint center, double logicalSize);
 	void drawControls();
 	void drawKeyboardFocus();
 	bool active() const { return touchActive || usesHUD(); }
@@ -59,16 +68,26 @@ class GameGUITouch
 	void drawHUD();
 	void drawPanel();
 	bool hasPreview() const { return preview.has_value(); }
+	std::vector<GAGGUI::ui::PositionedControl> describeControls();
+	std::string focusedControlKey();
 
   private:
 	friend class GameGUITouchHarness;
+	friend struct TranslationPreviewAccess;
 	friend class MobileGalleryGameplay;
+	friend struct TranslationPreviewAccess;
 	GameGUI &gui;
 	TouchDial::Painter dialPainter;
 	// The dialog GameGUI is showing (menu, chat composer or history); the HUD
 	// yields to it and never synthesizes its input.
 	GAGGUI::ui::UIDialog *activeDialog() const;
 	void menuAction(int action);
+	void activateNavigation(int button);
+	bool controlAllowed(const std::string &key, GAGGUI::ui::ActionKind kind);
+	bool scrollAllowed(int surface);
+	bool inputBlocked(GAGCore::ViewPoint point);
+	bool pointerControlAllowed(GAGCore::ViewPoint point);
+	std::string pointerControlKey(GAGCore::ViewPoint point);
 	std::optional<GAGCore::ViewRect> labelClip;
 	std::vector<std::string> pointLines(const std::string &text, double width,
 										double textScale = 1.15) const;
@@ -92,6 +111,7 @@ class GameGUITouch
 		bool enabled;
 	};
 	std::vector<PaletteItem> paletteItems() const;
+	void activatePalette(const PaletteItem &item);
 	GAGCore::ViewRect paletteItemRect(size_t index) const;
 	// Compact phones show the palette as a rail rising from the thumb corner;
 	// the persistent (Spacious) panel keeps its top-down grid.
@@ -175,15 +195,14 @@ class GameGUITouch
 	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in (thumb side last).
 	void navigatePeek(GAGCore::ViewPoint point);
 	void drawPeek();
-	// Compact statistics: a bottom sheet with the team's history chart (the
-	// end-game chart, own team only), a metric switcher and current counters.
+	// Statistics uses the same topics and metric list as the desktop sidebar.
+	// The header owns dismissal; the embedded host owns body scrolling.
 	bool statsOpen = false;
-	int statsMetric = 0;
-	std::vector<Stats::Metric> statsCatalog;
 	double statsDrag = 0;
+	void dragStatistics(double deltaPoints);
 	struct StatsLayout
 	{
-		GAGCore::ViewRect sheet, close, previous, next, title, counters, chart;
+		GAGCore::ViewRect sheet, close, title, body;
 	};
 	StatsLayout statsLayout() const;
 	void drawStats();
@@ -220,7 +239,9 @@ class GameGUITouch
 	void drawBuildingActions();
 	void tapBuildingAction(GAGCore::ViewPoint point);
 	void applyDiscreteAction(const SceneBuildingPanel &building, const BuildingAction &row);
+	bool performBuildingAction(const BuildingAction &row, const GAGGUI::ui::SemanticAction &action);
 	void setRatio(const SceneBuildingPanel &building, int type, int value);
+	void cycleRatio(const SceneBuildingPanel &building, int type);
 	// Compact (phone) inspectors are a thumb dial: concentric quarter rings in
 	// the thumb corner for workers, priority and a ratio or range, with chips
 	// for discrete choices and actions. Spacious panels keep the row list.
@@ -250,6 +271,9 @@ class GameGUITouch
 	bool usesDial(const GAGCore::MobileLayout &ui) const;
 	DialLayout dialLayout(const GAGCore::MobileLayout &ui) const;
 	std::vector<DialRegion> dialRegions() const;
+	std::string buildingControlKey(const BuildingAction &row, std::optional<DialRegion::Part> part = {}) const;
+	bool buildingControlAllowed(const BuildingAction &row, std::optional<DialRegion::Part> part = {});
+	GAGCore::ViewRect dialRegionBounds(const DialRegion &region) const;
 	std::optional<DialRegion> dialRegionAt(GAGCore::ViewPoint point) const;
 	GAGCore::ViewPoint dialActionPoint(int kind, int value, int side) const;
 	void tapDial(const SceneBuildingPanel &building, const DialRegion &region, GAGCore::ViewPoint point);
@@ -265,7 +289,23 @@ class GameGUITouch
 	bool confirmDestroy = false;
 	BuildingRef lastInspectedBuilding;
 	void drawPointLabel(GAGCore::ViewRect rect, const std::string &text, double textScale = 1.15,
-						bool leading = false);
+						bool leading = false, int lineHeight = 0);
+	std::string navigationLabel(int index) const;
+	int navigationLabelLineHeight(const std::vector<std::string> &lines) const;
+	GAGCore::ViewRect navigationLabelRect(const GAGCore::MobileLayout &ui, int index) const;
+	struct NavigationMeasurement
+	{
+		const GAGCore::Font *font = nullptr;
+		double width = 0, unit = 0, growth = 0, height = 0;
+		int language = -1, lineHeight = 0, columns = 6;
+		bool replay = false;
+		std::array<std::string, 6> labels;
+		std::array<std::pair<int, int>, 6> metrics;
+	};
+	const NavigationMeasurement &measureNavigation(double width) const;
+	GAGCore::ViewRect navigationButtonRect(const GAGCore::MobileLayout &ui, int index) const;
+	int navigationButtonAt(const GAGCore::MobileLayout &ui, GAGCore::ViewPoint point) const;
+	mutable std::optional<NavigationMeasurement> navigationMeasurement;
 	BuildingRef ownerBuilding;
 	const void *ownerDialog = nullptr;
 	bool panelOpen = false;
@@ -278,7 +318,14 @@ class GameGUITouch
 	std::string scenarioMessageText;
 	std::vector<std::string> scenarioMessageLines;
 	double scenarioMessageWidth = 0, scenarioMessageScroll = 0;
+	const GAGCore::Font *scenarioMessageFont = nullptr;
+	int scenarioMessageLanguage = -1, scenarioMessageFontHeight = 0, scenarioMessageTextWidth = 0, scenarioMessageTextHeight = 0;
+	int scenarioMessageLineStep = 24; // authored font pixels; converted to points by scenarioMessagePitch()
+	double scenarioMessagePitch() const;
+	double scenarioMessageFooterHeight() const;
 	GAGCore::ViewRect scenarioMessageRect() const;
+	GAGCore::ViewRect scenarioMessageContinueRect() const;
+	GAGCore::ViewRect scenarioMessageCollapseRect() const;
 	void prepareScenarioMessage();
 	void drawScenarioMessage();
 	GAGCore::MobileLayout layout() const;

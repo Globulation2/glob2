@@ -5,6 +5,7 @@
 #pragma once
 namespace Online { class SkinDownloads; }
 #include <MapCamera.h>
+#include <ui/PositionedControls.h>
 
 #include <InputState.h>
 #include <functional>
@@ -28,6 +29,7 @@ namespace Online { class SkinDownloads; }
 #include "GameGUIMessageManager.h"
 #include "GameEventFeed.h"
 #include "GameGUIDialog.h"
+class InGameStatisticsPanel;
 namespace Tutorial { class Guidance; }
 #include "GameSpeedControl.h"
 #include "render/Minimap.h"
@@ -70,12 +72,19 @@ class MapMarkOrder;
 /*!
 	Handle all user input during game, draw & handle menu.
 */
-namespace Hive { class Client; class Dialog; }
+namespace Hive
+{
+class Client;
+class Dialog;
+class LocalCommander;
+} // namespace Hive
 class GameGUITouch;
 class HudUnitConversionIcon;
 class ConnectionOverlay;
+struct EventFeedLayout;
 class GameGUI : public ClientCommandSink
 {
+	friend struct TranslationPreviewAccess;
 	friend struct CustomGameSetupHarness;
 	friend struct TurnClient;
 	friend struct ScriptPresentationFixture;
@@ -259,6 +268,29 @@ public:
 	Game game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	std::vector<GAGGUI::ui::Host *> inspectionHosts();
+	// Hive cards remain available above the chat/commander composer.
+	bool hiveCardsVisible() const;
+	// Domain UI model shared by desktop HUD paint, human hit testing and inspection.
+	std::vector<GAGGUI::ui::PositionedControl> describeHudControls();
+	SDL_Rect connectionOverlayArea() const;
+	GAGGUI::ui::Host &hudInspectionHost();
+	void prepareHudOwnership();
+	bool activateHudControlAt(GAGGUI::ui::Point point, const std::string &prefix = {});
+	GAGGUI::ui::Rect hudControlBounds(const std::string &key, GAGGUI::ui::Rect fallback);
+	class HudControlPaint
+	{
+		GameGUI &gui;
+		const std::vector<GAGGUI::ui::PositionedControl> *previous;
+		std::vector<GAGGUI::ui::PositionedControl> snapshot;
+	  public:
+		explicit HudControlPaint(GameGUI &owner);
+		~HudControlPaint();
+		HudControlPaint(const HudControlPaint &) = delete;
+		HudControlPaint &operator=(const HudControlPaint &) = delete;
+	};
+
+
 	void setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads);
     void swapColonyAppearance(MapRenderState &state);
 	/// Chevrons the HUD speed control lights for the current speed.
@@ -284,6 +316,7 @@ public:
         view.scene = &drawnScene();
         if (view.scene->buildingTypes) choiceCatalog = view.scene->buildingTypes;
         toolManager.setDrawnScene(view.scene->world.catalogs ? view.scene : nullptr);
+        reconcilePublishedBuildingGuiState();
     }
 	/// What the next scene should show; read by extraction, which runs where the
 	/// game may be read. The main thread publishes it through the runner mailbox.
@@ -339,6 +372,7 @@ public:
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer = 0, localTeamNo = 0;
 	std::shared_ptr<Hive::Client> hive;
+	std::shared_ptr<Hive::LocalCommander> localHive;
 	void updateCommander(bool caughtUp);
 	void openCommander();
 	std::unique_ptr<Hive::Dialog> hiveCards;
@@ -397,12 +431,22 @@ public:
 	/// Whether the menus offer Pause to this player now.
 	bool pauseAvailable() const;
 private:
+	std::unique_ptr<GAGGUI::ui::Host> hudHost;
+	const std::vector<GAGGUI::ui::PositionedControl> *hudPaintControls = nullptr;
+	struct TopBarLayout
+	{
+		std::array<std::string, 7> values;
+		std::array<double, 7> x;
+		double scale;
+	};
+	TopBarLayout topBarLayout() const;
 	friend class GameGUISelectionHarness;
 	friend class SavegameSafetyHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
 	friend class SoftwareRenderBenchmark;
 	bool persistPreferences;
+    friend class InGameStatisticsPanel;
     friend class GameGUITouch;
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
@@ -500,13 +544,14 @@ private:
 	//! `panelTopY` is the Y of the first row of cells — must match the value passed to
 	//! drawChoiceSprites / drawChoiceHighlight so click/hover/draw share one origin.
 	std::optional<size_t> pickChoiceUnderMouse(int panelTopY, size_t count, unsigned numberPerLine) const;
+	GAGGUI::ui::Rect choiceControlBounds(int panelTopY, size_t index, unsigned numberPerLine) const;
 	//! Paint the resource/info text block at the bottom of the right panel for the given type.
 	void drawChoiceInfoPanel(const std::string& type);
 	int choiceVisibleRows(int panelTopY,unsigned columns) const;
 	bool scrollBuildingChoices(double delta);
 	int buildingChoiceRow=0, flagChoiceRow=0;
 	int buildingInfoScroll=0, buildingInfoScrollMaximum=0;
-	Uint16 buildingInfoScrollGid=0xffff;
+	std::optional<BuildingRef> buildingInfoScrollTarget;
 	//! Draw a choice of flags
 	void drawFlagView(void);
 	//! Draw the infos from a unit
@@ -741,14 +786,14 @@ private:
 	bool showUnitWorkingToBuilding;
 
 	const TeamStats *teamStats;
-	int measurementPage = 0;
-	//! Pages of the statistics text view: the colony summary, the metric groups
-	//! and, when spectating, the win chances.
-	int statisticsPages() const;
-	void drawStatisticsPage(int y);
-	//! Each side's chance of winning, under the statistics. Drawn for live
-	//! spectators, independently of the game's winning conditions.
-	void drawWinProbabilities(int x, int y);
+    std::unique_ptr<InGameStatisticsPanel> statisticsPanel;
+    InGameStatisticsPanel &statistics();
+    bool statisticsVisible() const;
+    bool handleStatisticsEvent(const SDL_Event &event);
+    GAGGUI::ui::Rect statisticsBounds() const;
+    GAGGUI::ui::Host &statisticsHost();
+    void drawStatisticsPanel();
+    void drawMapOverlayControls();
 	Team *localTeam;
 
 	Uint32 chatMask;
@@ -781,7 +826,8 @@ private:
 		IGM_HIVE,
 		IGM_CONFIRM_LEAVE,
 		IGM_TELEMETRY,
-        IGM_TUTORIAL_RESTART
+        IGM_TUTORIAL_RESTART,
+        IGM_STATISTICS
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;
@@ -856,6 +902,9 @@ private:
 	void stepEventFeed(int viewedTeam);
 	/// Draw the eventFeed rows from (x, y) down; returns the y below the last row.
 	int drawEventFeed(int x, int y);
+	std::optional<int> eventFeedStartY();
+	EventFeedLayout eventFeedLayout(int x, int y) const;
+	std::vector<GAGGUI::ui::PositionedControl> describeEventControls();
 	/// Jump the camera to a feed row when (mx, my) hits one; true if it did.
 	bool handleEventFeedClick(int mx, int my);
 	/// Scroll so map tile (x, y) is at the centre of the view.
@@ -893,6 +942,7 @@ private:
 	///Per-building GUI-side pending order state (optimistic shadow).
 	///See BuildingGuiState.h. Public so render code can read pending positions.
 	BuildingGuiStateMap buildingGuiState;
+	std::queue<std::pair<Uint64, std::shared_ptr<Order>>> pendingBuildingReconciliations;
 
 	///Per-client viewer state (selection + mouse). NOT simulation state — see
 	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
@@ -941,6 +991,7 @@ private:
 
 	///Called from executeOrder: clear pending fields the order has now made authoritative.
 	void reconcileBuildingGuiState(const std::shared_ptr<Order>& order);
+	void reconcilePublishedBuildingGuiState();
 	
 	//! A particle is cute and only for eye candy
 	struct Particle

@@ -4884,6 +4884,34 @@ Lượng tài nguyên mọc ở mọi nơi trên bản đồ, tính bằng đi�
 Tài nguyên đã khai quang
 [stat cleared about]
 Tài nguyên công nhân dọn đi trong vùng khai quang để lấy chỗ trống.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Uy danh
 [stat prestige about]
@@ -5546,14 +5574,6 @@ Giới hạn việc vẽ trong toàn bộ ứng dụng. Giá trị thấp hơn l
 Băng
 [road]
 Đường mòn
-[experiment ice-terrain]
-Địa hình băng
-[experiment ice-terrain help]
-Thêm băng vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với một nửa tốc độ và mất một điểm sức khỏe sau mỗi 32 bước mô phỏng trên băng. Không thể đặt công trình hoặc tài nguyên trên băng.
-[experiment road-terrain]
-Địa hình đường mòn
-[experiment road-terrain help]
-Thêm đường mòn phong hóa vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với tốc độ gấp đôi. Đường mòn cho phép xây dựng công trình nhưng không có tài nguyên. Đơn vị bay không bị ảnh hưởng.
 [experiment markets-v2]
 Chợ V2
 [experiment markets-v2 help]
@@ -5676,6 +5696,14 @@ Nước tối
 Hố
 [chasm]
 Vực sâu
+[lush_grass]
+Cỏ tươi tốt
+[dry_grass]
+Cỏ khô
+[dune_sand]
+Cát đụn
+[pale_sand]
+Cát trắng
 [terrain group water]
 Nước
 [terrain group sand]
@@ -5702,42 +5730,6 @@ Dung nham
 Nước sâu
 [terrain group void]
 Khoảng không
-[experiment obstacle-terrain]
-Địa hình chướng ngại vật
-[experiment obstacle-terrain help]
-Thêm đá tảng, hàng rào cây và bụi rậm vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể đi qua và đạn bị chặn; đơn vị bay có thể vượt qua. Không thể đặt công trình hay tài nguyên trên đó.
-[experiment ridge-terrain]
-Địa hình sống đá
-[experiment ridge-terrain help]
-Thêm sống đá và đá lộ thiên vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể đi qua, nhưng đạn từ tháp và đơn vị bay có thể vượt qua. Không thể đặt công trình hay tài nguyên trên đó.
-[experiment barren-terrain]
-Đất cằn
-[experiment barren-terrain help]
-Thêm đất, đất sét, sỏi và đồng hoa vào trình chỉnh sửa bản đồ. Có thể đặt công trình, nhưng không có gì mọc trên hoặc cạnh đó, và chúng không được tính là bờ nước.
-[experiment rough-terrain]
-Đất khó đi
-[experiment rough-terrain help]
-Thêm bùn, đầm lầy, tuyết dày và sườn đá vụn vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với khoảng hai phần ba tốc độ bình thường. Không thể đặt công trình hay tài nguyên trên đó.
-[experiment path-terrain]
-Địa hình đường
-[experiment path-terrain help]
-Thêm đường đất và lối ván gỗ vào trình chỉnh sửa bản đồ. Giống đường mòn, đơn vị mặt đất đi nhanh gấp đôi và có thể đặt công trình, nhưng không có gì mọc.
-[experiment lava-terrain]
-Địa hình dung nham
-[experiment lava-terrain help]
-Thêm dung nham và bãi than hồng vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể vào; đơn vị bay qua sẽ mất máu nhanh. Đạn có thể vượt qua.
-[experiment fertile-terrain]
-Đất màu mỡ
-[experiment fertile-terrain help]
-Thêm đất thịt, rêu và đồng cỏ mùa xuân vào trình chỉnh sửa bản đồ. Chúng hỗ trợ công trình và cây trồng, đồng thời tưới vùng đất xung quanh mạnh hơn nước.
-[experiment deep-water-terrain]
-Nước sâu
-[experiment deep-water-terrain help]
-Thêm nước sâu và nước tối vào trình chỉnh sửa bản đồ. Đơn vị bơi đi qua chậm hơn, tảo không mọc, nhưng vẫn tưới các cánh đồng gần đó.
-[experiment void-terrain]
-Địa hình khoảng không
-[experiment void-terrain help]
-Thêm hố và vực sâu vào trình chỉnh sửa bản đồ. Không gì có thể vượt qua, kể cả đơn vị bay, và đạn dừng ở mép.
 [terrain group custom]
 Tùy chỉnh
 [terrain group classic]
@@ -5770,8 +5762,6 @@ Gây hại cho đơn vị bay
 Chọn cọ. Các địa hình trong cùng nhóm có chung quy tắc và chỉ khác vẻ ngoài.
 [terrain rule algae grow]
 Tảo mọc
-[terrain palette experiments hint]
-Chọn cọ. Các nhóm địa hình khác xuất hiện khi bật thử nghiệm tương ứng trong Cài đặt > Thử nghiệm.
 [brush valid on %0]
 Có thể đặt trên: %0
 [brush valid nowhere]
@@ -6401,421 +6391,421 @@ Không thể lưu lựa chọn. Âm thanh vẫn tắt. Vui lòng thử lại.
 [audio choices description]
 Im lặng: loa bị tắt tiếng. Âm thanh: loa có sóng âm.
 [intro menu]
-
+Giới thiệu
 [intro briefing]
-
+Học cách điều khiển gián tiếp: dùng cờ thám hiểm, tiếp tế thuộc địa và chỉ huy tấn công.
 [intro try]
-
+Bắt đầu giới thiệu
 [intro preflight]
-
+Các globul tự hành động. Bạn chọn nhiệm vụ cho chúng qua công trình và cờ. Trong phần giới thiệu ngắn này, hãy thám hiểm một mốc địa hình, mở rộng nguồn thức ăn, tăng nhân lực và chỉ huy một cuộc tấn công nhỏ.
 [intro preflight save]
-
+Dành khoảng 10 phút. Bạn có thể lưu từ trình đơn trò chơi rồi tiếp tục bằng Tải trò chơi. Các quy tắc đói và chiến đấu thông thường vẫn áp dụng. Chọn Bài hướng dẫn từ trình đơn chính để luyện thêm kỹ năng.
 [intro preference failed]
-
+Không lưu được lựa chọn của bạn. Bạn vẫn có thể chơi; gợi ý này có thể xuất hiện lại lần sau.
 [intro goal scout]
-
+Thám hiểm mốc đá
 [intro goal build]
-
+Xây thêm một Quán trọ
 [intro goal supply]
-
+Tiếp tế Quán trọ mới
 [intro goal grow]
-
+Tăng nhân lực
 [intro goal attack]
-
+Phá hủy Tổ địch
 [intro instruction scout]
-
+Mở Cờ và đặt Cờ thám hiểm lên bãi đá phía đông thuộc địa. Phân công một nhà thám hiểm. Quan sát nó đi đến cờ.
 [intro instruction build]
-
+Mở Xây dựng và đặt Quán trọ gần lúa mì. Phân công công nhân rảnh xây dựng. Tiếp tục tiếp tế Quán trọ cũ.
 [intro instruction supply]
-
+Chọn Quán trọ mới đã xây xong và phân công ít nhất một người tiếp tế. Chờ công nhân mang lúa mì tới.
 [intro instruction grow]
-
+Chọn Tổ. Đặt chỉ tiêu công nhân ít nhất là 2 và tỷ lệ sản xuất chỉ tạo công nhân. Tiếp tế cả hai Quán trọ trong khi công nhân mới ra đời.
 [intro instruction attack]
-
+Tìm Tổ địch xa hơn về phía đông. Dùng Cờ chiến đấu để chỉ huy chiến binh tấn công nó. Có trợ giúp nếu bạn cần nhắc lại.
 [intro help]
-
+Trợ giúp / tại sao?
 [intro help scout]
-
+Dùng bản đồ nhỏ chuyển góc nhìn sang đông và tìm bãi đá. Chọn Cờ thám hiểm trong Cờ, đặt lên đá rồi thoát chế độ đặt bằng nút chuột phụ. Chọn cờ và yêu cầu 1 nhà thám hiểm. Cờ yêu cầu đơn vị chứ không dịch chuyển chúng tức thì. Nhà thám hiểm có thể dừng để ăn.
 [intro help build]
-
+Xây dựng tiêu thụ gỗ do công nhân mang tới. Chọn Quán trọ trong bảng công trình, đặt trên đất trống gần lúa mì rồi yêu cầu 2 thợ xây. Chỉ tiêu công nhân là yêu cầu, không phải số người đã có mặt. Giữ người tiếp tế ở Quán trọ cũ và Tổ. Mọi vị trí hợp lệ đều được tính.
 [intro help supply]
-
+Xây dựng và tiếp tế hằng ngày có chỉ tiêu công nhân riêng. Chọn Quán trọ đã hoàn tất và tăng chỉ tiêu vận hành. Người tiếp tế thu gom lúa mì rồi mang về đây. Globul đói ăn ở Quán trọ; công trình không có người tiếp tế rồi sẽ hết thức ăn. Giữ lối tới lúa mì thông thoáng.
 [intro help grow]
-
+Tổ tiêu thụ lúa mì để sinh đơn vị. Đặt sản xuất công nhân là 1, nhà thám hiểm và chiến binh là 0. Tăng chỉ tiêu công nhân của Tổ lên ít nhất 2. Nhiều người tiếp tế đưa lúa mì tới nhanh hơn nhưng cạnh tranh nhân lực với việc khác. Duy trì thức ăn ở cả hai Quán trọ.
 [intro help attack]
-
+Mở Cờ, chọn Cờ chiến đấu và đặt lên Tổ địch phía đông bãi đá. Chọn cờ rồi yêu cầu tối đa 4 chiến binh. Bán kính nhỏ giữ họ tập trung. Thoát chế độ đặt bằng nút chuột phụ trước khi chọn cờ. Nếu hết chiến binh, tạo thêm tại Tổ. Chiến binh có thể dừng ăn; hãy tiếp tế Quán trọ.
 [intro hint scout]
-
+Nhà thám hiểm cần Cờ thám hiểm được phân công tại bãi đá phía đông. Kiểm tra mục tiêu và số nhà thám hiểm.
 [intro hint build]
-
+Nếu đã xóa Quán trọ mới, hãy xây lại. Nếu không, kiểm tra công trường và chỉ tiêu công nhân. Việc tiếp tế có thể đang giữ chân công nhân; duy trì thức ăn đồng thời dành người xây dựng.
 [intro hint supply]
-
+Chọn Quán trọ mới đã hoàn tất. Kiểm tra chỉ tiêu công nhân và theo dõi việc giao lúa mì. Công nhân có thể cần thời gian đi lại hoặc ăn.
 [intro hint grow]
-
+Kiểm tra tiếp tế Tổ và chế độ chỉ sản xuất công nhân. Tiếp tế các Quán trọ trong khi chờ công nhân mới.
 [intro hint attack]
-
+Kiểm tra Cờ chiến đấu, số chiến binh yêu cầu và nguồn thức ăn. Chiến binh cần thời gian đi lại và tấn công.
 [intro hint no scout flag]
-
+Không tìm thấy Cờ thám hiểm được phân công. Đặt một cờ lên đá phía đông căn cứ và yêu cầu 1 nhà thám hiểm.
 [intro hint no suppliers]
-
+Quán trọ mới hoặc công trường có chỉ tiêu công nhân là 0. Chọn nó và yêu cầu công nhân.
 [intro hint no war flag]
-
+Không tìm thấy Cờ chiến đấu được phân công tại căn cứ địch. Đặt cờ lên Tổ địch phía đông và yêu cầu chiến binh.
 [intro hint retry]
-
+Một đơn vị hoặc công trình cần cho bài học đã mất. Tải bản lưu trước hoặc bắt đầu lại bài học từ trình đơn trò chơi.
 [intro complete]
-
+Hoàn tất giới thiệu
 [intro complete body]
-
+Bạn đã điều khiển globul tự chủ, mở rộng nguồn thức ăn, phát triển thuộc địa và tổ chức tấn công. Tiếp tục Bài hướng dẫn để học huấn luyện, nâng cấp và phòng thủ, hoặc về trình đơn chính để bắt đầu trận đấu.
 [intro play again]
-
+Chơi lại
 [intro restart]
-
+Bắt đầu lại giới thiệu
 [intro restart body]
-
+Bắt đầu lại từ thuộc địa chuẩn bị sẵn? Tiến trình chưa lưu trong phần giới thiệu sẽ mất.
 [intro help touch scout]
-
+Kéo đất trống để chuyển góc nhìn trước khi đặt cờ. Tìm bãi đá phía đông thuộc địa. Mở Cờ, chọn Cờ thám hiểm, đặt lên đá và xác nhận. Chọn cờ rồi yêu cầu 1 nhà thám hiểm bằng chỉ tiêu đơn vị. Globul tự di chuyển và có thể dừng để ăn.
 [intro help touch build]
-
+Chọn Quán trọ từ Xây dựng. Đặt trên đất trống gần lúa mì và xác nhận. Chọn công trường rồi yêu cầu 2 thợ xây. Chỉ tiêu công nhân là yêu cầu, không phải số đã có mặt. Tiếp tế Quán trọ cũ và Tổ. Mọi vị trí hợp lệ đều được tính.
 [intro help touch supply]
-
+Chọn Quán trọ mới đã hoàn tất và tăng chỉ tiêu công nhân. Xây dựng và tiếp tế hằng ngày có chỉ tiêu riêng. Người tiếp tế gom lúa mì và mang về đây. Globul đói ăn ở Quán trọ; không có người tiếp tế thì thức ăn sẽ hết. Giữ đường tới lúa mì thông thoáng.
 [intro help touch grow]
-
+Chọn Tổ. Đặt sản xuất công nhân là 1, nhà thám hiểm và chiến binh là 0. Tăng chỉ tiêu công nhân lên ít nhất 2. Người tiếp tế mang lúa mì cho đơn vị mới nhưng cạnh tranh với việc khác. Tiếp tế cả hai Quán trọ.
 [intro help touch attack]
-
+Mở Cờ, chọn Cờ chiến đấu, đặt lên Tổ địch phía đông bãi đá và xác nhận. Chọn cờ, yêu cầu tối đa 4 chiến binh. Bán kính nhỏ giúp tập trung lực lượng. Nếu hết, tạo chiến binh tại Tổ. Chiến binh có thể dừng ăn; hãy tiếp tế Quán trọ.
 [intro show destination]
-
+Hiện điểm đến
 [intro scout destination]
-
+Thám hiểm ở đây
 [intro attack destination]
-
+Tấn công ở đây
 [intro compact scout]
-
+Cờ → Cờ thám hiểm. Đặt lên đá; giao 1 nhà thám hiểm.
 [intro compact build]
-
+Xây dựng → Quán trọ. Gần lúa mì; giao 2 thợ xây.
 [intro compact supply]
-
+Chọn Quán trọ mới; giao ít nhất 1 người tiếp tế. Chờ lúa mì.
 [intro compact grow]
-
+Chọn Tổ; giao 2 người tiếp tế. Chỉ tạo công nhân.
 [intro compact attack]
-
+Cờ → Cờ chiến đấu. Đặt lên Tổ địch; giao chiến binh.
 [tutorial lessons]
-
+Bài hướng dẫn
 [tutorial restart]
-
+Bắt đầu lại bài học
 [tutorial restart body]
-
+Bắt đầu lại bài học từ thuộc địa chuẩn bị sẵn? Tiến trình chưa lưu sẽ mất.
 [tutorial complete]
-
+Hoàn tất bài học
 [tutorial food title]
-
+Luyện tiếp tế thức ăn
 [tutorial food briefing]
-
+Luyện mở rộng nguồn thức ăn: xây thêm Quán trọ, phân công người tiếp tế và xem lúa mì được giao.
 [tutorial food complete]
-
+Bạn đã xây Quán trọ và tiếp tế lúa mì. Thử bài khác hoặc về trình đơn chính.
 [tutorial unavailable]
-
+Không tải được các bài hướng dẫn.
 [lesson healing title]
-
+Bệnh viện và chữa thương
 [lesson healing briefing]
-
+Xây Bệnh viện và giúp công nhân bị thương hồi phục. Thuộc địa bắt đầu đã no, với một công nhân bị thương.
 [lesson healing complete]
-
+Bệnh viện đã chữa lành globul bị thương. Tiếp tế Quán trọ: đói có thể làm đơn vị bị thương lần nữa.
 [lesson healing build hint]
-
+Xây Bệnh viện trên đất trống; phân công 2 thợ xây. Chừa chỗ cho globul ra vào. Bệnh viện chữa thương; Quán trọ cung cấp thức ăn. Bệnh nhân này đã được ăn no.
 [lesson healing build title]
-
+Xây Bệnh viện
 [lesson healing build instruction]
-
+Xây Bệnh viện trên đất trống; phân công 2 thợ xây.
 [lesson healing build help]
-
+Chừa chỗ cho globul ra vào. Bệnh viện chữa thương; Quán trọ cung cấp thức ăn. Bệnh nhân này đã được ăn no.
 [lesson healing build marker]
-
+Xây Bệnh viện
 [lesson healing heal hint]
-
+Giữ lối tới Bệnh viện thông thoáng. Quan sát công nhân bị thương hồi phục. Globul tự tìm cách chữa thương. Theo dõi công nhân bị thương, không phải đơn vị mới sinh. Nếu nó chết, bắt đầu lại hoặc tải bản lưu.
 [lesson healing heal title]
-
+Để bệnh nhân hồi phục
 [lesson healing heal instruction]
-
+Giữ lối tới Bệnh viện thông thoáng. Quan sát công nhân bị thương hồi phục.
 [lesson healing heal help]
-
+Globul tự tìm cách chữa thương. Theo dõi công nhân bị thương, không phải đơn vị mới sinh. Nếu nó chết, bắt đầu lại hoặc tải bản lưu.
 [lesson healing heal marker]
-
+Để bệnh nhân hồi phục
 [lesson walking-training title]
-
+Huấn luyện đi bộ
 [lesson walking-training briefing]
-
+Xây Đường chạy và quan sát công nhân hiện có học đi nhanh hơn.
 [lesson walking-training complete]
-
+Công nhân đã học đi nhanh hơn. Huấn luyện cải thiện công nhân hiện có; không thay thế nguồn thức ăn của thuộc địa.
 [lesson walking-training build hint]
-
+Xây Đường chạy trong khoảng trống được đánh dấu; phân công thợ xây. Đường chạy cần gỗ và đá. Chừa khoảng trống quanh rìa để ra vào và mở rộng sau này.
 [lesson walking-training build title]
-
+Xây Đường chạy
 [lesson walking-training build instruction]
-
+Xây Đường chạy trong khoảng trống được đánh dấu; phân công thợ xây.
 [lesson walking-training build help]
-
+Đường chạy cần gỗ và đá. Chừa khoảng trống quanh rìa để ra vào và mở rộng sau này.
 [lesson walking-training build marker]
-
+Xây Đường chạy
 [lesson walking-training train hint]
-
+Giữ lối tới Đường chạy thông thoáng và để công nhân hoàn tất huấn luyện. Globul đủ điều kiện tự huấn luyện. Giữ một số công nhân không bận tiếp tế và dự trữ đầy cả hai Quán trọ.
 [lesson walking-training train title]
-
+Huấn luyện công nhân hiện có
 [lesson walking-training train instruction]
-
+Giữ lối tới Đường chạy thông thoáng và để công nhân hoàn tất huấn luyện.
 [lesson walking-training train help]
-
+Globul đủ điều kiện tự huấn luyện. Giữ một số công nhân không bận tiếp tế và dự trữ đầy cả hai Quán trọ.
 [lesson swimming title]
-
+Bơi và tài nguyên dưới nước
 [lesson swimming briefing]
-
+Huấn luyện người bơi rồi dùng tảo trong ao để xây Trường học.
 [lesson swimming complete]
-
+Người bơi đã mang tài nguyên dưới nước cho Trường học. Tiếp cận nước mở rộng các công việc thuộc địa có thể làm.
 [lesson swimming build hint]
-
+Xây Hồ bơi phía tây ao; phân công thợ xây. Chừa chỗ quanh Hồ bơi. Công nhân chưa biết bơi không thể lấy tảo ở nước sâu.
 [lesson swimming build title]
-
+Xây Hồ bơi
 [lesson swimming build instruction]
-
+Xây Hồ bơi phía tây ao; phân công thợ xây.
 [lesson swimming build help]
-
+Chừa chỗ quanh Hồ bơi. Công nhân chưa biết bơi không thể lấy tảo ở nước sâu.
 [lesson swimming build marker]
-
+Xây Hồ bơi
 [lesson swimming train hint]
-
+Để công nhân hiện có hoàn tất huấn luyện bơi. Đơn vị tự chọn huấn luyện. Duy trì tiếp tế và để công nhân rảnh tới Hồ bơi.
 [lesson swimming train title]
-
+Huấn luyện người bơi
 [lesson swimming train instruction]
-
+Để công nhân hiện có hoàn tất huấn luyện bơi.
 [lesson swimming train help]
-
+Đơn vị tự chọn huấn luyện. Duy trì tiếp tế và để công nhân rảnh tới Hồ bơi.
 [lesson swimming water-job hint]
-
+Xây Trường học gần thuộc địa; phân công thợ xây lấy gỗ và tảo. Tảo mọc trong ao. Người đã học bơi phải xuống nước để lấy. Đặt Trường học trên đất trống có đường cho người tiếp tế.
 [lesson swimming water-job title]
-
+Dùng tảo trong ao
 [lesson swimming water-job instruction]
-
+Xây Trường học gần thuộc địa; phân công thợ xây lấy gỗ và tảo.
 [lesson swimming water-job help]
-
+Tảo mọc trong ao. Người đã học bơi phải xuống nước để lấy. Đặt Trường học trên đất trống có đường cho người tiếp tế.
 [lesson swimming water-job marker]
-
+Dùng tảo trong ao
 [lesson schools title]
-
+Trường học và kỹ năng công nhân
 [lesson schools briefing]
-
+Dùng những người bơi có sẵn để xây Trường học, rồi quan sát công nhân học xây dựng và thu hoạch.
 [lesson schools complete]
-
+Trường học đã cải thiện kỹ năng công nhân. Thợ xây giỏi cho phép nâng cấp; thu hoạch tốt hơn giúp duy trì nền kinh tế mở rộng.
 [lesson schools build hint]
-
+Xây Trường học trong khoảng trống; phân công thợ xây. Thuộc địa đã có người bơi lấy tảo. Giữ đường tới gỗ và nước. Cây ăn quả cung cấp tài nguyên uy tín; thức ăn vẫn từ lúa mì.
 [lesson schools build title]
-
+Xây Trường học
 [lesson schools build instruction]
-
+Xây Trường học trong khoảng trống; phân công thợ xây.
 [lesson schools build help]
-
+Thuộc địa đã có người bơi lấy tảo. Giữ đường tới gỗ và nước. Cây ăn quả cung cấp tài nguyên uy tín; thức ăn vẫn từ lúa mì.
 [lesson schools build marker]
-
+Xây Trường học
 [lesson schools learn hint]
-
+Để công nhân hiện có hoàn tất huấn luyện tại Trường học. Trường học dạy cả xây dựng và thu hoạch. Để công nhân sẵn sàng; chỉ có công trường không huấn luyện được ai.
 [lesson schools learn title]
-
+Dạy xây dựng và thu hoạch
 [lesson schools learn instruction]
-
+Để công nhân hiện có hoàn tất huấn luyện tại Trường học.
 [lesson schools learn help]
-
+Trường học dạy cả xây dựng và thu hoạch. Để công nhân sẵn sàng; chỉ có công trường không huấn luyện được ai.
 [lesson upgrades title]
-
+Nâng cấp công trình
 [lesson upgrades briefing]
-
+Dùng công nhân giỏi có sẵn nâng cấp Đường chạy và huấn luyện vượt cấp đầu tiên.
 [lesson upgrades complete]
-
+Bạn đã nâng cấp công trình và dùng huấn luyện cải tiến. Các lần nâng tiếp theo lặp chu trình với Trường học, kỹ năng, vật liệu và không gian tốt hơn, tới cấp 3.
 [lesson upgrades upgrade hint]
-
+Chọn Đường chạy, chọn Nâng cấp và phân công thợ xây giỏi. Các công nhân này đã học kỹ năng Trường học cấp một. Nâng cấp cần thêm chỗ và vật liệu, đồng thời ngắt dịch vụ công trình. Nâng cấp bị hủy không được tính.
 [lesson upgrades upgrade title]
-
+Nâng cấp Đường chạy
 [lesson upgrades upgrade instruction]
-
+Chọn Đường chạy, chọn Nâng cấp và phân công thợ xây giỏi.
 [lesson upgrades upgrade help]
-
+Các công nhân này đã học kỹ năng Trường học cấp một. Nâng cấp cần thêm chỗ và vật liệu, đồng thời ngắt dịch vụ công trình. Nâng cấp bị hủy không được tính.
 [lesson upgrades upgrade marker]
-
+Nâng cấp Đường chạy
 [lesson upgrades train hint]
-
+Để công nhân hiện có học đi nhanh hơn tại Đường chạy đã nâng cấp. Nâng cấp hoàn tất cải thiện huấn luyện sẵn có. Công trình cấp cao cần kỹ năng xây dựng cao hơn; cấp hiển thị cho người chơi bắt đầu từ 1.
 [lesson upgrades train title]
-
+Dùng huấn luyện nâng cấp
 [lesson upgrades train instruction]
-
+Để công nhân hiện có học đi nhanh hơn tại Đường chạy đã nâng cấp.
 [lesson upgrades train help]
-
+Nâng cấp hoàn tất cải thiện huấn luyện sẵn có. Công trình cấp cao cần kỹ năng xây dựng cao hơn; cấp hiển thị cho người chơi bắt đầu từ 1.
 [lesson warrior-training title]
-
+Tạo và huấn luyện chiến binh
 [lesson warrior-training briefing]
-
+Tạo chiến binh tại Tổ rồi huấn luyện trong Doanh trại.
 [lesson warrior-training complete]
-
+Bạn đã điều khiển sản xuất quân và huấn luyện chiến binh. Duy trì thức ăn; đơn vị chiến đấu vẫn cần ăn.
 [lesson warrior-training produce hint]
-
+Đặt Tổ chỉ tạo chiến binh; phân công tiếp tế và chờ 2 chiến binh. Đặt tỷ lệ công nhân và nhà thám hiểm là 0, chiến binh là 1. Tổ dùng lúa mì để sinh đơn vị. Tỷ lệ chọn loại được tạo; người tiếp tế quyết định sản xuất có chạy được không.
 [lesson warrior-training produce title]
-
+Tạo hai chiến binh
 [lesson warrior-training produce instruction]
-
+Đặt Tổ chỉ tạo chiến binh; phân công tiếp tế và chờ 2 chiến binh.
 [lesson warrior-training produce help]
-
+Đặt tỷ lệ công nhân và nhà thám hiểm là 0, chiến binh là 1. Tổ dùng lúa mì để sinh đơn vị. Tỷ lệ chọn loại được tạo; người tiếp tế quyết định sản xuất có chạy được không.
 [lesson warrior-training produce marker]
-
+Tạo hai chiến binh
 [lesson warrior-training build hint]
-
+Xây Doanh trại trong khoảng trống; phân công thợ xây. Dừng hoặc giảm sản xuất khi đủ chiến binh. Doanh trại dạy kỹ năng chiến đấu; cần chỗ trống quanh rìa.
 [lesson warrior-training build title]
-
+Xây Doanh trại
 [lesson warrior-training build instruction]
-
+Xây Doanh trại trong khoảng trống; phân công thợ xây.
 [lesson warrior-training build help]
-
+Dừng hoặc giảm sản xuất khi đủ chiến binh. Doanh trại dạy kỹ năng chiến đấu; cần chỗ trống quanh rìa.
 [lesson warrior-training build marker]
-
+Xây Doanh trại
 [lesson warrior-training train hint]
-
+Để chiến binh hoàn tất luyện tập tại Doanh trại. Chiến binh tự tìm huấn luyện. Tiếp tế Quán trọ và giữ lối vào Doanh trại. Chỉ xây Doanh trại không được tính là hoàn tất buổi luyện.
 [lesson warrior-training train title]
-
+Huấn luyện chiến binh
 [lesson warrior-training train instruction]
-
+Để chiến binh hoàn tất luyện tập tại Doanh trại.
 [lesson warrior-training train help]
-
+Chiến binh tự tìm huấn luyện. Tiếp tế Quán trọ và giữ lối vào Doanh trại. Chỉ xây Doanh trại không được tính là hoàn tất buổi luyện.
 [lesson fortifications title]
-
+Tháp và tường bảo vệ
 [lesson fortifications briefing]
-
+Xây tháp được tiếp tế và tường bảo vệ, rồi thử chống một cuộc tấn công nhỏ.
 [lesson fortifications complete]
-
+Phòng tuyến được tiếp tế đã chặn cuộc tấn công thử. Tháp cần đá; tường cần khe hở để người tiếp tế qua được.
 [lesson fortifications tower hint]
-
+Xây tháp trong vùng đánh dấu; phân công thợ xây. Đặt gần mỏ đá và chừa đường tiếp tế. Chỉ bắt đầu tấn công khi hoàn tất mục tiêu chuẩn bị.
 [lesson fortifications tower title]
-
+Xây Tháp phòng thủ
 [lesson fortifications tower instruction]
-
+Xây tháp trong vùng đánh dấu; phân công thợ xây.
 [lesson fortifications tower help]
-
+Đặt gần mỏ đá và chừa đường tiếp tế. Chỉ bắt đầu tấn công khi hoàn tất mục tiêu chuẩn bị.
 [lesson fortifications tower marker]
-
+Xây Tháp phòng thủ
 [lesson fortifications walls hint]
-
+Xây ít nhất 2 đoạn tường gần tháp; giữ lối vào phía tây thông thoáng. Tường dùng đá và mỗi công trường yêu cầu công nhân. Đừng bịt kín tháp: người tiếp tế cần đường. Lối phía tây được đánh dấu phải thông thoáng.
 [lesson fortifications walls title]
-
+Bảo vệ tháp bằng tường
 [lesson fortifications walls instruction]
-
+Xây ít nhất 2 đoạn tường gần tháp; giữ lối vào phía tây thông thoáng.
 [lesson fortifications walls help]
-
+Tường dùng đá và mỗi công trường yêu cầu công nhân. Đừng bịt kín tháp: người tiếp tế cần đường. Lối phía tây được đánh dấu phải thông thoáng.
 [lesson fortifications walls marker]
-
+Bảo vệ tháp bằng tường
 [lesson fortifications supply hint]
-
+Chọn tháp và yêu cầu người tiếp tế. Chờ ít nhất 2 đá. Tháp hoàn tất cần chỉ tiêu công nhân vận hành để mang đạn. Chỉ tiêu này riêng với xây dựng.
 [lesson fortifications supply title]
-
+Tiếp tế đạn dược
 [lesson fortifications supply instruction]
-
+Chọn tháp và yêu cầu người tiếp tế. Chờ ít nhất 2 đá.
 [lesson fortifications supply help]
-
+Tháp hoàn tất cần chỉ tiêu công nhân vận hành để mang đạn. Chỉ tiêu này riêng với xây dựng.
 [lesson fortifications supply marker]
-
+Tiếp tế đạn dược
 [lesson fortifications hold hint]
-
+Chiến binh tập luyện đang tới. Giữ tháp được tiếp tế và dễ tiếp cận. Giữ vững tới khi đánh bại hoặc đẩy lui kẻ tấn công. Tường chặn người tiếp tế có thể khiến tháp hết đạn. Nếu thuộc địa thất thủ, bắt đầu lại hoặc tải bản lưu cũ.
 [lesson fortifications hold title]
-
+Thử công sự
 [lesson fortifications hold instruction]
-
+Chiến binh tập luyện đang tới. Giữ tháp được tiếp tế và dễ tiếp cận.
 [lesson fortifications hold help]
-
+Giữ vững tới khi đánh bại hoặc đẩy lui kẻ tấn công. Tường chặn người tiếp tế có thể khiến tháp hết đạn. Nếu thuộc địa thất thủ, bắt đầu lại hoặc tải bản lưu cũ.
 [lesson fortifications hold marker]
-
+Thử công sự
 [lesson defensive-tactics title]
-
+Vùng canh gác và chiến thuật cờ
 [lesson defensive-tactics briefing]
-
+Thám hiểm kẻ địch luyện tập, chuẩn bị vùng canh gác, phòng thủ rồi tổ chức phản công.
 [lesson defensive-tactics complete]
-
+Bạn đã thám hiểm, bảo vệ vùng canh gác và chỉ huy phản công. Chỉ tiêu cờ yêu cầu đơn vị; bán kính quyết định nơi chúng hoạt động.
 [lesson defensive-tactics scout hint]
-
+Đặt Cờ thám hiểm tại căn cứ địch; giao 1 nhà thám hiểm. Cờ tự yêu cầu đơn vị. Nhà thám hiểm hé lộ hoạt động hiện tại qua sương mù chiến tranh; nó có thể dừng ăn.
 [lesson defensive-tactics scout title]
-
+Thám hiểm căn cứ địch
 [lesson defensive-tactics scout instruction]
-
+Đặt Cờ thám hiểm tại căn cứ địch; giao 1 nhà thám hiểm.
 [lesson defensive-tactics scout help]
-
+Cờ tự yêu cầu đơn vị. Nhà thám hiểm hé lộ hoạt động hiện tại qua sương mù chiến tranh; nó có thể dừng ăn.
 [lesson defensive-tactics scout marker]
-
+Thám hiểm căn cứ địch
 [lesson defensive-tactics guard hint]
-
+Tô vùng canh gác trong khu vực đánh dấu và để 2 chiến binh tới đó. Mở Cờ, chọn Canh gác và tô ít nhất 4 ô bên trong vùng. Vùng canh gác thu hút chiến binh rảnh. Vùng cấm chặn đi lại; vùng dọn dẹp yêu cầu loại bỏ tài nguyên.
 [lesson defensive-tactics guard title]
-
+Chuẩn bị vùng canh gác
 [lesson defensive-tactics guard instruction]
-
+Tô vùng canh gác trong khu vực đánh dấu và để 2 chiến binh tới đó.
 [lesson defensive-tactics guard help]
-
+Mở Cờ, chọn Canh gác và tô ít nhất 4 ô bên trong vùng. Vùng canh gác thu hút chiến binh rảnh. Vùng cấm chặn đi lại; vùng dọn dẹp yêu cầu loại bỏ tài nguyên.
 [lesson defensive-tactics guard marker]
-
+Chuẩn bị vùng canh gác
 [lesson defensive-tactics repel hint]
-
+Địch đang tấn công. Giữ quân trong vùng canh gác và tiếp tế Quán trọ. Cuộc tấn công nhỏ bắt đầu sau khi chuẩn bị. Đánh bại hoặc đẩy lui cả hai kẻ đột kích; địch bị thương có thể rút lui. Chiến binh có thể tạm đi ăn. Nếu phòng thủ thất bại, tải bản lưu cũ hoặc bắt đầu lại.
 [lesson defensive-tactics repel title]
-
+Đẩy lui cuộc tấn công thử
 [lesson defensive-tactics repel instruction]
-
+Địch đang tấn công. Giữ quân trong vùng canh gác và tiếp tế Quán trọ.
 [lesson defensive-tactics repel help]
-
+Cuộc tấn công nhỏ bắt đầu sau khi chuẩn bị. Đánh bại hoặc đẩy lui cả hai kẻ đột kích; địch bị thương có thể rút lui. Chiến binh có thể tạm đi ăn. Nếu phòng thủ thất bại, tải bản lưu cũ hoặc bắt đầu lại.
 [lesson defensive-tactics repel marker]
-
+Đẩy lui cuộc tấn công thử
 [lesson defensive-tactics counterattack hint]
-
+Đặt Cờ chiến đấu lên Tổ địch; yêu cầu 3 chiến binh và bán kính tối đa 4. Vùng canh gác và Cờ chiến đấu tranh nhau chiến binh. Xóa ô canh gác nếu chúng giữ chân quân. Duy trì thức ăn khi chiến binh di chuyển và tấn công.
 [lesson defensive-tactics counterattack title]
-
+Chỉ huy phản công tập trung
 [lesson defensive-tactics counterattack instruction]
-
+Đặt Cờ chiến đấu lên Tổ địch; yêu cầu 3 chiến binh và bán kính tối đa 4.
 [lesson defensive-tactics counterattack help]
-
+Vùng canh gác và Cờ chiến đấu tranh nhau chiến binh. Xóa ô canh gác nếu chúng giữ chân quân. Duy trì thức ăn khi chiến binh di chuyển và tấn công.
 [lesson defensive-tactics counterattack marker]
-
+Chỉ huy phản công tập trung
 [lesson healing build compact]
-
+Xây dựng → Bệnh viện. Chừa lối; giao thợ xây.
 [lesson healing heal compact]
-
+Để công nhân bị thương hồi phục tại Bệnh viện.
 [lesson walking-training build compact]
-
+Xây dựng → Đường chạy. Chừa chỗ quanh rìa.
 [lesson walking-training train compact]
-
+Để công nhân hoàn tất huấn luyện Đường chạy.
 [lesson swimming build compact]
-
+Xây dựng → Hồ bơi, phía tây ao.
 [lesson swimming train compact]
-
+Để công nhân học bơi.
 [lesson swimming water-job compact]
-
+Xây dựng → Trường học. Giao thợ xây lấy gỗ và tảo.
 [lesson schools build compact]
-
+Xây dựng → Trường học. Giao thợ xây lấy gỗ và tảo.
 [lesson schools learn compact]
-
+Để công nhân hoàn tất huấn luyện Trường học.
 [lesson upgrades upgrade compact]
-
+Chọn Đường chạy → Nâng cấp. Giao thợ xây giỏi.
 [lesson upgrades train compact]
-
+Để công nhân luyện tại Đường chạy đã nâng cấp.
 [lesson warrior-training produce compact]
-
+Tổ → Chỉ chiến binh. Tiếp tế lúa mì cho 2 chiến binh.
 [lesson warrior-training build compact]
-
+Xây dựng → Doanh trại. Chừa chỗ quanh rìa.
 [lesson warrior-training train compact]
-
+Để chiến binh hoàn tất luyện tập Doanh trại.
 [lesson fortifications tower compact]
-
+Xây dựng → Tháp. Đặt trong vùng đánh dấu.
 [lesson fortifications walls compact]
-
+Xây 2 tường. Giữ lối phía tây tháp thông thoáng.
 [lesson fortifications supply compact]
-
+Chọn tháp → Người tiếp tế. Chờ 2 đá.
 [lesson fortifications hold compact]
-
+Duy trì tiếp tế tháp để chống kẻ tấn công.
 [lesson defensive-tactics scout compact]
-
+Cờ → Thám hiểm. Đặt tại địch; giao 1 nhà thám hiểm.
 [lesson defensive-tactics guard compact]
-
+Cờ → Canh gác. Tô 4 ô; để 2 chiến binh tới.
 [lesson defensive-tactics repel compact]
-
+Giữ vùng canh gác. Tiếp tế Quán trọ.
 [lesson defensive-tactics counterattack compact]
-
+Cờ chiến đấu → Tổ địch. Yêu cầu 3 chiến binh; bán kính ≤4.
 [library GL only]
 Chỉ GL
 [Grassland]
@@ -6827,6 +6817,44 @@ Chỉ GL
 [Fish amount]
 Lượng cá
 [scenario messages]
-
+Thông điệp ▸
 [Camp-site amount]
 Số khu cắm trại
+[script compilation success]
+Biên dịch thành công
+[script error at %0:%1: %2]
+Lỗi tại %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Lỗi biên dịch: %0:%1:(%2):%3
+[script compilation failed %0]
+Biên dịch thất bại: %0
+[script loading failed %0]
+Quá trình tải tập lệnh từ %0 thất bại.
+[script saving failed %0]
+Lưu tập lệnh vào %0 không thành công
+[script line %0 column %1]
+Dòng: %0 Cột: %1
+[game stopped %0]
+Trò chơi đã dừng: %0
+[game stopped script help]
+Hãy kiểm tra mã JavaScript được nhúng và mức sử dụng tài nguyên của mã trước khi khởi động lại trò chơi này.
+[missing map generator %0]
+Thiếu trình tạo bản đồ: %0. Đã chọn địa hình tích hợp sẵn.
+[hive standing order paused]
+Một lệnh thường trực cần được xử lý và đã bị tạm dừng.
+[hive connection changed orders paused]
+Kết nối đã thay đổi. Hãy xem lại các lệnh thường trực đang tạm dừng trước khi tiếp tục chúng.
+[hive standing order fresh instruction]
+Lệnh thường trực cần một chỉ thị mới sau khi kết nối lại. Bạn có thể hủy bỏ lệnh đó hoặc yêu cầu chỉ huy thay thế.
+[hive order confirmation failed]
+Không thể xác nhận một lệnh. Hãy xem lại các lệnh thường trực của bạn trước khi tiếp tục chúng.
+[hive previous order sending]
+Lệnh trước của bạn vẫn đang được gửi. Tin nhắn này đã được lưu giữ; hãy mở chỉ huy để gửi lại.
+[hive order received %0]
+Đã nhận lệnh: %0
+[hive order not confirmed]
+Lệnh chưa được xác nhận. Mở chỉ huy để thử lại; tin nhắn của bạn đã được lưu giữ.
+[hive standing order update failed]
+Cập nhật lệnh thường trực không thành công. Lệnh của bạn đang tạm dừng trên thiết bị này; hãy thử lại bằng thành phần điều khiển tương ứng.
+[AI for all computer colonies]
+AI cho mọi thuộc địa do máy tính điều khiển

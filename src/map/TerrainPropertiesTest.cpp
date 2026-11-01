@@ -40,11 +40,8 @@ TEST_CASE("exclusive movement modes and bounded compile-time definitions")
 TEST_CASE("Trail retains legacy identities and terrain behavior")
 {
     // Trail replaces Road's name and artwork, so old maps and scripts must
-    // still resolve the same material and experiment without changing rules.
+    // still resolve the same material without changing rules.
     CHECK_EQ(static_cast<unsigned>(TRAIL),4);
-    CHECK_EQ(static_cast<unsigned>(ExperimentId::TrailTerrain),3);
-    CHECK_EQ(parseExperimentKey("road-terrain"),ExperimentId::TrailTerrain);
-    CHECK_EQ(terrainExperiment(TRAIL),ExperimentId::TrailTerrain);
     CHECK_EQ(std::string(terrainPresentation(TRAIL).name),"road");
     CHECK_EQ(std::string(terrainPresentation(TRAIL).label),"[road]");
     const auto& properties = terrainProperties(TRAIL);
@@ -87,8 +84,6 @@ TEST_CASE("vertex terrain survives tiling and batches snapshot invalidation")
     CHECK_EQ(map.terrainTypeAt(11,8),ICE);
     CHECK_EQ(map.terrainTypeAt(7,8),MIXED_TERRAIN);
     CHECK_EQ(map.terrainTypeAt(6,8),WATER);
-    CHECK(map.requiredTerrainExperiments().has(ExperimentId::IceTerrain));
-    CHECK(map.requiredTerrainExperiments().has(ExperimentId::TrailTerrain));
     map.tile(2,1);
     CHECK_EQ(map.terrainTypeAt(40,8),TRAIL);
     CHECK_EQ(map.terrainTypeAt(43,8),ICE);
@@ -169,37 +164,71 @@ TEST_CASE("terrain edits refresh escape costs after captured routes publish at t
     CHECK(std::equal(replacement.begin(),replacement.end(),refreshedMaterial));
 }
 
-TEST_CASE("required terrain experiments survive tiling and distinguish map headers")
+TEST_CASE("retired terrain flags load from old headers without becoming experiments")
 {
     glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.header=true});
-    auto& map = world.game.map;
-    map.paintCell(8,8,ICE);
-    map.tile(2,1);
-    CHECK(world.game.mapHeader.requiredTerrainExperiments.has(ExperimentId::IceTerrain));
-    MapHeader plain, required;
-    required.requiredTerrainExperiments.set(ExperimentId::TrailTerrain);
-    CHECK(plain != required);
-    CHECK_FALSE(plain == required);
-    CHECK(plain.checkSum() != required.checkSum());
+    const std::vector<std::string> retired = {
+        "ice-terrain", "road-terrain", "obstacle-terrain", "ridge-terrain",
+        "barren-terrain", "rough-terrain", "path-terrain", "lava-terrain",
+        "fertile-terrain", "deep-water-terrain", "void-terrain"};
+    for (const auto& key : retired)
+    {
+        CHECK_FALSE(knownExperimentKey(key));
+        CHECK(ExperimentSet::fromText(key).empty());
+    }
+    MapHeader header;
     auto* bytes = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);
-    required.save(&output);
+    size_t shaPosition = 0;
+    header.save(&output, &shaPosition);
     output.flush();
-    std::string corrupt(bytes->getBuffer(),bytes->getPosition());
-    // The pointer/length MemoryStreamBackend constructor leaves its cursor at
-    // the end after copying. The owning-string constructor starts at byte zero.
-    GAGCore::BinaryInputStream validInput(new GAGCore::MemoryStreamBackend(std::string(corrupt)));
-    MapHeader decoded;
-    REQUIRE(decoded.load(&validInput));
-    CHECK(decoded == required);
-    auto key = corrupt.find("road-terrain");
-    REQUIRE(key != std::string::npos);
-    corrupt.replace(key,4,"xxxx");
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::move(corrupt)));
-    MapHeader loaded;
-    CHECK_FALSE(loaded.load(&input));
-    CHECK(loaded.requiredTerrainExperiments.empty());
+    const std::string original(bytes->getBuffer(), bytes->getPosition());
+    const auto withRequirements = [&](const std::vector<std::string>& keys) {
+        // Recreate the serialized requirement list written by pre-graduation builds.
+        auto* storage = new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream out(storage);
+        ExperimentSet::fromKeys(keys, nullptr, keys).save(&out);
+        out.flush();
+        std::string legacy = original;
+        legacy.insert(shaPosition + 20, storage->getBuffer(), storage->getPosition());
+        const unsigned version = FILE_FORMAT_VERSION_MAINLINE_TERRAINS - 1;
+        // An empty map name puts the minor version at byte 8.
+        for (unsigned i = 0; i < 4; ++i) legacy[8+i] = char(version >> (24-8*i));
+        return legacy;
+    };
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(withRequirements(retired)));
+    MapHeader restored;
+    REQUIRE(restored.load(&input));
+    CHECK(restored.getVersionMinor() == FILE_FORMAT_VERSION_MAINLINE_TERRAINS - 1);
+    CHECK(restored.getMapName() == header.getMapName());
+    CHECK(restored.getNumberOfTeams() == header.getNumberOfTeams());
+    // Re-saving upgrades the header and writes no retired requirement slot.
+    auto* upgradedBytes = new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream upgraded(upgradedBytes);
+    restored.save(&upgraded);
+    upgraded.flush();
+    CHECK(std::string(upgradedBytes->getBuffer(), upgradedBytes->getPosition()) == original);
+    // Truly unknown requirements remain an error, rather than being silently lost.
+    GAGCore::BinaryInputStream corrupt(new GAGCore::MemoryStreamBackend(withRequirements({"unknown-terrain"})));
+    CHECK_FALSE(restored.load(&corrupt));
+
+    // A saved game's old flags are retired too; its terrain survives.
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    world.game.map.paintCell(8,8,ICE);
+    world.game.map.paintCell(12,8,TRAIL);
+    world.game.gameHeader.setExperiments(ExperimentSet::fromKeys(retired, nullptr, retired));
+    auto* savedBytes = new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream savedOutput(savedBytes);
+    world.game.save(&savedOutput, false, "retired terrains");
+    savedOutput.flush();
+    GAGCore::BinaryInputStream savedInput(new GAGCore::MemoryStreamBackend(
+        std::string(savedBytes->getBuffer(), savedBytes->getPosition())));
+    GameGUI loaded;
+    REQUIRE(loaded.game.load(&savedInput));
+    CHECK(loaded.game.gameHeader.getExperiments().empty());
+    CHECK(loaded.game.map.terrainTypeAt(8,8) == ICE);
+    CHECK(loaded.game.map.terrainTypeAt(12,8) == TRAIL);
+    CHECK(loaded.game.map.checkSum(true) == world.game.map.checkSum(true));
 }
 
 TEST_CASE("ice exposure includes stationary units and preserves fractional health in saves")
@@ -236,7 +265,6 @@ TEST_CASE("ice exposure includes stationary units and preserves fractional healt
     REQUIRE(loaded);
     CHECK_EQ(loaded->terrainHealthRemainder,unit->terrainHealthRemainder);
     CHECK_EQ(resumed.game.map.terrainTypeAt(8,8),ICE);
-    CHECK(resumed.game.gameHeader.hasExperiment(ExperimentId::IceTerrain));
     for (int i=0;i<15;++i) { unit->applyTerrainHealth(); loaded->applyTerrainHealth(); }
     CHECK_EQ(unit->hp,health-1);
     CHECK_EQ(loaded->hp,unit->hp);
@@ -772,6 +800,78 @@ TEST_SUITE("TerrainRuntime")
 		// Current files number their custom definitions from the current built-ins.
 		CHECK(nlohmann::json::parse(reloaded.game.map.terrainRegistry().serialize())["terrains"][0]["id"] == TERRAIN_COUNT);
 	}
+	TEST_CASE("format-186 saves keep built-in IDs and move custom terrain behind the grass and sand looks")
+	{
+		glob2test::HeadlessGlobals globals;
+		// Written by an origin/master build (TERRAIN_COUNT 29) with two runtime
+		// definitions painted at IDs 29 and 30 beside chasm, ice, trail, sand and water.
+		auto *backend = globalContainer->fileManager->openInflatingInputStreamBackend(
+			"test/fixtures/terrain-catalogue/custom-registry-186.game.gz");
+		REQUIRE(backend);
+		GameGUI loaded;
+		{
+			GAGCore::BinaryInputStream input(backend);
+			REQUIRE(loaded.game.load(&input));
+		}
+		auto verify = [](const Map &map)
+		{
+			REQUIRE(map.terrainRegistry().size() == TERRAIN_COUNT + 2);
+			const auto bog = map.terrainRegistry().find("fixture:bog");
+			const auto mud = map.terrainRegistry().find("fixture:mud");
+			REQUIRE(bog);
+			REQUIRE(mud);
+			CHECK(*bog == TerrainType(TERRAIN_COUNT));
+			CHECK(*mud == TerrainType(TERRAIN_COUNT + 1));
+			CHECK(map.terrainProperties(*bog).swimmable);
+			CHECK(map.terrainProperties(*bog).groundSpeedQ8 == 128);
+			CHECK(map.terrainProperties(*mud).groundSpeedQ8 == 192);
+			CHECK_FALSE(map.terrainProperties(*mud).buildable);
+			CHECK(map.terrainTypeAt(4, 4) == *bog);
+			CHECK(map.terrainTypeAt(5, 4) == *bog);
+			CHECK(map.terrainTypeAt(6, 6) == *mud);
+			CHECK(map.terrainTypeAt(8, 8) == CHASM);
+			CHECK(map.terrainTypeAt(10, 10) == ICE);
+			CHECK(map.terrainTypeAt(12, 10) == TRAIL);
+			CHECK(map.terrainTypeAt(14, 14) == SAND);
+			CHECK(map.terrainTypeAt(16, 14) == WATER);
+			CHECK(map.terrainTypeAt(0, 0) == GRASS);
+		};
+		verify(loaded.game.map);
+		auto *resaved = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(resaved);
+		loaded.game.save(&output, false, "custom-registry-187");
+		output.flush();
+		GameGUI reloaded;
+		{
+			GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
+				std::string(resaved->getBuffer(), resaved->getPosition())));
+			REQUIRE(reloaded.game.load(&input));
+		}
+		verify(reloaded.game.map);
+		CHECK(reloaded.game.map.terrainRegistry().digest() == loaded.game.map.terrainRegistry().digest());
+		CHECK(reloaded.game.map.checkSum(true) == loaded.game.map.checkSum(true));
+	}
+	TEST_CASE("grass and sand looks share every rule of grass and sand")
+	{
+		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},
+									 std::pair{DUNE_SAND, SAND}, std::pair{PALE_SAND, SAND}})
+		{
+			CAPTURE(terrainPresentation(look).name);
+			CHECK(terrainGroup(look) == terrainGroup(classic));
+			CHECK(sameTerrainProperties(terrainProperties(look), terrainProperties(classic)));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(look) ==
+				  TerrainRegistry::builtins()->propertyIndex(classic));
+		}
+		// The editor lays a sand beach where any grass look meets water.
+		glob2test::HeadlessGlobals globals;
+		Map map;
+		map.setSize(5, 5, WATER);
+		map.paintVertices({{2, 2}}, DRY_GRASS);
+		CHECK(map.vertexTerrainAt(2, 2) == DRY_GRASS);
+		CHECK(map.vertexTerrainAt(1, 1) == SAND);
+		CHECK(map.vertexTerrainAt(3, 2) == SAND);
+		CHECK(map.vertexTerrainAt(0, 0) == WATER);
+	}
 	TEST_CASE("painted catalogue terrain survives save and reload with its checksum")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -781,7 +881,7 @@ TEST_SUITE("TerrainRuntime")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				painted.push_back(TerrainType(i));
-		REQUIRE(painted.size() == 24);
+		REQUIRE(painted.size() == 28);
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
 			map.paintCell(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);
@@ -789,8 +889,6 @@ TEST_SUITE("TerrainRuntime")
 		}
 		map.paintCell(20, 20, ICE);
 		map.paintCell(22, 20, TRAIL);
-		const auto required = map.requiredTerrainExperiments();
-		CHECK(required.size() == 11); // nine catalogue groups plus ice and trail
 		for (auto text : {false, true})
 		{
 			CAPTURE(text);
@@ -811,11 +909,9 @@ TEST_SUITE("TerrainRuntime")
 			CHECK(loaded.game.map.terrainTypeAt(20, 20) == ICE);
 			CHECK(loaded.game.map.terrainTypeAt(22, 20) == TRAIL);
 			CHECK(loaded.game.map.checkSum(true) == map.checkSum(true));
-			CHECK(loaded.game.map.requiredTerrainExperiments() == required);
-			CHECK(loaded.game.mapHeader.requiredTerrainExperiments == required);
 		}
 	}
-	TEST_CASE("each catalogue type requires exactly its group's experiment and shares the group profile")
+	TEST_CASE("each catalogue type shares its group profile")
 	{
 		glob2test::HeadlessGlobals globals;
 		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
@@ -827,42 +923,9 @@ TEST_SUITE("TerrainRuntime")
 			Map map;
 			map.setSize(5, 5, GRASS);
 			map.paintCell(2, 2, type);
-			const auto required = map.requiredTerrainExperiments();
-			const auto expected = terrainExperiment(type);
-			CHECK(required.size() == (expected ? 1u : 0u));
-			if (expected)
-				CHECK(required.has(*expected));
-			// Trail keeps its historical switch; every other member takes the group's.
-			if (type == TRAIL)
-				CHECK(expected == ExperimentId::TrailTerrain);
-			else
-				CHECK(expected == terrainGroupExperiment(terrainGroup(type)));
 			CHECK(sameTerrainProperties(map.terrainProperties(type),
 										terrainGroupDefinition(terrainGroup(type)).properties));
 		}
-		// Runtime definitions: a gated group's exact profile declares the group's
-		// experiment, a profile of its own declares nothing.
-		{
-			Map custom;
-			custom.setSize(5, 5, GRASS);
-			custom.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[
-				{"key":"mod:pit","name":"Pit","base":"void_hole","properties":{},"appearance":"void_hole"},
-				{"key":"mod:bog","name":"Bog","base":"water","properties":{"groundSpeedQ8":128},"appearance":"water"}]})");
-			const auto pit = *custom.terrainRegistry().find("mod:pit");
-			const auto bog = *custom.terrainRegistry().find("mod:bog");
-			custom.paintCell(1, 1, pit);
-			CHECK(custom.requiredTerrainExperiments().has(ExperimentId::VoidTerrain));
-			CHECK(custom.requiredTerrainExperiments().size() == 1);
-			custom.paintCell(1, 1, GRASS);
-			custom.paintCell(2, 2, bog);
-			CHECK(custom.requiredTerrainExperiments().empty());
-		}
-		// Classic ground never acquires a requirement.
-		Map plain;
-		plain.setSize(5, 5, GRASS);
-		plain.paintCell(1, 1, SAND);
-		plain.setVertexTerrain(3, 3, WATER);
-		CHECK(plain.requiredTerrainExperiments().empty());
 		// Group mechanics the catalogue promises.
 		CHECK_FALSE(terrainProperties(BOULDERS).walkable);
 		CHECK(terrainProperties(BOULDERS).projectileBlocks);

@@ -25,11 +25,6 @@ struct CustomGamePreferences
 	bool userMaps = false;
 	std::string librarySelection[2];
 	bool expanded[3] = {false, false, false};
-	// The landscape picker's sort order (LandscapePickerScreen::SortOrder): 0 random (its
-	// catalog order, shuffled once so no landscape is favoured), 1 alphabetical. Kept as a plain
-	// int here, the same way other UI choices in this struct are, so the wire format does not
-	// depend on that screen's header.
-	int landscapeSortOrder = 0;
 
 	struct Field
 	{
@@ -75,7 +70,7 @@ struct CustomGamePreferences
 		const bool custom = !selected.packageHash.empty();
 		if (custom)
 			legacy.method = MapGenerationDescriptor::Method(
-				GeneratorRegistry::builtins().methods(false).front());
+				GeneratorRegistry::builtins().defaultMethod(false));
 		std::ostringstream out;
 		out << "glob2-custom-game 8\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' ' << setup.prestige << ' '
@@ -94,7 +89,8 @@ struct CustomGamePreferences
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
 			<< std::quoted(librarySelection[1]) << '\n'
 			<< "sections " << expanded[0] << ' ' << expanded[1] << ' ' << expanded[2] << '\n'
-			<< "picker " << landscapeSortOrder << '\n'
+			// Retain the retired picker field for compatibility with older builds.
+			<< "picker 1\n"
 			<< "generator " << int(legacy.method) << ' ' << legacy.logRepeatAreaTimes << '\n';
 		out << "custom-generator " << std::quoted(custom ? std::string(selected.id) : std::string{})
 			<< '\n';
@@ -186,8 +182,9 @@ struct CustomGamePreferences
 			if (!number(value, 0, 1)) return false;
 			expanded = value;
 		}
-		// The sort-order line was added at version 2; a version-1 file keeps the random default.
-		if (version >= 2 && (!word("picker") || !number(draft.landscapeSortOrder, 0, 1))) return false;
+		// Consume the retired sorting preference without applying it.
+		int ignoredSortOrder;
+		if (version >= 2 && (!word("picker") || !number(ignoredSortOrder, 0, 1))) return false;
 		if (!word("generator") || !number(method, 0, 1000) || !number(repeat, 0, 5)) return false;
 		// Method validity is checked against the live registry rather than a
 		// hardcoded range, so it stays correct as generators are added or

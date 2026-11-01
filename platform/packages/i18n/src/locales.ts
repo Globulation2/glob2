@@ -197,5 +197,71 @@ export const locales = [
     name: '한국어',
     dir: 'ltr',
   },
+  {
+    code: 'hi',
+    gameCode: 'hi',
+    name: 'हिन्दी',
+    dir: 'ltr',
+  },
+  {
+    code: 'ur',
+    gameCode: 'ur',
+    name: 'اردو',
+    dir: 'rtl',
+  },
+  {
+    code: 'te',
+    gameCode: 'te',
+    name: 'తెలుగు',
+    dir: 'ltr',
+  },
+  {
+    code: 'sw',
+    gameCode: 'sw',
+    name: 'Kiswahili',
+    dir: 'ltr',
+  },
+  {
+    code: 'ta',
+    gameCode: 'ta',
+    name: 'தமிழ்',
+    dir: 'ltr',
+  },
+  {
+    code: 'bn',
+    gameCode: 'bn',
+    name: 'বাংলা',
+    dir: 'ltr',
+  },
+  {
+    code: 'fil',
+    gameCode: 'fil',
+    name: 'Filipino',
+    dir: 'ltr',
+  },
+  {
+    code: 'nb',
+    gameCode: 'nb',
+    name: 'Norsk bokmål',
+    dir: 'ltr',
+  },
+  {
+    code: 'ms',
+    gameCode: 'ms',
+    name: 'Bahasa Melayu',
+    dir: 'ltr',
+  },
+  {
+    code: 'bg',
+    gameCode: 'bg',
+    name: 'Български',
+    dir: 'ltr',
+  },
+  {
+    code: 'mr',
+    gameCode: 'mr',
+    name: 'मराठी',
+    dir: 'ltr',
+  },
 ] as const;
 export type Locale = (typeof locales)[number]['code'];

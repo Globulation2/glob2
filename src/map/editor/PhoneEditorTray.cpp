@@ -18,6 +18,7 @@
 #include <TouchText.h>
 #include <algorithm>
 #include <cmath>
+#include <map>
 
 using namespace GAGCore;
 
@@ -148,12 +149,13 @@ void PhoneEditor::layoutTray(double unit)
 		extent += row.width + cardGap * unit;
 		rows.push_back(std::move(row));
 	};
-	auto beginGroup = [&](const std::string &title)
+	auto beginGroup = [&](const std::string &title, std::string id)
 	{
 		if (!rows.empty())
 			extent += (groupGap - cardGap) * unit;
 		Chip chip;
 		chip.title = title;
+		chip.id = std::move(id);
 		chip.first = int(rows.size());
 		chips.push_back(std::move(chip));
 	};
@@ -166,7 +168,7 @@ void PhoneEditor::layoutTray(double unit)
 			if (grouped)
 				beginGroup(!group.title.empty() ? group.title
 							   : section == BrushSection::Resources ? tr("[Resources]")
-																	: group.key);
+																	: group.key, std::string(brushSectionKey(section)) + "/" + group.key);
 			for (const auto &entry : group.entries)
 			{
 				Row row;
@@ -178,7 +180,7 @@ void PhoneEditor::layoutTray(double unit)
 	if (paletteMode == 0)
 	{
 		addSection(BrushSection::Terrain, true);
-		beginGroup(tr("[brush section tools]"));
+		beginGroup(tr("[brush section tools]"), "tools");
 		for (const auto &group : catalog)
 		{
 			if (group.section != BrushSection::Areas && group.section != BrushSection::Tools)
@@ -599,40 +601,53 @@ void PhoneEditor::publishControls(bool shown)
 		publishedControls.clear();
 		return;
 	}
-	auto *gfx = globalContainer->gfx;
-	std::string json = "{\"surface\":{\"w\":" + std::to_string(gfx->getW()) + ",\"h\":" + std::to_string(gfx->getH()) +
-					   "},\"root\":{\"x\":" + std::to_string(int(modeBar.x)) + ",\"y\":" + std::to_string(int(modeBar.y)) +
-					   ",\"w\":" + std::to_string(int(modeBar.w)) + ",\"h\":" + std::to_string(int(modeBar.h + tray.h)) +
-					   "},\"controls\":{";
-	bool first = true;
-	auto add = [&](const std::string &key, ViewRect r, ViewRect area, const std::string &label)
+	const auto json = GAGGUI::ui::diagnosticJSON(browserControls());
+	if (json == publishedControls)
+		return;
+	publishedControls = json;
+	ApplicationHost::controlsChanged(this, publishedControls.c_str());
+}
+
+GAGGUI::ui::SurfaceSnapshot PhoneEditor::browserControls()
+{
+	using namespace GAGGUI::ui;
+	auto snapshot = inspectionHost().inspect();
+	// Preserve the original browser tray contract while MCP inspects the whole
+	// compact surface. This is a typed adapter, not another JSON/control model:
+	// the controls come from Host and geometry from the native tray layout.
+	std::map<std::string, ControlSnapshot> controls;
+	auto collect = [&](auto &&self, const std::vector<ControlSnapshot> &nodes) -> void
 	{
-		const ViewRect v = intersect(r, area);
-		std::string quoted;
-		for (char c : label)
-			if (c == '"' || c == '\\')
-				quoted += std::string("\\") + c;
-			else if (static_cast<unsigned char>(c) >= 0x20)
-				quoted += c;
-		json += std::string(first ? "" : ",") + "\"" + key + "\":{\"x\":" + std::to_string(int(r.x)) + ",\"y\":" +
-				std::to_string(int(r.y)) + ",\"w\":" + std::to_string(int(r.w)) + ",\"h\":" + std::to_string(int(r.h)) +
-				",\"visible\":{\"x\":" + std::to_string(int(v.x)) + ",\"y\":" + std::to_string(int(v.y)) + ",\"w\":" +
-				std::to_string(int(v.w)) + ",\"h\":" + std::to_string(int(v.h)) + "},\"enabled\":true,\"label\":\"" + quoted +
-				"\"}";
-		first = false;
+		for (const auto &node : nodes)
+		{
+			if (!node.key.empty()) controls.emplace(node.key, node);
+			self(self, node.children);
+		}
+	};
+	collect(collect, snapshot.controls);
+	snapshot.controls.clear();
+	auto legacyRect = [](ViewRect r) { return Rect{int(r.x), int(r.y), int(r.w), int(r.h)}; };
+	snapshot.bounds = legacyRect({modeBar.x, modeBar.y, modeBar.w, modeBar.h + tray.h});
+	auto append = [&](const std::string &key, ViewRect r, ViewRect clip, std::string label)
+	{
+		const auto it = controls.find(key);
+		if (it == controls.end()) return;
+		auto control = it->second;
+		control.children.clear();
+		control.bounds = legacyRect(r);
+		control.visible = legacyRect(intersect(r, clip));
+		std::erase_if(label, [](unsigned char c) { return c < 0x20; });
+		control.label = std::move(label);
+		snapshot.controls.push_back(std::move(control));
 	};
 	for (int i = 0; i < modeCount; ++i)
 	{
-		const ViewRect r{modeBar.x + i * modeBar.w / modeCount, modeBar.y, modeBar.w / modeCount, modeBar.h};
-		add("tray/mode/" + std::to_string(i), r, r, "");
+		const auto r = modeRect(i);
+		append("tray/mode/" + std::to_string(i), r, r, "");
 	}
 	for (size_t i = 0; i < chips.size(); ++i)
-		add("tray/chip/" + std::to_string(i), chips[i].rect, chipBar, chips[i].title);
+		append("tray/chip/" + std::to_string(i), chips[i].rect, chipBar, chips[i].title);
 	for (const auto &row : rows)
-		add("tray/" + row.id, row.rect, cardBar, row.lines.empty() ? std::string() : row.lines.front());
-	json += "}}";
-	if (json == publishedControls)
-		return;
-	publishedControls = std::move(json);
-	ApplicationHost::controlsChanged(this, publishedControls.c_str());
+		append("tray/" + row.id, row.rect, cardBar, row.lines.empty() ? std::string{} : row.lines.front());
+	return snapshot;
 }

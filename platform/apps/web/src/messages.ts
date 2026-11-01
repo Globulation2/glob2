@@ -1,4 +1,31 @@
 import * as localization from '../../../packages/i18n/src/index.ts';
+
+/** The music phase is construction; Building elsewhere names a structure. */
+export function musicMoodLabel(mood: string | undefined): string {
+  return t(localization.getLocale() === 'bg' && mood === 'Building' ? 'Build' : mood);
+}
+
+/** Canonical protocol tags stay in English; only their visible labels change. */
+export function aiTagLabel(tag: string): string {
+  switch (tag) {
+    case 'Balanced':
+      return t('Balanced');
+    case 'Rush':
+      return t('Rush');
+    case 'Defensive':
+      return t('Defensive');
+    case 'Economy':
+      return t('Economy');
+    case 'Expansion':
+      return t('Expansion');
+    case 'Experimental':
+      return t('Experimental');
+    case 'Beginner-friendly':
+      return t('Beginner-friendly');
+    default:
+      return tag;
+  }
+}
 function displayParams(
   params?: Record<string, unknown>,
 ): Record<string, string | number> | undefined {
@@ -54,6 +81,26 @@ export const formatRelative = localization.formatRelative;
 /** Keep notices in the source language so an open page can change locale later. */
 export function message(source: string): string {
   return source;
+}
+
+/** Pose IDs remain asset keys, including the swarm's empty static action. */
+export function skinActionLabel(action: string): string {
+  switch (action) {
+    case 'walk':
+      return t('Walk');
+    case 'swim':
+      return t('Swim');
+    case 'harvest':
+      return t('Harvest');
+    case 'fight':
+      return t('Fight');
+    case 'fly':
+      return t('Fly');
+    case '':
+      return t('Static pose');
+    default:
+      return action;
+  }
 }
 export function displayMessage(value: unknown): string {
   return typeof value === 'string' ? t(value) : translateError(value);

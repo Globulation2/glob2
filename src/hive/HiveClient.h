@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "HiveWorker.h"
+#include "HiveReport.h"
+#include "CommanderView.h"
 #include <nlohmann/json.hpp>
 #include "online/PlatformClient.h"
 #include "scripting/javascript/ScriptObservations.h"
@@ -24,7 +26,7 @@ struct ClientEnvironment
 	std::function<std::uint64_t()> now;
 	Online::OnlineStorage *storage = nullptr;
 };
-class Client
+class Client : public CommanderView
 {
 	GameGUI &gui;
 	Online::PlatformClient &platform;
@@ -57,14 +59,16 @@ class Client
 	bool save();
 	void restore();
 	void deliverResult();
+	ReportHistory reportHistory;
+	void appendReport(std::string text, ReportSource source = ReportSource::Remote, std::string parameter = {})
+	{
+		reportHistory.append(reports, std::move(text), source, std::move(parameter));
+	}
 
   public:
-	std::vector<std::string> reports;
 	std::string commandDraft, retryCommandId, retryCommandText;
 	bool commandSending = false, retryCommandOngoing = false;
-	std::map<std::string, std::string> controlStatus;
 	std::map<std::string, std::uint64_t> controlGeneration;
-	std::string progress;
 	Json account = Json::object();
 	Client(GameGUI &gui, Online::PlatformClient &platform, std::string match, int seat,
 		   ClientEnvironment environment = {});
@@ -76,5 +80,6 @@ class Client
 	void buyCredits();
 	bool available() const { return enabled; }
 	Json standingOrders() const;
+	Report reportPresentation(std::size_t index) const override { return reportHistory.at(reports, index); }
 };
 } // namespace Hive

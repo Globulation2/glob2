@@ -76,6 +76,15 @@
   width: 100%;
   gap: 12px;
   margin-bottom: 20px;
+  padding-block: 8px;
+  white-space: normal;
+}
+.sidebar-play .nav-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.sidebar-play > svg {
+  flex-shrink: 0;
 }
 .nav {
   display: flex;
@@ -234,6 +243,9 @@
 .sidebar-account.on .chip {
   border-color: var(--accent);
 }
+.sidebar-auth-icon {
+  display: none;
+}
 main {
   min-width: 0;
 }
@@ -326,8 +338,14 @@ main:focus {
 .sidebar-collapsed .app-sidebar .sidebar-utilities {
   flex-direction: column-reverse;
 }
+.sidebar-collapsed .app-sidebar .language-preference {
+  /* The full picker remains available in expanded navigation. Native selects
+     cannot show a readable language name inside the narrow icon rail. */
+  display: none;
+}
 .sidebar-collapsed .app-sidebar .app-about summary {
   font-size: var(--text-xs);
+  overflow-wrap: anywhere;
 }
 .sidebar-collapsed .app-sidebar .app-about[open] nav {
   position: fixed;
@@ -343,12 +361,17 @@ main:focus {
 .sidebar-collapsed .app-sidebar .sidebar-account .chip span {
   display: none;
 }
-.sidebar-collapsed .app-sidebar .sidebar-account :is(button, .btn) {
-  font-size: var(--text-xs);
-  padding: 0 2px;
-  max-width: 100%;
-  white-space: normal;
-  overflow-wrap: anywhere;
+.sidebar-collapsed .app-sidebar .sidebar-account .sidebar-auth {
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+.sidebar-collapsed .app-sidebar .sidebar-auth-icon {
+  display: block;
+}
+.sidebar-collapsed .app-sidebar .sidebar-auth-label {
+  display: none;
 }
 .sidebar-collapsed .app-sidebar .nav a:is(:hover, :focus-visible) .rail-tooltip {
   display: block;
@@ -396,8 +419,12 @@ main:focus {
   .app-sidebar .sidebar-utilities {
     flex-direction: column-reverse;
   }
+  .app-sidebar .language-preference {
+    display: none;
+  }
   .app-sidebar .app-about summary {
     font-size: var(--text-xs);
+    overflow-wrap: anywhere;
   }
   .app-sidebar .app-about[open] nav {
     position: fixed;
@@ -413,12 +440,17 @@ main:focus {
   .app-sidebar .sidebar-account .chip span {
     display: none;
   }
-  .app-sidebar .sidebar-account :is(button, .btn) {
-    font-size: var(--text-xs);
-    padding: 0 2px;
-    max-width: 100%;
-    white-space: normal;
-    overflow-wrap: anywhere;
+  .app-sidebar .sidebar-account .sidebar-auth {
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
+  .app-sidebar .sidebar-auth-icon {
+    display: block;
+  }
+  .app-sidebar .sidebar-auth-label {
+    display: none;
   }
   .app-sidebar .nav a:is(:hover, :focus-visible) .rail-tooltip {
     display: block;
@@ -483,19 +515,24 @@ main:focus {
 
 .section-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: var(--sp-3);
   margin: var(--sp-7) 0 var(--sp-3);
 }
 .section-head h2 {
   margin: 0;
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 .section-head a {
   font-weight: 700;
   font-size: var(--text-sm);
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   display: inline-flex;
   align-items: center;
   min-height: var(--target);
@@ -569,7 +606,79 @@ main:focus {
 .language-preference {
   width: 100%;
 }
+:root:lang(ta) .sidebar-collapsed .app-sidebar .language-preference select {
+  font-size: var(--text-xs);
+  padding-inline: 2px 10px;
+  background-position:
+    calc(100% - 8px) 50%,
+    calc(100% - 5px) 50%;
+  background-size: 3px 3px;
+}
+@media (max-width: 1099px) {
+  :root:lang(ta) .app-sidebar .language-preference select {
+    font-size: var(--text-xs);
+    padding-inline: 2px 10px;
+    background-position:
+      calc(100% - 8px) 50%,
+      calc(100% - 5px) 50%;
+    background-size: 3px 3px;
+  }
+}
 :root[dir='rtl'] .app-sidebar {
   border-inline-start: 0;
   border-inline-end: 1px solid var(--line);
+}
+
+/* Compact rails show a readable locale code while the native popup and
+   expanded drawer keep the complete language names. */
+.language-preference-control {
+  position: relative;
+  display: block;
+}
+.language-preference-compact {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font:
+    600 var(--text-sm) / 1 system-ui,
+    sans-serif;
+}
+.sidebar-collapsed .app-sidebar .language-preference-label {
+  display: none;
+}
+.sidebar-collapsed .app-sidebar .language-preference select {
+  appearance: none;
+  background-image: none;
+  color: transparent;
+  padding: 0;
+  height: 44px;
+}
+.sidebar-collapsed .app-sidebar .language-preference option {
+  color: var(--ink);
+  background: var(--surface);
+}
+.sidebar-collapsed .app-sidebar .language-preference-compact {
+  display: flex;
+}
+@media (max-width: 1099px) {
+  .app-sidebar .language-preference-label {
+    display: none;
+  }
+  .app-sidebar .language-preference select {
+    appearance: none;
+    background-image: none;
+    color: transparent;
+    padding: 0;
+    height: 44px;
+  }
+  .app-sidebar .language-preference option {
+    color: var(--ink);
+    background: var(--surface);
+  }
+  .app-sidebar .language-preference-compact {
+    display: flex;
+  }
 }

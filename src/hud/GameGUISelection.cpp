@@ -95,6 +95,14 @@ void GameGUI::syncSelectionView(void)
 	view.selectedBuilding=nullptr;
 	view.selectedUnit=nullptr;
 	const BuildingRef *observed = std::get_if<BuildingRef>(&selection);
+	if (selectionMode==BUILDING_SELECTION && observed &&
+		(!buildingInfoScrollTarget || *buildingInfoScrollTarget!=*observed))
+	{
+		buildingInfoScrollTarget=*observed;
+		buildingInfoScroll=0;
+		buildingInfoScrollMaximum=0;
+	}
+
 	clientRequests.publishObservedBuilding(
 		(selectionMode==BUILDING_SELECTION && observed) ? *observed : BuildingRef());
 }

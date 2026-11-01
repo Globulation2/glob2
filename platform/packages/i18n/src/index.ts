@@ -51,11 +51,42 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     const exact = locales.find((l) => l.code.toLowerCase() === tag);
     if (exact) return exact.code;
     const [language, ...parts] = tag.split('-');
+    // These catalogs cover a specific written form. Unicode extensions and
+    // private-use tags may contain script-like words without selecting a script.
+    const writtenScript = (
+      {
+        bg: 'cyrl',
+        hi: 'deva',
+        mr: 'deva',
+        bn: 'beng',
+        ur: 'arab',
+        sw: 'latn',
+        ms: 'latn',
+        fil: 'latn',
+        tl: 'latn',
+        te: 'telu',
+        ta: 'taml',
+      } as Record<string, string>
+    )[language ?? ''];
+    if (writtenScript) {
+      const extension = parts.findIndex((part) => part.length === 1);
+      const subtags = extension < 0 ? parts : parts.slice(0, extension);
+      const scripts = subtags.filter((part) => /^[a-z]{4}$/.test(part));
+      if (scripts.some((script) => script !== writtenScript)) continue;
+    }
+    // Legacy no-nyn and no_NO_NY explicitly request Nynorsk, which has no catalog.
+    if (language === 'no') {
+      const extension = parts.findIndex((part) => part.length === 1);
+      const subtags = extension < 0 ? parts : parts.slice(0, extension);
+      if (subtags.includes('nyn') || (subtags.includes('no') && subtags.includes('ny'))) continue;
+      return 'nb';
+    }
     if (language === 'pt') return parts.includes('br') ? 'pt-BR' : 'pt-PT';
     if (language === 'zh')
       return parts.some((p) => ['hant', 'tw', 'hk', 'mo'].includes(p)) ? 'zh-Hant' : 'zh-Hans';
     if (language === 'sr') return 'sr-Cyrl';
     if (language === 'in') return 'id';
+    if (language === 'tl') return 'fil';
     const base = locales.find((l) => l.code === language);
     if (base) return base.code;
   }
@@ -91,6 +122,16 @@ export function hasMessage(source: string, locale = selected): boolean {
   return !!catalog && Object.hasOwn(catalog, source);
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
+  bg: () => import('../locales/bg.json', { with: { type: 'json' } }),
+  fil: () => import('../locales/fil.json', { with: { type: 'json' } }),
+  bn: () => import('../locales/bn.json', { with: { type: 'json' } }),
+  ms: () => import('../locales/ms.json', { with: { type: 'json' } }),
+  hi: () => import('../locales/hi.json', { with: { type: 'json' } }),
+  mr: () => import('../locales/mr.json', { with: { type: 'json' } }),
+  te: () => import('../locales/te.json', { with: { type: 'json' } }),
+  ur: () => import('../locales/ur.json', { with: { type: 'json' } }),
+  sw: () => import('../locales/sw.json', { with: { type: 'json' } }),
+  ta: () => import('../locales/ta.json', { with: { type: 'json' } }),
   ar: () => import('../locales/ar.json', { with: { type: 'json' } }),
   ca: () => import('../locales/ca.json', { with: { type: 'json' } }),
   cs: () => import('../locales/cs.json', { with: { type: 'json' } }),
@@ -109,6 +150,7 @@ const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
   it: () => import('../locales/it.json', { with: { type: 'json' } }),
   ja: () => import('../locales/ja.json', { with: { type: 'json' } }),
   ko: () => import('../locales/ko.json', { with: { type: 'json' } }),
+  nb: () => import('../locales/nb.json', { with: { type: 'json' } }),
   nl: () => import('../locales/nl.json', { with: { type: 'json' } }),
   pl: () => import('../locales/pl.json', { with: { type: 'json' } }),
   'pt-BR': () => import('../locales/pt-BR.json', { with: { type: 'json' } }),

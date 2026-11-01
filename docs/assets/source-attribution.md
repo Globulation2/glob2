@@ -5,6 +5,8 @@ Sources of files not created by the Globulation 2 project:
 Font :
 sans.ttf : Glob2 Sans, based on DejaVu Sans 2.26 from Ubuntu, with Droid Sans Fallback CJK outlines. See data/fonts/README.md and accompanying font licenses.
 
+data/fonts/scripts/ : Noto script fonts, pinned to noto-fonts commit ffebf8c1ee449e544955a7e813c54f9b73848eac, under SIL Open Font License 1.1. Their shaping tables are retained; see data/fonts/LICENSE-Noto.txt and data/fonts/README.md.
+
 Web font (platform web app and sign-in pages only, not the game) :
 Nunito, copyright 2014 The Nunito Project Authors, SIL Open Font License 1.1 (licence in platform/apps/web/public/fonts/LICENSE-Nunito.txt), from @fontsource-variable/nunito. See platform/apps/web/art/README.md.
 
@@ -32,8 +34,8 @@ Runtime image codecs:
 SDL_image (zlib license) and libwebp (BSD license and patent grant).
 See data/image-codec-licenses.txt for notices shipped with runtime assets.
 
-Generated terrain materials (data/gfx/terrain-<name>0….png for the catalogue
-materials listed in tools/terrain_builtin_names.json):
+Generated terrain materials (data/gfx/terrain-<name>0….png for the 29 catalogue
+materials, including grass, sand, ice, road and water):
 Original procedural synthesis by tools/artwork/terrain_synth.py (noise fields,
 Worley cells, stamps and palette ramps; no pixels derived from other artwork),
 GPL-3.0-or-later like the rest of the project. Materials later replaced through

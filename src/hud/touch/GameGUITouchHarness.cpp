@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
+#include "tutorial/TutorialGuidance.h"
 #include <Environment.h>
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include <nlohmann/json.hpp>
 #include <string>
+#include <sstream>
 #include <memory>
 #include <algorithm>
 #include <iostream>
@@ -18,6 +22,7 @@
 #include <HostViewport.h>
 #include "InGameTouchTheme.h"
 #include "GameGUIDialog.h"
+#include "tutorial/TutorialGuidance.h"
 #include "LoadSaveDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
@@ -55,6 +60,7 @@
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#include <source_location>
 
 static void require(bool condition, const char *message)
 {
@@ -104,6 +110,627 @@ static void verifyTouchFontRaster()
 class GameGUITouchHarness
 {
   public:
+	static void semanticControls()
+	{
+		using namespace GAGGUI::ui;
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Semantic", 0, BasePlayer::P_LOCAL);
+		REQUIRE(gui.loadFromHeaders(map, players, true, true));
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.game.map.setMapDiscovered();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		globalContainer->gfx->setResponsiveViewport(true, 800, 600);
+		auto &touch = *gui.touch;
+		gui.clearSelection();
+		gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+		touch.panelOpen = false;
+		glob2test::drawGUI(gui, 0);
+		auto act = [&](const std::string &key, SemanticAction action = {})
+		{
+			std::string error;
+			const bool applied = gui.hudInspectionHost().act(key, action, error);
+			INFO(error);
+			CHECK(applied);
+		};
+		act("touch/navigation/buildings");
+		CHECK(touch.panelOpen);
+		std::string item;
+		for (const auto &control : touch.describeControls())
+			if (control.enabled && control.key.starts_with("touch/palette/") && control.role == "button")
+			{ item = control.key; break; }
+		REQUIRE_FALSE(item.empty());
+		act(item);
+		CHECK(gui.selectionMode == GameGUI::TOOL_SELECTION);
+		std::string error;
+		CHECK_FALSE(gui.hudInspectionHost().act("touch/placement/confirm", {}, error));
+		act("touch/placement/cancel");
+		act("touch/navigation/tools");
+		REQUIRE(touch.lensVisible());
+		act("touch/lens/50");
+		CHECK(touch.peekOpen);
+		CHECK_FALSE(gui.hudInspectionHost().find("touch/navigation/menu"));
+		act("touch/peek/done");
+		act("touch/lens/3");
+		REQUIRE(touch.statsOpen);
+		auto &panel = gui.statistics();
+        gui.inspectionHosts();
+        REQUIRE(panel.host().find("stats/topic/2"));
+        REQUIRE(panel.host().act("stats/topic/2", {}, error));
+        CHECK(panel.topic() == InGameStatisticsPanel::Topic::Economy);
+		act("touch/statistics/sheet", {ActionKind::Scroll, -80});
+		CHECK(touch.statsOpen);
+		act("touch/statistics/sheet", {ActionKind::Scroll, 0});
+		CHECK(touch.statsOpen);
+		const int pull = int(std::ceil(80 * globalContainer->gfx->logicalUnitsPerPoint()));
+		act("touch/statistics/sheet", {ActionKind::Scroll, pull});
+		CHECK_FALSE(touch.statsOpen);
+		CHECK(touch.statsDrag == 0);
+		act("touch/lens/3");
+		act("touch/statistics/close");
+		// Placement confirmation is bound to the tool and exact pending world
+		// position, although its visible label/rectangle remain unchanged.
+		gui.setSelection(GameGUI::TOOL_SELECTION, const_cast<char *>("inn"));
+		touch.previewType = "inn";
+		touch.preview = GAGCore::ViewPoint{320, 320};
+		auto command = semanticDispatch();
+		const auto snapshot = gui.hudInspectionHost().inspect();
+		command->surface = snapshot.instance;
+		command->key = "touch/placement/confirm";
+		command->action = {};
+		std::function<void(const std::vector<ControlSnapshot> &)> find = [&](const auto &nodes)
+		{
+			for (const auto &node : nodes)
+			{
+				if (node.key == command->key) command->revision = node.revision;
+				find(node.children);
+			}
+		};
+		find(snapshot.controls);
+		REQUIRE(command->revision > 0);
+		touch.preview->x += 32;
+		CHECK(gui.hudInspectionHost().event(command->event()));
+		CHECK_FALSE(command->error.empty());
+		CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+		act("touch/placement/cancel");
+		int slot = 0;
+		while (gui.localTeam->myBuildings[slot]) ++slot;
+		auto *building = new Building(0, 0, slot, gui.game.buildingsTypes.getTypeNum("inn", 0, false),
+			gui.localTeam, &gui.game.buildingsTypes, 1, 1);
+		gui.localTeam->attachBuilding(slot, building);
+		gui.setSelection(GameGUI::BUILDING_SELECTION, building);
+		touch.panelOpen = true;
+		glob2test::drawGUI(gui, 0);
+		std::string workers;
+		int before = 0;
+		for (const auto &control : touch.describeControls())
+			if (control.key.starts_with("touch/building/") && control.key.find("/6/") != std::string::npos &&
+				std::find(control.actions.begin(), control.actions.end(), ActionKind::SetValue) != control.actions.end())
+			{ workers = control.key; before = std::get<int>(control.value); break; }
+		REQUIRE_FALSE(workers.empty());
+		const int requested = before > 0 ? before - 1 : 1;
+		act(workers, {ActionKind::SetValue, requested});
+		CHECK(gui.getOrder()->getOrderType() == ORDER_MODIFY_BUILDING);
+		CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+		CHECK_FALSE(gui.hudInspectionHost().act(workers, {ActionKind::SetValue, building->type->semantics.assignmentLimit + 1}, error));
+		CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+		globalContainer->liveSpectating = true;
+		CHECK_FALSE(gui.hudInspectionHost().act(workers, {ActionKind::SetValue, before}, error));
+		CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+		// Live spectators get the same view-only tactical operations as replays.
+		// This is deliberately not a replay, to exercise the ownership gate.
+		REQUIRE_FALSE(globalContainer->replaying);
+		gui.clearSelection();
+		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+		touch.panelOpen = true;
+		touch.panelScroll = 0;
+		glob2test::drawGUI(gui, 0);
+		std::string fog;
+		for (const auto &control : touch.describeControls())
+			if (control.key.starts_with("touch/tactical/31/")) { fog = control.key; break; }
+		REQUIRE_FALSE(fog.empty());
+		const bool beforeFog = globalContainer->replayShowFog;
+		act(fog);
+		CHECK(bool(globalContainer->replayShowFog) != beforeFog);
+		CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+		globalContainer->liveSpectating = false;
+	}
+
+	static void occludedControls()
+	{
+		using namespace GAGGUI::ui;
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Ownership", 0, BasePlayer::P_LOCAL);
+		REQUIRE(gui.loadFromHeaders(map, players, true, true));
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.game.map.setMapDiscovered();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		auto *gfx = globalContainer->gfx;
+		gfx->setResponsiveViewport(true, 800, 600);
+		auto &touch = *gui.touch;
+		gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+		touch.panelOpen = false;
+		glob2test::drawGUI(gui, 0);
+		auto cover = [&](Rect r)
+		{
+			auto lesson = std::make_shared<Tutorial::Model>();
+			lesson->lessonId = "ownership"; lesson->stepId = "covered"; lesson->count = 1;
+			lesson->title = lesson->instruction = lesson->touchInstruction = "[intro help]";
+			gui.tutorialGuidance = std::make_unique<Tutorial::Guidance>([](int) {});
+			gui.tutorialGuidance->model(lesson);
+			gui.tutorialGuidance->attach(*gfx);
+			auto &host = gui.tutorialGuidance->host();
+			host.setAvailable([r](const auto &, const auto &) { return r; });
+			host.setPlacement([](Size, Rect area) { return area; });
+			host.invalidate(); host.layoutIfNeeded();
+		};
+		const auto button = gui.hudInspectionHost().bounds("touch/navigation/buildings");
+		REQUIRE(button.w > 0);
+		cover({button.x + button.w / 2, button.y, button.w - button.w / 2, button.h});
+		std::string error;
+		CHECK_FALSE(gui.hudInspectionHost().act("touch/navigation/buildings", {}, error));
+		touch.interfaceTap({double(button.x + button.w / 4), double(button.center().y)});
+		CHECK_FALSE(touch.panelOpen); // Uncovered half follows the same conservative eligibility.
+		const auto keyboard = touch.keyboardTargets();
+		auto targetKey = [&](const ViewRect &r)
+		{ return touch.pointerControlKey({r.x + r.w / 2, r.y + r.h / 2}); };
+		for (size_t i = 0; i < keyboard.size(); ++i)
+			if (targetKey(keyboard[i]) == "touch/navigation/buildings") touch.keyboardFocus = int(i);
+		REQUIRE(touch.focusedControlKey() == "touch/navigation/buildings");
+		auto focusedState = [&]()
+		{
+			std::optional<ControlSnapshot> focused;
+			std::function<void(const std::vector<ControlSnapshot> &)> visit = [&](const auto &nodes)
+			{
+				for (const auto &node : nodes)
+				{
+					if (node.focused) focused = node;
+					visit(node.children);
+				}
+			};
+			visit(gui.hudInspectionHost().inspect().controls);
+			return focused;
+		};
+		const auto obscuredFocus = focusedState();
+		REQUIRE(obscuredFocus);
+		CHECK(obscuredFocus->key == "touch/navigation/buildings");
+		CHECK(obscuredFocus->blocked); // Keep real legacy focus visible even after another surface covers it.
+		SDL_Event tab{}; tab.type = SDL_EVENT_KEY_DOWN; tab.key.key = SDLK_TAB;
+		CHECK(touch.process(tab));
+		const auto advancedFocus = focusedState();
+		REQUIRE(advancedFocus);
+		CHECK(advancedFocus->key != obscuredFocus->key);
+		CHECK_FALSE(advancedFocus->blocked);
+		CHECK(advancedFocus->key == touch.focusedControlKey());
+		CHECK(touch.keyboardTargets().size() == keyboard.size()); // Filtering preserves authored target order and geometry.
+		cover({0, 0, gfx->getW(), gfx->getH()});
+		CHECK(touch.process(tab));
+		CHECK(touch.keyboardFocus == -1);
+		CHECK_FALSE(focusedState());
+		gui.tutorialGuidance.reset();
+		// Statistics temporarily hides guidance, so the sheet header remains
+        // actionable even if the suspended lesson occupied the same pixels.
+		touch.statsOpen = true;
+		const auto sheet = touch.statsLayout();
+		const auto sheetBounds = gui.hudInspectionHost().bounds("touch/statistics/sheet");
+		REQUIRE(sheetBounds.w > 20);
+		cover({sheetBounds.right() - 10, sheetBounds.y, 10, sheetBounds.h});
+		CHECK(gui.hudInspectionHost().act("touch/statistics/sheet", {ActionKind::Scroll, 100}, error));
+        CHECK_FALSE(touch.statsOpen);
+        touch.statsOpen = true;
+		const auto start = sheet.title;
+		for (const auto type : {SDL_EVENT_FINGER_DOWN, SDL_EVENT_FINGER_MOTION, SDL_EVENT_FINGER_UP})
+		{
+			SDL_Event finger{}; finger.type = type;
+			finger.tfinger.touchID = 83; finger.tfinger.fingerID = 1;
+			finger.tfinger.x = float(start.x + start.w / 2) / gfx->getW();
+			finger.tfinger.y = float(start.y + start.h / 2 + (type == SDL_EVENT_FINGER_DOWN ? 0 : 80 * gfx->logicalUnitsPerPoint())) / gfx->getH();
+			CHECK(touch.process(finger));
+		}
+		CHECK_FALSE(touch.statsOpen);
+		CHECK(touch.statsDrag == 0);
+		// A popup opened after the header press still interrupts its capture.
+		touch.statsOpen = true;
+		touch.cancel();
+		SDL_Event interrupted{}; interrupted.type = SDL_EVENT_FINGER_DOWN;
+		interrupted.tfinger.touchID = 84; interrupted.tfinger.fingerID = 1;
+		interrupted.tfinger.x = float(start.x + start.w / 2) / gfx->getW();
+		interrupted.tfinger.y = float(start.y + start.h / 2) / gfx->getH();
+		CHECK(touch.process(interrupted));
+		REQUIRE(touch.fingers.size() == 1);
+		auto &statisticsHost = gui.statisticsHost();
+		statisticsHost.openPopup({.anchor = gui.statisticsBounds(), .options = {"Keep open"}});
+		REQUIRE(statisticsHost.popupOpen());
+		interrupted.type = SDL_EVENT_FINGER_MOTION;
+		interrupted.tfinger.y += float(80 * gfx->logicalUnitsPerPoint()) / gfx->getH();
+		CHECK(touch.process(interrupted));
+		CHECK(touch.statsOpen);
+		CHECK(touch.statsDrag == 0);
+		CHECK(touch.ignoreTouchSequence);
+		interrupted.type = SDL_EVENT_FINGER_UP;
+		CHECK(touch.process(interrupted));
+		CHECK(statisticsHost.popupOpen());
+		statisticsHost.closePopup();
+		touch.statsOpen = false;
+		touch.cancel();
+		gui.tutorialGuidance.reset();
+		REQUIRE(gui.hudInspectionHost().act("touch/navigation/buildings", {}, error));
+		REQUIRE(touch.panelOpen);
+		const auto scroll = gui.hudInspectionHost().bounds("touch/palette/scroll");
+		REQUIRE(scroll.w > 0);
+		cover({scroll.x + scroll.w / 2, scroll.y, scroll.w - scroll.w / 2, scroll.h});
+		const double offset = touch.panelScroll;
+		SDL_Event wheel{}; wheel.type = SDL_EVENT_MOUSE_WHEEL;
+		wheel.wheel.mouse_x = scroll.x + scroll.w / 4; wheel.wheel.mouse_y = scroll.center().y;
+		wheel.wheel.y = -3;
+		CHECK(touch.process(wheel));
+		CHECK(touch.panelScroll == offset);
+		SDL_Event page{}; page.type = SDL_EVENT_KEY_DOWN; page.key.key = SDLK_PAGEDOWN;
+		CHECK(touch.process(page));
+		CHECK(touch.panelScroll == offset);
+		gui.tutorialGuidance.reset();
+		int slot = 0;
+		while (gui.localTeam->myBuildings[slot]) ++slot;
+		auto *building = new Building(0, 0, slot, gui.game.buildingsTypes.getTypeNum("inn", 0, false),
+			gui.localTeam, &gui.game.buildingsTypes, 1, 1);
+		gui.localTeam->attachBuilding(slot, building);
+		gui.setSelection(GameGUI::BUILDING_SELECTION, building);
+		touch.panelOpen = true;
+		glob2test::drawGUI(gui, 0);
+		REQUIRE(touch.usesDial());
+		const auto at = touch.dialActionPoint(6, 0, 0);
+		const auto region = touch.dialRegionAt(at);
+		REQUIRE(region);
+		REQUIRE(region->part == GameGUITouch::DialRegion::Arc);
+		const auto key = touch.buildingControlKey(region->action, region->part);
+		const auto arc = gui.hudInspectionHost().bounds(key);
+		const int width = std::max(1, arc.w / 4);
+		const Rect obscured{at.x < arc.center().x ? arc.right() - width : arc.x, arc.y, width, arc.h};
+		REQUIRE_FALSE(obscured.contains(Point{int(at.x), int(at.y)}));
+		cover(obscured);
+		CHECK_FALSE(gui.hudInspectionHost().act(key, {ActionKind::SetValue, 2}, error));
+		touch.heldActionKind = 6; touch.heldActionValue = 0; touch.heldActionConfirmation = false;
+		touch.interfaceTap(at);
+		SDL_Event down{}; down.type = SDL_EVENT_FINGER_DOWN;
+		down.tfinger.touchID = 81; down.tfinger.fingerID = 1;
+		CHECK(touch.processAllocationPointer(down, at));
+		CHECK_FALSE(touch.allocation);
+		CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+		gui.tutorialGuidance.reset(); touch.cancel();
+		gui.setSelection(GameGUI::BRUSH_SELECTION);
+		gui.toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
+		gui.brush.defaultSelection();
+		glob2test::drawGUI(gui, 0);
+		const Rect coveredMap{300, 180, 64, 64};
+		cover(coveredMap);
+		const auto checksum = gui.game.checkSum();
+		for (const auto type : {SDL_EVENT_FINGER_DOWN, SDL_EVENT_FINGER_MOTION, SDL_EVENT_FINGER_UP})
+		{
+			SDL_Event finger{}; finger.type = type; finger.tfinger.touchID = 82; finger.tfinger.fingerID = 1;
+			finger.tfinger.x = float(coveredMap.center().x) / gfx->getW();
+			finger.tfinger.y = float(coveredMap.center().y) / gfx->getH();
+			CHECK(touch.process(finger));
+		}
+		CHECK(gui.game.checkSum() == checksum);
+		CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+		gui.tutorialGuidance.reset(); touch.cancel(); gui.clearSelection();
+		// Resize the actual window: responsive viewport arguments are minimum
+		// logical dimensions, so changing those alone does not make it shorter.
+		// At this compact landscape size the floating palette covers part of the
+		// scenario message; the earlier, taller fixture leaves them disjoint.
+		const int oldWidth = gfx->getW(), oldHeight = gfx->getH();
+		gfx->setResponsiveViewport(true, 640, 360);
+		auto *window = SDL_GetWindowFromID(gfx->windowID());
+		REQUIRE(SDL_SetWindowSize(window, 640, 360));
+		REQUIRE(SDL_SyncWindow(window));
+		SDL_Event resize{};
+		resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+		GAGCore::GraphicContext::translateMouseEvent(&resize);
+		gui.viewportResized(oldWidth, oldHeight, gfx->getW(), gfx->getH());
+		REQUIRE(gfx->getW() == 640);
+		REQUIRE(gfx->getH() == 360);
+		REQUIRE_FALSE(touch.layout().persistentPanel);
+		gui.scriptText = std::string(30, 'x') + "\n" + std::string(30, 'y') + "\n" + std::string(30, 'z');
+		gui.swallowSpaceKey = true;
+		touch.panelOpen = false;
+		glob2test::drawGUI(gui, 0);
+		const auto lower = touch.describeControls();
+		for (const auto &control : lower)
+			if (control.key.starts_with("touch/scenario-message/"))
+				REQUIRE(gui.hudInspectionHost().find(control.key));
+		REQUIRE(gui.hudInspectionHost().act("touch/navigation/buildings", {}, error));
+		REQUIRE(touch.panelOpen);
+		const auto panel = touch.layout().panel;
+		const Rect above{int(panel.x), int(panel.y), int(panel.w), int(panel.h)};
+		bool checked = false;
+		for (const auto &control : lower)
+			if (control.key.starts_with("touch/scenario-message/") && control.bounds.intersects(above))
+			{
+				checked = true;
+				CHECK_FALSE(gui.hudInspectionHost().find(control.key));
+				CHECK_FALSE(gui.hudInspectionHost().act(control.key, {control.actions.front(), 32}, error));
+			}
+		CHECK(checked);
+	}
+
+	static void editorRailOwnership()
+	{
+		using namespace GAGCore;
+		// The bounded opt-in must preserve old geometry where it fits, including
+		// the mirrored Undo chip, while widening rather than shrinking targets.
+		auto contains = [](ViewRect outer, ViewRect inner)
+		{
+			return inner.w > 0 && inner.h > 0 && inner.x >= outer.x - 0.001 &&
+				inner.y >= outer.y - 0.001 && inner.x + inner.w <= outer.x + outer.w + 0.001 &&
+				inner.y + inner.h <= outer.y + outer.h + 0.001;
+		};
+		for (double unit : {1., 1.25, 2.})
+			for (bool left : {false, true})
+				for (bool undo : {false, true})
+					for (auto size : {std::pair{552., 124.}, std::pair{552., 360.}, std::pair{552., 400.}, std::pair{552., 1000.}})
+					{
+						const ViewRect area{8 * unit, 56 * unit, size.first * unit, size.second * unit};
+						const auto rail = BrushHUD::boundedLayout(area, left, unit, true, true, undo);
+						REQUIRE(rail.detents.size() == BrushTool::BRUSH_COUNT);
+						for (auto rect : rail.detents)
+						{
+							CHECK(contains(area, rect));
+							CHECK(rect.h >= InGameTouchTheme::brushRailMinimumCell * unit);
+						}
+						CHECK(contains(area, rail.mode));
+						CHECK(contains(area, rail.pan));
+						if (undo) CHECK(contains(area, rail.undo));
+						if (size.second >= 360)
+						{
+							const auto old = BrushHUD::layout(area, left, unit, true, true, undo);
+							for (size_t i = 0; i < rail.detents.size(); ++i)
+							{
+								CHECK(rail.detents[i].x == old.detents[i].x);
+								CHECK(rail.detents[i].y == old.detents[i].y);
+								CHECK(rail.detents[i].w == old.detents[i].w);
+								CHECK(rail.detents[i].h == old.detents[i].h);
+							}
+							for (auto pair : {std::pair{rail.mode, old.mode}, std::pair{rail.pan, old.pan},
+								std::pair{rail.undo, old.undo}, std::pair{rail.rail, old.rail}})
+							{
+								CHECK(pair.first.x == pair.second.x); CHECK(pair.first.y == pair.second.y);
+								CHECK(pair.first.w == pair.second.w); CHECK(pair.first.h == pair.second.h);
+							}
+						}
+					}
+		CHECK(BrushHUD::boundedLayout({0, 0, 4, 4}, false, 1, true, true, true).detents.empty());
+		CHECK(BrushHUD::boundedLayout({0, 0, 400, 400}, false, 0, true, true, true).detents.empty());
+		auto *gfx = globalContainer->gfx;
+		// Exercise the clipped painter against deliberately overflowing legacy
+		// geometry: font transforms and the touched-size preview must retain the
+		// owner clip, rather than resetting it between primitives.
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+			SDL_CreateSurface(568, 320, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+		REQUIRE(pixels);
+		const ViewRect canvas{0, 48, 568, 140};
+		// Fractional empty clips must not round outward to a one-pixel stripe.
+		gfx->drawToSurface(pixels.get(), 1, [&]
+		{
+			// Offscreen passes begin in map mode; this painter belongs to the UI.
+			gfx->endMapTransform();
+			gfx->drawFilledRect(0, 0, 568, 320, Color(17, 23, 29));
+			BrushHUD::State state;
+			state.figure = 7; state.touched = 7;
+			state.modeLabel = "Paint"; state.panLabel = "Pan"; state.undoLabel = "Undo";
+			BrushHUD::draw(BrushHUD::layout({8, 56, 552, 124}, false, 1, true, true, true),
+				state, {500.25, 0.25, 0, 319.5});
+		});
+		for (int y = 0; y < 320; y += 4)
+			for (int x = 0; x < 568; x += 4)
+			{
+				Uint8 r, g, b, a;
+				REQUIRE(SDL_ReadSurfacePixel(pixels.get(), x, y, &r, &g, &b, &a));
+				CHECK(r == 17); CHECK(g == 23); CHECK(b == 29);
+			}
+		gfx->drawToSurface(pixels.get(), 1, [&]
+		{
+			// Offscreen passes begin in map mode; this painter belongs to the UI.
+			gfx->endMapTransform();
+			gfx->drawFilledRect(0, 0, 568, 320, Color(17, 23, 29));
+			BrushHUD::State state;
+			state.figure = 7; state.touched = 7;
+			state.modeLabel = "Paint"; state.panLabel = "Pan"; state.undoLabel = "Undo";
+			BrushHUD::draw(BrushHUD::layout({8, 56, 552, 124}, false, 1, true, true, true), state, canvas);
+		});
+		for (int y = 0; y < 320; y += 4)
+			for (int x = 0; x < 568; x += 4)
+				if (!canvas.contains({double(x), double(y)}))
+				{
+					Uint8 r, g, b, a;
+					REQUIRE(SDL_ReadSurfacePixel(pixels.get(), x, y, &r, &g, &b, &a));
+					CHECK(r == 17); CHECK(g == 23); CHECK(b == 29);
+				}
+		MapEdit editor;
+		REQUIRE(editor.load("maps/balanced.map"));
+		editor.phone = std::make_unique<PhoneEditor>(editor);
+		auto &touch = *editor.phone;
+		editor.preparePresentation();
+		const int savedThumb = globalContainer->settings.thumbSide;
+		const float savedScale = gfx->getUiScale();
+		struct Restore
+		{
+			GraphicContext *gfx; int thumb; float scale;
+			~Restore() { globalContainer->settings.thumbSide = thumb; gfx->setUiScale(scale); }
+		} restore{gfx, savedThumb, savedScale};
+		Uint32 ticks = 1000;
+		auto finger = [&](Uint32 type, ViewPoint point)
+		{
+			SDL_Event event{}; event.type = type;
+			event.tfinger.timestamp = SDL_MS_TO_NS(ticks += 400);
+			event.tfinger.touchID = 29; event.tfinger.fingerID = 1;
+			event.tfinger.x = point.x / gfx->getW(); event.tfinger.y = point.y / gfx->getH();
+			REQUIRE(touch.event(event));
+		};
+		auto tap = [&](ViewPoint point) { finger(SDL_EVENT_FINGER_DOWN, point); finger(SDL_EVENT_FINGER_UP, point); };
+		auto centre = [](ViewRect rect) { return ViewPoint{rect.x + rect.w / 2, rect.y + rect.h / 2}; };
+		for (float scale : {1.f, 1.25f, 1.5f})
+			for (auto size : {std::pair{320, 568}, std::pair{568, 320}, std::pair{568, 216}})
+				for (int side : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
+				{
+					INFO("Requested " << size.first << "x" << size.second << " scale=" << scale << " thumb=" << side);
+					// Keep authored viewport sizes fixed while varying native output
+					// scaling; normalized real finger events must still hit the model.
+					const bool scaleSet = gfx->setUiScale(scale);
+					const std::string scaleError = SDL_GetError();
+					INFO("Scale setter=" << scaleSet << " SDL error=" << scaleError);
+					REQUIRE(scaleSet);
+					// A fixed logical canvas intentionally survives raw OS window
+					// resizing. Use the application's immediate viewport boundary.
+					const bool resized = gfx->resizeViewport(int(size.first * scale), int(size.second * scale));
+					const std::string resizeError = SDL_GetError();
+					INFO("Viewport setter=" << resized << " SDL error=" << resizeError);
+					REQUIRE(resized);
+					SDL_Window *window = SDL_GetWindowFromID(gfx->windowID());
+					globalContainer->settings.thumbSide = side;
+					touch.chooseMode(0); editor.performAction("select water"); touch.prepare();
+					const double unit = gfx->logicalUnitsPerPoint();
+					int windowWidth = 0, windowHeight = 0, pixelWidth = 0, pixelHeight = 0;
+					SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+					SDL_GetWindowSizeInPixels(window, &pixelWidth, &pixelHeight);
+					const int logicalWidth = gfx->getW(), logicalHeight = gfx->getH();
+					const auto initialSafe = touch.safe, initialContent = touch.content, initialMap = touch.mapButton();
+					const bool initialTools = touch.tools, initialMapShown = touch.showsMapButton();
+					INFO("Actual logical=" << logicalWidth << "x" << logicalHeight << " window=" << windowWidth << "x" << windowHeight
+						<< " pixels=" << pixelWidth << "x" << pixelHeight << " unit=" << unit << " uiScale=" << gfx->getUiScale());
+					REQUIRE(logicalWidth == size.first);
+					REQUIRE(logicalHeight == size.second);
+					INFO("Initial safe=" << initialSafe.x << "," << initialSafe.y << "," << initialSafe.w << "," << initialSafe.h
+						<< " content=" << initialContent.x << "," << initialContent.y << "," << initialContent.w << "," << initialContent.h
+						<< " tools=" << initialTools << " MapShown=" << initialMapShown << " Map=" << initialMap.x << "," << initialMap.y
+						<< "," << initialMap.w << "," << initialMap.h);
+					CHECK_FALSE((touch.showsMapButton() && !contains(touch.content, touch.mapButton())));
+					if (size.second == 216) REQUIRE_FALSE(touch.showsMapButton());
+					const ViewPoint done{touch.safe.x + touch.safe.w * 7 / 8, touch.safe.y + 22 * unit};
+					REQUIRE(touch.hit(done) == -5);
+					tap(done);
+					REQUIRE(editor.selectionMode == MapEdit::PlaceNothing);
+					REQUIRE_FALSE(touch.pan);
+					editor.performAction("select sand"); touch.prepare();
+					if (touch.rail().detents.empty())
+					{
+						// The ordinary selected-tab toggle is also inspectable: callers
+						// can free map space without guessing another coordinate.
+						if (side == Settings::THUMB_LEFT)
+						{
+							const auto targets = touch.controlTargets();
+							const auto tab = std::find_if(targets.begin(), targets.end(), [](const auto &target)
+								{ return target.control.key == "tray/mode/0"; });
+							REQUIRE(tab != targets.end());
+							const auto &box = tab->control.bounds;
+							tap({box.x + box.w / 2., box.y + box.h / 2.});
+						}
+						else
+						{
+							std::string error;
+							REQUIRE(touch.inspectionHost().act("tray/mode/0", {}, error));
+						}
+						REQUIRE_FALSE(touch.tools);
+						touch.prepare();
+						REQUIRE(touch.showsMapButton());
+						CHECK(contains(touch.content, touch.mapButton()));
+					}
+					const auto rail = touch.rail();
+					const auto finalSafe = touch.safe, finalContent = touch.content, finalMap = touch.mapButton();
+					INFO("Final safe=" << finalSafe.x << "," << finalSafe.y << "," << finalSafe.w << "," << finalSafe.h
+						<< " content=" << finalContent.x << "," << finalContent.y << "," << finalContent.w << "," << finalContent.h
+						<< " tools=" << touch.tools << " MapShown=" << touch.showsMapButton() << " Map=" << finalMap.x << "," << finalMap.y
+						<< "," << finalMap.w << "," << finalMap.h << " railCount=" << rail.detents.size()
+						<< " modeBar=" << touch.modeBar.x << "," << touch.modeBar.y << "," << touch.modeBar.w << "," << touch.modeBar.h
+						<< " palette=" << touch.paletteMode << " chips=" << touch.chips.size());
+					REQUIRE(rail.detents.size() == BrushTool::BRUSH_COUNT);
+					for (unsigned i = 0; i < BrushTool::BRUSH_COUNT; ++i)
+					{
+						REQUIRE(contains(touch.content, rail.detents[i]));
+						std::string error;
+						REQUIRE(touch.inspectionHost().act("editor/brush/shape/" + std::to_string(i), {}, error));
+						CHECK(editor.brush.getFigure() == i);
+					}
+					for (const auto &target : touch.controlTargets())
+						if (target.control.key.starts_with("editor/brush/"))
+							CHECK(target.control.clip.has_value());
+					tap(centre(rail.detents[2])); CHECK(editor.brush.getFigure() == 2);
+					finger(SDL_EVENT_FINGER_DOWN, centre(rail.detents[0]));
+					CHECK(editor.brush.getFigure() == 0); CHECK(touch.railTouched == 0);
+					finger(SDL_EVENT_FINGER_MOTION, done);
+					CHECK(editor.brush.getFigure() == 0); // The header never scrubs the rail.
+					finger(SDL_EVENT_FINGER_MOTION, centre(rail.detents[7]));
+					CHECK(editor.brush.getFigure() == 7); CHECK(touch.railTouched == 7);
+					finger(SDL_EVENT_FINGER_UP, centre(rail.detents[7]));
+					CHECK(touch.railTouched == -1); CHECK(editor.brush.getFigure() == 7);
+					tap(centre(rail.pan)); CHECK(touch.pan);
+					tap(centre(rail.pan)); CHECK_FALSE(touch.pan);
+					const auto mode = editor.brush.getType(); tap(centre(rail.mode));
+					CHECK(editor.brush.getType() != mode);
+				}
+		// A real Undo on a narrow, short canvas must not steal the opposite
+		// Map button. Exercise both callbacks through the ordinary touch path.
+		for (int side : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
+		{
+			REQUIRE(gfx->setUiScale(1));
+			const bool resized = gfx->resizeViewport(320, 320);
+			const std::string resizeError = SDL_GetError();
+			INFO("Undo viewport setter=" << resized << " SDL error=" << resizeError);
+			REQUIRE(resized);
+			REQUIRE(gfx->getW() == 320); REQUIRE(gfx->getH() == 320);
+			globalContainer->settings.thumbSide = side;
+			touch.chooseMode(3); editor.performAction("select forbidden zone"); touch.prepare();
+			editor.updateCamera(); editor.brush.setFigure(0);
+			std::optional<std::pair<ViewPoint, ViewPoint>> stroke;
+			const double unit = gfx->logicalUnitsPerPoint();
+			for (int row = 1; row < 4 && !stroke; ++row)
+				for (double x = touch.content.x + 8 * unit;
+					x + 24 * unit < touch.content.x + touch.content.w && !stroke; x += 24 * unit)
+				{
+					const ViewPoint a{x, touch.content.y + touch.content.h * row / 4};
+					const ViewPoint b{x + 20 * unit, a.y};
+					if (touch.hit(a) == -1 && touch.hit(b) == -1) stroke = std::pair{a, b};
+				}
+			REQUIRE(stroke);
+			const auto [wx, wy] = editor.camera.screenToWorld(stroke->first.x, stroke->first.y);
+			const int tx = int(std::floor(wx / 32)) & editor.game.map.wMask;
+			const int ty = int(std::floor(wy / 32)) & editor.game.map.hMask;
+			const auto before = editor.game.map.getTile(tx, ty).forbidden;
+			editor.brush.setType(before & (1u << editor.team) ? BrushTool::MODE_DEL : BrushTool::MODE_ADD);
+			finger(SDL_EVENT_FINGER_DOWN, stroke->first);
+			finger(SDL_EVENT_FINGER_MOTION, stroke->second);
+			finger(SDL_EVENT_FINGER_UP, stroke->second);
+			REQUIRE(touch.undo.has_value());
+			editor.preparePresentation();
+			const auto rail = touch.rail();
+			REQUIRE(rail.detents.size() == BrushTool::BRUSH_COUNT);
+			REQUIRE(rail.undo.w >= InGameTouchTheme::brushRailMinimumCell * unit);
+			REQUIRE(touch.showsMapButton());
+			const auto map = touch.mapButton();
+			CHECK(contains(touch.content, map));
+			auto overlaps = [](ViewRect a, ViewRect b)
+			{ return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h; };
+			for (const auto &rect : rail.detents) CHECK_FALSE(overlaps(rect, map));
+			for (auto rect : {rail.mode, rail.pan, rail.undo}) CHECK_FALSE(overlaps(rect, map));
+			REQUIRE(touch.hit(centre(map)) == -305);
+			tap(centre(map)); CHECK(touch.peekOpen); CHECK(touch.undo.has_value());
+			std::string error;
+			REQUIRE(touch.inspectionHost().act("editor/peek/done", {}, error));
+			REQUIRE(touch.inspectionHost().act("editor/show-minimap", {}, error));
+			CHECK(touch.peekOpen); CHECK(touch.undo.has_value());
+			tap(centre(touch.peekButtons().front())); REQUIRE_FALSE(touch.peekOpen);
+			REQUIRE(touch.hit(centre(rail.undo)) == -213);
+			tap(centre(rail.undo)); CHECK_FALSE(touch.undo.has_value()); CHECK_FALSE(touch.peekOpen);
+			CHECK(editor.game.map.getTile(tx, ty).forbidden == before);
+		}
+	}
+
 	static void editorInteractions()
 	{
 		MapEdit editor;
@@ -363,13 +990,22 @@ class GameGUITouchHarness
 		editor.mouseX = destination.x;
 		editor.mouseY = destination.y - 40 * u;
 		editor.performAction("select map building");
+		// Direct fixture actions bypass MapEdit::drawMap, which publishes the
+		// Scene before either the dock or phone inspector reads selected entities.
+		editor.preparePresentation();
 		touch.prepare();
+		INFO("Editor panel=" << editor.panelMode << " selected=" << editor.selectedBuildingGID
+			 << " live selection=" << bool(editor.view.selectedBuilding)
+			 << " published entity=" << bool(editor.view.scene && editor.view.scene->entities.building(editor.selectedBuildingGID))
+			 << " binding rows=" << editor.buildingEditRows.size()
+			 << " presentation rows=" << touch.properties.size());
 		require(touch.inspecting() && !touch.properties.empty(),
 				"Selected building has no contextual property rows");
 		auto property = touch.properties.front();
 		const int oldValue = property.value->currentValue();
 		editor.hasMapBeenModified = false;
 		tap({property.rect.x + 22 * u, property.rect.y + 46 * u});
+		editor.preparePresentation(); // Read back the frame after the human edit.
 		require(property.value->currentValue() == std::max(0, oldValue - 1) &&
 					editor.hasMapBeenModified,
 				"Inspector step did not change named property or mark draft modified");
@@ -1088,6 +1724,406 @@ class GameGUITouchHarness
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	}
 
+	static void tutorialTypography()
+	{
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Tutorial typography", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Tutorial typography fixture loads");
+		const auto checksum = gui.game.checkSum();
+		GAGCore::TrueTypeFont font("data/fonts/sans.ttf", 13);
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		struct Restore
+		{
+			GAGCore::Font *font = globalContainer->standardFont;
+			double text = GAGCore::userTextScale;
+			int language = GAGCore::Toolkit::getStringTable()->getLang();
+			bool stringsReplaced = false;
+			std::string mobile = SDL_getenv_unsafe("GLOB2_MOBILE_UI") ? SDL_getenv_unsafe("GLOB2_MOBILE_UI") : "";
+			~Restore() {
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", mobile.c_str(), 1);
+				globalContainer->standardFont = font;
+				GAGCore::userTextScale = text;
+				if (stringsReplaced) GAGCore::Toolkit::getStringTable()->load("data/texts.list.txt");
+				GAGCore::Toolkit::getStringTable()->setLang(language);
+			}
+		} restore;
+		globalContainer->standardFont = &font;
+		GAGCore::userTextScale = 1;
+		gui.scriptText = "alpha\n\nbeta";
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageLines == std::vector<std::string>{"alpha", "", "beta"});
+		CHECK(gui.touch->scenarioMessageLineStep == 24);
+		gui.touch->scenarioMessageCollapsed = true;
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageCollapsed); // unchanged content preserves player collapse
+		strings->setLang(strings->getLangCode("de"));
+		gui.touch->prepareScenarioMessage();
+		CHECK_FALSE(gui.touch->scenarioMessageCollapsed); // same text, different locale invalidates
+		strings->setLang(restore.language);
+
+		gui.scriptText = "क्षि";
+		gui.touch->prepareScenarioMessage();
+		const int small = gui.touch->scenarioMessageLineStep;
+		// An indivisible real-font conjunct wider than the slot must remain
+		// whole. Reload the SAME font object to expose metric-cache invalidation.
+		REQUIRE(font.load("data/fonts/sans.ttf", 1000));
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageLines == std::vector<std::string>{"क्षि"});
+		CHECK(gui.touch->scenarioMessageLineStep > small);
+		CHECK(gui.touch->scenarioMessageLineStep >= font.getStringHeight("क्षि"));
+		CHECK(font.getStringWidth("क्षि") > gui.touch->scenarioMessageWidth);
+		GAGCore::userTextScale = 1.5;
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessagePitch() == doctest::Approx(gui.touch->scenarioMessageLineStep * 1.5));
+		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+		CHECK(gui.touch->scenarioMessageMaximum() == doctest::Approx(std::max(0.0,
+			gui.touch->scenarioMessageLines.size() * gui.touch->scenarioMessagePitch() - gui.touch->scenarioMessageRect().h / unit + 16)));
+		gui.swallowSpaceKey = true;
+		CHECK(gui.touch->scenarioMessageFooterHeight() >= gui.touch->scenarioMessageFontHeight * 1.5 + 16);
+		// Exercise real input separately from the large synthetic-extent check.
+		// A normal Latin26px font at1.5x gives a footer taller than the legacy
+		//48pt target, so tapping its upper area detects stale hit geometry.
+		REQUIRE(font.load("data/fonts/sans.ttf", 26));
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.touch->panelOpen = false;
+		gui.scriptText.clear();
+		for (int line = 0; line < 20; ++line)
+			gui.scriptText += "Scroll this instruction without acknowledging it.\n";
+		gui.setIsSpaceSet(false);
+		glob2test::drawGUI(gui, 0);
+		const auto tutorial = gui.touch->scenarioMessageRect();
+		REQUIRE(tutorial.h > 0);
+		REQUIRE(gui.touch->scenarioMessageMaximum() > 0);
+		Uint64 now = 20000;
+		auto finger = [&](Uint32 type, double x, double y) {
+			SDL_Event event{};
+			event.type = type;
+			event.tfinger.timestamp = SDL_MS_TO_NS(now += 40);
+			event.tfinger.touchID = 7;
+			event.tfinger.fingerID = 1;
+			event.tfinger.x = float(x / globalContainer->gfx->getW());
+			event.tfinger.y = float(y / globalContainer->gfx->getH());
+			gui.processEvent(&event);
+		};
+		const double x = tutorial.x + 20 * unit, startY = tutorial.y + 40 * unit;
+		finger(SDL_EVENT_FINGER_DOWN, x, startY);
+		finger(SDL_EVENT_FINGER_MOTION, x, startY - 24 * unit);
+		finger(SDL_EVENT_FINGER_UP, x, startY - 24 * unit);
+		CHECK_FALSE(gui.isSpaceSet());
+		CHECK(gui.touch->scenarioMessageScroll > 0);
+		gui.touch->stopScrolling();
+		const double footer = gui.touch->scenarioMessageFooterHeight() * unit;
+		REQUIRE(footer > 48 * unit);
+		const double ackY = tutorial.y + tutorial.h - footer + 4 * unit;
+		REQUIRE(ackY < tutorial.y + tutorial.h - 48 * unit);
+		const auto controls = gui.touch->describeControls();
+		const auto continueControl = std::find_if(controls.begin(), controls.end(), [](const auto &control) {
+			return control.key == "touch/scenario-message/continue";
+		});
+		REQUIRE(continueControl != controls.end());
+		CHECK(continueControl->bounds.contains(GAGGUI::ui::Point{int(x), int(ackY)}));
+		now += 500;
+		finger(SDL_EVENT_FINGER_DOWN, x, ackY);
+		finger(SDL_EVENT_FINGER_UP, x, ackY);
+		CHECK(gui.isSpaceSet());
+		gui.setIsSpaceSet(false);
+		std::string semanticError;
+		REQUIRE(gui.hudInspectionHost().act("touch/scenario-message/continue", {}, semanticError));
+		CHECK(gui.isSpaceSet());
+		// Find an actual cramped font/layout combination, rather than assuming
+		// a viewport leaves less room than the requested footer. Geometry,
+		// painting and both input paths must stay within that remaining panel.
+		bool cramped = false;
+		for (int size = 28; size <= 200; size += 2)
+		{
+			REQUIRE(font.load("data/fonts/sans.ttf", size));
+			gui.touch->prepareScenarioMessage();
+			const auto panel = gui.touch->scenarioMessageRect();
+			if (panel.w > 40 * unit && panel.h > 4 * unit &&
+				panel.h < gui.touch->scenarioMessageFooterHeight() * unit)
+			{
+				cramped = true;
+				break;
+			}
+		}
+		REQUIRE(cramped);
+		glob2test::drawGUI(gui, 0);
+		const auto crampedPanel = gui.touch->scenarioMessageRect();
+		const auto crampedContinue = gui.touch->scenarioMessageContinueRect();
+		REQUIRE(crampedContinue.h > 0);
+		CHECK(crampedContinue.y == doctest::Approx(crampedPanel.y));
+		CHECK(crampedContinue.h == doctest::Approx(crampedPanel.h));
+		CHECK(crampedPanel.y + crampedPanel.h <= gui.touch->layout().actions.y);
+		const auto crampedControls = gui.touch->describeControls();
+		const auto crampedTarget = std::find_if(crampedControls.begin(), crampedControls.end(), [](const auto &control) {
+			return control.key == "touch/scenario-message/continue";
+		});
+		REQUIRE(crampedTarget != crampedControls.end());
+		CHECK(crampedTarget->bounds.y >= int(std::floor(crampedPanel.y)));
+		CHECK(crampedTarget->bounds.y + crampedTarget->bounds.h <= int(std::ceil(crampedPanel.y + crampedPanel.h)));
+		CHECK(std::none_of(crampedControls.begin(), crampedControls.end(), [](const auto &control) {
+			return control.key == "touch/scenario-message/collapse";
+		}));
+		gui.setIsSpaceSet(false);
+		now += 500;
+		const double crampedX = crampedContinue.x + crampedContinue.w / 2,
+			crampedY = crampedContinue.y + crampedContinue.h / 2;
+		finger(SDL_EVENT_FINGER_DOWN, crampedX, crampedY);
+		finger(SDL_EVENT_FINGER_UP, crampedX, crampedY);
+		CHECK(gui.isSpaceSet());
+		gui.setIsSpaceSet(false);
+		REQUIRE(gui.hudInspectionHost().act("touch/scenario-message/continue", {}, semanticError));
+		CHECK(gui.isSpaceSet());
+		gui.touch->scenarioMessageCollapsed = true;
+		const auto crampedCollapsed = gui.touch->scenarioMessageRect();
+		CHECK(crampedCollapsed.y + crampedCollapsed.h <= gui.touch->layout().actions.y);
+		CHECK(crampedCollapsed.h >= 0);
+		gui.touch->scenarioMessageCollapsed = false;
+		// Activate Urdu in an isolated two-language fixture, without registering
+		// any unfinished catalog. Use the actual authored collapsed label.
+		glob2test::TempDir labels("tutorial-urdu");
+		GAGCore::Toolkit::getFileManager()->addDir(labels.path.string());
+		std::ofstream(labels.path / "tutorial.keys.txt") << "[language-code]\n[scenario messages]\n";
+		std::ofstream(labels.path / "tutorial.list.txt") << "tutorial.keys.txt\ntutorial.en.txt\ntutorial.ur.txt\n";
+		std::ofstream(labels.path / "tutorial.en.txt") << "[language-code]\nen\n[scenario messages]\nMessages ▸\n";
+		std::ofstream(labels.path / "tutorial.ur.txt") << "[language-code]\nur\n[scenario messages]\nپیغامات ▸\n";
+		restore.stringsReplaced = true;
+		REQUIRE(strings->load("tutorial.list.txt"));
+		strings->setLang(strings->getLangCode("ur"));
+		REQUIRE(font.load("data/fonts/sans.ttf", 13));
+		gui.scriptText = "instruction";
+		gui.touch->prepareScenarioMessage();
+		gui.touch->scenarioMessageCollapsed = true;
+		const auto collapsed = gui.touch->scenarioMessageRect();
+		const auto label = strings->getString("[scenario messages]");
+		const double labelHeight = font.getStringHeight(label) * 1.15 * 1.5 * unit;
+		CHECK(collapsed.h >= labelHeight + 16 * unit);
+		CHECK(collapsed.h >= 48 * unit);
+		CHECK(collapsed.contains({collapsed.x + 1, collapsed.y + labelHeight}));
+		CHECK(gui.game.checkSum() == checksum);
+	}
+
+	static void navigationTypography()
+	{
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Navigation typography", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Navigation fixture loads");
+		const auto checksum = gui.game.checkSum();
+		struct CountingFont : GAGCore::TrueTypeFont {
+			using TrueTypeFont::TrueTypeFont;
+			unsigned widthCalls = 0;
+			unsigned clusterCalls = 0;
+			int getStringWidth(const std::string text) override {
+				++widthCalls;
+				return TrueTypeFont::getStringWidth(text);
+			}
+			std::vector<std::size_t> getStringClusterEnds(const std::string &text) override {
+				++clusterCalls;
+				return TrueTypeFont::getStringClusterEnds(text);
+			}
+		} font("data/fonts/sans.ttf", 13);
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		struct Restore {
+			GAGCore::Font *font = globalContainer->standardFont;
+			double text = GAGCore::userTextScale;
+			int language = GAGCore::Toolkit::getStringTable()->getLang();
+			std::string mobile = SDL_getenv_unsafe("GLOB2_MOBILE_UI") ? SDL_getenv_unsafe("GLOB2_MOBILE_UI") : "";
+			~Restore() {
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", mobile.c_str(), 1);
+				globalContainer->standardFont = font;
+				GAGCore::userTextScale = text;
+				GAGCore::Toolkit::getStringTable()->load("data/texts.list.txt");
+				GAGCore::Toolkit::getStringTable()->setLang(language);
+			}
+		} restore;
+		glob2test::TempDir labels("navigation-urdu");
+		GAGCore::Toolkit::getFileManager()->addDir(labels.path.string());
+		const char *keys[] = {"[Build]", "[Flags]", "[Editor tools]", "[Goals]", "[Teams]", "[Menu]",
+			"[Pause]", "[Speed]"};
+		const char *urdu[] = {"تعمیر", "جھنڈے", "آلات", "اہداف", "ٹیمیں", "مینیو", "توقف", "رفتار"};
+		std::ofstream keyFile(labels.path / "navigation.keys.txt"),
+			en(labels.path / "navigation.en.txt"), ur(labels.path / "navigation.ur.txt");
+		keyFile << "[language-code]\n";
+		en << "[language-code]\nen\n";
+		ur << "[language-code]\nur\n";
+		for (int i = 0; i < 8; ++i) {
+			keyFile << keys[i] << '\n';
+			en << keys[i] << '\n' << std::string(keys[i]).substr(1, std::strlen(keys[i]) - 2) << '\n';
+			ur << keys[i] << '\n' << urdu[i] << '\n';
+		}
+		keyFile.close(); en.close(); ur.close();
+		std::ofstream(labels.path / "navigation.list.txt") <<
+			"navigation.keys.txt\nnavigation.en.txt\nnavigation.ur.txt\n";
+		REQUIRE(strings->load("navigation.list.txt"));
+		strings->setLang(strings->getLangCode("ur"));
+		globalContainer->standardFont = &font;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		auto *gfx = globalContainer->gfx;
+		gfx->setResponsiveViewport(true, 390, 844);
+		CHECK(gfx->getW() == 390);
+		CHECK(gfx->getH() == 844);
+		const auto unit = gfx->logicalUnitsPerPoint();
+		for (double growth : {1.0, 1.5}) {
+			GAGCore::userTextScale = growth;
+			const auto ui = gui.touch->layout();
+			(void)gui.touch->measureNavigation(ui.actions.w / unit).height;
+			const unsigned calls = font.widthCalls;
+			const unsigned clusters = font.clusterCalls;
+			REQUIRE(calls > 0);
+			for (int repeat = 0; repeat < 10; ++repeat)
+				(void)gui.touch->measureNavigation(ui.actions.w / unit).height;
+			CHECK(font.widthCalls == calls + 10 * 6); // Only six whole-caption probes per cache hit.
+			CHECK(font.clusterCalls == clusters); // Wrapping/shaping is not repeated on a cache hit.
+			CHECK(ui.actions.h > 48 * unit);
+			CHECK(ui.actions.y + ui.actions.h == doctest::Approx(ui.safe.y + ui.safe.h));
+			CHECK(ui.world.y + ui.world.h == doctest::Approx(ui.actions.y));
+			for (int i = 0; i < 6; ++i) {
+				const auto rect = gui.touch->navigationLabelRect(ui, i);
+				const auto text = gui.touch->navigationLabel(i);
+				const auto lines = gui.touch->pointLines(text, rect.w, .86);
+				const int height = gui.touch->navigationLabelLineHeight(lines);
+				CHECK(rect.h + .001 >= lines.size() * height * .86 * gfx->textUnitsPerPoint());
+				CHECK(rect.y + rect.h + 4 * unit <= ui.safe.y + ui.safe.h + .001);
+				CHECK(gui.touch->interfaceRegion({rect.x + rect.w / 2, rect.y + rect.h / 2}) == 10 + i);
+				gui.touch->drawPointLabel(rect, text, .86, false, height);
+			}
+			gfx->nextFrame();
+			CHECK(gui.game.checkSum() == checksum);
+		}
+		// Real HarfBuzz cluster boundaries, not a codepoint-counting double:
+		// an Indic conjunct larger than the available slot must remain whole.
+		const std::string conjunct = "क्षि";
+		CHECK(font.getStringClusterEnds(conjunct) == std::vector<std::size_t>{conjunct.size()});
+		CHECK(font.getStringWidth(conjunct) > 1);
+		CHECK(gui.touch->pointLines(conjunct, 1, .86) == std::vector<std::string>{conjunct});
+		CHECK(gui.touch->pointLines(conjunct + "\n\n" + conjunct, 1, .86) ==
+			std::vector<std::string>{conjunct, "", conjunct});
+		CHECK(gui.touch->pointLines("alpha  beta\n\ngamma", 10000, .86) ==
+			std::vector<std::string>{"alpha  beta", "", "gamma"});
+		const auto oldHeight = gui.touch->layout().actions.h;
+		const auto beforeReload = font.widthCalls;
+		REQUIRE(font.load("data/fonts/sans.ttf", 20)); // Same pointer, changed metrics.
+		CHECK(gui.touch->layout().actions.h > oldHeight);
+		CHECK(font.widthCalls > beforeReload + 6);
+		const auto beforeResize = font.widthCalls;
+		(void)gui.touch->measureNavigation(240).height;
+		CHECK(font.widthCalls > beforeResize + 6);
+		const auto beforeReplay = font.widthCalls;
+		const bool replaying = globalContainer->replaying;
+		globalContainer->replaying = !replaying;
+		(void)gui.touch->measureNavigation(240).height;
+		globalContainer->replaying = replaying;
+		CHECK(font.widthCalls > beforeReplay + 6);
+		const auto beforeLanguage = font.widthCalls;
+		strings->setLang(strings->getLangCode("en"));
+		(void)gui.touch->measureNavigation(240).height;
+		CHECK(font.widthCalls > beforeLanguage + 6);
+		strings->setLang(strings->getLangCode("ur"));
+	}
+
+	static void filipinoNavigationTypography()
+	{
+		struct Restore
+		{
+			double text = GAGCore::userTextScale;
+			int language = GAGCore::Toolkit::getStringTable()->getLang();
+			~Restore() {
+				GAGCore::userTextScale = text;
+				GAGCore::Toolkit::getStringTable()->setLang(language);
+			}
+		} restore;
+		glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		strings->setLang(strings->getLangCode("fil"));
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Filipino navigation", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Filipino navigation fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		const auto checksum = gui.game.checkSum();
+		auto *gfx = globalContainer->gfx;
+		gfx->setResponsiveViewport(true, 390, 844);
+		REQUIRE(gfx->getW() == 390);
+		REQUIRE(gfx->getH() == 844);
+		auto checkNavigation = [&](int expectedColumns) {
+			const auto ui = gui.touch->layout();
+			const double unit = gfx->logicalUnitsPerPoint();
+			CHECK(gui.touch->measureNavigation(ui.actions.w / unit).columns == expectedColumns);
+			const auto targets = gui.touch->keyboardTargets();
+			REQUIRE(targets.size() >= 6);
+			for (int i = 0; i < 6; ++i)
+			{
+				CAPTURE(i);
+				const auto button = gui.touch->navigationButtonRect(ui, i);
+				const auto rect = gui.touch->navigationLabelRect(ui, i);
+				const auto text = gui.touch->navigationLabel(i);
+				const auto lines = gui.touch->pointLines(text, rect.w, .86);
+				{
+					InGameTouchTheme::TextStyle style(globalContainer->standardFont);
+					std::istringstream words(text);
+					for (std::string word; words >> word;)
+					{
+						CHECK(globalContainer->standardFont->getStringWidth(word) <=
+							rect.w / (.86 * gfx->textUnitsPerPoint()) - 8 + .001);
+						CHECK(std::any_of(lines.begin(), lines.end(), [&](const auto &line) {
+							return line.find(word) != std::string::npos;
+						}));
+					}
+				}
+				const auto centre = GAGCore::ViewPoint{button.x + button.w / 2, button.y + button.h / 2};
+				CHECK(gui.touch->interfaceRegion(centre) == 10 + i);
+				const char *keys[] = {"buildings", "flags", "tools", "objectives", "alliance", "menu"};
+				const std::string key = std::string("touch/navigation/") + keys[i];
+				const auto exposed = gui.hudInspectionHost().bounds(key);
+				CHECK(exposed.x == int(std::floor(button.x)));
+				CHECK(exposed.y == int(std::floor(button.y)));
+				CHECK(exposed.w == int(std::ceil(button.x + button.w)) - exposed.x);
+				CHECK(exposed.h == int(std::ceil(button.y + button.h)) - exposed.y);
+				CHECK(gui.touch->pointerControlKey(centre) == key);
+				CHECK(targets[i].x == doctest::Approx(button.x));
+				CHECK(targets[i].y == doctest::Approx(button.y));
+				CHECK(targets[i].w == doctest::Approx(button.w));
+				CHECK(targets[i].h == doctest::Approx(button.h));
+				CHECK(rect.y >= button.y);
+				CHECK(rect.y + rect.h <= button.y + button.h + .001);
+			}
+			CHECK(ui.world.y + ui.world.h == doctest::Approx(ui.actions.y));
+			CHECK(gui.game.checkSum() == checksum);
+			return ui;
+		};
+		GAGCore::userTextScale = 1;
+		const auto normal = checkNavigation(6);
+		CHECK(normal.actions.h == doctest::Approx(64 * gfx->logicalUnitsPerPoint()));
+		GAGCore::userTextScale = 1.5;
+		const auto enlarged = checkNavigation(3);
+		CHECK(enlarged.actions.h >= 96 * gfx->logicalUnitsPerPoint());
+		glob2test::drawGUI(gui, 0);
+		gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/filipino-hud-navigation-large.bmp");
+		gfx->nextFrame();
+		const int oldW = gfx->getW(), oldH = gfx->getH();
+		SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), 844, 390);
+		REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+		SDL_Event resized{};
+		resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+		GAGCore::GraphicContext::translateMouseEvent(&resized);
+		gfx->setResponsiveViewport(true, 844, 390);
+		gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+		REQUIRE(gfx->getW() == 844);
+		REQUIRE(gfx->getH() == 390);
+		checkNavigation(6);
+	}
+
 	static void notifications()
 	{
 		struct Restore
@@ -1208,7 +2244,10 @@ class GameGUITouchHarness
                 {"yields", {{"food", {{"capacity", 9}, {"initial", 2}, {"consumption", "one"}}},
                             {"paper", {{"capacity", 6}, {"initial", 4}, {"consumption", "one"}}}}},
                 {"presentation", {{"name", "Mixed resource without artwork"},
-                    {"sprite", "data/gfx/touch-fixture-missing-resource"}, {"minimap", {255, 0, 255}},
+                    // Only the highest ID needs missing-art coverage. Failed sprites are
+                    // retried synchronously, so repeating that path for all 300 IDs
+                    // needlessly stalls each registry switch in the rendering matrix.
+                    {"sprite", i == 299 ? "data/gfx/touch-fixture-missing-resource" : "data/gfx/ressource"}, {"minimap", {255, 0, 255}},
                     {"levels", Json::array({{{"stock", 0}, {"variants", Json::array({{{"frame", 0}, {"weight", 1}}})}}})}}}});
         }
         gui.game.map.installResourceDefinitions(Json{{"schemaVersion", 1}, {"resources", additions}}.dump());
@@ -1331,6 +2370,8 @@ class GameGUITouchHarness
 		require(gui.viewportX == ((before - 2) & gui.game.map.getMaskW()),
 				"Two fingers must pan while placing");
 		noOrder();
+		require(gui.hudInspectionHost().find("touch/placement/confirm") != nullptr,
+				"Desktop touch confirmation exposes its shared semantic control");
 		tap(100, 576);
 		auto order = std::dynamic_pointer_cast<OrderCreate>(gui.toolManager.getOrder());
 		require(bool(order), "Confirmation must emit the shared create order");
@@ -1385,6 +2426,8 @@ class GameGUITouchHarness
 				if (flagHere) continue;
 				foundEmptyGround = true;
 				gui.camera.setZoom(1.7, x, y);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				gui.mouseX = x; gui.mouseY = y;
 				gui.updateCamera();
 				const auto wheelAnchor = gui.camera.screenToWorld(x, y);
@@ -1727,29 +2770,41 @@ class GameGUITouchHarness
 				gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
 			}
 			// A visible map spot with nothing selectable around it.
-			auto emptyGround = [&]
+			auto emptyGround = [&](std::source_location at = std::source_location::current())
 			{
+                auto emptyTile = [&](int cx, int cy) {
+                    for (int dy = -1; dy <= 1; ++dy)
+                        for (int dx = -1; dx <= 1; ++dx) {
+                            const int mx=cx+dx, my=cy+dy;
+                            if (gui.game.map.getBuilding(mx,my)!=NOGBID || gui.game.map.isResource(mx,my) ||
+                                gui.game.map.getGroundUnit(mx,my)!=NOGUID || gui.game.map.getAirUnit(mx,my)!=NOGUID)
+                                return false;
+                        }
+                    return true;
+                };
+                std::optional<GAGCore::ViewPoint> mapSpot;
 				for (double y = world.y + 48 * unit; y < world.y + world.h - 24 * unit; y += 16 * unit)
 					for (double x = world.x + 24 * unit; x < world.x + world.w - 24 * unit; x += 16 * unit)
 					{
-						if (gui.touch->interfaceRegion({x, y}) != 0)
-							continue;
+						if (gui.touch->interfaceRegion({x, y}) != 0) continue;
+                        if (!mapSpot) mapSpot=GAGCore::ViewPoint{x,y};
 						const int cx = gui.mapMouseX(int(x)) / 32 + gui.viewportX,
 								  cy = gui.mapMouseY(int(y)) / 32 + gui.viewportY;
-						bool clear = true;
-						for (int dy = -1; dy <= 1; ++dy)
-							for (int dx = -1; dx <= 1; ++dx)
-							{
-								const int mx = cx + dx, my = cy + dy;
-								clear = clear && gui.game.map.getBuilding(mx, my) == NOGBID &&
-										!gui.game.map.isResource(mx, my) &&
-										gui.game.map.getGroundUnit(mx, my) == NOGUID &&
-										gui.game.map.getAirUnit(mx, my) == NOGUID;
-							}
-						if (clear)
-							return GAGCore::ViewPoint{x, y};
+                        if (emptyTile(cx,cy)) return GAGCore::ViewPoint{x,y};
 					}
-				throw std::runtime_error("No empty ground visible in the phone world");
+                // Earlier navigation and desktop framing can leave only occupied
+                // terrain outside an open phone sheet. Reframe this input fixture
+                // onto existing clear terrain, without changing the map or orders.
+                if (mapSpot) for (int cy=0;cy<gui.game.map.getH();++cy)
+                    for (int cx=0;cx<gui.game.map.getW();++cx) if (emptyTile(cx,cy)) {
+                        gui.camera.originX=cx*32+16-(mapSpot->x-gui.camera.offsetX)/gui.camera.zoom;
+                        gui.camera.originY=cy*32+16-(mapSpot->y-gui.camera.offsetY)/gui.camera.zoom;
+                        gui.camera.normalize();
+                        gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
+                        gui.prepareLocalPresentation();
+                        return *mapSpot;
+                    }
+                throw std::runtime_error("No empty ground visible in the phone world at line " + std::to_string(at.line()));
 			};
 			{
 				const auto checksum = gui.game.checkSum();
@@ -1888,6 +2943,8 @@ class GameGUITouchHarness
 				{
 					gui.camera = savedCamera;
 					gui.camera.setZoom(initial, spot.x, spot.y);
+					gui.viewportX = gui.camera.tileX();
+					gui.viewportY = gui.camera.tileY();
 					if (initial != 1.0)
 					{
 						gui.camera.originX = gui.camera.mapWidth - 8;
@@ -1934,6 +2991,8 @@ class GameGUITouchHarness
 				auto armedPress = [&]
 				{
 					gui.camera.setZoom(1, spot.x, spot.y);
+                    gui.viewportX = gui.camera.tileX();
+                    gui.viewportY = gui.camera.tileY();
 					quickTouches();
 					tap(spot.x, spot.y);
 					finger(SDL_EVENT_FINGER_DOWN, 1, spot.x, spot.y);
@@ -1997,7 +3056,10 @@ class GameGUITouchHarness
 				require(gui.viewportX != panX && std::abs(gui.camera.zoom - 1) < 1e-9,
 						"A sideways drag after a tap must pan, not zoom");
 				globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_PLATFORM;
-				gui.camera.setZoom(1, spot.x, spot.y);
+                // Keep later gesture scenarios independent of the pan above.
+				gui.camera = savedCamera;
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				noOrder();
 			}
 			{
@@ -2022,6 +3084,8 @@ class GameGUITouchHarness
 				require(forbidden(), "A paint tap must land after the double-tap window");
 				drain();
 				gui.camera.setZoom(1.5, spot.x, spot.y);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				quickTouches();
 				tap(spot.x, spot.y);
 				tap(spot.x, spot.y);
@@ -2293,20 +3357,24 @@ class GameGUITouchHarness
 				p = at(3);
 				tap(p.x, p.y);
 				require(gui.touch->statsOpen && !gui.touch->lensVisible(), "The statistics lens opens the sheet");
+                require(std::none_of(gui.statistics().metrics().begin(), gui.statistics().metrics().end(),
+                    [](const auto &m) { return m.winProbability; }), "Live players cannot see hidden-state win probabilities");
 				const auto stats = gui.touch->statsLayout();
-				require(stats.chart.h >= 100 * unit && stats.sheet.y + stats.sheet.h <= ui.actions.y + 0.5,
-						"The sheet sits above the toolbar with room for the chart");
-				tap(centre(stats.next).x, centre(stats.next).y);
-				require(gui.touch->statsMetric == 1, "The sheet's arrow shows the next metric");
-				tap(centre(stats.previous).x, centre(stats.previous).y);
-				tap(centre(stats.previous).x, centre(stats.previous).y);
-				require(gui.touch->statsMetric == int(Stats::catalog().size()) - 1, "Metrics wrap around");
-				gui.touch->statsMetric = 0;
+                require(stats.body.h >= 100 * unit && stats.sheet.y + stats.sheet.h <= ui.actions.y + 0.5,
+                        "The sheet sits above the toolbar with room for statistics");
+                glob2test::drawGUI(gui, 0);
+                auto &panel = gui.statistics();
+                require(panel.topic() == InGameStatisticsPanel::Topic::Overview, "Statistics starts on Overview");
+                panel.selectTopic(InGameStatisticsPanel::Topic::Economy);
+                glob2test::drawGUI(gui, 0);
+                require(panel.host().find("stats/metric/idle workers") != nullptr, "Economy exposes worker time");
+                panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
 				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-stats-portrait.bmp" : "touch-stats-landscape.bmp");
 				gfx->nextFrame();
 				finger(SDL_EVENT_FINGER_DOWN, 1, centre(stats.title).x, centre(stats.title).y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, centre(stats.title).x, centre(stats.title).y + 80 * unit);
+				require(!gui.touch->statsOpen, "Pulling the sheet past its threshold closes it during the drag");
 				finger(SDL_EVENT_FINGER_UP, 1, centre(stats.title).x, centre(stats.title).y + 80 * unit);
 				require(!gui.touch->statsOpen && gui.touch->lensVisible(), "Pulling the sheet down closes it");
 				tap(p.x, p.y);
@@ -2336,6 +3404,8 @@ class GameGUITouchHarness
 				const auto buttons = gui.touch->peekButtons();
 				gui.updateCamera();
 				gui.camera.setZoom(1, gfx->getW() / 2, gfx->getH() / 2);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				tap(centre(buttons[2]).x, centre(buttons[2]).y);
 				require(std::abs(gui.camera.zoom - InGameTouchTheme::peekZoomStep) < 0.01, "Peek + zooms in");
 				tap(centre(buttons[1]).x, centre(buttons[1]).y);
@@ -4178,10 +5248,10 @@ class GameGUITouchHarness
 			const auto bar = gui.touch->layout().actions;
 			tap(bar.x + bar.w * 4.5 / 6, bar.y + bar.h / 2);
 			glob2test::drawGUI(gui,0);
-			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->panelOpen &&
-				gui.displayMode == GameGUI::STAT_TEXT_VIEW && !gui.touch->restorePalette &&
-				!gui.touch->readOnlyPanelShown,
-				"Replay statistics replace every inspector and survive the next draw");
+			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->statsOpen &&
+                !gui.touch->panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW &&
+                !gui.touch->restorePalette && !gui.touch->readOnlyPanelShown,
+                "Replay statistics replace every inspector and survive the next draw");
 		}
 		gui.touch->dismissMapPanels();
 		gui.touch->select({center.x + 28, center.y});
@@ -4219,6 +5289,7 @@ class GameGUITouchHarness
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.adjustLocalTeam();
+		gui.prepareLocalPresentation();
 		auto *gfx = globalContainer->gfx;
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 		gfx->setResponsiveViewport(true, 800, 600);
@@ -5114,9 +6185,180 @@ class GameGUITouchHarness
 		gui.processEvent(&event);
 		REQUIRE(std::string(static_cast<LoadSaveDialog *>(dialog)->getName()) == "Scaled2");
 	}
+    static void compactTutorialStatistics()
+    {
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+        glob2test::HeadlessGlobals globals({.display=true, .loadStrings=true, .width=320, .height=640,
+            .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        auto *strings=GAGCore::Toolkit::getStringTable();
+        const int previousLanguage=strings->getLang();
+        struct RestoreLanguage { GAGCore::StringTable *strings; int value;
+            ~RestoreLanguage(){strings->setLang(value);} } restore{strings,previousLanguage};
+        strings->setLang(strings->getLangCode("bn"));
+        globals->settings.setTextSizePercent(150);
+        // Use the public fixture loader with the packaged lesson's authored
+        // players, team associations and AI configuration, as campaign init does.
+        GameGUI gui;
+        const auto source=(glob2test::sourceRoot()/Tutorial::IntroductionMap).string();
+        auto map=Engine::loadMapHeader(source);
+        auto players=Engine::loadGameHeader(source);
+        REQUIRE(map.getNumberOfTeams()==2);
+        REQUIRE(players.getNumberOfPlayers()==2);
+        REQUIRE(players.getBasePlayer(0).name=="Your colony");
+        REQUIRE(players.getBasePlayer(1).name=="Practice colony");
+        // Missions and the tutorial play as authored: never with experiments.
+        if (!map.getIsSavedGame()) players.getExperiments().clear();
+        REQUIRE(gui.loadFromHeaders(map,players,true,true,false,source));
+        gui.localPlayer=0; gui.localTeamNo=players.getBasePlayer(0).teamNumber;
+        gui.adjustLocalTeam();
+        gui.game.setWaitingOnMask(0);
+        for(int tick=0;tick<64;++tick)gui.game.step(0);
+        glob2test::drawGUI(gui,0);
+        auto *card=gui.tutorialGuidance.get(); REQUIRE(card);
+        const auto lesson=Tutorial::view(gui.drawnScene().panels.hud.state()); REQUIRE(lesson);
+        const auto tap=[&](GAGGUI::ui::Rect r) {
+            SDL_Event e{};e.type=SDL_EVENT_MOUSE_BUTTON_DOWN;e.button.button=SDL_BUTTON_LEFT;
+            e.button.x=r.x+r.w/2;e.button.y=r.y+r.h/2;gui.processEvent(&e);
+            e.type=SDL_EVENT_MOUSE_BUTTON_UP;gui.processEvent(&e);
+        };
+        tap(card->host().bounds("intro/collapse")); glob2test::drawGUI(gui,0);
+        CHECK_FALSE(card->host().find("intro/instruction"));
+        const auto compact=card->panelBounds();
+        REQUIRE(card->host().find("intro/title"));
+        CHECK(card->host().bounds("intro/title").h<=card->host().bounds("intro/collapse").h);
+        CHECK(compact.h<100);
+        card->host().focus("intro/help",true);
+        gui.touch->lensOpen=true;
+        gui.selectionMode=GameGUI::NO_SELECTION; gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+        glob2test::drawGUI(gui,0);
+        REQUIRE(gui.touch->lensVisible()); CHECK(gui.touch->obscuresTutorial());
+        CHECK_FALSE(card->host().keyboardFocused());
+        gui.touch->lensOpen=false; gui.touch->peekOpen=true;
+        glob2test::drawGUI(gui,0); CHECK(gui.touch->obscuresTutorial());
+        gui.touch->peekOpen=false; CHECK_FALSE(gui.touch->obscuresTutorial());
+        card->host().focus("intro/help",true);
+        gui.touch->menuAction(3); glob2test::drawGUI(gui,0);
+        REQUIRE(gui.touch->statsOpen);
+        CHECK_FALSE(card->host().keyboardFocused());
+        const auto sheet=gui.touch->statsLayout();
+        const auto mini=gui.touch->minimapRect();
+        const GAGCore::ViewPoint overlap{mini.x+mini.w-3, std::min(mini.y+mini.h-3,sheet.title.y+sheet.title.h-2)};
+        REQUIRE(mini.contains(overlap)); REQUIRE(sheet.sheet.contains(overlap));
+        CHECK(gui.touch->interfaceRegion(overlap)==48);
+        const auto cameraX=gui.viewportX,cameraY=gui.viewportY;
+        gui.touch->interfaceTap(overlap);
+        CHECK(gui.viewportX==cameraX); CHECK(gui.viewportY==cameraY);
+        auto *gfx=globalContainer->gfx;
+        // Request an actual backend readback; completedFrame may still refer
+        // to the unused software surface with the programmable renderer.
+        const auto capture=glob2test::profileDir()/"compact-bn-statistics.bmp";
+        gfx->printScreen(capture.filename().string());
+        gfx->nextFrame();
+        REQUIRE(std::filesystem::exists(capture));
+        std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(SDL_LoadBMP(capture.string().c_str()),SDL_DestroySurface);
+        REQUIRE(pixels);
+        Uint8 r=0,g=0,b=0,a=0;
+        REQUIRE(SDL_ReadSurfacePixel(pixels.get(),int(overlap.x),int(overlap.y),&r,&g,&b,&a));
+        const auto paper=InGameTouchTheme::readout();
+        const int tolerance=257-paper.a;
+        CHECK(std::abs(int(r)-int(paper.r))<=tolerance);
+        CHECK(std::abs(int(g)-int(paper.g))<=tolerance);
+        CHECK(std::abs(int(b)-int(paper.b))<=tolerance);
+        CHECK(glob2test::retainFromProfile(".bmp")==1);
+        auto &panel=gui.statistics();
+        for(int topic=0;topic<5;++topic) {
+            tap(panel.host().bounds("stats/topic/"+std::to_string(topic)));
+            glob2test::drawGUI(gui,0);
+            CHECK(panel.topic()==InGameStatisticsPanel::Topic(topic));
+        }
+        gui.touch->closeStatistics();glob2test::drawGUI(gui,0);
+        REQUIRE(gui.tutorialGuidance.get()==card);
+        CHECK_FALSE(card->host().find("intro/instruction"));
+        CHECK(card->panelBounds()==compact);
+        CHECK(Tutorial::view(gui.drawnScene().panels.hud.state())==lesson);
+        tap(card->host().bounds("intro/collapse"));glob2test::drawGUI(gui,0);
+        CHECK(card->host().find("intro/instruction"));
+        auto title=card->host().find("intro/title");REQUIRE(title);
+        CHECK(title->accessibleText()==std::to_string(lesson->index+1)+" / "+std::to_string(lesson->count)+"  "+Glob2UI::tr(lesson->title));
+    }
+	static void liveStatisticsProbability()
+    {
+        glob2test::HeadlessGlobals globals({.display=true, .loadStrings=true, .width=360, .height=720,
+            .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        REQUIRE(NET_Init());
+        struct NetworkCleanup { ~NetworkCleanup() { NET_Quit(); } } network;
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+        GameGUI gui;
+        auto map = Engine::loadMapHeader("maps/balanced.map");
+        GameHeader players;
+        players.setNumberOfPlayers(1);
+        players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+        REQUIRE(gui.loadFromHeaders(map, players, true, true));
+        gui.localTeamNo=gui.localPlayer=0;
+        gui.adjustLocalTeam();
+        gui.localTeam->stats.recordWinProbability(0, 900, "visibility-test");
+        auto *gfx=globalContainer->gfx;
+        gfx->setResponsiveViewport(true,800,600);
+        for (auto [width,height] : {std::pair{360,720},std::pair{720,360}})
+        {
+            const int oldW=gfx->getW(),oldH=gfx->getH();
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+            SDL_Event resize{};resize.type=SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resize);
+            gui.viewportResized(oldW,oldH,gfx->getW(),gfx->getH());
+            gui.prepareLocalPresentation();
+            const auto checksum=gui.game.checkSum();
+            gui.touch->menuAction(3);
+            REQUIRE(gui.touch->statsOpen);
+            auto &panel = gui.statistics();
+            REQUIRE_FALSE(panel.metrics().empty());
+            CHECK(std::none_of(panel.metrics().begin(), panel.metrics().end(),
+                [](const auto &m){return m.winProbability;}));
+            panel.selectTopic(InGameStatisticsPanel::Topic::World);
+            panel.update(0);
+            CHECK_FALSE(panel.host().find("stats/metric/win probability"));
+            glob2test::drawGUI(gui,0);
+            CHECK(gui.game.checkSum()==checksum);
+            const auto screenshot="live-stats-"+std::to_string(width)+"x"+std::to_string(height)+".bmp";
+            gfx->printScreen(screenshot);
+            gfx->nextFrame();
+            REQUIRE(std::filesystem::exists(glob2test::profileDir()/screenshot));
+            gui.touch->statsOpen=false;
+        }
+        CHECK(glob2test::retainFromProfile(".bmp")==2);
+    }
 };
 TEST_SUITE("GameGUITouch")
 {
+	TEST_CASE("compact input and semantics reject partially obscured targets and covered map gestures [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 700, .height = 520,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::occludedControls();
+		NET_Quit();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+	}
+
+	TEST_CASE("compact semantic controls share navigation placement and building order validation [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 700, .height = 520,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::semanticControls();
+		NET_Quit();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+	}
+    GLOB2_TEST_CASE("compact Bengali tutorial yields to statistics and covers the minimap", "[display][artifacts]")
+    {
+        GameGUITouchHarness::compactTutorialStatistics();
+    }
+    GLOB2_TEST_CASE("live statistics hide post-game probability across topics", "[display][artifacts]")
+    {
+        GameGUITouchHarness::liveStatisticsProbability();
+    }
+
 	GLOB2_TEST_CASE("attack marks follow mobile minimaps without extra lifetime ticks", "[display][artifacts]")
 	{
 		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
@@ -5126,6 +6368,37 @@ TEST_SUITE("GameGUITouch")
 		GameGUITouchHarness::minimapMarks();
 		NET_Quit();
 		glob2test::retainFromProfile(".bmp");
+	}
+
+	GLOB2_TEST_CASE("tutorial wrapping preserves shaped clusters and refreshes font metrics", "[display]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::tutorialTypography();
+		NET_Quit();
+	}
+
+	GLOB2_TEST_CASE("phone navigation contains actual Urdu labels at normal and enlarged text sizes", "[display]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 390, .height = 844,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::navigationTypography();
+		NET_Quit();
+	}
+
+	GLOB2_TEST_CASE("Filipino navigation keeps whole words and shared targets at enlarged text sizes", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 390, .height = 844,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		options.beforeLoad = [](GlobalContainer &globals) { globals.settings.language = "fil"; };
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::filipinoNavigationTypography();
+		NET_Quit();
 	}
 
 	GLOB2_TEST_CASE("notifications clear system gutters and HUD at mobile text sizes", "[display][artifacts]")
@@ -5249,6 +6522,27 @@ TEST_SUITE("GameGUITouch")
 		NET_Quit();
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	}
+	TEST_CASE("bounded editor brush rails preserve header ownership and every visible size [display][artifacts]")
+	{
+		glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 568, .height = 320,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		GameGUITouchHarness::editorRailOwnership();
+	}
+
+	TEST_CASE("localized phone editor interactions preserve contextual properties [display][artifacts]")
+	{
+		glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 320, .height = 568,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		strings->setLang(strings->getLangCode("de"));
+		GameGUITouchHarness::editorInteractions();
+		glob2test::retainFromProfile(".bmp");
+	}
+
 	TEST_CASE("actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]")
 	{
 		// Exercise the legacy mouse sidebar first, even on touch-capable hosts;

@@ -2,8 +2,17 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
+import { AI_TAGS } from '@glob2/protocol';
 import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
-import { statusLabel, artifactLabel, fixedCaption } from '../src/messages.ts';
+import {
+  statusLabel,
+  artifactLabel,
+  fixedCaption,
+  aiTagLabel,
+  musicMoodLabel,
+  skinActionLabel,
+} from '../src/messages.ts';
+import { ACTIONS } from '../src/skins/geometry.ts';
 import { ApiError } from '../src/api.ts';
 import {
   LocaleProvider,
@@ -31,6 +40,70 @@ afterEach(async () => {
   await setLocale('en');
 });
 describe('web localization', () => {
+  it('uses the construction sense for Bulgarian music without changing building entities', async () => {
+    registerCatalog('bg', {
+      Build: 'Изграждане',
+      Building: 'Сграда',
+      Calm: 'Спокойствие',
+      Combat: 'Бой',
+    });
+    await setLocale('bg');
+    const moods = ['Calm', 'Building', 'Combat'];
+    expect(moods.map(musicMoodLabel)).toEqual(['Спокойствие', 'Изграждане', 'Бой']);
+    expect(t('Building')).toBe('Сграда');
+    expect(moods).toEqual(['Calm', 'Building', 'Combat']);
+    await setLocale('en');
+    expect(moods.map(musicMoodLabel)).toEqual(moods);
+  });
+
+  it('translates canonical AI tags while retaining their stored identifiers', async () => {
+    const tags = [...AI_TAGS];
+    registerCatalog('bg', {
+      Balanced: 'Балансиран',
+      Rush: 'Ранна атака',
+      Defensive: 'Отбранителен',
+      Economy: 'Икономика',
+      Expansion: 'Разширяване',
+      Experimental: 'Експериментален',
+      'Beginner-friendly': 'Подходящ за начинаещи',
+    });
+    await setLocale('bg');
+    const labels = tags.map(aiTagLabel);
+    expect(labels).toEqual([
+      'Балансиран',
+      'Ранна атака',
+      'Отбранителен',
+      'Икономика',
+      'Разширяване',
+      'Експериментален',
+      'Подходящ за начинаещи',
+    ]);
+    expect(tags[1]).toBe('Rush');
+    expect(aiTagLabel('a future authored tag')).toBe('a future authored tag');
+    await setLocale('en');
+    expect(tags.map(aiTagLabel)).toEqual(tags);
+  });
+
+  it('localizes pose captions without interpreting the empty swarm action as a word', async () => {
+    registerCatalog('fr', {
+      Walk: 'Marche',
+      Swim: 'Nage',
+      Harvest: 'Récolte',
+      Fight: 'Combat',
+      Fly: 'Vol',
+      'Static pose': 'Pose statique',
+    });
+    await setLocale('fr');
+    for (const actions of Object.values(ACTIONS)) {
+      for (const action of actions) {
+        expect(skinActionLabel(action)).toBeTruthy();
+        expect(skinActionLabel(action)).not.toBe(action);
+      }
+    }
+    expect(skinActionLabel('')).toBe('Pose statique');
+    await setLocale('en');
+    expect(skinActionLabel('walk')).toBe('Walk');
+  });
   it('localizes known system artifact captions while preserving authored titles', async () => {
     registerCatalog('fr', {
       'Generated layout': 'Disposition générée',
@@ -95,6 +168,49 @@ describe('web localization', () => {
   it('renders missing inherited slot names as literal placeholders', () => {
     const { container } = render(<RichMessage source="{constructor} {toString}" slots={{}} />);
     expect(container.textContent).toBe('{constructor} {toString}');
+  });
+  it('omits explicit empty React slots while preserving genuinely missing placeholders', () => {
+    const { container } = render(
+      <RichMessage
+        source="A{empty}{optional}{missing}B"
+        slots={{ empty: null, optional: undefined }}
+      />,
+    );
+    expect(container.textContent).toBe('A{missing}B');
+  });
+  it('keeps complete numeric ratios and dimensions LTR inside translated RTL sentences', async () => {
+    registerCatalog('ar', {
+      '{first} / {total} passed': 'نجح {first} / {total}',
+      '{width}×{height}': '{width}×{height}',
+      '{wins}–{losses}': '{wins}–{losses}',
+    });
+    await setLocale('ar');
+    const { container } = render(
+      <div dir="rtl">
+        <RichMessage source="{first} / {total} passed" slots={{ first: 12, total: 100 }} />
+        <RichMessage source="{width}×{height}" slots={{ width: 64, height: 128 }} />
+        <RichMessage source="{wins}–{losses}" slots={{ wins: 5, losses: 3 }} />
+      </div>,
+    );
+    expect(container.textContent).toBe('نجح 12 / 10064×1285–3');
+    expect(
+      [...container.querySelectorAll('bdi[dir="ltr"]')].map((node) => node.textContent),
+    ).toEqual(['12 / 100', '64×128', '5–3']);
+  });
+  it('preserves authored identifiers and repeated slots around numeric expressions', async () => {
+    registerCatalog('ar', {});
+    await setLocale('ar');
+    const { container } = render(
+      <RichMessage
+        source="{n}/{n} · {model} / {stage}"
+        slots={{ n: 3, model: 'model-A', stage: 'draft' }}
+      />,
+    );
+    expect(container.textContent).toBe('3/3 · model-A / draft');
+    expect(container.querySelector('bdi[dir="ltr"]')?.textContent).toBe('3/3');
+    expect(
+      [...container.querySelectorAll('bdi[dir="auto"]')].map((node) => node.textContent),
+    ).toEqual(['model-A', 'draft']);
   });
   it('preserves unknown enum labels that match Object prototype properties', () => {
     for (const value of ['constructor', 'toString', '__proto__']) {

@@ -119,7 +119,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
               className={q.id === ladder ? 'on' : ''}
               onClick={() => setCursor([])}
             >
-              {q.name}
+              <bdi dir="auto">{q.name}</bdi>
             </Link>
           ))}
         </nav>
@@ -149,7 +149,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
               ))}
             </div>
             <h2 className="grow" style={{ margin: 0 }}>
-              {name}
+              <bdi dir="auto">{name}</bdi>
             </h2>
             <label className="check">
               <input
@@ -177,7 +177,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
                 </div>
               ) : (
                 <>
-                  <Rows entries={page.entries} caption={`${name ?? 'Leaderboard'} players`} />
+                  <Rows entries={page.entries} caption={t('Leaderboard participants')} />
                   <div className="pager">
                     {cursor.length > 0 && (
                       <button className="small" onClick={() => setCursor(cursor.slice(0, -1))}>

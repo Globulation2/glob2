@@ -65,6 +65,14 @@
   gap: var(--sp-2) var(--sp-3);
   margin-bottom: var(--sp-4);
 }
+.hero-actions .btn {
+  min-width: 0;
+  max-width: 100%;
+  height: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
 .hero-actions .btn.big {
   flex: 1 1 auto;
 }
@@ -82,6 +90,7 @@
 }
 .join label {
   flex: 1 1 180px;
+  min-width: 0;
   display: grid;
   gap: 2px;
   font-size: var(--text-sm);
@@ -89,6 +98,8 @@
   color: var(--ink-2);
 }
 .join input {
+  min-width: 0;
+  width: 100%;
   font-family: var(--font-display);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -119,7 +130,7 @@
 }
 .stat {
   display: grid;
-  grid-template-columns: 34px 1fr;
+  grid-template-columns: 34px minmax(0, 1fr);
   grid-template-rows: auto auto;
   column-gap: var(--sp-2);
   align-items: center;
@@ -141,6 +152,8 @@
   font-weight: 700;
   color: var(--ink-2);
   line-height: 1.2;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .stat .v {
   font-family: var(--font-display);
@@ -189,6 +202,16 @@
   position: relative;
   z-index: 1;
   margin-top: var(--sp-5);
+}
+.home-body .section-head {
+  flex-wrap: wrap;
+}
+.home-body .section-head h2 {
+  flex: 1 1 18rem;
+}
+.home-body .section-head a {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .podium {
@@ -279,7 +302,7 @@
   }
   /* Three compact pebbles: icon and number on top, label below. */
   .stat {
-    grid-template-columns: 26px 1fr;
+    grid-template-columns: 26px minmax(0, 1fr);
     padding: var(--sp-2);
     column-gap: 6px;
   }
@@ -310,6 +333,16 @@
   display: grid;
   gap: var(--sp-4);
   max-width: 800px;
+}
+.account-settings :is(button, .btn) {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  padding-block: 8px;
+}
+/* Tamil labels need more room than the compact three-column counter row. */
+:lang(ta) .stats {
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
 }
 .ladder-empty {
   display: flex;

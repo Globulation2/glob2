@@ -100,7 +100,11 @@ jobs:
           ref: ${{ inputs.revision || github.sha }}
           fetch-depth: 0
       - name: Test shared build-system contracts once
-        run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s test/build_system -v'
+        run: |
+          encoder_python="$(python3 tools/package_assets.py --encoder-python)"
+          "$encoder_python" -m venv artifacts/build-contract-venv
+          artifacts/build-contract-venv/bin/python -m pip install -r test/build_system/requirements.txt
+          artifacts/build-contract-venv/bin/python -m unittest discover -s test/build_system -v
       - name: Test CI runners and failure reporting
         run: |
           python3 test/ci_run_commands.py \
@@ -109,7 +113,8 @@ jobs:
             --check 'terrain ecology analysis contracts' 'python3 tools/test_terrain_ecology.py' \
             --check 'gradient benchmark contracts' 'python3 tools/test_gradient_benchmark.py' \
             --check 'resource benchmark contracts' "python3 -m unittest discover -s test -p 'test_*benchmark*.py' -v" \
-            --check 'recording extraction contracts' 'python3 test/test_recording_tool.py'
+            --check 'recording extraction contracts' 'python3 test/test_recording_tool.py' \
+            --check 'MCP launcher contracts' 'python3 test/test_mcp_stdio.py'
       - name: Check that the sim version follows the simulation
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -807,7 +812,7 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.run_web_build == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 120
     env:
       CCACHE_DIR: /tmp/glob2-wasm-ccache
       CCACHE_COMPILERCHECK: content
@@ -939,6 +944,8 @@ jobs:
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/presentation-surface.js
             build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/script-fonts.css
+            build/emscripten/client/release/fonts/
             build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
@@ -981,6 +988,8 @@ jobs:
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/presentation-surface.js
             build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/script-fonts.css
+            build/emscripten/client/release/fonts/
             build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js

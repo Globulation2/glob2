@@ -7,6 +7,7 @@
 #include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <TouchText.h>
 
 #include "BuildingFailureDisplay.h"
 #include "BuildingPresentation.h"
@@ -208,7 +209,8 @@ void GameGUI::drawBuildingWorkingControls(const SceneBuildingPanel* selBuild, co
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, working);
 			globalContainer->littleFont->popStyle();
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormattableString("%0/%1").arg(selBuild->state().working.count).arg(maxUnitsWorking).c_str());
-			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, maxUnitsWorking, selBuild->state().working.count, buildingType->semantics.assignmentLimit);
+			const auto control=hudControlBounds("building/workers",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET,ypos+YOFFSET_TEXT_BAR-buildingInfoScroll,SCROLLBOX_BAR_WIDTH,16});
+			drawScrollBox(control.x,control.y+buildingInfoScroll,maxUnitsWorking,selBuild->state().working.count,buildingType->semantics.assignmentLimit);
 		}
 		else
 		{
@@ -252,13 +254,16 @@ void GameGUI::drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, c
 	std::string medstr = Toolkit::getStringTable()->getString("[medium priority]");
 	std::string highstr = Toolkit::getStringTable()->getString("[high priority]");
 
-	drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+12+4, (priority==-1));
+	const auto priority0=hudControlBounds("building/priority/-1",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET,ypos+16-buildingInfoScroll,12,12});
+	drawRadioButton(priority0.x,priority0.y+buildingInfoScroll,(priority==-1));
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14, ypos+12+2, globalContainer->littleFont, lowstr);
 
-	drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width, ypos+12+4, (priority==0));
+	const auto priority1=hudControlBounds("building/priority/0",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width,ypos+16-buildingInfoScroll,12,12});
+	drawRadioButton(priority1.x,priority1.y+buildingInfoScroll,(priority==0));
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width, ypos+12+2, globalContainer->littleFont, medstr);
 
-	drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width*2, ypos+12+4, (priority==1));
+	const auto priority2=hudControlBounds("building/priority/1",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width*2,ypos+16-buildingInfoScroll,12,12});
+	drawRadioButton(priority2.x,priority2.y+buildingInfoScroll,(priority==1));
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width*2, ypos+12+2, globalContainer->littleFont, highstr);
 
 	ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -280,7 +285,8 @@ void GameGUI::drawBuildingRangeControls(const SceneBuildingPanel* selBuild, cons
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, range);
 		globalContainer->littleFont->popStyle();
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormattableString("%0").arg(selBuild->state().unitStayRange).c_str());
-		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, unitStayRange, 0, selBuild->type->maxUnitStayRange);
+		const auto control=hudControlBounds("building/range",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET,ypos+YOFFSET_TEXT_BAR-buildingInfoScroll,SCROLLBOX_BAR_WIDTH,16});
+		drawScrollBox(control.x,control.y+buildingInfoScroll,unitStayRange,0,selBuild->type->maxUnitStayRange);
 	}
 	ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 }
@@ -406,7 +412,8 @@ void GameGUI::drawBuildingSwarmRatios(const SceneBuildingPanel* selBuild, const 
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
 		if (!buildingType->semantics.production.recipes[i].enabled) continue;
-		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, displayed[i], selBuild->state().ratio[i], MAX_RATIO_RANGE);
+		const auto control=hudControlBounds("building/production/"+std::to_string(i),{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET,ypos-buildingInfoScroll,SCROLLBOX_BAR_WIDTH,16});
+		drawScrollBox(control.x,control.y+buildingInfoScroll,displayed[i],selBuild->state().ratio[i],MAX_RATIO_RANGE);
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+24, ypos, globalContainer->littleFont, getUnitName(i));
 
 		if(i==1 && highlights.find(HighlightRatioBar) != highlights.end())
@@ -480,8 +487,18 @@ void GameGUI::drawBuildingFailureReasons(const SceneBuildingPanel* selBuild, con
 			const int shapeX = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10;
 			if (reason != Building::UnitNotAvailable)
 				drawFailureShape(globalContainer->gfx, shapeX+FAILURE_SHAPE_HALF, ypos+FAILURE_SHAPE_HALF+1, FAILURE_SHAPE_HALF, reason, failureShapeColor());
-			globalContainer->gfx->drawString(shapeX+2*FAILURE_SHAPE_HALF+6, ypos, globalContainer->littleFont, s.c_str());
-			ypos += YOFFSET_RESOURCE_LINE;
+			// Keep translated reasons inside the narrow panel. The outer building
+			// panel clips and scrolls using the complete height returned in ypos.
+			const int textX = shapeX+2*FAILURE_SHAPE_HALF+6;
+			auto* font = globalContainer->littleFont;
+			const auto lines = GAGCore::wrapTouchText(font, s, globalContainer->gfx->getW()-4-textX);
+			if (lines.empty())
+				ypos += YOFFSET_RESOURCE_LINE;
+			for (const auto& line : lines)
+			{
+				globalContainer->gfx->drawString(textX, ypos, font, line);
+				ypos += std::max(YOFFSET_RESOURCE_LINE, font->getStringHeight(line));
+			}
 		}
 	}
 }
@@ -512,9 +529,9 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, cons
 	if (selBuild->owner().number != drawnScene().panels.local.state().number)
 		return;
 
-	const int btnX = globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET;
-	const int primaryY = globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET;
-	const int secondaryY = globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET;
+	const auto primary=hudControlBounds("building/construction",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET,globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET,128,BOTTOM_BUTTON_HEIGHT});
+	const auto secondary=hudControlBounds("building/destroy",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET,globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET,128,BOTTOM_BUTTON_HEIGHT});
+	const int btnX=primary.x, primaryY=primary.y, secondaryY=secondary.y;
 
 	if (selBuild->state().constructionResultState==Building::REPAIR)
 	{
@@ -626,7 +643,8 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, const
 					spriteId=20;
 				else
 					spriteId=19;
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
+				const auto control=hudControlBounds("building/clear/"+std::to_string(i),{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10,ypos-buildingInfoScroll,12,YOFFSET_TEXT_PARA});
+			globalContainer->gfx->drawSprite(control.x,control.y+buildingInfoScroll+2,globalContainer->gamegui,spriteId);
 
 				ypos+=YOFFSET_TEXT_PARA;
 			}
@@ -647,7 +665,8 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, const
 				spriteId=20;
 			else
 				spriteId=19;
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
+			const auto control=hudControlBounds("building/worker-level/"+std::to_string(i),{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10,ypos-buildingInfoScroll,12,YOFFSET_TEXT_PARA});
+			globalContainer->gfx->drawSprite(control.x,control.y+buildingInfoScroll+2,globalContainer->gamegui,spriteId);
 
 			ypos+=YOFFSET_TEXT_PARA;
 		}
@@ -668,7 +687,8 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, const
 				spriteId=20;
 			else
 				spriteId=19;
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
+			const auto control=hudControlBounds("building/warrior-level/"+std::to_string(i),{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10,ypos-buildingInfoScroll,12,YOFFSET_TEXT_PARA});
+			globalContainer->gfx->drawSprite(control.x,control.y+buildingInfoScroll+2,globalContainer->gamegui,spriteId);
 
 			ypos+=YOFFSET_TEXT_PARA;
 		}
@@ -696,7 +716,8 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, const
 				spriteId = 20;
 			else
 				spriteId = 19;
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
+			const auto control=hudControlBounds("building/explorer/"+std::to_string(i),{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10,ypos-buildingInfoScroll,12,YOFFSET_TEXT_PARA});
+			globalContainer->gfx->drawSprite(control.x,control.y+buildingInfoScroll+2,globalContainer->gamegui,spriteId);
 
 			ypos += YOFFSET_TEXT_PARA;
 		}

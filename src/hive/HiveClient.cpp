@@ -2,6 +2,8 @@
 #include "app/ClientFeatures.h"
 #include "HiveClient.h"
 #include "HiveObservation.h"
+#include "WorkerProcess.h"
+#include "ProgramSchedule.h"
 #include "GameGUI.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -25,7 +27,6 @@ namespace Hive
 {
 namespace
 {
-std::string executable;
 std::string uuid()
 {
 	std::random_device rd;
@@ -39,70 +40,7 @@ std::string uuid()
 	}
 	return out;
 }
-#ifndef __EMSCRIPTEN__
-Json runWorker(const Json &input)
-{
-	const char *args[] = {executable.c_str(), "dev", "hive-worker", nullptr};
-	SDL_PropertiesID props = SDL_CreateProperties();
-	auto *environment = SDL_CreateEnvironment(false);
-	SDL_SetPointerProperty(props, SDL_PROP_PROCESS_CREATE_ARGS_POINTER, const_cast<char **>(args));
-	SDL_SetPointerProperty(props, SDL_PROP_PROCESS_CREATE_ENVIRONMENT_POINTER, environment);
-	SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDIN_NUMBER, SDL_PROCESS_STDIO_APP);
-	SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDOUT_NUMBER, SDL_PROCESS_STDIO_APP);
-	SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDERR_NUMBER, SDL_PROCESS_STDIO_NULL);
-	auto *process = SDL_CreateProcessWithProperties(props);
-	SDL_DestroyProperties(props);
-	SDL_DestroyEnvironment(environment);
-	if (!process)
-		return {{"ok", false}};
-	std::string wire = input.dump() + "\n", output;
-	auto *stdinStream = SDL_GetProcessInput(process);
-	auto *stdoutStream = SDL_GetProcessOutput(process);
-	// SDL process input is nonblocking; pump both pipes so large observations cannot deadlock.
-	std::size_t sent = 0;
-	const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
-	bool complete = false;
-	int exitCode = 0;
-	while (std::chrono::steady_clock::now() < deadline)
-	{
-		if (sent < wire.size())
-			sent += SDL_WriteIO(stdinStream, wire.data() + sent, wire.size() - sent);
-		char bytes[8192];
-		auto n = SDL_ReadIO(stdoutStream, bytes, sizeof(bytes));
-		if (n)
-			output.append(bytes, n);
-		if (output.size() > 2 * 1024 * 1024)
-			break;
-		if (output.find('\n') != std::string::npos)
-		{
-			complete = true;
-			break;
-		}
-		if (SDL_WaitProcess(process, false, &exitCode))
-			break;
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
-	SDL_KillProcess(process, true);
-	SDL_WaitProcess(process, true, &exitCode);
-	SDL_DestroyProcess(process);
-	if (!complete)
-		return {{"ok", false}};
-	try
-	{
-		return Json::parse(output);
-	}
-	catch (...)
-	{
-		return {{"ok", false}};
-	}
-}
-#else
-#endif
 } // namespace
-void setExecutable(const char *path)
-{
-	executable = std::filesystem::absolute(path).string();
-}
 std::uint64_t Client::now() const
 {
 	return environment.now ? environment.now() : SDL_GetTicks();
@@ -342,7 +280,7 @@ void Client::finish(const Json &r)
 	if (!accepted && !currentProgram.empty())
 	{
 		programs[currentProgram].paused = true;
-		reports.push_back("A standing order needs attention and has been paused.");
+		appendReport("A standing order needs attention and has been paused.", ReportSource::StandingOrderPaused);
 	}
 	if (current.contains("id"))
 	{
@@ -446,8 +384,8 @@ void Client::update(bool caughtUp)
 						 p.paused = true;
 					 pendingResult = Json::object();
 					 current = Json::object();
-					 reports.push_back("The connection changed. Review your paused standing orders "
-									   "before resuming.");
+					 appendReport("The connection changed. Review your paused standing orders "
+									   "before resuming.", ReportSource::ConnectionChanged);
 					 save();
 				 }
 				 lease = nextLease;
@@ -473,9 +411,9 @@ void Client::update(bool caughtUp)
 							 missing.missingCheckpoint = true;
 							 programs[missing.definition.at("id").get<std::string>()] =
 								 std::move(missing);
-							 reports.push_back(
+							 appendReport(
 								 "A standing order needs a fresh instruction after reconnecting. "
-								 "You can cancel it or ask the commander to replace it.");
+								 "You can cancel it or ask the commander to replace it.", ReportSource::FreshInstruction);
 							 save();
 						 }
 						 else if (record.at("status") != "active" ||
@@ -521,12 +459,10 @@ void Client::update(bool caughtUp)
 						 else
 						 {
 							 progress.clear();
-							 reports.push_back(b.at("text"));
+							 appendReport(b.at("text").template get<std::string>());
 						 }
 					 }
 				 }
-				 while (reports.size() > 100)
-					 reports.erase(reports.begin());
 			 });
 	}
 	if (!pendingResult.empty() && !resultSending && timestamp - lastResult >= 1000)
@@ -544,27 +480,25 @@ void Client::update(bool caughtUp)
 	if (!working && current.empty() && pendingResult.empty() && ready && !lease.empty() &&
 		timestamp - lastLeaseAck < 10000)
 	{
-		for (auto &[id, p] : programs)
-			if (!p.paused && gui.game.stepCounter >= p.nextTick)
+		const auto id = scheduleDue(programs, gui.game.stepCounter);
+		if (!id.empty())
+		{
+			auto &p = programs.at(id);
+			currentProgram = id;
+			current = Json::object();
+			try
 			{
-				p.nextTick =
-					gui.game.stepCounter + p.definition.at("intervalTicks").get<unsigned>();
-				currentProgram = id;
-				current = Json::object();
-				try
-				{
-					start({{"source", p.definition.at("source")},
-						   {"state", p.state},
-						   {"initialized", p.initialized},
-						   {"random", p.random},
-						   {"snapshot", snapshot()}});
-				}
-				catch (...)
-				{
-					finish({{"ok", false}});
-				}
-				break;
+				start({{"source", p.definition.at("source")},
+					   {"state", p.state},
+					   {"initialized", p.initialized},
+					   {"random", p.random},
+					   {"snapshot", snapshot()}});
 			}
+			catch (...)
+			{
+				finish({{"ok", false}});
+			}
+		}
 	}
 }
 void Client::deliverResult()
@@ -587,8 +521,8 @@ void Client::deliverResult()
 				 {
 					 for (auto &[id, p] : programs)
 						 p.paused = true;
-					 reports.push_back("An order could not be confirmed. Review your "
-									   "standing orders before resuming.");
+					 appendReport("An order could not be confirmed. Review your "
+									   "standing orders before resuming.", ReportSource::ConfirmationFailed);
 				 }
 				 pendingResult = Json::object();
 				 save();
@@ -603,8 +537,8 @@ void Client::command(const std::string &text, bool ongoing)
 	if (commandSending)
 	{
 		commandDraft = text;
-		reports.push_back("Your previous order is still sending. This message has been kept; open "
-						  "the commander to send it again.");
+		appendReport("Your previous order is still sending. This message has been kept; open "
+						  "the commander to send it again.", ReportSource::PreviousSending);
 		return;
 	}
 	commandDraft = text;
@@ -629,11 +563,11 @@ void Client::command(const std::string &text, bool ongoing)
 				 if (commandDraft == text)
 					 commandDraft.clear();
 				 retryCommandId.clear();
-				 reports.push_back("Order received: " + text);
+				 appendReport("Order received: " + text, ReportSource::OrderReceived, text);
 			 }
 			 else
-				 reports.push_back("Order not confirmed. Open the commander to retry; your message "
-								   "has been kept.");
+				 appendReport("Order not confirmed. Open the commander to retry; your message "
+								   "has been kept.", ReportSource::OrderNotConfirmed);
 		 });
 }
 void Client::stop()
@@ -653,7 +587,7 @@ void Client::stop()
 			 if (r.ok)
 				 progress.clear();
 			 controlStatus["commander"] = r.ok ? "Stopped" : "Stop failed; retry the stop shortcut";
-			 reports.push_back(controlStatus["commander"]);
+			 appendReport(controlStatus["commander"], r.ok ? ReportSource::Stopped : ReportSource::StopFailed);
 		 });
 }
 void Client::change(const std::string &id, const std::string &action)
@@ -683,8 +617,8 @@ void Client::change(const std::string &id, const std::string &action)
 				 return;
 			 controlStatus[id] = r.ok ? "Requested" : "Update failed; try again";
 			 if (!r.ok)
-				 reports.push_back("Standing order update failed. Your order is paused locally; "
-								   "retry the control.");
+				 appendReport("Standing order update failed. Your order is paused locally; "
+								   "retry the control.", ReportSource::UpdateFailed);
 		 });
 }
 void Client::buyCredits()

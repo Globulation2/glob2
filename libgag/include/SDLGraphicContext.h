@@ -25,6 +25,7 @@
 #include <optional>
 #include <cstdint>
 
+#include <span>
 #include <set>
 #include <tuple>
 #include <list>
@@ -146,6 +147,10 @@ namespace GAGCore
 
 		//! Whether every character of this UTF-8 string has a glyph in this font
 		virtual bool hasGlyphsFor(const std::string &utf8Text) { return true; }
+
+		//! Positive UTF-8 byte ends of indivisible shaping clusters, in logical order.
+		//! Legacy fonts default to code points; shaped fonts override this contract.
+		virtual std::vector<std::size_t> getStringClusterEnds(const std::string &text);
 
 		// width and height
 		virtual int getStringWidth(const std::string string) = 0;
@@ -994,9 +999,15 @@ namespace GAGCore
 		static HighResolutionStats highResolutionStats();
 		static void setHighResolution(bool enabled);
         static void requestHighResolution(bool enabled);
+        // Large terrain banks retain native frames and stream only the caller's HD window.
+        static void deferHighResolution(const std::string& name);
+        static bool highResolutionDeferred(const std::string& name);
+        void setHighResolutionFrames(std::span<const unsigned> indices);
         static void refreshHighResolutionForRenderer();
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::chrono::steady_clock::time_point deadline);
+        // Blocks until every requested HD frame, deferred windows included, is published.
+        static void finishHighResolution();
 		static void flushBatches(GraphicContext *gc);
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }

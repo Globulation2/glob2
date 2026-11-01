@@ -24,6 +24,8 @@ export {
   statusLabel,
   artifactLabel,
   fixedCaption,
+  aiTagLabel,
+  musicMoodLabel,
 } from './messages.ts';
 const LocaleContext = createContext('en');
 export function useLocale() {
@@ -44,22 +46,27 @@ export function LanguageSelector() {
   return (
     <div className="language-preference">
       <label>
-        {t('Language')}
-        <select
-          data-testid="language-selector"
-          aria-label={t('Language')}
-          value={locale}
-          onChange={(event) => {
-            setError(false);
-            void localization.setLocale(event.target.value).catch(() => setError(true));
-          }}
-        >
-          {localization.locales.map((item) => (
-            <option key={item.code} value={item.code} lang={item.code}>
-              {item.name}
-            </option>
-          ))}
-        </select>
+        <span className="language-preference-label">{t('Language')}</span>
+        <span className="language-preference-control">
+          <select
+            data-testid="language-selector"
+            aria-label={t('Language')}
+            value={locale}
+            onChange={(event) => {
+              setError(false);
+              void localization.setLocale(event.target.value).catch(() => setError(true));
+            }}
+          >
+            {localization.locales.map((item) => (
+              <option key={item.code} value={item.code} lang={item.code}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          <span className="language-preference-compact" aria-hidden="true">
+            {locale.split('-')[0]?.toUpperCase()}
+          </span>
+        </span>
       </label>
       {error && <p role="alert">{t('Could not load this language. Please try again.')}</p>}
     </div>
@@ -80,27 +87,58 @@ export function RichMessage({
 }) {
   useLocale();
   const occurrences = new Map<string, number>();
-  return (
-    <>
-      {(singular !== undefined && count !== undefined ? tp(singular, source, count) : t(source))
-        .split(/(\{[A-Za-z][A-Za-z0-9_]*\})/g)
-        .map((part) => {
-          if (!/^\{[A-Za-z][A-Za-z0-9_]*\}$/.test(part)) return part;
-          const occurrence = occurrences.get(part) ?? 0;
-          occurrences.set(part, occurrence + 1);
-          const name = part.slice(1, -1);
-          const value = Object.hasOwn(slots, name) ? (slots[name] ?? part) : part;
-          const isolate =
-            typeof value === 'string' &&
-            (localization.locales.find((item) => item.code === localization.getLocale())?.dir ===
-              'rtl' ||
-              /[\u0590-\u08ff]/.test(value));
-          return (
-            <Fragment key={`${part}:${occurrence}`}>
-              {isolate ? <bdi dir="auto">{value}</bdi> : value}
-            </Fragment>
-          );
-        })}
-    </>
-  );
+  const parts = (
+    singular !== undefined && count !== undefined ? tp(singular, source, count) : t(source)
+  ).split(/(\{[A-Za-z][A-Za-z0-9_]*\})/g);
+  const placeholder = (part: string) => /^\{[A-Za-z][A-Za-z0-9_]*\}$/.test(part);
+  const valueOf = (part: string) => {
+    const name = part.slice(1, -1);
+    return Object.hasOwn(slots, name) ? slots[name] : part;
+  };
+  const result: ReactNode[] = [];
+  for (let index = 0; index < parts.length; index++) {
+    const part = parts[index] ?? '';
+    if (!placeholder(part)) {
+      result.push(part);
+      continue;
+    }
+    const occurrence = occurrences.get(part) ?? 0;
+    occurrences.set(part, occurrence + 1);
+    const value = valueOf(part);
+    // A whole numeric ratio/dimension/score needs one LTR isolate. Isolating its
+    // operands separately still reverses numerator/denominator in RTL text.
+    if (typeof value === 'number') {
+      const numeric: ReactNode[] = [value];
+      let last = index;
+      while (last + 2 < parts.length) {
+        const separator = parts[last + 1] ?? '';
+        const token = parts[last + 2] ?? '';
+        if (!/^\s*[/×–]\s*$/.test(separator) || !placeholder(token)) break;
+        const next = valueOf(token);
+        if (typeof next !== 'number') break;
+        numeric.push(separator, next);
+        occurrences.set(token, (occurrences.get(token) ?? 0) + 1);
+        last += 2;
+      }
+      if (last > index) {
+        result.push(
+          <bdi dir="ltr" key={`${part}:${occurrence}`}>
+            {numeric}
+          </bdi>,
+        );
+        index = last;
+        continue;
+      }
+    }
+    const isolate =
+      typeof value === 'string' &&
+      (localization.locales.find((item) => item.code === localization.getLocale())?.dir === 'rtl' ||
+        /[\u0590-\u08ff]/.test(value));
+    result.push(
+      <Fragment key={`${part}:${occurrence}`}>
+        {isolate ? <bdi dir="auto">{value}</bdi> : value}
+      </Fragment>,
+    );
+  }
+  return <>{result}</>;
 }

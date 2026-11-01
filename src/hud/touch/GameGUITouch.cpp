@@ -6,6 +6,7 @@
 #include <InterfacePresentation.h>
 #include "MobileSafeArea.h"
 #include <HostViewport.h>
+#include <ui/Host.h>
 #include "ThumbSide.h"
 #include "BrushCoverage.h"
 #include <map>
@@ -61,6 +62,14 @@ MobileLayout GameGUITouch::layout() const
 		gfx->getW() / unit, gfx->getH() / unit, insets, 0, 1, panelOpen,
 		resolved.layout == PresentationLayout::Spacious,
 		resolved.layout == PresentationLayout::Spacious ? resolved.panelWidth : 288);
+	// Keep the icon band, then reserve the actual wrapped label height and
+	// bottom padding. Tall scripts and accessibility text grow upward into
+	// the world; drawing and hit regions share the resulting action strip.
+	const auto &navigation = measureNavigation(result.actions.w);
+	const double labelHeight = navigation.height;
+	result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0)) *
+		(6 / navigation.columns);
+	result.actions.y = result.safe.y + result.safe.h - result.actions.h;
 	// Persistent palettes float too: the map remains visible below their last
 	// icon, and opening an inspector never changes the camera's framing.
 	result.world = result.safe;
@@ -176,11 +185,19 @@ MobileLayout GameGUITouch::layout() const
 	}
 	return result;
 }
+double GameGUITouch::scenarioMessagePitch() const
+{
+	return scenarioMessageLineStep * InGameTouchTheme::textGrowth();
+}
+double GameGUITouch::scenarioMessageFooterHeight() const
+{
+	return gui.swallowSpaceKey ? std::max(48.0, scenarioMessageFontHeight * InGameTouchTheme::textGrowth() + 16) : 0;
+}
 double GameGUITouch::scenarioMessageMaximum() const
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	return std::max(0.0, scenarioMessageLines.size() * InGameTouchTheme::scenarioMessagePitch() - scenarioMessageRect().h / unit + 16 +
-							 (gui.swallowSpaceKey ? 48 : 0));
+	return std::max(0.0, scenarioMessageLines.size() * scenarioMessagePitch() - scenarioMessageRect().h / unit + 16 +
+							 scenarioMessageContinueRect().h / unit);
 }
 void GameGUITouch::clampScroll()
 {
@@ -247,6 +264,7 @@ void GameGUITouch::advanceScroll(Uint64 now)
 {
 	lastStepTime = now;
 	if (nativeScrolling && (!usesHUD() || activeDialog() || (nativePanel == 2 && !inspecting()))) stopScrolling();
+	if (mapMotion.isAnimating() && usesHUD() && inputBlocked(touchPoint)) mapMotion.interrupt();
 	if (mapMotion.isAnimating())
 	{
 		const auto [dx, dy] = mapMotion.stepDelta(now);
@@ -262,10 +280,16 @@ void GameGUITouch::advanceScroll(Uint64 now)
 	}
 	if (!usesHUD())
 		return;
+	if (nativeScrolling && !scrollAllowed(nativePanel)) stopScrolling();
 	if (nativeScrolling) nativeScroll.update(now, nativeAxis().axis);
+	int surface = 0;
 	for (auto *panel : {&panelAxis, &actionAxis, &scenarioMessageAxis})
-		if (panel->axis.isAnimating())
-			panel->axis.step(now);
+	{
+		++surface;
+		if (!panel->axis.isAnimating()) continue;
+		if (!scrollAllowed(surface)) panel->axis.interrupt();
+		else panel->axis.step(now);
+	}
 	clampScroll();
 }
 GameGUITouch::~GameGUITouch()
@@ -391,10 +415,6 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		const auto stats = statsLayout();
 		if (stats.close.contains(point))
 			return 45;
-		if (stats.previous.contains(point))
-			return 46;
-		if (stats.next.contains(point))
-			return 47;
 		if (stats.sheet.contains(point))
 			return 48;
 	}
@@ -411,8 +431,9 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 			return 8;
 		if (speedRect().contains(point))
 			return 49;
-		if (layout().actions.contains(point))
-			return 10 + std::min(5, int((point.x - layout().actions.x) / (layout().actions.w / 6)));
+		const auto navigation = layout();
+		if (navigation.actions.contains(point))
+			return 10 + navigationButtonAt(navigation, point);
 		const auto header = allocationRect();
 		if (header.contains(point) &&
 			point.x >= header.x + header.w - 48 * globalContainer->gfx->logicalUnitsPerPoint())
@@ -448,8 +469,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 		return targets;
 	const auto ui = layout();
 	for (int i = 0; i < 6; ++i)
-		targets.push_back(
-			{ui.actions.x + i * ui.actions.w / 6, ui.actions.y, ui.actions.w / 6, ui.actions.h});
+		targets.push_back(navigationButtonRect(ui, i));
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION)
 	{
 		targets = {confirmRect(), cancelRect()};
@@ -463,7 +483,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	if (statsOpen)
 	{
 		const auto stats = statsLayout();
-		return {stats.close, stats.previous, stats.next};
+		return {stats.close};
 	}
 	if (lensVisible())
 		return lensRects(layout());
@@ -541,6 +561,7 @@ bool GameGUITouch::process(SDL_Event &event)
 				const int region = interfaceRegion({sample->x, sample->y});
 				if (region == 7) nativePanel = 3;
 				else if (region == 3) nativePanel = inspecting() ? 2 : 1;
+				if (nativePanel && !scrollAllowed(nativePanel)) return true;
 				if (nativePanel)
 				{
 					clampScroll();
@@ -557,6 +578,7 @@ bool GameGUITouch::process(SDL_Event &event)
 		}
 		if (sample->sequence != nativeSequence) return true;
 		if (!nativePanel) return false;
+		if (nativeScrolling && !scrollAllowed(nativePanel)) { stopScrolling(); return true; }
 		if (nativeScrolling)
 		{
 			nativeScroll.handle(*sample, nativeAxis().axis, 1 / globalContainer->gfx->logicalUnitsPerPoint(), nativePanel == 1 ? paletteScrollSign() : 1);
@@ -571,10 +593,21 @@ bool GameGUITouch::process(SDL_Event &event)
 		if (key == SDLK_TAB)
 		{
 			const auto targets = keyboardTargets();
-			if (!targets.empty())
-				keyboardFocus = (keyboardFocus + ((event.key.mod & SDL_KMOD_SHIFT) ? -1 : 1) +
-								 int(targets.size())) %
-								int(targets.size());
+			const int count = int(targets.size());
+			const int direction = (event.key.mod & SDL_KMOD_SHIFT) ? -1 : 1;
+			int next = keyboardFocus;
+			keyboardFocus = -1;
+			for (int tried = 0; tried < count; ++tried)
+			{
+				next = (next + direction + count) % count;
+				const auto &r = targets[next];
+				const ViewPoint center{r.x + r.w / 2, r.y + r.h / 2};
+				if (!pointerControlKey(center).empty() && pointerControlAllowed(center))
+				{
+					keyboardFocus = next;
+					break;
+				}
+			}
 			return true;
 		}
 		if ((key == SDLK_RETURN || key == SDLK_SPACE) && keyboardFocus >= 0 &&
@@ -597,6 +630,7 @@ bool GameGUITouch::process(SDL_Event &event)
 		}
 		if (key == SDLK_PAGEDOWN || key == SDLK_PAGEUP)
 		{
+			if (!scrollAllowed(inspecting() ? 2 : 1)) return true;
 			const double delta = key == SDLK_PAGEDOWN ? 144 : -144;
 			panelScroll += delta * paletteScrollSign();
 			actionScroll += delta;
@@ -623,6 +657,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			event.wheel.y * (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -48 : 48);
 		if (region == 3)
 		{
+			if (!scrollAllowed(inspecting() ? 2 : 1)) return true;
 			if (inspecting())
 				actionScroll -= delta;
 			else
@@ -660,6 +695,27 @@ bool GameGUITouch::process(SDL_Event &event)
 		return false;
 	const ViewPoint pointerPoint{event.tfinger.x * globalContainer->gfx->getW(),
 								 event.tfinger.y * globalContainer->gfx->getH()};
+	const bool blocked = usesHUD() && inputBlocked(pointerPoint);
+	const GAGGUI::ui::Point pixel{int(pointerPoint.x), int(pointerPoint.y)};
+	// Keep a captured header pull when it enters its own statistics body.
+	// The header and body hosts must still permit it: popups, modals and
+	// higher overlays retain their normal ability to interrupt the gesture.
+	const bool ownStatisticsBody = blocked && statsOpen && ownerRegion == 48 &&
+		!ignoreTouchSequence && event.type != SDL_EVENT_FINGER_DOWN && fingers.size() == 1 &&
+		fingers.front() == std::make_pair(event.tfinger.touchID, event.tfinger.fingerID) &&
+		controlAllowed("touch/statistics/sheet", GAGGUI::ui::ActionKind::Scroll) &&
+		gui.statisticsBounds().contains(pixel) && !gui.statisticsHost().inputBlockedAt(pixel);
+	if (usesHUD() && ((blocked && !ownStatisticsBody) ||
+		(event.type == SDL_EVENT_FINGER_DOWN && !pointerControlAllowed(pointerPoint))))
+	{
+		cancel();
+		if (event.type != SDL_EVENT_FINGER_UP)
+		{
+			fingers.emplace_back(event.tfinger.touchID, event.tfinger.fingerID);
+			ignoreTouchSequence = true;
+		}
+		return true;
+	}
 	// An outside press dismisses confirmation and consumes its whole sequence,
 	// so restoring the normal controls cannot activate one underneath the tap.
 	if (usesHUD() && gui.inputState.hasFocus() && !ignoreTouchSequence &&
@@ -809,7 +865,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			if (ownerRegion == 16)
 			{
 				const auto hit = BrushHUD::hit(brushHUD(), point);
-				if (hit.part == BrushHUD::Part::Detent)
+				if (hit.part == BrushHUD::Part::Detent && controlAllowed("touch/brush/shape/" + std::to_string(hit.index), GAGGUI::ui::ActionKind::Activate))
 				{
 					gui.brush.setFigure(unsigned(hit.index));
 					railTouched = hit.index;
@@ -863,7 +919,7 @@ bool GameGUITouch::process(SDL_Event &event)
 		if (strokeHold && strokeHold->pointer == key)
 			strokeHold->pointerPosition = point;
 		if (ownerRegion == 16 && railTouched >= 0 && fingers.size() == 1 && fingers.front() == key)
-			if (const int detent = BrushHUD::detentAt(brushHUD(), point); detent >= 0)
+			if (const int detent = BrushHUD::detentAt(brushHUD(), point); detent >= 0 && controlAllowed("touch/brush/shape/" + std::to_string(detent), GAGGUI::ui::ActionKind::Activate))
 			{
 				gui.brush.setFigure(unsigned(detent));
 				railTouched = detent;
@@ -871,9 +927,9 @@ bool GameGUITouch::process(SDL_Event &event)
 		// A single finger that landed on the minimap keeps steering the camera,
 		// as a held mouse button does on desktop. Leaving the minimap clamps to
 		// its edge so a fast sweep never drops the drag.
-		if (usesHUD() && ownerRegion == 8 && fingers.size() == 1 && fingers.front() == key)
+		if (usesHUD() && ownerRegion == 8 && fingers.size() == 1 && fingers.front() == key && controlAllowed("touch/minimap", GAGGUI::ui::ActionKind::Activate))
 			navigateMinimap(minimapRect().clamp(point));
-		if (usesHUD() && ownerRegion == 40 && peekOpen && fingers.size() == 1 && fingers.front() == key)
+		if (usesHUD() && ownerRegion == 40 && peekOpen && fingers.size() == 1 && fingers.front() == key && controlAllowed("touch/minimap", GAGGUI::ui::ActionKind::Activate))
 			navigatePeek(point);
 		if (!fingers.empty() && fingers.front() == key)
 		{
@@ -942,6 +998,17 @@ bool GameGUITouch::process(SDL_Event &event)
 	return true;
 }
 
+void GameGUITouch::dragStatistics(double deltaPoints)
+{
+	if (!statsOpen) return;
+	statsDrag += deltaPoints;
+	if (statsDrag > InGameTouchTheme::target)
+	{
+		statsOpen = false;
+		statsDrag = 0;
+	}
+}
+
 void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 {
 	for (const auto &action : changes)
@@ -962,6 +1029,8 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			if (usesHUD() && (ownerRegion == 7 || ownerRegion == 3) &&
 				(action.kind == TouchActionKind::Pan || action.kind == TouchActionKind::PanEnd))
 			{
+				if (!scrollAllowed(ownerRegion == 7 ? 3 : inspecting() ? 2 : 1))
+				{ stopScrolling(); continue; }
 				const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 				clampScroll();
 				auto &panel = ownerRegion == 7 ? scenarioMessageAxis : inspecting() ? actionAxis : panelAxis;
@@ -976,10 +1045,9 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			}
 			if (usesHUD() && ownerRegion == 48 && action.kind == TouchActionKind::Pan)
 			{
-				// Pulling the statistics sheet down closes it.
-				statsDrag += point.y / globalContainer->gfx->logicalUnitsPerPoint();
-				if (statsDrag > InGameTouchTheme::target)
-					statsOpen = false;
+				if (!controlAllowed("touch/statistics/sheet", GAGGUI::ui::ActionKind::Scroll))
+					continue;
+				dragStatistics(point.y / globalContainer->gfx->logicalUnitsPerPoint());
 			}
 			if (action.kind == TouchActionKind::Select && interfaceRegion(point) == ownerRegion)
 				interfaceTap(point);
@@ -1202,261 +1270,112 @@ void GameGUITouch::commitDeferredStroke()
 		replayStroke(held);
 }
 
+void GameGUITouch::activateNavigation(int button)
+{
+	if (button == 2)
+		showStatistics = false;
+	if (globalContainer->replaying && button < 2)
+	{
+		if (button == 0)
+			gui.gamePaused = !gui.gamePaused;
+		else
+		{
+			globalContainer->replayFastForward = !globalContainer->replayFastForward;
+			gui.gamePaused = false;
+		}
+		return;
+	}
+	if (button < 3)
+	{
+		if ((button == 0 && (gui.hiddenGUIElements & GameGUI::HIDABLE_BUILDINGS_LIST)) ||
+			(button == 1 && (gui.hiddenGUIElements & GameGUI::HIDABLE_FLAGS_LIST)))
+			return;
+		// Explicit navigation wins over inspector restoration and pending
+		// invalidation, even when a client step already cleared selection.
+		if (inspecting() || inspectingReadOnly() || readOnlyPanelShown)
+			dismissMapPanels();
+		if (button < 2)
+		{
+			lensOpen = false;
+			statsOpen = false;
+			const auto mode = button == 0 ? GameGUI::CONSTRUCTION_VIEW : GameGUI::FLAG_VIEW;
+			panelOpen = !(panelOpen && gui.displayMode == mode &&
+						  gui.selectionMode == GameGUI::NO_SELECTION);
+			gui.clearSelection();
+			gui.displayMode = mode;
+		}
+		else if (gui.selectionMode == GameGUI::NO_SELECTION && !globalContainer->isViewingGame() &&
+				 !layout().persistentPanel)
+		{
+			// Compact: Tools opens the lens strip opposite the thumb corner.
+			lensOpen = !(lensOpen && !panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW);
+			panelOpen = false;
+			gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+			gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+		}
+		else
+		{
+			panelOpen = !panelOpen || (gui.selectionMode == GameGUI::NO_SELECTION &&
+									   gui.displayMode != GameGUI::STAT_TEXT_VIEW);
+			if (gui.selectionMode == GameGUI::NO_SELECTION)
+			{
+				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+				gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+			}
+		}
+		panelScroll = 0;
+		clampScroll();
+		return;
+	}
+	if (button == 4 && globalContainer->isViewingGame())
+	{
+		// Replay statistics are explicit navigation too: consume any
+		// inspector restoration or pending invalidation before opening.
+		dismissMapPanels();
+		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+        gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+        statsOpen = true;
+		return;
+	}
+	// Touch opens dialogs by intent, never by synthesizing desktop pixels.
+	const auto open = [&]
+	{
+		if (button == 3)
+			gui.openDialog(GameGUI::IGM_OBJECTIVES,
+						   std::make_unique<InGameObjectivesScreen>(&gui, false));
+		else if (button == 4)
+			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+		else
+			gui.openMainMenu();
+	};
+	if (button == 3 || button == 4 || !gui.parkForClient(open))
+		open();
+	return;
+}
 void GameGUITouch::interfaceTap(ViewPoint point)
 {
 	if (activeDialog())
 		return;
-	if (usesHUD() && statsOpen && !peekOpen)
+
+	if (usesHUD() || (active() && gui.selectionMode == GameGUI::TOOL_SELECTION))
 	{
-		const int region = interfaceRegion(point);
-		if (region >= 45 && region <= 48)
+		// Polar dial contacts retain their exact ring hit test, rather than a
+		// bounding-box approximation. All discrete surfaces use the shared model.
+		if (!peekOpen && !statsOpen && inspecting() && usesDial() && dialRegionAt(point))
 		{
-			if (region == 45)
-				statsOpen = false;
-			else if (region != 48)
-			{
-				const int count = int(Stats::catalog().size());
-				statsMetric = (statsMetric + (region == 47 ? 1 : count - 1)) % count;
-			}
-			return;
-		}
-	}
-	if (usesHUD() && peekOpen)
-	{
-		const int region = interfaceRegion(point);
-		if (region == 40)
-			navigatePeek(point);
-		else if (region == 42 || region == 43)
-		{
-			const auto area = world();
-			gui.updateCamera();
-			gui.zoomMap((region == 43 ? 1 : -1) * std::log(InGameTouchTheme::peekZoomStep) / std::log(1.1),
-						int(area.x + area.w / 2), int(area.y + area.h / 2));
-		}
-		else if (region == 44)
-			dismissMapPanels(); // Outside tap closes the whole transient UI.
-		else
-			peekOpen = false; // Explicit Done returns to the tools.
-		return;
-	}
-	if (usesHUD() && interfaceRegion(point) == 49)
-	{
-		gui.cycleGameSpeed();
-		return;
-	}
-	if (usesHUD() && interfaceRegion(point) == 38)
-	{
-		if (inspectingReadOnly())
-		{
-			dismissMapPanels();
-			return;
-		}
-		gui.clearSelection();
-		panelOpen = previousPanelOpen;
-		prepareDraw();
-		return;
-	}
-	if (usesHUD() && minimapRect().contains(point))
-	{
-		navigateMinimap(point);
-		return;
-	}
-	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION && controls().contains(point))
-	{
-		const auto buttons = brushBarButtons();
-		stroke.cancel();
-		for (int button = 0; button < int(buttons.size()); ++button)
-			if (buttons[button].contains(point))
-			{
-				if (button < gui.toolManager.zoneTypeCount())
-					gui.toolManager.activateZoneTool(static_cast<GameGUIToolManager::ZoneType>(button));
-				else
-				{
-					gui.clearSelection();
-					panelOpen = true;
-				}
-			}
-		return;
-	}
-	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION && interfaceRegion(point) == 16)
-	{
-		const auto hit = BrushHUD::hit(brushHUD(), point);
-		stroke.cancel();
-		if (hit.part == BrushHUD::Part::Mode)
-			gui.brush.setType(gui.brush.getType() == BrushTool::MODE_ADD ? BrushTool::MODE_DEL
-																		 : BrushTool::MODE_ADD);
-		else if (hit.part == BrushHUD::Part::Pan)
-			brushPan = !brushPan;
-		else if (hit.part == BrushHUD::Part::Detent)
-			gui.brush.setFigure(unsigned(hit.index));
-		else if (hit.part == BrushHUD::Part::Undo)
-			applyZoneUndo();
-		return;
-	}
-	if (!gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText &&
-		gui.selectionMode == GameGUI::TOOL_SELECTION && controls().contains(point))
-	{
-		if (confirmRect().contains(point))
-		{
-			if (commitPlacement())
-			{
-				preview.reset();
-				gui.clearSelection();
-			}
-		}
-		else
-		{
-			preview.reset();
-			gui.clearSelection();
-		}
-		return;
-	}
-	if (usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText &&
-		scenarioMessageRect().contains(point) && !layout().panel.contains(point))
-	{
-		if (scenarioMessageCollapsed)
-		{
-			scenarioMessageCollapsed = false;
-			return;
-		}
-		const auto message = scenarioMessageRect();
-		const double target = 48 * globalContainer->gfx->logicalUnitsPerPoint();
-		if (point.x >= message.x + message.w - target && point.y < message.y + target)
-		{
-			scenarioMessageCollapsed = true;
-			return;
-		}
-		if (point.y < message.y + message.h - 48 * globalContainer->gfx->logicalUnitsPerPoint())
-			return;
-		if (!gui.swallowSpaceKey)
-		{
-			return;
-		}
-		if (gui.swallowSpaceKey)
-		{
-			SDL_KeyboardEvent key{};
-			key.key = SDLK_SPACE;
-			gui.handleKey(key, true);
-		}
-		return;
-	}
-	const bool hudInput =
-		usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText;
-	if (hudInput && layout().actions.contains(point))
-	{
-		const int button =
-			std::min(5, int((point.x - layout().actions.x) / (layout().actions.w / 6)));
-		if (button == 2)
-			showStatistics = false;
-		if (globalContainer->replaying && button < 2)
-		{
-			if (button == 0)
-				gui.gamePaused = !gui.gamePaused;
-			else
-			{
-				globalContainer->replayFastForward = !globalContainer->replayFastForward;
-				gui.gamePaused = false;
-			}
-			return;
-		}
-		if (button < 3)
-		{
-			if ((button == 0 && (gui.hiddenGUIElements & GameGUI::HIDABLE_BUILDINGS_LIST)) ||
-				(button == 1 && (gui.hiddenGUIElements & GameGUI::HIDABLE_FLAGS_LIST)))
-				return;
-			// Explicit navigation wins over inspector restoration and pending
-			// invalidation, even when a client step already cleared selection.
-			if (inspecting() || inspectingReadOnly() || readOnlyPanelShown)
-				dismissMapPanels();
-			if (button < 2)
-			{
-				lensOpen = false;
-				statsOpen = false;
-				const auto mode = button == 0 ? GameGUI::CONSTRUCTION_VIEW : GameGUI::FLAG_VIEW;
-				panelOpen = !(panelOpen && gui.displayMode == mode &&
-							  gui.selectionMode == GameGUI::NO_SELECTION);
-				gui.clearSelection();
-				gui.displayMode = mode;
-			}
-			else if (gui.selectionMode == GameGUI::NO_SELECTION && !globalContainer->isViewingGame() &&
-					 !layout().persistentPanel)
-			{
-				// Compact: Tools opens the lens strip opposite the thumb corner.
-				lensOpen = !(lensOpen && !panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW);
-				panelOpen = false;
-				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
-				gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
-			}
-			else
-			{
-				panelOpen = !panelOpen || (gui.selectionMode == GameGUI::NO_SELECTION &&
-										   gui.displayMode != GameGUI::STAT_TEXT_VIEW);
-				if (gui.selectionMode == GameGUI::NO_SELECTION)
-				{
-					gui.displayMode = GameGUI::STAT_TEXT_VIEW;
-					gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
-				}
-			}
-			panelScroll = 0;
-			clampScroll();
-			return;
-		}
-		if (button == 4 && globalContainer->isViewingGame())
-		{
-			// Replay statistics are explicit navigation too: consume any
-			// inspector restoration or pending invalidation before opening.
-			dismissMapPanels();
-			gui.displayMode = GameGUI::STAT_TEXT_VIEW;
-			panelOpen = true;
-			panelScroll = 0;
-			return;
-		}
-		// Touch opens dialogs by intent, never by synthesizing desktop pixels.
-        const auto open=[&] {
-            if (button == 3)
-                gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
-            else if (button == 4)
-                gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
-            else gui.openMainMenu();
-        };
-        if (button == 3 || button == 4 || !gui.parkForClient(open)) open();
-		return;
-	}
-	else if (hudInput && layout().panel.contains(point))
-	{
-		if (lensVisible())
-		{
-			const auto items = lenses();
-			const auto rects = lensRects(layout());
-			for (size_t i = 0; i < items.size() && i < rects.size(); ++i)
-				if (rects[i].contains(point))
-					menuAction(items[i].action);
-			return;
-		}
-		if (inspectingReadOnly())
-		{
-			if (readOnlyCloseRect().contains(point)) dismissMapPanels();
-			return; // Read-only inspectors never dispatch tactical actions.
-		}
-		if (showsBuildPalette())
-			tapBuildPalette(point);
-		else if (inspecting())
 			tapBuildingAction(point);
-		else if (gui.selectionMode == GameGUI::BRUSH_SELECTION)
-			return; // The brush toolbar owns painting commands, not this sidebar.
-		else
-		{
-			const auto panel = layout().panel;
-			const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-			const int index = int((point.y - panel.y) / unit + panelScroll) / 56;
-			const auto actions = tacticalActions();
-			if (index >= 0 && index < int(actions.size()))
-				menuAction(actions[index].second);
+			return;
 		}
-		return;
+		const auto controls = describeControls();
+		const GAGGUI::ui::Point p{int(point.x), int(point.y)};
+		for (auto it = controls.rbegin(); it != controls.rend(); ++it)
+			if (it->contains(p))
+			{
+				if (it->enabled && it->tap && !it->actions.empty() && controlAllowed(it->key, it->actions.front())) it->tap(p);
+				return;
+			}
+		if (usesHUD()) return;
 	}
-	if (usesHUD())
-		return;
 	// Some shared panel hit tests read the current cursor instead of the event.
 	gui.mouseX = gui.view.mouseX = gui.lastMouseX = int(point.x);
 	gui.mouseY = gui.view.mouseY = gui.lastMouseY = int(point.y);
@@ -1615,6 +1534,7 @@ void GameGUITouch::prepareDraw()
 	if (deferredStroke &&
 		SDL_GetTicks() - deferredStroke->ticks >= InGameTouchTheme::doubleTapWindowMs)
 		commitDeferredStroke();
+	if (minimapPress && !controlAllowed("touch/minimap", GAGGUI::ui::ActionKind::Activate)) minimapPress.reset();
 	if (minimapPress && (touchTravelled || fingers.size() != 1 || ownerRegion != 8))
 		minimapPress.reset();
 	if (minimapPress && SDL_GetTicks() - *minimapPress >= InGameTouchTheme::peekPressMs)
@@ -1655,8 +1575,8 @@ void GameGUITouch::prepareDraw()
 	}
 	if (usesHUD())
 	{
-		clampScroll();
 		prepareScenarioMessage();
+		clampScroll();
 	}
 	syncGestureExclusion();
 	if (gui.selectionMode != GameGUI::TOOL_SELECTION ||
@@ -1708,7 +1628,7 @@ void GameGUITouch::menuAction(int action)
 		// The next frame's scene extraction computes the newly chosen overlay.
 		return;
 	}
-	if (globalContainer->replaying && action >= 31 && action < 56)
+	if (globalContainer->isViewingGame() && action >= 31 && action < 56)
 	{
 		if (action == 31)
 			globalContainer->replayShowFog = !globalContainer->replayShowFog;
@@ -1742,17 +1662,16 @@ void GameGUITouch::menuAction(int action)
 		panelScroll = 0;
 		break;
 	case 3:
-		if (usesHUD() && !layout().persistentPanel && !globalContainer->isViewingGame())
-		{
-			statsCatalog = Stats::catalogForBuildings(*gui.drawnScene().buildingTypes);
-			statsOpen = true; // The compact statistics sheet.
-			break;
-		}
+        if (usesHUD()) {
+            gui.clearSelection();
+            statsOpen = true;
+            break;
+        }
 		showStatistics = true;
 		panelOpen = true;
 		gui.clearSelection();
-		gui.replayDisplayMode = GameGUI::RDM_STAT_GRAPH_VIEW;
-		gui.displayMode = GameGUI::STAT_GRAPH_VIEW;
+		gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
 		panelScroll = 0;
 		break;
 	case 4:

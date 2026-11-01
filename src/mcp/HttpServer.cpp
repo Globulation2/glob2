@@ -274,6 +274,25 @@ struct HttpServer::Impl::Session : std::enable_shared_from_this<Session>
 			std::string png;
 			if (result.pixels)
 			{
+				const int w = result.data.value("width", result.pixels->w),
+						  h = result.data.value("height", result.pixels->h);
+				if (w != result.pixels->w || h != result.pixels->h)
+				{
+					auto scaled = std::shared_ptr<SDL_Surface>(
+						SDL_CreateSurface(w, h, result.pixels->format), SDL_DestroySurface);
+					if (!scaled ||
+						!SDL_BlitSurfaceScaled(result.pixels.get(), nullptr, scaled.get(), nullptr,
+											   SDL_SCALEMODE_LINEAR))
+					{
+						result.error = "Screenshot resizing failed";
+						result.pixels.reset();
+					}
+					else
+						result.pixels = std::move(scaled);
+				}
+			}
+			if (result.pixels)
+			{
 				std::unique_ptr<SDL_IOStream, decltype(&SDL_CloseIO)> output(SDL_IOFromDynamicMem(),
 																			 SDL_CloseIO);
 				if (!output)

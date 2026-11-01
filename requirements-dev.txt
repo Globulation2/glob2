@@ -7,7 +7,8 @@
 #   uv pip install --python .venv/bin/python -r requirements-dev.txt
 #
 # Included sets keep their own pins and remain the source of truth for them:
--r tools/asset-requirements.txt
+-r test/build_system/requirements.txt
+-r tools/artwork/requirements.txt
 -r tools/music/requirements.txt
 -r tools/docs/requirements.txt
 -r .github/scripts/requirements-ci-model.txt
@@ -26,7 +27,6 @@ pandas==3.0.6
 matplotlib==3.11.2
 
 # Build, web asset and deployment helpers
-scons==4.11.1
 fonttools==4.66.1
 brotli==1.2.0
 PyYAML==6.0.3

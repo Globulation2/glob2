@@ -667,9 +667,18 @@ online sim-version gates reject clients using the older boundary. See the
 
 ### Probability-based early victory
 
-Structured `game run` runs accept `--win-probability PERMILLE` (501–1000).
-This appends the optional rule after existing winning conditions; omit it to play
-the game out. Evaluation begins at tick 5120 and repeats every 512 ticks. Results
+Every game automatically records alliance win-probability history at the 512-tick
+cadence, with a final sample at the reported terminal tick. Full `result.json`
+teams include `win_probability_history` (`[tick, permille]`) and `win_probability`
+(final prediction, model identity, coverage and trapezoidal area). This needs no
+telemetry flag. Detailed log samples remain opt-in with `--telemetry team-timeline`.
+See [whole-game scoring](../tools/tournaments.md#whole-game-probability-scores).
+
+New structured `game run` runs default to `--win-probability 950` (95%).
+Use `--win-probability 0` to play the game out, or choose 501–1000 for another
+threshold. This appends the rule after existing winning conditions; loaded saves
+retain their saved rules and reject an explicit threshold override. Evaluation
+begins at tick 5120 and repeats every 512 ticks. Results
 called by the model report `termination: "win_probability"`. See the
 [model guide](../ai/architecture/win-probability-model.md) for calibration and its limits.
 

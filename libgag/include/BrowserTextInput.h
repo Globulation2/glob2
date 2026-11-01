@@ -11,7 +11,13 @@ void focusBrowserTextInput(const void* owner);
 bool hasBrowserTextInput(const void* owner);
 void beginBrowserTextFrame();
 void endBrowserTextFrame();
+// maximum is an exclusive UTF-8 byte bound; zero leaves bytes unrestricted.
 void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
     bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip=nullptr,
     bool selectAll=false);
+// Independent inclusive Unicode-codepoint bound, matching TextFieldOptions.maxLength.
+// Keep the original overload for callers that only impose a byte bound.
+void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
+    bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip,
+    bool selectAll,size_t maxCharacters);
 }

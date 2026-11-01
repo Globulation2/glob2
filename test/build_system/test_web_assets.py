@@ -1,5 +1,6 @@
 """Browser data packages: what ships, where it goes, and how it is installed."""
 import ast
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -23,6 +24,46 @@ class WebAssetPlanTests(unittest.TestCase):
             for path in paths:
                 cls.owner.setdefault(path, name)
 
+    def test_standalone_launcher_has_exact_http_fonts_and_rebased_styles(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder)
+            web_assets.launcher_script_fonts(ROOT, output)
+            css = (output / 'script-fonts.css').read_text()
+            self.assertNotIn('../../../data/', css)
+            self.assertNotIn('../../../browser/', css)
+            self.assertIn('fonts/sans-core.ttf', css)
+            self.assertIn(':root:lang(bg)', css)
+            self.assertIn('option:lang(bg)', css)
+            self.assertEqual((output / 'fonts/sans-core.ttf').read_bytes(),
+                             (ROOT / 'browser/assets/sans-core.ttf').read_bytes())
+            self.assertEqual((output / 'fonts/LICENSE-DejaVu.txt').read_bytes(),
+                             (ROOT / 'data/fonts/LICENSE-DejaVu.txt').read_bytes())
+            self.assertEqual((output / 'fonts/LICENSE-Droid.txt').read_bytes(),
+                             (ROOT / 'data/fonts/LICENSE-Droid.txt').read_bytes())
+            manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+            for font in manifest['fonts']:
+                name = font['name'] + '-Regular.ttf'
+                data = (output / 'fonts' / name).read_bytes()
+                self.assertEqual(hashlib.sha256(data).hexdigest(), font['sha256'])
+                self.assertIn('fonts/' + name, css)
+            self.assertEqual((output / 'fonts/LICENSE-Noto.txt').read_bytes(),
+                             (ROOT / 'data/fonts/LICENSE-Noto.txt').read_bytes())
+
+    def test_bulgarian_launcher_font_is_tracked_and_packaged_for_api_images(self):
+        build = (ROOT / 'scons/web_build.py').read_text()
+        self.assertIn("str(Path(directory) / 'fonts/sans-core.ttf')", build)
+        self.assertIn("str(Path(directory) / 'fonts/LICENSE-DejaVu.txt')", build)
+        self.assertIn("'browser/assets/sans-core.ttf'", build)
+        self.assertIn("'data/fonts/LICENSE-DejaVu.txt'", build)
+        docker = (ROOT / 'deploy/Dockerfile').read_text()
+        for stage in ('web-build', 'platform-runtime-deps'):
+            section = docker.split(' AS ' + stage + '\n', 1)[1].split('\nFROM ', 1)[0]
+            self.assertIn('COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf', section)
+            self.assertIn('COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt', section)
+        for stage in ('platform', 'ai-music-worker'):
+            section = docker.split(' AS ' + stage + '\n', 1)[1].split('\nFROM ', 1)[0]
+            self.assertIn('COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets', section)
+
     def test_skin_meshes_are_only_in_the_on_demand_package(self):
         meshes = list((ROOT / 'data/skins/colony-v1').glob('*.gsk'))
         manifest = json.loads((ROOT / 'data/skins/colony-v1/manifest.json').read_text())
@@ -38,9 +79,19 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_build_files_and_documentation_are_not_shipped(self):
         for path in ('data/SConscript', 'data/check_translations.py', 'data/fonts/build_chinese_font.py',
-                     'data/fonts/README.md', 'campaigns/SConscript', 'data/screenshots/globulation2-gameplay.png'):
+                     'data/fonts/README.md', 'data/fonts/script-probes.json',
+                     'campaigns/SConscript', 'data/screenshots/globulation2-gameplay.png'):
             self.assertIn(path, self.skipped)
         self.assertFalse([p for p in self.owner if p.endswith(('SConscript', '.py', '.md'))])
+
+    def test_script_fonts_are_available_before_optional_downloads(self):
+        fonts = sorted((ROOT / 'data/fonts/scripts').glob('*.ttf'))
+        self.assertEqual(len(fonts), 13, 'All approved shaping fonts must ship')
+        for font in fonts:
+            path = font.relative_to(ROOT).as_posix()
+            self.assertEqual(self.owner.get(path), 'core', path)
+            self.assertNotIn(path, self.packages.get('font-cjk', []))
+            self.assertEqual(web_assets.contents(ROOT, 'core', path, {}), font.read_bytes())
 
     def test_only_current_tutorial_assets_ship(self):
         catalog = json.loads((ROOT / 'scripts/tutorials/catalog.json').read_text())
@@ -171,16 +222,27 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_core_has_english_and_every_language_name(self):
         self.assertEqual(self.owner['data/texts.en.txt'], 'core')
-        self.assertIn('data/texts.ja.txt', self.packages['translations'])
         self.assertNotIn('data/texts.en.txt', self.packages['translations'])
-        stub = web_assets.contents(ROOT, 'core', 'data/texts.ja.txt', {}).decode()
-        lines = stub.split('\n')
-        pairs = dict(zip(lines[0::2], lines[1::2]))
-        self.assertEqual(pairs['[language-code]'], 'ja')
-        self.assertEqual(pairs['[language]'], '日本語')
-        self.assertEqual(set(pairs) - {''}, set(web_assets.STUB_KEYS))
-        full = web_assets.contents(ROOT, 'translations', 'data/texts.ja.txt', {})
-        self.assertEqual(full, (ROOT / 'data/texts.ja.txt').read_bytes())
+        # Every selectable catalog must be discoverable before optional downloads,
+        # then arrive intact in translations. Exercise the installed inventory so
+        # newly registered languages cannot silently miss either package.
+        catalogs = (ROOT / 'data/texts.list.txt').read_text().splitlines()[1:]
+        for path in catalogs:
+            if path == 'data/texts.en.txt':
+                continue
+            with self.subTest(catalog=path):
+                self.assertIn(path, self.packages['core'])
+                self.assertIn(path, self.packages['translations'])
+                stub = web_assets.contents(ROOT, 'core', path, {}).decode()
+                lines = stub.split('\n')
+                pairs = dict(zip(lines[0::2], lines[1::2]))
+                source = (ROOT / path).read_text().split('\n')
+                original = dict(zip(source[0::2], source[1::2]))
+                self.assertEqual(set(pairs) - {''}, set(web_assets.STUB_KEYS))
+                self.assertEqual({key: pairs[key] for key in web_assets.STUB_KEYS},
+                                 {key: original[key] for key in web_assets.STUB_KEYS})
+                full = web_assets.contents(ROOT, 'translations', path, {})
+                self.assertEqual(full, (ROOT / path).read_bytes())
 
     def test_music_and_artwork_the_game_reloads_per_match_are_optional(self):
         self.assertEqual(self.owner['data/zik/intro.opus'], 'menu-music')
@@ -227,6 +289,7 @@ class WebAssetPackageTests(unittest.TestCase):
                              sorted(part['url'].split('/')[1] for entry in manifest['packages'] for part in entry['parts']))
             hd = next(entry for entry in manifest['packages'] if entry['name'] == 'hd')
             self.assertGreater(len(hd['parts']), 1)
+            derived = web_assets.derived_assets(ROOT)
             for entry in manifest['packages']:
                 self.assertEqual(entry['optional'], entry['name'] not in ('core', 'game'))
                 self.assertEqual(entry['size'], sum(part['size'] for part in entry['parts']))
@@ -237,7 +300,7 @@ class WebAssetPackageTests(unittest.TestCase):
                         self.assertLessEqual(part['size'], web_assets.PART_BYTES + 2_000_000)
                     for path, start, end in part['files'][:50]:
                         self.assertEqual(blob[start:end], web_assets.contents(ROOT, entry['name'], path.lstrip('/'),
-                                                                              web_assets.derived_assets(ROOT)), path)
+                                                                              derived), path)
             script = (output / 'asset-manifest.js').read_text()
             self.assertIn('Module["glob2AssetManifest"] ??= ', script)
             # A rebuild without changes writes the same names.
@@ -313,6 +376,8 @@ class BrowserCopyTests(unittest.TestCase):
         full = TTFont(ROOT / 'data/fonts/sans.ttf', lazy=True)
         core = TTFont(ROOT / 'browser/assets/sans-core.ttf', lazy=True)
         full_map, core_map = full.getBestCmap(), core.getBestCmap()
+        bulgarian = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯабвгдежзийклмнопрстуфхцчшщъьюяЍѝ'
+        self.assertLessEqual(set(map(ord, bulgarian)), set(core_map))
         original = {cp for cp, name in full_map.items() if not name.startswith('cjk')}
         self.assertLessEqual(original, set(core_map))
         # Outlines and advances of the original glyphs are unchanged.

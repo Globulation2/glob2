@@ -22,12 +22,67 @@ test('the online choice supplies a first-visit SDL hint and startup language', (
   assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'pt_BR');
   assert.equal(context.interfaceLanguage(), 'pt-BR');
 });
+test('Filipino online selection reaches SDL and uses the existing Latin font', () => {
+  const context = profile(null, 'fil');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'fil');
+  assert.equal(context.interfaceLanguage(), 'fil');
+  assert.equal(context.cjkInterface(), false);
+  const saved = profile('fil', 'de');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'fil');
+});
+test('Norwegian online startup uses the core font and preserves the saved game choice', () => {
+  const context = profile(null, 'nb');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'nb');
+  assert.equal(context.interfaceLanguage(), 'nb');
+  assert.equal(context.cjkInterface(), false);
+  const saved = profile('nb', 'de');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'nb');
+});
 test('a saved game language takes priority and receives no online override', () => {
   const context = profile('de', 'zh-Hant');
   context.applyOnlineLanguage();
   assert.equal(context.ENV.SDL_PREFERRED_LOCALES, undefined);
   assert.equal(context.interfaceLanguage(), 'de');
   assert.equal(context.cjkInterface(), false);
+});
+test('Marathi starts from the online choice while saved game preferences remain authoritative', () => {
+  const first = profile(null, 'mr');
+  first.applyOnlineLanguage();
+  assert.equal(first.ENV.SDL_PREFERRED_LOCALES, 'mr');
+  assert.equal(first.interfaceLanguage(), 'mr');
+  assert.equal(first.cjkInterface(), false);
+  const saved = profile('hi', 'mr');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'hi');
+});
+test('Malay starts from the online choice with the core Latin font and preserves saved choices', () => {
+  const context = profile(null, 'ms');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'ms');
+  assert.equal(context.interfaceLanguage(), 'ms');
+  assert.equal(context.cjkInterface(), false);
+  const saved = profile('fr', 'ms');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'fr');
+});
+test('Bengali is handed to the game and a saved Bengali choice persists', () => {
+  const firstVisit = profile(null, 'bn');
+  firstVisit.applyOnlineLanguage();
+  assert.equal(firstVisit.ENV.SDL_PREFERRED_LOCALES, 'bn');
+  assert.equal(firstVisit.interfaceLanguage(), 'bn');
+  assert.equal(firstVisit.cjkInterface(), false);
+  const returning = profile('bn', 'en');
+  returning.applyOnlineLanguage();
+  assert.equal(returning.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(returning.interfaceLanguage(), 'bn');
 });
 test('both Chinese scripts and Japanese/Korean require the full startup font', () => {
   for (const language of ['zh-Hans','zh-Hant','ja','ko']) {

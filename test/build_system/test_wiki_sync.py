@@ -38,6 +38,7 @@ class WikiSyncTest(unittest.TestCase):
         text = sync.render('Download and Install', [stable, preview], stable['tag_name'])
         self.assertNotIn('malicious', text)
         self.assertIn('Public previews', text)
+        self.assertIn('[[Git|current repository and build instructions]]', text)
         self.assertIn('(preview;', text)
         self.assertFalse(sync.TAG.fullmatch('v0.11.4.0\n{{bad}}'))
 
@@ -64,14 +65,31 @@ class WikiSyncTest(unittest.TestCase):
         with self.assertRaises(sync.SyncError):
             sync.NoRedirect().redirect_request(None, None, 302, '', {}, 'http://other.invalid')
 
-    def test_login_requires_bot_credentials_and_success(self):
+    def test_login_requires_credentials_and_success(self):
         wiki = sync.Wiki(Mock())
         with self.assertRaises(sync.SyncError):
-            wiki.login('Genixpro', 'main-password')
+            wiki.login('', '')
         wiki.fetch = Mock(side_effect=[{'query': {'tokens': {'logintoken': 'token'}}},
                                        {'login': {'result': 'NeedToken'}}])
         with self.assertRaises(sync.SyncError):
             wiki.login('Genixpro@ReleaseSync', 'secret')
+
+    def test_account_login_uses_clientlogin_and_never_continues_challenges(self):
+        from urllib.parse import parse_qs
+        for status in ('PASS', 'FAIL', 'UI', 'REDIRECT', 'RESTART'):
+            fetch = Mock(side_effect=[{'query': {'tokens': {'logintoken': 'token'}}},
+                                      {'clientlogin': {'status': status}}])
+            wiki = sync.Wiki(fetch)
+            if status == 'PASS':
+                wiki.login('Genixpro', 'test-password')
+            else:
+                with self.assertRaises(sync.SyncError):
+                    wiki.login('Genixpro', 'test-password')
+            self.assertEqual(fetch.call_count, 2)
+            params = parse_qs(fetch.call_args.args[1].decode())
+            self.assertEqual(params['action'], ['clientlogin'])
+            self.assertEqual(params['username'], ['Genixpro'])
+            self.assertEqual(params['loginreturnurl'], ['https://globulation2.org/wiki/Main_Page'])
 
     def test_edit_conflict_captcha_and_session_loss_fail(self):
         page = dict(title='Changes', revid=5, timestamp='time', start='start')
@@ -86,6 +104,47 @@ class WikiSyncTest(unittest.TestCase):
         self.assertEqual(params['baserevid'], ['5'])
         self.assertEqual(params['assert'], ['user'])
         self.assertEqual(params['nocreate'], ['1'])
+
+    def test_known_question_answers_and_normalization(self):
+        for question, expected in sync.CAPTCHA_ANSWERS.items():
+            challenge = dict(type='question', id='challenge-123', question=question)
+            self.assertEqual(sync.captcha_answer(challenge), ('challenge-123', expected))
+            challenge['question'] = '  ' + question.upper().replace('"', '“', 1).replace('"', '”') + '  '
+            self.assertEqual(sync.captcha_answer(challenge), ('challenge-123', expected))
+
+    def test_unknown_or_incomplete_challenges_are_not_answered(self):
+        known = next(iter(sync.CAPTCHA_ANSWERS))
+        for challenge in (None, {}, dict(type='image', id='1', question=known),
+                          dict(type='question', question=known),
+                          dict(type='question', id='', question=known),
+                          dict(type='question', id='1', question='A new question'),
+                          dict(type='question', id='1', question='<b>' + known + '</b>')):
+            with self.subTest(challenge=challenge), self.assertRaises(sync.SyncError):
+                sync.captcha_answer(challenge)
+
+    def test_known_captcha_retries_exact_edit_once(self):
+        from urllib.parse import parse_qs
+        challenge = dict(type='question', id='challenge-123',
+                         question='What are the vowels in “Globulation”? (in order)')
+        page = dict(title='Changes', revid=5, timestamp='time', start='start')
+        fetch = Mock(side_effect=[{'edit': {'result': 'Failure', 'captcha': challenge}},
+                                  {'edit': {'result': 'Success', 'newrevid': 6}}])
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(sync.Wiki(fetch).save(page, 'new text', 'csrf'), 6)
+        first, second = [parse_qs(call.args[1].decode()) for call in fetch.call_args_list]
+        self.assertEqual(second.pop('captchaid'), ['challenge-123'])
+        self.assertEqual(second.pop('captchaword'), ['ouaio'])
+        self.assertEqual(first, second)
+
+    def test_second_challenge_or_conflict_stops_retry(self):
+        challenge = dict(type='question', id='1', question=next(iter(sync.CAPTCHA_ANSWERS)))
+        captcha_result = {'edit': {'result': 'Failure', 'captcha': challenge}}
+        for second in (captcha_result, {'error': {'code': 'editconflict'}}):
+            fetch = Mock(side_effect=[captcha_result, second])
+            page = dict(title='Changes', revid=5, timestamp='time', start='start')
+            with redirect_stdout(io.StringIO()), self.assertRaises(sync.SyncError):
+                sync.Wiki(fetch).save(page, 'text', 'csrf')
+            self.assertEqual(fetch.call_count, 2)
 
     def test_read_permissions_match_mediawiki_131_flags(self):
         base = dict(pageid=1, title='Changes', revisions=[{'*': 'text', 'revid': 5,

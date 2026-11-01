@@ -235,16 +235,20 @@ checksum adapter remains available for diagnostic fixtures.
   changes must not change saved state or simulation RNG use.
 - Built-in terrain is table-driven. `TerrainGroup.h` defines one property profile per
   gameplay group; `TerrainTypeTable.h` lists every `TerrainType` with its group, external
-  name, string-table label and semantic colours, and the `TerrainProperties.h`,
-  `TerrainPresentation.h` and `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
+  name, string-table label and semantic colours, and the `TerrainProperties.h` and
+  `TerrainPresentation.h` tables derive from it. Members of a group are byte-identical
   profiles, so the registry deduplicates them into one property index; use
   `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
   Adding a type is one enumerator, one row, one label and one material binding;
   adding a group is one profile and, when gated, one `ExperimentId`.
 - Format 141 raised the built-in count from 7 to 31; format 146 retired the two
-  shore types (IDs 5 and 6), moving the catalogue down by two to `TERRAIN_COUNT` 29.
-  `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
-  (`TERRAIN_COUNT_BEFORE_CATALOGUE` or `TERRAIN_COUNT_BEFORE_VERTEX` for older files),
+  shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 187
+  appended the grass and sand looks (`LUSH_GRASS`, `DRY_GRASS`, `DUNE_SAND`,
+  `PALE_SAND`, in the Grass and Sand groups) for `TERRAIN_COUNT` 33. Built-in IDs only
+  ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
+  a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
+  (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX` or
+  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS` for older files),
   `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
   `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
   with shifted IDs, so their digest changes and replays that embed one no longer
@@ -259,15 +263,11 @@ checksum adapter remains available for diagnostic fixtures.
   to the same material without scanning custom definitions. Render caches bind the
   registry snapshot and actual asset revisions. Saved custom colors remain
   authoritative for previews and minimaps; built-ins use catalog palettes.
-  Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
-  experiments into matches, while saves retain them independently of user settings.
-  A runtime definition whose properties equal a gated built-in group's profile
-  requires that group's experiment too (`Map::requiredTerrainExperiments` compares
-  property indices); a definition with its own profile stays ungated.
-- Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
-  (`TrailTerrain`). Its external name, translation keys and serialized experiment
-  key remain `road` / `road-terrain` for scripting, reports, editor actions and
-  existing files. The material catalog chooses the detailed appearance for that ID.
+  All terrains are available to map authors without experiment flags. Terrain
+  properties apply unconditionally, including imported definitions.
+- Trail retains stable terrain ID `4` (`TRAIL`). Its external name and translation
+  keys remain `road` for scripting, reports, editor actions and existing files.
+  The material catalog chooses the detailed appearance for that ID.
 - Ecology caches terrain-only land and aquatic fields for the map's lifetime.
   Normal growth, harvesting, unit movement and building placement do not rebuild
   them. Map replacement invalidates them; terrain edits invalidate them only when

@@ -172,6 +172,9 @@
 }
 .skin-stage {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto;
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -198,6 +201,7 @@
 .skin-stage > .skin-viewport {
   position: absolute;
   inset: 0;
+  z-index: 0;
 }
 .skin-panel {
   background: color-mix(in srgb, var(--surface) 94%, transparent);
@@ -208,6 +212,7 @@
 }
 .skin-models {
   position: absolute;
+  z-index: 1;
   top: 22px;
   left: 50%;
   transform: translateX(-50%);
@@ -222,6 +227,13 @@
   gap: 2px;
   border-radius: 13px;
   font-size: 12px;
+  line-height: 1.5;
+}
+.skin-models button span {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 .skin-models img {
   width: 40px;
@@ -230,9 +242,11 @@
 }
 .skin-shape-button {
   position: absolute;
+  z-index: 1;
   top: 120px;
   left: 50%;
-  transform: translateX(-50%);
+  /* Keep centering when the shared button pressed-state changes transform. */
+  translate: -50% 0;
   padding: 9px 18px !important;
   gap: 18px !important;
 }
@@ -270,17 +284,21 @@
   padding: 0;
 }
 .skin-tools {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.45fr 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 2px;
   padding: 9px 6px;
 }
 .skin-tools button {
   padding: 7px 2px;
-  min-width: 0;
+  min-width: min-content;
+  max-width: 100%;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 5px;
-  font-size: 9px;
+  font-size: 10px;
+  line-height: 1.5;
+  white-space: normal;
   min-height: 56px;
   border-radius: 9px;
 }
@@ -293,6 +311,15 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+.skin-tool-options > button {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  grid-column: 1 / -1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
 .skin-tool-options label,
 .skin-pattern-controls > label {
@@ -342,7 +369,8 @@
 }
 .skin-material-group h4 {
   margin: 0 0 1px;
-  font-size: 9px;
+  font-size: 10px;
+  line-height: 1.5;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -365,15 +393,15 @@
 .skin-materials > div {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .skin-materials button {
   aspect-ratio: 1;
   padding: 0 1px 2px;
   min-width: 0;
   min-height: 0;
-  font-size: 8px;
-  line-height: 1.1;
+  font-size: 10px;
+  line-height: 1.5;
   white-space: normal;
   overflow-wrap: anywhere;
   align-items: flex-end;
@@ -381,6 +409,17 @@
   text-align: center;
   border: 1px solid transparent;
   border-radius: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(36px, 1fr) auto;
+}
+.skin-materials button span {
+  /* Wrapped labels need a readable band over the swatch's lower edge. */
+  grid-row: 2;
+  min-height: 3em;
+  background: var(--surface);
+  border-radius: 3px;
+  padding: 1px 2px;
 }
 .skin-materials button[aria-checked='true'] {
   border-color: var(--gold-ink);
@@ -439,11 +478,11 @@
   color: var(--ink-2);
 }
 .skin-pose-strip {
+  grid-row: 2;
+  justify-self: center;
+  margin: 0 auto 8px;
   width: max-content;
-  position: absolute;
-  bottom: 43px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -481,13 +520,17 @@
   min-width: 32px;
 }
 .skin-stage-hint {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  grid-row: 3;
+  justify-self: center;
+  inline-size: max-content;
+  max-inline-size: calc(100% - 24px);
+  margin: 0 auto 14px;
   font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
   color: var(--ink-2);
-  white-space: nowrap;
+  white-space: normal;
   pointer-events: none;
 }
 /* A two-tone cursor stays visible over arbitrary painted skin colors. */
@@ -535,10 +578,10 @@
   font-size: 22px;
 }
 .skin-final-view {
-  position: absolute;
-  bottom: 44px;
-  left: 50%;
-  transform: translateX(-50%);
+  grid-row: 2;
+  justify-self: center;
+  margin: 0 auto 8px;
+  position: relative;
   padding: 18px 22px;
   width: 440px;
   max-width: calc(100% - 24px);
@@ -748,11 +791,15 @@
 }
 .skin-shape-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 .skin-shape-grid button {
   flex-direction: column;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
   padding: 12px;
   border-color: var(--line);
 }
@@ -877,9 +924,6 @@
   .skin-tool-options {
     padding-inline: 12px;
   }
-  .skin-tools button {
-    font-size: 8px;
-  }
 }
 @media (max-width: 899px) {
   .skin-toolbox {
@@ -998,9 +1042,9 @@
     gap: 2px;
   }
   .skin-models button {
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
-    flex-direction: row;
+    flex-direction: column;
     font-size: 10px;
     padding: 5px 2px;
   }
@@ -1022,9 +1066,9 @@
     width: 75px;
   }
   .skin-shape-button {
-    top: 75px;
+    top: 135px;
     left: 12px;
-    transform: none;
+    translate: 0 0;
     font-size: 11px !important;
     padding: 5px 8px !important;
   }
@@ -1057,7 +1101,7 @@
     flex-direction: column;
     gap: 2px;
     padding: 2px;
-    font-size: 9px;
+    font-size: 10px;
   }
   .skin-tool-options {
     display: grid;
@@ -1066,6 +1110,8 @@
     padding: 6px 12px 10px;
     gap: 6px 14px;
   }
+  .skin-tool-options > .skin-segment,
+  .skin-tool-options > .skin-material-groups,
   .skin-tool-options > details,
   .skin-tool-options > .skin-check {
     grid-column: 1 / -1;
@@ -1082,13 +1128,12 @@
     font-size: 11px;
   }
   .skin-materials > div {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .skin-materials button {
-    font-size: 8px;
+    font-size: 10px;
   }
   .skin-pose-strip {
-    bottom: 31px;
     width: calc(100% - 24px);
     gap: 4px;
     justify-content: center;
@@ -1121,8 +1166,8 @@
     min-width: 28px;
   }
   .skin-stage-hint {
-    font-size: 8px;
-    bottom: 10px;
+    font-size: 10px;
+    margin-bottom: 10px;
   }
   .skin-reference {
     right: 12px;
@@ -1178,6 +1223,9 @@
   .skin-copy-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .skin-shape-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .skin-shape-grid img {
     width: 65px;
     height: 65px;
@@ -1194,7 +1242,6 @@
     top: 125px;
   }
   .skin-final-view {
-    bottom: 30px;
     padding: 14px;
   }
   .skin-final-view h2 {

@@ -13,10 +13,16 @@ from pathlib import Path
 import shutil
 import tempfile
 
-POLICY = b"browser-static-gzip-v1\0"
+POLICY = b"browser-static-gzip-v2\0"
+OWNED_POLICIES = {"browser-static-gzip-v1", POLICY.decode().rstrip("\0")}
 MARKER = "package.json"
 ROOT = Path(__file__).resolve().parents[1]
 MUSIC_FILES = ("music-worker.js", "music-output.js", "music-runtime.js", "music-runtime.wasm")
+LAUNCHER_CORE_ASSETS = {
+    'fonts/sans-core.ttf': 'browser/assets/sans-core.ttf',
+    'fonts/LICENSE-DejaVu.txt': 'data/fonts/LICENSE-DejaVu.txt',
+    'fonts/LICENSE-Droid.txt': 'data/fonts/LICENSE-Droid.txt',
+}
 
 
 def require_translation_catalogs(names):
@@ -88,6 +94,22 @@ def package(source, destination):
         localization["i18n.js"] = (source / "i18n.js").read_bytes()
         localization.update({"locales/" + path.name: path.read_bytes() for path in sorted((source / "locales").glob("*.json"))})
         require_translation_catalogs(localization)
+    launcher_fonts = {}
+    if b'href="script-fonts.css"' in files['html']:
+        launcher_fonts['script-fonts.css'] = (source / 'script-fonts.css').read_bytes()
+        font_manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        for font in font_manifest['fonts']:
+            name = 'fonts/' + font['name'] + '-Regular.ttf'
+            data = (source / name).read_bytes()
+            if hashlib.sha256(data).hexdigest() != font['sha256']:
+                raise ValueError('Launcher font checksum mismatch: ' + name)
+            launcher_fonts[name] = data
+        launcher_fonts['fonts/LICENSE-Noto.txt'] = (source / 'fonts/LICENSE-Noto.txt').read_bytes()
+        for name, canonical in LAUNCHER_CORE_ASSETS.items():
+            data = (source / name).read_bytes()
+            if data != (ROOT / canonical).read_bytes():
+                raise ValueError('Launcher font asset mismatch: ' + name)
+            launcher_fonts[name] = data
     version = hashlib.sha256(
         POLICY
         + b"".join(surface.values())
@@ -95,6 +117,7 @@ def package(source, destination):
         + b"".join(recording.values())
         + b"".join(music.values())
         + b"".join(name.encode() + data for name, data in localization.items())
+        + b"".join(name.encode() + data for name, data in launcher_fonts.items())
         + b"".join(files.values())
         + b"".join(name.encode() for name in packages)
     ).hexdigest()[:16]
@@ -109,12 +132,19 @@ def package(source, destination):
             text = text.replace(old, new)
         return text.replace('index.data', f'index-{version}.data')
 
+    def wasm_reference(text):
+        # Emscripten uses different quote styles across runtime variants.
+        for quote in ('"', "'"):
+            text = text.replace(quote + "index.wasm" + quote,
+                                quote + names["wasm"] + quote)
+        return text
+
     worker_assets = {
         worker_names[name]: runtime_references(data.decode()).encode() if name.endswith(".js") else data
         for name, data in worker_assets.items()
     }
     script = runtime_references(files["js"].decode())
-    script = script.replace('"index.wasm"', f'"{names["wasm"]}"')
+    script = wasm_reference(script)
     html = runtime_references(files["html"].decode()).replace('src="index.js"', f'src="{names["js"]}"')
     html = html.replace("src=index.js>", f'src="{names["js"]}">')
     if not threaded and names["js"] not in html:
@@ -133,6 +163,7 @@ def package(source, destination):
         **worker_assets,
         **notices,
         **localization,
+        **launcher_fonts,
     }
     if "data" in files:
         contents[f"index-{version}.data"] = files["data"]
@@ -149,7 +180,7 @@ def package(source, destination):
         ).encode()
         contents[loader] = files["loader"]
         thread_script = runtime_references(files["threaded/js"].decode())
-        thread_script = thread_script.replace('"index.wasm"', f'"{names["wasm"]}"')
+        thread_script = wasm_reference(thread_script)
         contents["threaded/" + names["js"]] = thread_script.encode()
         contents["threaded/" + names["wasm"]] = files["threaded/wasm"]
     # The Studio entry uses the identical runtime but a temporary profile and bridge.
@@ -206,7 +237,7 @@ def package(source, destination):
             try:
                 owned = json.loads((destination / MARKER).read_text())[
                     "policy"
-                ] == POLICY.decode().rstrip("\0")
+                ] in OWNED_POLICIES
             except (OSError, ValueError, KeyError, TypeError):
                 owned = False
             if destination.is_symlink() or not owned:
@@ -278,6 +309,20 @@ def verify(directory):
     if not any(name.startswith("assets/") for name in names):
         raise ValueError("Static package lacks game data packages")
     names += [name for name in expected if (name == "i18n.js" or (name.startswith("locales/") and name.endswith(".json")))]
+    if b'href="script-fonts.css"' in (directory / 'index.html').read_bytes():
+        names += ['script-fonts.css', 'fonts/LICENSE-Noto.txt']
+        for name, canonical in LAUNCHER_CORE_ASSETS.items():
+            names.append(name)
+            path = directory / name
+            if not path.is_file() or path.read_bytes() != (ROOT / canonical).read_bytes():
+                raise ValueError('Missing or unpinned launcher font asset: ' + name)
+        font_manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        for font in font_manifest['fonts']:
+            name = 'fonts/' + font['name'] + '-Regular.ttf'
+            names.append(name)
+            path = directory / name
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != font['sha256']:
+                raise ValueError('Missing or unpinned launcher font: ' + name)
     names += [name for name in ("hive-worker.js", "hive-runtime.js", "hive-runtime.wasm") if name in expected]
     recording = [f"recording-{marker['version']}-{suffix}" for suffix in
                  ("worker.js", "storage.js", "video.js", "runtime.js", "runtime.wasm")]
@@ -299,6 +344,8 @@ def verify(directory):
         runtime_paths.append(f"threaded/index-{marker['version']}.js")
     for runtime in runtime_paths:
         script = (directory / runtime).read_bytes()
+        if any(quote + b"index.wasm" + quote in script for quote in (b'"', b"'")):
+            raise ValueError("Unversioned game WebAssembly runtime reference")
         if b"index.data" in script:
             raise ValueError("Unversioned renderer preload package reference")
         if f"index-{marker['version']}.data".encode() in script:

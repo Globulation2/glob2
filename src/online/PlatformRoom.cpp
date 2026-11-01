@@ -1,4 +1,6 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
 // Copyright (C) 2026 glob2 contributors
 
@@ -72,7 +74,8 @@ std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, MapCa
 	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps, &storage));
 	room->automaticMap = automaticMap && !catalogMap;
 	room->listen();
-	Json params{{"name", name.substr(0, 64)}, {"visibility", listed ? "public" : "link"}};
+	// Protocol limits count characters; byte slices can corrupt valid UTF-8.
+	Json params{{"name", name}, {"visibility", listed ? "public" : "link"}};
 	if (catalogMap && catalogMap->scriptDescriptor)
 		params["map"] =
 			Json{{"kind", "scripted"}, {"generator", Json::parse(*catalogMap->scriptDescriptor)}};
@@ -224,7 +227,7 @@ void PlatformRoom::call(const std::string &method, Json params, std::function<vo
 							   event.text = response.error.code == "not_found" ? text("[room invite not found]")
 											: response.error.code == "update_required"
 												? text("[room update required]")
-												: problem;
+												: Glob2UI::apiErrorText(response.error);
 							   push(std::move(event));
 						   }
 						   else
@@ -336,7 +339,7 @@ void PlatformRoom::systemLinesFor(const Json &previous, const Json &next)
 																		: std::string();
 	};
 	if (!startNotice(next).empty() && startNotice(next) != startNotice(previous))
-		notice(startNotice(next));
+		{ Glob2UI::DiagnosticText presenter; notice(presenter(startNotice(next))); }
 	if (choice(previous) != choice(next))
 		notice(formatted("[room map changed %0]", mapName()));
 	else if (previous.value("rules", Json()) != next.value("rules", Json()))
@@ -749,7 +752,7 @@ void PlatformRoom::sendChat(const std::string &line)
 {
 	if (state.is_null() || line.empty())
 		return;
-	call("room.chat", Json{{"roomId", state["id"]}, {"text", line.substr(0, 500)}});
+	call("room.chat", Json{{"roomId", state["id"]}, {"text", line}});
 }
 
 std::string PlatformRoom::experimentsLabel() const
@@ -1011,7 +1014,7 @@ void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, cons
 	}
 	std::string path = Api::uploads("map", SimVersion::local().key());
 	if (!title.empty())
-		path += "&fileName=" + urlEncode(title.substr(0, 120) + ".map");
+		path += "&fileName=" + urlEncode(title + ".map");
 	calls->restRaw(
 		HttpFetch::Method::Post, path, std::move(bytes), "application/octet-stream",
 		[this, title, rules = matchRules(setup), teams = setupTeams(setup)](const PlatformClient::Response &response) {
@@ -1025,7 +1028,7 @@ void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, cons
 												: text("[room map upload failed]");
 				Event event;
 				event.kind = Event::Message;
-				event.text = formatted("[room map upload failed %0]", problem);
+				event.text = formatted("[room map upload failed %0]", !response.ok ? Glob2UI::apiErrorText(response.error) : Glob2UI::onlineProblemText(problem));
 				push(std::move(event));
 				return;
 			}

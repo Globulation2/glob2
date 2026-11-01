@@ -203,11 +203,11 @@ bool Recorder::start(const std::string &requestedPath)
 	{
 		if (!supported())
 			throw std::runtime_error("Recording worker is unavailable");
-		if (options.fps < 1 || options.fps > 240 || options.crf < 0 || options.crf > 51 || !options.chapterTicks)
+		if (options.fps < 1 || options.fps > 240 || options.crf < 0 || options.crf > MaxCrf || !options.chapterTicks)
 			throw std::runtime_error("Invalid recording options");
 		auto path = std::filesystem::absolute(std::filesystem::u8path(requestedPath));
-		if (path.extension() != ".mp4")
-			throw std::runtime_error("Recording output must have a .mp4 extension");
+		if (path.extension() != Extension)
+			throw std::runtime_error(std::string("Recording output must have a ") + Extension + " extension in this build");
 #ifndef __EMSCRIPTEN__
 		Detail::nativeSessionStorage().reserve(utf8(path));
 #endif
@@ -525,7 +525,7 @@ bool toggle()
 		return false;
 	auto root = Toolkit::getFileManager()->getDir(0);
 	return r.start(utf8(std::filesystem::u8path(root) / "videoshots" /
-						("capture-" + std::to_string(now()) + ".mp4")));
+						("capture-" + std::to_string(now()) + Extension)));
 }
 std::string controlLabel()
 {

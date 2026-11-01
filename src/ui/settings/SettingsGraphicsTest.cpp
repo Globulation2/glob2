@@ -11,6 +11,8 @@
 #include <FileManager.h>
 #include <fstream>
 #include <array>
+#include <utility>
+#include <vector>
 
 namespace
 {
@@ -21,6 +23,33 @@ const std::array<bool Settings::*, 8> effects = {
 }
 TEST_SUITE("SettingsGraphics")
 {
+    TEST_CASE("Telugu player names reject oversized edits and preserve saved preferences [writes-preferences]")
+    {
+        glob2test::HeadlessGlobals globals;
+        Settings settings;
+        for (const std::string input : {std::string(), std::string("ASCII player"),
+             std::string("తెలుగు"), std::string(32, 'a'), std::string(29, 'a') + "గ"})
+        {
+            settings.setUsername(input);
+            CHECK(settings.getUsername() == input);
+        }
+        settings.setUsername("తెలుగు");
+        for (const std::string oversized : {std::string("తెలుగు పరీక్ష"),
+             std::string(33, 'a'), std::string(31, 'a') + "é", std::string(31, 'a') + "😀"})
+        {
+            settings.setUsername(oversized);
+            CHECK(settings.getUsername() == "తెలుగు");
+        }
+        settings.language = "te";
+        const std::string file = "telugu-player-preferences.txt";
+        REQUIRE(settings.save(file));
+        Settings loaded;
+        loaded.load(file);
+        CHECK(loaded.getUsername() == "తెలుగు");
+        CHECK(loaded.language == "te");
+        std::filesystem::remove(std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file);
+    }
+
     TEST_CASE("retired gradient verification preference is ignored and CLI options are rejected")
     {
         glob2test::HeadlessGlobals globals;

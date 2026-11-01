@@ -4884,6 +4884,34 @@ AI 遙測
 清除的資源
 [stat cleared about]
 工人在清除區域中為騰出空間而移除的資源。
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 聲望
 [stat prestige about]
@@ -5546,14 +5574,6 @@ AI 生成
 冰
 [road]
 小徑
-[experiment ice-terrain]
-冰地形
-[experiment ice-terrain help]
-在地圖編輯器中新增冰。地面單位以一半速度移動，在冰上每經過32個模擬步就損失1點生命值。冰上不能放置建築或資源。
-[experiment road-terrain]
-小徑地形
-[experiment road-terrain help]
-在地圖編輯器中加入風化的小徑。地面單位以兩倍速度移動。小徑允許建築，但不允許資源。飛行單位不受影響。
 [experiment markets-v2]
 市場 V2
 [experiment markets-v2 help]
@@ -5676,6 +5696,14 @@ AI 生成
 坑洞
 [chasm]
 深淵
+[lush_grass]
+茂盛草原
+[dry_grass]
+枯黃草原
+[dune_sand]
+沙丘沙礫
+[pale_sand]
+淺色沙礫
 [terrain group water]
 水
 [terrain group sand]
@@ -5702,42 +5730,6 @@ AI 生成
 深水
 [terrain group void]
 虛空
-[experiment obstacle-terrain]
-障礙地形
-[experiment obstacle-terrain help]
-向地圖編輯器新增巨石、樹籬和灌木叢。地面單位無法穿越，彈射物也會被阻擋；飛行單位可以透過。不能放置建築或資源。
-[experiment ridge-terrain]
-巖脊地形
-[experiment ridge-terrain help]
-向地圖編輯器新增巖脊和岩石露頭。地面單位無法穿越，但防禦塔的射擊和飛行單位可以透過。不能放置建築或資源。
-[experiment barren-terrain]
-貧瘠地面
-[experiment barren-terrain help]
-向地圖編輯器新增泥土、黏土、礫石和花草地。可以放置建築，但其上及周圍不會生長任何東西，也不算作岸邊。
-[experiment rough-terrain]
-崎嶇地面
-[experiment rough-terrain help]
-向地圖編輯器新增泥濘、沼澤、深雪和碎石坡。地面單位的移動速度約為正常速度的三分之二。不能放置建築或資源。
-[experiment path-terrain]
-路徑地形
-[experiment path-terrain help]
-向地圖編輯器新增土路和木棧道。與小徑一樣，地面單位以雙倍速度移動，並且可以放置建築，但不會生長任何東西。
-[experiment lava-terrain]
-熔岩地形
-[experiment lava-terrain help]
-向地圖編輯器新增熔岩和餘燼地。地面單位無法進入；飛行單位穿越時會迅速損失生命值。彈射物可以透過。
-[experiment fertile-terrain]
-肥沃地面
-[experiment fertile-terrain help]
-向地圖編輯器新增壤土、苔蘚和春日草地。可以放置建築並種植作物，對周圍土地的灌溉效果比水更強。
-[experiment deep-water-terrain]
-深水
-[experiment deep-water-terrain help]
-向地圖編輯器新增深水和暗水。游泳單位透過時較慢，其中不生長藻類，但仍可灌溉附近的田地。
-[experiment void-terrain]
-虛空地形
-[experiment void-terrain help]
-向地圖編輯器新增坑洞和深淵。任何單位都無法穿越，包括飛行單位；彈射物會在邊緣停止。
 [terrain group custom]
 自定義
 [terrain group classic]
@@ -5770,8 +5762,6 @@ AI 生成
 選擇筆刷。同組地形的規則相同，只在外觀上有所區別。
 [terrain rule algae grow]
 藻類生長
-[terrain palette experiments hint]
-選擇筆刷。在“設定 > 實驗功能”中啟用對應實驗後，這裡會顯示更多地形組。
 [brush valid on %0]
 可放置於：%0
 [brush valid nowhere]
@@ -6401,421 +6391,421 @@ MCP 伺服器
 [audio choices description]
 靜音：已靜音的喇叭。聲音：帶有聲波的喇叭。
 [intro menu]
-
+入門
 [intro briefing]
-
+學習間接控制：用旗幟探索、為殖民地補給，並指揮進攻。
 [intro try]
-
+開始入門
 [intro preflight]
-
+你的球球會自主行動。你透過建築和旗幟選擇它們的任務。在這個簡短入門中，你將探索地標、擴充食物供應、增加工人，並指揮一次小規模進攻。
 [intro preflight save]
-
+請預留約10分鐘。你可以透過遊戲選單儲存，再透過載入遊戲繼續。正常的飢餓和戰鬥規則仍然適用。選擇主選單中的教學課程可練習更多技能。
 [intro preference failed]
-
+無法儲存你的選擇。你可以繼續遊戲；此建議可能在下次再次出現。
 [intro goal scout]
-
+探索石頭地標
 [intro goal build]
-
+再建一座客棧
 [intro goal supply]
-
+為新客棧補給
 [intro goal grow]
-
+增加工人
 [intro goal attack]
-
+摧毀敵方孢子堆
 [intro instruction scout]
-
+打開旗幟，在殖民地東側的石頭上放置探索旗幟。分配一名探索者，觀察它前往旗幟。
 [intro instruction build]
-
+打開建造，在小麥附近放置客棧。分配空閒工人建造，同時保持原有客棧的補給。
 [intro instruction supply]
-
+選擇建成的新客棧，至少分配一名補給工人。等待工人運來小麥。
 [intro instruction grow]
-
+選擇孢子堆，將工人需求設為至少2，並將生產比例設為僅生產工人。在新工人出生期間，保持兩座客棧的補給。
 [intro instruction attack]
-
+找到更東側的敵方孢子堆。使用攻擊旗幟指揮戰士攻擊。如需提示，可以查看說明。
 [intro help]
-
+說明／為什麼？
 [intro help scout]
-
+使用小地圖將視角移向東側，找到石頭。在旗幟中選擇探索旗幟，將其放在石頭上，然後用滑鼠次要按鍵退出放置。選擇旗幟，需求設為1名探索者。旗幟會請求單位，不會瞬間移動單位。探索者可能停下來吃飯。
 [intro help build]
-
+建造會消耗工人運來的木材。在建築面板中選擇客棧，放在小麥附近的空地上，並請求2名建造工人。工人需求是請求數量，不是已經到場的人數。原有客棧和孢子堆仍需保留補給工人。任何有效位置都算數。
 [intro help supply]
-
+建造和日常補給的工人需求分別設定。選擇建成的客棧，提高其運作工人需求。補給工人會收集小麥並運到這裡。飢餓的球球在客棧進食；沒有補給工人的建築最終會耗盡儲糧。請保持通往小麥的道路暢通。
 [intro help grow]
-
+孢子堆消耗小麥來生產單位。將工人生產比例設為1，探索者和戰士設為0。將孢子堆工人需求提高至至少2。更多補給工人能加快小麥運輸，但也會佔用其他任務的人力。請維持兩座客棧的食物供應。
 [intro help attack]
-
+打開旗幟，選擇攻擊旗幟，放在石頭東側的敵方孢子堆上。選擇旗幟，請求最多4名戰士。小半徑能讓他們集中。選擇旗幟前，用滑鼠次要按鍵退出放置。如果沒有戰士了，就在孢子堆生產更多。戰士可能停下來吃飯；請保持客棧補給。
 [intro hint scout]
-
+探索者需要東側石頭上已分配單位的探索旗幟。請檢查旗幟目標和探索者數量。
 [intro hint build]
-
+如果移除了新客棧，請再建一座。否則請檢查工地及其工人需求。現有補給任務可能佔用工人；在騰出建造工人的同時維持食物供應。
 [intro hint supply]
-
+選擇建成的新客棧。檢查工人需求，觀察小麥運送。工人可能需要時間趕路或進食。
 [intro hint grow]
-
+檢查孢子堆補給，並確認只生產工人。等待新工人期間，請保持客棧補給。
 [intro hint attack]
-
+檢查攻擊旗幟、請求的戰士數量以及食物供應。戰士需要時間趕路和進攻。
 [intro hint no scout flag]
-
+未找到已分配單位的探索旗幟。請在基地東側的石頭上放置一面，並請求1名探索者。
 [intro hint no suppliers]
-
+新客棧或工地的工人需求為0。請選擇它並請求工人。
 [intro hint no war flag]
-
+敵方基地沒有已分配單位的攻擊旗幟。請在東側敵方孢子堆上放置一面，並請求戰士。
 [intro hint retry]
-
+本課程所需的單位或建築已損失。請載入較早的存檔，或從遊戲選單重新開始課程。
 [intro complete]
-
+入門完成
 [intro complete body]
-
+你指揮了自主行動的球球，擴充食物供應、發展殖民地，並組織了進攻。繼續教學課程，學習訓練、升級和防禦，或返回主選單開始對局。
 [intro play again]
-
+再玩一次
 [intro restart]
-
+重新開始入門
 [intro restart body]
-
+從預設殖民地重新開始嗎？本次入門尚未儲存的進度將遺失。
 [intro help touch scout]
-
+放置旗幟前，拖動空地移動視角。找到殖民地東側的石頭。打開旗幟，選擇探索旗幟，放在石頭上並確認。選擇旗幟，透過分配單位需求請求1名探索者。球球會自行移動，也可能停下來進食。
 [intro help touch build]
-
+在建造中選擇客棧，放在小麥附近的空地上並確認。選擇工地，請求2名建造工人。工人需求是請求數量，不是已經到場的人數。保持原有客棧和孢子堆的補給。任何有效位置都算數。
 [intro help touch supply]
-
+選擇建成的新客棧，提高分配工人需求。建造和日常補給的需求分別設定。補給工人收集小麥並運到這裡。飢餓的球球在客棧進食；沒有補給工人的建築最終會斷糧。保持通往小麥的道路暢通。
 [intro help touch grow]
-
+選擇孢子堆，將工人生產比例設為1，探索者和戰士設為0。將分配工人需求提高至至少2。補給工人為新單位運來小麥，但也會佔用其他任務的人力。請保持兩座客棧的補給。
 [intro help touch attack]
-
+打開旗幟，選擇攻擊旗幟，放在石頭東側的敵方孢子堆上並確認。選擇旗幟，請求最多4名戰士。小半徑能讓他們集中。如果沒有戰士，就在孢子堆生產。戰士可能停下來吃飯；請保持客棧補給。
 [intro show destination]
-
+顯示目的地
 [intro scout destination]
-
+在此探索
 [intro attack destination]
-
+攻擊此處
 [intro compact scout]
-
+旗幟 → 探索旗幟。放在石頭上；分配1名探索者。
 [intro compact build]
-
+建造 → 客棧。放在小麥附近；分配2名建造工人。
 [intro compact supply]
-
+選擇新客棧；至少分配1名補給工人。等待小麥。
 [intro compact grow]
-
+選擇孢子堆；分配2名補給工人。僅生產工人。
 [intro compact attack]
-
+旗幟 → 攻擊旗幟。放在敵方孢子堆上；分配戰士。
 [tutorial lessons]
-
+教學課程
 [tutorial restart]
-
+重新開始課程
 [tutorial restart body]
-
+從預設殖民地重新開始本課程嗎？未儲存的進度將遺失。
 [tutorial complete]
-
+課程完成
 [tutorial food title]
-
+食物補給練習
 [tutorial food briefing]
-
+練習擴充食物供應：再建一座客棧，分配補給工人，觀察小麥運來。
 [tutorial food complete]
-
+你建造了客棧並為它供應小麥。試試其他課程，或返回主選單。
 [tutorial unavailable]
-
+無法載入教學課程。
 [lesson healing title]
-
+醫院與治療
 [lesson healing briefing]
-
+建造醫院，幫助受傷工人恢復。殖民地開始時已吃飽，有一名工人受傷。
 [lesson healing complete]
-
+醫院治好了受傷的球球。保持客棧補給：飢餓會讓單位再次受傷。
 [lesson healing build hint]
-
+在空地上建造醫院；分配2名建造工人。 留出球球進出的空間。醫院治療傷勢，客棧供應食物。這位傷員已經吃飽。
 [lesson healing build title]
-
+建造醫院
 [lesson healing build instruction]
-
+在空地上建造醫院；分配2名建造工人。
 [lesson healing build help]
-
+留出球球進出的空間。醫院治療傷勢，客棧供應食物。這位傷員已經吃飽。
 [lesson healing build marker]
-
+建造醫院
 [lesson healing heal hint]
-
+保持醫院通道暢通，觀察受傷工人恢復。 球球會自主尋求治療。請追蹤受傷工人，而不是新出生的單位。如果它死亡，請重新開始或載入存檔。
 [lesson healing heal title]
-
+讓傷員恢復
 [lesson healing heal instruction]
-
+保持醫院通道暢通，觀察受傷工人恢復。
 [lesson healing heal help]
-
+球球會自主尋求治療。請追蹤受傷工人，而不是新出生的單位。如果它死亡，請重新開始或載入存檔。
 [lesson healing heal marker]
-
+讓傷員恢復
 [lesson walking-training title]
-
+行走訓練
 [lesson walking-training briefing]
-
+建造跑道，觀察一名現有工人學會更快行走。
 [lesson walking-training complete]
-
+工人學會了更快行走。訓練提升現有工人的能力，不能代替殖民地的食物供應。
 [lesson walking-training build hint]
-
+在標記空地建造跑道；分配建造工人。 跑道需要木材和石頭。在四周留出空隙，方便進出和後續擴建。
 [lesson walking-training build title]
-
+建造跑道
 [lesson walking-training build instruction]
-
+在標記空地建造跑道；分配建造工人。
 [lesson walking-training build help]
-
+跑道需要木材和石頭。在四周留出空隙，方便進出和後續擴建。
 [lesson walking-training build marker]
-
+建造跑道
 [lesson walking-training train hint]
-
+保持跑道通道暢通，讓一名工人完成訓練。 符合條件的球球會自動訓練。留出一些不負責補給的工人，並讓兩座客棧保持儲糧。
 [lesson walking-training train title]
-
+訓練現有工人
 [lesson walking-training train instruction]
-
+保持跑道通道暢通，讓一名工人完成訓練。
 [lesson walking-training train help]
-
+符合條件的球球會自動訓練。留出一些不負責補給的工人，並讓兩座客棧保持儲糧。
 [lesson swimming title]
-
+游泳與水中資源
 [lesson swimming briefing]
-
+訓練游泳者，再用池塘中的水藻建造學校。
 [lesson swimming complete]
-
+游泳者為學校運來了水中資源。進入水域能增加殖民地可從事的工作。
 [lesson swimming build hint]
-
+在池塘西側建造游泳池；分配建造工人。 在游泳池四周留出空間。工人學會游泳後，才能在深水收集水藻。
 [lesson swimming build title]
-
+建造游泳池
 [lesson swimming build instruction]
-
+在池塘西側建造游泳池；分配建造工人。
 [lesson swimming build help]
-
+在游泳池四周留出空間。工人學會游泳後，才能在深水收集水藻。
 [lesson swimming build marker]
-
+建造游泳池
 [lesson swimming train hint]
-
+讓一名現有工人完成游泳訓練。 單位會自動選擇訓練。保持補給，讓空閒工人能夠到達游泳池。
 [lesson swimming train title]
-
+訓練游泳者
 [lesson swimming train instruction]
-
+讓一名現有工人完成游泳訓練。
 [lesson swimming train help]
-
+單位會自動選擇訓練。保持補給，讓空閒工人能夠到達游泳池。
 [lesson swimming water-job hint]
-
+在殖民地附近建造學校；分配建造工人獲取木材和水藻。 水藻長在池塘中。受過訓練的游泳者必須下水採集。請將學校放在空地上，確保補給工人能夠到達。
 [lesson swimming water-job title]
-
+使用池塘水藻
 [lesson swimming water-job instruction]
-
+在殖民地附近建造學校；分配建造工人獲取木材和水藻。
 [lesson swimming water-job help]
-
+水藻長在池塘中。受過訓練的游泳者必須下水採集。請將學校放在空地上，確保補給工人能夠到達。
 [lesson swimming water-job marker]
-
+使用池塘水藻
 [lesson schools title]
-
+學校與工人技能
 [lesson schools briefing]
-
+利用已有的游泳者建造學校，再觀察工人學習建造和採集。
 [lesson schools complete]
-
+學校提高了工人技能。熟練建造工人可進行升級，更好的採集能力有助於維持不斷擴大的經濟。
 [lesson schools build hint]
-
+在空地上建造學校；分配建造工人。 殖民地已有可採集水藻的游泳者。保持通往木材和水域的道路暢通。果樹提供聲望資源；食物仍然來自小麥。
 [lesson schools build title]
-
+建造學校
 [lesson schools build instruction]
-
+在空地上建造學校；分配建造工人。
 [lesson schools build help]
-
+殖民地已有可採集水藻的游泳者。保持通往木材和水域的道路暢通。果樹提供聲望資源；食物仍然來自小麥。
 [lesson schools build marker]
-
+建造學校
 [lesson schools learn hint]
-
+讓一名現有工人完成學校訓練。 學校同時教授建造和採集。留出可用工人；僅有工地並不能訓練任何人。
 [lesson schools learn title]
-
+學習建造與採集
 [lesson schools learn instruction]
-
+讓一名現有工人完成學校訓練。
 [lesson schools learn help]
-
+學校同時教授建造和採集。留出可用工人；僅有工地並不能訓練任何人。
 [lesson upgrades title]
-
+升級建築
 [lesson upgrades briefing]
-
+利用已有的熟練工人升級跑道，進行超過第一級的訓練。
 [lesson upgrades complete]
-
+你升級了建築並使用了更好的訓練。後續升級會重複這一過程，需要更好的學校、技能、材料和空間，最高到第3級。
 [lesson upgrades upgrade hint]
-
+選擇跑道，選擇升級，並分配熟練建造工人。 這些工人已學會學校第一級技能。升級需要額外空間和材料，並會中斷建築服務。取消的升級不算數。
 [lesson upgrades upgrade title]
-
+升級跑道
 [lesson upgrades upgrade instruction]
-
+選擇跑道，選擇升級，並分配熟練建造工人。
 [lesson upgrades upgrade help]
-
+這些工人已學會學校第一級技能。升級需要額外空間和材料，並會中斷建築服務。取消的升級不算數。
 [lesson upgrades upgrade marker]
-
+升級跑道
 [lesson upgrades train hint]
-
+讓一名現有工人在升級後的跑道學習更快行走。 完成升級會改善可用訓練。更高級建築需要更高建造技能；向玩家顯示的等級從1開始。
 [lesson upgrades train title]
-
+使用升級後的訓練
 [lesson upgrades train instruction]
-
+讓一名現有工人在升級後的跑道學習更快行走。
 [lesson upgrades train help]
-
+完成升級會改善可用訓練。更高級建築需要更高建造技能；向玩家顯示的等級從1開始。
 [lesson warrior-training title]
-
+生產與訓練戰士
 [lesson warrior-training briefing]
-
+在孢子堆生產戰士，再到兵營訓練。
 [lesson warrior-training complete]
-
+你控制了軍事生產並訓練了戰士。請維持食物供應；戰鬥單位也需要進食。
 [lesson warrior-training produce hint]
-
+將孢子堆設為僅生產戰士；分配補給工人，等待2名戰士。 將工人和探索者比例設為0，戰士比例設為1。孢子堆消耗小麥來誕生單位。比例決定生產什麼，補給工人決定生產能否進行。
 [lesson warrior-training produce title]
-
+生產兩名戰士
 [lesson warrior-training produce instruction]
-
+將孢子堆設為僅生產戰士；分配補給工人，等待2名戰士。
 [lesson warrior-training produce help]
-
+將工人和探索者比例設為0，戰士比例設為1。孢子堆消耗小麥來誕生單位。比例決定生產什麼，補給工人決定生產能否進行。
 [lesson warrior-training produce marker]
-
+生產兩名戰士
 [lesson warrior-training build hint]
-
+在空地建造兵營；分配建造工人。 戰士足夠後，停止或減少戰士生產。兵營教授戰鬥技能，四周需留出空間。
 [lesson warrior-training build title]
-
+建造兵營
 [lesson warrior-training build instruction]
-
+在空地建造兵營；分配建造工人。
 [lesson warrior-training build help]
-
+戰士足夠後，停止或減少戰士生產。兵營教授戰鬥技能，四周需留出空間。
 [lesson warrior-training build marker]
-
+建造兵營
 [lesson warrior-training train hint]
-
+讓一名戰士完成兵營訓練。 戰士會自動尋求訓練。保持客棧補給和兵營通道暢通。僅僅建成兵營不算完成訓練。
 [lesson warrior-training train title]
-
+訓練你的戰士
 [lesson warrior-training train instruction]
-
+讓一名戰士完成兵營訓練。
 [lesson warrior-training train help]
-
+戰士會自動尋求訓練。保持客棧補給和兵營通道暢通。僅僅建成兵營不算完成訓練。
 [lesson fortifications title]
-
+防禦塔與防護牆
 [lesson fortifications briefing]
-
+建造有補給的防禦塔和防護牆，再用一次小規模攻擊檢驗它們。
 [lesson fortifications complete]
-
+補給充足的防禦設施擋住了練習攻擊。防禦塔需要石頭，防護牆需要留出缺口，讓補給工人通行。
 [lesson fortifications tower hint]
-
+在標記區域建造防禦塔；分配建造工人。 將它放在石礦附近，留出補給工人通道。準備目標全部完成後，攻擊才會開始。
 [lesson fortifications tower title]
-
+建造防禦塔
 [lesson fortifications tower instruction]
-
+在標記區域建造防禦塔；分配建造工人。
 [lesson fortifications tower help]
-
+將它放在石礦附近，留出補給工人通道。準備目標全部完成後，攻擊才會開始。
 [lesson fortifications tower marker]
-
+建造防禦塔
 [lesson fortifications walls hint]
-
+在防禦塔附近建造至少2段牆；保持西側通道暢通。 牆需要石頭，每個工地都會請求工人。不要將防禦塔封死：補給工人需要通路。標記的西側通道必須保持暢通。
 [lesson fortifications walls title]
-
+用防護牆保護防禦塔
 [lesson fortifications walls instruction]
-
+在防禦塔附近建造至少2段牆；保持西側通道暢通。
 [lesson fortifications walls help]
-
+牆需要石頭，每個工地都會請求工人。不要將防禦塔封死：補給工人需要通路。標記的西側通道必須保持暢通。
 [lesson fortifications walls marker]
-
+用防護牆保護防禦塔
 [lesson fortifications supply hint]
-
+選擇防禦塔並請求補給工人。等待至少2塊石頭。 建成的防禦塔需設定運作工人需求來運送彈藥，這與建造工人需求是分開的。
 [lesson fortifications supply title]
-
+補給彈藥
 [lesson fortifications supply instruction]
-
+選擇防禦塔並請求補給工人。等待至少2塊石頭。
 [lesson fortifications supply help]
-
+建成的防禦塔需設定運作工人需求來運送彈藥，這與建造工人需求是分開的。
 [lesson fortifications supply marker]
-
+補給彈藥
 [lesson fortifications hold hint]
-
+一名練習戰士正在接近。保持防禦塔補給和通道暢通。 堅守直到擊敗或擊退攻擊者。堵住補給工人的牆會讓防禦塔缺乏彈藥。如果殖民地失守，請重新開始或載入較早存檔。
 [lesson fortifications hold title]
-
+檢驗防禦工事
 [lesson fortifications hold instruction]
-
+一名練習戰士正在接近。保持防禦塔補給和通道暢通。
 [lesson fortifications hold help]
-
+堅守直到擊敗或擊退攻擊者。堵住補給工人的牆會讓防禦塔缺乏彈藥。如果殖民地失守，請重新開始或載入較早存檔。
 [lesson fortifications hold marker]
-
+檢驗防禦工事
 [lesson defensive-tactics title]
-
+警戒區域與旗幟戰術
 [lesson defensive-tactics briefing]
-
+偵察練習敵軍，佈置警戒區域，進行防守，再組織反擊。
 [lesson defensive-tactics complete]
-
+你完成了偵察、警戒區域防守和反擊指揮。旗幟需求會請求單位；半徑決定單位的活動範圍。
 [lesson defensive-tactics scout hint]
-
+在敵方基地放置探索旗幟；分配1名探索者。 旗幟會自動請求單位。探索者可揭示戰爭迷霧中的目前活動；它可能停下來吃飯。
 [lesson defensive-tactics scout title]
-
+偵察敵方基地
 [lesson defensive-tactics scout instruction]
-
+在敵方基地放置探索旗幟；分配1名探索者。
 [lesson defensive-tactics scout help]
-
+旗幟會自動請求單位。探索者可揭示戰爭迷霧中的目前活動；它可能停下來吃飯。
 [lesson defensive-tactics scout marker]
-
+偵察敵方基地
 [lesson defensive-tactics guard hint]
-
+在標記區域塗繪警戒區域，讓2名戰士到達。 打開旗幟，選擇警戒，在區域內塗繪至少4格。警戒區域吸引空閒戰士。禁區阻止通行；清理區域請求移除資源。
 [lesson defensive-tactics guard title]
-
+佈置警戒區域
 [lesson defensive-tactics guard instruction]
-
+在標記區域塗繪警戒區域，讓2名戰士到達。
 [lesson defensive-tactics guard help]
-
+打開旗幟，選擇警戒，在區域內塗繪至少4格。警戒區域吸引空閒戰士。禁區阻止通行；清理區域請求移除資源。
 [lesson defensive-tactics guard marker]
-
+佈置警戒區域
 [lesson defensive-tactics repel hint]
-
+敵軍正在進攻。保持警戒區域有兵防守，並維持客棧補給。 準備完成後會開始小規模攻擊。擊敗或擊退兩名襲擊者；受傷敵軍可能撤退。戰士可能暫時離開去吃飯。如果防守失敗，請載入較早存檔或重新開始。
 [lesson defensive-tactics repel title]
-
+擊退練習攻擊
 [lesson defensive-tactics repel instruction]
-
+敵軍正在進攻。保持警戒區域有兵防守，並維持客棧補給。
 [lesson defensive-tactics repel help]
-
+準備完成後會開始小規模攻擊。擊敗或擊退兩名襲擊者；受傷敵軍可能撤退。戰士可能暫時離開去吃飯。如果防守失敗，請載入較早存檔或重新開始。
 [lesson defensive-tactics repel marker]
-
+擊退練習攻擊
 [lesson defensive-tactics counterattack hint]
-
+在敵方孢子堆上放置攻擊旗幟；請求3名戰士，半徑設為不超過4。 警戒區域和攻擊旗幟會爭用戰士。如果警戒格留住了部隊，請移除這些格子。戰士行軍和進攻時，請保持食物供應。
 [lesson defensive-tactics counterattack title]
-
+指揮集中反擊
 [lesson defensive-tactics counterattack instruction]
-
+在敵方孢子堆上放置攻擊旗幟；請求3名戰士，半徑設為不超過4。
 [lesson defensive-tactics counterattack help]
-
+警戒區域和攻擊旗幟會爭用戰士。如果警戒格留住了部隊，請移除這些格子。戰士行軍和進攻時，請保持食物供應。
 [lesson defensive-tactics counterattack marker]
-
+指揮集中反擊
 [lesson healing build compact]
-
+建造 → 醫院。保留通路；分配建造工人。
 [lesson healing heal compact]
-
+讓受傷工人在醫院治療。
 [lesson walking-training build compact]
-
+建造 → 跑道。四周留出空間。
 [lesson walking-training train compact]
-
+讓工人完成跑道訓練。
 [lesson swimming build compact]
-
+建造 → 游泳池，放在池塘西側。
 [lesson swimming train compact]
-
+讓工人學會游泳。
 [lesson swimming water-job compact]
-
+建造 → 學校。分配建造工人獲取木材和水藻。
 [lesson schools build compact]
-
+建造 → 學校。分配建造工人獲取木材和水藻。
 [lesson schools learn compact]
-
+讓工人完成學校訓練。
 [lesson upgrades upgrade compact]
-
+選擇跑道 → 升級。分配熟練建造工人。
 [lesson upgrades train compact]
-
+讓工人在升級後的跑道訓練。
 [lesson warrior-training produce compact]
-
+孢子堆 → 僅生產戰士。供應足夠誕生2名戰士的小麥。
 [lesson warrior-training build compact]
-
+建造 → 兵營。四周留出空間。
 [lesson warrior-training train compact]
-
+讓戰士完成兵營訓練。
 [lesson fortifications tower compact]
-
+建造 → 防禦塔。放在標記區域。
 [lesson fortifications walls compact]
-
+建造2段牆。保持防禦塔西側通道暢通。
 [lesson fortifications supply compact]
-
+選擇防禦塔 → 補給工人。等待2塊石頭。
 [lesson fortifications hold compact]
-
+持續補給防禦塔，抵禦攻擊者。
 [lesson defensive-tactics scout compact]
-
+旗幟 → 探索。放在敵方基地；分配1名探索者。
 [lesson defensive-tactics guard compact]
-
+旗幟 → 警戒。塗繪4格；讓2名戰士到達。
 [lesson defensive-tactics repel compact]
-
+守住警戒區域。保持客棧補給。
 [lesson defensive-tactics counterattack compact]
-
+攻擊旗幟 → 敵方孢子堆。請求3名戰士；半徑≤4。
 [library GL only]
 僅限 GL
 [Grassland]
@@ -6827,6 +6817,44 @@ MCP 伺服器
 [Fish amount]
 魚類數量
 [scenario messages]
-
+訊息 ▸
 [Camp-site amount]
 營地數量
+[script compilation success]
+編譯成功
+[script error at %0:%1: %2]
+第 %0 行、第 %1 欄發生錯誤：%2
+[script compilation failure %0:%1:(%2):%3]
+編譯失敗：%0:%1:(%2):%3
+[script compilation failed %0]
+編譯失敗：%0
+[script loading failed %0]
+從 %0 載入腳本失敗
+[script saving failed %0]
+儲存腳本到 %0 失敗
+[script line %0 column %1]
+行：%0 欄：%1
+[game stopped %0]
+遊戲停止：%0
+[game stopped script help]
+在重新啟動遊戲之前，請檢查嵌入的 JavaScript 程式碼及其資源使用情況。
+[missing map generator %0]
+缺少地圖產生器：%0。已選取內建地形。
+[hive standing order paused]
+一項常駐指令需要處理，目前已暫停。
+[hive connection changed orders paused]
+連線已變更。請在恢復之前檢查已暫停的常駐指令。
+[hive standing order fresh instruction]
+重新連線後，一項常駐指令需要新的指示。您可以取消該指令，或請指揮官將其替換。
+[hive order confirmation failed]
+無法確認一項指令。請在恢復之前檢查您的常駐指令。
+[hive previous order sending]
+您先前的指令仍在傳送中。此訊息已儲存；請開啟指揮官重新傳送。
+[hive order received %0]
+已收到指令：%0
+[hive order not confirmed]
+指令未確認。請開啟指揮官重試；您的訊息已儲存。
+[hive standing order update failed]
+常駐指令更新失敗。您的指令已在此裝置上暫停；請使用對應的控制項重試。
+[AI for all computer colonies]
+所有電腦控制殖民地的 AI
