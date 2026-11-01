@@ -65,14 +65,14 @@ export function Admin({ tab }: { tab: string | undefined }) {
       >
         {TABS.filter(
           (t) => !['overview', 'operations', 'finances'].includes(t.id) || account.role === 'admin',
-        ).map((t) => (
+        ).map((tab) => (
           <Link
-            key={t.id}
-            to={`/admin/${t.id}`}
-            aria-current={current === t.id ? 'page' : undefined}
-            className={current === t.id ? 'on' : ''}
+            key={tab.id}
+            to={`/admin/${tab.id}`}
+            aria-current={current === tab.id ? 'page' : undefined}
+            className={current === tab.id ? 'on' : ''}
           >
-            {t.name}
+            {t(tab.name)}
           </Link>
         ))}
       </nav>

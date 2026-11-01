@@ -123,7 +123,7 @@ function Tags({ value, onChange }: { value: string[]; onChange: (tags: string[])
             )
           }
         >
-          {tag}
+          {t(tag)}
         </button>
       ))}
     </div>
@@ -334,9 +334,9 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                           {ai.description || t('A community-created colony controller.')}
                         </p>
                         <div className="ai-tags">
-                          {ai.tags.map((t) => (
-                            <span className="badge" key={t}>
-                              {t}
+                          {ai.tags.map((tag) => (
+                            <span className="badge" key={tag}>
+                              {t(tag)}
                             </span>
                           ))}
                         </div>
@@ -483,9 +483,9 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
       <div className="ai-detail-grid">
         <section className="card">
           <div className="ai-tags">
-            {ai.tags.map((t) => (
-              <span className="badge" key={t}>
-                {t}
+            {ai.tags.map((tag) => (
+              <span className="badge" key={tag}>
+                {t(tag)}
               </span>
             ))}
           </div>
@@ -571,8 +571,15 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               <label className="field">
                 {t('Reason')}
                 <select autoFocus value={reason} onChange={(e) => setReason(e.target.value)}>
-                  {['broken', 'offensive', 'copyright', 'other'].map((r) => (
-                    <option key={r}>{r}</option>
+                  {[
+                    ['broken', t('Broken')],
+                    ['offensive', t('Offensive')],
+                    ['copyright', t('Copyright')],
+                    ['other', t('Other')],
+                  ].map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
                   ))}
                 </select>
               </label>

@@ -127,8 +127,11 @@ The JSON tutorial inventory distinguishes legacy language blocks from current
 `display_catalog_gaps`. Generator/building/resource names and keyboard names
 built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
-bindings, and render representative screens in each language to check font
-coverage, text fitting and layout. The legacy Arabic/Persian route in
+bindings. It also requires catalog keys for fixed UI metadata: AI tags and compatibility
+captions, connection-quality terms, route/admin/map labels, match verdicts, music
+moods/check guidance and skin model/material/shape/pose captions. Translate their displayed labels while preserving canonical protocol
+values in filters and requests. Render representative screens in each language to
+check font coverage, text fitting and layout. The legacy Arabic/Persian route in
 `TrueTypeFont` shapes text into visual order before rasterization and uses an
 explicit left-to-right SDL_ttf direction to prevent a second reordering pass.
 Complex script fonts retain their shaping tables and use logical directional
