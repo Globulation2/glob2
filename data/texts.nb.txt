@@ -6786,38 +6786,6 @@ Dyretråkk
 Mengde fisk
 [Camp-site amount]
 Antall leirplasser
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
-[lush_grass]
-
-[dry_grass]
-
-[dune_sand]
-
-[pale_sand]
-
 [scenario messages]
 Meldinger ▸
 [stats topic overview]

@@ -5460,15 +5460,22 @@ class GameGUITouchHarness
         gui.touch->interfaceTap(overlap);
         CHECK(gui.viewportX==cameraX); CHECK(gui.viewportY==cameraY);
         auto *gfx=globalContainer->gfx;
+        // Request an actual backend readback; completedFrame may still refer
+        // to the unused software surface with the programmable renderer.
+        const auto capture=glob2test::profileDir()/"compact-bn-statistics.bmp";
+        gfx->printScreen(capture.filename().string());
         gfx->nextFrame();
+        REQUIRE(std::filesystem::exists(capture));
+        std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(SDL_LoadBMP(capture.string().c_str()),SDL_DestroySurface);
+        REQUIRE(pixels);
         Uint8 r=0,g=0,b=0,a=0;
-        REQUIRE(SDL_ReadSurfacePixel(gfx->completedFrame(),int(overlap.x),int(overlap.y),&r,&g,&b,&a));
+        REQUIRE(SDL_ReadSurfacePixel(pixels.get(),int(overlap.x),int(overlap.y),&r,&g,&b,&a));
         const auto paper=InGameTouchTheme::readout();
         const int tolerance=257-paper.a;
         CHECK(std::abs(int(r)-int(paper.r))<=tolerance);
         CHECK(std::abs(int(g)-int(paper.g))<=tolerance);
         CHECK(std::abs(int(b)-int(paper.b))<=tolerance);
-        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"compact-bn-statistics.bmp").string().c_str()));
+        CHECK(glob2test::retainFromProfile(".bmp")==1);
         auto &panel=gui.statistics();
         for(int topic=0;topic<5;++topic) {
             tap(panel.host().bounds("stats/topic/"+std::to_string(topic)));

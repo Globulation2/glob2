@@ -6810,14 +6810,6 @@ Njia za wanyama
 Kiasi cha samaki
 [Camp-site amount]
 Idadi ya maeneo ya kambi
-[lush_grass]
-
-[dry_grass]
-
-[dune_sand]
-
-[pale_sand]
-
 [scenario messages]
 Ujumbe ▸
 [lush_grass]

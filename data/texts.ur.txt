@@ -6810,14 +6810,6 @@ MCP سرور چالو کریں
 مچھلی کی مقدار
 [Camp-site amount]
 خیمہ گاہوں کی تعداد
-[lush_grass]
-
-[dry_grass]
-
-[dune_sand]
-
-[pale_sand]
-
 [scenario messages]
 پیغامات ▸
 [lush_grass]
