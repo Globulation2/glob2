@@ -1,0 +1,104 @@
+{
+  "unsigned_apk": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+  "unsigned_apk_sha256": "b2be7a19831e9c1bed3b906b0dd99f56cd887cb14f2d30d10793b47a324e044f",
+  "final_official_producer_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "initial_native_producer_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+  "producer_provenance": "android-final-producer-provenance.json",
+  "native_object_reuse": {
+    "before_count": 774,
+    "after_count": 774,
+    "unchanged_object_bytes": 774,
+    "changed_or_new": [],
+    "before_manifest_sha256": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f",
+    "after_manifest_sha256": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f"
+  },
+  "head_at_validation": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "adb_server": 15187,
+  "serial": "emulator-5678",
+  "avd": "glob2-api35-x64",
+  "locale": "mr-IN",
+  "java_home": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1",
+  "java_path_prefix": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1/bin",
+  "packaged_assets": {
+    "assets/glob2-bundle/data/texts.mr.txt": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+  },
+  "compiled_marathi_resource_configuration_line": "      (mr) \"खेळाची तयारी सुरू आहे…\"",
+  "android_resource_verified": "Effective compiled APKresources include Marathi preparing_game with exact reviewed target खेळाची तयारी सुरू आहे…",
+  "android_source_xml_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "signed_apk_sha256": "71c047ec0b5d045c5a29257679accdc637656a1a0ab9687114d1a6b2dd66f2f2",
+  "first_run_captures": [
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-00.png",
+      "sha256": "b5e53bb0e3169fb1e42c1f3f86ea73fc851c61e91b63949a56d5c86986bee797",
+      "bytes": 16666,
+      "elapsed_seconds": 1.1744957100017928
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-01.png",
+      "sha256": "0530b3db4ba0ad309b7c2c62ca0ff7240ea454752278039cf1a0631438cab40d",
+      "bytes": 16615,
+      "elapsed_seconds": 1.6215389100034372
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-02.png",
+      "sha256": "fb4c546dd1b5351e2d28403f93e88f7fac82d5f49bf1b6134da04a7f2c3c3a57",
+      "bytes": 16590,
+      "elapsed_seconds": 2.131939972001419
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-03.png",
+      "sha256": "fb4c546dd1b5351e2d28403f93e88f7fac82d5f49bf1b6134da04a7f2c3c3a57",
+      "bytes": 16590,
+      "elapsed_seconds": 2.6058511160008493
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-04.png",
+      "sha256": "64842e82440025c5fe5a95c9025fd27f0bc5262ca5d42969058a08a882b19d76",
+      "bytes": 16841,
+      "elapsed_seconds": 3.519963229999121
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-05.png",
+      "sha256": "64842e82440025c5fe5a95c9025fd27f0bc5262ca5d42969058a08a882b19d76",
+      "bytes": 16841,
+      "elapsed_seconds": 4.122079079003015
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-06.png",
+      "sha256": "64842e82440025c5fe5a95c9025fd27f0bc5262ca5d42969058a08a882b19d76",
+      "bytes": 16841,
+      "elapsed_seconds": 4.659370485002
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-07.png",
+      "sha256": "64842e82440025c5fe5a95c9025fd27f0bc5262ca5d42969058a08a882b19d76",
+      "bytes": 16841,
+      "elapsed_seconds": 5.243028801000037
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-rendering/first-run-08.png",
+      "sha256": "64842e82440025c5fe5a95c9025fd27f0bc5262ca5d42969058a08a882b19d76",
+      "bytes": 16841,
+      "elapsed_seconds": 5.866588103999675
+    }
+  ],
+  "first_run_capture_budget": {
+    "maximum_frames": 10,
+    "target_interval_seconds": 0.5,
+    "byte_cap": 12582912,
+    "maximum_capture_span_seconds": 6.0,
+    "actual_capture_bytes": 150666,
+    "not_stored_due_to_cap": [],
+    "capture_errors": [
+      {
+        "attempt": 9,
+        "error": "Command '['/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/platform-tools/adb', '-P', '15187', '-s', 'emulator-5678', 'exec-out', 'screencap', '-p']' timed out after 0.13292282899783459 seconds"
+      }
+    ],
+    "not_attempted_due_to_deadline": 0,
+    "actual_span_seconds": 6.003347078003571
+  },
+  "overlay_visual_confirmation": "Pending actualimage review; compiledresource verified separately.",
+  "lifecycle_exit_code": -15
+}

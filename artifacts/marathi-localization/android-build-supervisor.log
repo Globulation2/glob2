@@ -1,0 +1,5 @@
+Waiting for exact current-release recording receipt /home/bradley/.local/share/glob2/development/dependencies/build-21a7b3edb8fa00934855eb1c/prefix
+Exact release recording verified and exposed for packaging
+Sent SIGINT only to own application SCons 1590244
+Starting release Android application with6jobs
+ReleaseAPKcomplete; exact recording notices verified /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk

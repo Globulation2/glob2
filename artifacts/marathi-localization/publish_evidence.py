@@ -19,9 +19,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--checkpoint', action='store_true',
                         help='Publish completed native/online evidence while package builds continue.')
+    parser.add_argument('--pending-browser', action='store_true',
+                        help='Include completed Android evidence while excluding active browser outputs.')
     args = parser.parse_args()
     previous = json.loads((ROOT / BASE / 'evidence-publication.json').read_text())
     files = {Path(name) for name in previous['files'] if (ROOT / name).is_file()}
+    # The inventory describes the payload and is added once after it is
+    # regenerated. It cannot hash or count an inherited copy of itself.
+    files.discard(BASE / 'published-inventory.json')
     # Build SDKs, dependency copies, executables, raw external reference pages,
     # environment dumps and profiles are deliberately outside this inventory.
     directories = ['checks', 'android-overlay-review', 'apple-permission-review',
@@ -32,10 +37,12 @@ def main():
                    'native-render-clean671',
                    'native-focused-results',
                    'browser-render-final', 'browser-game',
-                   'android-rendering']
+                   'android-rendering', 'android-attempt1-system-ui-anr']
     extensions = {'.json', '.log', '.gz', '.png', '.txt', '.md', '.xml'}
     for directory in directories:
-        if args.checkpoint and directory in {'browser-game', 'browser-render-final', 'android', 'android-rendering'}:
+        if (args.checkpoint or args.pending_browser) and directory in {'browser-game', 'browser-render-final'}:
+            continue
+        if args.checkpoint and directory in {'android', 'android-rendering'}:
             continue
         for path in (ROOT / BASE / directory).rglob('*'):
             relative = path.relative_to(ROOT)
@@ -48,10 +55,16 @@ def main():
              'android-build-restart-provenance.json', 'android-recording-reuse-candidates.json',
              'android-final-producer-provenance.json',
              'android-final-head-approval.json',
+             'android-final-visual-review.json', 'android-overlay-visual-review.json',
+             'android-evidence-gate-recommendation.json', 'android-runtime-cleanup.json',
+             'android-initial-producer-provenance.json',
+             'android-object-inputs-before-final.json', 'android-object-inputs-after-final.json',
+             'android_finalize_producer.py', 'android_finish_build.py', 'cleanup_owned_android.py',
              'android-smoke-adaptation.json', 'native-deps-reuse.json',
              'native-strip-provenance.json',
              'native-focused-build-commands.json',
              'native-focused-provenance.json',
+             'native-gate-inputs.json',
              'supplemental-review-summary.json', 'final-verification.json',
              'publish_evidence.py', 'native_qa_runner.py', 'android_validate_release.py',
              'android_smoke_task.py']
@@ -59,18 +72,19 @@ def main():
         path = BASE / name
         if (ROOT / path).is_file(): files.add(path)
     for path in (ROOT / BASE).glob('*.log'):
-        if args.checkpoint and (path.name.startswith('android-') or
-                                path.name.startswith('browser-release') or
-                                path.name.startswith('browser-qa')):
+        if args.checkpoint and path.name.startswith('android-'):
+            continue
+        if (args.checkpoint or args.pending_browser) and (
+                path.name.startswith('browser-release') or path.name.startswith('browser-qa')):
             continue
         files.add(path.relative_to(ROOT))
-    if args.checkpoint:
+    if args.checkpoint or args.pending_browser:
         files = {p for p in files if not (
             str(p).startswith(str(BASE / 'browser-game') + '/') or
-            str(p).startswith(str(BASE / 'android-rendering') + '/') or
-            str(p).startswith(str(BASE / 'android') + '/') or
+            (args.checkpoint and str(p).startswith(str(BASE / 'android-rendering') + '/')) or
+            (args.checkpoint and str(p).startswith(str(BASE / 'android') + '/')) or
             (p.parent == BASE and p.suffix == '.log' and (
-                p.name.startswith('android-') or p.name.startswith('browser-release') or
+                (args.checkpoint and p.name.startswith('android-')) or p.name.startswith('browser-release') or
                 p.name.startswith('browser-qa'))))}
     # Preserve every quantitative result, but publish a bounded selection of
     # matrix images: first/middle/last per font+scale and every inspected page.

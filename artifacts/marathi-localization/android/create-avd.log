@@ -1,0 +1,8 @@
+Warning: Observed package id 'emulator' in inconsistent location '/home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-ed2ca40fb96f830a06032aa9' (Expected '/home/bradley/.local/share/glob2/development/toolchains/emulator')
+Warning: Observed package id 'build-tools;35.0.0' in inconsistent location '/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/build-tools/35.0.0' (Expected '/home/bradley/.local/share/glob2/development/toolchains/build-tools/35.0.0')
+Warning: Observed package id 'emulator' in inconsistent location '/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/emulator' (Expected '/home/bradley/.local/share/glob2/development/toolchains/emulator')
+Warning: Already observed package id 'emulator' in '/home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-ed2ca40fb96f830a06032aa9'. Skipping duplicate at '/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/emulator'
+Warning: Observed package id 'platform-tools' in inconsistent location '/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/platform-tools' (Expected '/home/bradley/.local/share/glob2/development/toolchains/platform-tools')
+Warning: Observed package id 'platforms;android-36' in inconsistent location '/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/platforms/android-36' (Expected '/home/bradley/.local/share/glob2/development/toolchains/platforms/android-36')
+Error: Package path is not valid. Valid system image paths are:
+null

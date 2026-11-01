@@ -1,0 +1,18 @@
+{
+  "updated_gates": [
+    "desktop_rendering",
+    "phone_rendering",
+    "native_platforms",
+    "mobile_platforms"
+  ],
+  "pending_gates": [
+    "browser_startup",
+    "browser_platforms"
+  ],
+  "structural_registration_hash_refresh": {
+    "old": "74d6147e57dcfb24c052b0361effca3102efbbf6a94a2ac55eb4ebab73547225",
+    "current": "1f4d665cbd72b791392f03d0d062d73dca68fadb368b183ac618ce170d3f3f47",
+    "reason": "Registration manifest extended after initialstamp; current source/catalog hashes unchanged, recorded completedcheck evidence reviewed. Other gate references retained."
+  },
+  "limits": "Scoped platform coverage is explicit; no browser-game/WASM or unexecutedApple/Windows/physicaldevice claim."
+}

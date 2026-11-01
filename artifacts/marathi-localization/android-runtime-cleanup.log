@@ -1,0 +1,3 @@
+Stopping only verified owned emulator container 33deefb47cbc60b23847a4d9bdfbe10e5ddc208f05d42dd8d599fc83c070596a
+Stopping only verified isolated ADB server15187
+PASS owned container and ADB stopped; AVD/APKs/all evidence preserved

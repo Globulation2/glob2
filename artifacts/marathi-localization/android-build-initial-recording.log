@@ -1,0 +1,3 @@
+scons: Reading SConscript files ...
+scons: Build interrupted.
+Command '['scons', 'target=android', 'arch=x86_64', 'release=1', 'china=0', 'amazon=0', 'android_sdk=/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk', 'mobile_deps=/home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-90ec8cde16412e71dd8ed5af', '-j2']' returned non-zero exit status 2.

@@ -1,0 +1,25 @@
+{
+  "reason": "avdmanager infers incorrect SDK root from shared command-line tools symlink; task-owned manual configuration uses unchanged pinned image",
+  "config": {
+    "AvdId": "glob2-api35-x64",
+    "avd.ini.encoding": "UTF-8",
+    "abi.type": "x86_64",
+    "hw.cpu.arch": "x86_64",
+    "hw.cpu.ncore": "2",
+    "hw.ramSize": "2048",
+    "hw.lcd.width": "390",
+    "hw.lcd.height": "844",
+    "hw.lcd.density": "160",
+    "skin.name": "390x844",
+    "hw.keyboard": "yes",
+    "hw.mainKeys": "no",
+    "image.sysdir.1": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/system-images/android-35/default/x86_64/",
+    "tag.id": "default",
+    "tag.display": "Default",
+    "PlayStore.enabled": "false",
+    "hw.gpu.enabled": "yes",
+    "hw.gpu.mode": "swiftshader",
+    "disk.dataPartition.size": "2G",
+    "fastboot.forceColdBoot": "yes"
+  }
+}

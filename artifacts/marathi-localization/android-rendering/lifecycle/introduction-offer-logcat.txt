@@ -1,0 +1,389 @@
+--------- beginning of main
+10-31 22:24:49.001   526  2582 W InputManager-JNI: Input channel object '2f7c574 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity (client)' was disposed without first being removed with the input manager!
+10-31 22:24:49.002   333   333 I Zygote  : Process 2778 exited due to signal 9 (Killed)
+10-31 22:24:49.003  1138  1138 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=6, baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.uioverrides.QuickstepLauncher }
+10-31 22:24:49.003  1138  1138 D StatsLog: LAUNCHER_ONRESUME
+10-31 22:24:49.006   526  2587 I ImeTracker: org.globulation2.glob2:6d35e185: onRequestHide at ORIGIN_SERVER reason HIDE_REMOVE_CLIENT fromUser false
+10-31 22:24:49.007   526  2587 I ImeTracker: org.globulation2.glob2:6d35e185: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-31 22:24:49.009   858   858 D CarrierSvcBindHelper: onHandleForceStop: [org.globulation2.glob2]
+10-31 22:24:49.015   858   858 D CarrierSvcBindHelper: No carrier app for: 0
+10-31 22:24:49.016   526   567 I libprocessgroup: Removed cgroup /sys/fs/cgroup/uid_10148/pid_2778
+10-31 22:24:49.070  1138  1138 D StateManager: createAtomicAnimation - fromState: Background, toState: Normal, partial trace:
+10-31 22:24:49.070  1138  1138 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.prepareToAnimate(WorkspaceRevealAnim.java:130)
+10-31 22:24:49.070  1138  1138 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.<init>(WorkspaceRevealAnim.java:66)
+10-31 22:24:49.070  1138  1138 D StateManager: 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(QuickstepTransitionManager.java:1716)
+--------- beginning of system
+10-31 22:24:49.072   526   550 V WindowManager: Sent Transition (#12) createdAt=१०-३१ २२:२४:४८.८८८ via request=TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=12 displayId=0 isRunning=false baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=null topActivity=null origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=0 lastActiveTime=12064943 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{d0c9bb2 Task{477764c #12 type=standard A=10148:org.globulation2.glob2}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=null launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 12 }
+10-31 22:24:49.073   526   550 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+10-31 22:24:49.073   526   550 V WindowManager:     info={id=12 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+10-31 22:24:49.073   526   550 V WindowManager:         {WCT{RemoteToken{8073a90 Task{26e6fe4 #1 type=home}}} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x92a126f sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+10-31 22:24:49.073   526   550 V WindowManager:         {WCT{RemoteToken{d0c9bb2 Task{477764c #12 type=standard A=10148:org.globulation2.glob2}}} m=CLOSE f=NONE leash=Surface(name=Task=12)/@0x4dc7326 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+10-31 22:24:49.073   526   550 V WindowManager:         {null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{e7f0424 token=android.os.Binder@36554b7})/@0x22ad801 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0}
+10-31 22:24:49.073   526   550 V WindowManager:     ]}
+10-31 22:24:49.085   526   641 I ImeTracker: com.android.launcher3:9782539c: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-31 22:24:49.085   526   641 I ImeTracker: com.android.launcher3:9782539c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-31 22:24:49.092  2589  2601 V WindowManagerShell:  animated by com.android.wm.shell.transition.RemoteTransitionHandler@a902850
+10-31 22:24:49.092  2589  2601 W Looper  : Slow dispatch took 62ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda0@2e7efbf m=0
+10-31 22:24:49.109   526  1456 W UserManagerService: Requested status bar icon for non-badged user 0
+10-31 22:24:49.112  1138  1302 D EGL_emulation: app_time_stats: avg=1041.72ms min=3.51ms max=26691.18ms count=26
+10-31 22:24:49.125   526   554 W ActivityTaskManager: Unable to send transaction to client proc org.globulation2.glob2: no app thread
+10-31 22:24:49.211   526  1456 W ActivityTaskManager: callingPackage for (uid=2000, pid=2977) has no WPC
+10-31 22:24:49.215   526  1456 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+10-31 22:24:49.216   526  1456 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@ff46cc4, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-31 22:24:49.217   526  1456 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+10-31 22:24:49.218   526  1456 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+10-31 22:24:49.490   526  1456 I ActivityTaskManager: Add Task{477764c #12 type=standard A=10148:org.globulation2.glob2} to hidden list because adding Task{f6ae88e #13 type=standard A=10148:org.globulation2.glob2}
+10-31 22:24:49.492   526  1456 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity} with LAUNCH_SINGLE_TASK from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+10-31 22:24:49.494  2589  2601 V WindowManagerShell: Transition requested (#13): android.os.BinderProxy@fbe17b7 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=13 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} topActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=1 lastActiveTime=12092522 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@db40b24} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{2e5e68d org.globulation2.glob2.Glob2Activity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 13 }
+10-31 22:24:49.499   526   553 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@ff46cc4, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-31 22:24:49.503   526   554 W system_server: Long monitor contention with owner binder:526_E (1456) at void java.lang.Object.wait(long, int)(Object.java:-2) waiters=1 in void com.android.server.wm.WindowAnimator.lambda$new$1(long) for 264ms
+10-31 22:24:49.513  2589  2607 D SplashScreenView: Build android.window.SplashScreenView{127853 V.E...... ......ID 0,0-0,0}
+10-31 22:24:49.513  2589  2607 D SplashScreenView: Icon: view: android.widget.ImageView{bb8b590 V.ED..... ......I. 0,0-0,0 #1020504 android:id/splashscreen_icon_view} drawable: com.android.wm.shell.startingsurface.SplashscreenIconDrawableFactory$ImmobileIconDrawable@2575e89 size: 192
+10-31 22:24:49.513  2589  2607 D SplashScreenView: Branding: view: android.view.View{4f72e8e G.ED..... ......I. 0,0-0,0 #1020503 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-31 22:24:49.528   333   333 D Zygote  : Forked child process 2981
+10-31 22:24:49.529   526   566 I ActivityManager: Start proc 2981:org.globulation2.glob2/u0a148 for next-top-activity {org.globulation2.glob2/org.globulation2.glob2.Glob2Activity}
+10-31 22:24:49.544  2589  2601 W Looper  : Slow dispatch took 50ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda1@11b9abc m=0
+10-31 22:24:49.544  2589  2601 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#12) android.os.BinderProxy@dfa8806@0
+10-31 22:24:49.552   526   566 W ActivityManager: Slow operation: 53ms so far, now at startProcess: done updating pids map
+10-31 22:24:49.557  2981  2981 I bulation2.glob2: Using CollectorTypeCMC GC.
+10-31 22:24:49.559  2981  2981 W bulation2.glob2: Unexpected CPU variant for x86: x86_64.
+10-31 22:24:49.559  2981  2981 W bulation2.glob2: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, default
+--------- beginning of kernel
+10-31 22:24:49.726     0     0 W binder_debug: 4 callbacks suppressed
+10-31 22:24:49.726     0     0 I binder  : 2582:526 cannot find target node
+10-31 22:24:49.565   526   550 V WindowManager: Finish Transition (#12): created at १०-३१ २२:२४:४८.८८८ collect-started=0.059ms request-sent=0.227ms started=22.268ms ready=22.234ms sent=136.994ms finished=663.81ms
+10-31 22:24:49.565  2981  2981 E bulation2.glob2: Not starting debugger since process cannot load the jdwp agent.
+10-31 22:24:49.737     0     0 I binder  : 526:2582 transaction async to 0:0 failed 929842/29189/-22, size 64-0 line 3265
+10-31 22:24:49.567   526  2582 E IPCThreadState: Binder transaction failure. id: 929842, BR_*: 29189, error: -22 (Invalid argument)
+10-31 22:24:49.567   526  2582 W ActivityManager: pid 526 system sent binder code 7 with flags 1 to frozen apps and got error -32
+10-31 22:24:49.567   526  2582 W WindowManager: Exception thrown during dispatchAppVisibility Window{2f7c574 u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity EXITING}
+10-31 22:24:49.567   526  2582 W WindowManager: android.os.DeadObjectException
+10-31 22:24:49.567   526  2582 W WindowManager: 	at android.os.BinderProxy.transactNative(Native Method)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at android.view.IWindow$Stub$Proxy.dispatchAppVisibility(IWindow.java:553)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.WindowState.sendAppVisibilityToClients(WindowState.java:3253)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.WindowContainer.sendAppVisibilityToClients(WindowContainer.java:1289)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.WindowToken.setClientVisible(WindowToken.java:403)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.ActivityRecord.setClientVisible(ActivityRecord.java:7166)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.ActivityRecord.postApplyAnimation(ActivityRecord.java:5881)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.ActivityRecord.commitVisibility(ActivityRecord.java:5823)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.Transition.finishTransition(Transition.java:1286)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.TransitionController.finishTransition(TransitionController.java:937)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.finishTransition(WindowOrganizerController.java:494)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at android.window.IWindowOrganizerController$Stub.onTransact(IWindowOrganizerController.java:289)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.onTransact(WindowOrganizerController.java:204)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at android.os.Binder.execTransactInternal(Binder.java:1505)
+10-31 22:24:49.567   526  2582 W WindowManager: 	at android.os.Binder.execTransact(Binder.java:1444)
+10-31 22:24:49.570   526  2582 W Process : Unable to open /proc/2778/status
+10-31 22:24:49.578  2981  2981 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-31 22:24:49.590  2589  2601 V WindowManagerShell: Track 0 became idle
+10-31 22:24:49.591   526  2226 D CoreBackPreview: Window{6d9f0cb u0 Splash Screen org.globulation2.glob2}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@c35ae43, mPriority=0, mIsAnimationCallback=false}
+10-31 22:24:49.595  2589  2601 W Looper  : Slow delivery took 48ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.RemoteTransitionHandler$1$$ExternalSyntheticLambda0@365a6a8 m=0
+10-31 22:24:49.595  2589  2601 W Looper  : Slow dispatch took 51ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.RemoteTransitionHandler$1$$ExternalSyntheticLambda0@365a6a8 m=0
+10-31 22:24:49.595  2589  2601 W Looper  : Drained
+10-31 22:24:49.600  1138  1138 W SplitSelectStateCtor: Missing session instanceIds
+10-31 22:24:49.600  1138  1138 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+10-31 22:24:49.600   526  2587 W UserManagerService: Requested status bar icon for non-badged user 0
+10-31 22:24:49.600  2589  2601 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=112
+10-31 22:24:49.632   526  2587 W UserManagerService: Requested status bar icon for non-badged user 0
+10-31 22:24:49.633  1138  1138 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=13, baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity }
+10-31 22:24:49.634   526   704 I AppWidgetServiceImpl: Received broadcast: android.intent.action.PACKAGE_UNSTOPPED on user 0
+10-31 22:24:49.634   526   704 I AppWidgetServiceImpl: Updating package stopped masked state for uid 10148 package org.globulation2.glob2 isStopped false
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed App frame:UNKNOWN: 88, 40770, 67070651, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed SF frame:UNKNOWN: 88, 40770, 67070651, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed SF frame:UNKNOWN: 80, 40807, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missing HWUI jank callback for vsyncId: 40807, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed SF frame:UNKNOWN: 80, 40830, 35729885, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed App frame:UNKNOWN: 73, 40838, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed SF frame:UNKNOWN: 73, 40838, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missing HWUI jank callback for vsyncId: 40838, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed App frame:UNKNOWN: 72, 40846, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missing HWUI jank callback for vsyncId: 40846, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed App frame:UNKNOWN: 88, 40854, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missed SF frame:UNKNOWN: 88, 40854, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.635  1138  1138 W FrameTracker: Missing HWUI jank callback for vsyncId: 40854, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-31 22:24:49.636  1138  1189 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-78 - not enough time since last trigger
+10-31 22:24:49.641  1138  1138 I TopTaskTracker: onTaskRemoved: taskId=12
+10-31 22:24:49.641  1138  1138 I TopTaskTracker: onTaskRemoved: taskId=12
+10-31 22:24:49.651   526   550 V WindowManager: Sent Transition (#13) createdAt=१०-३१ २२:२४:४९.२२० via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=13 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} topActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=1 lastActiveTime=12092522 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{b2260b5 Task{f6ae88e #13 type=standard A=10148:org.globulation2.glob2}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{818834a org.globulation2.glob2.Glob2Activity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 13 }
+10-31 22:24:49.653  2589  2628 V WindowManagerShell: onTransitionReady(transaction=2259152798527)
+10-31 22:24:49.653   526   550 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+10-31 22:24:49.653   526   550 V WindowManager:     info={id=13 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[
+10-31 22:24:49.653   526   550 V WindowManager:         {WCT{RemoteToken{b2260b5 Task{f6ae88e #13 type=standard A=10148:org.globulation2.glob2}}} m=OPEN f=NONE leash=Surface(name=Task=13)/@0x6faeb9f sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+10-31 22:24:49.653   526   550 V WindowManager:         {WCT{RemoteToken{8073a90 Task{26e6fe4 #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x92a126f sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}
+10-31 22:24:49.653   526   550 V WindowManager:     ]}
+10-31 22:24:49.655  2589  2601 V WindowManagerShell: onTransitionReady (#13) android.os.BinderProxy@fbe17b7: {id=13 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@857fbf9} m=OPEN f=NONE leash=Surface(name=Task=13)/@0xc014df2 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@7d2573e} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xd7a1c43 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+10-31 22:24:49.656  2589  2601 V WindowManagerShell: Playing animation for (#13) android.os.BinderProxy@fbe17b7@1
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@c4a3776
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@3c3c177
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@855d1e4
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@cd6064d
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@99a5502
+10-31 22:24:49.656  2589  2601 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@e28fe13
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@a902850
+10-31 22:24:49.656  2589  2601 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=13 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@857fbf9} m=OPEN f=NONE leash=Surface(name=Task=13)/@0xc014df2 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@7d2573e} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xd7a1c43 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@dfd9ae0, appThread = android.app.IApplicationThread$Stub$Proxy@36b6199, debugName = QuickstepLaunchHome }}
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  Delegate animation for (#13) to null
+10-31 22:24:49.656  2589  2601 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@989ba49
+10-31 22:24:49.656  2589  2601 V WindowManagerShell: start default transition animation, info = {id=13 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@857fbf9} m=OPEN f=NONE leash=Surface(name=Task=13)/@0xc014df2 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@7d2573e} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xd7a1c43 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+10-31 22:24:49.657  2589  2601 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@318399f animAttr=0x13 type=OPEN isEntrance=false
+10-31 22:24:49.657  2589  2601 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@2d92aec animAttr=0x12 type=OPEN isEntrance=true
+10-31 22:24:49.662  2589  2601 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@989ba49
+10-31 22:24:49.683   526  2587 W UserManagerService: Requested status bar icon for non-badged user 0
+10-31 22:24:49.699  2981  2981 D nativeloader: Configuring clns-7 for other apk /data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/lib/x86_64:/data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/org.globulation2.glob2
+10-31 22:24:49.721  2981  2981 V GraphicsEnvironment: Currently set values for:
+10-31 22:24:49.721  2981  2981 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-31 22:24:49.721  2981  2981 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-31 22:24:49.721  2981  2981 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+10-31 22:24:49.722  2981  2981 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-31 22:24:49.774  2981  2981 V SDL     : Manufacturer: unknown
+10-31 22:24:49.775  2981  2981 V SDL     : Device: emu64x
+10-31 22:24:49.776  2981  2981 V SDL     : Model: Android SDK built for x86_64
+10-31 22:24:49.777  2981  2981 V SDL     : onCreate()
+10-31 22:24:49.800  2981  2981 D nativeloader: Load /data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/base.apk!/lib/x86_64/libc++_shared.so using ns clns-7 from class loader (caller=/data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/base.apk): ok
+10-31 22:24:49.806  2981  2981 D nativeloader: Load /data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/base.apk!/lib/x86_64/libSDL3.so using ns clns-7 from class loader (caller=/data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/base.apk): ok
+10-31 22:24:49.866  2981  2981 D nativeloader: Load /data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/base.apk!/lib/x86_64/libmain.so using ns clns-7 from class loader (caller=/data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/base.apk): ok
+10-31 22:24:49.867  2981  2981 V SDL     : nativeSetupJNI()
+10-31 22:24:49.867  2981  2981 V SDL     : AUDIO nativeSetupJNI()
+10-31 22:24:49.867  2981  2981 V SDL     : CONTROLLER nativeSetupJNI()
+10-31 22:24:49.887  2981  2981 V SDL     : onStart()
+10-31 22:24:49.889  2981  2981 V SDL     : onResume()
+10-31 22:24:49.896  2981  2981 W HWUI    : Unknown dataspace 0
+10-31 22:24:49.900   526  2587 W WindowManager: Failed looking up window session=Session{aede125 2981:u0a10148} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6311 com.android.server.wm.Session.updateRequestedVisibleTypes:755 android.view.IWindowSession$Stub.onTransact:1078 
+10-31 22:24:49.911   526  2587 D CoreBackPreview: Window{19c8308 u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@ef0a4c6, mPriority=0, mIsAnimationCallback=false}
+10-31 22:24:49.927  2981  2981 V SDL     : surfaceCreated()
+10-31 22:24:49.928  2981  2981 V SDL     : surfaceChanged()
+10-31 22:24:49.928  2981  2981 V SDL     : Window size: 390x844
+10-31 22:24:49.928  2981  2981 V SDL     : Device size: 390x844
+10-31 22:24:49.934  2981  3000 V SDL     : nativeInitSDLThread() 1 time
+10-31 22:24:49.935  2981  3000 V SDL     : Running main function SDL_main from library /data/app/~~lzM78KqegTGXlVJvs5n48g==/org.globulation2.glob2-kpBULFrmd7peqU8kvmHZEg==/lib/x86_64/libmain.so
+10-31 22:24:49.961  2589  2601 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#13) android.os.BinderProxy@fbe17b7@1
+10-31 22:24:49.963   526   550 V WindowManager: Finish Transition (#13): created at १०-३१ २२:२४:४९.२२० collect-started=0.074ms request-sent=271.573ms started=311.646ms ready=422.284ms sent=428.429ms finished=742.962ms
+10-31 22:24:49.965  2589  2601 V WindowManagerShell: Track 1 became idle
+10-31 22:24:49.965  2589  2601 V WindowManagerShell: All active transition animations finished
+10-31 22:24:49.968   526   818 W UserManagerService: Requested status bar icon for non-badged user 0
+10-31 22:24:49.969   526   818 W UserManagerService: Requested status bar icon for non-badged user 0
+10-31 22:24:49.969   526   818 W UserManagerService: Requested status bar icon for non-badged user 0
+10-31 22:24:49.974  1138  1138 D VRI[QuickstepLauncher]: visibilityChanged oldVisibility=true newVisibility=false
+10-31 22:24:49.974  2981  2995 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+10-31 22:24:49.975  2981  2995 I EGL_emulation: Opening libGLESv2_emulation.so
+10-31 22:24:49.975   403   403 E BpTransactionCompletedListener: Failed to transact (-32)
+10-31 22:24:49.976   403   403 E BpTransactionCompletedListener: Failed to transact (-32)
+10-31 22:24:49.989   526  1192 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+10-31 22:24:49.997  2981  2995 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-31 22:24:50.004   526  1192 I EGL_emulation: Opening libGLESv2_emulation.so
+10-31 22:24:50.021   526  1192 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-31 22:24:50.192     0     0 I servicemanager: Caller(pid=2981,uid=10148,sid=u:r:untrusted_app:s0:c148,c256,c512,c768) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+10-31 22:24:50.032   141   141 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-31 22:24:50.033  2981  2995 I Gralloc4: mapper 4.x is not supported
+10-31 22:24:50.122  1138  1302 D EGL_emulation: app_time_stats: avg=25.91ms min=2.85ms max=274.54ms count=29
+10-31 22:24:50.716  2981  2989 I HWUI    : Davey! duration=799ms; Flags=1, FrameTimelineVsyncId=41208, IntendedVsync=12092935735127, Vsync=12092935735127, InputEventId=0, HandleInputStart=12092941065842, AnimationStart=12092941066582, PerformTraversalsStart=12092941066882, DrawStart=12093151775284, FrameDeadline=12092952401793, FrameInterval=12092941060052, FrameStartTime=16666666, SyncQueued=12093153128789, SyncStart=12093153511592, IssueDrawCommandsStart=12093161298005, SwapBuffers=12093496250940, FrameCompleted=12093735268187, DequeueBufferDuration=1959596, QueueBufferDuration=812958, GpuCompleted=12093733178606, SwapBuffersCompleted=12093735268187, DisplayPresentTime=16960825855817, CommandSubmissionCompleted=12093496250940, 
+10-31 22:24:50.738  2981  2981 I Choreographer: Skipped 47 frames!  The application may be doing too much work on its main thread.
+10-31 22:24:50.741   526   550 I ActivityTaskManager: Displayed org.globulation2.glob2/.Glob2Activity for user 0: +1s507ms
+10-31 22:24:50.767  2981  2981 V SDL     : onWindowFocusChanged(): true
+10-31 22:24:50.788   526   641 I ImeTracker: org.globulation2.glob2:afb9e3bc: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-31 22:24:50.788   526   641 I ImeTracker: org.globulation2.glob2:afb9e3bc: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-31 22:24:50.806  1138  1138 D BaseDepthController: setSurface:
+10-31 22:24:50.806  1138  1138 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+10-31 22:24:50.806  1138  1138 D BaseDepthController: 	mSurface: null
+10-31 22:24:50.810   332   332 I netd    : tetherGetStats() -> {[]} <1.98ms>
+10-31 22:24:50.812  1138  1138 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+10-31 22:24:50.818  1138  1138 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+10-31 22:24:50.818  1138  1138 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:453)
+10-31 22:24:50.818  1138  1138 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:444)
+10-31 22:24:50.818  1138  1138 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(StatefulActivity.java:119)
+10-31 22:24:50.837  1138  1138 D StatsLog: LAUNCHER_ONSTOP
+10-31 22:24:50.839   526   818 I AppWidgetServiceImpl: setAppWidgetHidden() 0
+10-31 22:24:51.008   749   749 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+10-31 22:24:51.010  2589  2615 D EGL_emulation: app_time_stats: avg=50969.31ms min=50969.31ms max=50969.31ms count=1
+10-31 22:24:51.193     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3005 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:51.260     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3008 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:51.339     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3011 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:51.263  2589  2606 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@2f69ecb
+10-31 22:24:51.271   526  1456 D CoreBackPreview: Window{6d9f0cb u0 Splash Screen org.globulation2.glob2 EXITING}: Setting back callback null
+10-31 22:24:51.284   526  1456 W InputManager-JNI: Input channel object '6d9f0cb Splash Screen org.globulation2.glob2 (client)' was disposed without first being removed with the input manager!
+10-31 22:24:51.311  2589  2606 W FrameTracker: Missed App frame:UNKNOWN: 24, 41659, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.311  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 24, 41659, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.312  2589  2606 W FrameTracker: Missing HWUI jank callback for vsyncId: 41659, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.314  2589  2606 W FrameTracker: Missed App frame:UNKNOWN: 88, 41681, 58626035, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.314  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 88, 41681, 58626035, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.314  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 80, 41696, 51845533, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.314  2589  2606 W FrameTracker: Missed App frame:UNKNOWN: 88, 41718, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.314  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 88, 41718, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.314  2589  2606 W FrameTracker: Missing HWUI jank callback for vsyncId: 41718, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.314  2589  2606 W FrameTracker: Missed App frame:UNKNOWN: 88, 41726, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.314  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 88, 41726, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missing HWUI jank callback for vsyncId: 41726, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 80, 41734, 46584232, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 80, 41756, 48670638, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 80, 41778, 51916015, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 80, 41800, 42082179, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 80, 41822, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missing HWUI jank callback for vsyncId: 41822, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missed App frame:UNKNOWN: 88, 41837, 53918522, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 88, 41837, 53918522, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.315  2589  2606 W FrameTracker: Missed App frame:UNKNOWN: 88, 41852, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.318  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 88, 41852, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.318  2589  2606 W FrameTracker: Missing HWUI jank callback for vsyncId: 41852, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.318  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 80, 41874, 84815687, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.318  2589  2606 W FrameTracker: Missed App frame:UNKNOWN: 88, 41911, 175410121, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.320  2589  2606 W FrameTracker: Missed SF frame:UNKNOWN: 88, 41911, 175410121, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+10-31 22:24:51.321  2589  2603 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-39 - not enough time since last trigger
+10-31 22:24:51.490     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3014 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:51.512  2981  3000 V SDL     : setOrientation() requestedOrientation=13 width=800 height=600 resizable=true hint=LandscapeLeft LandscapeRight Portrait PortraitUpsideDown
+10-31 22:24:52.020  2981  3000 V SDL     : setOrientation() requestedOrientation=13 width=800 height=600 resizable=true hint=LandscapeLeft LandscapeRight Portrait PortraitUpsideDown
+10-31 22:24:52.030  2981  3000 I SDL/APP : pixel format wanted SDL_PIXELFORMAT_RGBA8888 (1), got SDL_PIXELFORMAT_RGBA8888 (1)
+10-31 22:24:52.561     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3018 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:52.603     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3021 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:52.645     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3024 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:52.691     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3027 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:53.519   526  1219 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+10-31 22:24:53.763     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3032 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:53.823     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3035 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:53.887     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3038 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:53.971     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3041 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:55.036     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3047 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:55.081     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3050 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:55.148     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3053 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:55.239     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3056 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:55.173  2981  3000 D EGL_emulation: app_time_stats: avg=70.14ms min=35.41ms max=253.28ms count=16
+10-31 22:24:56.184  2981  3000 D EGL_emulation: app_time_stats: avg=48.11ms min=34.37ms max=58.74ms count=21
+10-31 22:24:56.407     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3059 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:56.487     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3062 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:56.548     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3065 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:56.620     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3068 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:57.228  2981  3000 D EGL_emulation: app_time_stats: avg=49.64ms min=37.58ms max=68.75ms count=21
+10-31 22:24:57.741     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3071 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:57.842     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3074 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:57.996     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3077 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:58.111     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3080 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:58.260  2981  3000 D EGL_emulation: app_time_stats: avg=51.55ms min=42.11ms max=61.13ms count=20
+10-31 22:24:59.015   749   749 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+10-31 22:24:59.244     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3083 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:59.124   526   622 D ActivityManager: freezing 2726 com.android.keychain
+10-31 22:24:59.125   526   622 D ActivityManager: freezing 1971 com.android.localtransport
+10-31 22:24:59.126   526   622 D ActivityManager: freezing 867 com.android.settings
+10-31 22:24:59.334     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3086 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:59.442     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3089 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:24:59.294  2981  3000 D EGL_emulation: app_time_stats: avg=51.68ms min=44.49ms max=65.63ms count=20
+10-31 22:24:59.533     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3092 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:00.049  2589  2615 D EGL_emulation: app_time_stats: avg=9037.97ms min=9037.97ms max=9037.97ms count=1
+10-31 22:25:00.318  2981  3000 D EGL_emulation: app_time_stats: avg=46.44ms min=35.08ms max=64.92ms count=22
+10-31 22:25:00.582     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3095 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:00.927     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3098 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:01.018     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3101 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:01.078     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3104 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:01.350  2981  3000 D EGL_emulation: app_time_stats: avg=49.06ms min=39.68ms max=63.30ms count=21
+10-31 22:25:02.294     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3107 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:02.361     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3110 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:02.448     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3113 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:02.351  2981  3000 D EGL_emulation: app_time_stats: avg=49.99ms min=34.10ms max=99.46ms count=20
+10-31 22:25:02.520     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3116 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:03.394  2981  3000 D EGL_emulation: app_time_stats: avg=49.62ms min=34.19ms max=95.22ms count=21
+10-31 22:25:03.595     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3119 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:03.654     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3122 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:03.714     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3125 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:03.813     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3128 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:04.404  2981  3000 D EGL_emulation: app_time_stats: avg=50.45ms min=31.73ms max=63.85ms count=20
+10-31 22:25:04.969     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3131 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:05.075     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3134 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:05.262     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3137 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:05.367     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3140 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:05.428  2981  3000 D EGL_emulation: app_time_stats: avg=46.49ms min=35.40ms max=58.11ms count=22
+10-31 22:25:06.487     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3143 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:06.551     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3146 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:06.624     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3149 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:06.466  2981  3000 D EGL_emulation: app_time_stats: avg=47.15ms min=36.48ms max=56.92ms count=22
+10-31 22:25:06.697     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3152 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:07.015   749   749 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+10-31 22:25:07.493  2981  3000 D EGL_emulation: app_time_stats: avg=42.74ms min=34.33ms max=57.94ms count=24
+10-31 22:25:07.751     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3155 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:07.840     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3158 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:07.912     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3161 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:07.971     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3164 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:08.546  2981  3000 D EGL_emulation: app_time_stats: avg=45.76ms min=34.13ms max=70.26ms count=23
+10-31 22:25:09.109     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3167 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:09.260     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3170 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:09.369     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3173 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:09.545     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3176 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:09.571  2981  3000 D EGL_emulation: app_time_stats: avg=46.59ms min=34.04ms max=54.09ms count=22
+10-31 22:25:10.636     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3179 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:10.714     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3182 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:10.614  2981  3000 D EGL_emulation: app_time_stats: avg=45.29ms min=30.87ms max=61.44ms count=23
+10-31 22:25:10.805     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3185 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:10.927     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3188 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:11.631  2981  3000 D EGL_emulation: app_time_stats: avg=48.39ms min=37.57ms max=61.33ms count=21
+10-31 22:25:12.042     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3191 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:12.108     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3194 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:12.240     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3197 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:12.326     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3200 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:12.680  2981  3000 D EGL_emulation: app_time_stats: avg=49.93ms min=44.00ms max=57.29ms count=21
+10-31 22:25:13.402     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3203 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:13.491     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3206 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:13.553     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3209 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:13.615     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3212 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:13.691  2981  3000 D EGL_emulation: app_time_stats: avg=43.92ms min=34.46ms max=55.34ms count=23
+10-31 22:25:14.727     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3215 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:14.838     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3218 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:14.694  2981  3000 D EGL_emulation: app_time_stats: avg=47.70ms min=35.69ms max=66.49ms count=21
+10-31 22:25:14.936     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3221 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:15.058     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3224 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:15.009   749   749 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+10-31 22:25:15.694  2981  3000 D EGL_emulation: app_time_stats: avg=45.39ms min=36.53ms max=55.53ms count=22
+10-31 22:25:16.145     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3227 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:16.283     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3230 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:16.379     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3233 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:16.446     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3236 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:16.703  2981  3000 D EGL_emulation: app_time_stats: avg=48.00ms min=31.44ms max=65.22ms count=21
+10-31 22:25:17.522     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3239 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:17.598     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3242 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:17.658     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3245 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:17.732     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3248 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:17.744  2981  3000 D EGL_emulation: app_time_stats: avg=51.83ms min=37.99ms max=126.92ms count=20
+10-31 22:25:18.811     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3251 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:18.878     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3254 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:18.770  2981  3000 D EGL_emulation: app_time_stats: avg=46.63ms min=29.52ms max=61.00ms count=22
+10-31 22:25:18.937     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3257 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:18.993     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3260 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:19.564   526  1456 D WifiNl80211Manager: Scan result ready event
+10-31 22:25:19.564   526  1456 D WifiNative: Scan result ready event
+10-31 22:25:19.570   526   671 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+10-31 22:25:20.041     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3263 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:20.116     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3266 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:20.206     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3269 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:20.280     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3272 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:20.785  2981  3000 I SDL/APP : Glob2 screen ready: 21AudioPreferenceScreen
+10-31 22:25:20.964  2589  2615 D EGL_emulation: app_time_stats: avg=20914.94ms min=20914.94ms max=20914.94ms count=1
+10-31 22:25:21.342     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3275 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:21.234  2981  3000 D EGL_emulation: app_time_stats: avg=164.13ms min=36.09ms max=1845.02ms count=15
+10-31 22:25:21.410     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3278 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:21.513  3283  3283 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+10-31 22:25:21.513  3283  3283 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+10-31 22:25:21.545   141   141 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-31 22:25:21.545  3283  3284 I Gralloc4: mapper 4.x is not supported
+10-31 22:25:21.706     0     0 I servicemanager: Caller(pid=3283,uid=2000,sid=u:r:shell:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+10-31 22:25:22.256  2981  3000 D EGL_emulation: app_time_stats: avg=78.52ms min=47.19ms max=178.97ms count=13
+10-31 22:25:22.557     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3295 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:22.424  2981  3000 I SDL/APP : Glob2 screen ready: 20HandPreferenceScreen
+10-31 22:25:23.308  2981  3000 D EGL_emulation: app_time_stats: avg=58.44ms min=41.64ms max=101.73ms count=18
+10-31 22:25:23.639     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3298 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:23.704     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3301 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:23.760  3306  3306 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+10-31 22:25:23.763  3306  3306 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+10-31 22:25:23.781   141   141 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-31 22:25:23.782  3306  3307 I Gralloc4: mapper 4.x is not supported
+10-31 22:25:23.950     0     0 I servicemanager: Caller(pid=3306,uid=2000,sid=u:r:shell:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+10-31 22:25:24.335  2981  3000 D EGL_emulation: app_time_stats: avg=60.32ms min=44.91ms max=141.69ms count=17
+10-31 22:25:24.609     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3318 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:24.459  2981  3000 I SDL/APP : Glob2 screen ready: 23IntroductionOfferScreen
+10-31 22:25:25.345  2981  3000 D EGL_emulation: app_time_stats: avg=59.21ms min=35.08ms max=138.06ms count=17
+10-31 22:25:26.123     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3321 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:26.265     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3324 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+10-31 22:25:26.395  2981  3000 D EGL_emulation: app_time_stats: avg=55.25ms min=39.02ms max=90.66ms count=19
+10-31 22:25:26.467  3329  3329 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+10-31 22:25:26.468  3329  3329 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+10-31 22:25:26.652     0     0 I servicemanager: Caller(pid=3329,uid=2000,sid=u:r:shell:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+10-31 22:25:26.489   141   141 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-31 22:25:26.489  3329  3330 I Gralloc4: mapper 4.x is not supported
+10-31 22:25:27.396  2981  3000 D EGL_emulation: app_time_stats: avg=76.88ms min=32.73ms max=273.41ms count=13

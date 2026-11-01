@@ -1,0 +1,26 @@
+{
+  "reviewer": "/root/locale_integration",
+  "surface": "actual Android Java first-run preparing overlay",
+  "producer_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "unsigned_apk_sha256": "b2be7a19831e9c1bed3b906b0dd99f56cd887cb14f2d30d10793b47a324e044f",
+  "signed_apk_sha256": "71c047ec0b5d045c5a29257679accdc637656a1a0ab9687114d1a6b2dd66f2f2",
+  "actual_image_viewed": "artifacts/marathi-localization/android-rendering/first-run-09.png",
+  "image_sha256": "34883471124062072ba10308ae4307947f8b0e007710fbc57646e10fb994948a",
+  "displayed_text": "खेळाची तयारी सुरू आहे…",
+  "assessment": "Real spinner/status overlay is visible; Marathi letters and matras are intact, text centered and fully contained without tofu or clipped marks. Earlier actual frames00/03 show Android splash, not a held/faked overlay.",
+  "source_xml_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "compiled_resource_configuration_line": "      (mr) \"खेळाची तयारी सुरू आहे…\"",
+  "capture_budget": {
+    "maximum_frames": 10,
+    "target_interval_seconds": 0.5,
+    "byte_cap": 12582912,
+    "maximum_capture_span_seconds": 6.0,
+    "actual_capture_bytes": 172209,
+    "not_stored_due_to_cap": [],
+    "capture_errors": [],
+    "not_attempted_due_to_deadline": 0,
+    "actual_span_seconds": 5.202931054001965
+  },
+  "previous_environment_failure": "Prior SystemUI ANR frames retained separately and excluded from app-rendering success.",
+  "certification": "Agent visual review; no native-human certification"
+}

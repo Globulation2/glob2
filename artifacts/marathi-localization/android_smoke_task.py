@@ -25,20 +25,31 @@ def validate_target(serial, adb_port, avd):
         raise ValueError('Smoke checks require a task-owned Glob2 AVD')
 
 
-def wait_for_main_menu(run, logs, wait_for):
+def wait_for_main_menu(run, logs, wait_for, capture=None, evidence=None):
     def ready_screen():
         screens = re.findall(r'Glob2 screen ready: ([^\r\n]+)', logs())
         return screens[-1] if screens else ''
 
-    setup_screens = ('AudioPreferenceScreen', 'HandPreferenceScreen')
+    setup_screens = ('AudioPreferenceScreen', 'HandPreferenceScreen', 'IntroductionOfferScreen')
     wait_for(lambda: any(name in ready_screen() for name in (*setup_screens, 'MainMenuScreen')),
              'native startup and bundled assets')
     for setup in setup_screens:
         if setup not in ready_screen():
             continue
-        # Choose silence, then the first grip, through real focus/accept input.
-        run('shell', 'input', 'keyevent', 'KEYCODE_TAB')
-        run('shell', 'input', 'keyevent', 'KEYCODE_ENTER')
+        if capture and setup != 'IntroductionOfferScreen':
+            capture('first-run-' + setup)
+        if setup == 'IntroductionOfferScreen':
+            # Actual first-run screen: Escape selects intro/menu and persists
+            # introductionOffered through the production input path.
+            if capture:
+                capture('introduction-offer')
+            if evidence:
+                (evidence / 'introduction-offer-logcat.txt').write_text(logs())
+            run('shell', 'input', 'keyevent', 'KEYCODE_ESCAPE')
+        else:
+            # Choose silence, then the first grip, through real focus/accept input.
+            run('shell', 'input', 'keyevent', 'KEYCODE_TAB')
+            run('shell', 'input', 'keyevent', 'KEYCODE_ENTER')
         wait_for(lambda: setup not in ready_screen(), 'completion of ' + setup)
     wait_for(lambda: 'MainMenuScreen' in ready_screen(), 'native main menu')
 
@@ -122,7 +133,7 @@ def main():
         run('shell', 'am', 'force-stop', package)
         run('logcat', '-c')
         start()
-        wait_for_main_menu(run, logs, wait_for)
+        wait_for_main_menu(run, logs, wait_for, screenshot, output)
         wait_for(foreground, 'foreground activity')
         first_pid = pid()
         if not first_pid: raise RuntimeError('Native process is missing')
@@ -182,7 +193,7 @@ def main():
         run('shell', 'am', 'force-stop', package)
         run('logcat', '-c')
         start()
-        wait_for_main_menu(run, logs, wait_for)
+        wait_for_main_menu(run, logs, wait_for, screenshot, output)
         if not pid() or pid() == first_pid: raise RuntimeError('Force-stop did not produce a fresh process')
         screenshot('relaunched')
         summary['checks'].append('force-stop and fresh-process relaunch')

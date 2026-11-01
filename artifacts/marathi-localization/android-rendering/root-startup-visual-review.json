@@ -1,0 +1,10 @@
+{
+  "reviewer": "/root",
+  "image": {
+    "path": "artifacts/marathi-localization/android-rendering/first-run-09.png",
+    "sha256": "34883471124062072ba10308ae4307947f8b0e007710fbc57646e10fb994948a"
+  },
+  "finding": "Actually inspected real release-APK preparing-game overlay on task-ownedAPI35x86_64 emulator with mr-IN: cyan spinner and reviewed खेळाची तयारी सुरू आहे… centered on dark background; clear Devanagari, intact vowel marks and no visible tofu/clipping. System navigation visible and no ANR dialog in this frame.",
+  "scope": "Actual Android Java startup resource rendering, separate from SDLgame screen/lifecycle checks still running.",
+  "prior_attempt": "android-attempt1-system-ui-anr preserved separately; those blockedframes are not app-rendering evidence."
+}

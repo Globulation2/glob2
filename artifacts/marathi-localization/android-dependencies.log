@@ -1,0 +1,1579 @@
+Cloning into '/home/bradley/.local/share/glob2/development/toolchains/vcpkg/.install-i3ivrcex/vcpkg'...
+HEAD is now at 80d54ff62 [vcpkg-make] Add new port (#39050)
+Downloading vcpkg-glibc...
+vcpkg package management program version 2024-12-09-1005b78fa1bf1dde1a20c2734cba4ea61ca94d9a
+
+See LICENSE.txt for license information.
+warning: Embedding `vcpkg-configuration` in a manifest file is an EXPERIMENTAL feature.
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+Detecting compiler hash for triplet glob2-x64-android...
+Compiler found: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++
+The following packages will be built and installed:
+  * boost-algorithm:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-algorithm/16fe704598a261d9766b1d6eb3a483f468ab6cac
+  * boost-align:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-align/c8dc52b5f1feedf8b14e93d23d6d6e719d269c0e
+  * boost-array:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-array/6259bc62d2fa5980736b9365bb69fb242269b0e2
+    boost-asio:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-asio/ce757138eb7af2b214f21e2680814777b580b325
+  * boost-assert:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-assert/89ff4d2e2e735c492f4f186ef5d08c27a33af0b7
+    boost-beast:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-beast/ce6db020fd6f96d0340dc88560cf05ac4c4402cc
+  * boost-bind:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-bind/4779d27870e250fbe6fc8b7a05d911cacb8aae60
+  * boost-cmake:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-cmake/453705350fbd0a8dbdbbdd06e8f368baa30b131b
+  * boost-concept-check:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-concept-check/e55931d7c2bc2b33a2cf49d6ced511e2e209bdd2
+  * boost-config:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-config/762b2f284c48416310b5d05c4028716803ec2043
+  * boost-container:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-container/5a0b49ee85c27c39ef25631cfdbd5d3ad1149310
+  * boost-container-hash:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-container-hash/2903e8d987be9e6c2d367298452cca9900f87f8e
+  * boost-context:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-context/306765f81ddde7b69509b45679f1ea40e61ee87e
+  * boost-conversion:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-conversion/41fb2eb0dd4203ced5645d9e659253e642d6848c
+  * boost-core:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-core/d978b719a8e14adce4d804ab5371e357afed9687
+  * boost-coroutine:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-coroutine/8e8c55041bd950518602014556a780c71e806470
+    boost-date-time:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-date-time/1369ed0885ac49e0798a74ae9d74190658364ed6
+  * boost-describe:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-describe/d2a4fc640014f7442932464d954ad44b302e41c3
+  * boost-detail:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-detail/180c83d347dfd34afc12f69f5ca7d9e75b9681bf
+  * boost-dynamic-bitset:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-dynamic-bitset/51d054aab9c1c50259e253c4cc02114d661a4f4f
+  * boost-endian:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-endian/41ac0a7472ea5f242d1df7874ff39f6c64123c0a
+  * boost-exception:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-exception/3c99e4a65f9f64580c5601219d05dac6f54bc0ab
+  * boost-function:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-function/6c633bb26db4be00c4d2aaacbb36493cce90edae
+  * boost-function-types:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-function-types/13e0fd21c39949a145a90a001eb01d95c10e6cd9
+  * boost-functional:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-functional/1a149e24ca42cbda3040781ebb9a4a634ccccfba
+  * boost-fusion:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-fusion/7fca552578f4e09ce194b1bf0d6f25bac435907b
+  * boost-headers:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-headers/c01b4dd603c01edf1940f0df3f6498f51c8acda1
+  * boost-integer:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-integer/944979527cd3e9b158f6d4fa27174a154b756f44
+  * boost-intrusive:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-intrusive/fdd697cf75e1c4151548b2a5df0cd17376999534
+  * boost-io:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-io/381228ce40062d70c8a56afaafed81710a1ff743
+  * boost-iterator:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-iterator/8b9a0e755f202cc140222722f4292daf54ff582b
+    boost-lambda:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-lambda/2d8080f6e41b95cd9f13ddecfdc4db12bbb72994
+  * boost-lexical-cast:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-lexical-cast/0a36777f88db58f8d69f5e0727e3603c29e67c63
+    boost-logic:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-logic/5909374a447c242f80b0921ac3ada302ba42732c
+    boost-math:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-math/690873bedff0687ce992ee4e67a1fcd35efff094
+  * boost-move:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-move/2ec65ea9d8386c7364647e10ce8eeeb809be40b9
+  * boost-mp11:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-mp11/46e636f8b4c3d8baad6af94f37838a84bf2a3ad7
+  * boost-mpl:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-mpl/42387dab4931df9bfd20d869b92d7c6855900a93
+  * boost-numeric-conversion:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-numeric-conversion/d7c5fdc151bf418c8b4c7e8df69306797ea12f63
+  * boost-optional:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-optional/1401709a35e73abf6581ee9eab32ae2b71a7fa0f
+  * boost-pool:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-pool/fae207f1642a362cab7ed2d17550bf776ca99a93
+  * boost-predef:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-predef/955dda784a843bfb85d7c17343666c5ccf0f8642
+  * boost-preprocessor:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-preprocessor/a086ddc6ee105650c442c1d40438b1670e3248b4
+    boost-random:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-random/28837a21143c7896257a2714036769302199b030
+  * boost-range:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-range/92192fe61d14a9c421db7c3ed640e7b35f9685a4
+  * boost-regex:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-regex/9318a93a93511ef643cf511123f7be253b27cb66
+  * boost-smart-ptr:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-smart-ptr/a5ab980fbf31a3a2a95cadf878c42cfdf7e5449f
+  * boost-static-assert:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-static-assert/47f251620a2037084eb2d8ac0e6ff3601523e42a
+  * boost-static-string:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-static-string/582bee8fec9374c28c43d8d42f7dcc0e360e3998
+  * boost-system:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-system/7c85bcb721e1a1cc3bd96660476a30c0eba11f8f
+  * boost-throw-exception:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-throw-exception/4b282c6d95bbb3e399592f9eb87b8f420d34b3b5
+  * boost-tokenizer:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-tokenizer/b7b01a69aaf4f53a6e97eb141790cb96222f69d6
+  * boost-tuple:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-tuple/b04ebfe07fa6c45bf2e0dd35a9fec10add1b6ef9
+  * boost-type-index:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-type-index/bde43caf92370cdc6b55d296f0641e1b9a516885
+  * boost-type-traits:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-type-traits/fe39918134d7cdeec3dc248cd6075bc792039ce5
+  * boost-typeof:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-typeof/dbef6caf417e0c2ec880da9e9a6d4094a750e970
+  * boost-uninstall:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-uninstall/f7397719df120125cafecc8000deb3d2a0d5c7af
+  * boost-unordered:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-unordered/3016f6768a087d2f7a5629edae86d00c67191f1f
+  * boost-utility:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-utility/ee6600d9dea03593efcc67d0862d7d14807bd14d
+  * boost-variant2:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-variant2/da8c7998e31bf676c2efbce08f4e7cb41066dfe2
+  * boost-winapi:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-winapi/d75ae8aec7f6af51c19a6301a05194616da25145
+  * brotli:glob2-x64-android@1.1.0#1 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/brotli/4e5b5ae1ad26c80535c893cc0307121f0398549e
+  * bzip2[core,tool]:glob2-x64-android@1.0.8#6 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/bzip2/2d029da682847c5ebdc54e4dbea001331a02207e
+  * freetype[brotli,bzip2,core,png,zlib]:glob2-x64-android@2.13.3 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/freetype/8a2c633dcc14eaabdb31cf4637242f4e3c2f3fa2
+  * harfbuzz[core,freetype]:glob2-x64-android@10.1.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/harfbuzz/0bf3419dd2362d61aa7b93eceba27acf0a7b826c
+  * libjpeg-turbo:glob2-x64-android@3.1.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/libjpeg-turbo/8286a6351f59be7eed5e924d32c3a419d0612ee9
+  * libogg:glob2-x64-android@1.3.5#1 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/libogg/98e27727c32704393494d32615c25b7b16eb3067
+  * libpng:glob2-x64-android@1.6.44 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/libpng/bda480fe3c3cef1113fe8bfdecda127a5b3b2a77
+  * libwebp[core,libwebpmux,nearlossless,simd]:glob2-x64-android@1.4.0#1 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/libwebp/9d0c00119dd6ec04488b4e0c926aa3ae73b95847
+    openssl:glob2-x64-android@3.4.0 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/openssl/ce504a83eb9627d54f1cffdb497a6bf5bd970d18
+  * opus:glob2-x64-android@1.5.2 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/opus/368f8193c8c240a844cd342a3a485a0fa62e5774
+    opusfile:glob2-x64-android@0.12+20221121#1 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/opusfile/6b39a2d4ff309c4e2bedf74adeb1cd18f7ab16c9
+    sdl3:glob2-x64-android@3.4.16 -- /home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3
+    sdl3-image[core,jpeg,png,webp]:glob2-x64-android@3.4.6 -- /home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3-image
+    sdl3-net:glob2-x64-android@3.2.0 -- /home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3-net
+    sdl3-ttf[core,harfbuzz]:glob2-x64-android@3.2.2 -- /home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3-ttf
+  * vcpkg-boost:x64-linux@2024-05-15 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/vcpkg-boost/aca8ab6ec76d120c4482a629de23cad5ad7e4643
+  * vcpkg-cmake:x64-linux@2024-04-23 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake/e74aa1e8f93278a8e71372f1fa08c3df420eb840
+  * vcpkg-cmake-config:x64-linux@2024-05-23 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake-config/97a63e4bc1a17422ffe4eff71da53b4b561a7841
+  * vcpkg-cmake-get-vars:x64-linux@2024-09-22 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake-get-vars/f23148add155147f3d95ae622d3b0031beb25acf
+  * vcpkg-tool-meson:x64-linux@1.6.1 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/vcpkg-tool-meson/dc948c67d7f1359319f801078422e996b0a89fd0
+    zlib:glob2-x64-android@1.3.1 -- /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/zlib/3f05e04b9aededb96786a911a16193cdb711f0c9
+Additional packages (*) will be modified to complete this operation.
+Restored 4 package(s) from /home/bradley/.local/share/glob2/development/caches/vcpkg-binary in 49.1 ms. Use --debug to see more details.
+Installing 1/82 vcpkg-cmake-config:x64-linux@2024-05-23...
+Elapsed time to handle vcpkg-cmake-config:x64-linux: 1.07 ms
+vcpkg-cmake-config:x64-linux package ABI: 5564dcd992886de29f161f37147051bc7042151f5941d5fecfd1b1e93dcfe040
+Installing 2/82 vcpkg-cmake:x64-linux@2024-04-23...
+Elapsed time to handle vcpkg-cmake:x64-linux: 929 us
+vcpkg-cmake:x64-linux package ABI: e5bd2e010dcd0a38a046215db6521d98387cfec83216237f9fd1d6db715c621f
+Installing 3/82 vcpkg-boost:x64-linux@2024-05-15...
+Elapsed time to handle vcpkg-boost:x64-linux: 12.9 ms
+vcpkg-boost:x64-linux package ABI: 44c60631fe969391301be14564839321b6026e32253d7c4f8d970abedce15cff
+Installing 4/82 boost-uninstall:glob2-x64-android@1.86.0...
+Building boost-uninstall:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-uninstall/f7397719df120125cafecc8000deb3d2a0d5c7af: info: installing overlay port from here
+-- 
+Please use the following command when you need to remove all boost ports/components:
+    "./vcpkg remove boost-uninstall:glob2-x64-android --recurse"
+
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Stored binaries in 1 destinations in 27.6 ms.
+Elapsed time to handle boost-uninstall:glob2-x64-android: 112 ms
+boost-uninstall:glob2-x64-android package ABI: 60c664aac548821e0730d4b55d394e6f97a3851bfbcce137061571e1a65e1f58
+Installing 5/82 boost-cmake:glob2-x64-android@1.86.0...
+Building boost-cmake:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-cmake/453705350fbd0a8dbdbbdd06e8f368baa30b131b: info: installing overlay port from here
+-- Using cached boostorg-boost-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-boost-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-cmake/src/ost-1.86.0-da01bebc44.clean
+-- Using cached boostorg-cmake-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-cmake-boost-1.86.0.tar.gz
+-- Applying patch vcpkg-build.diff
+-- Applying patch fix-mpi.diff
+-- Applying patch no-prefix.diff
+-- Applying patch no-config-suffix.diff
+-- Applying patch no-honor-static.diff
+-- Applying patch add-optional-deps.diff
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-cmake/src/ost-1.86.0-196b676d9e.clean
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost-cmake/usage
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Up-to-date: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost/cmake-build
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost/cmake-build/BoostFetch.cmake
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost/cmake-build/BoostMessage.cmake
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost/cmake-build/BoostTest.cmake
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost/cmake-build/BoostTestJamfile.cmake
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost/cmake-build/BoostInstall.cmake
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost/cmake-build/BoostRoot.cmake
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost-cmake/vcpkg-port-config.cmake
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-cmake_glob2-x64-android/share/boost-cmake/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 13.5 ms.
+Elapsed time to handle boost-cmake:glob2-x64-android: 2.3 s
+boost-cmake:glob2-x64-android package ABI: b589debfa65dfc379f1e037bf25bef47f1370f1155ad90d77f4288ceeccfa675
+Installing 6/82 boost-headers:glob2-x64-android@1.86.0...
+Building boost-headers:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-headers/c01b4dd603c01edf1940f0df3f6498f51c8acda1: info: installing overlay port from here
+-- Using cached boostorg-headers-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-headers-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-headers/src/ost-1.86.0-7dc5ae651a.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-headers_glob2-x64-android/share/boost-headers/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 36.1 ms.
+Elapsed time to handle boost-headers:glob2-x64-android: 3.3 s
+boost-headers:glob2-x64-android package ABI: de841ba2d9fc4f731c0be5e11f754a0ac411245fdc11a9d7715775e1c7e66e76
+Installing 7/82 boost-config:glob2-x64-android@1.86.0...
+Building boost-config:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-config/762b2f284c48416310b5d05c4028716803ec2043: info: installing overlay port from here
+-- Using cached boostorg-config-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-config-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-config/src/ost-1.86.0-8ca7c2ca3e.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-config_glob2-x64-android/share/boost-config/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 124 ms.
+Elapsed time to handle boost-config:glob2-x64-android: 4.5 s
+boost-config:glob2-x64-android package ABI: 635f064a7e90c18bb741b5c6610fb1862a19ec331715607c547832a5624aec06
+Installing 8/82 boost-assert:glob2-x64-android@1.86.0...
+Building boost-assert:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-assert/89ff4d2e2e735c492f4f186ef5d08c27a33af0b7: info: installing overlay port from here
+-- Using cached boostorg-assert-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-assert-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-assert/src/ost-1.86.0-cff5da31ed.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-assert_glob2-x64-android/share/boost-assert/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 34.6 ms.
+Elapsed time to handle boost-assert:glob2-x64-android: 3.5 s
+boost-assert:glob2-x64-android package ABI: ed2ca4a4efffeb118542feb1296233a1d73acab4e66cafa6ca960b21204c062f
+Installing 9/82 boost-throw-exception:glob2-x64-android@1.86.0...
+Building boost-throw-exception:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-throw-exception/4b282c6d95bbb3e399592f9eb87b8f420d34b3b5: info: installing overlay port from here
+-- Using cached boostorg-throw_exception-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-throw_exception-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-throw-exception/src/ost-1.86.0-03f9559308.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-throw-exception_glob2-x64-android/share/boost-throw-exception/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 31.5 ms.
+Elapsed time to handle boost-throw-exception:glob2-x64-android: 3.7 s
+boost-throw-exception:glob2-x64-android package ABI: 907b6e6bdab062a8c46b346f29466bd21e3d7ce166092b076b0c5e54cd4ae0c9
+Installing 10/82 boost-predef:glob2-x64-android@1.86.0...
+Building boost-predef:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-predef/955dda784a843bfb85d7c17343666c5ccf0f8642: info: installing overlay port from here
+-- Using cached boostorg-predef-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-predef-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-predef/src/ost-1.86.0-5ef4c73c71.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-predef_glob2-x64-android/share/boost-predef/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 259 ms.
+Elapsed time to handle boost-predef:glob2-x64-android: 2.9 s
+boost-predef:glob2-x64-android package ABI: c751a26afabfdfee3c1216469817a7ee18f18e852288ab46021c9a970f26a6be
+Installing 11/82 boost-winapi:glob2-x64-android@1.86.0...
+Building boost-winapi:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-winapi/d75ae8aec7f6af51c19a6301a05194616da25145: info: installing overlay port from here
+-- Using cached boostorg-winapi-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-winapi-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-winapi/src/ost-1.86.0-afe0d2847f.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-winapi_glob2-x64-android/share/boost-winapi/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 65.2 ms.
+Elapsed time to handle boost-winapi:glob2-x64-android: 4 s
+boost-winapi:glob2-x64-android package ABI: abb63edebc3c31eb5771c7ff93a48762d1c650d7a2078d43496e20ba851f0da7
+Installing 12/82 boost-mp11:glob2-x64-android@1.86.0...
+Building boost-mp11:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-mp11/46e636f8b4c3d8baad6af94f37838a84bf2a3ad7: info: installing overlay port from here
+-- Using cached boostorg-mp11-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-mp11-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-mp11/src/ost-1.86.0-93cf4ea149.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-mp11_glob2-x64-android/share/boost-mp11/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 76.6 ms.
+Elapsed time to handle boost-mp11:glob2-x64-android: 3.3 s
+boost-mp11:glob2-x64-android package ABI: 2d7c67a71964e4593910e66caac13eca9b9dcf73af588daf23c5d2ac7985b756
+Installing 13/82 boost-variant2:glob2-x64-android@1.86.0...
+Building boost-variant2:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-variant2/da8c7998e31bf676c2efbce08f4e7cb41066dfe2: info: installing overlay port from here
+-- Using cached boostorg-variant2-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-variant2-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-variant2/src/ost-1.86.0-ab70efdf36.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-variant2_glob2-x64-android/share/boost-variant2/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 22.6 ms.
+Elapsed time to handle boost-variant2:glob2-x64-android: 3 s
+boost-variant2:glob2-x64-android package ABI: 70e5268c6055f68209729a1bce4197dbe37650072eb47de4767d5db87035500b
+Installing 14/82 boost-system:glob2-x64-android@1.86.0...
+Building boost-system:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-system/7c85bcb721e1a1cc3bd96660476a30c0eba11f8f: info: installing overlay port from here
+-- Using cached boostorg-system-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-system-boost-1.86.0.tar.gz
+-- Applying patch compat.diff
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-system/src/ost-1.86.0-c57474edd7.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-system_glob2-x64-android/share/boost-system/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 68.1 ms.
+Elapsed time to handle boost-system:glob2-x64-android: 4.9 s
+boost-system:glob2-x64-android package ABI: cae0d55d130b5a76f58592b3fde6572a308f603cec07c06ba2096687e2e895ce
+Installing 15/82 boost-static-assert:glob2-x64-android@1.86.0...
+Building boost-static-assert:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-static-assert/47f251620a2037084eb2d8ac0e6ff3601523e42a: info: installing overlay port from here
+-- Using cached boostorg-static_assert-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-static_assert-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-static-assert/src/ost-1.86.0-e7e646c10a.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-static-assert_glob2-x64-android/share/boost-static-assert/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 27.1 ms.
+Elapsed time to handle boost-static-assert:glob2-x64-android: 3.7 s
+boost-static-assert:glob2-x64-android package ABI: 5f7f38539fc36a05b077be390db42f4440b3df32b13c0a300c2bbd84196edb1f
+Installing 16/82 boost-type-traits:glob2-x64-android@1.86.0...
+Building boost-type-traits:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-type-traits/fe39918134d7cdeec3dc248cd6075bc792039ce5: info: installing overlay port from here
+-- Using cached boostorg-type_traits-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-type_traits-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-type-traits/src/ost-1.86.0-53c11c29f7.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-type-traits_glob2-x64-android/share/boost-type-traits/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 116 ms.
+Elapsed time to handle boost-type-traits:glob2-x64-android: 5.4 s
+boost-type-traits:glob2-x64-android package ABI: d49676e8c1dc23837c094fd08e6d7ac68ca32ac82ec3eb2e92e5e80b40002c03
+Installing 17/82 boost-preprocessor:glob2-x64-android@1.86.0...
+Building boost-preprocessor:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-preprocessor/a086ddc6ee105650c442c1d40438b1670e3248b4: info: installing overlay port from here
+-- Using cached boostorg-preprocessor-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-preprocessor-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-preprocessor/src/ost-1.86.0-84266ceb21.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-preprocessor_glob2-x64-android/share/boost-preprocessor/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 573 ms.
+Elapsed time to handle boost-preprocessor:glob2-x64-android: 8.9 s
+boost-preprocessor:glob2-x64-android package ABI: b2e421eeffce54f8d0c6a196b4dd1f09c38e35b6981a89d1e066418b8f845335
+Installing 18/82 boost-io:glob2-x64-android@1.86.0...
+Building boost-io:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-io/381228ce40062d70c8a56afaafed81710a1ff743: info: installing overlay port from here
+-- Using cached boostorg-io-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-io-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-io/src/ost-1.86.0-8ea8d85cc0.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-io_glob2-x64-android/share/boost-io/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 24.1 ms.
+Elapsed time to handle boost-io:glob2-x64-android: 2.9 s
+boost-io:glob2-x64-android package ABI: 93ecea77d120b44d26ff646d3c3b1b1828f493c06c90cc41abfdb28118107ebe
+Installing 19/82 boost-core:glob2-x64-android@1.86.0...
+Building boost-core:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-core/d978b719a8e14adce4d804ab5371e357afed9687: info: installing overlay port from here
+-- Using cached boostorg-core-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-core-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-core/src/ost-1.86.0-8eea1d4843.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-core_glob2-x64-android/share/boost-core/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 156 ms.
+Elapsed time to handle boost-core:glob2-x64-android: 3 s
+boost-core:glob2-x64-android package ABI: a1164134041e61ac39622fc81fe1bce8ace86e0a1c3385bd79c82fdc1905ac22
+Installing 20/82 boost-utility:glob2-x64-android@1.86.0...
+Building boost-utility:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-utility/ee6600d9dea03593efcc67d0862d7d14807bd14d: info: installing overlay port from here
+-- Using cached boostorg-utility-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-utility-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-utility/src/ost-1.86.0-6d9df6b1ea.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-utility_glob2-x64-android/share/boost-utility/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 52.4 ms.
+Elapsed time to handle boost-utility:glob2-x64-android: 3.4 s
+boost-utility:glob2-x64-android package ABI: 580e3d2ca3507e24424eb169ccb096f93e574ca7504890ac14540d1ecf502942
+Installing 21/82 boost-move:glob2-x64-android@1.86.0...
+Building boost-move:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-move/2ec65ea9d8386c7364647e10ce8eeeb809be40b9: info: installing overlay port from here
+-- Using cached boostorg-move-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-move-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-move/src/ost-1.86.0-a83c27c31c.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-move_glob2-x64-android/share/boost-move/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 81.4 ms.
+Elapsed time to handle boost-move:glob2-x64-android: 2.9 s
+boost-move:glob2-x64-android package ABI: b371c36519f2e81aaa812cddee9edd2ac5ba0462d1370ce9ad67bd10980c68f4
+Installing 22/82 boost-smart-ptr:glob2-x64-android@1.86.0...
+Building boost-smart-ptr:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-smart-ptr/a5ab980fbf31a3a2a95cadf878c42cfdf7e5449f: info: installing overlay port from here
+-- Using cached boostorg-smart_ptr-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-smart_ptr-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-smart-ptr/src/ost-1.86.0-966ec184b2.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-smart-ptr_glob2-x64-android/share/boost-smart-ptr/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 47.9 ms.
+Elapsed time to handle boost-smart-ptr:glob2-x64-android: 3 s
+boost-smart-ptr:glob2-x64-android package ABI: 5769f792480a11f376440f1e550c6e9a76cf9491ffb3ef72da1014691c90182f
+Installing 23/82 boost-detail:glob2-x64-android@1.86.0...
+Building boost-detail:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-detail/180c83d347dfd34afc12f69f5ca7d9e75b9681bf: info: installing overlay port from here
+-- Using cached boostorg-detail-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-detail-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-detail/src/ost-1.86.0-3e51be0057.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-detail_glob2-x64-android/share/boost-detail/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 29.5 ms.
+Elapsed time to handle boost-detail:glob2-x64-android: 3 s
+boost-detail:glob2-x64-android package ABI: d3d6a14f8e85f2233199b0356cd16209e8997c11742ac298a2a6bb4f6e9ef770
+Installing 24/82 boost-optional:glob2-x64-android@1.86.0...
+Building boost-optional:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-optional/1401709a35e73abf6581ee9eab32ae2b71a7fa0f: info: installing overlay port from here
+-- Using cached boostorg-optional-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-optional-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-optional/src/ost-1.86.0-3b4831e768.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-optional_glob2-x64-android/share/boost-optional/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 61.5 ms.
+Elapsed time to handle boost-optional:glob2-x64-android: 2.7 s
+boost-optional:glob2-x64-android package ABI: 27f4249663716b0633a7e73563c1f452d985b74c8faf75742c680b5bae3fa568
+Installing 25/82 boost-mpl:glob2-x64-android@1.86.0...
+Building boost-mpl:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-mpl/42387dab4931df9bfd20d869b92d7c6855900a93: info: installing overlay port from here
+-- Using cached boostorg-mpl-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-mpl-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-mpl/src/ost-1.86.0-92630279e5.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-mpl_glob2-x64-android/share/boost-mpl/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 357 ms.
+Elapsed time to handle boost-mpl:glob2-x64-android: 9.2 s
+boost-mpl:glob2-x64-android package ABI: 142f6489a01bfc91a939c902b899d7124fb016f0135827ecb436459efdbc536e
+Installing 26/82 boost-typeof:glob2-x64-android@1.86.0...
+Building boost-typeof:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-typeof/dbef6caf417e0c2ec880da9e9a6d4094a750e970: info: installing overlay port from here
+-- Using cached boostorg-typeof-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-typeof-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-typeof/src/ost-1.86.0-9057ec91b0.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-typeof_glob2-x64-android/share/boost-typeof/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 57.9 ms.
+Elapsed time to handle boost-typeof:glob2-x64-android: 3.3 s
+boost-typeof:glob2-x64-android package ABI: 63a02ebd11610dd67708936adf47d8d0ebaa163a90eb67ecd7aac8ced890243e
+Installing 27/82 boost-tuple:glob2-x64-android@1.86.0...
+Building boost-tuple:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-tuple/b04ebfe07fa6c45bf2e0dd35a9fec10add1b6ef9: info: installing overlay port from here
+-- Using cached boostorg-tuple-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-tuple-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-tuple/src/ost-1.86.0-1a4b66a7ed.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-tuple_glob2-x64-android/share/boost-tuple/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 27.6 ms.
+Elapsed time to handle boost-tuple:glob2-x64-android: 3 s
+boost-tuple:glob2-x64-android package ABI: 43bfc6707eeefee20c7f1ea9c8530484a2305f19f31cf071695699d18293f827
+Installing 28/82 boost-function-types:glob2-x64-android@1.86.0...
+Building boost-function-types:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-function-types/13e0fd21c39949a145a90a001eb01d95c10e6cd9: info: installing overlay port from here
+-- Using cached boostorg-function_types-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-function_types-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-function-types/src/ost-1.86.0-aa3ea9a2df.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-function-types_glob2-x64-android/share/boost-function-types/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 66.6 ms.
+Elapsed time to handle boost-function-types:glob2-x64-android: 2.8 s
+boost-function-types:glob2-x64-android package ABI: 7f4ecedb1ae27372321a775949aefe30de37e9383cb38565a3fd8f2945b2d43d
+Installing 29/82 boost-bind:glob2-x64-android@1.86.0...
+Building boost-bind:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-bind/4779d27870e250fbe6fc8b7a05d911cacb8aae60: info: installing overlay port from here
+-- Using cached boostorg-bind-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-bind-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-bind/src/ost-1.86.0-ba785d1d9b.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-bind_glob2-x64-android/share/boost-bind/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 46.3 ms.
+Elapsed time to handle boost-bind:glob2-x64-android: 3.4 s
+boost-bind:glob2-x64-android package ABI: 25fa75f90c356ad0ca47528503e2731a5d61602c1f96970c9c19ec3ba7c07561
+Installing 30/82 boost-function:glob2-x64-android@1.86.0...
+Building boost-function:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-function/6c633bb26db4be00c4d2aaacbb36493cce90edae: info: installing overlay port from here
+-- Using cached boostorg-function-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-function-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-function/src/ost-1.86.0-ec6eb5e976.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-function_glob2-x64-android/share/boost-function/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 27 ms.
+Elapsed time to handle boost-function:glob2-x64-android: 3.6 s
+boost-function:glob2-x64-android package ABI: 5b58201f4f58a925aa9adb773b40ecd2e703fe9e0d96bbc4529c272efc3ab898
+Installing 31/82 boost-functional:glob2-x64-android@1.86.0...
+Building boost-functional:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-functional/1a149e24ca42cbda3040781ebb9a4a634ccccfba: info: installing overlay port from here
+-- Using cached boostorg-functional-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-functional-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-functional/src/ost-1.86.0-1c8b845386.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-functional_glob2-x64-android/share/boost-functional/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 29.1 ms.
+Elapsed time to handle boost-functional:glob2-x64-android: 3.2 s
+boost-functional:glob2-x64-android package ABI: 98aa7f9a1d1b0b6d0374b942c66020e5bc67c364b594be95102b793c1f86a072
+Installing 32/82 boost-describe:glob2-x64-android@1.86.0...
+Building boost-describe:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-describe/d2a4fc640014f7442932464d954ad44b302e41c3: info: installing overlay port from here
+-- Using cached boostorg-describe-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-describe-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-describe/src/ost-1.86.0-b453081212.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-describe_glob2-x64-android/share/boost-describe/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 61.8 ms.
+Elapsed time to handle boost-describe:glob2-x64-android: 3.6 s
+boost-describe:glob2-x64-android package ABI: c3757e7a057f1b60a756be9576b0e87a8ace46ec85e131f5751ab79247c27414
+Installing 33/82 boost-container-hash:glob2-x64-android@1.86.0...
+Building boost-container-hash:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-container-hash/2903e8d987be9e6c2d367298452cca9900f87f8e: info: installing overlay port from here
+-- Using cached boostorg-container_hash-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-container_hash-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-container-hash/src/ost-1.86.0-9d5d7be400.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-container-hash_glob2-x64-android/share/boost-container-hash/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 45.3 ms.
+Elapsed time to handle boost-container-hash:glob2-x64-android: 3.6 s
+boost-container-hash:glob2-x64-android package ABI: 9f861a716200ee4a8bc7f8ddfb58796a7bb80ee7a7307be5ba472ee413bd6d9f
+Installing 34/82 boost-fusion:glob2-x64-android@1.86.0...
+Building boost-fusion:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-fusion/7fca552578f4e09ce194b1bf0d6f25bac435907b: info: installing overlay port from here
+-- Using cached boostorg-fusion-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-fusion-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-fusion/src/ost-1.86.0-b137a2029d.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-fusion_glob2-x64-android/share/boost-fusion/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 797 ms.
+Elapsed time to handle boost-fusion:glob2-x64-android: 7.8 s
+boost-fusion:glob2-x64-android package ABI: 80afe798b7ab22b406854e161fa52e77794ad80681eb16e945d2b46cfa8102c6
+Installing 35/82 boost-concept-check:glob2-x64-android@1.86.0...
+Building boost-concept-check:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-concept-check/e55931d7c2bc2b33a2cf49d6ced511e2e209bdd2: info: installing overlay port from here
+-- Using cached boostorg-concept_check-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-concept_check-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-concept-check/src/ost-1.86.0-1cfb0781dd.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-concept-check_glob2-x64-android/share/boost-concept-check/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 27 ms.
+Elapsed time to handle boost-concept-check:glob2-x64-android: 3.3 s
+boost-concept-check:glob2-x64-android package ABI: 0ff1087abfd9d281fb1c93dfb60707db7157dfb656e27e4dc13f3bd0e0be4e3f
+Installing 36/82 boost-iterator:glob2-x64-android@1.86.0...
+Building boost-iterator:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-iterator/8b9a0e755f202cc140222722f4292daf54ff582b: info: installing overlay port from here
+-- Using cached boostorg-iterator-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-iterator-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-iterator/src/ost-1.86.0-76a9f818a2.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-iterator_glob2-x64-android/share/boost-iterator/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 65.8 ms.
+Elapsed time to handle boost-iterator:glob2-x64-android: 4.1 s
+boost-iterator:glob2-x64-android package ABI: e5c9d1e99d3ed8860f53b0b5ab4011aa0ab49a50ce06a92b4e0d5bdc6449faf7
+Installing 37/82 boost-tokenizer:glob2-x64-android@1.86.0...
+Building boost-tokenizer:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-tokenizer/b7b01a69aaf4f53a6e97eb141790cb96222f69d6: info: installing overlay port from here
+-- Using cached boostorg-tokenizer-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-tokenizer-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-tokenizer/src/ost-1.86.0-99362d80bb.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-tokenizer_glob2-x64-android/share/boost-tokenizer/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 19.6 ms.
+Elapsed time to handle boost-tokenizer:glob2-x64-android: 3.7 s
+boost-tokenizer:glob2-x64-android package ABI: bbd6d9f4bc5c4d68451ee82510bd63c887d3a78e45f7459c31026a59267365a6
+Installing 38/82 boost-integer:glob2-x64-android@1.86.0...
+Building boost-integer:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-integer/944979527cd3e9b158f6d4fa27174a154b756f44: info: installing overlay port from here
+-- Using cached boostorg-integer-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-integer-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-integer/src/ost-1.86.0-8c48ec5bcf.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-integer_glob2-x64-android/share/boost-integer/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 57.7 ms.
+Elapsed time to handle boost-integer:glob2-x64-android: 3.6 s
+boost-integer:glob2-x64-android package ABI: 352a630913be6d6e503c04ebb6d52954009594d6c75cc4e46e33968f64943b96
+Installing 39/82 boost-regex:glob2-x64-android@1.86.0...
+Building boost-regex:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-regex/9318a93a93511ef643cf511123f7be253b27cb66: info: installing overlay port from here
+-- Using cached boostorg-regex-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-regex-boost-1.86.0.tar.gz
+-- Applying patch compat.diff
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-regex/src/ost-1.86.0-b1f6e91a9a.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-regex_glob2-x64-android/share/boost-regex/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 2.6 s.
+Elapsed time to handle boost-regex:glob2-x64-android: 1.1 min
+boost-regex:glob2-x64-android package ABI: b60df11d1f1acf548eec8afe7ef7c1b80daa20585e3b226c818adbf0673f40cd
+Installing 40/82 boost-conversion:glob2-x64-android@1.86.0...
+Building boost-conversion:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-conversion/41fb2eb0dd4203ced5645d9e659253e642d6848c: info: installing overlay port from here
+-- Using cached boostorg-conversion-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-conversion-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-conversion/src/ost-1.86.0-7b341a92c3.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-conversion_glob2-x64-android/share/boost-conversion/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 19.6 ms.
+Elapsed time to handle boost-conversion:glob2-x64-android: 2.9 s
+boost-conversion:glob2-x64-android package ABI: 531e93daf85f5f819199dd4c95033a0b5d38c214a5ddbc69d0992cd2cfe15c04
+Installing 41/82 boost-array:glob2-x64-android@1.86.0...
+Building boost-array:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-array/6259bc62d2fa5980736b9365bb69fb242269b0e2: info: installing overlay port from here
+-- Using cached boostorg-array-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-array-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-array/src/ost-1.86.0-c0e10e14f5.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-array_glob2-x64-android/share/boost-array/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 26.3 ms.
+Elapsed time to handle boost-array:glob2-x64-android: 2.6 s
+boost-array:glob2-x64-android package ABI: 85e5e5e0b99def664b48c76f0baee8de4e40f9b7ab580979d4530b0174dca62b
+Installing 42/82 boost-range:glob2-x64-android@1.86.0...
+Building boost-range:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-range/92192fe61d14a9c421db7c3ed640e7b35f9685a4: info: installing overlay port from here
+-- Using cached boostorg-range-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-range-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-range/src/ost-1.86.0-6d9bb3208e.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-range_glob2-x64-android/share/boost-range/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 120 ms.
+Elapsed time to handle boost-range:glob2-x64-android: 3.6 s
+boost-range:glob2-x64-android package ABI: e127f3b5d2491f242c487a5f0641b4f4dcb7ab05d19b9db285cb91adf720585b
+Installing 43/82 boost-numeric-conversion:glob2-x64-android@1.86.0...
+Building boost-numeric-conversion:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-numeric-conversion/d7c5fdc151bf418c8b4c7e8df69306797ea12f63: info: installing overlay port from here
+-- Using cached boostorg-numeric_conversion-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-numeric_conversion-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-numeric-conversion/src/ost-1.86.0-b772f974c1.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-numeric-conversion_glob2-x64-android/share/boost-numeric-conversion/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 36.8 ms.
+Elapsed time to handle boost-numeric-conversion:glob2-x64-android: 2.6 s
+boost-numeric-conversion:glob2-x64-android package ABI: 284af953923c44994f5f4b2830785ebede690022a3be994f65358b2199b74a9e
+Installing 44/82 boost-intrusive:glob2-x64-android@1.86.0...
+Building boost-intrusive:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-intrusive/fdd697cf75e1c4151548b2a5df0cd17376999534: info: installing overlay port from here
+-- Using cached boostorg-intrusive-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-intrusive-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-intrusive/src/ost-1.86.0-337295fefb.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-intrusive_glob2-x64-android/share/boost-intrusive/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 381 ms.
+Elapsed time to handle boost-intrusive:glob2-x64-android: 3.4 s
+boost-intrusive:glob2-x64-android package ABI: 010059fe4cca919930726b3833d6aced5272410e2b579e58d73bb62796063c00
+Installing 45/82 boost-container:glob2-x64-android@1.86.0...
+Building boost-container:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-container/5a0b49ee85c27c39ef25631cfdbd5d3ad1149310: info: installing overlay port from here
+-- Using cached boostorg-container-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-container-boost-1.86.0.tar.gz
+-- Applying patch posix-threads.diff
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-container/src/ost-1.86.0-bbec49e1ca.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-container_glob2-x64-android/share/boost-container/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 729 ms.
+Elapsed time to handle boost-container:glob2-x64-android: 18 s
+boost-container:glob2-x64-android package ABI: f8af8e7b242bd4b6bd767b69c37b25dd5141ff64a3744631f114de8c9a9cb65b
+Installing 46/82 boost-lexical-cast:glob2-x64-android@1.86.0...
+Building boost-lexical-cast:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-lexical-cast/0a36777f88db58f8d69f5e0727e3603c29e67c63: info: installing overlay port from here
+-- Using cached boostorg-lexical_cast-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-lexical_cast-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-lexical-cast/src/ost-1.86.0-bff5d8212e.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-lexical-cast_glob2-x64-android/share/boost-lexical-cast/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 59.4 ms.
+Elapsed time to handle boost-lexical-cast:glob2-x64-android: 4 s
+boost-lexical-cast:glob2-x64-android package ABI: 57d9eee43703cfaf0546e77a411a73b8aa60966a1c0a3ad28e676c16fc48aa5a
+Installing 47/82 boost-unordered:glob2-x64-android@1.86.0...
+Building boost-unordered:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-unordered/3016f6768a087d2f7a5629edae86d00c67191f1f: info: installing overlay port from here
+-- Using cached boostorg-unordered-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-unordered-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-unordered/src/ost-1.86.0-459d142153.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-unordered_glob2-x64-android/share/boost-unordered/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 75.4 ms.
+Elapsed time to handle boost-unordered:glob2-x64-android: 3.5 s
+boost-unordered:glob2-x64-android package ABI: 03fafb5809c7297585f10d2a1d24c1f689da2a16329070384fdf4f91b2b4e829
+Installing 48/82 boost-exception:glob2-x64-android@1.86.0...
+Building boost-exception:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-exception/3c99e4a65f9f64580c5601219d05dac6f54bc0ab: info: installing overlay port from here
+-- Using cached boostorg-exception-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-exception-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-exception/src/ost-1.86.0-6fac1ea9e9.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-exception_glob2-x64-android/share/boost-exception/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 42.3 ms.
+Elapsed time to handle boost-exception:glob2-x64-android: 2.8 s
+boost-exception:glob2-x64-android package ABI: 9159c066f7d7b0b1b9701ad29dd96b08108e3db1303fa191ac62436613328072
+Installing 49/82 boost-algorithm:glob2-x64-android@1.86.0...
+Building boost-algorithm:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-algorithm/16fe704598a261d9766b1d6eb3a483f468ab6cac: info: installing overlay port from here
+-- Using cached boostorg-algorithm-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-algorithm-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-algorithm/src/ost-1.86.0-78901f118f.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-algorithm_glob2-x64-android/share/boost-algorithm/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 112 ms.
+Elapsed time to handle boost-algorithm:glob2-x64-android: 2.7 s
+boost-algorithm:glob2-x64-android package ABI: 5de654413c1102f4ce2f7ca2fa40e465d22eff8461b76ff11f86c3d092bd6cd7
+Installing 50/82 boost-date-time:glob2-x64-android@1.86.0...
+Building boost-date-time:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-date-time/1369ed0885ac49e0798a74ae9d74190658364ed6: info: installing overlay port from here
+-- Using cached boostorg-date_time-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-date_time-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-date-time/src/ost-1.86.0-0ee3268484.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-date-time_glob2-x64-android/share/boost-date-time/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 90.5 ms.
+Elapsed time to handle boost-date-time:glob2-x64-android: 7.9 s
+boost-date-time:glob2-x64-android package ABI: 1e6286d5b129e75539f8231e63aabaff312ac654abc9a7d195f7907cc6543090
+Installing 51/82 boost-pool:glob2-x64-android@1.86.0...
+Building boost-pool:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-pool/fae207f1642a362cab7ed2d17550bf776ca99a93: info: installing overlay port from here
+-- Using cached boostorg-pool-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-pool-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-pool/src/ost-1.86.0-cd045b2676.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-pool_glob2-x64-android/share/boost-pool/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 158 ms.
+Elapsed time to handle boost-pool:glob2-x64-android: 3.4 s
+boost-pool:glob2-x64-android package ABI: d53e3efd1461edf2d0138c7b654dbde54f2408f3de8dbda5ad7bb4cf96a07a93
+Installing 52/82 boost-context:glob2-x64-android@1.86.0...
+Building boost-context:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-context/306765f81ddde7b69509b45679f1ea40e61ee87e: info: installing overlay port from here
+-- Using cached boostorg-context-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-context-boost-1.86.0.tar.gz
+-- Applying patch marmasm.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-context/src/ost-1.86.0-42b4fad533.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-context_glob2-x64-android/share/boost-context/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 85.4 ms.
+Elapsed time to handle boost-context:glob2-x64-android: 11 s
+boost-context:glob2-x64-android package ABI: c1fbe27b598d5c382a71e46f6da6d5de768b51f4eff7a3e5192c0343d85e29e9
+Installing 53/82 boost-coroutine:glob2-x64-android@1.86.0...
+Building boost-coroutine:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-coroutine/8e8c55041bd950518602014556a780c71e806470: info: installing overlay port from here
+-- Using cached boostorg-coroutine-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-coroutine-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-coroutine/src/ost-1.86.0-6eefa8f68f.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-coroutine_glob2-x64-android/share/boost-coroutine/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 119 ms.
+Elapsed time to handle boost-coroutine:glob2-x64-android: 14 s
+boost-coroutine:glob2-x64-android package ABI: 35cf6b2e708d1224af49dbe267251e24a140eed30f35b28174e5df7348b4c0c7
+Installing 54/82 boost-align:glob2-x64-android@1.86.0...
+Building boost-align:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-align/c8dc52b5f1feedf8b14e93d23d6d6e719d269c0e: info: installing overlay port from here
+-- Using cached boostorg-align-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-align-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-align/src/ost-1.86.0-a246ed6c77.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-align_glob2-x64-android/share/boost-align/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 38.6 ms.
+Elapsed time to handle boost-align:glob2-x64-android: 2.8 s
+boost-align:glob2-x64-android package ABI: f0aee467bce652fad65911c659694353cb68f9f7664fca916cf318ecb96533b4
+Installing 55/82 boost-asio:glob2-x64-android@1.86.0...
+Building boost-asio:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-asio/ce757138eb7af2b214f21e2680814777b580b325: info: installing overlay port from here
+-- Using cached boostorg-asio-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-asio-boost-1.86.0.tar.gz
+-- Applying patch opt-dep.diff
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-asio/src/ost-1.86.0-cf1f3e6264.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-asio_glob2-x64-android/share/boost-asio/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 1.1 s.
+Elapsed time to handle boost-asio:glob2-x64-android: 7.5 s
+boost-asio:glob2-x64-android package ABI: 3b358d29d32ec48492b9e6967d05c891b23c0359fcce757c5b855075736949dc
+Installing 56/82 boost-type-index:glob2-x64-android@1.86.0...
+Building boost-type-index:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-type-index/bde43caf92370cdc6b55d296f0641e1b9a516885: info: installing overlay port from here
+-- Using cached boostorg-type_index-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-type_index-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-type-index/src/ost-1.86.0-818ef8d13b.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-type-index_glob2-x64-android/share/boost-type-index/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 25.1 ms.
+Elapsed time to handle boost-type-index:glob2-x64-android: 3.3 s
+boost-type-index:glob2-x64-android package ABI: fb61383dcf2d115fa8b63d6d3aabb6c65cdee6331a22132cc71ff1c388bd5863
+Installing 57/82 boost-static-string:glob2-x64-android@1.86.0...
+Building boost-static-string:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-static-string/582bee8fec9374c28c43d8d42f7dcc0e360e3998: info: installing overlay port from here
+-- Using cached boostorg-static_string-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-static_string-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-static-string/src/ost-1.86.0-870dc91986.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-static-string_glob2-x64-android/share/boost-static-string/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 62.2 ms.
+Elapsed time to handle boost-static-string:glob2-x64-android: 3.1 s
+boost-static-string:glob2-x64-android package ABI: 3985b9048feb83e963b761f6cb4ed1e91e4126cde08761efd24ea4f56bdc5e39
+Installing 58/82 boost-logic:glob2-x64-android@1.86.0...
+Building boost-logic:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-logic/5909374a447c242f80b0921ac3ada302ba42732c: info: installing overlay port from here
+-- Using cached boostorg-logic-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-logic-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-logic/src/ost-1.86.0-90b7b3027a.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-logic_glob2-x64-android/share/boost-logic/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 23.2 ms.
+Elapsed time to handle boost-logic:glob2-x64-android: 3.3 s
+boost-logic:glob2-x64-android package ABI: 4697c990c7e8ab50928332042542fc6a4af6ffec17752b85c3f4f7ed02b12460
+Installing 59/82 boost-endian:glob2-x64-android@1.86.0...
+Building boost-endian:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-endian/41ac0a7472ea5f242d1df7874ff39f6c64123c0a: info: installing overlay port from here
+-- Using cached boostorg-endian-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-endian-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-endian/src/ost-1.86.0-25e969cb58.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-endian_glob2-x64-android/share/boost-endian/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 68.5 ms.
+Elapsed time to handle boost-endian:glob2-x64-android: 2.4 s
+boost-endian:glob2-x64-android package ABI: 03df24d58e642a8332914e8a37dd31f18b410a6eb63b8a3683cbfe0f7b45689a
+Installing 60/82 boost-beast:glob2-x64-android@1.86.0...
+Building boost-beast:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-beast/ce6db020fd6f96d0340dc88560cf05ac4c4402cc: info: installing overlay port from here
+-- Using cached boostorg-beast-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-beast-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-beast/src/ost-1.86.0-9132879fab.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-beast_glob2-x64-android/share/boost-beast/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 215 ms.
+Elapsed time to handle boost-beast:glob2-x64-android: 7.2 s
+boost-beast:glob2-x64-android package ABI: 33c03f778491e388f4d590deff443bade8e1251ca6f51c37544cb9ef4813ba0e
+Installing 61/82 boost-lambda:glob2-x64-android@1.86.0...
+Building boost-lambda:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-lambda/2d8080f6e41b95cd9f13ddecfdc4db12bbb72994: info: installing overlay port from here
+-- Using cached boostorg-lambda-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-lambda-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-lambda/src/ost-1.86.0-f7f174f655.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-lambda_glob2-x64-android/share/boost-lambda/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 45.9 ms.
+Elapsed time to handle boost-lambda:glob2-x64-android: 3.9 s
+boost-lambda:glob2-x64-android package ABI: ba05a28acc482f143142da3a055a15614a8f53f73fae083a70cfb0853c271aaf
+Installing 62/82 boost-dynamic-bitset:glob2-x64-android@1.86.0...
+Building boost-dynamic-bitset:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-dynamic-bitset/51d054aab9c1c50259e253c4cc02114d661a4f4f: info: installing overlay port from here
+-- Using cached boostorg-dynamic_bitset-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-dynamic_bitset-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-dynamic-bitset/src/ost-1.86.0-4441af5af6.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-dynamic-bitset_glob2-x64-android/share/boost-dynamic-bitset/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 33.3 ms.
+Elapsed time to handle boost-dynamic-bitset:glob2-x64-android: 3.4 s
+boost-dynamic-bitset:glob2-x64-android package ABI: 8560bab3bac079f3cba4637cdc27e1540e606768105a42105470ee37dbb51a82
+Installing 63/82 boost-random:glob2-x64-android@1.86.0...
+Building boost-random:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-random/28837a21143c7896257a2714036769302199b030: info: installing overlay port from here
+-- Using cached boostorg-random-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-random-boost-1.86.0.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-random/src/ost-1.86.0-d0ab3c5008.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-random_glob2-x64-android/share/boost-random/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 335 ms.
+Elapsed time to handle boost-random:glob2-x64-android: 21 s
+boost-random:glob2-x64-android package ABI: a660da357898ed15aa2e7509c15a1248223abbf3ad8047813b59ee30bb6ef926
+Installing 64/82 boost-math:glob2-x64-android@1.86.0...
+Building boost-math:glob2-x64-android@1.86.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/boost-math/690873bedff0687ce992ee4e67a1fcd35efff094: info: installing overlay port from here
+-- Using cached boostorg-math-boost-1.86.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/boostorg-math-boost-1.86.0.tar.gz
+-- Applying patch build-old-libs.patch
+-- Applying patch opt-random.diff
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/boost-math/src/ost-1.86.0-aeee076d2c.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/boost-math_glob2-x64-android/share/boost-math/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 1.8 s.
+Elapsed time to handle boost-math:glob2-x64-android: 10 s
+boost-math:glob2-x64-android package ABI: e50ab6dff5ceb445aeb6653c1049dfa06989494396e2b3801949accad8561c71
+Installing 65/82 vcpkg-cmake-get-vars:x64-linux@2024-09-22...
+Elapsed time to handle vcpkg-cmake-get-vars:x64-linux: 29.5 ms
+vcpkg-cmake-get-vars:x64-linux package ABI: 0a19735f38762e473df8ee1f95dd236e8c17a96f5fc4a25fb4533b9942b863e0
+Installing 66/82 openssl:glob2-x64-android@3.4.0...
+Building openssl:glob2-x64-android@3.4.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/openssl/ce504a83eb9627d54f1cffdb497a6bf5bd970d18: info: installing overlay port from here
+-- Using cached openssl-openssl-openssl-3.4.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/openssl-openssl-openssl-3.4.0.tar.gz
+-- Applying patch cmake-config.patch
+-- Applying patch command-line-length.patch
+-- Applying patch script-prefix.patch
+-- Applying patch asm-armcap.patch
+-- Applying patch windows/install-layout.patch
+-- Applying patch windows/install-pdbs.patch
+-- Applying patch unix/android-cc.patch
+-- Applying patch unix/move-openssldir.patch
+-- Applying patch unix/no-empty-dirs.patch
+-- Applying patch unix/no-static-libs-for-shared.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/openssl/src/nssl-3.4.0-821e8e5bdc.clean
+-- Found external ninja('1.13.2').
+-- Getting CMake variables for glob2-x64-android
+-- Getting CMake variables for glob2-x64-android-dbg
+-- Getting CMake variables for glob2-x64-android-rel
+-- Configuring glob2-x64-android-dbg
+-- Configuring glob2-x64-android-rel
+-- Building glob2-x64-android-dbg
+-- Installing glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/openssl_glob2-x64-android/lib/pkgconfig/libcrypto.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/openssl_glob2-x64-android/lib/pkgconfig/libssl.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/openssl_glob2-x64-android/lib/pkgconfig/openssl.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/openssl_glob2-x64-android/debug/lib/pkgconfig/libcrypto.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/openssl_glob2-x64-android/debug/lib/pkgconfig/libssl.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/openssl_glob2-x64-android/debug/lib/pkgconfig/openssl.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/openssl_glob2-x64-android/share/openssl/usage
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/openssl_glob2-x64-android/share/openssl/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 22 s.
+Elapsed time to handle openssl:glob2-x64-android: 9.6 min
+openssl:glob2-x64-android package ABI: 542c61f3d81a543ab44c6bdb3a58973361bdf8de38970c99012b9e22421ae7d0
+Installing 67/82 opus:glob2-x64-android@1.5.2...
+Building opus:glob2-x64-android@1.5.2...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/opus/368f8193c8c240a844cd342a3a485a0fa62e5774: info: installing overlay port from here
+-- Using cached xiph-opus-v1.5.2.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/xiph-opus-v1.5.2.tar.gz
+-- Applying patch fix-pkgconfig-version.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/opus/src/v1.5.2-81ed242155.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/opus_glob2-x64-android/lib/pkgconfig/opus.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/opus_glob2-x64-android/debug/lib/pkgconfig/opus.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/opus_glob2-x64-android/share/opus/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 1.2 s.
+Elapsed time to handle opus:glob2-x64-android: 50 s
+opus:glob2-x64-android package ABI: 411c8941271a950af74d156044ed339384c661ad038c00b6706240c6380a83e4
+Installing 68/82 libogg:glob2-x64-android@1.3.5#1...
+Building libogg:glob2-x64-android@1.3.5#1...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/libogg/98e27727c32704393494d32615c25b7b16eb3067: info: installing overlay port from here
+-- Using cached xiph-ogg-v1.3.5.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/xiph-ogg-v1.3.5.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/libogg/src/v1.3.5-1a4243fef9.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libogg_glob2-x64-android/lib/pkgconfig/ogg.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libogg_glob2-x64-android/debug/lib/pkgconfig/ogg.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libogg_glob2-x64-android/share/libogg/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 103 ms.
+Elapsed time to handle libogg:glob2-x64-android: 18 s
+libogg:glob2-x64-android package ABI: 679d841f25f90c78bc2ae5fb83392eb128d15b991d16db21bc77ba7a7287b017
+Installing 69/82 opusfile:glob2-x64-android@0.12+20221121#1...
+Building opusfile:glob2-x64-android@0.12+20221121#1...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/opusfile/6b39a2d4ff309c4e2bedf74adeb1cd18f7ab16c9: info: installing overlay port from here
+-- Using cached xiph-opusfile-9d718345ce03b2fad5d7d28e0bcd1cc69ab2b166.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/xiph-opusfile-9d718345ce03b2fad5d7d28e0bcd1cc69ab2b166.tar.gz
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/opusfile/src/c69ab2b166-6cc7de23ec.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/opusfile_glob2-x64-android/lib/pkgconfig/opusfile.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/opusfile_glob2-x64-android/debug/lib/pkgconfig/opusfile.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/opusfile_glob2-x64-android/share/opusfile/copyright
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/opusfile_glob2-x64-android/share/opusfile/usage
+-- Performing post-build validation
+Stored binaries in 1 destinations in 164 ms.
+Elapsed time to handle opusfile:glob2-x64-android: 10 s
+opusfile:glob2-x64-android package ABI: 499c972ca2d24e0b1a64455d818148f39e1dfd54e897bc2e05c44568d9607493
+Installing 70/82 sdl3:glob2-x64-android@3.4.16...
+Building sdl3:glob2-x64-android@3.4.16...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3: info: installing overlay port from here
+-- Using cached libsdl-org-SDL-release-3.4.16.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/libsdl-org-SDL-release-3.4.16.tar.gz
+-- Applying patch fix-freebsd.patch
+-- Applying patch x11-reparent-race.patch
+-- Applying patch x11-map-notify.patch
+-- Applying patch png16-preserve-channels.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/sdl3/src/ase-3.4.16-4462054d94.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+CMake Warning at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-installed/x64-linux/share/vcpkg-cmake/vcpkg_cmake_configure.cmake:344 (message):
+  The following variables are not used in CMakeLists.txt:
+
+      SDL_UNIX_CONSOLE_BUILD
+
+  Please recheck them and remove the unnecessary options from the
+  `vcpkg_cmake_configure` call.
+
+  If these options should still be passed for whatever reason, please use the
+  `MAYBE_UNUSED_VARIABLES` argument.
+Call Stack (most recent call first):
+  /home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3/portfile.cmake:74 (vcpkg_cmake_configure)
+  scripts/ports.cmake:196 (include)
+
+
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3_glob2-x64-android/lib/pkgconfig/sdl3.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3_glob2-x64-android/debug/lib/pkgconfig/sdl3.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3_glob2-x64-android/share/sdl3/usage
+-- Performing post-build validation
+Stored binaries in 1 destinations in 1.1 s.
+Elapsed time to handle sdl3:glob2-x64-android: 4.7 min
+sdl3:glob2-x64-android package ABI: b92ded9fa7b6b6751415835e220d67381158ef9bfe70145ed29ed58768ffe392
+Installing 71/82 libwebp[core,libwebpmux,nearlossless,simd]:glob2-x64-android@1.4.0#1...
+Building libwebp[core,libwebpmux,nearlossless,simd]:glob2-x64-android@1.4.0#1...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/libwebp/9d0c00119dd6ec04488b4e0c926aa3ae73b95847: info: installing overlay port from here
+-- Using cached webmproject-libwebp-v1.4.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/webmproject-libwebp-v1.4.0.tar.gz
+-- Applying patch 0002-cmake-config.patch
+-- Applying patch 0003-simd.patch
+-- Applying patch 0008-sdl.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/libwebp/src/v1.4.0-3f90aab08d.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/lib/pkgconfig/libsharpyuv.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/lib/pkgconfig/libwebp.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/lib/pkgconfig/libwebpdecoder.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/lib/pkgconfig/libwebpdemux.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/lib/pkgconfig/libwebpmux.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/debug/lib/pkgconfig/libsharpyuv.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/debug/lib/pkgconfig/libwebp.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/debug/lib/pkgconfig/libwebpdecoder.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/debug/lib/pkgconfig/libwebpdemux.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/debug/lib/pkgconfig/libwebpmux.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libwebp_glob2-x64-android/share/libwebp/usage
+-- Performing post-build validation
+Stored binaries in 1 destinations in 6.6 s.
+Elapsed time to handle libwebp:glob2-x64-android: 1.2 min
+libwebp:glob2-x64-android package ABI: c89303cbaa88c335606856a7dcec8930b4e037d2615decb3d3c892d16ff3b4f0
+Installing 72/82 zlib:glob2-x64-android@1.3.1...
+Building zlib:glob2-x64-android@1.3.1...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/zlib/3f05e04b9aededb96786a911a16193cdb711f0c9: info: installing overlay port from here
+-- Using cached madler-zlib-v1.3.1.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/madler-zlib-v1.3.1.tar.gz
+-- Applying patch 0001-Prevent-invalid-inclusions-when-HAVE_-is-set-to-0.patch
+-- Applying patch 0002-build-static-or-shared-not-both.patch
+-- Applying patch 0003-android-and-mingw-fixes.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/zlib/src/v1.3.1-2e5db616bf.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/zlib_glob2-x64-android/share/zlib/vcpkg-cmake-wrapper.cmake
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/zlib_glob2-x64-android/lib/pkgconfig/zlib.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/zlib_glob2-x64-android/debug/lib/pkgconfig/zlib.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/zlib_glob2-x64-android/share/zlib/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 353 ms.
+Elapsed time to handle zlib:glob2-x64-android: 14 s
+zlib:glob2-x64-android package ABI: 9ca2780e64b48d0ddd85883b43c59c028046adcb5eead1fc38d7b47f1a677029
+Installing 73/82 libpng:glob2-x64-android@1.6.44...
+Building libpng:glob2-x64-android@1.6.44...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/libpng/bda480fe3c3cef1113fe8bfdecda127a5b3b2a77: info: installing overlay port from here
+-- Using cached glennrp-libpng-v1.6.44.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/glennrp-libpng-v1.6.44.tar.gz
+-- Applying patch cmake.patch
+-- Applying patch libm.patch
+-- Applying patch pkgconfig.patch
+-- Applying patch fix-msa-support-for-mips.patch
+-- Applying patch fix-tools-static.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/libpng/src/v1.6.44-58a090cbad.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libpng_glob2-x64-android/share/png/vcpkg-cmake-wrapper.cmake
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libpng_glob2-x64-android/share/libpng/libpng-config.cmake
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libpng_glob2-x64-android/lib/pkgconfig/libpng16.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libpng_glob2-x64-android/debug/lib/pkgconfig/libpng16.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libpng_glob2-x64-android/debug/lib/pkgconfig/libpng.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libpng_glob2-x64-android/lib/pkgconfig/libpng.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libpng_glob2-x64-android/share/libpng/usage
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libpng_glob2-x64-android/share/libpng/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 1.4 s.
+Elapsed time to handle libpng:glob2-x64-android: 16 s
+libpng:glob2-x64-android package ABI: 37b4ea389f0da4a5491d91c5bc52a950c457e002b16e458547865a85f391396b
+Installing 74/82 libjpeg-turbo:glob2-x64-android@3.1.0...
+Building libjpeg-turbo:glob2-x64-android@3.1.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/libjpeg-turbo/8286a6351f59be7eed5e924d32c3a419d0612ee9: info: installing overlay port from here
+-- Using cached libjpeg-turbo-libjpeg-turbo-3.1.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/libjpeg-turbo-libjpeg-turbo-3.1.0.tar.gz
+-- Applying patch add-options-for-exes-docs-headers.patch
+-- Applying patch workaround_cmake_system_processor.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/libjpeg-turbo/src/3.1.0-61083179ee.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libjpeg-turbo_glob2-x64-android/lib/pkgconfig/libjpeg.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libjpeg-turbo_glob2-x64-android/lib/pkgconfig/libturbojpeg.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libjpeg-turbo_glob2-x64-android/debug/lib/pkgconfig/libjpeg.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libjpeg-turbo_glob2-x64-android/debug/lib/pkgconfig/libturbojpeg.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/libjpeg-turbo_glob2-x64-android/share/libjpeg-turbo/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 8.7 s.
+Elapsed time to handle libjpeg-turbo:glob2-x64-android: 1.1 min
+libjpeg-turbo:glob2-x64-android package ABI: 5986c6be9300fa91e0a18f1a17f9abfbf4350468a9cf5866090e1c98e3cde691
+Installing 75/82 sdl3-image[core,jpeg,png,webp]:glob2-x64-android@3.4.6...
+Building sdl3-image[core,jpeg,png,webp]:glob2-x64-android@3.4.6...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3-image: info: installing overlay port from here
+-- Using cached libsdl-org-SDL_image-release-3.4.6.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/libsdl-org-SDL_image-release-3.4.6.tar.gz
+-- Applying patch dependencies.diff
+-- Applying patch pkgconfig-libname.diff
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/sdl3-image/src/ease-3.4.6-44c2cf98c9.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-image_glob2-x64-android/lib/pkgconfig/sdl3-image.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-image_glob2-x64-android/debug/lib/pkgconfig/sdl3-image.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-image_glob2-x64-android/share/sdl3-image/usage
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-image_glob2-x64-android/share/sdl3-image/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 990 ms.
+Elapsed time to handle sdl3-image:glob2-x64-android: 21 s
+sdl3-image:glob2-x64-android package ABI: 8e021c09eec671478dcff540caa648854c9c1dc61ea3b1167a7059f8b7fcd2a4
+Installing 76/82 sdl3-net:glob2-x64-android@3.2.0...
+Building sdl3-net:glob2-x64-android@3.2.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3-net: info: installing overlay port from here
+-- Using cached libsdl-org-SDL_net-release-3.2.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/libsdl-org-SDL_net-release-3.2.0.tar.gz
+-- Applying patch mingw-io-names.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/sdl3-net/src/ease-3.2.0-a4c0c9508d.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-net_glob2-x64-android/lib/pkgconfig/sdl3-net.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-net_glob2-x64-android/debug/lib/pkgconfig/sdl3-net.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-net_glob2-x64-android/share/sdl3-net/usage
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-net_glob2-x64-android/share/sdl3-net/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 237 ms.
+Elapsed time to handle sdl3-net:glob2-x64-android: 11 s
+sdl3-net:glob2-x64-android package ABI: e8fcc1473247a5853b90cb35fda8f48edc378b8a6e5bb46aeec27816d4f422e6
+Installing 77/82 bzip2[core,tool]:glob2-x64-android@1.0.8#6...
+Building bzip2[core,tool]:glob2-x64-android@1.0.8#6...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/bzip2/2d029da682847c5ebdc54e4dbea001331a02207e: info: installing overlay port from here
+-- Using cached bzip2-1.0.8.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/bzip2-1.0.8.tar.gz
+-- Applying patch fix-import-export-macros.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/bzip2/src/bzip2-1-336d4794a3.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/bzip2_glob2-x64-android/lib/pkgconfig/bzip2.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/bzip2_glob2-x64-android/debug/lib/pkgconfig/bzip2.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/bzip2_glob2-x64-android/share/bzip2/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 448 ms.
+Elapsed time to handle bzip2:glob2-x64-android: 16 s
+bzip2:glob2-x64-android package ABI: 2c0b6af774b22e5671a9061fa0b29c3bab7cd8e8ed88384a6c3a6b002bb3b635
+Installing 78/82 brotli:glob2-x64-android@1.1.0#1...
+Building brotli:glob2-x64-android@1.1.0#1...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/brotli/4e5b5ae1ad26c80535c893cc0307121f0398549e: info: installing overlay port from here
+-- Using cached google-brotli-v1.1.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/google-brotli-v1.1.0.tar.gz
+-- Applying patch install.patch
+-- Applying patch fix-arm-uwp.patch
+-- Applying patch pkgconfig.patch
+-- Applying patch emscripten.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/brotli/src/v1.1.0-958bece74c.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/brotli_glob2-x64-android/lib/pkgconfig/libbrotlicommon.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/brotli_glob2-x64-android/lib/pkgconfig/libbrotlidec.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/brotli_glob2-x64-android/lib/pkgconfig/libbrotlienc.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/brotli_glob2-x64-android/debug/lib/pkgconfig/libbrotlicommon.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/brotli_glob2-x64-android/debug/lib/pkgconfig/libbrotlidec.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/brotli_glob2-x64-android/debug/lib/pkgconfig/libbrotlienc.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/brotli_glob2-x64-android/share/brotli/usage
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/brotli_glob2-x64-android/share/brotli/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 680 ms.
+Elapsed time to handle brotli:glob2-x64-android: 38 s
+brotli:glob2-x64-android package ABI: ed48e9d1a0257d30885c526360fca95d989487b6d2cafdd8ed205f408285d292
+Installing 79/82 freetype[brotli,bzip2,core,png,zlib]:glob2-x64-android@2.13.3...
+Building freetype[brotli,bzip2,core,png,zlib]:glob2-x64-android@2.13.3...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/freetype/8a2c633dcc14eaabdb31cf4637242f4e3c2f3fa2: info: installing overlay port from here
+-- Using cached freetype-freetype-VER-2-13-3.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/freetype-freetype-VER-2-13-3.tar.gz
+-- Applying patch 0003-Fix-UWP.patch
+-- Applying patch brotli-static.patch
+-- Applying patch bzip2.patch
+-- Applying patch fix-exports.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/freetype/src/VER-2-13-3-8b423a038b.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/freetype_glob2-x64-android/lib/pkgconfig/freetype2.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/freetype_glob2-x64-android/debug/lib/pkgconfig/freetype2.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/freetype_glob2-x64-android/share/freetype/usage
+-- Performing post-build validation
+Stored binaries in 1 destinations in 6.2 s.
+Elapsed time to handle freetype:glob2-x64-android: 57 s
+freetype:glob2-x64-android package ABI: 0b97bf9e72f5dd142f98924da300ce3b87670b2c38c274d53cf97dc1a1a2d859
+Installing 80/82 vcpkg-tool-meson:x64-linux@1.6.1...
+Building vcpkg-tool-meson:x64-linux@1.6.1...
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/vcpkg-tool-meson/dc948c67d7f1359319f801078422e996b0a89fd0: info: installing overlay port from here
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/vcpkg-tool-meson_x64-linux/share/vcpkg-tool-meson/copyright
+Downloading meson-1.6.1.tar.gz
+Successfully downloaded meson-1.6.1.tar.gz.
+-- Applying patch /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/vcpkg-tool-meson_x64-linux/share/vcpkg-tool-meson/meson-intl.patch
+-- Applying patch /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/vcpkg-tool-meson_x64-linux/share/vcpkg-tool-meson/adjust-python-dep.patch
+-- Applying patch /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/vcpkg-tool-meson_x64-linux/share/vcpkg-tool-meson/adjust-args.patch
+-- Applying patch /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/vcpkg-tool-meson_x64-linux/share/vcpkg-tool-meson/remove-freebsd-pcfile-specialization.patch
+-- Found Python version '3.14.4 at /usr/bin/python3'
+-- Using meson: /home/bradley/.local/share/glob2/development/caches/downloads/tools/meson-1.6.1-6779de/meson.py
+Downloading patchelf-0.14.5-x86_64.tar.gz
+Successfully downloaded patchelf-0.14.5-x86_64.tar.gz.
+-- Performing post-build validation
+Stored binaries in 1 destinations in 24.1 ms.
+Elapsed time to handle vcpkg-tool-meson:x64-linux: 6.6 s
+vcpkg-tool-meson:x64-linux package ABI: 2a9e5edc1a7de580a4a1cd8df6d692cd463aea22f95954683076d5eba70e9ee6
+Installing 81/82 harfbuzz[core,freetype]:glob2-x64-android@10.1.0...
+Building harfbuzz[core,freetype]:glob2-x64-android@10.1.0...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/versioning_/versions/harfbuzz/0bf3419dd2362d61aa7b93eceba27acf0a7b826c: info: installing overlay port from here
+-- Found Python version '3.14.4 at /usr/bin/python3'
+-- Using meson: /home/bradley/.local/share/glob2/development/caches/downloads/tools/meson-1.6.1-6779de/meson.py
+Downloading harfbuzz-harfbuzz-10.1.0.tar.gz
+Successfully downloaded harfbuzz-harfbuzz-10.1.0.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/harfbuzz-harfbuzz-10.1.0.tar.gz
+-- Applying patch fix-win32-build.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/harfbuzz/src/10.1.0-4a762381cc.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android-dbg
+-- Getting CMake variables for glob2-x64-android
+-- Configuring glob2-x64-android-dbg done
+-- Configuring glob2-x64-android-rel
+-- Configuring glob2-x64-android-rel done
+-- Package glob2-x64-android-dbg
+-- Package glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/harfbuzz_glob2-x64-android/lib/pkgconfig/harfbuzz-subset.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/harfbuzz_glob2-x64-android/lib/pkgconfig/harfbuzz.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/harfbuzz_glob2-x64-android/debug/lib/pkgconfig/harfbuzz-subset.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/harfbuzz_glob2-x64-android/debug/lib/pkgconfig/harfbuzz.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/harfbuzz_glob2-x64-android/share/harfbuzz/copyright
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/harfbuzz_glob2-x64-android/share/harfbuzz/usage
+-- Performing post-build validation
+Stored binaries in 1 destinations in 1.4 min.
+Elapsed time to handle harfbuzz:glob2-x64-android: 15 min
+harfbuzz:glob2-x64-android package ABI: 47eae8ef201c11f51c85a9212fc33452354b3aaf717a008008d9fc4d001decc4
+Installing 82/82 sdl3-ttf[core,harfbuzz]:glob2-x64-android@3.2.2...
+Building sdl3-ttf[core,harfbuzz]:glob2-x64-android@3.2.2...
+/home/bradley/.codex/worktrees/45cd/glob2/mobile/triplets/glob2-x64-android.cmake: info: loaded overlay triplet from here
+/home/bradley/.codex/worktrees/45cd/glob2/scons/vcpkg-ports/sdl3-ttf: info: installing overlay port from here
+-- Using cached libsdl-org-SDL_ttf-release-3.2.2.tar.gz.
+-- Extracting source /home/bradley/.local/share/glob2/development/caches/downloads/libsdl-org-SDL_ttf-release-3.2.2.tar.gz
+-- Applying patch link-sdl3.diff
+-- Applying patch kerning-moves-pen.patch
+-- Using source at /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-buildtrees/sdl3-ttf/src/ease-3.2.2-f129d2719a.clean
+-- Found external ninja('1.13.2').
+-- Configuring glob2-x64-android
+-- Building glob2-x64-android-dbg
+-- Building glob2-x64-android-rel
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-ttf_glob2-x64-android/lib/pkgconfig/sdl3-ttf.pc
+-- Fixing pkgconfig file: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-ttf_glob2-x64-android/debug/lib/pkgconfig/sdl3-ttf.pc
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-ttf_glob2-x64-android/share/sdl3-ttf/usage
+-- Installing: /home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/dependency-staging-iwkk7kbb/vcpkg-packages/sdl3-ttf_glob2-x64-android/share/sdl3-ttf/copyright
+-- Performing post-build validation
+Stored binaries in 1 destinations in 225 ms.
+Elapsed time to handle sdl3-ttf:glob2-x64-android: 48 s
+sdl3-ttf:glob2-x64-android package ABI: 4343acd4c9e722eab5489e57fcb0537070dc0ee35ec5b5012012fd721d7cafa9
+Total install time: 43 min
+The package boost-date-time is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS date_time)
+    target_link_libraries(main PRIVATE Boost::date_time)
+
+or the generated cmake configs via:
+
+    find_package(boost_date_time REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::date_time)
+
+The package boost-asio is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS asio)
+    target_link_libraries(main PRIVATE Boost::asio)
+
+or the generated cmake configs via:
+
+    find_package(boost_asio REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::asio)
+
+The package boost-logic is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS logic)
+    target_link_libraries(main PRIVATE Boost::logic)
+
+or the generated cmake configs via:
+
+    find_package(boost_logic REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::logic)
+
+The package boost-beast is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS beast)
+    target_link_libraries(main PRIVATE Boost::beast)
+
+or the generated cmake configs via:
+
+    find_package(boost_beast REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::beast)
+
+The package boost-lambda is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS lambda)
+    target_link_libraries(main PRIVATE Boost::lambda)
+
+or the generated cmake configs via:
+
+    find_package(boost_lambda REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::lambda)
+
+The package boost-random is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS random)
+    target_link_libraries(main PRIVATE Boost::random)
+
+or the generated cmake configs via:
+
+    find_package(boost_random REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::random)
+
+The package boost-math is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS math)
+    target_link_libraries(main PRIVATE Boost::math)
+
+or the generated cmake configs via:
+
+    find_package(boost_math REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::math)
+
+openssl is compatible with built-in CMake targets:
+
+  find_package(OpenSSL REQUIRED)
+  target_link_libraries(main PRIVATE OpenSSL::SSL)
+  target_link_libraries(main PRIVATE OpenSSL::Crypto)
+
+The package opusfile provides CMake targets:
+
+    find_package(OpusFile CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE OpusFile::opusfile)
+
+    # To use the opusurl API
+    target_link_libraries(main PRIVATE OpusFile::opusurl)
+
+sdl3 provides CMake targets:
+
+  find_package(SDL3 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SDL3::SDL3)
+
+The package zlib is compatible with built-in CMake targets:
+
+    find_package(ZLIB REQUIRED)
+    target_link_libraries(main PRIVATE ZLIB::ZLIB)
+
+sdl3-image provides CMake targets:
+
+  find_package(SDL3_image CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:SDL3_image::SDL3_image-shared>,SDL3_image::SDL3_image-shared,SDL3_image::SDL3_image-static>)
+
+sdl3-image provides pkg-config modules:
+
+  # image loading library for Simple DirectMedia Layer
+  sdl3-image
+
+sdl3-net provides CMake targets:
+
+  find_package(SDL3_net CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:SDL3_net::SDL3_net>,SDL3_net::SDL3_net,SDL3_net::SDL3_net-static>)
+
+sdl3-ttf provides CMake targets:
+
+  find_package(SDL3_ttf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SDL3_ttf::SDL3_ttf)
+
+Dependency prefix: /home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-90ec8cde16412e71dd8ed5af

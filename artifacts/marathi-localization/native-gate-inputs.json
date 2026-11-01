@@ -1,0 +1,1119 @@
+{
+  "kind": "gate-input recommendation only; reviews/mr.json was not modified",
+  "prepared_by": "/root/draft_tool",
+  "validation_head": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "executed_native_producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+    "sourceStatus": [],
+    "sourceTreeSha256": "a7b3ef887b68290b5e244e9caf08c738554635452615b31fdbef8978b7caa666"
+  },
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "preview_json_catalog_sha256": {
+    "native": "7ecf6099aa43a96f2ed171641b282b32383ad3313f5e16475797726c08b3c364",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "native_rendering_gate_inputs": {
+    "desktop_rendering": {
+      "ready_for_documented_scope": true,
+      "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+      "catalog_sha256": {
+        "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+        "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+      },
+      "scope": "Complete catalog through the production Linux desktop harness at 1280x900, with exact committed-native-overlay equivalence; matrices at 10/13/20px and 1x/2x plus real menus, gameplay and ten initial tutorial states.",
+      "evidence": [
+        {
+          "path": "checks/root-native-visual-review.json",
+          "sha256": "50e7173602dd7bfe1c294834689bd96864d9ffbc3a4e0420d91e7f7fe1a03313",
+          "bytes": 7004
+        },
+        {
+          "path": "native-render-clean671/1280x900/game-diagnostics.json",
+          "sha256": "498cc3e416e3bdee8389b7c2e108f900e75c0345e065659af155816467149cff",
+          "bytes": 13369
+        },
+        {
+          "path": "native-render-clean671/1280x900/gameplay/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/gameplay/gameplay-dialog.png",
+          "sha256": "0f681bd4e08eecb626764ebab48313ff45def331913a8fee03491ac02b80d9d7",
+          "bytes": 474505
+        },
+        {
+          "path": "native-render-clean671/1280x900/gameplay/gameplay-zoom-fit.png",
+          "sha256": "e079f0e592d1383fbd8516991ba70e84eabafc7f78157b82c2730a9013fa71fa",
+          "bytes": 63526
+        },
+        {
+          "path": "native-render-clean671/1280x900/gameplay/gameplay-zoom-plus.png",
+          "sha256": "d329c9084bc7b6b95ec3bb15acafca823a251af43fa6f9d741fa3ece5df00423",
+          "bytes": 680650
+        },
+        {
+          "path": "native-render-clean671/1280x900/gameplay/gameplay.json",
+          "sha256": "ac09225d255c66e867c31717bca16d7197fefc4cd85aef652568bcdf24d21d1a",
+          "bytes": 13461
+        },
+        {
+          "path": "native-render-clean671/1280x900/gameplay/gameplay.png",
+          "sha256": "92d79393a84d3955ef7101284bf024168f9382b5e864c8be520851313ae331a1",
+          "bytes": 629188
+        },
+        {
+          "path": "native-render-clean671/1280x900/lobby-players/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/lobby-players/lobby-players.json",
+          "sha256": "6aecba3a65422ddb88bdc1569abd68bb930f16a7a83be35fc3c2ccadd7e9b194",
+          "bytes": 13774
+        },
+        {
+          "path": "native-render-clean671/1280x900/lobby-players/lobby-players.png",
+          "sha256": "fe7c6d75b04453c6275a32a7bb537ab79eeac0c123667fac509f327f8f9bca58",
+          "bytes": 247316
+        },
+        {
+          "path": "native-render-clean671/1280x900/lobby/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/lobby/lobby.json",
+          "sha256": "67ceac4b2610a4b6fb177eb8c01a4e1c503d614c954c48fee641d42aa3a621b5",
+          "bytes": 13489
+        },
+        {
+          "path": "native-render-clean671/1280x900/lobby/lobby.png",
+          "sha256": "1e0f982c29490433a29c4cc7d9e62cebf4126e4b1054640cd0d74bbe598f7fa3",
+          "bytes": 236178
+        },
+        {
+          "path": "native-render-clean671/1280x900/main/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/main/main.json",
+          "sha256": "f3f3c9ab16a691c79aa21da1e5c572c617a3734adb69953fceceda5bd9982da2",
+          "bytes": 12413
+        },
+        {
+          "path": "native-render-clean671/1280x900/main/main.png",
+          "sha256": "74d8978290ca85b5d38e047806462983339e39bc877c1c5dd312729590fde9db",
+          "bytes": 1299597
+        },
+        {
+          "path": "native-render-clean671/1280x900/matrix/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/matrix/font-10-scale-1-page-001.png",
+          "sha256": "ebcaf8fa9f05923d914c4518f737caf93bdceb4784d7294f1bf9734ca0111716",
+          "bytes": 74425
+        },
+        {
+          "path": "native-render-clean671/1280x900/matrix/font-10-scale-2-page-102.png",
+          "sha256": "b2f0d2dad277b17791c04b26654f4d139c9d129b92a0db3faf6d5682c1ff0ddf",
+          "bytes": 147843
+        },
+        {
+          "path": "native-render-clean671/1280x900/matrix/font-13-scale-2-page-020.png",
+          "sha256": "c00becd81856448d4912a57632e20d65326380f771b1d393a2e6669eb5b7192a",
+          "bytes": 1484419
+        },
+        {
+          "path": "native-render-clean671/1280x900/matrix/font-20-scale-1-page-066.png",
+          "sha256": "3b474bc4b749c835adb1b468940b4028870ba2352cbc92d2463c2215c3a045ab",
+          "bytes": 91362
+        },
+        {
+          "path": "native-render-clean671/1280x900/matrix/font-matrix.json",
+          "sha256": "d4d54b58f5d9694ee387a8b92d975868a504d2b5c637b252ff6f3ad2da4366af",
+          "bytes": 29096780
+        },
+        {
+          "path": "native-render-clean671/1280x900/matrix/matrix-diagnostics.json",
+          "sha256": "9d17d282fe1e66451a5816a085ec040d70fc379f9f981d5445724a927ee8e21a",
+          "bytes": 124578
+        },
+        {
+          "path": "native-render-clean671/1280x900/settings-audio/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/settings-audio/settings-audio.json",
+          "sha256": "c743f46f6cad036b07f09f3cbcaae3c6ab489e9c3a663bbd8cecd177f06be56e",
+          "bytes": 13397
+        },
+        {
+          "path": "native-render-clean671/1280x900/settings-audio/settings-audio.png",
+          "sha256": "ddff91884f5ea95c2750d3a09b9a582ac447a6a8deb9811fb4e03143f62309bf",
+          "bytes": 691207
+        },
+        {
+          "path": "native-render-clean671/1280x900/settings/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/settings/settings.json",
+          "sha256": "28a7e4ad0eef9824bf437e4fce7bc518e9a7f15664def70cd55f4d9568648978",
+          "bytes": 16106
+        },
+        {
+          "path": "native-render-clean671/1280x900/settings/settings.png",
+          "sha256": "69e90bbf15a00b51b00e3841de50a4cde1b72ddf8cb060b743250da2d6acd002",
+          "bytes": 716445
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-defensive-tactics/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-defensive-tactics/tutorial-defensive-tactics-dialog.png",
+          "sha256": "282b4ff736d48586428308e398843d8d963e3e0622da0f5ad94d635c3df5dd90",
+          "bytes": 509126
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-defensive-tactics/tutorial-defensive-tactics.json",
+          "sha256": "7f73770a340aeefc6a5775ce3883d67bfbd61bb5ec3533be687bb6e5f392647d",
+          "bytes": 13008
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-defensive-tactics/tutorial-defensive-tactics.png",
+          "sha256": "39cfaac6739280efb9b595a329205347a7eb7f195238ee05b68f2a239deca056",
+          "bytes": 889970
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-food-supply/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-food-supply/tutorial-food-supply-dialog.png",
+          "sha256": "f3675fd92642ae3d7cf1b674db9fd34958f53a7e962da7419d7a4d887221a3de",
+          "bytes": 499771
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-food-supply/tutorial-food-supply.json",
+          "sha256": "d785ccf44dfc26bd0f0ba372f43447474d9400c41549249990b7235379add4b9",
+          "bytes": 12942
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-food-supply/tutorial-food-supply.png",
+          "sha256": "7b3a77b8b3a09e22e3cfca7027690b4a80a5f40e4c8f461c14b749ed391c2fd4",
+          "bytes": 873483
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-fortifications/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-fortifications/tutorial-fortifications-briefing.png",
+          "sha256": "290fa8e464552fb99c8262f303ffd50e267106352e45d92f5a54628ba5ec7f13",
+          "bytes": 833673
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-fortifications/tutorial-fortifications-dialog.png",
+          "sha256": "d25b1ed0153189794bfa34cc3fcf603bb6ab4afd6f600d0eecc3aa25a49b92a9",
+          "bytes": 505739
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-fortifications/tutorial-fortifications.json",
+          "sha256": "41a4a8d1fa77b411bf2ba2d89bccacf475efd20d8b0de9c3b9b1e2887bc406b9",
+          "bytes": 13188
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-fortifications/tutorial-fortifications.png",
+          "sha256": "011767cde288e2847b31ac75dfb722e0ddafc64317799245857aa2eed12f9ef3",
+          "bytes": 877221
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-healing/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-healing/tutorial-healing-briefing.png",
+          "sha256": "e2599bea08636db3b422b6ae07cf4b800eab0a7f706dd130d7753755137ac979",
+          "bytes": 817490
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-healing/tutorial-healing-dialog.png",
+          "sha256": "fd1a99de8b87bfe8a318014da1f9c8a5b99fc4554abfa3fb61e7a21c21bcc675",
+          "bytes": 501770
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-healing/tutorial-healing.json",
+          "sha256": "a7f6a857c75a2a806df4e67811172399670db4417125022e11491a2c6c940838",
+          "bytes": 13141
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-healing/tutorial-healing.png",
+          "sha256": "754d60091a719a6dfafd58587896b523daf475728e09d90f905929b3c6fcc869",
+          "bytes": 876637
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-introduction/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-introduction/tutorial-introduction-briefing.png",
+          "sha256": "9753b9c81a11460be65ec77430ace7fbac322ad9e5d4f100b72817f90721c25b",
+          "bytes": 822952
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-introduction/tutorial-introduction-dialog.png",
+          "sha256": "dc746bc714c00c7f168499e74c370ec9cb0c6623b183e7dc026782cae017c362",
+          "bytes": 499673
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-introduction/tutorial-introduction.json",
+          "sha256": "acfcc8c26d91c570df62c13d152bb0aeadf5f50a846fb0a7fc96e77a4d5c998c",
+          "bytes": 13146
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-introduction/tutorial-introduction.png",
+          "sha256": "0d012364011a7e3df66bbff98e0498607b593ba34acb3c6b2a11b1b92cce0711",
+          "bytes": 877268
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-schools/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-schools/tutorial-schools-briefing.png",
+          "sha256": "ad3ef9f3a729cbf55ae9541dac2d1c21da829ef7269fd8e427f3ef3451c04f6c",
+          "bytes": 832372
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-schools/tutorial-schools-dialog.png",
+          "sha256": "d71a75ba6e6002622fc068af1afd0ecd5e605ec2792258666582b7b6ac7d3663",
+          "bytes": 503322
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-schools/tutorial-schools.json",
+          "sha256": "892d31fa0030be66d9f0c30cd69f7237b7b83adc5edb70bb697bc46a853bc798",
+          "bytes": 13137
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-schools/tutorial-schools.png",
+          "sha256": "320bdc33da73a994a999db24dbf096a3355ed038f7a2ca59028d059c336560da",
+          "bytes": 877305
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-swimming/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-swimming/tutorial-swimming-briefing.png",
+          "sha256": "083162417c12226828b5fcfa8f1176cfae417685d4401effebfff53511fbd6be",
+          "bytes": 832631
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-swimming/tutorial-swimming-dialog.png",
+          "sha256": "2f349cc6e9c37a07f472d7bbb8270aab227cb15583a4c757dee7488a974124fc",
+          "bytes": 506304
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-swimming/tutorial-swimming.json",
+          "sha256": "206b68967bc84cfb111199e528eaa4769b6992ff759cdd1d9868d92955661fcb",
+          "bytes": 13148
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-swimming/tutorial-swimming.png",
+          "sha256": "90cc3245253864301ad49e2c81491c9fb116ff4328ae40d2d8480f2d651cd6b4",
+          "bytes": 882193
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-upgrades/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-upgrades/tutorial-upgrades-briefing.png",
+          "sha256": "c02068a08b93ce5367014de27b87d6860f5aaf370efe434580f83a0b1cd13a1f",
+          "bytes": 854751
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-upgrades/tutorial-upgrades-dialog.png",
+          "sha256": "e1de948ea3096029c6271ac84d99386dfbee66b939133669fd9cc533c39b2be3",
+          "bytes": 504544
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-upgrades/tutorial-upgrades.json",
+          "sha256": "48f9337c97bf95fd099ccd31f234d3d12f0c0ae0a6d878b135bc35daa065dc83",
+          "bytes": 13151
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-upgrades/tutorial-upgrades.png",
+          "sha256": "f68368b550090bd9af5bf98895e48ec4152fcec4cb9b3a9afea3454c1efb8f44",
+          "bytes": 903791
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-walking-training/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-walking-training/tutorial-walking-training-briefing.png",
+          "sha256": "563a1f89db69e01aef31488f747ee5ed4a7de4da6537632ff8d80b7316b1f21e",
+          "bytes": 818322
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-walking-training/tutorial-walking-training-dialog.png",
+          "sha256": "b40f3b0057e25ca09606df84f589d215b9e11298f136a9b01c87e9f3b2e8fcaa",
+          "bytes": 503869
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-walking-training/tutorial-walking-training.json",
+          "sha256": "e8ca85aec7f2132d0a7c85f79d79dc0779885aaf73e2aeec25c505564b3ee5da",
+          "bytes": 13201
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-walking-training/tutorial-walking-training.png",
+          "sha256": "47d4d8924f5ee61a03983739363d325e3003f767cc5cd0b7cbb4605949ed621d",
+          "bytes": 881000
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-warrior-training/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-warrior-training/tutorial-warrior-training-dialog.png",
+          "sha256": "16f14b575727485ecc8c620a3199de0dcded460fadd7b5aa6d7d30641ce305d8",
+          "bytes": 501500
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-warrior-training/tutorial-warrior-training.json",
+          "sha256": "5eacde87da42b8f1238eada262f569bbe51e1251f6cf15605db341c5051daa35",
+          "bytes": 13007
+        },
+        {
+          "path": "native-render-clean671/1280x900/tutorial-warrior-training/tutorial-warrior-training.png",
+          "sha256": "76af60e61456a59d38cc1f9ca5051d012ed0f5adec2cf25a53b5aab63c011ab5",
+          "bytes": 879212
+        },
+        {
+          "path": "native-render-clean671/diagnostics.json",
+          "sha256": "fa9b35315918ba46ce05f1161db7d9763198f1221e797a42ec3aa1de772f60c0",
+          "bytes": 1566762
+        },
+        {
+          "path": "native-render-clean671/final-head-production-carry.json",
+          "sha256": "b28b0a4f6011e6ad44a8cceae188f208ac6785f8ffb8fded5109235b2be012e8",
+          "bytes": 1083
+        },
+        {
+          "path": "native-render-clean671/overlay-equivalence.json",
+          "sha256": "2a3f484f8d5e6334ccf648ba9716180223fd4b94a30253029750f49f7ff3176e",
+          "bytes": 7798
+        },
+        {
+          "path": "native-render-clean671/runner.json",
+          "sha256": "e07b9a2d394d9f45fdbce7c5d583e55084e29c7a80b4553bf8e064a3f411acce",
+          "bytes": 8843
+        },
+        {
+          "path": "native-render-clean671/summary.json",
+          "sha256": "32d3fb41bc3bcb149e4fe830ac7268a7cefc5f334bf17c4db0b1b4d55dc57cbd",
+          "bytes": 5568
+        },
+        {
+          "path": "native-render-clean671/visual-inspections.json",
+          "sha256": "01db13d383517d007d2a0b5410d4876debc1a4485d9f12ff21a506fc406534b1",
+          "bytes": 15582
+        },
+        {
+          "path": "native-strip-provenance.json",
+          "sha256": "d91d835e094f4fa3cb3b5220a4fc97a11f0f573e0da413bba2a05b84f7aa2a12",
+          "bytes": 13979
+        },
+        {
+          "path": "previews/mr/metadata.json",
+          "sha256": "27747bf99edbfb7cda154c546efbf815e9098c318c7a4af60bd1732530c48951",
+          "bytes": 936
+        },
+        {
+          "path": "previews/mr/native.json",
+          "sha256": "7ecf6099aa43a96f2ed171641b282b32383ad3313f5e16475797726c08b3c364",
+          "bytes": 422706
+        },
+        {
+          "path": "previews/mr/online.json",
+          "sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+          "bytes": 347995
+        }
+      ],
+      "omissions": [
+        "This is a complete draft-overlay rendering check, not an independent normal registered/package startup check.",
+        "Literal placeholders and escaped paragraph controls in the matrix do not exhaust dynamic formatted-message combinations."
+      ]
+    },
+    "phone_rendering": {
+      "ready_for_documented_scope": true,
+      "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+      "catalog_sha256": {
+        "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+        "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+      },
+      "scope": "Complete catalog through the production Linux desktop harness at 390x844, with exact committed-native-overlay equivalence; matrices at 10/13/20px and 1x/2x plus real menus, gameplay and ten initial tutorial states.",
+      "evidence": [
+        {
+          "path": "checks/root-native-visual-review.json",
+          "sha256": "50e7173602dd7bfe1c294834689bd96864d9ffbc3a4e0420d91e7f7fe1a03313",
+          "bytes": 7004
+        },
+        {
+          "path": "native-render-clean671/390x844/game-diagnostics.json",
+          "sha256": "8961391ece70639d31f7d8c28848d559f5208be3af7804770f802eec6364416d",
+          "bytes": 12225
+        },
+        {
+          "path": "native-render-clean671/390x844/gameplay/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/gameplay/gameplay-dialog.png",
+          "sha256": "1ce7d380b333e1254034d84c55eca34671b0a2a84d814e5051a9a8797c2b7c88",
+          "bytes": 46913
+        },
+        {
+          "path": "native-render-clean671/390x844/gameplay/gameplay.json",
+          "sha256": "c8deef503e098c7e650f72eabf27637ff19e6c1e936323b964b74c200db8e182",
+          "bytes": 12681
+        },
+        {
+          "path": "native-render-clean671/390x844/gameplay/gameplay.png",
+          "sha256": "6ced00074a1c3732c2ecc5d8299e4f2333ca2991e9df84c94affbaed5dabb19e",
+          "bytes": 203082
+        },
+        {
+          "path": "native-render-clean671/390x844/lobby-players/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/lobby-players/lobby-players.json",
+          "sha256": "a68e9dfeaca24de5d06f29162ee01faaab6a45684303afac3347b948fe6f8a1e",
+          "bytes": 13764
+        },
+        {
+          "path": "native-render-clean671/390x844/lobby-players/lobby-players.png",
+          "sha256": "0b94e39a633d7775c3df6808a77a0db7a5978ddbd6d55d6e7e14eb76cc788c13",
+          "bytes": 49890
+        },
+        {
+          "path": "native-render-clean671/390x844/lobby/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/lobby/lobby.json",
+          "sha256": "e0bbb0c163afe6dff249aabe266be6baf4e2a6c6067c4cd97ff15ac2c2e010eb",
+          "bytes": 13492
+        },
+        {
+          "path": "native-render-clean671/390x844/lobby/lobby.png",
+          "sha256": "57b8baaf2eb80427a4b48271ad524a224345232615b6ba0108c00d799af5afbc",
+          "bytes": 46925
+        },
+        {
+          "path": "native-render-clean671/390x844/main/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/main/main.json",
+          "sha256": "d634f38323ae058e768568bc49ccc5aef23806788121441a44a55376778b8bdc",
+          "bytes": 11866
+        },
+        {
+          "path": "native-render-clean671/390x844/main/main.png",
+          "sha256": "4b577b3024f1b2ec7673695d9f29c702040457f5b17ec94250df3ef096b9738d",
+          "bytes": 346911
+        },
+        {
+          "path": "native-render-clean671/390x844/matrix/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/matrix/font-10-scale-1-page-107.png",
+          "sha256": "ac2eff650a0df60e2d24923a03a55357fccdb0a16c182fc64c5d3f538977c361",
+          "bytes": 46403
+        },
+        {
+          "path": "native-render-clean671/390x844/matrix/font-20-scale-2-page-058.png",
+          "sha256": "026b2c24c3f9a088d9843749fcfe18961da50fa56fa50390d7cae097bfb99cb7",
+          "bytes": 222095
+        },
+        {
+          "path": "native-render-clean671/390x844/matrix/font-matrix.json",
+          "sha256": "8bdee59350db36611aa6f4258221b864f5c5d74e2d55b583c21a331330e641d4",
+          "bytes": 32262674
+        },
+        {
+          "path": "native-render-clean671/390x844/matrix/matrix-diagnostics.json",
+          "sha256": "e9302db24a9728575fd63ae50695f6ce1c7f755fc480372a2badd534e62e16ba",
+          "bytes": 441066
+        },
+        {
+          "path": "native-render-clean671/390x844/settings-audio/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/settings-audio/settings-audio.json",
+          "sha256": "7facfe7e0169faabddb34a76e3c42edcd7b2ea9bcc55dfb800831775cef70c34",
+          "bytes": 11749
+        },
+        {
+          "path": "native-render-clean671/390x844/settings-audio/settings-audio.png",
+          "sha256": "d237e4ddc0047f225cbc521c64414f3f1bbdd9b12f09d47d8c206b86702b98b0",
+          "bytes": 42105
+        },
+        {
+          "path": "native-render-clean671/390x844/settings/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/settings/settings.json",
+          "sha256": "60cbf5485466451cec1ef2dde9a8689ab09dee817745f8b326c1b35c4cffdf74",
+          "bytes": 14743
+        },
+        {
+          "path": "native-render-clean671/390x844/settings/settings.png",
+          "sha256": "a673e33049fa29f9261b3f5f2bd0b82b2a8d3d09476d62b302a61d3384ffecbe",
+          "bytes": 71290
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-defensive-tactics/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-defensive-tactics/tutorial-defensive-tactics-dialog.png",
+          "sha256": "2845b47c7176f3554e3ab587a2dfffed1788a4212836291cfbd949ba823968f9",
+          "bytes": 78527
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-defensive-tactics/tutorial-defensive-tactics.json",
+          "sha256": "e161fee761bfa85f8349f570e4ea05f54270de8bfa693752ee7f036144f470c2",
+          "bytes": 13004
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-defensive-tactics/tutorial-defensive-tactics.png",
+          "sha256": "7cad7275490dbdb52830c40c38c7e29e46f7a9e3a9c7f8ac08595b11b1f3a3e1",
+          "bytes": 302138
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-food-supply/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-food-supply/tutorial-food-supply-dialog.png",
+          "sha256": "ae572af1722ef7d9a2199f608cd2ab98ed5b8dc9c53a92648a8fb76ab63d83f4",
+          "bytes": 77677
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-food-supply/tutorial-food-supply.json",
+          "sha256": "66c0d9e861ddf5790cca8aaa52d4375ccf2fab712eb30b74f3839b7a7510851f",
+          "bytes": 12938
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-food-supply/tutorial-food-supply.png",
+          "sha256": "a928bace4e49fccd33dce64024a7e39c0f01863672ffa987c111f843fbc0cea0",
+          "bytes": 297710
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-fortifications/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-fortifications/tutorial-fortifications-dialog.png",
+          "sha256": "c39e76102faf91e3d46a83143fbbf59f68f159fad8c7e59acb64c2716dd5df2d",
+          "bytes": 78564
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-fortifications/tutorial-fortifications.json",
+          "sha256": "19ebe65c89a86bbd2c77e6b10ac33b9205277192bae1b24d5de67edadca2a89a",
+          "bytes": 12986
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-fortifications/tutorial-fortifications.png",
+          "sha256": "70d9f68b9ff57b20941e6bb1988d1b3392adc54a75d7b8d5ac51cdfa3c977fcf",
+          "bytes": 299593
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-healing/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-healing/tutorial-healing-briefing.png",
+          "sha256": "696f26795d47063dd65e31f48076a6b31b097123158f1acef9a0740ca07279b3",
+          "bytes": 265221
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-healing/tutorial-healing-dialog.png",
+          "sha256": "b44d7ca02dae71985cff773ba9218770d5c6c45f3ec2088071534a16506be41d",
+          "bytes": 78636
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-healing/tutorial-healing.json",
+          "sha256": "086241905949aab8c019e4dfd882aa3c1e3e35cb2016f8e6655442e0e7e66c42",
+          "bytes": 13136
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-healing/tutorial-healing.png",
+          "sha256": "8b78de0f3b8ebe6f794446dafcb59541034c79f94f8b1f5b0f2959aca31b41a9",
+          "bytes": 289739
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-introduction/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-introduction/tutorial-introduction-briefing.png",
+          "sha256": "383e430e516e06471325109a4d97f2e243b8046d0373aefc2bf067bb79ba00fd",
+          "bytes": 270641
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-introduction/tutorial-introduction-dialog.png",
+          "sha256": "ac88945815ac2c84426c6c41dc054d4e19c34f2d62f3b47f5418d737bcbec8c5",
+          "bytes": 77648
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-introduction/tutorial-introduction.json",
+          "sha256": "fda663ed61d5a6164997cca0f6a06b607ddf34b1acddbc5175a9903721477165",
+          "bytes": 13141
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-introduction/tutorial-introduction.png",
+          "sha256": "6f0f2d8d870ffbd6438d27414c4dbc24fe4bbd02ba7140a84c794d7dc55f8582",
+          "bytes": 300946
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-schools/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-schools/tutorial-schools-dialog.png",
+          "sha256": "9af94fffc7bf610bed4137f2f1eb64c571989ed8960cd81e88e4061b9276284e",
+          "bytes": 80620
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-schools/tutorial-schools.json",
+          "sha256": "9a56672182cb22f0c5052d629475cfe631909ef30fee3847068610c09449de9a",
+          "bytes": 12942
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-schools/tutorial-schools.png",
+          "sha256": "6f490cc207d8ed80b1ccf056a0aa746a20f748055ba2d4a159191cef0cbacf88",
+          "bytes": 302131
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-swimming/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-swimming/tutorial-swimming-briefing.png",
+          "sha256": "3bcea11cb0da30ac897f5bd0c6ad0f541ef2660a73f24ee76c996c3477d129fb",
+          "bytes": 268922
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-swimming/tutorial-swimming-dialog.png",
+          "sha256": "e4dd5009f95ecdfbe4ed4d6c2f3a757b5ada706f7ffac6ecf4adc69a3b15546e",
+          "bytes": 78588
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-swimming/tutorial-swimming.json",
+          "sha256": "e9a1f6453709fea4aa21d40e7a6ce90a45f4d0c62febb1779c026b21bdf5865b",
+          "bytes": 13143
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-swimming/tutorial-swimming.png",
+          "sha256": "7b0ab057b68bf74c100fc6f1e032d37f0498660720d64bb7cdac8e7ad34ce0c6",
+          "bytes": 303371
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-upgrades/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-upgrades/tutorial-upgrades-dialog.png",
+          "sha256": "9dd414b0778891df0fd968b0c74dbc319916a5b5536aa5553be85b1ef51eea40",
+          "bytes": 78159
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-upgrades/tutorial-upgrades.json",
+          "sha256": "7d7350d2ae081f2d194e927b1e84decc120d439fbf46dd5417be3eec65a9b5f0",
+          "bytes": 12955
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-upgrades/tutorial-upgrades.png",
+          "sha256": "182e2fbfb26617056adffa4568114ed697781b5ffcd10674f828979301e659a8",
+          "bytes": 285819
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-walking-training/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-walking-training/tutorial-walking-training-dialog.png",
+          "sha256": "aacf60a054da568f4dfae21b8767a53af0cf29f37ce8940dbee042c5dd966023",
+          "bytes": 80488
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-walking-training/tutorial-walking-training.json",
+          "sha256": "32cc22aa77db0e19934729052d86455c3b6fded18e241a07f5bc6cb4ea515384",
+          "bytes": 12997
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-walking-training/tutorial-walking-training.png",
+          "sha256": "3ba5849b21ec9d41db137277081bebf6066acca0c03f2b3c2a9b7f611d328ba4",
+          "bytes": 314892
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-warrior-training/draft-overlay.txt",
+          "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+          "bytes": 395451
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-warrior-training/tutorial-warrior-training-briefing.png",
+          "sha256": "e5e024a0edc51375583ab32394d2cfd2c256e87631475a661ddfcd5c738da383",
+          "bytes": 278036
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-warrior-training/tutorial-warrior-training-dialog.png",
+          "sha256": "24492a13a7499769ece147fa1296f0d69464f30ca8d7bb15eceede5d0c1d0175",
+          "bytes": 80525
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-warrior-training/tutorial-warrior-training.json",
+          "sha256": "09ea748fc96636078d9db64bef732bf8944f4fd82343c4de387ea5277cff7f2c",
+          "bytes": 13196
+        },
+        {
+          "path": "native-render-clean671/390x844/tutorial-warrior-training/tutorial-warrior-training.png",
+          "sha256": "9193d936598a1165cc931bc163616c477e969db103ac2966a698156061a5fdca",
+          "bytes": 318518
+        },
+        {
+          "path": "native-render-clean671/diagnostics.json",
+          "sha256": "fa9b35315918ba46ce05f1161db7d9763198f1221e797a42ec3aa1de772f60c0",
+          "bytes": 1566762
+        },
+        {
+          "path": "native-render-clean671/final-head-production-carry.json",
+          "sha256": "b28b0a4f6011e6ad44a8cceae188f208ac6785f8ffb8fded5109235b2be012e8",
+          "bytes": 1083
+        },
+        {
+          "path": "native-render-clean671/overlay-equivalence.json",
+          "sha256": "2a3f484f8d5e6334ccf648ba9716180223fd4b94a30253029750f49f7ff3176e",
+          "bytes": 7798
+        },
+        {
+          "path": "native-render-clean671/runner.json",
+          "sha256": "e07b9a2d394d9f45fdbce7c5d583e55084e29c7a80b4553bf8e064a3f411acce",
+          "bytes": 8843
+        },
+        {
+          "path": "native-render-clean671/summary.json",
+          "sha256": "32d3fb41bc3bcb149e4fe830ac7268a7cefc5f334bf17c4db0b1b4d55dc57cbd",
+          "bytes": 5568
+        },
+        {
+          "path": "native-render-clean671/visual-inspections.json",
+          "sha256": "01db13d383517d007d2a0b5410d4876debc1a4485d9f12ff21a506fc406534b1",
+          "bytes": 15582
+        },
+        {
+          "path": "native-strip-provenance.json",
+          "sha256": "d91d835e094f4fa3cb3b5220a4fc97a11f0f573e0da413bba2a05b84f7aa2a12",
+          "bytes": 13979
+        },
+        {
+          "path": "previews/mr/metadata.json",
+          "sha256": "27747bf99edbfb7cda154c546efbf815e9098c318c7a4af60bd1732530c48951",
+          "bytes": 936
+        },
+        {
+          "path": "previews/mr/native.json",
+          "sha256": "7ecf6099aa43a96f2ed171641b282b32383ad3313f5e16475797726c08b3c364",
+          "bytes": 422706
+        },
+        {
+          "path": "previews/mr/online.json",
+          "sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+          "bytes": 347995
+        }
+      ],
+      "omissions": [
+        "This is a complete draft-overlay rendering check, not an independent normal registered/package startup check.",
+        "Literal placeholders and escaped paragraph controls in the matrix do not exhaust dynamic formatted-message combinations.",
+        "Compact phone presentation on Linux does not establish Android/iOS device rendering or touch hardware."
+      ]
+    }
+  },
+  "linux_native_check_inputs": {
+    "ready_for_linux_scope": true,
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+    "catalog_sha256": {
+      "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+      "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+    },
+    "result": "15 registered cases passed: 9 FontKerning and 6 SystemLanguage; all 34 production-harness capture jobs passed.",
+    "evidence": [
+      {
+        "path": "native-focused-provenance.json",
+        "sha256": "a4cb14c446b36b79dac191528ab1f589ad99ea8ffe566410e73b2b749b114e80",
+        "bytes": 1426
+      },
+      {
+        "path": "native-focused-build-commands.json",
+        "sha256": "e83fc3172b79ca7f43264f481cd0577f738983de2c795a540836cd88e9dc07a8",
+        "bytes": 65117
+      },
+      {
+        "path": "native-focused-results/junit.xml",
+        "sha256": "2fbfcd9319cde4aede8065ea5d8a36775ae4376590b85698c1df16bba5c27f1b",
+        "bytes": 2266
+      },
+      {
+        "path": "native-focused-run.log",
+        "sha256": "02e7d25684faa461d277e7acae34dbb8a2761c36848b5d78cfe588f3469e344d",
+        "bytes": 1469
+      },
+      {
+        "path": "native-focused-producer.log",
+        "sha256": "f3131c7bf31c1ba54acda1503fbf2b6e8ebfad10aefc530df728d3d828020a30",
+        "bytes": 2144
+      },
+      {
+        "path": "native-focused-build.log",
+        "sha256": "69a854ce99c7f7d012919c3cb242dac435be8f2b066c03d923086514ef6cebce",
+        "bytes": 8216
+      },
+      {
+        "path": "native-focused-link.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "native-harness-clean671.log",
+        "sha256": "27a4c7ad2164647b1789c25aef3e200532cb142956a9d108c5a5cb3043003379",
+        "bytes": 62738
+      },
+      {
+        "path": "native-render-clean671/final-head-production-carry.json",
+        "sha256": "b28b0a4f6011e6ad44a8cceae188f208ac6785f8ffb8fded5109235b2be012e8",
+        "bytes": 1083
+      }
+    ],
+    "limits": [
+      "The unrelated full native unit/engine aggregate was not completed.",
+      "The executed harness copy was stripped; allocated sections/program headers/entry are proven unchanged, and its own executable hash is recorded."
+    ]
+  },
+  "platform_coverage_disposition": {
+    "Linux": "Completed scoped native checks and rendering; evidence ready for assembly.",
+    "Windows": "Native runtime execution unverified. Do not describe as tested.",
+    "macOS": "Native runtime execution unverified. Apple resource contracts run on Linux do not establish macOS rendering.",
+    "iOS": "Native runtime and OS permission dialog rendering unverified. Compact Linux captures and .lproj contracts are not iOS device evidence.",
+    "Android": "Final release-package/emulator gate remains pending here; add only actual completed Android evidence from its owning agent.",
+    "browser_game": "Release serial/threaded WASM startup and the 12 actual game-runtime cases remain pending here. Online-app tests below do not substitute."
+  },
+  "completed_online_app_references": {
+    "scope": "Online application only, across Chromium/Firefox/WebKit at desktop/phone widths.",
+    "Chromium": "Five initial successes plus one successful focused capture retry complete six authored cases; the initial screenshot-protocol failure remains recorded.",
+    "Firefox_WebKit": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "source_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a"
+    },
+    "initial_Chromium_revision": "c9d772635398c57582069b58208eb337cee2787b",
+    "evidence": [
+      {
+        "path": "checks/online-cross-browser-results.json",
+        "sha256": "bcadf9c1bbcdfa8eeba12138b5657fd06cc12f4cac0bb7cd51460a04a4fca0e3",
+        "bytes": 3852047
+      },
+      {
+        "path": "checks/web-cross-browser-visual-review.json",
+        "sha256": "e5e10777eb1cc1f5948a912a25385e603436f89f04ded3e69ee43bbb8221974b",
+        "bytes": 1271
+      },
+      {
+        "path": "compact-picker-desktop-capture-recheck.log",
+        "sha256": "42d324ddccc81f594a83cebf4ea87a7d0adc79892d9c0d49e97d6392743dabb4",
+        "bytes": 609
+      },
+      {
+        "path": "web-cross-browser-provenance.json",
+        "sha256": "4367857d10957d41990cff426899f3c570344e91efe3a515d6b71a23701ea28b",
+        "bytes": 60534
+      },
+      {
+        "path": "web-cross-browser-screenshots/firefox-desktop/mr-home.png",
+        "sha256": "209f1eec74f6f3c60214bfb542ac59b6f13812bf5154ed802b23857fd4c8f064",
+        "bytes": 1042716
+      },
+      {
+        "path": "web-cross-browser-screenshots/firefox-phone/mr-home.png",
+        "sha256": "726a6793a783ef9b8d1e1f32e2360aedb885c06e4a6b821fff8ef12e6ba6ede2",
+        "bytes": 448605
+      },
+      {
+        "path": "web-cross-browser-screenshots/webkit-desktop/mr-home.png",
+        "sha256": "485d6a3787359805912cc5160e26c00d99d7336f03a220fe230bc7a20a58e6c6",
+        "bytes": 968955
+      },
+      {
+        "path": "web-cross-browser-screenshots/webkit-phone/mr-home.png",
+        "sha256": "5cef6f6a0c9912259037911c1680713078c295ee98c8bcc0f9edaf0463550d92",
+        "bytes": 418955
+      },
+      {
+        "path": "web-marathi-e2e.log",
+        "sha256": "55e131fd011d07941659ca90770051b9f5b90e1bf229c9269d29b876da2b850d",
+        "bytes": 3602
+      },
+      {
+        "path": "web-screenshots/desktop/mr-home.png",
+        "sha256": "c0015db5d25cc81c0e2e9737592ea60239dd5b57e6359adc046c0a5d1c89ccb0",
+        "bytes": 351086
+      },
+      {
+        "path": "web-screenshots/phone/mr-home.png",
+        "sha256": "f3b7d30b1bd2ad612c4493023cd7d4f70d95d21949b6d96865edb0a4a680609b",
+        "bytes": 1220520
+      },
+      {
+        "path": "web-test-server-identity.json",
+        "sha256": "b6025a98d741dfec51ca7da320d29eb05a669d74ff6895c74bea8597e2d7d0d2",
+        "bytes": 283
+      },
+      {
+        "path": "web-visual-review.json",
+        "sha256": "d6b28c7098cf12d49a91d1c8ba54fb40c08ba1176186d8b8b2719fc6903303b6",
+        "bytes": 1538
+      }
+    ],
+    "limits": [
+      "Playwright WebKit on Linux is not Safari on macOS/iOS.",
+      "These results concern the online React application, not the WASM game package or browser game startup.",
+      "Retain initial producer revisions and exact unchanged-production-input carry proofs; do not relabel executed builds as the validation HEAD."
+    ],
+    "unchanged_runtime_source_carry": {
+      "from": "c9d772635398c57582069b58208eb337cee2787b",
+      "to": "ba890db53e67617fb3cb1033c157ca578781196e",
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "c9d772635398c57582069b58208eb337cee2787b",
+        "ba890db53e67617fb3cb1033c157ca578781196e",
+        "--",
+        "platform/apps/web/src",
+        "platform/apps/web/public",
+        "platform/packages/i18n/src",
+        "platform/packages/i18n/locales",
+        "data/fonts"
+      ],
+      "exit_code": 0,
+      "diff_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "scope": [
+        "platform/apps/web/src",
+        "platform/apps/web/public",
+        "platform/packages/i18n/src",
+        "platform/packages/i18n/locales",
+        "data/fonts"
+      ],
+      "interpretation": "The listed online UI, font and i18n runtime inputs are unchanged. This source carry proof does not relabel the original executed Chromium build or replace its recorded artifact identity."
+    }
+  },
+  "current_review_gate_hash_audit": {
+    "review_record": {
+      "path": "reviews/mr.json",
+      "sha256": "697c54a41e2895148ba3c5f55c8d86beb76c9245251309bcf25c429ae5dc528c",
+      "bytes": 1215963
+    },
+    "stale_hash_references": [
+      {
+        "location": "reviews/mr.json/gates/structural/evidence/4",
+        "path": "registration-checks.json",
+        "recorded_sha256": "74d6147e57dcfb24c052b0361effca3102efbbf6a94a2ac55eb4ebab73547225",
+        "current_sha256": "1f4d665cbd72b791392f03d0d062d73dca68fadb368b183ac618ce170d3f3f47"
+      }
+    ],
+    "other_nested_review_hashes": "All other recursive path+sha256 references currently match.",
+    "current_pending_gate_names": [
+      "desktop_rendering",
+      "phone_rendering",
+      "browser_startup",
+      "native_platforms",
+      "browser_platforms",
+      "mobile_platforms"
+    ],
+    "final_verification": {
+      "path": "final-verification.json",
+      "sha256": "87dcfea537b9971395fe670a2799c5846610f4500a09208c03897274be464eb9",
+      "bytes": 2871
+    },
+    "final_verification_stale_hashes": [],
+    "final_verification_pending_list": [
+      "native actual full matrix/screens and focused registered cases",
+      "both release WASM variants and actual browser UI",
+      "Android release package and emulator UI"
+    ]
+  },
+  "final_audit_refresh_required": [
+    "Rebind structural gate registration-checks.json to its final stable bytes; currently its recorded hash is stale. Re-run its actual contract/registration check if inputs change.",
+    "Assemble desktop_rendering and phone_rendering evidence with the frozen source/catalog hashes and the explicit overlay/format/platform limits in this recommendation.",
+    "Treat native_platforms coverage as Linux-only with named Windows/macOS omissions; root must explicitly record the accepted coverage scope rather than infer other platforms passed.",
+    "Keep browser_startup/browser_platforms/mobile_platforms pending until the actual serial/threaded browser-game and final Android results are complete. Do not promote online-app checks into those game/package gates.",
+    "Refresh final-verification.json: the existing hash references are intact, but its pending list still names native rendering/checks already completed and omits the newly completed native/online evidence. Preserve 671 as the executed producer and add validation HEAD plus exact carry proofs.",
+    "Once the remaining runs finish, refresh hashes of every newly referenced mutable log/report, then run translation_program status/audit against the exact final sources and catalogs. Current linguistic batch/catalog bindings remain valid unless those catalogs change.",
+    "Refresh EVIDENCE.md pending/runtime coverage and final publication inventory only after actual completion; the b4 checkpoint accurately leaves package/runtime gates pending. If this recommendation itself becomes formal evidence, explicitly include native-gate-inputs.json in the final publisher inventory and bind its final hash."
+  ],
+  "evidence_stability": "All referenced completed native files are stable. Ongoing browser-game/Android logs are deliberately excluded.",
+  "review_file_unchanged_sha256": "697c54a41e2895148ba3c5f55c8d86beb76c9245251309bcf25c429ae5dc528c"
+}

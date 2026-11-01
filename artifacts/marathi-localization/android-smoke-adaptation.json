@@ -2,12 +2,14 @@
   "original_script": "mobile/smoke.py",
   "original_sha256": "f8f6d9240a0bd1bffbfe7c74dc460e3bd8c9a8cb21baff534d942ba968e545bd",
   "adapted_script": "artifacts/marathi-localization/android_smoke_task.py",
-  "adapted_sha256": "577f1891518f2366d8188d5156e4162453bd7e08ffcc943efed2a1a58a8729ec",
+  "adapted_sha256": "4d175d6b684ec3ebd5253349b81008aed21386ef382f37fd4816143d2ea412d5",
   "modifications": [
     "Only tasklocalcopy; explicitworkspace ROOT/import path",
     "Use ro.boot.qemu.avd_name equivalent ownership property because emu console replies are empty on isolatedserver",
     "Require system locale mr-IN and saved native profile language=mr",
-    "Increase actualscreen wait90to180 seconds for first-run assetpreparation under hostcontention"
+    "Increase actualscreen wait90to180 seconds for first-run assetpreparation under hostcontention",
+    "Handle actual IntroductionOfferScreen after Audio/Hand with KEYCODE_ESCAPE; capture its Marathi UI and log first, then await real MainMenu. Uses actual intro/menu binding and production preference persistence; no direct profile edits.",
+    "Capture both actual AudioPreferenceScreen and HandPreferenceScreen before real focus/accept choices, alongside the IntroOffer image, for Marathi first-run text visual QA."
   ],
   "intended_command": [
     "python3",
@@ -20,5 +22,9 @@
     "15187",
     "--output",
     "build/mobile-smoke-marathi"
-  ]
+  ],
+  "introduction_offer_sources": {
+    "src/app/Application.cpp": "16bb2a9d58c1aac0ea428314f16236fa61f7477adbe58e580cc22669a42746ff",
+    "src/ui/screens/IntroductionOfferScreen.h": "8fe12f2298f9e3be780bb689ae99e0dfce9508a77a70091b55885343444f04a2"
+  }
 }

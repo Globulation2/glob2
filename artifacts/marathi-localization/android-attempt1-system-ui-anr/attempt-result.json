@@ -1,0 +1,15 @@
+{
+  "classification": "Emulator SystemUI ANR blocked native application UI; no product rendering success claimed",
+  "original_frames_preserved": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android-attempt1-system-ui-anr",
+  "actions": [
+    "Stopped only current task smoke driver",
+    "Saved last ANR/activity/logcat evidence",
+    "Force-stopped only task Glob2 app",
+    "Tapped actual visible SystemUI Wait option at170,460 on390x844 capture"
+  ],
+  "native_screen_log_seen": "Glob2 screen ready:21AudioPreferenceScreen",
+  "next": "Inspect after-wait capture, then real fresh-profile retry without holding overlay",
+  "last_anr_diagnostic": "dumpsys activity lastanr reports no ANR since boot; classification is based on the actual visible System UI dialog, not an inferred Glob2 crash.",
+  "after_wait_actual_image_review": "Dialog dismissed; launcher is visible and responsive. No app-rendering success claimed.",
+  "lifecycle_interruption": "Task smoke process was intentionally terminated before more input could reach the system modal; this is not a completed product smoke result."
+}

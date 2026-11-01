@@ -1,0 +1,18 @@
+{
+  "reviewer": "/root",
+  "final_official_build_head": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "observations": [
+    {
+      "path": "artifacts/marathi-localization/android-rendering/lifecycle/startup.png",
+      "sha256": "be6043f9faef92b754ecac52763d0cd00d9e30f542e8569391cef40becbcec3e",
+      "finding": "Actually inspected real Android release-engine frame: clear joined Marathi and intact vowel marks, responsive labels/paragraphs fit or wrap within the visible viewport. No visible tofu, clipping or overlap; settings confirmation remains above system navigation."
+    },
+    {
+      "path": "artifacts/marathi-localization/android-rendering/lifecycle/settings.png",
+      "sha256": "01e94060f88f9ba40618ed1c184bae80ffef5484e568f087094df6c8455a12f9",
+      "finding": "Actually inspected real Android release-engine frame: clear joined Marathi and intact vowel marks, responsive labels/paragraphs fit or wrap within the visible viewport. No visible tofu, clipping or overlap; settings confirmation remains above system navigation."
+    }
+  ],
+  "startup_resource_visual": "root-startup-visual-review.json",
+  "scope": "Actual task-owned API35x86_64 Android emulator; source PNGs inspected in build/mobile-smoke-marathi and verified byte-identical to retained copies. No physical-device or Apple runtime claim."
+}

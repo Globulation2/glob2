@@ -1,0 +1,7 @@
+Waiting for own verified release APK
+Running native Marathi startup/settings/lifecycle smoke
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android_validate_release.py", line 73, in <module>
+    report['lifecycle_exit_code']=result;(out/'apk-and-install.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n');assert result==0,'Android smoke failed; inspect retained lifecycle result/log/images'
+                                                                                                                                             ^^^^^^^^^
+AssertionError: Android smoke failed; inspect retained lifecycle result/log/images

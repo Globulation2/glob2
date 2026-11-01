@@ -1,0 +1,67 @@
+{
+  "reviewer": "/root/locale_integration",
+  "actual_image_reads": {
+    "android-rendering/lifecycle/first-run-AudioPreferenceScreen.png": "28c95f8d5468a1515879b584760c6681dd41fa7c07037ba2e76ab086a71a1624",
+    "android-rendering/lifecycle/first-run-HandPreferenceScreen.png": "c4784d785cafac20c87c5791da0cc2c60b29cfe964f0dc8acef0dfbf89869f22",
+    "android-rendering/lifecycle/introduction-offer.png": "7dacbc0633844c5c6685ccc5e808aa06ea512865492e4a515bd2e5b98f589473",
+    "android-rendering/lifecycle/startup.png": "be6043f9faef92b754ecac52763d0cd00d9e30f542e8569391cef40becbcec3e",
+    "android-rendering/lifecycle/settings.png": "01e94060f88f9ba40618ed1c184bae80ffef5484e568f087094df6c8455a12f9",
+    "android-rendering/lifecycle/resumed.png": "d84296960d85d3ad9acd6c86fa3bb72d94fb136c6d1e9352674680f444de4e4e",
+    "android-rendering/lifecycle/rotation-1.png": "ae2ad21a2c20f2868abd48dacca1de7528c22eeb7a260821426c3ed7a319e429",
+    "android-rendering/lifecycle/rotation-0.png": "cc92c81f5d270b94f6876b8300c4010c8981ac838a36730a33619503f435f3e2",
+    "android-rendering/lifecycle/relaunched.png": "1098d9f30b2948c8d80e11fb4e54062485cc05ee9740444e69e3df7cb133c8ff",
+    "android-rendering/first-run-00.png": "6a7574b0efdbd379bc3b7c176d9436db4f21e4d417975ae2f985e79c0cbe92dd",
+    "android-rendering/first-run-03.png": "ffab89b2a6eff4ef1465c4f3b8c06bdd6a949361bf226e4a448a480a710b7688",
+    "android-rendering/first-run-09.png": "34883471124062072ba10308ae4307947f8b0e007710fbc57646e10fb994948a"
+  },
+  "final_official_producer_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "initial_native_producer_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+  "producer_proof": "android-final-producer-provenance.json",
+  "unsigned_apk_sha256": "b2be7a19831e9c1bed3b906b0dd99f56cd887cb14f2d30d10793b47a324e044f",
+  "signed_apk_sha256": "71c047ec0b5d045c5a29257679accdc637656a1a0ab9687114d1a6b2dd66f2f2",
+  "device": {
+    "avd": "glob2-api35-x64",
+    "serial": "emulator-5678",
+    "adb_port": 15187,
+    "system_locale": "mr-IN",
+    "viewports_observed": [
+      "390x844 portrait",
+      "844x390 landscape"
+    ]
+  },
+  "observations": [
+    "Real Java asset-preparation spinner/status shows reviewed खेळाची तयारी सुरू आहे… with intact Devanagari and no clipping.",
+    "Native Audio/Hand/IntroductionOffer screens show readable Marathi headings, paragraphs, hints and full button labels.",
+    "Main menu, Settings and post-resume/relaunch screens preserve clear Devanagari shaping and fit the phone viewport; long text wraps and scrolls correctly.",
+    "Landscape and portrait layouts render Marathi without missing glyphs or clipped vowel marks."
+  ],
+  "functional_checks": [
+    "native startup and bundled assets",
+    "settings input and dismissal",
+    "mr-IN system locale selects and saves native mr catalog",
+    "retained-process background/resume",
+    "landscape/portrait rotation",
+    "force-stop and fresh-process relaunch",
+    "application profile persistence"
+  ],
+  "saved_locale_evidence": "language=mr in lifecycle/marathi-preferences-before.txt; full profile bytehash list unchanged across lifecycle/relaunch",
+  "actual_first_run_capture_budget": {
+    "maximum_frames": 10,
+    "target_interval_seconds": 0.5,
+    "byte_cap": 12582912,
+    "maximum_capture_span_seconds": 6.0,
+    "actual_capture_bytes": 172209,
+    "not_stored_due_to_cap": [],
+    "capture_errors": [],
+    "not_attempted_due_to_deadline": 0,
+    "actual_span_seconds": 5.202931054001965
+  },
+  "excluded_environment_failure": "Initial SystemUI-not-responding modal frames and deliberate test interruption are retained under android-attempt1-system-ui-anr; excluded from app success. Wait dismissed only that task-owned OS dialog before an authentic fresh-profile retry.",
+  "environment_fix": "Existing pinned JDK/bin added to QA PATH because apksigner launches java from PATH; no dependency or production change. Initial failure retained.",
+  "findings": [],
+  "limits": [
+    "Actual runtime verification is on API35 x86_64 task-owned Android emulator, not physical Android hardware.",
+    "This record does not establish Apple permission-dialog runtime behavior."
+  ],
+  "certification": "Agent visual and functional verification, not native-human certification"
+}

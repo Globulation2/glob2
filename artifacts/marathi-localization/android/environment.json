@@ -1,0 +1,6 @@
+{
+  "ANDROID_SDK_ROOT": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk",
+  "ANDROID_AVD_HOME": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android/avds",
+  "ANDROID_USER_HOME": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android/user",
+  "JAVA_HOME": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1"
+}

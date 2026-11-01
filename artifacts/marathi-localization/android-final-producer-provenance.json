@@ -1,0 +1,69 @@
+{
+  "initial_native_producer_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+  "initial_provenance": "android-initial-producer-provenance.json",
+  "initial_working_tree_status_capture": "Not captured at initial native build launch; initial HEAD is retained without asserting a clean producer snapshot",
+  "final_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "intermediate_resource_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "test_only_followup_approval": {
+    "initial_native_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+    "intermediate_resource_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+    "approved_final_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+    "changed_paths": [
+      "test/build_system/test_apple_localizations.py"
+    ],
+    "actual_diff": "diff --git a/test/build_system/test_apple_localizations.py b/test/build_system/test_apple_localizations.py\nindex 76eeb3b77a..666979738f 100644\n--- a/test/build_system/test_apple_localizations.py\n+++ b/test/build_system/test_apple_localizations.py\n@@ -5,6 +5,7 @@ Apple's language selection or permission UI.\n \"\"\"\n import contextlib\n import ast\n+import importlib.util\n import json\n from pathlib import Path\n import plistlib\n@@ -22,9 +23,7 @@ sys.path.insert(0, str(ROOT))\n sys.path.insert(0, str(ROOT / 'mobile'))\n sys.path.insert(0, str(ROOT / 'scons'))\n import ios\n-import bundle\n from apple_localizations import localization_files\n-from SCons.Script import Environment\n \n \n def strings(path):\n@@ -43,6 +42,10 @@ class AppleLocalizationTests(unittest.TestCase):\n         return directories\n \n     def test_macos_bundle_copies_declared_localizations_and_tracks_them(self):\n+        if importlib.util.find_spec('SCons') is None:\n+            self.skipTest('SCons is required for the macOS bundle-copy contract')\n+        import bundle\n+        from SCons.Script import Environment\n         with tempfile.TemporaryDirectory() as temporary:\n             root = Path(temporary)\n             directories = self.fixture(root)",
+    "actual_diff_sha256": "49db555654e70f66054abd658bb87491ea6a8441989cb986fc78874822627843",
+    "production_blob_trees_identical": true,
+    "production_blob_trees": "100644 blob aafd0f766c39c47a27a6e5ec47a10ee2c97ca285\tSConstruct\n040000 tree 49cabccd1794739a84719a4d4f16bca85c5ac229\tbrowser\n040000 tree de68f9069b020b6879ef722dd70f5d1a40e52321\tdata\n040000 tree 33216bab3e196b4d207b6ce33d506fec80ce98b5\tlibgag\n040000 tree 2216123e02aa49910664a407b4c25a7f1ceb83f6\tlibusl\n040000 tree e1e8cd07699489c56d4e27eb0939716088f482e5\tmobile\n040000 tree 7862a2307d045fc2b8d63f36afe35061cdcb289e\tplatform\n040000 tree 0dc1578557cfce66b6066535dc1dd9df50f54a2f\tscons\n040000 tree f9f4b6ef20c26bbc0edaa4dcab0523f470d15a07\tsrc\n040000 tree b7725e164863bde4e27157033608b7a721aa9243\tthird_party\n100644 blob 7f83380ff0601dff3c7d71f9139e66d3a2e02390\tvcpkg.json",
+    "proof": "Exact repository diff changes only lazy SCons imports and skips only the SCons-dependent test when unavailable. All other tracked files, production code, build definitions, catalogs, fonts and resources are identical to671.",
+    "source_status": "clean"
+  },
+  "final_source_tree_status_before": "",
+  "final_source_git_trees": "100644 blob aafd0f766c39c47a27a6e5ec47a10ee2c97ca285\tSConstruct\n040000 tree de68f9069b020b6879ef722dd70f5d1a40e52321\tdata\n040000 tree 33216bab3e196b4d207b6ce33d506fec80ce98b5\tlibgag\n040000 tree 2216123e02aa49910664a407b4c25a7f1ceb83f6\tlibusl\n040000 tree e1e8cd07699489c56d4e27eb0939716088f482e5\tmobile\n040000 tree 0dc1578557cfce66b6066535dc1dd9df50f54a2f\tscons\n040000 tree f9f4b6ef20c26bbc0edaa4dcab0523f470d15a07\tsrc\n040000 tree b7725e164863bde4e27157033608b7a721aa9243\tthird_party",
+  "native_runtime_changes_since_initial_producer": [],
+  "command": [
+    "python3",
+    "mobile/android.py",
+    "build",
+    "--arch",
+    "x86_64",
+    "--release",
+    "--jobs",
+    "6"
+  ],
+  "state": "verified final clean official build",
+  "notes": [
+    "Earlier objects retain their earlier production history. The final official build may reuse them only after SCons validates current inputs; no older producer is relabeled.",
+    "Final configuration copies current Android sources/resources and reruns Gradle packaging."
+  ],
+  "recording_prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-21a7b3edb8fa00934855eb1c/prefix",
+  "application_build_exit_code": 0,
+  "objects": {
+    "before_count": 774,
+    "after_count": 774,
+    "unchanged_object_bytes": 774,
+    "changed_or_new": [],
+    "before_manifest_sha256": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f",
+    "after_manifest_sha256": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f"
+  },
+  "final_action_counts": {
+    "printed_compile_commands": 0,
+    "note": "Unchanged object hashes establish byte identity, not whether the compiler was invoked; consult final official action log for actual reuse/recompilation."
+  },
+  "apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+    "sha256": "b2be7a19831e9c1bed3b906b0dd99f56cd887cb14f2d30d10793b47a324e044f",
+    "recording_license_files_verified_sha256": {
+      "sources.json": "264d868e3eb117595546456250ccfefd99203355ac74d0dbd68eab53d5db5629",
+      "configuration.json": "4f5926c1c5a11d34b06c2cd121ce2647c2a98b3f44a5ae511fffbad702f6c982",
+      "nvEncodeAPI.h": "4fe4094541ef0f8a13249d97a8692dc5f835a6e9dd42eeadb3e2f7321d54dc7e",
+      "x264-COPYING": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670",
+      "ffmpeg-COPYING.LGPLv2.1": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30",
+      "ffmpeg-COPYING.GPLv2": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "ffmpeg-COPYING.LGPLv3": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+      "ffmpeg-COPYING.GPLv3": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    }
+  },
+  "staged_marathi_xml_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "final_source_tree_status_after": ""
+}

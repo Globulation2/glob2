@@ -1,0 +1,99 @@
+{
+  "recommendation": "Android-specific local verification passes; no Android blocker found. Overall merge recommendation remains with root while browser verification is still pending.",
+  "source_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "initial_native_producer_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+  "intermediate_resource_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "producer_limits": "The initial native build did not capture a clean working-tree snapshot; it remains labeled6e. Final official incremental build validated cleanba890 with explicit unchanged production-input proof from671;774 object bytes remained identical. This does not claim774 objects were newly compiled atba890.",
+  "unsigned_apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+    "sha256": "b2be7a19831e9c1bed3b906b0dd99f56cd887cb14f2d30d10793b47a324e044f"
+  },
+  "developer_signed_release_apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk",
+    "sha256": "71c047ec0b5d045c5a29257679accdc637656a1a0ab9687114d1a6b2dd66f2f2",
+    "note": "Release engine with task-owned development signing key for emulator install; not a production-signed distribution."
+  },
+  "symbol_build_id": "74ea34c83072ada6c5baf8e50917e2772238e830",
+  "packaged_assets_sha256": {
+    "assets/glob2-bundle/data/texts.mr.txt": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+  },
+  "compiled_marathi_startup_resource_line": "      (mr) \"खेळाची तयारी सुरू आहे…\"",
+  "source_marathi_xml_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "recording_license_files_verified_sha256": {
+    "sources.json": "264d868e3eb117595546456250ccfefd99203355ac74d0dbd68eab53d5db5629",
+    "configuration.json": "4f5926c1c5a11d34b06c2cd121ce2647c2a98b3f44a5ae511fffbad702f6c982",
+    "nvEncodeAPI.h": "4fe4094541ef0f8a13249d97a8692dc5f835a6e9dd42eeadb3e2f7321d54dc7e",
+    "x264-COPYING": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670",
+    "ffmpeg-COPYING.LGPLv2.1": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30",
+    "ffmpeg-COPYING.GPLv2": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    "ffmpeg-COPYING.LGPLv3": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "ffmpeg-COPYING.GPLv3": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+  },
+  "functional_checks": [
+    "native startup and bundled assets",
+    "settings input and dismissal",
+    "mr-IN system locale selects and saves native mr catalog",
+    "retained-process background/resume",
+    "landscape/portrait rotation",
+    "force-stop and fresh-process relaunch",
+    "application profile persistence"
+  ],
+  "actual_image_reads": {
+    "android-rendering/lifecycle/first-run-AudioPreferenceScreen.png": "28c95f8d5468a1515879b584760c6681dd41fa7c07037ba2e76ab086a71a1624",
+    "android-rendering/lifecycle/first-run-HandPreferenceScreen.png": "c4784d785cafac20c87c5791da0cc2c60b29cfe964f0dc8acef0dfbf89869f22",
+    "android-rendering/lifecycle/introduction-offer.png": "7dacbc0633844c5c6685ccc5e808aa06ea512865492e4a515bd2e5b98f589473",
+    "android-rendering/lifecycle/startup.png": "be6043f9faef92b754ecac52763d0cd00d9e30f542e8569391cef40becbcec3e",
+    "android-rendering/lifecycle/settings.png": "01e94060f88f9ba40618ed1c184bae80ffef5484e568f087094df6c8455a12f9",
+    "android-rendering/lifecycle/resumed.png": "d84296960d85d3ad9acd6c86fa3bb72d94fb136c6d1e9352674680f444de4e4e",
+    "android-rendering/lifecycle/rotation-1.png": "ae2ad21a2c20f2868abd48dacca1de7528c22eeb7a260821426c3ed7a319e429",
+    "android-rendering/lifecycle/rotation-0.png": "cc92c81f5d270b94f6876b8300c4010c8981ac838a36730a33619503f435f3e2",
+    "android-rendering/lifecycle/relaunched.png": "1098d9f30b2948c8d80e11fb4e54062485cc05ee9740444e69e3df7cb133c8ff",
+    "android-rendering/first-run-00.png": "6a7574b0efdbd379bc3b7c176d9436db4f21e4d417975ae2f985e79c0cbe92dd",
+    "android-rendering/first-run-03.png": "ffab89b2a6eff4ef1465c4f3b8c06bdd6a949361bf226e4a448a480a710b7688",
+    "android-rendering/first-run-09.png": "34883471124062072ba10308ae4307947f8b0e007710fbc57646e10fb994948a"
+  },
+  "stable_evidence_files_sha256": {
+    "android-final-producer-provenance.json": "6b0e5f542e1d92d4039cc03e3ab3e289472d00d9c5a5818ae942dfe1d6679fba",
+    "android-initial-producer-provenance.json": "02f2563b250ceb591c39f151dd3b3426530b5d8004794fa6c4cc9070f5fa6887",
+    "android-final-head-approval.json": "882897365ece5b7a3b4485162b9d0b6a0a86dce0c3c220a29d81bf32092535dd",
+    "android-build-final-incremental.log": "0b945c8065121ad0de0c198260f136730a2aae405d00f7143353787e07f6a73b",
+    "android-rendering/apk-and-install.json": "7c437d555e7bd02f9ed473fcd880f5c621365b57cf4b962cf3c30c385e7d22bd",
+    "android-rendering/lifecycle/result.json": "0811594ab7770163a9c198fbe2cf7f77c58e4cf5c43506c68927c9a009df746f",
+    "android-final-visual-review.json": "a2ad45f4c63b1afdbb7c9051327ea525325478077211ebf7b09b9b7f4bc7f2e6",
+    "android-overlay-visual-review.json": "558e752369452659002971bd45a0419307dc1992e0ba9d42ea876175ff59465c",
+    "android-smoke-adaptation.json": "1825a28a914179a8e1cd01d3af9559c5fb85b775e3af8716d41f2a22c75d7f88",
+    "android-object-inputs-before-final.json": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f",
+    "android-object-inputs-after-final.json": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f"
+  },
+  "actual_first_run_capture_budget": {
+    "maximum_frames": 10,
+    "target_interval_seconds": 0.5,
+    "byte_cap": 12582912,
+    "maximum_capture_span_seconds": 6.0,
+    "actual_capture_bytes": 172209,
+    "not_stored_due_to_cap": [],
+    "capture_errors": [],
+    "not_attempted_due_to_deadline": 0,
+    "actual_span_seconds": 5.202931054001965
+  },
+  "failure_evidence_to_retain": [
+    "artifacts/marathi-localization/android-attempt1-system-ui-anr/",
+    "artifacts/marathi-localization/android-rendering/sign-first-missing-java-path.log",
+    "artifacts/marathi-localization/android-rendering/qa-first-missing-java-path.log"
+  ],
+  "failure_disposition": [
+    "SystemUI modal blocked first attempt; retained screenshots, diagnostics and deliberate interruption; not counted as app success. Actual Wait action restored emulator UI before authentic fresh-profile retry.",
+    "Existing pinned apksigner required java on PATH; prepended existing pinned JDK/bin. Initial signing failure retained; no production/dependency changes."
+  ],
+  "limits": [
+    "Actual runtime verification is on API35 x86_64 task-owned Android emulator, not physical Android hardware.",
+    "This record does not establish Apple permission-dialog runtime behavior."
+  ],
+  "artifact_preservation": "APKs, AVD files, logs, source/proof scripts and all screenshots remain local. Cleanup will stop only owned runtime processes.",
+  "runtime_cleanup": {
+    "record": "artifacts/marathi-localization/android-runtime-cleanup.json",
+    "sha256": "122289be16389c4b89c37c92185860785efdd7e1740ed839b7efea5d194318fa",
+    "status": "Verified owned emulator container and isolatedADB15187 stopped; AVD/APKs/repro artifacts preserved; no foreign device/process or shared SDK touched"
+  }
+}

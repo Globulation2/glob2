@@ -65,10 +65,36 @@
   "shared_receipt_sha256": "a7d49d6685561c12d697e2f1269958ffa1b89bbeb47bb8ad3461edc06839154a",
   "receipt_verification": "Current full shared identity and every installation file SHA verified; exact fresh release build; no debug receipt reused",
   "rejected_candidates_record": "android-recording-reuse-candidates.json",
-  "commands": [],
+  "commands": [
+    [
+      "python3",
+      "mobile/android.py",
+      "build",
+      "--arch",
+      "x86_64",
+      "--release",
+      "--jobs",
+      "6"
+    ]
+  ],
   "packager_license_path": {
     "link": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/recording/prefix",
     "target": "/home/bradley/.local/share/glob2/development/dependencies/build-21a7b3edb8fa00934855eb1c/prefix",
     "reason": "Existing packager reads recording notices from local output path; immutable exact managedprefix is exposed without tracked infrastructure changes."
+  },
+  "application_build_exit_code": 0,
+  "apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+    "sha256": "8d8679453789911a69757103d6cc92a5551c136c42dfec51c054f7e264e92241",
+    "recording_license_files_verified_sha256": {
+      "sources.json": "264d868e3eb117595546456250ccfefd99203355ac74d0dbd68eab53d5db5629",
+      "configuration.json": "4f5926c1c5a11d34b06c2cd121ce2647c2a98b3f44a5ae511fffbad702f6c982",
+      "nvEncodeAPI.h": "4fe4094541ef0f8a13249d97a8692dc5f835a6e9dd42eeadb3e2f7321d54dc7e",
+      "x264-COPYING": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670",
+      "ffmpeg-COPYING.LGPLv2.1": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30",
+      "ffmpeg-COPYING.GPLv2": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "ffmpeg-COPYING.LGPLv3": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+      "ffmpeg-COPYING.GPLv3": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    }
   }
 }
