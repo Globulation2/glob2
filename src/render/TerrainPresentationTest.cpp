@@ -1786,6 +1786,45 @@ TEST_SUITE("TerrainValidation")
 			REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(), (directory / name).string().c_str()));
 		}
 	}
+	TEST_CASE("shore calm before and after along a coastline [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 768, .seed = 7331});
+		auto &compositor = globals->terrainCompositor();
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				const double coast = 11 + 2.5 * std::sin(y * 0.45) + 1.2 * std::cos(y * 1.3);
+				map.paintCell(x, y, x < coast - 3 ? GRASS : x < coast ? SAND : x > 24 ? DEEP_WATER : WATER);
+			}
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		const auto directory = glob2test::artifactDir() / "shore-calm";
+		std::filesystem::create_directories(directory);
+		// HD cells, as accelerated renderers draw them, over a stretch of coast.
+		constexpr int scale = 4, x0 = 6, y0 = 4, w = 14, h = 9, n = 32 * scale;
+		const int time = 77;
+		compositor.prepare(true, time);
+		unsigned calmed = 0;
+		for (bool calm : {false, true})
+		{
+			GAGCore::DrawableSurface image(w * n, h * n);
+			for (int y = 0; y < h; ++y)
+				for (int x = 0; x < w; ++x)
+				{
+					auto recipe = compositor.describe(scene, x0 + x, y0 + y);
+					calmed += calm && recipe.calmed();
+					if (!calm)
+						recipe.calm = {};
+					compositor.compose(recipe, image.getSDLSurface(), x * n, y * n, scale);
+				}
+			REQUIRE(IMG_SavePNG(image.getSDLSurface(),
+								(directory / (calm ? "after.png" : "before.png")).string().c_str()));
+		}
+		CHECK(calmed > 0);
+	}
 	TEST_CASE("terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(

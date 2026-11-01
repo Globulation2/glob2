@@ -68,6 +68,27 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 		materialRevisions.push_back(0);
 	}
     if (mixedDecorSprites) sharedDecorSprite = nullptr;
+	// Shore calm pulls waves toward one colour per material, so the fade
+	// stays continuous across variants and does not shift the shore's tone.
+	for (unsigned id = 0; id < definitions.materials.size(); ++id)
+	{
+		auto &m = definitions.materials[id];
+		m.shoreCalm = m.surf.period > 0 && m.animationFrames > 1;
+		if (!m.shoreCalm)
+			continue;
+		std::uint64_t sum[3] = {}, count = 0;
+		for (const auto &v : m.variants)
+		{
+			Texture t;
+			readTexture(t, sprites[id]->nativeFrame(v.frame));
+			for (const auto &p : t.pixels)
+				for (int k = 0; k < 3; ++k)
+					sum[k] += p[k];
+			count += t.pixels.size();
+		}
+		for (int k = 0; k < 3; ++k)
+			m.calmMean[k] = static_cast<unsigned char>((sum[k] + count / 2) / count);
+	}
 }
 void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
 {
@@ -425,6 +446,7 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	const auto corners = map.cellCorners(r.x, r.y);
 	for (unsigned k = 0; k < corners.size(); ++k)
 		r.corners[k] = materialFor(map, corners[k]);
+	describeShoreCalm(map, r);
 	const auto first = r.corners[0];
 	MaterialId other = first;
 	for (const auto id : r.corners)
@@ -439,6 +461,45 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 			r.neighborhood[(y + 1) * 4 + x + 1] =
 				materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
 	return r;
+}
+void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
+{
+	if (std::none_of(r.corners.begin(), r.corners.end(),
+					 [&](auto id) { return definitions.materials[id].shoreCalm; }))
+		return;
+	// Vertices around the cell, enough to reach land within the fade of every corner.
+	constexpr int R = ShoreCalmSearch, W = 2 * R + 2;
+	std::array<bool, W * W> land{};
+	for (int y = 0; y < W; ++y)
+		for (int x = 0; x < W; ++x)
+			land[y * W + x] = definitions.materials[materialFor(
+				map, map.vertexTerrainAt(r.x + x - R, r.y + y - R))].surf.period == 0;
+	for (int k = 0; k < 4; ++k)
+	{
+		const int cx = R + (k & 1), cy = R + (k >> 1);
+		if (land[cy * W + cx])
+		{
+			r.calm[k] = 255; // The shoreline runs beside every land corner.
+			continue;
+		}
+		int nearest = 0;
+		for (int y = cy - R; y <= cy + R; ++y)
+			for (int x = cx - R; x <= cx + R; ++x)
+				if (land[y * W + x])
+				{
+					const int d2 = (x - cx) * (x - cx) + (y - cy) * (y - cy);
+					if (!nearest || d2 < nearest)
+						nearest = d2;
+				}
+		r.calm[k] = static_cast<std::uint8_t>(shoreCalmAt(nearest));
+	}
+	// A cell whose liquid corners are all far from land needs no calm at all;
+	// land corners alone keep their ordinary uniform and seam composition.
+	bool liquidCalm = false;
+	for (int k = 0; k < 4; ++k)
+		liquidCalm |= definitions.materials[r.corners[k]].shoreCalm && r.calm[k];
+	if (!liquidCalm)
+		r.calm = {};
 }
 Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &recipe, MaterialId id) const
 {
@@ -649,9 +710,34 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
     const auto *sources = prepared.data();
 	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
 									 [&](auto id) { return id == r.corners[0]; });
+	// Q8 shore calm of a sample, for animated liquids near land.
+	const unsigned calmStrength = 256 - ShoreCalmContrastQ8;
+	const auto calmAt = [&](int x, int y)
+	{
+		return shoreCalm(r.calm, unsigned(2 * x + 1) * 128 / size, unsigned(2 * y + 1) * 128 / size);
+	};
 	if (uniform)
 	{
 		const auto &texture = sources[r.corners[0]];
+		const auto &material = definitions.materials[r.corners[0]];
+		if (material.shoreCalm && r.calmed() && !texture.pixels.empty())
+		{
+			for (int y = 0; y < size; ++y)
+			{
+				auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
+					(oy + y) * target->pitch) + ox;
+				for (int x = 0; x < size; ++x)
+				{
+					const int sx = texture.step ? x * texture.step : x * texture.size / size;
+					const int sy = texture.step ? y * texture.step : y * texture.size / size;
+					const auto *p = texture.pixels[sy * texture.size + sx].data();
+					unsigned rgb[3] = {p[0], p[1], p[2]};
+					applyShoreCalm(calmAt(x, y), calmStrength, material.calmMean, rgb);
+					row[x] = (unsigned(p[3]) << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+				}
+			}
+			return;
+		}
 		// Native and HD sources usually divide the composition grid exactly.
 		// Walk their texels directly instead of dividing twice per output pixel.
         if (!texture.pixels.empty() && texture.step)
@@ -724,8 +810,12 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 					const auto *p = t.pixels[sy * t.size + sx].data();
 					const unsigned a = weights[slot] * p[3];
 					alpha += a;
+					unsigned source[3] = {p[0], p[1], p[2]};
+					const auto &material = definitions.materials[cell.palette[slot]];
+					if (material.shoreCalm && r.calmed())
+						applyShoreCalm(calmAt(x, y), calmStrength, material.calmMean, source);
 					for (int k = 0; k < 3; ++k)
-						rgb[k] += std::uint64_t(p[k]) * a;
+						rgb[k] += std::uint64_t(source[k]) * a;
 				}
 			auto *p = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
 												 (oy + y) * target->pitch) +

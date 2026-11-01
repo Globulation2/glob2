@@ -24,6 +24,28 @@ vec4 terrainUnpack(uint packedColor) {
     if ((params.w & 2u) != 0u) bytes.rgb = (bytes.rgb * bytes.a + 127u) / 255u;
     return vec4(bytes) / 255.0;
 }
+// CPU reference: TerrainVisual::shoreCalm and applyShoreCalm in
+// src/render/terrain/TerrainMaterials.cpp. surfPlace.w packs the cell's corner
+// calm; surfColor[slot].w packs a liquid's strength and mean colour.
+uint terrainCalmAt(ivec2 pixel) {
+    uint corners = uint(surfPlace.w);
+    if (corners == 0u) return 0u;
+    uint fx = (2u * uint(pixel.x) + 1u) * 128u / params.x;
+    uint fy = (2u * uint(pixel.y) + 1u) * 128u / params.x;
+    return ((corners & 255u) * (256u - fx) * (256u - fy) +
+        ((corners >> 8u) & 255u) * fx * (256u - fy) +
+        ((corners >> 16u) & 255u) * (256u - fx) * fy +
+        (corners >> 24u) * fx * fy + 32768u) >> 16u;
+}
+uvec3 terrainCalm(uint slot, ivec2 pixel, uvec3 rgb) {
+    uint packedMean = uint(surfColor[slot].w), strength = packedMean >> 24u;
+    if (strength == 0u) return rgb;
+    uint calm = terrainCalmAt(pixel);
+    if (calm == 0u) return rgb;
+    uint keep = 256u - calm * strength / 255u;
+    uvec3 mean = uvec3((packedMean >> 16u) & 255u, (packedMean >> 8u) & 255u, packedMean & 255u);
+    return (rgb * keep + mean * (256u - keep) + 128u) / 256u;
+}
 int terrainSurfBump(int u) {
     int x = u < 512 ? u : 1024 - u;
     return x * x * (1536 - 2 * x) / 524288;
@@ -68,6 +90,7 @@ void main() {
     ivec2 pixel = clamp(ivec2(uv * float(params.x)), ivec2(0), ivec2(int(params.x)-1));
     if ((params.w & 1u) == 0u) {
         uvec4 bytes = terrainMaterial(0u, pixel);
+        bytes.rgb = terrainCalm(0u, pixel, bytes.rgb);
         if ((params.w & 2u) != 0u) bytes.rgb = (bytes.rgb * bytes.a + 127u) / 255u;
         color = vec4(bytes) / 255.0;
         return;
@@ -89,6 +112,7 @@ void main() {
     for (uint slot = 0u; slot < 4u; ++slot) {
         if (slot >= params.y) break;
         uvec4 source = terrainMaterial(slot, pixel);
+        source.rgb = terrainCalm(slot, pixel, source.rgb);
         uint contribution = weights[slot] * source.a;
         alpha += contribution;
         rgb += source.rgb * contribution;

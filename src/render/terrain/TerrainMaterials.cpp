@@ -396,6 +396,29 @@ unsigned surfMix(unsigned value, unsigned color, int amount)
 	return (value * unsigned(256 - amount) + color * unsigned(amount)) / 256;
 }
 } // namespace
+unsigned shoreCalmAt(int d2)
+{
+	if (d2 <= 0)
+		return 0;
+	// Q8 distance from the shoreline, halfway to the nearest land vertex.
+	const double shore = std::sqrt(double(d2)) * 256 - 128;
+	if (shore >= ShoreCalmReachQ8)
+		return 0;
+	const double t = std::max(0.0, shore) / ShoreCalmReachQ8;
+	return unsigned(std::lround(255 * (1 - t * t * (3 - 2 * t))));
+}
+unsigned shoreCalm(const std::array<std::uint8_t, 4> &c, unsigned fx, unsigned fy)
+{
+	return (c[0] * (256 - fx) * (256 - fy) + c[1] * fx * (256 - fy) + c[2] * (256 - fx) * fy +
+			c[3] * fx * fy + 32768) >> 16;
+}
+void applyShoreCalm(unsigned calm, unsigned strength, const std::array<unsigned char, 3> &mean,
+					unsigned rgb[3])
+{
+	const unsigned keep = 256 - calm * strength / 255;
+	for (int k = 0; k < 3; ++k)
+		rgb[k] = (rgb[k] * keep + mean[k] * (256 - keep) + 128) / 256;
+}
 void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigned time,
 			   unsigned value[3])
 {

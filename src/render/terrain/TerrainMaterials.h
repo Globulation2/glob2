@@ -59,6 +59,25 @@ struct Surf
 // libgag/shaders/terrain-compose-fragment.glsl.
 void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,
 			   unsigned value[3]);
+// Shore calm: animated surf liquids fade from their full waves to a quiet
+// shimmer toward land, so the surf is the only motion at the beach. The fade
+// ends ShoreCalmReachQ8 (Q8 cells) from the shoreline, which lies halfway
+// between a land and a liquid vertex; ShoreCalmContrastQ8 is the share of the
+// wave contrast kept at the shoreline itself.
+constexpr int ShoreCalmReachQ8 = 256;
+constexpr int ShoreCalmContrastQ8 = 64;
+// Q8 calm of a liquid vertex whose nearest non-surf vertex is at squared
+// vertex distance d2 (zero means none within reach).
+unsigned shoreCalmAt(int d2);
+// Vertex radius searched for land around each corner.
+constexpr int ShoreCalmSearch = (ShoreCalmReachQ8 + 128 + 255) / 256;
+// Calm at a sample: corner calm bilinearly interpolated at Q8 cell position
+// fx, fy (0..256). The result is continuous across cells.
+unsigned shoreCalm(const std::array<std::uint8_t, 4> &corners, unsigned fx, unsigned fy);
+// Pulls rgb toward mean by calm (Q8), keeping `strength` of the reduction;
+// mirrored exactly by libgag/shaders/terrain-compose-fragment.glsl.
+void applyShoreCalm(unsigned calm, unsigned strength, const std::array<unsigned char, 3> &mean,
+					unsigned rgb[3]);
 // Raised objects drawn over a material's cells with the resources, in screen
 // row order, so they overlap neighbouring cells (boulders, hedges, rock).
 // `full` frames are for cells surrounded by the same material, `edge` frames
@@ -102,6 +121,10 @@ struct Material
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
 	Surf surf;
+	// Set by the compositor for animated surf liquids: their mean native colour,
+	// toward which shore calm pulls the waves.
+	bool shoreCalm = false;
+	std::array<unsigned char, 3> calmMean{};
 };
 struct PairTreatment
 {
@@ -148,6 +171,9 @@ struct Recipe
 	// Row-major vertices (-1,-1)..(2,2); optional for standalone diagnostics.
 	std::array<MaterialId, 16> neighborhood{};
 	bool hasNeighborhood = false;
+	// Q8 shore calm of each corner (see shoreCalm), zero away from land.
+	std::array<std::uint8_t, 4> calm{};
+	bool calmed() const { return calm != std::array<std::uint8_t, 4>{}; }
 	bool operator==(const Recipe &) const = default;
 };
 struct Coverage

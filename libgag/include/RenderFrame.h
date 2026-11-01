@@ -52,6 +52,8 @@ struct SurfConstants
     std::int32_t period=0, reach=0, foam=0, foamWidth=0, shallow=0, shallowWidth=0, wet=0, wetWidth=0;
     std::array<std::uint8_t,3> shallowColor{}, foamColor{};
     std::int32_t ticks=1;
+    // Shore calm: Q8 strength in bits 24-31 (zero disables) over the mean RGB.
+    std::uint32_t calm=0;
 };
 struct CoverageSample
 {
@@ -75,6 +77,8 @@ struct WeightedComposeData
     // Q8 world pixels of the cell origin and the surf animation time.
     std::int32_t surfOriginX=0, surfOriginY=0;
     std::uint32_t surfTime=0;
+    // Q8 shore calm of the cell's corners, top-left in the low byte.
+    std::uint32_t shoreCalm=0;
     std::uint32_t paletteCount=0,compositionSize=32,reductionDivisor=1;
     std::shared_ptr<const CoverageData> coverage;
     SDL_Rect targetRect{}; // Target pixels, top-left origin.
@@ -83,12 +87,13 @@ struct WeightedComposeData
 // surfShape[4], surfBand[4] and surfColor[4], one ivec4 per palette slot.
 inline std::array<std::int32_t,52> surfUniforms(const WeightedComposeData &data)
 {
-    std::array<std::int32_t,52> values{data.surfOriginX,data.surfOriginY,std::int32_t(data.surfTime),0};
+    std::array<std::int32_t,52> values{data.surfOriginX,data.surfOriginY,std::int32_t(data.surfTime),
+                                       std::int32_t(data.shoreCalm)};
     for(unsigned slot=0;slot<4;++slot) {
         const auto &surf=data.surfs[slot];
         const auto pack=[](const std::array<std::uint8_t,3> &c){return std::int32_t(c[0])<<16|std::int32_t(c[1])<<8|c[2];};
         const std::int32_t shape[]{surf.period,surf.reach,surf.foam,surf.foamWidth},
-            band[]{surf.shallow,surf.shallowWidth,surf.wet,surf.wetWidth},color[]{pack(surf.shallowColor),pack(surf.foamColor),surf.ticks,0};
+            band[]{surf.shallow,surf.shallowWidth,surf.wet,surf.wetWidth},color[]{pack(surf.shallowColor),pack(surf.foamColor),surf.ticks,std::int32_t(surf.calm)};
         for(unsigned k=0;k<4;++k) {
             values[4+slot*4+k]=shape[k];values[20+slot*4+k]=band[k];values[36+slot*4+k]=color[k];
         }
