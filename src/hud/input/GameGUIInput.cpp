@@ -138,7 +138,8 @@ void GameGUI::processEvent(SDL_Event *event)
     inputState.observe(*event);
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
     if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;
-    if (tutorialGuidance && !activeDialog() && !typingInputScreen && tutorialGuidance->handle(*event)) return;
+    const bool foregroundTools = touch && touch->obscuresTutorial();
+    if (tutorialGuidance && !activeDialog() && !typingInputScreen && !foregroundTools && tutorialGuidance->handle(*event)) return;
     if (handleStatisticsEvent(*event)) return;
     if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_MIDDLE) ||

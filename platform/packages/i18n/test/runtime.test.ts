@@ -78,9 +78,30 @@ describe('online locale resolution', () => {
     expect(resolveLocale('sw-Latn-KE')).toBe('sw');
     expect(resolveLocale(['sw-Arab', 'de'])).toBe('de');
   });
+  it('resolves Bengali regions and script without claiming Latin transliteration', () => {
+    for (const tag of ['bn', 'bn-BD', 'bn-IN', 'bn-Beng-BD', 'bn_Beng_IN', 'bn-u-nu-latn'])
+      expect(resolveLocale(tag)).toBe('bn');
+    expect(resolveLocale(['bn-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale(['bn-Deva-IN', 'de'])).toBe('de');
+    expect(resolveLocale('bn-x-latn')).toBe('bn');
+  });
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
+  });
+  it.each(locales)('loads selectable $code through the default browser loader', async (locale) => {
+    vi.resetModules();
+    const runtime = await import('../src/index.ts');
+    await runtime.setLocale(locale.code);
+    expect(runtime.getLocale()).toBe(locale.code);
+    expect(runtime.hasMessage('Welcome to the colony')).toBe(true);
+  });
+  it('selects Malay Rumi and skips explicit Jawi requests', () => {
+    for (const tag of ['ms', 'ms-MY', 'ms-Latn-MY', 'ms_MY', 'ms-u-nu-arab', 'ms-x-arab'])
+      expect(resolveLocale(tag)).toBe('ms');
+    expect(resolveLocale(['ms-Arab-MY', 'fr'])).toBe('fr');
+    expect(resolveLocale(['ms-Latn-Arab', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ms')).toBe('ms');
   });
 });
 describe('message presentation', () => {
@@ -148,20 +169,12 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 38 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(38);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(38);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(38);
-    expect(locales.find((locale) => locale.code === 'th')).toMatchObject({
-      gameCode: 'th',
-      name: 'ไทย',
-      dir: 'ltr',
-    });
-    expect(locales.find((locale) => locale.code === 'nb')).toMatchObject({
-      gameCode: 'nb',
-      name: 'Norsk bokmål',
-      dir: 'ltr',
-    });
+  it('contains 40 unique game catalog mappings including Thai, Bengali and Malay', () => {
+    expect(locales).toHaveLength(40);
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
+    for (const [code, name] of [['th', 'ไทย'], ['bn', 'বাংলা'], ['ms', 'Bahasa Melayu'], ['nb', 'Norsk bokmål']])
+      expect(locales).toContainEqual({code, gameCode: code, name, dir: 'ltr'});
   });
 });
 

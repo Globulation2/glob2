@@ -75,7 +75,8 @@ async function expectThaiCampaignEditor(page, info, variant, touch) {
 
 for (const variant of ['serial', 'threaded']) {
   test(`${variant} Thai startup, composed input and refresh use the shipped catalog`, async ({page, context}, info) => {
-    test.setTimeout(180000);
+    // Two full software-rendered startups plus campaign authoring can exceed three minutes.
+    test.setTimeout(420000);
     const url = new URL(gameURL(), String(info.project.use.baseURL || 'http://127.0.0.1:8770'));
     url.searchParams.set('threads', variant);
     url.searchParams.set('renderer', 'software');
@@ -135,7 +136,7 @@ for (const variant of ['serial', 'threaded']) {
       .toBe('การตั้งค่า');
     await page.evaluate(() => Module.storage.flush());
     await page.reload();
-    await waitForMainMenu(page);
+    await waitForMainMenu(page, {timeout: 180000});
     await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().controls['menu/6']?.label.replace(/\u200b/g, '')))
       .toBe('การตั้งค่า');
     expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toContain('username=ผู้เล่น 123');
@@ -149,7 +150,8 @@ test.describe('Thai touch phones', () => {
   test.use({viewport: {width: 390, height: 844}, hasTouch: true, deviceScaleFactor: 2});
   for (const variant of ['serial', 'threaded']) {
     test(`${variant} Thai touch setup, input and rotation retain the locale`, async ({page, context}, info) => {
-      test.setTimeout(180000);
+      // Two full software-rendered startups plus campaign authoring can exceed three minutes.
+    test.setTimeout(420000);
       const url = new URL(gameURL(), String(info.project.use.baseURL || 'http://127.0.0.1:8770'));
       url.searchParams.set('threads', variant);
       url.searchParams.set('renderer', 'software');
@@ -214,7 +216,7 @@ test.describe('Thai touch phones', () => {
       await page.reload();
       await page.setViewportSize(page.viewportSize());
       expect(await page.evaluate(() => devicePixelRatio)).toBe(2);
-      await waitForMainMenu(page);
+      await waitForMainMenu(page, {timeout: 180000});
       await expect(page.locator('html')).toHaveAttribute('lang', 'th');
       expect(await page.evaluate(() => Object.values(glob2Diagnostics.snapshot().controls)
         .some(control => /[\u0e00-\u0e7f]/.test(control.label)))).toBe(true);

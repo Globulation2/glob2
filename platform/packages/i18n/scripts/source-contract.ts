@@ -3,6 +3,17 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
+/** Computed system labels need keys even when the call site uses an enum value. */
+export function fixedLabelErrors(
+  english: Record<string, unknown>,
+  labels: readonly string[],
+  family: string,
+): string[] {
+  return labels
+    .filter((label) => !Object.hasOwn(english, label))
+    .map((label) => `${family}: missing catalog key: ${label}`);
+}
+
 /** Contributor check: user-facing JSX and literal message calls must stay localized. */
 export function sourceErrors(
   english: Record<string, unknown>,
@@ -203,4 +214,98 @@ export function browserSourceErrors(
     visit(tree);
   }
   return errors;
+}
+
+/** Fixed UI registries; exclude canonical IDs and developer-only schema documentation. */
+const FIXED_METADATA = [
+  ['platform/packages/protocol/src/ais.ts', 'AI_TAGS', []],
+  ['platform/packages/protocol/src/ais.ts', 'AI_CHECK_LABELS', []],
+  ['platform/packages/protocol/src/connectionQuality.ts', 'CONNECTION_RATING_LABELS', []],
+  [
+    'platform/packages/protocol/src/connectionQuality.ts',
+    'CONNECTION_METRICS',
+    ['label', 'description'],
+  ],
+  ['platform/packages/protocol/src/skins.ts', 'COLONY_SKIN_MATERIALS', ['name', 'group']],
+  ['platform/apps/web/src/App.tsx', 'ROUTES', ['title']],
+  ['platform/apps/web/src/admin/Admin.tsx', 'TABS', ['name']],
+  ['platform/apps/web/src/admin/Accounts.tsx', 'MUTES', ['name']],
+  ['platform/apps/web/src/admin/presentation.ts', 'PRODUCT_NAMES', []],
+  ['platform/apps/web/src/admin/presentation.ts', 'PAYMENT_MODE_NAMES', []],
+  ['platform/apps/web/src/admin/presentation.ts', 'REPORTING_PERIOD_NAMES', []],
+  ['platform/apps/web/src/admin/presentation.ts', 'FINANCE_KIND_NAMES', []],
+  ['platform/apps/web/src/admin/presentation.ts', 'MATCH_METRIC_NAMES', []],
+  ['platform/apps/web/src/admin/presentation.ts', 'COMPLETION_METRIC_NAMES', []],
+  ['platform/apps/web/src/pages/Maps.tsx', 'SORTS', ['name']],
+  ['platform/apps/web/src/music/Validation.tsx', 'CATEGORIES', ['label', 'guidance']],
+  ['platform/apps/web/src/skins/atlas.ts', 'MODELS', ['name']],
+  ['platform/apps/web/src/skins/swarmShapes.ts', 'SWARM_SHAPES', ['name', 'description']],
+  ['platform/apps/web/src/pages/Maps.tsx', 'VISIBILITY_TEXT', []],
+  ['platform/apps/web/src/pages/Match.tsx', 'VERDICT_TEXT', []],
+  ['platform/apps/web/src/skins/geometry.ts', 'ACTION_LABELS', []],
+  ['platform/apps/web/src/messages.ts', 'STATUS_LABELS', []],
+  ['platform/apps/web/src/music/Player.tsx', 'MOODS', []],
+  ['platform/apps/web/src/music/Player.tsx', 'MOOD_DESCRIPTIONS', []],
+] as const;
+
+export function fixedMetadataSources(
+  root = fileURLToPath(new URL('../../../../', import.meta.url)),
+): { source: string; file: string; line: number }[] {
+  const sources: { source: string; file: string; line: number }[] = [];
+  for (const [file, variable, fields] of FIXED_METADATA) {
+    const tree = ts.createSourceFile(
+      file,
+      readFileSync(join(root, file), 'utf8'),
+      ts.ScriptTarget.Latest,
+      true,
+    );
+    let found = false;
+    const firstSource = sources.length;
+    const capture = (node: ts.Node) => {
+      if (
+        (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) &&
+        node.text.trim()
+      )
+        sources.push({
+          source: node.text,
+          file,
+          line: tree.getLineAndCharacterOfPosition(node.getStart(tree)).line + 1,
+        });
+    };
+    const labels = (node: ts.Node) => {
+      if (!fields.length) {
+        if (!(ts.isPropertyAssignment(node.parent) && node.parent.name === node)) capture(node);
+      } else if (
+        ts.isPropertyAssignment(node) &&
+        (fields as readonly string[]).includes(
+          ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)
+            ? node.name.text
+            : node.name.getText(tree),
+        )
+      )
+        capture(node.initializer);
+      ts.forEachChild(node, labels);
+    };
+    const visit = (node: ts.Node) => {
+      if (
+        ts.isVariableDeclaration(node) &&
+        node.name.getText(tree) === variable &&
+        node.initializer
+      ) {
+        found = true;
+        labels(node.initializer);
+      } else ts.forEachChild(node, visit);
+    };
+    visit(tree);
+    if (!found) throw new Error(`Fixed UI metadata registry moved: ${file}:${variable}`);
+    if (sources.length === firstSource)
+      throw new Error(`Fixed UI metadata has no literal display labels: ${file}:${variable}`);
+  }
+  return sources;
+}
+
+export function fixedMetadataSourceErrors(english: Record<string, unknown>): string[] {
+  return fixedMetadataSources()
+    .filter(({ source }) => !Object.hasOwn(english, source))
+    .map(({ source, file, line }) => `${file}:${line}: missing fixed UI catalog key: ${source}`);
 }

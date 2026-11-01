@@ -157,6 +157,7 @@ TEST_SUITE("FontKerning")
 		struct Sample { const char *text; std::vector<size_t> ends; };
 		const Sample samples[] = {
 			{"क्षिX", {12, 13}}, {"क्षत्रिX", {9, 21, 22}},
+			{"ক্ষিX", {12, 13}}, {"র্কিX", {12, 13}}, {"কৌX", {6, 7}},
 			{"က္ကX", {9, 10}}, {"ก้X", {6, 7}}, {"o\u0323\u0301X", {5, 6}},
 		};
 		for (const auto &sample : samples)
@@ -178,7 +179,7 @@ TEST_SUITE("FontKerning")
 		std::ofstream(files.path / "probe.keys.txt") << "[language-code]\n";
 		std::ofstream listing(files.path / "probe.list.txt");
 		listing << "probe.keys.txt\n";
-		for (const char *code : {"en", "hi", "ur", "sw", "nb", "gu", "pa-guru", "th", "ar", "fa"})
+		for (const char *code : {"en", "hi", "bn", "nb", "ms", "ur", "sw", "gu", "pa-guru", "th", "ar", "fa"})
 		{
 			listing << "probe." << code << ".txt\n";
 			std::ofstream(files.path / (std::string("probe.") + code + ".txt")) << "[language-code]\n" << code << '\n';
@@ -192,7 +193,7 @@ TEST_SUITE("FontKerning")
 			const int originalHeight = font.getStringHeight("");
 			auto original = font.rasterizeString("Menu", 1.f);
 			REQUIRE(original);
-			for (const char *code : {"hi", "ur", "sw", "nb", "gu", "pa-guru", "th"})
+			for (const char *code : {"hi", "bn", "nb", "ms", "ur", "sw", "gu", "pa-guru", "th"})
 			{
 				strings->setLang(strings->getLangCode(code));
 				const int lineHeight = font.getStringHeight("");
@@ -203,6 +204,8 @@ TEST_SUITE("FontKerning")
 				CHECK(menu->getH() == lineHeight);
 				CAPTURE(code); CAPTURE(size);
 				const char *sample = std::string(code) == "hi" ? "क्षत्रिय खिलाड़ी" :
+					std::string(code) == "ms" ? "sendiri dibekalkan dengan makanan dan buah-buahan untuk mengekalkan" :
+					std::string(code) == "bn" ? "ক্ষুদ্র শ্রমিকের প্রস্তুতি: ১২ / ১০০ Glob2" :
 					std::string(code) == "gu" ? "ગુજરાતી ખેલાડી" :
 					std::string(code) == "th" ? "ผู้เล่นกำลังก่อสร้าง 12 / 100" :
 					std::string(code) == "pa-guru" ? "ਪੰਜਾਬੀ ਖਿਡਾਰੀ" :
@@ -276,7 +279,9 @@ TEST_SUITE("FontKerning")
 		TtfScope ttf;
 		glob2test::ToolkitScope toolkit;
 		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
-		const char *samples[] = {"क्षत्रिय खिलाड़ी", "বাংলা শ্রমিক", "ગુજરાતી ખેલાડી", "ਪੰਜਾਬੀ ਖਿਡਾਰੀ",
+		const char *samples[] = {"क्षत्रिय खिलाड़ी", "বাংলা শ্রমিক", "ক্ষুদ্র শ্রমিকের প্রস্তুতি: ১২ / ১০০ Glob2",
+			"র্কি কৌ কি কী কু কূ কৃ কে কৈ কো কৌ", "ক\u200d্ষ ক\u200c্ষ Player-12 replay.glob2",
+			"ગુજરાતી ખેલાડી", "ਪੰਜਾਬੀ ਖਿਡਾਰੀ",
 			"தமிழ் வீரர்", "తెలుగు క్రీడాకారుడు", "ಕನ್ನಡ ಆಟಗಾರ", "മലയാളം കളിക്കാരൻ", "ଓଡ଼ିଆ ଖେଳାଳି",
 			"ไทย ผู้เล่น", "မြန်မာ ကစားသမား", "አማርኛ ተጫዋች", "کھلاڑی 12 / 100 Glob2", "پښتو لوبغاړی", "سنڌي رانديگر"};
 		for (unsigned size : {10u, 13u, 20u})

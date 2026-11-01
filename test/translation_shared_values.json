@@ -391,7 +391,12 @@
       "Introduction",
       "Messages ▸"
     ],
-    "texts.gr.txt": ["%0 / %1 HP · %2", "%0 KB", "256 × 256", "CPU %0%"],
+    "texts.gr.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "256 × 256",
+      "CPU %0%"
+    ],
     "texts.hu.txt": [
       "CPU %0%",
       "Editor",
@@ -486,8 +491,16 @@
       "host",
       "host %0"
     ],
-    "texts.ja.txt": ["%0 / %1 HP · %2", "%0/%1  >", "CPU %0%", "Ping"],
-    "texts.ko.txt": ["256 × 256", "CPU %0%"],
+    "texts.ja.txt": [
+      "%0 / %1 HP · %2",
+      "%0/%1  >",
+      "CPU %0%",
+      "Ping"
+    ],
+    "texts.ko.txt": [
+      "256 × 256",
+      "CPU %0%"
+    ],
     "texts.nl.txt": [
       " teams",
       "%0 min",
@@ -633,7 +646,9 @@
       "Scalar",
       "Port"
     ],
-    "texts.ru.txt": ["256 × 256"],
+    "texts.ru.txt": [
+      "256 × 256"
+    ],
     "texts.si.txt": [
       "CPU %0%",
       "Cyan",
@@ -663,7 +678,9 @@
       "Port",
       "Seed: %0"
     ],
-    "texts.sr.txt": ["256 × 256"],
+    "texts.sr.txt": [
+      "256 × 256"
+    ],
     "texts.sv.txt": [
       "%0 / %1 HP · %2",
       "%0 min",
@@ -723,10 +740,27 @@
       "Set",
       "Spiral"
     ],
-    "texts.uk.txt": ["256 × 256"],
-    "texts.vi.txt": ["%0 KB", "256 × 256", "AI: %0", "CPU %0%", "Ping"],
-    "texts.zh-cn.txt": ["%0 KB", "256 × 256", "CPU %0%", "Ping"],
-    "texts.zh-tw.txt": ["%0 KB", "256 × 256", "CPU %0%"],
+    "texts.uk.txt": [
+      "256 × 256"
+    ],
+    "texts.vi.txt": [
+      "%0 KB",
+      "256 × 256",
+      "AI: %0",
+      "CPU %0%",
+      "Ping"
+    ],
+    "texts.zh-cn.txt": [
+      "%0 KB",
+      "256 × 256",
+      "CPU %0%",
+      "Ping"
+    ],
+    "texts.zh-tw.txt": [
+      "%0 KB",
+      "256 × 256",
+      "CPU %0%"
+    ],
     "texts.hi.txt": [
       "%0 KB",
       "%0/%1  >",
@@ -774,16 +808,30 @@
       "Sep",
       "–"
     ],
-    "texts.th.txt": [
+    "texts.bn.txt": [
       "%0 / %1 HP · %2",
       "%0 KB",
+      "%0/%1  >",
       "256 × 256",
       "CPU %0%",
-      "Delete",
       "FFA",
+      "Globulation 2 Discord",
       "HP ≤25/50/75%",
       "Hive Mind",
+      "L",
       "P %0/%1/%2",
+      "W",
+      "down",
+      "equals",
+      "left",
+      "left meta",
+      "left windows key",
+      "right",
+      "right meta",
+      "right windows key",
+      "sim %0",
+      "space",
+      "up",
       "–"
     ],
     "texts.nb.txt": [
@@ -836,6 +884,68 @@
       "element",
       "jitter %0",
       "sim %0",
+      "–"
+    ],
+    "texts.ms.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "%0 min",
+      "%0 min %1 s",
+      "%0 s",
+      "/min",
+      "256 × 256",
+      "AI: %0",
+      "Apr",
+      "Asia",
+      "Audio",
+      "Bajada",
+      "Blitz",
+      "CPU %0%",
+      "Editor",
+      "Everglades",
+      "FFA",
+      "Feb",
+      "Globulation 2 Discord",
+      "HP ≤25/50/75%",
+      "Hive Mind",
+      "Hospital",
+      "Import",
+      "Import JavaScript AI",
+      "Import ZIP",
+      "Jan",
+      "Jul",
+      "Jun",
+      "Lava",
+      "Magenta",
+      "Menu",
+      "Nov",
+      "Oceania",
+      "Ok: %0",
+      "P %0/%1/%2",
+      "Ping",
+      "Playa",
+      "Plum",
+      "Polder",
+      "Port",
+      "Sep",
+      "Set",
+      "Slot",
+      "Tag",
+      "Tutorial",
+      "Veteran",
+      "sim %0",
+      "–"
+    ],
+    "texts.th.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "256 × 256",
+      "CPU %0%",
+      "Delete",
+      "FFA",
+      "HP ≤25/50/75%",
+      "Hive Mind",
+      "P %0/%1/%2",
       "–"
     ]
   }

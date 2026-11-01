@@ -322,7 +322,7 @@ void checkShapingClusterWrapping()
     };
     // Yoruba decomposed vowel with underdot+tone, Indic conjunct+matra,
     // Myanmar stacked consonants, and Thai consonant+tone mark.
-    for (const std::string cluster : {"o\u0323\u0301", "क्षि", "က္က", "ก้"}) {
+    for (const std::string cluster : {"o\u0323\u0301", "क्षि", "ক্ষি", "র্কি", "কৌ", "က္က", "ก้"}) {
         ClusterFixture shaped(cluster);
         const auto source = cluster + "x";
         const auto lines = wrapText(shaped, FontRole::Body, source, 8);
@@ -339,6 +339,19 @@ void checkShapingClusterWrapping()
         const auto explicitLines = wrapText(shaped, FontRole::Body, cluster + "\nx", 800);
         require(explicitLines.size() == 2 && explicitLines.front() == cluster,
                 "explicit newline keeps preceding cluster intact");
+
+        const auto editable = cluster + "x\n" + cluster + "y";
+        Fixture editor([&](const Presentation &) {
+            return column({textEditor("cluster-editor", editable, {}, {true, 8})});
+        }, 32, 300);
+        editor.host.setMeasurer(&shaped);
+        editor.host.layoutIfNeeded();
+        RecordingCanvas canvas(editor.presentation.viewport.size(), shaped);
+        editor.host.paint(canvas, 0);
+        require(canvas.texts.size() == 4 && canvas.texts[0].second == cluster &&
+                canvas.texts[1].second == "x" && canvas.texts[2].second == cluster &&
+                canvas.texts[3].second == "y",
+                "multiline editor keeps shaping clusters and explicit newlines intact");
     }
     FixedTextMeasurer fixed;
     const std::string annotated = "ab\u200bcd\u200bef";
@@ -637,6 +650,97 @@ void checkTextField()
 	require(f.host.state("name").cursor == 1, "cursor position persists across rebuilds");
 	f.key(SDLK_ESCAPE);
 	require(f.host.editing().empty(), "escape ends editing");
+}
+
+void checkTextFieldByteLimit()
+{
+	std::string model = "নাম";
+	TextFieldOptions options;
+	options.maxLength = 32;
+	options.maxBytes = 32;
+	options.commitOnSubmit = true;
+	int previews = 0;
+	options.preview = [&](const std::string &) { ++previews; };
+	Fixture f([&](const Presentation &) { return textField("name", model, [&](const std::string &v) { model = v; }, options); }, 400, 100);
+	f.click({20, 20});
+	const auto replace = [&](const std::string &next)
+	{
+		f.key(SDLK_A, SDL_KMOD_CTRL);
+		SDL_Event text{};
+		text.type = SDL_EVENT_TEXT_INPUT;
+		text.text.text = next.c_str();
+		f.host.event(text);
+	};
+	std::string oversized;
+	for (int i = 0; i < 8; ++i) oversized += "ক";
+	oversized += "ক্ষ";
+	require(oversized.size() == 33, "probe crosses the byte cap inside a Bengali conjunct");
+	replace(oversized);
+	require(f.host.state("name").text == "নাম", "oversized edit preserves the whole previous draft");
+	require(previews == 0 && model == "নাম", "rejected edit never reaches preview or model");
+	replace("ক্ষুদ্র");
+	require(f.host.state("name").text == "ক্ষুদ্র", "a complete Bengali edit below the byte cap is accepted");
+	f.key(SDLK_RETURN);
+	require(model == "ক্ষুদ্র", "Enter commits the complete Bengali name");
+	f.click({20, 20});
+	replace(std::string(32, 'a'));
+	f.key(SDLK_RETURN);
+	require(model == std::string(32, 'a'), "all 32 ASCII bytes remain supported");
+}
+
+void checkTextFieldCharacterLimit()
+{
+	const auto repeat = [](const std::string &text, std::size_t count)
+	{
+		std::string result;
+		while (count--) result += text;
+		return result;
+	};
+	for (const auto &[character, maximum] : std::vector<std::pair<std::string, std::size_t>>{
+		{"ক", 32}, {"ক", 128}, {"😀", 32}})
+	{
+		std::string model;
+		TextFieldOptions options;
+		options.maxLength = maximum;
+		int changes = 0;
+		Fixture f([&](const Presentation &)
+		{
+			return textField("name", model, [&](const std::string &next) { model = next; ++changes; }, options);
+		}, 400, 100);
+		f.click({20, 20});
+		const auto replace = [&](const std::string &next)
+		{
+			f.key(SDLK_A, SDL_KMOD_CTRL);
+			SDL_Event text{};
+			text.type = SDL_EVENT_TEXT_INPUT;
+			text.text.text = next.c_str();
+			f.host.event(text);
+		};
+		if (maximum == 128)
+		{
+			const auto title = repeat(character, 43);
+			require(title.size() == 129, "title crosses 128 bytes while staying below 128 characters");
+			replace(title);
+			require(model == title, "a valid 43-character Bengali title is unchanged");
+		}
+		const auto full = repeat(character, maximum);
+		replace(full);
+		require(model == full, "character capacity counts codepoints independently of UTF-8 bytes");
+		const auto acceptedChanges = changes;
+		replace(full + character);
+		require(model == full && changes == acceptedChanges, "an extra codepoint rejects the whole edit");
+	}
+
+	std::string model = "abc";
+	TextFieldOptions options;
+	options.maxLength = 5;
+	Fixture f([&](const Presentation &) { return textField("name", model, [&](const std::string &next) { model = next; }, options); }, 400, 100);
+	f.click({20, 20});
+	SDL_Event text{};
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "ক্ষ";
+	f.host.event(text);
+	require(model == "abc", "character overflow never appends a partial Bengali conjunct");
 }
 
 void checkCopyField()
@@ -1177,6 +1281,8 @@ TEST_SUITE("UILayout")
 	TEST_CASE("choice popup") { checkChoicePopup(); }
 	TEST_CASE("icon segments and choices") { checkIconSegmentsAndChoice(); }
 	TEST_CASE("text field") { checkTextField(); }
+	TEST_CASE("text field UTF-8 byte limit preserves Bengali edits") { checkTextFieldByteLimit(); }
+	TEST_CASE("text field character limits preserve Bengali and non-BMP input") { checkTextFieldCharacterLimit(); }
 	TEST_CASE("list view") { checkListView(); }
 	TEST_CASE("copy field") { checkCopyField(); }
 	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }

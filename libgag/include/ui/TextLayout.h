@@ -39,6 +39,11 @@ std::size_t nextGlyph(const std::string &text, std::size_t at);
 std::size_t previousGlyph(const std::string &text, std::size_t at);
 std::size_t glyphCount(const std::string &text);
 
+// Validated shaping-cluster byte ends. Invalid font segmentation conservatively
+// leaves the complete run intact rather than splitting combining marks.
+std::vector<std::size_t> shapingClusterEnds(const TextMeasurer &measurer, FontRole role,
+										  const std::string &text);
+
 // Word wrap that breaks unspaced runs at shaping-cluster boundaries and keeps CJK closing punctuation
 // with its preceding character. U+200B hints prefer word boundaries without
 // inserting visible spaces. Explicit newlines always break. A cluster wider

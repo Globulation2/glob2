@@ -15,7 +15,7 @@ import {
 import { request } from '../api.ts';
 import { useLoad, useSession } from '../state.tsx';
 import { MeshPreview, type SceneView, type Tool } from '../skins/MeshPreview.tsx';
-import { ACTIONS, DEFAULT_CAMERA, type Camera } from '../skins/geometry.ts';
+import { ACTIONS, ACTION_LABELS, DEFAULT_CAMERA, type Camera } from '../skins/geometry.ts';
 import { MODELS, type Model } from '../skins/atlas.ts';
 import { SWARM_SHAPES, swarmModel } from '../skins/swarmShapes.ts';
 import { SkinStore } from '../skins/Store.tsx';
@@ -770,7 +770,7 @@ function SkinStudio() {
                           }}
                         >
                           <img src={`/skins/thumbs/${model.id}-${a}.png`} alt="" />
-                          <span>{skinLabel(a[0]!.toUpperCase() + a.slice(1))}</span>
+                          <span>{skinLabel(ACTION_LABELS[a] ?? a)}</span>
                         </button>
                       ))}
                     </div>

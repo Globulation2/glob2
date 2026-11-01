@@ -294,11 +294,12 @@ fe::Element InGameStatisticsPanel::unitDetails(const fe::Presentation &p)
 fe::Element InGameStatisticsPanel::build(const fe::Presentation &p)
 {
     std::vector<fe::Element> topicRows, buttons;
-    const int columns = bounds.w < p.textPt(270) ? 2 : 3;
+    const bool narrow = bounds.w < p.textPt(270);
+    const int columns = narrow ? 2 : 3;
     for (int i = 0; i < 5; ++i) {
         buttons.push_back(fe::expanded(fe::button("stats/topic/" + std::to_string(i), fe::tr(topicKeys[i]),
             [this, i] { selectTopic(Topic(i)); }, {.selected = selectedTopic == Topic(i), .role = fe::FontRole::Support})));
-        if (int(buttons.size()) == columns || i == 4) {
+        if ((narrow && i == 0) || int(buttons.size()) == columns || i == 4) {
             topicRows.push_back(fe::row(std::move(buttons), {p.pt(4)}));
             buttons.clear();
         }

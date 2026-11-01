@@ -1,5 +1,6 @@
 import { getLocale } from '../messages.ts';
 import { t } from '../messages.ts';
+import { statusLabel } from '../messages.ts';
 import type { AdminAnalytics } from '@glob2/protocol';
 
 export const PRODUCT_NAMES: Readonly<Record<string, string>> = {
@@ -13,17 +14,56 @@ export const PRODUCT_NAMES: Readonly<Record<string, string>> = {
   engine: 'Engine jobs',
 };
 export function productName(product: string) {
-  return PRODUCT_NAMES[product] ?? product;
+  return Object.hasOwn(PRODUCT_NAMES, product) ? t(PRODUCT_NAMES[product]) : product;
+}
+export const PAYMENT_MODE_NAMES: Readonly<Record<string, string>> = {
+  live: 'Live payments',
+  test: 'Test payments',
+  unclassified: 'Unclassified payments',
+};
+export const REPORTING_PERIOD_NAMES: Readonly<Record<string, string>> = {
+  current: 'Current period',
+  previous: 'Previous period',
+};
+export const FINANCE_KIND_NAMES: Readonly<Record<string, string>> = {
+  payment: 'Payment',
+  purchase: 'Purchase',
+  usage: 'Usage',
+  refund: 'Refund',
+  reserved: 'Reserved',
+  adjustment: 'Account adjustment',
+  grant: 'Credit grant',
+  returned: 'Returned credits',
+  dispute: 'Dispute',
+  dispute_closed: 'Dispute closed',
+};
+export const MATCH_METRIC_NAMES: Readonly<Record<string, string>> = {
+  'matches.started': 'Matches started',
+  'matches.completed': 'Matches completed',
+  'matches.cancelled': 'Matches cancelled',
+};
+export const COMPLETION_METRIC_NAMES: Readonly<Record<string, string>> = {
+  seconds: '{value0} completion time (seconds)',
+  samples: '{value0} completion samples',
+};
+export function paymentModeName(mode: string) {
+  return Object.hasOwn(PAYMENT_MODE_NAMES, mode) ? t(PAYMENT_MODE_NAMES[mode]) : mode;
+}
+export function reportingPeriodName(period: string) {
+  return Object.hasOwn(REPORTING_PERIOD_NAMES, period) ? t(REPORTING_PERIOD_NAMES[period]) : period;
+}
+export function financeKindName(kind: string) {
+  return Object.hasOwn(FINANCE_KIND_NAMES, kind) ? t(FINANCE_KIND_NAMES[kind]) : kind;
 }
 export function libraryName(library: string) {
   return (
     (
       {
         maps: t('Maps'),
-        ais: 'AIs',
+        ais: t('AI'),
         generators: t('Generators'),
         buildings: t('Buildings'),
-        sets: 'Terrain/resource sets',
+        sets: t('Terrain & resources'),
         skins: t('Skins'),
         music: t('Music'),
       } as Record<string, string>
@@ -37,12 +77,15 @@ export function measureName(metric: string, dimension: string) {
     return dimension === 'guest'
       ? t('Guest active account-days')
       : t('Registered active account-days');
-  if (metric.startsWith('matches.')) return 'Matches ' + metric.slice(8);
-  if (metric === 'library.published') return libraryName(dimension) + ' publications';
-  if (metric === 'library.downloads') return libraryName(dimension) + ' recorded downloads';
-  if (metric.startsWith('status.')) return productName(metric.slice(7)) + ' · ' + dimension;
-  if (metric.startsWith('duration.'))
-    return productName(metric.slice(9)) + ' completion ' + dimension;
+  if (Object.hasOwn(MATCH_METRIC_NAMES, metric)) return t(MATCH_METRIC_NAMES[metric]);
+  if (metric === 'library.published')
+    return t('{value0} publications', { value0: libraryName(dimension) });
+  if (metric === 'library.downloads')
+    return t('{value0} recorded downloads', { value0: libraryName(dimension) });
+  if (metric.startsWith('status.'))
+    return productName(metric.slice(7)) + ' · ' + statusLabel(dimension);
+  if (metric.startsWith('duration.') && Object.hasOwn(COMPLETION_METRIC_NAMES, dimension))
+    return t(COMPLETION_METRIC_NAMES[dimension], { value0: productName(metric.slice(9)) });
   return metric + ' ' + dimension;
 }
 /** Preserve exact units in exports, and neutralize spreadsheet formulas in string cells. */
