@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="probability statistics fit sixteen colonies [display][artifacts]" time="26.2867" status="run" />
+  </testsuite><testsuite name="DelayedGradientPublication"><testcase classname="DelayedGradientPublication" name="private174 migration profile is explicit and does not replace published layouts" time="0.00375" status="run" />
+  </testsuite><testsuite name="EntityRandomLifecycle"><testcase classname="EntityRandomLifecycle" name="format 150 text area saves retain funded services through current saves [save-format][artifacts]" time="25.9827" status="run" />
+  </testsuite><testsuite name="IntrusivePopulationSave"><testcase classname="IntrusivePopulationSave" name="formats164 through166 preserve population encoding and scheduler boundaries" time="7.40799" status="run" />
+  </testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Current simulation rejects earlier replays and enforces acceptance boundaries" time="2.46797" status="run" />
+  </testsuite><testsuite name="RuntimeResources"><testcase classname="RuntimeResources" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="9.02793" status="run" />
+  </testsuite></testsuites>
