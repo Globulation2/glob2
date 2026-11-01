@@ -199,6 +199,7 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	const auto runEnd = std::chrono::steady_clock::now();
 	Game& game = engine.gui.game;
 	const Uint32 finalTick = game.stepCounter;
+	game.winProbabilitySyncStep(true);
 
 	Verdict verdict = judge(record, checksums, versionProblem);
 	verdict.orders = lockstep.orderAudit();

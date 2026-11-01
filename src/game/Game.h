@@ -310,9 +310,9 @@ public:
 
 	/// Check and update winning conditions
 	void wonSyncStep(void);
-	//! Optional per-sample win probability trace. Diagnostic only, gated by
-	//! GLOB2_TEAM_TIMELINE; reads state and changes nothing.
-	void winProbabilitySyncStep();
+	//! Automatic probability history; force records a final partial interval.
+    // Detailed stdout traces still require GLOB2_TEAM_TIMELINE.
+	void winProbabilitySyncStep(bool force = false);
 
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();

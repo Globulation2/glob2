@@ -31,6 +31,7 @@
 
 namespace WinProbability
 {
+    const char *modelId() { return MODEL_ID; }
 	Sint64 clampCount(Sint64 value)
 	{
 		if (value < 0)

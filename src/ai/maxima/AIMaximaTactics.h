@@ -76,6 +76,8 @@ template<class Archive> void fields(Archive& a, Wave& wave)
 
 /// Fixed-point army controller: no floating point, wall clocks or RNG.
 int desiredArmy(int enemy, unsigned int tick, int ticksPerPoint, int floor, int ceiling);
+bool awaitingEffectiveArrival(int graceTicks,int elapsed,int arrived,int enrolled);
+int flagProximityPenalty(int weight,int distance);
 bool waveReady(Wave& wave, int arrived, int tick, int readyPercent,
 	int stallTicks, int maximumTicks, int minimumForce, int cohort, int capacity);
 

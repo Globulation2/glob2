@@ -193,7 +193,8 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
   page,
   context,
 }, info) => {
-  test.setTimeout(180_000);
+  // Eleven full navigations include font settling and actual painter controls.
+  test.setTimeout(360_000);
   const base = String(info.project.use.baseURL);
   await context.addCookies([{ name: 'glob2_locale', value: 'ta', url: base }]);
   const text = (source: string) => {

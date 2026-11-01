@@ -5,6 +5,28 @@
 #include <algorithm>
 TEST_SUITE("CommandLine")
 {
+    TEST_CASE("tournament probability defaults to 95 percent with an explicit zero opt-out")
+    {
+        const std::vector<std::string> base = {"game", "run", "--map-file", "test.map",
+            "--game-seed", "42", "--player", "castor", "--output-dir", "out"};
+        const auto request = Cli::parse(base);
+        CHECK(request.get("--win-probability") == "950");
+        CHECK_FALSE(request.has("--win-probability"));
+        for (const char *threshold : {"0", "950", "1000"})
+        {
+            auto args = base;
+            args.insert(args.end(), {"--win-probability", threshold});
+            CHECK(Cli::parse(args).get("--win-probability") == threshold);
+        }
+        for (const char *threshold : {"1", "500", "1001"})
+        {
+            auto args = base;
+            args.insert(args.end(), {"--win-probability", threshold});
+            CHECK_THROWS_AS(Cli::parse(args), std::invalid_argument);
+        }
+        CHECK_THROWS_AS(Cli::parse({"game", "run", "--load-game", "test.game",
+            "--output-dir", "out", "--win-probability", "950"}), std::invalid_argument);
+    }
 	TEST_CASE("registry describes every executable command and help is asset independent")
 	{
 		const auto schema = Cli::describe();

@@ -1,6 +1,7 @@
 #include "AIMaximaStrategy.h"
 
 #include "BasePlayer.h"
+#include "AI.h"
 #include "FileManager.h"
 #include "GameHeader.h"
 #include "Toolkit.h"
@@ -530,6 +531,13 @@ namespace
 		INT_SPEC(tactics, flag_minimum_level, "tactics.flag_minimum_level", 1, 4, "level", "tactics", "Minimum warrior level (1 = untrained) admitted to raid and siege flags", StrategyImpactHigh),
 		INT_SPEC(tactics, min_force, "tactics.min_force", 1, 20, "units", "tactics", "Eligible warriors required before the offensive flag is raised", StrategyImpactHigh),
 		INT_SPEC(tactics, retarget_margin, "tactics.retarget_margin", 0, 1000, "score", "tactics", "Score advantage a new target needs over the current one before the flag moves", StrategyImpactMedium),
+        INT_SPEC(tactics, enemy_commitment, "tactics.enemy_commitment", 0, 1, "mode", "tactics", "Enemy persistence: 0 unchanged, 1 same-enemy score bonus during an active mission", StrategyImpactHigh),
+        INT_SPEC(tactics, arrival_grace_ticks, "tactics.arrival_grace_ticks", 0, 30000, "ticks", "tactics", "Bounded grace before judging an attack stalled while its effective force is still arriving", StrategyImpactHigh),
+        INT_SPEC(tactics, flag_proximity_weight, "tactics.flag_proximity_weight", 0, 100, "score/tile", "tactics", "Penalty per tile from the current offensive flag to a candidate objective, capped at 32 tiles; zero disables", StrategyImpactHigh),
+        BOOL_SPEC(forward_support, inns_enabled, "forward_support.inns_enabled", "enabled", "tactics", "Offer dedicated forward feeding bases during a committed attack", StrategyImpactHigh),
+        BOOL_SPEC(forward_support, hospitals_enabled, "forward_support.hospitals_enabled", "enabled", "tactics", "Offer dedicated forward healing bases during a committed attack", StrategyImpactHigh),
+        INT_SPEC(forward_support, distance_tiles, "forward_support.distance_tiles", 12, 64, "tiles", "tactics", "Preferred forward-support distance behind the offensive objective", StrategyImpactHigh),
+        INT_SPEC(forward_support, coverage_distance_tiles, "forward_support.coverage_distance_tiles", 16, 96, "tiles", "tactics", "Existing service coverage that suppresses a new forward request; independent of placement distance", StrategyImpactHigh),
 		INT_SPEC(tactics, dwell_ticks, "tactics.dwell_ticks", 0, 1000000, "ticks", "tactics", "Ticks a live objective is kept before a better-scoring one may replace it", StrategyImpactMedium),
 		INT_SPEC(tactics, stall_ticks, "tactics.stall_ticks", 1, 1000000, "ticks", "tactics", "Ticks without damage to a visible siege target before it is quarantined", StrategyImpactMedium),
 		INT_SPEC(tactics, target_swarm_value, "tactics.target_swarm_value", 0, 1000, "score", "tactics", "Siege value of a swarm", StrategyImpactMedium),
@@ -1321,6 +1329,22 @@ StrategyConfigOptions StrategyResolver::environmentOptions()
 	return options;
 }
 
+bool StrategyResolver::upgradeSavedConfigurations(GameHeader& gameHeader,
+	int versionMinor, std::string& error)
+{
+	for(int player=0; player<gameHeader.getNumberOfPlayers(); ++player)
+		if(gameHeader.getBasePlayer(player).type ==
+			BasePlayer::playerTypeFromImplementationID(AI::MAXIMA)
+			&& !gameHeader.getAIConfig(player).empty())
+		{
+			MaximaStrategy values{};
+			if(!restoreValues(gameHeader.getAIConfig(player),values,error,versionMinor))
+				return false;
+			gameHeader.setAIConfig(player,canonicalValues(values));
+		}
+	return true;
+}
+
 bool StrategyResolver::resolveForPlayer(const GameHeader& gameHeader,
 	int playerNumber, ResolvedStrategy& result, std::string& error)
 {
@@ -1474,6 +1498,21 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
     std::map<std::string, std::string> provenance;
     if(!applyInline("saved strategy", text, restored, provenance, error))
         return false;
+    if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_FLAG_PROXIMITY
+        && !provenance.count("tactics.flag_proximity_weight"))
+        provenance["tactics.flag_proximity_weight"]="legacy proximity disabled";
+    if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT)
+    {
+        // Supported older saves keep their stored decisions. Missing newly
+        // introduced controls restore the original disabled policy, independent
+        // of the defaults used for new games.
+        if(!provenance.count("forward_support.distance_tiles")) restored.forward_support.distance_tiles=24;
+        if(!provenance.count("forward_support.coverage_distance_tiles")) restored.forward_support.coverage_distance_tiles=40;
+        for(const char* key:{"tactics.enemy_commitment","tactics.arrival_grace_ticks",
+            "forward_support.inns_enabled","forward_support.hospitals_enabled",
+            "forward_support.distance_tiles","forward_support.coverage_distance_tiles"})
+            if(!provenance.count(key)) provenance[key]="legacy tactical defaults";
+    }
     for(const auto& spec:parameterSpecs)
         if(!provenance.count(spec.key))
         {

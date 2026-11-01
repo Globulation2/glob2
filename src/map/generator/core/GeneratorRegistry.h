@@ -13,6 +13,8 @@ class GeneratorRegistry
 	/// The numeric id of the generator with this string id; throws for an unknown one.
 	int idOf(const std::string &id) const;
 	std::vector<int> methods(bool editor = true) const;
+	/// Prefer Lava Shield independently of catalog order; fall back for partial catalogs.
+	int defaultMethod(bool editor = true) const;
 	int selectionIndex(int id, bool editor = true) const;
 	static const GeneratorRegistry &builtins();
 	static std::shared_ptr<const GeneratorRegistry> builtinsSnapshot();
