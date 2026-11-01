@@ -719,16 +719,21 @@ Custom scripts can use the same reader rather than reimplementing the integral:
 ```python
 from tools.tournaments.probability import group_summary
 
-side = group_summary([t for t in result["teams"] if t["alliance"] == alliance])
+side = group_summary(
+    [t for t in result["teams"] if t["alliance"] == alliance],
+    expected_end_tick=result["ticks"],
+)
 if side is None or not side["whole_game"]:
     raise ValueError("Whole-match probability score is unavailable")
 score = side["mean"]  # 0..1, higher is better
 ```
 
 Older saves start history at the first newly observed sample. Scores with missing
-opening coverage, no elapsed time, or mixed models after a refit are marked
+opening or terminal coverage, no elapsed time, or mixed models after a refit are marked
 unavailable for whole-game summaries, rather than extrapolated. Partial observed
-scores and coverage remain in raw observations. Changing early-stopping thresholds
+scores and coverage remain in raw observations. Cap adjudication requires a
+prediction at the actual terminal tick; an up-to-date final prediction remains
+usable even when opening history is missing. Changing early-stopping thresholds
 changes the measured duration: compare matched rules, model, maps and opponents.
 These are model-based scores, useful for detecting smaller trajectory changes;
 their sensitivity does not establish robustness to every AI change. The model was
@@ -750,6 +755,10 @@ bypass the planners also use the CLI default of 950 unless they specify the rule
 
 Calibration and its limits are described in the model guide. Evaluate the model
 against the AI and game rules in the cohort you intend to measure. The threshold accepts 0 (off) or 501–1000.
+For validation or refitting of the probability model itself, disable probability
+victory and use independent labels, such as the historical `prestige` cap policy.
+The fitting helpers reject probability-called games and `win_probability` labels
+to prevent training or evaluating the model against its own predictions.
 Experiment `rules` also pass through the shared `--rule` interface. Games it ended report a `termination`
 of `win_probability` rather than `engine_end`, and `observations()` carries the
 raw termination through, so analysis can pool, exclude or compare them but can

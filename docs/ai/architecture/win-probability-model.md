@@ -198,7 +198,7 @@ opening samples can look lopsided for reasons that mean nothing. It is placed
 last among the winning conditions, so an actual elimination or prestige win is
 always the reason a game ended when one is available on the same tick.
 
-Live spectators can open a fourth statistics page showing each side's chance,
+Live spectators can open an additional, last statistics page showing each side's chance,
 whether the rule is on or off. The separate page fits up to sixteen colonies. Allies share one figure, because the model
 rates the alliance. Players do not see the panel during a normal game.
 
@@ -217,6 +217,14 @@ normalized whole-game probability separately from outcomes. See
 [whole-game scores](../../tools/tournaments.md#whole-game-probability-scores).
 The original calibration labels and measurements above used the historical
 economic adjudication, not this new default; these changes do not refit the model.
+
+When validating or refitting the probability model itself, collect games with
+`--win-probability 0` (tournament setting `win_probability_permille: 0`) and use
+independent outcome labels. The fitting helpers reject probability-ended games
+and `win_probability` adjudication, including in previously cached datasets:
+training or measuring calibration against the model's own calls would make its
+reported accuracy misleading. The extraction default remains the historical
+`prestige` policy for tick-capped games; natural engine victories remain authoritative.
 
 The threshold is the only dial:
 

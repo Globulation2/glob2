@@ -1313,6 +1313,22 @@ TEST_CASE("clearing telemetry counts operations once by configured primary mater
 
 TEST_SUITE("TeamStatsSave")
 {
+    TEST_CASE("probability history rejects samples beyond the saved game tick [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        auto &game=world.game;
+        game.stepCounter=512;
+        auto &stats=world.team->stats;
+        stats.recordWinProbability(0,400,"saved-model");
+        stats.recordWinProbability(game.stepCounter,600,"saved-model");
+        const auto loaded=roundTrip(game);
+        REQUIRE(loaded->game.teams[0]->stats.getWinProbabilityHistory().back().tick==game.stepCounter);
+
+        // Ascending, in-range samples are still corrupt if they describe the future.
+        stats.recordWinProbability(game.stepCounter+1,600,"saved-model");
+        CHECK_THROWS_WITH_AS(roundTrip(game),"Invalid win probability game tick",std::runtime_error);
+    }
     TEST_CASE("probability text history and integral survive a team save [save-format]")
     {
         glob2test::HeadlessGlobals globals;

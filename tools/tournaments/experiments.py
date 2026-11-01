@@ -9,6 +9,7 @@ from .analysis import POLICIES, reanalyze
 from .bundles import inspect_bundle
 from .common import atomic_json, digest, read_json
 from .coordinator import Coordinator
+from .jobs import win_probability_threshold
 from .model import generator_samples, grid, job, rotations, seeded_samples, validate_experiment
 
 
@@ -85,7 +86,7 @@ class Planner:
                             'players': players, 'ticks': config.get('ticks', 90000), 'ai_params': {},
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'alliances': alliances} if alliances else {}),
-                            'win_probability_permille': config.get('win_probability_permille', config.get('rules', {}).get('winProbabilityPermille', 950))},
+                            'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
         self.jobs.append(value)
@@ -132,7 +133,7 @@ class Planner:
                     config={'players': players, 'ticks': config.get('ticks', 90000),
                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
                             **({'rules': config['rules']} if 'rules' in config else {}),
-                            'win_probability_permille': config.get('win_probability_permille', config.get('rules', {}).get('winProbabilityPermille', 950))},
+                            'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
         self.jobs.append(value)

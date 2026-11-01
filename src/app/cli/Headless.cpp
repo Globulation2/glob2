@@ -315,9 +315,8 @@ void Headless::writeManifest(const std::string &directory)
 	manifest(fs::path(directory));
 }
 
-void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::vector<Sint32> &eliminatedTicks)
+void Headless::playersAndTeamsJson(std::ostream &result, const Game &game, const std::vector<Sint32> &eliminatedTicks)
 {
-    game.winProbabilitySyncStep(true);
 	bool comma=false;
 	result << "\"players\":[";
 	for(int p=0;p<game.gameHeader.getNumberOfPlayers();++p)
@@ -332,7 +331,7 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 	std::set<int> winningAlliances; std::vector<int> winningTeams;
 	for(int t=0;t<game.mapHeader.getNumberOfTeams();++t)
 	{
-		Team *team=game.teams[t];
+		const Team *team=game.teams[t];
 		int units=0,workers=0,explorers=0,warriors=0,buildings=0,sites=0;
 		long long warriorHP=0,warriorAttack=0;
 		for (const Unit *u : team->liveUnits.entries())
@@ -366,6 +365,8 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 			result<<']';
 		}
         const auto &probability = team->stats.getWinProbabilityHistory();
+        if (probability.empty() || probability.back().tick != game.stepCounter)
+            throw std::logic_error("Result serialization requires finalized win probability history");
         const auto &first = probability.front();
         const auto &last = probability.back();
         const auto duration = last.tick - first.tick;
@@ -801,6 +802,9 @@ struct HeadlessRunner
 		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
+		// Finalize reporting only after continuation saves. A report endpoint
+		// must not add an off-cadence sample to a subsequently resumed game.
+		game.winProbabilitySyncStep(true);
 		const auto pipelineResult = game.map.gradientPipelineStatus();
 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
 		const auto gradient=gradient_kernel::configuration();

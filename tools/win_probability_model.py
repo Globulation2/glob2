@@ -36,13 +36,16 @@ deliberately excluded: both are documented as diagnostic only and must never
 feed the simulation, and a winning condition built on this model does exactly
 that. Anything fitted here has to be computable in-engine.
 
-Commands:
-  dataset  extract the per-sample dataset from tournament results and cache it
-  screen   report what each candidate state measurement predicts on its own
-  fit      select features, fit the coefficients and emit the C++ header
-  savings  what the winning condition would have saved on games already played
+Collect calibration/refit games with --win-probability 0 (or the tournament
+setting win_probability_permille=0). Probability-called winners and final-
+probability adjudication are predictions, not independent outcome labels.
+
+Programmatic entry points:
+  build_dataset  extract the per-sample dataset from tournament results
+  screen/select compare candidate measurements and select fitted terms
+  emit_header   emit the fitted model as the C++ header
+  savings       estimate early-victory savings on independently labelled games
 """
-import argparse
 import gzip
 import hashlib
 import json
@@ -217,16 +220,36 @@ def measurements_of(pair):
     return values
 
 
+CALIBRATION_POLICIES = ('prestige', 'survivor_draw', 'military')
+
+
+def _validate_calibration_labels(policy, game=None):
+    if policy not in CALIBRATION_POLICIES:
+        raise ValueError('probability-model calibration requires independent outcome labels; '
+                         'use prestige, survivor_draw or military, not win_probability')
+    if game is not None and game.get('termination') == 'win_probability':
+        raise ValueError('probability-called games cannot label probability-model calibration; '
+                         'collect games with --win-probability 0 (win_probability_permille=0)')
+
+
+def _validate_calibration_dataset(data):
+    policy = data.get('policy', 'prestige')
+    _validate_calibration_labels(policy)
+    for game in data.get('games', []):
+        _validate_calibration_labels(policy, game)
+
+
 def game_slices(source, record, policy='prestige'):
     """One contest per 512-tick sample of one game, labelled by how it ended.
 
     The label is the game's finishing order, not anything about the sample: that
     is the whole point, since what we want to predict at tick T is the result
-    that only arrives later. Tick-capped games are labelled by the same economic
-    adjudication the ratings use, so the games that most need calling early are
-    not the ones missing from the fit.
+    that only arrives later. Tick-capped games default to the historical economic
+    adjudication, keeping their labels independent of the model being fitted.
+    Probability-ended games and probability-based labels are rejected.
     """
     result = record.get('result') or {}
+    _validate_calibration_labels(policy, result)
     if result.get('job_type') != 'game' or not result.get('teams'):
         return []
     labels = record['job'].get('labels', {})
@@ -275,6 +298,8 @@ def game_slices(source, record, policy='prestige'):
 
 
 def build_dataset(roots, output, policy='prestige', limit=None):
+    """Extract independent labels; reject model-called outcomes, including old logs."""
+    _validate_calibration_labels(policy)
     games, skipped = [], defaultdict(int)
     for root in roots:
         source = Results(root)
@@ -284,6 +309,9 @@ def build_dataset(roots, output, policy='prestige', limit=None):
             if not record.get('accepted') or (record.get('result') or {}).get('job_type') != 'game':
                 skipped['not an accepted game'] += 1
                 continue
+            # Reject before the unreadable-log handler: this is an unsuitable
+            # experiment design, not missing diagnostic data to skip silently.
+            _validate_calibration_labels(policy, record['result'])
             if not any(a['path'] == 'stdout.log' for a in record['artifacts']):
                 skipped['no log'] += 1
                 continue
@@ -311,11 +339,14 @@ def build_dataset(roots, output, policy='prestige', limit=None):
 
 def load_cache(path):
     with gzip.open(path, 'rt') as stream:
-        return json.load(stream)
+        data = json.load(stream)
+    _validate_calibration_dataset(data)
+    return data
 
 
 def contests(cache, stride=1, formats=None, minimum_tick=0):
     """Flatten the cached games into the estimator's contest list."""
+    _validate_calibration_dataset(cache)
     games = []
     for game in cache['games']:
         if formats and game['format'] not in formats:
@@ -326,7 +357,7 @@ def contests(cache, stride=1, formats=None, minimum_tick=0):
             games.append({'job_id': game['job_id'], 'map': game['map'], 'format': game['format'],
                           'tick': piece['tick'], 'tick_cap': game['tick_cap'],
                           'termination': game['termination'], 'entries': piece['entries']})
-    return {'games': games, 'skipped': cache.get('skipped', {})}
+    return {'games': games, 'policy': cache.get('policy', 'prestige'), 'skipped': cache.get('skipped', {})}
 
 
 def by_game(game):
@@ -338,6 +369,7 @@ def by_game(game):
 # ---------------------------------------------------------------------------
 def screen(data, folds=5, ridge=1e-3):
     """What each candidate measurement and transform predicts on its own."""
+    _validate_calibration_dataset(data)
     rows = []
     for name in MEASUREMENTS:
         for transform in transform_candidates(name):
@@ -353,6 +385,7 @@ def screen(data, folds=5, ridge=1e-3):
 
 def select(data, candidates, limit=6, folds=5, ridge=1e-3, tolerance=0.0005):
     """Greedy forward selection on cross-validated fit, one term per family."""
+    _validate_calibration_dataset(data)
     chosen, used, history, current = [], set(), [], 0.0
     while len(chosen) < limit:
         trials = []
@@ -432,6 +465,7 @@ def savings(cache, features, threshold=0.97, dwell=3, folds=4, ridge=1e-3, seed=
     model has met each game's own outcome and would report a precision the engine
     would not reproduce.
     """
+    _validate_calibration_dataset(cache)
     import random as _random
     games = [g for g in cache['games'] if g['slices']]
     ids = sorted({g['job_id'] for g in games})
@@ -492,6 +526,7 @@ def summarise_savings(rows):
 
 def calibration(model, data, buckets=12):
     """Predicted against observed win rate, pooled over every entry of every contest."""
+    _validate_calibration_dataset(data)
     pairs = []
     for row, game in zip(probabilities(model, data), data['games']):
         for probability, entry in zip(row['probability'], game['entries']):

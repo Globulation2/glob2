@@ -18,6 +18,8 @@ from tools.tournaments.coordinator import Coordinator
 from tools.tournaments.model import job, validate_experiment, validate_job
 from tools.tournaments.transfer import put_chunk, offset
 from tools.tournaments.worker import Worker, installed_bundle, outcome_only, pack
+from tools.tournaments.analysis import adjudicate, paired_effects, probability_scores, observations
+from tools.tournaments.probability import summary, group_summary, stopping_threshold
 
 FAKE = '''#!/usr/bin/env python3
 import json, pathlib, sys
@@ -63,7 +65,7 @@ class RuleJobs(unittest.TestCase):
 
     def test_probability_threshold_matches_engine_range(self):
         from tools.tournaments.jobs import EngineJob
-        for threshold in (True, -1, 1, 500, 1001):
+        for threshold in (None, True, -1, 1, 500, 1001):
             request = job('game', 'a'*64, config={'generator': 15,
                 'players': ['numbi', 'castor'], 'win_probability_permille': threshold},
                 seeds={'map': 1, 'game': 1})
@@ -528,6 +530,13 @@ class AnalysisTests(unittest.TestCase):
         plain_game = next(j for j in disabled['jobs'] if j['type'] == 'game')
         disabled_args = EngineJob('game').command(plain_game, bundle_directory, '/tmp/attempt', {})
         self.assertEqual(disabled_args[disabled_args.index('--win-probability') + 1], '0')
+        rules_off = Planner('ai_comparison', dict(base, rules={'winProbabilityPermille': 0}), [bundle]).plan()
+        self.assertTrue(all(j['config']['win_probability_permille'] == 0 for j in rules_off['jobs']))
+        with self.assertRaisesRegex(ValueError, 'conflicting'):
+            Planner('ai_comparison', dict(base, win_probability_permille=950,
+                    rules={'winProbabilityPermille': 0}), [bundle]).plan()
+        with self.assertRaisesRegex(ValueError, '501'):
+            Planner('ai_comparison', dict(base, win_probability_permille=None), [bundle]).plan()
 
     def test_sample_games_uses_standard_duels_via_inline_generation(self):
         """The standard Elo cohort uses 128x128 duels. Sampling remains the one
@@ -748,10 +757,6 @@ class ParameterSampling(unittest.TestCase):
         self.assertIn(2, {j['config']['params']['shape'] for j in sampled})
 
 
-from tools.tournaments.analysis import adjudicate, paired_effects, probability_scores
-from tools.tournaments.probability import summary, group_summary
-
-
 def _probability_team(n, chance=500, area=1000000, start=0, end=1000, **extra):
     return dict(team=n, alliance=n, alive=True, outcome='unresolved', prestige=100-n,
                 units=50, buildings=10, eliminated_tick=-1,
@@ -767,6 +772,42 @@ def _probability_row(name='baseline', mean=500, block='one', build='build'):
 
 
 class ProbabilityTests(unittest.TestCase):
+    def test_actual_stopping_rule_takes_precedence_including_disabled_rules(self):
+        result={'resolved': {'rules': {'winProbabilityPermille': 0}}, 'win_probability_permille': 950}
+        config={'win_probability_permille': 970, 'rules': {'winProbabilityPermille': 990}}
+        self.assertEqual(stopping_threshold(result, config), 0)
+        result.pop('resolved')
+        self.assertEqual(stopping_threshold(result, config), 950)
+        self.assertEqual(stopping_threshold({}, config), 970)
+        config.pop('win_probability_permille')
+        self.assertEqual(stopping_threshold({}, config), 990)
+        self.assertIsNone(stopping_threshold({}, {}))
+
+    def test_terminal_coverage_is_required_for_scoring_and_cap_adjudication(self):
+        stale=_probability_team(0, chance=900, area=500000, end=500)
+        other=_probability_team(1, chance=100)
+        self.assertFalse(summary(stale, expected_end_tick=1000)['whole_game'])
+        result=dict(termination='tick_cap', ticks=1000, winning_teams=[], teams=[stale, other],
+                    players=[{'team':0,'ai':'cortex'}, {'team':1,'ai':'castor'}])
+        with self.assertRaisesRegex(ValueError, 'terminal tick'):
+            adjudicate(result)
+
+        # A fresh final prediction can adjudicate a cap even if its opening is missing.
+        partial=_probability_team(0, chance=900, area=500000, start=500)
+        result['teams'][0]=partial
+        self.assertEqual(adjudicate(result)['winners'], [0])
+        self.assertFalse(summary(partial, expected_end_tick=1000)['whole_game'])
+
+        # Missing AUC coverage cannot invalidate an engine-declared winner.
+        result['winning_teams']=[0]
+        result['teams']=[stale, dict(other)]
+        result['teams'][1].pop('win_probability')
+        record={'category':'success', 'result':result, 'job':job('game','a'*64)}
+        row=observations([record], 'win_probability')[0]
+        self.assertEqual(row['winners'], [0])
+        self.assertTrue(row['engine_outcome'])
+        self.assertTrue(all(s['scored_games']==0 for s in probability_scores([row], 10)))
+
     def test_same_ai_ablation_keeps_subject_score_separate_from_opponent(self):
         row=_probability_row('improved', 510)
         row['competitors']=['cortex','cortex']
@@ -814,7 +855,7 @@ class ProbabilityTests(unittest.TestCase):
             self.assertIn('W / L / D', text)
 
     def test_cap_uses_final_probability_instead_of_economy(self):
-        result=dict(termination='tick_cap', winning_teams=[], teams=[_probability_team(0, 300), _probability_team(1, 700)])
+        result=dict(termination='tick_cap', ticks=1000, winning_teams=[], teams=[_probability_team(0, 300), _probability_team(1, 700)])
         self.assertEqual(adjudicate(result)['winners'], [1])
         self.assertEqual(adjudicate(result, 'prestige')['winners'], [0])
         result['teams'][0]['win_probability']['permille'] = 500
@@ -835,7 +876,7 @@ class ProbabilityTests(unittest.TestCase):
         a,b,c=_probability_team(0, 400),_probability_team(1, 400),_probability_team(2, 600)
         a['alliance']=b['alliance']=10
         self.assertEqual(group_summary([a,b])['final'], .4)
-        self.assertEqual(adjudicate(dict(termination='tick_cap', teams=[a,b,c]), alliances=True)['winners'], [2])
+        self.assertEqual(adjudicate(dict(termination='tick_cap', ticks=1000, teams=[a,b,c]), alliances=True)['winners'], [2])
         b['win_probability']['permille']=401
         with self.assertRaisesRegex(ValueError, 'inconsistent alliance'):
             group_summary([a,b])

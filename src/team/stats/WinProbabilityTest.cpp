@@ -7,6 +7,7 @@
 #include "stats/MetricCatalog.h"
 #include "WinProbability.h"
 #include "WinningConditions.h"
+#include "Headless.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "FileFormatVersions.h"
@@ -15,9 +16,37 @@
 #include <array>
 #include <algorithm>
 #include <sstream>
+#include <stdexcept>
+#include <utility>
 
 TEST_SUITE("WinProbability")
 {
+    TEST_CASE("result serialization requires owner-finalized probability history")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2,.header=true});
+        auto &game=world.game;
+        const std::vector<Sint32> eliminated(game.teamsCount(),-1);
+        std::ostringstream missing;
+        CHECK_THROWS_WITH_AS(Headless::playersAndTeamsJson(missing,std::as_const(game),eliminated),
+            "Result serialization requires finalized win probability history",std::logic_error);
+        CHECK(world.team->stats.getWinProbabilityHistory().empty());
+
+        game.winProbabilitySyncStep(true);
+        const auto history=world.team->stats.frozenHistory();
+        game.stepCounter=100;
+        std::ostringstream result;
+        CHECK_THROWS_WITH_AS(Headless::playersAndTeamsJson(result,std::as_const(game),eliminated),
+            "Result serialization requires finalized win probability history",std::logic_error);
+        CHECK(world.team->stats.getWinProbabilityHistory().size()==1);
+        CHECK(world.team->stats.getWinProbabilityHistory().back().tick==0);
+        CHECK(world.team->stats.frozenHistory()==history);
+
+        game.winProbabilitySyncStep(true);
+        std::ostringstream finalized;
+        Headless::playersAndTeamsJson(finalized,std::as_const(game),eliminated);
+        CHECK(nlohmann::json::parse("{"+finalized.str()+"}")["teams"][0]["win_probability"]["end_tick"]==100);
+    }
     TEST_CASE("live chances and automatic history use the same scout-role counts")
     {
         glob2test::HeadlessGlobals globals;

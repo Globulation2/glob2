@@ -189,11 +189,11 @@ def main():
                 file=sys.stderr,
             )
 
-    print("\n| Format | Build | Competitor | Role | Stop (permille) | W / L / D | Mean win probability | 95% interval |", file=sys.stderr)
-    print("| --- | --- | --- | --- | ---: | --- | ---: | --- |", file=sys.stderr)
+    print("\n| Format | Build | Variant | Competitor | Role | Stop (permille) | W / L / D | Mean win probability | 95% interval |", file=sys.stderr)
+    print("| --- | --- | --- | --- | --- | ---: | --- | ---: | --- |", file=sys.stderr)
     for score in sorted(report['probability_scores'], key=lambda s: (s['format'], s['build'], -(s['mean'] if s['mean'] is not None else -1))):
         mean = f"{score['mean']:.4f}" if score['mean'] is not None else 'unavailable'
-        print(f"| {score['format']} | {score['build'][:12]} | {score['competitor']} | {score['role']} | {score['win_probability_permille']} | "
+        print(f"| {score['format']} | {score['build'][:12]} | {score['variant']} | {score['competitor']} | {score['role']} | {score['win_probability_permille']} | "
               f"{score['wins']} / {score['losses']} / {score['draws']} | {mean} | {score['interval']} |", file=sys.stderr)
 
 

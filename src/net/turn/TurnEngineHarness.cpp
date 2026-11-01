@@ -668,6 +668,7 @@ struct EngineMatch
 /// verifier's.
 json liveTeams(EngineClient& client)
 {
+	client.engine->gui.game.winProbabilitySyncStep(true);
 	std::ostringstream out;
 	out << '{';
 	Headless::playersAndTeamsJson(out, client.engine->gui.game, client.engine->teamEliminatedTick);

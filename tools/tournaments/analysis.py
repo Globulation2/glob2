@@ -9,7 +9,7 @@ import statistics
 from .common import atomic_json, digest
 from .fairness_statistics import share_table, squared_bias, bias_interval, rms_points, seed_for, benjamini_hochberg, holm
 from .results import Results
-from .probability import group_summary
+from .probability import group_summary, stopping_threshold
 
 POLICY_VERSION = 2
 POLICIES = ('win_probability', 'prestige', 'survivor_draw', 'military')
@@ -19,6 +19,7 @@ def adjudicate(result, policy='win_probability', alliances=False):
     if policy not in POLICIES:
         raise ValueError('unknown adjudication policy')
     teams = result['teams']
+    engine_outcome = any(t['outcome'] == 'won' or t['team'] in result.get('winning_teams', []) for t in teams)
     groups = defaultdict(list)
     for team in teams:
         groups[team['alliance'] if alliances else team['team']].append(team)
@@ -30,12 +31,16 @@ def adjudicate(result, policy='win_probability', alliances=False):
         if won:
             score = (3,)
         elif alive:
-            if result.get('termination') != 'tick_cap' or policy == 'survivor_draw':
+            if (result.get('termination') != 'tick_cap' or policy == 'survivor_draw'
+                    or (policy == 'win_probability' and engine_outcome)):
                 score = (2,)
             elif policy == 'win_probability':
-                probability = group_summary(colonies)
+                terminal_tick = result.get('ticks')
+                probability = group_summary(colonies, terminal_tick)
                 if probability is None:
                     raise ValueError('win_probability adjudication requires automatic probability statistics; use an explicit legacy policy for older results')
+                if terminal_tick is None or probability['end_tick'] != terminal_tick:
+                    raise ValueError('win_probability adjudication requires a prediction at the terminal tick')
                 score = (2, probability['final'])
             else:
                 fields = ('warrior_attack', 'warrior_hp', 'warriors') if policy == 'military' else ('prestige', 'units', 'buildings')
@@ -50,7 +55,7 @@ def adjudicate(result, policy='win_probability', alliances=False):
         placements[group] = 1 + better + (tied - 1) / 2
     best = max(scores.values())
     return {'policy': policy, 'version': POLICY_VERSION, 'alliances': alliances,
-            'engine_outcome': bool(result.get('winning_teams')), 'placements': placements,
+            'engine_outcome': engine_outcome, 'placements': placements,
             'winners': [key for key, score in scores.items() if score == best], 'scores': scores}
 
 
@@ -89,7 +94,7 @@ def observations(records, policy):
         keys = sorted(groups)
         competitors = ['+'.join(sorted(groups[key])) for key in keys]
         probabilities = [group_summary([t for t in result['teams']
-                         if (t['alliance'] if fmt == '2v2' else t['team']) == key]) for key in keys]
+                         if (t['alliance'] if fmt == '2v2' else t['team']) == key], result['ticks']) for key in keys]
         rows.append({'job_id': job['id'], 'format': fmt, 'block': str(labels.get('block', digest(job['inputs']))),
                      'map': labels.get('map', labels.get('map_seed')), 'build': job['build'],
                      'seeds': job['seeds'],
@@ -99,9 +104,7 @@ def observations(records, policy):
                      'symmetric_control': labels.get('symmetric_control', False),
                      'ticks': result['ticks'], 'cap': result['termination'] == 'tick_cap',
                      'termination': result['termination'],
-                     'win_probability_permille': result.get('resolved', {}).get('rules', {}).get('winProbabilityPermille',
-                         result.get('win_probability_permille', job['config'].get('win_probability_permille',
-                             job['config'].get('rules', {}).get('winProbabilityPermille')))),
+                     'win_probability_permille': stopping_threshold(result, job['config']),
                      'engine_outcome': outcome['engine_outcome'], 'groups': keys,
                      'competitors': competitors, 'probabilities': probabilities, 'placements': [outcome['placements'][key] for key in keys],
                      'winners': outcome['winners'], 'policy': outcome['policy'], 'teams': result['teams']})
@@ -209,6 +212,20 @@ def fairness(rows):
     return {'maps': output, 'aggregates': aggregate}
 
 
+def _block_mean_interval(blocks, draws, rng):
+    """Bootstrap an equal-game mean, keeping each seed's rotations together."""
+    keys = sorted(blocks)
+    if len(keys) < 2 or draws < 1:
+        return None
+    estimates = []
+    for _ in range(draws):
+        values = []
+        for _ in keys:
+            values.extend(blocks[rng.choice(keys)])
+        estimates.append(statistics.mean(values))
+    return [percentile(estimates, .025), percentile(estimates, .975)]
+
+
 def paired_effects(rows, draws=1000, seed=1):
     paired = defaultdict(dict)
     for row in rows:
@@ -240,17 +257,15 @@ def paired_effects(rows, draws=1000, seed=1):
         for _, value, block in pairs:
             blocks[block].append(value)
         if metric == 'win_probability_mean':
-            # Rotations of one seed are correlated; resample them together.
-            keys = sorted(blocks)
-            estimates = [statistics.mean([v for _ in keys for v in blocks[rng.choice(keys)]])
-                         for _ in range(draws)] if len(keys) > 1 else []
+            interval = _block_mean_interval(blocks, draws, rng)
         else:
             estimates = [statistics.mean(rng.choices(values, k=len(values))) for _ in range(draws)] if len(values) > 1 else []
+            interval = [percentile(estimates, .025), percentile(estimates, .975)] if estimates else None
         output.append({'build': build, 'held_out': held_out, 'variant': variant, 'metric': metric,
                        **({'model': model, 'win_probability_permille': threshold, 'blocks': len(blocks),
                            'resampling': 'seed_block'} if metric == 'win_probability_mean' else {}),
                        'pairs': len(values), 'mean_effect': statistics.mean(values),
-                       'interval': [percentile(estimates, .025), percentile(estimates, .975)] if estimates else None,
+                       'interval': interval,
                        'raw_pairs': [(pair, value) for pair, value, _ in pairs]})
     return output
 
@@ -281,10 +296,7 @@ def probability_scores(rows, draws=1000, seed=1):
         blocks = defaultdict(list)
         for block, value in usable:
             blocks[block].append(value['mean'])
-        keys = sorted(blocks)
         rng = random.Random(seed_for(seed, fmt, build, variant, competitor, role, model, threshold))
-        estimates = [statistics.mean([v for _ in keys for v in blocks[rng.choice(keys)]])
-                     for _ in range(draws)] if len(keys) > 1 else []
         output.append({'format': fmt, 'build': build, 'variant': variant, 'competitor': competitor,
                        'role': role,
                        'model': model, 'win_probability_permille': threshold, 'games': len(entries),
@@ -292,10 +304,10 @@ def probability_scores(rows, draws=1000, seed=1):
                        'probability_ended_games': sum(end == 'win_probability' for _, _, _, end in entries),
                        'capped_games': sum(end == 'tick_cap' for _, _, _, end in entries),
                        'scored_games': len(usable), 'unavailable': len(entries) - len(usable),
-                       'blocks': len(keys),
+                       'blocks': len(blocks),
                        'mean': statistics.mean(v['mean'] for _, v in usable) if usable else None,
                        'mean_area_probability_ticks': statistics.mean(v['area'] for _, v in usable) if usable else None,
-                       'interval': [percentile(estimates, .025), percentile(estimates, .975)] if estimates else None})
+                       'interval': _block_mean_interval(blocks, draws, rng)})
     return output
 
 

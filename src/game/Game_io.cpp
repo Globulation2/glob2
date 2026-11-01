@@ -403,10 +403,15 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 		}
 	std::set<std::pair<int, Uint32>> diagnosticIdentities;
 	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+	{
+		const auto &probability = teams[t]->stats.getWinProbabilityHistory();
+		if (!probability.empty() && probability.back().tick > stepCounter)
+			throw std::runtime_error("Invalid win probability game tick");
 		for (const auto &record : teams[t]->stats.aiTelemetry)
 			if (record->current.tick > stepCounter || record->coverage > stepCounter ||
 				!diagnosticIdentities.emplace(record->player, record->generation).second)
 				throw std::runtime_error("Invalid AI telemetry identity or game tick");
+	}
 	for (int p = 0; p < gameHeader.getNumberOfPlayers(); ++p)
 		if (players[p] && players[p]->ai)
 			players[p]->ai->bindTelemetry();
