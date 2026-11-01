@@ -203,8 +203,9 @@ struct AssetLoader::Impl {
     void checkOwner() const { if (owner != std::this_thread::get_id()) throw std::logic_error("Asset requests and polling require the owner thread"); }
     // The caller holds mutex. Retain demand and promote queued work exactly as
     // submit does, without constructing dependencies for an already cached job.
-    std::shared_ptr<Result> cached(const std::string& cacheKey, Priority priority, bool read) {
+    std::shared_ptr<Result> cached(const std::string& cacheKey, Priority priority, bool read, bool readyOnly = false) {
         if (auto result = cache[cacheKey].lock()) {
+            if (readyOnly && result->state != State::Ready) return {};
             if (result->state != State::Failed && result->state != State::Cancelled && result->consumers) {
                 for (auto &job : jobs) if (job->result == result && priority < job->priority) job->priority = priority;
                 ++result->consumers;
@@ -507,7 +508,9 @@ AssetLoader::Handle<AssetImage> AssetLoader::requestImage(const std::string& pat
         if (impl->stopping) throw std::runtime_error("Asset loader stopped");
         const auto key = std::to_string(impl->generation) + ':' + typeid(AssetImage).name() + ':' +
             name + (highResolution ? ":mips" : ":base");
-        if (auto result = impl->cached(key, priority, false)) return Handle<AssetImage>(result);
+        // Pending images still take the ordinary path, which promotes their
+        // byte input as well as their decode when request priority increases.
+        if (auto result = impl->cached(key, priority, false, true)) return Handle<AssetImage>(result);
     }
     auto bytes = requestBytesImpl(name, priority, true);
     auto work = [bytes, highResolution]() -> std::shared_ptr<const void> { return decodeImage(bytes.get(), highResolution); };

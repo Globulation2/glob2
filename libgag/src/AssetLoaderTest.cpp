@@ -221,6 +221,21 @@ TEST_CASE("WebP requests deduplicate and preserve alpha and invisible RGB in bot
         CHECK(loader.metrics().oversizedJobs == 2); // encoded bytes and output/scratch
         first.cancel(); CHECK(first.state() == GAGCore::AssetLoader::State::Cancelled);
         CHECK(second.get() == image);
+        if (workers == 0) {
+            // A Required re-request must promote the still-pending byte input,
+            // not just its decode, ahead of unrelated Interactive IO work.
+            write(temp.path / "priority.webp", webp, sizeof(webp));
+            GAGCore::AssetLoader priorities(files, {0, 0, 1024 * 1024});
+            auto background = priorities.requestImage("priority.webp", GAGCore::AssetLoader::Priority::Background);
+            auto sentinel = priorities.requestRead<unsigned>("priority-sentinel", [background] {
+                CHECK(background.state() == GAGCore::AssetLoader::State::Ready);
+                return std::make_shared<const unsigned>(1);
+            }, GAGCore::AssetLoader::Priority::Interactive);
+            auto required = priorities.requestImage("priority.webp", GAGCore::AssetLoader::Priority::Required);
+            REQUIRE(priorities.wait(sentinel));
+            REQUIRE(priorities.wait(required));
+            CHECK(required.get() == background.get());
+        }
     }
 }
 TEST_CASE("read backpressure yields to decoders and retained metadata cannot stall images") {
