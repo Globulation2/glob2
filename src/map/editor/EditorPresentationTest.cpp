@@ -130,6 +130,8 @@ TEST_SUITE("EditorPresentation")
 			CHECK(globalContainer->standardFont->getStringWidth(word) * gfx->textUnitsPerPoint() <= captionWidth);
 		CHECK(phone.cardBar.y >= phone.modeBar.y + phone.modeBar.h);
 		CHECK(phone.content.y + phone.content.h <= phone.modeBar.y);
+		CHECK(phone.mapButton().w >= globalContainer->standardFont->getStringWidth("Minimap") *
+			gfx->textUnitsPerPoint() + 8 * gfx->logicalUnitsPerPoint());
 		const int grass = phone.rowOf("terrain/grass");
 		REQUIRE(grass >= 0);
 		const auto card = phone.rows[grass].rect;
