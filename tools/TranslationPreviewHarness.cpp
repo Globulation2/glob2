@@ -123,12 +123,12 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
     if (fs::exists(pilot / "metadata.json"))
         result["input_metadata"] = readJson(pilot / "metadata.json");
     for (const auto *name : {"data/texts.en.txt", "data/texts.keys.txt",
-             "platform/packages/i18n/locales/en.json", "libgag/src/TrueTypeFont.cpp",
-             "libgag/src/BidiText.cpp", "libgag/src/ui/TextLayout.cpp",
+             "platform/packages/i18n/locales/en.json", "libs/gag/src/TrueTypeFont.cpp",
+             "libs/gag/src/BidiText.cpp", "libs/gag/src/ui/TextLayout.cpp",
              "src/hud/draw/GameGUIDraw.cpp", "src/hud/touch/GameGUITouchView.cpp",
              "src/hud/touch/GameGUITouch.cpp", "src/hud/touch/GameGUITouch.h",
-             "libgag/include/TouchText.h", "libgag/include/TrueTypeFont.h",
-             "libgag/include/ui/TextLayout.h", "libgag/src/DrawableSurfaceCompound.cpp",
+             "libs/gag/include/TouchText.h", "libs/gag/include/TrueTypeFont.h",
+             "libs/gag/include/ui/TextLayout.h", "libs/gag/src/DrawableSurfaceCompound.cpp",
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
              "tools/TranslationPreviewHarness.cpp"})
         result["source_sha256"][name] = sha256(root / name);

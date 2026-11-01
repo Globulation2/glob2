@@ -44,7 +44,7 @@ top-right, explorer bottom-left, swarm bottom-right.
   an opaque sRGB lossless WebP without metadata.
 - `materialBase64`, the material map, is at most 256 KiB. Every pixel is grey
   (R = G = B), opaque, and a material id below the count registered in
-  `libgag/shaders/skin-materials.json` (mirrored as `COLONY_SKIN_MATERIALS` in
+  `libs/gag/shaders/skin-materials.json` (mirrored as `COLONY_SKIN_MATERIALS` in
   the protocol package). Anything else is a 400. The server re-encodes it as an
   8-bit lossless WebP. Native clients built with the registry shade ids beyond
   their own catalogue as matte, so later materials degrade gracefully; clients

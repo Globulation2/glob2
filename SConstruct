@@ -573,7 +573,7 @@ def main():
               
     PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     PackTar(env["TARFILE"], Glob("datasrc/icons/tabler/*"))
-    PackTar(env["TARFILE"], Split("tools/icons/export_tabler.cjs libgag/include/ui/Icon.h"))
+    PackTar(env["TARFILE"], Split("tools/icons/export_tabler.cjs libs/gag/include/ui/Icon.h"))
     PackTar(env["TARFILE"], [p for p in sorted(__import__("glob").glob("third_party/**/*", recursive=True)) if os.path.isfile(p)])
     #packaging for apple
     if isDarwinPlatform and env["release"] and any(
@@ -628,10 +628,10 @@ def main():
         "data",
         "debian",
         "fedora",
-        "libgag",
-        "libusl",
+        "libs/gag",
+        "libs/usl",
         "maps",
-        "natsort",
+        "third_party/natsort",
         "scripts",
         "scons",
         "src",

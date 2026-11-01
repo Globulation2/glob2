@@ -1,7 +1,7 @@
 # Menus and dialogs: the declarative UI framework
 
 Every frontend menu, in-game dialog and editor dialog is one element tree that
-the screen rebuilds from its model. The framework in `libgag/include/ui/`
+the screen rebuilds from its model. The framework in `libs/gag/include/ui/`
 (namespace `GAGGUI::ui`) owns layout, phone/tablet/desktop adaptation, live
 relayout on resize and rotation, input, focus, scrolling, popups and theming.
 The game-side bindings in `src/ui/FrontendUI.h` (namespace `Glob2UI`) add the
@@ -581,7 +581,7 @@ desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
   `logicalUnitsPerPoint()`, and grow rows that are sized by their text with
   `InGameTouchTheme::textGrowth()`.
 - A control's measured size must hold the text it paints at every text size.
-  `libgag/src/ui/UILayoutHarness.cpp` and the presentation harness check that no
+  `libs/gag/src/ui/UILayoutHarness.cpp` and the presentation harness check that no
   painted line crosses a control's edge, at 100% and 150%.
 
 Mobile game-event notifications start below the statistics, minimap and selection
@@ -906,7 +906,7 @@ press and release land on the same element.
 
 Finger pans on `scroll`, `listView` and `textEditor` (the nodes whose
 `inertial()` is true) have the physics of a native list, driven by
-`GAGCore::ScrollAxis` from `libgag/include/ScrollPhysics.h`:
+`GAGCore::ScrollAxis` from `libs/gag/include/ScrollPhysics.h`:
 
 - the content tracks the finger, and after release coasts with the finger's
   velocity (a least-squares fit over the last 100 ms; a finger that rests for
@@ -956,7 +956,7 @@ preference fields or simulation state are introduced.
 ## Verification
 
 - `scons unit-tests` then `python3 test/run_tests.py --binary unit --filter 'UILayout/*'`
-  runs `libgag/src/ui/UILayoutHarness.cpp`: pure layout with fixed-advance text and a
+  runs `libs/gag/src/ui/UILayoutHarness.cpp`: pure layout with fixed-advance text and a
   recording canvas. Measure and arrange,
   adaptive re-choice after resize, footer folding, scroll clamping, wrapping,
   ellipsis, focus order, capture, tap versus pan, fling, overscroll and bounce

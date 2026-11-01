@@ -77,10 +77,15 @@ def profile_pattern(pool_size):
     return f'%{pool_size}m.profraw' if pool_size else '%m-%p.profraw'
 
 
+COVERED_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'mobile/')
+
+
 def area(path):
     parts = Path(path).parts
     if parts[0] == 'src' and len(parts) > 2:
         return '/'.join(parts[:3] if parts[1] in ('ai', 'map') and len(parts) > 3 else parts[:2])
+    if parts[0] in ('libs', 'third_party') and len(parts) > 2:
+        return '/'.join(parts[:2])
     return parts[0]
 
 
@@ -92,7 +97,7 @@ def summarize(export, root=ROOT):
             relative = Path(item['filename']).resolve().relative_to(root.resolve())
         except ValueError:
             continue
-        if relative.parts[0] not in ('src', 'libgag', 'libusl', 'natsort', 'mobile'):
+        if not relative.as_posix().startswith(COVERED_ROOTS):
             continue
         if str(relative).startswith(('src/net/', 'src/yog/')) or is_test_source(relative.as_posix()):
             continue
@@ -110,7 +115,7 @@ def summarize(export, root=ROOT):
             counts['percent'] = 100 * counts['covered'] / counts['count'] if counts['count'] else None
     measured = {row['path'] for row in files}
     unmeasured = sorted(p.relative_to(root).as_posix()
-                        for directory in ('src', 'libgag', 'libusl', 'natsort', 'mobile')
+                        for directory in COVERED_ROOTS
                         for p in (root / directory).rglob('*')
                         if p.suffix in ('.c', '.cpp', '.cc', '.cxx')
                         and p.relative_to(root).as_posix() not in measured

@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scons'))
 import skin_materials
 
-MANIFEST = Path('libgag/shaders/renderer-manifest.json')
+MANIFEST = Path('libs/gag/shaders/renderer-manifest.json')
 TYPES = {'float': (4, 4), 'vec2': (8, 8), 'vec4': (16, 16), 'ivec4': (16, 16), 'uvec4': (16, 16), 'mat3': (16, 48), 'mat4': (16, 64)}
 
 

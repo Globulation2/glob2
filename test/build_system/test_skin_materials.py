@@ -39,8 +39,8 @@ class SkinMaterialsTest(unittest.TestCase):
 
     def test_web_studio_imports_the_shader(self):
         module = (ROOT / 'platform/apps/web/src/skins/materialShader.ts').read_text()
-        self.assertIn("libgag/shaders/skin-material.glsl?raw'", module)
-        self.assertIn('COPY libgag/shaders', (ROOT / 'deploy/Dockerfile').read_text())
+        self.assertIn("libs/gag/shaders/skin-material.glsl?raw'", module)
+        self.assertIn('COPY libs/gag/shaders', (ROOT / 'deploy/Dockerfile').read_text())
 
     def test_protocol_mirror(self):
         """The platform ships a copy of the registry; its vitest pins equality,

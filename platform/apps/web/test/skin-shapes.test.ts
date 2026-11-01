@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-/* GSB1 blend-shape contract shared with libgag/src/SkinShapeModelTest.cpp. */
+/* GSB1 blend-shape contract shared with libs/gag/src/SkinShapeModelTest.cpp. */
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { decodeShapes, evaluateShapes } from '../src/skins/shapes.ts';

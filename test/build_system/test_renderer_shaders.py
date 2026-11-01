@@ -186,7 +186,7 @@ class RendererShaderTest(unittest.TestCase):
     def test_rejects_overlapping_vertex_attributes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for p in (shader.MANIFEST, Path('libgag/shaders/skin-material.glsl'), Path('libgag/shaders/skin-materials.json')):
+            for p in (shader.MANIFEST, Path('libs/gag/shaders/skin-material.glsl'), Path('libs/gag/shaders/skin-materials.json')):
                 (root / p).parent.mkdir(parents=True, exist_ok=True)
                 (root / p).write_bytes((ROOT / p).read_bytes())
             manifest = json.loads((root / shader.MANIFEST).read_text())

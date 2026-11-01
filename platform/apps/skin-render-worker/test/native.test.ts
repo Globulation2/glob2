@@ -220,7 +220,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
       await save();
       expect((await command()).stderr).toContain('invalid material');
       const registry = JSON.parse(
-        await readFile(join(cwd, 'libgag/shaders/skin-materials.json'), 'utf8'),
+        await readFile(join(cwd, 'libs/gag/shaders/skin-materials.json'), 'utf8'),
       ) as { materials: unknown[] };
       const invalidId = registry.materials.length;
       // Grayscale PNG IDs must survive SDL's generated palette. Previously

@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	#include "natsort/strnatcmp.c"
+	#include "third_party/natsort/strnatcmp.c"
 };
 
 namespace GAGCore

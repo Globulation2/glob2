@@ -15,11 +15,11 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` (statistics in `team/stats/`), `src/resource/`; each holds its type tables in `types/` and its drawing or HUD code in `render/` or `hud/` |
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/`; generators in `generator/`, the editor in `editor/` |
 | AI implementations | `src/ai/`, one directory per AI, behind `AIImplementation` |
-| Rendering, menus and editor | `src/render/`, in-game HUD in `src/hud/`, menus and settings in `src/ui/`, each domain's screens in its `screens/` directory, `src/map/editor/`; drawing reads only the extracted Scene in `src/render/scene/`, see [Scene renderer](docs/architecture/rendering.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
+| Rendering, menus and editor | `src/render/`, in-game HUD in `src/hud/`, menus and settings in `src/ui/`, each domain's screens in its `screens/` directory, `src/map/editor/`; drawing reads only the extracted Scene in `src/render/scene/`, see [Scene renderer](docs/architecture/rendering.md#scene-renderer); menu/dialog framework in `libs/gag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
 | Network and multiplayer client | `src/net/` (turn netcode in `src/net/turn/`, LAN in `src/net/lan/`), online client in `src/online/` ([client](docs/multiplayer/client.md)), match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
 | Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `platform/`, [platform architecture](docs/multiplayer/architecture.md) |
 | Soundtrack sets and the music pipeline | `data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
-| Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
+| Graphics/UI and scripting libraries | `libs/gag/`, `libs/usl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
 | Documentation index | [docs/README.md](docs/README.md) |
 | Application shell and shared utilities | `src/app/` (entry point, settings, command-line modes in `cli/`), `src/audio/`, `src/common/` |

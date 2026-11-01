@@ -282,7 +282,7 @@ heading (the static swarm has one page). Run it with white, stripes, spots and
 an isolated patch to review both geometry and paint attachment. Generated files stay
 under `artifacts/`. `python3 tools/skins/make_paint.py <DIR> [--pattern
 checker|stripes|spots|solid] [--color RRGGBB] [--material <key>|mixed]` (keys
-from `libgag/shaders/skin-materials.json`) writes the colony-v2 pair `<DIR>/paint.webp`
+from `libs/gag/shaders/skin-materials.json`) writes the colony-v2 pair `<DIR>/paint.webp`
 (512x512 colour atlas, one 256x256 quadrant per model: worker top-left, warrior
 top-right, explorer bottom-left, swarm bottom-right) and `<DIR>/material.webp`
 (the matching material-id map). The generator requires Pillow with WebP support
@@ -708,7 +708,7 @@ space. Positions blend four weighted bone transforms; normals blend each
 bone's inverse-transpose (its rotation divided by its uniform scale), then
 normalize, before and after the camera. Native rendering uploads the rest mesh
 once per model and context and skins it on the GPU with the shader in
-`libgag/include/SkinDeformation.h`, sharing the palette across paints of the
+`libs/gag/include/SkinDeformation.h`, sharing the palette across paints of the
 same pose; the context keeps at most 16 uploaded rest models beside the
 bounded pose atlas, and failed shader compilation or capability checks use the
 CPU evaluator (`SkinModel::evaluate`). Studio uses the same contract in
@@ -771,7 +771,7 @@ publishes a new immutable model only after all checks pass; failures leave an
 existing mesh untouched.
 
 C++ and TypeScript validate decoded float32 values using binary64 arithmetic
-(`libgag/src/SkinAssetReader.h`, `platform/apps/web/src/skins/binaryAsset.ts`).
+(`libs/gag/src/SkinAssetReader.h`, `platform/apps/web/src/skins/binaryAsset.ts`).
 Inclusive scale and duration lower bounds and heading bounds use their
 serialized float32 endpoints; norm and weight-sum tolerance is binary64
 `0.0001`. Accepted quaternions and weights normalize into float32 storage in

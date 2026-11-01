@@ -109,8 +109,8 @@ def build_mobile(directory, identity, arguments):
     if identity['target'] == 'ios':
         files.remove('src/app/Glob2.cpp')
         files += ['mobile/ios/SafeArea.mm', 'mobile/ios/Documents.mm', 'mobile/ios/LaunchLinks.mm', 'mobile/ios/CertificateTrust.cpp']
-    files += ['libgag/src/' + name for name in GAG_SOURCES]
-    files += ['libusl/src/' + name for name in USL_SOURCES]
+    files += ['libs/gag/src/' + name for name in GAG_SOURCES]
+    files += ['libs/usl/src/' + name for name in USL_SOURCES]
     files += ['browser/VoiceRecorder.cpp', 'mobile/MobilePaths.cpp', 'mobile/Documents.cpp', 'mobile/CertificateTrust.cpp', 'mobile/TemporaryFiles.cpp']
     if identity['target'] == 'android':
         files += ['mobile/android/Documents.cpp', 'mobile/android/CertificateTrust.cpp']
@@ -138,11 +138,11 @@ def build_mobile(directory, identity, arguments):
             tests['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
             # Retain build definitions (including the official origin).
             # TestMain.cpp defines SDL_MAIN_HANDLED itself.
-            tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
+            tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
             # by_source also maps unity members to their shared production object.
             client_objects = unique([obj for name, obj in by_source.items() if name != 'src/app/Glob2.cpp']) + script_objects
             library_objects = [obj for name, obj in by_source.items()
-                               if name.startswith('libgag/') or name.startswith('libusl/')] + script_objects
+                               if name.startswith('libs/gag/') or name.startswith('libs/usl/')] + script_objects
 
             def available(options):
                 required = options.get('require', ())
@@ -202,7 +202,7 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))
             import tests as registry
             tests = env.Clone()
-            tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
+            tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
             test_objects = []
             for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries():
                 source, options = (entry, {}) if isinstance(entry, str) else entry

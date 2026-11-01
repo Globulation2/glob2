@@ -1,9 +1,9 @@
 {
   "version": 1,
   "license": "GPL-3.0-or-later",
-  "materials": "libgag/shaders/skin-materials.json",
-  "materialSource": "libgag/shaders/skin-material.glsl",
-  "deformationSource": "libgag/include/SkinDeformation.h",
+  "materials": "libs/gag/shaders/skin-materials.json",
+  "materialSource": "libs/gag/shaders/skin-material.glsl",
+  "deformationSource": "libs/gag/include/SkinDeformation.h",
   "vertexLayouts": {
     "skin": {
       "stride": 40,
@@ -499,12 +499,12 @@
     "layoutName": "world_image"
   },
   "passSources": {
-    "worldVertex": "libgag/shaders/world-vertex.glsl",
-    "worldFragment": "libgag/shaders/world-fragment.glsl",
-    "cloudFragment": "libgag/shaders/cloud-fragment.glsl",
-    "pointFragment": "libgag/shaders/point-fragment.glsl",
-    "terrain-composeFragment": "libgag/shaders/terrain-compose-fragment.glsl",
-    "terrain-reduceFragment": "libgag/shaders/terrain-reduce-fragment.glsl"
+    "worldVertex": "libs/gag/shaders/world-vertex.glsl",
+    "worldFragment": "libs/gag/shaders/world-fragment.glsl",
+    "cloudFragment": "libs/gag/shaders/cloud-fragment.glsl",
+    "pointFragment": "libs/gag/shaders/point-fragment.glsl",
+    "terrain-composeFragment": "libs/gag/shaders/terrain-compose-fragment.glsl",
+    "terrain-reduceFragment": "libs/gag/shaders/terrain-reduce-fragment.glsl"
   },
   "webgpuCompiler": {
     "name": "naga-cli",

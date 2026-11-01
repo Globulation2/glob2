@@ -22,10 +22,10 @@ SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
 PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud/')
 # Code inside the directories above that belongs to neither class: every check.
-UNCLASSIFIED = ('src/mcp/', 'libgag/shaders/', 'tools/shaders/', 'data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
+UNCLASSIFIED = ('src/mcp/', 'libs/gag/shaders/', 'tools/shaders/', 'data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
                 'src/building/types/', 'src/team/stats/', 'src/map/preview/', 'src/map/tools/',
                 'src/net/lan/screens/')
-UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
+UNCLASSIFIED_FILES = {'libs/gag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
                       'src/map/Brush.cpp', 'src/map/BrushCoverage.cpp', 'src/unit/UnitDisplayNames.cpp',
                       'src/net/ConnectionOverlay.cpp', 'src/net/turn/TurnMatchPresenter.cpp',
                       'src/map/editor/screens/EditorMainMenu.cpp'}
@@ -36,13 +36,13 @@ TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_c
                      'OnlineScreensProbe.cpp', 'RelayTestMain.cpp', 'ResourceGrowthFixtures.cpp'}
 # Build-system and service suites: unknown to the selector, so every check.
 TOOLING_TESTS = ('test/build_system/', 'test/baselines/', 'test/relay_service/', 'test/online_service/')
-TEST_ROOTS = ('src/', 'libgag/', 'libusl/', 'natsort/', 'mobile/')
+TEST_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'mobile/')
 SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/EngineRun.cpp',
                     'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
 THREAD_FILES = {'src/map/ResourceGrowth.cpp', 'src/map/ResourceGrowth.h', 'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
                 'src/hud/draw/GameGUIDraw.cpp', 'src/hud/GameGUIStep.cpp', 'src/hud/GameGUIOrders.cpp',
-                'libgag/src/PerformanceTelemetry.cpp', 'libgag/src/AssetLoader.cpp',
-                'libgag/include/AssetLoader.h', 'libgag/src/SpriteLoad.cpp',
+                'libs/gag/src/PerformanceTelemetry.cpp', 'libs/gag/src/AssetLoader.cpp',
+                'libs/gag/include/AssetLoader.h', 'libs/gag/src/SpriteLoad.cpp',
                 'src/audio/SoundMixer.cpp', 'src/audio/MusicBuffer.h', 'browser/Audio.cpp'}
 # Paths whose changes rebuild and smoke-test the whole self-hosted stack
 # (deploy/compose.yaml). Its images compile the engine, so engine changes that
@@ -56,11 +56,11 @@ PLATFORM_STACK_PATHS = (
 )
 TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
                        'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}
-RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp',
-          'libgag/src/SurfaceRaster.cpp', 'libgag/src/RenderDevice.cpp', 'libgag/src/RenderFrame.cpp',
-          'libgag/src/RenderResources.cpp', 'libgag/src/RendererSelection.cpp',
-          'libgag/src/GraphicContextRenderer.cpp', 'libgag/src/ProgrammableGLDevice.cpp',
-          'libgag/src/SDLGPUDevice.cpp', 'libgag/src/WebGPUDevice.cpp'}
+RENDER = {'libs/gag/src/RenderBackend.cpp', 'libs/gag/src/SoftwareRenderBackend.cpp',
+          'libs/gag/src/SurfaceRaster.cpp', 'libs/gag/src/RenderDevice.cpp', 'libs/gag/src/RenderFrame.cpp',
+          'libs/gag/src/RenderResources.cpp', 'libs/gag/src/RendererSelection.cpp',
+          'libs/gag/src/GraphicContextRenderer.cpp', 'libs/gag/src/ProgrammableGLDevice.cpp',
+          'libs/gag/src/SDLGPUDevice.cpp', 'libs/gag/src/WebGPUDevice.cpp'}
 
 
 # The mirror-only deployment of app.glob2.online (deploy-online.yml runs
@@ -165,7 +165,7 @@ def select(paths, labels=(), known=False):
                 add(path, 'native', 'map_generators', 'compatibility')
             else:
                 add(path, 'native')
-        elif path.startswith(('scons/', 'libusl/', 'data/terrain/', 'data/resources/', 'data/units/')) or path in {'SConstruct', 'vcpkg.json', 'libgag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
+        elif path.startswith(('scons/', 'libs/usl/', 'data/terrain/', 'data/resources/', 'data/units/')) or path in {'SConstruct', 'vcpkg.json', 'libs/gag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
             add(path, *FLAGS)
         elif path.startswith(('test/fixtures/', 'test/maxima/fixtures/', 'test/support/', '.github/')) or path in {
             'test/run_tests.py', 'test/ci_native_shard_plan.py', 'test/ci-native-auxiliary.json',

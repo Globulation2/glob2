@@ -8,7 +8,7 @@ export default defineConfig({
       // Web skin previews and icons use the same sources as the native game.
       allow: [
         searchForWorkspaceRoot(fileURLToPath(new URL('.', import.meta.url))),
-        fileURLToPath(new URL('../libgag/shaders', import.meta.url)),
+        fileURLToPath(new URL('../libs/gag/shaders', import.meta.url)),
         fileURLToPath(new URL('../datasrc/icons/tabler', import.meta.url)),
       ],
     },

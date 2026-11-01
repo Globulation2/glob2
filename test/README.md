@@ -153,7 +153,7 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 | `[maxima]`, `[save-format]` | selection only |
 
 Where a test file lives: beside the code it tests, in that code's directory under
-`src/`, `libgag/src/`, `libusl/test/`, `natsort/` or `mobile/`, named `*Test.cpp`,
+`src/`, `libs/gag/src/`, `libs/usl/test/`, `third_party/natsort/` or `mobile/`, named `*Test.cpp`,
 `*Harness.cpp`, `*Benchmark.cpp` or `*Fixture.cpp` so CI and coverage tell it from
 production code (`is_test_source` in `.github/scripts/ci_policy.py`). Tests that span
 domains, shared support, stubs and fixtures stay in `test/`. Registry entries outside
@@ -192,8 +192,8 @@ timestamps (`event.tfinger.timestamp`, `event.common.timestamp`) and the frame
 clock a test passes to `Host::update(tick)`, `GameGUI::step(events, now)`,
 `GameGUITouch::advanceScroll(now)` or `PhoneEditor::advance(tick)` are the only
 sources the touch scroll physics sees, so a fling, bounce or stopped-finger
-rule is exact and repeatable (`libgag/src/ScrollPhysicsTest.cpp`,
-`libgag/src/ui/UILayoutHarness.cpp`, `src/hud/touch/GameGUITouchHarness.cpp`). Events without a
+rule is exact and repeatable (`libs/gag/src/ScrollPhysicsTest.cpp`,
+`libs/gag/src/ui/UILayoutHarness.cpp`, `src/hud/touch/GameGUITouchHarness.cpp`). Events without a
 timestamp carry no velocity, which is why older synthetic gestures never coast.
 
 Mac gesture scrolling uses the same injected timestamps and frame clocks. Run

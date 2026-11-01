@@ -131,7 +131,7 @@ COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
 COPY data/fonts/scripts /app/data/fonts/scripts
 COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
 # Colony Studio imports the game's material shader raw (materialShader.ts).
-COPY libgag/shaders /app/libgag/shaders
+COPY libs/gag/shaders /app/libs/gag/shaders
 # Set authoring and Terrain Studio import the shared resource registry.
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-/* GSR1 bone-rig contract shared with libgag/src/SkinModelTest.cpp. */
+/* GSR1 bone-rig contract shared with libs/gag/src/SkinModelTest.cpp. */
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { rigGeometry, projectPose } from '../src/skins/geometry.ts';

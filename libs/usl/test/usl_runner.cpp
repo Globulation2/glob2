@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// Standalone runner for libusl/test/*.usl fixtures.
+// Standalone runner for libs/usl/test/*.usl fixtures.
 //
 // Wraps each script in `result := { <source> }`, includes it via Usl, and
 // prints the bound `result` value. Pointers from Value::dump are stripped

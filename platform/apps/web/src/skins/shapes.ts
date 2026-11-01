@@ -1,7 +1,7 @@
 import { validationMessage } from '../messages.ts';
 
 // SPDX-License-Identifier: GPL-3.0-or-later
-/* GSB1 contract; keep in agreement with libgag/src/SkinShapeModel.cpp.
+/* GSB1 contract; keep in agreement with libs/gag/src/SkinShapeModel.cpp.
  *
  * A blend-shape clip stores a mean mesh plus shape vectors (int16 deltas with
  * one float scale each) for positions and, separately, normals. A frame is

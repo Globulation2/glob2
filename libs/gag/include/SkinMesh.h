@@ -81,7 +81,7 @@ enum SkinRegion : std::uint8_t
 // gameplay assets use the shared WebP loader. Material IDs are data, so this
 // path copies them without filtering. Missing or undecodable files return null.
 std::unique_ptr<DrawableSurface> loadSkinMaterialMap(const std::string &path);
-// Whether a material id grows fur shells (libgag/shaders/skin-materials.json).
+// Whether a material id grows fur shells (libs/gag/shaders/skin-materials.json).
 bool skinMaterialShells(unsigned id);
 // Which quadrants of a 512x512 material map contain a fur material.
 std::array<bool, 4> skinShellRegions(DrawableSurface &material);
@@ -90,7 +90,7 @@ struct SkinMeshRequest
 	const SkinMesh *mesh;
 	unsigned frame;
 	DrawableSurface *texture;  // colour atlas
-	DrawableSurface *material; // material ids, see libgag/shaders/skin-materials.json
+	DrawableSurface *material; // material ids, see libs/gag/shaders/skin-materials.json
 	std::uint8_t region;       // SkinRegion: the atlas quadrant this mesh samples
 };
 } // namespace GAGCore

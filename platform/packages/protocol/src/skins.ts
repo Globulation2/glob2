@@ -21,7 +21,7 @@ export const SWARM_MESHES = SwarmMesh.anyOf.map((mesh) => mesh.const) as readonl
  * worker (0,0), warrior (256,0), explorer (0,256) and swarm (256,256). */
 export const COLONY_SKIN_LAYOUT = 'colony-v2';
 /** Materials of a material map pixel (grey level R=G=B is the id), mirroring
- * libgag/shaders/skin-materials.json in id order; a test keeps them equal.
+ * libs/gag/shaders/skin-materials.json in id order; a test keeps them equal.
  * `shells` materials grow fur passes in the renderers. */
 export const COLONY_SKIN_MATERIALS = [
   { id: 0, key: 'glossy', name: 'Classic glossy', group: 'Basics', shells: false },

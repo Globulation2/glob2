@@ -18,7 +18,7 @@ export default defineConfig({
       // Share native shader and icon sources without exposing the rest of the checkout.
       allow: [
         searchForWorkspaceRoot(fileURLToPath(new URL('.', import.meta.url))),
-        fileURLToPath(new URL('../../../libgag/shaders', import.meta.url)),
+        fileURLToPath(new URL('../../../libs/gag/shaders', import.meta.url)),
         fileURLToPath(new URL('../../../datasrc/icons/tabler', import.meta.url)),
         fileURLToPath(new URL('../../../data/fonts/scripts', import.meta.url)),
       ],

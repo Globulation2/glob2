@@ -3,7 +3,7 @@ import { validationMessage } from '../messages.ts';
 
 // SPDX-License-Identifier: GPL-3.0-or-later
 /* Bounded reading and the limits the GSR1 and GSB1 decoders share with
- * libgag/src/SkinAssetReader.h. Validation arithmetic is binary64; limits on
+ * libs/gag/src/SkinAssetReader.h. Validation arithmetic is binary64; limits on
  * serialized scalars use their binary32 representation, including endpoints,
  * so every decoder accepts exactly the same bytes. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */

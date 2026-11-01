@@ -13,9 +13,9 @@ JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "
 # Implementation-only drawing changes retain native, browser, and equivalence
 # checks. Shared headers, file I/O, fonts and unknown library paths stay full CI.
 RENDER_IMPLEMENTATIONS = {
-    "libgag/src/RenderBackend.cpp",
-    "libgag/src/SoftwareRenderBackend.cpp",
-    "libgag/src/SurfaceRaster.cpp",
+    "libs/gag/src/RenderBackend.cpp",
+    "libs/gag/src/SoftwareRenderBackend.cpp",
+    "libs/gag/src/SurfaceRaster.cpp",
 }
 CI_TOOL_TESTS = {
     "test/test_run_tests.py",
@@ -83,7 +83,7 @@ def classify(paths):
             "test/maxima/check_save_continuation_fixture.py",
             "test/fixtures/resources/seeded-compositions-units.trace",
             "test/build_provenance.py", "test/support/TestMain.cpp",
-            "libgag/src/ImageAssetTest.cpp",
+            "libs/gag/src/ImageAssetTest.cpp",
         }:
             # These cases and fixtures are compiled/executed in the production
             # WebAssembly harness too; native-only CI would leave that boundary untested.
@@ -155,14 +155,14 @@ def coverage_profile(paths, event, selected):
             continue
         if path.startswith(MUSIC_TOOL_PATHS):
             continue
-        if not is_test_source(path) and path.startswith(('src/', 'libgag/', 'libusl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','tools/image_encoding.json','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
+        if not is_test_source(path) and path.startswith(('src/', 'libs/gag/', 'libs/usl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','tools/image_encoding.json','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
             android = True
         if path.startswith(('browser/',) + PRESENTATION) or path in RENDER_IMPLEMENTATIONS:
             browsers_all = True
         # Conservative omissions only for known test-only and implementation-only boundaries.
         primary_safe = ((path.startswith('test/') and not path.startswith(('test/fixtures/','test/maxima/fixtures/','test/support/') + TOOLING_TESTS)
                          or is_test_source(path) and not Path(path).name.startswith('Script'))
-                        and path not in ('test/run-browser-determinism.py','test/check_javascript.py','test/check_javascript_corpus.py','test/check_javascript_evidence.py','test/maxima/check_save_continuation_fixture.py','test/build_provenance.py','libgag/src/ImageAssetTest.cpp'))
+                        and path not in ('test/run-browser-determinism.py','test/check_javascript.py','test/check_javascript_corpus.py','test/check_javascript_evidence.py','test/maxima/check_save_continuation_fixture.py','test/build_provenance.py','libs/gag/src/ImageAssetTest.cpp'))
         primary_safe = primary_safe or path in RENDER_IMPLEMENTATIONS or (path.startswith(PRESENTATION) and not unclassified(path) and not path.startswith(FULL_PATHS) and path.endswith('.cpp')) or (path.startswith('browser/') and browser_only(path)) or path.startswith(('deploy/','test/deployment/','test/transport/'))
         # Shard/runtime configuration changes must exercise the oldest supported
         # platform too, even though their files live under test/.

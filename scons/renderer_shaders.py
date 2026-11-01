@@ -44,10 +44,10 @@ def prepare(root, output):
     naga = os.environ.get('GLOB2_NAGA')
     spirv_cross = os.environ.get('GLOB2_SPIRV_CROSS')
     dxc = os.environ.get('GLOB2_DXC')
-    sources = [script, root / 'libgag/shaders/renderer-manifest.json',
-               root / 'libgag/shaders/skin-materials.json',
-               root / 'libgag/include/SkinDeformation.h']
-    sources.extend(sorted((root / 'libgag/shaders').glob('*.glsl')))
+    sources = [script, root / 'libs/gag/shaders/renderer-manifest.json',
+               root / 'libs/gag/shaders/skin-materials.json',
+               root / 'libs/gag/include/SkinDeformation.h']
+    sources.extend(sorted((root / 'libs/gag/shaders').glob('*.glsl')))
     identity = {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources}
     if compiler:
         compiler = str(Path(compiler).resolve())

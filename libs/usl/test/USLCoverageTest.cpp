@@ -48,10 +48,10 @@ TEST_SUITE("USLCoverage")
             Usl usl;
             if (std::string(entry.name)=="fib")
             {
-                std::ifstream prelude(glob2test::sourceRoot()/"libusl/test/if.usl");
+                std::ifstream prelude(glob2test::sourceRoot()/"libs/usl/test/if.usl");
                 REQUIRE(prelude.good()); usl.includeScript("prelude",prelude);
             }
-            std::ifstream source(glob2test::sourceRoot()/(std::string("libusl/test/")+entry.name+".usl"));
+            std::ifstream source(glob2test::sourceRoot()/(std::string("libs/usl/test/")+entry.name+".usl"));
             REQUIRE(source.good());
             std::ostringstream text; text<<source.rdbuf();
             CHECK(evaluate(usl,text.str())==entry.expected);

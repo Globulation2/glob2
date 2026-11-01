@@ -28,7 +28,7 @@ function browserModule(path: string, modules: Map<string, string>): string {
   return url;
 }
 const evaluator = browserModule('platform/apps/web/src/skins/rig.ts', new Map());
-const shader = read('libgag/include/SkinDeformation.h')
+const shader = read('libs/gag/include/SkinDeformation.h')
   .toString()
   .match(/R"GLSL\(([\s\S]*?)\)GLSL"/u)?.[1];
 if (!shader) throw new Error('Production deformation shader was not found');

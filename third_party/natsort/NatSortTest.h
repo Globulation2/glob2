@@ -9,7 +9,7 @@
 
 extern "C"
 {
-#include "../../natsort/strnatcmp.h"
+#include "strnatcmp.h"
 }
 
 class ABResult

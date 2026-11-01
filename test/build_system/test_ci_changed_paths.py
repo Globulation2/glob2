@@ -157,7 +157,7 @@ class ChangedPathsTest(unittest.TestCase):
                      "test/maxima/fixtures/save-continuation/expected-resources-30000-30512.json",
                      "test/maxima/check_save_continuation_fixture.py",
                      "test/fixtures/resources/seeded-compositions-units.trace",
-                     "test/support/TestMain.cpp", "libgag/src/ImageAssetTest.cpp"):
+                     "test/support/TestMain.cpp", "libs/gag/src/ImageAssetTest.cpp"):
             with self.subTest(path=path):
                 self.assert_jobs(
                     [path], native=True, browser=True, map_generators=False,
@@ -235,9 +235,9 @@ class ChangedPathsTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.assert_jobs([path], native=True, browser=True, map_generators=False,
                                  deployment=False, cross_platform=True)
-        for paths in (["libgag/include/RenderBackend.h"], ["libgag/src/FileManager.cpp"],
-                      ["libgag/src/SurfaceRaster.cpp", "src/map/generator/core/MapGenerator.cpp"],
-                      ["libgag/src/UnknownRenderer.cpp"]):
+        for paths in (["libs/gag/include/RenderBackend.h"], ["libs/gag/src/FileManager.cpp"],
+                      ["libs/gag/src/SurfaceRaster.cpp", "src/map/generator/core/MapGenerator.cpp"],
+                      ["libs/gag/src/UnknownRenderer.cpp"]):
             with self.subTest(paths=paths):
                 self.assert_jobs(paths, native=True, browser=True, map_generators=True,
                                  deployment=True, cross_platform=True)

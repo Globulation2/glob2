@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Renders every registered colony-skin material on a lit sphere, through the
 // shared GLSL under WebGL2 in headless Chromium, for quick iteration on
-// libgag/shaders/skin-material.glsl before a native build.
+// libs/gag/shaders/skin-material.glsl before a native build.
 //
 //   cd platform/apps/web && node ../../../tools/skins/material_spheres.mjs out.png [RRGGBB]
 //
@@ -18,11 +18,11 @@ const { chromium } = createRequire(join(process.cwd(), "package.json"))(
 );
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const glsl = readFileSync(
-  join(root, "libgag/shaders/skin-material.glsl"),
+  join(root, "libs/gag/shaders/skin-material.glsl"),
   "utf8",
 );
 const registry = JSON.parse(
-  readFileSync(join(root, "libgag/shaders/skin-materials.json"), "utf8"),
+  readFileSync(join(root, "libs/gag/shaders/skin-materials.json"), "utf8"),
 );
 const [output = "material-spheres.png", tint = "ed9252"] =
   process.argv.slice(2);

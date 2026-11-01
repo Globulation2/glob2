@@ -167,8 +167,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS), Value(threaded)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
     files = ['src/' + s for s in CLIENT_SOURCES if s not in ('audio/VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')]
-    files += ['libgag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
-    files += ['libusl/src/' + s for s in USL_SOURCES]
+    files += ['libs/gag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
+    files += ['libs/usl/src/' + s for s in USL_SOURCES]
     files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/RecordingPlatform.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
     files += ['browser/Audio.cpp', 'browser/GradientCompute.cpp']
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
@@ -212,7 +212,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         tests['LINKFLAGS'] = kept
         for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
             tests.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
-        tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
+        tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
         tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
                                '--preload-file', 'examples/javascript@/examples/javascript',
                                '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
@@ -352,7 +352,7 @@ def build_web(directory, identity, arguments):
     attach_recording(recording, recording_prefix, 'wasm')
     configure_development(recording, identity)
     recording_objects = [recording.Object(str(Path(directory) / 'recording-obj' / (source + '.o')), source)
-        for source in ('browser/RecordingWorker.cpp', 'libgag/src/RecordingEncoder.cpp', 'libgag/src/RecordingSession.cpp', 'libgag/src/RecordingMetadata.cpp')]
+        for source in ('browser/RecordingWorker.cpp', 'libs/gag/src/RecordingEncoder.cpp', 'libs/gag/src/RecordingSession.cpp', 'libs/gag/src/RecordingMetadata.cpp')]
     record(recording, recording_objects, "compile")
     recording_program = record(recording, recording.Program(str(Path(directory) / 'recording-runtime.js'), recording_objects), 'link')
     recording.SideEffect(str(Path(directory) / 'recording-runtime.wasm'), recording_program)

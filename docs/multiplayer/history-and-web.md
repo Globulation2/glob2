@@ -159,7 +159,7 @@ without menu controls or status bars; no separate sprite animations are overlaid
 
 - **Tokens** live in `src/styles/tokens.css`: colours, type, spacing, radii and
   shadows for two themes. *Meadow* (light) is the menu paper theme
-  (`libgag/include/ui/Theme.h`) with the wordmark's green and gold; *Night
+  (`libs/gag/include/ui/Theme.h`) with the wordmark's green and gold; *Night
   colony* (dark) is the in-match touch theme's aubergine and gold
   (`src/ui/FrontendUI.cpp`). The theme follows the system unless the viewer
   picks one with the navigation toggle (stored in that browser only; `public/theme.js`

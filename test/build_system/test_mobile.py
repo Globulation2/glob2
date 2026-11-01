@@ -325,7 +325,7 @@ class ArchiveSymbolTests(unittest.TestCase):
     def test_archive_member_names_distinguish_same_basename_sources(self):
         from mobile_artifacts import archive_object_name
         from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES
-        sources = ['src/' + name for name in CLIENT_SOURCES] + ['libgag/src/' + name for name in GAG_SOURCES] + ['libusl/src/' + name for name in USL_SOURCES]
+        sources = ['src/' + name for name in CLIENT_SOURCES] + ['libs/gag/src/' + name for name in GAG_SOURCES] + ['libs/usl/src/' + name for name in USL_SOURCES]
         names = [archive_object_name(source).name for source in sources]
         self.assertEqual(len(names), len(set(names)))
         self.assertEqual(archive_object_name('src/ai/castor/Lifecycle.cpp'), archive_object_name('src/ai/castor/Lifecycle.cpp'))

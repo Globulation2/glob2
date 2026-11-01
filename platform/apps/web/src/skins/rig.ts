@@ -1,6 +1,6 @@
 import { validationMessage } from '../messages.ts';
 // SPDX-License-Identifier: GPL-3.0-or-later
-/* GSR1 contract; keep in agreement with libgag/src/SkinModel.cpp.
+/* GSR1 contract; keep in agreement with libs/gag/src/SkinModel.cpp.
  *
  * A bone rig stores a rest mesh whose vertices each follow up to four bones,
  * a parent-ordered skeleton with rest and inverse-bind transforms, and clips

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "support/Glob2Test.h"
 #include "support/RecordingValidationProcess.h"
-#include "../libgag/src/RecordingSession.h"
+#include "RecordingSession.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
 extern "C"

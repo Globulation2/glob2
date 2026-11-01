@@ -72,7 +72,7 @@ that a drag out of the rail places a building rather than navigating back.
 
 ## Frontend layout and interaction policy
 
-`Presentation` (`libgag/include/ui/Presentation.h`) owns frontend device
+`Presentation` (`libs/gag/include/ui/Presentation.h`) owns frontend device
 classification: the width class is Compact below 600 points and Expanded from
 960, `phone()` is a touch host whose short edge is below 600 points, and
 keyboard occlusion reduces the `dialog` rectangle without changing

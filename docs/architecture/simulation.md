@@ -168,7 +168,7 @@ checksum adapter remains available for diagnostic fixtures.
   requires the format-128 compact save reader. Older saves load into the current
   simulation.
 - `.map`/`.game` files are gzip level 6 by default (`FileManager::writeGzipAtomic`/
-  `writeGzipAtomically` in `libgag/src/FileManagerGzip.cpp`; the gzip header carries
+  `writeGzipAtomically` in `libs/gag/src/FileManagerGzip.cpp`; the gzip header carries
   a zero timestamp and OS=unknown, producing deterministic bytes with the same
   zlib encoder). This is a container change, not a save-format schema change: the bytes
   inside the gzip stream are exactly what today's serializer already writes, so it

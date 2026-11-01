@@ -80,10 +80,10 @@ GUV1 sidecar for procedural detail, so rebuilding the surface does not move save
 paint. Both renderers use the paint UVs when a sidecar is absent; malformed
 sidecars are rejected. See the [unit asset pipeline](../../tools/unit-animation/README.md#experimental-live-colony-skins).
 
-Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
+Colony-skin materials are declared once in `libs/gag/shaders/skin-materials.json`
 (ids, keys, display names, picker groups, which materials grow fur shells, the
 shell count and the fur length and depth bias every renderer uses) and shaded
-once in `libgag/shaders/skin-material.glsl`. `scons/skin_materials.py`
+once in `libs/gag/shaders/skin-material.glsl`. `scons/skin_materials.py`
 compiles both into the generated `include/glob2/SkinMaterials.h`
 (`SKIN_MATERIAL_COUNT`, `SKIN_MATERIAL_SHELLS`, the `SkinMaterials` table and the
 GLSL text) for the desktop, web and mobile builds; Colony Studio imports the GLSL
@@ -378,7 +378,7 @@ existing paths; cache-backed team-color surfaces cannot be deferred safely.
 
 ### Portable shader build artifacts
 
-`libgag/shaders/renderer-manifest.json` declares skin/rig, world/cloud, smooth-point and 2D primitive
+`libs/gag/shaders/renderer-manifest.json` declares skin/rig, world/cloud, smooth-point and 2D primitive
 vertex layouts, uniform blocks and resource bindings. Generate build artifacts
 with `python3 tools/shaders/generate.py --output artifacts/shaders/generated`.
 The output contains GLSL ES 3.00, desktop GLSL 3.30 and Vulkan GLSL 4.50 sources,
