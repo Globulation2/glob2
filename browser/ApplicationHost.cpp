@@ -618,10 +618,14 @@ void endBrowserTextFrame() {
 }
 void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
     bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip,bool selectAll) {
+    browserTextInput(owner,rect,width,height,value,password,maximum,std::move(changed),clip,selectAll,0);
+}
+void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
+    bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip,bool selectAll,size_t maxCharacters) {
     browserTextVisible.insert(owner);browserTextCallbacks[owner]=std::move(changed);
     const SDL_Rect visible=clip ? *clip : SDL_Rect{0,0,width,height};
-    MAIN_THREAD_EM_ASM({ Module.textBridge?.field($0,{x:$1,y:$2,w:$3,h:$4},$5,$6,UTF8ToString($7),!!$8,$9,{x:$10,y:$11,w:$12,h:$13},!!$14); },
-        owner,rect.x,rect.y,rect.w,rect.h,width,height,value.c_str(),password,maximum,visible.x,visible.y,visible.w,visible.h,selectAll);
+    MAIN_THREAD_EM_ASM({ Module.textBridge?.field($0,{x:$1,y:$2,w:$3,h:$4},$5,$6,UTF8ToString($7),!!$8,$9,{x:$10,y:$11,w:$12,h:$13},!!$14,$15); },
+        owner,rect.x,rect.y,rect.w,rect.h,width,height,value.c_str(),password,maximum,visible.x,visible.y,visible.w,visible.h,selectAll,maxCharacters);
 }
 bool hasBrowserTextInput(const void* owner) { return browserTextCallbacks.count(owner)>0; }
 }

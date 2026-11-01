@@ -670,6 +670,61 @@ void checkTextFieldByteLimit()
 	require(model == std::string(32, 'a'), "all 32 ASCII bytes remain supported");
 }
 
+void checkTextFieldCharacterLimit()
+{
+	const auto repeat = [](const std::string &text, std::size_t count)
+	{
+		std::string result;
+		while (count--) result += text;
+		return result;
+	};
+	for (const auto &[character, maximum] : std::vector<std::pair<std::string, std::size_t>>{
+		{"ক", 32}, {"ক", 128}, {"😀", 32}})
+	{
+		std::string model;
+		TextFieldOptions options;
+		options.maxLength = maximum;
+		int changes = 0;
+		Fixture f([&](const Presentation &)
+		{
+			return textField("name", model, [&](const std::string &next) { model = next; ++changes; }, options);
+		}, 400, 100);
+		f.click({20, 20});
+		const auto replace = [&](const std::string &next)
+		{
+			f.key(SDLK_A, SDL_KMOD_CTRL);
+			SDL_Event text{};
+			text.type = SDL_EVENT_TEXT_INPUT;
+			text.text.text = next.c_str();
+			f.host.event(text);
+		};
+		if (maximum == 128)
+		{
+			const auto title = repeat(character, 43);
+			require(title.size() == 129, "title crosses 128 bytes while staying below 128 characters");
+			replace(title);
+			require(model == title, "a valid 43-character Bengali title is unchanged");
+		}
+		const auto full = repeat(character, maximum);
+		replace(full);
+		require(model == full, "character capacity counts codepoints independently of UTF-8 bytes");
+		const auto acceptedChanges = changes;
+		replace(full + character);
+		require(model == full && changes == acceptedChanges, "an extra codepoint rejects the whole edit");
+	}
+
+	std::string model = "abc";
+	TextFieldOptions options;
+	options.maxLength = 5;
+	Fixture f([&](const Presentation &) { return textField("name", model, [&](const std::string &next) { model = next; }, options); }, 400, 100);
+	f.click({20, 20});
+	SDL_Event text{};
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "ক্ষ";
+	f.host.event(text);
+	require(model == "abc", "character overflow never appends a partial Bengali conjunct");
+}
+
 void checkCopyField()
 {
 	// A failed Copy leaves the text in a field that opens selected and ignores edits.
@@ -1209,6 +1264,7 @@ TEST_SUITE("UILayout")
 	TEST_CASE("icon segments and choices") { checkIconSegmentsAndChoice(); }
 	TEST_CASE("text field") { checkTextField(); }
 	TEST_CASE("text field UTF-8 byte limit preserves Bengali edits") { checkTextFieldByteLimit(); }
+	TEST_CASE("text field character limits preserve Bengali and non-BMP input") { checkTextFieldCharacterLimit(); }
 	TEST_CASE("list view") { checkListView(); }
 	TEST_CASE("copy field") { checkCopyField(); }
 	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }

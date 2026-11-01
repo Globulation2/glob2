@@ -8,7 +8,7 @@ const start = shell.indexOf('Module.textBridge = (() => {');
 const end = shell.indexOf('\n})();', start) + '\n})();'.length;
 assert.ok(start >= 0 && end > start);
 
-function profile({maximum = 32, value = '', segmenter = true} = {}) {
+function profile({maximum = 32, maxCharacters = 0, value = '', segmenter = true} = {}) {
   const elements = [];
   function element() {
     const listeners = new Map();
@@ -37,7 +37,7 @@ function profile({maximum = 32, value = '', segmenter = true} = {}) {
   vm.runInContext(shell.slice(start, end), context);
   const bridge = context.Module.textBridge;
   const rect = {x:0,y:0,w:350,h:50};
-  const draw = next => bridge.field(1, rect, 400, 200, next, false, maximum, rect, false);
+  const draw = next => bridge.field(1, rect, 400, 200, next, false, maximum, rect, false, maxCharacters);
   draw(value);
   const input = elements[0];
   return {bridge, input, draw, edit(next) { input.value = next; input.fire('input'); return input.value; }};
@@ -117,4 +117,73 @@ test('fallback preserves composition and unlimited input contracts', () => {
   p.input.fire('compositionend');
   assert.equal(p.bridge.take(1).value, 'নাম');
   assert.equal(profile({segmenter:false,maximum:0}).edit(value), value);
+});
+
+test('a character-limited account name accepts all 32 Bengali codepoints', () => {
+  const p = profile({maximum:0,maxCharacters:32});
+  const name = 'ক'.repeat(32);
+  assert.equal(Buffer.byteLength(name), 96);
+  assert.equal(p.edit(name), name);
+  assert.equal(p.bridge.take(1).value, name);
+  assert.equal(p.edit(name + 'ক'), name);
+});
+
+test('a 128-character map title accepts 43 Bengali characters and all 128', () => {
+  const p = profile({maximum:0,maxCharacters:128});
+  const title = 'ক'.repeat(43);
+  assert.equal(Buffer.byteLength(title), 129);
+  assert.equal(p.edit(title), title);
+  const full = 'ক'.repeat(128);
+  assert.equal(p.edit(full), full);
+  assert.equal(p.edit(full + 'ক'), full);
+});
+
+test('character bounds count Unicode codepoints rather than UTF-16 code units', () => {
+  const p = profile({maximum:0,maxCharacters:32});
+  const value = '😀'.repeat(32);
+  assert.equal(value.length, 64);
+  assert.equal(p.edit(value), value);
+  assert.equal(p.edit(value + '😀'), value);
+});
+
+test('character overflow preserves complete conjuncts, reph, marks and emoji ZWJ', () => {
+  for (const cluster of ['ক্ষ','র্কি','e\u0301','👩‍🔬']) {
+    const p = profile({maximum:0,maxCharacters:3 + Array.from(cluster).length - 1});
+    assert.equal(p.edit('abc' + cluster), 'abc', cluster);
+  }
+});
+
+test('character and byte bounds are both enforced independently', () => {
+  assert.equal(profile({maximum:33,maxCharacters:32}).edit('ক'.repeat(32)), 'ক'.repeat(10));
+  assert.equal(profile({maximum:100,maxCharacters:2}).edit('ক'.repeat(3)), 'ক'.repeat(2));
+  assert.equal(profile({maximum:4,maxCharacters:10}).edit('abcdef'), 'abc');
+  assert.equal(profile({maximum:100,maxCharacters:3}).edit('abcdef'), 'abc');
+});
+
+test('explicit chat and LAN byte limits retain their inclusive payload capacities', () => {
+  for (const capacity of [254,256]) {
+    const p = profile({maximum:capacity + 1});
+    assert.equal(p.edit('x'.repeat(capacity)), 'x'.repeat(capacity));
+    assert.equal(p.edit('x'.repeat(capacity + 1)), 'x'.repeat(capacity));
+  }
+});
+
+test('character limits wait for compositionend before delivering a whole prefix', () => {
+  const p = profile({maximum:0,maxCharacters:5,value:'abc'});
+  const value = 'abcক্ষ';
+  p.input.fire('compositionstart');
+  assert.equal(p.edit(value), value);
+  assert.equal(p.bridge.take(1), null);
+  p.input.fire('compositionend');
+  assert.equal(p.bridge.take(1).value, 'abc');
+});
+
+test('without Segmenter character limits retain accepted Unicode and native updates', () => {
+  const p = profile({maximum:0,maxCharacters:3,segmenter:false,value:'ক'});
+  assert.equal(p.edit('কখ'), 'কখ');
+  assert.equal(p.bridge.take(1).value, 'কখ');
+  p.draw('নাম');
+  assert.equal(p.edit('ক্ষক'), 'নাম');
+  assert.equal(p.edit('abcd'), 'abc');
+  assert.equal(profile({maximum:4,maxCharacters:2,segmenter:false}).edit('abcd'), 'ab');
 });
