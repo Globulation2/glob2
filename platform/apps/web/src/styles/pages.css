@@ -176,6 +176,10 @@
   display: block !important;
 }
 
+.admin-console > .page-head h1 {
+  overflow-wrap: anywhere;
+}
+
 .operation-recovery fieldset {
   min-width: 0;
 }

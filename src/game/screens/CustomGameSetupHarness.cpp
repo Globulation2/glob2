@@ -323,7 +323,16 @@ struct CustomGameSetupHarness
         globalContainer->liveSpectating = true;
         world.gui.statistics().selectTopic(InGameStatisticsPanel::Topic::World);
         globalContainer->gfx->drawFilledRect(0, 0, 640, 480, 0, 0, 32);
-        world.gui.drawStatisticsPage(195);
+        // Use the same host and sidebar geometry as the production HUD.
+        const auto bounds = world.gui.statisticsBounds();
+        REQUIRE(bounds.w > 0);
+        REQUIRE(bounds.h > 0);
+        REQUIRE(bounds.x >= 0);
+        REQUIRE(bounds.y >= 0);
+        REQUIRE(bounds.right() <= globalContainer->gfx->getW());
+        REQUIRE(bounds.bottom() <= globalContainer->gfx->getH());
+        REQUIRE(world.gui.statisticsHost().root());
+        world.gui.drawStatisticsPanel();
         const auto path = glob2test::artifactDir() / "probability-sixteen-colonies.png";
         REQUIRE(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), path.string().c_str()));
         globalContainer->liveSpectating = false;
