@@ -1,0 +1,8 @@
+{
+  "status": "Known desktop fixture timeout; production code unchanged. Proposed harness-only initialization order correction staged.",
+  "observed": "Desktop known attempt2 had synthetic200 guest responses but no AIS endpoint; other3 captures reached AIS503 and passed. Auth request starts before FrontendTheme/colony/font/initial UI setup.",
+  "primary_source": "HttpFetch.cpp19\u201322 and107: asio io_context is pumped only by state() on caller thread. PlatformClient request deadline15s starts at client.start, before expensive cold UI setup. Delayed first pump can expire request even if localserver later logs200; tokenAvailable(false) discards queued AIS request.",
+  "proposed_patch": "artifacts/bulgarian/native-api-fixture-start-timing.patch",
+  "scope": "Only fixture branch: delay client.start until local theme and first Settings render are ready, immediately before production Browse action. Normal captures/client behavior unchanged.",
+  "coverage": "3 real response-to-notice cases succeeded,1 known desktop case still needs a successful fresh capture; unknown unauthenticated-only attempt1 is explicitly excluded."
+}

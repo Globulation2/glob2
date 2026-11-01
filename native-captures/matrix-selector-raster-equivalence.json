@@ -1,0 +1,1041 @@
+{
+  "purpose": "Validate optional selector preserves raster output: complete10px scales1/2 against all203 overlapping pages of old incomplete six-combination attempt.",
+  "compared_pages": 203,
+  "identical": 202,
+  "differences": [
+    {
+      "name": "font-10-scale-2-page-055.png",
+      "old_sha256": "78001104d95a25c27895516df0b03b790fc4751b1d4ce3a9e849113f7711bb34",
+      "new_sha256": "1691d3ecce53ae7426109817cd71f00e21cc91b3adfba489fd2ccdf4472a12bc"
+    }
+  ],
+  "pages": [
+    {
+      "name": "font-10-scale-1-page-001.png",
+      "old_sha256": "d04c678d7a328dc78165afda9399ead9faddbd50b2c102eb5bac0a7c74e4de84",
+      "new_sha256": "d04c678d7a328dc78165afda9399ead9faddbd50b2c102eb5bac0a7c74e4de84"
+    },
+    {
+      "name": "font-10-scale-1-page-002.png",
+      "old_sha256": "f8e1199b0041c8dfa53357b48a514292d1b9df75e1e3b5902e204d67c674fc22",
+      "new_sha256": "f8e1199b0041c8dfa53357b48a514292d1b9df75e1e3b5902e204d67c674fc22"
+    },
+    {
+      "name": "font-10-scale-1-page-003.png",
+      "old_sha256": "be6137215428dd008296724523535eba6943307a4b49dd4a36c0684fff35f7ec",
+      "new_sha256": "be6137215428dd008296724523535eba6943307a4b49dd4a36c0684fff35f7ec"
+    },
+    {
+      "name": "font-10-scale-1-page-004.png",
+      "old_sha256": "5d2a7f5d5b68d63792359532088aee731ebdda4c0601dbaffaf391dac24de296",
+      "new_sha256": "5d2a7f5d5b68d63792359532088aee731ebdda4c0601dbaffaf391dac24de296"
+    },
+    {
+      "name": "font-10-scale-1-page-005.png",
+      "old_sha256": "d1229bea5c68ceee9376e95ec66202d0a8b770f3c87a3d29743b12dbf201b201",
+      "new_sha256": "d1229bea5c68ceee9376e95ec66202d0a8b770f3c87a3d29743b12dbf201b201"
+    },
+    {
+      "name": "font-10-scale-1-page-006.png",
+      "old_sha256": "ed4a8ff3ec61a5587ce2703fed7a2051d10aadd9cb4202a0fd49320bfc531a1c",
+      "new_sha256": "ed4a8ff3ec61a5587ce2703fed7a2051d10aadd9cb4202a0fd49320bfc531a1c"
+    },
+    {
+      "name": "font-10-scale-1-page-007.png",
+      "old_sha256": "fee3addb74893995e16c7bc9f1931556e9d791b6a24f24954a55d149c41e5e68",
+      "new_sha256": "fee3addb74893995e16c7bc9f1931556e9d791b6a24f24954a55d149c41e5e68"
+    },
+    {
+      "name": "font-10-scale-1-page-008.png",
+      "old_sha256": "b7991c36224cafbe6bd93bc2d980ec328c379084451ef944ec9a80265d4bbe87",
+      "new_sha256": "b7991c36224cafbe6bd93bc2d980ec328c379084451ef944ec9a80265d4bbe87"
+    },
+    {
+      "name": "font-10-scale-1-page-009.png",
+      "old_sha256": "9739ef2f10f829f0a9ae3130a8e26d15e3e0630a9db60600be3590b2d93e9005",
+      "new_sha256": "9739ef2f10f829f0a9ae3130a8e26d15e3e0630a9db60600be3590b2d93e9005"
+    },
+    {
+      "name": "font-10-scale-1-page-010.png",
+      "old_sha256": "59bc386781f9f672fde09d19f8529b1454e59f6c6cf7630ae21f99d32eb00b72",
+      "new_sha256": "59bc386781f9f672fde09d19f8529b1454e59f6c6cf7630ae21f99d32eb00b72"
+    },
+    {
+      "name": "font-10-scale-1-page-011.png",
+      "old_sha256": "334e248f0becb70a034cf8083eca7764e2568901c4b382ba06557e8dd3db3d10",
+      "new_sha256": "334e248f0becb70a034cf8083eca7764e2568901c4b382ba06557e8dd3db3d10"
+    },
+    {
+      "name": "font-10-scale-1-page-012.png",
+      "old_sha256": "90762d3e9ab532e0bdc37088fbf5dd420957e7cbb449854289000076c947bbe2",
+      "new_sha256": "90762d3e9ab532e0bdc37088fbf5dd420957e7cbb449854289000076c947bbe2"
+    },
+    {
+      "name": "font-10-scale-1-page-013.png",
+      "old_sha256": "eba1c7b2da047ee4ad3d36e7aa33b29a3d0140619536d62744988ddcf625bd0a",
+      "new_sha256": "eba1c7b2da047ee4ad3d36e7aa33b29a3d0140619536d62744988ddcf625bd0a"
+    },
+    {
+      "name": "font-10-scale-1-page-014.png",
+      "old_sha256": "7f13dfdcda6e136eb922f4e69baec040da33d3fc8b67fc278b143b453928ec81",
+      "new_sha256": "7f13dfdcda6e136eb922f4e69baec040da33d3fc8b67fc278b143b453928ec81"
+    },
+    {
+      "name": "font-10-scale-1-page-015.png",
+      "old_sha256": "391847200fcb3cb6571bf9f7bf49976c91b865c236b6e44bc0e4f67a2bfc62bd",
+      "new_sha256": "391847200fcb3cb6571bf9f7bf49976c91b865c236b6e44bc0e4f67a2bfc62bd"
+    },
+    {
+      "name": "font-10-scale-1-page-016.png",
+      "old_sha256": "40b8882f5e56d12cbcd41f208478e3947b894886291eeeff6a5b12a0f5f2566d",
+      "new_sha256": "40b8882f5e56d12cbcd41f208478e3947b894886291eeeff6a5b12a0f5f2566d"
+    },
+    {
+      "name": "font-10-scale-1-page-017.png",
+      "old_sha256": "55fa4f79b0d19e20041721c23b299cc143192c01e37889ae614105c45fe8abdd",
+      "new_sha256": "55fa4f79b0d19e20041721c23b299cc143192c01e37889ae614105c45fe8abdd"
+    },
+    {
+      "name": "font-10-scale-1-page-018.png",
+      "old_sha256": "22e0b5ca6a09e00bcd1a4522900d235c9203cf9081d0694b99bcf40d63332116",
+      "new_sha256": "22e0b5ca6a09e00bcd1a4522900d235c9203cf9081d0694b99bcf40d63332116"
+    },
+    {
+      "name": "font-10-scale-1-page-019.png",
+      "old_sha256": "b85fe5828e211cdec52413acc87b1d55d383659336cb6bda5dc6e5725e23c031",
+      "new_sha256": "b85fe5828e211cdec52413acc87b1d55d383659336cb6bda5dc6e5725e23c031"
+    },
+    {
+      "name": "font-10-scale-1-page-020.png",
+      "old_sha256": "bca98678fe25bf7e24130efb0e83ae3fcb60649992030b276800ef8bfb83c451",
+      "new_sha256": "bca98678fe25bf7e24130efb0e83ae3fcb60649992030b276800ef8bfb83c451"
+    },
+    {
+      "name": "font-10-scale-1-page-021.png",
+      "old_sha256": "53237fbe0f645cca6cdfcf7a3613fc75eb39b41c34bc611e3c56d6dcd59ee1aa",
+      "new_sha256": "53237fbe0f645cca6cdfcf7a3613fc75eb39b41c34bc611e3c56d6dcd59ee1aa"
+    },
+    {
+      "name": "font-10-scale-1-page-022.png",
+      "old_sha256": "88f6e75bcd684cc13b51832f81b83ee062c9fa1ad95ca5aa60870890c964a7a5",
+      "new_sha256": "88f6e75bcd684cc13b51832f81b83ee062c9fa1ad95ca5aa60870890c964a7a5"
+    },
+    {
+      "name": "font-10-scale-1-page-023.png",
+      "old_sha256": "2b67fcb4d68e283e3d43ea9e9ce4db9ab4143a14392c80d45c9e3997f48e61de",
+      "new_sha256": "2b67fcb4d68e283e3d43ea9e9ce4db9ab4143a14392c80d45c9e3997f48e61de"
+    },
+    {
+      "name": "font-10-scale-1-page-024.png",
+      "old_sha256": "acf397e5e03fe5829a8539c32410805cf7152a78b8fa1f9e9c904ce529c3a8c6",
+      "new_sha256": "acf397e5e03fe5829a8539c32410805cf7152a78b8fa1f9e9c904ce529c3a8c6"
+    },
+    {
+      "name": "font-10-scale-1-page-025.png",
+      "old_sha256": "0a6bec61c9b2a393282b8fb66ec5c992bef0a79cc837fa829ad1b2523cf1b5dd",
+      "new_sha256": "0a6bec61c9b2a393282b8fb66ec5c992bef0a79cc837fa829ad1b2523cf1b5dd"
+    },
+    {
+      "name": "font-10-scale-1-page-026.png",
+      "old_sha256": "7bc8be2f786168f21dec1b2b804840f62a1bd74bf4dd0fcd217041fbd9d8d5e0",
+      "new_sha256": "7bc8be2f786168f21dec1b2b804840f62a1bd74bf4dd0fcd217041fbd9d8d5e0"
+    },
+    {
+      "name": "font-10-scale-1-page-027.png",
+      "old_sha256": "8e30f6c7747720d795d47a95f61b312a0a8253027d3e3a6f2e3b60e6181b434d",
+      "new_sha256": "8e30f6c7747720d795d47a95f61b312a0a8253027d3e3a6f2e3b60e6181b434d"
+    },
+    {
+      "name": "font-10-scale-1-page-028.png",
+      "old_sha256": "2da6e6eedbd72d240a2cdfda10c23c529cd8c082e3ebbd67cede9d885532911d",
+      "new_sha256": "2da6e6eedbd72d240a2cdfda10c23c529cd8c082e3ebbd67cede9d885532911d"
+    },
+    {
+      "name": "font-10-scale-1-page-029.png",
+      "old_sha256": "24eb412fd64246fa11d3c8c47e9789428b4b45f2ee9535352d7be1a32c5dc989",
+      "new_sha256": "24eb412fd64246fa11d3c8c47e9789428b4b45f2ee9535352d7be1a32c5dc989"
+    },
+    {
+      "name": "font-10-scale-1-page-030.png",
+      "old_sha256": "a51af00636c0a16b69349822ef09de44e553e8b231692d86bb7f7436305b827f",
+      "new_sha256": "a51af00636c0a16b69349822ef09de44e553e8b231692d86bb7f7436305b827f"
+    },
+    {
+      "name": "font-10-scale-1-page-031.png",
+      "old_sha256": "206fa9d96cff7447959b2e49179101aa0541a96bb00731fd2f26aa231a104486",
+      "new_sha256": "206fa9d96cff7447959b2e49179101aa0541a96bb00731fd2f26aa231a104486"
+    },
+    {
+      "name": "font-10-scale-1-page-032.png",
+      "old_sha256": "cff315d214f37f7949d0bc1bdf913ed1b3ce87e21164db0f0f42590c5f8aef52",
+      "new_sha256": "cff315d214f37f7949d0bc1bdf913ed1b3ce87e21164db0f0f42590c5f8aef52"
+    },
+    {
+      "name": "font-10-scale-1-page-033.png",
+      "old_sha256": "9c479696be748e43ed404b80f15ae7cdc1e13fb77d146dd8202906c89482292e",
+      "new_sha256": "9c479696be748e43ed404b80f15ae7cdc1e13fb77d146dd8202906c89482292e"
+    },
+    {
+      "name": "font-10-scale-1-page-034.png",
+      "old_sha256": "881d88da736e09283b4f7e7eefecc9f1adb1b0a34784df405711b93f24363ef1",
+      "new_sha256": "881d88da736e09283b4f7e7eefecc9f1adb1b0a34784df405711b93f24363ef1"
+    },
+    {
+      "name": "font-10-scale-1-page-035.png",
+      "old_sha256": "f52ef6a6023656ab3746abad10be15f4392d49e627ed110cc307c49afa9c604a",
+      "new_sha256": "f52ef6a6023656ab3746abad10be15f4392d49e627ed110cc307c49afa9c604a"
+    },
+    {
+      "name": "font-10-scale-1-page-036.png",
+      "old_sha256": "59d926085fed193455983871665609fe3dca1ebda392f5d1133c0e14c9400c5f",
+      "new_sha256": "59d926085fed193455983871665609fe3dca1ebda392f5d1133c0e14c9400c5f"
+    },
+    {
+      "name": "font-10-scale-1-page-037.png",
+      "old_sha256": "505030795ba1d0590a3ac7e6dd5104565bd4ebda2071db9a0c69c08bb4c8f90f",
+      "new_sha256": "505030795ba1d0590a3ac7e6dd5104565bd4ebda2071db9a0c69c08bb4c8f90f"
+    },
+    {
+      "name": "font-10-scale-1-page-038.png",
+      "old_sha256": "b2d155840bd3be8efe1810296f353e3b3341596c0e502706b3764c3d4cefdd77",
+      "new_sha256": "b2d155840bd3be8efe1810296f353e3b3341596c0e502706b3764c3d4cefdd77"
+    },
+    {
+      "name": "font-10-scale-1-page-039.png",
+      "old_sha256": "7e38dc2683da60921c7d819279b6ffa9d830caadb343b9fcc3d42f18ab62e700",
+      "new_sha256": "7e38dc2683da60921c7d819279b6ffa9d830caadb343b9fcc3d42f18ab62e700"
+    },
+    {
+      "name": "font-10-scale-1-page-040.png",
+      "old_sha256": "b93b8c76f7295902062f71d0eb6750eeeff0c60a166b74d04980def452f3365e",
+      "new_sha256": "b93b8c76f7295902062f71d0eb6750eeeff0c60a166b74d04980def452f3365e"
+    },
+    {
+      "name": "font-10-scale-1-page-041.png",
+      "old_sha256": "bebc041a2651f3fd91df0b9abefaa74d362df40018e8b205442b6e10126dd498",
+      "new_sha256": "bebc041a2651f3fd91df0b9abefaa74d362df40018e8b205442b6e10126dd498"
+    },
+    {
+      "name": "font-10-scale-1-page-042.png",
+      "old_sha256": "a72476183b7dc80f52c02dce300eb8d0ecff477c5260b40c296aec3d81b7f80a",
+      "new_sha256": "a72476183b7dc80f52c02dce300eb8d0ecff477c5260b40c296aec3d81b7f80a"
+    },
+    {
+      "name": "font-10-scale-1-page-043.png",
+      "old_sha256": "d97f1b9d807d864c6097a6118be5d3af849ae228db06ec8468db0e3f8f8aa621",
+      "new_sha256": "d97f1b9d807d864c6097a6118be5d3af849ae228db06ec8468db0e3f8f8aa621"
+    },
+    {
+      "name": "font-10-scale-1-page-044.png",
+      "old_sha256": "f742daa42f6343b149f24d45575d41f0b9079fafa9c37925854a858d662a983e",
+      "new_sha256": "f742daa42f6343b149f24d45575d41f0b9079fafa9c37925854a858d662a983e"
+    },
+    {
+      "name": "font-10-scale-1-page-045.png",
+      "old_sha256": "284ddeb8f34e5aa6ce600bb60c7d460790c7638b21a0c15079484397f45f099a",
+      "new_sha256": "284ddeb8f34e5aa6ce600bb60c7d460790c7638b21a0c15079484397f45f099a"
+    },
+    {
+      "name": "font-10-scale-1-page-046.png",
+      "old_sha256": "a697103c16bd3e516d266ef4c4d6111ae9624ca7e367f1faeb8e938807310c35",
+      "new_sha256": "a697103c16bd3e516d266ef4c4d6111ae9624ca7e367f1faeb8e938807310c35"
+    },
+    {
+      "name": "font-10-scale-1-page-047.png",
+      "old_sha256": "c7b78006af2c17655439f841c54d4fc3c2316436a66511b32ef4c21767180556",
+      "new_sha256": "c7b78006af2c17655439f841c54d4fc3c2316436a66511b32ef4c21767180556"
+    },
+    {
+      "name": "font-10-scale-1-page-048.png",
+      "old_sha256": "fd6e002110e3fc70ede6797bd2de6c9db3761b72bdb17fc2e97889178f8e2fca",
+      "new_sha256": "fd6e002110e3fc70ede6797bd2de6c9db3761b72bdb17fc2e97889178f8e2fca"
+    },
+    {
+      "name": "font-10-scale-1-page-049.png",
+      "old_sha256": "7a1432eb071e2bc79504dbeab7b822391635685d28f69b28c16d353074541be3",
+      "new_sha256": "7a1432eb071e2bc79504dbeab7b822391635685d28f69b28c16d353074541be3"
+    },
+    {
+      "name": "font-10-scale-1-page-050.png",
+      "old_sha256": "0cd409f00a268e9e858727e2c1232742c7104d53464f8d1299e19b04a2586230",
+      "new_sha256": "0cd409f00a268e9e858727e2c1232742c7104d53464f8d1299e19b04a2586230"
+    },
+    {
+      "name": "font-10-scale-1-page-051.png",
+      "old_sha256": "c10e0e60b249c96c63f68827904d6e684ccebafb17656cf5f2df313d78b5fce8",
+      "new_sha256": "c10e0e60b249c96c63f68827904d6e684ccebafb17656cf5f2df313d78b5fce8"
+    },
+    {
+      "name": "font-10-scale-1-page-052.png",
+      "old_sha256": "930879bc31c8aaf4d43a8c4c664a863e46577e0671b51a5871f3424d2f648752",
+      "new_sha256": "930879bc31c8aaf4d43a8c4c664a863e46577e0671b51a5871f3424d2f648752"
+    },
+    {
+      "name": "font-10-scale-1-page-053.png",
+      "old_sha256": "c90402c980b485375e605e6da1370af6a27a528b39a90c591232e67234c6321d",
+      "new_sha256": "c90402c980b485375e605e6da1370af6a27a528b39a90c591232e67234c6321d"
+    },
+    {
+      "name": "font-10-scale-1-page-054.png",
+      "old_sha256": "03d23ce9d1b060b7f6b1e281c4c5e7c377cb9c4acdf8598b040e11ad9f24d7ca",
+      "new_sha256": "03d23ce9d1b060b7f6b1e281c4c5e7c377cb9c4acdf8598b040e11ad9f24d7ca"
+    },
+    {
+      "name": "font-10-scale-1-page-055.png",
+      "old_sha256": "bdcdc91341638493b9dadbb560806ff6ee5c54d2e0fe361e48cc01ef1ba574ea",
+      "new_sha256": "bdcdc91341638493b9dadbb560806ff6ee5c54d2e0fe361e48cc01ef1ba574ea"
+    },
+    {
+      "name": "font-10-scale-1-page-056.png",
+      "old_sha256": "6758373bf67090efb0c74118b2d32c062c0388cac6af8bba185964c24a3af174",
+      "new_sha256": "6758373bf67090efb0c74118b2d32c062c0388cac6af8bba185964c24a3af174"
+    },
+    {
+      "name": "font-10-scale-1-page-057.png",
+      "old_sha256": "d0036ec91c48a4094d34697916d8bc1cf0af81cc242d9847e63353de21398234",
+      "new_sha256": "d0036ec91c48a4094d34697916d8bc1cf0af81cc242d9847e63353de21398234"
+    },
+    {
+      "name": "font-10-scale-1-page-058.png",
+      "old_sha256": "4d25ea7e736a8c7cc9363f0fbd53fe0cd8d97789b2e41032b1618e8faf8410ef",
+      "new_sha256": "4d25ea7e736a8c7cc9363f0fbd53fe0cd8d97789b2e41032b1618e8faf8410ef"
+    },
+    {
+      "name": "font-10-scale-1-page-059.png",
+      "old_sha256": "b43cc1d120ccc740e638cd0947702112efca731bbc5d7ba6a11d23aec120be85",
+      "new_sha256": "b43cc1d120ccc740e638cd0947702112efca731bbc5d7ba6a11d23aec120be85"
+    },
+    {
+      "name": "font-10-scale-1-page-060.png",
+      "old_sha256": "6f67de348a6c4ca1f94d7cd33e5f5e221ffccd2d6931cd2bb8f1889a73fac9be",
+      "new_sha256": "6f67de348a6c4ca1f94d7cd33e5f5e221ffccd2d6931cd2bb8f1889a73fac9be"
+    },
+    {
+      "name": "font-10-scale-1-page-061.png",
+      "old_sha256": "dcd5d2c40657fd56f7937a47973da4467c024312f7c598c3df7e95af42636d5f",
+      "new_sha256": "dcd5d2c40657fd56f7937a47973da4467c024312f7c598c3df7e95af42636d5f"
+    },
+    {
+      "name": "font-10-scale-1-page-062.png",
+      "old_sha256": "be4fb9d138f9d1e29e80d3ce285f30613d4bdfcf88d4b0a87246cf7398c07d8c",
+      "new_sha256": "be4fb9d138f9d1e29e80d3ce285f30613d4bdfcf88d4b0a87246cf7398c07d8c"
+    },
+    {
+      "name": "font-10-scale-1-page-063.png",
+      "old_sha256": "78590ac98a1bf89adb94b67117351bc2970f3eae4b1f25942e9e01c43731cd8d",
+      "new_sha256": "78590ac98a1bf89adb94b67117351bc2970f3eae4b1f25942e9e01c43731cd8d"
+    },
+    {
+      "name": "font-10-scale-1-page-064.png",
+      "old_sha256": "ee6afc4ce5f1335d6183afe8b0d0da68a81d64db0b134e59f602284db7789dea",
+      "new_sha256": "ee6afc4ce5f1335d6183afe8b0d0da68a81d64db0b134e59f602284db7789dea"
+    },
+    {
+      "name": "font-10-scale-1-page-065.png",
+      "old_sha256": "a99929534d9ff89ba794875656ee59510da4dd96aea4f1b9eb4302270559029d",
+      "new_sha256": "a99929534d9ff89ba794875656ee59510da4dd96aea4f1b9eb4302270559029d"
+    },
+    {
+      "name": "font-10-scale-1-page-066.png",
+      "old_sha256": "30d621a6b86e83be9392dec8cba305b8888f51aae01ad55bd39b9830be27929e",
+      "new_sha256": "30d621a6b86e83be9392dec8cba305b8888f51aae01ad55bd39b9830be27929e"
+    },
+    {
+      "name": "font-10-scale-1-page-067.png",
+      "old_sha256": "64b3c734dc523a7dc1a6b299ffdc14fdb6f4a5486eade65ca27cdf63de4ec249",
+      "new_sha256": "64b3c734dc523a7dc1a6b299ffdc14fdb6f4a5486eade65ca27cdf63de4ec249"
+    },
+    {
+      "name": "font-10-scale-1-page-068.png",
+      "old_sha256": "b58d7ed7eb9186c13825f8e108a263e88debb49d3cae8a886f1466215479b6ba",
+      "new_sha256": "b58d7ed7eb9186c13825f8e108a263e88debb49d3cae8a886f1466215479b6ba"
+    },
+    {
+      "name": "font-10-scale-1-page-069.png",
+      "old_sha256": "8bba0f8a2aaba793c15b33f2d348a117d930d202ba77442bfe7fc5936e643e4a",
+      "new_sha256": "8bba0f8a2aaba793c15b33f2d348a117d930d202ba77442bfe7fc5936e643e4a"
+    },
+    {
+      "name": "font-10-scale-1-page-070.png",
+      "old_sha256": "ee4b0657cd7d5321531fc649a83c1e680729d9c7ad536fdbf05b367d2923dfd3",
+      "new_sha256": "ee4b0657cd7d5321531fc649a83c1e680729d9c7ad536fdbf05b367d2923dfd3"
+    },
+    {
+      "name": "font-10-scale-1-page-071.png",
+      "old_sha256": "79e4b3b278338147845fa53975519f3a165344aaf73fd10a3a0a9866ccd6bdaa",
+      "new_sha256": "79e4b3b278338147845fa53975519f3a165344aaf73fd10a3a0a9866ccd6bdaa"
+    },
+    {
+      "name": "font-10-scale-1-page-072.png",
+      "old_sha256": "d8aaee7c4b77c257839e04a379671d4a658c61b906503782fcb6ad3927dbb9da",
+      "new_sha256": "d8aaee7c4b77c257839e04a379671d4a658c61b906503782fcb6ad3927dbb9da"
+    },
+    {
+      "name": "font-10-scale-1-page-073.png",
+      "old_sha256": "23cc3a4d1d1675fb822de60660456dfc86b6e14b40a40066a73f2b300ab054b1",
+      "new_sha256": "23cc3a4d1d1675fb822de60660456dfc86b6e14b40a40066a73f2b300ab054b1"
+    },
+    {
+      "name": "font-10-scale-1-page-074.png",
+      "old_sha256": "4d313ff60dae778eb08a68109cd65d83072e4fac0c9be6faf194b8334095c98f",
+      "new_sha256": "4d313ff60dae778eb08a68109cd65d83072e4fac0c9be6faf194b8334095c98f"
+    },
+    {
+      "name": "font-10-scale-1-page-075.png",
+      "old_sha256": "2a1c0a6a8c1c87751ae4cd05155cda33e2646582b190d937461fc245cb13551a",
+      "new_sha256": "2a1c0a6a8c1c87751ae4cd05155cda33e2646582b190d937461fc245cb13551a"
+    },
+    {
+      "name": "font-10-scale-1-page-076.png",
+      "old_sha256": "120a357f7befbddfe32f83bd8bceed41332c4df4b3466cd1fdedd86d5c69b338",
+      "new_sha256": "120a357f7befbddfe32f83bd8bceed41332c4df4b3466cd1fdedd86d5c69b338"
+    },
+    {
+      "name": "font-10-scale-1-page-077.png",
+      "old_sha256": "8b2bdec12ab68c3d3008b5440c6edf64fc3e94653e8f95f3d73ce2f74e61b4e0",
+      "new_sha256": "8b2bdec12ab68c3d3008b5440c6edf64fc3e94653e8f95f3d73ce2f74e61b4e0"
+    },
+    {
+      "name": "font-10-scale-1-page-078.png",
+      "old_sha256": "026ed0fb54d59ad75c556498b23feac23d861bfe8d7bbcba0a6eed5fd2c81183",
+      "new_sha256": "026ed0fb54d59ad75c556498b23feac23d861bfe8d7bbcba0a6eed5fd2c81183"
+    },
+    {
+      "name": "font-10-scale-1-page-079.png",
+      "old_sha256": "4424498db1d469f339b8e35d60649baa2ab46e8c8ee58fca677c467794fd7593",
+      "new_sha256": "4424498db1d469f339b8e35d60649baa2ab46e8c8ee58fca677c467794fd7593"
+    },
+    {
+      "name": "font-10-scale-1-page-080.png",
+      "old_sha256": "f9737ba040bef526d8f3dd242d67a2d6079b2766b1e0b6f482bf2075907d6805",
+      "new_sha256": "f9737ba040bef526d8f3dd242d67a2d6079b2766b1e0b6f482bf2075907d6805"
+    },
+    {
+      "name": "font-10-scale-1-page-081.png",
+      "old_sha256": "ecac506c597f758d59d9b66325e5bb2c0a8fa804396db83abc5c4feb2c0469bc",
+      "new_sha256": "ecac506c597f758d59d9b66325e5bb2c0a8fa804396db83abc5c4feb2c0469bc"
+    },
+    {
+      "name": "font-10-scale-1-page-082.png",
+      "old_sha256": "e2bd30e93250a673a33f58c556909d248ea0a68afdabebf2e65a9026b145ec25",
+      "new_sha256": "e2bd30e93250a673a33f58c556909d248ea0a68afdabebf2e65a9026b145ec25"
+    },
+    {
+      "name": "font-10-scale-1-page-083.png",
+      "old_sha256": "b176ef56c7db0b7b11b821b1601d45e61d4b7243c416eff9bc9db21bd26c5bf9",
+      "new_sha256": "b176ef56c7db0b7b11b821b1601d45e61d4b7243c416eff9bc9db21bd26c5bf9"
+    },
+    {
+      "name": "font-10-scale-1-page-084.png",
+      "old_sha256": "f1ca34370483cc6b69b38eebe3bbaf64033df608ec41e24e807ec46f4e12ea56",
+      "new_sha256": "f1ca34370483cc6b69b38eebe3bbaf64033df608ec41e24e807ec46f4e12ea56"
+    },
+    {
+      "name": "font-10-scale-1-page-085.png",
+      "old_sha256": "fd5a9419f60d8fe37a3877f8312c57ab81bf21f8f885229e94a7f7261f163f7c",
+      "new_sha256": "fd5a9419f60d8fe37a3877f8312c57ab81bf21f8f885229e94a7f7261f163f7c"
+    },
+    {
+      "name": "font-10-scale-1-page-086.png",
+      "old_sha256": "460d187c910e8d45e204691a48fffe78e71ac2812dc058a92346905c4840c145",
+      "new_sha256": "460d187c910e8d45e204691a48fffe78e71ac2812dc058a92346905c4840c145"
+    },
+    {
+      "name": "font-10-scale-1-page-087.png",
+      "old_sha256": "6edd9cd91741cb2a7c0d11852cbb4395f6c0dfa6488ad29fb5205d3ea6396044",
+      "new_sha256": "6edd9cd91741cb2a7c0d11852cbb4395f6c0dfa6488ad29fb5205d3ea6396044"
+    },
+    {
+      "name": "font-10-scale-1-page-088.png",
+      "old_sha256": "44affc2e6d5950fa86dd17cb2f7eaff22e71a286e45bccb9bed5a2f4c889f873",
+      "new_sha256": "44affc2e6d5950fa86dd17cb2f7eaff22e71a286e45bccb9bed5a2f4c889f873"
+    },
+    {
+      "name": "font-10-scale-1-page-089.png",
+      "old_sha256": "1d4b51ff725b13dd73e53e648dd19b70c6cb9c936f7e1ae247666c1f51fdbe2e",
+      "new_sha256": "1d4b51ff725b13dd73e53e648dd19b70c6cb9c936f7e1ae247666c1f51fdbe2e"
+    },
+    {
+      "name": "font-10-scale-1-page-090.png",
+      "old_sha256": "beff61b218c8478eccc5ddd5c0c04ee53d9938e7caf9115c85b7860a6c400c4b",
+      "new_sha256": "beff61b218c8478eccc5ddd5c0c04ee53d9938e7caf9115c85b7860a6c400c4b"
+    },
+    {
+      "name": "font-10-scale-1-page-091.png",
+      "old_sha256": "99dbc975b653ca2cfb15ba4cf48a794d7d35984c44dfd1ed3c7f69d3116d7399",
+      "new_sha256": "99dbc975b653ca2cfb15ba4cf48a794d7d35984c44dfd1ed3c7f69d3116d7399"
+    },
+    {
+      "name": "font-10-scale-1-page-092.png",
+      "old_sha256": "374c9770f193ab9f0ed10df9a4a61a001f09d1ab53c62aed97a9b98f929fda88",
+      "new_sha256": "374c9770f193ab9f0ed10df9a4a61a001f09d1ab53c62aed97a9b98f929fda88"
+    },
+    {
+      "name": "font-10-scale-1-page-093.png",
+      "old_sha256": "53282b33a89735385ee49ae7393f49b524cd070053f44629af52a6f501b8a152",
+      "new_sha256": "53282b33a89735385ee49ae7393f49b524cd070053f44629af52a6f501b8a152"
+    },
+    {
+      "name": "font-10-scale-1-page-094.png",
+      "old_sha256": "7fe262a999e937a83f7b5e888caf922d95741c2d4bb6d7e229c5628d9349fcd3",
+      "new_sha256": "7fe262a999e937a83f7b5e888caf922d95741c2d4bb6d7e229c5628d9349fcd3"
+    },
+    {
+      "name": "font-10-scale-1-page-095.png",
+      "old_sha256": "f18c21c932d0bfe6947eb4a8d99b3b51f8f52c0ee3db8215867489ee545fa939",
+      "new_sha256": "f18c21c932d0bfe6947eb4a8d99b3b51f8f52c0ee3db8215867489ee545fa939"
+    },
+    {
+      "name": "font-10-scale-1-page-096.png",
+      "old_sha256": "ec7249dae1680c83b91daf36486e3193459d890a83c8e37da2bf44c70f4296c8",
+      "new_sha256": "ec7249dae1680c83b91daf36486e3193459d890a83c8e37da2bf44c70f4296c8"
+    },
+    {
+      "name": "font-10-scale-1-page-097.png",
+      "old_sha256": "795ca457cb5528f2ad1145ea07aad2497c1aadebe5df0a2bd01a2e9155a35f2c",
+      "new_sha256": "795ca457cb5528f2ad1145ea07aad2497c1aadebe5df0a2bd01a2e9155a35f2c"
+    },
+    {
+      "name": "font-10-scale-1-page-098.png",
+      "old_sha256": "69bf467045dc2b4d9b4a8783490eaa93b8c3cad0ad8b70aa3af6ba5cc357231c",
+      "new_sha256": "69bf467045dc2b4d9b4a8783490eaa93b8c3cad0ad8b70aa3af6ba5cc357231c"
+    },
+    {
+      "name": "font-10-scale-1-page-099.png",
+      "old_sha256": "1241eb1277a5aaebf449928e63c6c3cf14bd88eb0357f68c93e69165c135f1b1",
+      "new_sha256": "1241eb1277a5aaebf449928e63c6c3cf14bd88eb0357f68c93e69165c135f1b1"
+    },
+    {
+      "name": "font-10-scale-1-page-100.png",
+      "old_sha256": "310a482519a2d1581c4c811932b1dca4de9cf0155e82ccad63c7fe538b84135e",
+      "new_sha256": "310a482519a2d1581c4c811932b1dca4de9cf0155e82ccad63c7fe538b84135e"
+    },
+    {
+      "name": "font-10-scale-1-page-101.png",
+      "old_sha256": "5f641e18f69edeb488636e4f90d92028232891748682131ecdc20e50519d78e1",
+      "new_sha256": "5f641e18f69edeb488636e4f90d92028232891748682131ecdc20e50519d78e1"
+    },
+    {
+      "name": "font-10-scale-1-page-102.png",
+      "old_sha256": "b07eb446ed91a54f9421e4d5aa40030d3c9fe4b3b0584517f32d83c7708a2b3e",
+      "new_sha256": "b07eb446ed91a54f9421e4d5aa40030d3c9fe4b3b0584517f32d83c7708a2b3e"
+    },
+    {
+      "name": "font-10-scale-1-page-103.png",
+      "old_sha256": "abc7a10631789a2a7dd45588b6bdbd37bccd08e4a1eb85e3747ab7195cbabe0b",
+      "new_sha256": "abc7a10631789a2a7dd45588b6bdbd37bccd08e4a1eb85e3747ab7195cbabe0b"
+    },
+    {
+      "name": "font-10-scale-1-page-104.png",
+      "old_sha256": "1678cb2612b93169434036b3948f68ca2e35290408932ad09ae7f503f0513633",
+      "new_sha256": "1678cb2612b93169434036b3948f68ca2e35290408932ad09ae7f503f0513633"
+    },
+    {
+      "name": "font-10-scale-1-page-105.png",
+      "old_sha256": "827284e12945496c9a8ffbdc2ac3263e6a24bb9184c2223361bd6201a71c494e",
+      "new_sha256": "827284e12945496c9a8ffbdc2ac3263e6a24bb9184c2223361bd6201a71c494e"
+    },
+    {
+      "name": "font-10-scale-1-page-106.png",
+      "old_sha256": "a239301ea5880a08a1879bd6a6a7cb868c9601d60619ad18b1b037388f95b4be",
+      "new_sha256": "a239301ea5880a08a1879bd6a6a7cb868c9601d60619ad18b1b037388f95b4be"
+    },
+    {
+      "name": "font-10-scale-1-page-107.png",
+      "old_sha256": "8e2bc0ba65bb8ae4696613e4702e524d4432da4e0bcd5800f1797b9c2c2b6f87",
+      "new_sha256": "8e2bc0ba65bb8ae4696613e4702e524d4432da4e0bcd5800f1797b9c2c2b6f87"
+    },
+    {
+      "name": "font-10-scale-1-page-108.png",
+      "old_sha256": "cc91de9eadbebd794f9fb92a7e3e7c40ee68a43840f8b1a81c0d4b76e6504f56",
+      "new_sha256": "cc91de9eadbebd794f9fb92a7e3e7c40ee68a43840f8b1a81c0d4b76e6504f56"
+    },
+    {
+      "name": "font-10-scale-1-page-109.png",
+      "old_sha256": "ca963dfbb46834e4e5d1956dff5a0ca214a0c6a9f1fc51b60cf65318987a4c55",
+      "new_sha256": "ca963dfbb46834e4e5d1956dff5a0ca214a0c6a9f1fc51b60cf65318987a4c55"
+    },
+    {
+      "name": "font-10-scale-1-page-110.png",
+      "old_sha256": "c1143d85c724e087b7b4302c9b362f786bc6b2053bec2491b31c7ff79caa1aac",
+      "new_sha256": "c1143d85c724e087b7b4302c9b362f786bc6b2053bec2491b31c7ff79caa1aac"
+    },
+    {
+      "name": "font-10-scale-1-page-111.png",
+      "old_sha256": "e71b7f18b8d31e79916ddfdc7119f3e78a2f5365e1cc62f8aab10b482ed2bfc0",
+      "new_sha256": "e71b7f18b8d31e79916ddfdc7119f3e78a2f5365e1cc62f8aab10b482ed2bfc0"
+    },
+    {
+      "name": "font-10-scale-1-page-112.png",
+      "old_sha256": "54bae3e7401a8e1bf81871472e99e7efbdbbf7d4ca6db018835189d9e520960e",
+      "new_sha256": "54bae3e7401a8e1bf81871472e99e7efbdbbf7d4ca6db018835189d9e520960e"
+    },
+    {
+      "name": "font-10-scale-1-page-113.png",
+      "old_sha256": "717535da5028d373654332ef97a5a33ca2fdfa682315937094c683a7df2b40f6",
+      "new_sha256": "717535da5028d373654332ef97a5a33ca2fdfa682315937094c683a7df2b40f6"
+    },
+    {
+      "name": "font-10-scale-1-page-114.png",
+      "old_sha256": "349bad2d4d26aa36ba2457eac7a057591e396ce6ae3037dcf640cae82d92e314",
+      "new_sha256": "349bad2d4d26aa36ba2457eac7a057591e396ce6ae3037dcf640cae82d92e314"
+    },
+    {
+      "name": "font-10-scale-1-page-115.png",
+      "old_sha256": "b1131dfc58d7c2cc0de32ebd0bc426d5f45ed4a3edb26a43019ab7911a300361",
+      "new_sha256": "b1131dfc58d7c2cc0de32ebd0bc426d5f45ed4a3edb26a43019ab7911a300361"
+    },
+    {
+      "name": "font-10-scale-1-page-116.png",
+      "old_sha256": "0b40b9d1695ae5ad3a76c72e4a5bdb44e88d28242dd57da313d621f173ce3aa1",
+      "new_sha256": "0b40b9d1695ae5ad3a76c72e4a5bdb44e88d28242dd57da313d621f173ce3aa1"
+    },
+    {
+      "name": "font-10-scale-1-page-117.png",
+      "old_sha256": "2fc080a9be6ca08953cbaf7f8b6b87d59c9cbbc93ed76f4956870b05782c8f46",
+      "new_sha256": "2fc080a9be6ca08953cbaf7f8b6b87d59c9cbbc93ed76f4956870b05782c8f46"
+    },
+    {
+      "name": "font-10-scale-1-page-118.png",
+      "old_sha256": "7bd802ae9f6141d9c09ef0d8a2fd4fc1fd17e4f7898a04abf0972bf17aee7e7c",
+      "new_sha256": "7bd802ae9f6141d9c09ef0d8a2fd4fc1fd17e4f7898a04abf0972bf17aee7e7c"
+    },
+    {
+      "name": "font-10-scale-1-page-119.png",
+      "old_sha256": "9863bdbf7d028aa5beb73fef4262d4084b51026a608230cae3790e5e30b4bbcd",
+      "new_sha256": "9863bdbf7d028aa5beb73fef4262d4084b51026a608230cae3790e5e30b4bbcd"
+    },
+    {
+      "name": "font-10-scale-1-page-120.png",
+      "old_sha256": "18decaaf3b78d4e42b4b62fa565278df3391d001babf503bf546fa3141b1dab2",
+      "new_sha256": "18decaaf3b78d4e42b4b62fa565278df3391d001babf503bf546fa3141b1dab2"
+    },
+    {
+      "name": "font-10-scale-1-page-121.png",
+      "old_sha256": "22c145f8237b9728ba087befb3ffca37951f0e526d38712cd28a29e7246c3d65",
+      "new_sha256": "22c145f8237b9728ba087befb3ffca37951f0e526d38712cd28a29e7246c3d65"
+    },
+    {
+      "name": "font-10-scale-1-page-122.png",
+      "old_sha256": "6be531b59469edd8d64c9d008c7afcbee13f99c87b5ccafabdc99cba6e55d5f1",
+      "new_sha256": "6be531b59469edd8d64c9d008c7afcbee13f99c87b5ccafabdc99cba6e55d5f1"
+    },
+    {
+      "name": "font-10-scale-1-page-123.png",
+      "old_sha256": "61c038e967b01b8299d91cdee17a90acc634b859acdcd1321c737047b230d190",
+      "new_sha256": "61c038e967b01b8299d91cdee17a90acc634b859acdcd1321c737047b230d190"
+    },
+    {
+      "name": "font-10-scale-1-page-124.png",
+      "old_sha256": "867a8abbebe726d06a1ce520786521e91fb1e11934ef31f9cc5bd6d5fd2bb757",
+      "new_sha256": "867a8abbebe726d06a1ce520786521e91fb1e11934ef31f9cc5bd6d5fd2bb757"
+    },
+    {
+      "name": "font-10-scale-1-page-125.png",
+      "old_sha256": "ab5a2b1cc828de83c72ca2948d1bd201b2effd99cdd6525d35132f5c8456f7b2",
+      "new_sha256": "ab5a2b1cc828de83c72ca2948d1bd201b2effd99cdd6525d35132f5c8456f7b2"
+    },
+    {
+      "name": "font-10-scale-1-page-126.png",
+      "old_sha256": "0f6d0e4e7e1e31ec7e3984abe79a96c013e66dcf636902179e641adc11e0f21d",
+      "new_sha256": "0f6d0e4e7e1e31ec7e3984abe79a96c013e66dcf636902179e641adc11e0f21d"
+    },
+    {
+      "name": "font-10-scale-1-page-127.png",
+      "old_sha256": "6e963040153c7a5a9984d964a3a2add10a88850549da7c101297f45384867758",
+      "new_sha256": "6e963040153c7a5a9984d964a3a2add10a88850549da7c101297f45384867758"
+    },
+    {
+      "name": "font-10-scale-1-page-128.png",
+      "old_sha256": "42dada5b9cf406828ef6acc34c45ade9057b41640d1dd76da4de9213535ac6be",
+      "new_sha256": "42dada5b9cf406828ef6acc34c45ade9057b41640d1dd76da4de9213535ac6be"
+    },
+    {
+      "name": "font-10-scale-1-page-129.png",
+      "old_sha256": "5441765bb4bd02d163d520ed1750223cbe04654eddad04d3cb793b65ccdeb069",
+      "new_sha256": "5441765bb4bd02d163d520ed1750223cbe04654eddad04d3cb793b65ccdeb069"
+    },
+    {
+      "name": "font-10-scale-1-page-130.png",
+      "old_sha256": "891bc1ba16e456416a85df6b86bdaba1efed5423e4910cab3e31b6639731db73",
+      "new_sha256": "891bc1ba16e456416a85df6b86bdaba1efed5423e4910cab3e31b6639731db73"
+    },
+    {
+      "name": "font-10-scale-1-page-131.png",
+      "old_sha256": "19eea30525147c5d07c4a47e04f0c505783b54cea844307d0c5087ad58db6ab5",
+      "new_sha256": "19eea30525147c5d07c4a47e04f0c505783b54cea844307d0c5087ad58db6ab5"
+    },
+    {
+      "name": "font-10-scale-1-page-132.png",
+      "old_sha256": "1e83fc42065e864fa6fe842b02850f830c1140e16bdb932d170e33b45322eb64",
+      "new_sha256": "1e83fc42065e864fa6fe842b02850f830c1140e16bdb932d170e33b45322eb64"
+    },
+    {
+      "name": "font-10-scale-1-page-133.png",
+      "old_sha256": "301d931c9b29e2da5a6f793b9bb10f9fce67e1de75f1d02ee82df5e0487c9546",
+      "new_sha256": "301d931c9b29e2da5a6f793b9bb10f9fce67e1de75f1d02ee82df5e0487c9546"
+    },
+    {
+      "name": "font-10-scale-1-page-134.png",
+      "old_sha256": "e04f7e1392ea5b6311faf2cb29b7a8fffd0b761593e5ff5a7b3495474d07b49c",
+      "new_sha256": "e04f7e1392ea5b6311faf2cb29b7a8fffd0b761593e5ff5a7b3495474d07b49c"
+    },
+    {
+      "name": "font-10-scale-1-page-135.png",
+      "old_sha256": "9c991910db1cae3244e78d72291bca0607ce50a5fe3127c92b1c25c26a54ebe7",
+      "new_sha256": "9c991910db1cae3244e78d72291bca0607ce50a5fe3127c92b1c25c26a54ebe7"
+    },
+    {
+      "name": "font-10-scale-1-page-136.png",
+      "old_sha256": "72c9776f7a73d30cc282f33216912f15b8f3dc8d32e75e0b0e119250fd70d538",
+      "new_sha256": "72c9776f7a73d30cc282f33216912f15b8f3dc8d32e75e0b0e119250fd70d538"
+    },
+    {
+      "name": "font-10-scale-1-page-137.png",
+      "old_sha256": "64c3cb2a29e4373238b57f6dc0f75bc1c93bebece4c5d8ca4eb8d855a32acbc7",
+      "new_sha256": "64c3cb2a29e4373238b57f6dc0f75bc1c93bebece4c5d8ca4eb8d855a32acbc7"
+    },
+    {
+      "name": "font-10-scale-1-page-138.png",
+      "old_sha256": "c44e184348a598a73f5c8aa78432b6cf063785c56990cd5a686b847522f7bd90",
+      "new_sha256": "c44e184348a598a73f5c8aa78432b6cf063785c56990cd5a686b847522f7bd90"
+    },
+    {
+      "name": "font-10-scale-1-page-139.png",
+      "old_sha256": "f291609a16a208b59d0cc6a8b4bd9541c00a70609eded344dacc7796cae92215",
+      "new_sha256": "f291609a16a208b59d0cc6a8b4bd9541c00a70609eded344dacc7796cae92215"
+    },
+    {
+      "name": "font-10-scale-1-page-140.png",
+      "old_sha256": "237991defb1c5b56ba7fef862b3f9515adb1cfe04f839e4674cc34c43db8a5ea",
+      "new_sha256": "237991defb1c5b56ba7fef862b3f9515adb1cfe04f839e4674cc34c43db8a5ea"
+    },
+    {
+      "name": "font-10-scale-1-page-141.png",
+      "old_sha256": "478092ddd15ada7caac4dba1e1d5ba7f0a17fdec8053f4ad31a720606b97fd0d",
+      "new_sha256": "478092ddd15ada7caac4dba1e1d5ba7f0a17fdec8053f4ad31a720606b97fd0d"
+    },
+    {
+      "name": "font-10-scale-1-page-142.png",
+      "old_sha256": "ae1e82da6e376f9cb865a0ffc688ae9ef985d82f46c1d9a7c5deced65d3e045c",
+      "new_sha256": "ae1e82da6e376f9cb865a0ffc688ae9ef985d82f46c1d9a7c5deced65d3e045c"
+    },
+    {
+      "name": "font-10-scale-1-page-143.png",
+      "old_sha256": "4b1ca6bc24af674cbe5b8be86d55f660b156716d0d152118413328b557763828",
+      "new_sha256": "4b1ca6bc24af674cbe5b8be86d55f660b156716d0d152118413328b557763828"
+    },
+    {
+      "name": "font-10-scale-1-page-144.png",
+      "old_sha256": "b6eb20db7b9be52804ab23c75c92c255bddd4b79ac6f6886eb22566db1a23425",
+      "new_sha256": "b6eb20db7b9be52804ab23c75c92c255bddd4b79ac6f6886eb22566db1a23425"
+    },
+    {
+      "name": "font-10-scale-1-page-145.png",
+      "old_sha256": "064b46a9600bcf0f4ab0990c42a2934a8e36e530bd84adb594bc9e7a58f115e2",
+      "new_sha256": "064b46a9600bcf0f4ab0990c42a2934a8e36e530bd84adb594bc9e7a58f115e2"
+    },
+    {
+      "name": "font-10-scale-1-page-146.png",
+      "old_sha256": "58d7bc4b3e43375cc11ec11f927e24a1b0d6e6bc7525c0a5c177c0c59f693118",
+      "new_sha256": "58d7bc4b3e43375cc11ec11f927e24a1b0d6e6bc7525c0a5c177c0c59f693118"
+    },
+    {
+      "name": "font-10-scale-1-page-147.png",
+      "old_sha256": "fd8d7abdab7434706d2e08fcb1e5dc6644329dd6af861bbd86e7859055fa0c61",
+      "new_sha256": "fd8d7abdab7434706d2e08fcb1e5dc6644329dd6af861bbd86e7859055fa0c61"
+    },
+    {
+      "name": "font-10-scale-1-page-148.png",
+      "old_sha256": "20bff660afca26cfe6348094ae249972e2c42b6dababae5fd3933fe2fc91cbb2",
+      "new_sha256": "20bff660afca26cfe6348094ae249972e2c42b6dababae5fd3933fe2fc91cbb2"
+    },
+    {
+      "name": "font-10-scale-2-page-001.png",
+      "old_sha256": "60404cf5b427dab018eca55eed129f32154470588bed186e102479a2207a65d1",
+      "new_sha256": "60404cf5b427dab018eca55eed129f32154470588bed186e102479a2207a65d1"
+    },
+    {
+      "name": "font-10-scale-2-page-002.png",
+      "old_sha256": "838b6b9a4831f5062df1a0189573e580665366b82397eb4846352deddda22b7a",
+      "new_sha256": "838b6b9a4831f5062df1a0189573e580665366b82397eb4846352deddda22b7a"
+    },
+    {
+      "name": "font-10-scale-2-page-003.png",
+      "old_sha256": "1e2e05a591da1c1df275c8c035e1c7701955b89d507a06e7fc38ee30d74d998c",
+      "new_sha256": "1e2e05a591da1c1df275c8c035e1c7701955b89d507a06e7fc38ee30d74d998c"
+    },
+    {
+      "name": "font-10-scale-2-page-004.png",
+      "old_sha256": "d6866917a39e51b307690eed435c80bb2c27719886b72d68447a9aeb2a8cb95b",
+      "new_sha256": "d6866917a39e51b307690eed435c80bb2c27719886b72d68447a9aeb2a8cb95b"
+    },
+    {
+      "name": "font-10-scale-2-page-005.png",
+      "old_sha256": "d53e0cb84b2a419b73a2e36e09bfaf2ccef7f7928f3052e3555aea6c3095bf38",
+      "new_sha256": "d53e0cb84b2a419b73a2e36e09bfaf2ccef7f7928f3052e3555aea6c3095bf38"
+    },
+    {
+      "name": "font-10-scale-2-page-006.png",
+      "old_sha256": "b2966b84869d350d10126a1f18ee025e1257e600d94da1cb8663fe2abf22f860",
+      "new_sha256": "b2966b84869d350d10126a1f18ee025e1257e600d94da1cb8663fe2abf22f860"
+    },
+    {
+      "name": "font-10-scale-2-page-007.png",
+      "old_sha256": "73b3695e847ba9fdc5a541e5687a96f0f5a4867c2121b39aff2d73be3df0fc8e",
+      "new_sha256": "73b3695e847ba9fdc5a541e5687a96f0f5a4867c2121b39aff2d73be3df0fc8e"
+    },
+    {
+      "name": "font-10-scale-2-page-008.png",
+      "old_sha256": "8769500ad7367cbb21aa1a9e7c2cbe11a868549e10258141ea13c854adec8ea1",
+      "new_sha256": "8769500ad7367cbb21aa1a9e7c2cbe11a868549e10258141ea13c854adec8ea1"
+    },
+    {
+      "name": "font-10-scale-2-page-009.png",
+      "old_sha256": "65a91f044c6d6abb496b82fef206cb98d1212d7feb00f522e66abad95e205d4c",
+      "new_sha256": "65a91f044c6d6abb496b82fef206cb98d1212d7feb00f522e66abad95e205d4c"
+    },
+    {
+      "name": "font-10-scale-2-page-010.png",
+      "old_sha256": "ca5f570a7a20774552cf8d17106af68643725e9ee1da2bc68f948b349e267444",
+      "new_sha256": "ca5f570a7a20774552cf8d17106af68643725e9ee1da2bc68f948b349e267444"
+    },
+    {
+      "name": "font-10-scale-2-page-011.png",
+      "old_sha256": "85cd4f0702bc964409f32ef6ecbcc8ae6e9e092eae9e1fcbef883ec9df9a9121",
+      "new_sha256": "85cd4f0702bc964409f32ef6ecbcc8ae6e9e092eae9e1fcbef883ec9df9a9121"
+    },
+    {
+      "name": "font-10-scale-2-page-012.png",
+      "old_sha256": "525df8107e902df4a3b380c9c53160ddc83e9d2dcee79fa556edd86754ad2648",
+      "new_sha256": "525df8107e902df4a3b380c9c53160ddc83e9d2dcee79fa556edd86754ad2648"
+    },
+    {
+      "name": "font-10-scale-2-page-013.png",
+      "old_sha256": "9b9073618e1fbec1234e8aa582911fa0b014be41ecad69080765fbb6857637a0",
+      "new_sha256": "9b9073618e1fbec1234e8aa582911fa0b014be41ecad69080765fbb6857637a0"
+    },
+    {
+      "name": "font-10-scale-2-page-014.png",
+      "old_sha256": "4ed6265c6aa9349d7cc08f6175b391ffd55e2dbcdf0d3c1416f52565deeaa76b",
+      "new_sha256": "4ed6265c6aa9349d7cc08f6175b391ffd55e2dbcdf0d3c1416f52565deeaa76b"
+    },
+    {
+      "name": "font-10-scale-2-page-015.png",
+      "old_sha256": "ba046ae99e5cfa71b59c7e69067ddcca48b71bce0371891d58e358b01b017190",
+      "new_sha256": "ba046ae99e5cfa71b59c7e69067ddcca48b71bce0371891d58e358b01b017190"
+    },
+    {
+      "name": "font-10-scale-2-page-016.png",
+      "old_sha256": "c3b2e147082db4a771a8dce41cc40cba89ceb4ebbcd4fabbc2f4f774a4768661",
+      "new_sha256": "c3b2e147082db4a771a8dce41cc40cba89ceb4ebbcd4fabbc2f4f774a4768661"
+    },
+    {
+      "name": "font-10-scale-2-page-017.png",
+      "old_sha256": "6696e53361aa2c15bb20956b0bcbc6187f1a18d151515fc4497e6014347a3503",
+      "new_sha256": "6696e53361aa2c15bb20956b0bcbc6187f1a18d151515fc4497e6014347a3503"
+    },
+    {
+      "name": "font-10-scale-2-page-018.png",
+      "old_sha256": "038e252a830e98f94739e8f26906ce4cd6f119a7308b855e33c736227ca73aa6",
+      "new_sha256": "038e252a830e98f94739e8f26906ce4cd6f119a7308b855e33c736227ca73aa6"
+    },
+    {
+      "name": "font-10-scale-2-page-019.png",
+      "old_sha256": "c1e968d35ad126eb62cfd01fd4ab5e1002d2550588d851c9b587ba9f13e4142e",
+      "new_sha256": "c1e968d35ad126eb62cfd01fd4ab5e1002d2550588d851c9b587ba9f13e4142e"
+    },
+    {
+      "name": "font-10-scale-2-page-020.png",
+      "old_sha256": "f6835226daa41890e44bdad961e657612f01c4426af583326ffb9876ba320d22",
+      "new_sha256": "f6835226daa41890e44bdad961e657612f01c4426af583326ffb9876ba320d22"
+    },
+    {
+      "name": "font-10-scale-2-page-021.png",
+      "old_sha256": "8cd01d45740159be2722dcb4bf280c102d831ed880f30cb82519ba2571a00f68",
+      "new_sha256": "8cd01d45740159be2722dcb4bf280c102d831ed880f30cb82519ba2571a00f68"
+    },
+    {
+      "name": "font-10-scale-2-page-022.png",
+      "old_sha256": "65e41852d639c005ca2073496c92b23b3a60cbb4a902e9320a06aada88eee02a",
+      "new_sha256": "65e41852d639c005ca2073496c92b23b3a60cbb4a902e9320a06aada88eee02a"
+    },
+    {
+      "name": "font-10-scale-2-page-023.png",
+      "old_sha256": "669e59e5d328ddcfb3bf8ba05e4f86386ef3f80a1ec7446001c345ec0f24068c",
+      "new_sha256": "669e59e5d328ddcfb3bf8ba05e4f86386ef3f80a1ec7446001c345ec0f24068c"
+    },
+    {
+      "name": "font-10-scale-2-page-024.png",
+      "old_sha256": "e9d98919345f0a7c1c36d0ea74619626cf59bad79d30888a908cf92393c64152",
+      "new_sha256": "e9d98919345f0a7c1c36d0ea74619626cf59bad79d30888a908cf92393c64152"
+    },
+    {
+      "name": "font-10-scale-2-page-025.png",
+      "old_sha256": "b43b63554ac7dbeafc4e1bec1c2d46956e0420940b2ba7b8140afdc67fbfc8d1",
+      "new_sha256": "b43b63554ac7dbeafc4e1bec1c2d46956e0420940b2ba7b8140afdc67fbfc8d1"
+    },
+    {
+      "name": "font-10-scale-2-page-026.png",
+      "old_sha256": "ca6bc20c759aafd334474b12cbed50f3402cee3467beeb517e475dd186b899ce",
+      "new_sha256": "ca6bc20c759aafd334474b12cbed50f3402cee3467beeb517e475dd186b899ce"
+    },
+    {
+      "name": "font-10-scale-2-page-027.png",
+      "old_sha256": "7f7e1f8055beb3cdbf2ef42824ce19df9f963758e00bc5af4079acb1386f3987",
+      "new_sha256": "7f7e1f8055beb3cdbf2ef42824ce19df9f963758e00bc5af4079acb1386f3987"
+    },
+    {
+      "name": "font-10-scale-2-page-028.png",
+      "old_sha256": "50bf98c4732d3ab8490197d63a3da78a42a01962d0c1d018a56ef8be8b32533e",
+      "new_sha256": "50bf98c4732d3ab8490197d63a3da78a42a01962d0c1d018a56ef8be8b32533e"
+    },
+    {
+      "name": "font-10-scale-2-page-029.png",
+      "old_sha256": "51aceb34ccca991be219a7a7d615a8307bc1e13beea1260b3c867648713493dd",
+      "new_sha256": "51aceb34ccca991be219a7a7d615a8307bc1e13beea1260b3c867648713493dd"
+    },
+    {
+      "name": "font-10-scale-2-page-030.png",
+      "old_sha256": "2e286357b66175030ddd4d0b298c341abec9d7418e7131e672897d9a168a5d00",
+      "new_sha256": "2e286357b66175030ddd4d0b298c341abec9d7418e7131e672897d9a168a5d00"
+    },
+    {
+      "name": "font-10-scale-2-page-031.png",
+      "old_sha256": "83abd282062f0837adff1d0459ca2ece99a7694b29130999801f76c2daf19d66",
+      "new_sha256": "83abd282062f0837adff1d0459ca2ece99a7694b29130999801f76c2daf19d66"
+    },
+    {
+      "name": "font-10-scale-2-page-032.png",
+      "old_sha256": "540caaca4e03997cd9657b3dc601b3dfff5a56bbad17470fd96ee3ea063b5b00",
+      "new_sha256": "540caaca4e03997cd9657b3dc601b3dfff5a56bbad17470fd96ee3ea063b5b00"
+    },
+    {
+      "name": "font-10-scale-2-page-033.png",
+      "old_sha256": "070dc4910bb9f45979634a16c67050cbfadf98c0e64d267a49f9eaf8686dcc0a",
+      "new_sha256": "070dc4910bb9f45979634a16c67050cbfadf98c0e64d267a49f9eaf8686dcc0a"
+    },
+    {
+      "name": "font-10-scale-2-page-034.png",
+      "old_sha256": "397a509d5c391be925d6713f4110a2a66cb3f5478a90e1bd9834f345c8b868e1",
+      "new_sha256": "397a509d5c391be925d6713f4110a2a66cb3f5478a90e1bd9834f345c8b868e1"
+    },
+    {
+      "name": "font-10-scale-2-page-035.png",
+      "old_sha256": "89b304c9bda62f37f46f7698e046c560bf054b36348fdc124d3f9611f4523fef",
+      "new_sha256": "89b304c9bda62f37f46f7698e046c560bf054b36348fdc124d3f9611f4523fef"
+    },
+    {
+      "name": "font-10-scale-2-page-036.png",
+      "old_sha256": "83ee87ee20996c8f33c95e22842b15ad91a6902c839b2e6f0e876ef6ab8d8f6d",
+      "new_sha256": "83ee87ee20996c8f33c95e22842b15ad91a6902c839b2e6f0e876ef6ab8d8f6d"
+    },
+    {
+      "name": "font-10-scale-2-page-037.png",
+      "old_sha256": "4f44aa8ac479a2af56d9c458624e9366231c4c795b03498669a3b1a32b937657",
+      "new_sha256": "4f44aa8ac479a2af56d9c458624e9366231c4c795b03498669a3b1a32b937657"
+    },
+    {
+      "name": "font-10-scale-2-page-038.png",
+      "old_sha256": "f7d96129db8fadb3604bf3fb1ef5558f1e694d4e11d8baedd0a864f670797287",
+      "new_sha256": "f7d96129db8fadb3604bf3fb1ef5558f1e694d4e11d8baedd0a864f670797287"
+    },
+    {
+      "name": "font-10-scale-2-page-039.png",
+      "old_sha256": "a204de0b3a8647338aeef6e46f35c41694dc05ef224f5bb4024f9111f38c704c",
+      "new_sha256": "a204de0b3a8647338aeef6e46f35c41694dc05ef224f5bb4024f9111f38c704c"
+    },
+    {
+      "name": "font-10-scale-2-page-040.png",
+      "old_sha256": "e9bf54a287bbacbed2d62d2f5d946dc53ce3a611dfed1bdb84a2719f70560e22",
+      "new_sha256": "e9bf54a287bbacbed2d62d2f5d946dc53ce3a611dfed1bdb84a2719f70560e22"
+    },
+    {
+      "name": "font-10-scale-2-page-041.png",
+      "old_sha256": "0fb6b96543f696fdd8f235828c1e28e7ae0e534cd84675e0b1beb73f7814cbb3",
+      "new_sha256": "0fb6b96543f696fdd8f235828c1e28e7ae0e534cd84675e0b1beb73f7814cbb3"
+    },
+    {
+      "name": "font-10-scale-2-page-042.png",
+      "old_sha256": "6b2712bf881ed6830e4e66c68fd0189f8bb70753a5fdd9eca9cb097104defb69",
+      "new_sha256": "6b2712bf881ed6830e4e66c68fd0189f8bb70753a5fdd9eca9cb097104defb69"
+    },
+    {
+      "name": "font-10-scale-2-page-043.png",
+      "old_sha256": "3937f9b0ee6f945276fe5d361a95763c6bed7cc253caa6114d2338d23012af61",
+      "new_sha256": "3937f9b0ee6f945276fe5d361a95763c6bed7cc253caa6114d2338d23012af61"
+    },
+    {
+      "name": "font-10-scale-2-page-044.png",
+      "old_sha256": "ace28d3dfc014c28f05fb849ca91106b185c7f0d5ca065e84197cc6f12838542",
+      "new_sha256": "ace28d3dfc014c28f05fb849ca91106b185c7f0d5ca065e84197cc6f12838542"
+    },
+    {
+      "name": "font-10-scale-2-page-045.png",
+      "old_sha256": "135ac5d8ed608f6ae024d6e75ee8a980b7d60d38d25d81ab05402b9efbda06fd",
+      "new_sha256": "135ac5d8ed608f6ae024d6e75ee8a980b7d60d38d25d81ab05402b9efbda06fd"
+    },
+    {
+      "name": "font-10-scale-2-page-046.png",
+      "old_sha256": "c97a37c5817da83dbc78b3700b5692c34d7f2213ce6bc7fde892ebf4ff55edb8",
+      "new_sha256": "c97a37c5817da83dbc78b3700b5692c34d7f2213ce6bc7fde892ebf4ff55edb8"
+    },
+    {
+      "name": "font-10-scale-2-page-047.png",
+      "old_sha256": "131dab22a6ded29e075a097d6abc41963282b337fb4b8e9255b3a339559f1fa2",
+      "new_sha256": "131dab22a6ded29e075a097d6abc41963282b337fb4b8e9255b3a339559f1fa2"
+    },
+    {
+      "name": "font-10-scale-2-page-048.png",
+      "old_sha256": "4242a5d63cb4b521a771275aeece753a1a3f8edbbca3184f3041d5a2ba9b3ed9",
+      "new_sha256": "4242a5d63cb4b521a771275aeece753a1a3f8edbbca3184f3041d5a2ba9b3ed9"
+    },
+    {
+      "name": "font-10-scale-2-page-049.png",
+      "old_sha256": "9ccf89beb747e5a728f4d57c75051dc6e078abac83b7dcf380f4590c6b9ee674",
+      "new_sha256": "9ccf89beb747e5a728f4d57c75051dc6e078abac83b7dcf380f4590c6b9ee674"
+    },
+    {
+      "name": "font-10-scale-2-page-050.png",
+      "old_sha256": "323085efe0ae25b7d2274bf6416ec026b33418ae0693ac1e6b218ef75d039da3",
+      "new_sha256": "323085efe0ae25b7d2274bf6416ec026b33418ae0693ac1e6b218ef75d039da3"
+    },
+    {
+      "name": "font-10-scale-2-page-051.png",
+      "old_sha256": "2c92826b6f1f453155cacf38e2aaf74153d3bc3132fc42cc3d1e9e3875d8409a",
+      "new_sha256": "2c92826b6f1f453155cacf38e2aaf74153d3bc3132fc42cc3d1e9e3875d8409a"
+    },
+    {
+      "name": "font-10-scale-2-page-052.png",
+      "old_sha256": "cac1849ce5c62b4e8c0ed88f9ce79a9a3c276f4cd98e78cd411a5cac264c2bbb",
+      "new_sha256": "cac1849ce5c62b4e8c0ed88f9ce79a9a3c276f4cd98e78cd411a5cac264c2bbb"
+    },
+    {
+      "name": "font-10-scale-2-page-053.png",
+      "old_sha256": "cf93a82a7a24045e8e8fa778fe766e9a4ef32988f0f5a22421f45db3e5ab9111",
+      "new_sha256": "cf93a82a7a24045e8e8fa778fe766e9a4ef32988f0f5a22421f45db3e5ab9111"
+    },
+    {
+      "name": "font-10-scale-2-page-054.png",
+      "old_sha256": "ed04cccb12c5bc1d46876646925f8a72ee3e1dd6bbcb9c16458eafcbaab08329",
+      "new_sha256": "ed04cccb12c5bc1d46876646925f8a72ee3e1dd6bbcb9c16458eafcbaab08329"
+    },
+    {
+      "name": "font-10-scale-2-page-055.png",
+      "old_sha256": "78001104d95a25c27895516df0b03b790fc4751b1d4ce3a9e849113f7711bb34",
+      "new_sha256": "1691d3ecce53ae7426109817cd71f00e21cc91b3adfba489fd2ccdf4472a12bc"
+    }
+  ],
+  "old_truncated_files": [
+    {
+      "name": "font-10-scale-2-page-055.png",
+      "old_bytes": 81920,
+      "new_bytes": 210327,
+      "decoder_error": "Pillow OSError: image file is truncated",
+      "cause": "Old incomplete run was terminated while writing this finalPNG. Preserved as incomplete evidence; cannot be an equivalence baseline."
+    }
+  ],
+  "valid_complete_old_pngs_compared": 202,
+  "valid_complete_old_pngs_identical": 202,
+  "interpretation": "All202 decodable complete old PNGs match new bytes exactly. The sole SHA difference is the old truncated final file, not a raster algorithm difference; original incomplete attempt remains unsuccessful."
+}

@@ -1,0 +1,7 @@
+Both focused TypeScript commands completed with exit code 0 and no diagnostics:
+node_modules/.bin/tsc -p apps/web/tsconfig.json
+node_modules/.bin/tsc -p apps/web/e2e/tsconfig.json
+Working directory: platform
+Node: v24.22.1
+
+PROVENANCE LIMIT: The process chain began before integration/product edits. Do not treat this as exact final-source coverage. Final post-freeze shared/API/web/e2e checks are recorded separately by draft_tooling.

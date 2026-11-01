@@ -1,0 +1,44 @@
+{
+  "status": "Preparation only, not publication approval",
+  "v4_source_sha256": "2b396013f79c0bd68dd016a771fe48b8769ec856c5a5cb8f700f0e6ee2e845c7",
+  "v4_native_keys": 3425,
+  "v4_online_keys": 2843,
+  "v4_current_native_draft_sha256": "24ee79586ba0e811c67958785623e0755602e2b075c767f7ee84e31677aa90bb",
+  "ledger_reservations": 84,
+  "reserved_usd": "5.29170",
+  "primary_native_selection_entries": 253,
+  "actual_v4_role_reports": [
+    "linguistics/adversarial-v4-exposure-record.json",
+    "linguistics/adversarial-v4-final-batches.json",
+    "linguistics/adversarial-v4-final-recheck.json",
+    "linguistics/adversarial-v4-new14-blinded.json",
+    "linguistics/editor-v4-final14.json",
+    "linguistics/editor-v4-new14-proposed-edits.json",
+    "linguistics/editor-v4-new14.json",
+    "linguistics/editor-v4-original-role-final14.json",
+    "linguistics/editor-v4-original-role14.json",
+    "linguistics/editor-v4-refinement15.json",
+    "linguistics/semantic-v4-context-preparation.json",
+    "linguistics/semantic-v4-delta-recheck.json",
+    "linguistics/semantic-v4-delta-round1-proposed-values.json",
+    "linguistics/semantic-v4-delta-round1.json",
+    "linguistics/semantic-v4-final14.json",
+    "linguistics/semantic-v4-refinement15.json",
+    "linguistics/v4-adversarial-final-batches-input.json",
+    "linguistics/v4-editorial-candidate.json",
+    "linguistics/v4-final-candidate.json",
+    "linguistics/v4-final-source-target-only.json",
+    "linguistics/v4-refinement15-candidate.json",
+    "linguistics/v4-refinement15-integration.json",
+    "linguistics/v4-source-target-only.json"
+  ],
+  "actual_v4_proof_reports": [
+    "review-proof-v4-independent-validation.json",
+    "review-proof-v4-validation.json"
+  ],
+  "pending_categories": [
+    "Final native/browser capture and platform gate binding",
+    "Explicit additional capture selection supplied with --native-selection or incorporated into primary selection"
+  ],
+  "future_paths_invented": false
+}

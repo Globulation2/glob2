@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="40" failures="0" errors="0" skipped="0"><testsuite name="ApiErrorText"><testcase classname="ApiErrorText" name="known metadata translates without rewriting diagnostics or details" time="0.847393" status="run" />
+    <testcase classname="ApiErrorText" name="exact literal fallback never guesses a translated or parameterized diagnostic" time="0" status="run" />
+    <testcase classname="ApiErrorText" name="parameters are scalar literal text in source order and substituted once" time="0.000193" status="run" />
+    <testcase classname="ApiErrorText" name="decoder rejects malformed localization metadata but leaves original fields intact" time="0.000371" status="run" />
+    <testcase classname="ApiErrorText" name="unknown source and malformed direct parameters use reviewed generic" time="0" status="run" />
+    <testcase classname="ApiErrorText" name="realtime decoding retains the same metadata as REST errors" time="0.000262" status="run" />
+    <testcase classname="ApiErrorText" name="embedded data exposes source hash metadata and portable chunks" time="0" status="run" />
+    <testcase classname="ApiErrorText" name="UI exception boundary preserves intentional messages and legacy diagnostics" time="0.000144" status="run" />
+  </testsuite><testsuite name="PlatformClient"><testcase classname="PlatformClient" name="first start creates a guest, keeps its credential and says hello with the token" time="0.00168" status="run" />
+    <testcase classname="PlatformClient" name="an unsupported sim version says which side is out of date" time="0.088457" status="run" />
+    <testcase classname="PlatformClient" name="a returning player signs in with the device credential or refresh token" time="0.000533" status="run" />
+    <testcase classname="PlatformClient" name="without consent to sign in, the socket connects anonymously" time="0.000527" status="run" />
+    <testcase classname="PlatformClient" name="responses reach their own requests; timeouts and events are delivered" time="0.026654" status="run" />
+    <testcase classname="PlatformClient" name="requests made before the socket is online wait for it" time="0.028576" status="run" />
+    <testcase classname="PlatformClient" name="lost connections retry with growing, jittered backoff" time="0.002155" status="run" />
+    <testcase classname="PlatformClient" name="a connection that never opens times out and retries" time="0.018815" status="run" />
+    <testcase classname="PlatformClient" name="tokens refresh before expiry, rotate the stored token and re-authenticate the socket" time="0.002379" status="run" />
+    <testcase classname="PlatformClient" name="a refused refresh token falls back to the device credential" time="0.025061" status="run" />
+    <testcase classname="PlatformClient" name="a refresh that fails on the network is retried while the token lasts" time="0.001488" status="run" />
+    <testcase classname="PlatformClient" name="a refused token at hello continues anonymously and signs in again" time="0.028345" status="run" />
+    <testcase classname="PlatformClient" name="update_required stops retrying" time="0.00097" status="run" />
+    <testcase classname="PlatformClient" name="an idle socket is checked with session.ping and replaced when silent" time="0.024945" status="run" />
+    <testcase classname="PlatformClient" name="browser sign-in opens the page, survives a reconnect and adopts the session" time="0.002908" status="run" />
+    <testcase classname="PlatformClient" name="browser sign-in failures, cancellation and expiry" time="0.088325" status="run" />
+    <testcase classname="PlatformClient" name="session.revoked signs out and stops automatic sign-in" time="0.025514" status="run" />
+    <testcase classname="PlatformClient" name="sign-out revokes the refresh token, reconnects anonymously and stays signed out" time="0.027071" status="run" />
+    <testcase classname="PlatformClient" name="stop cancels everything and credentials stay per instance" time="0.020905" status="run" />
+    <testcase classname="PlatformClient" name="rename patches the account" time="0.004489" status="run" />
+    <testcase classname="PlatformClient" name="REST calls return an id that cancels them; a cancelled call never calls back" time="0.021371" status="run" />
+    <testcase classname="PlatformClient" name="the instance description is fetched once per start and shared" time="0.000269" status="run" />
+    <testcase classname="PlatformClient" name="a scope cancels its owner's calls and listeners when the owner goes away" time="0.02647" status="run" />
+    <testcase classname="PlatformClient" name="a handler that destroys another owner in the same update does not reach it" time="0.001391" status="run" />
+  </testsuite><testsuite name="PlatformProtocol"><testcase classname="PlatformProtocol" name="requests encode as the realtime envelope" time="0.000336" status="run" />
+    <testcase classname="PlatformProtocol" name="responses and events decode; malformed frames are rejected" time="0.015896" status="run" />
+    <testcase classname="PlatformProtocol" name="RFC 3339 timestamps convert to epoch milliseconds" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="token lifetime comes from the JWT claims" time="0.000291" status="run" />
+    <testcase classname="PlatformProtocol" name="refreshes are scheduled well before expiry" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="backoff grows exponentially to a cap, with bounded jitter" time="0.000109" status="run" />
+    <testcase classname="PlatformProtocol" name="SHA-256 matches the FIPS 180-4 vectors" time="0.371443" status="run" />
+    <testcase classname="PlatformProtocol" name="the local sim version carries this build's versions" time="0" status="run" />
+  </testsuite></testsuites>

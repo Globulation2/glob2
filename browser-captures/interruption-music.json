@@ -1,0 +1,26 @@
+{
+  "pid": 2276641,
+  "command": "/usr/bin/python3 /usr/bin/scons release=1 target=web web_variant=both -j4 web-package ",
+  "cwd": "/home/bradley/.codex/worktrees/5a87/glob2",
+  "signal": "SIGINT",
+  "sent_utc": "2026-11-01T01:57:45Z",
+  "reason": "Root coordinated stop for reviewed Music queue cleanup bug; preserve current jobs/objects",
+  "no_child_signals": true,
+  "exit_observed_utc": "2026-11-01T01:58:42Z",
+  "serial_objects": 360,
+  "log_tail": [
+    "      |                              ^",
+    "libgag/include/SDLGraphicContext.h:342:16: note: overridden virtual function is here",
+    "  342 |                 virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);",
+    "      |                              ^",
+    "36 warnings generated.",
+    "scons: Build interrupted.",
+    "scons: building terminated because of errors.",
+    "scons: writing .sconsign file."
+  ],
+  "preserved_log": {
+    "path": "artifacts/bulgarian/browser-captures/release-before-music-interrupted.log",
+    "sha256": "4b2b9a3e4b686dd18b2a869cc9e9c00f1c14e4a5e56615a15b9689d4cf563466",
+    "bytes": 202671
+  }
+}

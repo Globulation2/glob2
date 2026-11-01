@@ -1,0 +1,443 @@
+{
+  "role": "independent AI visual inspection; no human native-language certification",
+  "images": [
+    {
+      "path": "artifacts/bulgarian/native-captures/incomplete-attempt-01-desktop-matrix/font-10-scale-1-page-001.png",
+      "inspection": "individual full image",
+      "observations": "Cyrillic letters, punctuation and Latin technical labels are legible; no tofu or clipped lines observed in this sampled beginning page. Count-neutral labels render; placeholders intentionally remain literal.",
+      "limits": "One sampled page, not inspection of all matrix rasters or every catalog line. This partial attempt is not the final complete matrix."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-main/main.png",
+      "inspection": "individual full image",
+      "observations": "Menu entries, Settings, Editor, credits and exit show clear Bulgarian Cyrillic and fit their controls. Discord remains an intentional service name. No missing glyphs, clipped labels or overlapping text observed.",
+      "limits": "Desktop main-menu sample only; capture job provenance manifest was still being finalized when image inspected."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-settings/settings.png",
+      "inspection": "individual full image",
+      "observations": "Title, sidebar, wrapped labels and explanation text render clear Bulgarian without tofu or overlap. Bottom content intentionally lies inside a scroll region; scrollbar visible. Software is the renderer backend identifier in current-display status, inspected separately in source.",
+      "limits": "Visible Settings display viewport only; below-scroll rows not visually inspected."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-settings-audio/settings-audio.png",
+      "inspection": "individual full image",
+      "observations": "Audio heading, mute row, explanatory text, random-per-match two-line music selector and slider labels are legible and fit their controls. No clipping, overlap or missing Bulgarian glyphs seen.",
+      "limits": "Desktop audio settings visible area only."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-lobby/lobby.png",
+      "inspection": "individual full image",
+      "observations": "Map tab, player/rules tabs, terrain/resource controls and long reset-defaults button wrap visibly without overlap or clipping. FFA is intentional game-mode abbreviation. Bulgarian map labels and action controls readable.",
+      "limits": "Map preview is still generating in this early two-frame harness capture; screenshot verifies visible lobby labels, not completed map-preview content."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-lobby-players/lobby-players.png",
+      "inspection": "individual full image",
+      "observations": "Player/team rows, AI selection, short Numbi strategy text and longer custom-AI help line render legibly within the desktop layout. User name and FFA remain intentional identity/abbreviation text. No clipping, overlap or missing glyphs seen.",
+      "limits": "Current visible local-game setup; no online player flow or dropdown contents exercised."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-new-map/new-map.png",
+      "inspection": "individual full image",
+      "observations": "Create-map title, empty/generated mode options, landscape/size controls, preview placeholder and Create/Cancel actions show clear Cyrillic and fit. No tofu, clipping or overlapping text seen.",
+      "limits": "Initial new-map view; representative map preview not yet populated, parameter subdialogs not exercised in this image."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-editor/editor.png",
+      "inspection": "individual full image",
+      "observations": "Buildings dock, search, level/team controls and building icons display Cyrillic. No overflowing text or tofu.",
+      "limits": "Narrow icon tiles intentionally ellipsize long defense-tower caption; blank-map visual only, no brush interaction."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-editor/editor-terrain.png",
+      "inspection": "individual full image",
+      "observations": "Terrain family headings, names, movement/attack explanations and brush controls are legible and wrapped within the dock. No overflow or missing glyphs.",
+      "limits": "Wooden-path caption intentionally ellipsized; lower terrain families lie in scroll area, not inspected."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-editor/editor-dialog.png",
+      "inspection": "individual full image",
+      "observations": "Actual editor menu headings and save/open/share/import/settings/team/scenario/exit actions are legible. Long import-set label wraps to two lines without collision.",
+      "limits": "Native desktop dialog only; no file/remote action invoked."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-gameplay/gameplay.png",
+      "inspection": "individual full image",
+      "observations": "Actual tick20 scene, units, HUD icons and numeric counters rendered; tiny Fit zoom control uses expected narrow caption. No tofu or UI collision seen.",
+      "limits": "Most HUD visible content is numeric/icon-based; no selected-unit tooltip or formatted gameplay warning exercised."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-gameplay/gameplay-dialog.png",
+      "inspection": "individual full image",
+      "observations": "Pause/menu title, save/load, AI telemetry, options/settings, pause/recordings and return actions render fully in Bulgarian within buttons. No text overlap, clipping or missing glyphs observed.",
+      "limits": "Menu contents only; actions not activated."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial/tutorial-introduction.png",
+      "inspection": "individual full image",
+      "observations": "Actual first introduction objective and four wrapped instruction lines are clear Bulgarian; Show goal and Help/Why buttons fit. No missing glyphs or clipped instruction text.",
+      "limits": "First objective only, not every tutorial step."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial/tutorial-introduction-dialog.png",
+      "inspection": "individual full image",
+      "observations": "Tutorial pause menu adds Restart lesson; all Bulgarian menu labels fit without collision.",
+      "limits": "Menu actions not invoked."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial-swimming/tutorial-swimming.png",
+      "inspection": "individual full image",
+      "observations": "First swimming goal, wrapped instruction, goal/help buttons and world annotation are legible Bulgarian without clipping or collisions.",
+      "limits": "First swimming step only."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial-swimming/tutorial-swimming-briefing.png",
+      "inspection": "individual full image",
+      "observations": "Briefing/Goals/Tips tabs and two-line swimming briefing fit the actual automatic dialog, including Bulgarian punctuation.",
+      "limits": "Briefing tab only; other tab contents not shown."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training/tutorial-warrior-training.png",
+      "inspection": "individual full image",
+      "observations": "Warrior-training objective, two wrapped instruction lines, world goal annotation and help buttons are clear and fit. No tofu or clipped instructions seen.",
+      "limits": "First warrior-training step only."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training/tutorial-warrior-training-briefing.png",
+      "inspection": "individual full image",
+      "observations": "Briefing tabs, sentence and confirmation button fit in actual dialog without clipping.",
+      "limits": "Briefing tab only."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial-fortifications/tutorial-fortifications.png",
+      "inspection": "individual full image",
+      "observations": "Fortifications first-step title and two-line tower-building instruction fit actual guidance panel; clear Cyrillic and correct construction terminology, no clipping or overlap.",
+      "limits": "First fortifications step only."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-main/main.png",
+      "inspection": "individual full image",
+      "observations": "480×960 phone presentation shows Bulgarian primary actions clearly with no truncation, overlapping text or tofu. Settings is intentionally an icon button; lower actions reside in scroll region.",
+      "limits": "Desktop executable phone presentation, not physical mobile-device rendering; below-scroll actions not visually inspected."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-settings/settings.png",
+      "inspection": "individual full image",
+      "observations": "Phone display settings wrap instructions, status and descriptions naturally inside viewport. Dropdowns, checkboxes and fixed Done/footer remain separated; no tofu or text overflow seen. Software is the raw technical backend label already flagged to root.",
+      "limits": "Visible scrolled viewport only; lower settings content not inspected; resized desktop phone presentation."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-settings-audio/settings-audio.png",
+      "inspection": "individual full image",
+      "observations": "Phone audio description, mute help, music selector, random-per-match text and slider labels fit naturally with wrapping. No missing glyphs, overlap or clipped labels.",
+      "limits": "Current audio viewport only; resized desktop phone presentation."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-lobby/lobby.png",
+      "inspection": "individual full image",
+      "observations": "Phone map/player/rules tabs, premade/random controls, long pan help and three-line reset-defaults caption fit. Footer Back/Next controls separated from scroll content; no tofu or overflow.",
+      "limits": "Async map preview still generating; lower controls below scroll not inspected."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-lobby-players/lobby-players.png",
+      "inspection": "individual full image",
+      "observations": "Phone player/team rows, AI selector and wrapped Numbi strategy text fit in scroll panel. No tofu, overlap or unintended truncation in visible rows. FFA and user name intentional identifiers.",
+      "limits": "Visible player rows only; lower team controls below scroll not inspected."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-new-map/new-map.png",
+      "inspection": "individual full image",
+      "observations": "Phone create-map heading, initial preview placeholder, landscape selector and parameters action fit. Create-map button wraps cleanly to two lines with Cancel separate; no missing glyphs or clipped text.",
+      "limits": "Initial map preview placeholder; parameter submenu and generated-map preview not exercised."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-editor/editor.png",
+      "inspection": "individual full image",
+      "observations": "Phone toolbar and bottom category/building trays show clear Bulgarian labels without glyph issues.",
+      "limits": "Horizontal tray extends offscreen by design; far-right partially visible building name not fully inspected. Blank grass map appears flat under portable renderer."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-editor/editor-terrain.png",
+      "inspection": "individual full image",
+      "observations": "Phone terrain category/family tabs, brush size, paint mode and visible water/sand/grass/ice labels fit compact trays.",
+      "limits": "Only visible tray portion inspected; horizontal overflow is scrollable by production design."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-editor/editor-dialog.png",
+      "inspection": "individual full image",
+      "observations": "Phone editor menu displays full labels, long import-set action wraps to two lines, bottom Exit/Return actions wrap cleanly without overlap.",
+      "limits": "No file, sharing, import or map mutation action executed."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-gameplay/gameplay.png",
+      "inspection": "individual full image",
+      "observations": "Actual phone HUD and scene render; Bulgarian navigation Build/Tools split single words at last1–2 letters across lines. No glyph loss or clipped characters, but undesirable word split flagged to root with staged draw-only fitting proposal.",
+      "limits": "Before-fix image; most HUD numeric/icon-based. No selected-unit tooltip exercised."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-gameplay/gameplay-dialog.png",
+      "inspection": "individual full image",
+      "observations": "Phone game menu Bulgarian title/actions render completely without overflow, collision or tofu.",
+      "limits": "Menu actions not activated."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial/tutorial-introduction.png",
+      "inspection": "individual full image",
+      "observations": "Phone intro objective wraps to two lines; compact instruction wraps naturally and is fully visible. Cyrillic and arrow correct; goal/help/minimize icons separate. Bottom Build/Tools split matches before-fix finding.",
+      "limits": "First introduction objective; before proposed navigation fitting change."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial-swimming/tutorial-swimming.png",
+      "inspection": "individual full image",
+      "observations": "Compact swimming instruction and wrapped goal title fit guidance panel with clear Cyrillic. Bottom navigation retains before-fix single-word split.",
+      "limits": "Redundant world-space goal annotation partly obscured by guidance panel/viewport at right; instruction panel remains complete. First step only."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial-swimming/tutorial-swimming-briefing.png",
+      "inspection": "individual full image",
+      "observations": "Phone briefing tabs, three-line explanation and confirmation fit actual dialog clearly without clipping.",
+      "limits": "Briefing tab only."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial-warrior-training/tutorial-warrior-training.png",
+      "inspection": "individual full image",
+      "observations": "Compact warrior objective and two-line instruction fit phone guidance panel; world annotation also clear. Bottom navigation retains before-fix split.",
+      "limits": "First warrior-training step, before proposed navigation fitting fix."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial-fortifications/tutorial-fortifications.png",
+      "inspection": "individual full image",
+      "observations": "Phone tower-building objective and compact two-line instruction fit with goal/help controls clear. No tofu or clipped guidance text. Bottom Build/Tools split remains recorded before-fix issue.",
+      "limits": "First fortifications step only; before staged navigation fix."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-font-probe/probe-contact.png",
+      "inspection": "six aspect-preserving strips at2x logical size from all actual synthetic probe pages, sizes10/13/20 scales1/2",
+      "source_images": [
+        "artifacts/bulgarian/native-captures/desktop-font-probe/font-10-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/desktop-font-probe/font-10-scale-2-page-001.png",
+        "artifacts/bulgarian/native-captures/desktop-font-probe/font-13-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/desktop-font-probe/font-13-scale-2-page-001.png",
+        "artifacts/bulgarian/native-captures/desktop-font-probe/font-20-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/desktop-font-probe/font-20-scale-2-page-001.png"
+      ],
+      "observations": "Precomposed lowercaseѝ/uppercaseЍ and decomposed и+grave/И+grave render with visible grave marks; Bulgarian/angle quotes, dash, ellipsis and punctuation render without tofu. Small10px accents remain pixel-limited but present.",
+      "limits": "Synthetic font diagnostic, not a translated-catalog or physical-device claim. Contact crops preserve aspect ratio; full original pages retained."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-font-probe/probe-contact.png",
+      "inspection": "six aspect-preserving strips at2x logical size from all actual synthetic probe pages, sizes10/13/20 scales1/2",
+      "source_images": [
+        "artifacts/bulgarian/native-captures/phone-font-probe/font-10-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/phone-font-probe/font-10-scale-2-page-001.png",
+        "artifacts/bulgarian/native-captures/phone-font-probe/font-13-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/phone-font-probe/font-13-scale-2-page-001.png",
+        "artifacts/bulgarian/native-captures/phone-font-probe/font-20-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/phone-font-probe/font-20-scale-2-page-001.png"
+      ],
+      "observations": "Precomposed lowercaseѝ/uppercaseЍ and decomposed и+grave/И+grave render with visible grave marks; Bulgarian/angle quotes, dash, ellipsis and punctuation render without tofu. Small10px accents remain pixel-limited but present.",
+      "limits": "Synthetic font diagnostic, not a translated-catalog or physical-device claim. Contact crops preserve aspect ratio; full original pages retained."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-selected-pages-contact.png",
+      "inspection": "layout-only contact sheet of first/middle/last pages for all6 desktop size/scale combinations",
+      "observations": "Sampled page layouts and Cyrillic text structure visible; no tofu apparent in thumbnails. Actual20px2x clipping found separately by measurements and detailed page085 inspection.",
+      "limits": "Before-font-fix state; thumbnails do not establish full text readability or every line/page fit."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-2/font-20-scale-2-page-085.png",
+      "inspection": "individual full image",
+      "observations": "Before fix, connection-card explanation line reaches beyond right edge and clips the final word, matching measured6.5logical-pixel overflow. Other visible text and glyphs legible.",
+      "limits": "Before-fix font diagnostic; not an actual connection-card UI capture."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/scaled-font-before-after.png",
+      "inspection": "derived1:1 physical-pixel crops of all4 exact formerly clipped lines, before/after side by side",
+      "source_recipe": "artifacts/bulgarian/native-captures/scaled-font-before-after.json",
+      "observations": "All4 corrected line endings fully visible with right margin: treatment, history, final да, and могат. Original left images show edge cuts; corrected right images keep the full glyph endings. No missing glyphs seen.",
+      "limits": "Production font-matrix diagnostic crops only, not proof every game/menu layout was inspected."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/font-corrected-probes/desktop/probe-contact.png",
+      "inspection": "all6 corrected synthetic probe pages as aspect-preserving2x logical strips",
+      "source_images": [
+        "artifacts/bulgarian/native-captures/font-corrected-probes/desktop/font-10-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/desktop/font-10-scale-2-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/desktop/font-13-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/desktop/font-13-scale-2-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/desktop/font-20-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/desktop/font-20-scale-2-page-001.png"
+      ],
+      "observations": "Corrected precomposed/decomposed lower/uppercase grave marks and Bulgarian quotes/punctuation remain visible at10/13/20px x1/x2. No tofu, clipped accents or punctuation seen. Phone20px2x now meets intended text-width budget.",
+      "limits": "Synthetic font diagnostic, not a translated-catalog, full-page-reading or physical-device claim."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/font-corrected-probes/phone/probe-contact.png",
+      "inspection": "all6 corrected synthetic probe pages as aspect-preserving2x logical strips",
+      "source_images": [
+        "artifacts/bulgarian/native-captures/font-corrected-probes/phone/font-10-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/phone/font-10-scale-2-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/phone/font-13-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/phone/font-13-scale-2-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/phone/font-20-scale-1-page-001.png",
+        "artifacts/bulgarian/native-captures/font-corrected-probes/phone/font-20-scale-2-page-001.png"
+      ],
+      "observations": "Corrected precomposed/decomposed lower/uppercase grave marks and Bulgarian quotes/punctuation remain visible at10/13/20px x1/x2. No tofu, clipped accents or punctuation seen. Phone20px2x now meets intended text-width budget.",
+      "limits": "Synthetic font diagnostic, not a translated-catalog, full-page-reading or physical-device claim."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings/settings.png",
+      "inspection": "individual full final-producer image",
+      "observations": "Software backend status now reads Софтуер, clear standard Bulgarian technical vocabulary in this status list; no English Software fallback. Visible headings, settings explanations and Done fit without tofu or overlap.",
+      "limits": "Automatic selector and unavailable-renderer reason lie outside this visible viewport/not triggered; no pixel-fit claim for those unseen states. Lower rows remain in production scroll area."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-ais/settings-ais.png",
+      "inspection": "individual full final-producer image",
+      "observations": "All7 real AI tag buttons visible and untruncated: Балансиран, Ранна атака, Отбранителен, Икономика, Разширяване, Експериментален, Подходящ за начинаещи. Masculine adjectival register appropriately refers to AI/controller; UI nouns and polite Discover action natural. No tofu, text clipping or overlap observed.",
+      "limits": "Real local library UI in loading state with unavailable loopback; no remote catalogue/provider/account actions verified."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-online/settings-online.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "Server selector, connection state, account heading, alternate-server URL field and help fit in Bulgarian. Domains, localhost address and URL remain intentional identifiers.",
+      "limits": "Local connecting state only; no real account/provider/server flow."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-player/settings-player.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "Bulgarian language selection, player-name labels and help are clear and fit. User name remains authored/derived identity.",
+      "limits": "Dropdown options not opened."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-controls/settings-controls.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "Mouse/edge/gesture scrolling descriptions and control labels wrap clearly inside the desktop settings scroll panel.",
+      "limits": "Visible top portion; keyboard bindings below scroll not visually inspected."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings/settings.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "Software status now reads Софтуер; phone display explanations and status wrap without overlap or glyph loss.",
+      "limits": "Below-scroll rows and Automatic dropdown/unavailable diagnostic not visible."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-online/settings-online.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "Phone server/account headings, descriptions, localhost state and URL/Check row fit without clipping or tofu.",
+      "limits": "Local connecting state only; real remote account/provider flow not verified."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-player/settings-player.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "Phone language/player fields, help and Български selected label fit clearly.",
+      "limits": "Language dropdown not opened."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-ais/settings-ais.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "All7 real AI tags visible. Подходящ за начинаещи wraps cleanly to2lines; adjective register remains appropriate to AI/controller. Tabs, search and footer actions also fit.",
+      "limits": "Real library loading state with unavailable loopback; no remote AI catalogue verified."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-gameplay/gameplay.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "At480px100%, Build and Tools captions now remain whole and fit. Numeric HUD and icons remain clear.",
+      "limits": "Resized desktop phone presentation; wrapped words are intentional fallback at larger text/narrower width, not a claim every caption stays on one line."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-150-gameplay/gameplay.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "At this narrow/enlarged setting, long captions retain shaped-cluster wrapping over2or3lines to preserve minimum text size; all letters visible with no overlap. Numeric HUD and icons remain clear.",
+      "limits": "Resized desktop phone presentation; wrapped words are intentional fallback at larger text/narrower width, not a claim every caption stays on one line."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-360x720-100-gameplay/gameplay.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "At this narrow/enlarged setting, long captions retain shaped-cluster wrapping over2or3lines to preserve minimum text size; all letters visible with no overlap. Numeric HUD and icons remain clear.",
+      "limits": "Resized desktop phone presentation; wrapped words are intentional fallback at larger text/narrower width, not a claim every caption stays on one line."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-360x720-150-gameplay/gameplay.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "At this narrow/enlarged setting, long captions retain shaped-cluster wrapping over2or3lines to preserve minimum text size; all letters visible with no overlap. Numeric HUD and icons remain clear.",
+      "limits": "Resized desktop phone presentation; wrapped words are intentional fallback at larger text/narrower width, not a claim every caption stays on one line."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-150-gameplay/gameplay-dialog.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "Enlarged150% menu title/actions visible; long Load game wraps when needed, Return remains fully inside viewport. No missing glyphs or label collisions observed.",
+      "limits": "Menu actions not invoked; resized desktop phone presentation."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-ui/phone-360x720-150-gameplay/gameplay-dialog.png",
+      "inspection": "individual full d3f7 image",
+      "observations": "Enlarged150% menu title/actions visible; long Load game wraps when needed, Return remains fully inside viewport. No missing glyphs or label collisions observed.",
+      "limits": "Menu actions not invoked; resized desktop phone presentation."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/font-corrected/desktop-selected-pages-contact.png",
+      "sha256": "30eb86486184a7d1011d7cc60a896fc23bc60a4b8f93bde955f181ce408303a6",
+      "inspection": "contact sheet: layout sampling only",
+      "observations": "First/middle/last page thumbnails across six font combinations inspected for broad layout; no full-text legibility claim for thumbnail sheets.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/font-corrected/phone-selected-pages-contact.png",
+      "sha256": "0d2c9c2201851d147c441804c228e388ea1f9c504b37a81b6ece9a804f83fb72",
+      "inspection": "contact sheet: layout sampling only",
+      "observations": "First/middle/last page thumbnails across six font combinations inspected for broad layout; no full-text legibility claim for thumbnail sheets.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2/font-20-scale-2-page-001.png",
+      "sha256": "ce86b70c0cb1d0761ecd734e87763dee24c2e69ae24ec98c93f18ab399a05fff",
+      "inspection": "individual full page",
+      "observations": "Bulgarian text, punctuation and line ends inspected. No missing glyphs, clipped endings or overlap observed in these sampled corrected pages. The targeted four formerly clipped lines were also inspected in the separate before/after crop.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2/font-20-scale-2-page-118.png",
+      "sha256": "7d724ada13a0504acb47d7a6d6a84957c3865d8b58227a9c2296741211906348",
+      "inspection": "individual full page",
+      "observations": "Bulgarian text, punctuation and line ends inspected. No missing glyphs, clipped endings or overlap observed in these sampled corrected pages. The targeted four formerly clipped lines were also inspected in the separate before/after crop.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2/font-20-scale-2-page-235.png",
+      "sha256": "9924e2b5d559e40d711db76a325f802cdbc1516818c570ec2909a18d18fda1a6",
+      "inspection": "individual full page",
+      "observations": "Bulgarian text, punctuation and line ends inspected. No missing glyphs, clipped endings or overlap observed in these sampled corrected pages. The targeted four formerly clipped lines were also inspected in the separate before/after crop.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/font-corrected/phone-matrix-20-scale-2/font-20-scale-2-page-165.png",
+      "sha256": "40c60362f697eb8f163afc8fd8dc8494a829808b9863a9706d24730927e97115",
+      "inspection": "individual full page",
+      "observations": "Bulgarian text, punctuation and line ends inspected. No missing glyphs, clipped endings or overlap observed in these sampled corrected pages. The targeted four formerly clipped lines were also inspected in the separate before/after crop.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-api/desktop-api-unknown/settings-ais.png",
+      "sha256": "fdcd458feeec6562275d6ed7d238890b234f9d06da08245d80f994882a4389f1",
+      "inspection": "individual full image",
+      "observations": "Actual Settings AI notice visually inspected: typed known error or translated generic fallback fits and is legible; all displayed AI tags fit. This is a controlled loopback HTTP fixture, not a production-server account.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-api/phone-api-known/settings-ais.png",
+      "sha256": "ca03ac9a06199eed3de323d72f4399f4c093fd4acd64e174d36bac07b2eafd0c",
+      "inspection": "individual full image",
+      "observations": "Actual Settings AI notice visually inspected: typed known error or translated generic fallback fits and is legible; all displayed AI tags fit. This is a controlled loopback HTTP fixture, not a production-server account.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/final-api/phone-api-unknown/settings-ais.png",
+      "sha256": "953367535535049c2270de2805b2fffdd16d84bb338de6dd429745a6a43487b8",
+      "inspection": "individual full image",
+      "observations": "Actual Settings AI notice visually inspected: typed known error or translated generic fallback fits and is legible; all displayed AI tags fit. This is a controlled loopback HTTP fixture, not a production-server account.",
+      "limits": "Sample inspection only; every matrix PNG was not visually read. Producer and catalog identities remain those in the companion manifest."
+    }
+  ]
+}

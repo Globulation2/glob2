@@ -1,0 +1,722 @@
+{
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+  "binary_sha256": "7e96f35a1925aa8292534ae4f8313d9595d6c823b19019e847f810bc6bc31257",
+  "jobs": [
+    {
+      "tag": "desktop-main",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-main",
+        "1280",
+        "1024",
+        "main"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-main/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 117.0,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-main/capture.log"
+    },
+    {
+      "tag": "desktop-settings",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-settings",
+        "1280",
+        "1024",
+        "settings"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-settings/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 109.37,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-settings/capture.log"
+    },
+    {
+      "tag": "desktop-settings-audio",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-settings-audio",
+        "1280",
+        "1024",
+        "settings-audio"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-settings-audio/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 58.93,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-settings-audio/capture.log"
+    },
+    {
+      "tag": "desktop-lobby",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-lobby",
+        "1280",
+        "1024",
+        "lobby"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-lobby/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 122.08,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-lobby/capture.log"
+    },
+    {
+      "tag": "desktop-lobby-players",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-lobby-players",
+        "1280",
+        "1024",
+        "lobby-players"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-lobby-players/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 54.45,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-lobby-players/capture.log"
+    },
+    {
+      "tag": "desktop-new-map",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-new-map",
+        "1280",
+        "1024",
+        "new-map"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-new-map/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 144.32,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-new-map/capture.log"
+    },
+    {
+      "tag": "desktop-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-editor",
+        "1280",
+        "1024"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-editor/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 164.55,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-editor/capture.log"
+    },
+    {
+      "tag": "desktop-gameplay",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-gameplay",
+        "1280",
+        "1024",
+        "gameplay"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-gameplay/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 148.58,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-gameplay/capture.log"
+    },
+    {
+      "tag": "desktop-tutorial",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial",
+        "1280",
+        "1024",
+        "tutorial"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 162.87,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial/capture.log"
+    },
+    {
+      "tag": "desktop-tutorial-swimming",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-swimming",
+        "1280",
+        "1024",
+        "tutorial:swimming"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-swimming/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 94.35,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-swimming/capture.log"
+    },
+    {
+      "tag": "desktop-tutorial-warrior-training",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training",
+        "1280",
+        "1024",
+        "tutorial:warrior-training"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 139.65,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training/capture.log"
+    },
+    {
+      "tag": "desktop-tutorial-fortifications",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-fortifications",
+        "1280",
+        "1024",
+        "tutorial:fortifications"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-fortifications/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 181.1,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-tutorial-fortifications/capture.log"
+    },
+    {
+      "tag": "phone-main",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-main",
+        "480",
+        "960",
+        "main"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-main/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 66.81,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-main/capture.log"
+    },
+    {
+      "tag": "phone-settings",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-settings",
+        "480",
+        "960",
+        "settings"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-settings/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 118.45,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-settings/capture.log"
+    },
+    {
+      "tag": "phone-settings-audio",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-settings-audio",
+        "480",
+        "960",
+        "settings-audio"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-settings-audio/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 108.0,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-settings-audio/capture.log"
+    },
+    {
+      "tag": "phone-lobby",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-lobby",
+        "480",
+        "960",
+        "lobby"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-lobby/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 141.87,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-lobby/capture.log"
+    },
+    {
+      "tag": "phone-lobby-players",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-lobby-players",
+        "480",
+        "960",
+        "lobby-players"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-lobby-players/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 146.36,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-lobby-players/capture.log"
+    },
+    {
+      "tag": "phone-new-map",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-new-map",
+        "480",
+        "960",
+        "new-map"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-new-map/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 143.83,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-new-map/capture.log"
+    },
+    {
+      "tag": "phone-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-editor",
+        "480",
+        "960"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-editor/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 137.4,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-editor/capture.log"
+    },
+    {
+      "tag": "phone-gameplay",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-gameplay",
+        "480",
+        "960",
+        "gameplay"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-gameplay/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 130.49,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-gameplay/capture.log"
+    },
+    {
+      "tag": "phone-tutorial",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial",
+        "480",
+        "960",
+        "tutorial"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 182.09,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial/capture.log"
+    },
+    {
+      "tag": "phone-tutorial-swimming",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-swimming",
+        "480",
+        "960",
+        "tutorial:swimming"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-swimming/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 132.13,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-swimming/capture.log"
+    },
+    {
+      "tag": "phone-tutorial-warrior-training",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-warrior-training",
+        "480",
+        "960",
+        "tutorial:warrior-training"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-warrior-training/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 73.46,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-warrior-training/capture.log"
+    },
+    {
+      "tag": "phone-tutorial-fortifications",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-fortifications",
+        "480",
+        "960",
+        "tutorial:fortifications"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-fortifications/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 70.2,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-tutorial-fortifications/capture.log"
+    },
+    {
+      "tag": "desktop-font-probe",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-probe-kit/drafts/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-font-probe",
+        "1280",
+        "1024"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-font-probe/profile/user",
+        "GLOB2_MOBILE_UI": null,
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 143.18,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/desktop-font-probe/capture.log"
+    },
+    {
+      "tag": "phone-font-probe",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-probe-kit/drafts/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-font-probe",
+        "480",
+        "960"
+      ],
+      "environment": {
+        "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib:",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-font-probe/profile/user",
+        "GLOB2_MOBILE_UI": "1",
+        "GLOB2_RENDERER": "software",
+        "SDL_AUDIODRIVER": "dummy",
+        "SDL_VIDEODRIVER": "x11"
+      },
+      "returncode": 0,
+      "seconds": 128.76,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/phone-font-probe/capture.log"
+    }
+  ]
+}

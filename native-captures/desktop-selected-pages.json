@@ -1,0 +1,72 @@
+{
+  "selected": [
+    "artifacts/bulgarian/native-captures/desktop-matrix-10-scale-1/font-10-scale-1-page-001.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-10-scale-1/font-10-scale-1-page-075.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-10-scale-1/font-10-scale-1-page-148.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-10-scale-2/font-10-scale-2-page-001.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-10-scale-2/font-10-scale-2-page-075.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-10-scale-2/font-10-scale-2-page-148.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-13-scale-1/font-13-scale-1-page-001.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-13-scale-1/font-13-scale-1-page-088.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-13-scale-1/font-13-scale-1-page-174.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-13-scale-2/font-13-scale-2-page-001.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-13-scale-2/font-13-scale-2-page-088.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-13-scale-2/font-13-scale-2-page-174.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-1/font-20-scale-1-page-001.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-1/font-20-scale-1-page-118.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-1/font-20-scale-1-page-235.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-2/font-20-scale-2-page-001.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-2/font-20-scale-2-page-118.png",
+    "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-2/font-20-scale-2-page-235.png"
+  ],
+  "counts": [
+    {
+      "size": 10,
+      "scale": 1,
+      "samples": 6263,
+      "missing": 0,
+      "budget_overruns": 0,
+      "viewport_overruns": 0
+    },
+    {
+      "size": 10,
+      "scale": 2,
+      "samples": 6263,
+      "missing": 0,
+      "budget_overruns": 0,
+      "viewport_overruns": 0
+    },
+    {
+      "size": 13,
+      "scale": 1,
+      "samples": 6263,
+      "missing": 0,
+      "budget_overruns": 0,
+      "viewport_overruns": 0
+    },
+    {
+      "size": 13,
+      "scale": 2,
+      "samples": 6263,
+      "missing": 0,
+      "budget_overruns": 1,
+      "viewport_overruns": 0
+    },
+    {
+      "size": 20,
+      "scale": 1,
+      "samples": 6263,
+      "missing": 0,
+      "budget_overruns": 0,
+      "viewport_overruns": 0
+    },
+    {
+      "size": 20,
+      "scale": 2,
+      "samples": 6263,
+      "missing": 0,
+      "budget_overruns": 70,
+      "viewport_overruns": 4
+    }
+  ]
+}

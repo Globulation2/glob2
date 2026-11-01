@@ -1,0 +1,76 @@
+{
+  "status": "Prepared finalf02b metadata; await explicit root final Wasm artifact handoff. No runtime/server started.",
+  "final_source": "f02b75ccab66d3073f33ae865d2c8a731e546545",
+  "root_session": 17219,
+  "build_log": "artifacts/bulgarian/browser-release-f02b75.log",
+  "build_command": "CCACHE=1 CCACHE_MAXSIZE=12G scons release=1 target=web web_variant=both -j4 web-package",
+  "next_commands": [
+    "python3 browser/package-static.py --source build/emscripten/client/release --output artifacts/bulgarian/browser-static-release",
+    "python3 browser/package-static.py --verify artifacts/bulgarian/browser-static-release",
+    "python3 artifacts/bulgarian/browser-captures/gzip-server.py",
+    "browser/node_modules/.bin/playwright test --config artifacts/bulgarian/browser-captures/playwright.config.cjs",
+    "node artifacts/bulgarian/browser-captures/capture.cjs",
+    "node artifacts/bulgarian/browser-captures/scenes.cjs"
+  ],
+  "node_path": "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin",
+  "server_port": 42771,
+  "scripts_ready": true,
+  "browser_test_count": 4,
+  "supplemental_contexts": [
+    "desktop 1200x900 DPR1",
+    "phone 390x844 DPR1",
+    "desktop 1200x900 DPR2"
+  ],
+  "cleanup": "Stop only our gzip-server after all checks; no Docker needed",
+  "limitations": "No runtime acceptance yet. Exact currentmaster3fixture failures reproduced; old146passing browser-unit sweep is historical, not re-run or newly claimed.",
+  "supplemental_scenes": [
+    "actual tutorial catalog/briefing/HUD/help",
+    "new-map setup and real map editor"
+  ],
+  "final_source_at_handoff": "d3f7ad00c8d4276967b8807e052d46a74d63be34",
+  "last_build": {
+    "utc": "03:04:53",
+    "serial_objects": 629,
+    "threaded_objects": 0,
+    "latest": "src/online/RelayProbe.cpp",
+    "errors": []
+  },
+  "root_owns_build": true,
+  "owned_background_services": [],
+  "on_reactivation": [
+    "Receive root finalWasm artifact handoff; verify actual finalsource/runtime/package/font/catalog bytes against f02b before final testing.",
+    "Do not start duplicate SCons; root44886 owns existing release build",
+    "Extend scenes.cjs to actual map ScriptEditor cursor caption, successful compile, controlled validation error at desktopDPR2 and390phone once new code/catalog integrated",
+    "Run prepared final pipeline only after both release variants link/package",
+    "Inspect captured PNGs, record source/binary/font/catalog identities, gzip/MIME/decoded/network bytes and honest coverage limits",
+    "Clean up only own42771 gzip server after checks"
+  ],
+  "latest_interim_component_proof": "artifacts/bulgarian/final-web-preview-qa/checks.json",
+  "interim_source": "82394c1563b8e324da54770d037d319b9f27c072",
+  "native_catalog": {
+    "keys": 3425,
+    "sha256": "24ee79586ba0e811c67958785623e0755602e2b075c767f7ee84e31677aa90bb"
+  },
+  "online_catalog": {
+    "keys": 2843,
+    "sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813"
+  },
+  "platform_component_binding": "artifacts/bulgarian/final-web-preview-qa/final-f02b-binding.json",
+  "current_master_fixture_proof": "artifacts/bulgarian/browser-unit-master-e927/comparison.json",
+  "engine_versions": {
+    "version_minor": 190,
+    "replay_minimum_minor": 187,
+    "sim_revision": 110
+  },
+  "historical_prep_provenance": "provenance-prepared.json is explicitly pre-build42c-era preparation, not final acceptance",
+  "stats_scenario": {
+    "prepared": "Desktop normal right-click view cycling\u2192stats/topic/0\u2192population fullhistory\u2192stats/topic/4. Phone realTools action openshand-painted lenses; Stats target may require actual-image navigation once runtime is handed over.",
+    "hidden_probability": "Never enable observer/liveSpectating/hidden flags. Assert no stats/metric/win probability control; screenshot only normal live-player UI. Do not claim phone stats coverage until actually reached."
+  },
+  "script_hashes": {
+    "playwright.config.cjs": "b67d220158a4b794fa9e5d8f116fdc235c911604d07ba40b6956086aad8245ab",
+    "gzip-server.py": "c0f5a480ba3c876c1ebb3621f18880a337c48d595590f2abc9e1cbf10c60a237",
+    "capture.cjs": "28a68e1ab455dcf80c6f7ebeb28ed00f00a6ffaeff46607c07bfdcad6867d5ab",
+    "scenes.cjs": "17a801dc37612cf06bb2943bd6b1b32261433162643d94204bf5932ff7f15dea"
+  }
+}

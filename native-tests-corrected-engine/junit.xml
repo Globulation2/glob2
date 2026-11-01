@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="22" failures="0" errors="0" skipped="0"><testsuite name="CommunityMusicUI"><testcase classname="CommunityMusicUI" name="API failures clear queued installs and preserve Bulgarian notices [display]" time="20.4554" status="run" />
+  </testsuite><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.161899" status="run" />
+  <testcase classname="FontKerning" name="Bulgarian scaled advances fit authored wrapping and locale switches preserve legacy geometry" time="0.482191" status="run" />
+  <testcase classname="FontKerning" name="high-DPI Hindi wrapping width is preserved without cropping the raw raster" time="0.088763" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.121192" status="run" />
+  <testcase classname="FontKerning" name="language changes refresh default line height and Arabic shaping caches" time="1.07525" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.170034" status="run" />
+  <testcase classname="FontKerning" name="script fonts shape clusters and preserve measured raster sizes after reload" time="1.77178" status="run" />
+  <testcase classname="FontKerning" name="script run composition preserves straight-alpha antialiasing" time="0.094383" status="run" />
+  <testcase classname="FontKerning" name="shaping clusters keep conjuncts and combining marks together" time="0.098233" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.023856" status="run" />
+  </testsuite><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="Bulgarian building failure rows wrap inside the panel and remain scrollable [display][artifacts]" time="22.8307" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]" time="49.1454" status="run" />
+  </testsuite><testsuite name="OnlineScreenLifetime"><testcase classname="OnlineScreenLifetime" name="Bulgarian AI catalogue callback uses reviewed response errors and keeps API specificity" time="10.1797" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="Bulgarian library callbacks retain API messages and summarize malformed responses" time="6.56069" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="generator examples with omitted controls use engine defaults when selecting a room" time="19.9672" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="generator installation clears pending state when restoring the library throws" time="15.2009" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="online screens closed with platform calls in flight are never called back" time="10.6613" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]" time="27.2883" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="78.4939" status="run" />
+  </testsuite><testsuite name="SettingsAILibrary"><testcase classname="SettingsAILibrary" name="AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" time="47.7753" status="run" />
+  <testcase classname="SettingsAILibrary" name="AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" time="64.1981" status="run" />
+  </testsuite></testsuites>

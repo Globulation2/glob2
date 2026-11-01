@@ -1,0 +1,275 @@
+{
+  "identity": "Immutable capture copy with debug information removed; never an active SCons output. Actual capture metadata must hash this stripped file.",
+  "source": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness",
+  "source_sha256": "f8911cc2904d64f2d4355888ba3b42f3e292a5528169916015e24379d3bc0ee4",
+  "source_bytes": 328943976,
+  "capture_copy": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+  "capture_copy_sha256": "861048c0adb3d7d6659eb13a27edad56a88858e806d0497969ab2ffe062dcc38",
+  "capture_copy_bytes": 151028344,
+  "strip_version": "GNU strip (GNU Binutils for Ubuntu) 2.46",
+  "objcopy_version": "GNU objcopy (GNU Binutils for Ubuntu) 2.46",
+  "readelf_version": "GNU readelf (GNU Binutils for Ubuntu) 2.46",
+  "command": [
+    "strip",
+    "--strip-debug",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture"
+  ],
+  "verification": "All SHF_ALLOC section addresses/types/sizes/flags and every file-backed section byte verified equal via readelf and objcopy dumps; full program headers/segment mapping identical. NOBITS implicit contents unchanged.",
+  "program_headers": "\nElf file type is DYN (Position-Independent Executable file)\nEntry point 0x13ec70\nThere are 15 program headers, starting at offset 64\n\nProgram Headers:\n  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align\n  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x000348 0x000348 R   0x8\n  INTERP         0x0003ac 0x00000000000003ac 0x00000000000003ac 0x00001c 0x00001c R   0x1\n      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]\n  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x1180e0 0x1180e0 R   0x1000\n  LOAD           0x119000 0x0000000000119000 0x0000000000119000 0x2d30075 0x2d30075 R E 0x1000\n  LOAD           0x2e4a000 0x0000000002e4a000 0x0000000002e4a000 0x1692268 0x1692268 R   0x1000\n  LOAD           0x44dc290 0x00000000044dd290 0x00000000044dd290 0x08cd00 0x11acea0 RW  0x1000\n  DYNAMIC        0x45614b0 0x00000000045624b0 0x00000000045624b0 0x000310 0x000310 RW  0x8\n  NOTE           0x000388 0x0000000000000388 0x0000000000000388 0x000024 0x000024 R   0x4\n  NOTE           0x44dc218 0x00000000044dc218 0x00000000044dc218 0x000030 0x000030 R   0x8\n  NOTE           0x44dc248 0x00000000044dc248 0x00000000044dc248 0x000020 0x000020 R   0x4\n  TLS            0x44dc290 0x00000000044dd290 0x00000000044dd290 0x000000 0x00a559 R   0x10\n  GNU_PROPERTY   0x44dc218 0x00000000044dc218 0x00000000044dc218 0x000030 0x000030 R   0x8\n  GNU_EH_FRAME   0x3940dd0 0x0000000003940dd0 0x0000000003940dd0 0x1f5024 0x1f5024 R   0x4\n  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10\n  GNU_RELRO      0x44dc290 0x00000000044dd290 0x00000000044dd290 0x087d70 0x087d70 R   0x1\n\n Section to Segment mapping:\n  Segment Sections...\n   00     \n   01     .interp \n   02     .note.gnu.build-id .interp .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt \n   03     .init .plt .plt.got .text .fini \n   04     .rodata .eh_frame_hdr .eh_frame .gcc_except_table .note.gnu.property .note.ABI-tag \n   05     .init_array .fini_array .data.rel.ro .dynamic .got .data .bss \n   06     .dynamic \n   07     .note.gnu.build-id \n   08     .note.gnu.property \n   09     .note.ABI-tag \n   10     .tbss \n   11     .note.gnu.property \n   12     .eh_frame_hdr \n   13     \n   14     .init_array .fini_array .data.rel.ro .dynamic .got \n",
+  "allocated_sections": [
+    {
+      "name": ".note.gnu.build-id",
+      "type": "NOTE",
+      "address": 904,
+      "size": 36,
+      "flags": "A",
+      "content_sha256": "8e49132c138323674ad607d2c64ccc235e449812940b20ce74334060b2f04833",
+      "identical": true
+    },
+    {
+      "name": ".interp",
+      "type": "PROGBITS",
+      "address": 940,
+      "size": 28,
+      "flags": "A",
+      "content_sha256": "9097c98ea70f6f3b01d50145eb72bf55ad1f4e9713bccf27bd6405d6254eed00",
+      "identical": true
+    },
+    {
+      "name": ".gnu.hash",
+      "type": "GNU_HASH",
+      "address": 968,
+      "size": 2424,
+      "flags": "A",
+      "content_sha256": "d1fade13e99a9e217d35e2494c1109f436a7681dd9c5cfe28d11510a4d9783b3",
+      "identical": true
+    },
+    {
+      "name": ".dynsym",
+      "type": "DYNSYM",
+      "address": 3392,
+      "size": 35256,
+      "flags": "A",
+      "content_sha256": "2209aa139a3bf946419401549e331728cd0a1bcafb194c2282d400e03c73431d",
+      "identical": true
+    },
+    {
+      "name": ".dynstr",
+      "type": "STRTAB",
+      "address": 38648,
+      "size": 41458,
+      "flags": "A",
+      "content_sha256": "d228d558178625bfe4d7933bf40f01f73be63eacfd3b73d976da129a1341cb7e",
+      "identical": true
+    },
+    {
+      "name": ".gnu.version",
+      "type": "VERSYM",
+      "address": 80106,
+      "size": 2938,
+      "flags": "A",
+      "content_sha256": "faa46d81ad1f34dff0ec8b005754c12c393d2c617a8b91c9c576689aa5ade4d0",
+      "identical": true
+    },
+    {
+      "name": ".gnu.version_r",
+      "type": "VERNEED",
+      "address": 83048,
+      "size": 1168,
+      "flags": "A",
+      "content_sha256": "1415653fa95325f44858e991bc91c4e212fe633e5c00c20761d75e68a3ec3ee0",
+      "identical": true
+    },
+    {
+      "name": ".rela.dyn",
+      "type": "RELA",
+      "address": 84216,
+      "size": 1038912,
+      "flags": "A",
+      "content_sha256": "4d76b73cc0ca9effce2a8dffb027dbe0d1f3c0a934fe8976e640589893f2ff26",
+      "identical": true
+    },
+    {
+      "name": ".rela.plt",
+      "type": "RELA",
+      "address": 1123128,
+      "size": 23976,
+      "flags": "AI",
+      "content_sha256": "a9d1b264cab55b5fd001039dcab2d5a0568de881d55070dac66f855d58f6d9a1",
+      "identical": true
+    },
+    {
+      "name": ".init",
+      "type": "PROGBITS",
+      "address": 1150976,
+      "size": 27,
+      "flags": "AX",
+      "content_sha256": "6e1cf168ebfae9fa166e639c71bc42e8b40a5ebd6ec048f947d8bb11b02d80f1",
+      "identical": true
+    },
+    {
+      "name": ".plt",
+      "type": "PROGBITS",
+      "address": 1151008,
+      "size": 16000,
+      "flags": "AX",
+      "content_sha256": "b8165f4978a3d3fd6cdd1c5a23a9012a09a16b160f12b7df48dd4efcbf8859cc",
+      "identical": true
+    },
+    {
+      "name": ".plt.got",
+      "type": "PROGBITS",
+      "address": 1167008,
+      "size": 288,
+      "flags": "AX",
+      "content_sha256": "c3d8ca2c3414562f08a5ad87674676d7baa38f70ead99b7e99ae0f980085d441",
+      "identical": true
+    },
+    {
+      "name": ".text",
+      "type": "PROGBITS",
+      "address": 1167296,
+      "size": 47366312,
+      "flags": "AX",
+      "content_sha256": "836a94793d6d909c3e2c0a625dee8d5b5ddcf4b65616c98b5ee82682909f85dd",
+      "identical": true
+    },
+    {
+      "name": ".fini",
+      "type": "PROGBITS",
+      "address": 48533608,
+      "size": 13,
+      "flags": "AX",
+      "content_sha256": "6a4f3e5efc7c1f7ee7d6f21afd9ed040ba1d7f0b97bb12b016f5b176cc558bd8",
+      "identical": true
+    },
+    {
+      "name": ".rodata",
+      "type": "PROGBITS",
+      "address": 48537600,
+      "size": 11496912,
+      "flags": "A",
+      "content_sha256": "3db2b084276298a41602fddf2ad534c5a01b4308c01f52dc182f908dfefad7c7",
+      "identical": true
+    },
+    {
+      "name": ".eh_frame_hdr",
+      "type": "PROGBITS",
+      "address": 60034512,
+      "size": 2052132,
+      "flags": "A",
+      "content_sha256": "31328966e0862fd2b35b6f6bbccfcaf075f4b591783a77bcd9400457dc6fdb08",
+      "identical": true
+    },
+    {
+      "name": ".eh_frame",
+      "type": "PROGBITS",
+      "address": 62086648,
+      "size": 8725992,
+      "flags": "A",
+      "content_sha256": "f0cdc97a707ff593ded2160c6f0b8b7a54a38a728cbd6d27042fd61f41ac9183",
+      "identical": true
+    },
+    {
+      "name": ".gcc_except_table",
+      "type": "PROGBITS",
+      "address": 70812640,
+      "size": 1392183,
+      "flags": "A",
+      "content_sha256": "73ac23296366a3ac8f161955c5bd362c6c7af445e1edc73db9e2ad08c86b0c1e",
+      "identical": true
+    },
+    {
+      "name": ".note.gnu.property",
+      "type": "NOTE",
+      "address": 72204824,
+      "size": 48,
+      "flags": "A",
+      "content_sha256": "7817b7c56cef4cd4b1cff9cabb7a6f07b64dfe33cb732ed4750495a3ccc7b5fe",
+      "identical": true
+    },
+    {
+      "name": ".note.ABI-tag",
+      "type": "NOTE",
+      "address": 72204872,
+      "size": 32,
+      "flags": "A",
+      "content_sha256": "6e48317ad93a8ac2dc04321465ede06d1274543fc8ab172e68171a9d684bb313",
+      "identical": true
+    },
+    {
+      "name": ".tbss",
+      "type": "NOBITS",
+      "address": 72209040,
+      "size": 42329,
+      "flags": "WAT",
+      "content_sha256": "implicit zero-initialized NOBITS, identical size/address/type",
+      "identical": true
+    },
+    {
+      "name": ".init_array",
+      "type": "INIT_ARRAY",
+      "address": 72209040,
+      "size": 2216,
+      "flags": "WA",
+      "content_sha256": "fd7669b53a4855f47ad2e5adb8a954fbb5f542d3b58251b03e489b433a993585",
+      "identical": true
+    },
+    {
+      "name": ".fini_array",
+      "type": "FINI_ARRAY",
+      "address": 72211256,
+      "size": 8,
+      "flags": "WA",
+      "content_sha256": "1000805c95136bbb5bdacd449fce3ffa7ed4351a3bfec8452ff571dbf6907436",
+      "identical": true
+    },
+    {
+      "name": ".data.rel.ro",
+      "type": "PROGBITS",
+      "address": 72211264,
+      "size": 543088,
+      "flags": "WA",
+      "content_sha256": "1c285e54faf8405f15913b242e343c095ddce8eb3609ddc26564672e76e30f6b",
+      "identical": true
+    },
+    {
+      "name": ".dynamic",
+      "type": "DYNAMIC",
+      "address": 72754352,
+      "size": 784,
+      "flags": "WA",
+      "content_sha256": "80d99cfa45dd1ae5141dd8d4ba1f0fa60b1081d04005f35a788a02a1c3cde0c4",
+      "identical": true
+    },
+    {
+      "name": ".got",
+      "type": "PROGBITS",
+      "address": 72755136,
+      "size": 10296,
+      "flags": "WA",
+      "content_sha256": "18d47ff7b3a9f54eb9c716d6406a23fdc7db82c1e03b0d8f898e116d02eaafdc",
+      "identical": true
+    },
+    {
+      "name": ".data",
+      "type": "PROGBITS",
+      "address": 72765440,
+      "size": 20368,
+      "flags": "WA",
+      "content_sha256": "ecf0666b48d59610ced6e7f34671a640fa0f3676dda85e06a099d99ab29ab9b7",
+      "identical": true
+    },
+    {
+      "name": ".bss",
+      "type": "NOBITS",
+      "address": 72785856,
+      "size": 17957232,
+      "flags": "WA",
+      "content_sha256": "implicit zero-initialized NOBITS, identical size/address/type",
+      "identical": true
+    }
+  ],
+  "section_headers_before": "There are 40 section headers, starting at offset 0x139b3f68:\n\nSection Headers:\n  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al\n  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0\n  [ 1] .note.gnu.build-id NOTE            0000000000000388 000388 000024 00   A  0   0  4\n  [ 2] .interp           PROGBITS        00000000000003ac 0003ac 00001c 00   A  0   0  1\n  [ 3] .gnu.hash         GNU_HASH        00000000000003c8 0003c8 000978 00   A  4   0  8\n  [ 4] .dynsym           DYNSYM          0000000000000d40 000d40 0089b8 18   A  5   1  8\n  [ 5] .dynstr           STRTAB          00000000000096f8 0096f8 00a1f2 00   A  0   0  1\n  [ 6] .gnu.version      VERSYM          00000000000138ea 0138ea 000b7a 02   A  4   0  2\n  [ 7] .gnu.version_r    VERNEED         0000000000014468 014468 000490 00   A  5  13  8\n  [ 8] .rela.dyn         RELA            00000000000148f8 0148f8 0fda40 18   A  4   0  8\n  [ 9] .rela.plt         RELA            0000000000112338 112338 005da8 18  AI  4  26  8\n  [10] .init             PROGBITS        0000000000119000 119000 00001b 00  AX  0   0  4\n  [11] .plt              PROGBITS        0000000000119020 119020 003e80 10  AX  0   0 16\n  [12] .plt.got          PROGBITS        000000000011cea0 11cea0 000120 08  AX  0   0  8\n  [13] .text             PROGBITS        000000000011cfc0 11cfc0 2d2c0a8 00  AX  0   0 64\n  [14] .fini             PROGBITS        0000000002e49068 2e49068 00000d 00  AX  0   0  4\n  [15] .rodata           PROGBITS        0000000002e4a000 2e4a000 af6dd0 00   A  0   0 64\n  [16] .eh_frame_hdr     PROGBITS        0000000003940dd0 3940dd0 1f5024 00   A  0   0  4\n  [17] .eh_frame         PROGBITS        0000000003b35df8 3b35df8 8525e8 00   A  0   0  8\n  [18] .gcc_except_table PROGBITS        00000000043883e0 43883e0 153e37 00   A  0   0  4\n  [19] .note.gnu.property NOTE            00000000044dc218 44dc218 000030 00   A  0   0  8\n  [20] .note.ABI-tag     NOTE            00000000044dc248 44dc248 000020 00   A  0   0  4\n  [21] .tbss             NOBITS          00000000044dd290 44dc290 00a559 00 WAT  0   0 16\n  [22] .init_array       INIT_ARRAY      00000000044dd290 44dc290 0008a8 08  WA  0   0  8\n  [23] .fini_array       FINI_ARRAY      00000000044ddb38 44dcb38 000008 08  WA  0   0  8\n  [24] .data.rel.ro      PROGBITS        00000000044ddb40 44dcb40 084970 00  WA  0   0 64\n  [25] .dynamic          DYNAMIC         00000000045624b0 45614b0 000310 10  WA  5   0  8\n  [26] .got              PROGBITS        00000000045627c0 45617c0 002838 08  WA  0   0  8\n  [27] .data             PROGBITS        0000000004565000 4564000 004f90 00  WA  0   0 32\n  [28] .bss              NOBITS          0000000004569fc0 4568f90 1120170 00  WA  0   0 64\n  [29] .comment          PROGBITS        0000000000000000 4568f90 000026 01  MS  0   0  1\n  [30] .debug_aranges    PROGBITS        0000000000000000 4568fb6 8f0010 00      0   0  1\n  [31] .debug_info       PROGBITS        0000000000000000 4e58fc6 2996fdf 00      0   0  1\n  [32] .debug_abbrev     PROGBITS        0000000000000000 77effa5 0f5252 00      0   0  1\n  [33] .debug_line       PROGBITS        0000000000000000 78e51f7 2c599dd 00      0   0  1\n  [34] .debug_str        PROGBITS        0000000000000000 a53ebd4 440883a 01  MS  0   0  1\n  [35] .debug_line_str   PROGBITS        0000000000000000 e94740e 00cea4 01  MS  0   0  1\n  [36] .debug_rnglists   PROGBITS        0000000000000000 e9542b2 5b740c 00      0   0  1\n  [37] .symtab           SYMTAB          0000000000000000 ef0b6c0 a88838 18     38 241014  8\n  [38] .strtab           STRTAB          0000000000000000 f993ef8 401fed3 00      0   0  1\n  [39] .shstrtab         STRTAB          0000000000000000 139b3dcb 000196 00      0   0  1\nKey to Flags:\n  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n  L (link order), O (extra OS processing required), G (group), T (TLS),\n  C (compressed), x (unknown), o (OS specific), E (exclude),\n  R (retain), D (mbind), l (large), p (processor specific)\n",
+  "section_headers_after": "There are 33 section headers, starting at offset 0x9007a38:\n\nSection Headers:\n  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al\n  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0\n  [ 1] .note.gnu.build-id NOTE            0000000000000388 000388 000024 00   A  0   0  4\n  [ 2] .interp           PROGBITS        00000000000003ac 0003ac 00001c 00   A  0   0  1\n  [ 3] .gnu.hash         GNU_HASH        00000000000003c8 0003c8 000978 00   A  4   0  8\n  [ 4] .dynsym           DYNSYM          0000000000000d40 000d40 0089b8 18   A  5   1  8\n  [ 5] .dynstr           STRTAB          00000000000096f8 0096f8 00a1f2 00   A  0   0  1\n  [ 6] .gnu.version      VERSYM          00000000000138ea 0138ea 000b7a 02   A  4   0  2\n  [ 7] .gnu.version_r    VERNEED         0000000000014468 014468 000490 00   A  5  13  8\n  [ 8] .rela.dyn         RELA            00000000000148f8 0148f8 0fda40 18   A  4   0  8\n  [ 9] .rela.plt         RELA            0000000000112338 112338 005da8 18  AI  4  26  8\n  [10] .init             PROGBITS        0000000000119000 119000 00001b 00  AX  0   0  4\n  [11] .plt              PROGBITS        0000000000119020 119020 003e80 10  AX  0   0 16\n  [12] .plt.got          PROGBITS        000000000011cea0 11cea0 000120 08  AX  0   0  8\n  [13] .text             PROGBITS        000000000011cfc0 11cfc0 2d2c0a8 00  AX  0   0 64\n  [14] .fini             PROGBITS        0000000002e49068 2e49068 00000d 00  AX  0   0  4\n  [15] .rodata           PROGBITS        0000000002e4a000 2e4a000 af6dd0 00   A  0   0 64\n  [16] .eh_frame_hdr     PROGBITS        0000000003940dd0 3940dd0 1f5024 00   A  0   0  4\n  [17] .eh_frame         PROGBITS        0000000003b35df8 3b35df8 8525e8 00   A  0   0  8\n  [18] .gcc_except_table PROGBITS        00000000043883e0 43883e0 153e37 00   A  0   0  4\n  [19] .note.gnu.property NOTE            00000000044dc218 44dc218 000030 00   A  0   0  8\n  [20] .note.ABI-tag     NOTE            00000000044dc248 44dc248 000020 00   A  0   0  4\n  [21] .tbss             NOBITS          00000000044dd290 44dc290 00a559 00 WAT  0   0 16\n  [22] .init_array       INIT_ARRAY      00000000044dd290 44dc290 0008a8 08  WA  0   0  8\n  [23] .fini_array       FINI_ARRAY      00000000044ddb38 44dcb38 000008 08  WA  0   0  8\n  [24] .data.rel.ro      PROGBITS        00000000044ddb40 44dcb40 084970 00  WA  0   0 64\n  [25] .dynamic          DYNAMIC         00000000045624b0 45614b0 000310 10  WA  5   0  8\n  [26] .got              PROGBITS        00000000045627c0 45617c0 002838 08  WA  0   0  8\n  [27] .data             PROGBITS        0000000004565000 4564000 004f90 00  WA  0   0 32\n  [28] .bss              NOBITS          0000000004569fc0 4568f90 1120170 00  WA  0   0 64\n  [29] .comment          PROGBITS        0000000000000000 4568f90 000026 01  MS  0   0  1\n  [30] .symtab           SYMTAB          0000000000000000 4568fb8 a81e60 18     31 239885  8\n  [31] .strtab           STRTAB          0000000000000000 4feae18 401cae7 00      0   0  1\n  [32] .shstrtab         STRTAB          0000000000000000 90078ff 000136 00      0   0  1\nKey to Flags:\n  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n  L (link order), O (extra OS processing required), G (group), T (TLS),\n  C (compressed), x (unknown), o (OS specific), E (exclude),\n  R (retain), D (mbind), l (large), p (processor specific)\n"
+}

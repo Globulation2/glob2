@@ -1,0 +1,28 @@
+
+Running 14 tests using 1 worker
+
+(node:1680249) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › platform/apps/web/e2e/bulgarian.spec.ts:9:1 › Bulgarian loads its bundled font and persists an explicit language choice (11.6s)
+  ✓   2 [desktop] › platform/apps/web/e2e/localized-layout.spec.ts:8:1 › long localized controls fit phone columns and preserve desktop layout (50.4s)
+(node:1685298) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 [phone] › platform/apps/web/e2e/bulgarian.spec.ts:9:1 › Bulgarian loads its bundled font and persists an explicit language choice (12.9s)
+  -   4 [phone] › platform/apps/web/e2e/localized-layout.spec.ts:8:1 › long localized controls fit phone columns and preserve desktop layout
+(node:1686889) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:34:1 › AI filter, card, detail and publish labels translate while canonical tags stay stable (11.9s)
+  ✓   6 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:54:1 › map visibility labels translate while protocol values remain public unlisted private (3.1s)
+  ✓   7 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:64:1 › music author labels use Artist and attribution Credits and sources (3.3s)
+  ✓   8 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:72:1 › new set and building drafts initialize localized names without rewriting stored metadata (16.5s)
+  ✓   9 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:101:1 › terrain and resource Add labels translate while package collections stay canonical (12.1s)
+(node:1693147) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:34:1 › AI filter, card, detail and publish labels translate while canonical tags stay stable (8.2s)
+  ✓  11 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:54:1 › map visibility labels translate while protocol values remain public unlisted private (2.6s)
+  ✓  12 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:64:1 › music author labels use Artist and attribution Credits and sources (2.8s)
+  ✓  13 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:72:1 › new set and building drafts initialize localized names without rewriting stored metadata (10.4s)
+  ✓  14 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:101:1 › terrain and resource Add labels translate while package collections stay canonical (9.0s)
+
+  1 skipped
+  13 passed (3.0m)

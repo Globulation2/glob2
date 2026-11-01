@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="Bulgarian building failure rows wrap inside the panel and remain scrollable [display][artifacts]" time="32.9767" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,25 @@
+[
+  {
+    "selector": [
+      "11",
+      "1"
+    ],
+    "returncode": 2,
+    "output": "TranslationPreviewHarness: Matrix SIZE must be 10, 13 or 20:"
+  },
+  {
+    "selector": [
+      "10",
+      "3"
+    ],
+    "returncode": 2,
+    "output": "TranslationPreviewHarness: Matrix SCALE must be 1 or 2:"
+  },
+  {
+    "selector": [
+      "10"
+    ],
+    "returncode": 2,
+    "output": "TranslationPreviewHarness: Matrix takes ROOT DRAFT OUTPUT W H and optional SIZE SCALE:"
+  }
+]

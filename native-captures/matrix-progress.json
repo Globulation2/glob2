@@ -1,0 +1,37 @@
+{
+  "completed": [
+    {
+      "batch": "desktop-matrix-10-scale-1",
+      "samples": 6263,
+      "pages": 148,
+      "missing_glyphs": 0,
+      "drawn_width_budget": 0,
+      "actual_viewport_width": 0
+    },
+    {
+      "batch": "desktop-matrix-10-scale-2",
+      "samples": 6263,
+      "pages": 148,
+      "missing_glyphs": 0,
+      "drawn_width_budget": 0,
+      "actual_viewport_width": 0
+    },
+    {
+      "batch": "desktop-matrix-13-scale-1",
+      "samples": 6263,
+      "pages": 174,
+      "missing_glyphs": 0,
+      "drawn_width_budget": 0,
+      "actual_viewport_width": 0
+    },
+    {
+      "batch": "desktop-matrix-13-scale-2",
+      "samples": 6263,
+      "pages": 174,
+      "missing_glyphs": 0,
+      "drawn_width_budget": 1,
+      "actual_viewport_width": 0
+    }
+  ],
+  "limits": "Progress only; full12batch coverage not yet complete."
+}

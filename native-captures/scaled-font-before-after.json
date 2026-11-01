@@ -1,0 +1,61 @@
+{
+  "identity": "Derived diagnostic crops of exact production font-matrix pages, physical pixels at1:1; red line marks actual page right edge",
+  "images": [
+    {
+      "key": "[AICabino-Profile]",
+      "before": "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-2/font-20-scale-2-page-024.png",
+      "after": "artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2/font-20-scale-2-page-024.png",
+      "before_overflow_logical_px": 2.5,
+      "after_drawn_width_logical_px": 1256.0,
+      "after_canvas_overflow_logical_px": 0,
+      "crop_box_physical": [
+        1920,
+        1132,
+        2560,
+        1194
+      ]
+    },
+    {
+      "key": "[results waiting slow]",
+      "before": "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-2/font-20-scale-2-page-084.png",
+      "after": "artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2/font-20-scale-2-page-084.png",
+      "before_overflow_logical_px": 2.0,
+      "after_drawn_width_logical_px": 1256.0,
+      "after_canvas_overflow_logical_px": 0,
+      "crop_box_physical": [
+        1920,
+        650,
+        2560,
+        712
+      ]
+    },
+    {
+      "key": "[conn card cannot keep up body]",
+      "before": "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-2/font-20-scale-2-page-085.png",
+      "after": "artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2/font-20-scale-2-page-085.png",
+      "before_overflow_logical_px": 6.5,
+      "after_drawn_width_logical_px": 1256.0,
+      "after_canvas_overflow_logical_px": 0,
+      "crop_box_physical": [
+        1920,
+        1248,
+        2560,
+        1310
+      ]
+    },
+    {
+      "key": "[lesson fortifications complete]",
+      "before": "artifacts/bulgarian/native-captures/desktop-matrix-20-scale-2/font-20-scale-2-page-127.png",
+      "after": "artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2/font-20-scale-2-page-127.png",
+      "before_overflow_logical_px": 1.0,
+      "after_drawn_width_logical_px": 1254.0,
+      "after_canvas_overflow_logical_px": 0,
+      "crop_box_physical": [
+        1920,
+        1464,
+        2560,
+        1526
+      ]
+    }
+  ]
+}

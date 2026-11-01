@@ -1,0 +1,55 @@
+{
+  "font": "data/fonts/sans.ttf",
+  "pinned_sdk": "artifacts/bulgarian/sdl3/prefix",
+  "samples": [
+    {
+      "language": "bg",
+      "text": "страни: Комбинира растеж, обучение, защита и няколко атаки. Унищожаването на снабдяването с храна и лечението",
+      "authored20_width": 1256,
+      "physical40_width": 2541,
+      "legacy_destination_logical": 1270.5,
+      "hinting_delta_logical": 14.5
+    },
+    {
+      "language": "bg",
+      "text": "Играч, който е загубил връзката, има до 3 минути, за да се върне. Резултатът ще се покаже във вашата история и на",
+      "authored20_width": 1256,
+      "physical40_width": 2540,
+      "legacy_destination_logical": 1270.0,
+      "hinting_delta_logical": 14.0
+    },
+    {
+      "language": "bg",
+      "text": "Преиграва мача по-бавно, отколкото протича самият мач, така че няма да навакса. Можете да напуснете мача или да",
+      "authored20_width": 1256,
+      "physical40_width": 2549,
+      "legacy_destination_logical": 1274.5,
+      "hinting_delta_logical": 18.5
+    },
+    {
+      "language": "bg",
+      "text": "Снабдените ви укрепления спряха учебната атака. Кулите се нуждаят от камък, а стените — от пролуки, за да могат",
+      "authored20_width": 1254,
+      "physical40_width": 2538,
+      "legacy_destination_logical": 1269.0,
+      "hinting_delta_logical": 15.0
+    },
+    {
+      "language": "en",
+      "text": "You can leave the match or reduce the graphics settings and keep waiting.",
+      "authored20_width": 747,
+      "physical40_width": 1503,
+      "legacy_destination_logical": 751.5,
+      "hinting_delta_logical": 4.5
+    },
+    {
+      "language": "ru",
+      "text": "Вы можете покинуть матч или снизить настройки графики и продолжить ожидание.",
+      "authored20_width": 905,
+      "physical40_width": 1816,
+      "legacy_destination_logical": 908.0,
+      "hinting_delta_logical": 3.0
+    }
+  ],
+  "limits": "Direct SDL_ttf metric comparison; production matrix provides the actual raster/destination widths separately."
+}

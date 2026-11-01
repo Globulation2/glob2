@@ -1,0 +1,297 @@
+{
+  "reason": "Duplicate binary screenshots are represented by metadata and hashes; separately curated images remain available.",
+  "derived_files": {
+    "final-online-qa/verified/tests.json": {
+      "original_sha256": "1cb7a4ee69627a5ee1eeff9da5920a21d828b0e3c7b3157fa36ee532623909da",
+      "published_sha256": "887c8b0b4c23e1058a44c23ae518dcedf559eb938c6c10f6c599b20e6bc1a91c",
+      "omitted_embedded_images": 22
+    },
+    "final-online-qa/verified-before-compact/tests.json": {
+      "original_sha256": "39d48766cbe15df0b26999f9a26a44820870b3b0ceb3ce75c9586a584a1c3abd",
+      "published_sha256": "90f52b340506c4288abe1d05c013c35800bbd55ee19b44e80186c0bbe848eb70",
+      "omitted_embedded_images": 18
+    }
+  },
+  "omissions": [
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 837647,
+      "sha256": "440e9debc4a894cab80d702e3f0872fd5bbdf5a45a0146c0842ef5c79eb18c44"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 1020969,
+      "sha256": "de287042e7abc22458915c60f8bae0035aac337b99e44be881fd8e25de54515e"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 283787,
+      "sha256": "73eeae994e6821ac25229cde97a8922d2db26b6638c3229ef5826a9f5d34b60c"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 126877,
+      "sha256": "abf1317d7d374535e6eeb05a69230185ff5475ce6fe4a0d5be0b626439aa3b2e"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 155795,
+      "sha256": "bf531b94f7f8b75c77905d5a5fdeed521ca2f0c0bae001a58e3495fd6afd6fc1"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/2/body",
+      "content_type": "image/png",
+      "bytes": 144108,
+      "sha256": "95d9abef79f62c1b0ff8162868a579d2f5e33bb19fc3bc8062f5695b79734620"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/3/body",
+      "content_type": "image/png",
+      "bytes": 204858,
+      "sha256": "f7a8e004a9134eaf9cdda8b2cc9f1ca07ba4af3cc0e186977f01441abde2d67e"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/1/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 122525,
+      "sha256": "bd78f19ad25d53e40586de20306f611c485a96ac53207184b68bb59e6bd0c831"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/2/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 130616,
+      "sha256": "00b5ac447c6789610a2a1efe6ce924be4bb62ab7a4e4595010cef8ed528721f0"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 201234,
+      "sha256": "78b38e0928733f0dc89ebbf3f9790bd31fd75ec0e4f42070208fce39ecf81a69"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/2/body",
+      "content_type": "image/png",
+      "bytes": 243463,
+      "sha256": "9904f49584c51ec09138734fed99cb70bba3a6b2d64546a7789c81c3cf385d00"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 223981,
+      "sha256": "3fefbd97ddc26da0b65b6d0e0cffc9920f5b9f233f8e3b0971359473fb77e692"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 506582,
+      "sha256": "823221edd9c64986fb06e7c5ad55e1e9711f9f3710b163d2cc0d7b4ad2516fdf"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/5/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 124912,
+      "sha256": "572ea5845ae5e4f78d3e738c91a9ad5f1b26db07e0366488c6e851cd77dedf0f"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/5/tests/0/results/0/attachments/2/body",
+      "content_type": "image/png",
+      "bytes": 110660,
+      "sha256": "964dbffb789a09832882039e69cab5c6168bc8ab15e26c0ee6152acdd48fcd32"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/5/tests/0/results/0/attachments/3/body",
+      "content_type": "image/png",
+      "bytes": 166706,
+      "sha256": "40eec3b4d22b3f8f021675db5c5064f0b9fa132c3cfe9ec79348d9082bf5a0c2"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/6/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 80945,
+      "sha256": "a493699318f488d77d473d002153e0437e20ec7cc0050cfad182d43bcde48b4a"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/7/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 90766,
+      "sha256": "8208b053143bc45921baf35db928f452f44292eb32a20d9c2e361eab2b0639de"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/8/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 151629,
+      "sha256": "b7ec9dcbfe5c7ff30b69d07db620f053a50e7b92a9a3b7925214cd9dda75481d"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/8/tests/0/results/0/attachments/2/body",
+      "content_type": "image/png",
+      "bytes": 216623,
+      "sha256": "d4bd3e02582385c422bf516979fc3ab3d85ff23a81fc8e1fc7cf4f40846471a3"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/9/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 181514,
+      "sha256": "9fd76c5b3e552c86f72e98b238c6b3b0da9c59cc9c1193582cf40ace69225ef2"
+    },
+    {
+      "source": "final-online-qa/verified/tests.json",
+      "json_pointer": "/suites/2/specs/9/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 449661,
+      "sha256": "27fb856c84d4e349eada175719a40582069ac6b3bbbdefe55e082477e562e24b"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 836462,
+      "sha256": "70d748e2092f6114fd03df7d424988dba2d50c9a5a9bf8119de61173c9844820"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 1020969,
+      "sha256": "de287042e7abc22458915c60f8bae0035aac337b99e44be881fd8e25de54515e"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 332330,
+      "sha256": "4c784f32384d00f65fed2c0d15cba7750088838d2a6a118122e098500bfd3082"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 126877,
+      "sha256": "abf1317d7d374535e6eeb05a69230185ff5475ce6fe4a0d5be0b626439aa3b2e"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 156117,
+      "sha256": "24efb72b14aa5fe6cd73a36024d7333f4d49933296da9415649c71e7c874859c"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 144099,
+      "sha256": "55aea6f80084aa18c5252b7ade5d6399b15686981cf39d710af7c1a4681a32ab"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/2/body",
+      "content_type": "image/png",
+      "bytes": 204854,
+      "sha256": "872658d354b8b6886ebd07be2e400a1ff5c18c98b2f63c34b337125963cc8393"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/1/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 122521,
+      "sha256": "100fd5bef2f15fdd02c9df7071e051b0ca967e4a4a9d06003251f33b06a00a1e"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/2/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 130609,
+      "sha256": "96f17981e319d4973ce97946d30ce901ef1bb5ebe27518192f0a8fa9767ddc80"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 201375,
+      "sha256": "3feec50c3dcbb3d00a867d9a9cc7d2db97895e3d9a464960c84354fd8a17c0a2"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 244067,
+      "sha256": "5fd009ddc104c982672b3bf6b6f4a4270c14d42d548b17f2ecea77fde6b8bd57"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 125162,
+      "sha256": "ed355985db60ea934851b9b5704efbce0522892b173efe71d6a083bad20f546d"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 110660,
+      "sha256": "964dbffb789a09832882039e69cab5c6168bc8ab15e26c0ee6152acdd48fcd32"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/2/body",
+      "content_type": "image/png",
+      "bytes": 166706,
+      "sha256": "40eec3b4d22b3f8f021675db5c5064f0b9fa132c3cfe9ec79348d9082bf5a0c2"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/5/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 80945,
+      "sha256": "a493699318f488d77d473d002153e0437e20ec7cc0050cfad182d43bcde48b4a"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/6/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 90766,
+      "sha256": "8208b053143bc45921baf35db928f452f44292eb32a20d9c2e361eab2b0639de"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/7/tests/0/results/0/attachments/0/body",
+      "content_type": "image/png",
+      "bytes": 151677,
+      "sha256": "dc262239ed2ce103c5e3ab6bf2100f384c95b75df3a915027fcaeb9a4154def8"
+    },
+    {
+      "source": "final-online-qa/verified-before-compact/tests.json",
+      "json_pointer": "/suites/2/specs/7/tests/0/results/0/attachments/1/body",
+      "content_type": "image/png",
+      "bytes": 217937,
+      "sha256": "fa3d56bf5d6ecc90819bec4fa085051a43ec8d7c093eac692dd8e20e2e20e11f"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "identity": "Synthetic font diagnostic, not translated catalog",
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+  "binary_sha256": "621b6abb7cc8190564a2bf5bb92dfba64e4f10de057b618753cd448c7b3aa8ca",
+  "jobs": [
+    {
+      "presentation": "desktop",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-probe-kit-corrected/drafts/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected-probes/desktop",
+        "1280",
+        "1024"
+      ],
+      "returncode": 0,
+      "seconds": 43.48
+    },
+    {
+      "presentation": "phone",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-probe-kit-corrected/drafts/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected-probes/phone",
+        "480",
+        "960"
+      ],
+      "returncode": 0,
+      "seconds": 12.76
+    }
+  ]
+}

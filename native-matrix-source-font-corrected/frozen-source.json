@@ -1,0 +1,430 @@
+{
+  "revision": "3881c64e0d2b43b460a122422d2727c0cbd4d3ca",
+  "purpose": "Exact source/catalog/font snapshot for complete font-only matrix; compiled production font and wrapper, not a substituted renderer. Later unrelated edits cannot contaminate source identity.",
+  "files": [
+    {
+      "path": "data/authors.txt",
+      "sha256": "8979a0e62cd68ef606666dd2e253994a963bec38087b62cc83d0838ceb3325fa"
+    },
+    {
+      "path": "data/fonts/LICENSE-DejaVu.txt",
+      "sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c"
+    },
+    {
+      "path": "data/fonts/LICENSE-Droid.txt",
+      "sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d"
+    },
+    {
+      "path": "data/fonts/LICENSE-HarfBuzz.txt",
+      "sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64"
+    },
+    {
+      "path": "data/fonts/LICENSE-Noto.txt",
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb"
+    },
+    {
+      "path": "data/fonts/README.md",
+      "sha256": "7497dd832fae7ba3398422fe10b42a2f585c4d246cb497f7fd192d978e126850"
+    },
+    {
+      "path": "data/fonts/SConscript",
+      "sha256": "eb19ec63cd16a1da24a478d1eb558d61960cdaf9bcfd8e1b7bb963123eff4343"
+    },
+    {
+      "path": "data/fonts/build_chinese_font.py",
+      "sha256": "525228064ff2578fefb99ad589abd0a404b80384e90d7fb89043ae6d0cffb700"
+    },
+    {
+      "path": "data/fonts/check_script_support.py",
+      "sha256": "ce90eb6d76d01ef56092cc2271767d02bfcc1f5f3172cdddef87f5de131739fb"
+    },
+    {
+      "path": "data/fonts/fetch_script_fonts.py",
+      "sha256": "8e90363c8da89d0a211a2e0833255feb66281e9de9fc1281b491fd1d30106e5c"
+    },
+    {
+      "path": "data/fonts/sans.ttf",
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+    },
+    {
+      "path": "data/fonts/script-probes.json",
+      "sha256": "3948ab33b272c91497aa0c3e9ae6ae311a73a1fedceab01ffd48d6951cc4da64"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+      "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+      "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+      "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+      "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+      "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+      "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+      "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+      "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+      "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+      "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+    },
+    {
+      "path": "data/fonts/scripts/manifest.json",
+      "sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc"
+    },
+    {
+      "path": "data/image-codec-licenses.txt",
+      "sha256": "a6601ff68f68502710f45e4e7dd0f70ed832b974fb068fa7d957d14aec91170d"
+    },
+    {
+      "path": "data/javascript-licenses.txt",
+      "sha256": "0158703d85413e037ef86f2571dbc2388f274ce479ec2dc368a29b0eb30a3306"
+    },
+    {
+      "path": "data/json-license.txt",
+      "sha256": "c8d136df7d239fca8a06ba3363f02a032136e775390afb38130b0a246c593b63"
+    },
+    {
+      "path": "data/keyboard-gui.default.txt",
+      "sha256": "0fdb2962bcb13021486a13e713471be602161608042ed96558acde69f7c55640"
+    },
+    {
+      "path": "data/keyboard-mapedit.default.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    {
+      "path": "data/nicowar.default.txt",
+      "sha256": "915056272589367438d5db6d9ba0d56bb993668b45a7a950d406708be66fc887"
+    },
+    {
+      "path": "data/nicowar.txt",
+      "sha256": "074b36aea2332a301bdf3bd5a7b0ceb8e3c511ae6fd73b96a9b97ee20ad9bff8"
+    },
+    {
+      "path": "data/pal.txt",
+      "sha256": "769a462211cd5abac4f3f7cf93ffaa96a7991074926d6fe45e6d4d870a467e34"
+    },
+    {
+      "path": "data/tabler-icons-license.txt",
+      "sha256": "b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db"
+    },
+    {
+      "path": "data/texts.ar.txt",
+      "sha256": "f00445cb3b169f1c2a8f05a78dfb5910d4d4264535b70a3a88f4e6c81ed745f2"
+    },
+    {
+      "path": "data/texts.bg.txt",
+      "sha256": "ccd9b28467ec8a4e5272d2d3780d6813107eed945e424f8fac1d6ff2656d38ed"
+    },
+    {
+      "path": "data/texts.br.txt",
+      "sha256": "86d1ae1518fb11b0d4560b1d03db8bb8d14357ed977927f403f06f02e34b263d"
+    },
+    {
+      "path": "data/texts.ca.txt",
+      "sha256": "18db6f8dfc4567b8c9d4393ba7ff91569cccd28a6d3c00e88612c6a8ae5a3803"
+    },
+    {
+      "path": "data/texts.cz.txt",
+      "sha256": "b86ce31622480df6c229418568090c96af999594dd95b7d85f8a13acbd40433d"
+    },
+    {
+      "path": "data/texts.de.txt",
+      "sha256": "fe5b00df0c7da8a2b7a98b84865419d0a6a446fabffd838628f6287ac62384cd"
+    },
+    {
+      "path": "data/texts.dk.txt",
+      "sha256": "21ba236b37c7155af366effb986202bf61cdefe51867e3f3ec90ceb61706dbc0"
+    },
+    {
+      "path": "data/texts.en.txt",
+      "sha256": "3cff1f3aef1a95ddd874c169b86a11cad9f777cdd2bfac9477127c8709bb8a92"
+    },
+    {
+      "path": "data/texts.eo.txt",
+      "sha256": "1acf7a1785ee72be6e2e01ad1e1cd99199b61b0e6d875eafada0de9a12a028e2"
+    },
+    {
+      "path": "data/texts.es.txt",
+      "sha256": "3b9378ffb83d9c6f8c8ba87a9bd1bbecf48a93ab9dd3cfb5bec208d17234eb5c"
+    },
+    {
+      "path": "data/texts.eu.txt",
+      "sha256": "48256b7645866ac98a67a16dd1a4e5b994e23a9a319ba4ce20225d256ae1f528"
+    },
+    {
+      "path": "data/texts.fa.txt",
+      "sha256": "a60c8c3f00a59d20385a860521477340a0cf8f74fdd5404edd8521ecff6b3f04"
+    },
+    {
+      "path": "data/texts.fi.txt",
+      "sha256": "4280f2ba4ab209881402d2b411b3b3ff953c5e5169833423bf8b8a96616aae60"
+    },
+    {
+      "path": "data/texts.fr.txt",
+      "sha256": "b49ea67ddb88fe61e0d7c656f07b7d102f8ae32f243c09012f4a53dc3e58ef90"
+    },
+    {
+      "path": "data/texts.gr.txt",
+      "sha256": "5d5e856b6346ab94d7974a8fad6e3ce4cd027cbe21b0f1a356d08f0e175a992c"
+    },
+    {
+      "path": "data/texts.hi.txt",
+      "sha256": "849ffdf75d63b127d85a5a305fa0049e99fc33b2a682a1c43d0bfd9ec0ecc6d6"
+    },
+    {
+      "path": "data/texts.hu.txt",
+      "sha256": "aa5a44be8232c28298180dba0f44652c721c39231394d54a80015ccd975d66bf"
+    },
+    {
+      "path": "data/texts.id.txt",
+      "sha256": "e4a220522e19fd095971ed97369c80dcbb11a51ccea68217d2281f839d8bdfa2"
+    },
+    {
+      "path": "data/texts.incomplete.txt",
+      "sha256": "642a102aa9362f771319b457c07ab8be238ea958e468830dac80f58c33794288"
+    },
+    {
+      "path": "data/texts.it.txt",
+      "sha256": "0fb40411db1233b83b91ba9d4668481b146f6c7c3880da551186916ae76edd2f"
+    },
+    {
+      "path": "data/texts.ja.txt",
+      "sha256": "eef903c80f23532173f437f21d528e3abc492adb55e7b403e26398472edaa486"
+    },
+    {
+      "path": "data/texts.keys.txt",
+      "sha256": "1fd115cb8324008d2e2611d6c0e03a4f943366680ccdb6d9f4445d87f1b20247"
+    },
+    {
+      "path": "data/texts.ko.txt",
+      "sha256": "0f7885c6f1635f9bdda5bd3bf44c07869f709d5b5033308127862acf6b6e07cc"
+    },
+    {
+      "path": "data/texts.list.txt",
+      "sha256": "34b0d9f85ed736b2a718d43772bbfd9fae23c716055d157a73755b6a83d3001b"
+    },
+    {
+      "path": "data/texts.nl.txt",
+      "sha256": "f4fbc576eff24140f3bf80dac8e6c8ecd34815b4c0e4aa99a369646ff8579fa5"
+    },
+    {
+      "path": "data/texts.pending.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/texts.pl.txt",
+      "sha256": "49d6eae41230dffd6759fc2a2c4336ad950c5c75395d2f3be8509db866d64dbf"
+    },
+    {
+      "path": "data/texts.pt.txt",
+      "sha256": "89ca917d4a17dc81e23f64e1cb67512a9f3ab5f36e2b6ddadfcc41e72bb22188"
+    },
+    {
+      "path": "data/texts.ro.txt",
+      "sha256": "a870018275b1f9be93f2d2f82a98ae83e195de842b0db6b9ca87c7d6db82266b"
+    },
+    {
+      "path": "data/texts.ru.txt",
+      "sha256": "c488a0e2f78ca502f9d583630877afe5244d34fd9a4f6ab3e7e2932b8123cc26"
+    },
+    {
+      "path": "data/texts.si.txt",
+      "sha256": "559906f6940f14b24a70483d47ecdf0b61a0989d6702c5e1a5f1a839bf08bfbb"
+    },
+    {
+      "path": "data/texts.sk.txt",
+      "sha256": "d47e177da6533e28b446be47fff91d03de5f76a98b0830169aca1c996acc4ffb"
+    },
+    {
+      "path": "data/texts.sr.txt",
+      "sha256": "0a9fc27e20428f8d7844842c0ad7e4b5fdd4f407d34799841719d8f12acb4f52"
+    },
+    {
+      "path": "data/texts.sv.txt",
+      "sha256": "790e43014a501a92fceace383bea51a8e020d4b18b0f81c9a3e2d9ccdba492e9"
+    },
+    {
+      "path": "data/texts.sw.txt",
+      "sha256": "c5a1ae26b383c99f67756e2eabf9fb30ac06e637cff6d8bafd39058c7ec352ef"
+    },
+    {
+      "path": "data/texts.tr.txt",
+      "sha256": "45ef299e858d15855fbeaae71adea5b09f3c5962ecc4543d9d8c4299d34d7131"
+    },
+    {
+      "path": "data/texts.uk.txt",
+      "sha256": "f2ab4a1bfa91a5d9d5454b97a21e5ba2859c16da3a43d46b8f86c04ddedb61b8"
+    },
+    {
+      "path": "data/texts.ur.txt",
+      "sha256": "93a27dfdeae71fbd5bd76739be93b69eec1d66f0eb81e2bd664f86b71febd0a1"
+    },
+    {
+      "path": "data/texts.vi.txt",
+      "sha256": "f26d2eaaa18e5b7975f978149eb1364480a2aff139edadb0e695e43f75007aee"
+    },
+    {
+      "path": "data/texts.zh-cn.txt",
+      "sha256": "ba6504d23d3433457cac487ab717066cf30421dd0796c1a893cbc6bcc10623b1"
+    },
+    {
+      "path": "data/texts.zh-tw.txt",
+      "sha256": "f0121533e3c38bd736ae0712727042a791b057e42f1c6b9bd675698f9a982282"
+    },
+    {
+      "path": "libgag/include/TouchText.h",
+      "sha256": "71eb059abd12e090a6c0674cec761a7041339e89dcfadfdae8904f570c6d97cb"
+    },
+    {
+      "path": "libgag/include/TrueTypeFont.h",
+      "sha256": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c"
+    },
+    {
+      "path": "libgag/include/ui/TextLayout.h",
+      "sha256": "6cb805b24332bb38bde8525eeea77fa0917cea3b88ae4561bc44c00b08975969"
+    },
+    {
+      "path": "libgag/src/BidiText.cpp",
+      "sha256": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7"
+    },
+    {
+      "path": "libgag/src/DrawableSurfaceCompound.cpp",
+      "sha256": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810"
+    },
+    {
+      "path": "libgag/src/TrueTypeFont.cpp",
+      "sha256": "83f62e0290809c41674e587f22967cb13e216b9734a58902d920e3074ac7dfdb"
+    },
+    {
+      "path": "libgag/src/ui/TextLayout.cpp",
+      "sha256": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd"
+    },
+    {
+      "path": "platform/packages/i18n/locales/en.json",
+      "sha256": "7ef5053bd3bd867bddd3f1065a50c01a05c91517c9ebe31f0f7176632d66f8a3"
+    },
+    {
+      "path": "src/game/screens/CustomGameScreen.cpp",
+      "sha256": "b843e385ba6c1cd206870b173ef43120052118bc70ea1dbfa4824fa22489c77a"
+    },
+    {
+      "path": "src/hud/draw/GameGUIDraw.cpp",
+      "sha256": "e09cc4698c7b2f9e7a8d856b2a9c2beafca723431f6107f000e6308d3551891b"
+    },
+    {
+      "path": "src/hud/touch/GameGUITouch.cpp",
+      "sha256": "32f0ddea06cb53cbc574e6e5dc7c3b0785efdd650fc1bd348f24275da0244333"
+    },
+    {
+      "path": "src/hud/touch/GameGUITouch.h",
+      "sha256": "db39db778997c0cccb65248279b46d55a7f9178580438d92d258db83ed8432bb"
+    },
+    {
+      "path": "src/hud/touch/GameGUITouchView.cpp",
+      "sha256": "effb3a954b805134a45e75ad824f6691340d02c40447bf0d3d4724c8f7ee9729"
+    },
+    {
+      "path": "src/map/editor/EditorDock.cpp",
+      "sha256": "03e20c32de2581fcf3b6ebd3d232da00ec00b0940b769f694ecebda0210645f7"
+    },
+    {
+      "path": "src/map/editor/MapEditDraw.cpp",
+      "sha256": "12e06cf1962705464985e4e5ee27ef7f956b7afbab076a3e011d67c9dd26d218"
+    },
+    {
+      "path": "src/map/editor/MapEditIO.cpp",
+      "sha256": "e8f9c1e3929cbed3206f1e1ef0675dc94793ddb961af5b7726def64b7b28778a"
+    },
+    {
+      "path": "src/map/editor/PhoneEditor.cpp",
+      "sha256": "b2b9518d6e8d777d864f32ff9927a57f6653c794b0f6befb4d6304ea65e9a2b7"
+    },
+    {
+      "path": "src/map/editor/screens/NewMapScreen.cpp",
+      "sha256": "e38060773179e3264ed5836ba04f0ec5fecf331554ea2a5a19e046b23cd4a45f"
+    },
+    {
+      "path": "src/online/ApiErrorText.cpp",
+      "sha256": "9032c48ac1b863bd11bdd7178c9ee5fa43216bd1a0b807785ca74a1d2844fa06"
+    },
+    {
+      "path": "src/online/ApiErrorText.h",
+      "sha256": "82d94be752a85d19b96836e93e506af15e07462dfc0deb7c8d53f462f7f2025a"
+    },
+    {
+      "path": "src/online/PlatformClient.cpp",
+      "sha256": "5070c5cba117cddfd64737ad89524f5d4de8f54650f8197711ed5190fa2ff0e9"
+    },
+    {
+      "path": "src/online/PlatformProtocol.cpp",
+      "sha256": "dfcc3f60b94feb022ad2050ff589a13bd2936f71a7893e1a74c34106319ead47"
+    },
+    {
+      "path": "src/online/PlatformProtocol.h",
+      "sha256": "f666ef46362c808b3c1717c55a19e01d7305a1b8298e82b9d988bc470aa77ad7"
+    },
+    {
+      "path": "src/render/overlay/MapZoomControls.h",
+      "sha256": "6d5b99d9f77853315ddd7298ce77b2ecbf54e470c406ce07c5d9fd1ee152e2d3"
+    },
+    {
+      "path": "src/ui/ApiErrorText.h",
+      "sha256": "3126d720487c87ce7c2fbcb56a9abec9f162664f9a3be0eb6f05ead640152eb1"
+    },
+    {
+      "path": "src/ui/settings/SettingsScreenCustomAIs.cpp",
+      "sha256": "33f607fb160acf88c678f958cde34bae26a566914bca9f9c20e9d3c422021e5f"
+    },
+    {
+      "path": "src/ui/settings/SettingsScreenGeneral.cpp",
+      "sha256": "59775b6d0eb6eb0d568d4dde91596cf90b28f213ffafe7d62d3348994927406b"
+    },
+    {
+      "path": "src/ui/settings/SettingsScreenKeyboard.cpp",
+      "sha256": "9bb9ea17b5ff60c529e6c1731bfd40ba8f9875603c5a4163468eb381bd0a521e"
+    },
+    {
+      "path": "src/ui/settings/SettingsScreenOnline.cpp",
+      "sha256": "4b660eec007f5d9d3b86344596b9d2c878e9324070d85279c1b7acefb7db034f"
+    },
+    {
+      "path": "tools/TranslationPreviewHarness.cpp",
+      "sha256": "c52fa23f82024d2e3bd5af5e6582485ea673945a212b6a3e021b450ff54c075c"
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+  "binary_sha256": "861048c0adb3d7d6659eb13a27edad56a88858e806d0497969ab2ffe062dcc38",
+  "jobs": [
+    {
+      "tag": "desktop-1280x1024-100-settings",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings",
+        "1280",
+        "1024",
+        "settings"
+      ],
+      "returncode": 0,
+      "seconds": 60.54,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings/profile/user"
+    },
+    {
+      "tag": "desktop-1280x1024-100-settings-ais",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-ais",
+        "1280",
+        "1024",
+        "settings-ais"
+      ],
+      "returncode": 0,
+      "seconds": 82.08,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-ais/profile/user"
+    },
+    {
+      "tag": "desktop-1280x1024-100-settings-online",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-online",
+        "1280",
+        "1024",
+        "settings-online"
+      ],
+      "returncode": 0,
+      "seconds": 64.52,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-online/profile/user"
+    },
+    {
+      "tag": "desktop-1280x1024-100-settings-player",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-player",
+        "1280",
+        "1024",
+        "settings-player"
+      ],
+      "returncode": 0,
+      "seconds": 46.0,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-player/profile/user"
+    },
+    {
+      "tag": "desktop-1280x1024-100-settings-controls",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-controls",
+        "1280",
+        "1024",
+        "settings-controls"
+      ],
+      "returncode": 0,
+      "seconds": 65.5,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/desktop-1280x1024-100-settings-controls/profile/user"
+    },
+    {
+      "tag": "phone-480x960-100-settings",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings",
+        "480",
+        "960",
+        "settings"
+      ],
+      "returncode": 0,
+      "seconds": 38.42,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings/profile/user"
+    },
+    {
+      "tag": "phone-480x960-100-settings-ais",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-ais",
+        "480",
+        "960",
+        "settings-ais"
+      ],
+      "returncode": 0,
+      "seconds": 46.76,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-ais/profile/user"
+    },
+    {
+      "tag": "phone-480x960-100-settings-online",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-online",
+        "480",
+        "960",
+        "settings-online"
+      ],
+      "returncode": 0,
+      "seconds": 45.15,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-online/profile/user"
+    },
+    {
+      "tag": "phone-480x960-100-settings-player",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-player",
+        "480",
+        "960",
+        "settings-player"
+      ],
+      "returncode": 0,
+      "seconds": 49.46,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-settings-player/profile/user"
+    },
+    {
+      "tag": "phone-480x960-100-gameplay",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-gameplay",
+        "480",
+        "960",
+        "gameplay"
+      ],
+      "returncode": 0,
+      "seconds": 48.37,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-gameplay/profile/user"
+    },
+    {
+      "tag": "phone-480x960-150-gameplay",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-150-gameplay",
+        "480",
+        "960",
+        "gameplay"
+      ],
+      "returncode": 0,
+      "seconds": 75.26,
+      "text_size_percent": 150,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-480x960-150-gameplay/profile/user"
+    },
+    {
+      "tag": "phone-360x720-100-gameplay",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-360x720-100-gameplay",
+        "360",
+        "720",
+        "gameplay"
+      ],
+      "returncode": 0,
+      "seconds": 71.33,
+      "text_size_percent": 100,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-360x720-100-gameplay/profile/user"
+    },
+    {
+      "tag": "phone-360x720-150-gameplay",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/d3f7/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v2/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-360x720-150-gameplay",
+        "360",
+        "720",
+        "gameplay"
+      ],
+      "returncode": 0,
+      "seconds": 60.03,
+      "text_size_percent": 150,
+      "fresh_profile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/final-ui/phone-360x720-150-gameplay/profile/user"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+file:///home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e/server.ts:82
+  throw new Error('Build the web app first: npm run build -w @glob2/web');
+        ^
+
+Error: Build the web app first: npm run build -w @glob2/web
+    at file:///home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e/server.ts:82:9
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.22.1

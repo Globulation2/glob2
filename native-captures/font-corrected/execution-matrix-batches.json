@@ -1,0 +1,210 @@
+{
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+  "binary_sha256": "621b6abb7cc8190564a2bf5bb92dfba64e4f10de057b618753cd448c7b3aa8ca",
+  "jobs": [
+    {
+      "tag": "desktop-matrix-20-scale-2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2",
+        "1280",
+        "1024",
+        "20",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 314.78,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-2/capture.log"
+    },
+    {
+      "tag": "desktop-matrix-13-scale-2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-13-scale-2",
+        "1280",
+        "1024",
+        "13",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 144.57,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-13-scale-2/capture.log"
+    },
+    {
+      "tag": "phone-matrix-20-scale-2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-20-scale-2",
+        "480",
+        "960",
+        "20",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 223.05,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-20-scale-2/capture.log"
+    },
+    {
+      "tag": "desktop-matrix-10-scale-1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-10-scale-1",
+        "1280",
+        "1024",
+        "10",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 113.03,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-10-scale-1/capture.log"
+    },
+    {
+      "tag": "desktop-matrix-10-scale-2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-10-scale-2",
+        "1280",
+        "1024",
+        "10",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 325.37,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-10-scale-2/capture.log"
+    },
+    {
+      "tag": "desktop-matrix-13-scale-1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-13-scale-1",
+        "1280",
+        "1024",
+        "13",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 203.23,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-13-scale-1/capture.log"
+    },
+    {
+      "tag": "desktop-matrix-20-scale-1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-1",
+        "1280",
+        "1024",
+        "20",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 197.64,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/desktop-matrix-20-scale-1/capture.log"
+    },
+    {
+      "tag": "phone-matrix-10-scale-1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-10-scale-1",
+        "480",
+        "960",
+        "10",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 115.07,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-10-scale-1/capture.log"
+    },
+    {
+      "tag": "phone-matrix-10-scale-2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-10-scale-2",
+        "480",
+        "960",
+        "10",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 106.87,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-10-scale-2/capture.log"
+    },
+    {
+      "tag": "phone-matrix-13-scale-1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-13-scale-1",
+        "480",
+        "960",
+        "13",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 73.22,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-13-scale-1/capture.log"
+    },
+    {
+      "tag": "phone-matrix-13-scale-2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-13-scale-2",
+        "480",
+        "960",
+        "13",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 194.54,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-13-scale-2/capture.log"
+    },
+    {
+      "tag": "phone-matrix-20-scale-1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/3881/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-source-font-corrected",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-matrix-input-font-corrected/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-20-scale-1",
+        "480",
+        "960",
+        "20",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 155.61,
+      "log": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/font-corrected/phone-matrix-20-scale-1/capture.log"
+    }
+  ]
+}

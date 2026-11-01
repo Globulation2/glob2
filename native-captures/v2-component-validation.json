@@ -1,0 +1,99 @@
+{
+  "status": "Completed v2 component evidence; v3 supplemental coverage and final desktop known API fixture remain pending.",
+  "scope": {
+    "native_keys": 3393,
+    "online_keys": 2843,
+    "source_keys": 6236,
+    "samples_per_combination": 6263,
+    "font_combinations_per_viewport": 6,
+    "viewports": 2,
+    "measured_font_samples": 75156
+  },
+  "font": {
+    "producer": "3881c64e0d2b43b460a122422d2727c0cbd4d3ca",
+    "completed_batches": 12,
+    "raster_pages": 2536,
+    "selected_pages": 36,
+    "contact_sheets": 2,
+    "glyph_missing": 0,
+    "draw_budget_failures": 0,
+    "actual_canvas_overflow": 0,
+    "raw_raster_width_diagnostics": 236,
+    "raw_raster_note": "Full hinted high-resolution bitmap is preserved; production draws it at authored Bulgarian destination width. Raw bitmap measurements are not destination clipping.",
+    "scale1_pages_byte_identical": 1268
+  },
+  "final_ui": {
+    "producer": "d3f7ad00c8d4276967b8807e052d46a74d63be34",
+    "jobs_passed": 13,
+    "images": 17,
+    "draw_checksums_unchanged": [
+      {
+        "manifest": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-gameplay/gameplay.json",
+        "capture": "gameplay",
+        "checksum": 3828636654
+      },
+      {
+        "manifest": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-100-gameplay/gameplay.json",
+        "capture": "gameplay-dialog",
+        "checksum": 3828636654
+      },
+      {
+        "manifest": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-150-gameplay/gameplay.json",
+        "capture": "gameplay",
+        "checksum": 3828636654
+      },
+      {
+        "manifest": "artifacts/bulgarian/native-captures/final-ui/phone-480x960-150-gameplay/gameplay.json",
+        "capture": "gameplay-dialog",
+        "checksum": 3828636654
+      },
+      {
+        "manifest": "artifacts/bulgarian/native-captures/final-ui/phone-360x720-100-gameplay/gameplay.json",
+        "capture": "gameplay",
+        "checksum": 2826819108
+      },
+      {
+        "manifest": "artifacts/bulgarian/native-captures/final-ui/phone-360x720-100-gameplay/gameplay.json",
+        "capture": "gameplay-dialog",
+        "checksum": 2826819108
+      },
+      {
+        "manifest": "artifacts/bulgarian/native-captures/final-ui/phone-360x720-150-gameplay/gameplay.json",
+        "capture": "gameplay",
+        "checksum": 3828636654
+      },
+      {
+        "manifest": "artifacts/bulgarian/native-captures/final-ui/phone-360x720-150-gameplay/gameplay.json",
+        "capture": "gameplay-dialog",
+        "checksum": 3828636654
+      }
+    ]
+  },
+  "api_loopback_fixture": {
+    "passed": [
+      "desktop-api-unknown",
+      "phone-api-known",
+      "phone-api-unknown"
+    ],
+    "failed": [
+      "desktop-api-known"
+    ],
+    "failure": "Cold-start native HTTP timer begins before font/theme setup; desktop-known request did not reach AIS503. A harness-only start-timing patch is staged for coordinated future integration. Failed attempt retained, not counted as localized response.",
+    "production_server_coverage": false
+  },
+  "tests": {
+    "d3f7_unit_cases_passed": 40,
+    "d3f7_engine_cases_passed": 22,
+    "evidence": [
+      "artifacts/bulgarian/native-tests-corrected-unit",
+      "artifacts/bulgarian/native-tests-corrected-engine"
+    ]
+  },
+  "limits": [
+    "No claim that all2536 matrix pages were visually read; exact inspected images are listed separately.",
+    "v3 contains18new keys and may include corrections from73-entry fresh language review; v2 coverage does not cover those changed targets.",
+    "Matrix inputs retain literal placeholders and9 native catalog values with literal backslash-n paragraph separators; actual UI formatting is covered only by explicit sampled surfaces.",
+    "Linux SDL development build and simulated phone-sized viewport only; no release, physical mobile, or cross-platform execution claim.",
+    "Initial63c9d actual surfaces remain evidence for their exact producer; corrected Settings/nav/API use d3f7 and font matrices/probes use3881."
+  ]
+}

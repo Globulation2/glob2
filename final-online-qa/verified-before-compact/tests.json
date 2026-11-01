@@ -1,0 +1,878 @@
+{
+  "config": {
+    "argv": [
+      "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "artifacts/bulgarian/final-online-qa/playwright.config.mjs"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa/playwright.config.mjs",
+    "rootDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "bulgarian.spec.ts",
+          "localized-layout.spec.ts"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "phone",
+        "name": "phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "bulgarian.spec.ts",
+          "localized-layout.spec.ts"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "controls-desktop",
+        "name": "controls-desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "translated-controls.spec.mjs"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "controls-phone",
+        "name": "controls-phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "translated-controls.spec.mjs"
+        ],
+        "timeout": 240000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa/verified/tests.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-online-qa/verified/html-report",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "../../../platform/apps/web/e2e/bulgarian.spec.ts",
+      "file": "../../../platform/apps/web/e2e/bulgarian.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Bulgarian loads its bundled font and persists an explicit language choice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14197,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:12:39.623Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "bulgarian-home",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 836462,
+                        "sha256": "70d748e2092f6114fd03df7d424988dba2d50c9a5a9bf8119de61173c9844820"
+                      }
+                    },
+                    {
+                      "name": "bulgarian-signin",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 1020969,
+                        "sha256": "de287042e7abc22458915c60f8bae0035aac337b99e44be881fd8e25de54515e"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "89d812a47996ce3f70ad-5addf2193a44fa775813",
+          "file": "../../../platform/apps/web/e2e/bulgarian.spec.ts",
+          "line": 9,
+          "column": 1
+        },
+        {
+          "title": "Bulgarian loads its bundled font and persists an explicit language choice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13735,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:14:15.180Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "bulgarian-home",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 332330,
+                        "sha256": "4c784f32384d00f65fed2c0d15cba7750088838d2a6a118122e098500bfd3082"
+                      }
+                    },
+                    {
+                      "name": "bulgarian-signin",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 126877,
+                        "sha256": "abf1317d7d374535e6eeb05a69230185ff5475ce6fe4a0d5be0b626439aa3b2e"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "89d812a47996ce3f70ad-e96aefe61eb6bdb10441",
+          "file": "../../../platform/apps/web/e2e/bulgarian.spec.ts",
+          "line": 9,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+      "file": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "long localized controls fit phone columns and preserve desktop layout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 75622,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
+                    {
+                      "title": "390px /players/543fbe18-b829-4c74-8069-ee8b99c03764",
+                      "duration": 3452
+                    },
+                    {
+                      "title": "390px /maps/273ec9a8-9b7b-44b8-80f3-8403f9e4a1b8",
+                      "duration": 3000
+                    },
+                    {
+                      "title": "390px /buildings/c54aeac1-6433-4d25-8796-467633911c22",
+                      "duration": 3996
+                    },
+                    {
+                      "title": "390px /account",
+                      "duration": 2790
+                    },
+                    {
+                      "title": "390px /maps/new",
+                      "duration": 2504
+                    },
+                    {
+                      "title": "390px /ais/new",
+                      "duration": 4694
+                    },
+                    {
+                      "title": "390px /generators/new",
+                      "duration": 3343
+                    },
+                    {
+                      "title": "390px /music/new",
+                      "duration": 2675
+                    },
+                    {
+                      "title": "390px /sets/new",
+                      "duration": 3281
+                    },
+                    {
+                      "title": "390px /building-studio/5ac86a04-426d-40fa-8d16-68b9cc54a1a5",
+                      "duration": 6373
+                    },
+                    {
+                      "title": "1280px /players/543fbe18-b829-4c74-8069-ee8b99c03764",
+                      "duration": 3962
+                    },
+                    {
+                      "title": "1280px /maps/273ec9a8-9b7b-44b8-80f3-8403f9e4a1b8",
+                      "duration": 2899
+                    },
+                    {
+                      "title": "1280px /buildings/c54aeac1-6433-4d25-8796-467633911c22",
+                      "duration": 3001
+                    },
+                    {
+                      "title": "1280px /account",
+                      "duration": 2540
+                    },
+                    {
+                      "title": "1280px /maps/new",
+                      "duration": 3029
+                    },
+                    {
+                      "title": "1280px /ais/new",
+                      "duration": 3670
+                    },
+                    {
+                      "title": "1280px /generators/new",
+                      "duration": 3970
+                    },
+                    {
+                      "title": "1280px /music/new",
+                      "duration": 2638
+                    },
+                    {
+                      "title": "1280px /sets/new",
+                      "duration": 2852
+                    },
+                    {
+                      "title": "1280px /building-studio/5ac86a04-426d-40fa-8d16-68b9cc54a1a5",
+                      "duration": 6243
+                    }
+                  ],
+                  "startTime": "2026-10-31T23:12:54.620Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f16f9d5c140033279166-7da75f4cd1021a3f9950",
+          "file": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+          "line": 8,
+          "column": 1
+        },
+        {
+          "title": "long localized controls fit phone columns and preserve desktop layout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Both viewports are exercised explicitly.",
+                  "location": {
+                    "file": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e/localized-layout.spec.ts",
+                    "line": 14,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 636,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:14:30.147Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Both viewports are exercised explicitly.",
+                      "location": {
+                        "file": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e/localized-layout.spec.ts",
+                        "line": 14,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "f16f9d5c140033279166-a9681a4d793e2084d11e",
+          "file": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+          "line": 8,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "translated-controls.spec.mjs",
+      "file": "translated-controls.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "AI filter, card, detail and publish labels translate while canonical tags stay stable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7419,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:14:35.288Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-ai-filter-card",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 156117,
+                        "sha256": "24efb72b14aa5fe6cd73a36024d7333f4d49933296da9415649c71e7c874859c"
+                      }
+                    },
+                    {
+                      "name": "translated-ai-detail",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 144099,
+                        "sha256": "55aea6f80084aa18c5252b7ade5d6399b15686981cf39d710af7c1a4681a32ab"
+                      }
+                    },
+                    {
+                      "name": "translated-ai-publish",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 204854,
+                        "sha256": "872658d354b8b6886ebd07be2e400a1ff5c18c98b2f63c34b337125963cc8393"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-5e8ff55bc5f556bff25f",
+          "file": "translated-controls.spec.mjs",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "map visibility labels translate while protocol values remain public unlisted private",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2695,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:14:43.370Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-map-visibility",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 122521,
+                        "sha256": "100fd5bef2f15fdd02c9df7071e051b0ca967e4a4a9d06003251f33b06a00a1e"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-6830277120bc64fff31e",
+          "file": "translated-controls.spec.mjs",
+          "line": 41,
+          "column": 1
+        },
+        {
+          "title": "music author labels use Artist and attribution Credits and sources",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3970,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:14:46.114Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-music-attribution",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/2/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 130609,
+                        "sha256": "96f17981e319d4973ce97946d30ce901ef1bb5ebe27518192f0a8fa9767ddc80"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-a4a4e95effaa068e3fac",
+          "file": "translated-controls.spec.mjs",
+          "line": 50,
+          "column": 1
+        },
+        {
+          "title": "new set and building drafts initialize localized names without rewriting stored metadata",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11427,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:14:50.162Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "localized-new-set-title",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 201375,
+                        "sha256": "3feec50c3dcbb3d00a867d9a9cc7d2db97895e3d9a464960c84354fd8a17c0a2"
+                      }
+                    },
+                    {
+                      "name": "localized-new-building-title",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 244067,
+                        "sha256": "5fd009ddc104c982672b3bf6b6f4a4270c14d42d548b17f2ecea77fde6b8bd57"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-f65c08e8ef0f3f5bedfb",
+          "file": "translated-controls.spec.mjs",
+          "line": 58,
+          "column": 1
+        },
+        {
+          "title": "AI filter, card, detail and publish labels translate while canonical tags stay stable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7883,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:15:09.631Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-ai-filter-card",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 125162,
+                        "sha256": "ed355985db60ea934851b9b5704efbce0522892b173efe71d6a083bad20f546d"
+                      }
+                    },
+                    {
+                      "name": "translated-ai-detail",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 110660,
+                        "sha256": "964dbffb789a09832882039e69cab5c6168bc8ab15e26c0ee6152acdd48fcd32"
+                      }
+                    },
+                    {
+                      "name": "translated-ai-publish",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 166706,
+                        "sha256": "40eec3b4d22b3f8f021675db5c5064f0b9fa132c3cfe9ec79348d9082bf5a0c2"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-e85fbf2b8d3ec7864967",
+          "file": "translated-controls.spec.mjs",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "map visibility labels translate while protocol values remain public unlisted private",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2386,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:15:18.941Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-map-visibility",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/5/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 80945,
+                        "sha256": "a493699318f488d77d473d002153e0437e20ec7cc0050cfad182d43bcde48b4a"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-c22849ed05cb30a91139",
+          "file": "translated-controls.spec.mjs",
+          "line": 41,
+          "column": 1
+        },
+        {
+          "title": "music author labels use Artist and attribution Credits and sources",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1977,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:15:21.380Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-music-attribution",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/6/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 90766,
+                        "sha256": "8208b053143bc45921baf35db928f452f44292eb32a20d9c2e361eab2b0639de"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-f5e55acaf5c8b35235b8",
+          "file": "translated-controls.spec.mjs",
+          "line": 50,
+          "column": 1
+        },
+        {
+          "title": "new set and building drafts initialize localized names without rewriting stored metadata",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9049,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-31T23:15:23.461Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "localized-new-set-title",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/7/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 151677,
+                        "sha256": "dc262239ed2ce103c5e3ab6bf2100f384c95b75df3a915027fcaeb9a4154def8"
+                      }
+                    },
+                    {
+                      "name": "localized-new-building-title",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-online-qa/verified-before-compact/tests.json",
+                        "json_pointer": "/suites/2/specs/7/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 217937,
+                        "sha256": "fa3d56bf5d6ecc90819bec4fa085051a43ec8d7c093eac692dd8e20e2e20e11f"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-373385974f747a8aaa2d",
+          "file": "translated-controls.spec.mjs",
+          "line": 58,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-31T23:12:36.044Z",
+    "duration": 177186.404,
+    "expected": 11,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

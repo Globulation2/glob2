@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "family": null,
+  "seconds": {
+    "CommunityMusicUI/API failures clear queued installs and preserve Bulgarian notices [display]": 20.83224243100267,
+    "FontKerning/Arabic and Persian visual-order text is not reordered again by SDL_ttf": 0.3251800389989512,
+    "FontKerning/Bulgarian scaled advances fit authored wrapping and locale switches preserve legacy geometry": 0.8445711450040108,
+    "FontKerning/high-DPI Hindi wrapping width is preserved without cropping the raw raster": 0.22863365700322902,
+    "FontKerning/kerned words have no gap wider than the same words unkerned": 0.2190549029983231,
+    "FontKerning/language changes refresh default line height and Arabic shaping caches": 1.2436716849988443,
+    "FontKerning/pair advances equal the glyph advances plus kerning": 0.38712710000254447,
+    "FontKerning/script fonts shape clusters and preserve measured raster sizes after reload": 1.9601072009972995,
+    "FontKerning/script run composition preserves straight-alpha antialiasing": 0.28652874299586983,
+    "FontKerning/shaping clusters keep conjuncts and combining marks together": 0.1765486489966861,
+    "FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs": 0.23256466499879025,
+    "GUIInteractionCoverage/Bulgarian building failure rows wrap inside the panel and remain scrollable [display][artifacts]": 23.2577240899991,
+    "GameGUITouch/phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]": 49.692341784000746,
+    "OnlineScreenLifetime/Bulgarian AI catalogue callback uses reviewed response errors and keeps API specificity": 10.415622239001095,
+    "OnlineScreenLifetime/Bulgarian library callbacks retain API messages and summarize malformed responses": 6.749501536003663,
+    "OnlineScreenLifetime/generator examples with omitted controls use engine defaults when selecting a room": 20.29895114700048,
+    "OnlineScreenLifetime/generator installation clears pending state when restoring the library throws": 15.558528377994662,
+    "OnlineScreenLifetime/online screens closed with platform calls in flight are never called back": 10.812767629999144,
+    "Settings/all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]": 27.594793179006956,
+    "Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]": 78.71391639400099,
+    "SettingsAILibrary/AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]": 48.28398258400557,
+    "SettingsAILibrary/AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]": 64.48323791300209
+  }
+}

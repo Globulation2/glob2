@@ -1,0 +1,89 @@
+{
+  "status": "Complete BEFORE font policy correction only",
+  "batches": [
+    {
+      "batch": "desktop-matrix-10-scale-1",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 0,
+      "canvas": 0
+    },
+    {
+      "batch": "desktop-matrix-10-scale-2",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 0,
+      "canvas": 0
+    },
+    {
+      "batch": "desktop-matrix-13-scale-1",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 0,
+      "canvas": 0
+    },
+    {
+      "batch": "desktop-matrix-13-scale-2",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 1,
+      "canvas": 0
+    },
+    {
+      "batch": "desktop-matrix-20-scale-1",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 0,
+      "canvas": 0
+    },
+    {
+      "batch": "desktop-matrix-20-scale-2",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 70,
+      "canvas": 4
+    },
+    {
+      "batch": "phone-matrix-10-scale-1",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 0,
+      "canvas": 0
+    },
+    {
+      "batch": "phone-matrix-10-scale-2",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 1,
+      "canvas": 0
+    },
+    {
+      "batch": "phone-matrix-13-scale-1",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 0,
+      "canvas": 0
+    },
+    {
+      "batch": "phone-matrix-13-scale-2",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 19,
+      "canvas": 0
+    },
+    {
+      "batch": "phone-matrix-20-scale-1",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 0,
+      "canvas": 0
+    },
+    {
+      "batch": "phone-matrix-20-scale-2",
+      "samples": 6263,
+      "missing": 0,
+      "budget": 145,
+      "canvas": 0
+    }
+  ]
+}

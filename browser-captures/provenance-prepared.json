@@ -1,0 +1,84 @@
+{
+  "status": "prepared; release build still running; runtime checks pending",
+  "source": "42c5c0cf63aac32ef584a32566f95063ed24080c",
+  "environment": {
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+    "node": "v24.22.1",
+    "playwright": "1.63.0"
+  },
+  "files": {
+    "platform/packages/i18n/locales/bg.json": {
+      "sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813",
+      "bytes": 292336
+    },
+    "data/texts.bg.txt": {
+      "sha256": "ccd9b28467ec8a4e5272d2d3780d6813107eed945e424f8fac1d6ff2656d38ed",
+      "bytes": 317099
+    },
+    "browser/assets/sans-core.ttf": {
+      "sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+      "bytes": 597784
+    },
+    "data/fonts/sans.ttf": {
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "bytes": 8137448
+    },
+    "browser/tests/bulgarian.spec.js": {
+      "sha256": "dd5020b429b398991aacbb0ec6da209277ce8853f5fa5284b5ad59daf0524aee",
+      "bytes": 4754
+    },
+    "browser/package-static.py": {
+      "sha256": "02e6f624e82a5a0e33bbb4c250715a6eb651a0cd266e091faa8cc22f57ed42e7",
+      "bytes": 17289
+    },
+    "browser/serve.py": {
+      "sha256": "1da8fbc8014e80766ca7bdbd8aacc5e146c186b8c4ab8fc7f3705e319bb853bb",
+      "bytes": 937
+    },
+    "browser/package-lock.json": {
+      "sha256": "80965faa2a040a1254443dd24dac3403220f7f3ba6ba0bd0035622bc277b571d",
+      "bytes": 1654
+    },
+    "scons/web_assets.py": {
+      "sha256": "8d8e978cff72a368e1d803055c6a80afaa044c44301c70b5fa1a14ce2013f019",
+      "bytes": 20680
+    },
+    "src/app/Version.h": {
+      "sha256": "54cbfb83d3dd2874c2fe466208cfcfaba916d9d0b6ce1680c48dd45bbe5b6109",
+      "bytes": 20704
+    },
+    "src/game/SimRevision.h": {
+      "sha256": "59d6cd951f2209f6f53079016e1ed5f97d9b9695935002d6ca002a964a2d6a51",
+      "bytes": 1049
+    }
+  },
+  "build": {
+    "command": "CCACHE=1 scons release=1 target=web web_variant=both -j4 web-package",
+    "log": "artifacts/bulgarian/browser-release-cached.log",
+    "identity": {
+      "client_features": {
+        "authoring_links": false,
+        "commander": false,
+        "community_ai": true,
+        "community_generators": true
+      },
+      "client_profile": "free",
+      "distribution": "browser",
+      "mode": "release",
+      "native_wss": false,
+      "role": "client",
+      "target": "web",
+      "toolchain": "emscripten"
+    },
+    "options": {
+      "release": "1",
+      "target": "web",
+      "web_variant": "both"
+    }
+  },
+  "limits": [
+    "Chromium only; Firefox/WebKit not run",
+    "No actual multiplayer session or external account provider actions",
+    "Gzip evidence host subclasses browser/serve.py isolation handler; production CDN not tested"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "family": null,
+  "seconds": {
+    "FontKerning/Arabic and Persian visual-order text is not reordered again by SDL_ttf": 0.6870803239944507,
+    "FontKerning/Bulgarian scaled advances fit authored wrapping and locale switches preserve legacy geometry": 0.6906657630024711,
+    "FontKerning/high-DPI Hindi wrapping width is preserved without cropping the raw raster": 0.3902886439973372,
+    "FontKerning/kerned words have no gap wider than the same words unkerned": 0.4772453969999333,
+    "FontKerning/language changes refresh default line height and Arabic shaping caches": 1.3475901320052799,
+    "FontKerning/pair advances equal the glyph advances plus kerning": 0.42118519399809884,
+    "FontKerning/script fonts shape clusters and preserve measured raster sizes after reload": 1.8443403950004722,
+    "FontKerning/script run composition preserves straight-alpha antialiasing": 0.4861428049989627,
+    "FontKerning/shaping clusters keep conjuncts and combining marks together": 0.18828678200225113,
+    "FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs": 0.2390350360001321
+  }
+}

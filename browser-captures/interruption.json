@@ -1,0 +1,26 @@
+{
+  "pid": 1718501,
+  "command": "/usr/bin/python3 /usr/bin/scons release=1 target=web web_variant=both -j4 web-package ",
+  "cwd": "/home/bradley/.codex/worktrees/5a87/glob2",
+  "signal": "SIGINT",
+  "sent_utc": "2026-11-01T01:51:21Z",
+  "reason": "Root coordinated stop for final reviewed production bridge integration; preserve incremental objects",
+  "no_child_signals": true,
+  "exit_observed_utc": "2026-11-01T01:53:10Z",
+  "log_tail": [
+    "      |                              ^",
+    "libgag/include/SDLGraphicContext.h:342:16: note: overridden virtual function is here",
+    "  342 |                 virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);",
+    "      |                              ^",
+    "36 warnings generated.",
+    "scons: Build interrupted.",
+    "scons: building terminated because of errors.",
+    "scons: writing .sconsign file."
+  ],
+  "serial_objects": 360,
+  "preserved_log": {
+    "path": "artifacts/bulgarian/browser-captures/release-before-bridge-interrupted.log",
+    "sha256": "f4f120a9d5fe6b23b0416cde4d3fd4fa38b8b3e554c46008f867fa4464dc21f0",
+    "bytes": 8489016
+  }
+}

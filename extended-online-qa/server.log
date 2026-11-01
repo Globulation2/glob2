@@ -1,0 +1,45 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+error: out of shared memory
+    at /home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/pg/lib/client.js:694:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async PostgresConnection.executeQuery (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/dialect/postgres/postgres-driver.js:113:28)
+    at async file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-executor/query-executor-base.js:39:24
+    at async DefaultConnectionProvider.provideConnection (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/driver/default-connection-provider.js:10:20)
+    at async DefaultQueryExecutor.executeQuery (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-executor/query-executor-base.js:38:28)
+    at async InsertQueryBuilder.execute (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-builder/insert-query-builder.js:1101:24)
+    at async InsertQueryBuilder.executeTakeFirst (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-builder/insert-query-builder.js:1113:26)
+    at async InsertQueryBuilder.executeTakeFirstOrThrow (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-builder/insert-query-builder.js:1122:24)
+    at async seedHistory (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/apps/api/test/historySeed.ts:400:19)
+    at PostgresConnection.executeQuery (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/dialect/postgres/postgres-driver.js:126:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-executor/query-executor-base.js:39:24
+    at async DefaultConnectionProvider.provideConnection (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/driver/default-connection-provider.js:10:20)
+    at async DefaultQueryExecutor.executeQuery (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-executor/query-executor-base.js:38:28)
+    at async InsertQueryBuilder.execute (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-builder/insert-query-builder.js:1101:24)
+    at async InsertQueryBuilder.executeTakeFirst (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-builder/insert-query-builder.js:1113:26)
+    at async InsertQueryBuilder.executeTakeFirstOrThrow (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/kysely/dist/query-builder/insert-query-builder.js:1122:24)
+    at async seedHistory (file:///home/bradley/.codex/worktrees/5a87/glob2/platform/apps/api/test/historySeed.ts:400:19)
+    at async file:///home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e/server.ts:243:14 {
+  length: 138,
+  severity: 'ERROR',
+  code: '53200',
+  detail: undefined,
+  hint: 'You might need to increase max_locks_per_transaction.',
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'lock.c',
+  line: '1033',
+  routine: 'LockAcquireExtended'
+}
+
+Node.js v24.22.1

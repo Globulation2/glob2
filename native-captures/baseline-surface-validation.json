@@ -1,0 +1,338 @@
+{
+  "status": "All26 initial capture jobs successful; full catalog matrices not yet executed",
+  "producer_revision": "63c9d875a51094b28930296d07a5a7ec6a9a808d",
+  "binary_sha256": "7e96f35a1925aa8292534ae4f8313d9595d6c823b19019e847f810bc6bc31257",
+  "jobs": 26,
+  "actual_surface_jobs": 24,
+  "synthetic_probe_jobs": 2,
+  "manifests": [
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-main/main.json",
+      "sha256": "19fa86fc5580c41012eaa076dae4c2d3abf6b383e95b19bc4bfc175d11dba00c",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-settings/settings.json",
+      "sha256": "e56c68ee087d525a5bb0a5010b353ac54ffcca79b12890df627683fb3020dabc",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-settings-audio/settings-audio.json",
+      "sha256": "2881364fb16cc652cb30d1c228eb9be49de297f7d12f70ad84d46e81b0dc672d",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-lobby/lobby.json",
+      "sha256": "de324e188b2dfc5961ecec2152f76beb8762c769b07ddb3471a9eae46278f8fc",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-lobby-players/lobby-players.json",
+      "sha256": "831ba13ca24082965f7f7b3ecab97f2bf9408138def4e8c4c33e32efc9c2eb16",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-new-map/new-map.json",
+      "sha256": "8bd67001b32e14af4b47788c093b4989dea3b4581ac34159e85d46805f11a293",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-editor/editor.json",
+      "sha256": "8221491c851d6e31ccffaa7e66032af95768e193061b9c69cb8a2f2fcd6264cf",
+      "kind": "production-editor-draft-overlay",
+      "images": 3
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-gameplay/gameplay.json",
+      "sha256": "2df990b1cd1c5d9a8126f4c53a155ade2e465e8ddfa0edfdd221b2d31ed24d5b",
+      "kind": "production-game-draft-overlay",
+      "images": 4
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial/tutorial-introduction.json",
+      "sha256": "350ac92434b351180c0b1d3f8f2b32f30a41f2d3af7c0d24b9db2ef536b1eefe",
+      "kind": "production-game-draft-overlay",
+      "images": 2
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial-swimming/tutorial-swimming.json",
+      "sha256": "9082fc72b1df8a6293565941c6dcc6ec634b92042639804f07db57727d989e08",
+      "kind": "production-game-draft-overlay",
+      "images": 3
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training/tutorial-warrior-training.json",
+      "sha256": "d6488e5b9e195d488cb0b12f36d83986d72afc224ac17825f89df9bfb8b53a33",
+      "kind": "production-game-draft-overlay",
+      "images": 3
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-tutorial-fortifications/tutorial-fortifications.json",
+      "sha256": "8e1d0f682080d6071a2afc43b0e73134f2a2f3b8eeb68dd7dca2f7eb28b32956",
+      "kind": "production-game-draft-overlay",
+      "images": 2
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-main/main.json",
+      "sha256": "31b70d65f5ee12aa7eb6c9acc039b79ee2c9ec9a439501cbb85f681f385f6f2a",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-settings/settings.json",
+      "sha256": "3f971d259721ef368a1d5b83e7aa9d71b3c3177388a65e400e3f6c097941a206",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-settings-audio/settings-audio.json",
+      "sha256": "31e8004d90adbaeb9aa39d20815553988635182c2ff7f2c415d4d82b47b415a8",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-lobby/lobby.json",
+      "sha256": "eb0a2909fefcce37c5f53f23a718fdcda5463a230e39c84242cd4af3e330099f",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-lobby-players/lobby-players.json",
+      "sha256": "2c63b61a167e883196a509d7b51ffd110913943a18bb7c464cd6331cba70a280",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-new-map/new-map.json",
+      "sha256": "3b42eb6c741f54dab32d46cf128696285fe2ab8b4793e74445c951bead0ae793",
+      "kind": "production-screen-draft-overlay",
+      "images": 1
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-editor/editor.json",
+      "sha256": "7eca7bbb90d7f60354404ba75324c636be01e1427e58b3545ae529e39350bd6d",
+      "kind": "production-editor-draft-overlay",
+      "images": 3
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-gameplay/gameplay.json",
+      "sha256": "f4a470db936389781d9922a3d1bbbceb698fb508a17f9d2136f92b5f7a39113e",
+      "kind": "production-game-draft-overlay",
+      "images": 2
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial/tutorial-introduction.json",
+      "sha256": "fba6ee77c7afc947ebd948d135b379c124e40d300cfc3594a42e1f5d43e1d107",
+      "kind": "production-game-draft-overlay",
+      "images": 2
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial-swimming/tutorial-swimming.json",
+      "sha256": "bbe179648b4d17c5f54b57b54032cb99d0809c2b6ecdd375389a96089432d6e7",
+      "kind": "production-game-draft-overlay",
+      "images": 3
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial-warrior-training/tutorial-warrior-training.json",
+      "sha256": "58d824553fcceee19717439f1e549c7efb2772bc2aafec7b811469f47d9355d8",
+      "kind": "production-game-draft-overlay",
+      "images": 3
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-tutorial-fortifications/tutorial-fortifications.json",
+      "sha256": "8b2fcca6bc3b68062863eec426d101dc670689c3db97d8217f4ad12bfa60d587",
+      "kind": "production-game-draft-overlay",
+      "images": 2
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/desktop-font-probe/font-matrix.json",
+      "sha256": "d789187f26c54a01604ab095c6bb1e96eeacab82546c6fca74dbd386aca94f4a",
+      "kind": "production-font-matrix",
+      "images": 6
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/phone-font-probe/font-matrix.json",
+      "sha256": "c9b0f7a594a06e1a17bbd4f937f9e2823f05f2347c623dee1d82ecfe80cb1f05",
+      "kind": "production-font-matrix",
+      "images": 6
+    }
+  ],
+  "drawing_checksum_equalities": [
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-editor/editor.json",
+      "name": "editor",
+      "checksum": 665534151
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-editor/editor.json",
+      "name": "editor-terrain",
+      "checksum": 665534151
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-editor/editor.json",
+      "name": "editor-dialog",
+      "checksum": 665534151
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-gameplay/gameplay.json",
+      "name": "gameplay",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-gameplay/gameplay.json",
+      "name": "gameplay-zoom-plus",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-gameplay/gameplay.json",
+      "name": "gameplay-zoom-fit",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-gameplay/gameplay.json",
+      "name": "gameplay-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial/tutorial-introduction.json",
+      "name": "tutorial-introduction",
+      "checksum": 1049833793
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial/tutorial-introduction.json",
+      "name": "tutorial-introduction-dialog",
+      "checksum": 1049833793
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial-swimming/tutorial-swimming.json",
+      "name": "tutorial-swimming-briefing",
+      "checksum": 3603766124
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial-swimming/tutorial-swimming.json",
+      "name": "tutorial-swimming",
+      "checksum": 3603766124
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial-swimming/tutorial-swimming.json",
+      "name": "tutorial-swimming-dialog",
+      "checksum": 3603766124
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training/tutorial-warrior-training.json",
+      "name": "tutorial-warrior-training-briefing",
+      "checksum": 222620682
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training/tutorial-warrior-training.json",
+      "name": "tutorial-warrior-training",
+      "checksum": 222620682
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial-warrior-training/tutorial-warrior-training.json",
+      "name": "tutorial-warrior-training-dialog",
+      "checksum": 222620682
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial-fortifications/tutorial-fortifications.json",
+      "name": "tutorial-fortifications",
+      "checksum": 3237625279
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/desktop-tutorial-fortifications/tutorial-fortifications.json",
+      "name": "tutorial-fortifications-dialog",
+      "checksum": 3237625279
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-editor/editor.json",
+      "name": "editor",
+      "checksum": 1036934584
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-editor/editor.json",
+      "name": "editor-terrain",
+      "checksum": 1036934584
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-editor/editor.json",
+      "name": "editor-dialog",
+      "checksum": 1036934584
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-gameplay/gameplay.json",
+      "name": "gameplay",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-gameplay/gameplay.json",
+      "name": "gameplay-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial/tutorial-introduction.json",
+      "name": "tutorial-introduction",
+      "checksum": 1049833793
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial/tutorial-introduction.json",
+      "name": "tutorial-introduction-dialog",
+      "checksum": 1049833793
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial-swimming/tutorial-swimming.json",
+      "name": "tutorial-swimming-briefing",
+      "checksum": 3603766124
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial-swimming/tutorial-swimming.json",
+      "name": "tutorial-swimming",
+      "checksum": 3603766124
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial-swimming/tutorial-swimming.json",
+      "name": "tutorial-swimming-dialog",
+      "checksum": 3603766124
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial-warrior-training/tutorial-warrior-training.json",
+      "name": "tutorial-warrior-training-briefing",
+      "checksum": 222620682
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial-warrior-training/tutorial-warrior-training.json",
+      "name": "tutorial-warrior-training",
+      "checksum": 222620682
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial-warrior-training/tutorial-warrior-training.json",
+      "name": "tutorial-warrior-training-dialog",
+      "checksum": 222620682
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial-fortifications/tutorial-fortifications.json",
+      "name": "tutorial-fortifications",
+      "checksum": 1455014497
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/phone-tutorial-fortifications/tutorial-fortifications.json",
+      "name": "tutorial-fortifications-dialog",
+      "checksum": 1455014497
+    }
+  ],
+  "actual_image_count": 44,
+  "synthetic_probe_pages": 12,
+  "inspection_record": "visual-inspection.json",
+  "limits": [
+    "Phone HUD Build/Tools word splitting is a known before-fix finding with staged patch.",
+    "Generic backend names Software/Automatic and API error translation fixes planned by root; these initial images preserve actual before state.",
+    "Not every screenshot/page/line visually inspected; exact inspected files listed separately.",
+    "Failed driver attempts and incomplete matrix attempts remain local, never counted successful.",
+    "Linux dev_fast pinned SDL desktop executable and phone presentation only; not release readiness or physical mobile-device coverage."
+  ]
+}

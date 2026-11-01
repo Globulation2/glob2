@@ -1,0 +1,26 @@
+{
+  "pid": 2324588,
+  "command": "/usr/bin/python3 /usr/bin/scons release=1 target=web web_variant=both -j4 web-package ",
+  "cwd": "/home/bradley/.codex/worktrees/5a87/glob2",
+  "signal": "SIGINT",
+  "sent_utc": "2026-11-01T02:22:13Z",
+  "reason": "Root coordinated stop for independently reviewed Bulgarian authored-width/font caption fix",
+  "no_child_signals": true,
+  "exit_observed_utc": "2026-11-01T02:24:02Z",
+  "serial_objects": 463,
+  "log_tail": [
+    "      |              ^",
+    "src/map/editor/MapEdit.h:82:15: note: overridden virtual function is here",
+    "   82 |         virtual void draw()=0;",
+    "      |                      ^",
+    "37 warnings generated.",
+    "scons: Build interrupted.",
+    "scons: building terminated because of errors.",
+    "scons: writing .sconsign file."
+  ],
+  "preserved_log": {
+    "path": "artifacts/bulgarian/browser-captures/release-before-bg-font-interrupted.log",
+    "sha256": "73a3928b931f5e156dbdc6be44558a823df7badfaed3f5f7b0dd9e376a388b37",
+    "bytes": 1866601
+  }
+}

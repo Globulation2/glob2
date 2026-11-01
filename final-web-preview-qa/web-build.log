@@ -1,0 +1,248 @@
+
+> @glob2/web@0.1.0 build
+> python3 ../../../tools/music/build_web.py && vite build --outDir /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-web-preview-qa/dist --emptyOutDir
+
+Glob2 design system: 220b965b061e402df7531fa0f9ad5104bf29a638
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 2157 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../artifacts/bulgarian/final-web-preview-qa/dist/index.html                                          2.51 kB │ gzip:   0.85 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/hospital-CZ8mxl8H.webp                       4.16 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/glob-64-DRYAgOz9.png                         4.51 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/school-3kPEHozp.webp                         4.60 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/war-flag-ClpBapaP.webp                       4.61 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/exploration-flag-DEYVuIyb.webp               5.54 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/wood-BvhIq-A_.webp                           5.59 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/clearing-flag-Dr2FX3nZ.webp                  5.94 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/stone-CR7HLFDE.webp                          6.14 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/racetrack-BEfp0i51.webp                      6.45 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/inn-pEFHk1BY.webp                            6.51 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/fruit-C8P4nJfl.webp                          7.36 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/papyrus-sl-e5iDV.webp                        7.49 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/algae-Cf7k497T.webp                          7.53 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/swarm-C7Cw-oud.webp                          9.26 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/wordmark-letters-Cs-rHGsD.webp              14.87 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/worker-east-Bqinqqlq.webp                   22.38 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansThai-Regular-B7bm4NDe.ttf           37.75 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/nunito-BzFMHfZw.woff2                       39.12 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/glob2-sans-CPDKeuVg.woff2                   52.08 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansGurmukhi-Regular-DhgDvr06.ttf       53.00 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansTamil-Regular-DwgvaMU5.ttf          74.24 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansOriya-Regular-tI0-SzTV.ttf          95.77 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansMalayalam-Regular-CF5BxcIb.ttf     111.72 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/codicon-ngg6Pgfi.ttf                       121.97 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansKannada-Regular-B7XP5do4.ttf       151.94 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/colony-960-DI2K-hM_.webp                   159.77 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansMyanmar-Regular-D8mhhRmj.ttf       195.40 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansTelugu-Regular-Blx13bra.ttf        197.22 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansBengali-Regular-ByHju1oA.ttf       200.04 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansGujarati-Regular-D1OY9laU.ttf      208.45 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansDevanagari-Regular-CIJEaBX8.ttf    219.21 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansArabic-Regular-CEibNoL-.ttf        240.45 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/editor.worker-O-CH8JUO.js                  280.62 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/NotoSansEthiopic-Regular-CbGqmaVa.ttf      344.32 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/colony-1600-yR11DKDO.webp                  385.40 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/json.worker-B4dEhy0e.js                    409.98 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sans-core-BpUcAg98.ttf                     597.78 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/html.worker-JUzsMP-j.js                    720.23 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/css.worker-DFdt6_zu.js                   1,055.17 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/colony-loop-DySpPHVm.mp4                 6,831.27 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ts.worker-CmEKzkmF.js                    6,905.53 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Account-BY2xzm8t.css                         1.05 kB │ gzip:   0.43 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/buildings-rL_YR8W3.css                       1.70 kB │ gzip:   0.61 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/TerrainStudio-BTDnIWOD.css                   1.85 kB │ gzip:   0.77 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/CodingStudio-BxPoZYIn.css                    2.87 kB │ gzip:   1.08 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sets-Z-XzXdoP.css                            2.96 kB │ gzip:   1.03 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Ais-Cl7SnRIn.css                             3.00 kB │ gzip:   1.10 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/AiBuildingStudio-DcRBDZ1j.css                3.67 kB │ gzip:   1.21 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/library-C5eXv-Ec.css                         6.21 kB │ gzip:   1.59 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/MusicStudio-Bu9vl4DZ.css                     7.14 kB │ gzip:   2.18 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Studio-B8AFNURH.css                          8.60 kB │ gzip:   2.20 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/studio-CnRZcrxV.css                         34.64 kB │ gzip:   7.20 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/index-CY5UgJy-.css                          94.04 kB │ gzip:  22.19 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/editor-Br_kD0ds.css                        145.98 kB │ gzip:  22.61 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/CodeEditor-DbkJDAPS.js                       0.06 kB │ gzip:   0.08 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Workspace-BUjA0NWi.js                        0.07 kB │ gzip:   0.07 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/BuildingStudio-CyJ5jcMU.js                   0.07 kB │ gzip:   0.08 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/typescript-DHbCRfe_.js                       0.07 kB │ gzip:   0.09 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Ais-CAC6uEIS.js                              0.09 kB │ gzip:   0.09 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/assetUrls-Bjg43JKQ.js                        0.18 kB │ gzip:   0.17 kB │ map:      0.72 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/AiStudio-BHzBCbg1.js                         0.22 kB │ gzip:   0.19 kB │ map:      0.54 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/GeneratorStudio-BgiBWDq6.js                  0.24 kB │ gzip:   0.20 kB │ map:      0.59 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/playerLinks-CEVZiiwE.js                      0.41 kB │ gzip:   0.30 kB │ map:      1.25 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/theme-BxDTmaaM.js                            0.57 kB │ gzip:   0.40 kB │ map:      1.93 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/useRevisionUndo-Llbdasik.js                  0.70 kB │ gzip:   0.44 kB │ map:      2.70 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/rolldown-runtime-hePW80VL.js                 0.71 kB │ gzip:   0.42 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/generatorApi-LP2rKdPW.js                     0.71 kB │ gzip:   0.40 kB │ map:      2.59 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/javascript-CqkmOUwU.js                       0.72 kB │ gzip:   0.44 kB │ map:      1.95 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/azcli-Bc_sGQ0U.js                            0.75 kB │ gzip:   0.32 kB │ map:      2.34 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/storage-6MeanjWz.js                          0.84 kB │ gzip:   0.47 kB │ map:      3.55 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ini-sBoK_t0W.js                              1.00 kB │ gzip:   0.52 kB │ map:      3.05 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sets-BVeThzb3.js                             1.10 kB │ gzip:   0.70 kB │ map:      3.15 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/workers-ChngIhmj.js                          1.26 kB │ gzip:   0.60 kB │ map:      8.70 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/csp-bTuwJoIa.js                              1.31 kB │ gzip:   0.51 kB │ map:      2.91 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/preload-helper-DjzSQ1t3.js                   1.38 kB │ gzip:   0.75 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/pla-CopQ2nXW.js                              1.58 kB │ gzip:   0.64 kB │ map:      4.96 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/scheme-BeGwcela.js                           1.67 kB │ gzip:   0.81 kB │ map:      4.38 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/flow9-C5_-GSwl.js                            1.71 kB │ gzip:   0.85 kB │ map:      4.95 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sb-CcwsVR0C.js                               1.72 kB │ gzip:   0.82 kB │ map:      4.86 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/bat-i0X4ZdIN.js                              1.73 kB │ gzip:   0.85 kB │ map:      4.60 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/dockerfile-DZFCIeNp.js                       1.77 kB │ gzip:   0.66 kB │ map:      5.40 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/pascaligo-D-ptJ9y-.js                        1.90 kB │ gzip:   0.90 kB │ map:      5.75 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/xml-B_K0K6Px.js                              1.96 kB │ gzip:   0.77 kB │ map:     10.23 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/cameligo-DMUM7wLl.js                         2.02 kB │ gzip:   0.95 kB │ map:      6.05 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/lua-CsQS60Ue.js                              2.02 kB │ gzip:   0.92 kB │ map:      5.94 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/objective-c-FvmIjYaQ.js                      2.15 kB │ gzip:   1.04 kB │ map:      5.74 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/graphql-fmXr3nnJ.js                          2.16 kB │ gzip:   1.03 kB │ map:      6.23 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sparql-D_Lu-MrJ.js                           2.26 kB │ gzip:   1.14 kB │ map:      6.11 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/lexon-CfSJPG6W.js                            2.33 kB │ gzip:   0.92 kB │ map:      6.50 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/mips-CIPQ_RoX.js                             2.36 kB │ gzip:   1.06 kB │ map:      6.68 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/go-C-y9NEjX.js                               2.39 kB │ gzip:   1.15 kB │ map:      7.15 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/bicep-B5-_aFwp.js                            2.41 kB │ gzip:   0.95 kB │ map:      6.36 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sophia-CRfGWb83.js                           2.52 kB │ gzip:   1.19 kB │ map:      6.80 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/m3-D-oSqn_W.js                               2.56 kB │ gzip:   1.32 kB │ map:      6.81 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/typespec-B8J7ngcE.js                         2.67 kB │ gzip:   1.05 kB │ map:      7.13 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/pascal-DrH0SRf2.js                           2.68 kB │ gzip:   1.38 kB │ map:      7.46 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/fsharp-C8Ef5oNN.js                           2.69 kB │ gzip:   1.31 kB │ map:      7.13 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/qsharp-DkqhCAOL.js                           2.76 kB │ gzip:   1.41 kB │ map:      7.83 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/shell-CC2rA5mh.js                            2.85 kB │ gzip:   1.20 kB │ map:      7.53 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/r-BwWrilGY.js                                2.87 kB │ gzip:   1.28 kB │ map:      7.67 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/java-BEtHBSE6.js                             2.94 kB │ gzip:   1.38 kB │ map:      8.00 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/cssMode-Renw7G9O.js                          2.99 kB │ gzip:   1.16 kB │ map:     14.85 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/redis-ClamHrr6.js                            3.07 kB │ gzip:   1.45 kB │ map:      7.82 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/kotlin-BOotOW0E.js                           3.08 kB │ gzip:   1.45 kB │ map:      8.14 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/cypher-CVaqCwHa.js                           3.09 kB │ gzip:   1.43 kB │ map:      8.28 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/powershell-DmHpPYUd.js                       3.10 kB │ gzip:   1.37 kB │ map:      8.65 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/tcl-DISqw1ZD.js                              3.31 kB │ gzip:   1.36 kB │ map:      8.38 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/liquid-BPYKTQik.js                           3.38 kB │ gzip:   1.46 kB │ map:     13.61 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/coffee-Ba7i2nA0.js                           3.40 kB │ gzip:   1.28 kB │ map:      9.35 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/htmlMode-DxYdofEb.js                         3.45 kB │ gzip:   1.28 kB │ map:     16.14 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/hcl-CpzslTdj.js                              3.49 kB │ gzip:   1.49 kB │ map:      8.15 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/python-CYcnbbI0.js                           3.50 kB │ gzip:   1.46 kB │ map:     15.21 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/apex-BWPQTe0t.js                             3.51 kB │ gzip:   1.74 kB │ map:      9.71 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/yaml-BOA8zHmy.js                             3.58 kB │ gzip:   1.33 kB │ map:     14.65 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/markdown-Cimd5fb3.js                         3.68 kB │ gzip:   1.38 kB │ map:     10.50 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/rust-DdL9SqIa.js                             3.70 kB │ gzip:   1.84 kB │ map:      9.63 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/less-B9JPFI3C.js                             3.79 kB │ gzip:   1.40 kB │ map:      8.81 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/restructuredtext-BYgofb2h.js                 3.79 kB │ gzip:   1.37 kB │ map:      9.03 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/dart-onAF5SnQ.js                             3.97 kB │ gzip:   1.64 kB │ map:     10.32 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/studio-XqBs6WEw.js                           4.08 kB │ gzip:   1.77 kB │ map:     18.82 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/library-BYRcZoJv.js                          4.11 kB │ gzip:   1.53 kB │ map:     20.18 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/csharp-BKxtCVv1.js                           4.16 kB │ gzip:   1.70 kB │ map:     11.21 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/msdax-DauUninz.js                            4.31 kB │ gzip:   1.91 kB │ map:     10.18 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/mdx-E_zH5w06.js                              4.36 kB │ gzip:   1.25 kB │ map:     15.77 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/css-DIMkf-bt.js                              4.40 kB │ gzip:   1.37 kB │ map:     10.81 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/pug-Z5eAx3Zn.js                              4.50 kB │ gzip:   1.64 kB │ map:     13.22 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/swift-Bxkupp3x.js                            4.52 kB │ gzip:   2.02 kB │ map:     10.79 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/html-BOEK-QRu.js                             4.55 kB │ gzip:   1.19 kB │ map:     17.66 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ecl-D05T4iGw.js                              4.66 kB │ gzip:   2.23 kB │ map:     11.68 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/typescript-CbBi43l6.js                       4.70 kB │ gzip:   1.97 kB │ map:     17.33 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/cpp-C7h46wYY.js                              4.78 kB │ gzip:   2.06 kB │ map:     12.13 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/monaco.contribution-ChuT74No.js              4.82 kB │ gzip:   1.67 kB │ map:     19.12 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/LineChart-BwiWD76i.js                        4.88 kB │ gzip:   2.16 kB │ map:     19.36 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/vb-DV3o63ZY.js                               5.34 kB │ gzip:   2.05 kB │ map:     12.83 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/twig-De2hgUGE.js                             5.82 kB │ gzip:   1.52 kB │ map:     16.02 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/scss-gp-XZpBa.js                             6.30 kB │ gzip:   1.74 kB │ map:     15.78 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/handlebars-CSh1zEJR.js                       6.33 kB │ gzip:   1.41 kB │ map:     21.65 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/julia-Bri6UV-V.js                            6.54 kB │ gzip:   2.68 kB │ map:     16.25 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/systemverilog-Bz4Y3fRF.js                    6.90 kB │ gzip:   2.76 kB │ map:     17.07 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/st-DbInun42.js                               6.98 kB │ gzip:   2.28 kB │ map:     16.62 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/scala-DHpiXF5c.js                            7.15 kB │ gzip:   2.11 kB │ map:     17.56 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/wgsl-DpFanUEy.js                             7.22 kB │ gzip:   2.76 kB │ map:     13.93 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/perl-oz_6vUea.js                             7.39 kB │ gzip:   3.13 kB │ map:     18.60 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/postiats-43DmfD33.js                         7.41 kB │ gzip:   2.43 kB │ map:     26.27 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/php-nr791fC2.js                              7.78 kB │ gzip:   2.06 kB │ map:     19.45 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/router-Myna3l6k.js                           7.79 kB │ gzip:   2.90 kB │ map:     27.97 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/razor-B4ublwSK.js                            8.15 kB │ gzip:   2.08 kB │ map:     25.97 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/clojure-Cm7r79vr.js                          8.25 kB │ gzip:   3.53 kB │ map:     17.87 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ruby-DezsRK8O.js                             8.25 kB │ gzip:   2.59 kB │ map:     22.91 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/en-Cg87C7F0.js                               8.54 kB │ gzip:   3.93 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sql-NEE52Syq.js                              8.88 kB │ gzip:   3.78 kB │ map:     20.60 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/protobuf-C531GsRP.js                         8.94 kB │ gzip:   2.08 kB │ map:     21.65 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/mysql-SOo6toE5.js                            9.70 kB │ gzip:   4.02 kB │ map:     20.93 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/elixir-6RTg0lbw.js                          10.16 kB │ gzip:   2.54 kB │ map:     27.31 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Player-wcT_EaUR.js                          10.30 kB │ gzip:   3.27 kB │ map:     31.53 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/redshift-DT7zqm-g.js                        10.37 kB │ gzip:   4.28 kB │ map:     20.81 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/react-DXM13qKM.js                           10.97 kB │ gzip:   4.04 kB │ map:     25.55 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/BuildingLibrary-CX-doIMY.js                 11.08 kB │ gzip:   3.52 kB │ map:     35.22 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/abap-08VXUWAP.js                            11.73 kB │ gzip:   5.18 kB │ map:     28.59 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/pgsql-DTj74zXo.js                           11.95 kB │ gzip:   4.47 kB │ map:     22.85 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/jsonMode-BSTGAWLk.js                        12.22 kB │ gzip:   4.48 kB │ map:     79.50 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Studio-CblGaG1s.js                          12.34 kB │ gzip:   4.47 kB │ map:     50.72 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Library-DXE-CTNz.js                         12.44 kB │ gzip:   3.93 kB │ map:     38.27 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/common-0_uFqNOb.js                          12.78 kB │ gzip:   5.01 kB │ map:     40.85 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/src-BhS9kAri.js                             13.24 kB │ gzip:   5.38 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Generators-BbyPvTmc.js                      14.15 kB │ gzip:   4.06 kB │ map:     43.54 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/art-VT4TogOL.js                             14.21 kB │ gzip:  10.54 kB │ map:     20.20 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/powerquery-D3hlyOfw.js                      15.39 kB │ gzip:   4.77 kB │ map:     26.38 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/BuildingStudio-BhlHXFM9.js                  15.39 kB │ gzip:   4.97 kB │ map:     52.29 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/freemarker2-BlDkF-qS.js                     15.59 kB │ gzip:   4.01 kB │ map:     63.65 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/solidity-BEEn4gHE.js                        16.03 kB │ gzip:   4.43 kB │ map:     32.05 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Match-XrTpZ3HF.js                           17.27 kB │ gzip:   5.43 kB │ map:     52.16 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Library-DWieru9q.js                         17.61 kB │ gzip:   5.55 kB │ map:     55.31 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Editor-BaT5jpsU.js                          17.87 kB │ gzip:   6.22 kB │ map:      1.54 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Cover-Co71JoQI.js                           18.32 kB │ gzip:   6.23 kB │ map:     54.47 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/TerrainStudio-BqDHOo5s.js                   18.58 kB │ gzip:   6.27 kB │ map:     66.77 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/tsMode-CVRQbc8j.js                          21.90 kB │ gzip:   6.19 kB │ map:     83.01 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Ais-Cv-X00Ks.js                             21.91 kB │ gzip:   6.99 kB │ map:     69.95 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/i18n-BGprha6e.js                            22.32 kB │ gzip:   8.65 kB │ map:     76.94 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Workspace-CtMOaPVl.js                       24.11 kB │ gzip:   7.72 kB │ map:     85.60 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/AiBuildingStudio-zSnneEsM.js                24.12 kB │ gzip:   7.79 kB │ map:     82.17 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Maps-Cqqv4BbD.js                            24.38 kB │ gzip:   7.51 kB │ map:     78.15 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/MusicStudio-C1BhbECB.js                     25.66 kB │ gzip:   8.34 kB │ map:     86.36 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/lspLanguageFeatures-CVqJuzBb.js             28.28 kB │ gzip:   7.21 kB │ map:    138.85 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Account-B9-ykIdh.js                         34.07 kB │ gzip:  10.34 kB │ map:    112.66 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/MapStudio-CUiEv0qB.js                       36.00 kB │ gzip:  11.28 kB │ map:    121.07 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/CodingStudio-R3dceXRD.js                    39.83 kB │ gzip:  12.22 kB │ map:    135.47 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Admin-D61OOlxW.js                           50.14 kB │ gzip:  12.43 kB │ map:    152.91 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/CodeEditor-D4XDY062.js                      54.52 kB │ gzip:  14.74 kB │ map:    274.06 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/Editor-DUwmXv-0.js                         113.08 kB │ gzip:  20.96 kB │ map:      7.40 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/zh-Hans-bZH6Yc87.js                        187.30 kB │ gzip:  70.08 kB │ map:    210.48 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/en-CWWpmF90.js                             187.58 kB │ gzip:  44.02 kB │ map:    212.94 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/zh-Hant-C3A5_TXy.js                        187.66 kB │ gzip:  70.22 kB │ map:    210.84 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/id-Ct-7hvLj.js                             196.45 kB │ gzip:  64.86 kB │ map:    219.62 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/da-2h8QfWZJ.js                             197.49 kB │ gzip:  66.35 kB │ map:    221.02 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/eo-CzCSVFh4.js                             199.91 kB │ gzip:  67.31 kB │ map:    223.47 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sv-DPUJPLNr.js                             200.34 kB │ gzip:  67.27 kB │ map:    223.88 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sl-C0ewvLyJ.js                             203.21 kB │ gzip:  69.62 kB │ map:    227.47 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/nl-D7GC-3mb.js                             203.39 kB │ gzip:  67.24 kB │ map:    226.93 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/fi-QfSx5Bhe.js                             203.78 kB │ gzip:  69.80 kB │ map:    227.34 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/tr-BBaLNpFu.js                             205.08 kB │ gzip:  69.24 kB │ map:    228.62 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sw-DNI3UF41.js                             205.10 kB │ gzip:  67.15 kB │ map:    228.67 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/cs-CSgMl5Sv.js                             207.91 kB │ gzip:  71.70 kB │ map:    232.17 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/eu-KDIU1Bhn.js                             208.20 kB │ gzip:  68.52 kB │ map:    231.76 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/pl-DxGmGN5c.js                             209.29 kB │ gzip:  71.41 kB │ map:    233.56 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sk-Dp7y7H7R.js                             209.88 kB │ gzip:  72.13 kB │ map:    234.15 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/pt-BR-B1RXNKBE.js                          210.12 kB │ gzip:  68.43 kB │ map:    234.05 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/it-kpYCc8SC.js                             210.20 kB │ gzip:  68.45 kB │ map:    234.12 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/pt-PT-CgIRcV1d.js                          210.33 kB │ gzip:  68.45 kB │ map:    234.26 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/de-CPZFikxz.js                             211.52 kB │ gzip:  70.71 kB │ map:    235.08 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ro-BJt1tbPP.js                             211.54 kB │ gzip:  69.86 kB │ map:    235.46 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/es-DcI2PWv5.js                             212.44 kB │ gzip:  69.21 kB │ map:    236.36 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ca-Bwll0z2v.js                             213.65 kB │ gzip:  69.35 kB │ map:    237.55 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/hu-DigC-e5Z.js                             213.99 kB │ gzip:  72.50 kB │ map:    237.55 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/fr-CAbg1WmF.js                             219.85 kB │ gzip:  70.70 kB │ map:    243.76 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ko-BG9xO774.js                             220.04 kB │ gzip:  72.56 kB │ map:    243.23 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/vi-DY8UV95C.js                             232.95 kB │ gzip:  71.93 kB │ map:    256.21 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ja-DA_2-w5O.js                             234.34 kB │ gzip:  75.80 kB │ map:    257.51 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/src-DB9F63-i.js                            236.65 kB │ gzip:  66.19 kB │ map:  1,409.48 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ar-BrTbnfer.js                             253.36 kB │ gzip:  74.98 kB │ map:    278.39 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/fa-DAyWdW0r.js                             253.70 kB │ gzip:  71.58 kB │ map:    277.27 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ur-dndbdwW0.js                             256.67 kB │ gzip:  72.66 kB │ map:    280.24 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/sr-Cyrl-CxvDJdIP.js                        266.63 kB │ gzip:  77.81 kB │ map:    290.57 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/uk-C150VJPx.js                             285.95 kB │ gzip:  81.01 kB │ map:    310.24 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/bg-DK4kY5he.js                             287.09 kB │ gzip:  79.73 kB │ map:    310.66 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/ru-vmJbmNRt.js                             288.94 kB │ gzip:  81.69 kB │ map:    313.24 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/el-lh4jmn2N.js                             296.15 kB │ gzip:  82.80 kB │ map:    319.72 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/hi-C2zAPB_o.js                             317.98 kB │ gzip:  76.33 kB │ map:    341.56 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/index-D8UrAzdm.js                          361.54 kB │ gzip: 112.61 kB │ map:  1,440.72 kB
+../../../artifacts/bulgarian/final-web-preview-qa/dist/assets/editor.api2-C21O8rKV.js                  3,624.78 kB │ gzip: 926.27 kB │ map: 14,186.80 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 20.09s

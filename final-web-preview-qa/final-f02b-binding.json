@@ -1,0 +1,34 @@
+{
+  "status": "carry forward without rerun; exact source/dependency/flags checks unchanged",
+  "final_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545",
+  "master": "e9275c2ae198c9a431f9cba3313ef1209ab06109",
+  "original_checks": "checks.json",
+  "original_check_commit_binding": "82394c1563b8e324da54770d037d319b9f27c072",
+  "input_count": 1211,
+  "input_changes": [],
+  "versions_equal": {
+    "typescript": "6.0.3",
+    "vitest": "5.0.3",
+    "vite": "8.3.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "eslint": "10.11.0",
+    "prettier": "3.9.9"
+  },
+  "external_web_build_input_roots_unchanged": [
+    "data/fonts",
+    "tools/music",
+    "datasrc/icons",
+    "libgag/shaders",
+    "browser/assets",
+    "data/generators",
+    "data/zik"
+  ],
+  "commands_flags": "identical to recorded checks.json; no rerun",
+  "online_catalog_sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813",
+  "native_catalog_sha256": "24ee79586ba0e811c67958785623e0755602e2b075c767f7ee84e31677aa90bb",
+  "native_catalog_keys": 3425,
+  "working_tree_status": "",
+  "utc": "2026-11-01T04:36:22Z",
+  "scope": "Only platform component TS/lint/format/4React tests/Vite build; no browser-game runtime acceptance"
+}

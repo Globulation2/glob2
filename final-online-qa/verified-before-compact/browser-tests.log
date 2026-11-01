@@ -1,0 +1,26 @@
+
+Running 12 tests using 1 worker
+
+(node:1445408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › platform/apps/web/e2e/bulgarian.spec.ts:9:1 › Bulgarian loads its bundled font and persists an explicit language choice (14.2s)
+  ✓   2 [desktop] › platform/apps/web/e2e/localized-layout.spec.ts:8:1 › long localized controls fit phone columns and preserve desktop layout (1.3m)
+(node:1456159) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 [phone] › platform/apps/web/e2e/bulgarian.spec.ts:9:1 › Bulgarian loads its bundled font and persists an explicit language choice (13.7s)
+  -   4 [phone] › platform/apps/web/e2e/localized-layout.spec.ts:8:1 › long localized controls fit phone columns and preserve desktop layout
+(node:1458168) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:22:1 › AI filter, card, detail and publish labels translate while canonical tags stay stable (7.4s)
+  ✓   6 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:41:1 › map visibility labels translate while protocol values remain public unlisted private (2.7s)
+  ✓   7 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:50:1 › music author labels use Artist and attribution Credits and sources (4.0s)
+  ✓   8 [controls-desktop] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:58:1 › new set and building drafts initialize localized names without rewriting stored metadata (11.4s)
+(node:1462128) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:22:1 › AI filter, card, detail and publish labels translate while canonical tags stay stable (7.9s)
+  ✓  10 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:41:1 › map visibility labels translate while protocol values remain public unlisted private (2.4s)
+  ✓  11 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:50:1 › music author labels use Artist and attribution Credits and sources (2.0s)
+  ✓  12 [controls-phone] › artifacts/bulgarian/final-online-qa/translated-controls.spec.mjs:58:1 › new set and building drafts initialize localized names without rewriting stored metadata (9.0s)
+
+  1 skipped
+  11 passed (3.0m)

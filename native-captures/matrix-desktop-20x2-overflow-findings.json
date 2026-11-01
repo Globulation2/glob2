@@ -1,0 +1,93 @@
+{
+  "kind": "Measured potential production scaled-font wrap boundary issue; raw font diagnostic, not an actual menu capture",
+  "findings": [
+    {
+      "surface": "native",
+      "key": "[AICabino-Profile]",
+      "branch": "",
+      "line": {
+        "text": "страни: Комбинира растеж, обучение, защита и няколко атаки. Унищожаването на снабдяването с храна и лечението",
+        "png": "font-20-scale-2-page-024.png",
+        "x": 12,
+        "y": 568,
+        "raster_width": 2541,
+        "raster_height": 47,
+        "fits_width": false,
+        "fits_height": true,
+        "destination_width": 1270.5,
+        "destination_height": 23.5,
+        "drawn_width": 2541,
+        "drawn_height": 47,
+        "drawn_fits_width": false,
+        "drawn_fits_height": true
+      },
+      "canvas_right_overflow_logical_px": 2.5
+    },
+    {
+      "surface": "native",
+      "key": "[results waiting slow]",
+      "branch": "",
+      "line": {
+        "text": "Играч, който е загубил връзката, има до 3 минути, за да се върне. Резултатът ще се покаже във вашата история и на",
+        "png": "font-20-scale-2-page-084.png",
+        "x": 12,
+        "y": 327,
+        "raster_width": 2540,
+        "raster_height": 47,
+        "fits_width": false,
+        "fits_height": true,
+        "destination_width": 1270.0,
+        "destination_height": 23.5,
+        "drawn_width": 2540,
+        "drawn_height": 47,
+        "drawn_fits_width": false,
+        "drawn_fits_height": true
+      },
+      "canvas_right_overflow_logical_px": 2.0
+    },
+    {
+      "surface": "native",
+      "key": "[conn card cannot keep up body]",
+      "branch": "",
+      "line": {
+        "text": "Преиграва мача по-бавно, отколкото протича самият мач, така че няма да навакса. Можете да напуснете мача или да",
+        "png": "font-20-scale-2-page-085.png",
+        "x": 12,
+        "y": 626,
+        "raster_width": 2549,
+        "raster_height": 47,
+        "fits_width": false,
+        "fits_height": true,
+        "destination_width": 1274.5,
+        "destination_height": 23.5,
+        "drawn_width": 2549,
+        "drawn_height": 47,
+        "drawn_fits_width": false,
+        "drawn_fits_height": true
+      },
+      "canvas_right_overflow_logical_px": 6.5
+    },
+    {
+      "surface": "native",
+      "key": "[lesson fortifications complete]",
+      "branch": "",
+      "line": {
+        "text": "Снабдените ви укрепления спряха учебната атака. Кулите се нуждаят от камък, а стените — от пролуки, за да могат",
+        "png": "font-20-scale-2-page-127.png",
+        "x": 12,
+        "y": 734,
+        "raster_width": 2538,
+        "raster_height": 47,
+        "fits_width": false,
+        "fits_height": true,
+        "destination_width": 1269.0,
+        "destination_height": 23.5,
+        "drawn_width": 2538,
+        "drawn_height": 47,
+        "drawn_fits_width": false,
+        "drawn_fits_height": true
+      },
+      "canvas_right_overflow_logical_px": 1.0
+    }
+  ]
+}

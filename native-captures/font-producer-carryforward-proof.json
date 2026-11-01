@@ -1,0 +1,225 @@
+{
+  "matrix_compiled_revision": "3881c64e0d2b43b460a122422d2727c0cbd4d3ca",
+  "current_revision": "d3f7ad00c8d4276967b8807e052d46a74d63be34",
+  "correspondence": "3881 corrected complete font matrices/probes retained with actual immutable stripped executable identity. Later UI-only error-boundary patches do not alter these font/wrapper/catalog inputs. No earlier evidence relabeled as later executable.",
+  "files": [
+    {
+      "path": "libgag/src/TrueTypeFont.cpp",
+      "matrix_source_sha256": "83f62e0290809c41674e587f22967cb13e216b9734a58902d920e3074ac7dfdb",
+      "current_sha256": "83f62e0290809c41674e587f22967cb13e216b9734a58902d920e3074ac7dfdb",
+      "identical": true
+    },
+    {
+      "path": "libgag/src/BidiText.cpp",
+      "matrix_source_sha256": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+      "current_sha256": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+      "identical": true
+    },
+    {
+      "path": "libgag/src/ui/TextLayout.cpp",
+      "matrix_source_sha256": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+      "current_sha256": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+      "identical": true
+    },
+    {
+      "path": "libgag/include/TrueTypeFont.h",
+      "matrix_source_sha256": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+      "current_sha256": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+      "identical": true
+    },
+    {
+      "path": "libgag/include/ui/TextLayout.h",
+      "matrix_source_sha256": "6cb805b24332bb38bde8525eeea77fa0917cea3b88ae4561bc44c00b08975969",
+      "current_sha256": "6cb805b24332bb38bde8525eeea77fa0917cea3b88ae4561bc44c00b08975969",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/LICENSE-DejaVu.txt",
+      "matrix_source_sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c",
+      "current_sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/LICENSE-Droid.txt",
+      "matrix_source_sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d",
+      "current_sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/LICENSE-HarfBuzz.txt",
+      "matrix_source_sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+      "current_sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/LICENSE-Noto.txt",
+      "matrix_source_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "current_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/README.md",
+      "matrix_source_sha256": "7497dd832fae7ba3398422fe10b42a2f585c4d246cb497f7fd192d978e126850",
+      "current_sha256": "7497dd832fae7ba3398422fe10b42a2f585c4d246cb497f7fd192d978e126850",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/SConscript",
+      "matrix_source_sha256": "eb19ec63cd16a1da24a478d1eb558d61960cdaf9bcfd8e1b7bb963123eff4343",
+      "current_sha256": "eb19ec63cd16a1da24a478d1eb558d61960cdaf9bcfd8e1b7bb963123eff4343",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/build_chinese_font.py",
+      "matrix_source_sha256": "525228064ff2578fefb99ad589abd0a404b80384e90d7fb89043ae6d0cffb700",
+      "current_sha256": "525228064ff2578fefb99ad589abd0a404b80384e90d7fb89043ae6d0cffb700",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/check_script_support.py",
+      "matrix_source_sha256": "ce90eb6d76d01ef56092cc2271767d02bfcc1f5f3172cdddef87f5de131739fb",
+      "current_sha256": "ce90eb6d76d01ef56092cc2271767d02bfcc1f5f3172cdddef87f5de131739fb",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/fetch_script_fonts.py",
+      "matrix_source_sha256": "8e90363c8da89d0a211a2e0833255feb66281e9de9fc1281b491fd1d30106e5c",
+      "current_sha256": "8e90363c8da89d0a211a2e0833255feb66281e9de9fc1281b491fd1d30106e5c",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/sans.ttf",
+      "matrix_source_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "current_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/script-probes.json",
+      "matrix_source_sha256": "3948ab33b272c91497aa0c3e9ae6ae311a73a1fedceab01ffd48d6951cc4da64",
+      "current_sha256": "3948ab33b272c91497aa0c3e9ae6ae311a73a1fedceab01ffd48d6951cc4da64",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+      "matrix_source_sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "current_sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "matrix_source_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "current_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "matrix_source_sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "current_sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+      "matrix_source_sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "current_sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+      "matrix_source_sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "current_sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+      "matrix_source_sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "current_sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+      "matrix_source_sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "current_sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+      "matrix_source_sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "current_sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+      "matrix_source_sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "current_sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+      "matrix_source_sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "current_sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+      "matrix_source_sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "current_sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+      "matrix_source_sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "current_sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+      "matrix_source_sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "current_sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "identical": true
+    },
+    {
+      "path": "data/fonts/scripts/manifest.json",
+      "matrix_source_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "current_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "identical": true
+    },
+    {
+      "path": "data/texts.bg.txt",
+      "matrix_source_sha256": "ccd9b28467ec8a4e5272d2d3780d6813107eed945e424f8fac1d6ff2656d38ed",
+      "current_sha256": "ccd9b28467ec8a4e5272d2d3780d6813107eed945e424f8fac1d6ff2656d38ed",
+      "identical": true
+    },
+    {
+      "path": "data/texts.en.txt",
+      "matrix_source_sha256": "3cff1f3aef1a95ddd874c169b86a11cad9f777cdd2bfac9477127c8709bb8a92",
+      "current_sha256": "3cff1f3aef1a95ddd874c169b86a11cad9f777cdd2bfac9477127c8709bb8a92",
+      "identical": true
+    },
+    {
+      "path": "data/texts.keys.txt",
+      "matrix_source_sha256": "1fd115cb8324008d2e2611d6c0e03a4f943366680ccdb6d9f4445d87f1b20247",
+      "current_sha256": "1fd115cb8324008d2e2611d6c0e03a4f943366680ccdb6d9f4445d87f1b20247",
+      "identical": true
+    },
+    {
+      "path": "platform/packages/i18n/locales/en.json",
+      "matrix_source_sha256": "7ef5053bd3bd867bddd3f1065a50c01a05c91517c9ebe31f0f7176632d66f8a3",
+      "current_sha256": "7ef5053bd3bd867bddd3f1065a50c01a05c91517c9ebe31f0f7176632d66f8a3",
+      "identical": true
+    },
+    {
+      "path": "tools/TranslationPreviewHarness.cpp",
+      "matrix_source_sha256": "c52fa23f82024d2e3bd5af5e6582485ea673945a212b6a3e021b450ff54c075c",
+      "current_sha256": "c52fa23f82024d2e3bd5af5e6582485ea673945a212b6a3e021b450ff54c075c",
+      "identical": true
+    },
+    {
+      "path": "libgag/src/DrawableSurfaceCompound.cpp",
+      "matrix_source_sha256": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810",
+      "current_sha256": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810",
+      "identical": true
+    }
+  ],
+  "online_target_sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813",
+  "native_target_sha256": "ccd9b28467ec8a4e5272d2d3780d6813107eed945e424f8fac1d6ff2656d38ed"
+}
