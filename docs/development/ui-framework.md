@@ -439,6 +439,9 @@ messages; inflect them naturally in sentences.
 | Unit | యూనిట్ |
 | Settings | సెట్టింగ్‌లు |
 | Building upgrade | మెరుగుదల |
+| Music: Calm | ప్రశాంతం |
+| Music: Building | నిర్మాణం |
+| Music: Combat | పోరాటం |
 
 Reachability messages describe physically reaching a building, flag or resource,
 not software access. Conversion means a unit joining another team; explain that
@@ -447,6 +450,12 @@ attention, and the Swarm is the colony's unit-producing nest. Retain product and
 AI names consistently. Familiar software loanwords are acceptable when they make
 the interface easier to understand; avoid mechanically transliterating role
 names that already have clear Telugu terms.
+
+Music mood names identify soundtrack sections, rather than human emotions.
+When a message inserts a translated model, library category or product name,
+use a neutral label or colon when its grammatical suffix cannot be chosen
+reliably. Reporting metric name slots contain category or product names;
+they are not numeric count placeholders.
 
 ## Anatomy of a screen
 
