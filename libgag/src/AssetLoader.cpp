@@ -419,7 +419,12 @@ AssetLoader::Handle<AssetLoader::Directory> AssetLoader::requestDirectory(const 
         for(const auto& [name,content] : impl->communityFiles)
             if(name.starts_with(prefix) && name.find('/',prefix.size())==std::string::npos)
                 result->names.push_back(name.substr(prefix.size()));
-        return requestRead<Directory>("directory:"+folder,[result] { return result; });
+        return requestRead<Directory>("directory:"+folder,[result] {
+            // Publish one immutable membership index, shared by sprite requests.
+            std::sort(result->names.begin(), result->names.end());
+            result->names.erase(std::unique(result->names.begin(), result->names.end()), result->names.end());
+            return result;
+        });
     }
     impl->refreshDirectories();
     const auto directories = impl->directories;
@@ -432,6 +437,10 @@ AssetLoader::Handle<AssetLoader::Directory> AssetLoader::requestDirectory(const 
                 { const auto name = it->path().filename().u8string(); result->names.emplace_back(name.begin(), name.end()); }
             if (absolute) break;
         }
+        // Discovery only tests membership. Sort/deduplicate once per directory
+        // snapshot; file reads still resolve the original mounted-root order.
+        std::sort(result->names.begin(), result->names.end());
+        result->names.erase(std::unique(result->names.begin(), result->names.end()), result->names.end());
         return result;
     });
 }

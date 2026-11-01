@@ -768,6 +768,13 @@ TEST_CASE("sprites without an index still load one file per frame") {
 	writePattern(fixture.scratch.path / "single0.webp", 0, 1, 1, 4);
 	writePattern(fixture.scratch.path / "single1r.webp", 1, 1, 1, 4);
 	writePattern(fixture.scratch.path / "single3.webp", 3, 1, 1, 4);
+    const auto shadow = fixture.scratch.path / "later-root";
+    std::filesystem::create_directories(shadow);
+    writePattern(shadow / "single0.webp", 3, 1, 1, 4);
+    writePattern(shadow / "single1r.webp", 3, 1, 1, 4);
+    writePattern(shadow / "single10.webp", 3, 1, 1, 4);
+    writePattern(shadow / "Single2.webp", 3, 1, 1, 4); // case-sensitive membership must not fill frame2
+    GAGCore::Toolkit::getFileManager()->addDir(shadow.string());
 	GAGCore::Sprite sprite;
 	REQUIRE(sprite.load("single"));
 	// Frame 2 is missing, so frame 3 is never reached.

@@ -20,6 +20,49 @@ void write(const std::filesystem::path& path, const void *bytes, size_t size) {
 }
 }
 TEST_SUITE("AssetLoader") {
+TEST_CASE("directory snapshots share sorted membership and refresh without changing root precedence") {
+    glob2test::TempDir temp("directory-membership");
+    const std::string folder = temp.path.filename().string();
+    const auto firstRoot = temp.path / "first", secondRoot = temp.path / "second", thirdRoot = temp.path / "third";
+    for (const auto& root : {firstRoot, secondRoot, thirdRoot}) std::filesystem::create_directories(root / folder);
+    const char first = 'a', second = 'b';
+    write(firstRoot / folder / "z.webp", &first, 1);
+    write(firstRoot / folder / "same.webp", &first, 1);
+    write(firstRoot / folder / "a.webp", &first, 1);
+    write(secondRoot / folder / "same.webp", &second, 1);
+    write(secondRoot / folder / "b.webp", &second, 1);
+    write(thirdRoot / folder / "mounted.webp", &second, 1);
+    for (unsigned workers : {0u, 2u}) {
+        GAGCore::FileManager files("directory-membership");
+        files.addDir(firstRoot.string()); files.addDir(secondRoot.string());
+        GAGCore::AssetLoader loader(files, {workers, workers, 1024 * 1024});
+        auto one = loader.requestDirectory(folder), two = loader.requestDirectory(folder);
+        CHECK(loader.metrics().submitted == 1);
+        auto original = loader.wait(one), shared = loader.wait(two);
+        REQUIRE(original); CHECK(original == shared);
+        const std::vector<std::string> expected{"a.webp", "b.webp", "same.webp", "z.webp"};
+        CHECK(original->names == expected);
+        auto bytes = loader.wait(loader.requestBytes(folder + "/same.webp"));
+        REQUIRE(bytes); REQUIRE(bytes->size() == 1); CHECK((*bytes)[0] == first);
+        // A retained snapshot stays immutable while explicit invalidation sees a
+        // live filesystem addition. No process-global directory cache is added.
+        write(firstRoot / folder / "added.webp", &first, 1);
+        loader.invalidate();
+        auto refreshed = loader.wait(loader.requestDirectory(folder)); REQUIRE(refreshed);
+        CHECK(std::binary_search(refreshed->names.begin(), refreshed->names.end(), "added.webp"));
+        CHECK_FALSE(std::binary_search(original->names.begin(), original->names.end(), "added.webp"));
+        const auto generation = loader.sourceGeneration();
+        files.addDir(thirdRoot.string());
+        auto mounted = loader.wait(loader.requestDirectory(folder)); REQUIRE(mounted);
+        CHECK(loader.sourceGeneration() != generation);
+        CHECK(std::binary_search(mounted->names.begin(), mounted->names.end(), "mounted.webp"));
+        CHECK(std::is_sorted(mounted->names.begin(), mounted->names.end()));
+        CHECK(std::count(mounted->names.begin(), mounted->names.end(), "same.webp") == 1);
+        bytes = loader.wait(loader.requestBytes(folder + "/same.webp"));
+        REQUIRE(bytes); REQUIRE(bytes->size() == 1); CHECK((*bytes)[0] == first);
+        std::filesystem::remove(firstRoot / folder / "added.webp");
+    }
+}
 TEST_CASE("HD staging copies repeated uses then transfers exclusive pixels at the last use") {
     glob2test::TempDir temp("hd-staging");
     write(temp.path / "frame.webp", webp, sizeof(webp));
@@ -343,6 +386,7 @@ TEST_CASE("verified memory assets use the ordinary loader without shadowing inst
     const auto diskFolder=temp.path / "community/buildings" / std::string(64,'a');
     std::filesystem::create_directories(diskFolder);
     write(diskFolder / "sprite0.webp",webp,sizeof(webp));
+    write(diskFolder / "sprite99.webp",webp,sizeof(webp));
     GAGCore::FileManager files("community-assets"); files.addDir(temp.path.string());
     for(unsigned workers:{0u,2u}) {
         GAGCore::AssetLoader loader(files,{workers,workers,1024*1024});
@@ -353,6 +397,13 @@ TEST_CASE("verified memory assets use the ordinary loader without shadowing inst
         loader.setCommunityFiles({{path,bytes}});
         const auto directory=loader.wait(loader.requestDirectory(folder));
         REQUIRE(directory); REQUIRE(directory->names.size()==1); CHECK(directory->names.front()=="sprite0.webp");
+        loader.setCommunityFiles({{path,bytes},{folder+"/sprite10.webp",bytes},{folder+"/sprite2r.webp",bytes}});
+        const auto expanded = loader.wait(loader.requestDirectory(folder)); REQUIRE(expanded);
+        const std::vector<std::string> expectedNames{"sprite0.webp","sprite10.webp","sprite2r.webp"};
+        CHECK(expanded->names == expectedNames);
+        CHECK(directory->names.size() == 1); // previously published snapshot is immutable
+        CHECK_FALSE(loader.wait(loader.requestImage(folder+"/sprite99.webp"))); // disk cannot leak into verified namespace
+
         auto image=loader.wait(loader.requestImage(path)); REQUIRE(image);
         CHECK(image->surface->w==2); CHECK(image->surface->h==2);
         auto missing=loader.requestImage(folder+"/sprite1.webp"); CHECK_FALSE(loader.wait(missing));
