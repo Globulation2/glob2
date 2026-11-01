@@ -742,18 +742,23 @@ TEST_CASE("bounded wood rescue preserves the walking approach to existing food")
 	REQUIRE_FALSE(accessibleCrops().food);
 	map.setNoResource(12, 8, 1);
 	REQUIRE(accessibleCrops().food);
-	std::vector<unsigned char> allowed(torus.size(), 0);
+	std::vector<unsigned char> allowed(torus.size(), 0), protectedCrops(torus.size(), 0);
 	allowed[map.coordToIndex(12, 8)] = 1;
+	// The authored food is not a resource wall to clear while opening this
+	// deliberately small pocket; isolate wood placement from that policy.
+	protectedCrops[map.coordToIndex(16, 8)] = 1;
 	GenerationRequest request;
 	request.nbTeams = 1;
 	GenerationContext context(request);
 	context.bootX[0] = 8;
 	context.bootY[0] = 8;
-	MapGeneration::guaranteeStartingResources(fixture.game, context, 12, 12, 0, nullptr, &allowed);
+	MapGeneration::guaranteeStartingResources(fixture.game, context, 12, 12, 0, &protectedCrops,
+												&allowed);
 	const auto crops = accessibleCrops();
 	CHECK(crops.food);
 	CHECK_FALSE(crops.wood);
 	CHECK(map.getResource(12, 8).type == NO_RES_TYPE);
+	CHECK(map.getResource(16, 8).type == WHEAT);
 }
 
 TEST_CASE("starter guarantees use prospective boots only before workers exist")
