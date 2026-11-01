@@ -241,6 +241,68 @@ TEST_SUITE("FontKerning")
 		CHECK(samePixels(raw->getSDLSurface(), unchanged->getSDLSurface()));
 	}
 
+	TEST_CASE("Bulgarian scaled advances fit authored wrapping and locale switches preserve legacy geometry")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		glob2test::TempDir files("bg-authored-advance");
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		GAGCore::Toolkit::getFileManager()->addDir(files.path.string());
+		std::ofstream(files.path / "probe.keys.txt") << "[language-code]\n";
+		std::ofstream listing(files.path / "probe.list.txt");
+		listing << "probe.keys.txt\n";
+		for (const char *code : {"en", "bg", "ru"}) {
+			listing << "probe." << code << ".txt\n";
+			std::ofstream(files.path / (std::string("probe.") + code + ".txt")) << "[language-code]\n" << code << '\n';
+		}
+		listing.close();
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		REQUIRE(strings->load("probe.list.txt"));
+		TrueTypeFont font("data/fonts/sans.ttf", 20);
+		// Exact lines clipped by 1--6.5 logical pixels in the 1280px matrix at 2x.
+		// Their 40px hinted rasters expand by 14--18.5 logical pixels after /2.
+		const char *lines[] = {
+			"страни: Комбинира растеж, обучение, защита и няколко атаки. Унищожаването на снабдяването с храна и лечението",
+			"Играч, който е загубил връзката, има до 3 минути, за да се върне. Резултатът ще се покаже във вашата история и на",
+			"Преиграва мача по-бавно, отколкото протича самият мач, така че няма да навакса. Можете да напуснете мача или да",
+			"Снабдените ви укрепления спряха учебната атака. Кулите се нуждаят от камък, а стените — от пролуки, за да могат",
+		};
+		for (const auto *text : lines) {
+			CAPTURE(text);
+			strings->setLang(strings->getLangCode("en"));
+			const int authored = font.getStringWidth(text);
+			REQUIRE(authored > 0);
+			REQUIRE(authored <= 1256);
+			auto reference = font.rasterizeString(text, 2.f);
+			REQUIRE(reference);
+			// Use one font object and the same text across repeated language
+			// switches, so stale per-raster width policy cannot hide in its cache.
+			for (const char *code : {"bg", "en", "bg", "ru", "bg"}) {
+				CAPTURE(code);
+				strings->setLang(strings->getLangCode(code));
+				const auto drawn = font.getStringDrawSize(text, 2.f);
+				CHECK(font.getStringWidth(text) == authored);
+				if (std::string(code) == "bg") CHECK(drawn.first <= 1256.f);
+				CHECK(drawn.first == doctest::Approx(std::string(code) == "bg"
+					? float(authored) : reference->getW() / 2.f));
+				auto raster = font.rasterizeString(text, 2.f);
+				REQUIRE(raster);
+				CHECK(samePixels(reference->getSDLSurface(), raster->getSDLSurface()));
+			}
+		}
+		// The policy follows locale, not script detection or a special-cased
+		// Bulgarian string: existing English and Russian geometry stays raw.
+		for (const char *code : {"en", "ru"}) {
+			strings->setLang(strings->getLangCode(code));
+			for (const char *text : {"You can leave the match or reduce the graphics settings and keep waiting.",
+				"Вы можете покинуть матч или снизить настройки графики и продолжить ожидание."}) {
+				auto raster = font.rasterizeString(text, 2.f);
+				REQUIRE(raster);
+				CHECK(font.getStringDrawSize(text, 2.f).first == doctest::Approx(raster->getW() / 2.f));
+			}
+		}
+	}
+
 	TEST_CASE("script fonts shape clusters and preserve measured raster sizes after reload")
 	{
 		TtfScope ttf;

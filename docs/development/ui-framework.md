@@ -547,6 +547,9 @@ replacement/reload clears these metrics. Layout measurement neither creates
 bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
+Bulgarian opts into authored logical draw advances alongside other new locales,
+keeping the complete high-resolution raster within measured widths while
+preserving existing locale geometry.
 
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored
@@ -559,6 +562,9 @@ translated, wrapped caption using the active font and text-size preference.
 Captions taller than the original 16-point slot expand the action strip upward
 with bottom padding; world bounds and hit regions use that same strip geometry.
 Do not shorten a translation to compensate for a fixed-height caption clip.
+Only Bulgarian single-word captions may reuse one point from each inset and
+shrink to at least 10px at 100% text size, retaining the player's text multiplier
+and conservative original strip measurement without moving icons or hit areas.
 Touch text wrapping preserves the active font's shaped clusters, including an
 indivisible cluster wider than its slot, and retains explicit blank lines.
 Navigation measurements keep one last result per HUD, invalidated by caption,

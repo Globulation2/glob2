@@ -486,6 +486,9 @@ void GameGUITouch::drawHUD()
 	gfx->drawFilledRect(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), int(ui.actions.h),
 		InGameTouchTheme::paper());
 	gfx->drawHorzLine(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), InGameTouchTheme::border());
+	const auto *strings = Toolkit::getStringTable();
+	const bool fitBulgarianCaptions = strings && strings->doesStringExist("[language-code]") &&
+		strings->getString("[language-code]") == "bg";
 	for (int i = 0; i < 6; ++i)
 	{
 		const double x = ui.actions.x + i * ui.actions.w / 6, width = ui.actions.w / 6;
@@ -508,7 +511,7 @@ void GameGUITouch::drawHUD()
 		// Keep natural single-word captions whole when they only just exceed
 		// a slot. Borrow one point from each label inset, leaving hit areas,
 		// icons and the existing accessible navigation height unchanged.
-		if (text.find_first_of(" \t\r\n") == std::string::npos)
+		if (fitBulgarianCaptions && text.find_first_of(" \t\r\n") == std::string::npos)
 		{
 			auto *font = globalContainer->standardFont;
 			InGameTouchTheme::TextStyle style(font);

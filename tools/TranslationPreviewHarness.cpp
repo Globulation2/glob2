@@ -243,7 +243,7 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
     // Fonts and surfaces are destroyed before TTF/Toolkit teardown.
     Json manifest = {{"kind", "production-font-matrix"}, {"pilot", pilot.string()},
         {"logical_width", width}, {"logical_height", height}, {"samples", Json::array()},
-        {"limits", {"Draft overlay only; no language registered or locale finalized.",
+        {"limits", {"Overlay capture only; this command does not register or finalize a locale.",
                     "Uses production TrueTypeFont and shared UI wrapText, not a game screen.",
                     "Raw raster fits_width/height remain diagnostic; drawn_fits_width/height use the production draw destination, preserving the whole bitmap.",
                     "Glyph checks and images require independent linguistic/visual inspection.",
