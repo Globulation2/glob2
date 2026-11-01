@@ -1,3 +1,4 @@
+import { skinProductLabel } from './labels.ts';
 import { useFeatures } from '../features.tsx';
 import { statusLabel } from '../i18n.tsx';
 import { MessageError } from '../i18n.tsx';
@@ -125,13 +126,16 @@ function EnabledSkinStore({
                 key={product.sku}
                 style={{ padding: 16, border: '1px solid currentColor', borderRadius: 12 }}
               >
-                <h3>{product.name}</h3>
+                <h3>{skinProductLabel(product.sku, product.name)}</h3>
                 <p>{price(product)}</p>
                 <button
                   disabled={busy || !product.available || account?.kind !== 'registered'}
                   onClick={() => void buy(product.sku)}
                 >
-                  <RichMessage source={'Buy {slot0}'} slots={{ slot0: product.name }} />
+                  <RichMessage
+                    source={'Buy {slot0}'}
+                    slots={{ slot0: skinProductLabel(product.sku, product.name) }}
+                  />
                 </button>
               </article>
             ))}

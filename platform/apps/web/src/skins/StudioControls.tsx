@@ -1,3 +1,4 @@
+import { skinLabel } from './labels.ts';
 import { t, useLocale } from '../i18n.tsx';
 /* WebGL resources are bounded to the lifetime of this effect. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -292,7 +293,7 @@ function SwatchStrip({
             aria-checked={selected === m.id}
             onClick={() => onSelect(m.id)}
           >
-            <span>{m.name}</span>
+            <span>{skinLabel(m.name)}</span>
           </button>
         ))}
       </div>
@@ -323,7 +324,7 @@ export function MaterialSwatches({
     <div role="radiogroup" aria-label={t('Material')} className="skin-material-groups">
       {MATERIAL_GROUPS.map((group, index) => (
         <section key={group.name} className="skin-material-group">
-          <h4>{group.name}</h4>
+          <h4>{skinLabel(group.name)}</h4>
           <SwatchStrip
             source={source}
             color={color}

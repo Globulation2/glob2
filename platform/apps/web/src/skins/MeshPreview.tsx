@@ -1,3 +1,4 @@
+import { modelProseLabel } from './labels.ts';
 import { MessageError } from '../i18n.tsx';
 import { message as sourceMessage } from '../i18n.tsx';
 import { t, useLocale } from '../i18n.tsx';
@@ -378,7 +379,9 @@ export function MeshPreview(props: ViewportProps) {
         ref={canvas}
         aria-label={
           props.label ??
-          t('Paint directly on the 3D {value0} model', { value0: props.model.name.toLowerCase() })
+          t('Paint directly on the 3D {value0} model', {
+            value0: modelProseLabel(props.model.name),
+          })
         }
         onContextMenu={(e) => e.preventDefault()}
         onPointerDown={(e) => {

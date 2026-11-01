@@ -1,3 +1,4 @@
+import { skinLabel } from '../skins/labels.ts';
 import { message as sourceMessage } from '../messages.ts';
 import { statusLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
@@ -415,13 +416,13 @@ function SkinStudio() {
                   onClick={() => chooseModel(m)}
                 >
                   <img src={`/skins/thumbs/${m.mesh}.png`} alt="" />
-                  <span>{m.name}</span>
+                  <span>{skinLabel(m.name)}</span>
                 </button>
               ))}
             </div>
             {model.id === 'swarm' && (
               <button className="skin-shape-button skin-panel" onClick={() => showDialog('shapes')}>
-                {SWARM_SHAPES[d.swarmMesh].name}
+                {skinLabel(SWARM_SHAPES[d.swarmMesh].name)}
                 <span>{t('Change shape ⌄')}</span>
               </button>
             )}
@@ -635,7 +636,7 @@ function SkinStudio() {
                     </optgroup>
                     {['front', 'back', 'left', 'right'].map((v) => (
                       <option key={v} value={v}>
-                        {v[0]!.toUpperCase() + v.slice(1)}
+                        {skinLabel(v[0]!.toUpperCase() + v.slice(1))}
                       </option>
                     ))}
                   </select>
@@ -770,7 +771,7 @@ function SkinStudio() {
                           }}
                         >
                           <img src={`/skins/thumbs/${model.id}-${a}.png`} alt="" />
-                          <span>{a[0]!.toUpperCase() + a.slice(1)}</span>
+                          <span>{skinLabel(a[0]!.toUpperCase() + a.slice(1))}</span>
                         </button>
                       ))}
                     </div>
@@ -920,8 +921,8 @@ function SkinStudio() {
                 onClick={() => selectShape(shape)}
               >
                 <img src={`/skins/thumbs/${swarmModel(shape)}.png`} alt="" />
-                <strong>{SWARM_SHAPES[shape].name}</strong>
-                <small>{SWARM_SHAPES[shape].description}</small>
+                <strong>{skinLabel(SWARM_SHAPES[shape].name)}</strong>
+                <small>{skinLabel(SWARM_SHAPES[shape].description)}</small>
               </button>
             ))}
           </div>
