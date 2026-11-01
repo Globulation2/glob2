@@ -11,6 +11,8 @@
 #include "CustomGameScreen.h"
 #include "GameGUIDialog.h"
 #include "EndGameScreen.h"
+#include "InGameStatistics.h"
+#include "GameGUITouch.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -39,6 +41,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+#include <utility>
 #if !defined(WIN32)
 #include <dlfcn.h>
 #endif
@@ -64,6 +67,34 @@ struct TranslationPreviewAccess
     }
     static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
     static Tutorial::Guidance *guidance(GameGUI &gui) { return gui.tutorialGuidance.get(); }
+    static bool openLiveStatistics(GameGUI &gui) {
+        gui.clearSelection();
+        gui.closeDialog();
+        if (gui.touch && gui.touch->usesHUD()) {
+            // Exercise the production keyboard route: Tools is the third HUD
+            // action; Statistics is the seventh entry in its lens strip.
+            gui.touch->cancel(true);
+            auto key = [&](SDL_Keycode value) {
+                SDL_Event event{};
+                event.type = SDL_EVENT_KEY_DOWN;
+                event.key.key = value;
+                return gui.touch->process(event);
+            };
+            for (int i = 0; i < 3; ++i) if (!key(SDLK_TAB)) return false;
+            if (!key(SDLK_RETURN)) return false;
+            for (int i = 0; i < 4; ++i) if (!key(SDLK_TAB)) return false;
+            if (!key(SDLK_RETURN)) return false;
+            return gui.touch->needsStatisticsHistory();
+        }
+        gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+        gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+        return gui.statisticsVisible();
+    }
+    static InGameStatisticsPanel &liveStatistics(GameGUI &gui) { return gui.statistics(); }
+    static void closeLiveStatistics(GameGUI &gui) {
+        gui.closeDialog();
+        if (gui.touch) gui.touch->closeStatistics();
+    }
     static void rebaseViewport(GameGUI &gui) {
         gui.torusView.rebaseViewport(gui.viewportX, gui.viewportY);
     }
@@ -667,6 +698,55 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                 {"about", TeamStatChart::about(Stats::metricById("win probability"))},
                 {"compact_metric_picker_opened", picker}, {"controls", statistics.bounds()},
                 {"limits", "Actual statistics UI on the local preview session; no claim of a completed match or calibrated prediction."}};
+        }
+        if (kind == "gameplay") {
+            const auto before = gui.game.checkSum();
+            require(TranslationPreviewAccess::openLiveStatistics(gui), "Actual live statistics panel opened");
+            require(before == gui.game.checkSum(), "Opening live statistics must preserve simulation state");
+            auto &panel = TranslationPreviewAccess::liveStatistics(gui);
+            Json states = Json::array();
+            auto liveCapture = [&](const std::string &name) {
+                capture("gameplay-live-statistics-" + name);
+                require(before == gui.game.checkSum(), "Live statistics navigation must preserve simulation state");
+                states.push_back({{"name", name}, {"topic", int(panel.topic())},
+                    {"selected_metric", panel.selectedMetric()}, {"recorded_history_available", panel.history() != nullptr}});
+            };
+            auto reveal = [&](const std::string &key) {
+                require(draw(), "Render live statistics controls");
+                panel.host().layoutIfNeeded();
+                require(panel.host().find(key) != nullptr, "Live statistics control available: " + key);
+                panel.host().scrollIntoView(key);
+            };
+            panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
+            liveCapture("overview");
+            reveal("stats/metric/idle workers");
+            liveCapture("work");
+            reveal("stats/metric/warriors");
+            liveCapture("defence");
+            panel.selectTopic(InGameStatisticsPanel::Topic::Colony);
+            liveCapture("colony");
+            reveal("stats/unit-details");
+            liveCapture("unit-details-collapsed");
+            const auto details = panel.host().bounds("stats/unit-details");
+            require(details.w > 0 && details.h > 0, "Live unit details action has bounds");
+            panel.host().tapAt(details.center());
+            liveCapture("unit-details-expanded");
+            for (const auto &[topic, name] : {
+                    std::pair{InGameStatisticsPanel::Topic::Economy, "economy"},
+                    std::pair{InGameStatisticsPanel::Topic::Military, "military"},
+                    std::pair{InGameStatisticsPanel::Topic::World, "world"}}) {
+                panel.selectTopic(topic);
+                liveCapture(name);
+            }
+            panel.selectTopic(InGameStatisticsPanel::Topic::Colony);
+            panel.openMetric("population");
+            require(TranslationPreviewAccess::dialogOpen(gui), "Actual live statistics history dialog opened");
+            liveCapture("full-history");
+            TranslationPreviewAccess::closeLiveStatistics(gui);
+            require(before == gui.game.checkSum(), "Closing live statistics must preserve simulation state");
+            result["live_statistics_probe"] = {{"states", states}, {"simulation_checksum", before},
+                {"phone_opened_via_tools_keyboard_route", GAGCore::phonePresentationRequested()},
+                {"limits", "Actual production live statistics UI on the frozen published preview frame. Recorded-history availability is reported per state; no simulation or history data is fabricated."}};
         }
         gui.isRunning = false;
         engine.finishSession();
