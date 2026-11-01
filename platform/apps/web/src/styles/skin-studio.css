@@ -1070,6 +1070,8 @@
     padding: 6px 12px 10px;
     gap: 6px 14px;
   }
+  .skin-tool-options > .skin-segment,
+  .skin-tool-options > .skin-material-groups,
   .skin-tool-options > details,
   .skin-tool-options > .skin-check {
     grid-column: 1 / -1;
