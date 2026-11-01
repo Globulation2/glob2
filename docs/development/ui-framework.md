@@ -127,7 +127,9 @@ The JSON tutorial inventory distinguishes legacy language blocks from current
 `display_catalog_gaps`. Generator/building/resource names and keyboard names
 built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
-bindings, and render representative screens in each language to check font
+bindings. Fixed AI-tag labels are checked against the protocol's `AI_TAGS` list;
+translate their displayed labels while retaining their enum values. Render
+representative screens in each language to check font
 coverage, text fitting and layout. The legacy Arabic/Persian route in
 `TrueTypeFont` shapes text into visual order before rasterization and uses an
 explicit left-to-right SDL_ttf direction to prevent a second reordering pass.
@@ -243,6 +245,54 @@ exchange fruits. Translate ambiguous terrain terms from their control's effect,
 not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
+
+### Cloud Translation drafts
+
+Prepare a Bengali kit with `prepare --locales bn --output
+artifacts/bengali-localization` and `draft --locale bn --output
+artifacts/bengali-localization` using the translation-program tool above. Then
+`python3 tools/localization/cloud_draft.py --project PROJECT_ID` estimates a
+Bengali pilot without sending a paid request. Add
+`--execute` to request the pilot through Translation API v3 using the active
+`gcloud` credentials. Review the pilot before running `--phase bulk
+--pilot-reviewed --execute`. `--output` selects the kit and `--locale` selects its
+language. Existing translations are never overwritten.
+
+The runner defaults to a US$10 ceiling and accounts conservatively at US$20 per
+million NMT input characters without assuming free credits. Every request attempt
+is reserved before transmission, including retries whose outcome may be unknown.
+Verify the current [NMT tariff](https://cloud.google.com/products/translate/pricing)
+before requesting paid drafts; update the accounting rate if it changes.
+Successful responses are cached and checkpointed. Protected-token failures retain
+the response and block retransmission until a reviewer supplies a correction;
+formatting-only templates bypass translation. Keep the accounting and response
+files with the kit when resuming. A leftover runner lock needs investigation
+before removal. Credentials are never written into the kit.
+
+### Bengali conventions
+
+Bengali (`bn`, বাংলা) uses contemporary standard written Bengali for readers in
+Bangladesh and West Bengal, in Bengali script and logical left-to-right order.
+Use respectful আপনি/করুন forms and concise familiar wording, with consistent
+terms across lessons, game controls and the online platform. Preserve product
+names, code, filenames, shortcuts and formatting tokens. Dynamic online numbers
+continue to use the existing locale formatting functions.
+
+The concept anchors are শ্রমিক (Worker), অনুসন্ধানকারী (Explorer), যোদ্ধা
+(Warrior), সরাইখানা (Inn), মৌচাক (the Swarm building), বাজার (Market), and পতাকা
+(Flag). A moving swarm may be a ঝাঁক; the unit-producing building is a মৌচাক.
+Describe assignment targets as requested workers rather than workers already
+present. Terrain passes mean গিরিপথ, while river banks mean নদীর পাড়.
+
+The pinned Noto Sans Bengali asset supplies shaping tables for HarfBuzz in the
+game and the shared browser font CSS. Retain those tables and the OFL licence in
+packages. Check conjuncts, reph, vowel signs, mixed Latin text and Bengali digits
+at small sizes; glyph coverage alone does not establish correct shaping or fit.
+Explicit non-Bengali script tags must not select the Bengali-script catalog.
+After adding or changing a language's displayed name, regenerate the checked-in
+browser assets with the pinned exporter command in `browser/derive_assets.py`.
+Its font fingerprint includes the language-name inventory even when the resulting
+subset font bytes stay identical.
 
 ### Hindi, Urdu and Swahili terminology
 

@@ -10,8 +10,10 @@ bool continuation(unsigned char c) { return (c & 0xc0) == 0x80; }
 // Closing punctuation stays with the preceding glyph; opening brackets with the next.
 const std::string closingPunctuation = "。、，．！？：；）］｝〉》」』】〕〗〙〛";
 const std::string openingPunctuation = "（［｛〈《「『【〔〖〘〚";
+} // namespace
+
 // Malformed/unknown font segmentation must not fall back to splitting marks.
-std::vector<std::size_t> checkedClusterEnds(const TextMeasurer &measurer, FontRole role,
+std::vector<std::size_t> shapingClusterEnds(const TextMeasurer &measurer, FontRole role,
                                            const std::string &text)
 {
     if (text.empty()) return {};
@@ -26,8 +28,6 @@ std::vector<std::size_t> checkedClusterEnds(const TextMeasurer &measurer, FontRo
     if (ends.empty() || ends.back() != text.size()) ends.push_back(text.size());
     return ends;
 }
-
-} // namespace
 
 int FixedTextMeasurer::width(FontRole, const std::string &text) const
 {
@@ -86,12 +86,12 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 	auto appendClusters = [&](const std::string &run)
 	{
 		std::size_t at = 0;
-		for (const auto end : checkedClusterEnds(measurer, role, run))
+		for (const auto end : shapingClusterEnds(measurer, role, run))
 		{
 			const std::string glyph = run.substr(at, end - at);
 			if (!line.empty() && measurer.width(role, line + glyph) > width)
 			{
-				const auto lineEnds = checkedClusterEnds(measurer, role, line);
+				const auto lineEnds = shapingClusterEnds(measurer, role, line);
 				const std::size_t last = lineEnds.size() > 1 ? lineEnds[lineEnds.size() - 2] : 0;
 				const std::string tail = line.substr(last);
 				if (last > 0 && (closingPunctuation.find(glyph) != std::string::npos ||
@@ -154,7 +154,7 @@ std::string ellipsize(const TextMeasurer &measurer, FontRole role, const std::st
 	// A slot too narrow for even the ellipsis shows nothing rather than overflow.
 	if (measurer.width(role, ellipsis) > width)
 		return {};
-	const auto ends = checkedClusterEnds(measurer, role, text);
+	const auto ends = shapingClusterEnds(measurer, role, text);
 	std::size_t count = ends.size();
 	std::string value = text;
 	while (!value.empty() && measurer.width(role, value + ellipsis) > width)

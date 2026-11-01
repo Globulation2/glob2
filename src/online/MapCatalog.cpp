@@ -12,7 +12,7 @@ std::string MapQuery::path() const
 	if (mine)
 		query += "&owner=me";
 	if (!search.empty())
-		query += "&q=" + urlEncode(search.substr(0, 128));
+		query += "&q=" + urlEncode(search);
 	if (teams > 0)
 		query += "&teams=" + std::to_string(teams);
 	if (minSide > 0)
@@ -40,8 +40,9 @@ void MapShare::create()
 {
 	current = Stage::Creating;
 	waiting = true;
-	Json body = {{"title", details.title.substr(0, 128)},
-				 {"description", details.description.substr(0, 4000)},
+	// The server validates character limits; preserve complete UTF-8 here.
+	Json body = {{"title", details.title},
+				 {"description", details.description},
 				 {"visibility", details.visibility},
 				 {"madeWith", details.madeWith}};
 	calls.rest(HttpFetch::Method::Post, Api::maps(), std::move(body),

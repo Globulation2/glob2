@@ -2915,5 +2915,11 @@
   "Clear filters": "Rensa filter",
   "No results match these filters.": "Inga resultat matchar dessa filter.",
   "Results: {value0}": "Resultat: {value0}",
-  "Game text field": "Textfält i spelet"
+  "Game text field": "Textfält i spelet",
+  "Rush": "Snabbattack",
+  "Defensive": "Defensiv",
+  "Economy": "Ekonomi",
+  "Expansion": "Expansion",
+  "Experimental": "Experimentell",
+  "Beginner-friendly": "Nybörjarvänlig"
 }

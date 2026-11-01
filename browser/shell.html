@@ -635,6 +635,25 @@ addEventListener('unhandledrejection', event => {
 Module.textBridge = (() => {
   const fields = new Map();
   const encoder = new TextEncoder();
+  const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter(undefined, {granularity:'grapheme'}) : null;
+  const fits = (text, maximum) => !maximum || encoder.encode(text).length < maximum;
+  function limited(text, maximum, accepted) {
+    if (fits(text, maximum)) return text;
+    if (segmenter) {
+      let prefix = '';
+      for (const {segment} of segmenter.segment(text)) {
+        if (!fits(prefix + segment, maximum)) break;
+        prefix += segment;
+      }
+      return prefix;
+    }
+    // Older browsers cannot safely infer Unicode graphemes. Reject an
+    // overflowing Unicode edit rather than leave a broken conjunct/joiner.
+    // Single-line ASCII input can still be truncated without splitting glyphs.
+    for (let i = 0; i < text.length; ++i)
+      if (text.charCodeAt(i) > 127) return fits(accepted, maximum) ? accepted : '';
+    return text.slice(0, Math.max(0, maximum - 1));
+  }
   function remove(id) { fields.get(id)?.element.remove(); fields.delete(id); }
   return {
     remove,
@@ -658,12 +677,12 @@ Module.textBridge = (() => {
         element.dataset.i18nAria=password ? 'Password' : 'Game text field';
         element.setAttribute('aria-label',password ? browserText('Password') : browserText('Game text field'));
         element.style.cssText='position:fixed;z-index:2;box-sizing:border-box;min-width:0;border:1px solid #657363;border-radius:3px;padding:4px 8px;background:#e8edcf;color:#173226;font:16px var(--glob2-script-body,system-ui)';
-        field={element,dirty:false,composing:false,seen:true,maximum};fields.set(id,field);
+        field={element,dirty:false,composing:false,seen:true,maximum,accepted:fits(value,maximum) ? value : ''};fields.set(id,field);
         const update=() => {
-          if (!field.composing && field.maximum) {
-            let text=element.value;
-            while (text && encoder.encode(text).length>=field.maximum) text=Array.from(text).slice(0,-1).join('');
+          if (!field.composing) {
+            const text=limited(element.value,field.maximum,field.accepted);
             if (text!==element.value) element.value=text;
+            field.accepted=element.value;
           }
           field.dirty=true;
         };
@@ -686,7 +705,10 @@ Module.textBridge = (() => {
       }
       field.seen=true;field.maximum=maximum;
       const element=field.element;
-      if (!field.dirty && !field.composing && element.value!==value) element.value=value;
+      if (!field.dirty && !field.composing && element.value!==value) {
+        element.value=value;
+        if (fits(value,maximum)) field.accepted=value;
+      }
       const bounds=canvas.getBoundingClientRect();
       element.style.left=(bounds.left+rect.x*bounds.width/width)+'px';
       element.style.top=(bounds.top+rect.y*bounds.height/height)+'px';

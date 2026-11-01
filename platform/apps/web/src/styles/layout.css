@@ -326,6 +326,11 @@ main:focus {
 .sidebar-collapsed .app-sidebar .sidebar-utilities {
   flex-direction: column-reverse;
 }
+.sidebar-collapsed .app-sidebar .language-preference {
+  /* The full picker remains available in expanded navigation. Native selects
+     cannot show a readable language name inside the narrow icon rail. */
+  display: none;
+}
 .sidebar-collapsed .app-sidebar .app-about summary {
   font-size: var(--text-xs);
 }
@@ -395,6 +400,9 @@ main:focus {
   }
   .app-sidebar .sidebar-utilities {
     flex-direction: column-reverse;
+  }
+  .app-sidebar .language-preference {
+    display: none;
   }
   .app-sidebar .app-about summary {
     font-size: var(--text-xs);

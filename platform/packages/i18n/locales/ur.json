@@ -2915,5 +2915,11 @@
   "Clear filters": "فلٹر صاف کریں",
   "No results match these filters.": "کوئی نتیجہ ان فلٹرز سے میل نہیں کھاتا۔",
   "Results: {value0}": "نتائج: {value0}",
-  "Game text field": "کھیل میں متن درج کرنے کا خانہ"
+  "Game text field": "کھیل میں متن درج کرنے کا خانہ",
+  "Rush": "یلغار",
+  "Defensive": "دفاعی",
+  "Economy": "معیشت",
+  "Expansion": "توسیع",
+  "Experimental": "تجرباتی",
+  "Beginner-friendly": "نئے کھلاڑیوں کے لیے موزوں"
 }
