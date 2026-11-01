@@ -2043,7 +2043,7 @@ def boulders_fields(rng, size):
     return height, grit, pebbles
 
 
-@recipe(name="hedge", group="obstacles", label="Hedge", profile="brush",
+@recipe(name="hedge", group="obstacles", label="Hedge", profile="canopy",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (22, 50, 24), "mid": (36, 76, 36), "light": (64, 108, 52), "gap": (10, 26, 14)},
         style=Style(luma=56, std=10, grain_max=9), periodic=True, grid=8, blocks=4,
@@ -2076,7 +2076,7 @@ def hedge_fields(rng, size):
     return height, grit, leaves
 
 
-@recipe(name="thicket", group="obstacles", label="Thicket", profile="brush",
+@recipe(name="thicket", group="obstacles", label="Thicket", profile="canopy",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (40, 54, 26), "mid": (62, 80, 38), "light": (92, 110, 58),
                  "twig": (96, 78, 52), "twig_dark": (52, 42, 30)},
