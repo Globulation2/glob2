@@ -22,7 +22,7 @@ void write(const std::filesystem::path& path, const void *bytes, size_t size) {
 TEST_SUITE("AssetLoader") {
 TEST_CASE("directory snapshots share sorted membership and refresh without changing root precedence") {
     glob2test::TempDir temp("directory-membership");
-    const std::string folder = temp.path.filename().string();
+    const std::string folder = temp.path.filename().string() + "-frames";
     const auto firstRoot = temp.path / "first", secondRoot = temp.path / "second", thirdRoot = temp.path / "third";
     for (const auto& root : {firstRoot, secondRoot, thirdRoot}) std::filesystem::create_directories(root / folder);
     const char first = 'a', second = 'b';
@@ -207,8 +207,10 @@ TEST_CASE("WebP requests deduplicate and preserve alpha and invisible RGB in bot
     for (unsigned workers : {0u, 2u}) {
         GAGCore::AssetLoader loader(files, {workers, workers, 16});
         auto first = loader.requestImage("frame.webp");
-        auto second = loader.requestImage("frame.webp");
         auto image = loader.wait(first); REQUIRE(image);
+        // Completion releases the transient byte dependency. Reusing the live
+        // image result must not create an unused extra read after that happens.
+        auto second = loader.requestImage("frame.webp");
         REQUIRE(second.get() == image);
         REQUIRE(image->surface->format == SDL_PIXELFORMAT_ARGB8888);
         auto *rgba = SDL_ConvertSurface(image->surface, SDL_PIXELFORMAT_RGBA32); REQUIRE(rgba);

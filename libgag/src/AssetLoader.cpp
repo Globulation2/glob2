@@ -201,6 +201,19 @@ struct AssetLoader::Impl {
     Metrics totals;
     const FileManager *files = nullptr;
     void checkOwner() const { if (owner != std::this_thread::get_id()) throw std::logic_error("Asset requests and polling require the owner thread"); }
+    // The caller holds mutex. Retain demand and promote queued work exactly as
+    // submit does, without constructing dependencies for an already cached job.
+    std::shared_ptr<Result> cached(const std::string& cacheKey, Priority priority, bool read) {
+        if (auto result = cache[cacheKey].lock()) {
+            if (result->state != State::Failed && result->state != State::Cancelled && result->consumers) {
+                for (auto &job : jobs) if (job->result == result && priority < job->priority) job->priority = priority;
+                ++result->consumers;
+                (read ? ioWake : *cpuWake).notify_one();
+                return result;
+            }
+        }
+        return {};
+    }
     void refreshDirectories() {
         checkOwner();
         std::vector<std::string> mounted;
@@ -379,13 +392,7 @@ std::shared_ptr<AssetLoader::Result> AssetLoader::submit(const std::string& key,
     if (impl->stopping) throw std::runtime_error("Asset loader stopped");
     impl->sweepExpiredCache();
     const auto cacheKey = std::to_string(impl->generation) + ':' + type.name() + ':' + key;
-    if (auto result = impl->cache[cacheKey].lock()) {
-        if (result->state != State::Failed && result->state != State::Cancelled && result->consumers) {
-            for (auto &job : impl->jobs) if (job->result == result && priority < job->priority) job->priority = priority;
-            ++result->consumers;
-            (read ? impl->ioWake : *impl->cpuWake).notify_one(); return result;
-        }
-    }
+    if (auto result = impl->cached(cacheKey, priority, read)) return result;
     auto result = std::make_shared<Result>(); result->type = type;
     // Establish demand before unlocking: the returned Handle adds its own
     // subscription immediately below; workers may otherwise see zero consumers.
@@ -494,6 +501,14 @@ AssetLoader::Handle<AssetImage> AssetLoader::requestImage(const std::string& pat
             throw std::runtime_error("Asset images must use WebP: " + path);
         }, 0, priority);
     const auto &name = path;
+    impl->refreshDirectories();
+    {
+        std::lock_guard lock(impl->mutex);
+        if (impl->stopping) throw std::runtime_error("Asset loader stopped");
+        const auto key = std::to_string(impl->generation) + ':' + typeid(AssetImage).name() + ':' +
+            name + (highResolution ? ":mips" : ":base");
+        if (auto result = impl->cached(key, priority, false)) return Handle<AssetImage>(result);
+    }
     auto bytes = requestBytesImpl(name, priority, true);
     auto work = [bytes, highResolution]() -> std::shared_ptr<const void> { return decodeImage(bytes.get(), highResolution); };
 
