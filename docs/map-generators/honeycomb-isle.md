@@ -1,81 +1,101 @@
 # Honeycomb isle
 
-**Honeycomb isle** (`honeycomb-isle`, numeric ID 53) is a city of hexagon blocks on an
-island in a lagoon, cut in two by a wide river that a few bridges cross. Paved streets draw the
-honeycomb. Pale wheat fields ring the island's edge and line the river. The blocks inside contain
-overgrown rubble, with a few open squares, crater gardens round flooded craters,
-and an open orchard at the middle. Cells have no stone liners or partial walls.
-Every colony's home is two blocks with a cistern garden.
+**Honeycomb isle** (`honeycomb-isle`, numeric ID 53) is a board of terrain hexes on an island in
+the sea, after the board game: every hex is one landscape (a wheat field, a forest, a pasture,
+clay hills, a mountain, a lake), cobbled roads run along every hex edge, a river cuts the island
+in two under a few boardwalk bridges, and a desert oasis with an orchard sits at the middle.
+Every colony's home is two hexes with a cistern garden, bordered by two food hexes and a forest of
+its own.
 
 ## How it plays
 
-- **Crowded by design.** The city is only as big as the colonies need (`blocks-per-colony`), and the
-  lagoon and river can't be crossed until units swim, so colonies start a block or two apart and
-  nobody expands away from the fight.
-- **Rubble is cover and lumber.** Rubble is wood: it blocks walking and building, and it is the
-  city's main wood supply, so a colony builds its town by clearing its own cover. Cutting through a
-  ruin opens a way into a neighbour's flank. Clearing the rubble opens the block;
-  scattered masonry remains as a stone resource.
-- **Food on the edges.** Wheat fields fill the blocks along the lagoon and the river. The bridges are
-  where the two halves of the city meet, and the landmark's orchard is the prize in the middle.
+- **Crowded by design.** The island is only as big as the colonies need (`blocks-per-colony`), and
+  the sea and river can't be crossed until units swim, so colonies start a hex or two apart.
+- **One hex, one resource.** Food is in the fields and the water meadows along the river, wood in
+  the forests, stone at the foot of the mountains and on the hills, building room on the pastures
+  and hills. A colony grows by taking the hexes round it.
+- **Contested ground between the homes.** Mountains (one per colony by default) and lakes are
+  spread as far from the homes as the island allows, and the oasis orchard is the prize in the
+  middle. The bridges are where the two halves of the island meet.
+- **Fast roads.** Roads are cobbled road with gravel shoulders: fast, buildable, and nothing grows
+  on them, so every hex is a sealed plot of its own.
+- **The deep sea is a wall.** The sea deepens eight tiles from the shore, and a tile mixing
+  shallow and deep water can be neither walked nor swum, so swimming opens the river and the
+  coast, never a way across the sea.
+
+## The hexes
+
+| Hex | Terrain | Use |
+| --- | --- | --- |
+| Home (two per colony) | Lush grass, a cistern pond and garden | Swarm, starter crops, the first buildings |
+| Field | Solid loam under wheat | Food. The loam irrigates the field as the pond of earlier revisions did |
+| Water meadow (the river takes a fifth of it) | Spring meadow under wheat | Food, watered by the river too |
+| Forest | Trees on lush grass round a heart of moss and a thicket that never clears | Wood; the moss keeps it growing |
+| Pasture | Grass with drifts of flower meadow, and a hedgerow across it with a gap | Building room; the hedge stops arrows |
+| Hills | Clay with two or three outcrop knolls and a grass pocket | Building room and two stone |
+| Mountain | A ridge-rock and outcrop massif with a deep-snow cap, a scree and boulder skirt | Eight stone at its foot; rock towers shoot over, boulders stop arrows |
+| Lake | A pond with a dark deep middle, a garden round it, a mud rim | Food and wood between the homes |
+| Oasis (the middle; two on maps of more than four colonies) | Dune and pale sand round a pond, lush grass and the orchard | The fruit prize |
+
+Every beach is pale sand (the desert alone has dunes);
+bridges are boardwalk with dirt-track causeways on to the nearest road.
 
 ## How it is built
 
-`src/map/generator/generators/HoneycombIsleGenerator.cpp`; the header comment records the original
-vision, how it evolved and the tradeoffs.
+`src/map/generator/generators/HoneycombIsleGenerator.cpp`; the header comment records the vision,
+how it evolved and the tradeoffs.
 
 | Stage | What happens |
 | --- | --- |
-| Blocks | A warped hexagon tiling (`hexTessellation`, pitch 150% of the block size) or squares at 140% (the same block area). Blocks shrink towards 16 on crowded maps. |
-| River | A wandering band along one axis, all the way round the torus in three legs, a little off centre. Blocks it takes a fifth of are bank blocks. |
-| City | The blocks nearest the middle, at most three fifths of the map's blocks, so a lagoon always surrounds it. A crowded map squeezes colonies down to three blocks each, and refuses them below that. |
-| Homes | Two adjoining blocks per colony, spread farthest apart and kept off the river's banks, then dealt at random. One of two open garden designs per map: **well yard** (the cistern in front of the home block's middle) or **garden court** (the well on the street between the blocks). Neither has stone walls or posts. |
-| Block kinds | The open central orchard, craters (spread between the homes), wheat fields (every edge block, half the riverside blocks, and some inner blocks), and ruins, collapsed blocks and squares by weighted draw. |
-| Streets | Paved with sand everywhere except inside a home. The sand seals every block, so each block is a plot of its own and no pond or field needs a sand ring. |
-| Bridges | Sand decks across the river where it runs through the city, with rubble-free landings. |
+| Hexes | A warped hexagon tiling (`hexTessellation`, pitch 150% of the block size) or squares at 140% (the same area). Hexes shrink towards 16 on crowded maps. |
+| River | A wandering band along one axis, all the way round the torus in three legs, a little off centre. Hexes it takes a fifth of are water meadows. |
+| Island | The hexes nearest the middle, at most three fifths of the map's hexes, so the sea always surrounds it. A crowded map squeezes colonies down to three hexes each, and refuses them below that. |
+| Homes | Two adjoining hexes per colony, spread farthest apart and kept off the river's banks, then dealt at random. Each home's free neighbours nearest its swarm (preferring hexes no other home borders) make up two food hexes, counting water meadows already there, and one forest. One of two garden designs per map: **well yard** or **garden court**. |
+| Contested hexes | The oasis at the middle, then lakes and mountains, each by farthest-point spreading from everything placed before. |
+| Dealt hexes | Half the riverside hexes not beside a home are fields (the Wheat fields control). The rest are dealt from a shuffled deck of fields, forests, pastures and hills whose counts bring the island's totals to the proportions of the weights, as the board game deals its tiles; a field or forest card that falls beside a home changes places with the next pasture or hills card. |
+| Roads | Road down the middle, gravel shoulders against every hex, grass inside a home. |
+| Bridges | Boardwalk decks across the river where it runs through the island, landings kept clear and a dirt-track causeway to the nearest road. |
+| Looks | The layout is drawn with one terrain per mechanic; a last pass paints the looks that share each mechanic, and grass by its growth chance (lush where watered, dry where nothing grows). |
 
-On a small map the river can leave too few blocks away from its banks for the homes; the layout
-then runs again without the river, and the lagoon still supplies the water.
+On a small map the river can leave too few hexes away from its banks for the homes; the layout
+then runs again without the river.
 
 ## Controls
 
 | Control | Range (default) | Effect |
 | --- | --- | --- |
 | Block shape | Squares, Hexagons, Random (Hexagons) | The tiling; Random selects a fitting concrete layout from the map seed. |
-| Block size | 16–22 (18) | Target block size; crowded maps shrink it. |
-| Street width | 2–5 (3) | Street bands; wider streets mean less building room. |
-| Warp | 0–100 (50) | How irregular the blocks are (visual; no measurable effect on the economy). |
-| Blocks per colony | 8–16 (11) | City size, and so how much of it is ruins. |
-| Rubble | 20–90 (70) | How full the ruins are. |
-| Craters per colony | 0–3 (1) | Crater gardens between the homes. |
-| Wheat fields | Few, Normal, Many (Normal) | Few: half the edge and a quarter of the riverside blocks, none inside. Many: every edge and riverside block and more inner ones. |
+| Block size | 16–22 (18) | Target hex size; crowded maps shrink it. |
+| Street width | 2–5 (3) | Road bands; wider roads mean less room inside the hexes. |
+| Warp | 0–100 (50) | How irregular the hexes are. |
+| Blocks per colony | 8–16 (11) | Island size. |
+| Forest density | 20–90 (70) | How full the forests are; scaled again by the wood amount. |
+| Lakes | 0–3 (1) | Lakes per colony, between the homes. |
+| Mountain ranges | Few, Normal, Many (Normal) | Half, one or one and a half mountains per colony (at least one). |
+| Wheat fields | Few, Normal, Many (Normal) | A quarter, half or all of the riverside hexes, and the weight of fields among the dealt hexes. |
 | River width | 0–20 (12) | 0 removes the river. |
 | Bridges | 1–6 (3) | Plus one per four colonies. |
-| Wheat amount | 0–100% | Garden extras and how full the fields are (fields are full at 100). |
-| Wood amount | 0–200% | Garden wood and rubble density (rubble is full by 150–200). |
-| Stone amount | 0–300% | Scattered masonry chunks in rubble and single statues in open squares; no cell borders. |
+| Wheat amount | 0–100% | Garden extras and how full the fields are (full at 100). |
+| Wood amount | 0–200% | Garden wood and forest density. |
+| Stone amount | 0–300% | Quarry stone at the mountains (8 each at 100) and hills (2 each). |
 | Algae, fruit amount | 0–300% | Algae in the shallows; the orchard grows from 0 to 6 groves. |
+
+Revision 5 replaced the Rubble and Craters per colony controls with Forest density and Lakes, and
+added Mountain ranges.
 
 ## Limits
 
-- On 512-sided maps with few colonies the city is a small island in a large lagoon (about 85–94%
-  water with 2–4 colonies).
-- Rubble and fields use the wood and wheat sprites; there is no rubble graphic.
-- Fairness is statistical, not exact: the ruins, craters and fields between homes differ.
-  Fairness candidate selection keeps the requested tiling; it does not replace default hexagons
-  with squares. No rotation tournament of the open-cell layout has been run yet.
-- Numbi and Castor stall on this map (they harvest wheat but barely breed); by the maintainer's
-  decision maps are not tuned for the older AIs.
-- No human playtest of the final version has been recorded.
-
-The block-shape control defaults to Hexagons, retaining the intended honeycomb outline
-when the lobby compares candidates for fairness. Explicit Squares (0), Hexagons (1) and
-Random (2) retain their stored values. Random remains available as an explicit choice,
-and Randomize Parameters can still choose either concrete shape from the search subset.
-
-## Playtest limitations
-
-Streets need to remain usable after growth and construction. Accessible global building room does not establish equally usable local expansion space.
+- On 512-sided maps with few colonies the island is small in a large sea.
+- Fairness is statistical, not exact: every home has the same garden, two food hexes and one
+  forest beside it, and its other neighbours are pastures, hills, lakes or mountains. The river
+  can give a home a third food hex (a water meadow it borders), which the
+  `honeycomb-isle.home.extra-food` fallback records; a home with too few free neighbours gets
+  fewer (`honeycomb-isle.home.short-of-neighbours`). Hexes further out are dealt at random.
+- Roads are buildable; a building on a road closes it until it is gone. The hex network gives
+  every hex several ways in.
+- Numbi and Castor are not tuned for; by the maintainer's decision maps are not tuned for the older
+  AIs.
+- No human playtest of revision 5 has been recorded.
 
 ## Verification
 
