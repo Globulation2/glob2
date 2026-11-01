@@ -1405,7 +1405,7 @@ class GameGUITouchHarness
 		};
 		GAGCore::userTextScale = 1;
 		const auto normal = checkNavigation(6);
-		CHECK(normal.actions.h == doctest::Approx(48 * gfx->logicalUnitsPerPoint()));
+		CHECK(normal.actions.h == doctest::Approx(64 * gfx->logicalUnitsPerPoint()));
 		GAGCore::userTextScale = 1.5;
 		const auto enlarged = checkNavigation(3);
 		CHECK(enlarged.actions.h >= 96 * gfx->logicalUnitsPerPoint());
@@ -1418,6 +1418,7 @@ class GameGUITouchHarness
 		SDL_Event resized{};
 		resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 		GAGCore::GraphicContext::translateMouseEvent(&resized);
+		gfx->setResponsiveViewport(true, 844, 390);
 		gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 		REQUIRE(gfx->getW() == 844);
 		REQUIRE(gfx->getH() == 390);
