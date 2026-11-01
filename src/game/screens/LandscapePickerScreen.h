@@ -30,13 +30,6 @@ class LandscapePickerScreen : public Glob2UI::Screen
 	{
 		CANCEL = -2
 	};
-	/// How the sheet orders its tiles. Random is the registry's own catalog order (shuffled once
-	/// so browsing favours no landscape); Alphabetical sorts by each entry's shown name.
-	enum class SortOrder
-	{
-		Random,
-		Alphabetical
-	};
 	struct Entry
 	{
 		std::string name;
@@ -48,8 +41,7 @@ class LandscapePickerScreen : public Glob2UI::Screen
 		// This entry's generator's catalog tags (GeneratorDefinition::tags), for the filter row.
 		std::vector<std::string> tags;
 	};
-	LandscapePickerScreen(const std::string &title, std::vector<Entry> entries, int selected,
-						  SortOrder sortOrder = SortOrder::Random);
+	LandscapePickerScreen(const std::string &title, std::vector<Entry> entries, int selected);
 	~LandscapePickerScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32 tick) override;
@@ -62,10 +54,6 @@ class LandscapePickerScreen : public Glob2UI::Screen
 	std::optional<std::uint32_t> chosenSeed() const;
 	/// The request the selection's preview was rolled with (see randomizeParameters).
 	GenerationRequest chosenRequest() const;
-	/// The sort order currently shown, random or alphabetical, as last changed by the person
-	/// (starts at the constructor's `sortOrder`) - a caller persists this the way it persists any
-	/// other lobby preference.
-	SortOrder currentSortOrder() const { return sortOrder; }
 	/// Draws every landscape's own controls at random (GenerationRequest::randomizeControls) and
 	/// rolls them all again. A random set the world then refuses is drawn again, up to
 	/// kRandomDraws times per landscape, so the sheet fills with maps that exist.
@@ -81,8 +69,7 @@ class LandscapePickerScreen : public Glob2UI::Screen
 	/// at - uniform across entries[] by construction (the caller's GenerationHistory already
 	/// carries these shared fields onto every method) and kept uniform by setShared(). A caller
 	/// reads these back after execute() returns, on any exit, and applies them to its own lobby
-	/// setup, the same two-way relationship currentSortOrder() has with a caller's preferences:
-	/// this sheet is a live view onto shared lobby settings, not a disconnected copy of them.
+	/// setup: this sheet is a live view onto shared lobby settings.
 	int sharedWDec() const { return entries.empty() ? 0 : entries.front().request.wDec; }
 	int sharedHDec() const { return entries.empty() ? 0 : entries.front().request.hDec; }
 	int sharedTeams() const { return entries.empty() ? 0 : entries.front().request.nbTeams; }
@@ -119,10 +106,8 @@ class LandscapePickerScreen : public Glob2UI::Screen
 	/// Refills `incompatible` from a fresh validateGenerationRequest per entry, against each
 	/// entry's own (shared, per setShared) size and colony count.
 	void recomputeIncompatible();
-	/// Recomputes `visible` (entries[] indices, filtered by the active tag choices and ordered by
-	/// `sortOrder`) and `incompatible` (each entry's live validateGenerationRequest reason against
-	/// the sheet's own size/colony count, empty when it can generate). Called once at construction
-	/// and again whenever the person changes the sort order or a filter.
+	/// Recomputes `visible`: entries[] indices filtered by the active tag choices and sorted
+	/// by localized display name. Called at construction and after filter or shared-control edits.
 	void rebuild();
 	std::string title;
 	std::vector<Entry> entries;
@@ -130,8 +115,7 @@ class LandscapePickerScreen : public Glob2UI::Screen
 	/// Per entry, random draws still allowed after a refused set (0 when the parameters are the
 	/// entry's own or the draws are spent).
 	std::vector<int> redraws;
-	/// entries[] indices currently shown, filtered and ordered; empty-filter/Random means the
-	/// identity order 0..entries.size()-1.
+	/// entries[] indices currently shown, filtered and sorted by localized display name.
 	std::vector<int> visible;
 	/// Parallel to entries[]: the live reason this entry cannot generate at the sheet's size and
 	/// colony count, or empty when it can. Recomputed at construction and by setShared() whenever
@@ -150,6 +134,5 @@ class LandscapePickerScreen : public Glob2UI::Screen
 	Uint32 nextPreviewTick = 0;
 	std::vector<std::size_t> priorityOrder;
 	std::vector<std::size_t> viewportSlots;
-	SortOrder sortOrder;
 	LandscapePreviewer previewer;
 };

@@ -11,8 +11,6 @@
 #include <charconv>
 #include <functional>
 #include <map>
-#include <numeric>
-#include <random>
 #include <string_view>
 
 namespace fe = Glob2UI;
@@ -51,29 +49,6 @@ std::vector<std::string> categoriesOf(const std::vector<LandscapePickerScreen::E
 		}
 	std::sort(found.begin(), found.end());
 	return found;
-}
-// The Random sort order's permutation of entries[] indices (0..count-1), drawn once per distinct
-// entry count and reused for the rest of this process's run - not reshuffled on every dialog open
-// or filter/sort change. FEEDBACK 2026-09-17, refining the first version of this fix: "I don't
-// like how the random order changes sometimes while I'm using the UI... randomized once when the
-// app starts and then stays consistent for the duration of execution." Relaunching the app draws
-// a fresh one; a single run stays on whichever order it first drew, however many times the sheet
-// is opened or narrowed. Cached by count rather than a single fixed-size vector because a caller
-// could in principle open this screen on different entry lists in one run (the editor's landscape
-// list versus a lobby's, say); each distinct count gets its own permutation, drawn once.
-const std::vector<int> &randomOrderFor(std::size_t count)
-{
-	static std::map<std::size_t, std::vector<int>> cache;
-	auto it = cache.find(count);
-	if (it == cache.end())
-	{
-		std::vector<int> order(count);
-		std::iota(order.begin(), order.end(), 0);
-		std::mt19937 random(std::random_device{}());
-		std::shuffle(order.begin(), order.end(), random);
-		it = cache.emplace(count, std::move(order)).first;
-	}
-	return it->second;
 }
 } // namespace
 
@@ -123,24 +98,9 @@ void LandscapePickerScreen::rebuild()
 	for (int i = 0; i < int(entries.size()); ++i)
 		if (matchesFilters(i, -1))
 			visible.push_back(i);
-	if (sortOrder == SortOrder::Alphabetical)
-		std::stable_sort(visible.begin(), visible.end(),
-						 [this](int a, int b) { return entries[a].name < entries[b].name; });
-	else
-	{
-		// This run's fixed random order (see randomOrderFor), narrowed to what the active filters
-		// still allow, without disturbing the relative order of what remains - the same relation
-		// filtering already has to Alphabetical order above.
-		std::vector<unsigned char> shown(entries.size(), 0);
-		for (int i : visible)
-			shown[i] = 1;
-		std::vector<int> ordered;
-		ordered.reserve(visible.size());
-		for (int i : randomOrderFor(entries.size()))
-			if (shown[i])
-				ordered.push_back(i);
-		visible = std::move(ordered);
-	}
+	std::stable_sort(visible.begin(), visible.end(),
+					 [this](int a, int b) { return entries[a].name < entries[b].name; });
+
 	reveal = true;
 	layoutReady = false;
 	invalidate();
@@ -247,10 +207,10 @@ void LandscapePickerScreen::refresh()
 	}
 }
 
-LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vector<Entry> entries, int selected, SortOrder sortOrder)
+LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vector<Entry> entries, int selected)
 	: title(title), entries(std::move(entries)), tiles(this->entries.size()), redraws(this->entries.size(), 0),
 	  filterCategories(categoriesOf(this->entries)), filters(filterCategories.size()),
-	  selected(std::clamp(selected, 0, std::max(0, int(this->entries.size()) - 1))), sortOrder(sortOrder),
+	  selected(std::clamp(selected, 0, std::max(0, int(this->entries.size()) - 1))),
 	  previewer(requestsOf(this->entries), 2, true)
 {
 	recomputeIncompatible();
@@ -472,15 +432,9 @@ Element LandscapePickerScreen::build(const Presentation &p)
 	header.push_back(fe::paragraph(Glob2UI::libraryText("Each landscape is shown as a real map at the size and colony count below, which you can change here. "
 								   "Use one to play the map shown."),
 								   {fe::FontRole::Support}));
-	// Sort order and tag filters, browsed like a catalog: a category narrows the list to entries
+	// Tag filters, browsed like a catalog: a category narrows the list to entries
 	// carrying its chosen value (AND across categories; "Any" leaves a category unfiltered).
 	std::vector<Element> bar;
-	bar.push_back(fe::segments("landscape/sort", {"Random", "Alphabetical"}, int(sortOrder),
-							   [this](int value)
-							   {
-								   sortOrder = SortOrder(value);
-								   rebuild();
-							   }));
 	for (int c = 0; c < int(filterCategories.size()); ++c)
 	{
 		// Faceted like a shopping catalog: an option is only offered if it leaves at least one
