@@ -179,3 +179,79 @@ A published cohort is immutable. Later cohorts need a new version and matching
 new tag; never add bytes to a published tag. Retries may resume only an identical
 unpublished draft. This workflow prepares publication; it does not submit a
 store build, deploy instance configuration or supply missing qualification.
+
+## Public wiki release maintenance
+
+The English wiki's **Download and Install**, **Changes** and **Older Releases**
+contain bounded `glob2-release-sync:begin` / `glob2-release-sync:end` sections.
+`tools/release/sync_wiki.py` reconciles them against every page of public GitHub
+releases and GitHub's latest stable release. Only numeric game version tags are
+included; drafts and evidence releases are excluded. Previews are labelled
+separately. Release notes and available downloads link to the exact public
+release; these links do not attest to package qualification or store availability.
+Surrounding translations, editorial text and historical material are preserved.
+
+Preview without credentials:
+
+```sh
+python3 tools/release/sync_wiki.py --output-dir artifacts/wiki-sync/proposed
+```
+
+For a page without markers, `--initialize` explicitly inserts its first managed
+section above a labelled historical archive, preserving an initial translations
+template. Review the resulting text and rendered MediaWiki preview before the
+initial publication. Routine scheduled runs never initialize missing sections.
+Do not remove or duplicate the markers. No-op runs create no wiki revisions.
+
+The `sync-wiki.yml` workflow runs weekly on Monday at 13:23 UTC, with manual
+dispatch for retries, only on the restricted release mirror's `master`.
+It defaults to a public dry run without authentication. Manual dispatch defaults
+to `publish=false`; select `publish=true` to verify authenticated publication.
+Only after that succeeds, set the environment variable `WIKI_PUBLISH_ENABLED`
+to `true` to enable scheduled writes. Until then weekly runs check and report
+the proposed differences without editing the wiki. Configure a
+`wiki-publication` environment restricted to that branch, with
+`WIKI_USERNAME` and `WIKI_PASSWORD` secrets. An ordinary account such as
+`Genixpro` uses MediaWiki's `clientlogin` API; an `Account@BotName` username uses
+bot-password login. Both require basic read access and permission to edit existing
+pages. No administrator, page-creation or upload permission is needed.
+A dedicated bot password can be created through **Special:BotPasswords** when
+that page is available. With the account owner's authorization, the existing
+account password can instead be stored in this protected environment. Never put
+credentials in workflow inputs, source files, logs or artifacts. The local tool
+also accepts the older `WIKI_BOT_USERNAME` / `WIKI_BOT_PASSWORD` environment names
+when the generic names are absent.
+A required environment reviewer pauses scheduled jobs; unattended operation
+requires configuring this narrow environment accordingly. Game publication
+and signing environments retain their existing protections.
+
+Before enabling unattended operation, verify bot authentication and edit
+permissions and publish a real update successfully. New-account external-link
+CAPTCHAs block initial edits and new version links on this wiki. Its ordinary
+`user` and `autoconfirmed` groups lack `skipcaptcha`; the `bot` and `sysop`
+groups have it. A bot password does not grant its parent account extra rights.
+The publisher can answer the three observed English QuestyCaptcha questions
+about the vowels in "Globulation", letters that are not consonants, and letters
+that are neither vowels nor `b`. It matches only these known questions (ignoring
+case, whitespace and curly quotation marks), and retries the same edit once with
+the returned challenge ID. Revision guards and the edit payload stay unchanged.
+Unknown questions, other CAPTCHA types, missing identifiers or a second challenge
+stop publication for operator attention. Login challenges are not answered.
+A CAPTCHA-exempt account remains an optional alternative. The publisher rejects HTTP redirects, API
+errors, missing permissions, malformed markers and revision conflicts. If wiki
+reauthentication redirects to another host or plain HTTP, stop and have the wiki
+administrator correct the route before entering credentials. Do not claim
+maintenance is active until credentials, a successful run and the weekly schedule
+are verified in the release mirror.
+
+Runs report unchanged pages or public revision links. Review failed Actions runs
+and manually dispatch after correcting the cause. Edits are independent per page:
+a later failure may leave earlier pages updated; retry reconciles safely. The
+complete public release inventory is fetched before preparing edits, and edit
+permissions and markers on all three pages are checked before any write. Preserve
+workflow logs and public revision links as review evidence. Roll back unwanted
+wiki revisions through page history, and disable the workflow to suspend writes.
+
+The protected wiki homepage remains administrator-maintained. Broader English
+entry pages link to current game documentation; their editorial content is not
+rewritten by the release synchronizer. Translations remain independent.

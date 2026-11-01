@@ -10,7 +10,12 @@ workflow is defined here, in `Globulation2/glob2`, but each of its root jobs
 has a job-level `if:` that requires the mirror's name and numeric repository ID
 (`1397722696`), plus the owner and the expected ref. Anywhere else, including
 this repository and forks, every job is skipped before a runner starts. None of
-these workflows has a pull request trigger.
+these workflows has a pull request trigger. The narrow scheduled exception is
+`sync-wiki.yml`: on mirror `master`, the owner-associated weekly schedule may
+update bounded public wiki release sections using only the `wiki-publication`
+environment. Manual retries require the owner. It cannot build, sign or publish
+game packages; all other release workflows retain their existing event guards.
+See [wiki release maintenance](downloads.md#public-wiki-release-maintenance).
 `test/build_system/test_release_guards.py` enforces this for every workflow in
 the release set in `test/build_system/test_ci_concurrency.py`, and fails if a
 workflow that uses deployment environments, named secrets or write tokens is

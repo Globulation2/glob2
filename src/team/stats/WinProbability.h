@@ -43,6 +43,7 @@ class Game;
 /// returns the same permille.
 namespace WinProbability
 {
+    const char *modelId();
 	/// Fixed-point scales. Fitness and coefficients carry 32 fractional bits;
 	/// fractions and roots use fewer so that one Sint64 multiply per term cannot
 	/// overflow, which is what lets this avoid 128-bit arithmetic entirely.

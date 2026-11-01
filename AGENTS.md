@@ -47,6 +47,15 @@ working notes or PR narratives. Use these ignored local directories instead:
 - `docs/.work/` for temporary Markdown notes, validation narratives and draft PR
   material.
 
+Broad AI experiments must use the storage controls in `tools.tournaments` (see
+[experiment storage](docs/tools/tournaments.md#experiment-storage)); standalone
+runners must enforce equivalent per-attempt, campaign and free-space limits.
+Default to results, seeds, frozen inputs and compact telemetry. Select a bounded
+set of games for replays/saves, and use exhaustive per-object checksum dumps only
+for focused diagnostics with explicit byte allowances. Compress logs while
+capturing them; do not accumulate raw output until the end of each match. Never
+silently truncate a measurement or count storage failures as successful games.
+
 Before committing a documentation file, remove transient command output, local
 paths, dated status reports and redundant screenshots. Attach evidence needed for
 review to the pull request or keep it on a dedicated evidence branch. Summarize
@@ -152,6 +161,26 @@ Engine-correct changes can still change how the game feels to play: pacing, art
 style, animation smoothness, economy pressure, difficulty. Call out such effects
 explicitly in the PR description. A maintainer actually playing the result is part
 of review, not a formality that automated checks replace.
+
+## Evaluating AI changes
+
+Use `tools.tournaments` for standard and custom AI assessments. New tournament
+CLI games and experiment planners default to 95% probability-based early victory;
+freeze the threshold in the cohort and use an explicit zero only when playing
+out complete end games is part of the assessment. Resolve tick-cap survivors by
+final win probability rather than the historical economic calculation.
+
+Use **integrated whole-match win probability**, normalized by observed game time,
+as the primary continuous effectiveness metric alongside wins, losses and draws.
+It captures improvements in the strength and duration of an AI's position that
+can leave discrete match outcomes unchanged, making small changes easier to
+measure. Standard reports collect and analyze it automatically; custom scripts
+should use the retained integer area/coverage summary rather than count samples
+or infer it from the final chance. Compare paired seeds and seat rotations, report
+confidence intervals and missing coverage, and keep model identities, stopping
+rules, opponents and map distributions comparable. Retain actual outcomes as a
+check against improving the model score without improving play. Old or partial
+history is unavailable, never zero. See [tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
 
 ## Review and merge ownership
 

@@ -11,6 +11,7 @@
 
 #include "AICastor.h"
 #include "AINicowar.h"
+#include "AIMaximaStrategy.h"
 
 #include <assert.h>
 #include <string.h>
@@ -193,6 +194,13 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 	if (!tempGameHeader.load(stream, versionMinor, mapHeader.historicalGrowthLayout ? mapHeader.getVersionMinor() : 0))
 		co_return false;
 	gameHeader=tempGameHeader;
+	// The header is resolved by controller constructors, before their own saved
+	// execution state is read. Migrate with the actual source format here so an
+	// old embedded strategy is not mistaken for an incomplete current one.
+	std::string strategyError;
+	if (!AIMaxima::StrategyResolver::upgradeSavedConfigurations(
+			gameHeader, versionMinor, strategyError))
+		throw std::runtime_error("Maxima strategy error: " + strategyError);
 	// Resolve before any entity takes a descriptor pointer. Older files must
 	// never inherit edited repository definitions.
 	if (gameHeader.getBuildingCatalogSnapshot().empty()) buildingsTypes.initLegacy();
@@ -273,8 +281,6 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 	if(!(co_await map.loadTask(stream, mapHeader, this)))
 		co_return false;
 
-	if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && map.requiredTerrainExperiments() != mapHeader.requiredTerrainExperiments)
-		co_return false;
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES &&
 		(map.requiredResourceExperiments() != mapHeader.requiredResourceExperiments ||
 		 map.resourceRegistry().experiments() != mapHeader.resourceExperimentDefinitions ||
@@ -285,12 +291,6 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 		if (mapHeader.getIsSavedGame() && !gameHeader.getExperiments().has(key)) co_return false;
 		gameHeader.getExperiments().set(key, true, gameHeader.catalogExperimentKeys());
 	}
-	for (const auto& definition : experimentDefinitions())
-		if (mapHeader.requiredTerrainExperiments.has(definition.id))
-		{
-			if (mapHeader.getIsSavedGame() && !gameHeader.hasExperiment(definition.id)) co_return false;
-			gameHeader.getExperiments().set(definition.id);
-		}
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_MAP, "signatureAfterMap"))
 		co_return false;
@@ -411,10 +411,15 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 		}
 	std::set<std::pair<int, Uint32>> diagnosticIdentities;
 	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+	{
+		const auto &probability = teams[t]->stats.getWinProbabilityHistory();
+		if (!probability.empty() && probability.back().tick > stepCounter)
+			throw std::runtime_error("Invalid win probability game tick");
 		for (const auto &record : teams[t]->stats.aiTelemetry)
 			if (record->current.tick > stepCounter || record->coverage > stepCounter ||
 				!diagnosticIdentities.emplace(record->player, record->generation).second)
 				throw std::runtime_error("Invalid AI telemetry identity or game tick");
+	}
 	for (int p = 0; p < gameHeader.getNumberOfPlayers(); ++p)
 		if (players[p] && players[p]->ai)
 			players[p]->ai->bindTelemetry();
@@ -720,7 +725,6 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
-	mapHeader.requiredTerrainExperiments = map.requiredTerrainExperiments();
 	mapHeader.requiredResourceExperiments = map.requiredResourceExperiments();
 	mapHeader.resourceExperimentDefinitions = map.resourceRegistry().experiments();
 	gameHeader.setResourceExperiments(map.resourceRegistry().experiments());

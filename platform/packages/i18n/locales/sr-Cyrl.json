@@ -2941,5 +2941,6 @@
   "More filters": "Још филтера",
   "Clear filters": "Очисти филтере",
   "No results match these filters.": "Нема резултата који одговарају овим филтерима.",
-  "Results: {value0}": "Резултати: {value0}"
+  "Results: {value0}": "Резултати: {value0}",
+  "Game text field": "Поље за унос текста у игри"
 }

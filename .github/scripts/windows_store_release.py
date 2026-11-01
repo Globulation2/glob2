@@ -27,6 +27,44 @@ def stage_dlls(executable: Path, dll_dir: Path, destination: Path, sdl_runtime: 
 
 
 
+def normalize_store_license_filenames(destination: Path) -> None:
+    """Keep text .LIB notices out of the Store's foreign-library check.
+
+    The MinGW license tree is shared with other distribution channels. Rename
+    only its staged Store copy, validating the entire plan before changing any
+    filename so a collision or unexpected binary cannot produce a partial fix.
+    """
+    licenses = destination / "licenses"
+    if not licenses.is_dir():
+        return
+    paths = sorted(licenses.rglob("*"), key=lambda path: path.relative_to(licenses).as_posix())
+    occupied = {path.relative_to(licenses).as_posix().casefold() for path in paths}
+    renames = []
+    for source in paths:
+        if not source.is_file() or source.suffix.casefold() != ".lib":
+            continue
+        if source.is_symlink():
+            raise RuntimeError(f"Unexpected symlink in Store license text: {source}")
+        target = source.with_name(source.name + ".txt")
+        key = target.relative_to(licenses).as_posix().casefold()
+        if key in occupied:
+            raise RuntimeError(f"Case-insensitive Store license filename collision: {target}")
+        data = source.read_bytes()
+        try:
+            text = data.decode("utf-8-sig")
+        except UnicodeDecodeError as error:
+            raise RuntimeError(f"Non-text Store license file: {source}") from error
+        if (data.startswith((b"!<arch>\n", b"!<thin>\n", b"MZ", b"\x7fELF"))
+                or not text.strip()
+                or any((ord(char) < 32 and char not in "\t\r\n\f") or ord(char) == 127
+                       for char in text)):
+            raise RuntimeError(f"Non-text Store license file: {source}")
+        occupied.add(key)
+        renames.append((source, target))
+    for source, target in renames:
+        source.rename(target)
+
+
 def write_game_config(destination: Path, args: argparse.Namespace) -> None:
     game = ET.Element("Game", {"configVersion": "1"})
     ET.SubElement(game, "Identity", {
@@ -107,6 +145,7 @@ def main() -> None:
         encoding="utf-8",
     )
     stage_dlls(args.exe, args.dll_dir, destination, args.sdl_runtime)
+    normalize_store_license_filenames(destination)
 
     icon = args.root / "data/icons/glob2-icon-128x128.png"
     write_shell_images(icon, destination)

@@ -92,6 +92,12 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
 
 
 class AssetExportTests(unittest.TestCase):
+    def test_script_diagnostics_are_not_runtime_assets(self):
+        self.assertFalse(include_asset('data/fonts/script-probes.json'))
+        self.assertFalse(include_asset('data/fonts/check_script_support.py'))
+        self.assertTrue(include_asset('data/fonts/scripts/NotoSansDevanagari-Regular.ttf'))
+        self.assertTrue(include_asset('data/fonts/LICENSE-Noto.txt'))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

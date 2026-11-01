@@ -1,7 +1,8 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {gameURL,clickMainMenu,clickCustomGameStart,clickResultsSave,clickControl,rootBox,controlBox}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 async function colonyVisible(page) {
   const png=await page.screenshot({clip:{x:0,y:50,width:24,height:200}});
   return page.evaluate(async base64=>{

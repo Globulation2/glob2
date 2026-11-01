@@ -697,6 +697,7 @@ size_t TeamStats::displayCapacityBytes() const
     size_t bytes=0;
     for (const auto& sample:stats) bytes+=sample.buildingCountByVariant.capacity()*sizeof(int)+sample.numberUnitPerType.extraCapacityBytes()+sample.isFree.extraCapacityBytes()+sample.upgradeStatePerType.extraCapacityBytes();
     bytes += endOfGameStats.capacity() * sizeof(EndOfGameStat);
+    bytes += winProbabilityHistory.capacity() * sizeof(WinProbabilitySample);
     bytes += measurementHistory.capacity() * sizeof(GameplayMeasurements);
     for (const auto& sample : measurementHistory) bytes += sample.variants.capacity() * sizeof(sample.variants[0])+sample.unitCapacityBytes();
     bytes+=measurements().unitCapacityBytes();
@@ -711,6 +712,8 @@ std::shared_ptr<const TeamStats> TeamStats::frozenHistory() const
     auto result = std::make_shared<TeamStats>();
     result->sourceTick=sourceTick;result->publishedTick=publishedTick;
     result->endOfGameStats = endOfGameStats;
+    result->winProbabilityHistory = winProbabilityHistory;
+    result->winProbabilityModel = winProbabilityModel;
     result->measurementHistory = measurementHistory;
     result->coverageStartTick = coverageStartTick;
     result->extendedCoverageStartTick = extendedCoverageStartTick;
@@ -965,6 +968,8 @@ int TeamStats::getStarvingUnits() const
 
 bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor,bool privateAdaptive174)
 {
+    winProbabilityHistory.clear();
+    winProbabilityModel.clear();
     publishedMeasurements.reset();
     displaySnapshot.reset();
     historySnapshot.reset();
@@ -1126,6 +1131,27 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor,bool priv
         sourceTick=stream->readUint32("sourceTick");publishedTick=stream->readUint32("publishedTick");
         if(sourceTick>publishedTick) throw std::runtime_error("Invalid published statistics tick");
     } else {collectionEnabled=false;sourceTick=publishedTick=editMeasurements().tick;}
+    if (versionMinor >= FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY)
+    {
+        GAGCore::BinaryInputStream::CheckedReads checked(stream);
+        stream->readEnterSection("winProbability");
+        winProbabilityModel = stream->readText("model");
+        const auto count = stream->readCount("size");
+        if (count && winProbabilityModel.empty())
+            throw std::runtime_error("Missing win probability model identity");
+        for (unsigned i = 0; i < count; ++i)
+        {
+            stream->readEnterSection(i);
+            const auto tick = stream->readUint32("tick");
+            const auto chance = stream->readSint32("permille");
+            if (chance < 0 || chance > 1000 ||
+                (!winProbabilityHistory.empty() && tick <= winProbabilityHistory.back().tick))
+                throw std::runtime_error("Invalid win probability history");
+            winProbabilityHistory.push_back({tick, chance});
+            stream->readLeaveSection();
+        }
+        stream->readLeaveSection();
+    }
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_BUILDING_CATALOG)
     {
@@ -1250,7 +1276,41 @@ void TeamStats::save(GAGCore::OutputStream *stream)
     stream->writeUint8(collectionEnabled,"collectionEnabled");
     stream->writeEnterSection("collector");measurementFields(stream,collectedMeasurements);stream->writeLeaveSection();
     stream->writeUint32(sourceTick,"sourceTick");stream->writeUint32(publishedTick,"publishedTick");
+	stream->writeEnterSection("winProbability");
+    stream->writeText(winProbabilityModel, "model");
+    stream->writeUint32(winProbabilityHistory.size(), "size");
+    for (unsigned i = 0; i < winProbabilityHistory.size(); ++i)
+    {
+        stream->writeEnterSection(i);
+        stream->writeUint32(winProbabilityHistory[i].tick, "tick");
+        stream->writeSint32(winProbabilityHistory[i].permille, "permille");
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
 	stream->writeLeaveSection();
+}
+
+void TeamStats::recordWinProbability(Uint32 tick, int permille, const std::string &model)
+{
+    if (model.empty() || permille < 0 || permille > 1000 ||
+        (!winProbabilityHistory.empty() && tick < winProbabilityHistory.back().tick))
+        throw std::logic_error("Invalid win probability sample");
+    // Repeated reporting of the same boundary is idempotent.
+    if (!winProbabilityHistory.empty() && tick == winProbabilityHistory.back().tick)
+        return;
+    historySnapshot.reset();
+    if (winProbabilityHistory.empty()) winProbabilityModel = model;
+    else if (winProbabilityModel != model) winProbabilityModel = "mixed";
+    winProbabilityHistory.push_back({tick, permille});
+}
+
+Uint64 TeamStats::winProbabilityAreaTwice() const
+{
+    Uint64 area = 0;
+    for (size_t i = 1; i < winProbabilityHistory.size(); ++i)
+        area += Uint64(winProbabilityHistory[i].tick - winProbabilityHistory[i-1].tick) *
+                (winProbabilityHistory[i].permille + winProbabilityHistory[i-1].permille);
+    return area;
 }
 
 void TeamStats::initializeMeasurements(Uint32 tick)

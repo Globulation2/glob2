@@ -5,24 +5,26 @@ Pipeline role: every build writes ``preview.opus`` next to the trio so a human c
 judge a set in about two and a half minutes without starting the game. The preview
 imitates the game's mixer: one shared playback position runs through all three
 files (wrapping at the loop length, so the seam is heard too) and each mood change is
-an equal-power crossfade *at the same position*, as ``SoundMixer`` does. The game's
-own crossfade is only 0.37 s; the preview defaults to 3 s so the listener can hear
-both moods agree, and ``crossfade_s=0.37`` reproduces the game exactly.
+a smoothstep crossfade *at the same position*, as the gameplay producer does.
+The default duration and interleaved gain rounding follow ``MusicTypes.h`` and
+``MusicStream.cpp``. This is an audition model, not bit-exact engine PCM output.
 """
 import numpy as np
 
 from .audio import Trio, read_trio, write_opus
-from .loop import equal_power
 from .spec import MOODS, SAMPLE_RATE
 
 DEFAULT_ORDER = ('calm', 'building', 'combat', 'calm')
+# Music::GameFadeFrames, preserving the original 44.1 kHz fade at 48 kHz.
+GAME_FADE_FRAMES = (16384 * SAMPLE_RATE + 22050) // 44100
+GAME_FADE_SECONDS = GAME_FADE_FRAMES / SAMPLE_RATE
 
 
-def render(trio, order=DEFAULT_ORDER, segment_s=40.0, crossfade_s=3.0, fade_out_s=1.5, start_s=0.0):
+def render(trio, order=DEFAULT_ORDER, segment_s=40.0, crossfade_s=GAME_FADE_SECONDS, fade_out_s=1.5, start_s=0.0):
     """Return the preview as a float64 (frames, 2) array.
 
     Each entry of ``order`` plays for ``segment_s``; changes crossfade over
-    ``crossfade_s`` centred on the boundary. ``start_s`` offsets the shared playback
+    ``crossfade_s`` starting at the boundary. ``start_s`` offsets the shared playback
     position (to audition a particular passage or the seam).
     """
     if not isinstance(trio, Trio):
@@ -30,23 +32,29 @@ def render(trio, order=DEFAULT_ORDER, segment_s=40.0, crossfade_s=3.0, fade_out_
     for mood in order:
         if mood not in MOODS:
             raise ValueError(f'unknown mood {mood!r}')
+    if segment_s <= 0 or crossfade_s < 0 or fade_out_s < 0:
+        raise ValueError('segment must be positive and fades non-negative')
     n = trio.frames
     seg = int(round(segment_s * SAMPLE_RATE))
+    if seg < 1:
+        raise ValueError('segment must contain at least one frame')
     total = seg * len(order)
     pos = (np.arange(total) + int(round(start_s * SAMPLE_RATE))) % n   # shared position, wrapping
     xf = min(int(round(crossfade_s * SAMPLE_RATE)), seg)
-    weights = np.zeros((len(order), total))
-    for k in range(len(order)):
-        weights[k, k * seg:(k + 1) * seg] = 1.0
-    fade_out, fade_in = equal_power(xf)
-    for k in range(1, len(order)):
-        a = k * seg - xf // 2
-        weights[k - 1, a:a + xf] = fade_out
-        weights[k, a:a + xf] = fade_in
+    # Interleaved stereo gains, including the tiny difference between channels.
+    sample = np.arange(xf * 2, dtype=np.float64)
+    length = max(1, xf * 2 - 1)
+    incoming = np.floor(65535 * ((-2 / length**3) * sample**3 +
+                               (3 / length**2) * sample**2)).reshape(xf, 2) / 65536
+    outgoing = 65535 / 65536 - incoming
     out = np.zeros((total, 2))
     for k, mood in enumerate(order):
-        active = weights[k] > 0
-        out[active] += trio[mood][pos[active]].astype(np.float64) * weights[k, active, None]
+        a, b = k * seg, (k + 1) * seg
+        out[a:b] = trio[mood][pos[a:b]]
+    for k in range(1, len(order)):
+        a = k * seg
+        out[a:a + xf] = (trio[order[k - 1]][pos[a:a + xf]] * outgoing +
+                        trio[order[k]][pos[a:a + xf]] * incoming)
     fade = min(int(fade_out_s * SAMPLE_RATE), total)
     if fade:
         out[-fade:] *= np.linspace(1.0, 0.0, fade)[:, None]

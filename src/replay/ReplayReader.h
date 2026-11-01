@@ -22,10 +22,11 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 186 admits four building gradients per team per tick;
-//! older recorded orders cannot reproduce its gradient and movement decisions.
+//! the reader still accepts. Version 187 retires terrain experiment flags and
+//! script metadata; older scripted decisions may depend on those observations.
+//! Version 190 adds diagnostic probability history without changing replay execution.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 186;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 187;
 
 
 /// This class is used for reading replays.

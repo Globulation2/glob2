@@ -34,8 +34,7 @@ Detailed terrain now uses the material catalog and shared compositor described
 in [terrain authoring](../../../docs/assets/terrain-materials.md); the retained
 four-side sprites are not used by that renderer.
 
-These sprite slots, terrain ID 4, legacy external name `road`, experiment key
-`road-terrain`, and import/export colors remain stable. Gameplay properties are
+These sprite slots, terrain ID 4, legacy external name `road`, and import/export colors remain stable. Gameplay properties are
 independent of these textures. No high-resolution artwork is added.
 
 `validate_trail.py` reads the installed assets without rewriting them. It checks

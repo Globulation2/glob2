@@ -11,6 +11,7 @@
 
 class GameObjectives;
 class GameHints;
+namespace Tutorial { struct Model; }
 
 namespace SimulationSnapshot
 {
@@ -24,6 +25,7 @@ struct Session
     std::shared_ptr<const std::string> missionBriefing;
     std::shared_ptr<const GameObjectives> objectives;
     std::shared_ptr<const GameHints> hints;
+    std::shared_ptr<const Tutorial::Model> tutorial;
     bool editor = false, totalPrestigeReached = false, prestigeWinCondition = false;
     int prestigeToReach = 0;
     Uint64 executedOrderRevision = 0;

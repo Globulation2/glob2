@@ -22,7 +22,7 @@ and all included content. Record the reviewed feature set and build hashes.
 Ask the publisher whether subsequent changes need an amendment or new review.
 
 Run `python3 tools/china/export_review_text.py --output artifacts/china/text-review.tsv`
-to inventory Simplified Chinese UI strings and tutorial dialogue. Add `--strict`
+to inventory Simplified Chinese UI strings and the JavaScript lesson catalog text. Add `--strict`
 to fail while the tutorial has untranslated messages. Review campaign names,
 maps, and other embedded text separately; the export does not claim to be the
 complete NPPA script until that review is finished.

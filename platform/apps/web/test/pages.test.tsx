@@ -403,6 +403,15 @@ describe('pages', () => {
     expect(screen.getByTestId('watch').getAttribute('href')).toBe(
       watchUrl(`http://localhost/api/v1/matches/${MATCH}/artifacts/replay`),
     );
+    registerCatalog('fr', { Lost: 'Défaite' });
+    try {
+      await act(() => setLocale('fr'));
+      expect(
+        [...document.querySelectorAll('.team-card .outcome')].map((el) => el.textContent),
+      ).toContain('Défaite');
+    } finally {
+      await act(() => setLocale('en'));
+    }
   });
 
   it('clicking a match row navigates without reloading', async () => {
@@ -465,7 +474,8 @@ describe('pages', () => {
     expect(download.hasAttribute('download')).toBe(true);
     const button = screen.getByRole('button', { name: 'Delete my account for good' });
     expect((button as HTMLButtonElement).disabled).toBe(true);
-    const input = screen.getByLabelText(/Type your name, Bob, to confirm/);
+    const input = screen.getByLabelText(/Type your display name exactly to confirm\./);
+    expect(input.closest('label')?.textContent).toContain('Bob');
     fireEvent.change(input, { target: { value: 'bob' } });
     expect((button as HTMLButtonElement).disabled).toBe(true);
     fireEvent.change(input, { target: { value: 'Bob' } });

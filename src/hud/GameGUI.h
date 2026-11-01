@@ -28,6 +28,8 @@ namespace Online { class SkinDownloads; }
 #include "GameGUIMessageManager.h"
 #include "GameEventFeed.h"
 #include "GameGUIDialog.h"
+class InGameStatisticsPanel;
+namespace Tutorial { class Guidance; }
 #include "GameSpeedControl.h"
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
@@ -75,6 +77,7 @@ class HudUnitConversionIcon;
 class ConnectionOverlay;
 class GameGUI : public ClientCommandSink
 {
+	friend struct TranslationPreviewAccess;
 	friend struct CustomGameSetupHarness;
 	friend struct TurnClient;
 	friend struct ScriptPresentationFixture;
@@ -218,6 +221,7 @@ public:
 		HighlightClearingZoneOnPanel=14,
 		///This causes the brush selector to be highlighted
 		HighlightBrushSelector=15,
+        HighlightUpgradeButton=16,
 		
 		///Anything above this number causes a particular building on the right side menu to be highlighted,
 		///the value is HighlightBuilding+IntBuildingType
@@ -229,6 +233,10 @@ public:
 	
 	///Stores the currently highlighted elements
 	std::set<int> highlights;
+    std::set<int> tutorialHighlights;
+    std::unique_ptr<Tutorial::Guidance> tutorialGuidance;
+    int tutorialDestination = 0;
+    void updateTutorial();
 	
 	struct HighlightArrowPosition
 	{
@@ -391,12 +399,20 @@ public:
 	/// Whether the menus offer Pause to this player now.
 	bool pauseAvailable() const;
 private:
+	struct TopBarLayout
+	{
+		std::array<std::string, 7> values;
+		std::array<double, 7> x;
+		double scale;
+	};
+	TopBarLayout topBarLayout() const;
 	friend class GameGUISelectionHarness;
 	friend class SavegameSafetyHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
 	friend class SoftwareRenderBenchmark;
 	bool persistPreferences;
+    friend class InGameStatisticsPanel;
     friend class GameGUITouch;
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
@@ -735,14 +751,12 @@ private:
 	bool showUnitWorkingToBuilding;
 
 	const TeamStats *teamStats;
-	int measurementPage = 0;
-	//! Pages of the statistics text view: the colony summary, the metric groups
-	//! and, when spectating, the win chances.
-	int statisticsPages() const;
-	void drawStatisticsPage(int y);
-	//! Each side's chance of winning, under the statistics. Drawn for live
-	//! spectators, independently of the game's winning conditions.
-	void drawWinProbabilities(int x, int y);
+    std::unique_ptr<InGameStatisticsPanel> statisticsPanel;
+    InGameStatisticsPanel &statistics();
+    bool statisticsVisible() const;
+    bool handleStatisticsEvent(const SDL_Event &event);
+    void drawStatisticsPanel(GAGGUI::ui::Rect bounds);
+    void drawStatisticsPage(int y);
 	Team *localTeam;
 
 	Uint32 chatMask;
@@ -774,7 +788,9 @@ private:
 		IGM_END_OF_GAME,
 		IGM_HIVE,
 		IGM_CONFIRM_LEAVE,
-		IGM_TELEMETRY
+		IGM_TELEMETRY,
+        IGM_TUTORIAL_RESTART,
+        IGM_STATISTICS
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;
@@ -877,8 +893,6 @@ private:
 
 	// Stuff for the correct working of the campaign
 	Campaign* campaign;
-	// Client-only display context, derived on load; never serialized.
-	bool legacyTutorialScript = false;
 	std::string missionName;
 
 	GameGUIDefaultAssignManager defaultAssign;

@@ -84,7 +84,7 @@ TEST_SUITE("GameplayRecording.Integration")
 		const auto initial = root / "recording-initial.game";
 		const auto video =
 			root / ((gpu ? std::string("production-gpu-") : std::string("production-software-")) +
-					std::to_string(SDL_GetPerformanceCounter()) + ".mp4");
+					std::to_string(SDL_GetPerformanceCounter()) + GAGCore::Recording::Extension);
 		{
 			Engine engine;
 			REQUIRE(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR);
@@ -336,7 +336,7 @@ TEST_SUITE("GameplayRecording.Integration")
 			globals->automaticGameGlobalEndConditions = true;
 			auto &recorder = GAGCore::Recording::recorder();
 			const auto video =
-				root / ("threaded-" + std::to_string(SDL_GetPerformanceCounter()) + ".mp4");
+				root / ("threaded-" + std::to_string(SDL_GetPerformanceCounter()) + GAGCore::Recording::Extension);
 			if (capture)
 			{
 				recorder.options.chapterTicks = 20;

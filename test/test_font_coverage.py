@@ -29,9 +29,13 @@ class FontCoverageTest(unittest.TestCase):
         ttf.TTF_FontHasGlyph.restype = ctypes.c_bool
         ttf.TTF_Init.restype = ctypes.c_bool
         self.assertTrue(ttf.TTF_Init())
-        font = ttf.TTF_OpenFont(str(ROOT / 'data/fonts/sans.ttf').encode(), 13)
+        font_paths = [ROOT / 'data/fonts/sans.ttf', *sorted((ROOT / 'data/fonts/scripts').glob('*.ttf'))]
+        fonts = []
         try:
-            self.assertTrue(font, 'Could not load bundled sans.ttf')
+            for path in font_paths:
+                font = ttf.TTF_OpenFont(str(path).encode(), 13)
+                self.assertTrue(font, 'Could not load bundled ' + path.name)
+                fonts.append(font)
             for path in sorted((ROOT / 'data').glob('texts.*.txt')):
                 if path.name in ('texts.keys.txt', 'texts.list.txt', 'texts.incomplete.txt'):
                     continue
@@ -40,11 +44,11 @@ class FontCoverageTest(unittest.TestCase):
                 # Formatting controls have no visible glyph of their own.
                 characters -= set('\u200c\u200d\u200e\u200f')
                 missing = sorted(c for c in characters if ord(c) > 32 and (
-                    ord(c) > 0xFFFF or not ttf.TTF_FontHasGlyph(font, ord(c))))
+                    ord(c) > 0xFFFF or not any(ttf.TTF_FontHasGlyph(font, ord(c)) for font in fonts)))
                 with self.subTest(catalog=path.name):
                     self.assertEqual(missing, [], 'Missing glyphs: ' + repr(missing))
         finally:
-            if font:
+            for font in fonts:
                 ttf.TTF_CloseFont(font)
             ttf.TTF_Quit()
 

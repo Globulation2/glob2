@@ -88,6 +88,17 @@ def package(source, destination):
         localization["i18n.js"] = (source / "i18n.js").read_bytes()
         localization.update({"locales/" + path.name: path.read_bytes() for path in sorted((source / "locales").glob("*.json"))})
         require_translation_catalogs(localization)
+    launcher_fonts = {}
+    if b'href="script-fonts.css"' in files['html']:
+        launcher_fonts['script-fonts.css'] = (source / 'script-fonts.css').read_bytes()
+        font_manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        for font in font_manifest['fonts']:
+            name = 'fonts/' + font['name'] + '-Regular.ttf'
+            data = (source / name).read_bytes()
+            if hashlib.sha256(data).hexdigest() != font['sha256']:
+                raise ValueError('Launcher font checksum mismatch: ' + name)
+            launcher_fonts[name] = data
+        launcher_fonts['fonts/LICENSE-Noto.txt'] = (source / 'fonts/LICENSE-Noto.txt').read_bytes()
     version = hashlib.sha256(
         POLICY
         + b"".join(surface.values())
@@ -95,6 +106,7 @@ def package(source, destination):
         + b"".join(recording.values())
         + b"".join(music.values())
         + b"".join(name.encode() + data for name, data in localization.items())
+        + b"".join(name.encode() + data for name, data in launcher_fonts.items())
         + b"".join(files.values())
         + b"".join(name.encode() for name in packages)
     ).hexdigest()[:16]
@@ -133,6 +145,7 @@ def package(source, destination):
         **worker_assets,
         **notices,
         **localization,
+        **launcher_fonts,
     }
     if "data" in files:
         contents[f"index-{version}.data"] = files["data"]
@@ -278,6 +291,15 @@ def verify(directory):
     if not any(name.startswith("assets/") for name in names):
         raise ValueError("Static package lacks game data packages")
     names += [name for name in expected if (name == "i18n.js" or (name.startswith("locales/") and name.endswith(".json")))]
+    if b'href="script-fonts.css"' in (directory / 'index.html').read_bytes():
+        names += ['script-fonts.css', 'fonts/LICENSE-Noto.txt']
+        font_manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        for font in font_manifest['fonts']:
+            name = 'fonts/' + font['name'] + '-Regular.ttf'
+            names.append(name)
+            path = directory / name
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != font['sha256']:
+                raise ValueError('Missing or unpinned launcher font: ' + name)
     names += [name for name in ("hive-worker.js", "hive-runtime.js", "hive-runtime.wasm") if name in expected]
     recording = [f"recording-{marker['version']}-{suffix}" for suffix in
                  ("worker.js", "storage.js", "video.js", "runtime.js", "runtime.wasm")]

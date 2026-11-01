@@ -1597,7 +1597,6 @@ TEST_SUITE("TerrainPresentation")
 		CHECK_FALSE(map.terrainPropertiesAt(19, 10).buildable);
 		CHECK(map.vertexTerrainAt(30, 30) == DARK_WATER);
 		CHECK(map.vertexTerrainAt(34, 30) == WATER);
-		CHECK(map.requiredTerrainExperiments().has(ExperimentId::DeepWaterTerrain));
 		// An ordinary grass/water boundary still receives a sand beach.
 		CHECK(map.vertexTerrainAt(15, 5) == SAND);
 		CHECK(map.vertexTerrainAt(16, 5) == SAND);
@@ -1757,14 +1756,9 @@ TEST_SUITE("TerrainValidation")
 			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox + 3, oy + 1)));
 		}
 		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
-		// Painted islands keep their identity and the map declares every group painted.
+		// Painted islands keep their identity.
 		for (std::size_t n = 0; n < types.size(); ++n)
 			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 5) == types[n]);
-		const auto required = map.requiredTerrainExperiments();
-		for (auto type : types)
-			if (const auto experiment = terrainExperiment(type))
-				CHECK(required.has(*experiment));
-		CHECK(required.size() == 9);
 	}
 	TEST_CASE("catalogue materials load 4x HD frames and compose at 4x [display][artifacts]")
 	{

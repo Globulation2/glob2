@@ -19,6 +19,52 @@ namespace Cli
 {
 namespace
 {
+std::string lowercase(std::string text)
+{
+	std::transform(text.begin(), text.end(), text.begin(),
+				   [](unsigned char c) { return char(std::tolower(c)); });
+	return text;
+}
+std::vector<std::string> withoutEpicLauncherMetadata(const std::vector<std::string> &arguments)
+{
+	// These are launcher transport metadata, not game options or an EOS login.
+	// Never retain or diagnose their values: AUTH_PASSWORD can be an exchange code.
+	static const std::vector<std::string> values = {
+		"-auth_login", "-auth_password", "-auth_type", "-epicapp", "-epicenv",
+		"-epicusername", "-epicuserid", "-epiclocale", "-epicovt",
+		"-epicsandboxid", "-epicdeploymentid"};
+	std::vector<std::string> result;
+	bool literal = false;
+	for (const auto &argument : arguments)
+	{
+		if (argument == "--")
+			literal = true;
+		if (!literal)
+		{
+			const auto equals = argument.find('=');
+			const auto name = lowercase(argument.substr(0, equals));
+			if (name == "-epicportal")
+			{
+				if (equals != std::string::npos)
+					throw std::invalid_argument("-EpicPortal is a switch and takes no value");
+				continue;
+			}
+			if (std::find(values.begin(), values.end(), name) != values.end())
+			{
+				if (equals == std::string::npos)
+					throw std::invalid_argument("Epic launcher parameter " + argument +
+												" requires =VALUE");
+				continue;
+			}
+			if (name.rfind("-auth_", 0) == 0 || name.rfind("-epic", 0) == 0 ||
+				name.rfind("--auth_", 0) == 0 || name.rfind("--epic", 0) == 0)
+				throw std::invalid_argument("Unsupported Epic launcher argument; use documented "
+											"-KEY=VALUE fields or -EpicPortal");
+		}
+		result.push_back(argument);
+	}
+	return result;
+}
 Option value(std::string name, std::string type, std::string description, std::string fallback = "",
 			 bool repeat = false, bool required = false)
 {
@@ -61,12 +107,12 @@ std::vector<Option> display()
 				  "Initial window size in pixels; clamped to at least 640x480"),
 			value("--username", "string", "Player name"),
 			choice("--editor-script", "Map editor script language", {"sgsl", "usl"}, "preferences"),
-			value("--record", "file", "Record menus and gameplay to MP4; refuses existing files"),
-			value("--videoshot", "string", "Record to videoshots/NAME.mp4"),
+			value("--record", "file", "Record menus and gameplay; refuses existing files"),
+			value("--videoshot", "string", std::string("Record to videoshots/NAME") + GAGCore::Recording::Extension),
 			integer("--record-fps", "Recording frames per second", 1, 240,
 					std::to_string(GAGCore::Recording::DefaultFps)),
 			choice("--record-encoder", "Embedded encoder selection", {"auto", "software"}, "auto"),
-			integer("--record-crf", "Software H.264 quality; lower means higher quality", 0, 51,
+			integer("--record-crf", "Software video quality; lower means higher quality", 0, GAGCore::Recording::MaxCrf,
 					std::to_string(GAGCore::Recording::DefaultCrf)),
 			integer("--record-chapter-ticks", "Simulation ticks per chapter", 1, 1000000000,
 					std::to_string(GAGCore::Recording::DefaultChapterTicks))};
@@ -308,6 +354,12 @@ void constraints(const Request &r)
     }
 	if (r.command == "game run")
 	{
+        if (r.has("--win-probability"))
+        {
+            const auto threshold = std::stoll(r.get("--win-probability"));
+            if (threshold != 0 && threshold < 501)
+                throw std::invalid_argument("--win-probability must be 0 (off) or 501..1000");
+        }
 		const unsigned sources = r.has("--generator") + r.has("--map-file") + r.has("--load-game");
 		if (sources != 1)
 			throw std::invalid_argument(
@@ -329,7 +381,7 @@ void constraints(const Request &r)
 		if (r.has("--load-game"))
 			for (const auto &key :
 				 {"--player", "--ai-param", "--ai-script", "--map-script", "--alliance",
-				  "--win-condition", "--game-seed", "--experiment", "--rule", "--ai-order-delay"})
+				  "--win-condition", "--win-probability", "--game-seed", "--experiment", "--rule", "--ai-order-delay"})
 				if (r.has(key))
 					throw std::invalid_argument(std::string(key) + " cannot override a saved game");
 		if (!r.has("--load-game") && (!r.has("--game-seed") || !r.has("--player")))
@@ -385,6 +437,8 @@ const std::vector<Command> &commands()
 		append(gen, {value("--output", "file", "Playable gzip map output; .gz is appended"),
 					 value("--report-file", "file", "Detailed map JSON report"),
 					 value("--config", "file", "KEY=VALUE configuration; CLI settings override it"),
+                     value("--scenario", "file", "JavaScript scenario source to embed"),
+                     value("--scenario-config", "file", "Scenario name, briefing, objectives and hints JSON"),
 					 value("--map-image", "file", "Export categorical terrain PNG"),
 					 value("--export-generator-package", "file",
 						   "Export selected custom generator package")});
@@ -484,7 +538,7 @@ const std::vector<Command> &commands()
 			 integer("--alliance", "Alliance per team", 1, 16, "", true),
 			 choice("--win-condition", "Winning condition",
 					{"death", "allies", "prestige", "opponents", "script"}, "", true),
-			 integer("--win-probability", "Early-victory threshold in permille", 501, 1000),
+			 integer("--win-probability", "New-game early-victory threshold: 0 off, or 501..1000 permille", 0, 1000, "950"),
 			 value("--experiment", "string", "Enable a registered experiment", "", true),
 			 value("--rule", "assignment", "Game rule KEY=VALUE", "", true),
 			 value("--fork-rule", "assignment", "Explicit saved-game fork: buildingGradientDelay=N",
@@ -497,7 +551,7 @@ const std::vector<Command> &commands()
 			 integer("--ai-order-delay", "AI order delay in ticks", 0, 8),
 			 value("--save", "string", "Snapshot: initial, final, or every:N", "", true),
 			 choice("--telemetry", "Additional telemetry",
-					{"checksums", "team-timeline", "maxima"}, "", true),
+					{"checksums", "team-timeline", "maxima", "warrior-tactics"}, "", true),
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
 			 flag("--benchmark-tick-profile", "Export tick timings and the 1024 slowest ticks' phase/wait attribution; requires benchmark-warmup"),
@@ -801,8 +855,9 @@ std::vector<std::string> Request::all(const std::string &key) const
 	const auto it = options.find(key);
 	return it == options.end() ? std::vector<std::string>{} : it->second;
 }
-Request parse(const std::vector<std::string> &args)
+Request parse(const std::vector<std::string> &arguments)
 {
+	const auto args = withoutEpicLauncherMetadata(arguments);
 	Request r;
 	if (args.empty())
 	{

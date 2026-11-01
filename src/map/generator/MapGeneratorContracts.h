@@ -2216,14 +2216,10 @@ inline void bastionKeysContracts()
 	assert(GenerationService().generate(bridged, request));
 	assert(coloniesApart(bridged.map, 2, "without swimming").empty());
 	const Torus t(bridged.map);
-	// The estates are dressed in catalogue ground and the map's header declares it. Deep water is
+	// The estates are dressed in catalogue ground. Deep water is
 	// absent by design: a tile between shallow and deep water is not swimmable, so a ring of it
 	// would seal every island from swimmers.
 	{
-		const auto required = bridged.map.requiredTerrainExperiments();
-		assert(required.has(ExperimentId::PathTerrain) && required.has(ExperimentId::BarrenTerrain) &&
-			   required.has(ExperimentId::FertileTerrain) && required.has(ExperimentId::RidgeTerrain));
-		assert(!required.has(ExperimentId::DeepWaterTerrain));
 		std::set<int> used;
 		int pier = -1;
 		for (int i = 0; i < t.size(); ++i)

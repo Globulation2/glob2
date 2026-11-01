@@ -20,7 +20,27 @@ report as a publicly accessible GitHub Actions artifact. With `upload: true`, it
 creates a submission-encrypted package and sends it with its encryption key blob
 directly to an existing Partner Center branch; neither is retained as a public
 artifact. Keep credentials out of workflow logs and artifacts.
+The workflow stages the reviewed Microsoft Submission Validator ZIP after verifying
+its pinned SHA-256, then passes its directory through `/validationpath`. It does
+not rely on `/updatesubval` selecting the expected DLL. Failures are critical with
+`/validationcritical`, and the XML engine version must match the reviewed pin. The workflow also checks the actual XML
+summary and detailed failure counts before allowing an upload. Failed test-package
+reports remain retained for inspection; a successful MakePkg process alone is not
+validation evidence. See [Microsoft’s MakePkg options](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg).
 The workflow does not submit a listing for certification or publish it to retail.
+
+For an existing public Windows release, select the optional `payload_tag` to
+repackage its portable ZIP instead of compiling mirror `master`. Supported tags
+are explicitly pinned in `.github/scripts/windows_store_portable.py` to a source
+commit, asset name and SHA-256; adding another requires reviewing those values.
+The adapter verifies the entire archive, preserves every payload file byte,
+renames text `.LIB` license notices with a `.txt` suffix, and adds Store identity,
+source pointer and shell images derived from the payload’s existing icon. No
+current-master game assets or binaries enter that route. The package version is
+still an independent, increasing four-part Store version. Start with
+`upload: false`, inspect the validator and install-test package, then qualify the
+submission-encrypted build before certification. A blank `payload_tag` retains
+the fresh mirror-source build route.
 
 Follow the shared [release mirror policy](releasing.md#the-release-mirror) for
 repository hardening and credential storage.

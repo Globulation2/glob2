@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL,clickSettingsDone,clickSettingsCancel,clickControl,controlBox}=require('./main-menu');
 const {hasDarkText}=require('./pixels');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 const {preferences,lowPreferences,cloudPreferences}=require('./settings-preferences');
 // Settings controls carry the setting ids; the Display & graphics category is
 // selected by default when Settings opens.

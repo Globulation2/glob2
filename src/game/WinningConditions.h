@@ -180,7 +180,7 @@ enum class TeamOutcome
 ///probability model is `thresholdPermille` sure of the result, so a match that
 ///is already decided does not have to be played out.
 ///
-///Off unless a player turns it on -- a normal game is unaffected. It is
+///Off in ordinary GUI games; tournament CLI games enable it at 95%. It is
 ///evaluated only on the 512-tick sample boundary TeamStats already measures at,
 ///which is the cadence the model was fitted on, and never before
 ///WinProbability::MINIMUM_DECISION_TICK, since the opening samples can look
@@ -198,11 +198,9 @@ public:
 	void encodeData(GAGCore::OutputStream* stream) const override;
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
 
-	///Confidence the model must reach, in permille. 970 is the default the
-	///custom-game rule offers; measured on games already played it ended about a
-	///tenth of the tournament's compute early and named the eventual winner in
-	///over 99% of the games it called.
-	Uint32 thresholdPermille = 970;
+	///Confidence the model must reach, in permille. New rules default to 95%;
+	///decoding always restores the saved explicit threshold without changing it.
+	Uint32 thresholdPermille = 950;
 };
 
 

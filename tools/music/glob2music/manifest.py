@@ -16,8 +16,7 @@ write Oggs, normalise loudness or limit peaks themselves.
 
     title = "Moss Lanterns"            # player-facing name is derived from the id;
                                        # this is for docs and credits
-    method = "symbolic-acoustic"       # symbolic-acoustic | symbolic-synth | adapted |
-                                       # generated | reference
+    method = "symbolic-acoustic"       # symbolic-acoustic | symbolic-synth | reference
     license = "CC0-1.0"                # licence of the finished audio
     credits = ["Composed for Globulation 2 ...", "Samples: VSCO 2 CE (CC0)"]
     ai_generated = false               # true requires an [ai] table
@@ -26,12 +25,12 @@ write Oggs, normalise loudness or limit peaks themselves.
     description = "..."                # optional
 
     [[sources]]                        # zero or more pinned inputs
-    name = "woodland-part-1"           # key for ctx.source(name)
-    url = "https://opengameart.org/sites/default/files/woodland_music_part_1.zip"
+    name = "instrument-library"        # key for ctx.source(name)
+    url = "https://example.org/instruments.zip"
     sha256 = "<64 hex digits>"
-    license = "CC-BY-4.0"
-    author = "JC Sounds"
-    title = "Woodland Music"           # optional; also filename, note
+    license = "CC0-1.0"
+    author = "Instrument Library Author"
+    title = "Instrument Library"       # optional; also filename, note
 
     [master]                           # optional overrides of master.finish arguments
     highpass_hz = 25.0
@@ -40,8 +39,8 @@ write Oggs, normalise loudness or limit peaks themselves.
     "loudness.ladder" = "The original inverts the ladder on purpose."
 
     [ai]                               # required when ai_generated = true
-    model = "ACE-Step 1.5"
-    disclosure = "Generated locally with ACE-Step 1.5 (MIT weights) ..."
+    model = "Score assistance model"
+    disclosure = "Score composed with assistance from ..."
 
 The QA thresholds themselves cannot be overridden per set; see ``spec.py``.
 """
@@ -69,7 +68,7 @@ OUT_DIR = MUSIC_ROOT / 'out'
 REPO_ROOT = MUSIC_ROOT.parents[1]
 
 SET_ID = re.compile(r'^[a-z0-9]+(-[a-z0-9]+)*$')
-METHODS = {'symbolic-acoustic', 'symbolic-synth', 'adapted', 'generated', 'reference'}
+METHODS = {'symbolic-acoustic', 'symbolic-synth', 'reference'}
 _TOP_KEYS = {'title', 'method', 'license', 'credits', 'ai_generated', 'shipped', 'seed', 'description',
              'sources', 'master', 'qa', 'ai'}
 _SOURCE_KEYS = {'name', 'url', 'sha256', 'license', 'author', 'title', 'filename', 'note'}
@@ -186,14 +185,11 @@ class BuildContext:
         work_dir: ``tools/music/build/<id>``, scratch space for stems and renders
             (git-ignored, safe to delete; recipes may cache expensive renders here).
         out_dir: where the shared stages write a1/a2/a3.opus, preview.opus, qa.json.
-        cache_dir: ``tools/music/cache`` (downloads, model weights).
+        cache_dir: ``tools/music/cache`` (pinned sample and renderer downloads).
         spec: the ``TrioSpec`` (sample rate, targets) in force.
         seed: the manifest seed, or the ``--seed`` override.
         log: a ``logging.Logger`` named ``glob2music.<id>``.
         offline: refuse network access in ``source()``.
-        allow_regenerate: accept generated audio (``genai``) whose SHA-256 differs
-            from the one the recipe records, i.e. a new, unreviewed piece
-            (``build --allow-regenerate``). Off by default, so a mismatch is an error.
 
     Determinism: recipes must take all randomness from ``ctx.rng(label)``, so the same
     manifest and seed reproduce the same audio.
@@ -209,7 +205,6 @@ class BuildContext:
     seed: int = 0
     log: logging.Logger = None
     offline: bool = False
-    allow_regenerate: bool = False
 
     def __post_init__(self):
         if self.log is None:
@@ -365,15 +360,13 @@ def encoding_metadata(trio, out, manifest):
     }
 
 
-def build_set(set_id, out_dir=None, seed=None, spec=DEFAULT_SPEC, offline=False, preview=True, check=True,
-              allow_regenerate=False):
+def build_set(set_id, out_dir=None, seed=None, spec=DEFAULT_SPEC, offline=False, preview=True, check=True):
     """Build one set end to end. Returns ``(Trio, Report or None)``.
 
     Stages: recipe ``build(ctx)`` -> ``master.finish`` (with ``[master]`` options) ->
     ``encode_within_ceiling`` (``audio.write_trio`` plus decoded true-peak trims) ->
     ``preview.make`` -> ``qa.run_checks`` with the set's waivers, written to ``qa.json``
-    and ``build.json`` (provenance) in the output. ``allow_regenerate`` is passed to
-    the recipe as ``ctx.allow_regenerate``.
+    and ``build.json`` (provenance) in the output.
     """
     from . import master, preview as preview_mod
     from .audio import Trio
@@ -384,8 +377,7 @@ def build_set(set_id, out_dir=None, seed=None, spec=DEFAULT_SPEC, offline=False,
     out = Path(out_dir) if out_dir else OUT_DIR / manifest.set_id
     ctx = BuildContext(set_id=manifest.set_id, manifest=manifest, set_dir=set_dir,
                        work_dir=BUILD_DIR / manifest.set_id, out_dir=out, spec=spec,
-                       seed=manifest.seed if seed is None else seed, offline=offline,
-                       allow_regenerate=allow_regenerate)
+                       seed=manifest.seed if seed is None else seed, offline=offline)
     t0 = time.time()
     ctx.log.info('building %s (seed %d)', manifest.set_id, ctx.seed)
     raw = load_recipe(set_dir).build(ctx)

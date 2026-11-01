@@ -18,6 +18,9 @@
 #define PRIMARY_FONT "sans.ttf"
 #endif
 #include "Game.h"
+#include "MapScript.h"
+#include "Player.h"
+#include "WinningConditions.h"
 #include "MapRender.h"
 #include "render/scene/SceneExtract.h"
 #include "GenerationService.h"
@@ -445,7 +448,7 @@ int runMapCommand(const Cli::Request &cli)
 		const bool exporting = mode == "map export-image";
 		const bool writesMap = generate || importing;
 		std::string output, preview, config, json, mapImage, renderField, fieldColor,
-			generatorExport;
+			generatorExport, scenario, scenarioConfig;
 		int renderPixels = MapRender::DefaultPixels;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
@@ -466,7 +469,11 @@ int runMapCommand(const Cli::Request &cli)
 				renderField = value;
 			else if (arg == "--field-color" && render)
 				fieldColor = value;
-			else if (arg == "--export-generator-package" && generate)
+			else if (arg == "--scenario" && generate)
+                scenario = value;
+            else if (arg == "--scenario-config" && generate)
+                scenarioConfig = value;
+            else if (arg == "--export-generator-package" && generate)
 				generatorExport = value;
 			else if (arg == "--report-file" && !render)
 				json = value;
@@ -526,7 +533,7 @@ int runMapCommand(const Cli::Request &cli)
 			throw std::invalid_argument("Choose --preview-size or --preview-scale, not both");
 		// Compare the actual gzip destination as well as the user-supplied name.
 		std::vector<std::string> paths{
-			output, writesMap ? preview : "", config, json, mapImage, renderField, generatorExport};
+			output, writesMap ? preview : "", config, json, mapImage, renderField, generatorExport, scenario, scenarioConfig};
 		if (!generate)
 		{
 			paths.push_back(source);
@@ -683,6 +690,51 @@ int runMapCommand(const Cli::Request &cli)
 			MapRender::toPng(scene, output, renderPixels, renderField.empty() ? nullptr : &field);
 			return 0;
 		}
+        if (!scenarioConfig.empty() && scenario.empty()) throw std::invalid_argument("--scenario-config requires --scenario");
+        if (!scenario.empty()) {
+            std::ifstream script(scenario);
+            if(!script) throw std::runtime_error("Cannot read scenario source");
+            const std::string source{std::istreambuf_iterator<char>(script),{}};
+            if(source.size()>1024*1024) throw std::invalid_argument("Scenario source exceeds limit");
+            game.mapscript.setMapScriptMode(MapScript::JavaScript);
+            game.mapscript.setMapScript(source);
+            if(!game.mapscript.compileCode()) throw std::invalid_argument("Scenario compilation failed");
+            if(!scenarioConfig.empty()) {
+                std::ifstream file(scenarioConfig);
+                if(!file) throw std::runtime_error("Cannot read scenario configuration");
+                const auto metadata=nlohmann::json::parse(file);
+                game.mapHeader.setMapName(metadata.at("name").get<std::string>());
+                game.missionBriefing=metadata.at("briefing").get<std::string>();
+                // A scripted encounter can own the other colonies without an AI.
+                if(metadata.contains("localTeam")) {
+                    const int team=metadata.at("localTeam").get<int>();
+                    if(team<0 || team>=game.teamsCount()) throw std::invalid_argument("Invalid scenario local team");
+                    auto header=game.gameHeader;header.setNumberOfPlayers(game.teamsCount());
+                    // Seat zero is the learner; other colonies use the engine's
+                    // existing no-op AI so scenario orders retain valid owners.
+                    header.getBasePlayer(0)=BasePlayer(0,"Your colony",team,BasePlayer::P_LOCAL);
+                    int seat=1;
+                    for(int other=0;other<game.teamsCount();++other) if(other!=team) {
+                        header.getBasePlayer(seat)=BasePlayer(seat,"Practice colony",other,BasePlayer::P_AI);
+                        ++seat;
+                    }
+                    game.setGameHeader(header,true);
+                }
+                const auto victory=metadata.value("victory",std::string("standard"));
+                if(victory!="standard" && victory!="scenario") throw std::invalid_argument("Unknown scenario victory policy");
+                if(victory=="scenario") {
+                    game.gameHeader.getWinningConditions().clear();
+                    game.gameHeader.getWinningConditions().push_back(std::make_shared<WinningConditionDeath>());
+                }
+                while(game.objectives.getNumberOfObjectives()) game.objectives.removeObjective(0);
+                const auto objectives=metadata.at("objectives").get<std::vector<std::string>>();
+                const auto hints=metadata.at("hints").get<std::vector<std::string>>();
+                if(objectives.empty() || objectives.size()>64 || hints.size()>256) throw std::invalid_argument("Invalid scenario metadata counts");
+                for(unsigned i=0;i<objectives.size();++i) game.objectives.addNewObjective(objectives[i],i!=0,false,false,GameObjectives::Primary,i+1);
+                for(unsigned i=0;i<hints.size();++i) game.gameHints.addNewHint(hints[i],true,i+1);
+            }
+        }
+
 		// Analyze the original snapshot before any serializer updates its header metadata.
 		std::string report = json.empty() ? ""
 										  : describeMap(game, generate ? &request : nullptr,
@@ -709,7 +761,7 @@ int runMapCommand(const Cli::Request &cli)
 					  << " tiles)\n";
 		}
 		if (writesMap && !output.empty())
-			saveMap(game, output, std::filesystem::path(output).stem().string());
+			saveMap(game, output, scenarioConfig.empty() ? std::filesystem::path(output).stem().string() : game.mapHeader.getMapName());
 		if (!json.empty())
 			writeJsonReport(json, report);
 		return 0;

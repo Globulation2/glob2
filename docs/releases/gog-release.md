@@ -70,6 +70,71 @@ library/license files. The Windows depot reuses the portable Windows packaging
 helper. GOG's project template is `gog/project-template.json`; the renderer
 fills one depot and one primary launch task per operating system.
 
+## Reuse reviewed released payloads (build only)
+
+Set `reuse_released_payload=true`, `mode=build`, `tag=v0.11.4.0`, and
+`platforms=all` to prepare candidates from the already published Windows ZIP,
+Ubuntu 22.04 tarball and two signed Mac DMGs. This route does not compile the
+engine or regenerate artwork. The tag/source commit and each public asset's
+SHA-256 are pinned in `tools/gog_release.py`; another release requires review of
+its own pins. An unknown/moved tag, mismatched version or modified asset fails
+before staging. The default `false` retains the source-build workflow above.
+
+```sh
+gh workflow run gog-staging.yml --repo genixpro/glob2-release --ref master \
+  -f tag=v0.11.4.0 -f mode=build -f platforms=all \
+  -f reuse_released_payload=true
+```
+
+The candidates retain the original source SHA, workflow SHA, released asset
+name/digest and a hashed `RELEASE-INVENTORY.json`. Verification compares the
+preserved Windows files and Mac app entries against that inventory, including
+symlinks and executable modes. Additional depot manifests and source offers must
+not overwrite released payload files. Windows and Linux archives are extracted
+and verified again before runtime checks.
+
+Windows preserves the portable release's original payload bytes. Linux reuses
+the released `usr/bin/glob2`, assets and private libraries, resolving its existing
+dependency closure on Ubuntu 22.04. The launcher selects depot libraries without
+patching or relinking the executable. Existing private-library bytes cannot be
+replaced with host versions. Added system runtime files retain their actual
+Ubuntu package/version/source-package records, SHA-256 and copyright files;
+referenced common license files are copied too. Missing runtime attribution or
+unresolved libraries fail staging. These records describe provenance, not a
+blanket rights determination: candidates with added host libraries carry
+`runtime_licence_review_required=true` for release review.
+
+The Linux smoke uses a fresh, digest-pinned Ubuntu 22.04 container with explicitly
+installed base desktop graphics/audio libraries, not compilers or the game's
+codec/TLS development packages. It requires every non-system linked library to
+resolve inside the depot and runs the short fixture offline. This is a bounded
+packaging check; it does not replace interactive rendering/audio or broader
+supported-distribution qualification. The baseline follows GOG's
+[Linux dependency guidance](https://docs.gog.com/linux-guidelines/).
+
+Each Mac job mounts its corresponding signed DMG read-only and copies the app
+without changing its contents, merging architectures or signing it again.
+`SOURCE.txt`, inventory and depot metadata remain **outside** `Glob2.app`.
+Native arm64 and Intel jobs verify signatures, stapled notarization and Gatekeeper,
+then check a metadata-preserving ZIP roundtrip and run the short native fixture.
+Outputs are labelled `gog-released-macos-arm64` and
+`gog-released-macos-x86_64`; neither is a universal app.
+
+GOG's [app-bundle depot guidance](https://docs.gog.com/bc-macos-depot/) describes
+an intact app depot, while the documented
+[architecture selector](https://docs.gog.com/bc-architecture/) is Windows-specific.
+These documents do not establish automatic routing between our two Mac CPU
+candidates. Confirm the actual product's supported delivery layout with GOG's
+publisher tools before uploading either; do not assume Intel-only support or
+invent an ARM product/depot selector.
+
+Released-payload reuse rejects `mode=stage` in preflight, and its build jobs have
+no GOG credentials or upload dependency. This remains build-only even after
+product access is configured. Upload support needs a separately reviewed
+architecture/delivery mapping, runtime/license review and actual publisher access.
+Keep candidate creation, GOG Staging delivery, QA submission and public release
+as separate states.
+
 ## Upload to Staging
 
 After GOG grants access, commit the nonsecret product and base product IDs and

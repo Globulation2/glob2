@@ -939,6 +939,8 @@ jobs:
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/presentation-surface.js
             build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/script-fonts.css
+            build/emscripten/client/release/fonts/
             build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
@@ -981,6 +983,8 @@ jobs:
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/presentation-surface.js
             build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/script-fonts.css
+            build/emscripten/client/release/fonts/
             build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js

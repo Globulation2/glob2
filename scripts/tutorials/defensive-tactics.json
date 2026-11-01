@@ -1,0 +1,461 @@
+{
+  "schema": 1,
+  "id": "defensive-tactics",
+  "version": 1,
+  "map": "campaigns/defensive-tactics.map.gz",
+  "name": "Guard zones and flag tactics",
+  "title": "[lesson defensive-tactics title]",
+  "briefing": "[lesson defensive-tactics briefing]",
+  "completionTitle": "[tutorial complete]",
+  "completionBody": "[lesson defensive-tactics complete]",
+  "confirmTicks": 90,
+  "hintTicks": 1350,
+  "targets": {
+    "workers": {
+      "kind": "unit",
+      "team": 0,
+      "type": 0
+    },
+    "swarm": {
+      "kind": "building",
+      "team": 0,
+      "type": 0
+    },
+    "enemyWarriors": {
+      "kind": "unit",
+      "team": 1,
+      "type": 2
+    },
+    "defense": {
+      "kind": "area",
+      "region": "defense"
+    },
+    "enemyBase": {
+      "kind": "area",
+      "region": "enemyOutpost"
+    },
+    "scoutFlags": {
+      "kind": "building",
+      "team": 0,
+      "type": 8,
+      "filters": [
+        {
+          "field": "workers",
+          "op": "gte",
+          "value": 1
+        }
+      ]
+    },
+    "scouts": {
+      "kind": "unit",
+      "team": 0,
+      "type": 1,
+      "within": "enemyBase",
+      "assignedTo": "scoutFlags"
+    },
+    "guards": {
+      "kind": "unit",
+      "team": 0,
+      "type": 2,
+      "within": "defense"
+    },
+    "enemySwarm": {
+      "kind": "building",
+      "team": 1,
+      "type": 0
+    },
+    "warFlags": {
+      "kind": "building",
+      "team": 0,
+      "type": 9,
+      "within": "enemyBase",
+      "filters": [
+        {
+          "field": "workers",
+          "op": "gte",
+          "value": 3
+        },
+        {
+          "field": "range",
+          "op": "lte",
+          "value": 4
+        }
+      ]
+    },
+    "attackers": {
+      "kind": "unit",
+      "team": 0,
+      "type": 2,
+      "assignedTo": "warFlags"
+    },
+    "practiceFlag": {
+      "kind": "building",
+      "team": 1,
+      "type": 9,
+      "bind": "lesson"
+    },
+    "healthyRaiders": {
+      "kind": "unit",
+      "from": "enemyWarriors",
+      "filters": [
+        {
+          "field": "hp",
+          "op": "gte",
+          "value": {
+            "field": "maxHp",
+            "scale": 0.95
+          }
+        }
+      ]
+    },
+    "raidersAtDefense": {
+      "kind": "unit",
+      "from": "enemyWarriors",
+      "within": "defense"
+    }
+  },
+  "steps": [
+    {
+      "id": "scout",
+      "title": "[lesson defensive-tactics scout title]",
+      "instruction": "[lesson defensive-tactics scout instruction]",
+      "touchInstruction": "[lesson defensive-tactics scout compact]",
+      "help": "[lesson defensive-tactics scout help]",
+      "touchHelp": "[lesson defensive-tactics scout help]",
+      "complete": {
+        "type": "exists",
+        "target": "scouts"
+      },
+      "activeOnly": true,
+      "highlights": [
+        "flag:exploration"
+      ],
+      "hint": 0,
+      "milestones": [
+        {
+          "condition": {
+            "type": "exists",
+            "target": "scouts"
+          }
+        }
+      ],
+      "destination": {
+        "target": "enemyBase",
+        "label": "[lesson defensive-tactics scout marker]"
+      }
+    },
+    {
+      "id": "guard",
+      "title": "[lesson defensive-tactics guard title]",
+      "instruction": "[lesson defensive-tactics guard instruction]",
+      "touchInstruction": "[lesson defensive-tactics guard compact]",
+      "help": "[lesson defensive-tactics guard help]",
+      "touchHelp": "[lesson defensive-tactics guard help]",
+      "complete": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "zoneCoverage",
+            "area": "defense",
+            "zone": "guard",
+            "team": 0,
+            "minimum": 4
+          },
+          {
+            "type": "count",
+            "target": "guards",
+            "minimum": 2
+          }
+        ]
+      },
+      "activeOnly": true,
+      "highlights": [
+        "zone:guard",
+        "brush"
+      ],
+      "hint": 1,
+      "milestones": [
+        {
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "zoneCoverage",
+                "area": "defense",
+                "zone": "guard",
+                "team": 0,
+                "minimum": 4
+              },
+              {
+                "type": "count",
+                "target": "guards",
+                "minimum": 2
+              }
+            ]
+          }
+        }
+      ],
+      "destination": {
+        "target": "defense",
+        "label": "[lesson defensive-tactics guard marker]"
+      }
+    },
+    {
+      "id": "repel",
+      "title": "[lesson defensive-tactics repel title]",
+      "instruction": "[lesson defensive-tactics repel instruction]",
+      "touchInstruction": "[lesson defensive-tactics repel compact]",
+      "help": "[lesson defensive-tactics repel help]",
+      "touchHelp": "[lesson defensive-tactics repel help]",
+      "complete": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "none",
+            "target": "healthyRaiders",
+            "latch": true
+          },
+          {
+            "type": "none",
+            "target": "raidersAtDefense"
+          }
+        ]
+      },
+      "activeOnly": true,
+      "highlights": [
+        "zone:guard"
+      ],
+      "hint": 2,
+      "milestones": [
+        {
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "none",
+                "target": "healthyRaiders",
+                "latch": true
+              },
+              {
+                "type": "none",
+                "target": "raidersAtDefense"
+              }
+            ]
+          }
+        }
+      ],
+      "destination": {
+        "target": "defense",
+        "label": "[lesson defensive-tactics repel marker]"
+      },
+      "onEnter": [
+        {
+          "type": "scenarioOrder",
+          "team": 0,
+          "order": {
+            "type": "alliance",
+            "allies": [
+              0
+            ],
+            "enemies": [
+              1
+            ]
+          }
+        },
+        {
+          "type": "scenarioOrder",
+          "team": 1,
+          "order": {
+            "type": "alliance",
+            "allies": [
+              1
+            ],
+            "enemies": [
+              0
+            ]
+          }
+        },
+        {
+          "type": "scenarioOrder",
+          "team": 1,
+          "order": {
+            "type": "moveFlag",
+            "buildingTarget": "practiceFlag",
+            "destination": "defense"
+          }
+        }
+      ]
+    },
+    {
+      "id": "counterattack",
+      "title": "[lesson defensive-tactics counterattack title]",
+      "instruction": "[lesson defensive-tactics counterattack instruction]",
+      "touchInstruction": "[lesson defensive-tactics counterattack compact]",
+      "help": "[lesson defensive-tactics counterattack help]",
+      "touchHelp": "[lesson defensive-tactics counterattack help]",
+      "complete": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "exists",
+            "target": "attackers",
+            "latch": true
+          },
+          {
+            "type": "none",
+            "target": "enemySwarm"
+          }
+        ]
+      },
+      "activeOnly": true,
+      "highlights": [
+        "flag:war",
+        "workers"
+      ],
+      "hint": 3,
+      "milestones": [
+        {
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "exists",
+                "target": "attackers",
+                "latch": true
+              },
+              {
+                "type": "none",
+                "target": "enemySwarm"
+              }
+            ]
+          }
+        }
+      ],
+      "destination": {
+        "target": "enemyBase",
+        "label": "[lesson defensive-tactics counterattack marker]"
+      },
+      "onEnter": [
+        {
+          "type": "flagChoice",
+          "name": "warflag",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "hints": [
+    "[lesson defensive-tactics scout hint]",
+    "[lesson defensive-tactics guard hint]",
+    "[lesson defensive-tactics repel hint]",
+    "[lesson defensive-tactics counterattack hint]",
+    "[intro hint retry]"
+  ],
+  "onStart": [
+    {
+      "type": "scenarioOrder",
+      "team": 0,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          0
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "scenarioOrder",
+      "team": 1,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          1
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swarm",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "inn",
+      "enabled": true
+    },
+    {
+      "type": "buildingChoice",
+      "name": "hospital",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "racetrack",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swimmingpool",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "barracks",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "school",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "defencetower",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "stonewall",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "market",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "explorationflag",
+      "enabled": true
+    },
+    {
+      "type": "flagChoice",
+      "name": "warflag",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "clearingflag",
+      "enabled": false
+    }
+  ],
+  "recovery": [
+    {
+      "hint": 4,
+      "when": {
+        "type": "any",
+        "conditions": [
+          {
+            "type": "none",
+            "target": "swarm"
+          },
+          {
+            "type": "none",
+            "target": "workers"
+          }
+        ]
+      }
+    }
+  ]
+}

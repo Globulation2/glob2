@@ -11,6 +11,7 @@
 #include <list>
 #include <string>
 #include <utility>
+#include <vector>
 
 struct SDL_Surface;
 
@@ -36,8 +37,14 @@ namespace GAGCore
 		//! Measure text height; an empty string returns the font's base height.
 		int getStringHeight(const std::string string);
 		std::unique_ptr<DrawableSurface> rasterizeString(const std::string &text, float scale) override;
+		//! Logical destination extent used by scaled drawing, unlike the raw raster's
+		//! pixel dimensions. Native callers supply drawable/logical axis ratios;
+		//! leave both at 1 for an isotropic output. Does not change authored metrics.
+		std::pair<float, float> getStringDrawSize(const std::string &text, float scale,
+		                                       float outputScaleX = 1.f, float outputScaleY = 1.f);
 		//! Whether every character of this UTF-8 string has a glyph in the loaded font
 		virtual bool hasGlyphsFor(const std::string &utf8Text);
+		std::vector<std::size_t> getStringClusterEnds(const std::string &text) override;
 
 		//! Whether the linked SDL3_ttf moves the pen for kerned pairs. Builds without
 		//! HarfBuzz and without scons/vcpkg-ports/sdl3-ttf/kerning-moves-pen.patch shift
@@ -90,9 +97,10 @@ namespace GAGCore
 			//! Size in logical pixels, as the authored font size measures it
 			int w, h;
 			//! The raster's own size in logical pixels. Hinting rounds every size differently,
-			//! so this is close to but not exactly w x h, and drawing at it keeps one raster
-			//! pixel on one screen pixel instead of stretching glyphs by a few percent.
+			//! so this is close to but not exactly w x h. Legacy drawing retains this
+			//! geometry; new-locale drawing normalizes its width to authored layout.
 			float drawW, drawH;
+			bool authoredDrawWidth;
 		};
 
 		//! Init internal variables
@@ -118,6 +126,15 @@ namespace GAGCore
 		void applyStyle(void);
 		//! The text as it is handed to SDL_ttf: shaped and in display order (fribidi, or BidiText without it)
 		std::string shapeText(const std::string &text) const;
+		bool needsScriptLayout(const std::string &text) const;
+		void refreshScriptLanguage();
+		bool useScriptArabic = false;
+		std::string activeScript;
+		TTF_Font *scriptFont(const std::string &script, unsigned size, TTF_Font *fallback);
+		void clearScriptFonts();
+		std::pair<int, int> layoutScriptText(const std::string &text, TTF_Font *base,
+		                                   unsigned size, SDL_Color color, SDL_Surface **surface);
+		std::map<std::pair<std::string, unsigned>, TTF_Font *> scriptFonts;
 #ifdef HAVE_FRIBIDI
 		char *getBIDIString (const std::string text);
 #endif

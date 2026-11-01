@@ -2968,5 +2968,6 @@
   "More filters": "Další filtry",
   "Clear filters": "Vymazat filtry",
   "No results match these filters.": "Těmto filtrům neodpovídají žádné výsledky.",
-  "Results: {value0}": "Výsledky: {value0}"
+  "Results: {value0}": "Výsledky: {value0}",
+  "Game text field": "Textové pole ve hře"
 }

@@ -52,10 +52,9 @@ struct CustomGameSetup
 	// matches the first sole prestige leader appeared 13-28 minutes in.
 	static constexpr std::array<int, 5> suddenDeathMinuteChoices = {0, 30, 45, 60, 90};
 	int suddenDeathMinutes = 0;
-	// Confidence at which the fitted win probability model ends the game (0 = off,
-	// the default -- a normal game plays exactly as before). Measured on the AI
-	// tournament, 970 called the eventual winner in over 99% of the games it
-	// ended; 950 ends more of them and is wrong rather more often.
+	// Confidence at which the fitted win probability model ends the game (0 = off).
+	// Ordinary GUI games default off; tournament CLI games default to 950. See
+	// docs/ai/architecture/win-probability-model.md for calibration and tradeoffs.
 	static constexpr std::array<int, 4> winProbabilityChoices = {0, 950, 970, 990};
 	int winProbabilityPermille = 0;
 	// The ruleset the rules started from (data/rulesets.json). Edits do not change it: what
@@ -65,7 +64,7 @@ struct CustomGameSetup
 	unsigned mapRevision = 0;
 	CustomGameSetup()
 	{
-		generator.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
+		generator.setMethodDefaults(GeneratorRegistry::builtins().defaultMethod(false));
 		capacity = generator.nbTeams;
 		for (int i = 0; i < Team::MAX_COUNT; ++i)
 			colonies[i].alliance = i;

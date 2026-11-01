@@ -2941,5 +2941,6 @@
   "More filters": "Más filtros",
   "Clear filters": "Borrar filtros",
   "No results match these filters.": "Ningún resultado coincide con estos filtros.",
-  "Results: {value0}": "Resultados: {value0}"
+  "Results: {value0}": "Resultados: {value0}",
+  "Game text field": "Campo de texto del juego"
 }

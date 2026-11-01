@@ -32,6 +32,12 @@ int ToolkitTextMeasurer::lineHeight(FontRole role) const
 	return f ? int(std::lround(f->getStringHeight("Ag") * textScale)) : 0;
 }
 
+std::vector<std::size_t> ToolkitTextMeasurer::clusterEnds(FontRole role, const std::string &text) const
+{
+    auto *f = font(role);
+    return f ? f->getStringClusterEnds(text) : TextMeasurer::clusterEnds(role, text);
+}
+
 SurfaceCanvas::SurfaceCanvas(GAGCore::DrawableSurface &target, const Theme &theme,
 							 const Presentation &presentation)
 	: target(target), theme(theme), presentation(presentation),
