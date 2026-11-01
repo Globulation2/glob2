@@ -1624,6 +1624,89 @@ def render_spring_meadow(ctx):
     return rgb, None
 
 
+# Grass and sand looks: the same ground as the classic grass and sand, built
+# from the same common-edge and per-layout fields, so they keep the soft (grass)
+# and speckled (sand) grain and only shift the colour and a few small accents.
+
+@recipe(name="lush_grass", group="grass", label="Lush grass", profile="sand",
+        seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
+        palette={"dark": (14, 80, 40), "mid": (26, 104, 52), "light": (48, 128, 64), "clump": (10, 66, 34)},
+        style=Style(luma=72, std=6, grain_max=6), periodic=True, grid=8, blocks=4)
+def render_lush_grass(ctx):
+    """Classic grass grain in deeper greens, with darker clumps for body."""
+    p, size = RECIPES["lush_grass"].palette, ctx.size
+    rgb = grass_look(ctx, p)
+    clumps = blend_fields(fbm(ctx.shared_rng, 18, 2, size=size), fbm(ctx.rng, 18, 2, size=size),
+                          ctx.interior_mask)
+    return mix(rgb, p["clump"], [smoothstep(0.58, 0.74, v) for v in clumps], 0.45), None
+
+
+@recipe(name="dry_grass", group="grass", label="Dry grass", profile="sand",
+        seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
+        palette={"dark": (92, 100, 36), "mid": (120, 124, 52), "light": (150, 146, 74), "straw": (176, 164, 96)},
+        style=Style(luma=114, std=7, grain_max=7), periodic=True, grid=8, blocks=4)
+def render_dry_grass(ctx):
+    """Classic grass grain in olive, with short pale straw streaks."""
+    p, size = RECIPES["dry_grass"].palette, ctx.size
+    rgb = grass_look(ctx, p)
+    # Streaks: noise stretched along x, kept to its brightest ridges.
+    straw = blend_fields(fbm(ctx.shared_rng, 40, 2, cells_y=10, size=size),
+                         fbm(ctx.rng, 40, 2, cells_y=10, size=size), ctx.interior_mask)
+    return mix(rgb, p["straw"], [smoothstep(0.66, 0.8, v) for v in straw], 0.5), None
+
+
+def grass_look(ctx, p):
+    """Classic grass turf through another dark/mid/light palette."""
+    common, common_grain = grass_fields(ctx.shared_rng, ctx.size)
+    own, own_grain = grass_fields(ctx.rng, ctx.size)
+    height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
+    rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
+    return [[c * (1 + 0.05 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
+
+
+@recipe(name="dune_sand", group="sand", label="Dune sand", profile="sand",
+        seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
+        palette={"dark": (176, 120, 60), "mid": (206, 152, 84), "light": (230, 186, 118)},
+        style=Style(luma=158, std=20, grain_max=26, match=0.5), periodic=True, grid=8, blocks=4)
+def render_dune_sand(ctx):
+    """Classic sand grain in warm orange, with its mineral flecks."""
+    p = RECIPES["dune_sand"].palette
+    rgb, flecks = sand_look(ctx, p)
+    return mix(rgb, p["dark"], flecks, 0.18), None
+
+
+@recipe(name="pale_sand", group="sand", label="Pale sand", profile="sand",
+        seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
+        palette={"dark": (190, 180, 146), "mid": (214, 204, 170), "light": (234, 226, 196), "shell": (250, 246, 232)},
+        style=Style(luma=198, std=14, grain_max=24, match=0.5), periodic=True, grid=8, blocks=4)
+def render_pale_sand(ctx):
+    """Classic sand grain bleached pale, its flecks turned to shell fragments."""
+    p = RECIPES["pale_sand"].palette
+    rgb, flecks = sand_look(ctx, p)
+    return mix(rgb, p["shell"], flecks, 0.7), None
+
+
+def sand_look(ctx, p):
+    """Sand dunes and lit pebble grains through a palette, and its flecks."""
+    common, common_flecks = sand_fields(ctx.shared_rng, ctx.size)
+    own, own_flecks = sand_fields(ctx.rng, ctx.size)
+    # Lit grains two or three native pixels across, as the original tiles
+    # have, rather than independent single-pixel noise.
+    count = SAND_GRAINS
+    first, second, ids, common_first, common_second, common_ids = block_worley(ctx, count)
+    tones = [ctx.shared_rng.random() for _ in range(count * ctx.area_scale)]
+    def grains(f1, f2, cells):
+        return [smoothstep(0.0, 0.35, b - a) * (0.55 + 0.45 * tones[i]) for a, b, i in zip(f1, f2, cells)]
+    own_grains, common_grains = grains(first, second, ids), grains(common_first, common_second, common_ids)
+    surface = [SAND_DUNES * s + (1 - SAND_DUNES) * g for s, g in zip(blend_fields(common, own, ctx.interior_mask), own_grains)]
+    reference = [SAND_DUNES * s + (1 - SAND_DUNES) * g for s, g in zip(common, common_grains)]
+    height = normalize_like(surface, reference, 0.02, 0.98)
+    rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = shade(rgb, own_grains, SAND_BEVEL, reference_height=common_grains)
+    return rgb, blend_fields(common_flecks, own_flecks, ctx.interior_mask)
+
+
 # Water: opaque animated tiles in the colour of the retired scrolling ocean
 # backdrop (data/gfx/water0.png averaged about (69, 52, 200), luma 74). Water
 # and deep water are cells of one 4x4-cell periodic block (`variant_grid`), so
@@ -1960,7 +2043,7 @@ def boulders_fields(rng, size):
     return height, grit, pebbles
 
 
-@recipe(name="hedge", group="obstacles", label="Hedge", profile="brush",
+@recipe(name="hedge", group="obstacles", label="Hedge", profile="canopy",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (22, 50, 24), "mid": (36, 76, 36), "light": (64, 108, 52), "gap": (10, 26, 14)},
         style=Style(luma=56, std=10, grain_max=9), periodic=True, grid=8, blocks=4,
@@ -1993,7 +2076,7 @@ def hedge_fields(rng, size):
     return height, grit, leaves
 
 
-@recipe(name="thicket", group="obstacles", label="Thicket", profile="brush",
+@recipe(name="thicket", group="obstacles", label="Thicket", profile="canopy",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (40, 54, 26), "mid": (62, 80, 38), "light": (92, 110, 58),
                  "twig": (96, 78, 52), "twig_dark": (52, 42, 30)},
@@ -2152,24 +2235,9 @@ SAND_GRAINS, SAND_DUNES, SAND_BEVEL = 160, 0.25, 0.15
 def render_sand(ctx):
     """Warm granular sand with common edge dunes and independent interiors."""
     p = RECIPES["sand"].palette
-    common, common_flecks = sand_fields(ctx.shared_rng, ctx.size)
-    own, own_flecks = sand_fields(ctx.rng, ctx.size)
-    # Lit grains two or three native pixels across, as the original tiles
-    # have, rather than independent single-pixel noise.
-    count = SAND_GRAINS
-    first, second, ids, common_first, common_second, common_ids = block_worley(ctx, count)
-    tones = [ctx.shared_rng.random() for _ in range(count * ctx.area_scale)]
-    def grains(f1, f2, cells):
-        return [smoothstep(0.0, 0.35, b - a) * (0.55 + 0.45 * tones[i]) for a, b, i in zip(f1, f2, cells)]
-    own_grains, common_grains = grains(first, second, ids), grains(common_first, common_second, common_ids)
-    surface = [SAND_DUNES * s + (1 - SAND_DUNES) * g for s, g in zip(blend_fields(common, own, ctx.interior_mask), own_grains)]
-    reference = [SAND_DUNES * s + (1 - SAND_DUNES) * g for s, g in zip(common, common_grains)]
-    height = normalize_like(surface, reference, 0.02, 0.98)
-    rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = shade(rgb, own_grains, SAND_BEVEL, reference_height=common_grains)
+    rgb, flecks = sand_look(ctx, p)
     # The tiny brown mineral flecks remain part of the scalar surface, with
     # no plants or large deposits introduced into the legacy sand identity.
-    flecks = blend_fields(common_flecks, own_flecks, ctx.interior_mask)
     return mix(rgb, p["dark"], flecks, 0.18), None
 
 
@@ -2250,17 +2318,23 @@ def ice_fields(rng, size):
 assert set(SYNTH_ORDER) == set(RECIPES), "every built-in needs a recipe and vice versa"
 
 # Pair treatments (B5): boundary families chosen for specific contacts.
+# The grass and sand looks take the same edges as classic grass and sand.
+GRASS_LOOKS = ("grass", "lush_grass", "dry_grass")
+SAND_LOOKS = ("sand", "dune_sand", "pale_sand")
 PAIR_TREATMENTS = (
-    [{"a": name, "b": "grass", "profile": "rock"} for name in ("boulders", "ridge_rock", "outcrop")]
-    + [{"a": name, "b": "grass", "profile": "brush"} for name in ("hedge", "thicket")]
+    [{"a": name, "b": look, "profile": "rock"} for name in ("boulders", "ridge_rock", "outcrop") for look in GRASS_LOOKS]
+    + [{"a": name, "b": look, "profile": "brush"} for name in ("hedge", "thicket") for look in GRASS_LOOKS]
     + [
         {"a": "water", "b": "deep_water", "profile": "soft"},
         {"a": "deep_water", "b": "dark_water", "profile": "soft"},
     ]
+    # Low-roughness waterlines that the shoreline surf can wash up.
+    + [{"a": name, "b": look, "profile": "beach"} for name in ("water", "deep_water", "dark_water")
+       for look in SAND_LOOKS]
     + [
         {"a": name, "b": ground_name, "profile": "fractured"}
         for name in ("lava", "ember_field")
-        for ground_name in ("grass", "sand", "dirt", "gravel")
+        for ground_name in GRASS_LOOKS + SAND_LOOKS + ("dirt", "gravel")
     ]
     + [
         {"a": name, "b": other, "profile": "crisp"}
@@ -2461,9 +2535,9 @@ def merge_catalog(document, fragment):
     for block in fragment["materials"]:
         if block["key"] in by_key:
             previous = document["materials"][by_key[block["key"]]]
-            # Raised decor has its own generator; refreshing ground must retain it.
-            if "decor" in previous:
-                block = dict(block, decor=previous["decor"])
+            # Raised decor and shoreline surf are authored elsewhere; refreshing
+            # ground must retain them.
+            block = dict(block, **{k: previous[k] for k in ("decor", "surf") if k in previous})
             document["materials"][by_key[block["key"]]] = block
         else:
             document["materials"].append(block)

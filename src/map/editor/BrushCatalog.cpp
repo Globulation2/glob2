@@ -105,7 +105,13 @@ void addTerrain(const BrushCatalogInputs &inputs, const Text &text, std::vector<
 	};
 	{
 		BrushGroup classic{"classic", BrushSection::Terrain, text.tr("[terrain group classic]"), "", {}};
-		for (auto type : {WATER, SAND, GRASS})
+		// Water, sand, grass, then the other looks of sand and grass.
+		std::vector<TerrainType> types{WATER, SAND, GRASS};
+		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
+			if (terrainGroupIsClassic(terrainGroup(TerrainType(id))) &&
+				std::find(types.begin(), types.end(), TerrainType(id)) == types.end())
+				types.push_back(TerrainType(id));
+		for (auto type : types)
 			if (selectable(type))
 				classic.entries.push_back(terrainEntry(inputs, text, type, classic.key,
 													   terrainRuleSummary(registry.properties(type), translate), ""));

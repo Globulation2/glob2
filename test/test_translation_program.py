@@ -380,7 +380,7 @@ class MachineDraftTest(TranslationProgramTest):
         self.assertEqual(PROGRAM.LOCALES, (
             'hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
             'pa-Guru', 'pa-Arab', 'kn', 'am', 'yo', 'my', 'jv', 'ne', 'om',
-            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg'))
+            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg', 'nb'))
         self.assertEqual(self.manifest['locales'], list(PROGRAM.LOCALES))
         selected = PROGRAM.prepare(self.output / 'legacy', 1, self.root, locales=('cs', 'pt-PT', 'sr-Cyrl'))
         self.assertEqual(selected['locales'], ['cs', 'pt-PT', 'sr-Cyrl'])

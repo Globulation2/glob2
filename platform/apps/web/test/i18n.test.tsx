@@ -4,7 +4,13 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { useState } from 'react';
 import { AI_TAGS } from '@glob2/protocol';
 import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
-import { statusLabel, artifactLabel, fixedCaption, aiTagLabel } from '../src/messages.ts';
+import {
+  statusLabel,
+  artifactLabel,
+  fixedCaption,
+  aiTagLabel,
+  musicMoodLabel,
+} from '../src/messages.ts';
 import { ApiError } from '../src/api.ts';
 import {
   LocaleProvider,
@@ -32,6 +38,22 @@ afterEach(async () => {
   await setLocale('en');
 });
 describe('web localization', () => {
+  it('uses the construction sense for Bulgarian music without changing building entities', async () => {
+    registerCatalog('bg', {
+      Build: 'Изграждане',
+      Building: 'Сграда',
+      Calm: 'Спокойствие',
+      Combat: 'Бой',
+    });
+    await setLocale('bg');
+    const moods = ['Calm', 'Building', 'Combat'];
+    expect(moods.map(musicMoodLabel)).toEqual(['Спокойствие', 'Изграждане', 'Бой']);
+    expect(t('Building')).toBe('Сграда');
+    expect(moods).toEqual(['Calm', 'Building', 'Combat']);
+    await setLocale('en');
+    expect(moods.map(musicMoodLabel)).toEqual(moods);
+  });
+
   it('translates canonical AI tags while retaining their stored identifiers', async () => {
     const tags = [...AI_TAGS];
     registerCatalog('bg', {

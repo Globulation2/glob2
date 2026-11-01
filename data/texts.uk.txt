@@ -5696,6 +5696,14 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Провалля
 [chasm]
 Прірва
+[lush_grass]
+Соковита трава
+[dry_grass]
+Суха трава
+[dune_sand]
+Пісок дюн
+[pale_sand]
+Світлий пісок
 [terrain group water]
 Вода
 [terrain group sand]

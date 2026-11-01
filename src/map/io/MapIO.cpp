@@ -232,11 +232,19 @@ try
 		if (!drawn) legacyCellTerrain[i] = type;
 	};
 
+	// Vertex IDs written before the grass and sand looks number custom terrain from 29.
+	auto savedVertexTerrain = [&](Uint16 saved) -> std::optional<TerrainType>
+	{
+		const auto id = TerrainRegistry::currentTerrainId(savedBuiltins, saved);
+		if (!id || !validTerrainType(*id)) return std::nullopt;
+		return static_cast<TerrainType>(*id);
+	};
+
 	// We read what's inside the map: the terrain of every vertex, then the cells.
 	if (vertexTerrainFormat)
 	{
 		if (packed)
-			GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ if (!validTerrainType(v)) throw std::ios_base::failure("Unknown terrain identity"); vertexTerrain[i]=static_cast<TerrainType>(v); });
+			GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ const auto type=savedVertexTerrain(v); if (!type) throw std::ios_base::failure("Unknown terrain identity"); vertexTerrain[i]=*type; });
 	}
 	else
 	{
@@ -289,9 +297,9 @@ try
 
 		if (!packed && vertexTerrainFormat)
 		{
-			const auto v = stream->readUint16("vertexTerrain");
-			if (!validTerrainType(v)) co_return false;
-			vertexTerrain[i] = static_cast<TerrainType>(v);
+			const auto type = savedVertexTerrain(stream->readUint16("vertexTerrain"));
+			if (!type) co_return false;
+			vertexTerrain[i] = *type;
 		}
 		else if (!packed)
 		{

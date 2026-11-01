@@ -5696,6 +5696,14 @@ Tmavá voda
 Díra
 [chasm]
 Propast
+[lush_grass]
+Svěží tráva
+[dry_grass]
+Suchá tráva
+[dune_sand]
+Dunový písek
+[pale_sand]
+Světlý písek
 [terrain group water]
 Voda
 [terrain group sand]

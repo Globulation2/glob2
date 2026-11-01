@@ -27,5 +27,9 @@
   "deep_water",
   "dark_water",
   "void_hole",
-  "chasm"
+  "chasm",
+  "lush_grass",
+  "dry_grass",
+  "dune_sand",
+  "pale_sand"
 ]

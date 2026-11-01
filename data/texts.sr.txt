@@ -5696,6 +5696,14 @@ FFmpeg није доступан, па је снимање искључено. �
 Рупа
 [chasm]
 Понор
+[lush_grass]
+Бујна трава
+[dry_grass]
+Сува трава
+[dune_sand]
+Песак дина
+[pale_sand]
+Светли песак
 [terrain group water]
 Вода
 [terrain group sand]

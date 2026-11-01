@@ -785,11 +785,12 @@ void Observations::load(GAGCore::InputStream *s, int version)
 			for (unsigned corner = 0; corner < 4; ++corner)
 			{
 				s->readEnterSection(corner);
-				const auto type = s->readUint16("corner");
+				const auto type = TerrainRegistry::currentTerrainId(TerrainRegistry::savedBuiltinCount(version),
+																   s->readUint16("corner"));
 				s->readLeaveSection();
-				if (!world().terrain->valid(type))
+				if (!type || !world().terrain->valid(*type))
 					throw std::runtime_error("Invalid remembered terrain type");
-				t.corners[corner] = static_cast<TerrainType>(type);
+				t.corners[corner] = static_cast<TerrainType>(*type);
 			}
 		else
 		{

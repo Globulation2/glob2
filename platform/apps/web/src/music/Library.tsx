@@ -1,7 +1,7 @@
 import { statusLabel } from '../i18n.tsx';
 import { displayMessage } from '../i18n.tsx';
 import { translateError } from '../i18n.tsx';
-import { t, useLocale, RichMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage, musicMoodLabel } from '../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { MusicMetadata, MusicRelease } from '@glob2/protocol';
 import { request } from '../api.ts';
@@ -474,7 +474,10 @@ export function MusicDetail({ id }: { id: string }) {
                 <div className="music-card-actions">
                   {release.tracks.map((track, i) => (
                     <a key={track.mood} href={track.url} download={`a${i + 1}.opus`}>
-                      <RichMessage source={'Download {slot0}'} slots={{ slot0: t(MOODS[i]) }} />
+                      <RichMessage
+                        source={'Download {slot0}'}
+                        slots={{ slot0: musicMoodLabel(MOODS[i]) }}
+                      />
                     </a>
                   ))}
                 </div>
@@ -503,9 +506,10 @@ export function MusicDetail({ id }: { id: string }) {
       {owner && !release.generated && ['draft', 'inspected'].includes(release.status) && (
         <section className="music-upload">
           <h2>{t('Prepare this release')}</h2>
-          {[...MOODS, t('Cover')].map((mood, i) => (
+          {[...MOODS, 'Cover'].map((mood, i) => (
             <label key={mood}>
-              {mood} {release.uploaded.includes(mood.toLowerCase()) ? t('✓ uploaded') : ''}
+              {musicMoodLabel(mood)}{' '}
+              {release.uploaded.includes(mood.toLowerCase()) ? t('✓ uploaded') : ''}
               <input
                 type="file"
                 disabled={busy}
@@ -531,7 +535,7 @@ export function MusicDetail({ id }: { id: string }) {
             <>
               <p>
                 {release.inspection.seconds
-                  .map((seconds, i) => `${MOODS[i]}: ${seconds.toFixed(3)}s`)
+                  .map((seconds, i) => `${musicMoodLabel(MOODS[i])}: ${seconds.toFixed(3)}s`)
                   .join(' · ')}
               </p>
               <label>
@@ -547,7 +551,7 @@ export function MusicDetail({ id }: { id: string }) {
                   {release.inspection.seconds
                     .map(
                       (seconds, i, all) =>
-                        `${MOODS[i]}: ${Math.abs(seconds - (repair === 'trim' ? Math.min(...all) : Math.max(...all))).toFixed(3)}s ${repair === 'trim' ? t('removed from end') : t('silence added at end')}`,
+                        `${musicMoodLabel(MOODS[i])}: ${Math.abs(seconds - (repair === 'trim' ? Math.min(...all) : Math.max(...all))).toFixed(3)}s ${repair === 'trim' ? t('removed from end') : t('silence added at end')}`,
                     )
                     .join(' · ')}
                 </p>

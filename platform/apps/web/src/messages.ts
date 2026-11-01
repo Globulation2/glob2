@@ -1,5 +1,10 @@
 import * as localization from '../../../packages/i18n/src/index.ts';
 
+/** The music phase is construction; Building elsewhere names a structure. */
+export function musicMoodLabel(mood: string | undefined): string {
+  return t(localization.getLocale() === 'bg' && mood === 'Building' ? 'Build' : mood);
+}
+
 /** Canonical protocol tags stay in English; only their visible labels change. */
 export function aiTagLabel(tag: string): string {
   switch (tag) {

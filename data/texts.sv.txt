@@ -5696,6 +5696,14 @@ Mörkt vatten
 Hål
 [chasm]
 Avgrund
+[lush_grass]
+Frodigt gräs
+[dry_grass]
+Torrt gräs
+[dune_sand]
+Dynsand
+[pale_sand]
+Ljus sand
 [terrain group water]
 Vatten
 [terrain group sand]

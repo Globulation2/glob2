@@ -199,6 +199,26 @@ def _validate(document, root):
                 type(n) is not int or not 0 <= n <= 255 for n in fringe
             ):
                 raise ValueError("Invalid seam fringe color")
+        if "surf" in m:
+            if version < 3:
+                raise ValueError("Surf requires catalog version 3")
+            surf = m["surf"]
+            if not isinstance(surf, dict):
+                raise ValueError("Surf must be an object")
+            integer(surf.get("period"), 1, 65535, "Surf period")
+            integer(surf.get("ticks", 1), 1, surf["period"], "Surf ticks")
+            for field in ("shallow_q8", "wet_q8", "foam_q8"):
+                integer(surf.get(field, 0), 0, 256, f"Surf {field}")
+            for field in ("reach_q8", "shallow_width_q8", "wet_width_q8", "foam_width_q8"):
+                integer(surf.get(field, 0), 0, 2048, f"Surf {field}")
+            if surf.get("reach_q8", 0) + surf.get("foam_width_q8", 0) > 2048:
+                raise ValueError("Surf must end within eight pixels")
+            for field in ("shallow", "foam"):
+                color = surf.get(field, [0, 0, 0])
+                if not isinstance(color, list) or len(color) != 3 or any(
+                    type(n) is not int or not 0 <= n <= 255 for n in color
+                ):
+                    raise ValueError(f"Invalid surf {field} color")
         phases, stride, ticks = (
             m.get("animation_frames", 1),
             m.get("animation_stride", 0),
