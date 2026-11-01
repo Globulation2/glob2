@@ -4884,6 +4884,10 @@ Yksiköt, jotka ovat saarroksissa ilman vapaata ruutua, jolle astua.
 Raivatut resurssit
 [stat cleared about]
 Työläisten raivausalueilta poistamat resurssit tilan tekemiseksi.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Maine
 [stat prestige about]

@@ -4884,6 +4884,10 @@ FFmpeg није доступан, па је снимање искључено. �
 Очишћене сировине
 [stat cleared about]
 Сировине које су радници уклонили у областима чишћења да би направили места.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Престиж
 [stat prestige about]

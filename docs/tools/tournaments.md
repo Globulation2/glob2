@@ -143,7 +143,8 @@ Game options:
 | `--player AI` | Repeat once per map team, in team order; required for new games |
 | `--ai-param P:key=value` | Repeatable, zero-based player overrides; duplicate keys and invalid values rejected |
 | `--alliance N` | Repeat once per team, one-based group labels; default separate alliances |
-| `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script |
+| `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script; probability early victory is appended unless explicitly disabled |
+| `--win-probability PERMILLE` | New games default to 950 (95%); 0 disables, otherwise 501–1000; saved games retain their conditions |
 | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
@@ -478,13 +479,13 @@ plausible computation errors from faulty RAM. pharaoh-dev-1 is a normal pilot ho
 
 All experiment modules (`ai_comparison`, `fairness`, `generator_stress`, `ablations`) support `plan CONFIG --bundle DIR --output FILE`,
 `submit CONFIG --bundle DIR --output RESULTS`, and
-`reanalyze RESULTS [--policy prestige|survivor_draw|military] [--seed 1] [--draws 1000]
+`reanalyze RESULTS [--policy win_probability|prestige|survivor_draw|military] [--seed 1] [--draws 1000]
 [--k 32] [--output DIR]`. Reports are JSON, CSV and Markdown; no rerun is required.
 
 Shared design fields: id; builds (all supplied by default); map_build (first build);
 generators [15]; map_seeds [1001]; game_seeds [1]; generator_params {}; candidates 5
 for reusable maps; ticks 90000; timeout_seconds 3600; generation_timeout_seconds
-1800; outputs {}; settings {}; labels {}; win_probability_permille 0 (off). Build
+1800; outputs {}; settings {}; labels {}; win_probability_permille 950 (95%; use 0 to disable). Build
 cohorts use common generated maps
 unless generator variation itself is the experiment. Each build needs an eligible
 host. Generator defaults/ranges are always discoverable in its pinned catalog.
@@ -512,8 +513,9 @@ unsupported combinations remain reported failures rather than being filtered out
   logs and reports are omitted for successful game jobs with no requested outputs;
   failed jobs and map-generation jobs retain their diagnostic artifacts.
   For rating-only runs, set `outputs.result` to `outcome`. The retained payload
-  includes termination, winners, team/player identity, survival, prestige and
-  military totals needed by every supported adjudication policy, while omitting
+  includes termination, winners, team/player identity, survival, prestige,
+  military totals and compact probability summaries needed by adjudication and
+  whole-game scoring, while omitting
   per-tick histories and other bulky result details. Installed bundles are fully
   hashed before atomic publication and then treated as immutable; workers do not
   rehash the complete bundle before every queued game.
@@ -575,11 +577,15 @@ unsupported combinations remain reported failures rather than being filtered out
   alliances is optional. Paired effects, raw pairs, intervals, configurations and
   failure rates are exported. No automatic best-variant selection occurs.
 
-Engine-declared winners are authoritative under every policy. Capped games rank
-survivors by prestige, unit count, then finished buildings; exact ties stay tied.
-Alternatives draw all survivors or rank warrior attack strength, HP, count.
-Eliminated colonies rank by elimination tick. 2v2 aggregates surviving roster
-statistics. Reports record policy name/version/options and engine/adjudicated status.
+Engine-declared winners are authoritative under every policy. The default
+`win_probability` policy ranks unresolved survivors at the tick cap by their final
+model probability; exact ties stay tied. Eliminated colonies still rank by
+elimination tick. Allies share one probability, counted once in 2v2. Alternatives
+are `prestige` (prestige, population, finished buildings), `survivor_draw` (tie all
+survivors), and `military` (warrior attack, HP, count). Historical results without
+probability statistics require an explicit legacy policy; missing predictions are
+never silently replaced with economic scores. Reports record policy name/version,
+raw termination, and engine/adjudicated status.
 Standard 1v1 ratings fit all observed outcomes at once with the Bradley–Terry
 logistic model: each game has equal weight, ties score 0.5, and input/completion
 order has no effect. Ratings are centred on 1500 with 400 points per tenfold odds;
@@ -666,15 +672,93 @@ Native `map generate NAME --report-file FILE` uses tile dimensions; the structur
 `map study GENERATOR --output-dir DIR` interface uses exponent dimensions as documented
 above. Both use the same production report serializer.
 
+## Whole-game probability scores
+
+**Use mean whole-match win probability as the standard continuous AI effectiveness
+score alongside wins, losses and draws**, including in custom assessments. Small
+improvements can strengthen the trajectory of many games without changing who
+wins them; the integral retains that information, making it more sensitive than
+outcomes alone. Standard reanalysis and pooled leaderboards report it automatically.
+Use the paired `win_probability_mean` effect to assess an ablation, with matched
+seeds, seat rotations and held-out maps, rather than judging a small change only
+by its win count. Actual outcomes remain an essential supporting check.
+
+Every game automatically collects probability history, independently of verbose
+telemetry and of the early-victory rule. Full engine results include per-team
+`win_probability_history` rows `[tick, permille]` and a compact `win_probability`
+summary: `model`, `final_model`, `permille`, `start_tick`, `end_tick`,
+`area_twice_permille_ticks`, and `mean`. The model identity fingerprints the fitted
+fixed-point coefficients and feature transforms. Compact `outputs.result: outcome`
+retains the summary and drops the samples. No `team-timeline` logs are required.
+
+The integral is trapezoidal between actual sample ticks, including the final
+partial interval. Divide `area_twice_permille_ticks` by 2000 for area in
+probability × ticks, then by `end_tick - start_tick` for **mean win probability**
+from 0 to 1. For example, a linear rise from 40% to 80% has a mean of 60%.
+The mean gives games equal weight regardless of duration; raw area also remains
+available for analyses where duration matters. Allies share one trace and are
+counted once, rather than their probabilities being added.
+
+Reanalysis exports `probability_scores` in JSON/CSV and a Markdown table, grouped
+by format, build, variant, competitor, model and stopping threshold. Ablations
+also separate subject and opponent roles, including when both run the same AI,
+so their complementary probabilities cannot cancel a measured improvement.
+It reports wins/losses/draws, game and scored-game counts, missing
+coverage, mean probability, mean area and deterministic 95% intervals resampled
+by seed block (keeping correlated rotations together). Ablation `paired_effects`
+adds `win_probability_mean`: candidate minus baseline for the configured subject,
+with raw paired differences and seed-block bootstrap intervals that keep
+rotations together, separated by model and stopping threshold. Elo and placements remain
+outcome-based; probability scores do not overwrite wins. W/L/D uses the selected
+final-outcome policy; separate cap and probability-stop counts preserve which
+games ended through adjudication or early victory. The pooled leaderboard
+also includes probability scores.
+
+Custom scripts can use the same reader rather than reimplementing the integral:
+
+```python
+from tools.tournaments.probability import group_summary
+
+side = group_summary(
+    [t for t in result["teams"] if t["alliance"] == alliance],
+    expected_end_tick=result["ticks"],
+)
+if side is None or not side["whole_game"]:
+    raise ValueError("Whole-match probability score is unavailable")
+score = side["mean"]  # 0..1, higher is better
+```
+
+Older saves start history at the first newly observed sample. Scores with missing
+opening or terminal coverage, no elapsed time, or mixed models after a refit are marked
+unavailable for whole-game summaries, rather than extrapolated. Partial observed
+scores and coverage remain in raw observations. Cap adjudication requires a
+prediction at the actual terminal tick; an up-to-date final prediction remains
+usable even when opening history is missing. Changing early-stopping thresholds
+changes the measured duration: compare matched rules, model, maps and opponents.
+These are model-based scores, useful for detecting smaller trajectory changes;
+their sensitivity does not establish robustness to every AI change. The model was
+trained on AI games and cannot see position or planned attacks. Retain actual
+wins, held-out maps and paired evidence alongside the probability score.
+
 ## Ending decided games early
 
-`"win_probability_permille": 970` in an experiment design turns on the optional
-[win probability](../ai/architecture/win-probability-model.md) winning condition for its games, so a
-match that is already decided is not played out. It is off by default, because it
-changes the outcome that gets measured and so must be asked for.
+Standard experiment planners enable the
+[win probability](../ai/architecture/win-probability-model.md) winning condition at
+95% (`"win_probability_permille": 950`), so strongly decided end games stop sooner.
+Structured `game run` also defaults to 950; `--win-probability 0` disables it.
+The engine still waits until tick 5,120 and evaluates every 512 ticks. Set
+`"win_probability_permille": 0` to disable it, or specify another threshold.
+The planner freezes this choice in every game job, so its identity and retained
+design distinguish cohorts. An explicit `rules.winProbabilityPermille` also sets
+the threshold; conflicting explicit settings are rejected. Low-level new-game jobs that
+bypass the planners also use the CLI default of 950 unless they specify the rule.
 
 Calibration and its limits are described in the model guide. Evaluate the model
 against the AI and game rules in the cohort you intend to measure. The threshold accepts 0 (off) or 501–1000.
+For validation or refitting of the probability model itself, disable probability
+victory and use independent labels, such as the historical `prestige` cap policy.
+The fitting helpers reject probability-called games and `win_probability` labels
+to prevent training or evaluating the model against its own predictions.
 Experiment `rules` also pass through the shared `--rule` interface. Games it ended report a `termination`
 of `win_probability` rather than `engine_end`, and `observations()` carries the
 raw termination through, so analysis can pool, exclude or compare them but can

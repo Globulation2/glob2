@@ -4884,6 +4884,10 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 منابع پاک‌سازی‌شده
 [stat cleared about]
 منابعی که کارگرها در مناطق پاک‌سازی برای باز کردن جا برداشتند.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 اعتبار
 [stat prestige about]

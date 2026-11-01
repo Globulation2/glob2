@@ -267,7 +267,7 @@ _glob2() {
       '--resource-growth-delay[resource-growth-delay]:value:' \
       '--ai-order-delay[ai-order-delay]:value:' \
       '*--save[save]:value:' \
-      '*--telemetry[telemetry]:value:(checksums team-timeline maxima)' \
+      '*--telemetry[telemetry]:value:(checksums team-timeline maxima warrior-tactics)' \
       '--write-replay[write-replay]' \
       '--benchmark-warmup[benchmark-warmup]:value:' \
       '--benchmark-tick-profile[benchmark-tick-profile]' \

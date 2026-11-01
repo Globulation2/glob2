@@ -32,6 +32,7 @@
 #include "GameRuleOverrides.h"
 #include "Player.h"
 #include "TeamStat.h"
+#include "WinProbability.h"
 #include "Unit.h"
 #include "Version.h"
 #include "GenerationRequest.h"
@@ -315,7 +316,7 @@ void Headless::writeManifest(const std::string &directory)
 	manifest(fs::path(directory));
 }
 
-void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::vector<Sint32> &eliminatedTicks)
+void Headless::playersAndTeamsJson(std::ostream &result, const Game &game, const std::vector<Sint32> &eliminatedTicks)
 {
 	bool comma=false;
 	result << "\"players\":[";
@@ -331,7 +332,7 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 	std::set<int> winningAlliances; std::vector<int> winningTeams;
 	for(int t=0;t<game.mapHeader.getNumberOfTeams();++t)
 	{
-		Team *team=game.teams[t];
+		const Team *team=game.teams[t];
 		int units=0,workers=0,explorers=0,warriors=0,buildings=0,sites=0;
 		long long warriorHP=0,warriorAttack=0;
 		for (const Unit *u : team->liveUnits.entries())
@@ -364,7 +365,33 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 			for(int k=0;k<EndOfGameStat::TYPE_NB_STATS;++k){if(k)result<<',';result<<stat.value[k];}
 			result<<']';
 		}
-		result << "]}";
+        const auto &probability = team->stats.getWinProbabilityHistory();
+        if (probability.empty() || probability.back().tick != game.stepCounter)
+            throw std::logic_error("Result serialization requires finalized win probability history");
+        const auto &first = probability.front();
+        const auto &last = probability.back();
+        const auto duration = last.tick - first.tick;
+        const auto area = team->stats.winProbabilityAreaTwice();
+        result << "],\"win_probability\":{\"model\":" << quote(team->stats.getWinProbabilityModel())
+            << ",\"final_model\":" << quote(WinProbability::modelId()) << ",\"permille\":" << last.permille
+            << ",\"start_tick\":" << first.tick << ",\"end_tick\":" << last.tick
+            << ",\"area_twice_permille_ticks\":" << area
+            << ",\"mean\":";
+        if (duration)
+        {
+            // Match verification hashes this JSON across platforms. Format the
+            // convenience mean with integer rounding, not a platform's float
+            // formatter. The exact area above remains the analysis input.
+            // area <= 2000*UINT32_MAX: multiplying by 1e6 still fits Uint64.
+            const Uint64 scaled = (area * 1000000 + Uint64(duration) * 1000) / (Uint64(duration) * 2000);
+            const auto fraction = std::to_string(scaled % 1000000);
+            result << scaled / 1000000 << '.' << std::string(6 - fraction.size(), '0') << fraction;
+        }
+        else result << "null";
+        result << "},\"win_probability_history\":[";
+        for (size_t i = 0; i < probability.size(); ++i)
+            result << (i ? "," : "") << '[' << probability[i].tick << ',' << probability[i].permille << ']';
+        result << "]}";
 	}
 	result << "],\"winning_teams\":[";
 	comma=false;for(int t:winningTeams){if(comma)result<<',';comma=true;result<<t;}
@@ -589,14 +616,15 @@ struct HeadlessRunner
 				if(!knownExperimentKey(key, header.catalogExperimentKeys())) throw std::invalid_argument("unknown experiment: " + key);
 				header.getExperiments().set(key, true, header.catalogExperimentKeys());
 			}
-			// Added to the list in force rather than replacing it, so a real
-			// elimination or prestige win still ends the game first and only an
-			// otherwise-undecided match is stopped early.
-			if(options.count("--win-probability"))
+			// Tournament runs default to 95% early victory. Real elimination or
+            // prestige wins take precedence. Saved games retain their own rules;
+            // an explicit zero (or a later --rule override) disables this.
 			{
-				const int permille=integer(one(options,"--win-probability","0"), 501, 1000);
+				const int permille=integer(one(options,"--win-probability","950"), 0, 1000);
+                if (permille != 0 && permille < 501)
+                    throw std::invalid_argument("win probability must be 0 or 501..1000");
 				WinningCondition::setWinProbabilityWinCondition(header.getWinningConditions(),
-					std::optional<Uint32>(static_cast<Uint32>(permille)));
+					permille ? std::optional<Uint32>(static_cast<Uint32>(permille)) : std::nullopt);
 			}
 			for (const auto& rule:many(options,"--rule")) applyGameRule(header, rule);
 			if (options.count("--ai-order-delay")) header.setAIOrderDelay(integer(one(options,"--ai-order-delay"), 0, 8));
@@ -779,6 +807,9 @@ struct HeadlessRunner
 		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
+		// Finalize reporting only after continuation saves. A report endpoint
+		// must not add an off-cadence sample to a subsequently resumed game.
+		game.winProbabilitySyncStep(true);
 		const auto pipelineResult = game.map.gradientPipelineStatus();
 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
 		const auto gradient=gradient_kernel::configuration();

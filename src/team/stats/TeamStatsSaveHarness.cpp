@@ -198,8 +198,14 @@ static std::unique_ptr<GameGUI> roundTrip(Game& game)
 class LocatedOutput : public GAGCore::BinaryOutputStream
 {
 public:
+  using BinaryOutputStream::writeEnterSection;
   size_t statsPosition = 0, smoothingPosition = 0, coveragePosition = 0,
-		 measurementCountPosition = 0;
+		 measurementCountPosition = 0, probabilityPosition = 0;
+  void writeEnterSection(std::string_view name) override
+  {
+      if (name == "winProbability") probabilityPosition = getPosition();
+      BinaryOutputStream::writeEnterSection(name);
+  }
   void writeUint32(Uint32 value, std::string_view name) override
   {
 	  if (name == "coverageStartTick")
@@ -293,6 +299,8 @@ static void textRoundTrip()
     game.teams[0]->race.loadDefault();
     require(game.addUnit(5, 5, 0, WORKER, 0, 0, 0, 0) != nullptr, "text fixture worker exists");
     for (unsigned tick = 1; tick <= 77; ++tick) sample(game, tick);
+    game.teams[0]->stats.recordWinProbability(0, 400, "text-model");
+    game.teams[0]->stats.recordWinProbability(77, 600, "text-model");
     auto* bytes = new GAGCore::MemoryStreamBackend;
     GAGCore::TextOutputStream writer(bytes);
     game.teams[0]->save(&writer);
@@ -305,6 +313,10 @@ static void textRoundTrip()
     loaded.game.map.setGame(&loaded.game);
     loaded.game.addTeam();
     require(loaded.game.teams[0]->load(&reader, &globalContainer->buildingsTypes, VERSION_MINOR), "text team save loads");
+    require(loaded.game.teams[0]->stats.getWinProbabilityModel() == "text-model" &&
+            loaded.game.teams[0]->stats.getWinProbabilityHistory().size() == 2 &&
+            loaded.game.teams[0]->stats.winProbabilityAreaTwice() == 77000,
+            "text saves retain probability model, explicit ticks and integral");
     compare(game.teams[0]->stats, loaded.game.teams[0]->stats);
     const unsigned start = game.stepCounter;
     for (unsigned i = 1; i <= 65; ++i)
@@ -850,7 +862,9 @@ static void measurementReplayBoundaries()
 	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_MAINLINE_TERRAINS
             && REPLAY_MINIMUM_VERSION_MINOR <= VERSION_MINOR && NET_PROTOCOL_VERSION == 73,
 			"integrated simulation preserves the replay floor and current network gates");
-	for (int version : std::initializer_list<int>{98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, REPLAY_MINIMUM_VERSION_MINOR, VERSION_MINOR-1, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : std::initializer_list<int>{98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, REPLAY_MINIMUM_VERSION_MINOR,
+            FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT, FILE_FORMAT_VERSION_MAXIMA_FLAG_PROXIMITY,
+            VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -1157,6 +1171,8 @@ static void measurementScreenshots(const std::string &directory)
 		for (unsigned tick = 0; tick <= 4096; tick += 512)
 		{
 			game.stepCounter = tick;
+            const int leader = 50 + int(tick * 750 / 4096);
+            stats.recordWinProbability(tick, t == 0 ? leader : (1000-leader)/(Team::MAX_COUNT-1), "screenshot-model");
 			stats.editMeasurements().births[WORKER] = (Uint64(1) << 40) + (t + 1) * tick;
 			stats.editMeasurements().harvested[WHEAT] = (t + 1) * tick;
 			stats.editMeasurements().completed[Measurements::NEW_BUILDING][0][0] = (t + 1) * tick / 512;
@@ -1201,7 +1217,7 @@ static void measurementScreenshots(const std::string &directory)
 			// The overview, then one chart of each form: a level, a smoothed rate, a
 			// split counter, bands of the population, a net value and a global series.
 			const std::pair<const char *, bool> charts[] = {{"population", false}, {"births", false}, {"births", true},
-															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}};
+															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}, {"win probability", false}};
 			screen.selectMetric(EndGameScreen::OVERVIEW);
 			screen.paintFrame(0);
 			require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), (directory + "/overview-" + suffix).c_str()),
@@ -1305,6 +1321,64 @@ TEST_CASE("clearing telemetry counts operations once by configured primary mater
 
 TEST_SUITE("TeamStatsSave")
 {
+    TEST_CASE("probability save section preserves Maxima-era statistics layouts [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        auto *bytes=new GAGCore::MemoryStreamBackend;
+        LocatedOutput writer(bytes);
+        world.team->stats.recordWinProbability(0,500,"layout-model");
+        world.team->stats.save(&writer);
+        writer.flush();
+        REQUIRE(writer.probabilityPosition>0);
+
+        // Formats 188/189 changed Maxima state, not TeamStats. Dropping the
+        // appended probability section reproduces their statistics payload.
+        for (const int version : {FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT,
+                                  FILE_FORMAT_VERSION_MAXIMA_FLAG_PROXIMITY})
+        {
+            GAGCore::BinaryInputStream legacy(new GAGCore::MemoryStreamBackend(
+                bytes->getBuffer(),writer.probabilityPosition));
+            legacy.seekFromStart(0);
+            TeamStats loaded;
+            REQUIRE(loaded.load(&legacy,version));
+            CHECK(legacy.getPosition()==writer.probabilityPosition);
+            CHECK(loaded.getWinProbabilityHistory().empty());
+            CHECK(loaded.getWinProbabilityModel().empty());
+        }
+
+        GAGCore::BinaryInputStream missing(new GAGCore::MemoryStreamBackend(
+            bytes->getBuffer(),writer.probabilityPosition));
+        missing.seekFromStart(0);
+        TeamStats incomplete;
+        CHECK_THROWS_AS(incomplete.load(&missing,FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY),std::runtime_error);
+    }
+    TEST_CASE("probability history rejects samples beyond the saved game tick [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        auto &game=world.game;
+        game.stepCounter=512;
+        auto &stats=world.team->stats;
+        stats.recordWinProbability(0,400,"saved-model");
+        stats.recordWinProbability(game.stepCounter,600,"saved-model");
+        const auto loaded=roundTrip(game);
+        REQUIRE(loaded->game.teams[0]->stats.getWinProbabilityHistory().back().tick==game.stepCounter);
+
+        // Ascending, in-range samples are still corrupt if they describe the future.
+        stats.recordWinProbability(game.stepCounter+1,600,"saved-model");
+        CHECK_THROWS_WITH_AS(roundTrip(game),"Invalid win probability game tick",std::runtime_error);
+    }
+    TEST_CASE("probability text history and integral survive a team save [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        textRoundTrip();
+    }
+    TEST_CASE("diagnostic probability history preserves replay acceptance boundaries [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        measurementReplayBoundaries();
+    }
     TEST_CASE("retained format152 magic levels count each explorer once through migration and current continuation [save-format]")
     {
         glob2test::HeadlessGlobals globals;

@@ -1229,7 +1229,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 				statsOpen = false;
 			else if (region != 48)
 			{
-				const int count = int(Stats::catalog().size());
+				const int count = std::max(1, int(statsCatalog.size()));
 				statsMetric = (statsMetric + (region == 47 ? 1 : count - 1)) % count;
 			}
 			return;
@@ -1759,6 +1759,7 @@ void GameGUITouch::menuAction(int action)
 		if (usesHUD() && !layout().persistentPanel && !globalContainer->isViewingGame())
 		{
 			statsCatalog = Stats::catalogForBuildings(*gui.drawnScene().buildingTypes);
+            std::erase_if(statsCatalog, [](const auto &m) { return m.winProbability; });
 			statsOpen = true; // The compact statistics sheet.
 			break;
 		}
