@@ -8,7 +8,7 @@
 #include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
-#include <ui/TextLayout.h>
+#include <TouchText.h>
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -59,26 +59,19 @@ struct Text
 		surface.drawString(x, y, font, text);
 		font->popStyle();
 	}
-    // Empty-state notices share the chart's real font and shaping boundaries.
-    // Keep the complete notice readable inside compact statistics charts.
-    void drawNotice(int x, int y, int availableWidth, int availableHeight,
-                    const std::string &notice, const Color &color) const
-    {
-        struct Measurer : GAGGUI::ui::TextMeasurer {
-            Font &font;
-            explicit Measurer(Font &value) : font(value) {}
-            int width(GAGGUI::ui::FontRole, const std::string &value) const override { return font.getStringWidth(value); }
-            int lineHeight(GAGGUI::ui::FontRole) const override { return font.getStringHeight("0"); }
-            std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &value) const override { return font.getStringClusterEnds(value); }
-        } measurer(*font);
-        int offset = 0;
-        for (const auto &line : GAGGUI::ui::wrapText(measurer, GAGGUI::ui::FontRole::Support,
-                                                   notice, std::max(1, availableWidth))) {
-            if (offset + height > availableHeight) break;
-            draw(x, y + offset, line, color);
-            offset += height;
-        }
-    }
+	void status(int x, int y, int width, int availableHeight, const std::string &message) const
+	{
+		const int bottom = y + availableHeight;
+		font->pushStyle(Font::Style(Font::STYLE_NORMAL, TeamStatChart::ink));
+		for (const auto &line : wrapTouchText(font, message, width))
+		{
+			const int lineHeight = std::max(height, font->getStringHeight(line));
+			if (y + lineHeight > bottom) break;
+			surface.drawString(x, y, font, line);
+			y += lineHeight + 2;
+		}
+		font->popStyle();
+	}
 	//! `text` cut to fit `available` pixels.
 	std::string fit(std::string text, int available) const
 	{
@@ -653,14 +646,15 @@ void TeamStatChart::paint(const std::vector<Stats::TeamHistory>& histories, Uint
 	{
 		// Either the match was too short, or this save predates the measurement.
 		const bool recorded = std::any_of(histories.begin(), histories.end(), [](const auto &h) { return h.points.size() > 1; });
-		text.drawNotice(left + pad, top + pad, width - 2 * pad, height - 2 * pad, tr(recorded ? "[stat not recorded for this match]" : "[Not enough recorded history yet.]"), TeamStatChart::ink);
+		text.status(left + pad, top + pad, width - 2 * pad, height - 2 * pad,
+			tr(recorded ? "[stat not recorded for this match]" : "[Not enough recorded history yet.]"));
 		return;
 	}
 
 	if (!chart.any)
 	{
 		// Recorded, and nothing to draw: no trade, no prestige, nobody stranded.
-		text.drawNotice(left + pad, top + pad, width - 2 * pad, height - 2 * pad, tr("[stat nothing to show]"), TeamStatChart::ink);
+		text.status(left + pad, top + pad, width - 2 * pad, height - 2 * pad, tr("[stat nothing to show]"));
 		return;
 	}
 	// Markers belong to teams; a map-wide series has none.

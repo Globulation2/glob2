@@ -63,6 +63,35 @@ TEST_SUITE("RelayAdmission")
 		CHECK(d.check(claims(A, 0, 0b1), false, 10) == Admission::HumanSeatsDiffer);
 	}
 
+
+    TEST_CASE("Marathi catalog registration separates revision 111 and 112 match admission")
+    {
+        // Real simulation keys immediately before/after the registration: the
+        // data inputs and 191/73 save/network versions are identical. Only
+        // SIM_REVISION changes. Keep these historical boundary fixtures fixed.
+        const SimVersion before{191, 73,
+            "be0cfb6de27ede2ccf532696a24fe30af46f1f6e825019b75072d91081b3cee9"};
+        const SimVersion after{191, 73,
+            "9ce97439847adc396d7cf42390d2962c382a23f89363df4dd92c53dbc1f6c4d9"};
+        CHECK(before.key() != after.key());
+        for (const bool newMatch : {false, true})
+        {
+            CAPTURE(newMatch);
+            auto first = claims(A, 0);
+            first.simVersion = newMatch ? after : before;
+            MatchDirectory directory;
+            REQUIRE(directory.check(first, false, 10) == Admission::Create);
+            directory.create(first);
+            auto same = first;
+            same.seat = 1;
+            CHECK(directory.check(same, false, 10) == Admission::Join);
+            auto incompatible = same;
+            incompatible.simVersion = newMatch ? before : after;
+            CHECK(directory.check(incompatible, false, 10) == Admission::SimVersionDiffers);
+            CHECK(directory.check(first, false, 10) == Admission::Join);
+        }
+    }
+
 	TEST_CASE("an ended match cannot be restarted by a late ticket until every ticket has expired")
 	{
 		MatchDirectory d;

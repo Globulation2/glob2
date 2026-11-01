@@ -152,6 +152,7 @@
   font-weight: 700;
   color: var(--ink-2);
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 .stat .v {
   font-family: var(--font-display);
@@ -321,6 +322,16 @@
   display: grid;
   gap: var(--sp-4);
   max-width: 800px;
+}
+.account-settings :is(button, .btn) {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  padding-block: 8px;
+}
+/* Tamil labels need more room than the compact three-column counter row. */
+:lang(ta) .stats {
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
 }
 .ladder-empty {
   display: flex;

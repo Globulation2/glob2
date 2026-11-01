@@ -6,10 +6,12 @@
 #include "InGameStatistics.h"
 #include "touch/GameGUITouch.h"
 #include "tutorial/TutorialModel.h"
+#include "tutorial/TutorialGuidance.h"
 #include "sim/presentation/SceneInputs.h"
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
+#include "GameGUIDialog.h"
 #include "EndGameScreen.h"
 #include "NewMapScreen.h"
 #include "MapEdit.h"
@@ -45,6 +47,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+#include <utility>
 #if !defined(WIN32)
 #include <dlfcn.h>
 #endif
@@ -75,7 +78,43 @@ struct TranslationPreviewAccess
     static void openMenu(GameGUI &gui) { gui.openMainMenu(); }
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
     static bool initialBriefingOpen(const GameGUI &gui) { return gui.inGameMenu == GameGUI::IGM_OBJECTIVES; }
+    static void openBriefing(GameGUI &gui) {
+        gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, true));
+    }
+    static bool briefingTabShown(const GameGUI &gui) {
+        const auto *dialog = dynamic_cast<const InGameObjectivesScreen *>(gui.gameMenuScreen.get());
+        return dialog && dialog->tab() == InGameObjectivesScreen::BRIEFING;
+    }
     static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
+    static Tutorial::Guidance *guidance(GameGUI &gui) { return gui.tutorialGuidance.get(); }
+    static bool openLiveStatistics(GameGUI &gui) {
+        gui.clearSelection();
+        gui.closeDialog();
+        if (gui.touch && gui.touch->usesHUD()) {
+            // Exercise the production keyboard route: Tools is the third HUD
+            // action; Statistics is the seventh entry in its lens strip.
+            gui.touch->cancel(true);
+            auto key = [&](SDL_Keycode value) {
+                SDL_Event event{};
+                event.type = SDL_EVENT_KEY_DOWN;
+                event.key.key = value;
+                return gui.touch->process(event);
+            };
+            for (int i = 0; i < 3; ++i) if (!key(SDLK_TAB)) return false;
+            if (!key(SDLK_RETURN)) return false;
+            for (int i = 0; i < 4; ++i) if (!key(SDLK_TAB)) return false;
+            if (!key(SDLK_RETURN)) return false;
+            return gui.touch->needsStatisticsHistory();
+        }
+        gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+        gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+        return gui.statisticsVisible();
+    }
+    static InGameStatisticsPanel &liveStatistics(GameGUI &gui) { return gui.statistics(); }
+    static void closeLiveStatistics(GameGUI &gui) {
+        gui.closeDialog();
+        if (gui.touch) gui.touch->closeStatistics();
+    }
     static void rebaseViewport(GameGUI &gui) {
         gui.torusView.rebaseViewport(gui.viewportX, gui.viewportY);
     }
@@ -258,7 +297,7 @@ struct ProductionMeasurer : GAGGUI::ui::TextMeasurer
     { return font.getStringClusterEnds(text); }
 };
 void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &output, int width, int height,
-                unsigned selectedSize = 0, int selectedScale = 0)
+                unsigned selectedSize = 0, float selectedScale = 0)
 {
     GAGCore::Toolkit::init("glob2-translation-font-preview");
     GAGCore::Toolkit::getFileManager()->addDir(root.string());
@@ -267,6 +306,7 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
     // Fonts and surfaces are destroyed before TTF/Toolkit teardown.
     Json manifest = {{"kind", "production-font-matrix"}, {"pilot", pilot.string()},
         {"logical_width", width}, {"logical_height", height}, {"samples", Json::array()},
+        {"authored_sizes", {10, 13, 20}}, {"raster_scales", {1.0, 1.5, 2.0}},
         {"limits", {"Overlay capture only; this command does not register or finalize a locale.",
                     "Uses production TrueTypeFont and shared UI wrapText, not a game screen.",
                     "Raw raster fits_width/height remain diagnostic; drawn_fits_width/height use the production draw destination, preserving the whole bitmap.",
@@ -281,8 +321,13 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
     manifest["harfbuzz"] = {hb, hbMinor, hbMicro};
     {
         const auto rows = samples(pilot);
-        for (unsigned size : {10u, 13u, 20u}) for (int scale : {1, 2}) {
+        for (unsigned size : {10u, 13u, 20u}) for (float scale : {1.0f, 1.5f, 2.0f}) {
             if (selectedSize && (size != selectedSize || scale != selectedScale)) continue;
+            const char *scaleName = scale == 1.0f ? "1" : scale == 1.5f ? "1.5" : "2";
+            const int pixelWidth = int(std::lround(width * scale));
+            const int pixelHeight = int(std::lround(height * scale));
+            const int pixelInset = int(std::lround(12 * scale));
+            const int availablePixelWidth = pixelWidth - 2 * pixelInset;
             GAGCore::TrueTypeFont font;
             require(font.load("data/fonts/sans.ttf", size), "Load production font");
             font.setStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, 245, 238, 214));
@@ -296,9 +341,9 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
             };
             auto freshPage = [&] {
                 save();
-                filename = "font-" + std::to_string(size) + "-scale-" + std::to_string(scale) +
+                filename = "font-" + std::to_string(size) + "-scale-" + scaleName +
                     "-page-" + numbered(++pageNumber) + ".png";
-                page.reset(SDL_CreateSurface(width * scale, height * scale, SDL_PIXELFORMAT_RGBA32));
+                page.reset(SDL_CreateSurface(pixelWidth, pixelHeight, SDL_PIXELFORMAT_RGBA32));
                 require(bool(page), "Allocate matrix page");
                 require(SDL_FillSurfaceRect(page.get(), nullptr, SDL_MapSurfaceRGBA(page.get(), 28, 24, 35, 255)), "Fill page");
                 y = 12;
@@ -318,19 +363,20 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
                     const auto drawn = font.getStringDrawSize(line.empty() ? " " : line, float(scale));
                     const int drawnWidth = std::lround(drawn.first * scale);
                     const int drawnHeight = std::lround(drawn.second * scale);
-                    const int logicalHeight = (drawnHeight + scale - 1) / scale;
+                    const int logicalHeight = int(std::ceil(drawnHeight / scale));
                     if (y + logicalHeight + 12 > height) freshPage();
-                    SDL_Rect destination{12 * scale, y * scale, drawnWidth, drawnHeight};
+                    SDL_Rect destination{pixelInset, int(std::lround(y * scale)), drawnWidth, drawnHeight};
                     require(SDL_BlitSurfaceScaled(bitmap->getSDLSurface(), nullptr, page.get(), &destination,
                         SDL_SCALEMODE_LINEAR), "Compose raster at production destination size");
                     sample["lines"].push_back({{"text", line}, {"png", filename}, {"x", 12}, {"y", y},
+                        {"pixel_x", destination.x}, {"pixel_y", destination.y},
                         {"raster_width", bitmap->getW()}, {"raster_height", bitmap->getH()},
-                        {"fits_width", bitmap->getW() <= (width - 24) * scale},
-                        {"fits_height", y + (bitmap->getH() + scale - 1) / scale <= height},
+                        {"fits_width", bitmap->getW() <= availablePixelWidth},
+                        {"fits_height", destination.y + bitmap->getH() <= pixelHeight},
                         {"destination_width", drawn.first}, {"destination_height", drawn.second},
                         {"drawn_width", drawnWidth}, {"drawn_height", drawnHeight},
-                        {"drawn_fits_width", drawnWidth <= (width - 24) * scale},
-                        {"drawn_fits_height", y + logicalHeight <= height}});
+                        {"drawn_fits_width", drawnWidth <= availablePixelWidth},
+                        {"drawn_fits_height", destination.y + drawnHeight <= pixelHeight}});
                     y += logicalHeight + 3;
                 }
                 y += 8;
@@ -777,14 +823,19 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 
         if (tutorial) {
             // A tick-12 automatic briefing can cover the current lesson model.
-            // Preserve that real opening state, then expose the actual guidance.
+            // Preserve that real opening state. Other lessons still need their
+            // actual briefing tab captured before exposing the guidance.
             const bool briefing = TranslationPreviewAccess::initialBriefingOpen(gui);
-            if (briefing) capture(captureKind + "-briefing");
             const auto before = gui.game.checkSum();
-            if (briefing) TranslationPreviewAccess::closeMenu(gui);
+            if (!briefing) TranslationPreviewAccess::openBriefing(gui);
+            require(TranslationPreviewAccess::briefingTabShown(gui), "Actual tutorial briefing tab available");
+            require(before == gui.game.checkSum(), "Opening briefing must preserve simulation state");
+            capture(captureKind + "-briefing");
+            TranslationPreviewAccess::closeMenu(gui);
             require(!TranslationPreviewAccess::dialogOpen(gui), "Tutorial guidance capture must be dialog-free");
             require(before == gui.game.checkSum(), "Dismissing briefing must preserve simulation state");
             result["automatic_briefing_dismissed"] = briefing;
+            result["briefing_explicitly_opened"] = !briefing;
             result["tutorial_capture_dialog_free"] = true;
         }
         if (statistics) {
@@ -822,6 +873,47 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             require(beforeNavigation == gui.game.checkSum(), "Statistics navigation must preserve simulation state");
             result["limits"].push_back("Statistics use only real published local-game readings. A short session can show waiting/empty history; no history is synthesized. Win probability remains unavailable wherever production live-player policy hides it; no hidden help/detail coverage is claimed.");
         } else capture(captureKind);
+        if (tutorial) {
+            auto *card = TranslationPreviewAccess::guidance(gui);
+            require(card != nullptr, "Actual tutorial guidance card available");
+            const auto before = gui.game.checkSum();
+            const auto expandedHeight = card->panelBounds().h;
+            auto toggleGuidance = [&] {
+                card->host().layoutIfNeeded();
+                const auto bounds = card->host().bounds("intro/collapse");
+                require(bounds.w > 0 && bounds.h > 0, "Actual guidance collapse control available");
+                SDL_Event event{};
+                if (GAGCore::phonePresentationRequested()) {
+                    event.type = SDL_EVENT_FINGER_DOWN;
+                    event.tfinger.x = float(bounds.x + bounds.w / 2) / globals.gfx->getW();
+                    event.tfinger.y = float(bounds.y + bounds.h / 2) / globals.gfx->getH();
+                    require(card->handle(event), "Guidance collapse finger down handled");
+                    event.type = SDL_EVENT_FINGER_UP;
+                } else {
+                    event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+                    event.button.button = SDL_BUTTON_LEFT;
+                    event.button.x = bounds.x + bounds.w / 2;
+                    event.button.y = bounds.y + bounds.h / 2;
+                    require(card->handle(event), "Guidance collapse mouse down handled");
+                    event.type = SDL_EVENT_MOUSE_BUTTON_UP;
+                }
+                require(card->handle(event), "Guidance collapse release handled");
+                card->update(SDL_GetTicks());
+                require(before == gui.game.checkSum(), "Guidance toggle preserves simulation checksum");
+            };
+            toggleGuidance();
+            const auto collapsedHeight = card->panelBounds().h;
+            require(collapsedHeight < expandedHeight, "Collapsed guidance reduces card to its heading");
+            capture(captureKind + "-collapsed");
+            toggleGuidance();
+            require(card->panelBounds().h == expandedHeight, "Expanded guidance restores full card height");
+            capture(captureKind + "-expanded");
+            result["guidance_toggle_probe"] = {{"control", "intro/collapse"},
+                {"input", GAGCore::phonePresentationRequested() ? "finger" : "mouse"},
+                {"expanded_height", expandedHeight}, {"collapsed_height", collapsedHeight},
+                {"checksum_before_ui", before}, {"checksum_after_ui", gui.game.checkSum()},
+                {"limits", "Uses actual guidance hit bounds and public event handling; does not represent physical input hardware."}};
+        }
         if (kind == "gameplay" && !GAGCore::phonePresentationRequested()) {
             const auto originalCamera = gui.camera;
             const int originalViewportX = gui.viewportX, originalViewportY = gui.viewportY;
@@ -900,6 +992,97 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                 {"compact_metric_picker_opened", picker}, {"controls", statistics.bounds()},
                 {"limits", "Actual statistics UI on the local preview session; no claim of a completed match or calibrated prediction."}};
         }
+        if (kind == "gameplay") {
+            const auto before = gui.game.checkSum();
+            require(TranslationPreviewAccess::openLiveStatistics(gui), "Actual live statistics panel opened");
+            require(before == gui.game.checkSum(), "Opening live statistics must preserve simulation state");
+            auto &panel = TranslationPreviewAccess::liveStatistics(gui);
+            Json states = Json::array();
+            auto liveCapture = [&](const std::string &name) {
+                capture("gameplay-live-statistics-" + name);
+                require(before == gui.game.checkSum(), "Live statistics navigation must preserve simulation state");
+                const auto chart = panel.host().bounds("stats/inline/chart");
+                states.push_back({{"name", name}, {"topic", int(panel.topic())},
+                    {"selected_metric", panel.selectedMetric()}, {"recorded_history_available", panel.history() != nullptr},
+                    {"inline_chart_bounds", {chart.x, chart.y, chart.w, chart.h}},
+                    {"chart_font_line_height", globals.littleFont->getStringHeight("0") * panel.presentation().unit},
+                    {"chart_point_unit", panel.presentation().unit}});
+            };
+            auto reveal = [&](const std::string &key) {
+                require(draw(), "Render live statistics controls");
+                panel.host().layoutIfNeeded();
+                require(panel.host().find(key) != nullptr, "Live statistics control available: " + key);
+                panel.host().scrollIntoView(key);
+            };
+            panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
+            liveCapture("overview");
+            reveal("stats/metric/idle workers");
+            liveCapture("work");
+            reveal("stats/metric/warriors");
+            liveCapture("defence");
+            panel.selectTopic(InGameStatisticsPanel::Topic::Colony);
+            liveCapture("colony");
+            reveal("stats/unit-details");
+            liveCapture("unit-details-collapsed");
+            auto detailsGroup = [&](auto &&self, const GAGGUI::ui::Node *node) -> const GAGGUI::ui::Node * {
+                if (!node) return nullptr;
+                if (!node->children.empty() && node->children.front()->key == "stats/unit-details") return node;
+                for (const auto &child : node->children) if (const auto *found = self(self, child.get())) return found;
+                return nullptr;
+            };
+            const auto *collapsedGroup = detailsGroup(detailsGroup, panel.host().root());
+            require(collapsedGroup && collapsedGroup->children.size() == 1, "Actual unit details are collapsed");
+            const auto details = panel.host().bounds("stats/unit-details");
+            require(details.w > 0 && details.h > 0, "Live unit details action has bounds");
+            panel.host().tapAt(details.center());
+            require(draw(), "Layout expanded unit details");
+            panel.host().scrollToTop("stats/unit-details");
+            require(draw(), "Expose expanded unit details rows");
+            const auto *expandedGroup = detailsGroup(detailsGroup, panel.host().root());
+            require(expandedGroup && expandedGroup->children.size() > 1, "Expanded unit details contain actual additional rows");
+            const auto detailsViewport = panel.host().bounds("stats/scroll/1");
+            const auto firstDetailRow = expandedGroup->children[1]->bounds;
+            require(!firstDetailRow.empty() && detailsViewport.contains(firstDetailRow), "First actual expanded detail row is fully visible");
+            const Json detailsProbe = {{"expanded_rows", expandedGroup->children.size() - 1},
+                {"first_row", {firstDetailRow.x, firstDetailRow.y, firstDetailRow.w, firstDetailRow.h}},
+                {"viewport", {detailsViewport.x, detailsViewport.y, detailsViewport.w, detailsViewport.h}},
+                {"first_row_fully_visible", true}};
+            liveCapture("unit-details-expanded");
+            auto *scroll = panel.host().find("stats/scroll/1");
+            require(scroll && scroll->scrollable(), "Actual colony statistics scroll container available");
+            scroll->scrollTo(scroll->scrollMaximum(), panel.host());
+            require(draw(), "Expose actual missing-readings hint");
+            const std::string missingText = Glob2UI::tr("[stats missing readings]");
+            auto hintNode = [&](auto &&self, const GAGGUI::ui::Node *node) -> const GAGGUI::ui::Node * {
+                if (!node) return nullptr;
+                if (node->accessibleText() == missingText) return node;
+                for (const auto &child : node->children) if (const auto *found = self(self, child.get())) return found;
+                return nullptr;
+            };
+            const auto *hint = hintNode(hintNode, panel.host().root());
+            require(hint && !hint->bounds.empty() && panel.host().bounds("stats/scroll/1").contains(hint->bounds),
+                "Entire actual missing-readings hint is visible within the scroll viewport");
+            const Json hintProbe = {{"text", missingText}, {"bounds", {hint->bounds.x, hint->bounds.y, hint->bounds.w, hint->bounds.h}},
+                {"fully_visible", true}};
+            liveCapture("unit-details-bottom");
+            for (const auto &[topic, name] : {
+                    std::pair{InGameStatisticsPanel::Topic::Economy, "economy"},
+                    std::pair{InGameStatisticsPanel::Topic::Military, "military"},
+                    std::pair{InGameStatisticsPanel::Topic::World, "world"}}) {
+                panel.selectTopic(topic);
+                liveCapture(name);
+            }
+            panel.selectTopic(InGameStatisticsPanel::Topic::Colony);
+            panel.openMetric("population");
+            require(TranslationPreviewAccess::dialogOpen(gui), "Actual live statistics history dialog opened");
+            liveCapture("full-history");
+            TranslationPreviewAccess::closeLiveStatistics(gui);
+            require(before == gui.game.checkSum(), "Closing live statistics must preserve simulation state");
+            result["live_statistics_probe"] = {{"states", states}, {"simulation_checksum", before},
+                {"unit_details_visibility", detailsProbe}, {"missing_readings_visibility", hintProbe},
+                {"phone_opened_via_tools_keyboard_route", GAGCore::phonePresentationRequested()},
+                {"limits", "Actual production live statistics UI on the frozen published preview frame. Recorded-history availability is reported per state; no simulation or history data is fabricated."}};
+        }
         gui.isRunning = false;
         engine.finishSession();
         abort.active = false;
@@ -922,13 +1105,13 @@ int main(int argc, char **argv)
         if (mode == "matrix") {
             require(argc == 7 || argc == 9, "Matrix takes ROOT DRAFT OUTPUT W H and optional SIZE SCALE");
             unsigned size = 0;
-            int scale = 0;
+            float scale = 0;
             if (argc == 9) {
                 const std::string sizeArg = argv[7], scaleArg = argv[8];
                 require(sizeArg == "10" || sizeArg == "13" || sizeArg == "20", "Matrix SIZE must be 10, 13 or 20");
-                require(scaleArg == "1" || scaleArg == "2", "Matrix SCALE must be 1 or 2");
+                require(scaleArg == "1" || scaleArg == "1.5" || scaleArg == "2", "Matrix SCALE must be 1, 1.5 or 2");
                 size = unsigned(std::stoi(sizeArg));
-                scale = std::stoi(scaleArg);
+                scale = std::stof(scaleArg);
             }
             fontMatrix(root, pilot, output, width, height, size, scale);
         }

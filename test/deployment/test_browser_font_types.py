@@ -43,9 +43,10 @@ class BrowserFontTypeTests(unittest.TestCase):
             assets.launcher_script_fonts(ROOT, root)
             (root / 'locales').mkdir()
             (root / 'locales/hi.json').write_bytes('{"Game text field":"खेल में टेक्स्ट दर्ज करने का बॉक्स"}\n'.encode())
+            (root / 'locales/mr.json').write_bytes('{"Game text field":"खेळातील मजकूर क्षेत्र"}\n'.encode())
             (root / 'locales/bn.json').write_bytes('{"Game text field":"গেমে লেখার ঘর"}\n'.encode())
             paths = [('script-fonts.css', 'text/css'), ('locales/hi.json', 'application/json'),
-                     ('locales/bn.json', 'application/json'), ('fonts/sans-core.ttf', 'font/ttf'),
+                     ('locales/mr.json', 'application/json'), ('locales/bn.json', 'application/json'), ('fonts/sans-core.ttf', 'font/ttf'),
                      ('fonts/LICENSE-DejaVu.txt', 'text/plain'), ('fonts/LICENSE-Droid.txt', 'text/plain')]
             paths += [('fonts/' + font['name'] + '-Regular.ttf', 'font/ttf') for font in manifest['fonts']]
             for name, _ in paths:

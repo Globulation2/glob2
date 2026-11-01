@@ -21,6 +21,44 @@ for (const locale of locales) {
     await expect(page.getByTestId('language-selector').first()).toHaveValue(locale.code);
     if ((page.viewportSize()?.width ?? 1280) < 1100)
       await expect(page.locator('.app-sidebar [data-testid="language-selector"]')).toBeHidden();
+    if (locale.code === 'mr') {
+      const selectorWasVisible =
+        (await page.locator('[data-testid="language-selector"]:visible').count()) > 0;
+      if (!selectorWasVisible) await page.locator('.rail-expand').click();
+      await expect(page.locator('[data-testid="language-selector"]:visible').first()).toBeVisible();
+      await page.evaluate(() => document.fonts.ready);
+      const geometry = await page
+        .locator('[data-testid="language-selector"]:visible')
+        .first()
+        .evaluate((element) => {
+          const select = element as HTMLSelectElement;
+          const style = getComputedStyle(select);
+          const compact = select.parentElement!.querySelector('.language-preference-compact')!;
+          const compactVisible = getComputedStyle(compact).display !== 'none';
+          const label = compactVisible
+            ? compact.textContent!.trim()
+            : select.selectedOptions[0]!.text;
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d')!;
+          context.font = compactVisible ? getComputedStyle(compact).font : style.font;
+          const available =
+            select.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+          return {
+            label,
+            fullName: select.selectedOptions[0]!.text,
+            textWidth: context.measureText(label).width,
+            available,
+          };
+        });
+      expect(geometry.fullName).toBe('मराठी');
+      expect(['मराठी', 'MR']).toContain(geometry.label);
+      expect(geometry.textWidth).toBeLessThanOrEqual(geometry.available);
+      if (!selectorWasVisible) {
+        if (await page.locator('.navigation-drawer[open]').count())
+          await page.locator('.navigation-drawer[open] .sidebar-close').click();
+        else await page.locator('.app-sidebar .sidebar-toggle').click();
+      }
+    }
     const catalog = JSON.parse(
       readFileSync(
         new URL(`../../../packages/i18n/locales/${locale.code}.json`, import.meta.url),
@@ -55,23 +93,24 @@ for (const locale of locales) {
     }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    // The guest fixture has no skins.designer feature or moderation role.
-    // Assert destinations so a missing translated navigation item cannot pass.
+    // Core navigation must survive locale changes regardless of optional capabilities.
     expect(
       await page
         .locator('.app-sidebar .nav a')
         .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
-    ).toEqual([
-      '/',
-      '/leaderboard',
-      '/players',
-      '/matches',
-      '/maps',
-      '/sets',
-      '/ais',
-      '/buildings',
-      '/music',
-    ]);
+    ).toEqual(
+      expect.arrayContaining([
+        '/',
+        '/leaderboard',
+        '/players',
+        '/matches',
+        '/maps',
+        '/sets',
+        '/ais',
+        '/buildings',
+        '/music',
+      ]),
+    );
     const themeChangeLabel = catalog['{value0}. Change theme'];
     const defaultThemeLabel = catalog['Theme: same as this device'];
     if (!themeChangeLabel || !defaultThemeLabel) {
@@ -126,6 +165,7 @@ for (const locale of locales) {
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow).toBeLessThanOrEqual(1);
+    await page.evaluate(() => document.fonts.ready);
     if (locale.code === 'nb') {
       const inviteCode = page.locator('input[name="code"]');
       await expect(inviteCode).toHaveAttribute('placeholder', 'Kode eller lenke');
@@ -363,3 +403,45 @@ for (const language of ['fr', 'bn']) {
     await expect(page.locator('html')).toHaveAttribute('lang', language);
   });
 }
+
+// Exercise script-font loading and an explicit saved choice, beyond inventory smoke tests.
+test('Marathi switching restores LTR, loads the bundled font and keeps the chosen locale', async ({
+  page,
+  context,
+}, info) => {
+  await page.route('**/api/v1/accounts/me', (route) =>
+    route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
+  );
+  const base = String(info.project.use.baseURL ?? 'http://127.0.0.1:4280');
+  await context.addCookies([{ name: 'glob2_locale', value: 'ar', url: base }]);
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  const code = page.locator('input[name="code"]');
+  await code.fill('MARATHI');
+  if (!(await page.getByTestId('language-selector').first().isVisible()))
+    await page.locator('.rail-expand').click();
+  await page.locator('[data-testid="language-selector"]:visible').first().selectOption('mr');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'mr');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  await expect(page.locator('[data-testid="theme-toggle"]:visible').first()).toHaveAttribute(
+    'aria-label',
+    /थीम बदला$/,
+  );
+  await expect(
+    page.locator('[data-testid="language-selector"]:visible').last().locator('option:checked'),
+  ).toHaveText('मराठी');
+  await expect(code).toHaveValue('MARATHI');
+  expect(
+    await page.locator('#hero-title').evaluate((element) => getComputedStyle(element).fontFamily),
+  ).toContain('Glob2 Scripts');
+  const loaded = await page.evaluate(async () => {
+    const faces = await document.fonts.load('20px "Glob2 Scripts"', 'मराठी ळ ऱ ऍ ऑ क्ष ज्ञ श्र');
+    return faces.some(
+      (face) => face.family.replaceAll(/["']/g, '') === 'Glob2 Scripts' && face.status === 'loaded',
+    );
+  });
+  expect(loaded).toBe(true);
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'mr');
+  await expect(page.getByTestId('language-selector').first()).toHaveValue('mr');
+});

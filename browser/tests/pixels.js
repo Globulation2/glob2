@@ -16,9 +16,9 @@ async function hasRenderedPixels(page) {
 module.exports = {hasRenderedPixels};
 
 // Restrict to the inside of a text box, excluding its border and controls.
-async function hasLightText(page, clip) {
+async function hasLightText(page, clip, minimumChannel = 200) {
   const png = await page.screenshot({clip});
-  return page.evaluate(async base64 => {
+  return page.evaluate(async ({base64, minimumChannel}) => {
     const blob = await (await fetch('data:image/png;base64,' + base64)).blob();
     const bitmap = await createImageBitmap(blob);
     const canvas = document.createElement('canvas');
@@ -27,9 +27,9 @@ async function hasLightText(page, clip) {
     const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
     let light = 0;
     for (let i = 0; i < pixels.length; i += 4)
-      if (pixels[i] > 200 && pixels[i+1] > 200 && pixels[i+2] > 200) ++light;
+      if (pixels[i] > minimumChannel && pixels[i+1] > minimumChannel && pixels[i+2] > minimumChannel) ++light;
     return light > 50;
-  }, png.toString('base64'));
+  }, {base64: png.toString('base64'), minimumChannel});
 }
 module.exports.hasLightText = hasLightText;
 

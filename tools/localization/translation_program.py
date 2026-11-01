@@ -50,7 +50,7 @@ NATIVE_GAME_CODES = {
 # Both Portuguese variants deliberately use their reviewed regional API targets.
 # Malay uses the documented Latin-script NMT target ms, not Jawi ms-Arab.
 NMT_TARGETS = {
-    'bg': 'bg', 'ms': 'ms', 'bn': 'bn', 'ar': 'ar', 'pt-BR': 'pt-BR', 'ca': 'ca', 'cs': 'cs', 'da': 'da',
+    'bg': 'bg', 'ms': 'ms', 'bn': 'bn', 'mr': 'mr', 'ta': 'ta', 'ar': 'ar', 'pt-BR': 'pt-BR', 'ca': 'ca', 'cs': 'cs', 'da': 'da',
     'de': 'de', 'eo': 'eo', 'es': 'es', 'eu': 'eu', 'fa': 'fa', 'fi': 'fi',
     'fr': 'fr', 'el': 'el', 'hi': 'hi', 'hu': 'hu', 'id': 'id', 'it': 'it',
     'ja': 'ja', 'ko': 'ko', 'nl': 'nl', 'pl': 'pl', 'pt-PT': 'pt-PT',

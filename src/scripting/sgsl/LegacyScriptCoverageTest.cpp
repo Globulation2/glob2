@@ -133,13 +133,13 @@ std::string saveBeforePrivateRandom(MapScriptSGSL& script, Game& game)
 
 TEST_SUITE("LegacyScriptCoverage")
 {
-    TEST_CASE("Malay and Bulgarian SGSL language tokens require their installed catalogs")
+    TEST_CASE("Malay, Marathi and Bulgarian SGSL language tokens require their installed catalogs")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
         RestoreLanguageInventory restoreLanguage(globals.globals);
         glob2test::TempDir temporary("sgsl-languages");
         const auto listing = temporary.path / "texts.list.txt";
-        for (const std::string language : {"ms", "bg"})
+        for (const std::string language : {"ms", "mr", "bg"})
         {
             CAPTURE(language);
             World w;
@@ -152,7 +152,20 @@ TEST_SUITE("LegacyScriptCoverage")
             CHECK(withoutLanguage.getToken()->type == SGSLToken::NIL);
             CHECK(w.compile(source).type == ErrorReport::ET_NOT_VALID_LANG_ID);
 
+            auto* strings = GAGCore::Toolkit::getStringTable();
+            std::vector<std::string> oldCodes;
+            for (int i = 0; i < strings->getNumberOfLanguage(); ++i)
+                oldCodes.push_back(strings->getStringInLang("[language-code]", i));
             loadLanguageInventory(listing);
+            REQUIRE(strings->getNumberOfLanguage() == int(oldCodes.size()) + 1);
+            if (language == "mr" || language == "bg")
+                for (size_t i = 0; i < oldCodes.size(); ++i)
+                {
+                    // Bulgarian follows released Marathi; its earlier index is not a released contract.
+                    if (oldCodes[i] == "bg") continue;
+                    CAPTURE(oldCodes[i]);
+                    CHECK(strings->getLangCode(oldCodes[i]) == int(i));
+                }
             REQUIRE(GAGCore::Toolkit::getStringTable()->hasLanguage(language));
             StringAcquisition withLanguage(w.script.functions);
             withLanguage.open(language);
@@ -164,12 +177,13 @@ TEST_SUITE("LegacyScriptCoverage")
         }
     }
 
-    TEST_CASE("Malay and Bulgarian SGSL select their messages and retain an authored default")
+    TEST_CASE("Malay, Marathi and Bulgarian SGSL select their messages and retain an authored default")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
         RestoreLanguageInventory restoreLanguage(globals.globals);
         for (const auto& [language, expected] : {
-            std::pair{"ms", "Mesej Melayu"}, std::pair{"bg", "Българско съобщение"},
+            std::pair{"ms", "Mesej Melayu"}, std::pair{"mr", "मराठी संदेश"},
+            std::pair{"bg", "Българско съобщение"},
             std::pair{"en", "English message"},
             std::pair{"fr", "Authored fallback"}})
         {
@@ -177,27 +191,30 @@ TEST_SUITE("LegacyScriptCoverage")
             globals.globals.settings.language = language;
             World w;
             REQUIRE(w.compile("show(\"Authored fallback\") show(\"English message\",en) "
-                              "show(\"Mesej Melayu\",ms) show(\"Българско съобщение\",bg) wait(2)").type == ErrorReport::ET_OK);
+                              "show(\"Mesej Melayu\",ms) show(\"मराठी संदेश\",mr) "
+                              "show(\"Българско съобщение\",bg) wait(2)").type == ErrorReport::ET_OK);
             w.step();
             CHECK(w.script.isTextShown);
             CHECK(w.script.textShown == expected);
         }
     }
 
-    TEST_CASE("adding Malay or Bulgarian preserves legacy SGSL source bytes and saved program counters")
+    TEST_CASE("adding Malay, Marathi or Bulgarian preserves legacy SGSL source bytes and saved program counters")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
         RestoreLanguageInventory restoreLanguage(globals.globals);
         glob2test::TempDir temporary("sgsl-save-languages");
         const auto listing = temporary.path / "texts.list.txt";
-        for (const std::string language : {"ms", "bg"})
+        for (const std::string language : {"ms", "mr", "bg"})
         {
             CAPTURE(language);
             const std::string source =
                 "# Released script bytes \xC3\xA9\n"
                 "show(\"English message\",en) show(\"French message\",fr) "
-                // Malay is already released when Bulgarian is appended: its token index must remain stable.
-                + std::string(language == "bg" ? "show(\"Mesej Melayu\",ms) " : "") + "wait(3) "
+                // Released locale token indices must remain stable when another catalog is appended.
+                + std::string(language != "ms" ? "show(\"Mesej Melayu\",ms) " : "")
+                + std::string(language == "bg" ? "show(\"मराठी संदेश\",mr) show(\"தமிழ் செய்தி\",ta) " : "")
+                + "wait(3) "
                 "show(\"Authored continuation\") win(0)\n";
             for (const int format : {MINIMUM_VERSION_MINOR, VERSION_MINOR})
             {

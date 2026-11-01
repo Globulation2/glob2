@@ -10,7 +10,9 @@ import {
   fixedCaption,
   aiTagLabel,
   musicMoodLabel,
+  skinActionLabel,
 } from '../src/messages.ts';
+import { ACTIONS } from '../src/skins/geometry.ts';
 import { ApiError } from '../src/api.ts';
 import {
   LocaleProvider,
@@ -80,6 +82,27 @@ describe('web localization', () => {
     expect(aiTagLabel('a future authored tag')).toBe('a future authored tag');
     await setLocale('en');
     expect(tags.map(aiTagLabel)).toEqual(tags);
+  });
+
+  it('localizes pose captions without interpreting the empty swarm action as a word', async () => {
+    registerCatalog('fr', {
+      Walk: 'Marche',
+      Swim: 'Nage',
+      Harvest: 'Récolte',
+      Fight: 'Combat',
+      Fly: 'Vol',
+      'Static pose': 'Pose statique',
+    });
+    await setLocale('fr');
+    for (const actions of Object.values(ACTIONS)) {
+      for (const action of actions) {
+        expect(skinActionLabel(action)).toBeTruthy();
+        expect(skinActionLabel(action)).not.toBe(action);
+      }
+    }
+    expect(skinActionLabel('')).toBe('Pose statique');
+    await setLocale('en');
+    expect(skinActionLabel('walk')).toBe('Walk');
   });
   it('localizes known system artifact captions while preserving authored titles', async () => {
     registerCatalog('fr', {
