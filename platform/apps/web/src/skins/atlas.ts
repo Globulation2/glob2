@@ -23,7 +23,7 @@ export function modelSentenceName(model: Model): string {
 export const MATERIALS = COLONY_SKIN_MATERIALS;
 /** Materials in picker order, grouped under their registry group names. */
 export const MATERIAL_GROUPS = MATERIALS.reduce<
-  { name: string; materials: ColonySkinMaterial[] }[]
+  { name: ColonySkinMaterial['group']; materials: ColonySkinMaterial[] }[]
 >((groups, material) => {
   const group = groups.find((g) => g.name === material.group);
   if (group) group.materials.push(material);

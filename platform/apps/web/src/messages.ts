@@ -55,6 +55,26 @@ export const formatRelative = localization.formatRelative;
 export function message(source: string): string {
   return source;
 }
+
+/** Pose IDs remain asset keys, including the swarm's empty static action. */
+export function skinActionLabel(action: string): string {
+  switch (action) {
+    case 'walk':
+      return t('Walk');
+    case 'swim':
+      return t('Swim');
+    case 'harvest':
+      return t('Harvest');
+    case 'fight':
+      return t('Fight');
+    case 'fly':
+      return t('Fly');
+    case '':
+      return t('Static pose');
+    default:
+      return action;
+  }
+}
 export function displayMessage(value: unknown): string {
   return typeof value === 'string' ? t(value) : translateError(value);
 }

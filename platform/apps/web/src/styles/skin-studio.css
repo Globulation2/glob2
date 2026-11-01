@@ -198,6 +198,7 @@
 .skin-stage > .skin-viewport {
   position: absolute;
   inset: 0;
+  z-index: 0;
 }
 .skin-panel {
   background: color-mix(in srgb, var(--surface) 94%, transparent);
@@ -208,6 +209,7 @@
 }
 .skin-models {
   position: absolute;
+  z-index: 1;
   top: 22px;
   left: 50%;
   transform: translateX(-50%);
@@ -222,6 +224,13 @@
   gap: 2px;
   border-radius: 13px;
   font-size: 12px;
+  line-height: 1.5;
+}
+.skin-models button span {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 .skin-models img {
   width: 40px;
@@ -272,17 +281,21 @@
   padding: 0;
 }
 .skin-tools {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.45fr 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 2px;
   padding: 9px 6px;
 }
 .skin-tools button {
   padding: 7px 2px;
-  min-width: 0;
+  min-width: min-content;
+  max-width: 100%;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 5px;
-  font-size: 9px;
+  font-size: 10px;
+  line-height: 1.5;
+  white-space: normal;
   min-height: 56px;
   border-radius: 9px;
 }
@@ -295,6 +308,15 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+.skin-tool-options > button {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  grid-column: 1 / -1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
 .skin-tool-options label,
 .skin-pattern-controls > label {
@@ -344,7 +366,8 @@
 }
 .skin-material-group h4 {
   margin: 0 0 1px;
-  font-size: 9px;
+  font-size: 10px;
+  line-height: 1.5;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -367,15 +390,15 @@
 .skin-materials > div {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .skin-materials button {
   aspect-ratio: 1;
   padding: 0 1px 2px;
   min-width: 0;
   min-height: 0;
-  font-size: 8px;
-  line-height: 1.1;
+  font-size: 10px;
+  line-height: 1.5;
   white-space: normal;
   overflow-wrap: anywhere;
   align-items: flex-end;
@@ -383,6 +406,17 @@
   text-align: center;
   border: 1px solid transparent;
   border-radius: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(36px, 1fr) auto;
+}
+.skin-materials button span {
+  /* Wrapped labels need a readable band over the swatch's lower edge. */
+  grid-row: 2;
+  min-height: 3em;
+  background: var(--surface);
+  border-radius: 3px;
+  padding: 1px 2px;
 }
 .skin-materials button[aria-checked='true'] {
   border-color: var(--gold-ink);
@@ -758,6 +792,7 @@
   white-space: normal;
   flex-direction: column;
   overflow-wrap: anywhere;
+  line-height: 1.5;
   padding: 12px;
   border-color: var(--line);
 }
@@ -886,9 +921,6 @@
   .skin-tool-options {
     padding-inline: 12px;
   }
-  .skin-tools button {
-    font-size: 8px;
-  }
 }
 @media (max-width: 899px) {
   .skin-toolbox {
@@ -1007,9 +1039,9 @@
     gap: 2px;
   }
   .skin-models button {
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
-    flex-direction: row;
+    flex-direction: column;
     font-size: 10px;
     padding: 5px 2px;
   }
@@ -1033,7 +1065,7 @@
   .skin-shape-button {
     top: 142px;
     left: 12px;
-    translate: none;
+    translate: 0 0;
     font-size: 11px !important;
     padding: 5px 8px !important;
   }
@@ -1066,7 +1098,7 @@
     flex-direction: column;
     gap: 2px;
     padding: 2px;
-    font-size: 9px;
+    font-size: 10px;
   }
   .skin-tool-options {
     display: grid;
@@ -1093,10 +1125,10 @@
     font-size: 11px;
   }
   .skin-materials > div {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .skin-materials button {
-    font-size: 8px;
+    font-size: 10px;
   }
   .skin-pose-strip {
     bottom: 31px;

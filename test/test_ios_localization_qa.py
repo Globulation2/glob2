@@ -173,10 +173,12 @@ class MacBundleDependencies(unittest.TestCase):
             root=Path(temp);plist=root/'Info.plist';plist.write_text('plist')
             thai=root/'th.lproj/InfoPlist.strings';thai.parent.mkdir();thai.write_text('purpose')
             english=root/'en.lproj/InfoPlist.strings';english.parent.mkdir();english.write_text('purpose')
-            env=Env(BUNDLE_NAME='Glob2',BUNDLE_BINARIES=['binary'],BUNDLE_PLIST=str(plist))
+            icon=root/'Glob2.icns';icon.write_text('icon')
+            env=Env(BUNDLE_NAME='Glob2',BUNDLE_BINARIES=['binary'],BUNDLE_PLIST=str(plist),
+                    BUNDLE_ICON=str(icon),BUNDLE_RESOURCEDIRS=[str(thai.parent),str(english.parent)])
             target,sources=module.bundleEmitter([],[],env)
             self.assertEqual(target,'Glob2.app')
-            self.assertEqual(set(sources),{'binary',str(plist),str(thai),str(english)})
+            self.assertEqual(set(sources),{'binary',str(plist),str(icon),str(thai),str(english)})
 
 
 if __name__=='__main__':unittest.main()

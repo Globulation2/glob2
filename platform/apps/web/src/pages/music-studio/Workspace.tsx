@@ -18,7 +18,7 @@ import { Cover } from '../../music/Cover.tsx';
 import type { PlaybackSettings, PlaybackSnapshot } from '../../music/useMusicPlayback.ts';
 import { MusicValidation, MusicCheckDetails } from '../../music/Validation.tsx';
 import { useDeliveryCelebration } from '../studio/useDeliveryCelebration.ts';
-import { MUSIC_IDEAS } from './ideas.ts';
+import { musicIdeas } from './ideas.ts';
 import { ROOT, type Thread, type Wallet, type Delivered } from './types.ts';
 interface Props {
   id?: string;
@@ -197,8 +197,8 @@ export function MusicWorkspace(p: Props) {
                     'Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.',
                   )}
                 </p>
-                {MUSIC_IDEAS.map(([title, text]) => (
-                  <button key={title} className="mu-prompt" onClick={() => p.setDraft(text)}>
+                {musicIdeas().map(([key, title, text]) => (
+                  <button key={key} className="mu-prompt" onClick={() => p.setDraft(text)}>
                     <RichMessage source={'{slot0} ↗'} slots={{ slot0: title }} />
                   </button>
                 ))}

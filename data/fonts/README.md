@@ -23,6 +23,10 @@ the modification in its embedded metadata.
 The browser client starts with `browser/assets/sans-core.ttf`, this font without
 the appended CJK outlines, and downloads the full font later
 (`browser/derive_assets.py`). Regenerate that copy whenever this font changes.
+Registering a language also requires rerunning that script to refresh the
+language-name identity in `browser/assets/sources.json`, even when the subset
+font's bytes stay unchanged. Script-specific fonts supply names absent from the
+base font.
 
 ## Rebuild
 
@@ -58,6 +62,13 @@ script font when registered.
 Each newly supported complex-script locale also selects appropriate default
 line metrics, including for empty strings used to size UI rows. Language changes
 invalidate those metrics and cached text.
+
+Tamil (`ta`, தமிழ்) uses the pinned `NotoSansTamil-Regular.ttf` through this
+logical-text shaping path. Keep dependent vowels and puḷḷi in Unicode storage
+order; do not rearrange them to imitate their visual position. The FontKerning
+suite covers Tamil vowel combinations, equivalent composed/decomposed spellings,
+cluster-safe wrapping, fractional raster scales and language switching. Online
+pages and the launcher select the same pinned font through `:lang(ta)`.
 
 At high pixel densities, hinted script advances can differ from the authored
 layout size. Scaled drawing preserves the full raster while using the authored

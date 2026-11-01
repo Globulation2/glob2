@@ -13,7 +13,7 @@ function ReportSkin({ versionId }: { versionId: string }) {
   const [open, setOpen] = useState(false),
     [busy, setBusy] = useState(false);
   const [reason, setReason] = useState(''),
-    [message, setMessage] = useState('');
+    [message, setMessage] = useState<string | Error>('');
   if (!account) return <a href="/signin">{t('Sign in to report this skin')}</a>;
   async function report() {
     setBusy(true);
@@ -23,7 +23,7 @@ function ReportSkin({ versionId }: { versionId: string }) {
       setMessage(sourceMessage('Report received.'));
       setOpen(false);
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : t('Could not send report.'));
+      setMessage(e instanceof Error ? e : sourceMessage('Could not send report.'));
     } finally {
       setBusy(false);
     }

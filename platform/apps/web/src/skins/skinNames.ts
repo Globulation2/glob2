@@ -11,5 +11,6 @@ export function skinCopyName(name: string): string {
     parts.pop();
     result = t('{value0} copy', { value0: parts.join('') });
   }
+  if (result.length > 64) throw new RangeError('Copy-name template exceeds the name limit');
   return result;
 }

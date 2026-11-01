@@ -303,7 +303,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
             !busy && wallet?.enabled && !wallet.available ? () => setCreditsOpen(true) : undefined
           }
           pricing={t(
-            'Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery.',
+            'Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.',
           )}
           projects={
             <nav aria-label={t('Building projects')}>

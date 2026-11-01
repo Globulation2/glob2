@@ -1,7 +1,7 @@
+import { skinCopyName } from './labels.ts';
 import { MessageError, translateError } from '../messages.ts';
 import { message as sourceMessage } from '../messages.ts';
 import { t } from '../messages.ts';
-import { skinCopyName } from './skinNames.ts';
 /* Canvas contexts are checked by paintCanvas; dimensions are fixed. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
@@ -495,7 +495,10 @@ export function useSkinDocument(accountId: string | undefined) {
     await run(async () => {
       const local = cloneSkin(current.current);
       const { design } = await request<{ design: SkinDesign }>('POST', '/api/v1/skins/designs', {
-        body: { id: crypto.randomUUID(), name: skinCopyName(local.name) },
+        body: {
+          id: crypto.randomUUID(),
+          name: skinCopyName(local.name),
+        },
       });
       draftRevision.current = design.revision;
       current.current = { ...local, skinId: design.skinId, name: design.name };

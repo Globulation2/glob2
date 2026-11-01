@@ -3050,5 +3050,19 @@
   "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.": "ลบ “{value0}” หรือไม่? การดำเนินการนี้จะลบฉบับร่างในบัญชีและสำเนากู้คืนบนอุปกรณ์นี้ เวอร์ชันที่เผยแพร่แล้วจะยังใช้งานได้",
   "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.": "ถอน “{value0}” และเวอร์ชันที่เผยแพร่ทั้งหมดหรือไม่? การดาวน์โหลดและลิงก์ในคลังจะใช้งานไม่ได้ ฉบับร่างในสตูดิโอและสำเนาที่ฝังไว้ในแผนที่หรือไฟล์บันทึกที่มีอยู่จะยังใช้งานได้",
   "Delete this conversation and its source history? Finished music remains in your library.": "ลบการสนทนานี้และประวัติต้นฉบับหรือไม่? เพลงที่เสร็จแล้วยังคงอยู่ในคลังของคุณ",
-  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "กระทบยอดโทเค็นอินพุต {value0} (อ่านจากแคช {value1}; เขียนลงแคช {value2}) และโทเค็นเอาต์พุต {value3} หรือไม่? คิดเครดิตตามการใช้งานที่ตรวจสอบแล้ว ไม่เกิน {value4} เครดิตที่สำรองไว้ และคืนส่วนที่เหลือ"
+  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "กระทบยอดโทเค็นอินพุต {value0} (อ่านจากแคช {value1}; เขียนลงแคช {value2}) และโทเค็นเอาต์พุต {value3} หรือไม่? คิดเครดิตตามการใช้งานที่ตรวจสอบแล้ว ไม่เกิน {value4} เครดิตที่สำรองไว้ และคืนส่วนที่เหลือ",
+  "Front view": "มุมมองด้านหน้า",
+  "Back view": "ภาพด้านหลัง",
+  "Left view": "มุมมองด้านซ้าย",
+  "Right view": "มุมมองที่ถูกต้อง",
+  "Static pose": "ท่าโพสนิ่ง",
+  "Artist": "ศิลปิน",
+  "Started": "เริ่ม",
+  "Moss & morning light": "มอสและแสงยามเช้า",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "บทเพลงอบอุ่นท่ามกลางป่าไม้ พร้อมเสียงฟลุต พิณ และเสียงดีดสายเบาๆ ปล่อยให้ท่วงทำนองล่องลอยและหวนกลับมา บทเพลง Combat เพิ่มเสียงกลองเบาๆ และเสียงบาสซูนเป็นเสียงประสาน",
+  "Little clockwork garden": "สวนนาฬิกาเล็กๆ",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "เสียงกระดิ่งแก้วนุ่มนวลและเสียงสังเคราะห์ที่กลมกล่อม แปลกใหม่และไม่เร่งรีบ ท่วงทำนองตอบรับที่สนุกสนาน พร้อมจังหวะที่หนักแน่นขึ้นเมื่อกลุ่มคนเติบโตขึ้น",
+  "A waltz for the rain": "วอลซ์สำหรับสายฝน",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "เพลงวอลซ์พื้นบ้านแสนอบอุ่น บรรเลงด้วยรีคอร์เดอร์และคาลิมบา ท่วงทำนองที่เรียบง่ายและผ่อนคลายเพื่อความสงบ จังหวะที่นุ่มนวลเพื่อสร้างความหนักแน่น และเสียงเครื่องสายต่ำที่อบอุ่นเพื่อสร้างอารมณ์ร่วม",
+  "Untitled skin": "สกินที่ไม่มีชื่อ"
 }

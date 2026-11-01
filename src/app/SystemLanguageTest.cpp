@@ -108,6 +108,11 @@ TEST_SUITE("SystemLanguage")
 	TEST_CASE("expanded locales distinguish scripts and the precise Pulaar variety")
 	{
 		CHECK(code("hi", "IN") == "hi");
+		CHECK(code("mr", "IN") == "mr");
+		CHECK(code("mr-Deva-IN") == "mr");
+		CHECK(code("mr-Latn").empty());
+		CHECK(code("mr-u-nu-latn") == "mr");
+		CHECK(code("mr-x-arab") == "mr");
 		CHECK(code("tl", "PH") == "fil");
 		CHECK(code("jw") == "jv");
 		CHECK(code("yo", "NG") == "yo");
@@ -140,6 +145,19 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("sd-Deva").empty());
 	}
 
+	TEST_CASE("Tamil accepts regional tags only in the supported written script")
+	{
+		CHECK(code("ta") == "ta");
+		CHECK(code("ta", "IN") == "ta");
+		CHECK(code("ta-LK") == "ta");
+		CHECK(code("ta-Taml-IN") == "ta");
+		CHECK(code("ta-Latn").empty());
+		CHECK(code("ta-Taml-Latn").empty());
+		CHECK(code("ta-u-nu-latn") == "ta");
+		CHECK(SystemLanguage::choose({{"ta-IN", ""}, {"en", ""}}, [](const std::string &c) { return c == "ta"; }) == "ta");
+		CHECK(SystemLanguage::choose({{"ta-IN", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
+	}
+
 	TEST_CASE("the first available preference wins, then English")
 	{
 		auto all = [](const std::string &) { return true; };
@@ -155,6 +173,13 @@ TEST_SUITE("SystemLanguage")
 		PreferredLocales locales("th_TH,en_US");
 		CHECK(startupLanguage("") == "th");
 		CHECK(startupLanguage("th") == "th");
+		CHECK(startupLanguage("en") == "en");
+	}
+
+	TEST_CASE("startup selects installed Tamil and preserves an explicit saved choice")
+	{
+		PreferredLocales locales("ta_LK,en_US");
+		CHECK(startupLanguage("") == "ta");
 		CHECK(startupLanguage("en") == "en");
 	}
 
@@ -211,4 +236,12 @@ TEST_SUITE("SystemLanguage")
 	}
 
 
+	TEST_CASE("Marathi startup follows preferences and preserves a saved language")
+	{
+		PreferredLocales locales("mr_IN,hi_IN,pt_BR,en_US");
+		CHECK(startupLanguage("") == "mr");
+		CHECK(startupLanguage("no-such-language") == "mr");
+		CHECK(startupLanguage("fr") == "fr");
+		CHECK(startupLanguage("mr") == "mr");
+	}
 }

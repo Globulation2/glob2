@@ -1,5 +1,4 @@
 import { displayMessage } from '../i18n.tsx';
-import { modelProseLabel } from './labels.ts';
 import { MessageError } from '../i18n.tsx';
 import { message as sourceMessage } from '../i18n.tsx';
 import { t, useLocale } from '../i18n.tsx';
@@ -11,7 +10,7 @@ import {
   COLONY_SKIN_SHELL_DEPTH,
   type SwarmMeshId,
 } from '@glob2/protocol';
-import { type Model, ATLAS_SIZE, regionHasShells } from './atlas.ts';
+import { type Model, ATLAS_SIZE, regionHasShells, modelSentenceName } from './atlas.ts';
 import { swarmModel } from './swarmShapes.ts';
 import {
   furScale,
@@ -65,7 +64,7 @@ export function MeshPreview(props: ViewportProps) {
     latest = useRef(props),
     scene = useRef<SceneView | null>(null);
   const invalidate = useRef<() => void>(() => {});
-  const [error, setError] = useState(''),
+  const [error, setError] = useState<string | Error>(''),
     [attempt, setAttempt] = useState(0),
     [ready, setReady] = useState(false);
   const [cursor, setCursor] = useState<[number, number] | null>(null);
@@ -310,7 +309,7 @@ export function MeshPreview(props: ViewportProps) {
       requestDraw();
     }
     void start().catch((e: unknown) => {
-      if (!disposed) setError(e instanceof Error ? e.message : t('Preview unavailable.'));
+      if (!disposed) setError(e instanceof Error ? e : sourceMessage('Preview unavailable.'));
     });
     return () => {
       disposed = true;
@@ -381,7 +380,7 @@ export function MeshPreview(props: ViewportProps) {
         aria-label={
           props.label ??
           t('Paint directly on the 3D {value0} model', {
-            value0: modelProseLabel(props.model.name),
+            value0: modelSentenceName(props.model),
           })
         }
         onContextMenu={(e) => e.preventDefault()}

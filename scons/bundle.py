@@ -7,6 +7,8 @@ from pathlib import Path
 sys.path.append( os.path.dirname(__file__) )
 from addDependentLibsToBundle import addDependentLibsToBundle
 from moltenvk import install_macos
+from apple_localizations import copy_localizations, localization_files
+
 
 def run(command) :
     print(("\033[32m:: ", command, "\033[0m"))
@@ -52,6 +54,7 @@ def createBundle(target, source, env) :
     for directory in ('data', 'maps', 'campaigns', 'scripts'):
         if (assets/directory).is_dir():
             shutil.copytree(assets/directory, Path(bundleDir)/'Contents/Resources'/directory)
+    copy_localizations(env.get('BUNDLE_RESOURCEDIRS', []), Path(bundleDir)/'Contents/Resources')
     if env.get('RECORDING_PREFIX'):
         shutil.copytree(Path(env['RECORDING_PREFIX'])/'share/licenses/recording',Path(bundleDir)/'Contents/Resources/licenses/recording',dirs_exist_ok=True)
     run('cp COPYING %s/Contents/Resources/' % bundleDir)
@@ -60,9 +63,6 @@ def createBundle(target, source, env) :
     run('cp docs/assets/source-attribution.md %s/Contents/Resources/' % bundleDir)
     # write Info.plist -- TODO actually write it not copy it
     plistFile = env['BUNDLE_PLIST']
-    for localization in sorted(Path(plistFile).parent.glob('*.lproj')):
-        if localization.is_dir():
-            shutil.copytree(localization, Path(bundleDir)/'Contents/Resources'/localization.name)
     run('cp %s %s/Contents/Info.plist' % (plistFile, bundleDir) )
     run('/usr/libexec/PlistBuddy -c "Set :CFBundleVersion %s" %s/Contents/Info.plist' % (env['VERSION'], bundleDir))
     run('/usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string %s" %s/Contents/Info.plist' % (env['VERSION'], bundleDir))
@@ -87,10 +87,9 @@ def createBundleMessage(target, source, env) :
 def bundleEmitter(target, source, env):
     target = env.Dir(env['BUNDLE_NAME']+".app")
     source = list(env.Flatten(env['BUNDLE_BINARIES']))
-    source.append(env.File(env['BUNDLE_PLIST']))
-    # Localized permission wording must invalidate an existing bundle too.
-    for localization in sorted(Path(env['BUNDLE_PLIST']).parent.glob('*.lproj')):
-        source.extend(env.File(str(path)) for path in sorted(localization.rglob('*')) if path.is_file())
+    source += [env.File(str(resource)) for resource in localization_files(env.get('BUNDLE_RESOURCEDIRS', []))]
+    source += [env.File(env['BUNDLE_PLIST']), env.File(env['BUNDLE_ICON'])]
+
     return target, source
 
 def generate(env) :

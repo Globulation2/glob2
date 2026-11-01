@@ -1,3 +1,4 @@
+import { message as sourceMessage } from '../i18n.tsx';
 import { displayMessage } from '../i18n.tsx';
 import { translateError } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
@@ -11,7 +12,7 @@ function Report({ report, reload }: { report: SkinReportInfo; reload: () => void
   useLocale();
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | Error>('');
   async function act(action: 'dismissed' | 'disabled' | 'restore') {
     setBusy(true);
     setError('');
@@ -26,7 +27,7 @@ function Report({ report, reload }: { report: SkinReportInfo; reload: () => void
         });
       reload();
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('Could not update report.'));
+      setError(e instanceof Error ? e : sourceMessage('Could not update report.'));
     } finally {
       setBusy(false);
     }

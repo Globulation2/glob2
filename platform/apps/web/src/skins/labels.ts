@@ -1,3 +1,5 @@
+import type { ColonySkinMaterial, SwarmMeshId } from '@glob2/protocol';
+import type { Model } from './atlas.ts';
 import { t, getLocale } from '../messages.ts';
 
 // Closed built-in presentation vocabulary. Functions defer lookup until render so
@@ -95,3 +97,85 @@ export function skinPresetLabel(skinId: string, fallback: string): string {
       return fallback;
   }
 }
+
+// Stable registry IDs resolve through the same render-time vocabulary.
+const modelLabels: Record<Model['id'], () => string> = {
+  worker: () => skinLabel('Worker'),
+  warrior: () => skinLabel('Warrior'),
+  explorer: () => skinLabel('Explorer'),
+  swarm: () => skinLabel('Swarm'),
+};
+export const skinModelLabel = (id: Model['id']): string => modelLabels[id]();
+
+const materialLabels: Record<ColonySkinMaterial['key'], () => string> = {
+  glossy: () => skinLabel('Classic glossy'),
+  matte: () => skinLabel('Matte'),
+  metallic: () => skinLabel('Riveted metal'),
+  hairy: () => skinLabel('Hairy'),
+  cartoon: () => skinLabel('Cartoon'),
+  woven: () => skinLabel('Woven fabric'),
+  goo: () => skinLabel('Oozy goo'),
+  wood: () => skinLabel('Wood'),
+  stone: () => skinLabel('Stone'),
+  scales: () => skinLabel('Scales'),
+  leather: () => skinLabel('Leather'),
+  crystal: () => skinLabel('Crystal'),
+  lava: () => skinLabel('Lava'),
+  chrome: () => skinLabel('Chrome'),
+  carbon: () => skinLabel('Carbon fibre'),
+  velvet: () => skinLabel('Velvet'),
+  honeycomb: () => skinLabel('Honeycomb'),
+  ice: () => skinLabel('Ice'),
+  cloud: () => skinLabel('Cloud'),
+  hammered: () => skinLabel('Hammered metal'),
+  candy: () => skinLabel('Candy'),
+  slime: () => skinLabel('Slime'),
+};
+export const skinMaterialLabel = (key: ColonySkinMaterial['key']): string => materialLabels[key]();
+
+const groupLabels: Record<ColonySkinMaterial['group'], () => string> = {
+  Basics: () => skinLabel('Basics'),
+  Metal: () => skinLabel('Metal'),
+  Organic: () => skinLabel('Organic'),
+  Craft: () => skinLabel('Craft'),
+  Wet: () => skinLabel('Wet'),
+  Mineral: () => skinLabel('Mineral'),
+};
+export const skinMaterialGroupLabel = (group: ColonySkinMaterial['group']): string =>
+  groupLabels[group]();
+
+const shapeLabels: Record<SwarmMeshId, { name: () => string; description: () => string }> = {
+  classic: {
+    name: () => skinLabel('Classic'),
+    description: () => skinLabel('The original swarm: spires ringed around an egg.'),
+  },
+  crown: {
+    name: () => skinLabel('Crown'),
+    description: () => skinLabel('Seven smooth spires around a central egg.'),
+  },
+  clutch: {
+    name: () => skinLabel('Clutch'),
+    description: () => skinLabel('Six brood eggs nested in a low rim.'),
+  },
+  toadstool: {
+    name: () => skinLabel('Toadstool'),
+    description: () => skinLabel('A broad-capped toadstool with young caps.'),
+  },
+  coral: {
+    name: () => skinLabel('Coral'),
+    description: () => skinLabel('Branching spires rising from a mound.'),
+  },
+  skep: {
+    name: () => skinLabel('Skep'),
+    description: () => skinLabel('A coiled hive on a stand, its door facing you.'),
+  },
+  bloom: {
+    name: () => skinLabel('Bloom'),
+    description: () => skinLabel('Petals cupped open around a central bud.'),
+  },
+};
+export const skinShapeLabel = (id: SwarmMeshId): string => shapeLabels[id].name();
+export const skinShapeDescription = (id: SwarmMeshId): string => shapeLabels[id].description();
+
+
+export { skinCopyName } from './skinNames.ts';
