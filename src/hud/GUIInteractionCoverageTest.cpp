@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
+#include "stats/TeamStatChart.h"
 #include "EngineFixtures.h"
 #include "GameGUIViewport.h"
 #include "MapZoomControls.h"
@@ -1031,4 +1032,45 @@ TEST_CASE("statistics sheet scroll stays open and fits phone rotations [display]
         CHECK(world.game.checkSum()==checksum);CHECK(gui.orderQueue.empty());
     }
     gui.setPublishedScene(nullptr);
+}
+
+
+TEST_CASE("Bulgarian empty statistics notices wrap without ink outside their chart [display][artifacts]" *
+          doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::GlobalsOptions options{.display=true, .loadStrings=true};
+    options.beforeLoad=[](GlobalContainer &globals) { globals.settings.language="bg"; };
+    glob2test::HeadlessGlobals globals(options);
+    const auto notice=GAGCore::Toolkit::getStringTable()->getString("[Not enough recorded history yet.]");
+    auto *font=globals->littleFont;
+    REQUIRE(font);
+    Stats::Metric metric{.id="population"};
+    TeamStatChart::Options chart;
+    chart.metric=&metric;
+    for (const int width : {120,176}) {
+        INFO(width);
+        REQUIRE(font->getStringWidth(notice)>width-16);
+        auto *raw=SDL_CreateSurface(480,240,SDL_PIXELFORMAT_ARGB8888);
+        REQUIRE(raw);
+        GAGCore::DrawableSurface surface(raw,GAGCore::DrawableSurface::AdoptPixels{},false);
+        REQUIRE(SDL_FillSurfaceRect(surface.getSDLSurface(),nullptr,0));
+        // Deliberately leave the surrounding surface unclipped: the renderer
+        // must lay out the complete notice, rather than hide overflow pixels.
+        TeamStatChart::paint({},0,surface,16,16,width,200,chart);
+        surface.nextFrame();
+        auto *pixels=surface.getSDLSurface();
+        int outside=0,secondLine=0,total=0;
+        for (int y=0;y<pixels->h;++y) for (int x=0;x<pixels->w;++x) {
+            Uint8 red,green,blue,alpha;
+            REQUIRE(SDL_ReadSurfacePixel(pixels,x,y,&red,&green,&blue,&alpha));
+            if (!(red||green||blue)) continue;
+            ++total;
+            outside+=x<16 || x>=16+width || y<16 || y>=216;
+            secondLine+=x>=16 && x<16+width && y>=24+font->getStringHeight("0") && y<216;
+        }
+        CHECK(total>0);
+        CHECK(outside==0);
+        CHECK(secondLine>0);
+        REQUIRE(IMG_SavePNG(pixels,(glob2test::artifactDir()/("empty-chart-"+std::to_string(width)+".png")).string().c_str()));
+    }
 }

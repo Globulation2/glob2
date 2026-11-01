@@ -369,7 +369,11 @@ game concepts across both catalogs: workers gather and build, explorers scout,
 warriors fight, flags assign work or attention, Inns attract converts and Markets
 exchange fruits. Translate ambiguous terrain terms from their control's effect,
 not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
-only their presentation is localized. Review legitimate names and loanwords
+only their presentation is localized. In compact scenario editors, wrap compiler
+notices as paragraphs and size touch tab/action columns from actual label-word
+widths, retaining their control IDs and minimum hit areas. Empty statistics-chart
+notices wrap within the chart using the same font and shaping boundaries as the
+rest of the chart. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
 
 ### Hindi, Urdu and Swahili terminology

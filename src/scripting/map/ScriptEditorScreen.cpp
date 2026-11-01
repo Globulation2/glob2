@@ -16,6 +16,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <sstream>
 
 namespace fe = Glob2UI;
 using fe::Element;
@@ -24,6 +25,20 @@ using namespace GAGCore;
 
 namespace
 {
+Element scriptTouchButtons(std::vector<Element> buttons, std::vector<std::string> labels,
+                           const Presentation &p, fe::FontRole role, int maxColumns)
+{
+    return fe::adaptive([buttons=std::move(buttons), labels=std::move(labels), role,
+                         gap=p.pt(6), minimum=p.pt(150), maxColumns](const fe::LayoutContext &ctx, fe::Size) {
+        int width=minimum;
+        for (const auto &label : labels) {
+            std::istringstream words(label);
+            for (std::string word; words >> word;)
+                width=std::max(width,ctx.text.width(role,word)+2*ctx.metrics.padding);
+        }
+        return fe::wrap(buttons,{gap,width,maxColumns});
+    });
+}
 class ScriptCursorCaption : public fe::Node
 {
 	std::function<std::string()> current;
@@ -467,7 +482,7 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	auto position = std::make_shared<ScriptCursorCaption>(cursorText, cursorTemplate,
 		std::to_string(script.size() + 1).size());
 	auto status = p.compact() || p.textGrowth > 1.2
-		? fe::column({fe::label(compilation, resultStyle), position}, {p.pt(4)})
+		? fe::column({fe::paragraph(compilation, resultStyle), position}, {p.pt(4)})
 		: fe::row({fe::expanded(fe::label(compilation, resultStyle)), position}, {p.pt(8), fe::CrossAlign::Center});
 	auto language = fe::field(fe::tr("[language-tr]"),
 							  fe::choice("script/language", {"SGSL", "USL", "JavaScript"},
@@ -477,8 +492,23 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	tools.push_back({"compile", fe::tr("[Compile]"), [this] { testCompile(); }});
 	tools.push_back({"load", fe::tr("[load]"), [this] { loadSave(true); }});
 	tools.push_back({"save", fe::tr("[Save]"), [this] { loadSave(false); }});
+    Element toolActions;
+    if (!p.touch) toolActions=fe::actions(std::move(tools),p);
+    else {
+        std::vector<Element> buttons;
+        std::vector<std::string> labels;
+        for (const auto &item : tools) {
+            fe::ButtonOptions options;
+            options.primary=item.primary; options.shortcut=item.shortcut;
+            options.enabled=item.enabled; options.icon=item.icon;
+            options.minHeight=48; options.role=fe::FontRole::Heading;
+            buttons.push_back(fe::button(item.key,item.label,item.action,options));
+            labels.push_back(item.label);
+        }
+        toolActions=scriptTouchButtons(std::move(buttons),std::move(labels),p,fe::FontRole::Heading,0);
+    }
 	return fe::column(
-		{language, editor, status, fe::actions(std::move(tools), p)},
+		{language, editor, status, toolActions},
 		{p.pt(6)});
 }
 
@@ -511,6 +541,16 @@ Element ScriptEditorScreen::build(const Presentation &p)
 			selected = i;
 	auto header =
 		fe::segments("tab", tabs, selected, [this, ids](int index) { showTab(ids[index]); });
+    if (p.touch) {
+        std::vector<Element> buttons;
+        for (int i=0;i<4;++i) {
+            fe::ButtonOptions options;
+            options.selected=i==selected; options.minHeight=44;
+            buttons.push_back(fe::button("tab/"+std::to_string(i),tabs[i],
+                [this,id=ids[i]] { showTab(id); },options));
+        }
+        header=scriptTouchButtons(std::move(buttons),tabs,p,fe::FontRole::Body,2);
+    }
 	Element body;
 	if (page == TAB_SCRIPT)
 		body = scriptTab(p);

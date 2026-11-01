@@ -437,3 +437,50 @@ TEST_CASE("Bulgarian script cursor caption reserves measured localized coordinat
 				CHECK(at.x + measure.width(GAGGUI::ui::FontRole::Caption, text) <= caption->bounds.right());
 	}
 }
+
+
+TEST_CASE("Phone script editor keeps whole labels and full compiler notice with enlarged text [display]" *
+          doctest::test_suite("ScriptEditor"))
+{
+    glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI","1");
+    glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=390,.height=844,
+        .screenFlags=GAGCore::GraphicContext::RESIZABLE};
+    options.beforeLoad=[](GlobalContainer &globals) { globals.settings.language="bg"; };
+    glob2test::HeadlessGlobals globals(options);
+    glob2test::HeadlessGame world;
+    struct RestoreText { double old=GAGCore::userTextScale; ~RestoreText(){GAGCore::userTextScale=old;} } restore;
+    for (const double growth : {1.0,1.5}) {
+        INFO(growth);
+        GAGCore::userTextScale=growth;
+        ScriptEditorScreen editor(&world.game);
+        editor.attach(*globals->gfx);
+        editor.selectLanguage(Language::JavaScript);
+        editor.setScriptText("function step( {\n");
+        REQUIRE_FALSE(editor.compile());
+        editor.draw(0);
+        GAGGUI::ui::ToolkitTextMeasurer measure(editor.theme(),true,editor.host().presentation().textUnit);
+        glob2test::RecordingCanvas canvas({390,844},measure);
+        editor.host().paint(canvas,0);
+        std::string shown;
+        for (const auto &[at,text] : canvas.texts) { if (!shown.empty()) shown+=' '; shown+=text; }
+        CHECK(shown.find(editor.compilationText())!=std::string::npos);
+        for (const auto *key : {"tab/0","tab/1","tab/2","tab/3","compile","load","save","ok","cancel"}) {
+            const auto *button=editor.host().find(key);
+            REQUIRE(button);
+            INFO(key);
+            CHECK(button->bounds.h>=44);
+            CHECK(editor.host().presentation().dialog.contains(button->bounds));
+            std::string label;
+            for (const auto &[at,text] : canvas.texts) if (button->bounds.contains(at)) {
+                if (!label.empty()) label+=' ';
+                label+=text;
+            }
+            CHECK(label==button->accessibleText());
+        }
+        const auto *code=editor.host().find("script");
+        REQUIRE(code);
+        CHECK(code->bounds.h>=3*measure.lineHeight(GAGGUI::ui::FontRole::Body));
+        editor.host().tapAt(editor.host().bounds("tab/1").center());
+        CHECK(editor.tab()==ScriptEditorScreen::TAB_OBJECTIVES);
+    }
+}

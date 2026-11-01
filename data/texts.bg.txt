@@ -3201,7 +3201,7 @@ CPU %0%
 [Blank map]
 Празна карта
 [Generated]
-Генерирано
+Генерирана
 [Preview]
 Преглед
 [Selected landscape]
