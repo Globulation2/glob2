@@ -6788,3 +6788,35 @@ GL மட்டும்
 முகாம் தள அளவு
 [scenario messages]
 செய்திகள் ▸
+[stats topic overview]
+கண்ணோட்டம்
+[stats topic economy]
+பொருளாதாரம்
+[stats topic world]
+உலகம்
+[stats work construction]
+வேலை மற்றும் கட்டுமானம்
+[stats defence]
+பாதுகாப்பு
+[stats history]
+வரலாற்றைக் காண்க
+[stats waiting]
+புள்ளிவிவரங்களுக்குக் காத்திருக்கிறது…
+[stats unit details]
+அலகு விவரங்கள்
+[stats map overlays]
+வரைபட மேலடுக்குகள்
+[stats topic]
+தலைப்பு
+[stats full history]
+முழு வரலாற்றையும் திறக்கவும்
+[stats missing readings]
+— இதுவரை எந்த அளவீடும் பதிவு செய்யப்படவில்லை. விவரங்களுக்கு ஒரு புள்ளிவிவரத்தைத் தேர்ந்தெடுக்கவும்.
+[lush_grass]
+செழிப்பான புல்
+[dry_grass]
+உலர்ந்த புல்
+[dune_sand]
+மணற்குன்று மணல்
+[pale_sand]
+வெளிர்நிற மணல்
