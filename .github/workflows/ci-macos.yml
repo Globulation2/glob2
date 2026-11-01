@@ -158,15 +158,27 @@ jobs:
         id: ios_toolchain
         run: python3 mobile/ios_localization_qa.py select-xcode
       - name: Restore validated simulator dependencies
-        uses: actions/cache@v4
+        id: ios_dependencies
+        uses: actions/cache/restore@v4
         with:
           path: build/ios/simulator/arm64/15.0/client/release/vcpkg-installed
           key: ios-simulator-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.ios_toolchain.outputs.fingerprint }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/dependencies.py', 'mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
-      - name: Build pinned simulator dependencies and unsigned release app
+      - name: Build and validate pinned simulator dependencies
         run: |
           set -euo pipefail
           mkdir -p artifacts/ios-localization
           python3 mobile/dependencies.py --target ios --environment simulator --release --jobs 2 2>&1 | tee artifacts/ios-localization/dependencies.log
+      # Save only the checksum-validated dependency prefix, before app/QA failures.
+      # No game objects or app binaries are reused across source revisions.
+      - name: Save validated simulator dependencies
+        if: ${{ steps.ios_dependencies.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: build/ios/simulator/arm64/15.0/client/release/vcpkg-installed
+          key: ${{ steps.ios_dependencies.outputs.cache-primary-key }}
+      - name: Build unsigned release app at the checked-out revision
+        run: |
+          set -euo pipefail
           python3 mobile/ios.py build --environment simulator --release --jobs 2 2>&1 | tee artifacts/ios-localization/build.log
       - name: Qualify actual simulator bundle and native lifecycle
         env:

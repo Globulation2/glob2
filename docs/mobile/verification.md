@@ -40,7 +40,11 @@ ordinary manual runs retain native coverage. The job validates the existing
 pinned Xcode, reuses content-validated simulator dependencies, checks the actual
 Thai catalog/font/notices and localized permission-purpose string in the built
 bundle, and retains app symbols, logs, hashes and screenshots as an artifact.
-It uses no Apple signing credentials or release operations.
+It uses no Apple signing credentials or release operations. The dependency cache
+is saved immediately after checksum validation, so a later app or simulator
+failure does not discard that work. Cache keys retain the pinned toolchain and
+dependency inputs; app binaries and game objects are rebuilt for the checked-out
+revision.
 
 The fixture marks the initial hand choice and introduction as offered and forces
 Thai through `SDL_PREFERRED_LOCALES` plus the simulator language defaults. It

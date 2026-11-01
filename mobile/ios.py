@@ -24,6 +24,16 @@ def cmake_quote(value):
     return '"'+str(value).replace('\\','/').replace('"','\\"').replace('$','\\$').replace(';','\\;')+'"'
 
 
+def localized_resource_lines(resource_root):
+    # The Xcode generator retains a source's .lproj directory automatically.
+    # Adding it to PACKAGE_LOCATION produces th.lproj/th.lproj in the bundle.
+    lines = []
+    for resource in sorted(Path(resource_root).glob('*.lproj/InfoPlist.strings')):
+        lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(resource)+')',
+                  'set_source_files_properties('+cmake_quote(resource)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)']
+    return lines
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command',choices=['configure','build','install','launch'])
@@ -132,11 +142,7 @@ def main():
         write_if_changed(metadata,json.dumps(provenance,indent=2)+'\n')
         lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(metadata)+')',
                   'set_source_files_properties('+cmake_quote(metadata)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)']
-    # Localized permission strings live at the bundle root on iOS. CMake
-    # strips the Resources prefix while preserving each .lproj directory.
-    for resource in sorted((ROOT/'mobile/ios').glob('*.lproj/InfoPlist.strings')):
-        lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(resource)+')',
-                  'set_source_files_properties('+cmake_quote(resource)+' PROPERTIES MACOSX_PACKAGE_LOCATION '+cmake_quote('Resources/'+resource.parent.name)+')']
+    lines += localized_resource_lines(ROOT/'mobile/ios')
     # Xcode compiles the catalog and merges its icon metadata into Info.plist.
     icons=ROOT/'mobile/ios/Assets.xcassets'
     lines += [

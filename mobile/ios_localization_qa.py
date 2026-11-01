@@ -37,6 +37,15 @@ def select_device(runtimes, device_types):
     return runtime, sorted(phones, key=lambda d: d['name'])[-1]
 
 
+def localized_strings_path(app):
+    expected = app/'th.lproj/InfoPlist.strings'
+    if not expected.is_file():
+        observed = sorted(p.relative_to(app).as_posix() for p in app.rglob('InfoPlist.strings'))
+        raise ValueError('Missing root Thai permission localization: '+str(expected)+
+                         '; observed bundle paths: '+repr(observed))
+    return expected
+
+
 def bundle_checks(root, app, localized_read):
     expected = re.search(r'<key>NSLocalNetworkUsageDescription</key><string>(.*?)</string>',
                          (root/'mobile/ios/Info.plist.in').read_text()).group(1)
@@ -122,9 +131,10 @@ def run_qa(root, output, locale):
         if summary['source_diff'] or summary['source_status']:
             raise ValueError('CI qualification requires a committed exact revision')
         summary['toolchain'] = json.loads((output/'toolchain.json').read_text())
+        thai_file = localized_strings_path(app)
         run(['codesign', '--verify', '--deep', '--strict', str(app)])
-        run(['plutil', '-lint', str(app/'Info.plist'), str(app/'th.lproj/InfoPlist.strings')])
-        thai = run(['plutil', '-extract', 'NSLocalNetworkUsageDescription', 'raw', '-o', '-', str(app/'th.lproj/InfoPlist.strings')])
+        run(['plutil', '-lint', str(app/'Info.plist'), str(thai_file)])
+        thai = run(['plutil', '-extract', 'NSLocalNetworkUsageDescription', 'raw', '-o', '-', str(thai_file)])
         summary['bundle_hashes'] = bundle_checks(root, app, thai)
         runtimes = json.loads(sim('list', 'runtimes', '--json'))
         types = json.loads(sim('list', 'devicetypes', '--json'))

@@ -62,6 +62,37 @@ class BundleIntegrity(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'English'):qa.bundle_checks(root,app,'เชื่อมต่อผ่านเครือข่ายในพื้นที่')
 
 
+class LocalizedResourcePlacement(unittest.TestCase):
+    def test_actual_xcode_nested_lproj_output_is_rejected_before_plutil(self):
+        # Observed in run41252857300 commands.log/build.log and app.tar.gz:
+        # Glob2.app/th.lproj/th.lproj/InfoPlist.strings, with no root strings.
+        with tempfile.TemporaryDirectory() as temp:
+            app=Path(temp)/'Glob2.app'
+            nested=app/'th.lproj/th.lproj/InfoPlist.strings'
+            nested.parent.mkdir(parents=True);nested.write_bytes(b'compiled plist')
+            with self.assertRaisesRegex(ValueError,'th.lproj/th.lproj/InfoPlist.strings'):
+                qa.localized_strings_path(app)
+            correct=app/'th.lproj/InfoPlist.strings';nested.rename(correct)
+            self.assertEqual(qa.localized_strings_path(app),correct)
+
+    def test_xcode_localized_sources_use_resources_without_duplicate_locale(self):
+        repo=next(p for p in Path(__file__).resolve().parents if (p/'SConstruct').is_file())
+        sys.path.insert(0,str(repo/'mobile'))
+        spec=importlib.util.spec_from_file_location('ios_packaging_contract',ROOT/'mobile/ios.py')
+        generator=importlib.util.module_from_spec(spec);spec.loader.exec_module(generator)
+        with tempfile.TemporaryDirectory(prefix='ios resources ') as temp:
+            root=Path(temp)
+            for language in ['th','ja']:
+                source=root/(language+'.lproj')/'InfoPlist.strings'
+                source.parent.mkdir();source.write_text('"purpose" = "ข้อความ";',encoding='utf-8')
+            lines=generator.localized_resource_lines(root)
+            properties=[line for line in lines if line.startswith('set_source_files_properties')]
+            self.assertEqual(len(properties),2)
+            self.assertTrue(all(line.endswith('MACOSX_PACKAGE_LOCATION Resources)') for line in properties))
+            self.assertTrue(any('th.lproj/InfoPlist.strings' in line for line in lines))
+            self.assertFalse(any('Resources/th.lproj' in line or 'Resources/ja.lproj' in line for line in lines))
+
+
 class FailureEvidence(unittest.TestCase):
     def test_cleanup_refuses_foreign_device_set(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -90,7 +121,7 @@ class FailureEvidence(unittest.TestCase):
                     smoke=root/'build/mobile-smoke-ios-th';smoke.mkdir(parents=True);(smoke/'failure.png').write_bytes(b'image')
                     return qa.subprocess.CompletedProcess(parts,1,'smoke failed')
                 return qa.subprocess.CompletedProcess(parts,0,text)
-            with patch.object(qa.subprocess,'run',side_effect=run),patch.object(qa,'bundle_checks',return_value={}):
+            with patch.object(qa.subprocess,'run',side_effect=run),patch.object(qa,'bundle_checks',return_value={}),patch.object(qa,'localized_strings_path',return_value=root/'app/th.lproj/InfoPlist.strings'):
                 with self.assertRaises(qa.subprocess.CalledProcessError):qa.run_qa(root,output,'th')
             actions=[p[-2:] for p in calls if p[-2:] in [['shutdown','owned-uuid'],['delete','owned-uuid']]]
             self.assertEqual(actions,[['shutdown','owned-uuid'],['delete','owned-uuid']])
@@ -105,7 +136,7 @@ class MacBundleDependencies(unittest.TestCase):
     def test_localized_permission_files_invalidate_bundle(self):
         repo = next(p for p in Path(__file__).resolve().parents if (p/'SConstruct').is_file())
         sys.path.insert(0,str(repo/'scons'))
-        module_path = ROOT/'scons/bundle.py'
+        module_path = repo/'scons/bundle.py'
         spec = importlib.util.spec_from_file_location('localization_bundle_contract',module_path)
         module = importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         class Env(dict):
