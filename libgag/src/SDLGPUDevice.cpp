@@ -38,8 +38,9 @@ const char *platformDriver()
 }
 static_assert(sizeof(SDL_Vertex) == Layout::primitive_stride);
 static_assert(Layout::terrain_compose_stride == Layout::primitive_stride && Layout::terrain_reduce_stride == Layout::primitive_stride);
-static_assert(Layout::terrain_compose_fragment_size == 144 && Layout::terrain_compose_fragment_params_offset == 0 &&
-    Layout::terrain_compose_fragment_seamGeometry_offset == 16 && Layout::terrain_compose_fragment_seamFringe_offset == 80);
+static_assert(Layout::terrain_compose_fragment_size == 352 && Layout::terrain_compose_fragment_params_offset == 0 &&
+    Layout::terrain_compose_fragment_seamGeometry_offset == 16 && Layout::terrain_compose_fragment_seamFringe_offset == 80 &&
+    Layout::terrain_compose_fragment_surfPlace_offset == 144 && Layout::terrain_compose_fragment_surfColor_offset == 288);
 static_assert(Layout::terrain_reduce_fragment_size == 16 && Layout::terrain_reduce_fragment_params_offset == 0);
 static_assert(offsetof(SDL_Vertex, position) == Layout::primitive_attributes[0].offset);
 static_assert(offsetof(SDL_Vertex, color) == Layout::primitive_attributes[1].offset);
@@ -864,6 +865,11 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, 
         if(seam.cast<0 || seam.cast>256 || seam.fringe<0 || seam.fringe>256 || seam.castWidth<0 || seam.fringeWidth<0 ||
             seam.castWidth>65535 || seam.fringeWidth>65535)
             throw std::invalid_argument("Invalid terrain seam constants");
+        const auto &surf=data.surfs[i];
+        if(surf.period<0 || surf.period>65535 || surf.ticks<1 || surf.ticks>std::max(surf.period,1) || surf.reach<0 || surf.foamWidth<0 || surf.reach+surf.foamWidth>2048 ||
+            surf.shallowWidth<0 || surf.shallowWidth>2048 || surf.wetWidth<0 || surf.wetWidth>2048 ||
+            surf.shallow<0 || surf.shallow>256 || surf.wet<0 || surf.wet>256 || surf.foam<0 || surf.foam>256)
+            throw std::invalid_argument("Invalid terrain surf constants");
         if(data.materials[i] && (data.materials[i]==packet.target || data.materials[i]->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied))
             throw std::invalid_argument("Terrain material must provide canonical straight pixels");
         draw.materials[i]=resolve(commands,entry,data.materials[i]);entry.textures.push_back(draw.materials[i]);
@@ -900,6 +906,8 @@ void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, cons
         uniforms[Layout::terrain_compose_fragment_seamGeometry_offset/4+i*4]=std::uint32_t(seam.height);uniforms[Layout::terrain_compose_fragment_seamGeometry_offset/4+1+i*4]=seam.cast;uniforms[Layout::terrain_compose_fragment_seamGeometry_offset/4+2+i*4]=seam.castWidth;uniforms[Layout::terrain_compose_fragment_seamGeometry_offset/4+3+i*4]=seam.fringe;
         uniforms[Layout::terrain_compose_fragment_seamFringe_offset/4+i*4]=seam.fringeWidth;for(unsigned k=0;k<3;++k)uniforms[Layout::terrain_compose_fragment_seamFringe_offset/4+1+i*4+k]=seam.fringeColor[k];
     }
+    const auto surf=surfUniforms(data);
+    std::memcpy(uniforms.data()+Layout::terrain_compose_fragment_surfPlace_offset/4,surf.data(),sizeof surf);
     // Integer images must remain valid bindings even when the uniform path does
     // not load coverage. The factory creates a one-pixel immutable zero mask.
     const auto &mask=draw.coverage;
