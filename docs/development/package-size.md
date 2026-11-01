@@ -151,7 +151,10 @@ never application content. It requires network access on first setup; subsequent
 exports reuse cached verified conversions. Image recipe identity includes the
 recipe version, encoder pins, Q90 quality/method and depth conversion policy;
 older recipes regenerate automatically. Corrupt cache entries regenerate from
-source artwork. Export/install ownership remains `runtime-assets-v1`, so older
+source artwork. Concurrent exporters accept an already-published cache file only
+when its bytes exactly match their own output, including when a Windows reader
+prevents replacement; conflicting or unreadable publications fail.
+Export/install ownership remains `runtime-assets-v1`, so older
 generated trees can be replaced and obsolete managed files removed safely.
 Flatpak supplies checksum-pinned encoder sources and build dependencies for its offline sandbox. RPM uses
 `tools/build_asset_encoder.py` with checksum-pinned Source archives; the helper
