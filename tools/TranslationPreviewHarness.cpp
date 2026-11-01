@@ -71,9 +71,15 @@ struct TranslationPreviewAccess
     }
     static void restoreDisplayMode(GameGUI &gui, int mode) { gui.displayMode = GameGUI::DisplayMode(mode); }
     static void drawPhoneStatisticsComponent(GameGUI &gui) {
-        if (!gui.touch) throw std::runtime_error("Phone statistics component requires the real touch HUD");
+        if (!gui.touch || !gui.touch->usesHUD())
+            throw std::runtime_error("Phone statistics component requires the real touch HUD");
+        // The production statistics host now derives the touch content bounds.
         const auto area = gui.touch->statisticsContentRect();
-        gui.drawStatisticsPanel({int(area.x), int(area.y), int(area.w), int(area.h)});
+        const auto bounds = gui.statisticsBounds();
+        if (bounds.x != int(area.x) || bounds.y != int(area.y) ||
+            bounds.w != int(area.w) || bounds.h != int(area.h))
+            throw std::runtime_error("Phone statistics component bounds differ from the touch content area");
+        gui.drawStatisticsPanel();
     }
     static void rebaseViewport(GameGUI &gui) {
         gui.torusView.rebaseViewport(gui.viewportX, gui.viewportY);
