@@ -34,4 +34,4 @@ data/texts.en.txt
 *data/texts.hi.txt
 *data/texts.ur.txt
 *data/texts.sw.txt
-*data/texts.ms.txt
+data/texts.ms.txt

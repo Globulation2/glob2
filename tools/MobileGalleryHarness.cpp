@@ -1275,6 +1275,9 @@ class MobileGalleryGameplay
 			stackShot(stack, "game-results-filters");
 			view->inspectValue();
 			stackShot(stack, "game-results-value");
+			view->selectMetric(Stats::findMetric("win probability"));
+			stackShot(stack, "game-results-win-probability");
+			view->selectMetric(Stats::findMetric("population"));
 			// Online results: the rating card while verifying, verified, and a room match.
 			auto online = std::make_shared<Online::OnlineMatchResult>(
 				"https://app.glob2.online", "8f3k2q00-0000-4000-8000-000000000001",

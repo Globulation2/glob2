@@ -4894,6 +4894,10 @@ Unit-unit dikurung tanpa petak kosong untuk dipijak.
 Sumber dibersihkan
 [stat cleared about]
 Sumber yang dibuang oleh pekerja di kawasan pembersihan untuk memberi ruang.
+[stat win probability]
+Kebarangkalian menang
+[stat win probability about]
+Anggaran peluang perikatan anda menang. Sampel diambil sepanjang perlawanan. Sekutu berkongsi satu kebarangkalian. Model ini dilatih menggunakan perlawanan AI; anggaran tidak mengambil kira kedudukan atau langkah yang dirancang. Fail simpanan lama mungkin mempunyai sejarah yang tidak lengkap.
 [stat prestige]
 Prestij
 [stat prestige about]
