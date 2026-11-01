@@ -703,6 +703,15 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             } else engine.drawSession(true);
             return true;
         };
+        auto drawUntilReady = [&](const std::string &message) {
+            const Uint64 deadline = SDL_GetTicks() + 15000;
+            bool rendered = draw();
+            while (!rendered && SDL_GetTicks() < deadline) {
+                SDL_Delay(1);
+                rendered = draw();
+            }
+            require(rendered, message);
+        };
         const Uint64 readyDeadline = SDL_GetTicks() + 15000;
         while (SDL_GetTicks() < readyDeadline) {
             draw();
@@ -1063,7 +1072,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                     {"history_available", panel.history() != nullptr}, {"published_sample_tick", panel.tick()}});
                 TranslationPreviewAccess::closeMenu(gui);
                 phoneStatisticsComponent = phone;
-                require(draw(), "Refresh statistics ownership after history closes");
+                drawUntilReady("Refresh statistics ownership after history closes");
             }
             phoneStatisticsComponent = false;
             TranslationPreviewAccess::restoreDisplayMode(gui, previousMode);
@@ -1127,7 +1136,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                     {"chart_point_unit", panel.presentation().unit}});
             };
             auto reveal = [&](const std::string &key) {
-                require(draw(), "Render live statistics controls");
+                drawUntilReady("Render live statistics controls");
                 panel.host().layoutIfNeeded();
                 require(panel.host().find(key) != nullptr, "Live statistics control available: " + key);
                 panel.host().scrollIntoView(key);
@@ -1153,9 +1162,9 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             const auto details = panel.host().bounds("stats/unit-details");
             require(details.w > 0 && details.h > 0, "Live unit details action has bounds");
             panel.host().tapAt(details.center());
-            require(draw(), "Layout expanded unit details");
+            drawUntilReady("Layout expanded unit details");
             panel.host().scrollToTop("stats/unit-details");
-            require(draw(), "Expose expanded unit details rows");
+            drawUntilReady("Expose expanded unit details rows");
             const auto *expandedGroup = detailsGroup(detailsGroup, panel.host().root());
             require(expandedGroup && expandedGroup->children.size() > 1, "Expanded unit details contain actual additional rows");
             const auto detailsViewport = panel.host().bounds("stats/scroll/1");
@@ -1169,7 +1178,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             auto *scroll = panel.host().find("stats/scroll/1");
             require(scroll && scroll->scrollable(), "Actual colony statistics scroll container available");
             scroll->scrollTo(scroll->scrollMaximum(), panel.host());
-            require(draw(), "Expose actual missing-readings hint");
+            drawUntilReady("Expose actual missing-readings hint");
             const std::string missingText = Glob2UI::tr("[stats missing readings]");
             auto hintNode = [&](auto &&self, const GAGGUI::ui::Node *node) -> const GAGGUI::ui::Node * {
                 if (!node) return nullptr;
