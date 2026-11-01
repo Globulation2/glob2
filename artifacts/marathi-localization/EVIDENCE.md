@@ -18,7 +18,7 @@ Three independent agents supplied semantic, editorial and adversarial passes and
 - **Helper28tests:** both original APIs/cacheformats plus8integration regressions pass independent review. Shared durable pre-dispatch USD accounting includes authentication retries and historical attempts; physical-control HTML loss found in review is fixed by routing exact controls toblank-fill. Both real estimate modes ran without network. Their separate-kit zero-budget display is not the actual shared campaign total.
 - **Actual Caddyfont serving:**1test passes onthe deployment's alreadycached pinnedCaddy2.11.4 image binary, verifying font/CSS/localeJSON MIME andgzip bytes including Marathi. Extractioncontainer/anonymousvolumes removed, binary keptlocal andexcluded; config/data excluded. Initial absence-of-CLI skip is retained, followed by the actual passing run.
 - **Apple4/GOG27contracts pass** oncurrentLinux. These do not establish Apple device permission behavior. The broad browser-asset suite is still active and its mutable log is omitted here.
-- **Browserunit148/151:**3replay-fixture/version failures reproduce with exactbc8master inputs, all7 inputhashes match. Both logs/proof are retained; no failure is attributed to Marathi.
+- **Browserunit148/151:**3replay-fixture/version failures reproduce with exactbc8master inputs, all7 inputhashes match. Both logs/proof are retained; no failure is attributed to Marathi. `integration-bc8/reproduce_browser_baseline.py` reconstructs all7exactGitinputs in boundedtemporary storage and reproduces3/3expectedfailures; its actual output is attached. Partial sourcecopies are omitted.
 
 ## Pending game execution
 

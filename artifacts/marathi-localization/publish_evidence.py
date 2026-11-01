@@ -30,6 +30,7 @@ def main():
     # The inventory describes the payload and is added once after it is
     # regenerated. It cannot hash or count an inherited copy of itself.
     files.discard(BASE / 'published-inventory.json')
+    files = {p for p in files if not {'browser-fixture-baseline', 'baseline-browser-fixture'} & set(p.parts)}
     files = {p for p in files if not (p.name.startswith('publication-') and p.suffix == '.log')}
 
     # Build SDKs, dependency copies, executables, raw external reference pages,
@@ -62,7 +63,7 @@ def main():
             if (args.checkpoint or args.pending_browser) and any(str(relative).startswith(str(BASE / x) + '/') for x in ['integration-refresh/native', 'integration-bc8/native', 'integration-bc8/android']):
                 continue
             if (path.is_file() and (path.suffix in extensions or path.name.endswith(('.json.gz', '.log.gz', '.txt.gz')))
-                    and not {'baseline-browser-fixture', 'previous671'} & set(relative.parts)
+                    and not {'baseline-browser-fixture', 'browser-fixture-baseline', 'previous671'} & set(relative.parts)
                     and not {'profiles', 'node_modules', 'cache'} & set(relative.parts)):
                 files.add(relative)
     names = ['EVIDENCE.md', 'google-budget.json', 'registration-checks.json',

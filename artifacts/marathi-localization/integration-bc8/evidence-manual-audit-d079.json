@@ -1,0 +1,357 @@
+{
+  "auditor": "/root/locale_integration",
+  "result": "accepted for explicit source/review/website checkpoint publication; no material issue",
+  "evidence_commit": "d0795ed53c0e6fdd9a9ee17a7b483dbe1e589304",
+  "previous_accepted_commit": "b9088949ff7046ad356013df6c0119d116344956",
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "file_count": 1341,
+  "total_bytes": 230533802,
+  "every_payload_sha_and_tree_inventory_verified": true,
+  "publication_cap_bytes": 536870912,
+  "delta": {
+    "added": [
+      "artifacts/marathi-localization/google-responses/ce5743784d1ca990f555828ebe0d4c7f03144c0c5a679098a4102f0e60f3f038.json",
+      "artifacts/marathi-localization/integration-bc8/adversarial-final16.json",
+      "artifacts/marathi-localization/integration-bc8/adversarial-new16.json",
+      "artifacts/marathi-localization/integration-bc8/apple-contracts.log",
+      "artifacts/marathi-localization/integration-bc8/assemble_review.py",
+      "artifacts/marathi-localization/integration-bc8/branch-protection-query.log",
+      "artifacts/marathi-localization/integration-bc8/branch-protection.json",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline-proof.json",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline.log",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/browser/tests/fixtures/generator-studio-trace.json",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/browser/tests/fixtures/studio-trace.json",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/browser/unit/replay-fixture.test.js",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/app/Version.h",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/game/SimRevision.h",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/replay/ReplayReader.h",
+      "artifacts/marathi-localization/integration-bc8/browser-font-contracts-caddy.log",
+      "artifacts/marathi-localization/integration-bc8/browser-font-contracts.log",
+      "artifacts/marathi-localization/integration-bc8/browser-font-derivative.json",
+      "artifacts/marathi-localization/integration-bc8/browser-font-derivative.log",
+      "artifacts/marathi-localization/integration-bc8/browser-runtime-generation.log",
+      "artifacts/marathi-localization/integration-bc8/browser-unit.log",
+      "artifacts/marathi-localization/integration-bc8/caddy-qa/provenance.json",
+      "artifacts/marathi-localization/integration-bc8/checkpoint-report.log",
+      "artifacts/marathi-localization/integration-bc8/commit.log",
+      "artifacts/marathi-localization/integration-bc8/draft-contracts.json",
+      "artifacts/marathi-localization/integration-bc8/draft_new_entries.py",
+      "artifacts/marathi-localization/integration-bc8/editorial-final16.json",
+      "artifacts/marathi-localization/integration-bc8/editorial-new16.json",
+      "artifacts/marathi-localization/integration-bc8/final-targets.json",
+      "artifacts/marathi-localization/integration-bc8/gog-contracts.log",
+      "artifacts/marathi-localization/integration-bc8/google-draft-provenance-write-failure.log",
+      "artifacts/marathi-localization/integration-bc8/google-draft.json",
+      "artifacts/marathi-localization/integration-bc8/google-helper-merge-review.json",
+      "artifacts/marathi-localization/integration-bc8/google-helper-tests.log",
+      "artifacts/marathi-localization/integration-bc8/helper-blank-fill-dry-run.json",
+      "artifacts/marathi-localization/integration-bc8/helper-independent-review.json",
+      "artifacts/marathi-localization/integration-bc8/helper-plan-dry-run.json",
+      "artifacts/marathi-localization/integration-bc8/initial-google-native-draft.txt",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-colony-001.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-colony-002.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-001.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-002.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-003.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-004.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-005.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-006.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-007.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-008.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-009.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-010.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-011.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-012.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-013.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-014.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-015.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-016.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-017.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-018.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-019.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-020.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-021.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-022.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-023.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-024.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-025.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-026.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-general-027.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-maps-001.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-maps-002.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-settings-001.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-settings-002.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-settings-003.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-settings-004.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-settings-005.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/native-tutorial-001.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-001.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-002.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-003.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-004.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-005.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-006.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-007.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-008.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-009.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-010.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-011.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-012.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-013.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-014.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-015.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-016.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-017.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-018.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-019.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-020.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-021.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-022.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-023.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-024.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-025.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-026.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-027.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-028.json",
+      "artifacts/marathi-localization/integration-bc8/kit/batches/online-online-029.json",
+      "artifacts/marathi-localization/integration-bc8/kit/drafts/mr/mr.json",
+      "artifacts/marathi-localization/integration-bc8/kit/drafts/mr/texts.mr.txt",
+      "artifacts/marathi-localization/integration-bc8/kit/manifest.json",
+      "artifacts/marathi-localization/integration-bc8/kit/reviews/mr.json",
+      "artifacts/marathi-localization/integration-bc8/kit/source/native-keys.txt",
+      "artifacts/marathi-localization/integration-bc8/kit/source/native.json",
+      "artifacts/marathi-localization/integration-bc8/kit/source/online.json",
+      "artifacts/marathi-localization/integration-bc8/manifest.json",
+      "artifacts/marathi-localization/integration-bc8/merge.log",
+      "artifacts/marathi-localization/integration-bc8/native-baseline/master-stderr.log",
+      "artifacts/marathi-localization/integration-bc8/native-baseline/master-strict.json",
+      "artifacts/marathi-localization/integration-bc8/native-baseline/merged-stderr.log",
+      "artifacts/marathi-localization/integration-bc8/native-baseline/merged-strict.json",
+      "artifacts/marathi-localization/integration-bc8/native-baseline/proof.json",
+      "artifacts/marathi-localization/integration-bc8/native-baseline/reproduce.py",
+      "artifacts/marathi-localization/integration-bc8/native-baseline/result.log",
+      "artifacts/marathi-localization/integration-bc8/native-source-delta.json",
+      "artifacts/marathi-localization/integration-bc8/native-strict.log",
+      "artifacts/marathi-localization/integration-bc8/native_qa_runner.py",
+      "artifacts/marathi-localization/integration-bc8/online-contracts.log",
+      "artifacts/marathi-localization/integration-bc8/online-production-build.log",
+      "artifacts/marathi-localization/integration-bc8/online/cleanup.py",
+      "artifacts/marathi-localization/integration-bc8/online/config.cjs",
+      "artifacts/marathi-localization/integration-bc8/online/editorial-visual-review.json",
+      "artifacts/marathi-localization/integration-bc8/online/execution.json",
+      "artifacts/marathi-localization/integration-bc8/online/provenance.json",
+      "artifacts/marathi-localization/integration-bc8/online/results.json",
+      "artifacts/marathi-localization/integration-bc8/online/results/.last-run.json",
+      "artifacts/marathi-localization/integration-bc8/online/root-visual-review.json",
+      "artifacts/marathi-localization/integration-bc8/online/runtime-cleanup.json",
+      "artifacts/marathi-localization/integration-bc8/online/screenshots/chromium-desktop/mr-home.png",
+      "artifacts/marathi-localization/integration-bc8/online/screenshots/chromium-phone/mr-home.png",
+      "artifacts/marathi-localization/integration-bc8/online/screenshots/firefox-desktop/mr-home.png",
+      "artifacts/marathi-localization/integration-bc8/online/screenshots/firefox-phone/mr-home.png",
+      "artifacts/marathi-localization/integration-bc8/online/screenshots/webkit-desktop/mr-home.png",
+      "artifacts/marathi-localization/integration-bc8/online/screenshots/webkit-phone/mr-home.png",
+      "artifacts/marathi-localization/integration-bc8/online/server.log",
+      "artifacts/marathi-localization/integration-bc8/online/startup-attempt1-db-port.log",
+      "artifacts/marathi-localization/integration-bc8/online/startup-attempt1-provenance.json",
+      "artifacts/marathi-localization/integration-bc8/online/tests.log",
+      "artifacts/marathi-localization/integration-bc8/platform-typecheck.log",
+      "artifacts/marathi-localization/integration-bc8/pr-checkpoint.json",
+      "artifacts/marathi-localization/integration-bc8/preparation-kit/manifest.json",
+      "artifacts/marathi-localization/integration-bc8/prepare_caddy_qa.py",
+      "artifacts/marathi-localization/integration-bc8/previews/mr/metadata.json",
+      "artifacts/marathi-localization/integration-bc8/previews/mr/native.json",
+      "artifacts/marathi-localization/integration-bc8/previews/mr/online.json",
+      "artifacts/marathi-localization/integration-bc8/review-assembly-corrected.log",
+      "artifacts/marathi-localization/integration-bc8/review-assembly.log",
+      "artifacts/marathi-localization/integration-bc8/review-status-before-runtime.json",
+      "artifacts/marathi-localization/integration-bc8/run_online.py",
+      "artifacts/marathi-localization/integration-bc8/semantic-final16.json",
+      "artifacts/marathi-localization/integration-bc8/semantic-new16.json",
+      "artifacts/marathi-localization/integration-bc8/source-provenance.json",
+      "artifacts/marathi-localization/integration-bc8/source-push.log",
+      "artifacts/marathi-localization/integration-bc8/source-target-carry.json",
+      "artifacts/marathi-localization/integration-bc8/start_online.py",
+      "artifacts/marathi-localization/integration-bc8/upstream-texts.en.txt",
+      "artifacts/marathi-localization/integration-bc8/validation-kit-provenance.json",
+      "artifacts/marathi-localization/integration-bc8/write_checkpoint.py",
+      "artifacts/marathi-localization/integration-refresh/android-archive-ffbd.log",
+      "artifacts/marathi-localization/integration-refresh/archive_validated_android_ffbd.py",
+      "artifacts/marathi-localization/integration-refresh/audit_checkpoint_b908.py",
+      "artifacts/marathi-localization/integration-refresh/evidence-delta-audit-b908.json",
+      "artifacts/marathi-localization/integration-refresh/evidence-tree-audit-b908.json",
+      "artifacts/marathi-localization/integration-refresh/fetch-master-validation.log",
+      "artifacts/marathi-localization/integration-refresh/new-master-integration-inventory.json",
+      "artifacts/marathi-localization/validated-android-ffbd/archive-manifest.json"
+    ],
+    "removed": [],
+    "changed": [
+      "artifacts/marathi-localization/EVIDENCE.md",
+      "artifacts/marathi-localization/checks/google-final-budget.json",
+      "artifacts/marathi-localization/final-verification.json",
+      "artifacts/marathi-localization/google-budget.json",
+      "artifacts/marathi-localization/publish_evidence.py"
+    ]
+  },
+  "old_payloads_unchanged": 1163,
+  "passed_gates": [
+    "language_brief",
+    "source_based_pilot",
+    "structural"
+  ],
+  "pending_gates": [
+    "desktop_rendering",
+    "phone_rendering",
+    "browser_startup",
+    "native_platforms",
+    "browser_platforms",
+    "mobile_platforms"
+  ],
+  "passed_gate_refs_verified": [
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/semantic-review/language-brief.json",
+      "sha256": "851a5c87403aa2fa5c1f3000616b01449f2b613a7b01beea2f396a83f6621927"
+    },
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/integration-bc8/source-target-carry.json",
+      "sha256": "2ab915be7388255a75b9cebb08d09019bf5cc465dad4e198a3c9b9ce1caea833"
+    },
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/integration-bc8/semantic-final16.json",
+      "sha256": "a08b4ab2ac0f6e2a8b091805a581b97f0ef80381abd8c903ec8940bd874399cc"
+    },
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/integration-bc8/editorial-final16.json",
+      "sha256": "966406c04abce895e748d29d428a90517dac2c2bddae91ba377d11f7a0bf861f"
+    },
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/integration-bc8/adversarial-final16.json",
+      "sha256": "a96ec12114e255128de29367e25418d75bddbb5a930d44a7fe6ba6d1f8616789"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/semantic-review/pilot-review.json",
+      "sha256": "2e80c5fba49b3da417415a1cbf0b53551c8e6c10a240578ca10ffd92d45d6c85"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/editorial-review/pilot-review.json",
+      "sha256": "dca65a8ed8cf904ddabc3199144bef85a278b7cb331e3e57caf44f4941433864"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/adversarial-review/pilot.json",
+      "sha256": "2511a3894fc8905a0d5984f853fdaa3a2208126ff4ed1785153a0e8c75c3a3f6"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/integration-bc8/source-target-carry.json",
+      "sha256": "2ab915be7388255a75b9cebb08d09019bf5cc465dad4e198a3c9b9ce1caea833"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/integration-bc8/semantic-final16.json",
+      "sha256": "a08b4ab2ac0f6e2a8b091805a581b97f0ef80381abd8c903ec8940bd874399cc"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/integration-bc8/editorial-final16.json",
+      "sha256": "966406c04abce895e748d29d428a90517dac2c2bddae91ba377d11f7a0bf861f"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/integration-bc8/adversarial-final16.json",
+      "sha256": "a96ec12114e255128de29367e25418d75bddbb5a930d44a7fe6ba6d1f8616789"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-bc8/draft-contracts.json",
+      "sha256": "dc1051d1db6569792dbae31096b622b1c4843b880513de3af53253d4603ae6c7"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-bc8/native-baseline/proof.json",
+      "sha256": "e48a752450f6bbeb1ac4b7c920b522393fc882ecdfd943b92686d359679a42f5"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-bc8/native-baseline/master-strict.json",
+      "sha256": "00eef8b34f19981797c49e5c56c552c966de27da063a94cb4fc8794f8c90c5c9"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-bc8/native-baseline/merged-strict.json",
+      "sha256": "7b99fa90a1d688492f3f31ef24fecc8c554471a9d240ca06369b8e89446f98e0"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-bc8/online-contracts.log",
+      "sha256": "a8c51f7e5f3fc15c53fd54c065ebb95aa213bf347716607680e37d31038db18e"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-bc8/helper-independent-review.json",
+      "sha256": "d1ec583e0f7f34a624a2aec032bc58607ce6607ef74ed6b767c77dc22f8d9355"
+    }
+  ],
+  "final_stable_refs_verified": 31,
+  "independent_carry_recomputed": {
+    "native_source_target_old_pairs": 3395,
+    "new_keys_actual_selected_entries_compared": 16,
+    "current_native_total": 3411,
+    "online_source_target_old_pairs": 2836,
+    "current_kit_matches_actual64_canonical_source_target": true
+  },
+  "baseline_master_errors": {
+    "exact_ordered_diagnostics_both": 29,
+    "introduced_by_PR": 0,
+    "MR_missing_untranslated_pending_obsolete": 0
+  },
+  "current_website": {
+    "actual_cases": 12,
+    "failed_skipped_flaky": 0,
+    "actual_images_previously_independently_viewed": [
+      "firefox-phone",
+      "webkit-desktop"
+    ],
+    "same_image_hashes_in_published_tree": true
+  },
+  "google_arithmetic": {
+    "reserved_requests": 89,
+    "reserved_codepoints": 194087,
+    "usd": "3.88174",
+    "rate_scope": "Published rate arithmetic, not invoice or independent new pricing lookup"
+  },
+  "binary_dispositions": {
+    "old_license_trace_and_sparse_log": "Exact unchanged previously independently adjudicatedb908/E2 payloads; explicit historical exceptions remain.",
+    "added_cpp_headers": {
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/app/Version.h": {
+        "exact_master_source": "src/app/Version.h",
+        "sha256": "ab01483ebd25070be13cda8d715045d5934475117b3023680261a004bf5800d0"
+      },
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/game/SimRevision.h": {
+        "exact_master_source": "src/game/SimRevision.h",
+        "sha256": "e5909dbcfeb574867b2a1b0e5183cd1537d92de1da0ffb0f914acf1d2d950bcf"
+      },
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/replay/ReplayReader.h": {
+        "exact_master_source": "src/replay/ReplayReader.h",
+        "sha256": "486b4d6e8e6a26b4aa716792b0a3ef2b396b26bbb425c5434a034853114e244b"
+      }
+    },
+    "new_ffbd_archive": "Manifest only; complete APK/ELF/evidence snapshot stayslocal. Its ffbd3395producer is not relabeled64.",
+    "current_active_outputs": "No current64Android/native/browser runtime outputs or CaddyGo executable/APKs/objects/SDKs/master-thinsnapshot/caddyconfig-data/preparationkitpayload leaked. Preparation-kit publishes only actual olddirty-context manifest; activekit is clean64."
+  },
+  "credential_scope": "Full current tree text stream scan zero configured credential matches; unchanged nested failedtrace contents carried exact from previous audit. No exhaustive secret-certification claim.",
+  "scope_review": "Current64manifest/sourceb7/native540/online0a/66batches/3passed6pending correct. Exact dirtypreparation context is explicit and distinct from clean validation manifest and future compiled producers. Currentwebsite12pass is distinct from pending WASMgame/native/Android runtime. Historical671/ba/ffbd producers remainhistorical. Preparation-time pending list in validation-kit-provenance is historical creation-state; activekit reviews define currentgates.",
+  "candidate_flag_record": "Genericd079scan retains12flags:9previouslicense/trace/sparselog candidates plus3newUTF8C++headers, each exactbc8source above; all explicitly adjudicated, no executablebinary.",
+  "limits": [
+    "Two old largeJSON matrix reports strictUTF8/hash-stream checked rather than JSONparsed; unchangedacceptedbytes",
+    "WOFF2 nested trace fonts signature/CRC classified, not Brotli decoded; priorlimit preserved",
+    "Checkpoint accepted with six genuine runtime gates stillpending, not an overall merge/release completion claim"
+  ],
+  "main_source_or_evidence_commit_mutated": false
+}
