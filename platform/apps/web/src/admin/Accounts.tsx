@@ -120,7 +120,7 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
                     void act(() => api.adminMute(account.id, m.minutes, reason || undefined))
                   }
                 >
-                  <RichMessage source={'Mute {slot0}'} slots={{ slot0: m.name }} />
+                  <RichMessage source={'Mute {slot0}'} slots={{ slot0: t(m.name) }} />
                 </button>
               ))}
             {muted && (
@@ -160,7 +160,9 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
                 {t('Role')}{' '}
                 <select value={role} onChange={(e) => setRole(e.target.value as typeof role)}>
                   {['user', 'moderator', 'admin'].map((r) => (
-                    <option key={r}>{r}</option>
+                    <option key={r} value={r}>
+                      {statusLabel(r)}
+                    </option>
                   ))}
                 </select>
               </label>

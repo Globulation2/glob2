@@ -26,9 +26,9 @@ import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 
 const VISIBILITY_TEXT: Record<MapVisibility, string> = {
-  public: 'Public — listed for everyone',
-  unlisted: 'Unlisted — accessible by link',
-  private: 'Private — only you',
+  public: 'Public: listed in the catalog',
+  unlisted: 'Unlisted: anyone with the link',
+  private: 'Private: only you',
 };
 
 function MapCard({ map }: { map: MapInfo }) {

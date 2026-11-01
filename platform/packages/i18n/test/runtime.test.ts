@@ -75,6 +75,7 @@ describe('online locale resolution', () => {
     expect(resolveLocale('te-IN')).toBe('te');
     expect(resolveLocale('te-Telu-IN')).toBe('te');
     expect(resolveLocale(['te-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale(['te-Telu-Latn', 'fr'])).toBe('fr');
     expect(resolveLocale('te-u-nu-latn')).toBe('te');
     expect(resolveLocale('te-x-latn')).toBe('te');
     expect(resolveLocale('sw-Latn-KE')).toBe('sw');
@@ -83,6 +84,13 @@ describe('online locale resolution', () => {
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
+  });
+  it('selects Malay Rumi and skips explicit Jawi requests', () => {
+    for (const tag of ['ms', 'ms-MY', 'ms-Latn-MY', 'ms_MY', 'ms-u-nu-arab', 'ms-x-arab'])
+      expect(resolveLocale(tag)).toBe('ms');
+    expect(resolveLocale(['ms-Arab-MY', 'fr'])).toBe('fr');
+    expect(resolveLocale(['ms-Latn-Arab', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ms')).toBe('ms');
   });
 });
 describe('message presentation', () => {
@@ -150,10 +158,23 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 38 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(38);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(38);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(38);
+  it('contains 39 unique game catalog mappings including Malay and Telugu', () => {
+    expect(locales).toHaveLength(39);
+    expect(locales).toContainEqual({
+      code: 'nb',
+      gameCode: 'nb',
+      name: 'Norsk bokmål',
+      dir: 'ltr',
+    });
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
+    expect(locales).toContainEqual({
+      code: 'ms',
+      gameCode: 'ms',
+      name: 'Bahasa Melayu',
+      dir: 'ltr',
+    });
+    expect(locales).toContainEqual({ code: 'te', gameCode: 'te', name: 'తెలుగు', dir: 'ltr' });
   });
 });
 

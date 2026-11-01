@@ -5696,14 +5696,6 @@ Maji meusi
 Shimo
 [chasm]
 Korongo
-[lush_grass]
-
-[dry_grass]
-
-[dune_sand]
-
-[pale_sand]
-
 [terrain group water]
 Maji
 [terrain group sand]
@@ -6820,3 +6812,11 @@ Kiasi cha samaki
 Idadi ya maeneo ya kambi
 [scenario messages]
 Ujumbe ▸
+[lush_grass]
+Nyasi mbichi
+[dry_grass]
+Nyasi kavu
+[dune_sand]
+Mchanga wa matuta
+[pale_sand]
+Mchanga wa rangi hafifu

@@ -4876,30 +4876,6 @@ Enheter som var sperret inne uten en ledig rute å gå til.
 Ressurser ryddet
 [stat cleared about]
 Ressurser fjernet av arbeidere under rydding av områder for å gi plass.
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
 [stat win probability]
 Seierssjanse
 [stat win probability about]
@@ -5696,14 +5672,6 @@ Mørkt vann
 Hull
 [chasm]
 Kløft
-[lush_grass]
-
-[dry_grass]
-
-[dune_sand]
-
-[pale_sand]
-
 [terrain group water]
 Vann
 [terrain group sand]
@@ -6820,3 +6788,35 @@ Mengde fisk
 Antall leirplasser
 [scenario messages]
 Meldinger ▸
+[stats topic overview]
+Oversikt
+[stats topic economy]
+Økonomi
+[stats topic world]
+Verden
+[stats work construction]
+Arbeid og bygging
+[stats defence]
+Forsvar
+[stats history]
+Vis historikk
+[stats waiting]
+Venter på statistikk…
+[stats unit details]
+Enhetsdetaljer
+[stats map overlays]
+Kartoverlegg
+[stats topic]
+Emne
+[stats full history]
+Åpne hele historikken
+[stats missing readings]
+— Ingen registrert avlesning ennå. Velg en statistikk for detaljer.
+[lush_grass]
+Frodig gress
+[dry_grass]
+Tørt gress
+[dune_sand]
+Dynesand
+[pale_sand]
+Blek sand

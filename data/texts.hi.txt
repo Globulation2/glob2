@@ -5696,14 +5696,6 @@ AI से नहीं बना
 गड्ढा
 [chasm]
 खाई
-[lush_grass]
-
-[dry_grass]
-
-[dune_sand]
-
-[pale_sand]
-
 [terrain group water]
 पानी
 [terrain group sand]
@@ -6820,3 +6812,11 @@ MCP सर्वर चालू करें
 पड़ावों की मात्रा
 [scenario messages]
 संदेश ▸
+[lush_grass]
+हरी-भरी घास
+[dry_grass]
+सूखी घास
+[dune_sand]
+टीलों की रेत
+[pale_sand]
+हल्के रंग की रेत

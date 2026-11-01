@@ -324,10 +324,10 @@ export function PatternDialog({
                   onChange={(e) => setSecondMaterial(Number(e.target.value))}
                 >
                   {MATERIAL_GROUPS.map((group) => (
-                    <optgroup key={group.name} label={group.name}>
+                    <optgroup key={group.name} label={t(group.name)}>
                       {group.materials.map((m) => (
                         <option key={m.id} value={m.id}>
-                          {m.name}
+                          {t(m.name)}
                         </option>
                       ))}
                     </optgroup>
@@ -354,7 +354,7 @@ export function PatternDialog({
           disabled={!cameraReady || completedKey !== buildKey}
           onClick={() => onApply(candidate)}
         >
-          <RichMessage source={'Apply to {slot0}'} slots={{ slot0: model.name }} />
+          <RichMessage source={'Apply to {slot0}'} slots={{ slot0: t(model.name) }} />
         </button>
       </footer>
     </StudioDialog>
