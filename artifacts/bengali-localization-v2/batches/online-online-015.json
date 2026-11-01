@@ -1,0 +1,812 @@
+{
+  "id": "online-online-015",
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Verification ",
+      "key": "Verification ",
+      "source": "Verification "
+    },
+    {
+      "id": "online:Verification and connection details",
+      "key": "Verification and connection details",
+      "source": "Verification and connection details"
+    },
+    {
+      "id": "online:Verification failed",
+      "key": "Verification failed",
+      "source": "Verification failed"
+    },
+    {
+      "id": "online:Verified",
+      "key": "Verified",
+      "source": "Verified"
+    },
+    {
+      "id": "online:Version",
+      "key": "Version",
+      "source": "Version"
+    },
+    {
+      "id": "online:Version history",
+      "key": "Version history",
+      "source": "Version history"
+    },
+    {
+      "id": "online:Version label",
+      "key": "Version label",
+      "source": "Version label"
+    },
+    {
+      "id": "online:Version {slot0}",
+      "key": "Version {slot0}",
+      "source": "Version {slot0}"
+    },
+    {
+      "id": "online:Version {value0}",
+      "key": "Version {value0}",
+      "source": "Version {value0}"
+    },
+    {
+      "id": "online:Version {value0}{value1}",
+      "key": "Version {value0}{value1}",
+      "source": "Version {value0}{value1}"
+    },
+    {
+      "id": "online:Versions",
+      "key": "Versions",
+      "source": "Versions"
+    },
+    {
+      "id": "online:Versions of {slot0}",
+      "key": "Versions of {slot0}",
+      "source": "Versions of {slot0}"
+    },
+    {
+      "id": "online:Versions of {value0}",
+      "key": "Versions of {value0}",
+      "source": "Versions of {value0}"
+    },
+    {
+      "id": "online:View orientation",
+      "key": "View orientation",
+      "source": "View orientation"
+    },
+    {
+      "id": "online:View profile and games",
+      "key": "View profile and games",
+      "source": "View profile and games"
+    },
+    {
+      "id": "online:View reported paint",
+      "key": "View reported paint",
+      "source": "View reported paint"
+    },
+    {
+      "id": "online:View revision",
+      "key": "View revision",
+      "source": "View revision"
+    },
+    {
+      "id": "online:View {slot0}",
+      "key": "View {slot0}",
+      "source": "View {slot0}"
+    },
+    {
+      "id": "online:Viewing a saved revision. Restore it to make it the current draft.",
+      "key": "Viewing a saved revision. Restore it to make it the current draft.",
+      "source": "Viewing a saved revision. Restore it to make it the current draft."
+    },
+    {
+      "id": "online:Viewing {slot0}",
+      "key": "Viewing {slot0}",
+      "source": "Viewing {slot0}"
+    },
+    {
+      "id": "online:View…",
+      "key": "View…",
+      "source": "View…"
+    },
+    {
+      "id": "online:Visibility",
+      "key": "Visibility",
+      "source": "Visibility"
+    },
+    {
+      "id": "online:Volume",
+      "key": "Volume",
+      "source": "Volume"
+    },
+    {
+      "id": "online:V{slot0} · {slot1}",
+      "key": "V{slot0} · {slot1}",
+      "source": "V{slot0} · {slot1}"
+    },
+    {
+      "id": "online:Wait for a pending compatibility check.",
+      "key": "Wait for a pending compatibility check.",
+      "source": "Wait for a pending compatibility check."
+    },
+    {
+      "id": "online:Wait for a pending generator check.",
+      "key": "Wait for a pending generator check.",
+      "source": "Wait for a pending generator check."
+    },
+    {
+      "id": "online:Wait for the provider call to return before cancelling.",
+      "key": "Wait for the provider call to return before cancelling.",
+      "source": "Wait for the provider call to return before cancelling."
+    },
+    {
+      "id": "online:Waiting",
+      "key": "Waiting",
+      "source": "Waiting"
+    },
+    {
+      "id": "online:Waiting for service capacity. Your place is saved.",
+      "key": "Waiting for service capacity. Your place is saved.",
+      "source": "Waiting for service capacity. Your place is saved."
+    },
+    {
+      "id": "online:Waived",
+      "key": "Waived",
+      "source": "Waived"
+    },
+    {
+      "id": "online:Warning",
+      "key": "Warning",
+      "source": "Warning"
+    },
+    {
+      "id": "online:Warrior attack",
+      "key": "Warrior attack",
+      "source": "Warrior attack"
+    },
+    {
+      "id": "online:Warrior health",
+      "key": "Warrior health",
+      "source": "Warrior health"
+    },
+    {
+      "id": "online:Warriors",
+      "key": "Warriors",
+      "source": "Warriors"
+    },
+    {
+      "id": "online:Warrush",
+      "key": "Warrush",
+      "source": "Warrush"
+    },
+    {
+      "id": "online:Watch AI play",
+      "key": "Watch AI play",
+      "source": "Watch AI play"
+    },
+    {
+      "id": "online:Watch in browser",
+      "key": "Watch in browser",
+      "source": "Watch in browser"
+    },
+    {
+      "id": "online:Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+      "key": "Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+      "source": "Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it."
+    },
+    {
+      "id": "online:Water",
+      "key": "Water",
+      "source": "Water"
+    },
+    {
+      "id": "online:Waves",
+      "key": "Waves",
+      "source": "Waves"
+    },
+    {
+      "id": "online:Webhook mode mismatch.",
+      "key": "Webhook mode mismatch.",
+      "source": "Webhook mode mismatch."
+    },
+    {
+      "id": "online:Weight",
+      "key": "Weight",
+      "source": "Weight"
+    },
+    {
+      "id": "online:Welcome to the colony",
+      "key": "Welcome to the colony",
+      "source": "Welcome to the colony"
+    },
+    {
+      "id": "online:Welcome, {value0}",
+      "key": "Welcome, {value0}",
+      "source": "Welcome, {value0}"
+    },
+    {
+      "id": "online:What changed",
+      "key": "What changed",
+      "source": "What changed"
+    },
+    {
+      "id": "online:What will your world look like?",
+      "key": "What will your world look like?",
+      "source": "What will your world look like?"
+    },
+    {
+      "id": "online:What would you like to create?",
+      "key": "What would you like to create?",
+      "source": "What would you like to create?"
+    },
+    {
+      "id": "online:Whole model",
+      "key": "Whole model",
+      "source": "Whole model"
+    },
+    {
+      "id": "online:Why hide this map? (shown to its owner)",
+      "key": "Why hide this map? (shown to its owner)",
+      "source": "Why hide this map? (shown to its owner)"
+    },
+    {
+      "id": "online:Wide",
+      "key": "Wide",
+      "source": "Wide"
+    },
+    {
+      "id": "online:Width",
+      "key": "Width",
+      "source": "Width"
+    },
+    {
+      "id": "online:Win rate",
+      "key": "Win rate",
+      "source": "Win rate"
+    },
+    {
+      "id": "online:Win rate {slot0}",
+      "key": "Win rate {slot0}",
+      "source": "Win rate {slot0}"
+    },
+    {
+      "id": "online:Win rate, {slot0} day",
+      "key": "Win rate, {slot0} day",
+      "source": {
+        "one": "Win rate, {slot0} day",
+        "other": "Win rate, {slot0} days"
+      }
+    },
+    {
+      "id": "online:Win rate, {slot0} days",
+      "key": "Win rate, {slot0} days",
+      "source": "Win rate, {slot0} days"
+    },
+    {
+      "id": "online:Winner",
+      "key": "Winner",
+      "source": "Winner"
+    },
+    {
+      "id": "online:Withdraw from library",
+      "key": "Withdraw from library",
+      "source": "Withdraw from library"
+    },
+    {
+      "id": "online:Withdraw published family",
+      "key": "Withdraw published family",
+      "source": "Withdraw published family"
+    },
+    {
+      "id": "online:Withdraw release",
+      "key": "Withdraw release",
+      "source": "Withdraw release"
+    },
+    {
+      "id": "online:Withdrawn",
+      "key": "Withdrawn",
+      "source": "Withdrawn"
+    },
+    {
+      "id": "online:Won",
+      "key": "Won",
+      "source": "Won"
+    },
+    {
+      "id": "online:Worker leases",
+      "key": "Worker leases",
+      "source": "Worker leases"
+    },
+    {
+      "id": "online:Worker slots",
+      "key": "Worker slots",
+      "source": "Worker slots"
+    },
+    {
+      "id": "online:Workers",
+      "key": "Workers",
+      "source": "Workers"
+    },
+    {
+      "id": "online:Working…",
+      "key": "Working…",
+      "source": "Working…"
+    },
+    {
+      "id": "online:Workspace view",
+      "key": "Workspace view",
+      "source": "Workspace view"
+    },
+    {
+      "id": "online:Wrong username or password.",
+      "key": "Wrong username or password.",
+      "source": "Wrong username or password."
+    },
+    {
+      "id": "online:YOUR COLONY",
+      "key": "YOUR COLONY",
+      "source": "YOUR COLONY"
+    },
+    {
+      "id": "online:YOUR COMPOSER",
+      "key": "YOUR COMPOSER",
+      "source": "YOUR COMPOSER"
+    },
+    {
+      "id": "online:Yes",
+      "key": "Yes",
+      "source": "Yes"
+    },
+    {
+      "id": "online:Yes, continue",
+      "key": "Yes, continue",
+      "source": "Yes, continue"
+    },
+    {
+      "id": "online:You",
+      "key": "You",
+      "source": "You"
+    },
+    {
+      "id": "online:You already own this product.",
+      "key": "You already own this product.",
+      "source": "You already own this product."
+    },
+    {
+      "id": "online:You already reported this map.",
+      "key": "You already reported this map.",
+      "source": "You already reported this map."
+    },
+    {
+      "id": "online:You are already in a queue.",
+      "key": "You are already in a queue.",
+      "source": "You are already in a queue."
+    },
+    {
+      "id": "online:You are muted.",
+      "key": "You are muted.",
+      "source": "You are muted."
+    },
+    {
+      "id": "online:You are not in this room.",
+      "key": "You are not in this room.",
+      "source": "You are not in this room."
+    },
+    {
+      "id": "online:You are sending messages too quickly.",
+      "key": "You are sending messages too quickly.",
+      "source": "You are sending messages too quickly."
+    },
+    {
+      "id": "online:You are signed in",
+      "key": "You are signed in",
+      "source": "You are signed in"
+    },
+    {
+      "id": "online:You are signed in as",
+      "key": "You are signed in as",
+      "source": "You are signed in as"
+    },
+    {
+      "id": "online:You are signed out everywhere. Your name is gone from your past matches, which now show “Deleted player”. Thanks for playing.",
+      "key": "You are signed out everywhere. Your name is gone from your past matches, which now show “Deleted player”. Thanks for playing.",
+      "source": "You are signed out everywhere. Your name is gone from your past matches, which now show “Deleted player”. Thanks for playing."
+    },
+    {
+      "id": "online:You can close this page.",
+      "key": "You can close this page.",
+      "source": "You can close this page."
+    },
+    {
+      "id": "online:You can only ban accounts with a lower role.",
+      "key": "You can only ban accounts with a lower role.",
+      "source": "You can only ban accounts with a lower role."
+    },
+    {
+      "id": "online:You can only delete accounts with a lower role.",
+      "key": "You can only delete accounts with a lower role.",
+      "source": "You can only delete accounts with a lower role."
+    },
+    {
+      "id": "online:You can only mute accounts with a lower role.",
+      "key": "You can only mute accounts with a lower role.",
+      "source": "You can only mute accounts with a lower role."
+    },
+    {
+      "id": "online:You can send a new message to try again.",
+      "key": "You can send a new message to try again.",
+      "source": "You can send a new message to try again."
+    },
+    {
+      "id": "online:You cannot ban yourself.",
+      "key": "You cannot ban yourself.",
+      "source": "You cannot ban yourself."
+    },
+    {
+      "id": "online:You cannot change your own role.",
+      "key": "You cannot change your own role.",
+      "source": "You cannot change your own role."
+    },
+    {
+      "id": "online:You cannot delete your own account here.",
+      "key": "You cannot delete your own account here.",
+      "source": "You cannot delete your own account here."
+    },
+    {
+      "id": "online:You declined a match; wait before queueing again.",
+      "key": "You declined a match; wait before queueing again.",
+      "source": "You declined a match; wait before queueing again."
+    },
+    {
+      "id": "online:You did not play in that match.",
+      "key": "You did not play in that match.",
+      "source": "You did not play in that match."
+    },
+    {
+      "id": "online:You have no seat in a running match with that id.",
+      "key": "You have no seat in a running match with that id.",
+      "source": "You have no seat in a running match with that id."
+    },
+    {
+      "id": "online:You have not shared any maps yet.",
+      "key": "You have not shared any maps yet.",
+      "source": "You have not shared any maps yet."
+    },
+    {
+      "id": "online:Your account",
+      "key": "Your account",
+      "source": "Your account"
+    },
+    {
+      "id": "online:Your account cannot host rooms.",
+      "key": "Your account cannot host rooms.",
+      "source": "Your account cannot host rooms."
+    },
+    {
+      "id": "online:Your account cannot join rooms.",
+      "key": "Your account cannot join rooms.",
+      "source": "Your account cannot join rooms."
+    },
+    {
+      "id": "online:Your account cannot play.",
+      "key": "Your account cannot play.",
+      "source": "Your account cannot play."
+    },
+    {
+      "id": "online:Your account could not be refreshed. Please try again shortly.",
+      "key": "Your account could not be refreshed. Please try again shortly.",
+      "source": "Your account could not be refreshed. Please try again shortly."
+    },
+    {
+      "id": "online:Your account draft changed. Save your work on this device, then restore the account draft before saving again.",
+      "key": "Your account draft changed. Save your work on this device, then restore the account draft before saving again.",
+      "source": "Your account draft changed. Save your work on this device, then restore the account draft before saving again."
+    },
+    {
+      "id": "online:Your account is now linked",
+      "key": "Your account is now linked",
+      "source": "Your account is now linked"
+    },
+    {
+      "id": "online:Your account was deleted",
+      "key": "Your account was deleted",
+      "source": "Your account was deleted"
+    },
+    {
+      "id": "online:Your browser could not prepare this photo.",
+      "key": "Your browser could not prepare this photo.",
+      "source": "Your browser could not prepare this photo."
+    },
+    {
+      "id": "online:Your building",
+      "key": "Your building",
+      "source": "Your building"
+    },
+    {
+      "id": "online:Your building drafts",
+      "key": "Your building drafts",
+      "source": "Your building drafts"
+    },
+    {
+      "id": "online:Your building references are limited to 64 MiB. Delete old project history before uploading more.",
+      "key": "Your building references are limited to 64 MiB. Delete old project history before uploading more.",
+      "source": "Your building references are limited to 64 MiB. Delete old project history before uploading more."
+    },
+    {
+      "id": "online:Your building workspace is full.",
+      "key": "Your building workspace is full.",
+      "source": "Your building workspace is full."
+    },
+    {
+      "id": "online:Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+      "key": "Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+      "source": "Your building workspace is limited to 64 MiB. Export and delete an old draft first."
+    },
+    {
+      "id": "online:Your changes were saved as a new skin.",
+      "key": "Your changes were saved as a new skin.",
+      "source": "Your changes were saved as a new skin."
+    },
+    {
+      "id": "online:Your collection has 100 designs. Delete an unused design to make room.",
+      "key": "Your collection has 100 designs. Delete an unused design to make room.",
+      "source": "Your collection has 100 designs. Delete an unused design to make room."
+    },
+    {
+      "id": "online:Your colony has a sound.",
+      "key": "Your colony has a sound.",
+      "source": "Your colony has a sound."
+    },
+    {
+      "id": "online:Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+      "key": "Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+      "source": "Your creation will appear here. You can inspect, edit, compare, and publish saved versions."
+    },
+    {
+      "id": "online:Your credit is reserved while the provider outcome is reconciled.",
+      "key": "Your credit is reserved while the provider outcome is reconciled.",
+      "source": "Your credit is reserved while the provider outcome is reconciled."
+    },
+    {
+      "id": "online:Your credit remains reserved while the provider outcome is reconciled.",
+      "key": "Your credit remains reserved while the provider outcome is reconciled.",
+      "source": "Your credit remains reserved while the provider outcome is reconciled."
+    },
+    {
+      "id": "online:Your credits are ready. Let’s create.",
+      "key": "Your credits are ready. Let’s create.",
+      "source": "Your credits are ready. Let’s create."
+    },
+    {
+      "id": "online:Your drafts",
+      "key": "Your drafts",
+      "source": "Your drafts"
+    },
+    {
+      "id": "online:Your first AI belongs here.",
+      "key": "Your first AI belongs here.",
+      "source": "Your first AI belongs here."
+    },
+    {
+      "id": "online:Your first design starts with New skin. Your work saves automatically.",
+      "key": "Your first design starts with New skin. Your work saves automatically.",
+      "source": "Your first design starts with New skin. Your work saves automatically."
+    },
+    {
+      "id": "online:Your first idea",
+      "key": "Your first idea",
+      "source": "Your first idea"
+    },
+    {
+      "id": "online:Your game keeps its current account. You can close this page.",
+      "key": "Your game keeps its current account. You can close this page.",
+      "source": "Your game keeps its current account. You can close this page."
+    },
+    {
+      "id": "online:Your idea or next change",
+      "key": "Your idea or next change",
+      "source": "Your idea or next change"
+    },
+    {
+      "id": "online:Your map is ready to play.",
+      "key": "Your map is ready to play.",
+      "source": "Your map is ready to play."
+    },
+    {
+      "id": "online:Your match is already starting.",
+      "key": "Your match is already starting.",
+      "source": "Your match is already starting."
+    },
+    {
+      "id": "online:Your next colony starts here. Play in your browser or join your friends.",
+      "key": "Your next colony starts here. Play in your browser or join your friends.",
+      "source": "Your next colony starts here. Play in your browser or join your friends."
+    },
+    {
+      "id": "online:Your next great map",
+      "key": "Your next great map",
+      "source": "Your next great map"
+    },
+    {
+      "id": "online:Your next soundtrack",
+      "key": "Your next soundtrack",
+      "source": "Your next soundtrack"
+    },
+    {
+      "id": "online:Your next world starts with an idea.",
+      "key": "Your next world starts with an idea.",
+      "source": "Your next world starts with an idea."
+    },
+    {
+      "id": "online:Your profile",
+      "key": "Your profile",
+      "source": "Your profile"
+    },
+    {
+      "id": "online:Your projects will be saved here.",
+      "key": "Your projects will be saved here.",
+      "source": "Your projects will be saved here."
+    },
+    {
+      "id": "online:Your purchases",
+      "key": "Your purchases",
+      "source": "Your purchases"
+    },
+    {
+      "id": "online:Your saved building remains available in Building Studio.",
+      "key": "Your saved building remains available in Building Studio.",
+      "source": "Your saved building remains available in Building Studio."
+    },
+    {
+      "id": "online:Your set",
+      "key": "Your set",
+      "source": "Your set"
+    },
+    {
+      "id": "online:Your swarm, in the game",
+      "key": "Your swarm, in the game",
+      "source": "Your swarm, in the game"
+    },
+    {
+      "id": "online:Your terrain",
+      "key": "Your terrain",
+      "source": "Your terrain"
+    },
+    {
+      "id": "online:Your uploaded photo",
+      "key": "Your uploaded photo",
+      "source": "Your uploaded photo"
+    },
+    {
+      "id": "online:Your workspace has 100 drafts. Delete an old draft first.",
+      "key": "Your workspace has 100 drafts. Delete an old draft first.",
+      "source": "Your workspace has 100 drafts. Delete an old draft first."
+    },
+    {
+      "id": "online:Your world is taking shape…",
+      "key": "Your world is taking shape…",
+      "source": "Your world is taking shape…"
+    },
+    {
+      "id": "online:You’re invited",
+      "key": "You’re invited",
+      "source": "You’re invited"
+    },
+    {
+      "id": "online:Zoom",
+      "key": "Zoom",
+      "source": "Zoom"
+    },
+    {
+      "id": "online:Zoom in",
+      "key": "Zoom in",
+      "source": "Zoom in"
+    },
+    {
+      "id": "online:Zoom in (+)",
+      "key": "Zoom in (+)",
+      "source": "Zoom in (+)"
+    },
+    {
+      "id": "online:Zoom out",
+      "key": "Zoom out",
+      "source": "Zoom out"
+    },
+    {
+      "id": "online:Zoom out (−)",
+      "key": "Zoom out (−)",
+      "source": "Zoom out (−)"
+    },
+    {
+      "id": "online:a few seconds left",
+      "key": "a few seconds left",
+      "source": "a few seconds left"
+    },
+    {
+      "id": "online:aborted",
+      "key": "aborted",
+      "source": "aborted"
+    },
+    {
+      "id": "online:about {minutes} min left",
+      "key": "about {minutes} min left",
+      "source": "about {minutes} min left"
+    },
+    {
+      "id": "online:about {seconds} s left",
+      "key": "about {seconds} s left",
+      "source": "about {seconds} s left"
+    },
+    {
+      "id": "online:account export",
+      "key": "account export",
+      "source": "account export"
+    },
+    {
+      "id": "online:and use this link again.",
+      "key": "and use this link again.",
+      "source": "and use this link again."
+    },
+    {
+      "id": "online:as a guest, and sign in later to keep your games and rating.",
+      "key": "as a guest, and sign in later to keep your games and rating.",
+      "source": "as a guest, and sign in later to keep your games and rating."
+    },
+    {
+      "id": "online:b-",
+      "key": "b-",
+      "source": "b-"
+    },
+    {
+      "id": "online:banned",
+      "key": "banned",
+      "source": "banned"
+    },
+    {
+      "id": "online:browser sign-in completed",
+      "key": "browser sign-in completed",
+      "source": "browser sign-in completed"
+    },
+    {
+      "id": "online:browser sign-in completed from web session",
+      "key": "browser sign-in completed from web session",
+      "source": "browser sign-in completed from web session"
+    },
+    {
+      "id": "online:build",
+      "key": "build",
+      "source": "build"
+    },
+    {
+      "id": "online:building library",
+      "key": "building library",
+      "source": "building library"
+    },
+    {
+      "id": "online:by ",
+      "key": "by ",
+      "source": "by "
+    },
+    {
+      "id": "online:by {slot0} · updated {slot1}",
+      "key": "by {slot0} · updated {slot1}",
+      "source": "by {slot0} · updated {slot1}"
+    },
+    {
+      "id": "online:by {slot0}{slot1}",
+      "key": "by {slot0}{slot1}",
+      "source": "by {slot0}{slot1}"
+    },
+    {
+      "id": "online:cancelled",
+      "key": "cancelled",
+      "source": "cancelled"
+    },
+    {
+      "id": "online:check needs",
+      "key": "check needs",
+      "source": "check needs"
+    }
+  ]
+}

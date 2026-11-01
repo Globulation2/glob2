@@ -1,0 +1,10 @@
+{
+  "method": "Exact extracted production constructor/destructor/getData/setData/strmlen and four marshaling functions, wrapped in a minimal class declaration without font or game dependencies. SDL_Swap32BE local builtin wrapper, unrelated32-bit recipient/type fields preserved.",
+  "source_files": {
+    "src/game/orders/OrderMisc.cpp": "cb4ec6a38b389bbe03e152923d5ad8d8b4176a5f29c6646077de670a2cd175df",
+    "src/game/orders/Order.h": "3ad4307c80124e10403efa1a441e3d732052d22c29a43fc4a2166d02df1ccd0d",
+    "src/common/Utilities.cpp": "486da13afc8459b689b3cb165b58a95c0349643cfa8928caa1184259cffb7856",
+    "src/common/Marshaling.h": "c026ed52fc31314b9edf7b9c8007931f15ec32c3e79fa02638bcee408ecb8a6e"
+  },
+  "source_revision": "2afe891014845d0c44447e09db08a2a67754323d"
+}

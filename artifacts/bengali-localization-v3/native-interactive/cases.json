@@ -1,0 +1,13 @@
+{
+  "revision": "2afe891014845d0c44447e09db08a2a67754323d",
+  "valid_bengali": "বাংলা১",
+  "over_limit_bengali": "ককককককককক্ষ",
+  "valid_ascii_32": "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
+  "expected_byte_limit": 32,
+  "scope": "One complete SDL text commit for each UI type_text call. Excludes platform IME composition and mobile keyboard behavior.",
+  "utf8_bytes": {
+    "valid_bengali": 18,
+    "over_limit_bengali": 33,
+    "valid_ascii_32": 32
+  }
+}

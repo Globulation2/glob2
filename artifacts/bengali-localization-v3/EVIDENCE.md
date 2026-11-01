@@ -1,0 +1,16 @@
+# Bengali localization evidence — verification in progress
+
+PR: https://github.com/Globulation2/glob2/pull/1315
+Current source branch: 1d36a7031bbd14204648b48048f0e01983f7ccc1. V3 catalog/source hashes are in `installed-source-binding.json`; actual build producers retain their own identities.
+
+All 6,237 entries (3,395 native, 2,842 online) are agent-reviewed, not native-human-certified. The V3 assembler checks exact equality of 6,235 previously read pairs and actual author, semantic, editorial, final semantic and adversarial readings for the two new win-probability messages added by master. Earlier V2 records preserve actual V1 readings plus six fresh AI-tag reviews. There are 162 individually explained English-identical exceptions. `source-provenance.json` records the exact native 23 / online 62 snapshot and `installed-source-binding.json` binds it to the integrated clean source.
+
+Google Translation drafting reserves 188,884 characters across 63 attempts, conservatively US$3.77768 without free credits, below the authorized US$10 ceiling. Both immutable ledgers are identified by `combined-cloud-accounting.json`. No credentials are published.
+
+Current strict native validation passes with no structural errors and no Bengali missing/untranslated entries. The other languages' two pending stat labels are inherited from master. Translation/program tests 23 and mocked cloud tests 16 pass. The corrected command follows a retained module-import invocation error; that error is not a product-test failure. The unchanged website component retains actual 18 browser desktop/phone checks, authenticated account/room workflows, 86 focused i18n/API tests, typecheck and lint; `website-component-binding.json` proves the platform tree is identical.
+
+Historical V1/V2 native/font/interactive images remain supplemental and retain their real source/catalog identities. Later native byte limits, avatar/room/map text fixes, two new labels, and the final legacy 254-byte chat guard require scoped fresh execution. Do not interpret old screenshots as testing those changes. `chat-wire-boundary` preserves executed production-method reproduction of the 8-bit length boundary. The latest master also changed desktop HUD spacing; actual integration HUD evidence is required from the PR merge that includes it.
+
+Pending release audit gates: desktop_rendering is pending or lacks evidence, phone_rendering is pending or lacks evidence, browser_startup is pending or lacks evidence, native_platforms is pending or lacks evidence, browser_platforms is pending or lacks evidence, mobile_platforms is pending or lacks evidence. This evidence does not claim merge readiness. New native, browser and platform results will be added when actually executed. Unexecuted coverage remains pending.
+
+`published-files.json` enumerates newly published V3/dependency files. Earlier version inventories remain under their original directories. SDKs, dependency trees, app archives, private runtime sessions and test profiles are excluded. This dedicated evidence branch is not part of the game source branch.

@@ -1,0 +1,18 @@
+{
+  "reviewer": "/root/bengali_adversary",
+  "read_only": true,
+  "finding": "255 text bytes become256 bytes including NUL; constructor casts256 toUint8 zero; decoder compares zero against strmlen256 and rejects. Maximum roundtrip text254 bytes.",
+  "actual_execution": [
+    "ascii254 input_bytes=254 wire_text_including_NUL=255 uint8_length=255 decoder_accepts=1 exact_text_roundtrip=1",
+    "ascii255 input_bytes=255 wire_text_including_NUL=256 uint8_length=0 decoder_accepts=0 exact_text_roundtrip=0",
+    "bengali254 input_bytes=254 wire_text_including_NUL=255 uint8_length=255 decoder_accepts=1 exact_text_roundtrip=1",
+    "bengali255 input_bytes=255 wire_text_including_NUL=256 uint8_length=0 decoder_accepts=0 exact_text_roundtrip=0"
+  ],
+  "recommendation": "Noncommander TextField maxBytes=ORDER_TEXT_MESSAGE_MAX_LEN-2 (254); retain whole-edit rejection and commander0. No constructor/decoder/protocol or simulation changes.",
+  "source_scope": "Exact production methods extracted into minimal no-font standalone harness, not full game UI execution.",
+  "reproducer_sha256": "2a306d765d5ca1bf75343b9195ebb233abc0ba29978b9945ed825e74fefb84ba",
+  "executable_sha256": "eb1c5d41a747531db72a24923cc944b76b170f8ce9b9ef34f9a034d31bad0780",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "verdict": "root boundary concern confirmed",
+  "untested": "Fresh full UI acceptance and affected native regression tests belong to root final validation."
+}

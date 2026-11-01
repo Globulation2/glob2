@@ -1,0 +1,23 @@
+{
+  "project": "bradley-personal-20261027",
+  "locale": "bn",
+  "reserved_characters": 188884,
+  "attempts": 63,
+  "estimated_usd_without_free_credit": "3.77768",
+  "authorized_ceiling_usd": "10",
+  "ledgers": [
+    {
+      "path": "artifacts/bengali-localization/cloud/bn/accounting.json",
+      "sha256": "412d7d9b5dda6c6a7e1f9781de83046a7203b52532ae9ba57071d4614423c373",
+      "reserved_characters": 188634,
+      "attempts": 62
+    },
+    {
+      "path": "artifacts/bengali-localization-v3/cloud/bn/accounting.json",
+      "sha256": "1eb3f3e5d76f0b88a27f0bb441dec19a12e78d98abe68b22e1f32f72dab4a7f4",
+      "reserved_characters": 250,
+      "attempts": 1
+    }
+  ],
+  "new_delta": "Two new English stat messages added by master23; one successful250-character request. Existing six AI-label transfer used no extra API requests."
+}

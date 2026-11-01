@@ -1,0 +1,815 @@
+{
+  "id": "online-online-002",
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:All properties and capabilities",
+      "key": "All properties and capabilities",
+      "source": "All properties and capabilities"
+    },
+    {
+      "id": "online:All rankings",
+      "key": "All rankings",
+      "source": "All rankings"
+    },
+    {
+      "id": "online:All sets",
+      "key": "All sets",
+      "source": "All sets"
+    },
+    {
+      "id": "online:All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+      "key": "All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+      "source": "All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people."
+    },
+    {
+      "id": "online:Allowed resource keys (null uses habitats)",
+      "key": "Allowed resource keys (null uses habitats)",
+      "source": "Allowed resource keys (null uses habitats)"
+    },
+    {
+      "id": "online:Already in the game? Choose",
+      "key": "Already in the game? Choose",
+      "source": "Already in the game? Choose"
+    },
+    {
+      "id": "online:Always available",
+      "key": "Always available",
+      "source": "Always available"
+    },
+    {
+      "id": "online:An account is required to publish publicly.",
+      "key": "An account is required to publish publicly.",
+      "source": "An account is required to publish publicly."
+    },
+    {
+      "id": "online:An available Building credit is needed to chat or build.",
+      "key": "An available Building credit is needed to chat or build.",
+      "source": "An available Building credit is needed to chat or build."
+    },
+    {
+      "id": "online:An available Terrain credit is needed to chat or build.",
+      "key": "An available Terrain credit is needed to chat or build.",
+      "source": "An available Terrain credit is needed to chat or build."
+    },
+    {
+      "id": "online:An available {value0} credit is needed.",
+      "key": "An available {value0} credit is needed.",
+      "source": "An available {value0} credit is needed."
+    },
+    {
+      "id": "online:Analytics display is disabled.",
+      "key": "Analytics display is disabled.",
+      "source": "Analytics display is disabled."
+    },
+    {
+      "id": "online:Animation phase",
+      "key": "Animation phase",
+      "source": "Animation phase"
+    },
+    {
+      "id": "online:Another session saved revision {slot0}. Your local edits are preserved.",
+      "key": "Another session saved revision {slot0}. Your local edits are preserved.",
+      "source": "Another session saved revision {slot0}. Your local edits are preserved."
+    },
+    {
+      "id": "online:Another upload is in progress. Please retry shortly.",
+      "key": "Another upload is in progress. Please retry shortly.",
+      "source": "Another upload is in progress. Please retry shortly."
+    },
+    {
+      "id": "online:Any",
+      "key": "Any",
+      "source": "Any"
+    },
+    {
+      "id": "online:Any size",
+      "key": "Any size",
+      "source": "Any size"
+    },
+    {
+      "id": "online:Any status",
+      "key": "Any status",
+      "source": "Any status"
+    },
+    {
+      "id": "online:Any teams",
+      "key": "Any teams",
+      "source": "Any teams"
+    },
+    {
+      "id": "online:Anyone with the link",
+      "key": "Anyone with the link",
+      "source": "Anyone with the link"
+    },
+    {
+      "id": "online:Appearance",
+      "key": "Appearance",
+      "source": "Appearance"
+    },
+    {
+      "id": "online:Applied",
+      "key": "Applied",
+      "source": "Applied"
+    },
+    {
+      "id": "online:Applies to",
+      "key": "Applies to",
+      "source": "Applies to"
+    },
+    {
+      "id": "online:Apply soundtrack loudness targets and peak limiting",
+      "key": "Apply soundtrack loudness targets and peak limiting",
+      "source": "Apply soundtrack loudness targets and peak limiting"
+    },
+    {
+      "id": "online:Apply to {slot0}",
+      "key": "Apply to {slot0}",
+      "source": "Apply to {slot0}"
+    },
+    {
+      "id": "online:Artifact view",
+      "key": "Artifact view",
+      "source": "Artifact view"
+    },
+    {
+      "id": "online:Artwork",
+      "key": "Artwork",
+      "source": "Artwork"
+    },
+    {
+      "id": "online:Artwork and font credits",
+      "key": "Artwork and font credits",
+      "source": "Artwork and font credits"
+    },
+    {
+      "id": "online:Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+      "key": "Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+      "source": "Artwork could not be prepared for some older devices. Those devices will use the default colony."
+    },
+    {
+      "id": "online:Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+      "key": "Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+      "source": "Artwork for some older devices is still preparing. Those devices may temporarily show the default colony."
+    },
+    {
+      "id": "online:Assemble the family",
+      "key": "Assemble the family",
+      "source": "Assemble the family"
+    },
+    {
+      "id": "online:Assemble the pack",
+      "key": "Assemble the pack",
+      "source": "Assemble the pack"
+    },
+    {
+      "id": "online:At least {p0} characters.",
+      "key": "At least {p0} characters.",
+      "source": "At least {p0} characters."
+    },
+    {
+      "id": "online:At least {p0} seats must be taken.",
+      "key": "At least {p0} seats must be taken.",
+      "source": "At least {p0} seats must be taken."
+    },
+    {
+      "id": "online:Attached diagnostics",
+      "key": "Attached diagnostics",
+      "source": "Attached diagnostics"
+    },
+    {
+      "id": "online:Attack power",
+      "key": "Attack power",
+      "source": "Attack power"
+    },
+    {
+      "id": "online:Attempts",
+      "key": "Attempts",
+      "source": "Attempts"
+    },
+    {
+      "id": "online:Audible comparison version",
+      "key": "Audible comparison version",
+      "source": "Audible comparison version"
+    },
+    {
+      "id": "online:Audio quality checks",
+      "key": "Audio quality checks",
+      "source": "Audio quality checks"
+    },
+    {
+      "id": "online:Audit history",
+      "key": "Audit history",
+      "source": "Audit history"
+    },
+    {
+      "id": "online:Authenticated account activity; anonymous visitors are excluded.",
+      "key": "Authenticated account activity; anonymous visitors are excluded.",
+      "source": "Authenticated account activity; anonymous visitors are excluded."
+    },
+    {
+      "id": "online:Author-reported generator",
+      "key": "Author-reported generator",
+      "source": "Author-reported generator"
+    },
+    {
+      "id": "online:Authoring guide",
+      "key": "Authoring guide",
+      "source": "Authoring guide"
+    },
+    {
+      "id": "online:Authoring guide ↗",
+      "key": "Authoring guide ↗",
+      "source": "Authoring guide ↗"
+    },
+    {
+      "id": "online:Average successful completion time",
+      "key": "Average successful completion time",
+      "source": "Average successful completion time"
+    },
+    {
+      "id": "online:Awaiting provider outcome",
+      "key": "Awaiting provider outcome",
+      "source": "Awaiting provider outcome"
+    },
+    {
+      "id": "online:Awaiting validation",
+      "key": "Awaiting validation",
+      "source": "Awaiting validation"
+    },
+    {
+      "id": "online:Back to Globulation 2",
+      "key": "Back to Globulation 2",
+      "source": "Back to Globulation 2"
+    },
+    {
+      "id": "online:Back to My skins",
+      "key": "Back to My skins",
+      "source": "Back to My skins"
+    },
+    {
+      "id": "online:Back to sign in",
+      "key": "Back to sign in",
+      "source": "Back to sign in"
+    },
+    {
+      "id": "online:Back to the home page",
+      "key": "Back to the home page",
+      "source": "Back to the home page"
+    },
+    {
+      "id": "online:Background color",
+      "key": "Background color",
+      "source": "Background color"
+    },
+    {
+      "id": "online:Background material",
+      "key": "Background material",
+      "source": "Background material"
+    },
+    {
+      "id": "online:Background noise",
+      "key": "Background noise",
+      "source": "Background noise"
+    },
+    {
+      "id": "online:Balanced",
+      "key": "Balanced",
+      "source": "Balanced"
+    },
+    {
+      "id": "online:Ban",
+      "key": "Ban",
+      "source": "Ban"
+    },
+    {
+      "id": "online:Ban {value0}? This signs them out everywhere.",
+      "key": "Ban {value0}? This signs them out everywhere.",
+      "source": "Ban {value0}? This signs them out everywhere."
+    },
+    {
+      "id": "online:Band width",
+      "key": "Band width",
+      "source": "Band width"
+    },
+    {
+      "id": "online:Banned",
+      "key": "Banned",
+      "source": "Banned"
+    },
+    {
+      "id": "online:Base artwork",
+      "key": "Base artwork",
+      "source": "Base artwork"
+    },
+    {
+      "id": "online:Behind",
+      "key": "Behind",
+      "source": "Behind"
+    },
+    {
+      "id": "online:Best {slot0}",
+      "key": "Best {slot0}",
+      "source": "Best {slot0}"
+    },
+    {
+      "id": "online:Both",
+      "key": "Both",
+      "source": "Both"
+    },
+    {
+      "id": "online:Boundary style",
+      "key": "Boundary style",
+      "source": "Boundary style"
+    },
+    {
+      "id": "online:Branching spires rising from a mound.",
+      "key": "Branching spires rising from a mound.",
+      "source": "Branching spires rising from a mound."
+    },
+    {
+      "id": "online:Broken",
+      "key": "Broken",
+      "source": "Broken"
+    },
+    {
+      "id": "online:Browse",
+      "key": "Browse",
+      "source": "Browse"
+    },
+    {
+      "id": "online:Browse library",
+      "key": "Browse library",
+      "source": "Browse library"
+    },
+    {
+      "id": "online:Browse maps",
+      "key": "Browse maps",
+      "source": "Browse maps"
+    },
+    {
+      "id": "online:Browse the library",
+      "key": "Browse the library",
+      "source": "Browse the library"
+    },
+    {
+      "id": "online:Browser recovery is unavailable. Keep this page open until changes are saved.",
+      "key": "Browser recovery is unavailable. Keep this page open until changes are saved.",
+      "source": "Browser recovery is unavailable. Keep this page open until changes are saved."
+    },
+    {
+      "id": "online:Brush",
+      "key": "Brush",
+      "source": "Brush"
+    },
+    {
+      "id": "online:Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+      "key": "Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+      "source": "Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless."
+    },
+    {
+      "id": "online:Brush paints",
+      "key": "Brush paints",
+      "source": "Brush paints"
+    },
+    {
+      "id": "online:Brush size ",
+      "key": "Brush size ",
+      "source": "Brush size "
+    },
+    {
+      "id": "online:Build",
+      "key": "Build",
+      "source": "Build"
+    },
+    {
+      "id": "online:Build a consistent world with custom terrain, resources, and artwork.",
+      "key": "Build a consistent world with custom terrain, resources, and artwork.",
+      "source": "Build a consistent world with custom terrain, resources, and artwork."
+    },
+    {
+      "id": "online:Build details",
+      "key": "Build details",
+      "source": "Build details"
+    },
+    {
+      "id": "online:Build in AI Map Studio",
+      "key": "Build in AI Map Studio",
+      "source": "Build in AI Map Studio"
+    },
+    {
+      "id": "online:Build in AI Music Studio",
+      "key": "Build in AI Music Studio",
+      "source": "Build in AI Music Studio"
+    },
+    {
+      "id": "online:Build in AI Studio",
+      "key": "Build in AI Studio",
+      "source": "Build in AI Studio"
+    },
+    {
+      "id": "online:Build the playable map",
+      "key": "Build the playable map",
+      "source": "Build the playable map"
+    },
+    {
+      "id": "online:Build wooded hills with wide routes between colonies",
+      "key": "Build wooded hills with wide routes between colonies",
+      "source": "Build wooded hills with wide routes between colonies"
+    },
+    {
+      "id": "online:Building",
+      "key": "Building",
+      "source": "Building"
+    },
+    {
+      "id": "online:Building Studio",
+      "key": "Building Studio",
+      "source": "Building Studio"
+    },
+    {
+      "id": "online:Building Studio is disabled on this instance. Your saved projects remain available.",
+      "key": "Building Studio is disabled on this instance. Your saved projects remain available.",
+      "source": "Building Studio is disabled on this instance. Your saved projects remain available."
+    },
+    {
+      "id": "online:Building Studio is disabled.",
+      "key": "Building Studio is disabled.",
+      "source": "Building Studio is disabled."
+    },
+    {
+      "id": "online:Building color",
+      "key": "Building color",
+      "source": "Building color"
+    },
+    {
+      "id": "online:Building color preview",
+      "key": "Building color preview",
+      "source": "Building color preview"
+    },
+    {
+      "id": "online:Building design conversation",
+      "key": "Building design conversation",
+      "source": "Building design conversation"
+    },
+    {
+      "id": "online:Building family",
+      "key": "Building family",
+      "source": "Building family"
+    },
+    {
+      "id": "online:Building family editor",
+      "key": "Building family editor",
+      "source": "Building family editor"
+    },
+    {
+      "id": "online:Building library",
+      "key": "Building library",
+      "source": "Building library"
+    },
+    {
+      "id": "online:Building projects",
+      "key": "Building projects",
+      "source": "Building projects"
+    },
+    {
+      "id": "online:Building-credit sales are not enabled.",
+      "key": "Building-credit sales are not enabled.",
+      "source": "Building-credit sales are not enabled."
+    },
+    {
+      "id": "online:Buildings",
+      "key": "Buildings",
+      "source": "Buildings"
+    },
+    {
+      "id": "online:Buildings allowed",
+      "key": "Buildings allowed",
+      "source": "Buildings allowed"
+    },
+    {
+      "id": "online:Buildings and upgrade stages",
+      "key": "Buildings and upgrade stages",
+      "source": "Buildings and upgrade stages"
+    },
+    {
+      "id": "online:Buildings under construction",
+      "key": "Buildings under construction",
+      "source": "Buildings under construction"
+    },
+    {
+      "id": "online:Buildings: latest verified match against recent average",
+      "key": "Buildings: latest verified match against recent average",
+      "source": "Buildings: latest verified match against recent average"
+    },
+    {
+      "id": "online:Bundled JavaScript file",
+      "key": "Bundled JavaScript file",
+      "source": "Bundled JavaScript file"
+    },
+    {
+      "id": "online:Buy {slot0}",
+      "key": "Buy {slot0}",
+      "source": "Buy {slot0}"
+    },
+    {
+      "id": "online:Buy {slot0} credit · {slot1}",
+      "key": "Buy {slot0} credit · {slot1}",
+      "source": {
+        "one": "Buy {slot0} credit · {slot1}",
+        "other": "Buy {slot0} credits · {slot1}"
+      }
+    },
+    {
+      "id": "online:Buy {slot0} credits · {slot1}",
+      "key": "Buy {slot0} credits · {slot1}",
+      "source": "Buy {slot0} credits · {slot1}"
+    },
+    {
+      "id": "online:By a map generator",
+      "key": "By a map generator",
+      "source": "By a map generator"
+    },
+    {
+      "id": "online:By generator",
+      "key": "By generator",
+      "source": "By generator"
+    },
+    {
+      "id": "online:By map",
+      "key": "By map",
+      "source": "By map"
+    },
+    {
+      "id": "online:By queue",
+      "key": "By queue",
+      "source": "By queue"
+    },
+    {
+      "id": "online:By {slot0}",
+      "key": "By {slot0}",
+      "source": "By {slot0}"
+    },
+    {
+      "id": "online:By {slot0} · {slot1} likes · {slot2}",
+      "key": "By {slot0} · {slot1} likes · {slot2}",
+      "source": "By {slot0} · {slot1} likes · {slot2}"
+    },
+    {
+      "id": "online:By {slot0} · {slot1} terrain · {slot2} resources",
+      "key": "By {slot0} · {slot1} terrain · {slot2} resources",
+      "source": {
+        "one": "By {slot0} · {slot1} terrain · {slot2} resources",
+        "other": "By {slot0} · {slot1} terrains · {slot2} resources"
+      }
+    },
+    {
+      "id": "online:By {slot0} · {slot1} terrains · {slot2} resources",
+      "key": "By {slot0} · {slot1} terrains · {slot2} resources",
+      "source": "By {slot0} · {slot1} terrains · {slot2} resources"
+    },
+    {
+      "id": "online:By {slot0} · {slot1} · {slot2}",
+      "key": "By {slot0} · {slot1} · {slot2}",
+      "source": "By {slot0} · {slot1} · {slot2}"
+    },
+    {
+      "id": "online:B{slot0}",
+      "key": "B{slot0}",
+      "source": "B{slot0}"
+    },
+    {
+      "id": "online:CC BY",
+      "key": "CC BY",
+      "source": "CC BY"
+    },
+    {
+      "id": "online:CC BY 4.0",
+      "key": "CC BY 4.0",
+      "source": "CC BY 4.0"
+    },
+    {
+      "id": "online:CC BY 4.0 — credit required",
+      "key": "CC BY 4.0 — credit required",
+      "source": "CC BY 4.0 — credit required"
+    },
+    {
+      "id": "online:CC BY-SA 4.0",
+      "key": "CC BY-SA 4.0",
+      "source": "CC BY-SA 4.0"
+    },
+    {
+      "id": "online:CC-BY-4.0",
+      "key": "CC-BY-4.0",
+      "source": "CC-BY-4.0"
+    },
+    {
+      "id": "online:CC-BY-SA-4.0",
+      "key": "CC-BY-SA-4.0",
+      "source": "CC-BY-SA-4.0"
+    },
+    {
+      "id": "online:CC0",
+      "key": "CC0",
+      "source": "CC0"
+    },
+    {
+      "id": "online:CC0 1.0",
+      "key": "CC0 1.0",
+      "source": "CC0 1.0"
+    },
+    {
+      "id": "online:CC0 — public domain",
+      "key": "CC0 — public domain",
+      "source": "CC0 — public domain"
+    },
+    {
+      "id": "online:CC0-1.0",
+      "key": "CC0-1.0",
+      "source": "CC0-1.0"
+    },
+    {
+      "id": "online:CHOOSE FINAL VIEW",
+      "key": "CHOOSE FINAL VIEW",
+      "source": "CHOOSE FINAL VIEW"
+    },
+    {
+      "id": "online:COLONY STUDIO",
+      "key": "COLONY STUDIO",
+      "source": "COLONY STUDIO"
+    },
+    {
+      "id": "online:COMMUNITY SOUNDTRACKS",
+      "key": "COMMUNITY SOUNDTRACKS",
+      "source": "COMMUNITY SOUNDTRACKS"
+    },
+    {
+      "id": "online:COMMUNITY · LOCAL PLAY",
+      "key": "COMMUNITY · LOCAL PLAY",
+      "source": "COMMUNITY · LOCAL PLAY"
+    },
+    {
+      "id": "online:CURRENT POSE",
+      "key": "CURRENT POSE",
+      "source": "CURRENT POSE"
+    },
+    {
+      "id": "online:Cabino",
+      "key": "Cabino",
+      "source": "Cabino"
+    },
+    {
+      "id": "online:Cache write tokens",
+      "key": "Cache write tokens",
+      "source": "Cache write tokens"
+    },
+    {
+      "id": "online:Cached input",
+      "key": "Cached input",
+      "source": "Cached input"
+    },
+    {
+      "id": "online:Cached input tokens",
+      "key": "Cached input tokens",
+      "source": "Cached input tokens"
+    },
+    {
+      "id": "online:Calm",
+      "key": "Calm",
+      "source": "Calm"
+    },
+    {
+      "id": "online:Calm → Building → Combat → Calm · eight seconds per mood",
+      "key": "Calm → Building → Combat → Calm · eight seconds per mood",
+      "source": "Calm → Building → Combat → Calm · eight seconds per mood"
+    },
+    {
+      "id": "online:Camera angle ",
+      "key": "Camera angle ",
+      "source": "Camera angle "
+    },
+    {
+      "id": "online:Camera view",
+      "key": "Camera view",
+      "source": "Camera view"
+    },
+    {
+      "id": "online:Can be farmed",
+      "key": "Can be farmed",
+      "source": "Can be farmed"
+    },
+    {
+      "id": "online:Can be retried",
+      "key": "Can be retried",
+      "source": "Can be retried"
+    },
+    {
+      "id": "online:Cancel",
+      "key": "Cancel",
+      "source": "Cancel"
+    },
+    {
+      "id": "online:Cancel editing",
+      "key": "Cancel editing",
+      "source": "Cancel editing"
+    },
+    {
+      "id": "online:Cancel generation",
+      "key": "Cancel generation",
+      "source": "Cancel generation"
+    },
+    {
+      "id": "online:Cancel report",
+      "key": "Cancel report",
+      "source": "Cancel report"
+    },
+    {
+      "id": "online:Cancel request",
+      "key": "Cancel request",
+      "source": "Cancel request"
+    },
+    {
+      "id": "online:Cancel upload",
+      "key": "Cancel upload",
+      "source": "Cancel upload"
+    },
+    {
+      "id": "online:Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.",
+      "key": "Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.",
+      "source": "Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it."
+    },
+    {
+      "id": "online:Cancellation requested",
+      "key": "Cancellation requested",
+      "source": "Cancellation requested"
+    },
+    {
+      "id": "online:Cancelled",
+      "key": "Cancelled",
+      "source": "Cancelled"
+    },
+    {
+      "id": "online:Candidate preview · may need repairs",
+      "key": "Candidate preview · may need repairs",
+      "source": "Candidate preview · may need repairs"
+    },
+    {
+      "id": "online:Candidate previews & reports",
+      "key": "Candidate previews & reports",
+      "source": "Candidate previews & reports"
+    },
+    {
+      "id": "online:Candidate unavailable.",
+      "key": "Candidate unavailable.",
+      "source": "Candidate unavailable."
+    },
+    {
+      "id": "online:Candidate {slot0}",
+      "key": "Candidate {slot0}",
+      "source": "Candidate {slot0}"
+    },
+    {
+      "id": "online:Canonical package SHA-256: {slot0}",
+      "key": "Canonical package SHA-256: {slot0}",
+      "source": "Canonical package SHA-256: {slot0}"
+    },
+    {
+      "id": "online:Cash amount",
+      "key": "Cash amount",
+      "source": "Cash amount"
+    },
+    {
+      "id": "online:Castor",
+      "key": "Castor",
+      "source": "Castor"
+    },
+    {
+      "id": "online:Catalog",
+      "key": "Catalog",
+      "source": "Catalog"
+    },
+    {
+      "id": "online:Categorical",
+      "key": "Categorical",
+      "source": "Categorical"
+    },
+    {
+      "id": "online:Change",
+      "key": "Change",
+      "source": "Change"
+    },
+    {
+      "id": "online:Change role",
+      "key": "Change role",
+      "source": "Change role"
+    },
+    {
+      "id": "online:Change shape ⌄",
+      "key": "Change shape ⌄",
+      "source": "Change shape ⌄"
+    }
+  ]
+}

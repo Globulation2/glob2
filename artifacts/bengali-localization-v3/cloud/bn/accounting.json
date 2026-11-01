@@ -1,0 +1,18 @@
+{
+  "project": "bradley-personal-20261027",
+  "locale": "bn",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "usd_per_million_characters": "20",
+  "reserved_characters": 250,
+  "attempts": [
+    {
+      "characters": 250,
+      "request_sha256": "452d4d8ef832607b187f71333e151677b17127ff58cd76a7af39504716333d9c",
+      "sources": [
+        "Win probability",
+        "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history."
+      ],
+      "status": "completed"
+    }
+  ]
+}

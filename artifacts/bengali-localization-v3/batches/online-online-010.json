@@ -1,0 +1,812 @@
+{
+  "id": "online-online-010",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Prepare retry",
+      "key": "Prepare retry",
+      "source": "Prepare retry"
+    },
+    {
+      "id": "online:Prepare the design",
+      "key": "Prepare the design",
+      "source": "Prepare the design"
+    },
+    {
+      "id": "online:Prepare this release",
+      "key": "Prepare this release",
+      "source": "Prepare this release"
+    },
+    {
+      "id": "online:Preparing photo…",
+      "key": "Preparing photo…",
+      "source": "Preparing photo…"
+    },
+    {
+      "id": "online:Preparing your model…",
+      "key": "Preparing your model…",
+      "source": "Preparing your model…"
+    },
+    {
+      "id": "online:Prestige ",
+      "key": "Prestige ",
+      "source": "Prestige "
+    },
+    {
+      "id": "online:Prestige {slot0}",
+      "key": "Prestige {slot0}",
+      "source": "Prestige {slot0}"
+    },
+    {
+      "id": "online:Preview",
+      "key": "Preview",
+      "source": "Preview"
+    },
+    {
+      "id": "online:Preview current changes",
+      "key": "Preview current changes",
+      "source": "Preview current changes"
+    },
+    {
+      "id": "online:Preview game transitions",
+      "key": "Preview game transitions",
+      "source": "Preview game transitions"
+    },
+    {
+      "id": "online:Preview not found.",
+      "key": "Preview not found.",
+      "source": "Preview not found."
+    },
+    {
+      "id": "online:Preview of {value0}",
+      "key": "Preview of {value0}",
+      "source": "Preview of {value0}"
+    },
+    {
+      "id": "online:Preview unavailable",
+      "key": "Preview unavailable",
+      "source": "Preview unavailable"
+    },
+    {
+      "id": "online:Preview unavailable.",
+      "key": "Preview unavailable.",
+      "source": "Preview unavailable."
+    },
+    {
+      "id": "online:Preview · {value0}",
+      "key": "Preview · {value0}",
+      "source": "Preview · {value0}"
+    },
+    {
+      "id": "online:Previewing game transitions · {slot0} · game fade timing",
+      "key": "Previewing game transitions · {slot0} · game fade timing",
+      "source": "Previewing game transitions · {slot0} · game fade timing"
+    },
+    {
+      "id": "online:Previous",
+      "key": "Previous",
+      "source": "Previous"
+    },
+    {
+      "id": "online:Previous mean",
+      "key": "Previous mean",
+      "source": "Previous mean"
+    },
+    {
+      "id": "online:Previous recorded",
+      "key": "Previous recorded",
+      "source": "Previous recorded"
+    },
+    {
+      "id": "online:Previous samples",
+      "key": "Previous samples",
+      "source": "Previous samples"
+    },
+    {
+      "id": "online:Previous saved drafts",
+      "key": "Previous saved drafts",
+      "source": "Previous saved drafts"
+    },
+    {
+      "id": "online:Previous stage",
+      "key": "Previous stage",
+      "source": "Previous stage"
+    },
+    {
+      "id": "online:Priced",
+      "key": "Priced",
+      "source": "Priced"
+    },
+    {
+      "id": "online:Private",
+      "key": "Private",
+      "source": "Private"
+    },
+    {
+      "id": "online:Private or uploaded map",
+      "key": "Private or uploaded map",
+      "source": "Private or uploaded map"
+    },
+    {
+      "id": "online:Private project",
+      "key": "Private project",
+      "source": "Private project"
+    },
+    {
+      "id": "online:Private — only you",
+      "key": "Private — only you",
+      "source": "Private — only you"
+    },
+    {
+      "id": "online:Processing",
+      "key": "Processing",
+      "source": "Processing"
+    },
+    {
+      "id": "online:Product",
+      "key": "Product",
+      "source": "Product"
+    },
+    {
+      "id": "online:Product / model",
+      "key": "Product / model",
+      "source": "Product / model"
+    },
+    {
+      "id": "online:Product credit flow table",
+      "key": "Product credit flow table",
+      "source": "Product credit flow table"
+    },
+    {
+      "id": "online:Product credits",
+      "key": "Product credits",
+      "source": "Product credits"
+    },
+    {
+      "id": "online:Profile photo",
+      "key": "Profile photo",
+      "source": "Profile photo"
+    },
+    {
+      "id": "online:Profile {slot0} · {slot1} downloads of this version",
+      "key": "Profile {slot0} · {slot1} downloads of this version",
+      "source": "Profile {slot0} · {slot1} downloads of this version"
+    },
+    {
+      "id": "online:Progress does not match the leased AI validation.",
+      "key": "Progress does not match the leased AI validation.",
+      "source": "Progress does not match the leased AI validation."
+    },
+    {
+      "id": "online:Project",
+      "key": "Project",
+      "source": "Project"
+    },
+    {
+      "id": "online:Project actions",
+      "key": "Project actions",
+      "source": "Project actions"
+    },
+    {
+      "id": "online:Project has not loaded.",
+      "key": "Project has not loaded.",
+      "source": "Project has not loaded."
+    },
+    {
+      "id": "online:Project name",
+      "key": "Project name",
+      "source": "Project name"
+    },
+    {
+      "id": "online:Project options",
+      "key": "Project options",
+      "source": "Project options"
+    },
+    {
+      "id": "online:Project title",
+      "key": "Project title",
+      "source": "Project title"
+    },
+    {
+      "id": "online:Projects onto visible surfaces. Shared surfaces repeat the paint.",
+      "key": "Projects onto visible surfaces. Shared surfaces repeat the paint.",
+      "source": "Projects onto visible surfaces. Shared surfaces repeat the paint."
+    },
+    {
+      "id": "online:Properties inherit this preset until you add an override.",
+      "key": "Properties inherit this preset until you add an override.",
+      "source": "Properties inherit this preset until you add an override."
+    },
+    {
+      "id": "online:Provider attempt evidence for {value0}",
+      "key": "Provider attempt evidence for {value0}",
+      "source": "Provider attempt evidence for {value0}"
+    },
+    {
+      "id": "online:Provider cost table",
+      "key": "Provider cost table",
+      "source": "Provider cost table"
+    },
+    {
+      "id": "online:Public",
+      "key": "Public",
+      "source": "Public"
+    },
+    {
+      "id": "online:Public library",
+      "key": "Public library",
+      "source": "Public library"
+    },
+    {
+      "id": "online:Public — listed for everyone",
+      "key": "Public — listed for everyone",
+      "source": "Public — listed for everyone"
+    },
+    {
+      "id": "online:Publish",
+      "key": "Publish",
+      "source": "Publish"
+    },
+    {
+      "id": "online:Publish a generator release",
+      "key": "Publish a generator release",
+      "source": "Publish a generator release"
+    },
+    {
+      "id": "online:Publish a new release",
+      "key": "Publish a new release",
+      "source": "Publish a new release"
+    },
+    {
+      "id": "online:Publish a new version",
+      "key": "Publish a new version",
+      "source": "Publish a new version"
+    },
+    {
+      "id": "online:Publish a release",
+      "key": "Publish a release",
+      "source": "Publish a release"
+    },
+    {
+      "id": "online:Publish a version",
+      "key": "Publish a version",
+      "source": "Publish a version"
+    },
+    {
+      "id": "online:Publish map version",
+      "key": "Publish map version",
+      "source": "Publish map version"
+    },
+    {
+      "id": "online:Publish music version",
+      "key": "Publish music version",
+      "source": "Publish music version"
+    },
+    {
+      "id": "online:Publish release",
+      "key": "Publish release",
+      "source": "Publish release"
+    },
+    {
+      "id": "online:Publish revision {slot0}",
+      "key": "Publish revision {slot0}",
+      "source": "Publish revision {slot0}"
+    },
+    {
+      "id": "online:Publish revision {value0}",
+      "key": "Publish revision {value0}",
+      "source": "Publish revision {value0}"
+    },
+    {
+      "id": "online:Publish saved family",
+      "key": "Publish saved family",
+      "source": "Publish saved family"
+    },
+    {
+      "id": "online:Publish saved revision {value0}",
+      "key": "Publish saved revision {value0}",
+      "source": "Publish saved revision {value0}"
+    },
+    {
+      "id": "online:Publish saved soundtrack {slot0} to the public Music library. Only this exact version is shared.",
+      "key": "Publish saved soundtrack {slot0} to the public Music library. Only this exact version is shared.",
+      "source": "Publish saved soundtrack {slot0} to the public Music library. Only this exact version is shared."
+    },
+    {
+      "id": "online:Publish the selected saved map ({slot0}) to the public Map library.",
+      "key": "Publish the selected saved map ({slot0}) to the public Map library.",
+      "source": "Publish the selected saved map ({slot0}) to the public Map library."
+    },
+    {
+      "id": "online:Publish this release",
+      "key": "Publish this release",
+      "source": "Publish this release"
+    },
+    {
+      "id": "online:Publish this version",
+      "key": "Publish this version",
+      "source": "Publish this version"
+    },
+    {
+      "id": "online:Published",
+      "key": "Published",
+      "source": "Published"
+    },
+    {
+      "id": "online:Published description",
+      "key": "Published description",
+      "source": "Published description"
+    },
+    {
+      "id": "online:Published family name",
+      "key": "Published family name",
+      "source": "Published family name"
+    },
+    {
+      "id": "online:Published release",
+      "key": "Published release",
+      "source": "Published release"
+    },
+    {
+      "id": "online:Published visibility",
+      "key": "Published visibility",
+      "source": "Published visibility"
+    },
+    {
+      "id": "online:Published {slot0}.",
+      "key": "Published {slot0}.",
+      "source": "Published {slot0}."
+    },
+    {
+      "id": "online:Publishing allows reuse under {slot0}, including embedding and editing this content in shared maps. Confirm that the credits and reuse rights cover every uploaded image.",
+      "key": "Publishing allows reuse under {slot0}, including embedding and editing this content in shared maps. Confirm that the credits and reuse rights cover every uploaded image.",
+      "source": "Publishing allows reuse under {slot0}, including embedding and editing this content in shared maps. Confirm that the credits and reuse rights cover every uploaded image."
+    },
+    {
+      "id": "online:Publishing preserves these exact source bytes. Changes require a new version.",
+      "key": "Publishing preserves these exact source bytes. Changes require a new version.",
+      "source": "Publishing preserves these exact source bytes. Changes require a new version."
+    },
+    {
+      "id": "online:Purchase",
+      "key": "Purchase",
+      "source": "Purchase"
+    },
+    {
+      "id": "online:Purchase confirmed. Your skin is ready to use in game.",
+      "key": "Purchase confirmed. Your skin is ready to use in game.",
+      "source": "Purchase confirmed. Your skin is ready to use in game."
+    },
+    {
+      "id": "online:Purchase not found.",
+      "key": "Purchase not found.",
+      "source": "Purchase not found."
+    },
+    {
+      "id": "online:Purchases are not configured on this server yet.",
+      "key": "Purchases are not configured on this server yet.",
+      "source": "Purchases are not configured on this server yet."
+    },
+    {
+      "id": "online:Quality",
+      "key": "Quality",
+      "source": "Quality"
+    },
+    {
+      "id": "online:Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+      "key": "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+      "source": "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation."
+    },
+    {
+      "id": "online:Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+      "key": "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+      "source": "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation."
+    },
+    {
+      "id": "online:Queued",
+      "key": "Queued",
+      "source": "Queued"
+    },
+    {
+      "id": "online:Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.",
+      "key": "Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.",
+      "source": "Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately."
+    },
+    {
+      "id": "online:Quick-match games and public rooms, newest first.",
+      "key": "Quick-match games and public rooms, newest first.",
+      "source": "Quick-match games and public rooms, newest first."
+    },
+    {
+      "id": "online:Quiet passage audibility",
+      "key": "Quiet passage audibility",
+      "source": "Quiet passage audibility"
+    },
+    {
+      "id": "online:Range",
+      "key": "Range",
+      "source": "Range"
+    },
+    {
+      "id": "online:Rank",
+      "key": "Rank",
+      "source": "Rank"
+    },
+    {
+      "id": "online:Rate",
+      "key": "Rate",
+      "source": "Rate"
+    },
+    {
+      "id": "online:Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+      "key": "Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+      "source": {
+        "one": "Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+        "other": "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates."
+      }
+    },
+    {
+      "id": "online:Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+      "key": "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+      "source": "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates."
+    },
+    {
+      "id": "online:Rated queues are for registered accounts; sign in first.",
+      "key": "Rated queues are for registered accounts; sign in first.",
+      "source": "Rated queues are for registered accounts; sign in first."
+    },
+    {
+      "id": "online:Rating",
+      "key": "Rating",
+      "source": "Rating"
+    },
+    {
+      "id": "online:Rating after each rated match",
+      "key": "Rating after each rated match",
+      "source": "Rating after each rated match"
+    },
+    {
+      "id": "online:Re-verify ",
+      "key": "Re-verify ",
+      "source": "Re-verify "
+    },
+    {
+      "id": "online:Re-verify {slot0}",
+      "key": "Re-verify {slot0}",
+      "source": "Re-verify {slot0}"
+    },
+    {
+      "id": "online:Reach to Infinity",
+      "key": "Reach to Infinity",
+      "source": "Reach to Infinity"
+    },
+    {
+      "id": "online:Ready",
+      "key": "Ready",
+      "source": "Ready"
+    },
+    {
+      "id": "online:Ready for your next adventure",
+      "key": "Ready for your next adventure",
+      "source": "Ready for your next adventure"
+    },
+    {
+      "id": "online:Ready to download",
+      "key": "Ready to download",
+      "source": "Ready to download"
+    },
+    {
+      "id": "online:Ready to listen",
+      "key": "Ready to listen",
+      "source": "Ready to listen"
+    },
+    {
+      "id": "online:Ready to play",
+      "key": "Ready to play",
+      "source": "Ready to play"
+    },
+    {
+      "id": "online:Ready to publish",
+      "key": "Ready to publish",
+      "source": "Ready to publish"
+    },
+    {
+      "id": "online:Ready to use",
+      "key": "Ready to use",
+      "source": "Ready to use"
+    },
+    {
+      "id": "online:Reason",
+      "key": "Reason",
+      "source": "Reason"
+    },
+    {
+      "id": "online:Reason ",
+      "key": "Reason ",
+      "source": "Reason "
+    },
+    {
+      "id": "online:Reason (recorded in the audit log)",
+      "key": "Reason (recorded in the audit log)",
+      "source": "Reason (recorded in the audit log)"
+    },
+    {
+      "id": "online:Reason and evidence",
+      "key": "Reason and evidence",
+      "source": "Reason and evidence"
+    },
+    {
+      "id": "online:Reason: {slot0}",
+      "key": "Reason: {slot0}",
+      "source": "Reason: {slot0}"
+    },
+    {
+      "id": "online:Reasons",
+      "key": "Reasons",
+      "source": "Reasons"
+    },
+    {
+      "id": "online:Recent activity",
+      "key": "Recent activity",
+      "source": "Recent activity"
+    },
+    {
+      "id": "online:Recent matches",
+      "key": "Recent matches",
+      "source": "Recent matches"
+    },
+    {
+      "id": "online:Recently updated",
+      "key": "Recently updated",
+      "source": "Recently updated"
+    },
+    {
+      "id": "online:Reconcile outstanding credit reservations before deleting this project.",
+      "key": "Reconcile outstanding credit reservations before deleting this project.",
+      "source": "Reconcile outstanding credit reservations before deleting this project."
+    },
+    {
+      "id": "online:Reconcile verified usage",
+      "key": "Reconcile verified usage",
+      "source": "Reconcile verified usage"
+    },
+    {
+      "id": "online:Reconciling",
+      "key": "Reconciling",
+      "source": "Reconciling"
+    },
+    {
+      "id": "online:Reconnecting to your saved project…",
+      "key": "Reconnecting to your saved project…",
+      "source": "Reconnecting to your saved project…"
+    },
+    {
+      "id": "online:Recorded usage: {slot0} input tokens · {slot1} cached input · {slot2} cache write · {slot3} output tokens",
+      "key": "Recorded usage: {slot0} input tokens · {slot1} cached input · {slot2} cache write · {slot3} output tokens",
+      "source": "Recorded usage: {slot0} input tokens · {slot1} cached input · {slot2} cache write · {slot3} output tokens"
+    },
+    {
+      "id": "online:Recovered edits belong to an older revision. Download them before reloading.",
+      "key": "Recovered edits belong to an older revision. Download them before reloading.",
+      "source": "Recovered edits belong to an older revision. Download them before reloading."
+    },
+    {
+      "id": "online:Recovered local edits",
+      "key": "Recovered local edits",
+      "source": "Recovered local edits"
+    },
+    {
+      "id": "online:Recovery evidence for {value0}",
+      "key": "Recovery evidence for {value0}",
+      "source": "Recovery evidence for {value0}"
+    },
+    {
+      "id": "online:Redo",
+      "key": "Redo",
+      "source": "Redo"
+    },
+    {
+      "id": "online:Reference",
+      "key": "Reference",
+      "source": "Reference"
+    },
+    {
+      "id": "online:Reference limit reached for this project.",
+      "key": "Reference limit reached for this project.",
+      "source": "Reference limit reached for this project."
+    },
+    {
+      "id": "online:Reference upload could not be saved.",
+      "key": "Reference upload could not be saved.",
+      "source": "Reference upload could not be saved."
+    },
+    {
+      "id": "online:Refine the composition",
+      "key": "Refine the composition",
+      "source": "Refine the composition"
+    },
+    {
+      "id": "online:Refresh",
+      "key": "Refresh",
+      "source": "Refresh"
+    },
+    {
+      "id": "online:Refresh validation",
+      "key": "Refresh validation",
+      "source": "Refresh validation"
+    },
+    {
+      "id": "online:Refund",
+      "key": "Refund",
+      "source": "Refund"
+    },
+    {
+      "id": "online:Refunded",
+      "key": "Refunded",
+      "source": "Refunded"
+    },
+    {
+      "id": "online:Refused",
+      "key": "Refused",
+      "source": "Refused"
+    },
+    {
+      "id": "online:Register an account to create and share sets.",
+      "key": "Register an account to create and share sets.",
+      "source": "Register an account to create and share sets."
+    },
+    {
+      "id": "online:Registered",
+      "key": "Registered",
+      "source": "Registered"
+    },
+    {
+      "id": "online:Registered active account-days",
+      "key": "Registered active account-days",
+      "source": "Registered active account-days"
+    },
+    {
+      "id": "online:Registered player",
+      "key": "Registered player",
+      "source": "Registered player"
+    },
+    {
+      "id": "online:Registered signups",
+      "key": "Registered signups",
+      "source": "Registered signups"
+    },
+    {
+      "id": "online:Registered: {slot0} today · {slot1} weekly · {slot2} monthly",
+      "key": "Registered: {slot0} today · {slot1} weekly · {slot2} monthly",
+      "source": "Registered: {slot0} today · {slot1} weekly · {slot2} monthly"
+    },
+    {
+      "id": "online:Rejected",
+      "key": "Rejected",
+      "source": "Rejected"
+    },
+    {
+      "id": "online:Relay key required.",
+      "key": "Relay key required.",
+      "source": "Relay key required."
+    },
+    {
+      "id": "online:Release",
+      "key": "Release",
+      "source": "Release"
+    },
+    {
+      "id": "online:Release archive failed its integrity check.",
+      "key": "Release archive failed its integrity check.",
+      "source": "Release archive failed its integrity check."
+    },
+    {
+      "id": "online:Release archive is too large.",
+      "key": "Release archive is too large.",
+      "source": "Release archive is too large."
+    },
+    {
+      "id": "online:Release archive is unavailable.",
+      "key": "Release archive is unavailable.",
+      "source": "Release archive is unavailable."
+    },
+    {
+      "id": "online:Release artwork failed its integrity check.",
+      "key": "Release artwork failed its integrity check.",
+      "source": "Release artwork failed its integrity check."
+    },
+    {
+      "id": "online:Release exceeds package limits.",
+      "key": "Release exceeds package limits.",
+      "source": "Release exceeds package limits."
+    },
+    {
+      "id": "online:Release label",
+      "key": "Release label",
+      "source": "Release label"
+    },
+    {
+      "id": "online:Release not found.",
+      "key": "Release not found.",
+      "source": "Release not found."
+    },
+    {
+      "id": "online:Release notes",
+      "key": "Release notes",
+      "source": "Release notes"
+    },
+    {
+      "id": "online:Release unavailable.",
+      "key": "Release unavailable.",
+      "source": "Release unavailable."
+    },
+    {
+      "id": "online:Releases",
+      "key": "Releases",
+      "source": "Releases"
+    },
+    {
+      "id": "online:Releases & credits",
+      "key": "Releases & credits",
+      "source": "Releases & credits"
+    },
+    {
+      "id": "online:Reload saved revision",
+      "key": "Reload saved revision",
+      "source": "Reload saved revision"
+    },
+    {
+      "id": "online:Reload the current saved draft before publishing.",
+      "key": "Reload the current saved draft before publishing.",
+      "source": "Reload the current saved draft before publishing."
+    },
+    {
+      "id": "online:Remix with AI",
+      "key": "Remix with AI",
+      "source": "Remix with AI"
+    },
+    {
+      "id": "online:Remove",
+      "key": "Remove",
+      "source": "Remove"
+    },
+    {
+      "id": "online:Remove entry",
+      "key": "Remove entry",
+      "source": "Remove entry"
+    },
+    {
+      "id": "online:Remove favourite",
+      "key": "Remove favourite",
+      "source": "Remove favourite"
+    },
+    {
+      "id": "online:Remove generator",
+      "key": "Remove generator",
+      "source": "Remove generator"
+    },
+    {
+      "id": "online:Remove sheet",
+      "key": "Remove sheet",
+      "source": "Remove sheet"
+    },
+    {
+      "id": "online:Remove stage",
+      "key": "Remove stage",
+      "source": "Remove stage"
+    },
+    {
+      "id": "online:Remove stock level",
+      "key": "Remove stock level",
+      "source": "Remove stock level"
+    },
+    {
+      "id": "online:Remove variant",
+      "key": "Remove variant",
+      "source": "Remove variant"
+    }
+  ]
+}

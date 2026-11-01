@@ -1,0 +1,69 @@
+{
+  "editor": "/root/bengali_online_author",
+  "identity": "/root/bengali_online_author",
+  "role": "original independent native editor; V3 two-key delta",
+  "status": "pass",
+  "certification": "agent-reviewed; not native-human-certified",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "input_native_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+  "final_native_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+  "unchanged_online_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "examined_keys": [
+    "native:[stat win probability]",
+    "native:[stat win probability about]"
+  ],
+  "actual_examined_key_count": 2,
+  "entries": [
+    {
+      "id": "native:[stat win probability]",
+      "source": "Win probability",
+      "input": "জয়ের সম্ভাবনা",
+      "target": "জয়ের সম্ভাবনা",
+      "disposition": "retained after independent source/context/naturalness examination",
+      "rationale": "Compact natural Bengali title names estimated winning probability; সম্ভাবনা does not turn it into historical win rate হার. No percent token required because chart adds (%) separately.",
+      "source_text_sha256": "4d26458bb2b4a9662aed1bf751ef266e41cc4cd289e7d7897c0fffebb49b1516",
+      "target_text_sha256": "611baee610bfd7d151f54adef30840775f48d88616b3ce658b14254011d48437"
+    },
+    {
+      "id": "native:[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "input": "ম্যাচ চলাকালীন বিভিন্ন সময়ে মাপা আপনার জোটের জয়ের আনুমানিক সম্ভাবনা। মিত্রদের জন্য এই সম্ভাবনা একই। এআইয়ের খেলার তথ্য দিয়ে মডেলটি প্রশিক্ষিত হয়েছে; এই অনুমানে অবস্থান বা পরিকল্পিত চাল ধরা হয় না। পুরোনো সংরক্ষিত খেলায় ইতিহাস অসম্পূর্ণ থাকতে পারে।",
+      "target": "ম্যাচ চলাকালীন বিভিন্ন সময়ে মাপা আপনার জোটের জয়ের আনুমানিক সম্ভাবনা। মিত্রদের জন্য এই সম্ভাবনা একই। এআইয়ের খেলার তথ্য দিয়ে মডেলটি প্রশিক্ষিত হয়েছে; এই অনুমানে অবস্থান বা পরিকল্পিত চাল ধরা হয় না। পুরোনো সংরক্ষিত খেলায় ইতিহাস অসম্পূর্ণ থাকতে পারে।",
+      "disposition": "retained after independent source/context/naturalness examination",
+      "rationale": "Read entire source and authored paragraph. বিভিন্ন সময়ে মাপা naturally conveys sampling over match time; আপনার জোট and মিত্রদের জন্য এই সম্ভাবনা একই preserve shared alliance estimate. এআইয়ের খেলার তথ্য দিয়ে ... প্রশিক্ষিত is ordinary Bengali for AI-game model training. অবস্থান বা পরিকল্পিত চাল ধরা হয় না retains both excluded inputs. পুরোনো সংরক্ষিত খেলায় ইতিহাস অসম্পূর্ণ থাকতে পারে clearly limits older-save history without asserting every old save is incomplete. Register, জোট glossary, spelling and explanatory length are suitable; no editorial revision needed.",
+      "source_text_sha256": "514b9b1ab72b692a780f1221593286f453048b00e785183464d76edcdfb9d9d3",
+      "target_text_sha256": "40390bae679717a98bb844c7985b140cb0353c38a811116ca658c7a8253f14e6"
+    }
+  ],
+  "changes": [],
+  "findings": [],
+  "open_findings": [],
+  "unresolved_uncertainty": [],
+  "context_read": [
+    {
+      "revision": "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+      "path": "src/team/stats/MetricCatalog.cpp",
+      "scope": "win probability metric, percentage conversion of sampled ticks"
+    },
+    {
+      "revision": "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+      "path": "src/team/stats/TeamStatChart.cpp",
+      "scope": "about lookup and explicit (%) suffix on probability axis title"
+    },
+    {
+      "revision": "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+      "path": "src/team/stats/TeamStat.h",
+      "scope": "alliance-wide sampling and preserved gaps for legacy saves"
+    },
+    {
+      "path": "drafts/bn/texts.bn.txt",
+      "scope": "actual two authored target values and existing [Alliance] = জোট"
+    }
+  ],
+  "carry_forward": {
+    "old_kit": "artifacts/bengali-localization-v2",
+    "mechanically_verified_unchanged_source_target_pairs": 6235,
+    "fresh_read_claim": false
+  },
+  "limits": "Two-key linguistic/editorial approval only; final semantic recheck and fresh adversarial review remain separate."
+}

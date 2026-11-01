@@ -1,0 +1,12 @@
+{
+  "target": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "parents": [
+    "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+    "2afe891014845d0c44447e09db08a2a67754323d"
+  ],
+  "workflow_sha256": "d42c2ef9ace1f43a7a872c771cb280ed197010177a3f3b1f3b8355ca551d8ca4",
+  "python_compile": "pass",
+  "preflight_and_checkpoint_guards": "retained unchanged",
+  "delta": "literal final merged source; V3 native hash and3395/2842 source key-count receipt; actual complete shipped font-folder byte closure; unique final artifact name",
+  "prior31_run_retained": 41260132022
+}

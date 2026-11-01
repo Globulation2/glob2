@@ -1,0 +1,23 @@
+{
+  "status": "Waiting exact literal942 x86_64 APK; no VM started",
+  "actual_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "current_pr_revision": "1d36a7031bbd14204648b48048f0e01983f7ccc1",
+  "coverage": [
+    "Bengali seeded profile main menu/settings rendering",
+    "portrait/landscape rotation",
+    "background/resume and force-stop/relaunch",
+    "profile language persistence",
+    "APK and extracted native Bengali font/catalog/licence byte closure"
+  ],
+  "omissions": [
+    "First-visit Bengali system-language detection",
+    "Interactive Bengali language picker selection",
+    "Changed current GameGUIDialog254 chat guard",
+    "New master0d54 GameGUI desktop HUD layout"
+  ],
+  "own_avd": "glob2-api35-x64",
+  "emulator_port": 5668,
+  "adb_port": 15237,
+  "package": "org.globulation2.glob2",
+  "required_shutdown": "Own VM/container and own ADB server must stop before agent turn ends"
+}

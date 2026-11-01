@@ -1,0 +1,16 @@
+{
+  "old_revision": "2afe891014845d0c44447e09db08a2a67754323d",
+  "current_revision": "1d36a7031bbd14204648b48048f0e01983f7ccc1",
+  "changed_paths": [
+    "src/hud/GameGUIDialog.cpp"
+  ],
+  "change": "Only non-commander legacy game chat maximum bytes255\u2192254, plus explanatory comment; payload length is UInt8 includingNUL. No Order/wire/simulation/ABI/header/catalog/font/website/package-source changes.",
+  "affected_execution": "Fresh native chat field boundary checks required; prior255-byte acceptance is not a current guard pass.",
+  "unaffected_execution_scope": "Font shaping/cache/layout, language selection, main/settings startup, catalog/font asset packaging, website and browser DOM bridge inputs remain unchanged. Older actual producer identities must be preserved; never relabel the complete old binary as the new revision.",
+  "catalog_sha256": {
+    "native": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "wire_reproduction": "chat-wire-boundary/extraction-provenance.json"
+}

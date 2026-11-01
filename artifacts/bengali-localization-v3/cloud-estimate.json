@@ -1,0 +1,10 @@
+{
+  "phase": "bulk",
+  "blank_entries": 2,
+  "unique_uncached_texts": 2,
+  "new_characters": 250,
+  "reserved_characters": 0,
+  "known_rejected_texts": 0,
+  "estimated_total_usd_without_free_credit": "0.005",
+  "cap_usd": "6.22732"
+}

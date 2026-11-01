@@ -1,0 +1,10 @@
+{
+  "branch": "codex/bengali-android-validation-2afe891",
+  "game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "workflow_revision": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+  "workflow_path": ".github/workflows/bengali-android-validation.yml",
+  "architectures": [
+    "x86_64"
+  ],
+  "workflow": "name: Temporary Bengali Android x86_64 validation\non:\n  push:\n    branches: [codex/bengali-android-validation-2afe891]\n  workflow_dispatch:\npermissions:\n  contents: read\njobs:\n  android:\n    uses: ./.github/workflows/mobile.yml\n    with:\n      revision: '942d138b609ad8e0c425d974042b6e3983a717a4'\n      architectures: '[\"x86_64\"]'\n"
+}

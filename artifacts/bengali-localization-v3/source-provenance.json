@@ -1,0 +1,20 @@
+{
+  "manifest_revision_note": "The tool records preparation HEAD62. Frozen native source files are exact blobs from master23; frozen online English is exact62 blob. These explicit file identities, not an implied clean62 tree, govern this snapshot. The final installed source commit will be checked separately.",
+  "source_file_revisions": {
+    "data/texts.keys.txt": "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+    "data/texts.en.txt": "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+    "platform/packages/i18n/locales/en.json": "62b01a501cf70059e2e29f7cdf3e772679f70d7e"
+  },
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "new_native_keys": [
+    "[stat win probability about]",
+    "[stat win probability]"
+  ],
+  "carried_pairs": 6235,
+  "new_pairs": 2,
+  "parent_api_reserved_characters": 188634,
+  "parent_api_estimated_usd": "3.77268",
+  "delta_runner_cap_usd": "6.22732",
+  "combined_cap_usd": "10",
+  "parent_api_accounting_sha256": "412d7d9b5dda6c6a7e1f9781de83046a7203b52532ae9ba57071d4614423c373"
+}

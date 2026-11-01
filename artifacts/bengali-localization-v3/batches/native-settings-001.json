@@ -1,0 +1,809 @@
+{
+  "id": "native-settings-001",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "surface": "native",
+  "domain": "settings",
+  "context": "Labels and help describe settings. Prefer short labels and explain their effect plainly.",
+  "entries": [
+    {
+      "id": "native:[settings Finish in your browser. The game continues by itself.]",
+      "key": "[settings Finish in your browser. The game continues by itself.]",
+      "source": "Finish in your browser. The game continues by itself."
+    },
+    {
+      "id": "native:[music set]",
+      "key": "[music set]",
+      "source": "Music set"
+    },
+    {
+      "id": "native:[random music set]",
+      "key": "[random music set]",
+      "source": "Random each match"
+    },
+    {
+      "id": "native:[playing music set %0]",
+      "key": "[playing music set %0]",
+      "source": "Playing: %0"
+    },
+    {
+      "id": "native:[music set failed]",
+      "key": "[music set failed]",
+      "source": "Could not load this music set."
+    },
+    {
+      "id": "native:[settings Edge scrolling]",
+      "key": "[settings Edge scrolling]",
+      "source": "Edge scrolling"
+    },
+    {
+      "id": "native:[settings Edge scrolling in fullscreen]",
+      "key": "[settings Edge scrolling in fullscreen]",
+      "source": "Edge scrolling in fullscreen"
+    },
+    {
+      "id": "native:[settings Edge scrolling in windowed mode]",
+      "key": "[settings Edge scrolling in windowed mode]",
+      "source": "Edge scrolling in windowed mode"
+    },
+    {
+      "id": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "key": "[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source": "Move the game and editor maps when the mouse reaches the window edge."
+    },
+    {
+      "id": "native:[add shortcut]",
+      "key": "[add shortcut]",
+      "source": "Add Shortcut"
+    },
+    {
+      "id": "native:[editor shortcuts]",
+      "key": "[editor shortcuts]",
+      "source": "Editor Shortcuts"
+    },
+    {
+      "id": "native:[flag settings explanation]",
+      "key": "[flag settings explanation]",
+      "source": "The default radius of the flag"
+    },
+    {
+      "id": "native:[game shortcuts]",
+      "key": "[game shortcuts]",
+      "source": "Game Shortcuts"
+    },
+    {
+      "id": "native:[keyboard settings]",
+      "key": "[keyboard settings]",
+      "source": "Keyboard Settings"
+    },
+    {
+      "id": "native:[Music volume]",
+      "key": "[Music volume]",
+      "source": "Volume (music)"
+    },
+    {
+      "id": "native:[remove shortcut]",
+      "key": "[remove shortcut]",
+      "source": "Remove Shortcut"
+    },
+    {
+      "id": "native:[restore default shortcuts]",
+      "key": "[restore default shortcuts]",
+      "source": "Restore Default Keyboard Shortcuts"
+    },
+    {
+      "id": "native:[shortcut explanation enter]",
+      "key": "[shortcut explanation enter]",
+      "source": "Enter: send a chat message"
+    },
+    {
+      "id": "native:[shortcut explanation v]",
+      "key": "[shortcut explanation v]",
+      "source": "V: hold to speak"
+    },
+    {
+      "id": "native:[unit settings explanation]",
+      "key": "[unit settings explanation]",
+      "source": "The default number of units assigned"
+    },
+    {
+      "id": "native:[Generation failed. Adjust settings or press Start to retry.]",
+      "key": "[Generation failed. Adjust settings or press Start to retry.]",
+      "source": "Generation failed. Adjust settings or press Start to retry."
+    },
+    {
+      "id": "native:[Preview unavailable. Adjust settings or start to retry.]",
+      "key": "[Preview unavailable. Adjust settings or start to retry.]",
+      "source": "Preview unavailable. Adjust settings or start to retry."
+    },
+    {
+      "id": "native:[Generation failed. Adjust settings or try again.]",
+      "key": "[Generation failed. Adjust settings or try again.]",
+      "source": "Generation failed. Adjust settings or try again."
+    },
+    {
+      "id": "native:[Map settings changed. Generate a new preview or start.]",
+      "key": "[Map settings changed. Generate a new preview or start.]",
+      "source": "Map settings changed. Generate a new preview or start."
+    },
+    {
+      "id": "native:[settings Add key to sequence]",
+      "key": "[settings Add key to sequence]",
+      "source": "Add key to sequence"
+    },
+    {
+      "id": "native:[settings Add shortcut]",
+      "key": "[settings Add shortcut]",
+      "source": "Add shortcut"
+    },
+    {
+      "id": "native:[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "source": "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus."
+    },
+    {
+      "id": "native:[settings Adjust music and voice volume.]",
+      "key": "[settings Adjust music and voice volume.]",
+      "source": "Adjust music and voice volume."
+    },
+    {
+      "id": "native:[settings Adjust the pace of play.]",
+      "key": "[settings Adjust the pace of play.]",
+      "source": "Adjust the pace of play."
+    },
+    {
+      "id": "native:[settings Advanced binding]",
+      "key": "[settings Advanced binding]",
+      "source": "Advanced binding"
+    },
+    {
+      "id": "native:[settings Artwork & effects]",
+      "key": "[settings Artwork & effects]",
+      "source": "Artwork & effects"
+    },
+    {
+      "id": "native:[settings Audio]",
+      "key": "[settings Audio]",
+      "source": "Audio"
+    },
+    {
+      "id": "native:[settings Bind Escape]",
+      "key": "[settings Bind Escape]",
+      "source": "Bind Escape"
+    },
+    {
+      "id": "native:[settings Building]",
+      "key": "[settings Building]",
+      "source": "Building"
+    },
+    {
+      "id": "native:[settings Building defaults]",
+      "key": "[settings Building defaults]",
+      "source": "Building defaults"
+    },
+    {
+      "id": "native:[settings Cancel]",
+      "key": "[settings Cancel]",
+      "source": "Cancel"
+    },
+    {
+      "id": "native:[settings Changes saved automatically]",
+      "key": "[settings Changes saved automatically]",
+      "source": "Changes saved automatically"
+    },
+    {
+      "id": "native:[settings Changes you make during play update these defaults for future games.]",
+      "key": "[settings Changes you make during play update these defaults for future games.]",
+      "source": "Changes you make during play update these defaults for future games."
+    },
+    {
+      "id": "native:[settings Changing the renderer requires a restart.]",
+      "key": "[settings Changing the renderer requires a restart.]",
+      "source": "Changing the renderer requires a restart."
+    },
+    {
+      "id": "native:[settings Choose a binding to change it, or add another shortcut for an action.]",
+      "key": "[settings Choose a binding to change it, or add another shortcut for an action.]",
+      "source": "Choose a binding to change it, or add another shortcut for an action."
+    },
+    {
+      "id": "native:[settings Choose a window or fill the screen.]",
+      "key": "[settings Choose a window or fill the screen.]",
+      "source": "Choose a window or fill the screen."
+    },
+    {
+      "id": "native:[settings Choose how the game looks on your screen.]",
+      "key": "[settings Choose how the game looks on your screen.]",
+      "source": "Choose how the game looks on your screen."
+    },
+    {
+      "id": "native:[settings Completed]",
+      "key": "[settings Completed]",
+      "source": "Completed"
+    },
+    {
+      "id": "native:[settings Construction]",
+      "key": "[settings Construction]",
+      "source": "Construction"
+    },
+    {
+      "id": "native:[settings Controls]",
+      "key": "[settings Controls]",
+      "source": "Controls"
+    },
+    {
+      "id": "native:[settings Could not change display mode. The previous mode was restored.]",
+      "key": "[settings Could not change display mode. The previous mode was restored.]",
+      "source": "Could not change display mode. The previous mode was restored."
+    },
+    {
+      "id": "native:[settings Could not save]",
+      "key": "[settings Could not save]",
+      "source": "Could not save"
+    },
+    {
+      "id": "native:[settings Current display]",
+      "key": "[settings Current display]",
+      "source": "Current display"
+    },
+    {
+      "id": "native:[settings Default]",
+      "key": "[settings Default]",
+      "source": "Default"
+    },
+    {
+      "id": "native:[settings Display]",
+      "key": "[settings Display]",
+      "source": "Display"
+    },
+    {
+      "id": "native:[settings Display & graphics]",
+      "key": "[settings Display & graphics]",
+      "source": "Display & graphics"
+    },
+    {
+      "id": "native:[settings Display the Globulation 2 cursor.]",
+      "key": "[settings Display the Globulation 2 cursor.]",
+      "source": "Display the Globulation 2 cursor."
+    },
+    {
+      "id": "native:[settings Done]",
+      "key": "[settings Done]",
+      "source": "Done"
+    },
+    {
+      "id": "native:[settings Edit shortcut]",
+      "key": "[settings Edit shortcut]",
+      "source": "Edit shortcut"
+    },
+    {
+      "id": "native:[settings Multiply the operating system display scale for menus, text and the sidebar.]",
+      "key": "[settings Multiply the operating system display scale for menus, text and the sidebar.]",
+      "source": "Multiply the operating system display scale for menus, text and the sidebar."
+    },
+    {
+      "id": "native:[settings Flags]",
+      "key": "[settings Flags]",
+      "source": "Flags"
+    },
+    {
+      "id": "native:[settings Full]",
+      "key": "[settings Full]",
+      "source": "Full"
+    },
+    {
+      "id": "native:[settings Fullscreen]",
+      "key": "[settings Fullscreen]",
+      "source": "Fullscreen"
+    },
+    {
+      "id": "native:[settings Game]",
+      "key": "[settings Game]",
+      "source": "Game"
+    },
+    {
+      "id": "native:[settings Game speed]",
+      "key": "[settings Game speed]",
+      "source": "Game speed"
+    },
+    {
+      "id": "native:[settings Gameplay]",
+      "key": "[settings Gameplay]",
+      "source": "Gameplay"
+    },
+    {
+      "id": "native:[settings Graphics detail]",
+      "key": "[settings Graphics detail]",
+      "source": "Graphics detail"
+    },
+    {
+      "id": "native:[settings Interface scale]",
+      "key": "[settings Interface scale]",
+      "source": "Interface scale"
+    },
+    {
+      "id": "native:[settings Keep]",
+      "key": "[settings Keep]",
+      "source": "Keep"
+    },
+    {
+      "id": "native:[settings Keep this display mode?]",
+      "key": "[settings Keep this display mode?]",
+      "source": "Keep this display mode?"
+    },
+    {
+      "id": "native:[settings Keep your volume levels while silencing audio.]",
+      "key": "[settings Keep your volume levels while silencing audio.]",
+      "source": "Keep your volume levels while silencing audio."
+    },
+    {
+      "id": "native:[settings Key]",
+      "key": "[settings Key]",
+      "source": "Key"
+    },
+    {
+      "id": "native:[settings Keyboard shortcuts]",
+      "key": "[settings Keyboard shortcuts]",
+      "source": "Keyboard shortcuts"
+    },
+    {
+      "id": "native:[settings Keys form a sequence in order. Each key can trigger on press or release.]",
+      "key": "[settings Keys form a sequence in order. Each key can trigger on press or release.]",
+      "source": "Keys form a sequence in order. Each key can trigger on press or release."
+    },
+    {
+      "id": "native:[settings Language]",
+      "key": "[settings Language]",
+      "source": "Language"
+    },
+    {
+      "id": "native:[settings Language & player]",
+      "key": "[settings Language & player]",
+      "source": "Language & player"
+    },
+    {
+      "id": "native:[settings Language used throughout the interface.]",
+      "key": "[settings Language used throughout the interface.]",
+      "source": "Language used throughout the interface."
+    },
+    {
+      "id": "native:[settings Level]",
+      "key": "[settings Level]",
+      "source": "Level"
+    },
+    {
+      "id": "native:[settings Map editor]",
+      "key": "[settings Map editor]",
+      "source": "Map editor"
+    },
+    {
+      "id": "native:[settings Match the desktop]",
+      "key": "[settings Match the desktop]",
+      "source": "Match the desktop"
+    },
+    {
+      "id": "native:[settings Missing font]",
+      "key": "[settings Missing font]",
+      "source": "Missing font"
+    },
+    {
+      "id": "native:[settings Music volume]",
+      "key": "[settings Music volume]",
+      "source": "Music volume"
+    },
+    {
+      "id": "native:[settings Mute audio]",
+      "key": "[settings Mute audio]",
+      "source": "Mute audio"
+    },
+    {
+      "id": "native:[settings Name shown to other players.]",
+      "key": "[settings Name shown to other players.]",
+      "source": "Name shown to other players."
+    },
+    {
+      "id": "native:[settings Off]",
+      "key": "[settings Off]",
+      "source": "Off"
+    },
+    {
+      "id": "native:[settings On]",
+      "key": "[settings On]",
+      "source": "On"
+    },
+    {
+      "id": "native:[settings OpenGL is not available in this build.]",
+      "key": "[settings OpenGL is not available in this build.]",
+      "source": "OpenGL is not available in this build."
+    },
+    {
+      "id": "native:[settings Player name]",
+      "key": "[settings Player name]",
+      "source": "Player name"
+    },
+    {
+      "id": "native:[settings Press]",
+      "key": "[settings Press]",
+      "source": "Press"
+    },
+    {
+      "id": "native:[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+      "key": "[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+      "source": "Press a key. Escape cancels capture. Use Bind Escape to assign Escape."
+    },
+    {
+      "id": "native:[settings Radius]",
+      "key": "[settings Radius]",
+      "source": "Radius"
+    },
+    {
+      "id": "native:[settings Reduced]",
+      "key": "[settings Reduced]",
+      "source": "Reduced"
+    },
+    {
+      "id": "native:[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]",
+      "key": "[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]",
+      "source": "Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency."
+    },
+    {
+      "id": "native:[settings Release]",
+      "key": "[settings Release]",
+      "source": "Release"
+    },
+    {
+      "id": "native:[settings Remember assignments between games]",
+      "key": "[settings Remember assignments between games]",
+      "source": "Remember assignments between games"
+    },
+    {
+      "id": "native:[settings Remove key]",
+      "key": "[settings Remove key]",
+      "source": "Remove key"
+    },
+    {
+      "id": "native:[settings Remove shortcut]",
+      "key": "[settings Remove shortcut]",
+      "source": "Remove shortcut"
+    },
+    {
+      "id": "native:[settings Renderer]",
+      "key": "[settings Renderer]",
+      "source": "Renderer"
+    },
+    {
+      "id": "native:[settings Replace conflicting bindings]",
+      "key": "[settings Replace conflicting bindings]",
+      "source": "Replace conflicting bindings"
+    },
+    {
+      "id": "native:[settings Replace shortcuts in this context with the defaults? This saves immediately.]",
+      "key": "[settings Replace shortcuts in this context with the defaults? This saves immediately.]",
+      "source": "Replace shortcuts in this context with the defaults? This saves immediately."
+    },
+    {
+      "id": "native:[settings Resolution]",
+      "key": "[settings Resolution]",
+      "source": "Resolution"
+    },
+    {
+      "id": "native:[settings Restore default shortcuts]",
+      "key": "[settings Restore default shortcuts]",
+      "source": "Restore default shortcuts"
+    },
+    {
+      "id": "native:[settings Retry]",
+      "key": "[settings Retry]",
+      "source": "Retry"
+    },
+    {
+      "id": "native:[settings Revert]",
+      "key": "[settings Revert]",
+      "source": "Revert"
+    },
+    {
+      "id": "native:[settings Reverting in]",
+      "key": "[settings Reverting in]",
+      "source": "Reverting in"
+    },
+    {
+      "id": "native:[settings Save shortcut]",
+      "key": "[settings Save shortcut]",
+      "source": "Save shortcut"
+    },
+    {
+      "id": "native:[settings Saved — restart required]",
+      "key": "[settings Saved — restart required]",
+      "source": "Saved — restart required"
+    },
+    {
+      "id": "native:[settings Saving…]",
+      "key": "[settings Saving…]",
+      "source": "Saving…"
+    },
+    {
+      "id": "native:[settings Scroll wheel enabled]",
+      "key": "[settings Scroll wheel enabled]",
+      "source": "Scroll wheel enabled"
+    },
+    {
+      "id": "native:[settings Set starting unit assignments by building type and level.]",
+      "key": "[settings Set starting unit assignments by building type and level.]",
+      "source": "Set starting unit assignments by building type and level."
+    },
+    {
+      "id": "native:[settings Set your language and player name.]",
+      "key": "[settings Set your language and player name.]",
+      "source": "Set your language and player name."
+    },
+    {
+      "id": "native:[settings Settings]",
+      "key": "[settings Settings]",
+      "source": "Settings"
+    },
+    {
+      "id": "native:[settings Single-player and replays only. Multiplayer runs at 1x.]",
+      "key": "[settings Single-player and replays only. Multiplayer runs at 1x.]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x."
+    },
+    {
+      "id": "native:[settings Software]",
+      "key": "[settings Software]",
+      "source": "Software"
+    },
+    {
+      "id": "native:[settings Starting unit counts and radius for newly placed flags.]",
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "source": "Starting unit counts and radius for newly placed flags."
+    },
+    {
+      "id": "native:[settings This shortcut conflicts with existing bindings:]",
+      "key": "[settings This shortcut conflicts with existing bindings:]",
+      "source": "This shortcut conflicts with existing bindings:"
+    },
+    {
+      "id": "native:[settings Trigger]",
+      "key": "[settings Trigger]",
+      "source": "Trigger"
+    },
+    {
+      "id": "native:[settings Unbound]",
+      "key": "[settings Unbound]",
+      "source": "Unbound"
+    },
+    {
+      "id": "native:[settings Unit counts assigned to new construction sites.]",
+      "key": "[settings Unit counts assigned to new construction sites.]",
+      "source": "Unit counts assigned to new construction sites."
+    },
+    {
+      "id": "native:[settings Unit counts for completed buildings.]",
+      "key": "[settings Unit counts for completed buildings.]",
+      "source": "Unit counts for completed buildings."
+    },
+    {
+      "id": "native:[settings Unit counts while a building is being upgraded.]",
+      "key": "[settings Unit counts while a building is being upgraded.]",
+      "source": "Unit counts while a building is being upgraded."
+    },
+    {
+      "id": "native:[settings Units]",
+      "key": "[settings Units]",
+      "source": "Units"
+    },
+    {
+      "id": "native:[settings Upgrades]",
+      "key": "[settings Upgrades]",
+      "source": "Upgrades"
+    },
+    {
+      "id": "native:[settings Use game cursor]",
+      "key": "[settings Use game cursor]",
+      "source": "Use game cursor"
+    },
+    {
+      "id": "native:[settings Voice volume]",
+      "key": "[settings Voice volume]",
+      "source": "Voice volume"
+    },
+    {
+      "id": "native:[settings Window mode]",
+      "key": "[settings Window mode]",
+      "source": "Window mode"
+    },
+    {
+      "id": "native:[settings Window-only sizes also switch the game to windowed mode.]",
+      "key": "[settings Window-only sizes also switch the game to windowed mode.]",
+      "source": "Window-only sizes also switch the game to windowed mode."
+    },
+    {
+      "id": "native:[settings Windowed]",
+      "key": "[settings Windowed]",
+      "source": "Windowed"
+    },
+    {
+      "id": "native:[settings Windowed only]",
+      "key": "[settings Windowed only]",
+      "source": "Windowed only"
+    },
+    {
+      "id": "native:[settings seconds]",
+      "key": "[settings seconds]",
+      "source": "seconds"
+    },
+    {
+      "id": "native:[settings Flag]",
+      "key": "[settings Flag]",
+      "source": "Flag"
+    },
+    {
+      "id": "native:[settings High-resolution artwork]",
+      "key": "[settings High-resolution artwork]",
+      "source": "High-resolution artwork"
+    },
+    {
+      "id": "native:[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "key": "[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "source": "Apply artwork on the next game or editor load (OpenGL)."
+    },
+    {
+      "id": "native:[settings Automatic torus view]",
+      "key": "[settings Automatic torus view]",
+      "source": "Automatic torus view"
+    },
+    {
+      "id": "native:[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "key": "[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "source": "Automatically show the torus overview while moving around the map (OpenGL)."
+    },
+    {
+      "id": "native:[settings Autosave]",
+      "key": "[settings Autosave]",
+      "source": "Autosave"
+    },
+    {
+      "id": "native:[settings Save the game automatically about every 10 seconds.]",
+      "key": "[settings Save the game automatically about every 10 seconds.]",
+      "source": "Save the game automatically about every 10 seconds."
+    },
+    {
+      "id": "native:[Optional major shortcuts]",
+      "key": "[Optional major shortcuts]",
+      "source": "Optional major shortcuts"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "key": "[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful dry woodland shortcut on this seed."
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "key": "[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful swimming shortcut on this seed."
+    },
+    {
+      "id": "native:[settings continue]",
+      "key": "[settings continue]",
+      "source": "Continue"
+    },
+    {
+      "id": "native:[settings save failed]",
+      "key": "[settings save failed]",
+      "source": "Settings save not confirmed. Retry, or continue."
+    },
+    {
+      "id": "native:[Hide keyboard]",
+      "key": "[Hide keyboard]",
+      "source": "Hide keyboard"
+    },
+    {
+      "id": "native:[settings Interface layout]",
+      "key": "[settings Interface layout]",
+      "source": "Interface layout"
+    },
+    {
+      "id": "native:[settings Automatic]",
+      "key": "[settings Automatic]",
+      "source": "Automatic"
+    },
+    {
+      "id": "native:[settings Compact]",
+      "key": "[settings Compact]",
+      "source": "Compact"
+    },
+    {
+      "id": "native:[settings Spacious]",
+      "key": "[settings Spacious]",
+      "source": "Spacious"
+    },
+    {
+      "id": "native:[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]",
+      "key": "[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]",
+      "source": "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers."
+    },
+    {
+      "id": "native:[settings Menu theme]",
+      "key": "[settings Menu theme]",
+      "source": "Menu theme"
+    },
+    {
+      "id": "native:[settings Colours and backdrop of menus, lobbies and results.]",
+      "key": "[settings Colours and backdrop of menus, lobbies and results.]",
+      "source": "Colours and backdrop of menus, lobbies and results."
+    },
+    {
+      "id": "native:[settings In-game theme]",
+      "key": "[settings In-game theme]",
+      "source": "In-game theme"
+    },
+    {
+      "id": "native:[settings Colours of dialogs and the touch interface during a game and in the editor.]",
+      "key": "[settings Colours of dialogs and the touch interface during a game and in the editor.]",
+      "source": "Colours of dialogs and the touch interface during a game and in the editor."
+    },
+    {
+      "id": "native:[theme light]",
+      "key": "[theme light]",
+      "source": "Light"
+    },
+    {
+      "id": "native:[theme dark]",
+      "key": "[theme dark]",
+      "source": "Dark"
+    },
+    {
+      "id": "native:[theme classic]",
+      "key": "[theme classic]",
+      "source": "Classic"
+    },
+    {
+      "id": "native:[theme ocean]",
+      "key": "[theme ocean]",
+      "source": "Ocean"
+    },
+    {
+      "id": "native:[theme dune]",
+      "key": "[theme dune]",
+      "source": "Dune"
+    },
+    {
+      "id": "native:[theme high-contrast]",
+      "key": "[theme high-contrast]",
+      "source": "High contrast"
+    },
+    {
+      "id": "native:[settings One-finger zoom]",
+      "key": "[settings One-finger zoom]",
+      "source": "One-finger zoom"
+    },
+    {
+      "id": "native:[settings Double-tap the map, hold, then drag to zoom.]",
+      "key": "[settings Double-tap the map, hold, then drag to zoom.]",
+      "source": "Double-tap the map, hold, then drag to zoom."
+    },
+    {
+      "id": "native:[settings Platform default]",
+      "key": "[settings Platform default]",
+      "source": "Platform default"
+    },
+    {
+      "id": "native:[settings Drag up zooms in]",
+      "key": "[settings Drag up zooms in]",
+      "source": "Drag up zooms in"
+    },
+    {
+      "id": "native:[settings Drag down zooms in]",
+      "key": "[settings Drag down zooms in]",
+      "source": "Drag down zooms in"
+    },
+    {
+      "id": "native:[settings Thumb side]",
+      "key": "[settings Thumb side]",
+      "source": "Thumb side"
+    },
+    {
+      "id": "native:[settings Phone controls gather in this bottom corner.]",
+      "key": "[settings Phone controls gather in this bottom corner.]",
+      "source": "Phone controls gather in this bottom corner."
+    }
+  ]
+}

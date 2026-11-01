@@ -1,0 +1,21 @@
+{
+  "installed_revision": "2afe891014845d0c44447e09db08a2a67754323d",
+  "parents": [
+    "62b01a501cf70059e2e29f7cdf3e772679f70d7e",
+    "23edd38f4af1e6787f5e01920fc672a297eeaa4d"
+  ],
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "source_files": {
+    "data/texts.keys.txt": "d0326becbc5d2279ac5203c66063e7260939cfbdc82f506faaebfc22db8befd0",
+    "data/texts.en.txt": "5bf563d2f81beab9f79e80982ffda38a3c451e783f70417609bb059474986147",
+    "platform/packages/i18n/locales/en.json": "e91261322cacb21ecaacebdc24a8b2bda9c7d37e321050498f5fff7e5fa31d63",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "catalog_sha256": {
+    "native": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "original_snapshot_provenance_sha256": "ffd9844ee1fb67e39166b578b972f3ee637034c38e12e3a3a85bf2000c0f86af",
+  "snapshot_note": "PreparationHEAD62 plus exact native23/online62 blobs is now installed in this clean merge commit; actual code/tree identity remains separate from catalog/source hashes."
+}

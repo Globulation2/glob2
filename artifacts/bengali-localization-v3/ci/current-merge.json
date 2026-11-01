@@ -1,0 +1,11 @@
+{
+  "head": "1d36a7031bbd14204648b48048f0e01983f7ccc1",
+  "merge": "95713c8722c2e7d8796a4c8938c8d267249043b8",
+  "parents": [
+    "0d54ef3a99384059e68e78f03f774e062031a3ca",
+    "1d36a7031bbd14204648b48048f0e01983f7ccc1"
+  ],
+  "master": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "component_scope": "Literal942 Android/macOS/iOS cover unchanged fonts/catalogs/startup/package; GameGUIDialog254 behavior requires current1d36 actual producer.",
+  "actual_platform_source": "942d138b609ad8e0c425d974042b6e3983a717a4"
+}

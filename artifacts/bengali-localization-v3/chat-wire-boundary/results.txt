@@ -1,0 +1,4 @@
+ascii254 input_bytes=254 wire_text_including_NUL=255 uint8_length=255 decoder_accepts=1 exact_text_roundtrip=1
+ascii255 input_bytes=255 wire_text_including_NUL=256 uint8_length=0 decoder_accepts=0 exact_text_roundtrip=0
+bengali254 input_bytes=254 wire_text_including_NUL=255 uint8_length=255 decoder_accepts=1 exact_text_roundtrip=1
+bengali255 input_bytes=255 wire_text_including_NUL=256 uint8_length=0 decoder_accepts=0 exact_text_roundtrip=0

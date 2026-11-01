@@ -1,0 +1,69 @@
+{
+  "identity": "/root/rendering_audit",
+  "role": "original independent semantic reviewer, final post-editor V3 two-key recheck",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "status": "pass",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "native_catalog_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+  "online_catalog_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "initial_semantic_sha256": "bb4df7eaec0926e7f773fe667969badcaa1050b3dff38a36cdcd95221d7be762",
+  "editor_delta_sha256": "63534bfd7c836edb4dc5682a9e36bb7a496891d01ad4e6df74b02bc7d9e666df",
+  "rechecked_keys": [
+    "native:[stat win probability]",
+    "native:[stat win probability about]"
+  ],
+  "examined_keys": [
+    "native:[stat win probability]",
+    "native:[stat win probability about]"
+  ],
+  "actual_final_new_pairs_read": 2,
+  "entries": [
+    {
+      "id": "native:[stat win probability]",
+      "source": "Win probability",
+      "translation": "জয়ের সম্ভাবনা",
+      "source_text_sha256": "4d26458bb2b4a9662aed1bf751ef266e41cc4cd289e7d7897c0fffebb49b1516",
+      "target_text_sha256": "611baee610bfd7d151f54adef30840775f48d88616b3ce658b14254011d48437",
+      "reviewer": "/root/rendering_audit",
+      "verdict": "pass",
+      "rationale": "জয়ের সম্ভাবনা correctly names estimated winning probability, distinct from historical win rate জয়ের হার. TeamStatChart axis adds (%) separately; no numeric/percent token lost.",
+      "phase": "direct final semantic recheck after independent editorial retention",
+      "final_editor": "/root/bengali_online_author",
+      "final_editor_target_sha256": "611baee610bfd7d151f54adef30840775f48d88616b3ce658b14254011d48437",
+      "resolution": "Entire final target reread against English source; all meaning and qualifiers retained; no residual finding."
+    },
+    {
+      "id": "native:[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "translation": "ম্যাচ চলাকালীন বিভিন্ন সময়ে মাপা আপনার জোটের জয়ের আনুমানিক সম্ভাবনা। মিত্রদের জন্য এই সম্ভাবনা একই। এআইয়ের খেলার তথ্য দিয়ে মডেলটি প্রশিক্ষিত হয়েছে; এই অনুমানে অবস্থান বা পরিকল্পিত চাল ধরা হয় না। পুরোনো সংরক্ষিত খেলায় ইতিহাস অসম্পূর্ণ থাকতে পারে।",
+      "source_text_sha256": "514b9b1ab72b692a780f1221593286f453048b00e785183464d76edcdfb9d9d3",
+      "target_text_sha256": "40390bae679717a98bb844c7985b140cb0353c38a811116ca658c7a8253f14e6",
+      "reviewer": "/root/rendering_audit",
+      "verdict": "pass",
+      "rationale": "ম্যাচ চলাকালীন বিভিন্ন সময়ে মাপা retains sampled time history; আপনার জোট and মিত্রদের জন্য এই সম্ভাবনা একই preserve alliance-wide shared probability. এআইয়ের খেলার তথ্য দিয়ে ... প্রশিক্ষিত retains AI-game training; অবস্থান বা পরিকল্পিত চাল ধরা হয় না preserves both model limits; পুরোনো সংরক্ষিত খেলায় ইতিহাস অসম্পূর্ণ থাকতে পারে retains possible incomplete older-save history. Clear respectful standard Bengali; জোট matches existing [Alliance].",
+      "phase": "direct final semantic recheck after independent editorial retention",
+      "final_editor": "/root/bengali_online_author",
+      "final_editor_target_sha256": "40390bae679717a98bb844c7985b140cb0353c38a811116ca658c7a8253f14e6",
+      "resolution": "Entire final target reread against English source; all meaning and qualifiers retained; no residual finding."
+    }
+  ],
+  "affected_batch_bindings": [
+    {
+      "id": "native-general-012",
+      "target_sha256": "5c636f4b26a2aebc54a7ef036b4ad819982dba374228f7f0bcfe6e05e43e2219",
+      "directly_rechecked_delta_keys": [
+        "native:[stat win probability]",
+        "native:[stat win probability about]"
+      ],
+      "binding_scope": "Batch hash is mechanical; other keys retain earlier actual-review/equality provenance, not fresh reading."
+    }
+  ],
+  "findings": [],
+  "open_findings": [],
+  "carry_forward_acknowledgment": {
+    "old_source_target_pairs_mechanically_checked": 6235,
+    "old_kit": "artifacts/bengali-localization-v2",
+    "claim": "All prior source/target pairs are byte/value identical in V3 drafts; equality check carries prior actual reviews forward and is not a claim of fresh reading of6235 pairs."
+  },
+  "limitations": "Final linguistic recheck of exactly2 new values. Old6235 pairs are carried via exact equality and earlier actual reviews; no fresh full-read or rendering/platform pass claim."
+}

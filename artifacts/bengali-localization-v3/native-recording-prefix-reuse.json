@@ -1,0 +1,12 @@
+{
+  "source": "/home/bradley/.local/share/glob2/development/dependencies/build-abe7bda55581d5ac281d97ee/prefix",
+  "owned_copy": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/recording-prefix",
+  "manifest_sha256": "82b84d3f823c867238c18381759841df630e28a6e32ffeef7ef82e1fb50f0be9",
+  "actual_current_builder_no_op": true,
+  "downloads_rebuilds_forbidden": true,
+  "cc": "gcc",
+  "cxx": "g++-13",
+  "codec": "h264",
+  "profile": "current SConstruct default; optional Linux VP9/AV1 profiles are outside localization verification",
+  "no_shared_prefix_mutation": true
+}

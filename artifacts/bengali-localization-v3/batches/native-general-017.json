@@ -1,0 +1,204 @@
+{
+  "id": "native-general-017",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[lesson defensive-tactics guard instruction]",
+      "key": "[lesson defensive-tactics guard instruction]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard help]",
+      "key": "[lesson defensive-tactics guard help]",
+      "source": "Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard marker]",
+      "key": "[lesson defensive-tactics guard marker]",
+      "source": "Prepare a guard zone"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel hint]",
+      "key": "[lesson defensive-tactics repel hint]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel title]",
+      "key": "[lesson defensive-tactics repel title]",
+      "source": "Repel the practice attack"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel instruction]",
+      "key": "[lesson defensive-tactics repel instruction]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel help]",
+      "key": "[lesson defensive-tactics repel help]",
+      "source": "The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel marker]",
+      "key": "[lesson defensive-tactics repel marker]",
+      "source": "Repel the practice attack"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack hint]",
+      "key": "[lesson defensive-tactics counterattack hint]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack title]",
+      "key": "[lesson defensive-tactics counterattack title]",
+      "source": "Direct a focused counterattack"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack instruction]",
+      "key": "[lesson defensive-tactics counterattack instruction]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack help]",
+      "key": "[lesson defensive-tactics counterattack help]",
+      "source": "Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack marker]",
+      "key": "[lesson defensive-tactics counterattack marker]",
+      "source": "Direct a focused counterattack"
+    },
+    {
+      "id": "native:[lesson healing build compact]",
+      "key": "[lesson healing build compact]",
+      "source": "Build → Hospital. Leave access; assign builders."
+    },
+    {
+      "id": "native:[lesson healing heal compact]",
+      "key": "[lesson healing heal compact]",
+      "source": "Let the wounded worker heal at the Hospital."
+    },
+    {
+      "id": "native:[lesson walking-training build compact]",
+      "key": "[lesson walking-training build compact]",
+      "source": "Build → Racetrack. Leave space around its edges."
+    },
+    {
+      "id": "native:[lesson walking-training train compact]",
+      "key": "[lesson walking-training train compact]",
+      "source": "Let a worker finish Racetrack training."
+    },
+    {
+      "id": "native:[lesson swimming build compact]",
+      "key": "[lesson swimming build compact]",
+      "source": "Build → Swimming Pool, west of the pond."
+    },
+    {
+      "id": "native:[lesson swimming train compact]",
+      "key": "[lesson swimming train compact]",
+      "source": "Let a worker learn to swim."
+    },
+    {
+      "id": "native:[lesson swimming water-job compact]",
+      "key": "[lesson swimming water-job compact]",
+      "source": "Build → School. Assign builders for wood and algae."
+    },
+    {
+      "id": "native:[lesson schools build compact]",
+      "key": "[lesson schools build compact]",
+      "source": "Build → School. Assign builders for wood and algae."
+    },
+    {
+      "id": "native:[lesson schools learn compact]",
+      "key": "[lesson schools learn compact]",
+      "source": "Let a worker finish School training."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade compact]",
+      "key": "[lesson upgrades upgrade compact]",
+      "source": "Select Racetrack → Upgrade. Assign skilled builders."
+    },
+    {
+      "id": "native:[lesson upgrades train compact]",
+      "key": "[lesson upgrades train compact]",
+      "source": "Let a worker train at the upgraded Racetrack."
+    },
+    {
+      "id": "native:[lesson fortifications tower compact]",
+      "key": "[lesson fortifications tower compact]",
+      "source": "Build → Tower. Place in the marked area."
+    },
+    {
+      "id": "native:[lesson fortifications walls compact]",
+      "key": "[lesson fortifications walls compact]",
+      "source": "Build 2 walls. Keep the tower’s west lane open."
+    },
+    {
+      "id": "native:[lesson fortifications supply compact]",
+      "key": "[lesson fortifications supply compact]",
+      "source": "Select tower → suppliers. Wait for 2 stone."
+    },
+    {
+      "id": "native:[lesson fortifications hold compact]",
+      "key": "[lesson fortifications hold compact]",
+      "source": "Keep the tower supplied against the attacker."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout compact]",
+      "key": "[lesson defensive-tactics scout compact]",
+      "source": "Flags → Exploration. Place at the enemy; assign 1 explorer."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard compact]",
+      "key": "[lesson defensive-tactics guard compact]",
+      "source": "Flags → Guard. Paint 4 tiles; let 2 warriors arrive."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel compact]",
+      "key": "[lesson defensive-tactics repel compact]",
+      "source": "Hold the guard zone. Keep Inns supplied."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack compact]",
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "source": "War Flag → enemy Swarm. Request 3 warriors; radius ≤4."
+    },
+    {
+      "id": "native:[intro attack destination]",
+      "key": "[intro attack destination]",
+      "source": "Attack here"
+    },
+    {
+      "id": "native:[Grassland]",
+      "key": "[Grassland]",
+      "source": "Grassland"
+    },
+    {
+      "id": "native:[Kopjes]",
+      "key": "[Kopjes]",
+      "source": "Kopjes"
+    },
+    {
+      "id": "native:[Game trails]",
+      "key": "[Game trails]",
+      "source": "Game trails"
+    },
+    {
+      "id": "native:[Fish amount]",
+      "key": "[Fish amount]",
+      "source": "Fish amount"
+    },
+    {
+      "id": "native:[scenario messages]",
+      "key": "[scenario messages]",
+      "source": "Messages ▸"
+    },
+    {
+      "id": "native:[Camp-site amount]",
+      "key": "[Camp-site amount]",
+      "source": "Camp-site amount"
+    }
+  ]
+}

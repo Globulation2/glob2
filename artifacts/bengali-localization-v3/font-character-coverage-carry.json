@@ -1,0 +1,8 @@
+{
+  "current_native_catalog_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+  "previous_native_catalog_sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+  "new_characters_not_in_previous_catalog": [],
+  "font_tree_blob": "0b80cc8735dc0a9957a8ffc2e37a7d445da52c8c",
+  "font_tree_identical_to_actual_prior_coverage_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "scope": "Codepoint/font-byte coverage carry only. New combinations and new source UI/runtime still require actual final tests/captures; no complete rendering pass inferred."
+}

@@ -1,0 +1,159 @@
+[
+  {
+    "label": "source",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "seconds": 0.011,
+    "uncompressed_log_bytes": 41,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "architecture",
+    "argv": [
+      "uname",
+      "-m"
+    ],
+    "exit": 0,
+    "seconds": 0.004,
+    "uncompressed_log_bytes": 6,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "xcode",
+    "argv": [
+      "xcodebuild",
+      "-version"
+    ],
+    "exit": 0,
+    "seconds": 0.066,
+    "uncompressed_log_bytes": 33,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "sdks",
+    "argv": [
+      "xcodebuild",
+      "-showsdks"
+    ],
+    "exit": 0,
+    "seconds": 0.608,
+    "uncompressed_log_bytes": 745,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "doctor",
+    "argv": [
+      "python3",
+      "mobile/doctor.py",
+      "ios",
+      "environment=simulator",
+      "release=1"
+    ],
+    "exit": 0,
+    "seconds": 4.127,
+    "uncompressed_log_bytes": 1597,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "runtimes",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "--set",
+      "/Users/runner/work/glob2/glob2/build/mobile-tools/ios-simulators",
+      "list",
+      "runtimes",
+      "--json"
+    ],
+    "exit": 0,
+    "seconds": 2.92,
+    "uncompressed_log_bytes": 29808,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "device-types",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "--set",
+      "/Users/runner/work/glob2/glob2/build/mobile-tools/ios-simulators",
+      "list",
+      "devicetypes",
+      "--json"
+    ],
+    "exit": 0,
+    "seconds": 0.159,
+    "uncompressed_log_bytes": 64797,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "create",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "--set",
+      "/Users/runner/work/glob2/glob2/build/mobile-tools/ios-simulators",
+      "create",
+      "Glob2-Mobile",
+      "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+      "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+    ],
+    "exit": 0,
+    "seconds": 0.285,
+    "uncompressed_log_bytes": 37,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "boot",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "--set",
+      "/Users/runner/work/glob2/glob2/build/mobile-tools/ios-simulators",
+      "boot",
+      "EAB03E9E-34B4-4D01-819E-DCC70867B39E"
+    ],
+    "exit": 0,
+    "seconds": 4.738,
+    "uncompressed_log_bytes": 0,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "boot-wait",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "--set",
+      "/Users/runner/work/glob2/glob2/build/mobile-tools/ios-simulators",
+      "bootstatus",
+      "EAB03E9E-34B4-4D01-819E-DCC70867B39E",
+      "-b"
+    ],
+    "exit": 0,
+    "seconds": 50.786,
+    "uncompressed_log_bytes": 169,
+    "log_limit_exceeded": false
+  },
+  {
+    "label": "dependencies",
+    "argv": [
+      "python3",
+      "mobile/dependencies.py",
+      "--target",
+      "ios",
+      "--environment",
+      "simulator",
+      "--release",
+      "--jobs",
+      "2"
+    ],
+    "exit": 0,
+    "seconds": 1267.3,
+    "uncompressed_log_bytes": 151384,
+    "log_limit_exceeded": false
+  }
+]

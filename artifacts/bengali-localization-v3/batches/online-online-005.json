@@ -1,0 +1,809 @@
+{
+  "id": "online-online-005",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Download the game",
+      "key": "Download the game",
+      "source": "Download the game"
+    },
+    {
+      "id": "online:Download this release",
+      "key": "Download this release",
+      "source": "Download this release"
+    },
+    {
+      "id": "online:Download {slot0}",
+      "key": "Download {slot0}",
+      "source": "Download {slot0}"
+    },
+    {
+      "id": "online:Downloading replay…",
+      "key": "Downloading replay…",
+      "source": "Downloading replay…"
+    },
+    {
+      "id": "online:Downloading the game…",
+      "key": "Downloading the game…",
+      "source": "Downloading the game…"
+    },
+    {
+      "id": "online:Downloads",
+      "key": "Downloads",
+      "source": "Downloads"
+    },
+    {
+      "id": "online:Download{slot0}",
+      "key": "Download{slot0}",
+      "source": "Download{slot0}"
+    },
+    {
+      "id": "online:Draft",
+      "key": "Draft",
+      "source": "Draft"
+    },
+    {
+      "id": "online:Draft identities cannot change.",
+      "key": "Draft identities cannot change.",
+      "source": "Draft identities cannot change."
+    },
+    {
+      "id": "online:Draft is temporarily empty. Add source to save.",
+      "key": "Draft is temporarily empty. Add source to save.",
+      "source": "Draft is temporarily empty. Add source to save."
+    },
+    {
+      "id": "online:Draft not found.",
+      "key": "Draft not found.",
+      "source": "Draft not found."
+    },
+    {
+      "id": "online:Draft recovery failed",
+      "key": "Draft recovery failed",
+      "source": "Draft recovery failed"
+    },
+    {
+      "id": "online:Draft recovery failed.",
+      "key": "Draft recovery failed.",
+      "source": "Draft recovery failed."
+    },
+    {
+      "id": "online:Draft saved",
+      "key": "Draft saved",
+      "source": "Draft saved"
+    },
+    {
+      "id": "online:Draft saved.",
+      "key": "Draft saved.",
+      "source": "Draft saved."
+    },
+    {
+      "id": "online:Drafts",
+      "key": "Drafts",
+      "source": "Drafts"
+    },
+    {
+      "id": "online:Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "key": "Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "source": "Drafts are private. Publish a saved family to share it in the {slot0}."
+    },
+    {
+      "id": "online:Drag or use arrow keys to explore the wraparound map.",
+      "key": "Drag or use arrow keys to explore the wraparound map.",
+      "source": "Drag or use arrow keys to explore the wraparound map."
+    },
+    {
+      "id": "online:Drag the playhead to explore",
+      "key": "Drag the playhead to explore",
+      "source": "Drag the playhead to explore"
+    },
+    {
+      "id": "online:Drag to choose your {slot0} angle",
+      "key": "Drag to choose your {slot0} angle",
+      "source": "Drag to choose your {slot0} angle"
+    },
+    {
+      "id": "online:Drag to explore when zoomed",
+      "key": "Drag to explore when zoomed",
+      "source": "Drag to explore when zoomed"
+    },
+    {
+      "id": "online:Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "key": "Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "source": "Drag to paint · Rotate tool to turn · scroll or pinch to zoom"
+    },
+    {
+      "id": "online:Drag to position. Use arrow keys to move and the slider to zoom.",
+      "key": "Drag to position. Use arrow keys to move and the slider to zoom.",
+      "source": "Drag to position. Use arrow keys to move and the slider to zoom."
+    },
+    {
+      "id": "online:Drag to rotate and tilt · scroll or pinch to zoom",
+      "key": "Drag to rotate and tilt · scroll or pinch to zoom",
+      "source": "Drag to rotate and tilt · scroll or pinch to zoom"
+    },
+    {
+      "id": "online:Drag to turn · fixed height and scale",
+      "key": "Drag to turn · fixed height and scale",
+      "source": "Drag to turn · fixed height and scale"
+    },
+    {
+      "id": "online:Draw",
+      "key": "Draw",
+      "source": "Draw"
+    },
+    {
+      "id": "online:Duplicate",
+      "key": "Duplicate",
+      "source": "Duplicate"
+    },
+    {
+      "id": "online:Duplicate rig clip",
+      "key": "Duplicate rig clip",
+      "source": "Duplicate rig clip"
+    },
+    {
+      "id": "online:Duplicate shape clip",
+      "key": "Duplicate shape clip",
+      "source": "Duplicate shape clip"
+    },
+    {
+      "id": "online:Duration (steps)",
+      "key": "Duration (steps)",
+      "source": "Duration (steps)"
+    },
+    {
+      "id": "online:Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "key": "Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "source": "Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values."
+    },
+    {
+      "id": "online:Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "key": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "source": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots."
+    },
+    {
+      "id": "online:Each shape shares the swarm paint area. Check the result after switching.",
+      "key": "Each shape shares the swarm paint area. Check the result after switching.",
+      "source": "Each shape shares the swarm paint area. Check the result after switching."
+    },
+    {
+      "id": "online:Econo",
+      "key": "Econo",
+      "source": "Econo"
+    },
+    {
+      "id": "online:Economy against each player’s average",
+      "key": "Economy against each player’s average",
+      "source": "Economy against each player’s average"
+    },
+    {
+      "id": "online:Economy {slot0}",
+      "key": "Economy {slot0}",
+      "source": "Economy {slot0}"
+    },
+    {
+      "id": "online:Edit",
+      "key": "Edit",
+      "source": "Edit"
+    },
+    {
+      "id": "online:Edit AI details",
+      "key": "Edit AI details",
+      "source": "Edit AI details"
+    },
+    {
+      "id": "online:Edit details",
+      "key": "Edit details",
+      "source": "Edit details"
+    },
+    {
+      "id": "online:Edit in AI Studio",
+      "key": "Edit in AI Studio",
+      "source": "Edit in AI Studio"
+    },
+    {
+      "id": "online:Edit in Generator Studio",
+      "key": "Edit in Generator Studio",
+      "source": "Edit in Generator Studio"
+    },
+    {
+      "id": "online:Edit this saved draft",
+      "key": "Edit this saved draft",
+      "source": "Edit this saved draft"
+    },
+    {
+      "id": "online:Edit this version",
+      "key": "Edit this version",
+      "source": "Edit this version"
+    },
+    {
+      "id": "online:Edit this version in chat",
+      "key": "Edit this version in chat",
+      "source": "Edit this version in chat"
+    },
+    {
+      "id": "online:Edit with AI",
+      "key": "Edit with AI",
+      "source": "Edit with AI"
+    },
+    {
+      "id": "online:Edit your map",
+      "key": "Edit your map",
+      "source": "Edit your map"
+    },
+    {
+      "id": "online:Edit your soundtrack",
+      "key": "Edit your soundtrack",
+      "source": "Edit your soundtrack"
+    },
+    {
+      "id": "online:Edit {value0}",
+      "key": "Edit {value0}",
+      "source": "Edit {value0}"
+    },
+    {
+      "id": "online:Editing current saved draft · {slot0}",
+      "key": "Editing current saved draft · {slot0}",
+      "source": "Editing current saved draft · {slot0}"
+    },
+    {
+      "id": "online:Editing version {value0}",
+      "key": "Editing version {value0}",
+      "source": "Editing version {value0}"
+    },
+    {
+      "id": "online:Editing {slot0}",
+      "key": "Editing {slot0}",
+      "source": "Editing {slot0}"
+    },
+    {
+      "id": "online:Editor tool",
+      "key": "Editor tool",
+      "source": "Editor tool"
+    },
+    {
+      "id": "online:Editor tools",
+      "key": "Editor tools",
+      "source": "Editor tools"
+    },
+    {
+      "id": "online:Editor-only terrain cannot launch a colony game.",
+      "key": "Editor-only terrain cannot launch a colony game.",
+      "source": "Editor-only terrain cannot launch a colony game."
+    },
+    {
+      "id": "online:Empty the seat before locking it.",
+      "key": "Empty the seat before locking it.",
+      "source": "Empty the seat before locking it."
+    },
+    {
+      "id": "online:Empty the seat before putting an AI in it.",
+      "key": "Empty the seat before putting an AI in it.",
+      "source": "Empty the seat before putting an AI in it."
+    },
+    {
+      "id": "online:Ended",
+      "key": "Ended",
+      "source": "Ended"
+    },
+    {
+      "id": "online:Engine agent key required.",
+      "key": "Engine agent key required.",
+      "source": "Engine agent key required."
+    },
+    {
+      "id": "online:Engine agents",
+      "key": "Engine agents",
+      "source": "Engine agents"
+    },
+    {
+      "id": "online:Engine jobs",
+      "key": "Engine jobs",
+      "source": "Engine jobs"
+    },
+    {
+      "id": "online:Engine launch timed out. Stop and retry the preview.",
+      "key": "Engine launch timed out. Stop and retry the preview.",
+      "source": "Engine launch timed out. Stop and retry the preview."
+    },
+    {
+      "id": "online:Engine version",
+      "key": "Engine version",
+      "source": "Engine version"
+    },
+    {
+      "id": "online:Engine {slot0} · suite {slot1}",
+      "key": "Engine {slot0} · suite {slot1}",
+      "source": "Engine {slot0} · suite {slot1}"
+    },
+    {
+      "id": "online:Engine {slot0} · {slot1}",
+      "key": "Engine {slot0} · {slot1}",
+      "source": "Engine {slot0} · {slot1}"
+    },
+    {
+      "id": "online:Enlarged 3×",
+      "key": "Enlarged 3×",
+      "source": "Enlarged 3×"
+    },
+    {
+      "id": "online:Enter a JSON array.",
+      "key": "Enter a JSON array.",
+      "source": "Enter a JSON array."
+    },
+    {
+      "id": "online:Enter a username.",
+      "key": "Enter a username.",
+      "source": "Enter a username."
+    },
+    {
+      "id": "online:Enter to send · Shift + Enter for a new line",
+      "key": "Enter to send · Shift + Enter for a new line",
+      "source": "Enter to send · Shift + Enter for a new line"
+    },
+    {
+      "id": "online:Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+      "key": "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+      "source": "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery."
+    },
+    {
+      "id": "online:Enter valid JSON.",
+      "key": "Enter valid JSON.",
+      "source": "Enter valid JSON."
+    },
+    {
+      "id": "online:Enter your password.",
+      "key": "Enter your password.",
+      "source": "Enter your password."
+    },
+    {
+      "id": "online:Eraser",
+      "key": "Eraser",
+      "source": "Eraser"
+    },
+    {
+      "id": "online:Error",
+      "key": "Error",
+      "source": "Error"
+    },
+    {
+      "id": "online:Estimated provider costs",
+      "key": "Estimated provider costs",
+      "source": "Estimated provider costs"
+    },
+    {
+      "id": "online:Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+      "key": "Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+      "source": "Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost."
+    },
+    {
+      "id": "online:Event",
+      "key": "Event",
+      "source": "Event"
+    },
+    {
+      "id": "online:Every member needs generator sharing support.",
+      "key": "Every member needs generator sharing support.",
+      "source": "Every member needs generator sharing support."
+    },
+    {
+      "id": "online:Every room member must update before using a shared generator.",
+      "key": "Every room member must update before using a shared generator.",
+      "source": "Every room member must update before using a shared generator."
+    },
+    {
+      "id": "online:Every seated player must be ready.",
+      "key": "Every seated player must be ready.",
+      "source": "Every seated player must be ready."
+    },
+    {
+      "id": "online:Example generation settings",
+      "key": "Example generation settings",
+      "source": "Example generation settings"
+    },
+    {
+      "id": "online:Explore custom blends and fades. Restore game settings for the in-game transition.",
+      "key": "Explore custom blends and fades. Restore game settings for the in-game transition.",
+      "source": "Explore custom blends and fades. Restore game settings for the in-game transition."
+    },
+    {
+      "id": "online:Explore player and AI profiles",
+      "key": "Explore player and AI profiles",
+      "source": "Explore player and AI profiles"
+    },
+    {
+      "id": "online:Explore ratings and games",
+      "key": "Explore ratings and games",
+      "source": "Explore ratings and games"
+    },
+    {
+      "id": "online:Explorers",
+      "key": "Explorers",
+      "source": "Explorers"
+    },
+    {
+      "id": "online:Export activity CSV",
+      "key": "Export activity CSV",
+      "source": "Export activity CSV"
+    },
+    {
+      "id": "online:Export cash CSV",
+      "key": "Export cash CSV",
+      "source": "Export cash CSV"
+    },
+    {
+      "id": "online:Export credits CSV",
+      "key": "Export credits CSV",
+      "source": "Export credits CSV"
+    },
+    {
+      "id": "online:Export provider costs CSV",
+      "key": "Export provider costs CSV",
+      "source": "Export provider costs CSV"
+    },
+    {
+      "id": "online:Export saved package",
+      "key": "Export saved package",
+      "source": "Export saved package"
+    },
+    {
+      "id": "online:Export viewed revision",
+      "key": "Export viewed revision",
+      "source": "Export viewed revision"
+    },
+    {
+      "id": "online:Eyedropper",
+      "key": "Eyedropper",
+      "source": "Eyedropper"
+    },
+    {
+      "id": "online:FINAL VIEW",
+      "key": "FINAL VIEW",
+      "source": "FINAL VIEW"
+    },
+    {
+      "id": "online:Fade duration: ",
+      "key": "Fade duration: ",
+      "source": "Fade duration: "
+    },
+    {
+      "id": "online:Failed",
+      "key": "Failed",
+      "source": "Failed"
+    },
+    {
+      "id": "online:Family experiments",
+      "key": "Family experiments",
+      "source": "Family experiments"
+    },
+    {
+      "id": "online:Family experiments JSON",
+      "key": "Family experiments JSON",
+      "source": "Family experiments JSON"
+    },
+    {
+      "id": "online:Family link",
+      "key": "Family link",
+      "source": "Family link"
+    },
+    {
+      "id": "online:Family name",
+      "key": "Family name",
+      "source": "Family name"
+    },
+    {
+      "id": "online:Favourite",
+      "key": "Favourite",
+      "source": "Favourite"
+    },
+    {
+      "id": "online:Favourite AIs",
+      "key": "Favourite AIs",
+      "source": "Favourite AIs"
+    },
+    {
+      "id": "online:Favourite an AI to keep it close.",
+      "key": "Favourite an AI to keep it close.",
+      "source": "Favourite an AI to keep it close."
+    },
+    {
+      "id": "online:Favourited",
+      "key": "Favourited",
+      "source": "Favourited"
+    },
+    {
+      "id": "online:Favourites",
+      "key": "Favourites",
+      "source": "Favourites"
+    },
+    {
+      "id": "online:Fields",
+      "key": "Fields",
+      "source": "Fields"
+    },
+    {
+      "id": "online:File",
+      "key": "File",
+      "source": "File"
+    },
+    {
+      "id": "online:File unavailable.",
+      "key": "File unavailable.",
+      "source": "File unavailable."
+    },
+    {
+      "id": "online:Fills repeat across the model’s matching surfaces.",
+      "key": "Fills repeat across the model’s matching surfaces.",
+      "source": "Fills repeat across the model’s matching surfaces."
+    },
+    {
+      "id": "online:Filter",
+      "key": "Filter",
+      "source": "Filter"
+    },
+    {
+      "id": "online:Final game view · {slot0}°",
+      "key": "Final game view · {slot0}°",
+      "source": "Final game view · {slot0}°"
+    },
+    {
+      "id": "online:Final statistics",
+      "key": "Final statistics",
+      "source": "Final statistics"
+    },
+    {
+      "id": "online:Find a player",
+      "key": "Find a player",
+      "source": "Find a player"
+    },
+    {
+      "id": "online:Find content",
+      "key": "Find content",
+      "source": "Find content"
+    },
+    {
+      "id": "online:Finding players…",
+      "key": "Finding players…",
+      "source": "Finding players…"
+    },
+    {
+      "id": "online:Finish or cancel an existing upload first (maximum three active uploads).",
+      "key": "Finish or cancel an existing upload first (maximum three active uploads).",
+      "source": "Finish or cancel an existing upload first (maximum three active uploads)."
+    },
+    {
+      "id": "online:Finished",
+      "key": "Finished",
+      "source": "Finished"
+    },
+    {
+      "id": "online:Finished buildings",
+      "key": "Finished buildings",
+      "source": "Finished buildings"
+    },
+    {
+      "id": "online:Finished: {value0}",
+      "key": "Finished: {value0}",
+      "source": "Finished: {value0}"
+    },
+    {
+      "id": "online:First page",
+      "key": "First page",
+      "source": "First page"
+    },
+    {
+      "id": "online:Fit",
+      "key": "Fit",
+      "source": "Fit"
+    },
+    {
+      "id": "online:Fit model",
+      "key": "Fit model",
+      "source": "Fit model"
+    },
+    {
+      "id": "online:Fit model · F",
+      "key": "Fit model · F",
+      "source": "Fit model · F"
+    },
+    {
+      "id": "online:Fitted {value0} unavailable, using the baked clip:",
+      "key": "Fitted {value0} unavailable, using the baked clip:",
+      "source": "Fitted {value0} unavailable, using the baked clip:"
+    },
+    {
+      "id": "online:Fix the failed checks and choose your updated file.",
+      "key": "Fix the failed checks and choose your updated file.",
+      "source": "Fix the failed checks and choose your updated file."
+    },
+    {
+      "id": "online:Flow",
+      "key": "Flow",
+      "source": "Flow"
+    },
+    {
+      "id": "online:Follow latest",
+      "key": "Follow latest",
+      "source": "Follow latest"
+    },
+    {
+      "id": "online:Follow progress on the canvas.",
+      "key": "Follow progress on the canvas.",
+      "source": "Follow progress on the canvas."
+    },
+    {
+      "id": "online:Follow the composition, hear each candidate, and see what the checks find.",
+      "key": "Follow the composition, hear each candidate, and see what the checks find.",
+      "source": "Follow the composition, hear each candidate, and see what the checks find."
+    },
+    {
+      "id": "online:Food in inns",
+      "key": "Food in inns",
+      "source": "Food in inns"
+    },
+    {
+      "id": "online:Footprint height (tiles)",
+      "key": "Footprint height (tiles)",
+      "source": "Footprint height (tiles)"
+    },
+    {
+      "id": "online:For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+      "key": "For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+      "source": "For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner."
+    },
+    {
+      "id": "online:Force re-verification",
+      "key": "Force re-verification",
+      "source": "Force re-verification"
+    },
+    {
+      "id": "online:Force re-verification of {value0}?",
+      "key": "Force re-verification of {value0}?",
+      "source": "Force re-verification of {value0}?"
+    },
+    {
+      "id": "online:Fork into Studio",
+      "key": "Fork into Studio",
+      "source": "Fork into Studio"
+    },
+    {
+      "id": "online:Frame",
+      "key": "Frame",
+      "source": "Frame"
+    },
+    {
+      "id": "online:Frame dimensions must be whole numbers between 1 and 64.",
+      "key": "Frame dimensions must be whole numbers between 1 and 64.",
+      "source": "Frame dimensions must be whole numbers between 1 and 64."
+    },
+    {
+      "id": "online:Frame height",
+      "key": "Frame height",
+      "source": "Frame height"
+    },
+    {
+      "id": "online:Frame width",
+      "key": "Frame width",
+      "source": "Frame width"
+    },
+    {
+      "id": "online:Frames run left to right, then top to bottom.",
+      "key": "Frames run left to right, then top to bottom.",
+      "source": "Frames run left to right, then top to bottom."
+    },
+    {
+      "id": "online:Friends share a code or a link from their room.",
+      "key": "Friends share a code or a link from their room.",
+      "source": "Friends share a code or a link from their room."
+    },
+    {
+      "id": "online:From (UTC)",
+      "key": "From (UTC)",
+      "source": "From (UTC)"
+    },
+    {
+      "id": "online:From this view",
+      "key": "From this view",
+      "source": "From this view"
+    },
+    {
+      "id": "online:Full compatibility key: {slot0}",
+      "key": "Full compatibility key: {slot0}",
+      "source": "Full compatibility key: {slot0}"
+    },
+    {
+      "id": "online:Full definition and frame mappings",
+      "key": "Full definition and frame mappings",
+      "source": "Full definition and frame mappings"
+    },
+    {
+      "id": "online:Full leaderboard",
+      "key": "Full leaderboard",
+      "source": "Full leaderboard"
+    },
+    {
+      "id": "online:Game preview",
+      "key": "Game preview",
+      "source": "Game preview"
+    },
+    {
+      "id": "online:Game scale",
+      "key": "Game scale",
+      "source": "Game scale"
+    },
+    {
+      "id": "online:Game version",
+      "key": "Game version",
+      "source": "Game version"
+    },
+    {
+      "id": "online:Game versions",
+      "key": "Game versions",
+      "source": "Game versions"
+    },
+    {
+      "id": "online:Game-engine preview of the checked set",
+      "key": "Game-engine preview of the checked set",
+      "source": "Game-engine preview of the checked set"
+    },
+    {
+      "id": "online:Game-size reference",
+      "key": "Game-size reference",
+      "source": "Game-size reference"
+    },
+    {
+      "id": "online:Gameplay preset",
+      "key": "Gameplay preset",
+      "source": "Gameplay preset"
+    },
+    {
+      "id": "online:Gameplay preset: {slot0}",
+      "key": "Gameplay preset: {slot0}",
+      "source": "Gameplay preset: {slot0}"
+    },
+    {
+      "id": "online:Games",
+      "key": "Games",
+      "source": "Games"
+    },
+    {
+      "id": "online:Generate",
+      "key": "Generate",
+      "source": "Generate"
+    },
+    {
+      "id": "online:Generate a map to inspect its terrain and starting colonies, then watch AI colonies play.",
+      "key": "Generate a map to inspect its terrain and starting colonies, then watch AI colonies play.",
+      "source": "Generate a map to inspect its terrain and starting colonies, then watch AI colonies play."
+    },
+    {
+      "id": "online:Generate new landscapes from community JavaScript packages. Install a release in Settings → Map generators, or select it in an online room.",
+      "key": "Generate new landscapes from community JavaScript packages. Install a release in Settings → Map generators, or select it in an online room.",
+      "source": "Generate new landscapes from community JavaScript packages. Install a release in Settings → Map generators, or select it in an online room."
+    },
+    {
+      "id": "online:Generated",
+      "key": "Generated",
+      "source": "Generated"
+    },
+    {
+      "id": "online:Generated by",
+      "key": "Generated by",
+      "source": "Generated by"
+    },
+    {
+      "id": "online:Generated edits applied to revision {slot0}.",
+      "key": "Generated edits applied to revision {slot0}.",
+      "source": "Generated edits applied to revision {slot0}."
+    },
+    {
+      "id": "online:Generated example map",
+      "key": "Generated example map",
+      "source": "Generated example map"
+    }
+  ]
+}

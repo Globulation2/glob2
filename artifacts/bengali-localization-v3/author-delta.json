@@ -1,0 +1,71 @@
+{
+  "author": "/root/bengali_author",
+  "role": "Bengali native delta draft author",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "source_provenance_sha256": "ffd9844ee1fb67e39166b578b972f3ee637034c38e12e3a3a85bf2000c0f86af",
+  "cloud_accounting_sha256": "1eb3f3e5d76f0b88a27f0bb441dec19a12e78d98abe68b22e1f32f72dab4a7f4",
+  "cloud_response_sha256": "77c6907519dad45c3e06b2975b163cb7d80389e6ac046300ff5d15ae25522d1b",
+  "cloud_completed_attempts": 1,
+  "cloud_reserved_characters": 250,
+  "cloud_estimated_usd_without_free_credit": "0.005",
+  "draft_native_sha256": "654d5e4834f59292e81189c8503d3307c903ec81325c0d38c6d8d8945932499d",
+  "final_native_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+  "unchanged_online_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "examined_keys": [
+    "native:[stat win probability]",
+    "native:[stat win probability about]"
+  ],
+  "entries": [
+    {
+      "id": "native:[stat win probability]",
+      "source": "Win probability",
+      "actual_initial_google_output": "জয়ের সম্ভাবনা",
+      "draft_examined": "জয়ের সম্ভাবনা",
+      "final_authored": "জয়ের সম্ভাবনা",
+      "disposition": "retained after contextual author examination"
+    },
+    {
+      "id": "native:[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "actual_initial_google_output": "আপনার জোটের জেতার আনুমানিক সম্ভাবনা, যা পুরো ম্যাচ জুড়ে নমুনা হিসেবে নেওয়া হয়েছে। মিত্রদের জন্য সম্ভাবনা একটিই। এই মডেলটি এআই গেমের উপর ভিত্তি করে প্রশিক্ষিত; এই অনুমানে অবস্থান বা পরিকল্পিত চাল বিবেচনা করা হয়নি। পুরোনো সেভ ফাইলগুলোর ইতিহাস অসম্পূর্ণ থাকতে পারে।",
+      "draft_examined": "আপনার জোটের জেতার আনুমানিক সম্ভাবনা, যা পুরো ম্যাচ জুড়ে নমুনা হিসেবে নেওয়া হয়েছে। মিত্রদের জন্য সম্ভাবনা একটিই। এই মডেলটি এআই গেমের উপর ভিত্তি করে প্রশিক্ষিত; এই অনুমানে অবস্থান বা পরিকল্পিত চাল বিবেচনা করা হয়নি। পুরোনো সেভ ফাইলগুলোর ইতিহাস অসম্পূর্ণ থাকতে পারে।",
+      "final_authored": "ম্যাচ চলাকালীন বিভিন্ন সময়ে মাপা আপনার জোটের জয়ের আনুমানিক সম্ভাবনা। মিত্রদের জন্য এই সম্ভাবনা একই। এআইয়ের খেলার তথ্য দিয়ে মডেলটি প্রশিক্ষিত হয়েছে; এই অনুমানে অবস্থান বা পরিকল্পিত চাল ধরা হয় না। পুরোনো সংরক্ষিত খেলায় ইতিহাস অসম্পূর্ণ থাকতে পারে।",
+      "disposition": "edited after contextual author examination"
+    }
+  ],
+  "context_read": [
+    {
+      "revision": "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+      "path": "src/team/stats/MetricCatalog.cpp",
+      "scope": "win probability metric and history sampling"
+    },
+    {
+      "revision": "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+      "path": "src/team/stats/WinProbability.cpp",
+      "scope": "model identity and numerical probability implementation"
+    },
+    {
+      "path": "../bengali-localization/language-brief.json",
+      "scope": "existing modern Bengali register and terminology; retained জোট from [Alliance]"
+    }
+  ],
+  "semantic_checks": [
+    "জয়ের সম্ভাবনা is estimated probability, not historical জয়ের হার (win rate).",
+    "The winner modeled is the alliance; allies share the same probability.",
+    "ম্যাচ চলাকালীন বিভিন্ন সময়ে মাপা conveys sampled match history without implying cumulative wins.",
+    "Preserved training on AI games and exclusion of position/planned moves.",
+    "Preserved incomplete history possibility for older saved games.",
+    "No technical keys, execution identifiers, placeholders, or other6235 source/translation pairs changed."
+  ],
+  "findings": [
+    {
+      "id": "native:[stat win probability about]",
+      "severity": "minor",
+      "state": "resolved",
+      "reason": "Replaced literal নমুনা হিসেবে নেওয়া phrasing with natural sampling/history wording; সংরক্ষিত খেলা replaces a file-oriented save loanword while preserving compatibility note."
+    }
+  ],
+  "unresolved_uncertainty": [],
+  "status": "Authored two-key delta; awaits independent semantic/editorial/adversarial review; no release-gate claim."
+}

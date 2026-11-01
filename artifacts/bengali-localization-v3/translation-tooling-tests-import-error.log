@@ -1,0 +1,35 @@
+EEE
+======================================================================
+ERROR: test_translations (unittest.loader._FailedTest.test_translations)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_translations
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.test_translations'
+
+
+======================================================================
+ERROR: test_translation_program (unittest.loader._FailedTest.test_translation_program)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_translation_program
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.test_translation_program'
+
+
+======================================================================
+ERROR: test_cloud_draft (unittest.loader._FailedTest.test_cloud_draft)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_cloud_draft
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.test_cloud_draft'
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+FAILED (errors=3)

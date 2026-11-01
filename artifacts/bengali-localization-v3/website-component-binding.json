@@ -1,0 +1,9 @@
+{
+  "tested_revision": "60887383753dc130dfdb41621682ac7c1a00c469",
+  "current_revision": "2afe891014845d0c44447e09db08a2a67754323d",
+  "tested_platform_tree_blob": "e2bd321cbc7148e0bb2fe1044fdf6b2cf4dd78ff",
+  "current_platform_tree_blob": "e2bd321cbc7148e0bb2fe1044fdf6b2cf4dd78ff",
+  "platform_inputs_identical": true,
+  "actual_prior_execution_records": "../bengali-localization-v2/web-{build,chromium,cross}.json,typecheck.json,lint.json,account-room/visual-review.json",
+  "scope": "Only unchanged website component coverage can carry; does not cover native/browser-game source or current packages."
+}

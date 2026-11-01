@@ -1,0 +1,879 @@
+{
+  "observed_at": "2026-11-01T02:41:17.740748+00:00",
+  "expected_head": "2afe891014845d0c44447e09db08a2a67754323d",
+  "actual_pr_head": "2afe891014845d0c44447e09db08a2a67754323d",
+  "head_matches": true,
+  "dispatch_hold": "Final integrated2afe merge942d verified against master23edd; final runs dispatched, execution remains pending.",
+  "historical_evidence_runs": [
+    41251891306,
+    41252835211,
+    41253888583,
+    41258418491,
+    41254569038,
+    41263022026,
+    41258317846,
+    41263370500
+  ],
+  "historical_scope": "Preserved actual failed/cancelled/excluded snapshots. Adversary owns later iOS execution and artifact collection.",
+  "runs": [
+    {
+      "run_id": 41265887036,
+      "sha": "2afe891014845d0c44447e09db08a2a67754323d",
+      "expected_workflow_head": "2afe891014845d0c44447e09db08a2a67754323d",
+      "workflow_head_matches": true,
+      "requested_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "game_source_note": "Final integrated PR; verify actual checkout in producer log.",
+      "event": "pull_request",
+      "status": "pending",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41265887036",
+      "jobs": [],
+      "artifacts": []
+    },
+    {
+      "run_id": 41266158452,
+      "sha": "2afe891014845d0c44447e09db08a2a67754323d",
+      "expected_workflow_head": "2afe891014845d0c44447e09db08a2a67754323d",
+      "workflow_head_matches": true,
+      "requested_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "game_source_note": "Final full macOS literal integration merge.",
+      "event": "workflow_dispatch",
+      "status": "queued",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41266158452",
+      "jobs": [
+        {
+          "id": 124729284298,
+          "name": "native",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41266158452/job/124729284298",
+          "started_at": "2026-11-01T02:40:26Z",
+          "completed_at": null
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 41266158472,
+      "sha": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+      "expected_workflow_head": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+      "workflow_head_matches": true,
+      "requested_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "game_source_note": "Final focused Android x86_64 wrapper; workflow commit distinct from literal game checkout.",
+      "event": "push",
+      "status": "queued",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41266158472",
+      "jobs": [
+        {
+          "id": 124729280372,
+          "name": "android / Android release APK (x86_64)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41266158472/job/124729280372",
+          "started_at": "2026-11-01T02:40:25Z",
+          "completed_at": null
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 41263237840,
+      "sha": "fee00ba65ede3aa261ab3d2af8ab7b43fbcd59e5",
+      "expected_workflow_head": "fee00ba65ede3aa261ab3d2af8ab7b43fbcd59e5",
+      "workflow_head_matches": true,
+      "requested_game_revision": "06f093ff0e5ce59367991cd87d6932cff09d6e04",
+      "game_source_note": "Superseded fee PR; final62 adds native Unicode fixes. No final source execution claim.",
+      "event": "pull_request",
+      "status": "queued",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41263237840",
+      "jobs": [
+        {
+          "id": 124721954161,
+          "name": "Select relevant checks",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124721954161",
+          "started_at": "2026-11-01T02:04:59Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485015,
+          "name": "tsan",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485015",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485025,
+          "name": "Primary Linux programs",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485025",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485138,
+          "name": "android",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485138",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485227,
+          "name": "music pipeline (Python)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485227",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485251,
+          "name": "windows (mingw-w64)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485251",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485265,
+          "name": "browser build (WebAssembly)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485265",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485279,
+          "name": "Relevant checks passed",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485279",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": null
+        },
+        {
+          "id": 124728485305,
+          "name": "browser native WSS server, router and transport",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485305",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485309,
+          "name": "Golden-only build and checks (${{ matrix.runner }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485309",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485641,
+          "name": "platform (TypeScript)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485641",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485644,
+          "name": "Native Clang coverage",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485644",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485671,
+          "name": "self-hosted platform stack",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485671",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485674,
+          "name": "linux-build",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485674",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485684,
+          "name": "linux variants (${{ matrix.image }})",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485684",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485687,
+          "name": "linux-map-generators",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485687",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485723,
+          "name": "macos",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485723",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485804,
+          "name": "Linux GCC 11 build and tests",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485804",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485842,
+          "name": "Linux Clang compatibility",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485842",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485849,
+          "name": "Linux GCC 13 build and tests",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485849",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728485918,
+          "name": "browser self-hosting deployment",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728485918",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728486122,
+          "name": "linux (${{ matrix.image }})",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728486122",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728486195,
+          "name": "browser tests (${{ matrix.name }})",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728486195",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        },
+        {
+          "id": 124728486536,
+          "name": "browser/native simulation equivalence",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263237840/job/124728486536",
+          "started_at": "2026-11-01T02:36:14Z",
+          "completed_at": "2026-11-01T02:36:14Z"
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 41263414282,
+      "sha": "fee00ba65ede3aa261ab3d2af8ab7b43fbcd59e5",
+      "expected_workflow_head": "fee00ba65ede3aa261ab3d2af8ab7b43fbcd59e5",
+      "workflow_head_matches": true,
+      "requested_game_revision": "06f093ff0e5ce59367991cd87d6932cff09d6e04",
+      "game_source_note": "Fresh platform-only full macOS on literal fee integration merge06f.",
+      "event": "workflow_dispatch",
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41263414282",
+      "jobs": [
+        {
+          "id": 124721120766,
+          "name": "native",
+          "status": "in_progress",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41263414282/job/124721120766",
+          "started_at": "2026-11-01T02:02:00Z",
+          "completed_at": null
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 41258791491,
+      "sha": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
+      "expected_workflow_head": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
+      "workflow_head_matches": true,
+      "requested_game_revision": "96570c96c67572652f178b94c876f384383cff12",
+      "game_source_note": "Prior manual macOS full. Guard implementation at fee is not included; preserve actual old outcomes only.",
+      "event": "workflow_dispatch",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41258791491",
+      "jobs": [
+        {
+          "id": 124707553842,
+          "name": "native",
+          "status": "completed",
+          "conclusion": "failure",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41258791491/job/124707553842",
+          "started_at": "2026-11-01T01:04:29Z",
+          "completed_at": "2026-11-01T02:16:14Z"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13066267235,
+          "name": "generator-observations-macos",
+          "size_in_bytes": 28450,
+          "expired": false
+        },
+        {
+          "id": 13066197331,
+          "name": "native-macos-validation",
+          "size_in_bytes": 70532340,
+          "expired": false
+        },
+        {
+          "id": 13066147447,
+          "name": "browser-determinism-macos",
+          "size_in_bytes": 419264,
+          "expired": false
+        }
+      ]
+    },
+    {
+      "run_id": 41252835888,
+      "sha": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "expected_workflow_head": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "workflow_head_matches": true,
+      "requested_game_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "game_source_note": "Old manual browser31. Neither changed browser shell nor fee native guard is covered by this producer.",
+      "event": "workflow_dispatch",
+      "status": "queued",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41252835888",
+      "jobs": [
+        {
+          "id": 124690350689,
+          "name": "Select relevant checks",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124690350689",
+          "started_at": "2026-11-01T00:12:00Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699807496,
+          "name": "browser build (WebAssembly)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699807496",
+          "started_at": "2026-11-01T01:23:50Z",
+          "completed_at": "2026-11-01T02:02:12Z"
+        },
+        {
+          "id": 124699807725,
+          "name": "browser native WSS server, router and transport",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699807725",
+          "started_at": "2026-11-01T00:26:25Z",
+          "completed_at": "2026-11-01T01:04:26Z"
+        },
+        {
+          "id": 124699808255,
+          "name": "Golden-only build and checks (${{ matrix.runner }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808255",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808296,
+          "name": "Native Clang coverage",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808296",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808343,
+          "name": "android",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808343",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808471,
+          "name": "windows (mingw-w64)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808471",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808497,
+          "name": "self-hosted platform stack",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808497",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808639,
+          "name": "music pipeline (Python)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808639",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808669,
+          "name": "Linux GCC 11 build and tests",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808669",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808674,
+          "name": "linux variants (${{ matrix.image }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808674",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808692,
+          "name": "Primary Linux programs",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808692",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808844,
+          "name": "platform (TypeScript)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808844",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808859,
+          "name": "Linux GCC 13 build and tests",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808859",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699808868,
+          "name": "tsan",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699808868",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699809032,
+          "name": "Linux Clang compatibility",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699809032",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699809067,
+          "name": "macos",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699809067",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699809073,
+          "name": "linux-map-generators",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699809073",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699809122,
+          "name": "linux-build",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699809122",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124699809278,
+          "name": "linux (${{ matrix.image }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124699809278",
+          "started_at": "2026-11-01T00:19:05Z",
+          "completed_at": "2026-11-01T00:19:05Z"
+        },
+        {
+          "id": 124721387434,
+          "name": "browser self-hosting deployment",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387434",
+          "started_at": "2026-11-01T02:38:44Z",
+          "completed_at": "2026-11-01T02:39:33Z"
+        },
+        {
+          "id": 124721387561,
+          "name": "browser tests (chromium webgl2 match reload)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387561",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387575,
+          "name": "browser tests (chromium webgl2 damaged load)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387575",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387583,
+          "name": "browser tests (chromium 2/5)",
+          "status": "in_progress",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387583",
+          "started_at": "2026-11-01T02:38:44Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387589,
+          "name": "browser tests (webkit)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387589",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387594,
+          "name": "browser tests (chromium webgl2 viewport)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387594",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387600,
+          "name": "browser tests (lifecycle)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387600",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387606,
+          "name": "browser tests (chromium webgl2 responsive and startup)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387606",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387619,
+          "name": "browser tests (chromium settings storage)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387619",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387621,
+          "name": "browser tests (chromium torus)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387621",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387622,
+          "name": "browser tests (chromium 3/5)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387622",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387623,
+          "name": "browser tests (chromium webgl2 replay reload)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387623",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387628,
+          "name": "browser tests (chromium 4/5)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387628",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387631,
+          "name": "browser tests (webkit scripting)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387631",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387639,
+          "name": "browser tests (webkit WSS and simulation)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387639",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387643,
+          "name": "browser tests (chromium rendering)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387643",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387646,
+          "name": "browser tests (firefox WSS and simulation)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387646",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387662,
+          "name": "browser tests (firefox scripting)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387662",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387685,
+          "name": "browser tests (chromium 1/5)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387685",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387720,
+          "name": "browser tests (firefox)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387720",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721387778,
+          "name": "browser tests (chromium 5/5)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721387778",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721388590,
+          "name": "browser tests (chromium webgl2 input)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721388590",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721388654,
+          "name": "browser tests (chromium threaded colony skins)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721388654",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721388694,
+          "name": "browser tests (firefox replay import and reload)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721388694",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721388709,
+          "name": "browser tests (webkit replay import and reload)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721388709",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721388767,
+          "name": "browser tests (chromium serial renderer 1/3)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721388767",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721388812,
+          "name": "browser tests (chromium serial renderer 3/3)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721388812",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721388836,
+          "name": "browser tests (chromium threaded renderer)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721388836",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        },
+        {
+          "id": 124721388879,
+          "name": "browser tests (chromium serial renderer 2/3)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41252835888/job/124721388879",
+          "started_at": "2026-11-01T02:02:12Z",
+          "completed_at": null
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13067570413,
+          "name": "ci-observation-web-deploy-0",
+          "size_in_bytes": 172,
+          "expired": false
+        },
+        {
+          "id": 13066645512,
+          "name": "ci-observation-web-build-0",
+          "size_in_bytes": 239,
+          "expired": false
+        },
+        {
+          "id": 13066625708,
+          "name": "web-client",
+          "size_in_bytes": 337572545,
+          "expired": false
+        },
+        {
+          "id": 13066301325,
+          "name": "glob2-web-development",
+          "size_in_bytes": 164494933,
+          "expired": false
+        },
+        {
+          "id": 13064507219,
+          "name": "web-native",
+          "size_in_bytes": 190935723,
+          "expired": false
+        },
+        {
+          "id": 13064153230,
+          "name": "ci-observation-web-native-0",
+          "size_in_bytes": 217,
+          "expired": false
+        },
+        {
+          "id": 13063116970,
+          "name": "ci-observation-selection",
+          "size_in_bytes": 3153,
+          "expired": false
+        }
+      ]
+    }
+  ]
+}

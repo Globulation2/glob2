@@ -1,0 +1,6 @@
+{
+  "requested_at": "2026-11-01T02:45:53.467051+00:00",
+  "run_id": 41260132022,
+  "method": "normal POST /cancel",
+  "force_cancel": false
+}

@@ -1,0 +1,19 @@
+{
+  "branch": "codex/bengali-ios-validation-31efbe8",
+  "workflow_commit": "21d6a238aa61f64cf46890faa88691686e29abba",
+  "workflow_parent": "866676fb7590ced21b45010cf8a08acb941ff35f",
+  "workflow_only_change": ".github/workflows/bengali-ios-validation.yml",
+  "workflow_tree_base": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "actual_source_checkout": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "source_merge_parents": [
+    "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+    "2afe891014845d0c44447e09db08a2a67754323d"
+  ],
+  "workflow_sha256": "d42c2ef9ace1f43a7a872c771cb280ed197010177a3f3b1f3b8355ca551d8ca4",
+  "prior31_run_not_cancelled": 41260132022,
+  "main_checkout_before": "2afe891014845d0c44447e09db08a2a67754323d",
+  "main_checkout_unchanged": true,
+  "run_id": 41266250711,
+  "url": "https://github.com/Globulation2/glob2/actions/runs/41266250711",
+  "initial_status": "pending_behind_actual31_run"
+}

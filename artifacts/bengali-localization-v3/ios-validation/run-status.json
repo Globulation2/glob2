@@ -1,0 +1,23 @@
+{
+  "conclusion": "",
+  "jobs": [
+    {
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "databaseId": 124730435433,
+      "name": "simulator",
+      "startedAt": "2026-11-01T02:46:31Z",
+      "status": "queued",
+      "steps": [],
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41266250711/job/124730435433"
+    }
+  ],
+  "status": "queued",
+  "url": "https://github.com/Globulation2/glob2/actions/runs/41266250711",
+  "observed_at": "2026-11-01T02:50:08.077152+00:00",
+  "run_id": 41266250711,
+  "workflow_commit": "21d6a238aa61f64cf46890faa88691686e29abba",
+  "actual_source": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "monitor_handoff": "Root will periodically check hosted status and follow up this reviewer after completion. No local watcher or background producer.",
+  "runtime_verdict": "pending; no final iOS runtime pass claimed"
+}

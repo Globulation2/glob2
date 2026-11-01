@@ -1,0 +1,809 @@
+{
+  "id": "native-general-004",
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Gray]",
+      "key": "[Gray]",
+      "source": "Gray"
+    },
+    {
+      "id": "native:[Green]",
+      "key": "[Green]",
+      "source": "Green"
+    },
+    {
+      "id": "native:[Hard]",
+      "key": "[Hard]",
+      "source": "Hard"
+    },
+    {
+      "id": "native:[Height]",
+      "key": "[Height]",
+      "source": "Height"
+    },
+    {
+      "id": "native:[Invalid colony count.]",
+      "key": "[Invalid colony count.]",
+      "source": "Invalid colony count."
+    },
+    {
+      "id": "native:[Isles]",
+      "key": "[Isles]",
+      "source": "Isles"
+    },
+    {
+      "id": "native:[Landscape]",
+      "key": "[Landscape]",
+      "source": "Landscape"
+    },
+    {
+      "id": "native:[Last colony standing]",
+      "key": "[Last colony standing]",
+      "source": "Last colony standing"
+    },
+    {
+      "id": "native:[Layout]",
+      "key": "[Layout]",
+      "source": "Layout"
+    },
+    {
+      "id": "native:[Magenta]",
+      "key": "[Magenta]",
+      "source": "Magenta"
+    },
+    {
+      "id": "native:[Map]",
+      "key": "[Map]",
+      "source": "Map"
+    },
+    {
+      "id": "native:[Match finished]",
+      "key": "[Match finished]",
+      "source": "Match finished"
+    },
+    {
+      "id": "native:[Medium]",
+      "key": "[Medium]",
+      "source": "Medium"
+    },
+    {
+      "id": "native:[Medium - Experimental]",
+      "key": "[Medium - Experimental]",
+      "source": "Medium - Experimental"
+    },
+    {
+      "id": "native:[No AI orders]",
+      "key": "[No AI orders]",
+      "source": "No AI orders"
+    },
+    {
+      "id": "native:[Old random]",
+      "key": "[Old random]",
+      "source": "Shattered Coast"
+    },
+    {
+      "id": "native:[Open at least one colony to start a match.]",
+      "key": "[Open at least one colony to start a match.]",
+      "source": "Open at least one colony to start a match."
+    },
+    {
+      "id": "native:[Open book]",
+      "key": "[Open book]",
+      "source": "Open book"
+    },
+    {
+      "id": "native:[Pink]",
+      "key": "[Pink]",
+      "source": "Pink"
+    },
+    {
+      "id": "native:[Play this map]",
+      "key": "[Play this map]",
+      "source": "Play this map"
+    },
+    {
+      "id": "native:[Players & Teams]",
+      "key": "[Players & Teams]",
+      "source": "Players & Teams"
+    },
+    {
+      "id": "native:[Premade maps]",
+      "key": "[Premade maps]",
+      "source": "Premade maps"
+    },
+    {
+      "id": "native:[Preview ready. Start plays this exact map.]",
+      "key": "[Preview ready. Start plays this exact map.]",
+      "source": "Preview ready. Start plays this exact map."
+    },
+    {
+      "id": "native:[Regenerate all]",
+      "key": "[Regenerate all]",
+      "source": "Regenerate all"
+    },
+    {
+      "id": "native:[Generating preview...]",
+      "key": "[Generating preview...]",
+      "source": "Generating preview..."
+    },
+    {
+      "id": "native:[Preview unavailable]",
+      "key": "[Preview unavailable]",
+      "source": "Preview unavailable"
+    },
+    {
+      "id": "native:[Purple]",
+      "key": "[Purple]",
+      "source": "Purple"
+    },
+    {
+      "id": "native:[Quick clash]",
+      "key": "[Quick clash]",
+      "source": "Quick clash"
+    },
+    {
+      "id": "native:[Random map]",
+      "key": "[Random map]",
+      "source": "Random map"
+    },
+    {
+      "id": "native:[Red]",
+      "key": "[Red]",
+      "source": "Red"
+    },
+    {
+      "id": "native:[Repeat landscape]",
+      "key": "[Repeat landscape]",
+      "source": "Repeat landscape"
+    },
+    {
+      "id": "native:[Resources]",
+      "key": "[Resources]",
+      "source": "Resources"
+    },
+    {
+      "id": "native:[Sand weight]",
+      "key": "[Sand weight]",
+      "source": "Sand weight"
+    },
+    {
+      "id": "native:[Select a valid map.]",
+      "key": "[Select a valid map.]",
+      "source": "Select a valid map."
+    },
+    {
+      "id": "native:[Shared control needs a free controller slot (maximum %0).]",
+      "key": "[Shared control needs a free controller slot (maximum %0).]",
+      "source": "Shared control needs a free controller slot (maximum %0)."
+    },
+    {
+      "id": "native:[Smoothing]",
+      "key": "[Smoothing]",
+      "source": "Smoothing"
+    },
+    {
+      "id": "native:[Standard]",
+      "key": "[Standard]",
+      "source": "Standard"
+    },
+    {
+      "id": "native:[Start game]",
+      "key": "[Start game]",
+      "source": "Start game"
+    },
+    {
+      "id": "native:[Swamp]",
+      "key": "[Swamp]",
+      "source": "Swamp"
+    },
+    {
+      "id": "native:[Team]",
+      "key": "[Team]",
+      "source": "Team"
+    },
+    {
+      "id": "native:[Victory]",
+      "key": "[Victory]",
+      "source": "Victory"
+    },
+    {
+      "id": "native:[Watch game]",
+      "key": "[Watch game]",
+      "source": "Watch game"
+    },
+    {
+      "id": "native:[Water weight]",
+      "key": "[Water weight]",
+      "source": "Water weight"
+    },
+    {
+      "id": "native:[White]",
+      "key": "[White]",
+      "source": "White"
+    },
+    {
+      "id": "native:[Width]",
+      "key": "[Width]",
+      "source": "Width"
+    },
+    {
+      "id": "native:[Yellow]",
+      "key": "[Yellow]",
+      "source": "Yellow"
+    },
+    {
+      "id": "native:[You]",
+      "key": "[You]",
+      "source": "You"
+    },
+    {
+      "id": "native:[You + AI]",
+      "key": "[You + AI]",
+      "source": "You + AI"
+    },
+    {
+      "id": "native:[You and the AI both issue orders. Uses two controller slots.]",
+      "key": "[You and the AI both issue orders. Uses two controller slots.]",
+      "source": "You and the AI both issue orders. Uses two controller slots."
+    },
+    {
+      "id": "native:[You vs all]",
+      "key": "[You vs all]",
+      "source": "You vs all"
+    },
+    {
+      "id": "native:[%0 vs %1]",
+      "key": "[%0 vs %1]",
+      "source": "%0 vs %1"
+    },
+    {
+      "id": "native:[%0 vs all]",
+      "key": "[%0 vs all]",
+      "source": "%0 vs all"
+    },
+    {
+      "id": "native:[You will watch this match.]",
+      "key": "[You will watch this match.]",
+      "source": "You will watch this match."
+    },
+    {
+      "id": "native:[Your maps]",
+      "key": "[Your maps]",
+      "source": "Your maps"
+    },
+    {
+      "id": "native:[colonies]",
+      "key": "[colonies]",
+      "source": "colonies"
+    },
+    {
+      "id": "native:[Inactive]",
+      "key": "[Inactive]",
+      "source": "Inactive"
+    },
+    {
+      "id": "native:[Changes the pace of the whole simulation.]",
+      "key": "[Changes the pace of the whole simulation.]",
+      "source": "Changes the pace of the whole simulation."
+    },
+    {
+      "id": "native:[Choose whether teams can change during the match.]",
+      "key": "[Choose whether teams can change during the match.]",
+      "source": "Choose whether teams can change during the match."
+    },
+    {
+      "id": "native:[Dimensions and colony count are set above.]",
+      "key": "[Dimensions and colony count are set above.]",
+      "source": "Dimensions and colony count are set above."
+    },
+    {
+      "id": "native:[Generate & watch]",
+      "key": "[Generate & watch]",
+      "source": "Generate & watch"
+    },
+    {
+      "id": "native:[Info]",
+      "key": "[Info]",
+      "source": "Info"
+    },
+    {
+      "id": "native:[Map-defined starting units]",
+      "key": "[Map-defined starting units]",
+      "source": "Map-defined starting units"
+    },
+    {
+      "id": "native:[No maps in this library.]",
+      "key": "[No maps in this library.]",
+      "source": "No maps in this library."
+    },
+    {
+      "id": "native:[Premade maps retain their authored starting units.]",
+      "key": "[Premade maps retain their authored starting units.]",
+      "source": "Premade maps retain their authored starting units."
+    },
+    {
+      "id": "native:[This colony will not join the match.]",
+      "key": "[This colony will not join the match.]",
+      "source": "This colony will not join the match."
+    },
+    {
+      "id": "native:[This landscape uses fixed resource placement.]",
+      "key": "[This landscape uses fixed resource placement.]",
+      "source": "This landscape uses fixed resource placement."
+    },
+    {
+      "id": "native:[Win through conquest]",
+      "key": "[Win through conquest]",
+      "source": "Win through conquest"
+    },
+    {
+      "id": "native:[You control this colony.]",
+      "key": "[You control this colony.]",
+      "source": "You control this colony."
+    },
+    {
+      "id": "native:[controllers]",
+      "key": "[controllers]",
+      "source": "controllers"
+    },
+    {
+      "id": "native:[Use]",
+      "key": "[Use]",
+      "source": "Use"
+    },
+    {
+      "id": "native:[Lime]",
+      "key": "[Lime]",
+      "source": "Lime"
+    },
+    {
+      "id": "native:[Teal]",
+      "key": "[Teal]",
+      "source": "Teal"
+    },
+    {
+      "id": "native:[Azure]",
+      "key": "[Azure]",
+      "source": "Azure"
+    },
+    {
+      "id": "native:[automatic torus view]",
+      "key": "[automatic torus view]",
+      "source": "Automatic torus view"
+    },
+    {
+      "id": "native:[toggle torus view]",
+      "key": "[toggle torus view]",
+      "source": "Toggle 2D / torus view"
+    },
+    {
+      "id": "native:[Alliance]",
+      "key": "[Alliance]",
+      "source": "Alliance"
+    },
+    {
+      "id": "native:[Choose a rule to change it.]",
+      "key": "[Choose a rule to change it.]",
+      "source": "Choose a rule to change it."
+    },
+    {
+      "id": "native:[Control]",
+      "key": "[Control]",
+      "source": "Control"
+    },
+    {
+      "id": "native:[Controller]",
+      "key": "[Controller]",
+      "source": "Controller"
+    },
+    {
+      "id": "native:[Generate preview]",
+      "key": "[Generate preview]",
+      "source": "Generate preview"
+    },
+    {
+      "id": "native:[Map-defined]",
+      "key": "[Map-defined]",
+      "source": "Map-defined"
+    },
+    {
+      "id": "native:[Match format]",
+      "key": "[Match format]",
+      "source": "Match format"
+    },
+    {
+      "id": "native:[No current preview]",
+      "key": "[No current preview]",
+      "source": "No current preview"
+    },
+    {
+      "id": "native:[Reroll]",
+      "key": "[Reroll]",
+      "source": "Reroll"
+    },
+    {
+      "id": "native:[Randomize]",
+      "key": "[Randomize]",
+      "source": "Randomize"
+    },
+    {
+      "id": "native:[Reset to defaults]",
+      "key": "[Reset to defaults]",
+      "source": "Reset to defaults"
+    },
+    {
+      "id": "native:[Ruleset]",
+      "key": "[Ruleset]",
+      "source": "Ruleset"
+    },
+    {
+      "id": "native:[Unavailable]",
+      "key": "[Unavailable]",
+      "source": "Unavailable"
+    },
+    {
+      "id": "native:[Use selection]",
+      "key": "[Use selection]",
+      "source": "Use selection"
+    },
+    {
+      "id": "native:[Quick clash on premade maps: only speed changes (2x).]",
+      "key": "[Quick clash on premade maps: only speed changes (2x).]",
+      "source": "Quick clash on premade maps: only speed changes (2x)."
+    },
+    {
+      "id": "native:[Generate a preview to explore this world.]",
+      "key": "[Generate a preview to explore this world.]",
+      "source": "Generate a preview to explore this world."
+    },
+    {
+      "id": "native:[Channel width]",
+      "key": "[Channel width]",
+      "source": "Channel width"
+    },
+    {
+      "id": "native:[Land bridge width]",
+      "key": "[Land bridge width]",
+      "source": "Land bridge width"
+    },
+    {
+      "id": "native:[Contested commons]",
+      "key": "[Contested commons]",
+      "source": "Contested commons"
+    },
+    {
+      "id": "native:[Maze]",
+      "key": "[Maze]",
+      "source": "Maze"
+    },
+    {
+      "id": "native:[Fjord continent]",
+      "key": "[Fjord continent]",
+      "source": "Fjord continent"
+    },
+    {
+      "id": "native:[Cell size]",
+      "key": "[Cell size]",
+      "source": "Cell size"
+    },
+    {
+      "id": "native:[Loopiness]",
+      "key": "[Loopiness]",
+      "source": "Loopiness"
+    },
+    {
+      "id": "native:[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]",
+      "key": "[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]",
+      "source": "Channels this wide leave too little grass in each cell; use narrower channels or bigger cells."
+    },
+    {
+      "id": "native:[Commons size]",
+      "key": "[Commons size]",
+      "source": "Commons size"
+    },
+    {
+      "id": "native:[Moat width]",
+      "key": "[Moat width]",
+      "source": "Moat width"
+    },
+    {
+      "id": "native:[Bridge count]",
+      "key": "[Bridge count]",
+      "source": "Bridge count"
+    },
+    {
+      "id": "native:[Continent size]",
+      "key": "[Continent size]",
+      "source": "Continent size"
+    },
+    {
+      "id": "native:[Coast roughness]",
+      "key": "[Coast roughness]",
+      "source": "Coast roughness"
+    },
+    {
+      "id": "native:[Fjord width]",
+      "key": "[Fjord width]",
+      "source": "Fjord width"
+    },
+    {
+      "id": "native:[Watershed]",
+      "key": "[Watershed]",
+      "source": "Watershed"
+    },
+    {
+      "id": "native:[Dryness]",
+      "key": "[Dryness]",
+      "source": "Dryness"
+    },
+    {
+      "id": "native:[Fords]",
+      "key": "[Fords]",
+      "source": "Fords"
+    },
+    {
+      "id": "native:[Stone highlands]",
+      "key": "[Stone highlands]",
+      "source": "Stone highlands"
+    },
+    {
+      "id": "native:[Valley size]",
+      "key": "[Valley size]",
+      "source": "Valley size"
+    },
+    {
+      "id": "native:[Pass width]",
+      "key": "[Pass width]",
+      "source": "Pass width"
+    },
+    {
+      "id": "native:[Pond size]",
+      "key": "[Pond size]",
+      "source": "Pond size"
+    },
+    {
+      "id": "native:[Symmetric arena]",
+      "key": "[Symmetric arena]",
+      "source": "Symmetric arena"
+    },
+    {
+      "id": "native:[Centre size]",
+      "key": "[Centre size]",
+      "source": "Centre size"
+    },
+    {
+      "id": "native:[Causeway width]",
+      "key": "[Causeway width]",
+      "source": "Causeway width"
+    },
+    {
+      "id": "native:[Causeways]",
+      "key": "[Causeways]",
+      "source": "Causeways"
+    },
+    {
+      "id": "native:[Resource richness]",
+      "key": "[Resource richness]",
+      "source": "Resource richness"
+    },
+    {
+      "id": "native:[Symmetric arena needs 2, 4 or 8 colonies.]",
+      "key": "[Symmetric arena needs 2, 4 or 8 colonies.]",
+      "source": "Symmetric arena needs 2, 4 or 8 colonies."
+    },
+    {
+      "id": "native:[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]",
+      "key": "[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]",
+      "source": "The centre is too small for an orchard on this map; use a bigger centre or a bigger map."
+    },
+    {
+      "id": "native:[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]",
+      "key": "[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]",
+      "source": "The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat."
+    },
+    {
+      "id": "native:[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]",
+      "key": "[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]",
+      "source": "The causeways are too close together; use fewer or narrower causeways, or a bigger centre."
+    },
+    {
+      "id": "native:[Ring world]",
+      "key": "[Ring world]",
+      "source": "Ring world"
+    },
+    {
+      "id": "native:[Belt width]",
+      "key": "[Belt width]",
+      "source": "Belt width"
+    },
+    {
+      "id": "native:[City states]",
+      "key": "[City states]",
+      "source": "City states"
+    },
+    {
+      "id": "native:[Strait width]",
+      "key": "[Strait width]",
+      "source": "Strait width"
+    },
+    {
+      "id": "native:[Valleys]",
+      "key": "[Valleys]",
+      "source": "Valleys"
+    },
+    {
+      "id": "native:[Frontier richness]",
+      "key": "[Frontier richness]",
+      "source": "Frontier richness"
+    },
+    {
+      "id": "native:[City states need at least one colony.]",
+      "key": "[City states need at least one colony.]",
+      "source": "City states need at least one colony."
+    },
+    {
+      "id": "native:[Stone walls]",
+      "key": "[Stone walls]",
+      "source": "Stone walls"
+    },
+    {
+      "id": "native:[Sand patches]",
+      "key": "[Sand patches]",
+      "source": "Sand patches"
+    },
+    {
+      "id": "native:[Tidal flats]",
+      "key": "[Tidal flats]",
+      "source": "Tidal flats"
+    },
+    {
+      "id": "native:[Everglades]",
+      "key": "[Everglades]",
+      "source": "Everglades"
+    },
+    {
+      "id": "native:[Pool spacing]",
+      "key": "[Pool spacing]",
+      "source": "Pool spacing"
+    },
+    {
+      "id": "native:[Pool size]",
+      "key": "[Pool size]",
+      "source": "Pool size"
+    },
+    {
+      "id": "native:[Clearing size]",
+      "key": "[Clearing size]",
+      "source": "Clearing size"
+    },
+    {
+      "id": "native:[Levee]",
+      "key": "[Levee]",
+      "source": "Levee"
+    },
+    {
+      "id": "native:[Sloughs]",
+      "key": "[Sloughs]",
+      "source": "Sloughs"
+    },
+    {
+      "id": "native:[Everglades need at least one colony.]",
+      "key": "[Everglades need at least one colony.]",
+      "source": "Everglades need at least one colony."
+    },
+    {
+      "id": "native:[Coral]",
+      "key": "[Coral]",
+      "source": "Coral"
+    },
+    {
+      "id": "native:[Fork angle]",
+      "key": "[Fork angle]",
+      "source": "Fork angle"
+    },
+    {
+      "id": "native:[Lean]",
+      "key": "[Lean]",
+      "source": "Lean"
+    },
+    {
+      "id": "native:[Home size]",
+      "key": "[Home size]",
+      "source": "Home size"
+    },
+    {
+      "id": "native:[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]",
+      "key": "[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]",
+      "source": "The coral does not fit this map; use a bigger map, narrower straits or fewer colonies."
+    },
+    {
+      "id": "native:[Branching]",
+      "key": "[Branching]",
+      "source": "Branching"
+    },
+    {
+      "id": "native:[Branch width]",
+      "key": "[Branch width]",
+      "source": "Branch width"
+    },
+    {
+      "id": "native:[Coral needs at least one colony.]",
+      "key": "[Coral needs at least one colony.]",
+      "source": "Coral needs at least one colony."
+    },
+    {
+      "id": "native:[Carousel]",
+      "key": "[Carousel]",
+      "source": "Carousel"
+    },
+    {
+      "id": "native:[Amphitheatre]",
+      "key": "[Amphitheatre]",
+      "source": "Amphitheatre"
+    },
+    {
+      "id": "native:[Switchbacks]",
+      "key": "[Switchbacks]",
+      "source": "Switchbacks"
+    },
+    {
+      "id": "native:[Corridor width]",
+      "key": "[Corridor width]",
+      "source": "Corridor width"
+    },
+    {
+      "id": "native:[Spoke width]",
+      "key": "[Spoke width]",
+      "source": "Spoke width"
+    },
+    {
+      "id": "native:[Court size]",
+      "key": "[Court size]",
+      "source": "Court size"
+    },
+    {
+      "id": "native:[Court wall]",
+      "key": "[Court wall]",
+      "source": "Court wall"
+    },
+    {
+      "id": "native:[Plaza size]",
+      "key": "[Plaza size]",
+      "source": "Plaza size"
+    },
+    {
+      "id": "native:[Starting tower level]",
+      "key": "[Starting tower level]",
+      "source": "Starting tower level"
+    },
+    {
+      "id": "native:[Towers per colony]",
+      "key": "[Towers per colony]",
+      "source": "Towers per colony"
+    },
+    {
+      "id": "native:[Rings]",
+      "key": "[Rings]",
+      "source": "Rings"
+    },
+    {
+      "id": "native:[Ramp width]",
+      "key": "[Ramp width]",
+      "source": "Ramp width"
+    },
+    {
+      "id": "native:[Pit size]",
+      "key": "[Pit size]",
+      "source": "Pit size"
+    },
+    {
+      "id": "native:[Terrace width]",
+      "key": "[Terrace width]",
+      "source": "Terrace width"
+    }
+  ]
+}
