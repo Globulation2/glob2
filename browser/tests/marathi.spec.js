@@ -216,8 +216,8 @@ for (const device of [
         width: Math.floor(card.width - 8), height: Math.floor(card.y + card.height - top - 4)};
       expect(body.height).toBeGreaterThan(20);
       expect(body.width).toBeGreaterThan(20);
-      expect(await hasLightText(page, body)).toBe(true);
-      records.phoneHelpBody = {clip: body, renderedGlyphInk: true,
+      expect(await hasLightText(page, body, 150)).toBe(true);
+      records.phoneHelpBody = {clip: body, minimumChannel: 150, renderedGlyphInk: true,
         exactTextCoverage: 'Manual instruction/help image review; paragraph text is not a published diagnostic label.'};
     }
     records.lessonHelp = await snapshot(page);
