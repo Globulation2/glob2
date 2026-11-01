@@ -1,0 +1,78 @@
+{
+  "checks.json": {
+    "sha256": "7ae0866c5223fa5d767c84d765126a2f16646ec6a679607b857d049ec4889c50",
+    "bytes": 1178
+  },
+  "environment.json": {
+    "sha256": "51a63bbd5dfeb234b650849f8a983720a148ec8308658c620ef628a269f3c505",
+    "bytes": 261
+  },
+  "provenance.json": {
+    "sha256": "e870ee78aaed3bee7f8ae066a408ccd62b0cb012e5e7339185adf2bc66a2cd5e",
+    "bytes": 4883
+  },
+  "screenshots/desktop-building-default.png": {
+    "sha256": "5f5a1435bf9881c15046b2edd23e0d414919ce942977ecbfde5c4d7dc5dc9aee",
+    "bytes": 244963
+  },
+  "screenshots/phone-ai-tags.png": {
+    "sha256": "57537176003df473081f29f1c9bee6b2d38588e1b0e23dd3fe3227f6557515ca",
+    "bytes": 114757
+  },
+  "screenshots/phone-building-default.png": {
+    "sha256": "bacbdeeb6884721e7e295a797e5efcd94ecc052f5eaa2ea0523571ec8301311a",
+    "bytes": 218028
+  },
+  "screenshots/phone-map-visibility.png": {
+    "sha256": "178c60ab9e3646f455d8d170ed64b28ca928651be3c12d885592a0bc9a6bffc6",
+    "bytes": 81070
+  },
+  "screenshots/phone-music-fields.png": {
+    "sha256": "8208b053143bc45921baf35db928f452f44292eb32a20d9c2e361eab2b0639de",
+    "bytes": 90766
+  },
+  "screenshots/phone-set-default.png": {
+    "sha256": "dc262239ed2ce103c5e3ab6bf2100f384c95b75df3a915027fcaeb9a4154def8",
+    "bytes": 151677
+  },
+  "screenshots/report.json": {
+    "sha256": "9c4b318dc8b90bad5e6a7ddb7cd9623f62387b29b816bdad1114b690a101d2b8",
+    "bytes": 3409
+  },
+  "tests.json": {
+    "sha256": "39d48766cbe15df0b26999f9a26a44820870b3b0ceb3ce75c9586a584a1c3abd",
+    "bytes": 5977426
+  },
+  "summary.md": {
+    "sha256": "e02d461ec340f0efdcecf1dcc347e14451a2a44748e2aa6f1f92da5a7dc59522",
+    "bytes": 3844
+  },
+  "screenshots/inspection.jpg": {
+    "sha256": "e99c5652841d87216bfaaf48d0328163687e5ff9e2d50f56c55885fa2e7608d6",
+    "bytes": 283150
+  },
+  "cleanup.log": {
+    "sha256": "bb2e678e6b6a6aec8855c930df80bb2a8cb6c650b6437cfa7a2598136db1ec30",
+    "bytes": 32
+  },
+  "typecheck.log": {
+    "sha256": "304bc82c4c2866d9a4d1db24f07b4c62c840979874dec3c60e33fd1872890205",
+    "bytes": 436
+  },
+  "browser-tests.log": {
+    "sha256": "6e0767e497e8528f61bf3f211e514e795180648025131f3c348f83897a99c8ee",
+    "bytes": 2896
+  },
+  "eslint.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "prettier.log": {
+    "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "bytes": 66
+  },
+  "i18n-check.log": {
+    "sha256": "8eafa42cbd542bdd1de02e5d0346d86df7c9b827e81d951e1b68154650253ab0",
+    "bytes": 224
+  }
+}

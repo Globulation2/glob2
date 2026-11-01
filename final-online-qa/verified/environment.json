@@ -3,6 +3,23 @@
   "platform": "linux",
   "architecture": "x64",
   "node": "v24.22.1",
-  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
-  "playwright": "1.63.0"
+  "playwright": "1.63.0",
+  "desktopViewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "phoneViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewports": [
+    {
+      "width": 390,
+      "height": 900
+    },
+    {
+      "width": 1280,
+      "height": 900
+    }
+  ]
 }

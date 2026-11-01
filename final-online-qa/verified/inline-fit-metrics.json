@@ -1,0 +1,44 @@
+[
+  {
+    "project": "controls-desktop",
+    "metric": "ai-search-placeholder-fit",
+    "text": "Имена, описания, автори…",
+    "width": 227,
+    "available": 472
+  },
+  {
+    "project": "controls-desktop",
+    "metric": "unlisted-default-fit",
+    "text": "Само чрез връзка",
+    "width": 150,
+    "available": 560
+  },
+  {
+    "project": "controls-desktop",
+    "metric": "always-available-fit",
+    "text": "Не се изисква",
+    "width": 118,
+    "available": 878
+  },
+  {
+    "project": "controls-phone",
+    "metric": "ai-search-placeholder-fit",
+    "text": "Имена, описания, автори…",
+    "width": 227,
+    "available": 260
+  },
+  {
+    "project": "controls-phone",
+    "metric": "unlisted-default-fit",
+    "text": "Само чрез връзка",
+    "width": 150,
+    "available": 206
+  },
+  {
+    "project": "controls-phone",
+    "metric": "always-available-fit",
+    "text": "Не се изисква",
+    "width": 118,
+    "available": 188
+  }
+]

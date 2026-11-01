@@ -1,110 +1,28 @@
 {
-  "productCommit": "b07193e1deafa102cb694f9cca52c529a904e8dd",
-  "headAtCapture": "63c9d875a51094b28930296d07a5a7ec6a9a808d",
+  "productCommit": "42c5c0cf63aac32ef584a32566f95063ed24080c",
+  "headAtCapture": "42c5c0cf63aac32ef584a32566f95063ed24080c",
   "productDiffFromCommit": [],
-  "browser": "Playwright Chromium headless",
   "node": "v24.22.1",
-  "webBuildSeconds": 46.75,
+  "playwright": "1.63.0",
+  "browser": "Chromium153.0.8010.12 headless on Linuxx64",
+  "webBuildSeconds": 31.43,
+  "onlineSha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813",
   "files": {
     "data/texts.bg.txt": {
       "sha256": "ccd9b28467ec8a4e5272d2d3780d6813107eed945e424f8fac1d6ff2656d38ed",
       "bytes": 317099
     },
     "platform/packages/i18n/locales/bg.json": {
-      "sha256": "3597f1d21d3b8e8d55ec79368b7c10d66c88752a411c6c31b24a52e9cc421313",
-      "bytes": 292413
+      "sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813",
+      "bytes": 292336
     },
     "platform/packages/i18n/locales/en.json": {
       "sha256": "7ef5053bd3bd867bddd3f1065a50c01a05c91517c9ebe31f0f7176632d66f8a3",
       "bytes": 194609
     },
-    "platform/apps/web/dist/index.html": {
-      "sha256": "52bae1223b27b7b92851a04d03ba339c4db93877d6e535bb91df4064c93ece01",
-      "bytes": 2519
-    },
-    "platform/apps/web/dist/assets/index-zaGYHB_B.js": {
-      "sha256": "452ab3a18013d6e5ab10a027130960fcefa416524cdb06b028ad6a98cef61469",
-      "bytes": 361541
-    },
-    "platform/apps/web/dist/assets/index-zaGYHB_B.js.map": {
-      "sha256": "028cbbfdc21934b25afba61e96f1326b0cb5420979e0207cb44c2c01ae952d57",
-      "bytes": 1439888
-    },
-    "platform/apps/web/dist/assets/index-CY5UgJy-.css": {
-      "sha256": "0308d82ad7205a42eca0c4a423d11781c00cf3c0b23c4b279fd76e73ca10dd5a",
-      "bytes": 94042
-    },
-    "platform/apps/web/src/music/music.css": {
-      "sha256": "1fdc4a48839fdce50ae6fd06cefb98b30f6fb94021bbef73dbc4446cda58ba68",
-      "bytes": 14086
-    },
-    "platform/apps/web/src/sets/sets.css": {
-      "sha256": "6f0c6af9eb48a1809c9b29b0ea4c5c132ba6da61499a8fcedc4ac7496c161dd3",
-      "bytes": 3631
-    },
-    "platform/apps/web/src/styles/ai-building-studio.css": {
-      "sha256": "2e8e012a1f863f5795646df2081281d23b4a85301367a40e65778e3537c139ed",
-      "bytes": 4619
-    },
-    "platform/apps/web/src/styles/ai-studio.css": {
-      "sha256": "0192741dab5e5b07bf535f97e365b4bd1178b3d3d12f01f78d501e93dd4ffca8",
-      "bytes": 3611
-    },
-    "platform/apps/web/src/styles/ais.css": {
-      "sha256": "2c8006cecc4664468aef0b4c1c55520f3aa1a03ed4fb676d4ae5349131337625",
-      "bytes": 3665
-    },
-    "platform/apps/web/src/styles/base.css": {
-      "sha256": "b4d03cd54080b8b369bf3ab3ee442b6d16a124219513dccccd503fe61218e224",
-      "bytes": 406
-    },
-    "platform/apps/web/src/styles/buildings.css": {
-      "sha256": "2aef5eb33174798b036c4ce2560110d573fcc890ceb58c15b7c2b36cee318c4b",
-      "bytes": 2116
-    },
-    "platform/apps/web/src/styles/components.css": {
-      "sha256": "9e86685074e0260d83fa3142c67fd669e651cb28fa4c3d563aea3548d3bf27af",
-      "bytes": 7134
-    },
-    "platform/apps/web/src/styles/home.css": {
-      "sha256": "bdc5b2e2b100c0a5ee16f4443cf16f6703e52f517c5ed1526832cbf962381073",
-      "bytes": 6895
-    },
-    "platform/apps/web/src/styles/layout.css": {
-      "sha256": "36897c694d7d33b4c37a32264fb89354afcb6df772f810ffc38175595dbc11fc",
-      "bytes": 11222
-    },
-    "platform/apps/web/src/styles/library.css": {
-      "sha256": "b52bd561b0200ec2d304e2103e759e54bbeb9d49f87281e710000c82f920f6e3",
-      "bytes": 7638
-    },
-    "platform/apps/web/src/styles/pages.css": {
-      "sha256": "bbb4e7d2db948012ac37017dd15a187df91cb5cccfae5f1a9c8958dc422e20fb",
-      "bytes": 9911
-    },
-    "platform/apps/web/src/styles/script-fonts.css": {
-      "sha256": "bf4e8982528a5711c1acec489cea68ad93fb670d97fefbc2eddd6505635aee30",
-      "bytes": 118
-    },
-    "platform/apps/web/src/styles/skin-studio.css": {
-      "sha256": "5bfc806ab3e4d674b75e3cadcff009e3a0b1e3f55b20ddf2441935be83be2a8c",
-      "bytes": 29983
-    },
-    "platform/apps/web/src/styles/studio.css": {
-      "sha256": "45ceb2764df03f7382d00555186fa46b8a3ce14bc02f3bcdab8735b6427e9ecc",
-      "bytes": 43744
-    },
-    "platform/apps/web/src/styles/terrain-studio.css": {
-      "sha256": "8a23236f392cca60dbd1311e126e2993abc6a4d12667d285aa834a1bbda6cc16",
-      "bytes": 2308
-    },
-    "platform/apps/web/src/pages/music-studio/music-studio.css": {
-      "sha256": "9fc81d703761ba376f9f776ca9349e9290e5875e7e1c20cfe051035e0098d901",
-      "bytes": 8910
-    },
-    "platform/apps/web/src/components/studio/studio.css": {
-      "sha256": "981fd8d831cf276d96d42a8cbab9e4101f8818ac4f5c13c0936c3bd5055ed70d",
-      "bytes": 10472
+    "platform/package-lock.json": {
+      "sha256": "97395497eef79bab58b489381e45056d25a6de1d2d1a553fc98c3aea74418392",
+      "bytes": 383755
     },
     "browser/assets/sans-core.ttf": {
       "sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
@@ -113,12 +31,6 @@
     "data/fonts/sans.ttf": {
       "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
       "bytes": 8137448
-    },
-    "platform/package-lock.json": {
-      "sha256": "97395497eef79bab58b489381e45056d25a6de1d2d1a553fc98c3aea74418392",
-      "bytes": 383755
     }
-  },
-  "headAfterChecks": "63c9d875a51094b28930296d07a5a7ec6a9a808d",
-  "productDiffAfterChecks": []
+  }
 }

@@ -1,26 +1,29 @@
 {
-  "productCommit": "b07193e1deafa102cb694f9cca52c529a904e8dd",
+  "productCommit": "42c5c0cf63aac32ef584a32566f95063ed24080c",
+  "unit": {
+    "passed": true,
+    "tests": 7,
+    "file": "apps/web/test/setsWorkspace.test.tsx"
+  },
   "webBuild": {
     "passed": true,
-    "seconds": 46.75
+    "seconds": 31.43
   },
   "eslint": {
-    "passed": true,
-    "scope": "8 affected web sources and e2e tests"
+    "passed": true
   },
   "prettier": {
-    "passed": true,
-    "scope": "5 layout CSS/test files"
+    "passed": true
   },
   "typescript": {
     "passed": true,
+    "exactFinalSource": true,
     "projects": [
-      "apps/web/tsconfig.json",
-      "apps/web/e2e/tsconfig.json"
+      "platform/apps/web/tsconfig.json",
+      "platform/apps/web/e2e/tsconfig.json"
     ],
-    "diagnostics": [],
-    "exactFinalSource": false,
-    "note": "This passing focused chain spanned integration and product edits; retain as provisional only. draft_tooling is providing a separate fresh final e2e-only run and final shared/API/web coverage."
+    "node": "v24.22.1",
+    "diagnostics": []
   },
   "i18n": {
     "passed": true,
@@ -29,11 +32,12 @@
   },
   "browser": {
     "passed": true,
-    "expected": 11,
+    "expected": 13,
     "unexpected": 0,
     "skipped": 1,
     "flaky": 0,
     "workers": 1,
-    "note": "Phone layout project intentionally skips because its desktop test explicitly exercises both390px and1280px; 20 route/viewport checks. Additional AI card/detail use schema-shaped existing e2e-style fixture responses; other requests use the isolated real API."
+    "minutes": 3.0,
+    "layoutCases": 20
   }
 }
