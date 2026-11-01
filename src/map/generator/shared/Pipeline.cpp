@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Pipeline.h"
 #include "Game.h"
+#include "Building.h"
 #include "GenerationContext.h"
 #include "GenerationResult.h"
 #include "Homes.h"
@@ -9,6 +10,40 @@
 #include "Resources.h"
 namespace MapGeneration
 {
+std::vector<int> colonyGroundExits(const Game &game, int team,
+								   const std::vector<unsigned char> &open, bool canSwim)
+{
+	std::vector<int> result;
+	if (team < 0 || team >= game.teamsCount())
+		return result;
+	const auto &map = game.map;
+	const Torus t(map);
+	for (const auto *building : game.teams[team]->liveBuildings.entries())
+	{
+		if (!building || building->typeNum != game.buildingsTypes.getStartingBuildingTypeNum())
+			continue;
+		const int x = building->posX, y = building->posY;
+		const int width = building->type->width, height = building->type->height;
+		const auto add = [&](int insideX, int insideY, int dx, int dy)
+		{
+			if (groundConnection(map, open, insideX, insideY, dx, dy, canSwim))
+				result.push_back(t.at(insideX + dx, insideY + dy));
+		};
+		for (int dx = 0; dx < width; ++dx)
+		{
+			add(x + dx, y, 0, -1);
+			add(x + dx, y + height - 1, 0, 1);
+		}
+		for (int dy = 0; dy < height; ++dy)
+		{
+			add(x, y + dy, -1, 0);
+			add(x + width - 1, y + dy, 1, 0);
+		}
+		break;
+	}
+	return result;
+}
+
 std::string denseColonySizeFailure(const GenerationRequest &request)
 {
 	if (request.nbTeams > DENSE_COLONY_BASE_LIMIT &&
@@ -40,7 +75,7 @@ std::string startingAccessFailure(const Map &map, int teams,
 		const std::string colony = "Colony " + std::to_string(k) + " ";
 		if (workers.at(k).empty())
 			return colony + "has no workers to reach its supplies.";
-		const auto reached = floodFrom(t, tileMask(t, workers.at(k)), passable, range);
+		const auto reached = floodFrom(map, tileMask(t, workers.at(k)), passable, range);
 		std::vector<int> distances(rules.size(), -1);
 		int sites = 0;
 		for (int i : reached.visited)
@@ -135,7 +170,7 @@ ColonyWalk walkFromFirstColony(const Map &map, int teams, const std::string &gro
 		return walk;
 	}
 	const Torus t(map);
-	walk.steps = stepsFrom(t, tileMask(t, walk.workers.at(0)), walkableTiles(map));
+	walk.steps = stepsFrom(map, tileMask(t, walk.workers.at(0)), walkableTiles(map));
 	if (const int cut = firstColonyCutOff(walk.steps, walk.workers); cut >= 0)
 		walk.error = "Colony " + std::to_string(cut) + " cannot walk to colony 0" +
 					 (route.empty() ? "" : " " + route) + ".";
@@ -192,7 +227,7 @@ std::string coloniesApart(const Map &map, int teams, const std::string &route)
 		::MapGeneration::generationCheckpoint();
 		if (units.at(a).empty())
 			continue;
-		const std::vector<int> steps = stepsFrom(t, tileMask(t, units.at(a)), ground);
+		const std::vector<int> steps = stepsFrom(map, tileMask(t, units.at(a)), ground);
 		for (int b = 0; b < teams; ++b)
 		{
 			::MapGeneration::generationCheckpoint();

@@ -1,5 +1,5 @@
-#include "MapZoomControls.h"
 #include "DynamicClouds.h"
+#include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2022-2023 Nathan Mills
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -410,8 +410,9 @@ void MapEdit::drawPlacingUnitOnMap()
 		const auto& traits=frame.world.catalogs->units->runtime(type);
         const bool walks=traits.has(UnitRuntimeTraits::Walk) && ut->performance[WALK];
         const bool swims=traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM];
-		isRoom=map.isFreeForGroundUnit(cx, cy, swims, Team::teamNumberToMask(team))
-            && (walks || !swims || map.terrainPropertiesAt(cx,cy).swimmable);
+		isRoom = map.isFreeForGroundUnit(cx, cy, swims, Team::teamNumberToMask(team)) &&
+				 map.terrainAllowsMovementAt(cx, cy,
+											 walks || !swims ? (swims ? 1 : 0) : WATER_ONLY_CLASS);
 	}
 
 	const int imgid=unitAnimationFrame(frame.world.catalogs->unitTypes[type][0].startImage[STOP_WALK], 0, 0);

@@ -548,33 +548,41 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 			const int index=(*map).normalizeY(worker->posY)*w+(*map).normalizeX(worker->posX);
 			if(!visited[index]){visited[index]=1;queue.push_back(index);}
 		}
-		field::traverse(queue,{w,h},field::Surrounding,
-			[&](int index) {
-				const int x=powerOfTwoRemainder(index, w),y=index/w;
-				const auto current=AIEngine::ObservationQueries::spatialTile((*map),x,y);
-				const bool current_farm_area=after_harvest
-					&& index<int(applied_farm_protection_mask.size())
-					&& applied_farm_protection_mask[index];
-				if(current.building==NOGBID && (!MapState::resourceBlocksGround(map->state(),index)
-				   || current_farm_area
-				   || (after_harvest && (MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Wood) || MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food)))))
-					reachable[index]=1;
-
+		const auto passage = [&](int x, int y)
+		{
+			const int index = map->tileIndex(x, y);
+			const bool farm_area = after_harvest &&
+								   index < int(applied_farm_protection_mask.size()) &&
+								   applied_farm_protection_mask[index];
+			const bool harvestable =
+				after_harvest && (MapState::hasMaterial(map->state(), index, MaterialId::Wood) ||
+								  MapState::hasMaterial(map->state(), index, MaterialId::Food));
+			return map->terrainAllowsMovementAt(x, y, swimming) &&
+				   map->occupancyAt(index).building == NOGBID &&
+				   (!MapState::resourceBlocksGround(map->state(), index) || farm_area ||
+					harvestable) &&
+				   (map->visibilityAt(index).discovered & runtime.observedTeam().allies) &&
+				   (!(map->areasAt(index).forbidden & runtime.observedTeam().mask) || farm_area ||
+					development_planner.isCirculationReserved(index));
+		};
+		field::traverse(
+			queue, {w, h}, field::Surrounding,
+			[&](int index)
+			{
+				if (passage(index % w, index / w))
+					reachable[index] = 1;
 				return field::Visit::Expand;
-			},[&](int,int px,int py) {
-				const int nx=(*map).normalizeX(px),ny=(*map).normalizeY(py),next=ny*w+nx;
-				const auto tile=AIEngine::ObservationQueries::spatialTile((*map),nx,ny);
-				const bool farm_area=after_harvest
-					&& next<int(applied_farm_protection_mask.size())
-					&& applied_farm_protection_mask[next];
-				if(visited[next]||tile.building!=NOGBID
-				   ||(MapState::resourceBlocksGround(map->state(),next) && !farm_area && !(after_harvest
-				      && (MapState::hasMaterial(map->state(),map->tileIndex(nx,ny),MaterialId::Wood) || MapState::hasMaterial(map->state(),map->tileIndex(nx,ny),MaterialId::Food))))
-				   ||(!map->state().terrainProperties(map->tileIndex(nx,ny)).walkable && !(swimming && map->state().terrainProperties(map->tileIndex(nx,ny)).swimmable))
-				   ||!((map->visibilityAt(map->tileIndex(nx,ny)).discovered&(runtime.observedTeam().allies))!=0)
-				   ||(((map->areasAt(map->tileIndex(nx,ny)).forbidden&(runtime.observedTeam().mask))!=0)
-				      && !farm_area && !development_planner.isCirculationReserved(next)))return;
-				visited[next]=1;queue.push_back(next);
+			},
+			[&](int index, int px, int py)
+			{
+				const int next = map->tileIndex(px, py), x = index % w, y = index / w;
+				const int dx = px - x, dy = py - y;
+				if (visited[next] || !passage(px, py) ||
+					!MapState::terrainConnection(map->state(), x, y, dx, dy, swimming) ||
+					(dx && dy && (!passage(x + dx, y) || !passage(x, y + dy))))
+					return;
+				visited[next] = 1;
+				queue.push_back(next);
 			});
 	}
 
@@ -710,10 +718,14 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 			circulation.erase(std::unique(circulation.begin(),circulation.end()),circulation.end());
 			circulation.erase(std::remove_if(circulation.begin(),circulation.end(),
 				[&](int index){const auto cellType=map->resourceAt(index).resource.type;
-					return memberMask[index]||map->occupancyAt(index).building!=NOGBID||!map->state().terrainProperties(index).walkable
-						||!((map->visibilityAt(map->tileIndex(powerOfTwoRemainder(index, w),index/w)).discovered&(runtime.observedTeam().allies))!=0)
-						||(MapState::resourceBlocksGround(map->state(),index)
-						   &&!map->state().resourceProperties(cellType).clearable);
+				return memberMask[index] || map->occupancyAt(index).building != NOGBID ||
+					   !map->terrainAllowsMovementAt(index % w, index / w, 0) ||
+					   !((map->visibilityAt(
+								 map->tileIndex(powerOfTwoRemainder(index, w), index / w))
+							  .discovered &
+						  (runtime.observedTeam().allies)) != 0) ||
+					   (MapState::resourceBlocksGround(map->state(), index) &&
+						!map->state().resourceProperties(cellType).clearable);
 				}),circulation.end());
 			if(budget.farming_resource_preserving_circulation_enabled)
 			{

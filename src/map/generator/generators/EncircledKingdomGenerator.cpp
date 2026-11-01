@@ -604,7 +604,7 @@ std::string assess(const Game &game, const Layout &L, GenerationContext &c)
 	std::vector<int> room(teams, 0);
 	for (int k = 0; k < teams; ++k)
 	{
-		const auto reach = reachFrom(t, units[k], economicWalk, k == 0 ? 512 : 48);
+		const auto reach = reachFrom(game.map, units[k], economicWalk, k == 0 ? 512 : 48);
 		std::uint64_t local24 = 0, local48 = 0;
 		for (size_t j = 0; j < reach.tiles.size(); ++j)
 		{
@@ -642,7 +642,7 @@ std::string assess(const Game &game, const Layout &L, GenerationContext &c)
 			seedNear(t, int(L.fronts[f].x), int(L.fronts[f].y), 6, [&](int i) { return walk[i]; });
 		if (seed < 0)
 			return "A front has no walkable gate.";
-		const auto flood = floodFrom(t, tileMask(t, {seed}), walk);
+		const auto flood = floodFrom(game.map, tileMask(t, {seed}), walk);
 		for (int k = 0; k < attackers; ++k)
 			for (int i : units[k + 1])
 				if (flood.steps[i] >= 0)
@@ -827,7 +827,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	}
 	const auto walk = groundUnitTiles(game.map);
 	const auto units = unitTilesByTeam(game.map, c.request.nbTeams);
-	const auto reach = floodFrom(t, tileMask(t, units[0]), walk);
+	const auto reach = floodFrom(game.map, tileMask(t, units[0]), walk);
 	if (firstColonyCutOff(reach.steps, units) >= 0)
 		return "An outer town cannot reach the heartland.";
 	const auto gateTiles = dilate(t, L.gates, 2);
@@ -835,7 +835,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 		if (gateTiles[i])
 			sealed[i] = 0;
-	const auto shut = floodFrom(t, tileMask(t, units[0]), sealed);
+	const auto shut = floodFrom(game.map, tileMask(t, units[0]), sealed);
 	for (int k = 1; k < c.request.nbTeams; ++k)
 		for (int i : units[k])
 			if (shut.steps[i] >= 0)
@@ -860,7 +860,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		for (int i = 0; i < t.size(); ++i)
 			if (passage[i])
 				open[i] = walk[i];
-		const auto front = floodFrom(t, tileMask(t, units[0]), open);
+		const auto front = floodFrom(game.map, tileMask(t, units[0]), open);
 		if (firstColonyCutOff(front.steps, units) >= 0)
 			return "A land gate has no independent approach.";
 	}
@@ -877,7 +877,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		for (int i = 0; i < t.size(); ++i)
 			if (gateTiles[i] || other[i])
 				wet[i] = 0;
-		const auto swimmers = floodFrom(t, tileMask(t, units[0]), wet);
+		const auto swimmers = floodFrom(game.map, tileMask(t, units[0]), wet, INT_MAX, true);
 		if (firstColonyCutOff(swimmers.steps, units) >= 0)
 			return "A waterfront offers no independent swimming approach.";
 	}

@@ -102,8 +102,21 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
                 gradient[n] = better ? value : gradient[n];
                 *cursor = static_cast<std::uint32_t>(n); cursor += better;
             };
+			if (grid.incomingMask(i) != 255)
+			{
+				const auto mask = grid.incomingMask(i);
+				for (unsigned d = 0; d < field::Surrounding.size(); ++d)
+					if (mask & (1u << d))
+					{
+						const auto o = field::Surrounding[d];
+						const bool diagonal = o.x && o.y;
+						relax(grid.index(int(x) + o.x, int(y) + o.y), diagonal ? dv : cv,
+							  diagonal ? de : ce);
+					}
+			}
+			else
 #if defined(GLOB2_GRADIENT_SSE2)
-            if (Simd && x >= 1 && x+2 < width)
+				if (Simd && x >= 1 && x + 2 < width)
             {
                 auto *a = gradient + above+x-1, *b = gradient + below+x-1;
                 const auto old = _mm_unpacklo_epi64(_mm_loadl_epi64((const __m128i *)a), _mm_loadl_epi64((const __m128i *)b));
@@ -117,7 +130,7 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
             }
             else
 #elif defined(GLOB2_GRADIENT_NEON)
-            if (Simd && x >= 1 && x+2 < width)
+				if (Simd && x >= 1 && x + 2 < width)
             {
                 auto *a = gradient + above+x-1, *b = gradient + below+x-1;
                 const auto old = vcombine_u16(vld1_u16(a),vld1_u16(b));

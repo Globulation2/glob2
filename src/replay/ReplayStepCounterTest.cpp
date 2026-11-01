@@ -172,6 +172,9 @@ void testVersionBounds()
             check(!oldRouting.loadReplay(writeReplayBody(version,1),false),
                 "air routing boundary: older simulation replay rejected");
         }
+		ReplayReader oldTerrain;
+		check(!oldTerrain.loadReplay(writeReplayBody(191, 1), false),
+			  "terrain connection boundary: earlier movement replay rejected");
 		ReplayReader current;
 		check(current.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR,1),false),
 		      "current delayed-publication replay accepted");

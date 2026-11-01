@@ -31,6 +31,7 @@ struct View
 	std::span<const AreaCell> areas;
 	// The rule index of each cell into rules (CellRules.h).
 	std::span<const Uint16> cellRules;
+	std::span<const TerrainType> vertices;
 	// Multi-yield stock sidecar, referenced through its vectors: the live
 	// sidecar grows at runtime, and a cached view must follow it.
 	const std::vector<Uint32>* stockIndices = nullptr;
@@ -51,6 +52,53 @@ struct View
 	const TerrainProperties& terrainProperties(std::size_t i) const { return (*rules)[cellRules[i]].properties; }
 	const ResourceProperties& resourceProperties(unsigned type) const { return resourceRegistry->properties(static_cast<ResourceId>(type)); }
 };
+
+inline bool terrainAllowsMovement(const View &v, std::size_t i, int movement)
+{
+	return (*v.rules)[v.cellRules[i]].allowsMovement(movement);
+}
+
+// Physical occupancy excludes transient units; goal exceptions belong to callers.
+inline bool groundPassage(const View &v, int x, int y, int movement, Uint32 team)
+{
+	const auto i = v.index(x, y);
+	const auto resource = v.resources[i].resource.type;
+	return terrainAllowsMovement(v, i, movement) && v.occupancy[i].building == NOGBID &&
+		   (resource == NO_RES_TYPE || !v.resourceProperties(resource).blocksGround) &&
+		   !(v.areas[i].forbidden & team);
+}
+// Ordinary shore cells retain a connected land edge. A diagonal must
+// cross a walkable shared vertex; a cardinal step needs land on its shared edge.
+inline bool terrainConnection(const View &v, int x, int y, int dx, int dy, int movement)
+{
+	if (movement != 0 || (!dx && !dy))
+		return true;
+	const auto walk = [&](int vx, int vy)
+	{ return v.terrainRegistry->properties(v.vertices[v.index(vx, vy)]).walkable; };
+	if (dx && dy)
+		return walk(x + (dx > 0), y + (dy > 0));
+	if (dx)
+		return walk(x + (dx > 0), y) || walk(x + (dx > 0), y + 1);
+	return walk(x, y + (dy > 0)) || walk(x + 1, y + (dy > 0));
+}
+inline bool physicalSidesClear(const View &v, int x, int y, int dx, int dy, int movement,
+							   Uint32 team)
+{
+	return !dx || !dy ||
+		   (groundPassage(v, x + dx, y, movement, team) &&
+			groundPassage(v, x, y + dy, movement, team));
+}
+inline bool groundSidesClear(const View &v, int x, int y, int dx, int dy, int movement, Uint32 team)
+{
+	return terrainConnection(v, x, y, dx, dy, movement) &&
+		   physicalSidesClear(v, x, y, dx, dy, movement, team);
+}
+inline bool resourceInteractionEndpoint(const View &v, std::size_t i, int movement)
+{
+	const auto resource = v.resources[i].resource;
+	return resource.type != NO_RES_TYPE && (!terrainAllowsMovement(v, i, movement) ||
+											v.resourceProperties(resource.type).blocksGround);
+}
 
 inline Uint16 materialAmountAt(const View& v, std::size_t i, int material)
 {

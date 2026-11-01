@@ -21,6 +21,7 @@
 #include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/UniformTraversal.h"
+#include "map/MovementConnections.h"
 #include "AIMaxima.h"
 #include "AIMaximaBuildings.h"
 #include "AIMaximaWorldHelpers.h"
@@ -140,6 +141,16 @@ namespace
 
 	// Label each traversable component once per decision. A route from an
 	// outpost proves nothing about warriors stranded in another component.
+	bool combat_passage(const AIEngine::AIWorldView &world, int movement, Uint32 team, int x, int y)
+	{
+		const int index = world.tileIndex(x, y);
+		return world.terrainAllowsMovementAt(x, y, movement) &&
+			   (movement == AIR_MOVEMENT_CLASS ||
+				(world.occupancyAt(index).building == NOGBID &&
+				 !MapState::resourceBlocksGround(world.state(), index) &&
+				 !(world.areasAt(index).forbidden & team)));
+	}
+
 	class TacticalReachability
 	{
 	public:
@@ -190,12 +201,13 @@ namespace
                     continue;
                 }
                 const unsigned movement=flying?2:walking?unsigned(swimming):3;
-                if(components[movement].empty())label(movement);
-                const auto& field=components[movement];
-                if(field[target]>=0 && field[origin]==field[target])
-                    powers.push_back(warrior_power(*map,warrior));
-                else if(diagnostics)++(*diagnostics)["disconnected"];
-
+				if (components[movement].empty() || componentTeams[movement] != team->mask)
+					label(movement, team->mask);
+				const auto &field = components[movement];
+				if (reachesEndpoint(field, origin, x, y, movement, team->mask))
+					powers.push_back(warrior_power(*map, warrior));
+				else if (diagnostics)
+					++(*diagnostics)["disconnected"];
 			}
 			if(diagnostics) (*diagnostics)["reachable_before_reserve_cap"]=int(powers.size());
 			std::sort(powers.begin(),powers.end(),std::greater<int>());
@@ -208,26 +220,88 @@ namespace
 		const std::vector<const AIEngine::BuildingView*>* offenseFlags;
         const BuildingType* recruitmentType;
 		std::vector<int> components[4];
-		void label(unsigned movement)
+		Uint32 componentTeams[4]{};
+		bool reachesEndpoint(const std::vector<int> &components, int origin, int x, int y,
+							 unsigned movement, Uint32 team) const
+		{
+			const int target = map->tileIndex(x, y);
+			if (components[origin] < 0)
+				return false;
+			if (components[target] >= 0)
+				return components[origin] == components[target];
+			const int profile = movement == 2   ? AIR_MOVEMENT_CLASS
+								: movement == 3 ? WATER_ONLY_CLASS
+												: int(movement);
+			const auto *building = map->buildingAtSlot(map->occupancyAt(target).building);
+			if (!building)
+			{
+				if (!MapState::resourceInteractionEndpoint(map->state(), target, profile) ||
+					(map->areasAt(target).forbidden & team))
+					return false;
+				for (const auto d : field::Surrounding)
+					if (components[map->tileIndex(x + d.x, y + d.y)] == components[origin])
+						return true;
+				return false;
+			}
+			// An attack/harvest target is an interaction endpoint, never a
+			// transit cell. Test its real footprint boundary against the same
+			// physical diagonal sides used by the traversable components.
+			const auto approach = [&](int tx, int ty)
+			{
+				const int index = map->tileIndex(tx, ty);
+				if (!map->terrainAllowsMovementAt(tx, ty, profile) ||
+					(profile != AIR_MOVEMENT_CLASS && (map->areasAt(index).forbidden & team)))
+					return false;
+				for (const auto d : field::Surrounding)
+				{
+					const int nx = tx + d.x, ny = ty + d.y;
+					if (components[map->tileIndex(nx, ny)] != components[origin])
+						continue;
+					if (profile == AIR_MOVEMENT_CLASS ||
+						MapState::groundSidesClear(map->state(), nx, ny, -d.x, -d.y, profile, team))
+						return true;
+				}
+				return false;
+			};
+			const auto &type = AIEngine::ObservationQueries::buildingType(*map, *building);
+			for (int dy = 0; dy < type.height; ++dy)
+				for (int dx = 0; dx < type.width; ++dx)
+					if ((!dx || !dy || dx == type.width - 1 || dy == type.height - 1) &&
+						approach(building->posX + dx, building->posY + dy))
+						return true;
+			return false;
+		}
+		void label(unsigned movement, Uint32 team)
 		{
 			const int w=(*map).width, h=(*map).height;
 			std::vector<int>& field=components[movement];
 			field.assign(w*h,-1);
-			for(int i=0; i<w*h; ++i) {
-                const auto& terrain=AIEngine::ObservationQueries::terrain(*map,i);
-                const bool traversable=movement==2?terrain.flyable:movement==3?terrain.swimmable:
-                    terrain.walkable || (movement==1 && terrain.swimmable);
-                if(!traversable || (movement!=2 && map->resourceAt(map->tileIndex(powerOfTwoRemainder(i,w),i/w)).resource.type!=NO_RES_TYPE))field[i]=-2;
-            }
+			componentTeams[movement] = team;
+			const int profile = movement == 2   ? AIR_MOVEMENT_CLASS
+								: movement == 3 ? WATER_ONLY_CLASS
+												: int(movement);
+			for (int i = 0; i < w * h; ++i)
+				if (!combat_passage(*map, profile, team, i % w, i / w))
+					field[i] = -2;
 			std::vector<int> queue;
 			for(int start=0; start<w*h; ++start)
 			{
 				if(field[start]!=-1) continue;
 				queue.clear(); queue.push_back(start); field[start]=start;
-				field::traverse(queue,{w,h},field::Surrounding,[](int){return field::Visit::Expand;},
-					[&](int,int x,int y) {
+				field::traverse(
+					queue, {w, h}, field::Surrounding, [](int) { return field::Visit::Expand; },
+					[&](int index, int x, int y)
+					{
 						const int next=(powerOfTwoRemainder(y+h, h))*w+powerOfTwoRemainder(x+w, w);
-						if(field[next]==-1){field[next]=start;queue.push_back(next);}
+						const int sx = index % w, sy = index / w;
+						if (field[next] == -1 &&
+							(profile == AIR_MOVEMENT_CLASS ||
+							 MapState::groundSidesClear(map->state(), sx, sy, x - sx, y - sy,
+														profile, team)))
+						{
+							field[next] = start;
+							queue.push_back(next);
+						}
 					});
 			}
 		}
@@ -235,8 +309,7 @@ namespace
 
 	bool rally_walkable(const AIEngine::AIWorldView* map, Uint32 team, int x, int y)
 	{
-		return (*map).occupancyAt((*map).tileIndex(x,y)).building==NOGBID && !((*map).resourceAt((*map).tileIndex(x,y)).resource.type!=NO_RES_TYPE)
-			&& AIEngine::ObservationQueries::terrain((*map),x,y).walkable && !(map->areasAt(map->tileIndex(x,y)).forbidden&team);
+		return combat_passage(*map, 0, team, x, y);
 	}
 
 	// Count distinct connected standing tiles inside the engine's circular flag
@@ -253,10 +326,14 @@ namespace
 				for(const auto d:field::Surrounding)
 				{
 					const int px=(*map).normalizeX(point.first+d.x),py=(*map).normalizeY(point.second+d.y);
-					if((*map).distanceSquared(px,py,x,y)>radius*radius
-					   ||!visited.insert((*map).tileIndex(px,py)).second)continue;
-					if(rally_walkable(map,team,px,py))
+					if ((*map).distanceSquared(px, py, x, y) > radius * radius ||
+						visited.count((*map).tileIndex(px, py)))
+						continue;
+					if (rally_walkable(map, team, px, py) &&
+						MapState::groundSidesClear(map->state(), point.first, point.second, d.x,
+												   d.y, 0, team))
 					{
+						visited.insert(map->tileIndex(px, py));
 						queue.push_back(std::make_pair(px,py));
 						if(int(queue.size())>=needed){saturated=true;return field::Visit::Stop;}
 					}
@@ -974,18 +1051,35 @@ bool Maxima::control_offense_waves(Context& runtime)
 		};
 		for(int y=margin-1;y<=margin+AIEngine::ObservationQueries::buildingType(runtime.observation(),*home).height;++y)
 			for(int x=margin-1;x<=margin+AIEngine::ObservationQueries::buildingType(runtime.observation(),*home).width;++x)add(x,y);
-		field::breadthFirst(queue,[](const auto&){return field::Visit::Expand;},
-			[&](const auto& point) {
-				for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)add(point.first+dx,point.second+dy);
+		field::breadthFirst(
+			queue, [](const auto &) { return field::Visit::Expand; },
+			[&](const auto &point)
+			{
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+					{
+						const int sx = home->posX + point.first - margin,
+								  sy = home->posY + point.second - margin;
+						if (MapState::groundSidesClear(map->state(), sx, sy, dx, dy, 0,
+													   runtime.observedTeam().mask))
+							add(point.first + dx, point.second + dy);
+					}
 				const int x=(*map).normalizeX(home->posX+point.first-margin);
 				const int y=(*map).normalizeY(home->posY+point.second-margin);
 				const int distance=route.get_height(x,y);
-				if(distance<0)return field::Visit::Expand;
+				if (distance < 0)
+					return field::Visit::Expand;
 				landHome=true;
-				if(bestSpace==2*capacity && distance>=bestDistance)return field::Visit::Expand;
+				if (bestSpace == 2 * capacity && distance >= bestDistance)
+					return field::Visit::Expand;
 				const int space=rally_space(map,runtime.observedTeam().mask,x,y,policy.muster_radius,2*capacity);
-				if(space<capacity || space<bestSpace || (space==bestSpace && distance>=bestDistance))return field::Visit::Expand;
-				rallyX=x;rallyY=y;bestDistance=distance;bestSpace=space;
+				if (space < capacity || space < bestSpace ||
+					(space == bestSpace && distance >= bestDistance))
+					return field::Visit::Expand;
+				rallyX = x;
+				rallyY = y;
+				bestDistance = distance;
+				bestSpace = space;
 
 				return field::Visit::Expand;
 			});
@@ -1772,11 +1866,11 @@ void Maxima::update_preemptive_defense(Context& runtime)
 		for(int x=0; x<w; ++x)
 		{
 			const int index=y*w+x;
-			amphibious_walkable[index]=map.is_discovered(x, y)
-				&& !map.is_resource(x, y) && !map.is_forbidden_area(x, y)
-				&& (map.is_walkable(x,y) || map.is_water(x,y));
-			land_walkable[index]=amphibious_walkable[index]
-				&& map.is_walkable(x, y);
+			amphibious_walkable[index] =
+				map.is_discovered(x, y) &&
+				combat_passage(runtime.observation(), 1, runtime.observedTeam().mask, x, y);
+			land_walkable[index] = amphibious_walkable[index] &&
+								   runtime.observation().terrainAllowsMovementAt(x, y, 0);
 		}
 	}
 
@@ -1834,10 +1928,14 @@ void Maxima::update_preemptive_defense(Context& runtime)
 	land.width=w;
 	land.height=h;
 	land.walkable.assign(land_walkable.begin(), land_walkable.end());
+	land.connections = MapState::movementGrid(runtime.observation().state(), 0,
+											  runtime.observedTeam().mask, false);
 	AIMaxima::Defense::ModeInput amphibious;
 	amphibious.mode=AIMaxima::Defense::AmphibiousMode;
 	amphibious.width=w;
 	amphibious.height=h;
+	amphibious.connections = MapState::movementGrid(runtime.observation().state(), 1,
+													runtime.observedTeam().mask, false);
 	amphibious.walkable.assign(amphibious_walkable.begin(),
 		amphibious_walkable.end());
 	for(std::vector<PreemptiveBuilding>::const_iterator building=

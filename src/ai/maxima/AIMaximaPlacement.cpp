@@ -58,8 +58,9 @@ uint64_t Planner::retainedQueryVectorBytes() const noexcept
     total += incrementalWorld.retainedProfileIndexBytes();
     total += bytes(foodInput.yield);
     total += bytes(foodInput.traversable);
-    total += bytes(foodInput.consumers);
-    for (const auto& candidate : incrementalCandidates)
+	total += bytes(foodInput.connections);
+	total += bytes(foodInput.consumers);
+	for (const auto& candidate : incrementalCandidates)
         total += bytes(candidate.parcelTiles) + bytes(candidate.accessTiles) + bytes(candidate.arteryTiles);
     for (const auto* action : {&incrementalBestStrict, &incrementalBestFallback})
         total += bytes(action->parcelTiles) + bytes(action->accessTiles) + bytes(action->arteryTiles);
@@ -341,6 +342,8 @@ uint32_t WorldState::computeSignature() const
 			|(t.growthInhibiting?8u:0u)|(t.permanentResource?16u:0u)
 			|(t.clearableResource?32u:0u)|(t.occupied?64u:0u)|(t.foodTraversable?128u:0u)|(t.woodReserve?256u:0u)|(t.walkable?512u:0u)|(t.fertilitySource?1024u:0u)|(t.resourceBlocksGround?2048u:0u);
 		hashValue(result, flags); hashValue(result, uint32_t(t.materialType+1)); hashValue(result,t.sources());
+		hashValue(result, t.walkingConnections);
+		hashValue(result, t.amphibiousConnections);
 	}
 	for(size_t i=0; i<buildings.size(); ++i)
 	{
@@ -1130,6 +1133,22 @@ std::vector<int> Planner::colonyFoodTiles(const WorldState& world, int x, int y,
 			for(int dx=-1;dx<=footprint.width;++dx)
 				if(dx==-1||dy==-1||dx==footprint.width||dy==footprint.height)
 					visit(grid.index(x+footprint.left+dx,y+footprint.top+dy),0);
+		const auto physicalSide = [&](int px, int py)
+		{
+			const auto &tile = world.tile(px, py);
+			return tile.discovered && tile.foodTraversable && !tile.occupied &&
+				   tile.canTravel(swimming) && !tile.resourceBlocksGround &&
+				   !(world.normalizeX(px - footprintX) < footprint.width &&
+					 world.normalizeY(py - footprintY) < footprint.height);
+		};
+		const auto permits = [&](int index, int dx, int dy)
+		{
+			if (!(world.tiles[index].travelConnections(swimming) &
+				  (1u << field::directionIndex(dx, dy))))
+				return false;
+			const int px = index % width, py = index / width;
+			return !dx || !dy || (physicalSide(px + dx, py) && physicalSide(px, py + dy));
+		};
 		field::breadthFirst(queue,[&](int index) {
 			if(world.tiles[index].foodOpportunity>0) food.push_back(index);
 			return distance[index]>=placementPolicy.colonySupplyRadius
@@ -1140,10 +1159,15 @@ std::vector<int> Planner::colonyFoodTiles(const WorldState& world, int x, int y,
 			{
 				const int column=index&maskX, row=index&~maskX;
 				for(const auto offset:field::Surrounding)
-					visit(((row+offset.y*width)&cellMask)+((column+offset.x)&maskX),depth);
+					if (permits(index, offset.x, offset.y))
+						visit(((row + offset.y * width) & cellMask) + ((column + offset.x) & maskX),
+							  depth);
 			}
 			else
-				grid.neighborIndices(index,field::Surrounding,[&](int next) { visit(next,depth); });
+				for (const auto offset : field::Surrounding)
+					if (permits(index, offset.x, offset.y))
+						visit(grid.index(index % width + offset.x, index / width + offset.y),
+							  depth);
 			return field::Visit::Expand;
 		});
 	};
@@ -1283,10 +1307,27 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
     }
     foodLedger.reserveQueryFootprint(foodInput,queryWidth,queryHeight);
 	foodInput.yield.resize(size);foodInput.traversable.resize(size);
+	foodInput.connections.resize(size);
+	const bool swimming = world.swimmingBuilders > 0;
+	const auto physicalSide = [&](int x, int y)
+	{
+		const auto &tile = world.tile(x, y);
+		return tile.discovered && tile.foodTraversable && !tile.occupied &&
+			   tile.canTravel(swimming) && !tile.resourceBlocksGround;
+	};
 	for(int i=0;i<size;++i)
 	{
 		const WorldTile& tile=world.tiles[i];
 		foodInput.yield[i]=tile.protectedYield;
+		foodInput.connections[i] = tile.travelConnections(swimming);
+		for (unsigned d = 0; d < field::Surrounding.size(); ++d)
+		{
+			const auto [dx, dy] = field::Surrounding[d];
+			if (dx && dy &&
+				(!physicalSide(i % world.width + dx, i / world.width) ||
+				 !physicalSide(i % world.width, i / world.width + dy)))
+				foodInput.connections[i] &= uint8_t(~(1u << d));
+		}
 		// The same reach rule production harvesting uses: wheat may be walked
 		// through, anything else solid may not.
 		foodInput.traversable[i]=(tile.discovered&&tile.foodTraversable
@@ -1701,6 +1742,90 @@ uint32_t Planner::stateSignature(uint32_t worldSignature) const
 	return signature;
 }
 
+namespace
+{
+bool pairedWalkingConnection(const WorldState &world, int index, int orientation, int dx, int dy)
+{
+	const int x = index % world.width, y = index / world.width;
+	const int other = orientation == 0 ? world.index(x + 1, y) : world.index(x, y + 1);
+	const uint8_t edge = uint8_t(1u << field::directionIndex(dx, dy));
+	return (world.tiles[index].walkingConnections & edge) &&
+		   (world.tiles[other].walkingConnections & edge);
+}
+} // namespace
+
+bool Planner::circulationTileAllowed(const WorldState &world, int index) const
+{
+	const auto &tile = world.tiles[index];
+	return tile.discovered && tile.canWalk() && !tile.occupied && !tile.blocksConstruction() &&
+		   !isFootprintReserved(index);
+}
+
+// Check only the promised artery and access ring against the other network
+// reservations. The action's own reservation cannot serve as its destination.
+// Revalidation does not reserve a different route or mutate cache continuation.
+bool Planner::arteryStillConnected(const WorldState &world, const DevelopmentAction &action) const
+{
+	if (world.swimmingBuilders >= action.workers)
+		return true;
+	const int size = world.width * world.height;
+	std::vector<uint8_t> network(size, 0), allowed(size, 0), target(size, 0);
+	const auto own = reservationMap.find(action.reservationId);
+	for (int i = 0; i < size; ++i)
+	{
+		const bool ownReference =
+			own != reservationMap.end() && contains(own->second.circulationTiles, i);
+		network[i] = i < int(circulationRefs.size()) && circulationRefs[i] > unsigned(ownReference);
+		allowed[i] = network[i];
+	}
+	if (std::none_of(network.begin(), network.end(), [](uint8_t value) { return value != 0; }))
+		return world.buildings.empty();
+	for (int i : action.arteryTiles)
+		allowed[i] = 1;
+	for (int i : action.accessTiles)
+		allowed[i] = target[i] = 1;
+	const field::Grid grid(world.width, world.height);
+	for (int orientation = 0; orientation < 2; ++orientation)
+	{
+		const auto other = [&](int index)
+		{
+			const int x = index % world.width, y = index / world.width;
+			return orientation == 0 ? world.index(x + 1, y) : world.index(x, y + 1);
+		};
+		const auto passable = [&](int i)
+		{
+			const int j = other(i);
+			return allowed[i] && allowed[j] && circulationTileAllowed(world, i) &&
+				   circulationTileAllowed(world, j);
+		};
+		std::vector<uint8_t> reached(size, 0);
+		std::vector<int> queue;
+		for (int i = 0; i < size; ++i)
+			if (network[i] && network[other(i)] && passable(i))
+			{
+				reached[i] = 1;
+				queue.push_back(i);
+			}
+		for (size_t head = 0; head < queue.size(); ++head)
+		{
+			const int current = queue[head], x = current % world.width, y = current / world.width;
+			if (target[current] && target[other(current)])
+				return true;
+			for (const auto [dx, dy] : field::Cardinal)
+			{
+				const int next = grid.index(x + dx, y + dy);
+				if (!reached[next] && passable(next) &&
+					pairedWalkingConnection(world, next, orientation, -dx, -dy))
+				{
+					reached[next] = 1;
+					queue.push_back(next);
+				}
+			}
+		}
+	}
+	return false;
+}
+
 void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 {
     AIProfile::Scope profileScope(AIProfile::Phase::RouteCache);
@@ -1715,7 +1840,8 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 	{
 		const int x=world.normalizeX(index),y=index/world.width;
 		const int other=orientation==0?world.index(x+1,y):world.index(x,y+1);
-		if(isCirculationReserved(index)&&isCirculationReserved(other))
+		if (isCirculationReserved(index) && isCirculationReserved(other) &&
+			circulationTileAllowed(world, index) && circulationTileAllowed(world, other))
 		{distance[index]=0;queue.push(QueueEntry(0,index));}
 	}
 	field::traversePriority(queue,{world.width,world.height},field::Cardinal,
@@ -1727,14 +1853,22 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 			const int next=world.index(px,py);
 			const int nx=world.normalizeX(next),ny=next/world.width;
 			const int other=orientation==0?world.index(nx+1,ny):world.index(nx,ny+1);
+			// This is a reverse search from the existing artery. Both lanes
+			// must allow the forward step from the candidate toward its parent.
+			const int dx = current % world.width - px, dy = current / world.width - py;
+			if (!pairedWalkingConnection(world, next, orientation, dx, dy))
+				return;
 			const int pair[2]={next,other}; bool pass=true,pairAlreadyNetwork=true;
 			int stepCost=1;
 			for(int k=0;k<2;++k)
 			{
 				const WorldTile& tile=world.tiles[pair[k]];
 				// Circulation needs walkable land, not a buildable grass tile.
-				if(!tile.discovered||!tile.canWalk()||tile.occupied||tile.blocksConstruction()
-				   ||isFootprintReserved(pair[k])) {pass=false;break;}
+				if (!circulationTileAllowed(world, pair[k]))
+				{
+					pass = false;
+					break;
+				}
 				pairAlreadyNetwork=pairAlreadyNetwork&&isCirculationReserved(pair[k]);
 				if(!isCirculationReserved(pair[k]))
 				{
@@ -3456,14 +3590,21 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 		}
 		for(size_t i=0;i<action.arteryTiles.size();++i)
 		{
-			const int index=action.arteryTiles[i];const WorldTile& tile=world.tiles[index];
-			if(!tile.discovered||!tile.canWalk()||tile.occupied||tile.blocksConstruction()
-			   ||isFootprintReserved(index))
+			const int index = action.arteryTiles[i];
+			if (!circulationTileAllowed(world, index))
 			{
 				reason=RejectedCirculation;
 				if(rejected)*rejected=reason;return false;
 			}
 		}
+	}
+	if (placementPolicy.arteryRoutingEnabled &&
+		(!fillsExistingCampus || !action.arteryTiles.empty()) &&
+		!arteryStillConnected(world, action))
+	{
+		if (rejected)
+			*rejected = RejectedCirculation;
+		return false;
 	}
 	if(action.reservationId>=0)
 	{
@@ -3932,6 +4073,18 @@ void Planner::loadExecutionState(GAGCore::InputStream* stream,int versionMinor)
         if(*shared==*scoringNeighborhoodCache) scoringNeighborhoodCache=std::move(shared);
     }
     stream->readLeaveSection();
+	if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS)
+	{
+		// Geometric water/material/building spacing fields remain valid. The
+		// pending selection and its circulation routes contain old travel data.
+		clearIncrementalSelection();
+		routeCacheSignature = 0;
+		for (int orientation = 0; orientation < 2; ++orientation)
+		{
+			routeDistanceCache[orientation].clear();
+			routeParentCache[orientation].clear();
+		}
+	}
 }
 
 void Planner::save(GAGCore::OutputStream* stream) const

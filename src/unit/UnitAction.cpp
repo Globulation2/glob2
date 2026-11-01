@@ -18,16 +18,37 @@ namespace
 	// the unit takes the hit rather than stalling.
 	constexpr int RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS = 5;
 
+	unsigned terrainSpeedQ8(const Unit &unit)
+	{
+		const auto &map = *unit.owner->map;
+		if (unit.action == FLY)
+			return map.terrainPropertiesAt(unit.posX, unit.posY).airSpeedQ8;
+		const auto &rule = map.cellRule(map.coordToIndex(unit.posX, unit.posY));
+		return unit.action == SWIM ? rule.swimmingSpeedQ8 : rule.movementSpeedQ8;
+	}
+
 	// GOING_TARGET_MAX_PATH_LENGTH lives in UnitConsts.h so UnitMovement.cpp's
 	// tryAcquireAttackTarget can share the same path-budget value.
 }
 
 void Unit::wrapPosition()
 {
-	if (!performance[FLY] && !performance[WALK] && (dx || dy) && (!performance[SWIM] || !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable)) {
-		dx=dy=0; direction=UNIT_DIRECTION_NONE;
+	if (!performance[FLY] && (dx || dy))
+	{
+		const auto *map = owner->map;
+		const Uint32 mask = (map->getForbidden(posX, posY) & owner->me) ? 0 : owner->me;
+		const bool entering = movement == MOV_ENTERING_BUILDING && attachedBuilding &&
+							  map->getBuilding(posX + dx, posY + dy) == attachedBuilding->gid;
+		if ((!performance[WALK] && !performance[SWIM]) ||
+			!map->canTraverse(posX, posY, dx, dy, movementClass(), mask,
+							  entering ? Map::DestinationAccess::InteractionEndpoint
+									   : Map::DestinationAccess::RequireFree))
+		{
+			dx = dy = 0;
+			direction = UNIT_DIRECTION_NONE;
+		}
 	}
-    const int oldX=posX,oldY=posY;
+	const int oldX=posX,oldY=posY;
 	posX=(posX+dx)&(owner->map->getMaskW());
 	posY=(posY+dy)&(owner->map->getMaskH());
     if((posX!=oldX || posY!=oldY) && !isDead && displacement!=DIS_INSIDE && hasCapability(UnitRuntimeTraits::GuardIdle))
@@ -67,9 +88,8 @@ void Unit::handleActionRandomGround()
 	owner->map->pathfindRandom(this);
 	wrapPosition();
 	selectPreferredGroundMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	speed =
+		unitTerrainMovementSpeed(performance[action], terrainSpeedQ8(*this), dx != 0 || dy != 0);
 	claimOccupiedMapSlot();
 }
 
@@ -117,9 +137,8 @@ void Unit::handleActionGoingTarget()
 		if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
 	selectPreferredMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	speed =
+		unitTerrainMovementSpeed(performance[action], terrainSpeedQ8(*this), dx != 0 || dy != 0);
 	claimOccupiedMapSlot();
 }
 
@@ -141,9 +160,8 @@ void Unit::handleActionGoingDxDy()
 		if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
 	selectPreferredMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	speed =
+		unitTerrainMovementSpeed(performance[action], terrainSpeedQ8(*this), dx != 0 || dy != 0);
 
 	claimOccupiedMapSlot();
 
@@ -155,21 +173,29 @@ void Unit::handleActionEnteringBuilding()
 {
 	// NOTE : this is a hack : We don't delete the unit on the map
 	// because we have to draw it while it is entering.
+	if (!performance[FLY] &&
+		!owner->map->canTraverse(posX, posY, dx, dy, movementClass(), owner->me,
+								 Map::DestinationAccess::InteractionEndpoint))
+	{
+		stopAttachedForBuilding(true);
+		dx = dy = 0;
+		movement = MOV_GOING_DX_DY;
+		handleActionGoingDxDy();
+		return;
+	}
 	wrapPosition();
 	directionFromDxDy();
 	selectPreferredMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	speed =
+		unitTerrainMovementSpeed(performance[action], terrainSpeedQ8(*this), dx != 0 || dy != 0);
 }
 
 void Unit::handleActionExitingBuilding()
 {
 	directionFromDxDy();
 	selectPreferredMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	speed =
+		unitTerrainMovementSpeed(performance[action], terrainSpeedQ8(*this), dx != 0 || dy != 0);
 	claimOccupiedMapSlot();
 }
 

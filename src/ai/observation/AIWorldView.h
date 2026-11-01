@@ -179,6 +179,10 @@ public:
 		return {vertexCells[tileIndex(x, y)], vertexCells[tileIndex(x + 1, y)],
 				vertexCells[tileIndex(x, y + 1)], vertexCells[tileIndex(x + 1, y + 1)]};
 	}
+	bool terrainAllowsMovementAt(int x, int y, int movement) const
+	{
+		return (*cellRules)[cellRuleAt(tileIndex(x, y))].allowsMovement(movement);
+	}
 	const TerrainProperties& terrainPropertiesAt(std::size_t index) const { return (*cellRules)[cellRuleCells[index]].properties; }
 	const SimulationSnapshot::ResourceCell& resourceAt(std::size_t index) const { return resourceCells[index]; }
 	const SimulationSnapshot::OccupancyCell& occupancyAt(std::size_t index) const { return occupancyCells[index]; }

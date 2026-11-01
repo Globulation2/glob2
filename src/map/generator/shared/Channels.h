@@ -47,9 +47,9 @@ std::vector<unsigned char> beachTiles(const TerrainSketch &, const Torus &);
 std::vector<unsigned char> beachTiles(const Map &, const Torus &);
 
 /// A sand bridge laid straight across water from `from` to `to`: every water corner within
-/// `halfWidth` of the line becomes sand (strokePath over corners). A tile is water only when all four
-/// of its corners are, so a bridge one corner wide already carries units on the two tiles either side
-/// of it. Run after layBeaches (a bridge's own sand needs no beach). Returns the corners changed.
+/// `halfWidth` of the line becomes sand (strokePath over corners). A fully dry corridor needs all four corners
+/// of each cell for a dry interior; sqrt(2) half-width guarantees that interior and diagonal side clearance.
+/// Run after layBeaches (a bridge's own sand needs no beach). Returns the corners changed.
 int bridgeAcross(TerrainSketch &, const Torus &, ShapePoint from, ShapePoint to, double halfWidth);
 
 /// The water that parts labelled cells into islands: a strait `corners` terrain vertices wide (4 to 8)

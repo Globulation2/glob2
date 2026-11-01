@@ -1299,7 +1299,7 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 	const auto workers = unitTilesByTeam(map, c.request.nbTeams);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 	{
-		const auto reached = reachFrom(t, workers[k], walking, 32);
+		const auto reached = reachFrom(map, workers[k], walking, 32);
 		std::vector<int> shore;
 		std::vector<unsigned char> seen(t.size(), 0);
 		int placed = 0;
@@ -1402,33 +1402,13 @@ bool independentExits(const Torus &t, const std::vector<unsigned char> &permanen
 
 // A worker may leave a hypothetical building site before construction. The
 // configured starting building's reachable faces anchor future city circulation.
-std::vector<int> colonyEntrances(const Game &game, int team, const Torus &t,
-								const std::vector<unsigned char> &walk,
-								const std::vector<int> &reached)
+std::vector<int> colonyEntrances(const Game &game, int team, const std::vector<unsigned char> &walk,
+								 const std::vector<int> &reached)
 {
-	std::vector<int> result;
-	for (const auto *b : game.teams[team]->liveBuildings.entries())
-	{
-		if (!b || b->typeNum != game.buildingsTypes.getStartingBuildingTypeNum())
-			continue;
-		const auto add = [&](int x, int y)
-		{
-			const int i = t.at(x, y);
-			if (walk[i] && reached[i] >= 0)
-				result.push_back(i);
-		};
-		for (int x = b->posX; x < b->posX + b->type->width; ++x)
-		{
-			add(x, b->posY - 1);
-			add(x, b->posY + b->type->height);
-		}
-		for (int y = b->posY; y < b->posY + b->type->height; ++y)
-		{
-			add(b->posX - 1, y);
-			add(b->posX + b->type->width, y);
-		}
-		break;
-	}
+	auto result = colonyGroundExits(game, team, walk);
+	result.erase(
+		std::remove_if(result.begin(), result.end(), [&](int i) { return reached[i] < 0; }),
+		result.end());
 	return result;
 }
 
@@ -1445,7 +1425,7 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 			for (int i : *field)
 				walk[i] = 0;
 	const auto units = unitTilesByTeam(map, c.request.nbTeams);
-	const auto reached = stepsFrom(t, tileMask(t, units[0]), walk);
+	const auto reached = stepsFrom(map, tileMask(t, units[0]), walk);
 	if (firstColonyCutOff(reached, units) >= 0)
 		return "A colony is disconnected from the permanent routes.";
 	for (const auto &g : L.clearings)
@@ -1479,13 +1459,13 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 		auto room = nearbyBuildingGrid(t, eligible, walk, grid, units[0], reached);
 		if (!room.failure.empty() && j == homes[0])
 			room = arrangeBuildingGrid(t, eligible, walk, grid,
-									   colonyEntrances(game, 0, t, walk, reached));
+									   colonyEntrances(game, 0, walk, reached));
 		forward[j] = room.failure.empty() && room.footprints.size() >= 3;
 	}
 	std::vector<std::vector<int>> distances;
 	for (int k = 0; k < c.request.nbTeams; ++k)
 	{
-		distances.push_back(stepsFrom(t, tileMask(t, units[k]), walk));
+		distances.push_back(stepsFrom(map, tileMask(t, units[k]), walk));
 		const auto &g = L.clearings[homes[k]];
 		int grain = 0, timber = 0, algae = 0;
 		for (int i : g.wheat)
@@ -1517,7 +1497,7 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 		auto arrangement = nearbyBuildingGrid(t, eligible, walk, grid, units[k], distances.back());
 		if (!arrangement.failure.empty())
 			arrangement = arrangeBuildingGrid(t, eligible, walk, grid,
-											  colonyEntrances(game, k, t, walk, distances.back()));
+											  colonyEntrances(game, k, walk, distances.back()));
 		if (!arrangement.failure.empty() || arrangement.footprints.size() < 6)
 			return "A home cannot fit six buildings with access lanes.";
 		for (int exit : g.exits)
@@ -1579,20 +1559,20 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 	const auto shortcutWalk = groundUnitTiles(map);
 	std::vector<std::vector<int>> shortcutDistances;
 	for (const auto &team : units)
-		shortcutDistances.push_back(stepsFrom(t, tileMask(t, team), shortcutWalk));
+		shortcutDistances.push_back(stepsFrom(map, tileMask(t, team), shortcutWalk));
 	std::vector<int> useful(c.request.nbTeams, 0);
 	for (const auto &s : L.shortcuts)
 	{
 		for (int i : s.plug)
 			if (map.getResource(t.remainderX(i), i / t.w).type != WOOD)
 				return "A timber neck is already open.";
-		const auto fromA = stepsFrom(t, tileMask(t, {s.a}), shortcutWalk);
+		const auto fromA = stepsFrom(map, tileMask(t, {s.a}), shortcutWalk);
 		const int before = fromA[s.b];
 		auto cut = shortcutWalk;
 		for (int i : s.plug)
 			cut[i] = 1;
 		const int bound = std::max(0, std::min(before - 8, before * 3 / 4));
-		const int after = floodFrom(t, tileMask(t, {s.a}), cut, bound).steps[s.b];
+		const int after = floodFrom(map, tileMask(t, {s.a}), cut, bound).steps[s.b];
 		if (before < 0 || after < 0 || before - after < 8 || after * 4 > before * 3)
 			return "A timber neck does not shorten the coastal walk.";
 		bool relevant = false;
@@ -1603,7 +1583,7 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 						shortcutDistances[k][mouth] >= 0 && shortcutDistances[k][mouth] <= 100;
 		if (!relevant)
 			continue;
-		const auto fromB = stepsFrom(t, tileMask(t, {s.b}), shortcutWalk);
+		const auto fromB = stepsFrom(map, tileMask(t, {s.b}), shortcutWalk);
 		for (int k = 0; k < c.request.nbTeams; ++k)
 		{
 			if (useful[k])
@@ -1824,7 +1804,7 @@ GeneratorDefinition drownedForestDefinition()
 	return {"drowned-forest",
 			67,
 			"Drowned Forest",
-			2,
+			4,
 			false,
 			{GeneratorControl{"sandbar-connections", "Sandbar connections", 0, 100, 10, 30,
 							  ControlGroup::Layout}

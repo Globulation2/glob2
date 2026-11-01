@@ -1295,7 +1295,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const std::vector<unsigned char> walkable = walkableTiles(map);
 	for (int team = 0; team < teams; ++team)
 	{
-		const std::vector<int> reach = stepsFrom(t, tileMask(t, walk.workers[team]), walkable);
+		const std::vector<int> reach = stepsFrom(map, tileMask(t, walk.workers[team]), walkable);
 		bool onBar = false;
 		for (int i = 0; i < t.size() && !onBar; ++i)
 			onBar = reach[i] >= 0 && L.comp[i] == L.homes[team].bar;

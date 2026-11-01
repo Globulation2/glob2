@@ -110,7 +110,7 @@ std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
 		// Called by independent executor jobs too; do not dispatch while holding
 		// this lock. All readers share this one initialization pass.
 		for (size_t i = 0; i < size; ++i)
-			(*snapshot)[i] = terrainPropertiesAt(i).swimmable;
+			(*snapshot)[i] = cellRule(i).usesSwimming;
 		waterSnapshot = std::move(snapshot);
 	}
 	return waterSnapshot;
@@ -186,9 +186,9 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 {
 	const auto &rule = cellRuleData[ruleIndex];
 	const auto &p = rule.properties;
-	const unsigned edge = rule.ground[p.swimmable ? LEGACY_SWIM_CLASS_COUNT - 1 : 0].diagonal;
+	const unsigned edge = rule.ground[rule.usesSwimming ? LEGACY_SWIM_CLASS_COUNT - 1 : 0].diagonal;
 	for (unsigned sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
-		if (gradient_kernel::terrainAllowsMovement(p, sw))
+		if (rule.allowsMovement(sw))
 		{
 			auto &count = terrainGroundCostCounts[sw][rule.ground[sw].cardinal];
 			if (add)
@@ -211,7 +211,7 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 		}
 	}
 	const bool flags[] = {bool(p.groundHealthQ8 || p.airHealthQ8),
-						  p.groundSpeedQ8 != 256 || p.groundHealthQ8 < 0,
+						  rule.movementSpeedQ8 != 256 || p.groundHealthQ8 < 0,
 						  !p.flyable || p.airSpeedQ8 != 256 || p.airHealthQ8 < 0,
 						  p.projectileBlocks,
 						  edge >= 64,
@@ -351,10 +351,14 @@ void Map::changeCellRule(size_t index, std::uint16_t rule)
 		std::lock_guard<std::mutex> lock(growthCacheMutex);
 		growthCache.terrainChanged(index, before, after);
 	}
-	if (before.walkable != after.walkable || before.swimmable != after.swimmable ||
+	if (cellRuleData[old].groundAccess != cellRuleData[rule].groundAccess ||
+		cellRuleData[old].usesSwimming != cellRuleData[rule].usesSwimming ||
+		cellRuleData[old].movementSpeedQ8 != cellRuleData[rule].movementSpeedQ8 ||
+		cellRuleData[old].swimmingSpeedQ8 != cellRuleData[rule].swimmingSpeedQ8 ||
+		before.walkable != after.walkable || before.swimmable != after.swimmable ||
 		before.groundSpeedQ8 != after.groundSpeedQ8 || before.flyable != after.flyable ||
-		before.airSpeedQ8 != after.airSpeedQ8 ||
-		before.groundHealthQ8 != after.groundHealthQ8 || before.airHealthQ8 != after.airHealthQ8)
+		before.airSpeedQ8 != after.airSpeedQ8 || before.groundHealthQ8 != after.groundHealthQ8 ||
+		before.airHealthQ8 != after.airHealthQ8)
 		terrainRoutesChanged = true;
 	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 }
@@ -362,6 +366,12 @@ void Map::changeCellRule(size_t index, std::uint16_t rule)
 void Map::writeVertex(size_t index, TerrainType type)
 {
 	const auto old = vertexTerrain[index];
+	const auto &before = terrainRegistry().properties(old);
+	const auto &after = terrainRegistry().properties(type);
+	// Rotating a shore can preserve its canonical cell rule while changing
+	// the actual directional connections captured by searches.
+	if (before.walkable != after.walkable || before.swimmable != after.swimmable)
+		terrainRoutesChanged = true;
 	--terrainCounts[old];
 	++terrainCounts[type];
 	vertexTerrain[index] = type;

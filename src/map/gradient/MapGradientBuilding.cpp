@@ -70,7 +70,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
         [&](auto fn) { initializeGradientCells(fn); });
     if(seeded.resourceState) building->anyResourceToClear[swimAccessVariant(swimClass)]=seeded.resourceState;
 
-	const auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass);
+	const auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass, seed.teamMask);
 
 	if (route == BuildingRoute::Footprint)
 	{

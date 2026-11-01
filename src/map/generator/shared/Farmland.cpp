@@ -890,10 +890,10 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm,
 	{
 		::MapGeneration::generationCheckpoint();
 		const int x = t.remainderX(i), y = i / t.w;
-		open.at(i) = map.terrainPropertiesAt(x, y).walkable && map.getBuilding(x, y) == NOGBID &&
+		open.at(i) = map.terrainAllowsMovementAt(x, y, 0) && map.getBuilding(x, y) == NOGBID &&
 					 !permanentResourceBarrier(map, i);
 	}
-	const std::vector<int> steps = stepsFrom(t, tileMask(t, sources), open);
+	const std::vector<int> steps = stepsFrom(map, tileMask(t, sources), open);
 	int land = 0, reached = 0;
 	for (int i = 0; i < n; ++i)
 	{

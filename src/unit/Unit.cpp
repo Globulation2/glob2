@@ -589,8 +589,9 @@ bool Unit::trainingVisitSafe(const Building& building,int purpose) const
 	if(!movementCourses)return true;
 	const unsigned before=UnitTraining::movementModes(*this);
 	const unsigned after=UnitTraining::movementAfter(*this,movementCourses,spec.training,race->getCatalog()->levels(typeNum));
-	return UnitTraining::exitTerrainSafe(before,after,building.posX,building.posY,building.type->width,building.type->height,
-		[&](int x,int y)->const TerrainProperties& { return owner->map->terrainPropertiesAt(x,y); });
+	return UnitTraining::exitTerrainSafe(before, after, building.posX, building.posY,
+										 building.type->width, building.type->height,
+										 owner->map->cellView());
 }
 
 std::optional<Uint32> Unit::trainingVisitCourses(const Building& building,int purpose) const

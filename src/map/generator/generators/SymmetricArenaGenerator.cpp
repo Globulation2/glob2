@@ -919,8 +919,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::array<int, 6> first{};
 	for (int team = 0; team < teams; ++team)
 	{
-		const std::vector<int> dist = MapGeneration::stepsFrom(
-			torus, MapGeneration::tileMask(torus, workers[team]), walkable);
+		const std::vector<int> dist =
+			MapGeneration::stepsFrom(map, MapGeneration::tileMask(torus, workers[team]), walkable);
 		std::array<int, 6> steps;
 		steps.fill(-1);
 		const auto reach = [&](int slot, int d)

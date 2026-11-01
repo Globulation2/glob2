@@ -131,7 +131,9 @@ void Entities::Sand::save(GAGCore::OutputStream *stream)
 
 
 bool Entities::Unwalkable::is_entity(Map* map, int x, int y)
-{ return !map->terrainPropertiesAt(x,y).walkable; }
+{
+	return !map->terrainAllowsMovementAt(x, y, 0);
+}
 bool Entities::Unwalkable::operator==(const Entity& rhs) const
 { return typeid(rhs)==typeid(Entities::Unwalkable); }
 
@@ -142,4 +144,6 @@ bool Entities::Position::is_entity(const AIEngine::AIWorldView&,int posx,int pos
 bool Entities::Sand::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 { return world.terrainPropertiesAt(world.tileIndex(x,y)).shoreline; }
 bool Entities::Unwalkable::is_entity(const AIEngine::AIWorldView& world,int x,int y)
-{ return !world.terrainPropertiesAt(world.tileIndex(x,y)).walkable; }
+{
+	return !(*world.cellRules)[world.cellRuleAt(world.tileIndex(x, y))].allowsMovement(0);
+}

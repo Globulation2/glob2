@@ -91,7 +91,14 @@ MapState::View Handle::view() const
 	if (resources) { v.resources = resources->cells; v.stockIndices = &resources->stockIndices; v.stocks = &resources->stocks; v.materialSourceCounts = resources->materialSourceCounts; }
 	if (occupancy) v.occupancy = occupancy->cells;
 	if (areas) v.areas = areas->cells;
-	if (terrain) { v.cellRules = terrain->cellRules; v.rules = terrain->rules.get(); v.terrainRegistry = terrain->registry.get(); }
+	if (terrain)
+	{
+		v.cellRules = terrain->cellRules;
+		if (terrain->vertices)
+			v.vertices = *terrain->vertices;
+		v.rules = terrain->rules.get();
+		v.terrainRegistry = terrain->registry.get();
+	}
 	if (catalogs) v.resourceRegistry = catalogs->resources.get();
 	v.growth = growth.get();
 	if(areaFertility) v.areaFertility=areaFertility->values;

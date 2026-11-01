@@ -809,7 +809,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		passable[i] = stepCost(map, t.remainderX(i), i / t.w, StepCosts::walking()) >= 0;
 	const auto broad = erode(t, passable, 2);
 	const int firstExit = t.at(int(L.homes[0].x) - 9, int(L.homes[0].y) - 24);
-	const auto broadRegions = connectedRegions(broad, t.w, t.h, true);
+	const auto broadRegions = groundRegions(map, broad, GridNeighbors::Cardinal);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 	{
 		const auto costs = costsFrom(map, t, walk.workers[k], StepCosts::walking());

@@ -1,5 +1,5 @@
-#include "Material.h"
 #include "AIRuleOrders.h"
+#include "Material.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -10,6 +10,7 @@
 #include "ai/observation/WorldQueries.h"
 #include "Game.h"
 #include <algorithm>
+#include <stdexcept>
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -179,13 +180,27 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 
 void AICastor::updateGlobalGradient(Uint8 *gradient)
 {
-    if(observation->terrainMovementModifiers)
+	const auto connections =
+		MapState::movementGrid(observation->state(), canSwim ? 1 : 0, observedTeam->mask, false);
+	if(observation->terrainMovementModifiers)
     {
 		field::expandTerrainInfluence(
-			gradient, observation->width, observation->height, [&](std::size_t i) { return observation->cellRuleAt(i); },
-			*observation->cellRules);
+			gradient, observation->width, observation->height, [&](std::size_t i)
+			{ return observation->cellRuleAt(i); }, *observation->cellRules, connections);
 		return;
     }
-	field::directionalInfluence(gradient,{observation->width,observation->height},
-		field::BlockedUnitFloor<AI_CASTOR_GRADIENT_WALL>{});
+	field::ConvergentInfluence influence(gradient, connections);
+	if (!influence.hasSources())
+		return;
+	int passes = 0;
+	do
+	{
+		influence.beginPass();
+		for (int y = 0; y < observation->height; ++y)
+			influence.forwardRow(y);
+		for (int y = observation->height; y-- > 0;)
+			influence.reverseRow(y);
+		if (++passes >= 256)
+			throw std::logic_error("AI influence gradient failed to converge");
+	} while (influence.passChanged());
 }

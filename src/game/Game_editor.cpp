@@ -1,5 +1,5 @@
-#include <utility>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <utility>
 #include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -194,7 +194,9 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	bool free;
     const bool walks=traits.has(UnitRuntimeTraits::Walk) && performance(WALK);
     const bool swims=traits.has(UnitRuntimeTraits::Swim) && performance(SWIM);
-    if (!fly && !walks && swims && !map.terrainPropertiesAt(x,y).swimmable) return nullptr;
+	if (!fly && (walks || swims) &&
+		!map.terrainAllowsMovementAt(x, y, walks ? (swims ? 1 : 0) : WATER_ONLY_CLASS))
+		return nullptr;
 	if (fly)
 		free=map.isFreeForAirUnit(x, y);
 	else

@@ -7,6 +7,11 @@
 #include "StreamBackend.h"
 #include "FileFormatVersions.h"
 #include "CellRules.h"
+#include "UnitTraining.h"
+#include "field/RuntimeTerrainGradient.h"
+#include "BuildingGradientSearch.h"
+#include "MovementConnections.h"
+#include "field/TerrainTravel.h"
 #include "LegacyTerrainFrames.h"
 #include <algorithm>
 #include <memory>
@@ -113,10 +118,10 @@ TEST_CASE("the rule table numbers uniform rules by terrain and interns mixed one
 	}
 	const auto shore = table.intern(GRASS, SAND, SAND, GRASS);
 	CHECK(shore == TERRAIN_COUNT);
-	// The corner order does not matter, only the multiset.
+	// Rotations/reflections share a rule; adjacency remains part of its identity.
 	CHECK(table.intern(SAND, GRASS, GRASS, SAND) == shore);
-	CHECK(table.intern(GRASS, GRASS, SAND, SAND) == shore);
-	CHECK(table.intern(GRASS, GRASS, GRASS, SAND) == TERRAIN_COUNT + 1);
+	CHECK(table.intern(GRASS, GRASS, SAND, SAND) != shore);
+	CHECK(table.intern(GRASS, GRASS, GRASS, SAND) == TERRAIN_COUNT + 2);
 	CHECK_FALSE(table[shore].uniform());
 	CHECK(sameTerrainProperties(table[shore].properties, CLASSIC_SHORE_PROPERTIES));
 	// Costs come from the combined rules.
@@ -142,10 +147,10 @@ TEST_CASE("compiled CPU seed columns preserve frozen rules when mixed rules grow
 		REQUIRE(previous.size() == frozen.size());
 		CHECK(std::equal(previous.begin(), previous.end(), live.begin()));
 		for (unsigned rule = 0; rule < table.size(); ++rule)
-			CHECK(live[rule] == (gradient_kernel::terrainAllowsGround(table.properties(rule), swim)
-				? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
-		CHECK(live[mixed] == (gradient_kernel::terrainAllowsGround(table.properties(mixed), swim)
-			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
+			CHECK(live[rule] ==
+				  (table[rule].allowsMovement(swim) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
+		CHECK(live[mixed] ==
+			  (table[mixed].allowsMovement(swim) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
 	}
 	CHECK_THROWS_AS(table.openTerrainSeeds(CellRuleTable::OpenTerrainClasses.size()), std::out_of_range);
 }
@@ -325,4 +330,356 @@ TEST_CASE("vertex terrain round-trips through packed and text saves")
 		CHECK(loaded.game.map.checkSum(true) == map.checkSum(true));
 	}
 }
+TEST_CASE("conservative movement is separate from mixed ecology rules")
+{
+	glob2test::HeadlessGlobals globals;
+	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+	const auto rock = table.intern(OUTCROP, OUTCROP, OUTCROP, GRASS);
+	CHECK(table[rock].properties.walkable); // unchanged ecology profile
+	for (int movement : {0, 1, WATER_ONLY_CLASS})
+		CHECK_FALSE(table[rock].allowsMovement(movement));
+	CHECK(table[rock].allowsMovement(AIR_MOVEMENT_CLASS));
+	const auto beach = table.intern(SAND, WATER, WATER, DEEP_WATER);
+	CHECK_FALSE(table[beach].allowsMovement(0));
+	CHECK_FALSE(table[beach].allowsMovement(WATER_ONLY_CLASS));
+	CHECK(table[beach].allowsMovement(1));
+	CHECK(table[beach].usesSwimming);
+	CHECK(table[beach].movementSpeedQ8 == terrainProperties(DEEP_WATER).groundSpeedQ8);
+	CHECK(table[beach].ground[1].cardinal ==
+		  gradient_kernel::scaledTerrainStep(gradient_kernel::WATER_STEP[1],
+											 terrainProperties(DEEP_WATER).groundSpeedQ8));
+	const auto water = table.intern(WATER, DEEP_WATER, DARK_WATER, WATER);
+	CHECK(table[water].allowsMovement(WATER_ONLY_CLASS));
+	const auto land = table.intern(GRASS, SAND, TRAIL, GRASS);
+	CHECK(table[land].allowsMovement(0));
+	CHECK_FALSE(table[land].usesSwimming);
+}
+
+TEST_CASE("diagonal passage respects hard sides and ignores transient side traffic")
+{
+	glob2test::HeadlessGlobals globals;
+	Map map;
+	map.setSize(4, 4, GRASS);
+	CHECK(map.canTraverse(4, 4, 1, 1, 0, 1));
+	map.setGroundUnit(5, 4, 123);
+	CHECK(map.canTraverse(4, 4, 1, 1, 0, 1));
+	map.setGroundUnit(5, 4, NOGUID);
+	map.setBuilding(5, 4, 1, 1, 123);
+	CHECK_FALSE(map.canTraverse(4, 4, 1, 1, 0, 1));
+	CHECK(map.canTraverse(4, 4, 0, 1, 0, 1));
+	map.setBuilding(5, 4, 1, 1, NOGBID);
+	map.setResourceByIndex(5, 4, WOOD, 1);
+	CHECK_FALSE(map.canTraverse(4, 4, 1, 1, 0, 1));
+	map.setNoResource(5, 4, 1);
+	map.addForbidden(5, 4, 0);
+	CHECK_FALSE(map.canTraverse(4, 4, 1, 1, 0, 1));
+	CHECK(map.canTraverse(4, 4, 1, 1, 0, 2));
+	map.removeForbidden(5, 4, 0);
+	map.setVertexTerrain(6, 4, OUTCROP); // blocks side (5,4), not source/destination
+	CHECK(map.terrainAllowsMovementAt(5, 5, 0));
+	CHECK_FALSE(map.canTraverse(4, 4, 1, 1, 0, 1));
+	CHECK(map.canTraverse(4, 4, 1, 1, AIR_MOVEMENT_CLASS, 1));
+	map.setVertexTerrain(6, 4, GRASS);
+	CHECK(map.canTraverse(15, 15, 1, 1, 0, 1));
+	map.setVertexTerrain(1, 15, OUTCROP);
+	CHECK_FALSE(map.canTraverse(15, 15, 1, 1, 0, 1));
+}
+
+TEST_CASE("A star and eager and resumed gradients route around a blocked diagonal")
+{
+	glob2test::HeadlessGlobals globals;
+	Map map;
+	map.setSize(4, 4, GRASS);
+	map.setVertexTerrain(6, 4, OUTCROP);
+	int dx = 0, dy = 0;
+	REQUIRE(map.pathfindPointToPoint(4, 4, 5, 5, &dx, &dy, 0, 1, 16));
+	CHECK_FALSE((dx == 1 && dy == 1));
+	CHECK(map.canTraverse(4, 4, dx, dy, 0, 1));
+	CHECK((map.terrainConnections(4, 4, 0) & (1u << field::directionIndex(1, 1))) == 0);
+	std::vector<Uint16> seeds(map.cellCount(), GRADIENT_UNREACHABLE);
+	seeds[map.coordToIndex(5, 5)] = GRADIENT_AT_GOAL;
+	auto eager = seeds, lazy = seeds;
+	map.propagateGradient(eager.data(), 0);
+	BuildingGradientSearch search;
+	search.begin(map, lazy.data(), 0);
+	search.resolve(map.coordToIndex(4, 4));
+	search.finish();
+	CHECK(lazy == eager);
+	CHECK(eager[map.coordToIndex(4, 4)] == GRADIENT_AT_GOAL - 2 * GRADIENT_STEP);
+}
+
+TEST_CASE("resource ascent and finite peaks ignore disconnected higher neighbors")
+{
+	glob2test::HeadlessGlobals globals;
+	Map map;
+	map.setSize(4, 4, GRASS);
+	map.setVertexTerrain(6, 4, OUTCROP);
+	std::vector<Uint16> values(map.cellCount(), 0);
+	values[map.coordToIndex(4, 4)] = GRADIENT_AT_GOAL - 20;
+	values[map.coordToIndex(3, 4)] = GRADIENT_AT_GOAL - 10;
+	values[map.coordToIndex(5, 5)] = GRADIENT_AT_GOAL;
+	Sint32 x = -1, y = -1;
+	CHECK_FALSE(MapState::gradientDestination(map.cellView(), values.data(), 4, 4, &x, &y, 0, 1));
+	CHECK(x == 3);
+	CHECK(y == 4);
+	CHECK(MapState::gradientPeak(map.cellView(), values.data(), 3, 4, 0, 1));
+	values[map.coordToIndex(3, 4)] = 0;
+	CHECK(MapState::gradientPeak(map.cellView(), values.data(), 4, 4, 0, 1));
+	CHECK_FALSE(MapState::gradientDestination(map.cellView(), values.data(), 4, 4, &x, &y, 0, 1));
+	CHECK(x == 4);
+	CHECK(y == 4);
+}
+
+TEST_CASE("forward terrain influence respects the forward edge direction")
+{
+	glob2test::HeadlessGlobals globals;
+	constexpr int width = 8, height = 8;
+	auto edges = std::make_shared<std::vector<std::uint8_t>>(width * height, 0);
+	(*edges)[18] = 1u << field::directionIndex(1, 0); // A -> B only
+	const auto grid = field::Grid(width, height).withConnections(edges);
+	std::vector<Uint16> terrain(width * height, GRASS);
+	for (int source : {18, 19})
+	{
+		std::vector<Uint8> values(width * height, 1);
+		values[source] = 10;
+		field::expandTerrainInfluence(
+			values.data(), width, height, [&](size_t i) { return TerrainType(terrain[i]); },
+			*TerrainRegistry::builtins(), grid);
+		CHECK(values[18] == (source == 18 ? 10 : 1));
+		CHECK(values[19] == (source == 19 ? 10 : 9));
+	}
+}
+
+TEST_CASE("reverse propagation honors forward directed connections")
+{
+	glob2test::HeadlessGlobals globals;
+	constexpr int width = 8, height = 8;
+	auto edges = std::make_shared<std::vector<std::uint8_t>>(width * height, 0);
+	// Only A(2,2)->B(3,2) exists; reverse propagation must reach A from B.
+	(*edges)[2 + 2 * width] = 1u << 4; // E in field::Surrounding
+	const auto grid = field::Grid(width, height).withConnections(edges);
+	for (const auto backend : {gradient_kernel::Backend::Scalar, gradient_kernel::cpuBackend()})
+	{
+		gradient_kernel::CPUSelectionScope selection(backend);
+		for (const int goal : {2 + 2 * width, 3 + 2 * width})
+		{
+			std::vector<Uint16> cells(width * height, GRADIENT_UNREACHABLE);
+			cells[goal] = GRADIENT_AT_GOAL;
+			GradientWorkspace workspace;
+			gradient_kernel::propagateFieldCPU(cells.data(), 0, gradient_kernel::COST_LIMIT, grid,
+											   workspace, [](size_t) { return false; });
+			CHECK(cells[2 + 2 * width] ==
+				  (goal == 2 + 2 * width ? GRADIENT_AT_GOAL : GRADIENT_AT_GOAL - GRADIENT_STEP));
+			CHECK(cells[3 + 2 * width] ==
+				  (goal == 3 + 2 * width ? GRADIENT_AT_GOAL : GRADIENT_UNREACHABLE));
+		}
+	}
+}
+}
+
+TEST_SUITE("VertexTerrain")
+{
+	TEST_CASE("shore edges walk while isolated tips and opposite land corners do not")
+	{
+		glob2test::HeadlessGlobals globals;
+		CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+		for (unsigned mask = 0; mask < 16; ++mask)
+		{
+			const auto t = [&](int bit) { return mask & (1u << bit) ? SAND : WATER; };
+			const auto id = table.intern(t(0), t(1), t(2), t(3));
+			const bool edge =
+				(mask & 3) == 3 || (mask & 12) == 12 || (mask & 5) == 5 || (mask & 10) == 10;
+			CHECK(table[id].allowsMovement(0) == edge);
+			CHECK(table[id].allowsMovement(1));
+			CHECK(table[id].allowsMovement(WATER_ONLY_CLASS) == (mask == 0));
+			CHECK(table[id].usesSwimming == !edge);
+			CHECK(sameTerrainProperties(table[id].properties, combine(t(0), t(1), t(2), t(3))));
+		}
+	}
+
+	TEST_CASE("shore connections reject water corners and water edges while preserving beaches")
+	{
+		glob2test::HeadlessGlobals globals;
+		Map map;
+		map.setSize(4, 4, GRASS);
+		map.setVertexTerrain(5, 5, WATER);
+		for (const auto p : {std::pair{4, 4}, std::pair{5, 4}, std::pair{4, 5}, std::pair{5, 5}})
+			CHECK(map.terrainAllowsMovementAt(p.first, p.second, 0));
+		CHECK_FALSE(map.canTraverse(4, 4, 1, 1, 0, 1)); // shared water corner
+		CHECK(map.canTraverse(4, 4, 1, 0, 0, 1));
+		CHECK(map.canTraverse(4, 4, 1, 1, 1, 1)); // amphibious travel can swim across
+		map.setVertexTerrain(5, 5, GRASS);
+		map.setVertexTerrain(6, 4, WATER);
+		CHECK(map.canTraverse(4, 4, 1, 1, 0, 1)); // shared dry corner and clear sides
+		{
+			auto edit = map.editTerrain();
+			for (int y = 0; y < 16; ++y)
+				for (int x = 0; x < 16; ++x)
+					map.setVertexTerrain(x, y, x == 0 ? WATER : GRASS);
+		}
+		CHECK(map.terrainAllowsMovementAt(15, 5, 0));
+		CHECK(map.terrainAllowsMovementAt(0, 5, 0));
+		CHECK_FALSE(map.canTraverse(15, 5, 1, 0, 0, 1)); // all-water shared edge at seam
+		CHECK(map.canTraverse(15, 5, 0, 1, 0, 1));       // ordinary shoreline
+	}
+
+	TEST_CASE("walkers gather aquatic shore resources without entering them or bridging water")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(
+			{.wDec = 4, .hDec = 4, .discovered = true, .loadDefaultRace = true, .header = true});
+		auto &map = world.game.map;
+		{
+			auto edit = map.editTerrain();
+			for (int y = 0; y < 16; ++y)
+				for (int x = 0; x < 16; ++x)
+					map.setVertexTerrain(x, y,
+										 x == 0 || x == 1 || x == 5 || x == 6 ? WATER : GRASS);
+		}
+		map.setResourceByIndex(5, 5, ALGA, 5);
+		auto *worker = world.addUnit(WORKER, 4, 5);
+		REQUIRE(worker);
+		CHECK(map.doesUnitTouchMaterialSource(worker, MaterialId::Algae).has_value());
+		std::vector<Uint16> values(map.cellCount(), 0);
+		map.seedMaterialGradient(0, ALGA, 0, values.data());
+		map.propagateGradient(values.data(), 0, gradient_kernel::COST_LIMIT,
+							  gradient_kernel::Family::Materials, 1);
+		CHECK(values[map.coordToIndex(4, 5)] > GRADIENT_UNREACHABLE);
+		CHECK(values[map.coordToIndex(6, 5)] > GRADIENT_UNREACHABLE);
+		CHECK_FALSE(map.canTraverse(4, 5, 1, 0, 0, 1));
+		Sint32 tx = -1, ty = -1;
+		CHECK(MapState::gradientDestination(map.cellView(), values.data(), 4, 5, &tx, &ty, 0, 1));
+		CHECK(tx == 5);
+		CHECK(ty == 5);
+		int dx = 0, dy = 0;
+		CHECK(map.pathfindPointToPoint(3, 9, 5, 5, &dx, &dy, 0, 1, 16));
+		CHECK(map.canTraverse(3, 9, dx, dy, 0, 1));
+		CHECK(map.pathfindPointToPoint(4, 5, 5, 5, &dx, &dy, 0, 1, 16));
+		CHECK(dx == 0);
+		CHECK(dy == 0);
+		CHECK(map.takeHarvest(4, 5, 1, 0, MaterialId::Algae, 1));
+		CHECK(worker->posX == 4);
+		CHECK(worker->posY == 5);
+		for (size_t i = 0; i < values.size(); ++i)
+			values[i] = map.cellRule(i).allowsMovement(0) ? GRADIENT_UNREACHABLE : 0;
+		values[map.coordToIndex(6, 5)] = GRADIENT_AT_GOAL;
+		map.propagateGradient(values.data(), 0);
+		CHECK(values[map.coordToIndex(4, 5)] == GRADIENT_UNREACHABLE);
+	}
+
+	TEST_CASE("oriented shoreline changes invalidate routes even when canonical rules match")
+	{
+		glob2test::HeadlessGlobals globals;
+		Map map;
+		map.setSize(4, 4, GRASS);
+		{
+			auto edit = map.editTerrain();
+			for (int y = 0; y < 16; ++y)
+				for (int x = 0; x < 16; ++x)
+					map.setVertexTerrain(x, y, x % 2 ? WATER : SAND);
+		}
+		const auto ids =
+			std::vector<Uint16>(map.cellRuleState().begin(), map.cellRuleState().end());
+		const auto generation = map.topologyGeneration;
+		const auto old = MapState::movementGrid(map.cellView(), 0, 1, false);
+		{
+			auto edit = map.editTerrain();
+			for (int y = 0; y < 16; ++y)
+				for (int x = 0; x < 16; ++x)
+					map.setVertexTerrain(x, y, y % 2 ? WATER : SAND);
+		}
+		CHECK(std::equal(ids.begin(), ids.end(), map.cellRuleState().begin()));
+		CHECK(map.topologyGeneration > generation);
+		const auto now = MapState::movementGrid(map.cellView(), 0, 1, false);
+		CHECK(old.incomingMask(map.coordToIndex(0, 0)) != now.incomingMask(map.coordToIndex(0, 0)));
+	}
+
+	TEST_CASE("amphibious globs walk shore routes and swim across their water side")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(
+			{.wDec = 4, .hDec = 4, .discovered = true, .loadDefaultRace = true, .header = true});
+		world.game.map.setVertexTerrain(5, 5, WATER);
+		auto *unit = world.addUnit(WORKER, 5, 5, 0, 1);
+		REQUIRE(unit);
+		REQUIRE(unit->performance[SWIM] > 0);
+		unit->dx = 0;
+		unit->dy = 1;
+		unit->selectPreferredGroundMovement();
+		CHECK(unit->action == WALK);
+		unit->dx = unit->dy = 1;
+		unit->selectPreferredGroundMovement();
+		CHECK(unit->action == SWIM);
+		CHECK_FALSE(world.game.map.canTraverse(4, 4, 1, 1, 0, 1,
+											   Map::DestinationAccess::InteractionEndpoint));
+		CHECK(world.game.map.canTraverse(4, 4, 1, 1, unit->movementClass(), 1,
+										 Map::DestinationAccess::InteractionEndpoint));
+	}
+}
+
+TEST_SUITE("VertexTerrain")
+{
+	TEST_CASE("existing building exits and training reject water covered shared edges")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(
+			{.wDec = 5, .hDec = 5, .loadDefaultRace = true, .header = true});
+		auto *inn = world.addBuilding("inn", 10, 8);
+		REQUIRE(inn);
+		auto &map = world.game.map;
+		map.fillTerrain(OUTCROP);
+		for (int y = inn->posY; y < inn->posY + inn->type->height; ++y)
+			for (int x = inn->posX; x < inn->posX + inn->type->width; ++x)
+				map.paintCell(x, y, GRASS);
+		for (int x = inn->posX; x <= inn->posX + inn->type->width; ++x)
+			map.setVertexTerrain(x, inn->posY, WATER);
+		map.setVertexTerrain(inn->posX, inn->posY - 1, GRASS);
+		map.setVertexTerrain(inn->posX + 1, inn->posY - 1, GRASS);
+		REQUIRE(map.terrainAllowsMovementAt(inn->posX, inn->posY - 1, 0));
+		int x = 0, y = 0, dx = 0, dy = 0;
+		CHECK_FALSE(inn->findGroundExit(&x, &y, &dx, &dy, false, true));
+		CHECK_FALSE(UnitTraining::exitTerrainSafe(3, 1, inn->posX, inn->posY, inn->type->width,
+												  inn->type->height, map.cellView()));
+		CHECK(inn->findGroundExit(&x, &y, &dx, &dy, true, true));
+		CHECK_FALSE(inn->findGroundExit(&x, &y, &dx, &dy, false, false));
+		CHECK_FALSE(inn->findExpelTile(false, false, &x, &y, &dx, &dy, false));
+		map.setVertexTerrain(inn->posX, inn->posY, GRASS);
+		CHECK(inn->findGroundExit(&x, &y, &dx, &dy, false, true));
+		CHECK(dx == 0);
+		CHECK(dy == -1);
+		CHECK(UnitTraining::exitTerrainSafe(3, 1, inn->posX, inn->posY, inn->type->width,
+											inn->type->height, map.cellView()));
+	}
+}
+
+TEST_SUITE("VertexTerrain")
+{
+	TEST_CASE("learning flight requires an interior exit even when walking remains available")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(
+			{.wDec = 5, .hDec = 5, .loadDefaultRace = true, .header = true});
+		auto *inn = world.addBuilding("inn", 10, 8);
+		REQUIRE(inn);
+		auto &map = world.game.map;
+		map.importTerrainDefinitions(
+			R"({"schemaVersion":1,"terrains":[{"key":"fixture:exit-no-fly","name":"No fly","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
+		const auto noFly = map.terrainRegistry().find("fixture:exit-no-fly");
+		REQUIRE(noFly);
+		for (int y = inn->posY; y < inn->posY + inn->type->height; ++y)
+			for (int x = inn->posX; x < inn->posX + inn->type->width; ++x)
+				map.paintCell(x, y, *noFly);
+		int x = 0, y = 0, dx = 0, dy = 0;
+		CHECK_FALSE(inn->findAirExit(&x, &y, &dx, &dy));
+		CHECK(inn->findGroundExit(&x, &y, &dx, &dy, false, true));
+		for (unsigned after : {4u, 5u})
+			CHECK_FALSE(UnitTraining::exitTerrainSafe(1, after, inn->posX, inn->posY,
+													  inn->type->width, inn->type->height,
+													  map.cellView()));
+		map.paintCell(inn->posX, inn->posY, GRASS);
+		CHECK(inn->findAirExit(&x, &y, &dx, &dy));
+		for (unsigned after : {4u, 5u})
+			CHECK(UnitTraining::exitTerrainSafe(1, after, inn->posX, inn->posY, inn->type->width,
+												inn->type->height, map.cellView()));
+	}
 }

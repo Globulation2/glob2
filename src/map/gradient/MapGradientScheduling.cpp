@@ -42,7 +42,8 @@ void buildScheduled(PipelineJob& job)
 {
 	auto& p = job.payload;
 	if (building_gradient::workHook) building_gradient::workHook(p);
-    p.inputs=BuildingGradientSearch::Inputs::ofSnapshot(*job.snapshotLease,p.swim);
+	p.inputs =
+		BuildingGradientSearch::Inputs::ofSnapshot(*job.snapshotLease, p.swim, p.seed.teamMask);
 	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
 	p.locked = result.locked;
 	p.resourceState = result.resourceState;

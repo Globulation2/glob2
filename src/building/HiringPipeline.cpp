@@ -188,7 +188,8 @@ struct HiringPlanner::PreparedRoute
 		job.data.reset(new Uint16[std::size_t(snapshot.width) * snapshot.height]);
 		job.search = acquireBuildingGradientSearch();
 		const auto result = gradient_preparation::buildBuilding(
-			job.seed, snapshot, BuildingGradientSearch::Inputs::ofSnapshot(snapshot, job.swim),
+			job.seed, snapshot,
+			BuildingGradientSearch::Inputs::ofSnapshot(snapshot, job.swim, job.seed.teamMask),
 			job.data.get(), *job.search, BuildingGradientDepth::MIN_DEPTH);
 		job.locked = result.locked;
 		job.resourceState = result.resourceState;

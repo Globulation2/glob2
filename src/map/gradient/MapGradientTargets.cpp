@@ -69,11 +69,12 @@ bool Map::gradientGoalValid(GradientFieldKey key,int x,int y) const
         return false;
     }
     case GradientFieldFamily::Guard:
-        return !forbidden && mobile && !resourceBlocked && (area.guard&teamMask)
-            && (air || occupancy.building==NOGBID
-                || !(game->teams[key.team]->allies&(Uint32(1)<<Building::GIDtoTeam(occupancy.building))))
-            && gradient_kernel::terrainAllowsMovement(terrainPropertiesAt(index),key.swim);
-    case GradientFieldFamily::Clear: {
+		return !forbidden && mobile && !resourceBlocked && (area.guard & teamMask) &&
+			   (air || occupancy.building == NOGBID ||
+				!(game->teams[key.team]->allies &
+				  (Uint32(1) << Building::GIDtoTeam(occupancy.building)))) &&
+			   cellRule(index).allowsMovement(key.swim);
+	case GradientFieldFamily::Clear: {
         const auto flags=properties ? view.resourceRegistry->gradientPreparation()[resource.type] : 0;
         return gradient_preparation::rules::clearSeed(forbidden,mobile,resourceBlocked,
             !air && occupancy.building!=NOGBID,GRADIENT_UNREACHABLE,
@@ -83,10 +84,9 @@ bool Map::gradientGoalValid(GradientFieldKey key,int x,int y) const
     case GradientFieldFamily::Forbidden:
         // Outside free tiles are the actual goal set; the existing border pass
         // derives interior propagation seeds from it. No extra neighbor scan.
-        return !forbidden && mobile && !resourceBlocked
-            && (air || occupancy.building==NOGBID)
-            && gradient_kernel::terrainAllowsMovement(terrainPropertiesAt(index),key.swim);
-    }
+		return !forbidden && mobile && !resourceBlocked && (air || occupancy.building == NOGBID) &&
+			   cellRule(index).allowsMovement(key.swim);
+	}
     return false;
 }
 
@@ -113,8 +113,9 @@ GradientTargetCell Map::captureGradientTargetCell(size_t index) const
     cell.clearable=flags&(1u<<18);cell.farmable=flags&(1u<<19);cell.farming=farmAreasEnabled();
     const auto& terrain=terrainPropertiesAt(index);
     for(unsigned movement=0;movement<MOVEMENT_CLASS_COUNT;++movement)
-        if(gradient_kernel::terrainAllowsMovement(terrain,movement)) cell.openClasses|=std::uint16_t(1)<<movement;
-    cell.terrainCosts={std::uint32_t(terrain.groundSpeedQ8),std::uint32_t(terrain.airSpeedQ8),
+		if (cellRule(index).allowsMovement(movement))
+			cell.openClasses |= std::uint16_t(1) << movement;
+	cell.terrainCosts={std::uint32_t(terrain.groundSpeedQ8),std::uint32_t(terrain.airSpeedQ8),
         std::uint32_t(terrain.groundHealthQ8),std::uint32_t(terrain.airHealthQ8)};
     gradientMarketSupplierMasks(index,cell);
     return cell;

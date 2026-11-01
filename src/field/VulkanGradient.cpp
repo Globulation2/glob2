@@ -488,8 +488,8 @@ struct Runtime
 			work = std::make_unique<Work>(this);
 		}
 		const std::array<std::size_t, BufferCount> sizes{
-			cells * 4, cells * 4, cells * 4, 4,
-			16,        tiles * 4, tiles * 4, std::max<std::size_t>(cells * 4, 16)};
+			cells * 4, cells * 4, cells * 8, 4,
+			16,        tiles * 4, tiles * 4, std::max<std::size_t>(cells * 8, 16)};
 		if (!work->fence)
 		{
 			for (unsigned i = 0; i < BufferCount; ++i)
@@ -562,7 +562,7 @@ struct Runtime
 				   pitch = (w + 15) / 16, rows = (h + 15) / 16;
 		const auto tiles = std::size_t(pitch) * rows;
 
-		if (!cells || cells > properties.limits.maxStorageBufferRange / 4 || cells > UINT32_MAX ||
+		if (!cells || cells > properties.limits.maxStorageBufferRange / 8 || cells > UINT32_MAX ||
 			request.limit < 0)
 			return false;
 		if ((frozen && (pitch > properties.limits.maxComputeWorkGroupCount[0] ||
@@ -619,8 +619,9 @@ struct Runtime
 			if (!cost.cardinal || !cost.diagonal || cost.cardinal > 65535 || cost.diagonal > 65535)
 				return false;
 			staging[i] = cost.cardinal | (cost.diagonal << 16);
+			staging[cells + i] = request.grid.incomingMask(i);
 		}
-		if (!copyInput(Costs, cells * 4))
+		if (!copyInput(Costs, cells * 8))
 			return false;
 		std::fill_n(staging, tiles, 1u);
 		if (!copyInput(ActiveA, tiles * 4))

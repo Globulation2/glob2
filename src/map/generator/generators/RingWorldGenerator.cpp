@@ -261,7 +261,8 @@ bool siteFits(const Map &map, int x, int y)
 		{
 			const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
 			const bool footprint = dx >= 0 && dx < 4 && dy >= 0 && dy < 4;
-			if (footprint ? !map.terrainPropertiesAt(nx, ny).buildable : !map.terrainPropertiesAt(nx, ny).walkable)
+			if (footprint ? !map.terrainPropertiesAt(nx, ny).buildable
+						  : !map.terrainAllowsMovementAt(nx, ny, 0))
 				return false;
 			if (map.getBuilding(nx, ny) != NOGBID || map.getGroundUnit(nx, ny) != NOGUID)
 				return false;

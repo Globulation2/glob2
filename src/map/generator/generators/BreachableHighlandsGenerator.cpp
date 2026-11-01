@@ -497,7 +497,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// connectivity must respect labels, including diagonal paths across the torus.
 	// Gate validation additionally opens each complete plug in isolation and checks
 	// that it touches the intended valleys. Material/growth checks remain above.
-	const auto gates = checkGatePartition(t, walkableTiles(map), L.labels, L.gates);
+	const auto gates = checkGatePartition(map, walkableTiles(map), L.labels, L.gates);
 	if (gates.leakTile >= 0)
 		return "A ridge leaks between valleys outside its designed gates.";
 	if (gates.badGate >= 0)

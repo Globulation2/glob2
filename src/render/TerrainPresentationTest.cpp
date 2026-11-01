@@ -44,6 +44,15 @@
 
 namespace
 {
+// Uniform/undecorated cases should expose at most one sample. Mixed decorated
+// borders are checked explicitly against all samples below.
+int singleDecorationFrame(const TerrainVisual::Compositor &compositor, const SceneMap &map, int x,
+						  int y)
+{
+	const auto decor = compositor.decorations(map, x, y);
+	CHECK(decor.size() <= 1);
+	return decor.empty() ? -1 : decor[0].frame;
+}
 // Keep the real accelerated device, sampling, upload path and presentation
 // surface while selecting the existing CPU compositor as the reference.
 class CPUCompositionDevice : public GAGCore::RenderDevice
@@ -1678,6 +1687,241 @@ TEST_SUITE("TerrainPresentation")
 #include <chrono>
 TEST_SUITE("TerrainValidation")
 {
+	TEST_CASE("conservative borders and intermediate unit movement [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 768, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame world({.wDec = 5,
+									   .hDec = 5,
+									   .discovered = true,
+									   .loadDefaultRace = true,
+									   .header = true,
+									   .seed = 7331});
+		auto &map = world.game.map;
+		{
+			auto edit = map.editTerrain();
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+					map.setVertexTerrain(x, y,
+										 x < 9     ? OUTCROP
+										 : x >= 23 ? WATER
+										 : x >= 20 ? SAND
+												   : GRASS);
+			for (int y = 16; y <= 20; ++y)
+				for (int x = 12; x <= 16; ++x)
+					map.setVertexTerrain(x, y, HEDGE);
+		}
+		auto *rockWalker = world.addUnit(WORKER, 10, 8);
+		auto *beachWalker = world.addUnit(WORKER, 22, 7);
+		auto *swimmer = world.addUnit(WORKER, 23, 12, 0, 1);
+		REQUIRE(rockWalker);
+		REQUIRE(beachWalker);
+		REQUIRE(swimmer);
+		REQUIRE(swimmer->performance[SWIM] > 0);
+		for (auto *unit : {rockWalker, beachWalker, swimmer})
+		{
+			unit->dx = unit->dy = 1;
+			unit->directionFromDxDy();
+			unit->selectPreferredMovement();
+			REQUIRE(map.canTraverse(unit->posX - 1, unit->posY - 1, 1, 1, unit->movementClass(), 1,
+									Map::DestinationAccess::InteractionEndpoint));
+		}
+		CHECK(rockWalker->action == WALK);
+		CHECK(beachWalker->action == WALK);
+		CHECK(swimmer->action == SWIM);
+		for (int delta : {0, 128, 255})
+		{
+			for (auto *unit : {rockWalker, beachWalker, swimmer})
+				unit->delta = delta;
+			Game::ViewState view;
+			const auto &scene = glob2test::sceneOf(world.game, view);
+			world.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene.map);
+			world.game.drawMapResources(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene.map);
+			for (auto *unit : {rockWalker, beachWalker, swimmer})
+				world.game.drawUnit(unit->posX, unit->posY, unit->gid, 0, 0, 32, 24, 0,
+									Game::DRAW_WHOLE_MAP, view, scene);
+			GAGCore::Sprite::flushBatches(globals->gfx);
+			REQUIRE(IMG_SavePNG(
+				globals->gfx->getSDLSurface(),
+				(glob2test::artifactDir() / ("terrain-traversal-" + std::to_string(delta) + ".png"))
+					.string()
+					.c_str()));
+		}
+	}
+
+	GLOB2_TEST_CASE("decorated borders match cached and ordinary rendering",
+					"[display][isolated][artifacts][writes-preferences]")
+	{
+		using namespace GAGCore;
+		glob2test::HeadlessGlobals globals(
+			{.display = true,
+			 .width = 512,
+			 .height = 512,
+			 .beforeLoad = [](GlobalContainer &container)
+			 { container.settings.rendererBackend = RendererBackend::Software; }});
+		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .discovered = true});
+		auto &map = fixture.game.map;
+		{
+			auto edit = map.editTerrain();
+			for (int y = 0; y < 16; ++y)
+				for (int x = 0; x < 16; ++x)
+					map.setVertexTerrain(x, y,
+										 y >= 9   ? (x < 7 ? HEDGE : THICKET)
+										 : x < 5  ? RIDGE_ROCK
+										 : x < 9  ? OUTCROP
+										 : x < 12 ? GRASS
+												  : WATER);
+		}
+		for (const auto [x, y] : {std::pair{3, 5}, std::pair{5, 5}, std::pair{6, 10}})
+			map.setResourceByIndex(x, y, WOOD, 3);
+		auto &gfx = *globals->gfx;
+		std::vector<RendererBackend> backends{RendererBackend::Software};
+		for (const auto &choice : gfx.rendererAvailability())
+			if (choice.available && (choice.backend == RendererBackend::SDLGPU ||
+									 choice.backend == RendererBackend::ProgrammableGL))
+				backends.push_back(choice.backend);
+		if (backends.size() == 1)
+			MESSAGE("Decor GPU parity coverage unavailable: no accelerated backend");
+		const auto draw = [&](const SceneMap &scene, bool whole, int zoom, int viewport)
+		{
+			gfx.setClipRect();
+			gfx.drawFilledRect(0, 0, 512, 512, 17, 29, 41);
+			gfx.beginMapTransform(float(zoom), 0, 0, 0, 0, 512, 512);
+			fixture.game.drawMapTerrain(0, 0, 15, 15, viewport, viewport, 0, Game::DRAW_WHOLE_MAP,
+										scene);
+			fixture.game.drawMapResources(0, 0, 15, 15, viewport, viewport, 0,
+										  whole ? Game::DRAW_WHOLE_MAP : 0, scene);
+			GAGCore::Sprite::flushBatches(&gfx);
+			gfx.endMapTransform();
+			gfx.renderer->flush();
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(
+				gfx.renderer->capture(), SDL_DestroySurface);
+			REQUIRE(captured);
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+			REQUIRE(rgba);
+			std::vector<Uint8> pixels(size_t(rgba->w) * rgba->h * 4);
+			for (int row = 0; row < rgba->h; ++row)
+				std::memcpy(pixels.data() + size_t(row) * rgba->w * 4,
+							static_cast<Uint8 *>(rgba->pixels) + row * rgba->pitch, rgba->w * 4);
+			if (whole && gfx.backendSwitchStatus().active == RendererBackend::Software)
+				REQUIRE(IMG_SavePNG(rgba.get(),
+									(glob2test::artifactDir() /
+									 ("decorated-borders-" + std::to_string(zoom) + "x.png"))
+										.string()
+										.c_str()));
+			gfx.nextFrame();
+			return pixels;
+		};
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		for (const auto backend : backends)
+		{
+			CAPTURE(int(backend));
+			REQUIRE(gfx.requestBackendSwitch(backend));
+			gfx.nextFrame();
+			REQUIRE(gfx.backendSwitchStatus().phase == RendererSwitchPhase::Complete);
+			for (const auto [zoom, viewport] : {std::pair{1, 0}, std::pair{1, 15}, std::pair{3, 3}})
+			{
+				CAPTURE(zoom);
+				CAPTURE(viewport);
+				const auto ordinary = draw(scene, false, zoom, viewport);
+				CHECK(draw(scene, true, zoom, viewport) == ordinary);
+				CHECK(draw(scene, true, zoom, viewport) == ordinary); // warmed geometry
+			}
+			// Change only a mixed border's corner membership. Cached sample
+			// identity must track masks/anchors even if a frame variant repeats.
+			map.setVertexTerrain(5, 5, RIDGE_ROCK);
+			glob2test::observeMap(map, scene);
+			const auto ordinary = draw(scene, false, 1, 0);
+			CHECK(draw(scene, true, 1, 0) == ordinary);
+			map.setVertexTerrain(5, 5, OUTCROP);
+			glob2test::observeMap(map, scene);
+		}
+	}
+
+	TEST_CASE("decorated borders retain every material and suppress undecorated corners [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .discovered = true});
+		auto &map = fixture.game.map;
+		importBeforeMatch(fixture.game, R"({"schemaVersion":1,"terrains":[
+            {"key":"test:raised","name":"Raised","base":"grass","properties":{},"appearance":"grass"},
+            {"key":"test:plain","name":"Plain","base":"grass","properties":{},"appearance":"outcrop"},
+            {"key":"test:ridge-alias","name":"Ridge alias","base":"grass","properties":{},"appearance":"ridge_rock"}
+        ]})");
+		auto catalog = TerrainVisual::loadCatalog();
+		auto custom = catalog.materials[catalog.find("outcrop")];
+		custom.key = "test:raised";
+		const auto customId = TerrainVisual::MaterialId(catalog.materials.size());
+		catalog.materials.push_back(custom);
+		catalog.bindings[custom.key] = customId;
+		catalog.bindings["test:plain"] = catalog.find("grass");
+		TerrainVisual::Compositor compositor(std::move(catalog));
+		const auto &definitions = compositor.catalog();
+		const auto raised = *map.terrainRegistry().find("test:raised");
+		const auto plain = *map.terrainRegistry().find("test:plain");
+		const auto alias = *map.terrainRegistry().find("test:ridge-alias");
+		const auto samples = [&](std::array<TerrainType, 4> corners)
+		{
+			for (unsigned corner = 0; corner < 4; ++corner)
+				map.setVertexTerrain(4 + int(corner & 1), 4 + int(corner >> 1), corners[corner]);
+			SceneMap scene;
+			glob2test::observeMap(map, scene);
+			return compositor.decorations(scene, 4, 4);
+		};
+		for (const auto pair : {std::pair{OUTCROP, RIDGE_ROCK}, std::pair{HEDGE, THICKET},
+								std::pair{raised, RIDGE_ROCK}})
+			for (unsigned mask = 0; mask < 16; ++mask)
+			{
+				CAPTURE(pair.first);
+				CAPTURE(pair.second);
+				CAPTURE(mask);
+				std::array<TerrainType, 4> corners;
+				for (unsigned k = 0; k < 4; ++k)
+					corners[k] = mask & (1u << k) ? pair.first : pair.second;
+				const auto decor = samples(corners);
+				REQUIRE(decor.size() == (mask == 0 || mask == 15 ? 1 : 2));
+				unsigned covered = 0;
+				for (const auto &sample : decor)
+				{
+					CHECK((covered & sample.corners) == 0);
+					covered |= sample.corners;
+					const auto expectedMask =
+						sample.material == definitions.find(pair.second == RIDGE_ROCK ? "ridge_rock"
+																					  : "thicket")
+							? (15u ^ mask)
+							: mask;
+					CHECK(sample.corners == expectedMask);
+					CHECK(sample.sprite == compositor.decorSprite(sample.material));
+					CHECK(sample.frame ==
+						  definitions.decorFrame(
+							  sample.material, 4, 4, sample.corners != 15, map.terrainSeed(),
+							  sample.corners,
+							  TerrainVisual::cornerColours(4, 4, 15, 15, map.terrainSeed())));
+					if (sample.corners == 15)
+					{
+						CHECK(sample.offsetX == 0);
+						CHECK(sample.offsetY == 0);
+					}
+				}
+				CHECK(covered == 15);
+			}
+		REQUIRE(samples({OUTCROP, RIDGE_ROCK, BOULDERS, HEDGE}).size() == 4);
+		for (const auto undecorated : {GRASS, SAND, WATER, plain})
+			CHECK(samples({OUTCROP, RIDGE_ROCK, OUTCROP, undecorated}).empty());
+		// Different terrain identities resolving to one rendered material keep
+		// exactly one full decoration, independent of gameplay properties.
+		const auto aliases = samples({RIDGE_ROCK, alias, alias, RIDGE_ROCK});
+		REQUIRE(aliases.size() == 1);
+		CHECK(aliases[0].corners == 15);
+		CHECK(aliases[0].frame ==
+			  definitions.decorFrame(
+				  definitions.find("ridge_rock"), 4, 4, false, map.terrainSeed(), 15,
+				  TerrainVisual::cornerColours(4, 4, 15, 15, map.terrainSeed())));
+	}
+
 	TEST_CASE("connected foliage corners strips and filled patches [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(
@@ -1721,14 +1965,24 @@ TEST_SUITE("TerrainValidation")
 			{
 				const int x = panel * 16 + 1 + int(mask % 4) * 3, y = 1 + int(mask / 4) * 3;
 				const auto id = catalog.find(panel ? "thicket" : "hedge");
-				CHECK(compositor.decorFrame(scene, x, y) ==
-					catalog.decorFrame(id, x, y, mask != 15, scene.terrainSeed(), mask,
-						TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed())));
+				CHECK(singleDecorationFrame(compositor, scene, x, y) ==
+					  (mask == 15 ? catalog.decorFrame(id, x, y, false, scene.terrainSeed(), mask,
+													   TerrainVisual::cornerColours(
+														   x, y, 31, 31, scene.terrainSeed()))
+								  : -1));
 			}
-		for (const auto [x, y] : {std::pair{31, 31}, std::pair{15, 27}})
-			CHECK(compositor.decorFrame(scene, x, y) ==
-				catalog.decorFrame(catalog.find("hedge"), x, y, false, scene.terrainSeed(), 15,
-					TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed())));
+		for (const auto [x, y] : {std::pair{31, 31}})
+			CHECK(singleDecorationFrame(compositor, scene, x, y) ==
+				  catalog.decorFrame(
+					  catalog.find("hedge"), x, y, false, scene.terrainSeed(), 15,
+					  TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed())));
+		const auto border = compositor.decorations(scene, 15, 27);
+		REQUIRE(border.size() == 2);
+		for (const auto &sample : border)
+			CHECK(sample.frame ==
+				  catalog.decorFrame(
+					  sample.material, 15, 27, true, scene.terrainSeed(), sample.corners,
+					  TerrainVisual::cornerColours(15, 27, 31, 31, scene.terrainSeed())));
 
 		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
@@ -1897,20 +2151,19 @@ TEST_SUITE("TerrainValidation")
 			INFO(terrainPresentation(types[n]).name);
 			if (decor.full.empty())
 			{
-				CHECK(compositor.decorFrame(scene, ox + 1, oy + 1) == -1);
+				CHECK(singleDecorationFrame(compositor, scene, ox + 1, oy + 1) == -1);
 				continue;
 			}
 			// Filled connected cells may also choose an alternative interior.
 			auto full = decor.connected.empty() ? decor.full : decor.connected;
 			full.insert(full.end(), decor.connectedInterior.begin(), decor.connectedInterior.end());
-			const auto &edge = decor.connected.empty() ? decor.edge : decor.connected;
-			CHECK(contains(full, compositor.decorFrame(scene, ox + 1, oy + 1)));
+			CHECK(contains(full, singleDecorationFrame(compositor, scene, ox + 1, oy + 1)));
 			// Painted cells cover vertices ox..ox+3, so the cells just outside
 			// the island have two of its corners.
-			CHECK(contains(edge, compositor.decorFrame(scene, ox - 1, oy + 1)));
-			CHECK(contains(edge, compositor.decorFrame(scene, ox + 3, oy + 1)));
+			CHECK(singleDecorationFrame(compositor, scene, ox - 1, oy + 1) == -1);
+			CHECK(singleDecorationFrame(compositor, scene, ox + 3, oy + 1) == -1);
 		}
-		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
+		CHECK(singleDecorationFrame(compositor, scene, 5, 30) == -1);
 		// Painted islands keep their identity.
 		for (std::size_t n = 0; n < types.size(); ++n)
 			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 4) == types[n]);

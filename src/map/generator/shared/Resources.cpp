@@ -833,7 +833,7 @@ struct WorkerReach
 WorkerReach reachFromWorkers(Map &map, int team, int range)
 {
 	const Torus t(map);
-	const Flood flood = floodFrom(t, tileMask(t, unitTilesByTeam(map, team + 1).at(team)),
+	const Flood flood = floodFrom(map, tileMask(t, unitTilesByTeam(map, team + 1).at(team)),
 								  groundUnitTiles(map), range);
 	WorkerReach r;
 	r.dist = flood.steps;

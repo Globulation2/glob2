@@ -102,6 +102,13 @@ template<class A> void fields(A& a, WorldTile& value)
 		value.walkable=!value.swimmable;
 		value.fertilitySource=value.swimmable;
 	}
+	if (a.version() >= FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS)
+	{
+		a("walkingConnections", value.walkingConnections);
+		a("amphibiousConnections", value.amphibiousConnections);
+	}
+	else
+		value.walkingConnections = value.amphibiousConnections = 255;
 }
 
 template<class A> void fields(A& a, WorldBuilding& value)

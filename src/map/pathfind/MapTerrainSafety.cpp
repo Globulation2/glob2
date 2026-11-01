@@ -39,19 +39,22 @@ struct EscapeProfile
         const auto index = map.coordToIndex(x, y);
         const auto& terrain = map.terrainPropertiesAt(index);
         const bool forbidden = !air && (map.getForbidden(x, y) & team);
-        const bool passable = air ? terrain.flyable && !map.resourceBlocksAir(index)
-            : gradient_kernel::terrainAllowsGround(terrain,swim) &&
-              map.getBuilding(x, y) == NOGBID && !map.resourceBlocksGround(index) &&
-              (!forbidden || escapeForbidden);
-        if (!passable) return SafetyField::Blocked;
-        return safe(terrain) && !forbidden ? 0 : SafetyField::Unreachable;
-    }
+		const bool passable =
+			air ? terrain.flyable && !map.resourceBlocksAir(index)
+				: map.cellRule(index).allowsMovement(swim) && map.getBuilding(x, y) == NOGBID &&
+					  !map.resourceBlocksGround(index) && (!forbidden || escapeForbidden);
+		if (!passable) return SafetyField::Blocked;
+		return (air ? terrain.airHealthQ8 : terrain.groundHealthQ8) >= 0 && !forbidden
+				   ? 0
+				   : SafetyField::Unreachable;
+	}
 
     bool freeNextStep(const Map& map, int x, int y) const
     {
         if (air) return map.isFreeForAirUnit(x,y);
-        if (!air && swim==WATER_ONLY_CLASS && !map.terrainPropertiesAt(x,y).swimmable) return false;
-        return escapeForbidden ? map.isFreeForGroundUnitNoForbidden(x, y, swim > 0)
+		if (!air && !map.terrainAllowsMovementAt(x, y, swim))
+			return false;
+		return escapeForbidden ? map.isFreeForGroundUnitNoForbidden(x, y, swim > 0)
             : map.isFreeForGroundUnit(x, y, swim > 0, team);
     }
 };
@@ -81,8 +84,11 @@ void buildEscapeField(const Map& map, const EscapeProfile& profile, SafetyField&
             for (const auto& offset : tabClose)
             {
                 const auto next = map.coordToIndex(x + offset[0], y + offset[1]);
-                if (costs[next] == 0)
-                    best = std::min(best, profile.entryCost(map, next, offset[0] && offset[1]));
+				if (costs[next] == 0 &&
+					(profile.air || MapState::groundSidesClear(
+										map.cellView(), x, y, offset[0], offset[1], profile.swim,
+										profile.escapeForbidden ? 0 : profile.team)))
+					best = std::min(best, profile.entryCost(map, next, offset[0] && offset[1]));
             }
             if (best == SafetyField::Unreachable) continue;
             costs[index] = best;
@@ -106,7 +112,12 @@ void buildEscapeField(const Map& map, const EscapeProfile& profile, SafetyField&
             {
                 const auto next = map.coordToIndex(x + offset[0], y + offset[1]);
                 if (costs[next] == SafetyField::Blocked) continue;
-                const Uint64 candidate = Uint64(current) + (offset[0] && offset[1] ? diagonal : cardinal);
+				if (!profile.air &&
+					!MapState::groundSidesClear(map.cellView(), x + offset[0], y + offset[1],
+												-offset[0], -offset[1], profile.swim,
+												profile.escapeForbidden ? 0 : profile.team))
+					continue;
+				const Uint64 candidate = Uint64(current) + (offset[0] && offset[1] ? diagonal : cardinal);
                 if (candidate >= SafetyField::Blocked || candidate >= costs[next]) continue;
                 costs[next] = Uint32(candidate);
                 buckets[candidate % BucketCount].push_back(next);
@@ -130,8 +141,11 @@ bool chooseEscapeStep(const Map& map, const EscapeProfile& profile, const Safety
         const auto next = map.coordToIndex(x, y);
         // Strict descent prevents oscillation if traffic blocks the ideal step.
         // Blocked origins may still escape (e.g. a deposit appeared under a unit).
-        if (field.costs[next] >= here || !profile.freeNextStep(map, x, y)) continue;
-        const auto score = Uint64(field.costs[next]) + profile.entryCost(map, next, offset[0] && offset[1]);
+		if (field.costs[next] >= here || !profile.freeNextStep(map, x, y) ||
+			!map.canTraverse(unit.posX, unit.posY, offset[0], offset[1], profile.swim,
+							 profile.escapeForbidden ? 0 : profile.team))
+			continue;
+		const auto score = Uint64(field.costs[next]) + profile.entryCost(map, next, offset[0] && offset[1]);
         if (score < best)
         {
             best = score;

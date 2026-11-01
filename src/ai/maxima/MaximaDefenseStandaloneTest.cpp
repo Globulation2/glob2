@@ -1,4 +1,5 @@
 #include "Glob2Test.h"
+#include "field/Grid.h"
 #include <vector>
 #include "../../src/ai/maxima/AIMaximaDefense.h"
 
@@ -69,6 +70,54 @@ namespace
 
 TEST_SUITE("Maxima.Defense")
 {
+	TEST_CASE("movement distances and footprints honor directed terrain connections")
+	{
+		auto forward = std::make_shared<std::vector<std::uint8_t>>(64, 0);
+		(*forward)[18] = 1u << field::directionIndex(1, 1);
+		const auto grid = field::Grid(8, 8).withConnections(forward);
+		std::vector<unsigned char> passage(64, 1);
+		std::vector<int> distances;
+		computeDistanceField(8, 8, passage, {18}, distances, grid);
+		REQUIRE(distances[27] == 1);
+		REQUIRE(distances[19] == -1);
+		computeDistanceField(8, 8, passage, {27}, distances, grid);
+		REQUIRE(distances[18] == -1);
+		ModeResult mode;
+		mode.width = mode.height = 8;
+		mode.walkable = passage;
+		mode.connections = grid;
+		REQUIRE((buildFootprint(mode, 18, 1) == std::vector<int>{18, 27}));
+		REQUIRE((buildFootprint(mode, 27, 1) == std::vector<int>{27}));
+	}
+
+	TEST_CASE("movement fields reject diagonal corner cuts including wrapped seams")
+	{
+		for (const int source : {6, 0})
+		{
+			const field::Grid grid(5, 5);
+			const int x = source % 5, y = source / 5;
+			const int dx = source == 0 ? -1 : 1, dy = dx;
+			const int target = grid.index(x + dx, y + dy);
+			std::vector<unsigned char> passage(25, 0);
+			passage[source] = passage[target] = 1;
+			std::vector<int> distances;
+			computeDistanceField(5, 5, passage, {source}, distances);
+			REQUIRE(distances[target] == -1);
+			ModeResult mode;
+			mode.width = mode.height = 5;
+			mode.walkable = passage;
+			REQUIRE(buildFootprint(mode, source, 1).size() == 1);
+			passage[grid.index(x + dx, y)] = 1;
+			computeDistanceField(5, 5, passage, {source}, distances);
+			REQUIRE(distances[target] == 2);
+			passage[grid.index(x, y + dy)] = 1;
+			computeDistanceField(5, 5, passage, {source}, distances);
+			REQUIRE(distances[target] == 1);
+			mode.walkable = passage;
+			REQUIRE(buildFootprint(mode, source, 1).size() == 4);
+		}
+	}
+
 	TEST_CASE("choke-point modes; distance fields and footprints")
 	{
 		ModeInput open;

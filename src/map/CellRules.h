@@ -14,14 +14,26 @@
 
 // Terrain is stored once per map vertex; vertex (x,y) is the top-left corner
 // of cell (x,y). A cell's gameplay rules are derived from its four corners by
-// combineCornerRules, and every distinct corner combination is compiled once
+// combineCornerRules, and every distinct corner pattern is compiled once
 // into a CellRule: the combined properties, its movement costs and its
 // resource habitat. Cells store only the index of their rule.
 struct CellRule
 {
-	// The four corner terrains in ascending order: the rule's identity.
+	// The four corners in canonical rotation/reflection order: the rule's identity.
 	std::array<TerrainType, 4> corners{};
 	TerrainProperties properties;
+	// Movement preserves connected shore edges independently of ecology/placement.
+	std::uint8_t groundAccess = 0; // walk, amphibious, water-only
+	bool usesSwimming = false;
+	unsigned movementSpeedQ8 = 256, swimmingSpeedQ8 = 256;
+	bool allowsMovement(int movement) const
+	{
+		return movement == AIR_MOVEMENT_CLASS
+				   ? properties.flyable
+				   : (groundAccess & (1u << (movement == WATER_ONLY_CLASS ? 2
+											 : movement > 0               ? 1
+																		  : 0)));
+	}
 	// Damage-weighted movement costs; the historical name includes the air class.
 	std::array<gradient_kernel::EntrySteps, MOVEMENT_CLASS_COUNT> ground{};
 	unsigned airCost = GRADIENT_STEP, airRouteCost = GRADIENT_STEP, groundTravelCost = GRADIENT_STEP;
@@ -33,7 +45,10 @@ struct CellRule
 	MaterialMask materials = 0;
 	int farmResource = NO_RES_TYPE;
 
-	bool uniform() const { return corners[0] == corners[3]; }
+	bool uniform() const
+	{
+		return corners[0] == corners[1] && corners[0] == corners[2] && corners[0] == corners[3];
+	}
 };
 
 // Integer wire table compiled with the ordinary corner rules. All movement classes
@@ -96,7 +111,7 @@ class CellRuleTable
 	}
 	// The cost interface of TerrainRegistry, keyed by rule, for the field kernels.
 	const TerrainProperties &properties(std::uint16_t rule) const { return rules_[rule].properties; }
-	bool swimming(std::uint16_t rule) const { return rules_[rule].properties.swimmable; }
+	bool swimming(std::uint16_t rule) const { return rules_[rule].usesSwimming; }
 	unsigned airCost(std::uint16_t rule) const { return rules_[rule].airCost; }
 	unsigned airRouteCost(std::uint16_t rule) const { return rules_[rule].airRouteCost; }
 	unsigned groundTravelCost(std::uint16_t rule) const { return rules_[rule].groundTravelCost; }

@@ -435,7 +435,7 @@ std::vector<MapGeneratorPoint> existingStarts(Map &map, const Layout &L,
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	const auto roomy = buildAnchors(t, grass, 8);
 	const auto open = walkableTiles(map);
-	const auto labels = connectedRegions(open, t.w, t.h, true, GridNeighbors::Eight);
+	const auto labels = groundRegions(map, open, GridNeighbors::Eight);
 	std::vector<int> sizes(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 		if (open[i] && labels[i] >= 0)
@@ -578,7 +578,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "emoji shoreline starter crops";
 	for (int k = 0; k < context.request.nbTeams; ++k)
 	{
-		const auto walk = stepsFrom(t, tileMask(t, units[k]), bare);
+		const auto walk = stepsFrom(map, tileMask(t, units[k]), bare);
 		int first = -1;
 		for (int type : {WHEAT, WOOD})
 		{
@@ -631,7 +631,7 @@ bool generate(Game &game, GenerationContext &context)
 	// A short supply line supplements the renewable shore farm. It does not replace it.
 	for (int k = 0; k < context.request.nbTeams; ++k)
 	{
-		const auto walk = stepsFrom(t, tileMask(t, units[k]), bare);
+		const auto walk = stepsFrom(map, tileMask(t, units[k]), bare);
 		for (int type : {WHEAT, WOOD})
 		{
 			const auto eligible = [&](int i)
@@ -715,7 +715,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const auto open = walkableTiles(game.map);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 	{
-		const auto walk = floodFrom(L.t, tileMask(L.t, units[k]), open, 24);
+		const auto walk = floodFrom(game.map, tileMask(L.t, units[k]), open, 24);
 		int room = 0;
 		bool wheat = false, wood = false;
 		for (int i : walk.visited)

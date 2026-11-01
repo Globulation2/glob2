@@ -64,7 +64,8 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimCla
 		size_t n = coordToIndex(x + ddx, y + ddy);
 		Uint16 g = gradient[n];
         if (g <= GRADIENT_UNREACHABLE) continue;
-		if (!isFreeForMovement(x+ddx,y+ddy,swimClass,teamMask)) continue;
+		if (!canTraverse(x, y, ddx, ddy, swimClass, teamMask))
+			continue;
 		if (guardAreaMask && !(areaCells[n].guard & guardAreaMask))
 			continue;
 		if (g > here)

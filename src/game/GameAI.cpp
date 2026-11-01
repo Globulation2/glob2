@@ -110,6 +110,13 @@ std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsign
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();if(turretTargetingPipeline)turretTargetingPipeline->drain();}
+void Game::invalidateTerrainAI()
+{
+	hiringPipeline.reset();
+	aiPipeline.reset();
+	completedObservation.reset();
+	submittedObservation.reset();
+}
 void Game::clearAI()
 {
     completedObservation.reset();

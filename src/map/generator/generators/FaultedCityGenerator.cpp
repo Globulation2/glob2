@@ -375,7 +375,7 @@ std::string colonyRoutes(const Map &map, const Layout &L, int teams)
 					return "The city has too few usable junctions.";
 	auto interior = walking;
 	for (int i = 0; i < L.t.size(); ++i) if (L.fault[i]) interior[i] = 0;
-	const auto components = connectedRegions(interior, L.t.w, L.t.h, true, GridNeighbors::Eight);
+	const auto components = groundRegions(map, interior, GridNeighbors::Eight);
 	std::vector<int> mouths(L.t.size(), 0);
 	for (int gate : L.gates) if (components[gate] >= 0) ++mouths[components[gate]];
 	for (const auto &units : unitTilesByTeam(map, teams))
@@ -399,7 +399,7 @@ std::string colonyRoom(const Map &map, const Layout &L, int teams)
 	{
 		if (units[k].empty()) return "A city colony has no workers.";
 		const int site = units[k].front(), x = t.remainderX(site), y = site / t.w;
-		const auto reach = reachFrom(t, units[k], walking, 24);
+		const auto reach = reachFrom(map, units[k], walking, 24);
 		auto local = tileMask(t, reach.tiles);
 		for (int i : reach.tiles) local[i] = building[i];
 		bool fits = false;
@@ -424,7 +424,7 @@ std::string colonyFood(const Map &map, const Layout &L, int teams, const std::ve
 	const auto fertility = Fertility::forMap(map, false);
 	for (int k = 0; k < teams; ++k)
 	{
-		const auto reach = reachFrom(L.t, units[k], open, 24);
+		const auto reach = reachFrom(map, units[k], open, 24);
 		std::vector<unsigned char> seen(L.t.size(), 0), plots(L.plots.size(), 0);
 		int close = 0, total = 0;
 		bool wood = false;

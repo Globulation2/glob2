@@ -141,32 +141,52 @@ TEST_CASE("compact fields retain legacy binary and text encodings [save-format]"
 }
 
 namespace {
-struct LegacyTerrainWriter : AIMaximaContinuation::Writer
+struct VersionedTerrainWriter : AIMaximaContinuation::Writer
 {
- using Writer::Writer;
- int version() const { return FILE_FORMAT_VERSION_TERRAIN_PROPERTIES-1; }
+	VersionedTerrainWriter(GAGCore::OutputStream *stream, int version)
+		: Writer(stream), savedVersion(version)
+	{
+	}
+	int savedVersion;
+	int version() const { return savedVersion; }
 };
 }
 TEST_CASE("Maxima terrain snapshots retain independent properties and migrate legacy water [save-format]")
 {
- for(bool legacy:{false,true})
- {
-  auto* memory=new GAGCore::MemoryStreamBackend;
-  GAGCore::BinaryOutputStream output(memory);
-  AIMaximaPlacement::WorldTile tile;
-  tile.buildable=true; tile.walkable=true; tile.swimmable=false;
-  tile.fertilitySource=true; tile.growthInhibiting=false;
-  if(legacy) { LegacyTerrainWriter archive(&output); AIMaximaPlacement::fields(archive,tile); }
-  else { AIMaximaContinuation::Writer archive(&output); AIMaximaPlacement::fields(archive,tile); }
-  output.writeUint32(0x12345678,"sentinel");output.flush();
-  const auto bytes=memory->takeContents();
-  auto* source=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());source->seekFromStart(0);
-  GAGCore::BinaryInputStream input(source);
-  AIMaximaContinuation::Reader archive(&input,false,legacy?FILE_FORMAT_VERSION_TERRAIN_PROPERTIES-1:VERSION_MINOR);
-  AIMaximaPlacement::WorldTile restored;
-  AIMaximaPlacement::fields(archive,restored);
-  CHECK(restored.walkable);CHECK(restored.buildable);CHECK_FALSE(restored.swimmable);
-  CHECK(restored.fertilitySource==!legacy);
-  CHECK(input.readUint32("sentinel")==0x12345678);
- }
+	for (int version : {FILE_FORMAT_VERSION_TERRAIN_PROPERTIES - 1,
+						FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS - 1, VERSION_MINOR})
+	{
+		const bool legacy = version < FILE_FORMAT_VERSION_TERRAIN_PROPERTIES;
+		auto *memory = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(memory);
+		AIMaximaPlacement::WorldTile tile;
+		tile.buildable = true;
+		tile.walkable = true;
+		tile.swimmable = false;
+		tile.fertilitySource = true;
+		tile.growthInhibiting = false;
+		tile.walkingConnections = 0x5a;
+		tile.amphibiousConnections = 0xc3;
+		{
+			VersionedTerrainWriter writer(&output, version);
+			AIMaximaPlacement::fields(writer, tile);
+		}
+		output.writeUint32(0x12345678, "sentinel");
+		output.flush();
+		const auto bytes = memory->takeContents();
+		auto *source = new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size());
+		source->seekFromStart(0);
+		GAGCore::BinaryInputStream input(source);
+		AIMaximaContinuation::Reader archive(&input, false, version);
+		AIMaximaPlacement::WorldTile restored;
+		AIMaximaPlacement::fields(archive, restored);
+		CHECK(restored.walkable);
+		CHECK(restored.buildable);
+		CHECK_FALSE(restored.swimmable);
+		CHECK(restored.fertilitySource == !legacy);
+		const bool oldConnections = version < FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS;
+		CHECK(restored.walkingConnections == (oldConnections ? 255 : 0x5a));
+		CHECK(restored.amphibiousConnections == (oldConnections ? 255 : 0xc3));
+		CHECK(input.readUint32("sentinel") == 0x12345678);
+	}
 }

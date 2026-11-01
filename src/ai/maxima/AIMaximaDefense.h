@@ -3,6 +3,7 @@
 #define AI_MAXIMA_DEFENSE_H
 
 #include <vector>
+#include "field/Grid.h"
 
 namespace AIMaxima
 {
@@ -48,6 +49,7 @@ struct ModeInput
 	int width;
 	int height;
 	std::vector<unsigned char> walkable;
+	field::Grid connections{1, 1};
 	std::vector<int> homeSources;
 	std::vector<EnemySources> enemies;
 };
@@ -84,6 +86,7 @@ struct ModeResult
 	int width;
 	int height;
 	std::vector<unsigned char> walkable;
+	field::Grid connections{1, 1};
 	std::vector<int> homeDistance;
 	std::vector<TeamField> teams;
 	std::vector<int> memberships;
@@ -105,9 +108,9 @@ struct PlanResult
 	std::vector<unsigned char> desired;
 };
 
-void computeDistanceField(int width, int height,
-	const std::vector<unsigned char>& walkable,
-	const std::vector<int>& sources, std::vector<int>& distances);
+void computeDistanceField(int width, int height, const std::vector<unsigned char> &walkable,
+						  const std::vector<int> &sources, std::vector<int> &distances,
+						  field::Grid connections = {1, 1});
 
 ModeResult analyzeMode(const ModeInput& input, const Policy& policy);
 

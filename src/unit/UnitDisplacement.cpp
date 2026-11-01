@@ -315,12 +315,22 @@ void Unit::handleDisplacement(void)
 
 			if (displacement==DIS_GOING_TO_BUILDING)
 			{
-				if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
+				for (const auto step : {Offset{0, -1}, Offset{1, 0}, Offset{0, 1}, Offset{-1, 0},
+										Offset{1, -1}, Offset{1, 1}, Offset{-1, 1}, Offset{-1, -1}})
 				{
-					dx = off->dx;
-					dy = off->dy;
-					displacement=DIS_ENTERING_BUILDING;
+					if (owner->map->getBuilding(posX + step.dx, posY + step.dy) !=
+						attachedBuilding->gid)
+						continue;
+					if (!performance[FLY] &&
+						!owner->map->canTraverse(posX, posY, step.dx, step.dy, movementClass(),
+												 owner->me,
+												 Map::DestinationAccess::InteractionEndpoint))
+						continue;
+					dx = step.dx;
+					dy = step.dy;
+					displacement = DIS_ENTERING_BUILDING;
 					setValidTarget(false);
+					break;
 				}
 			}
 			else if (displacement==DIS_ENTERING_BUILDING)

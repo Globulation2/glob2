@@ -354,8 +354,9 @@ void Map::refreshLiveView()
     MapState::View view;
     view.width=w; view.height=h; view.wDec=unsigned(wDec); view.wMask=Uint32(wMask); view.hMask=Uint32(hMask);
     view.resources=resourceCells; view.occupancy=occupancyCells; view.areas=areaCells;
-    view.cellRules=cellRules;
-    view.stockIndices=&resourceStockIndices; view.stocks=&resourceStocks; view.materialSourceCounts=materialSourceCounts;
+	view.cellRules = cellRules;
+	view.vertices = vertexTerrain;
+	view.stockIndices=&resourceStockIndices; view.stocks=&resourceStocks; view.materialSourceCounts=materialSourceCounts;
     view.terrainRegistry=terrainRegistryValue.get(); view.resourceRegistry=resourceRegistryValue.get(); view.rules=cellRuleTable.get();
     liveCells=view;
 }

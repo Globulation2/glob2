@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "map/MovementConnections.h"
 #include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include "shared_runtime/Runtime.h"
@@ -22,6 +23,18 @@ using namespace AISharedRuntime::Conditions;
 using namespace AISharedRuntime::SearchTools;
 using std::shared_ptr;
 
+namespace
+{
+bool resourceInteractionSources(const std::vector<std::shared_ptr<Entities::Entity>> &sources)
+{
+	for (const auto &source : sources)
+		if (dynamic_cast<const Entities::MaterialSource *>(source.get()) ||
+			dynamic_cast<const Entities::MaterialSources *>(source.get()) ||
+			dynamic_cast<const Entities::AnyResource *>(source.get()))
+			return true;
+	return false;
+}
+} // namespace
 
 void GradientInfo::add_source(Entities::Entity* source)
 {
@@ -272,16 +285,23 @@ void Gradient::recalculate(Map* map, field::Frontier& frontier)
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;
 				frontier.push_back(get_pos(x,y));
 			}
-			else if(gradient_info.match_obstacle(map, x, y) || !field::terrainTravelAllowed(map->terrainPropertiesAt(x,y),gradient_info.terrainTravel))
+			else if (gradient_info.match_obstacle(map, x, y) ||
+					 !field::terrainTravelAllowed(map->cellRule(map->coordToIndex(x, y)),
+												  gradient_info.terrainTravel))
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_OBSTACLE_MARKER;
 		}
 	}
-    if(gradient_info.terrainTravel!=field::TerrainTravel::Geometric &&
-        (gradient_info.terrainTravel==field::TerrainTravel::Fly?map->hasAirTerrainConstraints():map->hasTerrainMovementModifiers()))
-    {
+	if (gradient_info.terrainTravel != field::TerrainTravel::Geometric)
+	{
 		field::expandTerrainTravel(
 			gradient, width, map->getH(), gradient_info.terrainTravel,
-			[&](std::size_t i) { return map->cellRuleAt(i); }, map->cellRuleTableRef());
+			[&](std::size_t i) { return map->cellRuleAt(i); }, map->cellRuleTableRef(),
+			MapState::movementGrid(map->cellView(),
+								   gradient_info.terrainTravel == field::TerrainTravel::Fly
+									   ? AIR_MOVEMENT_CLASS
+								   : gradient_info.terrainTravel == field::TerrainTravel::Swim ? 1
+																							   : 0,
+								   0, resourceInteractionSources(gradient_info.sources)));
 		frontier.clear();
     }
     else expand_bfs(frontier);
@@ -308,16 +328,24 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world, field::Frontier& 
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;
 				frontier.push_back(get_pos(x,y));
 			}
-			else if(gradient_info.match_obstacle(world, x, y) || !field::terrainTravelAllowed(world.terrainPropertiesAt(world.tileIndex(x,y)),gradient_info.terrainTravel))
+			else if (gradient_info.match_obstacle(world, x, y) ||
+					 !field::terrainTravelAllowed(
+						 (*world.cellRules)[world.cellRuleAt(world.tileIndex(x, y))],
+						 gradient_info.terrainTravel))
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_OBSTACLE_MARKER;
 		}
 	}
-    if(gradient_info.terrainTravel!=field::TerrainTravel::Geometric &&
-        (gradient_info.terrainTravel==field::TerrainTravel::Fly?world.airTerrainConstraints:world.terrainMovementModifiers))
-    {
+	if (gradient_info.terrainTravel != field::TerrainTravel::Geometric)
+	{
 		field::expandTerrainTravel(
 			gradient, width, world.height, gradient_info.terrainTravel,
-			[&](std::size_t i) { return world.cellRuleAt(i); }, *world.cellRules);
+			[&](std::size_t i) { return world.cellRuleAt(i); }, *world.cellRules,
+			MapState::movementGrid(world.state(),
+								   gradient_info.terrainTravel == field::TerrainTravel::Fly
+									   ? AIR_MOVEMENT_CLASS
+								   : gradient_info.terrainTravel == field::TerrainTravel::Swim ? 1
+																							   : 0,
+								   0, resourceInteractionSources(gradient_info.sources)));
 		frontier.clear();
     }
     else expand_bfs(frontier);
@@ -563,6 +591,18 @@ bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 ve
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
+	// Consume the complete old continuation before invalidating its travel data.
+	// Geometric fields and new-format scheduling retain their saved state.
+	if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS)
+		for (auto &gradient : gradients)
+		{
+			bool changed = gradient->gradient_info.terrainTravel != field::TerrainTravel::Geometric;
+			for (const auto &obstacle : gradient->gradient_info.obstacles)
+				changed = changed ||
+						  dynamic_cast<const Entities::Unwalkable *>(obstacle.get()) != nullptr;
+			if (changed)
+				gradient->terrainGeneration = 0;
+		}
 	return true;
 }
 

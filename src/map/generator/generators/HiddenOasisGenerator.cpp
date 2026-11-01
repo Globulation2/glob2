@@ -1048,6 +1048,8 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 		std::vector<unsigned char> open = walkable;
 		for (int i : posts[k].cover)
 			open[i] = 0;
+		// Geometric over-approximation: proving this superset sealed also proves
+		// that no physical ground route bypasses the pinch.
 		const Reach sealed = reachFrom(t, basinGround, open, INT_MAX);
 		for (int i : sealed.tiles)
 			if (!L.massif[i] && !L.gorge[i])
@@ -1554,13 +1556,13 @@ bool generate(Game &game, GenerationContext &context)
 			if (again)
 			{
 				std::vector<unsigned char> open = walkableTiles(map);
-				const Reach toMouth = reachFrom(t, workers[k], open, mouthLimit);
+				const Reach toMouth = reachFrom(map, workers[k], open, mouthLimit);
 				bool mouth = false, door = false;
 				for (int i : toMouth.tiles)
 					mouth = mouth || L.mouth[i];
 				for (int i = 0; i < n; ++i)
 					open[i] = open[i] && !shut[i];
-				const Reach toLedge = reachFrom(t, workers[k], open, ledgeLimit);
+				const Reach toLedge = reachFrom(map, workers[k], open, ledgeLimit);
 				for (int i : toLedge.tiles)
 					door = door || ledge[i];
 				if (mouth && door)
@@ -1582,7 +1584,7 @@ bool generate(Game &game, GenerationContext &context)
 			// within the band the design balanced.
 			const auto reaches = [&]()
 			{
-				const Reach flood = reachFrom(t, workers[k], walkableTiles(map), mouthLimit);
+				const Reach flood = reachFrom(map, workers[k], walkableTiles(map), mouthLimit);
 				for (int i : flood.tiles)
 					if (L.mouth[i])
 						return true;
@@ -1614,8 +1616,9 @@ bool generate(Game &game, GenerationContext &context)
 		{
 			// No farther than any of these walks can be on a map that validates.
 			const std::vector<int> walked =
-				floodFrom(t, tileMask(t, workers[k]), open,
-						  2 * (L.distance + L.band) + int(L.gorgeLength) + kLedgeWalkBeyondGorge).steps;
+				floodFrom(map, tileMask(t, workers[k]), open,
+						  2 * (L.distance + L.band) + int(L.gorgeLength) + kLedgeWalkBeyondGorge)
+					.steps;
 			int toMouth = INT_MAX, toLedge = INT_MAX;
 			for (int i = 0; i < n; ++i)
 				if (L.mouth[i] && walked[i] >= 0)
@@ -1794,7 +1797,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		for (int k = 0; k < teams; ++k)
 		{
 			// Flooded no farther than the promise allows: beyond it the walk fails either way.
-			const Reach reach = reachFrom(t, walk.workers[k], backWay, ledgeLimit + 1);
+			const Reach reach = reachFrom(map, walk.workers[k], backWay, ledgeLimit + 1);
 			std::vector<int> ledge = L.posts[k].ledge;
 			std::sort(ledge.begin(), ledge.end());
 			int best = INT_MAX;
@@ -1821,7 +1824,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		int shortest = INT_MAX, longest = 0;
 		for (int k = 0; k < teams; ++k)
 		{
-			const Reach reach = reachFrom(t, walk.workers[k], open, mouthLimit);
+			const Reach reach = reachFrom(map, walk.workers[k], open, mouthLimit);
 			int best = INT_MAX;
 			for (size_t j = 0; j < reach.tiles.size(); ++j)
 				if (L.mouth[reach.tiles[j]])

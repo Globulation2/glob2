@@ -369,7 +369,7 @@ std::string foodAccess(const Game &game, const Layout &L, int teams, bool future
 				open[i] = 0;
 	if (future)
 	{
-		const auto reach = reachFrom(t, workers[0], open, t.size());
+		const auto reach = reachFrom(game.map, workers[0], open, t.size());
 		std::vector<unsigned char> reached(t.size(), 0);
 		for (int i : reach.tiles)
 			reached[i] = 1;
@@ -383,7 +383,7 @@ std::string foodAccess(const Game &game, const Layout &L, int teams, bool future
 	std::vector<std::vector<int>> approaches, harvests;
 	for (int team = 0; team < teams; ++team)
 	{
-		const auto reach = reachFrom(t, workers[team], open, 96);
+		const auto reach = reachFrom(game.map, workers[team], open, 96);
 		std::vector<int> distances(L.pools.size(), -1), targets(L.pools.size(), -1);
 		for (size_t j = 0; j < reach.tiles.size(); ++j)
 		{

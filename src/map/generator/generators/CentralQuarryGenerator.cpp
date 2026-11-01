@@ -1161,7 +1161,7 @@ bool generate(Game &game, GenerationContext &context)
 	const auto reachesWithin = [&](const std::vector<unsigned char> &from,
 								   const std::vector<unsigned char> &open, int limit)
 	{
-		const Flood flood = floodFrom(t, from, open, limit);
+		const Flood flood = floodFrom(map, from, open, limit);
 		for (int i : flood.visited)
 			if (L.island[i])
 				return true;
@@ -1230,8 +1230,8 @@ bool generate(Game &game, GenerationContext &context)
 			ground[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 		for (int k = 0; k < teams; ++k)
 		{
-			const std::vector<int> walked = stepsFrom(t, tileMask(t, workers[k]), open);
-			const std::vector<int> terrain = stepsFrom(t, tileMask(t, workers[k]), ground);
+			const std::vector<int> walked = stepsFrom(map, tileMask(t, workers[k]), open);
+			const std::vector<int> terrain = stepsFrom(map, tileMask(t, workers[k]), ground);
 			int best = INT_MAX, bestTerrain = INT_MAX;
 			for (int i = 0; i < n; ++i)
 				if (L.island[i])
@@ -1310,7 +1310,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (const std::vector<int> &tiles : walk.workers)
 		for (int i : tiles)
 			sources[i] = 1;
-	const Flood shut = floodFrom(t, sources, ground);
+	const Flood shut = floodFrom(map, sources, ground);
 	for (int i : shut.visited)
 		if (L.island[i])
 			return "The isle can be walked to without a sand bar, at (" + std::to_string(t.remainderX(i)) +
@@ -1321,7 +1321,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<int> targets;
 	for (int k = 0; k < teams; ++k)
 	{
-		const std::vector<int> steps = stepsFrom(t, tileMask(t, walk.workers[k]), open);
+		const std::vector<int> steps = stepsFrom(map, tileMask(t, walk.workers[k]), open);
 		int best = -1;
 		for (int i = 0; i < n; ++i)
 			if (L.island[i] && steps[i] >= 0 && (best < 0 || steps[i] < steps[best]))

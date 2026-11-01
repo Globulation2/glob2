@@ -134,8 +134,9 @@ void Map::pathfindRandom(Unit *unit)
 				int ty=(y+tabClose[di][1])&hMask;
 				if (pass == 0 && !(areaCells[coordToIndex(tx, ty)].guard & unit->owner->me))
 					da[di]=false;
-				else if ((unit->performance[WALK] || terrainPropertiesAt(tx,ty).swimmable) && terrainPropertiesAt(tx,ty).groundHealthQ8 >= 0
-					&& isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+				else if (terrainPropertiesAt(tx, ty).groundHealthQ8 >= 0 &&
+						 canTraverse(x, y, tabClose[di][0], tabClose[di][1], unit->swimClass(),
+									 unit->owner->me))
 				{
 					da[di]=true;
 					count++;

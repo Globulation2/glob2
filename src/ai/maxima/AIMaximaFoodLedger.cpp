@@ -158,8 +158,9 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
     AIProfile::Scope profileScope(AIProfile::Phase::FoodWalk);
 	reach.clear();
 	const int size=input.width*input.height;
-	if(size<=0||int(input.traversable.size())!=size
-	   ||int(input.yield.size())!=size)return;
+	if (size <= 0 || int(input.traversable.size()) != size || int(input.yield.size()) != size ||
+		(!input.connections.empty() && int(input.connections.size()) != size))
+		return;
 	if(int(distanceScratch.size())!=size)
 	{
 		distanceScratch.assign(size,0);
@@ -177,14 +178,16 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 	const int originY=centerY+top;
 	std::vector<ReachCell>& queue=queryScratch;
 	queue.clear();
+	const auto canStand = [&](int x, int y)
+	{
+		return input.traversable[input.index(x, y)] &&
+			   !(input.normalizeX(x - originX) < width && input.normalizeY(y - originY) < height);
+	};
 	const auto visit=[&](int x,int y,int distance)
 	{
 		const int index=input.index(x,y);
-		if(distanceGeneration[index]==generation)return;
-		if(!input.traversable[index])return;
-		const int localX=input.normalizeX(x-originX);
-		const int localY=input.normalizeY(y-originY);
-		if(localX<width&&localY<height)return;
+		if (distanceGeneration[index] == generation || !canStand(x, y))
+			return;
 		distanceGeneration[index]=generation;
 		distanceScratch[index]=distance;
 		ReachCell cell;cell.index=index;cell.distance=distance;
@@ -197,9 +200,11 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 	// Breadth-first expansion visits cells in nondecreasing distance, so the
 	// claim pass below consumes the nearest wheat first without sorting.
 	long long reached=0;
-	field::traverse(queue,{input.width,input.height},field::Surrounding,
-		[](const ReachCell& cell){return cell.index;},
-		[&](const ReachCell& current) {
+	field::traverse(
+		queue, {input.width, input.height}, field::Surrounding,
+		[](const ReachCell &cell) { return cell.index; },
+		[&](const ReachCell &current)
+		{
 			if(input.yield[current.index]>0)
 			{
 				reach.push_back(current);
@@ -208,12 +213,24 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 					// Include the entire threshold-crossing cell before stopping;
 					// neither its residual nor the final reach entry is truncated.
 					reached+=(*residual)[current.index];
-					if(reached>=cap)return field::Visit::Stop;
+					if (reached >= cap)
+						return field::Visit::Stop;
 				}
 			}
 			return current.distance>=input.policy.supplyRadius?field::Visit::Skip:field::Visit::Expand;
-		},[&](const ReachCell& current,int px,int py){visit(px,py,current.distance+1);});
-    AIProfile::work(AIProfile::Work::WalkVisitedCells,queue.size());
+		},
+		[&](const ReachCell &current, int px, int py)
+		{
+			const int x = current.index % input.width, y = current.index / input.width;
+			const int dx = px - x, dy = py - y;
+			if (!input.connections.empty() &&
+				!(input.connections[current.index] & (1u << field::directionIndex(dx, dy))))
+				return;
+			if (dx && dy && (!canStand(x + dx, y) || !canStand(x, y + dy)))
+				return;
+			visit(px, py, current.distance + 1);
+		});
+	AIProfile::work(AIProfile::Work::WalkVisitedCells, queue.size());
 }
 
 void Ledger::prepareWorkCurve(const Input& input,const std::vector<ReachCell>& reach,const OperatingPlan& plan) const

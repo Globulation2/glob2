@@ -148,11 +148,12 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
         s.base[2][index]=map.terrainPropertiesAt(index).flyable && !map.resourceBlocksAir(index)
             ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
         }
-		const auto &terrain = map.terrainPropertiesAt(index);
+		const auto &terrain = map.cellRule(index);
 		const bool open = !map.resourceBlocksGround(index) && map.occupancyCells[index].building == NOGBID && unoccupied;
-		s.base[0][index] = open && terrain.walkable ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
-		s.base[1][index] = open && (terrain.walkable || terrain.swimmable)
-			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
+		s.base[0][index] =
+			open && terrain.allowsMovement(0) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
+		s.base[1][index] =
+			open && terrain.allowsMovement(1) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
 	}
 	if (flags & Building) setBit(s.buildings, index, map.occupancyCells[index].building != NOGBID);
 	if (flags & Forbidden)

@@ -366,8 +366,43 @@ static void fruitSupplyRoutes()
     field.build();
     auto one=field.assessBuilding(10,10,1,1);
     REQUIRE((one.available==1 && one.collectable==1 && one.distance[0]==1));
-    field.tiles[field.index(13,10)]=cherry;field.build();
-    REQUIRE(field.assessBuilding(10,10,1,1).varietyCount==1);
+	cherry.endpointAllowed = false;
+	field.build();
+	REQUIRE(field.assessBuilding(10, 10, 1, 1).available == 0);
+	cherry.endpointAllowed = true;
+	field.build();
+	// Harvesting is an incoming virtual edge to a blocked source, rather than
+	// permission to walk onto it or through its neighboring side cells.
+	Field shoreline;
+	shoreline.width = shoreline.height = 8;
+	shoreline.tiles.resize(64);
+	shoreline.tiles[18].passable = true;
+	shoreline.tiles[27] = cherry;
+	auto harvestEdges = std::make_shared<std::vector<std::uint8_t>>(64, 0);
+	(*harvestEdges)[18] = 1u << field::directionIndex(1, 1);
+	shoreline.connections = field::Grid(8, 8).withConnections(harvestEdges);
+	shoreline.build();
+	REQUIRE(shoreline.distances[0][18] == 1);
+	REQUIRE(shoreline.distances[0][19] == -1);
+	(*harvestEdges)[18] = 0;
+	(*harvestEdges)[27] = 1u << field::directionIndex(-1, -1);
+	shoreline.connections = field::Grid(8, 8).withConnections(harvestEdges);
+	shoreline.build();
+	REQUIRE(shoreline.distances[0][18] == -1);
+	Field corner;
+	corner.width = 8;
+	corner.height = 8;
+	corner.tiles.resize(64);
+	corner.tiles[corner.index(3, 3)] = cherry;
+	corner.build();
+	REQUIRE(corner.assessBuilding(4, 4, 1, 1).available == 0);
+	corner.tiles[corner.index(3, 4)] = cherry;
+	corner.build();
+	REQUIRE(corner.assessBuilding(4, 4, 1, 1).available ==
+			0); // blocked entry is not a standing cell
+	field.tiles[field.index(13, 10)] = cherry;
+	field.build();
+	REQUIRE(field.assessBuilding(10,10,1,1).varietyCount==1);
     field.tiles[field.index(10,12)].variety=1;field.build();
     REQUIRE(field.assessBuilding(10,10,1,1).varietyCount==2);
 
@@ -1530,9 +1565,9 @@ static void economicResourceAccessRegressions()
     // A local worker on the second island can reach its resources without swimming.
     REQUIRE(game.addUnit(20,16,0,WORKER,0,0,0,0)); verify(1,1);
 
-    // Sharing connectivity must preserve algae's unit counts and shore access.
-    game.map.setResourceByIndex(16,24,ALGA,1);
-    game.map.setResourceAmount(game.map.coordToIndex(16,24), 4);
+	// Workers harvest shoreline deposits without entering their water cells.
+	game.map.setResourceByIndex(16, 24, ALGA, 1);
+	game.map.setResourceAmount(game.map.coordToIndex(16,24), 4);
     for(int y=18;y<=21;++y) for(int x=20;x<=23;++x) game.map.paintCell(x,y,WATER);
     game.map.setResourceByIndex(21,19,ALGA,1);
     game.map.setResourceAmount(game.map.coordToIndex(21,19), 3);
@@ -2046,4 +2081,44 @@ TEST_CASE("economic worker priorities rank each role and boost emergency inn sit
         [&](const auto& b){return b.id!=lowestInn;}),lone.buildings.end());
     world=std::move(lone);expected[lowestInn]=0;
     review();
+}
+
+TEST_CASE("topology separates walking shores across shared water edges" *
+		  doctest::test_suite("Maxima.Implementation"))
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world({.wDec = 5,
+								   .hDec = 5,
+								   .terrain = WATER,
+								   .teams = 1,
+								   .discovered = true,
+								   .loadDefaultRace = true,
+								   .header = true});
+	auto &map = world.game.map;
+	{
+		auto edit = map.editTerrain();
+		// Every cell in row 5 has a connected land edge. Alternating grass
+		// vertex columns connect pairs of banks, separated by fully wet edges,
+		// including the wrapped edge between columns 31 and 0.
+		for (int x = 1; x < 32; x += 2)
+			for (int y : {5, 6})
+				map.setVertexTerrain(x, y, GRASS);
+	}
+	Player player;
+	player.setTeam(world.game.teams[0]);
+	AIMaxima::Maxima ai(&player);
+	auto &context = ai.context;
+	context.initialize();
+	glob2test::withMaximaObservation(context,
+									 [&]
+									 {
+										 ai.ensure_strategy();
+										 ai.initialize_topology_profile(context);
+									 });
+	CHECK(ai.global_land_tiles == 32);
+	CHECK(ai.global_land_components == 16);
+	CHECK(ai.global_largest_land_percent == 6);
+	// Each bank has one horizontal exit, not a through corridor. Counting
+	// adjacent accessible cells alone incorrectly reports every cell as a choke.
+	CHECK(ai.global_chokepoint_density == 0);
 }

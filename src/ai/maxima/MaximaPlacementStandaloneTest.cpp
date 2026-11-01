@@ -1702,3 +1702,43 @@ TEST_CASE("forward support never delays viable ordinary construction or maintena
     }
 }
 }
+
+TEST_CASE("forward route diagnostics honor directed shores and closed diagonals" *
+		  doctest::test_suite("Maxima.Placement"))
+{
+	using namespace AIMaxima::ForwardSupport;
+	WorldState world;
+	world.reset(32, 16);
+	world.profiles = makeProfiles();
+	WorldBuilding home;
+	home.id = 10;
+	home.buildingType = 1;
+	home.level = 1;
+	home.centerX = 4;
+	home.centerY = 8;
+	world.buildings.push_back(home);
+	DevelopmentIntent intent;
+	intent.purpose = ForwardSupport;
+	intent.supportX = 20;
+	intent.supportY = 8;
+	intent.supportDistance = 8;
+	for (int x = 5; x <= 17; ++x)
+		world.tile(x, 8).discovered = true;
+	// The source apron ends at17. The corridor is otherwise one cell wide,
+	// so cutting its single forward east edge disconnects the home apron.
+	REQUIRE(Routes(world, intent).direct != INT_MAX);
+	world.tile(10, 8).walkingConnections &= uint8_t(~(1u << 4)); // east
+	CHECK(Routes(world, intent).direct == INT_MAX);
+	world.tile(10, 8).walkingConnections = 255;
+	world.tile(11, 8).walkingConnections &= uint8_t(~(1u << 3)); // west
+	CHECK(Routes(world, intent).direct != INT_MAX);
+
+	// A diagonal contact between disconnected strips cannot join them when
+	// both adjacent physical cells are closed.
+	world.tile(11, 8).discovered = false;
+	for (int x = 11; x <= 17; ++x)
+		world.tile(x, 9).discovered = true;
+	for (int x = 12; x <= 17; ++x)
+		world.tile(x, 8).discovered = false;
+	CHECK(Routes(world, intent).direct == INT_MAX);
+}

@@ -451,7 +451,7 @@ std::vector<int> supplyWalk(const Map &map, const Torus &t, int type)
 	auto gathering = dilate(t, deposits, 1);
 	for (int i = 0; i < t.size(); ++i)
 		gathering[i] &= open[i];
-	return stepsFrom(t, gathering, open);
+	return stepsFrom(map, gathering, open);
 }
 std::string checkWorld(const Game &game, const Layout &L, GenerationContext *trace)
 {
@@ -461,10 +461,27 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 		if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != L.terrain[i])
 			return "The Comb terrain no longer matches its coast and channel design.";
 	auto open = groundUnitTiles(map);
+	const auto amphibious = groundUnitTiles(map, true);
+	const auto landingAt = [&](int bank)
+	{
+		for (const auto &step : kCardinalSteps)
+		{
+			const int shore = t.at(t.remainderX(bank) + step[0], bank / t.w + step[1]);
+			if (!amphibious[shore] || !map.cellRule(shore).usesSwimming)
+				continue;
+			for (const auto &out : kCardinalSteps)
+			{
+				const int water = t.at(t.remainderX(shore) + out[0], shore / t.w + out[1]);
+				if (amphibious[water] && map.cellRule(water).allowsMovement(WATER_ONLY_CLASS))
+					return true;
+			}
+		}
+		return false;
+	};
 	const auto units = unitTilesByTeam(map, game.teamsCount());
 	if (units.empty() || units.front().empty())
 		return "The Comb has no starting workers.";
-	const auto walk = stepsFrom(t, tileMask(t, units.front()), open);
+	const auto walk = stepsFrom(map, tileMask(t, units.front()), open);
 	for (const auto &u : units)
 		if (u.empty() || walk[u.front()] < 0)
 			return "The Comb's shores are disconnected.";
@@ -486,7 +503,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 		for (int i = 0; i < t.size(); ++i)
 			if (((closure & 1) && L.ends[0][i]) || ((closure & 2) && L.ends[1][i]))
 				blocked[i] = 0;
-		const auto components = connectedRegions(blocked, t.w, t.h, true, GridNeighbors::Eight);
+		const auto components = groundRegions(map, blocked, GridNeighbors::Eight);
 		const int first = units.front().front();
 		for (const auto &u : units)
 		{
@@ -558,13 +575,9 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 				if (L.u(i) < L.edges[p] || L.u(i) >= L.edges[p + 1])
 					continue;
 				room += ownAnchors[i] && inPeninsula(i, 4) && walk[i] >= 0;
-				if (open[i] && L.side[i] == int(p % 2))
-					for (const auto &step : kCardinalSteps)
-						if (map.terrainPropertiesAt(t.at(t.remainderX(i) + step[0], i / t.w + step[1])).swimmable)
-						{
-							++landing;
-							break;
-						}
+				// A landing crosses the mixed shore between a walking bank and full water.
+				if (open[i] && walk[i] >= 0 && L.side[i] == int(p % 2) && landingAt(i))
+					++landing;
 				if (!ownTowers[i] || !inPeninsula(i, 2))
 					continue;
 				bool hits = false;
@@ -618,7 +631,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 	// Final gathering distances are measured from workers, never straight-line kit distance.
 	for (size_t k = 0; k < units.size(); ++k)
 	{
-		const auto nearby = floodFrom(t, tileMask(t, units[k]), open, 24);
+		const auto nearby = floodFrom(map, tileMask(t, units[k]), open, 24);
 		int food = 999, wood = 999, room = 0;
 		for (int i : units[k])
 		{

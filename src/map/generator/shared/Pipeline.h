@@ -19,6 +19,11 @@ inline constexpr int DENSE_COLONY_BASE_LIMIT = 12;
 inline constexpr int DENSE_COLONY_MAP_EXPONENT = 9;
 std::string denseColonySizeFailure(const GenerationRequest &);
 
+/// Physically legal cardinal exits of the configured starting building, under
+/// a caller-owned present/future obstacle mask. Uses the actual footprint.
+std::vector<int> colonyGroundExits(const Game &, int team, const std::vector<unsigned char> &open,
+								   bool canSwim = false);
+
 // The stages a designed generator runs, as functions a generate() body calls in the order that
 // suits its map. There is no superclass: a generator that needs a different order, or a
 // different step, calls what it needs and writes the rest itself.

@@ -14,9 +14,10 @@ namespace MapGeneration
 int stepCost(const Map &map, int x, int y, const StepCosts &costs)
 {
     const auto index=map.coordToIndex(x,y);
-    const auto& terrain=map.terrainPropertiesAt(index);
-    const int open=terrain.walkable ? costs.open : terrain.swimmable ? costs.water : -1;
-    if (open<0) return open;
+	const int open = map.terrainAllowsMovementAt(x, y, 0)   ? costs.open
+					 : map.terrainAllowsMovementAt(x, y, 1) ? costs.water
+															: -1;
+	if (open<0) return open;
     if (map.getBuilding(x,y)!=NOGBID) return costs.building;
     if (map.resourceBlocksGround(index))
         return permanentResourceBarrier(map,index) ? costs.eternal : costs.clearable;
@@ -28,10 +29,12 @@ std::vector<int> costsFrom(const Map &map, const Torus &t, const std::vector<int
 {
 	const int n = t.w * t.h;
 	std::vector<int> step(n), cost(n, INT_MAX);
+	std::vector<unsigned char> open(n);
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
 		step.at(i) = stepCost(map, t.remainderX(i), i / t.w, costs);
+		open.at(i) = step.at(i) >= 0;
 	}
 	using Entry = std::pair<int, int>;
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> heap;
@@ -61,7 +64,8 @@ std::vector<int> costsFrom(const Map &map, const Torus &t, const std::vector<int
 				if ((!dx && !dy) || (neighbours == GridNeighbors::Cardinal && dx && dy))
 					continue;
 				const int m = t.at(x + dx, y + dy);
-				if (step.at(m) < 0 || c + step.at(m) >= cost.at(m))
+				if (step.at(m) < 0 || c + step.at(m) >= cost.at(m) ||
+					!groundConnection(map, open, x, y, dx, dy, costs.water >= 0))
 					continue;
 				cost.at(m) = c + step.at(m);
 				heap.push({cost.at(m), m});

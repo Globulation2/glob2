@@ -173,10 +173,13 @@ own terrain and resources:
   takes the narrowest score window that still holds enough mutually distant sites, falling back
   to the older any-legal-site search on maps where no set of sites can reach both resources at
   all.
-- `shared/StartQuality::scoreStarts` measures the *finished* map's colonies: the walk to every
-  resource, the stock standing within 12, 24 and 48 walking steps and how much of it no rival
-  reaches sooner, buildable room, territory held outright and contested, ground fertility, and
-  the distance to the nearest and farthest rival. What those measurements are worth is not
+- `shared/StartQuality::scoreStarts` measures the *finished* map's colonies using
+  geometric obstacle-mask catchments: resource distance, stock within 12, 24 and
+  48 steps and how much of it no rival reaches sooner, buildable room, territory
+  held outright and contested, ground fertility, and distance to rivals. These
+  established score fields are heuristics rather than physical walking proofs:
+  they do not enforce directional shore edges or diagonal side clearance.
+  Finished-map access guarantees use Map-based `Grid` floods and `Contact` queries. What those measurements are worth is not
   decided here: `FairnessModel.h` turns them into a start's fitness with coefficients fitted to
   thousands of real games, a softmax over the map's colonies turns fitness into a chance of
   winning, and the map's score is the fairness of those chances — 1 when every colony is as

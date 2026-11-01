@@ -185,8 +185,9 @@ checksum adapter remains available for diagnostic fixtures.
   Use `map.terrainProperties(type)` for a terrain or `map.terrainPropertiesAt(...)`
   for a cell; the global constexpr table defines only the built-ins. Walking, swimming, flying, building eligibility,
   resource habitats, irrigation, movement rates, health and projectile obstruction
-  are independent capabilities. Use a property predicate when asking what a cell
-  permits; compare IDs only when its identity is the actual question (for example,
+  are independent capabilities. Ground movement uses `terrainAllowsMovementAt`
+  and the shared source-to-destination traversal query rather than the combined
+  habitat properties. Compare IDs only when identity is the actual question (for example,
   an editor brush or a generator's material selection).
 - `Map::terrainSeed()` is presentation state saved with the map (format 138): it salts
   the terrain material hashes so maps look distinct; generators derive it from their
@@ -196,24 +197,34 @@ checksum adapter remains available for diagnostic fixtures.
   Vertex (x,y) is the top-left corner of cell (x,y); `cellCorners(x, y)` returns the
   top-left, top-right, bottom-left and bottom-right corners. A cell's rules come
   from its corners through `combineCornerRules` (`TerrainPropertiesLayout.h`):
-  equal corners keep their terrain's exact profile; mixed corners are walkable when
-  any corner is, never swimmable or buildable, block projectiles and count as a
-  shoreline when any corner does, and are otherwise as permissive as their weakest
-  corner (speed and ground damage from the walkable corners). Mixed grass/sand and sand/water cells reproduce the retired shore
-  profiles exactly, which is why no shore terrain types exist.
+  equal corners keep their terrain's exact profile. The combined habitat and
+  placement properties retain the historical corner rules: mixed cells are never
+  buildable, block projectiles and count as shoreline when any corner does, with
+  speed and ground damage from walkable corners. These aggregate properties do
+  not decide ground movement. Separate access profiles admit ordinary shores
+  with connected walkable corners, reject impassable corners, and compile walking,
+  amphibious and swimming-only permissions; see [terrain movement](../features/terrain-resource-sets.md#terrain-movement).
 - A per-map `CellRuleTable` (`src/map/CellRules.h`) compiles each corner combination
   once: properties, movement costs per swimming class, air costs and resource
-  habitat. Cells store only a rule index; rule t is the uniform cell of type t, and
+  habitat. Corner identities are canonical under rotations and reflections;
+  adjacent land pairs remain distinct from opposite-corner saddles. Oriented
+  connections read the original vertices. Cells store only a rule index; rule t
+  is the uniform cell of type t, and
   mixed combinations follow in the order the map first needs them, up to 65536.
   Snapshots, gradient preparation and AI observations share the table immutably.
+- Movement-dependent AI snapshots retain terrain-only walking and amphibious
+  forward masks alongside cell access. Placement, circulation and food queries
+  apply their own obstacle/clearing policy and diagonal side checks. Both masks
+  enter cache identities; reserved routes are revalidated before construction.
+  Format 194 reads older records fully before discarding stale movement searches.
 - `Map::terrainTypeAt` returns a cell's terrain when its corners agree and
   `MIXED_TERRAIN` otherwise. That sentinel is never stored; never index a table
   with it. The script-facing `getTerrainType` maps mixed cells to the unknown
   category. Write vertices with `setVertexTerrain`, `paintVertices`,
   `paintVertexSquare`, `assignVertexTerrain` or `fillTerrain`, and batch edits with
   `editTerrain()` so snapshots, topology and ecology caches stay consistent.
-- Grass directly against water is legal: the cells between are walkable and
-  unbuildable. Beaches are a painting and generation convention. `paintVertices`
+- Grass directly against water is legal: ordinary shore cells retain a walkable
+  land edge and remain unbuildable; isolated land tips are not walkable. Beaches are a painting and generation convention. `paintVertices`
   (by default) and `paintVertexSquare` turn an opposite vertex next to painted
   grass or water into sand. `Map::layBeaches()` handles a whole map independently
   of scan order and turns both sides of every grass/water contact into sand, a
@@ -704,7 +715,21 @@ Each transaction retains its original due tick, ticket, controls and immutable
 inputs. Frozen8 uses four-color integer relaxation
 on 16×16 tiles with frozen halos and eight sweeps; Jacobi uses separate input/output
 buffers for each round. The adapter commits output only after convergence and
-confirmed driver completion. Numerical correctness is established by device tests.
+confirmed driver completion. Ground searches carry incoming connection masks for
+walking, swimming-only and amphibious profiles; reverse propagation follows the
+corresponding forward edge. Terrain and both diagonal side cells must permit
+passage. Walking shores retain a connected land edge; shared-edge/vertex checks
+reject crossings through the water side. Resource goals allow adjacent gathering
+without turning the resource cell into a transit passage. Immutable request data
+also captures buildings, resources and forbidden areas; transient units affect
+destination seeds rather than diagonal clearance.
+OpenCL uses 32-bit device and local working values to keep adjacent stores
+independent across workgroups and odd-sized packed fields. Finished fields stay
+coherent in both ping-pong buffers while other fields in their batch continue.
+Routing retains destination-entry cost estimates. An amphibious step crossing
+water between walkable shoreline cells uses swimming animation and water speed;
+its estimate does not add a separate direction-specific swimming surcharge.
+Numerical correctness is established by device tests.
 
 Vulkan retains one adapter-owned work set because its execution is serial. The
 set holds buffers, immutable descriptor bindings, command resources, a fence and

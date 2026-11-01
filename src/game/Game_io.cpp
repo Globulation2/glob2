@@ -500,6 +500,11 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 		hasSavedRandomState = true;
 	}
 
+	if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS && mapHeader.getIsSavedGame())
+	{
+		map.upgradeTerrainTraversal();
+		invalidateTerrainAI();
+	}
 	areaEffects.beginTick(*this,false);
 	co_return true;
 }

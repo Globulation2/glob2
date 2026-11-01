@@ -1,5 +1,5 @@
-#include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "CortexSnapshotQueries.h"
 #include "PowerOfTwo.h"
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -69,26 +69,34 @@ namespace Cortex
 					const size_t idx = static_cast<size_t>(ny) * w + nx;
 					if (visited[idx])
 						continue;
-					if (!isHardSpaceForGroundUnit(map,nx, ny, canSwim, me))
+					if ((dx && dy) || !isHardSpaceForGroundUnit(map, nx, ny, canSwim, me))
 						continue;
 					visited[idx] = 1;
 					frontier.push_back(static_cast<int>(idx));
 				}
 
 			int count = 0;
-			field::traverse(frontier,{w,h},field::Surrounding,
-				[](int) { return field::Visit::Expand; },
-				[&](int,int px,int py) {
+			field::traverse(
+				frontier, {w, h}, field::Surrounding, [](int) { return field::Visit::Expand; },
+				[&](int current, int px, int py)
+				{
 					const int nx=map.normalizeX(px),ny=map.normalizeY(py);
 					// Probe shore resources before the radius and passability gates:
 					// harvestable algae can sit beside reachable ground.
 					if(algaeAdjacent!=NULL && !*algaeAdjacent
 					   && MapState::hasMaterial(map.state(),map.tileIndex(nx,ny),MaterialId::Algae)
-					   && isMapDiscovered(map,nx,ny,team->allies))*algaeAdjacent=true;
-					if(warpDistMax(map,cx,cy,nx,ny)>R)return;
+					   && isMapDiscovered(map,nx,ny,team->allies))
+						*algaeAdjacent = true;
+					if(warpDistMax(map,cx,cy,nx,ny)>R)
+						return;
 					const size_t idx=static_cast<size_t>(ny)*w+nx;
-					if(visited[idx] || !isHardSpaceForGroundUnit(map,nx,ny,canSwim,me))return;
-					visited[idx]=1;frontier.push_back(static_cast<int>(idx));
+					if (visited[idx] || !isHardSpaceForGroundUnit(map, nx, ny, canSwim, me) ||
+						!MapState::groundSidesClear(map.state(), current % w, current / w,
+													px - current % w, py - current / w,
+													canSwim ? 1 : 0, me))
+						return;
+					visited[idx]=1;
+					frontier.push_back(static_cast<int>(idx));
 				});
 			count=static_cast<int>(frontier.size());
 			return count;
@@ -191,7 +199,7 @@ namespace Cortex
 					const size_t idx = static_cast<size_t>(ny) * w + nx;
 					if (dist[idx] >= 0)
 						continue;
-					if (!isHardSpaceForGroundUnit(map,nx, ny, canSwim, me))
+					if ((dx && dy) || !isHardSpaceForGroundUnit(map, nx, ny, canSwim, me))
 						continue;
 					dist[idx] = 1;
 					frontier.push_back(static_cast<int>(idx));
@@ -202,7 +210,11 @@ namespace Cortex
 				[&](int current,int px,int py) {
 					const int nx=map.normalizeX(px),ny=map.normalizeY(py);
 					const size_t idx=static_cast<size_t>(ny)*w+nx;
-					if(dist[idx]>=0 || !isHardSpaceForGroundUnit(map,nx,ny,canSwim,me))return;
+					if (dist[idx] >= 0 || !isHardSpaceForGroundUnit(map, nx, ny, canSwim, me) ||
+						!MapState::groundSidesClear(map.state(), current % w, current / w,
+													px - current % w, py - current / w,
+													canSwim ? 1 : 0, me))
+						return;
 					dist[idx]=dist[current]+1;frontier.push_back(static_cast<int>(idx));
 				});
 		}

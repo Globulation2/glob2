@@ -347,3 +347,6 @@ static constexpr int FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY = 190;
 //! Built-in looks of grass and sand: TERRAIN_COUNT grew from 29 to 33, so earlier
 //! files carry custom terrain IDs starting at 29 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_GROUND_LOOKS = 191;
+
+// Movement connections became conservative; old saved routing must be rebuilt.
+static constexpr int FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS = 194;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
+#include "MovementConnections.h"
 #include <PerformanceTelemetry.h>
 #include "BuildingGradientSearch.h"
 #include <mutex>
@@ -19,9 +20,11 @@ using gradient_kernel::LAND_STEPS;
 using gradient_kernel::WATER_STEP;
 using gradient_kernel::weightedClass;
 
-BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::of(const Map &map, int swim)
+BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::of(const Map &map, int swim,
+																  Uint32 teamMask)
 {
 	Inputs inputs;
+	inputs.grid = MapState::movementGrid(map.cellView(), swim, teamMask);
 	inputs.modifiedCosts = map.hasMovementCostModifiers(swim);
 	inputs.registry = map.frozenTerrainRegistry();
 	inputs.buckets = map.movementQueueBuckets(swim);
@@ -34,10 +37,15 @@ BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::of(const Map &map
 	return inputs;
 }
 
-BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::ofSnapshot(const SimulationSnapshot::Handle &snapshot, int swim)
+BuildingGradientSearch::Inputs
+BuildingGradientSearch::Inputs::ofSnapshot(const SimulationSnapshot::Handle &snapshot, int swim,
+										   Uint32 teamMask)
 {
 	Inputs inputs;
-	inputs.modifiedCosts = snapshot.terrain && snapshot.terrain->movementModifiers;
+	inputs.grid = MapState::movementGrid(snapshot.view(), swim, teamMask);
+	inputs.modifiedCosts =
+		snapshot.terrain && (swim == AIR_MOVEMENT_CLASS ? snapshot.terrain->airConstraints
+														: snapshot.terrain->movementModifiers);
 	inputs.registry = snapshot.terrain ? snapshot.terrain->registry : nullptr;
 	const auto count = std::size_t(snapshot.width) * snapshot.height;
 	if (inputs.modifiedCosts)
@@ -77,7 +85,8 @@ BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::ofSnapshot(const 
 	{
 		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
 		auto water = std::make_shared<std::vector<std::uint8_t>>(count);
-		for (std::size_t i = 0; i < count; ++i) (*water)[i] = snapshot.terrainPropertiesAt(i).swimmable;
+		for (std::size_t i = 0; i < count; ++i)
+			(*water)[i] = (*snapshot.terrain->rules)[snapshot.terrain->cellRules[i]].usesSwimming;
 		inputs.water = std::move(water);
 	}
 	return inputs;
@@ -92,6 +101,9 @@ void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, 
 								   int width, int height)
 {
 	assert(width > 0 && height > 0 && !(width & (width - 1)) && !(height & (height - 1)));
+	grid = inputs.grid.width() == width && inputs.grid.height() == height
+			   ? inputs.grid
+			   : field::Grid(width, height);
 	gradient = seeded;
 	cells = std::size_t(width) * height;
 	widthMask = width - 1;
@@ -192,8 +204,7 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 		{
 			assert(currentCost <= COST_LIMIT);
 			expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost,
-													COST_LIMIT, {widthMask + 1, heightMask + 1},
-													waterSteps, waterAt);
+													COST_LIMIT, grid, waterSteps, waterAt);
 			++currentCost;
 		}
 	};
@@ -204,9 +215,8 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 			while (pending && !done())
 			{
 				gradient_kernel::runtime_terrain::expandProfileBucket<N>(
-					gradient, custom->buckets.data(), pending, currentCost, COST_LIMIT,
-					{widthMask + 1, heightMask + 1}, profiles->movement,
-					[&](size_t i) { return profiles->cells[i]; });
+					gradient, custom->buckets.data(), pending, currentCost, COST_LIMIT, grid,
+					profiles->movement, [&](size_t i) { return profiles->cells[i]; });
 				++currentCost;
 			}
 		};
@@ -224,6 +234,7 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	if (complete())
 	{
+		grid = field::Grid(widthMask + 1, heightMask + 1);
 		profiles.reset();
 		water.reset();
 	}
@@ -231,7 +242,7 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 
 std::size_t BuildingGradientSearch::retainedBytes() const
 {
-	std::size_t bytes = sizeof(*this);
+	std::size_t bytes = sizeof(*this) + grid.connectionBytes();
 	for (const auto &bucket : buckets)
 		bytes += bucket.cells.capacity() * sizeof(bucket.cells[0]);
 	if (custom)
@@ -245,6 +256,7 @@ std::size_t BuildingGradientSearch::retainedBytes() const
 
 void BuildingGradientSearch::clearForReuse()
 {
+	grid = field::Grid(1, 1);
 	gradient = nullptr;
 	cells = pending = 0;
 	currentCost = readerCost = 0;

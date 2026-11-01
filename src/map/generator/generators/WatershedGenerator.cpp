@@ -1495,7 +1495,7 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 	for (int team = 0; team < teams; ++team)
 	{
 		const std::vector<int> distance =
-			stepsFrom(Torus(map), tileMask(Torus(map), workers[team]), walkableTiles(map));
+			stepsFrom(map, tileMask(Torus(map), workers[team]), walkableTiles(map));
 		const int bx = context.bootX[team], by = context.bootY[team];
 		const Vec centre{bx + 2.0, by + 2.0};
 		struct Spot
@@ -1890,7 +1890,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int team = 0; team < teams; ++team)
 	{
 		const std::vector<int> reach =
-			stepsFrom(Torus(map), tileMask(Torus(map), workers[team]), walkableTiles(map));
+			stepsFrom(map, tileMask(Torus(map), workers[team]), walkableTiles(map));
 		if (team == 0)
 			fromFirst = reach;
 		bool met = false;

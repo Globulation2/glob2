@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "field/Grid.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "BuildingType.h"
@@ -34,7 +35,7 @@ bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
 		return false;
 	if (c.noUnit && getGroundUnit(x, y) != NOGUID)
 		return false;
-	if (c.requireGroundPassable && !terrainPropertiesAt(x, y).walkable && !(canSwim && terrainPropertiesAt(x, y).swimmable))
+	if (c.requireGroundPassable && !terrainAllowsMovementAt(x, y, canSwim ? 1 : 0))
 		return false;
 	if (c.requireBuildable && !terrainPropertiesAt(x, y).buildable)
 		return false;
@@ -43,6 +44,36 @@ bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
 	return true;
 }
 
+bool Map::canTraverse(int x, int y, int dx, int dy, int movement, Uint32 teamMask,
+					  DestinationAccess destination) const
+{
+	const bool interaction = destination == DestinationAccess::InteractionEndpoint;
+	if (dx < -1 || dx > 1 || dy < -1 || dy > 1)
+		return false;
+	if (movement == AIR_MOVEMENT_CLASS)
+		return interaction ? terrainPropertiesAt(x + dx, y + dy).flyable
+						   : isFreeForAirUnit(x + dx, y + dy);
+	if (!terrainAllowsMovementAt(x + dx, y + dy, movement) ||
+		!MapState::groundSidesClear(cellView(), x, y, dx, dy, movement, teamMask))
+		return false;
+	return interaction || isFreeForMovement(x + dx, y + dy, movement, teamMask);
+}
+
+std::uint8_t Map::terrainConnections(int x, int y, int movement) const
+{
+	std::uint8_t mask = 0;
+	for (unsigned d = 0; d < field::Surrounding.size(); ++d)
+	{
+		const auto [dx, dy] = field::Surrounding[d];
+		if (terrainAllowsMovementAt(x + dx, y + dy, movement) &&
+			MapState::terrainConnection(cellView(), x, y, dx, dy, movement) &&
+			(movement == AIR_MOVEMENT_CLASS || !dx || !dy ||
+			 (terrainAllowsMovementAt(x + dx, y, movement) &&
+			  terrainAllowsMovementAt(x, y + dy, movement))))
+			mask |= 1u << d;
+	}
+	return mask;
+}
 
 bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const
 {

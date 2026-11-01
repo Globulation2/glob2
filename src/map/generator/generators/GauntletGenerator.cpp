@@ -481,7 +481,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	}
 	if (gates.empty() || gates[0].tiles.empty())
 		return "The court circuit has no entrance.";
-	const auto circuitReach = stepsFrom(t, tileMask(t, {gates[0].tiles[0]}), courts);
+	const auto circuitReach = stepsFrom(map, tileMask(t, {gates[0].tiles[0]}), courts);
 	for (int k = 0; k < L.g.teams; ++k)
 		if (gates[3 * k].tiles.empty() || circuitReach[gates[3 * k].tiles[0]] < 0)
 			return "The permanent fighting circuit is disconnected.";
@@ -504,10 +504,10 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	auto possible = permanent;
 	for (int i = 0; i < t.size(); ++i)
 		possible[i] = !permanentResourceBarrier(map, i);
-	const auto possibleGraph = checkGatePartition(t, possible, labels, gates);
+	const auto possibleGraph = checkGatePartition(map, possible, labels, gates, true);
 	if (possibleGraph.leakTile >= 0)
 		return "A removable obstruction hides an unintended arena route.";
-	const auto graph = checkGatePartition(t, permanent, labels, gates);
+	const auto graph = checkGatePartition(map, permanent, labels, gates, true);
 	if (graph.leakTile >= 0)
 		return "The arena has an unintended route between regions at " +
 			   std::to_string(t.remainderX(graph.leakTile)) + ":" + std::to_string(graph.leakTile / t.w);
@@ -536,7 +536,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			return "A court is missing its orchard.";
 		if (GauntletOptions(c.request).wheat > 0 && grainCount[k] < 4)
 			return "A court is missing its bonus farm.";
-		const auto distance = stepsFrom(t, tileMask(t, walk.workers[k]), open);
+		const auto distance = stepsFrom(map, tileMask(t, walk.workers[k]), open);
 		int wheat = 100000, wood = 100000, room = 0;
 		for (int i = 0; i < t.size(); ++i)
 		{

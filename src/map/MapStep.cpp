@@ -311,6 +311,37 @@ void Map::finishGradientPipeline(JoinContext context)
 	gradientRuntime->pipeline.finish(context);
 	gradientRuntime->buildings.finish(context);
 }
+void Map::upgradeTerrainTraversal()
+{
+	resetGradientPipeline();
+	gradientRuntime->materialFields.clear();
+	gradientRuntime->materialLru.clear();
+	for (int t = 0; t < Team::MAX_COUNT; ++t)
+		for (int sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
+		{
+			for (int m = 0; m < MaterialCount; ++m)
+			{
+				delete[] materialGradients[t][m][sw];
+				materialGradients[t][m][sw] = nullptr;
+				delete[] marketMaterialGradients[t][m][sw];
+				marketMaterialGradients[t][m][sw] = nullptr;
+				materialGradientStale[t][m][sw] = marketMaterialGradientStale[t][m][sw] = true;
+			}
+			delete[] forbiddenGradient[t][sw];
+			forbiddenGradient[t][sw] = nullptr;
+			delete[] guardAreasGradient[t][sw];
+			guardAreasGradient[t][sw] = nullptr;
+			delete[] clearAreasGradient[t][sw];
+			clearAreasGradient[t][sw] = nullptr;
+			forbiddenGradientStale[t][sw] = guardGradientStale[t][sw] = clearGradientStale[t][sw] =
+				true;
+		}
+	rebuildPlaneRegistry();
+	for (int t = 0; t < game->teamsCount(); ++t)
+		for (Building *building : game->teams[t]->liveBuildings.entries())
+			building->resetPathfindGradients(Building::GradientDrop::New);
+}
+
 void Map::resetGradientPipeline(bool replacingWorld) noexcept
 {
 	gradientRuntime->worldResultsPublishedTick.reset();

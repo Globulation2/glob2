@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "AIMaximaPlacement.h"
+#include "field/Grid.h"
 #include <algorithm>
 #include <cstdlib>
 #include <climits>
@@ -81,8 +82,18 @@ struct Routes
                     if(dx==0 && dy==0)continue;
                     const int next=world.index(x+dx,y+dy);
                     if(result[next]!=INT_MAX || !passable(next,safe))continue;
-                    result[next]=result[index]+1;queue.push_back(next);
-                }
+					// Distances lead toward the source apron: inspect the
+					// predecessor's forward edge, not the settled cell's edge.
+					if (!(world.tiles[next].travelConnections(canSwim) &
+						  (1u << field::directionIndex(-dx, -dy))))
+						continue;
+					if (dx && dy &&
+						(!passable(world.index(x + dx, y), false) ||
+						 !passable(world.index(x, y + dy), false)))
+						continue;
+					result[next] = result[index] + 1;
+					queue.push_back(next);
+				}
             }
             return result;
         };

@@ -26,6 +26,8 @@ void main(){
     if(value!=0)for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)if(dx!=0||dy!=0){
      uint k=uint(int(j)+dy*18+dx);
      uint sx=wrap(int(gx*16+x)-1+dx,width),sy=wrap(int(gy*16+y)-1+dy,height);
+     int slot=(1-dy)*3+1-dx;slot-=int(slot>4);
+     if((costs[width*height+sy*width+sx]&(1u<<slot))==0)continue;
      uint packed=costs[sy*width+sx],step=(dx!=0&&dy!=0)?packed>>16:packed&65535;
      int candidate=int(values[k])-int(step);if(candidate>=threshold)value=max(value,uint(candidate));
     }

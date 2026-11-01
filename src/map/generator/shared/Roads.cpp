@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Roads.h"
 #include "GenerationContext.h"
+#include "GenerationResult.h"
 #include "Map.h"
+#include "MapStateView.h"
 #include "Morphology.h"
 #include <climits>
 #include <deque>
@@ -167,8 +169,8 @@ bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
 	{
 		::MapGeneration::generationCheckpoint();
 		const int x = t.remainderX(i), y = i / t.w;
-		blocked.at(i) = !map.terrainPropertiesAt(x, y).walkable ||
-						map.getBuilding(x, y) != NOGBID || (alsoBlocked && (*alsoBlocked).at(i));
+		blocked.at(i) = !map.terrainAllowsMovementAt(x, y, 0) || map.getBuilding(x, y) != NOGBID ||
+						(alsoBlocked && (*alsoBlocked).at(i));
 		costly.at(i) = map.isResource(x, y);
 	}
 	const std::vector<int> route = cheapestRoute(t, sources, goal, blocked, costly);
@@ -180,7 +182,19 @@ bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
 		if (map.isResource(t.remainderX(i), i / t.w))
 			map.setNoResource(t.remainderX(i), i / t.w, 1);
 	}
-	return true;
+	// cheapestRoute is a geometric clearing proposal. Corner/shore geometry
+	// and unremoved side deposits can still invalidate it; never report success
+	// until the finished map admits an actual ground route.
+	auto open = groundUnitTiles(map);
+	if (alsoBlocked)
+		for (int i = 0; i < n; ++i)
+			if ((*alsoBlocked).at(i))
+				open.at(i) = 0;
+	const auto reached = stepsFrom(map, tileMask(t, sources), open);
+	for (int i = 0; i < n; ++i)
+		if (goal.at(i) && reached.at(i) >= 0)
+			return true;
+	return false;
 }
 int connectColonies(Map &map, int teams, const std::vector<unsigned char> *alsoBlocked,
 					std::string &detail)
@@ -191,7 +205,8 @@ int connectColonies(Map &map, int teams, const std::vector<unsigned char> *alsoB
 	for (int team = 1; team < teams; ++team)
 	{
 		::MapGeneration::generationCheckpoint();
-		const std::vector<int> reach = stepsFrom(t, tileMask(t, workers.at(0)), walkableTiles(map));
+		const std::vector<int> reach =
+			stepsFrom(map, tileMask(t, workers.at(0)), walkableTiles(map));
 		bool connected = false;
 		for (int p : workers.at(team))
 		{
@@ -242,7 +257,8 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 	const auto openAt = [&](int i)
 	{
 		const int x = t.remainderX(i), y = i / t.w;
-		return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+		return map.terrainAllowsMovementAt(x, y, 0) && !map.isResource(x, y) &&
+			   map.getBuilding(x, y) == NOGBID;
 	};
 	// The open tiles round a colony's swarm.
 	const auto doorstep = [&](int team)
@@ -257,7 +273,12 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 				if (dy == -1 || dy == 4 || dx == -1 || dx == 4)
 				{
 					const int i = t.at(context.bootX[team] + dx, context.bootY[team] + dy);
-					if (openAt(i))
+					const int stepX = (dx == 4) - (dx == -1), stepY = (dy == 4) - (dy == -1);
+					if (stepX && stepY)
+						continue;
+					if (openAt(i) && MapState::terrainConnection(
+										 map.cellView(), context.bootX[team] + dx - stepX,
+										 context.bootY[team] + dy - stepY, stepX, stepY, 0))
 						tiles.push_back(i);
 				}
 			}
@@ -279,7 +300,7 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 			::MapGeneration::generationCheckpoint();
 			source.at(i) = 1;
 		}
-		const std::vector<int> walk = stepsFrom(t, source, open);
+		const std::vector<int> walk = stepsFrom(map, source, open);
 		std::vector<unsigned char> target(n, 0);
 		bool arrived = false;
 		for (int i : doorstep(team))
@@ -318,7 +339,8 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 			const int x = t.remainderX(i), y = i / t.w;
 			if (map.isWater(x, y))
 			{
-				// One sand corner turns this tile and its three other tiles into walkable shore.
+				// A one-corner ford is only a terrain proposal. Final physical
+				// validation below rejects isolated tips or water-side crossings.
 				fords.push_back({x, y});
 				for (int dy = -1; dy <= 0; ++dy)
 				{
@@ -339,6 +361,15 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 		}
 		if (!fords.empty())
 			map.paintVertices(fords, SAND, false);
+		for (int i = 0; i < n; ++i)
+			open.at(i) = openAt(i);
+		source = tileMask(t, doorstep(0));
+		const auto verified = stepsFrom(map, source, open);
+		bool connected = false;
+		for (int i : doorstep(team))
+			connected |= verified.at(i) >= 0;
+		if (!connected)
+			throw GenerationFailure("A proposed colony road has no physical walking connection.");
 	}
 	return changed;
 }

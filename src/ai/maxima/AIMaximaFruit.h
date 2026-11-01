@@ -16,7 +16,8 @@ struct Tile
 	bool buildingVision=false;
 	int variety=-1; // Legacy fixture adapter; live maps populate varieties.
     unsigned varieties=0;
-    unsigned mask() const { return varieties ? varieties : variety>=0 ? 1u<<variety : 0; }
+	bool endpointAllowed = true; // Harvest permissions; source terrain may block transit.
+	unsigned mask() const { return varieties ? varieties : variety >= 0 ? 1u << variety : 0; }
 };
 
 struct Supply
@@ -32,6 +33,7 @@ struct Supply
 struct Field
 {
 	int width=0, height=0;
+	field::Grid connections{1, 1};
 	std::vector<Tile> tiles;
 	std::array<std::vector<int>,3> distances, sources;
 
@@ -50,7 +52,8 @@ struct Field
 			// Row-major sources and neighbour order make equal routes stable.
 			for(int at=0;at<int(tiles.size());++at)
 			{
-				if(!(tiles[at].mask()&(1u<<variety)))continue;
+				if (!tiles[at].endpointAllowed || !(tiles[at].mask() & (1u << variety)))
+					continue;
 				distances[variety][at]=0;
 				sources[variety][at]=at;
 				queue.push_back(at);
@@ -63,7 +66,15 @@ struct Field
 				[](int){ return field::Visit::Expand; },
 				[&](int at,int x,int y) {
 					const int next=grid.index(x,y);
-					if(!tiles[next].passable || distances[variety][next]>=0)return;
+					const int sx = at % width, sy = at / width;
+					if (!tiles[next].passable || distances[variety][next] >= 0 ||
+						(connections.hasConnections() &&
+						 !(connections.incomingMask(at) &
+						   (1u << field::directionIndex(x - sx, y - sy)))) ||
+						(!connections.hasConnections() && x != sx && y != sy &&
+						 (!tiles[grid.index(x, sy)].passable ||
+						  !tiles[grid.index(sx, y)].passable)))
+						return;
 					distances[variety][next]=distances[variety][at]+1;
 					sources[variety][next]=sources[variety][at];
 					queue.push_back(next);
@@ -80,7 +91,11 @@ struct Field
 			for(int dx=-1;dx<=w;++dx)
 			{
 				if(dx>=0 && dx<w && dy>=0 && dy<h)continue;
+				if ((dx == -1 || dx == w) && (dy == -1 || dy == h))
+					continue;
 				const int at=index(x+dx,y+dy);
+				if (!tiles[at].passable)
+					continue; // a real standing/entry cell
 				for(int variety=0;variety<3;++variety)
 				{
 					const int distance=distances[variety][at];

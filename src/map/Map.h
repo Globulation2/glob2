@@ -288,6 +288,7 @@ public:
 	// Live-world resets retain supplier turnover history; world replacement must
 	// discard derived supplier ledgers before teams are destroyed or reconstructed.
 	void resetGradientPipeline(bool replacingWorld=false) noexcept;
+	void upgradeTerrainTraversal();
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
     void configureGradientWorkStats(const std::string& csvPath);
@@ -638,7 +639,7 @@ public:
 	TerrainType terrainTypeAt(size_t index) const
 	{
 		const auto &corners = cellRuleData[cellRules[index]].corners;
-		return corners[0] == corners[3] ? corners[0] : MIXED_TERRAIN;
+		return cellRuleData[cellRules[index]].uniform() ? corners[0] : MIXED_TERRAIN;
 	}
 	TerrainType terrainTypeAt(int x, int y) const { return terrainTypeAt(size_t(coordToIndex(x,y))); }
 	const TerrainProperties &terrainPropertiesAt(size_t index) const
@@ -672,13 +673,28 @@ public:
     { return movement==AIR_MOVEMENT_CLASS ? hasAirTerrainConstraints() : hasTerrainMovementModifiers(); }
     unsigned movementQueueBuckets(int movement) const
     { return movement==AIR_MOVEMENT_CLASS ? 256u : terrainQueueBuckets(); }
-    bool isFreeForMovement(int x, int y, int movement, Uint32 teamMask) const
+	bool terrainAllowsMovementAt(int x, int y, int movement) const
+	{
+		return cellRule(coordToIndex(x, y)).allowsMovement(movement);
+	}
+	enum class DestinationAccess
+	{
+		RequireFree,
+		InteractionEndpoint
+	};
+	// InteractionEndpoint is permitted only for the caller's selected target.
+	// It bypasses destination occupancy and forbidden paint; terrain and diagonal
+	// clearance still apply, including while escaping newly blocked source cells.
+	bool canTraverse(int x, int y, int dx, int dy, int movement, Uint32 teamMask,
+					 DestinationAccess destination = DestinationAccess::RequireFree) const;
+	std::uint8_t terrainConnections(int x, int y, int movement) const;
+	bool isFreeForMovement(int x, int y, int movement, Uint32 teamMask) const
     {
         if(movement==AIR_MOVEMENT_CLASS)
             return isFreeForAirUnit(x,y);
-        return (movement!=WATER_ONLY_CLASS || terrainPropertiesAt(x,y).swimmable)
-            && isFreeForGroundUnit(x,y,movement>0,teamMask);
-    }
+		return terrainAllowsMovementAt(x, y, movement) &&
+			   isFreeForGroundUnit(x, y, movement > 0, teamMask);
+	}
 	bool hasTerrainHealthEffects() const { return terrainHealthEffects; }
 	bool hasAirTerrainConstraints() const { return airTerrainConstraints; }
     // Forbidden paint applies only to ground movement. Transient air traffic
@@ -1210,7 +1226,8 @@ public:
 	//! swimClass must be in [0, MOVEMENT_CLASS_COUNT).
     GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
-	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family);
+	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost,
+						   gradient_kernel::Family family, Uint32 teamMask = 0);
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count

@@ -209,7 +209,7 @@ constexpr const char *source = R"CL(
 #define LOCAL_X (FROZEN_HALO?(CORE_X+8):SIDE_X)
 #define LOCAL_PATCH (LOCAL_X*SIDE_Y)
 inline int wrap(int x,uint size){if((size&(size-1))==0)return x&(size-1);x%=(int)size;return x<0?x+size:x;}
-__kernel void propagate(__global const ushort *a,__global ushort *b,
+__kernel void propagate(__global const uint *a,__global uint *b,
  __global const uint *c0,__global const uint *c1,__global const uint *c2,__global const uint *c3,
  __global const uint *c4,__global const uint *c5,__global const uint *c6,__global const uint *c7,
  __global uint *changed,__global const uint *desc,
@@ -227,19 +227,20 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
  uint gx=get_group_id(0),gy=get_group_id(1),tile=f*stride+gy*pitch+gx;
 
  uint lid=get_local_id(0);
- if(gx>=desc[d+6]||gy>=desc[d+7]||!desc[d+5])return; // Entire workgroup/retired field.
- if(!active[tile]){
+ if(gx>=desc[d+6]||gy>=desc[d+7])return; // Entire workgroup outside this field.
+ if(!desc[d+5]||!active[tile]){
   // Keep ping-pong buffers coherent. Only propagation/local-memory work is skipped.
   for(uint o=lid;o<CORE_X*CORE_Y;o+=WG){uint x=gx*CORE_X+o%CORE_X,y=gy*CORE_Y+o/CORE_X;
   if(x<w&&y<h){uint i=base+y*w+x;b[i]=a[i];}}return;
  }
- __local uint c[LOCAL_PATCH],flags[WG];
- __local ushort v[LOCAL_PATCH];
+ __local uint c[LOCAL_PATCH],flags[WG],connections[LOCAL_PATCH];
+ __local uint v[LOCAL_PATCH];
  __local uint firstSweepChanged;
  for(uint j=lid;j<PATCH;j+=WG){
   int sx=wrap(gx*CORE_X+(int)(j%SIDE_X)-HALO,w),sy=wrap(gy*CORE_Y+(int)(j/SIDE_X)-HALO,h);
   uint localIndex=(j/SIDE_X)*LOCAL_X+j%SIDE_X;
   v[localIndex]=a[base+sy*w+sx];if(!uniform)c[localIndex]=costs[sy*w+sx];
+  connections[localIndex]=(desc[d+5]&4)?costs[w*h+sy*w+sx]:255;
  }
  barrier(CLK_LOCAL_MEM_FENCE);
  // Four parity classes have no adjacent cells within a class, so each
@@ -252,8 +253,12 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
   for(uint q=lid;q<UPDATE_X*UPDATE_Y/4;q+=WG){int sx=FIRST_CELL+(q%(UPDATE_X/2))*2+(color&1),sy=FIRST_CELL+(q/(UPDATE_X/2))*2+(color>>1);uint j=sy*LOCAL_X+sx;uint val=v[j];
    int best=0; if(val)for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
     if((dx||dy)&&(FROZEN_HALO||(sx+dx>=0&&sx+dx<SIDE_X&&sy+dy>=0&&sy+dy<SIDE_Y))){
-     uint k=j+dy*LOCAL_X+dx,src=v[k],step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
-     best=max(best,(int)src-(int)step);
+     uint k=j+dy*LOCAL_X+dx;
+     int slot=(1-dy)*3+1-dx;slot-=slot>4;
+     if(connections[k]&(1u<<slot)){
+      uint src=v[k],step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
+      best=max(best,(int)src-(int)step);
+     }
     }
    }
    if(best>=threshold)val=max(val,(uint)best);
@@ -379,16 +384,18 @@ struct Device
         static std::shared_ptr<Plane> create(API& api,const Request& request,
             std::span<const std::uint8_t> mask,bool scalar) {
             BudgetLease reserved{hostBudget};
-            reserved.resize(estimatedBytes(scalar ? 1 : request.grid.cells(),mask.size(),
-                retainedCostOwnerBytes(request.identity)));
-            return std::make_shared<Plane>(api,request,mask,scalar,reserved);
+			reserved.resize(estimatedBytes(
+				scalar ? 1 : request.grid.cells() * (request.grid.hasConnections() ? 2 : 1),
+				mask.size(), retainedCostOwnerBytes(request.identity)));
+			return std::make_shared<Plane>(api,request,mask,scalar,reserved);
         }
         template<class Request>
         Plane(API& api,const Request& r,std::span<const std::uint8_t> mask,bool scalar,
             BudgetLease& admission):api(&api),identity(r.identity),width(r.grid.width()),height(r.grid.height()) {
             admission.transferTo(hostLease);
-            const auto count=scalar ? std::size_t(1) : r.grid.cells();
-            data.resize(count);
+			const auto count =
+				scalar ? std::size_t(1) : r.grid.cells() * (r.grid.hasConnections() ? 2 : 1);
+			data.resize(count);
             blocked.assign(mask.begin(),mask.end());
             hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),retainedCostOwnerBytes(identity)));
         }
@@ -597,11 +604,14 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     std::size_t capacity = 0, tileCapacity = 0;
     Handle tilesFirst = nullptr, tilesSecond = nullptr;
     // Each lane retains its accounting through concurrent status snapshots.
-    BudgetLease valuesLease{hostBudget}, blockedLease{hostBudget};
-    BudgetLease deviceLease{shared->deviceBudget};
-    std::vector<std::uint16_t> values;
-    std::vector<std::uint8_t> blocked;
-    struct RequiredTransaction {
+	BudgetLease valuesLease{hostBudget}, blockedLease{hostBudget}, tileStateLease{hostBudget};
+	BudgetLease deviceLease{shared->deviceBudget};
+	// Word storage prevents adjacent subword stores from aliasing across
+	// workgroups and odd-sized packed fields on desktop OpenCL drivers.
+	std::vector<UInt> values;
+	std::vector<std::uint8_t> blocked;
+	std::vector<UInt> tileState;
+	struct RequiredTransaction {
         struct Admission {
             std::shared_ptr<Device> parent;
             OpenCLRequiredLifetimePool::Slot* slot=nullptr;
@@ -611,8 +621,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         BudgetLease objectLease{hostBudget};
         std::shared_ptr<Runtime> lane;
         std::array<UInt,64> descriptors{};
-        std::array<UInt,8> flags{};
-        std::array<std::shared_ptr<Device::Plane>,8> costs{};
+		std::array<UInt, 8> flags{}, resetZeros{};
+		std::array<std::shared_ptr<Device::Plane>,8> costs{};
         std::array<std::shared_ptr<OpenCLRequiredControl>,8> controls{};
         std::shared_ptr<Device::Plane> preparing;
         Handle event=nullptr;
@@ -882,15 +892,19 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     std::shared_ptr<Device::Plane> costPlane(const BackendRequest& r) {
 
         const auto packed=r.identity.packedUniformCost;
-        const bool knownUniform=r.identity.owner && r.identity.allCells &&
-            (packed&65535u) && (packed>>16);
-        auto sameIdentity=[&](const auto& p) {
-            return p&&r.identity.owner&&p->identity.owner==r.identity.owner&&p->identity.variant==r.identity.variant&&
-                p->identity.revision==r.identity.revision&&p->identity.allCells==r.identity.allCells&&
-                p->identity.packedUniformCost==packed&&
-                p->width==r.grid.width()&&p->height==r.grid.height()&&(r.identity.allCells||p->blocked==blocked);
-        };
-        // Immutable snapshots allow expensive mask/content comparison outside
+		const bool knownUniform = !r.grid.hasConnections() && r.identity.owner &&
+								  r.identity.allCells && (packed & 65535u) && (packed >> 16);
+		auto sameIdentity = [&](const auto &p)
+		{
+			return !r.grid.hasConnections() && p && r.identity.owner &&
+				   p->identity.owner == r.identity.owner &&
+				   p->identity.variant == r.identity.variant &&
+				   p->identity.revision == r.identity.revision &&
+				   p->identity.allCells == r.identity.allCells &&
+				   p->identity.packedUniformCost == packed && p->width == r.grid.width() &&
+				   p->height == r.grid.height() && (r.identity.allCells || p->blocked == blocked);
+		};
+		// Immutable snapshots allow expensive mask/content comparison outside
         // the cache lock. Only publication and replacement need that lock.
         std::array<std::shared_ptr<Device::Plane>,8> candidates;
         {std::lock_guard lock(shared->cacheMutex);candidates=shared->planes;}
@@ -927,7 +941,13 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 p->data[i]=step.cardinal|(step.diagonal<<16);
                 if (i && p->data[i] != p->data[0]) p->uniform = false;
             }
-            {std::lock_guard lock(shared->cacheMutex);candidates=shared->planes;}
+			if (r.grid.hasConnections())
+			{
+				p->uniform = false;
+				for (std::size_t i = 0; i < n; ++i)
+					p->data[n + i] = r.grid.incomingMask(i);
+			}
+			{std::lock_guard lock(shared->cacheMutex);candidates=shared->planes;}
             for(auto& other:candidates) if(other&&other!=p&&other->published.load()&&other->uniform==p->uniform&&
                 (p->uniform || (other->width==p->width&&other->height==p->height))&&other->data==p->data) {
                 ++status.costCacheHits;
@@ -965,8 +985,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             throw;
         }
     }
-    void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging)
-    {
+	void computeBatch(std::span<const BackendRequest *const> requests, std::span<UInt> staging)
+	{
 
         if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
         std::size_t total = 0;
@@ -977,20 +997,27 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             width = std::max(width, UInt(r->grid.width()));
             height = std::max(height, UInt(r->grid.height()));
         }
-        if (total > std::numeric_limits<UInt>::max() ||
-            total > (std::numeric_limits<std::size_t>::max()-288) / (2 * sizeof(std::uint16_t)))
-            throw std::runtime_error("Gradient batch exceeds OpenCL index range");
+		if (total > std::numeric_limits<UInt>::max() ||
+			total > (std::numeric_limits<std::size_t>::max() - 288) / (2 * sizeof(UInt)))
+			throw std::runtime_error("Gradient batch exceeds OpenCL index range");
         if (total > capacity)
         {
 
             buffers();
-            try {deviceLease.resize(total*2*sizeof(std::uint16_t)+288);}
-            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();deviceLease.resize(total*2*sizeof(std::uint16_t)+288);}
-            Int error = 0;
+			try
+			{
+				deviceLease.resize(total * 2 * sizeof(UInt) + 288);
+			}
+			catch (const BudgetExceeded &)
+			{
+				shared->evictUnusedPlanes();
+				deviceLease.resize(total * 2 * sizeof(UInt) + 288);
+			}
+			Int error = 0;
             for (auto *buffer : {&first, &second})
             {
-                *buffer = api.CreateBuffer(context, 1, total * sizeof(std::uint16_t), nullptr, &error);
-                check(error);
+				*buffer = api.CreateBuffer(context, 1, total * sizeof(UInt), nullptr, &error);
+				check(error);
             }
             changed = api.CreateBuffer(context, 1, 8 * sizeof(UInt), nullptr, &error);
             check(error);
@@ -1018,16 +1045,24 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 }
             }
             held[field]=costPlane(*r);
-            const std::array descriptor{UInt(r->grid.width()),UInt(r->grid.height()),UInt(offset),UInt(field),
-                UInt(r->limit),held[field]->uniform ? 3u : 1u,UInt((r->grid.width()+variants[selectedVariant].tileWidth-1)/variants[selectedVariant].tileWidth),
-                UInt((r->grid.height()+variants[selectedVariant].tileHeight-1)/variants[selectedVariant].tileHeight)};
-            std::copy(descriptor.begin(),descriptor.end(),desc.begin()+field*8);
+			const std::array descriptor{
+				UInt(r->grid.width()),
+				UInt(r->grid.height()),
+				UInt(offset),
+				UInt(field),
+				UInt(r->limit),
+				(held[field]->uniform ? 3u : 1u) | (r->grid.hasConnections() ? 4u : 0u),
+				UInt((r->grid.width() + variants[selectedVariant].tileWidth - 1) /
+					 variants[selectedVariant].tileWidth),
+				UInt((r->grid.height() + variants[selectedVariant].tileHeight - 1) /
+					 variants[selectedVariant].tileHeight)};
+			std::copy(descriptor.begin(),descriptor.end(),desc.begin()+field*8);
             offset+=n;++field;
         }
         // Polling uploads always use retained staging. Original seeds stay
         // untouched and unborrowed until commit, including failed drain paths.
-        const auto seedBytes=total*sizeof(std::uint16_t);
-        write(first,staging.data(),seedBytes);
+		const auto seedBytes = total * sizeof(UInt);
+		write(first,staging.data(),seedBytes);
         write(descriptors, desc.data(), requests.size()*8*sizeof(UInt));
         Handle a = first, b = second;
         const auto &variant = variants[selectedVariant];
@@ -1040,10 +1075,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         {
 
             for(auto* mask:{&tilesFirst,&tilesSecond}) {if(*mask) api.ReleaseMemObject(*mask);*mask=nullptr;}
-            deviceLease.resize(capacity*2*sizeof(std::uint16_t)+288);
-            tileCapacity=0;
-            deviceLease.resize(capacity*2*sizeof(std::uint16_t)+288+tileCount*2*sizeof(UInt));
-            for (auto *mask : {&tilesFirst, &tilesSecond})
+			deviceLease.resize(capacity * 2 * sizeof(UInt) + 288);
+			tileCapacity=0;
+			deviceLease.resize(capacity * 2 * sizeof(UInt) + 288 + tileCount * 2 * sizeof(UInt));
+			for (auto *mask : {&tilesFirst, &tilesSecond})
             {
                 if (*mask)
                     api.ReleaseMemObject(*mask);
@@ -1055,15 +1090,17 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             tileCapacity = tileCount;
         }
 
-        UInt one = 1;
-        check(fill(queue, tilesFirst, &one, sizeof one, 0, tileCount * sizeof(UInt), 0,
-                                    nullptr, nullptr));
-        Handle active = tilesFirst, nextActive = tilesSecond;
+		resizeStaging(tileState, tileCount, tileStateLease);
+		std::fill(tileState.begin(), tileState.end(), 1u);
+		write(tilesFirst, tileState.data(), tileCount * sizeof(UInt));
+		std::fill(tileState.begin(), tileState.end(), 0u);
+		Handle active = tilesFirst, nextActive = tilesSecond;
         const std::size_t global[]{std::size_t(pitch) * variant.threads, std::size_t(rows),
                                    requests.size()},
             local[]{variant.threads, 1, 1};
-        std::array<UInt,8> zero{};
-        auto& flags=required->flags;flags.fill(0);
+		auto &zero = required->resetZeros;
+		zero.fill(0);
+		auto& flags=required->flags;flags.fill(0);
         ++status.batches;
         status.maxBatchFields = std::max(status.maxBatchFields, std::uint64_t(requests.size()));
         // Each lane owns one Frozen8 kernel and binds this immutable batch.
@@ -1087,11 +1124,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 // Only the last dispatch's changes are read by the host. The
                 // in-order queue clears earlier accumulated flags before it.
                 if (dispatch+1 == count)
-                    check(fill(queue, changed, zero.data(), sizeof(UInt), 0,
-                                                requests.size() * sizeof(UInt), 0, nullptr, nullptr));
-                check(fill(queue,nextActive,zero.data(),sizeof(UInt),0,
-                           tileCount*sizeof(UInt),0,nullptr,nullptr));
-                argument(0,a);argument(1,b);
+					// Explicitly upload this tiny reset: a four-byte device
+					// fill can leave stale high bits on Apple OpenCL drivers.
+					write(changed, zero.data(), requests.size() * sizeof(UInt));
+				write(nextActive, tileState.data(), tileCount * sizeof(UInt));
+				argument(0,a);argument(1,b);
                 argument(12,active);argument(13,nextActive);
                 check(
                     enqueueKernel(queue,kernel,3,nullptr,global,local,0,nullptr,
@@ -1111,9 +1148,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 status.deviceObservedFields+=requests.size();deviceObserved=true;
 
             }
-            ++status.hostChecks;
-
-            bool retired = false;
+			++status.hostChecks;
+			bool retired = false;
             for (std::size_t f = 0; f < requests.size(); ++f)
                 if (desc[f * 8 + 5] && !flags[f])
                 {
@@ -1123,10 +1159,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 }
             if (std::none_of(flags.begin(), flags.begin() + requests.size(), [](UInt v) { return v != 0; }))
             {
+				read(a, staging.data(), total * sizeof(UInt), true);
 
-                read(a,staging.data(),total*sizeof(std::uint16_t),true);
-
-                return;
+				return;
             }
             // No later kernel consumes descriptors once every field is done.
             // Mixed batches still retire finished fields before dispatching again.
@@ -1204,8 +1239,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 if(request.grid.cells()>std::numeric_limits<std::size_t>::max()-total) throw BudgetExceeded();
                 total+=request.grid.cells();
             }
-            if(total>OpenCLHostBudget/sizeof(std::uint16_t)) throw BudgetExceeded();
-            try {resizeStaging(values,total,valuesLease);}
+			if (total > OpenCLHostBudget / sizeof(UInt))
+				throw BudgetExceeded();
+			try {resizeStaging(values,total,valuesLease);}
             catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(values,total,valuesLease);}
 
             std::size_t outputOffset=0;

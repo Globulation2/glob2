@@ -53,6 +53,15 @@
 
 `Torus` wrap and offset arithmetic; `floodFrom`/`stepsFrom`, the one eight-connected breadth-first flood (with a step limit and the visit order for callers that need it); `walkableTiles` (deposits that do not block ground units, such as tall grass, stay walkable) and `groundUnitTiles` passability masks; `unitTilesByTeam` and `firstColonyCutOff`; `Axes`, the map's axes turned so that u runs along its longer side and v across it, the frame of a belt that wraps the map the long way (Ring world, Braided river); `reachFrom`, the same flood for one that is small beside the map (a few thousand tiles on a map of hundreds of thousands): the same tiles in the same order with their steps, at the cost of the tiles reached rather than of the map, which `floodFrom` pays on every call to clear its step field and scan its source mask
 
+The `Torus` flood overloads are geometric mask operations: use them for clearance,
+crop containment, influence and layout proposals. The `Map` overloads enforce the
+finished terrain's walking or amphibious connections, including dry shared shore
+edges/vertices and two clear diagonal side cells. Their open mask owns physical
+obstacles and can explicitly model cleared deposits; transient units are ignored.
+Use `groundRegions` for physical component labels and `groundConnection` for a
+single step under the same mask. Final walking/access proofs must use these Map
+queries rather than treating eight touching mask cells as a movement graph.
+
 ## Topology
 
 `connectedRegions` component labelling with explicit wrap and neighbour policy; `labelComponents` (assign component owners and report the first mixed-label component, keeping unlabelled connecting ground); `regionAdjacency` and `graphDistances` over sparse labels; `DisjointSets`, union-find for Kruskal-style networks (Stone highlands' passes, `carveNearTree`)
@@ -107,7 +116,7 @@ The ambient layer and its fairness guards: `scaledCount`/`scaledShare`, `placeRe
 
 ## Walls
 
-Walls a design builds and the checks that prove they hold: `seaVertices` and `seaMargin` (the land a swimmer can stand on), `sealCoasts` (stone on every grass tile touching that margin, so a coast is sealed; City states, Carousel, Switchbacks), `islandSeaMargin` and `sealedIslandStone` (the margin and the stone of walled land in the sea with ponds and sand roads, once for Carousel and Switchbacks), `checkGatePartition` (seal explicit tile plugs, detect diagonal or wrapped boundary leaks, and prove each connected plug touches exactly its two labelled regions); `labelBorders` (a wall between labelled regions no unit can cross even diagonally, one to three tiles thick, or with doors a design leaves open; Stone highlands' ridges, Amphitheatre's borders, Carousel's walls), `designedStone` (a designed band's stone and any gaps the beach pass left), `reachesWithShut`, `pieceLeak` and `seaEntry` (with the doors shut, does any part reach another, or the sea reach inside), `towerReach` (how close a tower on some ground comes to shooting at a target: towers scan square rings with no line of sight), `walkSpread` (every colony's walk to its own target, and how uneven they are) and `firstRegionLeak` (reachable ground where two labelled regions meet that a design says must not; Maze's walls); `colonyLeak`, the first two colonies that can walk to each other with a set of tiles shut (a map's causeways or gates), crops and buildings counted as the ground they will leave; `wallStanding` (a validator's proof that every designed wall tile holds stone and every gate is open; The Glacis, Caravanserai)
+Walls a design builds and the checks that prove they hold: `seaVertices` and `seaMargin` (the land a swimmer can stand on), `sealCoasts` (stone on every grass tile touching that margin, so a coast is sealed; City states, Carousel, Switchbacks), `islandSeaMargin` and `sealedIslandStone` (the margin and the stone of walled land in the sea with ponds and sand roads, once for Carousel and Switchbacks), `checkGatePartition` (seal explicit tile plugs, detect diagonal or wrapped boundary leaks, and prove each connected plug touches exactly its two labelled regions; its Map overload checks physical terrain connections, while its Torus overload checks layout geometry); `labelBorders` (a wall between labelled regions no unit can cross even diagonally, one to three tiles thick, or with doors a design leaves open; Stone highlands' ridges, Amphitheatre's borders, Carousel's walls), `designedStone` (a designed band's stone and any gaps the beach pass left), `reachesWithShut`, `pieceLeak` and `seaEntry` (with the doors shut, does any part reach another, or the sea reach inside), `towerReach` (how close a tower on some ground comes to shooting at a target: towers scan square rings with no line of sight), `walkSpread` (every colony's walk to its own target, and how uneven they are) and `firstRegionLeak` (reachable ground where two labelled regions meet that a design says must not; Maze's walls); `colonyLeak`, the first two colonies that can walk to each other with a set of tiles shut (a map's causeways or gates), crops and buildings counted as the ground they will leave; `wallStanding` (a validator's proof that every designed wall tile holds stone and every gate is open; The Glacis, Caravanserai)
 
 ## Tessellation
 
@@ -223,7 +232,12 @@ The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`,
 
 ## StartQuality
 
-`scoreStarts`, the finished map's colony measurements; `FairnessModel.h` scores them and the service ranks candidates by the resulting fairness
+`scoreStarts` measures finished colonies for `FairnessModel.h` and ranks complete
+start proposals. Its distance/reach fields retain the established geometric
+obstacle-mask catchment heuristic; they do not certify directional shore access
+or diagonal clearance. This preserves roll scoring independently of the movement
+upgrade. Final viability and connectivity proofs use the Map-based `Grid` floods
+and `Contact` queries instead.
 
 ## GenerationContext
 

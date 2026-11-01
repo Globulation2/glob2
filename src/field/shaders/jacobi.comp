@@ -14,6 +14,8 @@ void main(){
   int x=int(i%width),y=int(i/width),threshold=max(2,65535-int(cap));
   for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)if(dx!=0||dy!=0){
    uint k=wrap(y+dy,height)*width+wrap(x+dx,width);
+   int slot=(1-dy)*3+1-dx;slot-=int(slot>4);
+   if((costs[width*height+k]&(1u<<slot))==0)continue;
    uint step=(dx!=0&&dy!=0)?costs[k]>>16:costs[k]&65535;
    int candidate=int(a[k])-int(step);
    if(candidate>=threshold)value=max(value,uint(candidate));

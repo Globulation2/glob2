@@ -4,6 +4,9 @@
 #include <cassert>
 #include <bit>
 #include <cstddef>
+#include <cstdint>
+#include <memory>
+#include <vector>
 
 namespace field
 {
@@ -13,6 +16,11 @@ struct Offset
 };
 // Ordering is part of the traversal contract, including aliased neighbours on
 // thin grids. Callers may supply a different stencil without changing the solver.
+constexpr unsigned directionIndex(int dx, int dy)
+{
+	const unsigned slot = (dy + 1) * 3 + dx + 1;
+	return slot - (slot > 4);
+}
 inline constexpr std::array<Offset, 4> Cardinal = {{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}};
 inline constexpr std::array<Offset, 8> Surrounding = {
 	{{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}}};
@@ -22,6 +30,7 @@ inline constexpr std::array<Offset, 8> Surrounding = {
 class Grid
 {
 	int w, h, wMask, hMask;
+	std::shared_ptr<const std::vector<std::uint8_t>> edges;
 	static int mask(int size) { return (size & (size - 1)) == 0 ? size - 1 : -1; }
 	static int wrap(int coordinate, int size, int bitMask)
 	{
@@ -36,6 +45,32 @@ class Grid
 	{
 		assert(width > 0 && height > 0);
 	}
+	Grid withIncomingConnections(std::shared_ptr<const std::vector<std::uint8_t>> value) const
+	{
+		assert(value && value->size() == cells());
+		auto result = *this;
+		result.edges = std::move(value);
+		return result;
+	}
+	// Public connections are forward edges. Reverse solvers retain their transpose.
+	Grid withConnections(std::shared_ptr<const std::vector<std::uint8_t>> value) const
+	{
+		assert(value && value->size() == cells());
+		auto incoming = std::make_shared<std::vector<std::uint8_t>>(cells(), 0);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+				for (unsigned d = 0; d < Surrounding.size(); ++d)
+					if ((*value)[y * w + x] & (1u << d))
+					{
+						const auto o = Surrounding[d];
+						(*incoming)[index(x + o.x, y + o.y)] |= 1u << (7 - d);
+					}
+		return withIncomingConnections(std::move(incoming));
+	}
+	std::size_t connectionBytes() const { return edges ? edges->capacity() : 0; }
+	bool hasConnections() const { return bool(edges); }
+	// Bits name predecessors relative to destination i, in Surrounding order.
+	std::uint8_t incomingMask(std::size_t i) const { return edges ? (*edges)[i] : 255; }
 	int width() const { return w; }
 	int height() const { return h; }
 	bool powerOfTwo() const { return wMask >= 0 && hMask >= 0; }

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "MovementConnections.h"
 #include "SnapshotGradient.h"
 #include "GradientExecutionAudit.h"
 #include "ComputeExecutor.h"
@@ -94,8 +95,8 @@ bool seedCachedMaterials(MaterialSeedCache& cache, const SimulationSnapshot::Han
                         const MaterialMask mask=!mobile?0:(traits&0x20000)?MapState::materialMaskAt(view,i)
                             :deposit.amount?MaterialMask(traits&AllMaterials):0;
                         const auto& rules=view.terrainProperties(i);
-                        const Uint8 terrain=(rules.walkable?1:0)|((rules.walkable||rules.swimmable)?2:0);
-                        // Only facts that affect seeds: moving units, animation and positive
+						const Uint8 terrain = (*view.rules)[view.cellRules[i]].groundAccess;
+						// Only facts that affect seeds: moving units, animation and positive
                         // stock changes do not alter this template. All twelve materials fit.
                         static_assert(MaterialCount==12);
                         if constexpr (Air) {
@@ -260,10 +261,12 @@ std::uint64_t seed(const Request& request, const SimulationSnapshot::Handle& sna
     case Kind::Forbidden:
         for (size_t i=0; i<size; ++i) {
             const bool air=request.swim==AIR_MOVEMENT_CLASS;
-            const bool blocked=(air?MapState::resourceBlocksAir(view,i):MapState::resourceBlocksGround(view,i))
-                || (!air&&(view.occupancy[i].building!=NOGBID || view.occupancy[i].immobileUnit!=IMMOBILE_UNIT_NONE))
-                || !gradient_kernel::terrainAllowsMovement(view.terrainProperties(i),request.swim);
-            out[i]=blocked?GRADIENT_FORBIDDEN:(!air&&(view.areas[i].forbidden&mask))?GRADIENT_UNREACHABLE:GRADIENT_AT_GOAL;
+			const bool blocked = (air ? MapState::resourceBlocksAir(view, i)
+									  : MapState::resourceBlocksGround(view, i)) ||
+								 (!air && (view.occupancy[i].building != NOGBID ||
+										   view.occupancy[i].immobileUnit != IMMOBILE_UNIT_NONE)) ||
+								 !MapState::terrainAllowsMovement(view, i, request.swim);
+			out[i]=blocked?GRADIENT_FORBIDDEN:(!air&&(view.areas[i].forbidden&mask))?GRADIENT_UNREACHABLE:GRADIENT_AT_GOAL;
             goalCount+=out[i]==GRADIENT_AT_GOAL;
         }
         for (size_t i=0; i<size; ++i) if (out[i]==GRADIENT_UNREACHABLE)
@@ -359,11 +362,14 @@ gradient_kernel::CostIdentity snapshotCostIdentity(const Request& request, const
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, GradientWorkspace& scratch)
 {
     scratch.family = backendFamily(request.kind);
-    gradient_kernel::propagateTerrainField(out, request.swim, gradient_kernel::COST_LIMIT,
-        {snapshot.width, snapshot.height}, scratch,
-        [rules=snapshot.terrain->cellRules.data()](size_t i) { return rules[i]; },
-        (request.swim==AIR_MOVEMENT_CLASS ? snapshot.terrain->airConstraints : snapshot.terrain->movementModifiers), *snapshot.terrain->rules, request.terrainBuckets,
-        snapshotCostIdentity(request, snapshot));
+	gradient_kernel::propagateTerrainField(
+		out, request.swim, gradient_kernel::COST_LIMIT,
+		MapState::movementGrid(snapshot.view(), request.swim,
+							   request.kind == Kind::Forbidden ? 0 : Uint32(1) << request.team),
+		scratch, [rules = snapshot.terrain->cellRules.data()](size_t i) { return rules[i]; },
+		(request.swim == AIR_MOVEMENT_CLASS ? snapshot.terrain->airConstraints
+											: snapshot.terrain->movementModifiers),
+		*snapshot.terrain->rules, request.terrainBuckets, snapshotCostIdentity(request, snapshot));
 }
 
 namespace
@@ -413,8 +419,10 @@ void validatePropagation(const PropagationField& field)
 {
     using namespace gradient_kernel;
     const auto &terrain = *field.snapshot->terrain;
-    const field::Grid grid(field.snapshot->width, field.snapshot->height);
-    auto at = [&](std::size_t i) { return terrain.cellRules[i]; };
+	const auto grid = MapState::movementGrid(
+		field.snapshot->view(), field.request.swim,
+		field.request.kind == Kind::Forbidden ? 0 : Uint32(1) << field.request.team);
+	auto at = [&](std::size_t i) { return terrain.cellRules[i]; };
     if (!(field.request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers))
     {
         propagateFieldCPU(out, field.request.swim, COST_LIMIT, grid, *field.scratch,
@@ -562,12 +570,15 @@ std::shared_ptr<const MinimalCosts> minimalView(const Request& request,const Sim
     }catch(const std::bad_alloc&){return decline(MinimalDecline::Allocation);}
     catch(...){return decline(MinimalDecline::Representation);}
 }
-std::shared_ptr<gradient_kernel::OwnedGradientField> minimalHolder(std::size_t count,MinimalDecline& reason) noexcept {
-    using namespace gradient_kernel;
+std::shared_ptr<gradient_kernel::OwnedGradientField>
+minimalHolder(std::size_t count, MinimalDecline &reason, bool connected) noexcept
+{
+	using namespace gradient_kernel;
     constexpr auto fixed=sizeof(OwnedGradientField)+256;
-    if(count>(OpenCLHostBudget-fixed)/sizeof(Uint16))return {};
-    const auto bytes=fixed+count*sizeof(Uint16);
-    if(!reserveOpenCLHostBytes(bytes))return {};
+	if (count > (OpenCLHostBudget - fixed) / (sizeof(Uint16) + (connected ? 1 : 0)))
+		return {};
+	const auto bytes = fixed + count * (sizeof(Uint16) + (connected ? 1 : 0));
+	if(!reserveOpenCLHostBytes(bytes))return {};
     // Cover holder/control and original output ownership before allocation or
     // transfer. The deleter releases only after members and object are gone.
     struct Admission {std::size_t bytes;~Admission(){if(bytes)releaseOpenCLHostBytes(bytes);}} admission{bytes};
@@ -604,11 +615,16 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
     ++minimalAttempted;
     const auto view=minimalView(request,snapshot);if(!view)return {};
     auto reason=MinimalDecline::Budget;
-    auto owned=minimalHolder(std::size_t(snapshot.width)*snapshot.height,reason);
-    if(!owned){noteMinimalDecline(reason);return {};}
+	auto owned = minimalHolder(std::size_t(snapshot.width) * snapshot.height, reason,
+							   request.swim != AIR_MOVEMENT_CLASS);
+	if(!owned){noteMinimalDecline(reason);return {};}
     if(!owned->requiredControl){noteMinimalDecline(MinimalDecline::Budget);return {};}
-    owned->inputs=view;owned->session=std::move(session);owned->grid={snapshot.width,snapshot.height};
-    owned->family=backendFamily(request.kind);owned->cpuBuckets=request.terrainBuckets;
+	owned->inputs = view;
+	owned->session = std::move(session);
+	owned->grid =
+		MapState::movementGrid(snapshot.view(), request.swim,
+							   request.kind == Kind::Forbidden ? 0 : Uint32(1) << request.team);
+	owned->family=backendFamily(request.kind);owned->cpuBuckets=request.terrainBuckets;
     owned->decision=decision;owned->due=due;
     // Reuse the bounded validity/uniform proof, but replace its graph owner
     // and retained byte estimate before anything escapes to the backend.

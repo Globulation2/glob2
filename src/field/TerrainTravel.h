@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "PowerOfTwo.h"
+#include "Grid.h"
 #include "TerrainMovementCosts.h"
 #include "map/TerrainRegistry.h"
+#include "map/CellRules.h"
 #include <limits>
 #include <queue>
 #include <vector>
@@ -20,6 +22,13 @@ constexpr bool terrainTravelAllowed(const TerrainProperties& p,TerrainTravel mod
 {
     return mode==TerrainTravel::Geometric || (mode==TerrainTravel::Fly?p.flyable:
         p.walkable || (mode==TerrainTravel::Swim && p.swimmable));
+}
+inline bool terrainTravelAllowed(const CellRule &rule, TerrainTravel mode)
+{
+	return mode == TerrainTravel::Geometric ||
+		   rule.allowsMovement(mode == TerrainTravel::Fly    ? AIR_MOVEMENT_CLASS
+							   : mode == TerrainTravel::Swim ? 1
+															 : 0);
 }
 constexpr unsigned terrainTravelCost(const TerrainProperties& p,TerrainTravel mode)
 {
@@ -40,8 +49,10 @@ static_assert(gradient_kernel::scaledTerrainStep(GRADIENT_STEP,64)<TERRAIN_TRAVE
 // change diagonal distances on routes that never touch modified terrain.
 // Saturate only the public short distance; never the queue's ordering key.
 // Costs is a TerrainRegistry indexed by terrain type, or a CellRuleTable indexed by cell rule.
-template<class Values,class TerrainAt,class Costs=TerrainRegistry>
-void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,TerrainAt terrainAt,const Costs& registry=*TerrainRegistry::builtins())
+template <class Values, class TerrainAt, class Costs = TerrainRegistry>
+void expandTerrainTravel(Values &values, int width, int height, TerrainTravel mode,
+						 TerrainAt terrainAt, const Costs &registry = *TerrainRegistry::builtins(),
+						 Grid connections = {1, 1})
 {
     constexpr unsigned infinity=std::numeric_limits<unsigned>::max();
     std::vector<unsigned> costs(values.size(),infinity);
@@ -74,7 +85,13 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
                 const int nx=ux<0?width-1:ux==width?0:ux,ny=uy<0?height-1:uy==height?0:uy;
                 const int next=ny*width+nx;
                 if(values[next]==1)continue;
-                if(candidate<costs[next])
+				if (connections.hasConnections() &&
+					!(connections.incomingMask(index) & (1u << directionIndex(dx, dy))))
+					continue;
+				if (mode != TerrainTravel::Fly && mode != TerrainTravel::Geometric && dx && dy &&
+					(values[y * width + nx] == 1 || values[ny * width + x] == 1))
+					continue;
+				if(candidate<costs[next])
                 {
                     costs[next]=candidate;
                     // The positive step is smaller than the ring, so appends
@@ -94,8 +111,10 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
 // Forward, byte-valued reach/influence fields retain 0 obstacles and 1 floor.
 // Keep sub-tile costs in the queue so two half-cost road steps consume one
 // strength unit. Only publish rounded strength after the full expansion.
-template<class Value,class TerrainAt,class Costs=TerrainRegistry>
-void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrainAt,const Costs& registry=*TerrainRegistry::builtins())
+template <class Value, class TerrainAt, class Costs = TerrainRegistry>
+void expandTerrainInfluence(Value *values, int width, int height, TerrainAt terrainAt,
+							const Costs &registry = *TerrainRegistry::builtins(),
+							Grid connections = {1, 1})
 {
     const int size=width*height;
     std::vector<unsigned> strength(size);
@@ -115,7 +134,10 @@ void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrain
             const int nx=ux<0?width-1:ux==width?0:ux,ny=uy<0?height-1:uy==height?0:uy;
             const int next=ny*width+nx;
             if(!values[next])continue;
-            const unsigned step=registry.groundTravelCost(terrainAt(next));
+			if (connections.hasConnections() &&
+				!(connections.incomingMask(next) & (1u << directionIndex(-dx, -dy))))
+				continue;
+			const unsigned step=registry.groundTravelCost(terrainAt(next));
             if(remaining<=step+GRADIENT_STEP)continue;
             const unsigned candidate=remaining-step;
             if(candidate>strength[next]){strength[next]=candidate;queue.emplace(candidate,next);}

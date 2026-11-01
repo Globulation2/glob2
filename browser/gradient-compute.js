@@ -33,19 +33,19 @@ addToLibrary({
     },
     async execute(signal, seeds, costs, output, width, height, cap, frozen) {
       const device = this.device, cells = width * height, pitch = Math.ceil(width / 16), rows = Math.ceil(height / 16), tiles = pitch * rows;
-      if (!device || cells * 4 > device.limits.maxStorageBufferBindingSize) throw Error('WebGPU gradient buffer limit');
+      if (!device || cells * 8 > device.limits.maxStorageBufferBindingSize) throw Error('WebGPU gradient buffer limit');
       const x = frozen ? pitch : Math.ceil(cells / 128), y = frozen ? rows : 1;
       if (x > device.limits.maxComputeWorkgroupsPerDimension || y > device.limits.maxComputeWorkgroupsPerDimension) throw Error('WebGPU gradient dispatch limit');
       const buffers = [], make = (size, usage) => { const b = device.createBuffer({size, usage}); buffers.push(b); return b; };
       device.pushErrorScope('validation'); device.pushErrorScope('out-of-memory');
       try {
         const storage = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC;
-        const a = make(cells * 4, storage), b = make(cells * 4, storage), c = make(cells * 4, storage);
+        const a = make(cells * 4, storage), b = make(cells * 4, storage), c = make(cells * 8, storage);
         const changed = make(4, storage), params = make(16, storage), active = make(tiles * 4, storage), next = make(tiles * 4, storage);
         const read = make(Math.max(4, cells * 4), GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST);
         // Copies do not retain views of shared Wasm memory across await points.
         device.queue.writeBuffer(a, 0, new Uint32Array(HEAPU32.subarray(seeds >> 2, (seeds >> 2) + cells)));
-        device.queue.writeBuffer(c, 0, new Uint32Array(HEAPU32.subarray(costs >> 2, (costs >> 2) + cells)));
+        device.queue.writeBuffer(c, 0, new Uint32Array(HEAPU32.subarray(costs >> 2, (costs >> 2) + cells * 2)));
         device.queue.writeBuffer(params, 0, new Uint32Array([width, height, cap, pitch]));
         device.queue.writeBuffer(active, 0, new Uint32Array(tiles).fill(1));
         const pipeline = this.pipelines[frozen ? 0 : 1];

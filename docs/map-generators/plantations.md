@@ -4,7 +4,7 @@ An archipelago of small farm islands. Every island is a plantation: a square plo
 with one vertex of sand at its heart, the only ground a building can stand on, and wheat or wood
 over everything between that ring and the beach; the sea waters the crops, since no tile of an
 island is more than about ten from the water. Two sand lanes run from every plot to the shore.
-Nothing joins the islands: units swim, and the straits between the Voronoi cells (`Channels`'
+By default, nothing joins the islands: units swim, and the straits between the Voronoi cells (`Channels`'
 `straitsBetweenCells`) are an exact corner width, four by default, so only a level-3 tower reaches
 the next island's first grass. A plot is smaller than a base (10 tiles square), so every colony
 holds several islands from the first minute: its home island with the swarm and a completed
@@ -16,6 +16,10 @@ swarm, breeding units that could never leave, so the pair is seeded rather than 
 round by round, as many to each colony as to any other), with a rock islet beside them.
 Every owned island starts with the shared **Starting workers** count beside its swarm
 (four workers per island by default), including when causeways connect the islands.
+Optional causeways connect only a colony's home and granted islands. Their sand strokes
+have a 1.75-vertex half-width, leaving fully walkable cells and clear diagonal side
+cells under conservative terrain traversal. Ordinary shore edges remain walkable;
+isolated land tips do not.
 This count applies to the islands actually granted after any small-map reduction. The rest
 are neutral plantations of wheat, wood or both, orchard islets and rock islets. Every island is
 first stamped as the nominal rounded square and the homes and granted islands dealt on that; then,

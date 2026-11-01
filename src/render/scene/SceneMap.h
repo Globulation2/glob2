@@ -91,6 +91,7 @@ class SceneMap
 	//! The cell's terrain when all four corners agree, otherwise MIXED_TERRAIN.
 	TerrainType terrainTypeAt(int x, int y) const;
 	const TerrainProperties &terrainPropertiesAt(int x, int y) const;
+	bool terrainAllowsMovementAt(int x, int y, int movement) const;
 	// Detailed materials use shipped appearance IDs; custom canonical IDs never
 	// index the renderer's fixed builtin binding table.
 	TerrainType appearanceAt(int x, int y) const;

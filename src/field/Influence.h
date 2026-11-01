@@ -52,6 +52,22 @@ class ConvergentInfluence
 			const auto value = current[x];
 			if (value == 0 || value == 255)
 				continue;
+			if (grid.hasConnections())
+			{
+				unsigned strongest = value;
+				for (const auto o : Surrounding)
+				{
+					const auto next = grid.index(x + o.x, y + o.y);
+					if (grid.incomingMask(next) & (1u << directionIndex(-o.x, -o.y)))
+						strongest = std::max(strongest, unsigned(values[next]));
+				}
+				if (strongest >= 3 && strongest - 1 > value)
+				{
+					current[x] = strongest - 1;
+					changed = true;
+				}
+				continue;
+			}
 			const int left = Masked ? (x - 1) & grid.maskX() : grid.wrapX(x - 1);
 			const int right = Masked ? (x + 1) & grid.maskX() : grid.wrapX(x + 1);
 			const auto strongest =

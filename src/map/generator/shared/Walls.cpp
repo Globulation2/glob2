@@ -71,7 +71,7 @@ int seaEntry(const Map &map, const Torus &t, const std::vector<unsigned char> &m
 		::MapGeneration::generationCheckpoint();
 		beach.at(i) = open.at(i) && margin.at(i);
 	}
-	const std::vector<int> landed = stepsFrom(t, beach, open);
+	const std::vector<int> landed = stepsFrom(map, beach, open);
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
@@ -211,7 +211,7 @@ std::vector<int> reachesWithShut(const Map &map, const Torus &t,
 		if (shut.at(i))
 			open.at(i) = 0;
 	}
-	return stepsFrom(t, from, open);
+	return stepsFrom(map, from, open);
 }
 
 std::array<int, 2> colonyLeak(const Map &map, const Torus &t, int teams,
@@ -222,14 +222,14 @@ std::array<int, 2> colonyLeak(const Map &map, const Torus &t, int teams,
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		open.at(i) =
-			!shut.at(i) && map.terrainPropertiesAt(i).walkable && !permanentResourceBarrier(map, i);
+		open.at(i) = !shut.at(i) && map.terrainAllowsMovementAt(t.remainderX(i), i / t.w, 0) &&
+					 !permanentResourceBarrier(map, i);
 	}
 	const std::vector<std::vector<int>> units = unitTilesByTeam(map, teams);
 	for (int k = 0; k < teams; ++k)
 	{
 		::MapGeneration::generationCheckpoint();
-		const std::vector<int> steps = stepsFrom(t, tileMask(t, units.at(k)), open);
+		const std::vector<int> steps = stepsFrom(map, tileMask(t, units.at(k)), open);
 		for (int other = 0; other < teams; ++other)
 		{
 			::MapGeneration::generationCheckpoint();
@@ -254,8 +254,8 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		open.at(i) =
-			!shut.at(i) && map.terrainPropertiesAt(i).walkable && !permanentResourceBarrier(map, i);
+		open.at(i) = !shut.at(i) && map.terrainAllowsMovementAt(t.remainderX(i), i / t.w, 0) &&
+					 !permanentResourceBarrier(map, i);
 	}
 	int pieces = 0;
 	for (int p : piece)
@@ -272,7 +272,7 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 			::MapGeneration::generationCheckpoint();
 			from.at(i) = piece.at(i) == p && open.at(i);
 		}
-		const std::vector<int> reach = stepsFrom(t, from, open);
+		const std::vector<int> reach = stepsFrom(map, from, open);
 		for (int i = 0; i < n; ++i)
 		{
 			::MapGeneration::generationCheckpoint();
@@ -283,9 +283,10 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 	return -1;
 }
 
-GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned char> &passable,
-									  const std::vector<int> &labels,
-									  const std::vector<TileGate> &gates)
+static GatePartitionCheck gatePartition(const Torus &t, const std::vector<unsigned char> &passable,
+										const std::vector<int> &labels,
+										const std::vector<TileGate> &gates, const Map *map,
+										bool canSwim)
 {
 	if (passable.size() != size_t(t.size()) || labels.size() != passable.size())
 		throw std::invalid_argument("Gate partition grids do not match the torus");
@@ -311,7 +312,8 @@ GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned
 			sealed.at(tile) = 0;
 		}
 	}
-	const auto regions = connectedRegions(sealed, t.w, t.h, true, GridNeighbors::Eight);
+	const auto regions = map ? groundRegions(*map, sealed, GridNeighbors::Eight, canSwim)
+							 : connectedRegions(sealed, t.w, t.h, true, GridNeighbors::Eight);
 	const auto ownership = labelComponents(regions, labels);
 	result.leakTile = ownership.conflictTile;
 	if (result.leakTile >= 0)
@@ -319,7 +321,7 @@ GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned
 	// Reuse one scratch mask. A successful flood consumes every marked plug tile;
 	// a disconnected plug fails immediately, so its leftover marks never affect
 	// another gate. The work scales with gate area instead of a map flood per gate.
-	std::vector<unsigned char> pending(t.size(), 0);
+	std::vector<unsigned char> pending(t.size(), 0), opening = sealed;
 	for (size_t k = 0; k < gates.size(); ++k)
 	{
 		::MapGeneration::generationCheckpoint();
@@ -327,7 +329,14 @@ GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned
 		for (int tile : gate.tiles)
 		{
 			::MapGeneration::generationCheckpoint();
+			if (map &&
+				!map->terrainAllowsMovementAt(t.remainderX(tile), tile / t.w, canSwim ? 1 : 0))
+			{
+				result.badGate = int(k);
+				return result;
+			}
 			pending.at(tile) = 1;
+			opening.at(tile) = 1;
 		}
 		std::vector<int> queue{gate.tiles.front()};
 		pending.at(queue.front()) = 0;
@@ -344,6 +353,9 @@ GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned
 				{
 					::MapGeneration::generationCheckpoint();
 					const int neighbour = t.at(t.remainderX(tile) + ox, tile / t.w + oy);
+					if (map && !groundConnection(*map, opening, t.remainderX(tile), tile / t.w, ox,
+												 oy, canSwim))
+						continue;
 					if (pending.at(neighbour))
 					{
 						pending.at(neighbour) = 0;
@@ -363,6 +375,8 @@ GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned
 				}
 			}
 		}
+		for (int tile : gate.tiles)
+			opening.at(tile) = 0;
 		if (queue.size() != gate.tiles.size() || !sides[0] || !sides[1] || extraSide)
 		{
 			result.badGate = int(k);
@@ -370,6 +384,19 @@ GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned
 		}
 	}
 	return result;
+}
+
+GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned char> &passable,
+									  const std::vector<int> &labels,
+									  const std::vector<TileGate> &gates)
+{
+	return gatePartition(t, passable, labels, gates, nullptr, false);
+}
+GatePartitionCheck checkGatePartition(const Map &map, const std::vector<unsigned char> &passable,
+									  const std::vector<int> &labels,
+									  const std::vector<TileGate> &gates, bool canSwim)
+{
+	return gatePartition(Torus(map), passable, labels, gates, &map, canSwim);
 }
 
 int towerReach(const Torus &t, const std::vector<unsigned char> &buildable,
@@ -414,7 +441,7 @@ WalkSpread walkSpread(const Map &map, const Torus &t, const std::vector<std::vec
 	for (size_t team = 0; team < workers.size(); ++team)
 	{
 		::MapGeneration::generationCheckpoint();
-		const std::vector<int> steps = stepsFrom(t, tileMask(t, workers.at(team)), open);
+		const std::vector<int> steps = stepsFrom(map, tileMask(t, workers.at(team)), open);
 		const int walk = steps.at(targets.at(team));
 		spread.steps.push_back(walk);
 		if (walk < 0)

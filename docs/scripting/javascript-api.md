@@ -322,9 +322,13 @@ script asks for.
 bottom-left, bottom-right. Terrain is stored per map vertex, and vertex (x,y) is the
 top-left corner of tile (x,y). Index the immutable definitions returned by
 `ctx.game.terrainTypes()` with these IDs. When all four agree, the tile has that
-terrain's rules exactly; mixed corners are walkable when any corner is, never
-swimmable or buildable, block projectiles and count as a shoreline when any corner
-does, and are otherwise as permissive as the weakest corner. There is
+terrain's rules exactly. Ground walking on a mixed cell requires a connected land
+edge (at least two adjacent walkable corners) and no impassable corner. Swimming-only
+units need four swimmable corners; amphibious units accept corners that support
+walking or swimming. Walking connections require a dry shared edge or diagonal
+vertex, and diagonals require both adjoining side cells to be physically clear.
+Habitat, building eligibility and projectile rules keep their existing corner
+combination independently of these movement permissions. There is
 no single per-tile terrain field. `corners` follows the same visibility and
 remembered-observation rules as `resource`. The registry is static public metadata
 and does not reveal map contents.

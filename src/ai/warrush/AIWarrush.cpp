@@ -1,5 +1,5 @@
-#include "AIResourcePolicy.h"
 #include "Material.h"
+#include "AIResourcePolicy.h"
 #include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
@@ -954,7 +954,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 			{
 				gradient(x, y) = 0;
 			}
-			else if (!observation->terrainPropertiesAt(index).walkable)
+			else if (!MapState::terrainAllowsMovement(observation->state(), index, 0))
 			{
 				gradient(x, y) = 0;
 			}
@@ -964,9 +964,9 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 			}
 		}
 	}
-	
-	queries->updateGlobalGradient(gradient.c_array());
-	
+
+	queries->updateGlobalGradient(gradient.c_array(), true);
+
 	for(int x=0;x<observation->width;x++)
 	{
 		for(int y=0;y<observation->height;y++)
@@ -1026,7 +1026,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if (!observation->terrainPropertiesAt(index).walkable)
+			else if (!MapState::terrainAllowsMovement(observation->state(), index, 0))
 			{
 				availability_gradient(x, y) = 0;
 			}
@@ -1053,9 +1053,13 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 		Sint32 x_temp,y_temp;
 		
 		x = swarm->posX; y = swarm->posY;
-		
-  if(needsResource && queries->getGlobalGradientDestination(resource_gradient.c_array(), x, y, &x_temp, &y_temp))
-  { x = x_temp; y = y_temp; }
+
+		if (needsResource && queries->getGlobalGradientDestination(resource_gradient.c_array(), x,
+																   y, &x_temp, &y_temp, true))
+		{
+			x = x_temp;
+			y = y_temp;
+		}
 		bool result = queries->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
 		
 		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Trying to build " << static_cast<unsigned>(intent) << "(" << bt->width << " x " << bt->height << ")" << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl; return text.str(); }()});

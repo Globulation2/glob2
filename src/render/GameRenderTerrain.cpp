@@ -61,11 +61,21 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
     if (!decorSprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
         [](const auto &m) { return !m.decor.sprite.empty(); })) return false;
     std::vector<int> frames, decorFrames;
-    GAGCore::MapGeometryCache *cache;
-    try { frames.resize(map.getW()); decorFrames.resize(map.getW()); cache = &batch->geometryCache(); }
-    catch (const std::bad_alloc&) { return false; }
-    // Decide before emitting geometry: fallback must never redraw earlier rows.
-    for (int y = top; y <= bottom; ++y)
+	std::vector<TerrainVisual::Compositor::Decorations> decorations;
+	GAGCore::MapGeometryCache *cache;
+	try
+	{
+		frames.resize(map.getW());
+		decorFrames.resize(map.getW() * 12);
+		decorations.resize(map.getW());
+		cache = &batch->geometryCache();
+	}
+	catch (const std::bad_alloc &)
+	{
+		return false;
+	}
+	// Decide before emitting geometry: fallback must never redraw earlier rows.
+	for (int y = top; y <= bottom; ++y)
         for (int x = 0; x < map.getW(); ++x)
         {
             const int mapY = (y + viewportY) & map.getMaskH();
@@ -88,24 +98,31 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                 const auto& type = map.resourceRegistry().presentation(static_cast<ResourceId>(resource.type));
                 frames[mapX] = type.frame(resource.amount, mapX, mapY, map.tick);
             }
-            decorFrames[mapX] = decorSprite ? compositor.decorFrame(map, mapX, mapY) : -1;
-            anyDecor |= decorFrames[mapX] >= 0;
-        }
-        auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames, int layerKey)
-        {
-            auto draw = [&](int first, int last, int originX, int originY)
-            {
+			decorations[mapX] = compositor.decorations(map, mapX, mapY);
+			for (unsigned sample = 0; sample < 4; ++sample)
+			{
+				// Cache the actual geometry: distinct custom materials can reuse
+				// a frame while giving it different foliage/edge anchors.
+				const auto slot = mapX * 12 + sample * 3;
+				const bool present = sample < decorations[mapX].size();
+				decorFrames[slot] = present ? decorations[mapX][sample].frame : -1;
+				decorFrames[slot + 1] = present ? decorations[mapX][sample].offsetX : 0;
+				decorFrames[slot + 2] = present ? decorations[mapX][sample].offsetY : 0;
+			}
+			anyDecor |= !decorations[mapX].empty();
+		}
+		auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames,
+							 int layerKey, const auto &drawCell)
+		{
+			auto draw = [&](int first, int last, int originX, int originY)
+			{
                 for (int mapX = first; mapX <= last; ++mapX)
                 {
-                    int frame = layerFrames[mapX];
-                    if (frame < 0) continue;
-                    int dx = (layerSprite->getW(frame) - 32) >> 1;
-                    int dy = (layerSprite->getH(frame) - 32) >> 1;
-                    gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, layerSprite, frame);
-                }
-                gfx->finishDrawingSprite(layerSprite, 255);
-            };
-            for (int x = left; x <= right;)
+					drawCell(mapX, originX, originY);
+				}
+				gfx->finishDrawingSprite(layerSprite, 255);
+			};
+			for (int x = left; x <= right;)
             {
                 int mapX = (x + viewportX) & map.getMaskW();
                 int width = std::min(right - x + 1, map.getW() - mapX);
@@ -116,9 +133,11 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                         [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
                         float((x - mapX) * 32), float(y * 32));
                 }
-                catch (const std::bad_alloc&) {}
-                if (!drawn)
-                {
+				catch (const std::bad_alloc &)
+				{
+				}
+				if (!drawn)
+				{
                     layer.prepareFallback();
                     // Cold-cache budget exhaustion must retain the family
                     // batching path instead of reverting to one HD bind per sprite.
@@ -127,12 +146,32 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                 }
                 x += width;
             }
-        };
-        if (anyDecor)
-            drawLayer(decorSprite, decorFrames, 2);
-        drawLayer(sprite, frames, 1);
-    }
-    return true;
+		};
+		if (anyDecor)
+			drawLayer(decorSprite, decorFrames, 2,
+					  [&](int mapX, int originX, int originY)
+					  {
+						  for (const auto &sample : decorations[mapX])
+						  {
+							  const int dx = (decorSprite->getW(sample.frame) - 32) >> 1;
+							  const int dy = (decorSprite->getH(sample.frame) - 32) >> 1;
+							  gfx->drawSprite((originX + mapX) * 32 - dx + sample.offsetX,
+											  originY * 32 - dy + sample.offsetY, decorSprite,
+											  sample.frame);
+						  }
+					  });
+		drawLayer(sprite, frames, 1,
+				  [&](int mapX, int originX, int originY)
+				  {
+					  const int frame = frames[mapX];
+					  if (frame < 0)
+						  return;
+					  const int dx = (sprite->getW(frame) - 32) >> 1;
+					  const int dy = (sprite->getH(frame) - 32) >> 1;
+					  gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, sprite, frame);
+				  });
+	}
+	return true;
 }
 }
 
@@ -168,27 +207,35 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
         pendingSprite = nullptr;
     };
 
-	for (int y=top; y<=bot; y++)
-		for (int x=left; x<=right; x++)
-			if ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
-				sceneMap.isMapPartiallyDiscovered(
-						x+viewportX-1,
-						y+viewportY-1,
-						x+viewportX+1,
-						y+viewportY+1,
-						visibleTeams))
-			{
-                auto *decorSprite = compositor.decorSprite(sceneMap, x + viewportX, y + viewportY);
-				if (decorSprite)
+	const auto visible = [&](int x, int y)
+	{
+		return (drawOptions & DRAW_WHOLE_MAP) != 0 ||
+			   sceneMap.isMapPartiallyDiscovered(x + viewportX - 1, y + viewportY - 1,
+												 x + viewportX + 1, y + viewportY + 1,
+												 visibleTeams);
+	};
+	for (int y = top; y <= bot; ++y)
+	{
+		// Keep canonical row layering identical to cached GPU geometry: all
+		// terrain decorations, then all resources, preserving cell order.
+		for (int x = left; x <= right; ++x)
+			if (visible(x, y))
+				for (const auto &sample :
+					 compositor.decorations(sceneMap, x + viewportX, y + viewportY))
 				{
-					const int decor = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
-					if (decor >= 0)
+					if (pendingSprite != sample.sprite)
 					{
-						if (pendingSprite != decorSprite) { flush(); pendingSprite = decorSprite; }
-						globalContainer->gfx->drawSprite((x << 5) - ((decorSprite->getW(decor) - 32) >> 1),
-							(y << 5) - ((decorSprite->getH(decor) - 32) >> 1), decorSprite, decor);
+						flush();
+						pendingSprite = sample.sprite;
 					}
+					globalContainer->gfx->drawSprite(
+						(x << 5) - ((sample.sprite->getW(sample.frame) - 32) >> 1) + sample.offsetX,
+						(y << 5) - ((sample.sprite->getH(sample.frame) - 32) >> 1) + sample.offsetY,
+						sample.sprite, sample.frame);
 				}
+		for (int x = left; x <= right; ++x)
+			if (visible(x, y))
+			{
 				const auto& r = sceneMap.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
@@ -209,6 +256,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
 				}
 			}
+	}
 	flush();
 }
 

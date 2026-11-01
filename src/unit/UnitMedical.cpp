@@ -11,15 +11,40 @@
 
 #include "Utilities.h"
 #include "render/GameAnimations.h"
+#include "map/MovementConnections.h"
 #include <climits>
+
+namespace
+{
+bool swimsForStep(const Unit &unit)
+{
+	if (!unit.performance[SWIM])
+		return false;
+	const auto &map = *unit.owner->map;
+	if (!unit.performance[WALK])
+		return map.terrainAllowsMovementAt(unit.posX, unit.posY, WATER_ONLY_CLASS);
+	if (map.cellRule(map.coordToIndex(unit.posX, unit.posY)).usesSwimming)
+		return true;
+	if (!unit.dx && !unit.dy)
+		return false;
+	const int x = unit.posX - unit.dx, y = unit.posY - unit.dy;
+	if (!map.terrainAllowsMovementAt(x, y, 1))
+		return false; // escape from edited rock
+	return !map.terrainAllowsMovementAt(x, y, 0) ||
+		   !MapState::terrainConnection(map.cellView(), x, y, unit.dx, unit.dy, 0) ||
+		   (unit.dx && unit.dy &&
+			(!map.terrainAllowsMovementAt(x + unit.dx, y, 0) ||
+			 !map.terrainAllowsMovementAt(x, y + unit.dy, 0)));
+}
+} // namespace
 
 void Unit::selectPreferredMovement(void)
 {
 	if (performance[FLY])
 		action=FLY;
-	else if ((performance[SWIM]) && (owner->map->terrainPropertiesAt(posX, posY).swimmable) )
+	else if (swimsForStep(*this))
 		action=SWIM;
-	else if ((performance[WALK]) && (owner->map->terrainPropertiesAt(posX, posY).walkable) )
+	else if ((performance[WALK]) && (owner->map->terrainAllowsMovementAt(posX, posY, 0)))
 		action=WALK;
 	else
 		action=STOP_WALK;
@@ -28,9 +53,9 @@ void Unit::selectPreferredMovement(void)
 void Unit::selectPreferredGroundMovement(void)
 {
 	assert(!performance[FLY]);
-	if ((performance[SWIM]) && (owner->map->terrainPropertiesAt(posX, posY).swimmable) )
+	if (swimsForStep(*this))
 		action=SWIM;
-	else if ((performance[WALK]) && (owner->map->terrainPropertiesAt(posX, posY).walkable) )
+	else if ((performance[WALK]) && (owner->map->terrainAllowsMovementAt(posX, posY, 0)))
 		action=WALK;
 	else
 		action=STOP_WALK;

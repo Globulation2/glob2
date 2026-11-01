@@ -38,7 +38,9 @@ struct StepCosts
 int stepCost(const Map &, int x, int y, const StepCosts &);
 
 /// The cheapest cost from any source tile to every tile (0 at a source, -1 where nothing reaches),
-/// eight-connected on the torus unless told otherwise. A source is reached whatever stands on it.
+/// Physical ground connections on the torus, eight-connected unless told otherwise.
+/// Nonnegative clearing/building costs explicitly model those obstacles removed,
+/// including diagonal side clearance. A source is reached whatever stands on it.
 std::vector<int> costsFrom(const Map &, const Torus &, const std::vector<int> &sources,
 						   const StepCosts &, GridNeighbors = GridNeighbors::Eight);
 

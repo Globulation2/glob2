@@ -313,7 +313,20 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
     if(budget.tactical_quarantine_ticks<0 || budget.tactical_quarantine_ticks>1000000)
         throw std::runtime_error("Invalid saved Maxima tactical quarantine duration");
     stream->readLeaveSection();
-
+	if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS)
+	{
+		// Retain the applied areas so the next plan can remove obsolete tiles;
+		// only the old movement-dependent analysis and unfinished work expire.
+		topology_initialized = false;
+		food_ledger_valid = false;
+		last_preemptive_defense_tick = -1000000;
+		preemptive_building_signature = 0;
+		last_preemptive_effective_zone_max = -1;
+		preemptive_defense_pending = true;
+		last_farming_tick = -1000000;
+		farming_urgent = true;
+		development_cycle_pending = true;
+	}
 }
 
 std::string Maxima::auditStrategyJson() const

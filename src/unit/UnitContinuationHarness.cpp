@@ -2,6 +2,7 @@
 // Exercise clearing arbitration and idle activity across a real game save/load.
 #include "EngineFixtures.h"
 #include "GradientFixture.h"
+#include "Version.h"
 #include <string>
 #include "GlobalContainer.h"
 #include "GameGUI.h"
@@ -165,6 +166,93 @@ static void checkContinuation(int checkpoint, bool hazards = false)
 
 TEST_SUITE("UnitContinuation")
 {
+	TEST_CASE("newly blocked terrain escapes north first and enclosed units stay put")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(
+			{.wDec = 4, .hDec = 4, .loadDefaultRace = true, .header = true});
+		auto *unit = world.addUnit(WORKER, 4, 4);
+		REQUIRE(unit);
+		auto &map = world.game.map;
+		map.setVertexTerrain(5, 5, OUTCROP);
+		REQUIRE_FALSE(map.terrainAllowsMovementAt(4, 4, unit->movementClass()));
+		UnitActivityAccess::route(*unit);
+		CHECK(unit->dx == 0);
+		CHECK(unit->dy == -1);
+		UnitActivityAccess::move(*unit);
+		CHECK(unit->posX == 4);
+		CHECK(unit->posY == 3);
+		map.fillTerrain(OUTCROP);
+		UnitActivityAccess::route(*unit);
+		CHECK(unit->dx == 0);
+		CHECK(unit->dy == 0);
+		UnitActivityAccess::move(*unit);
+		CHECK(unit->posX == 4);
+		CHECK(unit->posY == 3);
+		CHECK(map.getGroundUnit(4, 3) == unit->gid);
+	}
+
+	TEST_CASE("a pending diagonal is revalidated after a terrain edit")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(
+			{.wDec = 4, .hDec = 4, .loadDefaultRace = true, .header = true});
+		auto *unit = world.addUnit(WORKER, 4, 4);
+		REQUIRE(unit);
+		unit->dx = unit->dy = 1;
+		unit->movement = Unit::MOV_GOING_DX_DY;
+		world.game.map.setVertexTerrain(6, 4, OUTCROP);
+		UnitActivityAccess::move(*unit);
+		CHECK(unit->posX == 4);
+		CHECK(unit->posY == 4);
+		CHECK(unit->dx == 0);
+		CHECK(unit->dy == 0);
+	}
+
+	TEST_CASE("older terrain saves preserve positions and support legal escape or enclosure")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (bool trapped : {false, true})
+		{
+			CAPTURE(trapped);
+			glob2test::HeadlessGame world(
+				{.wDec = 4, .hDec = 4, .loadDefaultRace = true, .header = true});
+			auto *unit = world.addUnit(WORKER, 4, 4);
+			REQUIRE(unit);
+			const auto gid = unit->gid;
+			if (trapped)
+				world.game.map.fillTerrain(OUTCROP);
+			else
+				world.game.map.setVertexTerrain(5, 5, OUTCROP);
+			auto *backend = new GAGCore::MemoryStreamBackend;
+			GAGCore::TextOutputStream output(backend);
+			world.game.save(&output, false, "terrain upgrade");
+			output.flush();
+			std::string bytes(backend->getBuffer(), backend->getPosition());
+			const std::string current = "versionMinor = " + std::to_string(VERSION_MINOR);
+			const auto version = bytes.find(current);
+			REQUIRE(version != std::string::npos);
+			bytes.replace(version, current.size(), "versionMinor = 191");
+			GAGCore::TextInputStream input(new GAGCore::MemoryStreamBackend(std::move(bytes)));
+			GameGUI loaded;
+			REQUIRE(loaded.game.load(&input));
+			auto *restored = loaded.game.teams[0]->myUnits[Unit::GIDtoID(gid)];
+			REQUIRE(restored);
+			CHECK(restored->posX == 4);
+			CHECK(restored->posY == 4);
+			CHECK(loaded.game.map.getGroundUnit(4, 4) == gid);
+			UnitActivityAccess::route(*restored);
+			CHECK(restored->dx == 0);
+			CHECK(restored->dy == (trapped ? 0 : -1));
+			UnitActivityAccess::move(*restored);
+			CHECK(restored->posX == 4);
+			CHECK(restored->posY == (trapped ? 4 : 3));
+			CHECK(loaded.game.map.getGroundUnit(4, restored->posY) == gid);
+			if (!trapped)
+				CHECK(loaded.game.map.getGroundUnit(4, 4) == NOGUID);
+		}
+	}
+
 	TEST_CASE("a pending building route steers while retaining assignment and random state until "
 			  "publication")
 	{

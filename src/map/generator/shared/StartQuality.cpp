@@ -19,9 +19,12 @@ namespace MapGeneration
 {
 namespace
 {
-/// Distance in walking steps from a colony's starting workers to every tile it can reach.
-/// Workers, not the boot tile: the swarm occupies the boot tile and nobody walks out of it.
-std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers)
+// Geometric catchment heuristic for comparing complete start proposals. The
+// mask excludes physical obstacles, but this legacy score does not enforce
+// directional shore edges or diagonal clearance. Final access proofs belong to
+// Pipeline's Map-based floods; changing scoring topology can reorder every roll.
+// Start from workers because the occupied swarm tile is not an actual entrance.
+std::vector<int> catchmentFromWorkers(const Map &map, const std::vector<int> &workers)
 {
 	const Torus t(map);
 	return stepsFrom(t, tileMask(t, workers), groundUnitTiles(map));
@@ -121,15 +124,15 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 	map.fertilityMaximum = fertilityMax;
 
 	report.colonies.resize(nbTeams);
-	std::vector<std::vector<int>> walkingFields;
-	walkingFields.reserve(nbTeams);
+	std::vector<std::vector<int>> catchmentFields;
+	catchmentFields.reserve(nbTeams);
 
 	for (int team = 0; team < nbTeams; ++team)
 	{
 		::MapGeneration::generationCheckpoint();
 		ColonyQuality &colony = report.colonies.at(team);
-		walkingFields.push_back(walkFromWorkers(map, workers.at(team)));
-		const std::vector<int> &dist = walkingFields.back();
+		catchmentFields.push_back(catchmentFromWorkers(map, workers.at(team)));
+		const std::vector<int> &dist = catchmentFields.back();
 
 		for (int p = 0; p < w * h; ++p)
 		{
@@ -260,7 +263,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 		for (int team = 0; team < nbTeams; ++team)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int d = walkingFields.at(team).at(p);
+			const int d = catchmentFields.at(team).at(p);
 			if (d < 0)
 				continue;
 			if (best < 0 || d < best)
@@ -279,14 +282,14 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			::MapGeneration::generationCheckpoint();
 			if (ties == 1 && team != owner)
 				continue;
-			if (ties > 1 && walkingFields.at(team).at(p) != best)
+			if (ties > 1 && catchmentFields.at(team).at(p) != best)
 				continue;
 			auto &colony = report.colonies.at(team);
-			const bool local = walkingFields.at(team).at(p) <= scale.catchmentSteps;
+			const bool local = catchmentFields.at(team).at(p) <= scale.catchmentSteps;
 			for (auto &band : colony.distanceBands)
 			{
 				::MapGeneration::generationCheckpoint();
-				if (walkingFields.at(team).at(p) <= band.walkingSteps)
+				if (catchmentFields.at(team).at(p) <= band.walkingSteps)
 				{
 					if (ties == 1)
 						++band.exclusiveNearestTiles;
@@ -332,8 +335,8 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 						::MapGeneration::generationCheckpoint();
 						if (!dx && !dy)
 							continue;
-						const int d = walkingFields.at(team).at(map.normalizeY(y + dy) * w +
-																map.normalizeX(x + dx));
+						const int d = catchmentFields.at(team).at(map.normalizeY(y + dy) * w +
+																  map.normalizeX(x + dx));
 						if (d >= 0 && (approach.at(team) < 0 || d < approach.at(team)))
 							approach.at(team) = d;
 					}

@@ -724,7 +724,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		ramps.push_back(nearestOpen(L.rampMiddle[k]));
-		const std::vector<int> fromRamp = stepsFrom(t, tileMask(t, {ramps.back()}), open);
+		const std::vector<int> fromRamp = stepsFrom(map, tileMask(t, {ramps.back()}), open);
 		int best = -1;
 		for (int i = 0; i < n; ++i)
 			if (pitDisc[i] && fromRamp[i] >= 0 && (best < 0 || fromRamp[i] < fromRamp[best]))

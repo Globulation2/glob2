@@ -2355,9 +2355,28 @@ TEST_CASE("Colony food traversal preserves ordered scalar reachability" * doctes
             if(distance[index]>=radius) continue;
             const int px=index%world.width,py=index/world.width;
             for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-                if(dx||dy) visit(px+dx,py+dy,distance[index]+1);
-        }
-        return food;
+					if (dx || dy)
+					{
+						const unsigned slot = unsigned((dy + 1) * 3 + dx + 1);
+						const unsigned direction = slot - (slot > 4);
+						if (!(world.tiles[index].travelConnections(world.swimmingBuilders > 0) &
+							  (1u << direction)))
+							continue;
+						const auto side = [&](int sx, int sy)
+						{
+							const auto &tile = world.tile(sx, sy);
+							return tile.discovered && tile.foodTraversable && !tile.occupied &&
+								   tile.canTravel(world.swimmingBuilders > 0) &&
+								   !tile.resourceBlocksGround &&
+								   !(world.normalizeX(sx - x - footprint.left) < footprint.width &&
+									 world.normalizeY(sy - y - footprint.top) < footprint.height);
+						};
+						if (dx && dy && (!side(px + dx, py) || !side(px, py + dy)))
+							continue;
+						visit(px + dx, py + dy, distance[index] + 1);
+					}
+		}
+		return food;
     };
     for(const auto dimensions:std::vector<std::pair<int,int>>{{16,8},{13,9},{1,8},{8,1},{1,7},{7,1},{1,1}})
     for(bool swimming:{false,true}) for(bool obstacles:{false,true}) for(bool extraStorage:{false,true})
@@ -2376,8 +2395,10 @@ TEST_CASE("Colony food traversal preserves ordered scalar reachability" * doctes
                 if(i%5==0) tile.materialSources=materialBit(MaterialId::Wood);
                 if(i%11==0) { tile.materialSources=0;tile.materialType=materialIndex(MaterialId::Food); }
                 if(i%4==0) tile.foodOpportunity=0;
-            }
-        }
+				tile.walkingConnections = uint8_t((i * 73 + 19) & 255);
+				tile.amphibiousConnections = uint8_t((i * 43 + 61) & 255);
+			}
+		}
         Planner planner;
         for(int radius:{0,1,3,30}) for(const Footprint footprint:{Footprint(0,0,1,1),Footprint(-1,-2,3,2)})
         for(const auto anchor:std::vector<std::pair<int,int>>{{0,0},{world.width-1,world.height-1},{-2*world.width-1,3*world.height+2}}) {
@@ -2388,4 +2409,143 @@ TEST_CASE("Colony food traversal preserves ordered scalar reachability" * doctes
                 ==scalar(world,anchor.first,anchor.second,footprint,radius));
         }
     }
+}
+
+TEST_CASE("paired circulation routes require both forward terrain connections" *
+		  doctest::test_suite("Maxima.Economy"))
+{
+	using namespace AIMaximaPlacement;
+	WorldState world;
+	world.reset(8, 8);
+	for (int x = 1; x <= 4; ++x)
+		for (int y : {3, 4})
+			world.tile(x, y).discovered = true;
+	Planner planner;
+	planner.ensureMaskSize(64);
+	planner.circulationRefs[world.index(4, 3)] = planner.circulationRefs[world.index(4, 4)] = 1;
+	const std::vector<int> ring{world.index(1, 3), world.index(1, 4)};
+	std::vector<int> route;
+	RejectionReason reason = RejectedAccess;
+	const auto canRoute = [&]
+	{ return planner.routeArtery(world, ring, 1, true, world.computeSignature(), route, reason); };
+	REQUIRE(canRoute());
+	const auto initialSignature = world.computeSignature();
+	for (int lane : {3, 4})
+	{
+		// One blocked lane must close a two-cell artery; changing only the
+		// connection mask must also invalidate the retained route cache.
+		world.tile(2, lane).walkingConnections &= uint8_t(~(1u << 4)); // east
+		CHECK(world.computeSignature() != initialSignature);
+		CHECK_FALSE(canRoute());
+		CHECK(reason == RejectedIslandBuilders);
+		world.tile(2, lane).walkingConnections = 255;
+		REQUIRE(canRoute());
+	}
+	// The search runs outward from the existing network, but admission must
+	// check the candidate's forward east edge, not the parent's west edge.
+	world.tile(3, 3).walkingConnections &= uint8_t(~(1u << 3)); // west
+	CHECK(canRoute());
+}
+
+TEST_CASE("colony food routes reject water edges and physically closed diagonals" *
+		  doctest::test_suite("Maxima.Economy"))
+{
+	using namespace AIMaximaPlacement;
+	WorldState world;
+	world.reset(8, 8);
+	for (auto &tile : world.tiles)
+		tile.walkable = false;
+	for (const auto [x, y] : {std::pair{2, 2}, std::pair{3, 3}})
+	{
+		auto &tile = world.tile(x, y);
+		tile.discovered = true;
+		tile.walkable = true;
+	}
+	world.tile(3, 3).foodOpportunity = 100;
+	Planner planner;
+	const auto reach = [&] { return planner.colonyFoodTiles(world, 1, 2, Footprint(0, 0, 1, 1)); };
+	CHECK(reach().empty());
+	for (const auto [x, y] : {std::pair{3, 2}, std::pair{2, 3}})
+	{
+		auto &tile = world.tile(x, y);
+		tile.discovered = true;
+		tile.walkable = true;
+	}
+	REQUIRE_FALSE(reach().empty());
+	// Both physical side blockers and the terrain mask are independent of
+	// the destination cell's walkability.
+	world.tile(3, 2).occupied = true;
+	world.tile(2, 3).foodTraversable = false;
+	world.tile(3, 3).foodOpportunity = 0;
+	world.tile(4, 2).discovered = true;
+	world.tile(4, 2).walkable = true;
+	world.tile(4, 2).foodOpportunity = 100;
+	CHECK(reach().empty());
+	world.tile(3, 2).occupied = false;
+	world.tile(2, 2).walkingConnections &= uint8_t(~(1u << 4)); // shared water edge east
+	CHECK(reach().empty());
+	world.tile(2, 2).walkingConnections = 255;
+	REQUIRE_FALSE(reach().empty());
+}
+
+TEST_CASE("reserved circulation rechecks connections without seeding itself" *
+		  doctest::test_suite("Maxima.Economy"))
+{
+	using namespace AIMaximaPlacement;
+	WorldState world;
+	world.reset(8, 8);
+	for (auto &tile : world.tiles)
+		tile.buildable = true;
+	for (int x = 1; x <= 4; ++x)
+		for (int y : {3, 4})
+			world.tile(x, y).discovered = true;
+	world.tile(1, 2).discovered = true;
+	BuildingProfile profile;
+	profile.buildingType = 7;
+	BuildingLevelProfile level;
+	level.level = 1;
+	level.footprint = Footprint(0, 0, 1, 1);
+	profile.levels.push_back(level);
+	world.profiles.push_back(profile);
+	Planner planner;
+	planner.configure(world.profiles, 1, 2, 6, 5, 7);
+	planner.ensureMaskSize(64);
+	Reservation network;
+	network.id = 0;
+	network.circulationTiles = {world.index(4, 3), world.index(4, 4)};
+	planner.reservationMap[network.id] = network;
+	planner.addReservationReferences(network);
+	DevelopmentAction action;
+	action.id = 1;
+	action.type = BuildStandalone;
+	action.buildingType = 7;
+	action.centerX = 1;
+	action.centerY = 2;
+	action.workers = 1;
+	action.targetLevel = 1;
+	action.initialFootprint = action.terminalFootprint = level.footprint;
+	action.parcelTiles = {world.index(1, 2)};
+	action.accessTiles = {world.index(1, 3), world.index(1, 4)};
+	RejectionReason reason = RejectedAccess;
+	REQUIRE(planner.routeArtery(world, action.accessTiles, 1, true, world.computeSignature(),
+								action.arteryTiles, reason));
+	REQUIRE_FALSE(action.arteryTiles.empty());
+	REQUIRE(planner.reserve(world, action));
+	REQUIRE(planner.revalidate(world, action, &reason));
+	DevelopmentIntent intent;
+	intent.buildingType = 7;
+	intent.unmetCount = 1;
+	intent.workers = 1;
+	DevelopmentLimits limits;
+	limits.newConstruction = 1;
+	REQUIRE(planner.revalidateSelection(world, {intent}, limits, action, &reason));
+	// All cells and reservations are unchanged. The action's own artery
+	// covers the ring, but cannot make that ring its own network seed.
+	world.tile(2, 3).walkingConnections &= uint8_t(~(1u << 4));
+	CHECK_FALSE(planner.revalidate(world, action, &reason));
+	CHECK(reason == RejectedCirculation);
+	CHECK_FALSE(planner.revalidateSelection(world, {intent}, limits, action, &reason));
+	world.tile(2, 3).walkingConnections = 255;
+	CHECK(planner.revalidate(world, action, &reason));
+	CHECK(planner.revalidateSelection(world, {intent}, limits, action, &reason));
 }

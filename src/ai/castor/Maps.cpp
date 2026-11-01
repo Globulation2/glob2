@@ -37,8 +37,7 @@ void AICastor::computeObstacleUnitMap()
 			obstacleUnitMap[i]=0;
 		else
 		{
-			const auto& terrain=observation->terrainPropertiesAt(i);
-			if (!terrain.walkable && !(canSwim && terrain.swimmable))
+			if (!MapState::terrainAllowsMovement(observation->state(), i, canSwim ? 1 : 0))
 				obstacleUnitMap[i]=0;
 			else
 				obstacleUnitMap[i]=1;
@@ -693,9 +692,8 @@ void AICastor::computeEnemyRangeMap()
 					gradient[(dx&wMask)+((dy&hMask)<<wDec)]=AI_CASTOR_GRADIENT_WALL;
 		}
 	}
-	
-	if(observation->terrainMovementModifiers) updateGlobalGradient(gradient);
-	else queries->updateGlobalGradient(gradient);
+
+	updateGlobalGradient(gradient);
 }
 
 void AICastor::computeEnemyWarriorsMap()
@@ -725,6 +723,5 @@ void AICastor::computeEnemyWarriorsMap()
 			continue;
 		gradient[i]=AI_CASTOR_ENEMY_WARRIOR_GRADIENT_SEED;
 	}
-	if(observation->terrainMovementModifiers) updateGlobalGradient(gradient);
-	else queries->updateGlobalGradient(gradient);
+	updateGlobalGradient(gradient);
 }

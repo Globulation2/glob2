@@ -1,3 +1,4 @@
+#include "map/MovementConnections.h"
 #include "PowerOfTwo.h"
 #include "Material.h"
 #include "AIStateSerialization.h"
@@ -178,7 +179,9 @@ bool Water::equals(const Entity& other) const
 void Water::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}
 
 bool Unwalkable::matches(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
-{ return !AIEngine::ObservationQueries::terrain(world,x,y).walkable; }
+{
+	return !world.terrainAllowsMovementAt(x, y, 0);
+}
 bool Unwalkable::equals(const Entity& other) const
 { return dynamic_cast<const Unwalkable*>(&other)!=nullptr; }
 void Unwalkable::save(GAGCore::OutputStream* stream) const
@@ -304,17 +307,27 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world,unsigned observerT
 			const int at=y*width+x;
             const bool blocked=needsGround && MapState::resourceBlocksGround(world.state(),at);
 			if(sources.matches(world,observerTeam,x,y,blocked)) { values[at]=SourceCell; queue.push_back(at);++sourceCount; }
-			else if(obstacles.matches(world,observerTeam,x,y,blocked) || !field::terrainTravelAllowed(AIEngine::ObservationQueries::terrain(world,x,y),info.terrainTravel)) values[at]=ObstacleCell;
+			else if (obstacles.matches(world, observerTeam, x, y, blocked) ||
+					 !field::terrainTravelAllowed(
+						 (*world.cellRules)[world.cellRuleAt(world.tileIndex(x, y))],
+						 info.terrainTravel))
+				values[at] = ObstacleCell;
 		}
-	if(info.terrainTravel!=field::TerrainTravel::Geometric &&
-        (info.terrainTravel==field::TerrainTravel::Fly?world.airTerrainConstraints:world.terrainMovementModifiers))
-    {
+	if (info.terrainTravel != field::TerrainTravel::Geometric)
+	{
 		field::expandTerrainTravel(
 			values, width, height, info.terrainTravel,
-			[&](std::size_t i) { return map->cellRuleAt(i); }, *map->cellRules);
+			[&](std::size_t i) { return map->cellRuleAt(i); }, *map->cellRules,
+			MapState::movementGrid(world.state(),
+								   info.terrainTravel == field::TerrainTravel::Fly
+									   ? AIR_MOVEMENT_CLASS
+								   : info.terrainTravel == field::TerrainTravel::Swim ? 1
+																					  : 0,
+								   0));
 		queue.clear();
-    }
-    else field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);
+	}
+	else
+		field::expandDistances(values, queue, {width, height}, field::Surrounding, UnreachableCell);
 }
 
 int Gradient::get_height(int x,int y) const
@@ -444,6 +457,17 @@ void GradientManager::loadExecutionState(GAGCore::InputStream* stream,Sint32 ver
         queued.push(index);
     }
     stream->readLeaveSection();
+	// Consume the complete old continuation before invalidating its travel data.
+	// Geometric fields and new-format scheduling retain their saved state.
+	if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS)
+		for (auto &gradient : gradients)
+		{
+			bool changed = gradient->info.terrainTravel != field::TerrainTravel::Geometric;
+			for (const auto &obstacle : gradient->info.obstacles)
+				changed = changed || obstacle->type() == Entities::EUnwalkable;
+			if (changed)
+				gradient->terrainGeneration = 0;
+		}
 }
 void GradientManager::invalidate()
 {
@@ -1586,6 +1610,9 @@ void Context::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMin
         stream->readLeaveSection();
     }
     stream->readLeaveSection();
+	if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS)
+		for (auto &order : buildingOrders)
+			order->reset_search();
 }
 bool Context::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 {

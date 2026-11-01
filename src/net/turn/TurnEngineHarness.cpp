@@ -1976,17 +1976,17 @@ TEST_SUITE("TurnEngineHarness")
 		glob2test::expectGolden("multiplayer/FourSquares1.verify-trace.txt", glob2test::readFile(out.path / "checksums.txt"));
 	}
 
-
-    GLOB2_TEST_CASE("Marathi registration rejects earlier match identities without changing replay file floors",
-                    "[network-sim][artifacts]")
-    {
-        glob2test::HeadlessGlobals globals(harnessGlobals());
+	GLOB2_TEST_CASE("conservative terrain traversal rejects earlier match identities and preserves "
+					"current replays",
+					"[network-sim][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
         Online::SimVersion before;
-        // Exact upstream revision-111 golden identity, before MR registration.
-        REQUIRE(Online::SimVersion::parseKey(
-            "191-73-be0cfb6de27ede2ccf532696a24fe30af46f1f6e825019b75072d91081b3cee9", before));
-        const auto current = Online::currentSimVersion();
-        REQUIRE(before != current);
+		// Exact upstream revision-116 identity, before the terrain traversal upgrade.
+		REQUIRE(Online::SimVersion::parseKey(
+			"191-73-073ef28125370208bf905617952c192cff54c21ca8a0d6c38465e5affeae607c", before));
+		const auto current = Online::currentSimVersion();
+		REQUIRE(before != current);
         const auto committed = Turn::MatchRecord::readFile(
             glob2test::fixture("multiplayer/FourSquares1.g2mr").string());
         REQUIRE(committed.simVersion == current.key());
@@ -2022,8 +2022,8 @@ TEST_SUITE("TurnEngineHarness")
             ReplayReader reader;
             CHECK(reader.loadReplay((output / "match.replay").string()));
         }
-    }
-    GLOB2_TEST_CASE("Filipino registration rejects earlier match identities without changing replay file floors",
+	}
+	GLOB2_TEST_CASE("Filipino registration rejects earlier match identities without changing replay file floors",
                     "[network-sim][artifacts]")
     {
         glob2test::HeadlessGlobals globals(harnessGlobals());

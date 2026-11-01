@@ -181,6 +181,21 @@ namespace gradient_kernel
 					*end = std::uint32_t(n);
 					end += better;
 				};
+				if (grid.incomingMask(i) != 255)
+				{
+					const auto mask = grid.incomingMask(i);
+					for (unsigned d = 0; d < field::Surrounding.size(); ++d)
+						if (mask & (1u << d))
+						{
+							const auto o = field::Surrounding[d];
+							const bool diagonal = o.x && o.y;
+							relax(grid.index(int(x) + o.x, int(y) + o.y),
+								  diagonal ? diagonalValue : cardinalValue,
+								  diagonal ? diagonalLimit : cardinalLimit,
+								  diagonal ? diagonalEnd : cardinalEnd);
+						}
+				}
+				else
 #ifdef GLOB2_GRADIENT_SSE2
 				// Four contiguous cells must fit in each row. Seam-adjacent cells
 				// use scalar wrapped indices below; vector loads never cross a row.
@@ -214,7 +229,7 @@ namespace gradient_kernel
 				}
 				else
 #elif defined(GLOB2_GRADIENT_NEON)
-				if (Simd && x >= 1 && x + 2 <= wMask)
+					if (Simd && x >= 1 && x + 2 <= wMask)
 				{
 						// Columns x-1..x+2 of all three rows; the same contiguous-row
 						// condition as SSE2 is required before loading.

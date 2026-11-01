@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "MovementConnections.h"
 #include "Unit.h"
 #include "Race.h"
 #include "Team.h"
@@ -44,10 +45,7 @@ void Unit::followPendingBuildingRoute(Building &building, BuildingRoute route)
 		const int candidate = (preferred + offset) & UNIT_DIRECTION_MASK;
 		int stepX, stepY;
 		Unit::dxDyFromDirection(candidate, &stepX, &stepY);
-		if ((access == WATER_ONLY_CLASS &&
-			 !owner->map->terrainPropertiesAt(posX + stepX, posY + stepY).swimmable) ||
-			!owner->map->isFreeForGroundUnit(posX + stepX, posY + stepY, performance[SWIM] > 0,
-											 owner->me))
+		if (!owner->map->canTraverse(posX, posY, stepX, stepY, access, owner->me))
 			continue;
 		dx = Sint8(stepX);
 		dy = Sint8(stepY);
@@ -60,6 +58,25 @@ void Unit::handleMovement(void)
 {
 	gradientDecisionPending=false;
     directGradientDecision.reset();
+	if (!performance[FLY] && displacement != DIS_INSIDE && displacement != DIS_ENTERING_BUILDING &&
+		displacement != DIS_EXITING_BUILDING &&
+		!owner->map->terrainAllowsMovementAt(posX, posY, movementClass()))
+	{
+		dx = dy = 0;
+		if (performance[WALK] || performance[SWIM])
+			for (const auto step : {Offset{0, -1}, Offset{1, 0}, Offset{0, 1}, Offset{-1, 0},
+									Offset{1, -1}, Offset{1, 1}, Offset{-1, 1}, Offset{-1, -1}})
+				if (owner->map->canTraverse(posX, posY, step.dx, step.dy, movementClass(),
+											owner->me))
+				{
+					dx = step.dx;
+					dy = step.dy;
+					break;
+				}
+		directionFromDxDy();
+		movement = MOV_GOING_DX_DY;
+		return;
+	}
 	const auto priorClaim=previousClearingArea;
 	// Release any clearing-area claim from a prior tick before this unit decides
 	// what to do this tick. Note: distance is intentionally NOT reset here — it
@@ -270,9 +287,10 @@ void Unit::handleMovementRemovingBlackAround()
 	const bool canSwim=performance[SWIM]>0;
 	if (flying) {
 		if (movement!=MOV_GOING_DX_DY || !owner->map->isFreeForMovement(posX+dx,posY+dy,AIR_MOVEMENT_CLASS,owner->me)) movement=MOV_RANDOM_FLY;
-	} else if (movement!=MOV_GOING_DX_DY
-		|| (!canWalk && (!canSwim || !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable))
-		|| !owner->map->isFreeForGroundUnit(posX+dx,posY+dy,canSwim,owner->me)) movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
+	}
+	else if (movement != MOV_GOING_DX_DY || (!canWalk && !canSwim) ||
+			 !owner->map->canTraverse(posX, posY, dx, dy, movementClass(), owner->me))
+		movement = performance[FLY] ? MOV_RANDOM_FLY : MOV_RANDOM_GROUND;
 }
 
 void Unit::handleMovementAttackingAround()
@@ -367,8 +385,10 @@ void Unit::handleMovementAttackingAround()
             const auto* field=owner->map->getGuardAreasGradient(owner->teamNumber,AIR_MOVEMENT_CLASS);
             if(!field){owner->map->gradientMovementDemand({GradientFieldFamily::Guard,Uint8(owner->teamNumber),AIR_MOVEMENT_CLASS});waitForGradient();return;}
             Sint32 goalX=0,goalY=0;
-            setValidTarget(owner->map->getGlobalGradientDestination(field,posX,posY,&goalX,&goalY));
-            const GradientFieldKey key{GradientFieldFamily::Guard,Uint8(owner->teamNumber),AIR_MOVEMENT_CLASS};
+			setValidTarget(MapState::gradientDestination(owner->map->cellView(), field, posX, posY,
+														 &goalX, &goalY, movementClass(),
+														 owner->me));
+			const GradientFieldKey key{GradientFieldFamily::Guard,Uint8(owner->teamNumber),AIR_MOVEMENT_CLASS};
             if(validTarget()){directGradientDecision=key;owner->map->gradientMovementDemand(key);}
             else owner->map->directGradientMovement(key,posX,posY,entityRandom,field,false,false);
             if (validTarget()) { targetX=goalX; targetY=goalY; }
@@ -381,7 +401,10 @@ void Unit::handleMovementAttackingAround()
 			directionFromDxDy();
 			movement = MOV_GOING_DX_DY;
 			// get the target position of guard area for display
-			owner->map->getGlobalGradientDestination(owner->map->getGuardAreasGradient(owner->teamNumber, movementClass()), posX, posY, &targetX, &targetY);
+			MapState::gradientDestination(
+				owner->map->cellView(),
+				owner->map->getGuardAreasGradient(owner->teamNumber, movementClass()), posX, posY,
+				&targetX, &targetY, movementClass(), owner->me);
 			setValidTarget(true);
 		}
 		else if (attachedBuilding || insideGuardArea(posX, posY))
@@ -397,9 +420,11 @@ void Unit::handleMovementAttackingAround()
 				int d = (direction + di) & UNIT_DIRECTION_MASK;
 				int cdx, cdy;
 				dxDyFromDirection(d, &cdx, &cdy);
-				if (flying ? !owner->map->isFreeForMovement(posX+cdx,posY+cdy,AIR_MOVEMENT_CLASS,owner->me)
-					: ((!canWalk && (!canSwim || !owner->map->terrainPropertiesAt(posX+cdx,posY+cdy).swimmable))
-						|| !owner->map->isFreeForGroundUnit(posX+cdx,posY+cdy,canSwim,owner->me)))
+				if (flying ? !owner->map->isFreeForMovement(posX + cdx, posY + cdy,
+															AIR_MOVEMENT_CLASS, owner->me)
+						   : ((!canWalk && !canSwim) ||
+							  !owner->map->canTraverse(posX, posY, cdx, cdy, movementClass(),
+													   owner->me)))
 					continue;
 				if (attachedBuilding)
 				{
@@ -516,8 +541,10 @@ void Unit::handleMovementClearingResources()
                 return;
             }
             const auto* field=map->buildingGradient(attachedBuilding,AIR_MOVEMENT_CLASS,BuildingRoute::Clearing);
-            source=field && map->getGlobalGradientDestination(field,posX,posY,&targetX,&targetY);
-        }
+			source =
+				field && MapState::gradientDestination(map->cellView(), field, posX, posY, &targetX,
+													   &targetY, movementClass(), owner->me);
+		}
         setValidTarget(source);
         if (source) movement=MOV_FLYING_TARGET;
         else { stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; }
@@ -598,7 +625,9 @@ void Unit::handleMovementRandom()
 		if(g > GRADIENT_UNREACHABLE && distance < foodStepsLeft(trigHungry) && medical == MED_FREE)
 		{
 			int tempTargetX, tempTargetY;
-			bool path = owner->map->getGlobalGradientDestination(clearAreasGradient, posX, posY, &tempTargetX, &tempTargetY);
+			bool path = MapState::gradientDestination(owner->map->cellView(), clearAreasGradient,
+													  posX, posY, &tempTargetX, &tempTargetY,
+													  movementClass(), owner->me);
 			int guid = owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber);
 			int other_distance = INT_MAX;
 			if(guid != NOGUID)
@@ -814,8 +843,10 @@ void Unit::handleMovementGoingToResource()
 		// being a peak of that same gradient; isGradientPeak is a cheap check
 		// to run every action, the ascent itself only when it actually goes stale.
 		const Uint16 *gradient = map->getMaterialGradientSlot(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
-		if (gradient && !map->isGradientPeak(gradient, targetX, targetY))
-			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
+		if (gradient && !MapState::gradientPeak(map->cellView(), gradient, targetX, targetY,
+												movementClass(), owner->me))
+			MapState::gradientDestination(map->cellView(), gradient, posX, posY, &targetX, &targetY,
+										  movementClass(), owner->me);
 	}
 	else
 	{

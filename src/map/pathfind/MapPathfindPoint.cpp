@@ -29,8 +29,14 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
         const auto i=coordToIndex(targetX,targetY);
         return !terrainPropertiesAt(i).flyable || resourceBlocksAir(i) || getAirUnit(targetX,targetY)!=NOGUID;
     };
-    const bool approach=air && blockedAirGoal();
-    AStarAlgorithmPoint reached;
+	const bool groundInteraction =
+		!air && !terrainAllowsMovementAt(targetX, targetY, swimClass) &&
+		(getGroundUnit(targetX, targetY) != NOGUID || getBuilding(targetX, targetY) != NOGBID ||
+		 getResource(targetX, targetY).type != NO_RES_TYPE);
+	// An occupied interaction target can be reached from an adjacent legal
+	// cell without ever treating its water/rock terrain as a transit square.
+	const bool approach = (air && blockedAirGoal()) || groundInteraction;
+	AStarAlgorithmPoint reached;
 
 	using Entry = std::tuple<unsigned, int, unsigned>;
 
@@ -75,6 +81,12 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 				}
 				else
 				{
+					const bool allowed = canTraverse(pos.x, pos.y, lx, ly, swimClass, teamMask) ||
+										 (!air && nx == targetX && ny == targetY &&
+										  canTraverse(pos.x, pos.y, lx, ly, swimClass, teamMask,
+													  Map::DestinationAccess::InteractionEndpoint));
+					if (!allowed)
+						continue; // Revisited nodes must obey the same edge rules.
 					int moveCost = pos.moveCost + stepCost(lx, ly, coordToIndex(nx, ny), swimClass);
 					if (moveCost > maximumCost) continue;
 					int totalCost = moveCost + heuristicStep * warpDistMax(targetX, targetY, nx, ny);
@@ -82,8 +94,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 					//If this cell hasn't been examined at all yet
 					if(npos.x == -1)
 					{
-                        if(isFreeForMovement(nx,ny,swimClass,teamMask) ||
-                            (!air && nx==targetX && ny==targetY && gradient_kernel::terrainAllowsGround(terrainPropertiesAt(nx,ny),swimClass)))
+						if (allowed)
 						{
 							//If the parent cell is the starting cell, add in the starting direction
 							if(pos.dx == 0 && pos.dy == 0)

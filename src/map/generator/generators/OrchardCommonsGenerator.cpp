@@ -574,7 +574,7 @@ bool generate(Game &game, GenerationContext &c)
 	}
 	std::array<std::vector<int>, 3> fruitWalk;
 	for (int f = 0; f < 3; ++f)
-		fruitWalk[f] = stepsFrom(t, fruitFaces[f], open);
+		fruitWalk[f] = stepsFrom(game.map, fruitFaces[f], open);
 	const auto roomAnchors = buildAnchors(t, potentialBuildingTiles(game.map), 8);
 	std::vector<MapGeneratorPoint> anchors;
 	for (const ShapePoint h : L.homes)
@@ -675,7 +675,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			return "An uncontained renewable crop threatens orchard routes.";
 	}
 	const auto broad = erode(t, future, 1);
-	const auto regions = connectedRegions(broad, t.w, t.h, true);
+	const auto regions = groundRegions(map, broad, GridNeighbors::Cardinal);
 	const int common = regions[t.at(int(L.courts.front().x), int(L.courts.front().y))];
 	if (common < 0)
 		return "An orchard court lacks a broad approach.";
@@ -719,19 +719,9 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	{
 		// Access belongs to a colony's usable swarm exits, not the random subset occupied
 		// by its requested starting workers. A one-worker roll must not redefine fairness.
-		std::vector<int> exits;
-		const int sx = game.teams[k]->startPosX, sy = game.teams[k]->startPosY;
-		for (int dy = -1; dy <= 4; ++dy)
-			for (int dx = -1; dx <= 4; ++dx)
-			{
-				if (dx >= 0 && dx < 4 && dy >= 0 && dy < 4)
-					continue;
-				const int i = t.at(sx + dx, sy + dy);
-				if (stepCost(map, t.remainderX(i), i / t.w, StepCosts::walking()) >= 0)
-					exits.push_back(i);
-			}
+		const auto exits = colonyGroundExits(game, k, walking);
 		// Every traversable step has cost one: the shared BFS is equivalent to Dijkstra.
-		const auto d = stepsFrom(t, tileMask(t, exits), walking);
+		const auto d = stepsFrom(map, tileMask(t, exits), walking);
 		int nearest = t.size();
 		for (int f = 0; f < 3; ++f)
 		{

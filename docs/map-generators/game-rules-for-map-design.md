@@ -11,18 +11,22 @@
 
 ## The rules of the terrain
 
-- **Terrain lives on corners.** The map stores one terrain type per vertex (`Map::vertexTerrain`);
-  vertex (x,y) is the top-left corner of tile (x,y). A tile's rules come from its four corners
-  (`combineCornerRules`, `TerrainPropertiesLayout.h`, compiled once per combination by
-  `CellRuleTable`): equal corners keep that terrain's rules exactly; mixed corners are walkable
-  when any corner is, never swimmable or buildable, and otherwise as permissive as the weakest
-  corner. So a tile is pure grass only when all four of its corners are grass, and a single sand
-  vertex spoils the four tiles around it. This is why a one-vertex sand road (`tracePath`) blocks a
-  strip about two tiles wide, and why generators stamp grass inside a one-tile sand ring. Read a
-  vertex with `vertexTerrainAt`, a tile's corners with `cellCorners`, and a tile's rules with
-  `terrainPropertiesAt`; `terrainTypeAt` answers `MIXED_TERRAIN` for a mixed tile.
-- **Beaches are a convention, not a rule.** Grass directly against water is legal: the tiles
-  between are walkable and unbuildable, exactly like a sand/water or grass/sand tile. The shipped
+- **Terrain lives on corners.** The map stores one terrain identity per vertex. A
+  cell's separate walking profile admits dry cells and normal shores with two
+  adjacent walkable corners. Single tips and opposite pairs are blocked, as are
+  impassable rock corners. Swimming-only needs four swimmable corners; amphibious
+  access needs every corner to support walking or swimming. Walking steps need
+  land on their shared edge (cardinal) or shared vertex (diagonal), and diagonals
+  also require clear side cells. Transient units block destinations only.
+  Adjacent resource gathering is an interaction, so ordinary beach cells retain
+  access to aquatic algae without entering its water tile. Use
+  `cellRule(...).allowsMovement` and the shared connection queries for routes;
+  aggregate `terrainPropertiesAt` remains the separate ecology profile.
+  `isGrass`/`isSand`/`isWater` still mean four matching corner identities, while
+  `terrainTypeAt` returns `MIXED_TERRAIN` on a transition.
+
+- **Beaches are a convention, not a rule.** Grass directly against water is legal: the cells
+  between are unbuildable and require amphibious movement, as sand/water cells do. The shipped
   maps keep sand between grass and water. `Map::layBeaches()` turns every grass vertex next to
   water, and every water vertex next to grass, into sand, reading the terrain as it was, so the
   result does not depend on scan order; the designed generators apply the same rule to their
@@ -38,7 +42,7 @@
   its pure grass, not its land. A swarm is 4×4; the start scorer counts free 4×4 footprints as a
   colony's room (`StartQuality`).
 - **Water blocks walking until a colony can swim.** Ground units cannot enter water
-  (cells whose four corners are all water) until they have trained at a swimming pool. Every island map, strait
+  or mixed water/land cells until they have trained at a swimming pool. Every island map, strait
   and moat is therefore a *timing* rule: it separates colonies early and opens once pools are
   built. Sand and grass are both walkable.
 - **Resources block movement and building.** A unit cannot stand on a tile with a resource on it

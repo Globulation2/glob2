@@ -76,7 +76,7 @@ each colony is reachable, not that every worker is reachable.
 Separate local opening access from travel between estates. A fort may need short
 supply piers to its own external farms while every rival and neutral key remains
 across open water. State that scope explicitly. Legal stone requires grass corners
-and beaches leave walkable mixed tiles: a wall beside water does not automatically
+and beaches leave walkable mixed shore cells: a wall beside water does not automatically
 make its harbour gate swimming-only. Check the shore detour before making that claim.
 Bastion Keys instead proves separation between entire estates, with both gates
 inside that movement contract.

@@ -25,8 +25,12 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
     ComputeExecutor executor;
     executor.configure(2);
     REQUIRE(executor.threadCount() == 2);
-    const field::Grid grid{gradient_fixture::retainedVulkanWidth, gradient_fixture::retainedVulkanHeight};
-    const auto costs = std::make_shared<const std::vector<EntrySteps>>(grid.cells(), LAND_STEPS);
+	field::Grid grid{gradient_fixture::retainedVulkanWidth, gradient_fixture::retainedVulkanHeight};
+	auto edges = std::make_shared<std::vector<std::uint8_t>>(grid.cells());
+	for (size_t i = 0; i < edges->size(); ++i)
+		(*edges)[i] = std::uint8_t((i * 71) ^ 0xa5);
+	grid = grid.withConnections(edges);
+	const auto costs = std::make_shared<const std::vector<EntrySteps>>(grid.cells(), LAND_STEPS);
     auto session = std::make_shared<BackendSession>();
     const std::array<std::span<const std::uint16_t>, 5> fixtures{
         gradient_fixture::retainedVulkanRuns0, gradient_fixture::retainedVulkanRuns1,

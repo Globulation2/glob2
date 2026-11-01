@@ -1,5 +1,5 @@
-#include "field/OpenCLGradient.h"
 #include "field/GradientDeviceService.h"
+#include "field/OpenCLGradient.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "sim/snapshot/SnapshotStore.h"
 #include "EngineFixtures.h"
@@ -44,8 +44,8 @@ void scalarResource(Map &m, int team, int resource, int swim, Uint16 *out, bool 
         else if (m.resourceBlocksGround(i)) out[i]=GRADIENT_FORBIDDEN;
         else if (m.occupancyCells[i].building!=NOGBID)
             out[i]=markets && m.isStockedMarketTile(m.occupancyCells[i].building,team,resource) ? GRADIENT_AT_GOAL-5*GRADIENT_STEP : GRADIENT_FORBIDDEN;
-        else if (swim==WATER_ONLY_CLASS ? !m.terrainPropertiesAt(i).swimmable : !m.terrainPropertiesAt(i).walkable && !(swim>0 && m.terrainPropertiesAt(i).swimmable))
-            out[i]=GRADIENT_FORBIDDEN;
+		else if (!m.cellRule(i).allowsMovement(swim))
+			out[i]=GRADIENT_FORBIDDEN;
         else out[i]=GRADIENT_UNREACHABLE;
     }
 }
@@ -65,7 +65,7 @@ void scalarClear(Map &m, int team, int swim, Uint16 *out)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.occupancyCells[i].building != NOGBID)
 			out[i] = GRADIENT_FORBIDDEN;
-		else if ((swim==WATER_ONLY_CLASS ? !m.terrainPropertiesAt(i).swimmable : !m.terrainPropertiesAt(i).walkable && !(swim > 0 && m.terrainPropertiesAt(i).swimmable)))
+		else if ((!m.cellRule(i).allowsMovement(swim)))
 			out[i] = GRADIENT_FORBIDDEN;
 		else
 			out[i] = GRADIENT_UNREACHABLE;
@@ -86,7 +86,7 @@ void scalarGuard(Map &m, int team, int swim, Uint16 *out)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.occupancyCells[i].building != NOGBID && ((1u << Building::GIDtoTeam(m.occupancyCells[i].building)) & m.game->teams[team]->allies))
 			out[i] = GRADIENT_FORBIDDEN;
-		else if ((swim==WATER_ONLY_CLASS ? !m.terrainPropertiesAt(i).swimmable : !m.terrainPropertiesAt(i).walkable && !(swim > 0 && m.terrainPropertiesAt(i).swimmable)))
+		else if ((!m.cellRule(i).allowsMovement(swim)))
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.areaCells[i].guard & mask)
 		{
@@ -1258,8 +1258,12 @@ TEST_CASE("snapshot seeds preserve every periodic kind after the live world chan
         CrowdingScratch scratch;
         seed(request,snapshot,actual.data(),scratch);
         requireSameField(m,"snapshot seed",actual,expected);
-        m.propagateGradient(expected.data(),swim);
-        // All worker input comes from the lease, even after these live writes.
+		m.propagateGradient(expected.data(), swim, gradient_kernel::COST_LIMIT,
+							kind == Kind::Guard   ? gradient_kernel::Family::Guard
+							: kind == Kind::Clear ? gradient_kernel::Family::Clear
+												  : gradient_kernel::Family::Materials,
+							1);
+		// All worker input comes from the lease, even after these live writes.
         const auto old=m.areaCells[1].forbidden;
         m.areaCells[1].forbidden=~old;
         seed(request,snapshot,actual.data(),scratch);
@@ -1536,14 +1540,14 @@ TEST_CASE("compiled preparation tables preserve rule and catalog interpretation"
     REQUIRE(rules.gradientPreparation().size()==rules.size());
     for(std::size_t id=0;id<rules.size();++id)for(unsigned swim=0;swim<8;++swim){
         const auto& original=rules[Uint16(id)];const auto& compact=rules.gradientPreparation()[id];
-        CHECK(bool(compact.accessibility&(1u<<swim))==gradient_kernel::terrainAllowsGround(original.properties,swim));
-        CHECK((compact.costs[swim]&65535)==original.ground[swim].cardinal);
+		CHECK(bool(compact.accessibility & (1u << swim)) == original.allowsMovement(swim));
+		CHECK((compact.costs[swim]&65535)==original.ground[swim].cardinal);
         CHECK((compact.costs[swim]>>16)==original.ground[swim].diagonal);
         const auto& cpu=rules.openTerrainSeeds(swimAccessVariant(swim));
         REQUIRE(cpu.size()==rules.size());
-        CHECK(cpu[id]==(gradient_kernel::terrainAllowsGround(original.properties,swim)
-            ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
-    }
+		CHECK(cpu[id] ==
+			  (original.allowsMovement(swim) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
+	}
     const auto& resources=*snapshot.catalogs->resources;
     REQUIRE(resources.gradientPreparation().size()==resources.size());
     for(std::size_t id=0;id<resources.size();++id){

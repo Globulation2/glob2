@@ -36,6 +36,8 @@ wood, alternating by bank. Actual counts
 vary with coast geometry and the seed. Both layers follow their own abundance
 control, with no guaranteed inlet crops at zero and physical capacity reached at
 100%. Grass gaps leave gathering faces and landings, without sand enclosures.
+Landing validation follows two cardinal amphibious steps from a reachable walking
+bank through a mixed shore cell into full water.
 Their future spread follows fertile shores; dry mainland construction ground and
 both end routes remain protected. Short dry paths across the inlet mouths stop
 crops spreading around the outer sea coast.

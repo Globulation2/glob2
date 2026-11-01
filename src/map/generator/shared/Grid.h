@@ -11,6 +11,7 @@
 class Map;
 namespace MapGeneration
 {
+enum class GridNeighbors;
 /// A width by height torus addressed row-major by tile index: the wrap arithmetic every
 /// generator needs, written once.
 struct Torus
@@ -108,7 +109,8 @@ inline Axes axesFor(int width, int height)
 	return {width, height, width >= height};
 }
 
-/// A breadth-first flood, eight-connected across the wrap, through open tiles only.
+/// A breadth-first flood across the wrap. Torus overloads are geometric, eight-connected
+/// mask operations; Map overloads enforce physical ground terrain connections.
 struct Flood
 {
 	/// Steps from the nearest source: 0 at a source, -1 where nothing was reached. Every step
@@ -140,6 +142,22 @@ std::vector<int> stepsFrom(const Torus &, const std::vector<unsigned char> &sour
 						   const std::vector<unsigned char> &open);
 /// The same flood with every tile open.
 std::vector<int> stepsFrom(const Torus &, const std::vector<unsigned char> &source);
+/// Physical ground floods. The open mask owns obstacle occupancy and may model
+/// explicitly cleared deposits; both diagonal side cells must also be open.
+/// Terrain access and oriented shore connections always come from the Map.
+Flood floodFrom(const Map &, const std::vector<unsigned char> &source,
+				const std::vector<unsigned char> &open, int limit = INT_MAX, bool canSwim = false);
+Reach reachFrom(const Map &, const std::vector<int> &sources,
+				const std::vector<unsigned char> &open, int limit, bool canSwim = false);
+std::vector<int> stepsFrom(const Map &, const std::vector<unsigned char> &source,
+						   const std::vector<unsigned char> &open, bool canSwim = false);
+/// A forward terrain step through a caller-owned physical/cleared obstacle mask.
+/// Both diagonal side cells must be open. Transient unit occupancy is excluded.
+bool groundConnection(const Map &, const std::vector<unsigned char> &open, int x, int y, int dx,
+					  int dy, bool canSwim = false);
+/// Dense component labels for the physical ground graph (-1 for blocked cells).
+std::vector<int> groundRegions(const Map &, const std::vector<unsigned char> &open, GridNeighbors,
+							   bool canSwim = false);
 /// A mask with one at each listed tile.
 std::vector<unsigned char> tileMask(const Torus &, const std::vector<int> &tiles);
 /// Where each of the first `teams` teams' ground units stand, as tile indices in row-major

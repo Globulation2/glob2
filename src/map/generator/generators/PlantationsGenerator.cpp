@@ -141,10 +141,10 @@ constexpr int kRelaxRounds = 3;
 // its nearest neighbours, so the swim to the next island lands on a lane and the plot is reached from
 // two sides when a field is solid; a home gets one per granted island when it holds more (the bulk
 // study's causeway failures were all homes with three granted islands and two lanes).
-// kCausewayHalfWidth is the sand line's half width across the strait for a causeway: one vertex of
-// sand already carries units two tiles wide (Channels.h's bridgeAcross).
+// Give causeways a dry interior and clear side cells at diagonal bends. Thin
+// shore strokes can leave isolated land tips that cannot support walking.
 constexpr int kLanes = 2;
-constexpr double kCausewayHalfWidth = 0.75;
+constexpr double kCausewayHalfWidth = 1.75;
 // Islets: a rock islet is a disc of this radius, a grass core of about three tiles that holds a stone
 // clump of kRockRadius; an orchard islet a little bigger, so three groves of one fruit each stand
 // round its middle kGroveRing tiles out. Neither carries a plot or a crop.
@@ -1060,7 +1060,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			for (int tile : units[k])
 				if (L.cell[tile] == L.homeCell[k])
 					homeUnits.push_back(tile);
-			const std::vector<int> steps = stepsFrom(t, tileMask(t, homeUnits), ground);
+			const std::vector<int> steps = stepsFrom(map, tileMask(t, homeUnits), ground);
 			for (int cell : L.grantedCells[k])
 			{
 				const Island &outer = L.islands[cell];
@@ -1094,7 +1094,7 @@ GeneratorDefinition plantationsDefinition()
 		"plantations",
 		48,
 		"Plantations",
-		5,
+		6,
 		false,
 		// A plot of 10 seats a swarm beside a pool with room for its level-1 upgrade and four rows
 		// left (10 is the least that seats both, 8 until 2026-09-16); 4 tiles of crops round it keep an island small enough to swim round and fertile to

@@ -2,6 +2,7 @@
 #pragma once
 #include "BuildingCatalog.h"
 #include "UnitCatalog.h"
+#include "MapStateView.h"
 
 // Cold service planning shared by live units and captured AI observations.
 // Capture the whole parallel grant set before any qualification/level changes.
@@ -51,20 +52,42 @@ template<class State,class Levels,class Training> unsigned movementAfter(
     return result;
 }
 // Occupancy, resources and forbidden areas can clear while an eater/trainer
-// exits. Only immutable terrain compatibility can reject a prospective course.
-template<class Terrain> bool exitTerrainSafe(unsigned before,unsigned after,
-    int x,int y,int width,int height,Terrain terrain)
+// exits. Only the captured terrain compatibility rejects a prospective course.
+inline bool exitTerrainSafe(unsigned before, unsigned after, int x, int y, int width, int height,
+							const MapState::View &view)
 {
     if(!after)return false;
-    // Flying units remain airborne; their exit is inside the footprint. Losing
-    // a dormant ground mode cannot make that existing air exit less usable.
-    if((before&4u) && (after&4u))return true;
-    if((after&before)==before)return true;
-    for(int dy=-1;dy<=height;++dy)for(int dx=-1;dx<=width;++dx) {
-        if(dx!=-1 && dx!=width && dy!=-1 && dy!=height)continue;
-        const auto& rules=terrain(x+dx,y+dy);
-        if(after&4u ? rules.flyable : ((after&1u) && rules.walkable) || ((after&2u) && rules.swimmable))return true;
-    }
-    return false;
+	if (after & 4u)
+	{
+		// Retained flight keeps its existing interior exit. Newly learned flight
+		// takes precedence over ground modes, so it needs a flyable footprint.
+		if (before & 4u)
+			return true;
+		for (int dy = 0; dy < height; ++dy)
+			for (int dx = 0; dx < width; ++dx)
+				if (MapState::terrainAllowsMovement(view, view.index(x + dx, y + dy),
+													AIR_MOVEMENT_CLASS))
+					return true;
+		return false;
+	}
+	if((after&before)==before)return true;
+	const int movement = after & 1u ? (after & 2u ? 1 : 0) : WATER_ONLY_CLASS;
+	for (int dy = -1; dy <= height; ++dy)
+		for (int dx = -1; dx <= width; ++dx)
+		{
+			if (dx != -1 && dx != width && dy != -1 && dy != height)
+				continue;
+			// Ground exits share an edge with the footprint. Corner-only cells
+			// would cut between two occupied building cells.
+			if ((dx == -1 || dx == width) && (dy == -1 || dy == height))
+				continue;
+			if (!MapState::terrainAllowsMovement(view, view.index(x + dx, y + dy), movement))
+				continue;
+			const int stepX = (dx == width) - (dx == -1), stepY = (dy == height) - (dy == -1);
+			if (MapState::terrainConnection(view, x + dx - stepX, y + dy - stepY, stepX, stepY,
+											movement))
+				return true;
+		}
+	return false;
 }
-}
+} // namespace UnitTraining

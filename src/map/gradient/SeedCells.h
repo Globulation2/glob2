@@ -146,16 +146,10 @@ struct BuildingSeedResult
 template<bool WaterOnly, bool Air=false, class Run>
 BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
 {
-    BuildingSeedResult result;
-    const bool canSwim=b.swim>0;
-    constexpr bool air=Air;
-    const auto closed=[&](size_t i) {
-        const auto& p=view.terrainProperties(i);
-        if (air) return !p.flyable;
-        if constexpr (WaterOnly) return !p.swimmable;
-        else return !p.walkable && !(canSwim && p.swimmable);
-    };
-    if (b.route==BuildingRoute::Footprint)
+	BuildingSeedResult result;
+	constexpr bool air=Air;
+	const auto closed = [&](size_t i) { return !MapState::terrainAllowsMovement(view, i, b.swim); };
+	if (b.route==BuildingRoute::Footprint)
     {
         run([&](size_t begin, size_t end) {
             for (size_t i=begin; i<end; ++i)

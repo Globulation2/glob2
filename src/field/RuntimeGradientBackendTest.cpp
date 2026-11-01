@@ -43,6 +43,8 @@ std::vector<std::uint16_t> oracle(std::vector<std::uint16_t> values, field::Grid
 			for (int dx = -1; dx <= 1; ++dx)
 				if (dx || dy)
 				{
+					if (!(grid.incomingMask(i) & (1u << field::directionIndex(dx, dy))))
+						continue;
 					const auto n =
 						std::size_t(grid.wrapY(y + dy)) * grid.width() + grid.wrapX(x + dx);
 					const auto next = cost + (dx && dy ? costs[i].diagonal : costs[i].cardinal);
@@ -296,6 +298,13 @@ TEST_SUITE("RuntimeGradientBackend")
 						costs[i] = {step, step * 14 / 10};
 					}
 					seeds[0] = 65535;
+					if (cap == 70)
+					{
+						auto edges = std::make_shared<std::vector<std::uint8_t>>(grid.cells());
+						for (auto &mask : *edges)
+							mask = random() & 255;
+						grid = grid.withConnections(edges);
+					}
 					seeds.back() = 65535 - 400;
 					auto actual = seeds;
 					BackendRequest request{
@@ -394,7 +403,7 @@ TEST_SUITE("RuntimeGradientBackend")
 					CAPTURE(dimensions.second);
 					CAPTURE(swim);
 					CAPTURE(cap);
-					const field::Grid grid{dimensions.first, dimensions.second};
+					field::Grid grid{dimensions.first, dimensions.second};
 					std::vector<std::uint16_t> seeds(grid.cells(), 1);
 					std::vector<EntrySteps> costs(grid.cells(), LAND_STEPS);
 					for (std::size_t i = 0; i < grid.cells(); ++i)
@@ -411,6 +420,13 @@ TEST_SUITE("RuntimeGradientBackend")
 					}
 					seeds.front() = 65535;
 					seeds[grid.cells() / 2] = 65535 - 71;
+					if (cap == 70)
+					{
+						auto edges = std::make_shared<std::vector<std::uint8_t>>(grid.cells());
+						for (auto &mask : *edges)
+							mask = random() & 255;
+						grid = grid.withConnections(edges);
+					}
 					seeds.back() = 65535 - 400;
 					const auto expected = oracle(seeds, grid, costs, cap);
 					for (const auto plan : {Plan::VulkanFrozen8, Plan::VulkanJacobi})
@@ -669,7 +685,7 @@ TEST_SUITE("RuntimeGradientBackend")
 		for (const auto &dimensions : {std::pair{1, 1}, std::pair{1, 17}, std::pair{19, 1},
 									   std::pair{3, 5}, std::pair{18, 33}})
 		{
-			const field::Grid grid{dimensions.first, dimensions.second};
+			field::Grid grid{dimensions.first, dimensions.second};
 			std::vector<std::uint16_t> seeds(grid.cells(), 1);
 			std::vector<EntrySteps> costs(grid.cells());
 			for (std::size_t i = 0; i < seeds.size(); ++i)

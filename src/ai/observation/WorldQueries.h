@@ -11,6 +11,7 @@
 #include "Order.h"
 #include "field/RuntimeTerrainGradient.h"
 #include "field/Influence.h"
+#include "map/MovementConnections.h"
 #include <algorithm>
 #include <map>
 #include <numeric>
@@ -50,34 +51,56 @@ public:
  bool canPaintFarmArea(int x,int y) const { return world.canPaintFarmAt(world.tileIndex(x,y)); }
  bool isHardSpaceForBuilding(int x,int y,int width=1,int height=1,Uint16 ignore=0xffff) const
  { return isFreeForBuilding(x,y,width,height,true,ignore); }
- void updateGlobalGradient(Uint8* values) const
+ void updateGlobalGradient(Uint8 *values, bool travel = false) const
  {
-  field::ConvergentInfluence influence(values,{world.width,world.height});
-  if(!influence.hasSources()) return;
-  int passes=0;
-  do {
+	 field::ConvergentInfluence influence(
+		 values, travel ? MapState::movementGrid(world.state(), 0, Uint32(1) << team)
+						: field::Grid(world.width, world.height));
+	 if (!influence.hasSources())
+		 return;
+	 int passes = 0;
+	 do {
    influence.beginPass();
    for(int y=0;y<world.height;++y) influence.forwardRow(y);
    for(int y=world.height;y-->0;) influence.reverseRow(y);
    if(++passes>=256) throw std::logic_error("AI influence gradient failed to converge");
   } while(influence.passChanged());
  }
- template<class T> bool getGlobalGradientDestination(const T* values,int x,int y,Sint32* targetX,Sint32* targetY) const
+ template <class T>
+ bool getGlobalGradientDestination(const T *values, int x, int y, Sint32 *targetX, Sint32 *targetY,
+								   bool travel = false) const
  {
-  static constexpr int directions[8][2]={{0,-1},{1,0},{0,1},{-1,0},{-1,-1},{1,-1},{1,1},{-1,1}};
-  int vx=world.normalizeX(x),vy=world.normalizeY(y);
-  const auto at=[&](int a,int b){return values[world.tileIndex(a,b)];};
-  T strongest=at(vx,vy);
-  bool exact=false;
-  while(true) {
-   bool found=false;int dx=0,dy=0;
-   for(const auto& d:directions) if(const T candidate=at(vx+d[0],vy+d[1]);candidate>strongest) {
-    strongest=candidate;dx=d[0];dy=d[1];found=true;
-   }
-   vx=world.normalizeX(vx+dx);vy=world.normalizeY(vy+dy);
-   if(strongest==std::numeric_limits<T>::max()) {exact=true;break;}
-   if(!found) break;
-  }
+	 if (travel)
+		 return MapState::gradientDestination(world.state(), values, x, y, targetX, targetY, 0,
+											  world.teams[team].mask);
+	 static constexpr int directions[8][2] = {{0, -1},  {1, 0},  {0, 1}, {-1, 0},
+											  {-1, -1}, {1, -1}, {1, 1}, {-1, 1}};
+	 int vx = world.normalizeX(x), vy = world.normalizeY(y);
+	 const auto at = [&](int a, int b) { return values[world.tileIndex(a, b)]; };
+	 T strongest = at(vx, vy);
+	 bool exact = false;
+	 while (true)
+	 {
+		 bool found = false;
+		 int dx = 0, dy = 0;
+		 for (const auto &d : directions)
+			 if (const T candidate = at(vx + d[0], vy + d[1]); candidate > strongest)
+			 {
+				 strongest = candidate;
+				 dx = d[0];
+				 dy = d[1];
+				 found = true;
+			 }
+		 vx = world.normalizeX(vx + dx);
+		 vy = world.normalizeY(vy + dy);
+		 if (strongest == std::numeric_limits<T>::max())
+		 {
+			 exact = true;
+			 break;
+		 }
+		 if (!found)
+			 break;
+	 }
   *targetX=vx;*targetY=vy;return exact;
  }
  void reserve(int type,int x,int y) { reservations.push_back({type,x,y}); }
@@ -179,7 +202,7 @@ public:
     auto& values=*buffer;
    const Uint32 mask=world.teams[owner].mask;
    values.resize(world.tiles.size());
-   bool modified=false;
+   bool modified = world.terrainMovementModifiers;
    for(size_t i=0;i<values.size();++i) {
     const auto resourceCell=world.resourceAt(i);const auto occupancy=world.occupancyAt(i);
     const auto& terrain=world.terrainPropertiesAt(i);
@@ -187,16 +210,19 @@ public:
     Uint16 value=GRADIENT_FORBIDDEN;
     if(!(world.areasAt(i).forbidden & mask) && occupancy.immobileUnit==255) {
      if(!MapState::resourceBlocksGround(world.state(),i) && occupancy.building==0xffff)
-      value=(terrain.walkable || (swim && terrain.swimmable))?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
-     // Passable sources are goals too. Visibility belongs to each source.
+		 value = MapState::terrainAllowsMovement(world.state(), i, swim) ? GRADIENT_UNREACHABLE
+																		 : GRADIENT_FORBIDDEN;
+	 // Passable sources are goals too. Visibility belongs to each source.
      if((MapState::materialMaskAt(world.state(),i) & MaterialMask(1u<<resource)) && (!MapState::resourceVisibleToHarvest(world.state(),i) || (world.visibilityAt(i).visible & mask)))
       value=GRADIENT_AT_GOAL;
     }
     values[i]=value;
    }
-   gradient_kernel::propagateTerrainField(values.data(),swim,gradient_kernel::COST_LIMIT,{world.width,world.height},scratch,
-    [&](size_t i){return world.cellRuleAt(i);},modified,*world.cellRules,256);
-    initialization.values=std::move(buffer);
+   gradient_kernel::propagateTerrainField(
+	   values.data(), swim, gradient_kernel::COST_LIMIT,
+	   MapState::movementGrid(world.state(), swim, mask), scratch,
+	   [&](size_t i) { return world.cellRuleAt(i); }, modified, *world.cellRules, 256);
+   initialization.values = std::move(buffer);
    }
    if(enrollments && enrollmentsReported.insert(key).second)
     enrollments->push_back({owner,resource,swim,initialization.observedTick,initialization.values});
@@ -216,7 +242,16 @@ public:
   while(true) {
    int dx=0,dy=0;bool step=false;
    for(const auto& d:directions) if(const auto candidate=gradient[index(px+d[0],py+d[1])];candidate>best) {
-    best=candidate; dx=d[0];dy=d[1];step=true;
+		   const bool interaction = candidate == GRADIENT_AT_GOAL &&
+									MapState::resourceInteractionEndpoint(
+										world.state(), index(px + d[0], py + d[1]), swim);
+		   if (!interaction && !MapState::gradientStep(world.state(), px, py, d[0], d[1], swim,
+													   world.teams[owner].mask))
+			   continue;
+		   best = candidate;
+		   dx = d[0];
+		   dy = d[1];
+		   step = true;
    }
    px=world.normalizeX(px+dx);py=world.normalizeY(py+dy);
    if(best==GRADIENT_AT_GOAL || !step) break;

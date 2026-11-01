@@ -33,7 +33,8 @@ bool exactGradientFixedPoint(std::span<const std::uint16_t> seeds, std::span<con
 				{
 					const auto k =
 						std::size_t(grid.wrapY(y + dy)) * grid.width() + grid.wrapX(x + dx);
-					if (!seeds[k] || output[k] <= 1)
+					if (!(grid.incomingMask(k) & (1u << field::directionIndex(-dx, -dy))) ||
+						!seeds[k] || output[k] <= 1)
 						continue;
 					const auto step = costs(k);
 					const auto edge = dx && dy ? step.diagonal : step.cardinal;

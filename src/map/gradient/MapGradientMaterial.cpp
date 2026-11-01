@@ -94,7 +94,9 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimCla
 	{
 		PERF_SCOPE_TIME(PropagationResource);
 		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT,
-            withMarkets ? gradient_kernel::Family::Markets : gradient_kernel::Family::Materials);
+						  withMarkets ? gradient_kernel::Family::Markets
+									  : gradient_kernel::Family::Materials,
+						  Uint32(1) << teamNumber);
 	}
     (withMarkets ? marketMaterialGradientStale[teamNumber][resourceType][swimClass]
                  : materialGradientStale[teamNumber][resourceType][swimClass])=false;

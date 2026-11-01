@@ -57,9 +57,12 @@ CellRuleTable::CellRuleTable(std::shared_ptr<const TerrainRegistry> terrains,
 
 CellRuleTable::Key CellRuleTable::key(TerrainType a, TerrainType b, TerrainType c, TerrainType d)
 {
-	Key result{a, b, c, d};
-	std::sort(result.begin(), result.end());
-	return result;
+	// Preserve adjacency while sharing rotations/reflections. Sorting loses the
+	// distinction between a continuous shore edge and two isolated land corners.
+	if (a == b && a == c && a == d)
+		return {a, b, c, d};
+	return std::min({Key{a, b, c, d}, Key{c, a, d, b}, Key{d, c, b, a}, Key{b, d, a, c},
+					 Key{b, a, d, c}, Key{d, b, c, a}, Key{c, d, a, b}, Key{a, c, b, d}});
 }
 
 std::optional<std::uint16_t> CellRuleTable::find(const Key &key) const
@@ -138,8 +141,8 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 					if (std::find(m.steps.begin(), m.steps.end(), step) == m.steps.end()) m.steps.push_back(step);
 			}
 			m.profileIds.push_back(static_cast<std::uint8_t>(profile));
-			const auto &p = rule.properties;
-			if (gradient_kernel::terrainAllowsMovement(p,sw)) m.minimum = std::min(m.minimum, cost.cardinal);
+			if (rule.allowsMovement(sw))
+				m.minimum = std::min(m.minimum, cost.cardinal);
 			if (prepare && (m.profiles.size() != checkpoints[sw].profiles || !m.prepared))
 			{
 				auto &checkpoint = checkpoints[sw];
@@ -156,7 +159,8 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 		GradientPreparationRule preparation;
 		for (unsigned sw = 0; sw < rule.ground.size(); ++sw)
 		{
-			if (gradient_kernel::terrainAllowsMovement(rule.properties, sw)) preparation.accessibility |= 1u << sw;
+			if (rule.allowsMovement(sw))
+				preparation.accessibility |= 1u << sw;
 			preparation.costs[sw] = rule.ground[sw].cardinal | (rule.ground[sw].diagonal << 16);
 		}
 		rules_.push_back(std::move(rule));
@@ -205,14 +209,52 @@ void CellRuleTable::compile(CellRule &rule)
 	const auto &c = rule.corners;
 	const auto &p = rule.properties = combineCornerRules(terrains_->properties(c[0]), terrains_->properties(c[1]),
 														 terrains_->properties(c[2]), terrains_->properties(c[3]));
+	rule.groundAccess = 0;
+	unsigned walking = 0, swimming = 0, amphibious = 0;
+	unsigned swimSpeed = 1024;
+	for (unsigned corner = 0; corner < 4; ++corner)
+	{
+		const auto &p = terrains_->properties(c[corner]);
+		if (p.walkable)
+			walking |= 1u << corner;
+		if (p.swimmable)
+		{
+			swimming |= 1u << corner;
+			swimSpeed = std::min(swimSpeed, unsigned(p.groundSpeedQ8));
+		}
+		if (p.walkable || p.swimmable)
+			amphibious |= 1u << corner;
+	}
+	const bool landEdge =
+		(walking & 3) == 3 || (walking & 12) == 12 || (walking & 5) == 5 || (walking & 10) == 10;
+	// Normal shores retain a connected land edge. Isolated tips and saddle
+	// corners cannot support a walking glob; rock corners remain impassable.
+	if (amphibious == 15 && landEdge)
+		rule.groundAccess |= 1;
+	if (amphibious == 15)
+		rule.groundAccess |= 2;
+	if (swimming == 15)
+		rule.groundAccess |= 4;
+	rule.usesSwimming = swimming && !(rule.groundAccess & 1);
+	rule.swimmingSpeedQ8 = swimming ? swimSpeed : p.groundSpeedQ8;
+	rule.movementSpeedQ8 = rule.usesSwimming ? swimSpeed : p.groundSpeedQ8;
+	auto movementProperties = p;
+	movementProperties.swimmable = rule.usesSwimming;
+	movementProperties.groundSpeedQ8 = rule.movementSpeedQ8;
 	for (unsigned sw = 0; sw < rule.ground.size(); ++sw)
 	{
-		const auto cost = gradient_kernel::terrainEntrySteps(p, int(sw));
+		auto profile = movementProperties;
+		if (sw == WATER_ONLY_CLASS)
+		{
+			profile.swimmable = true;
+			profile.groundSpeedQ8 = rule.swimmingSpeedQ8;
+		}
+		const auto cost = gradient_kernel::terrainEntrySteps(profile, int(sw));
 		if (cost.cardinal == 0 || cost.diagonal >= 256)
 			throw std::invalid_argument("Terrain edge exceeds supported gradient queue");
 		rule.ground[sw] = cost;
 	}
-	rule.groundTravelCost = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, p.groundSpeedQ8);
+	rule.groundTravelCost = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, rule.movementSpeedQ8);
 	rule.airCost = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, p.airSpeedQ8);
 	rule.airRouteCost = gradient_kernel::hazardRouteCost(rule.airCost, p.airHealthQ8);
 

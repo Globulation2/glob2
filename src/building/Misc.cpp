@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <numeric>
+#include <optional>
 #include <limits>
 
 #include "Building.h"
@@ -332,6 +333,26 @@ int Building::getMidY(void)
 	return ((posY-type->decTop)&owner->map->getMaskH());
 }
 
+namespace
+{
+// Existing/edited footprints can border water even when a destination cell is a
+// walkable shore. Keep the same oriented edge for exit selection and animation.
+std::optional<Offset> groundExitStep(const Building &building, int x, int y, bool canSwim,
+									 bool canWalk)
+{
+	if (!canWalk && !canSwim)
+		return std::nullopt;
+	const auto &map = *building.owner->map;
+	const int movement = canWalk ? (canSwim ? 1 : 0) : WATER_ONLY_CLASS;
+	for (const auto step : {Offset{0, -1}, Offset{1, 0}, Offset{0, 1}, Offset{-1, 0}})
+		if (map.getBuilding(x + step.dx, y + step.dy) == building.gid &&
+			MapState::terrainConnection(map.cellView(), x + step.dx, y + step.dy, -step.dx,
+										-step.dy, movement))
+			return Offset{-step.dx, -step.dy};
+	return std::nullopt;
+}
+} // namespace
+
 bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim, bool canWalk)
 {
 	int testX, testY;
@@ -371,10 +392,10 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	}
 	if (exitQuality>0)
 	{
-		auto off = owner->map->doesPosTouchBuilding(exitX, exitY, gid);
-		assert(off);
-		*dx=-off->dx;
-		*dy=-off->dy;
+		const auto step = groundExitStep(*this, exitX, exitY, canSwim, canWalk);
+		assert(step);
+		*dx = step->dx;
+		*dy = step->dy;
 		*posX=exitX & owner->map->getMaskW();
 		*posY=exitY & owner->map->getMaskH();
 		return true;
@@ -393,10 +414,16 @@ void Building::checkGroundExitQuality(
 		int & oldQuality,
 		bool canSwim, bool canWalk)
 {
+	if (!groundExitStep(*this, testX, testY, canSwim, canWalk))
+		return;
 	Uint32 me=owner->me;
-	if ((canWalk || (canSwim && owner->map->terrainPropertiesAt(testX,testY).swimmable)) && owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
+	if (owner->map->terrainAllowsMovementAt(testX, testY,
+											canWalk ? (canSwim ? 1 : 0) : WATER_ONLY_CLASS) &&
+		owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
 	{
-		if ((canWalk || (canSwim && owner->map->terrainPropertiesAt(extraTestX,extraTestY).swimmable)) && owner->map->isFreeForGroundUnit(extraTestX, extraTestY, canSwim, me))
+		if (owner->map->terrainAllowsMovementAt(extraTestX, extraTestY,
+												canWalk ? (canSwim ? 1 : 0) : WATER_ONLY_CLASS) &&
+			owner->map->isFreeForGroundUnit(extraTestX, extraTestY, canSwim, me))
 			oldQuality++;
 		if (owner->map->isResource(testX, testY-1))
 		{
@@ -451,6 +478,8 @@ bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
 
 bool Building::findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *dx, int *dy, bool canWalk)
 {
+	if (!fly && !canWalk && !canSwim)
+		return false;
 	// Pass 0 takes the footprint, pass 1 the ring around it.
 	for (int pass=0; pass<2; pass++)
 		for (int y=this->posY-1; y<=this->posY+type->height; y++)
@@ -462,7 +491,10 @@ bool Building::findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *
 					continue;
 				int wx=x&owner->map->getMaskW();
 				int wy=y&owner->map->getMaskH();
-				if (fly ? !owner->map->isFreeForAirUnit(wx, wy) : (!(canWalk || (canSwim && owner->map->terrainPropertiesAt(wx,wy).swimmable)) || !owner->map->isFreeForGroundUnit(wx, wy, canSwim, owner->me)))
+				if (fly ? !owner->map->isFreeForAirUnit(wx, wy)
+						: (!owner->map->terrainAllowsMovementAt(
+							   wx, wy, canWalk ? (canSwim ? 1 : 0) : WATER_ONLY_CLASS) ||
+						   !owner->map->isFreeForGroundUnit(wx, wy, canSwim, owner->me)))
 					continue;
 				*posX=wx;
 				*posY=wy;

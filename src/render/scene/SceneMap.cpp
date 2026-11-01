@@ -159,13 +159,19 @@ bool SceneMap::isFreeForAirUnit(int x,int y) const
     return terrainPropertiesAt(x,y).flyable && getAirUnit(x,y)==0xffff
         && (resource.type==NO_RES_TYPE || !resourceDefinitions->properties(ResourceId(resource.type)).blocksAir);
 }
+bool SceneMap::terrainAllowsMovementAt(int x, int y, int movement) const
+{
+	const auto i = coordToIndex(x, y);
+	return (*snapshot->terrain->rules)[snapshot->terrain->cellRules[i]].allowsMovement(movement);
+}
 bool SceneMap::isFreeForGroundUnit(int x,int y,bool canSwim,Uint32 teamMask) const
 {
-    const auto& terrain=terrainPropertiesAt(x,y);
-    const auto& resource=getResource(x,y);
-    return (terrain.walkable || (canSwim && terrain.swimmable)) && getGroundUnit(x,y)==0xffff
-        && getBuilding(x,y)==0xffff && !(snapshot->areas->cells[coordToIndex(x,y)].forbidden & teamMask)
-        && (resource.type==NO_RES_TYPE || !resourceDefinitions->properties(ResourceId(resource.type)).blocksGround);
+	const auto &resource = getResource(x, y);
+	return terrainAllowsMovementAt(x, y, canSwim ? 1 : 0) && getGroundUnit(x, y) == 0xffff &&
+		   getBuilding(x, y) == 0xffff &&
+		   !(snapshot->areas->cells[coordToIndex(x, y)].forbidden & teamMask) &&
+		   (resource.type == NO_RES_TYPE ||
+			!resourceDefinitions->properties(ResourceId(resource.type)).blocksGround);
 }
 bool SceneMap::isFreeForBuilding(int x,int y,int width,int height) const
 {

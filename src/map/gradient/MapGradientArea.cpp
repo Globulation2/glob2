@@ -66,7 +66,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (swimClass!=AIR_MOVEMENT_CLASS && occupancyCells[i].building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (!gradient_kernel::terrainAllowsMovement(terrainPropertiesAt(i),swimClass))
+		else if (!cellRule(i).allowsMovement(swimClass))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(swimClass!=AIR_MOVEMENT_CLASS && occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -207,7 +207,8 @@ void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 	seedGuardAreasGradient(teamNumber, swimClass, gradient);
 	{
 		PERF_SCOPE_TIME(PropagationArea);
-		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT, gradient_kernel::Family::Guard);
+		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT, gradient_kernel::Family::Guard,
+						  Uint32(1) << teamNumber);
 	}
 }
 
@@ -244,7 +245,8 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 	seedClearAreasGradient(teamNumber, swimClass, gradient);
 	{
 		PERF_SCOPE_TIME(PropagationArea);
-		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT, gradient_kernel::Family::Clear);
+		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT, gradient_kernel::Family::Clear,
+						  Uint32(1) << teamNumber);
 	}
 }
 

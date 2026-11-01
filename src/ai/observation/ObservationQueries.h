@@ -223,8 +223,8 @@ inline bool trainingVisitSafe(const AIEngine::AIWorldView& world,const AIEngine:
     if(!mask)return true;
     const unsigned before=UnitTraining::movementModes(unit);
     const unsigned after=UnitTraining::movementAfter(unit,mask,type.semantics.training,world.unitCatalog().levels(unit.typeNum));
-    return UnitTraining::exitTerrainSafe(before,after,building.posX,building.posY,type.width,type.height,
-        [&](int x,int y)->const TerrainProperties& { return terrain(world,x,y); });
+	return UnitTraining::exitTerrainSafe(before, after, building.posX, building.posY, type.width,
+										 type.height, world.state());
 }
 inline int maxBuildLevel(const AIEngine::AIWorldView& world, unsigned team)
 {

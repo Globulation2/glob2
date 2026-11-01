@@ -233,6 +233,13 @@ struct WorldTile
 	bool fertilitySource;
 	bool canWalk() const { return walkable && !swimmable; }
 	bool canTravel(bool swim) const { return canWalk() || (swim && swimmable); }
+	// Terrain-only forward edges in field::Surrounding order. Physical
+	// obstacles and hypothetical building footprints are applied by each query.
+	uint8_t walkingConnections = 255, amphibiousConnections = 255;
+	uint8_t travelConnections(bool swim) const
+	{
+		return swim ? amphibiousConnections : walkingConnections;
+	}
 	bool permanentResource;
 	/// Renewable seed or harvest outlet reserved against new construction.
 	bool woodReserve;
@@ -774,6 +781,8 @@ private:
 		std::vector<int>& route,
 		RejectionReason& reason) const;
 	void prepareRouteCache(const WorldState& world, int orientation) const;
+	bool circulationTileAllowed(const WorldState &world, int index) const;
+	bool arteryStillConnected(const WorldState &world, const DevelopmentAction &action) const;
 	void addBuildCandidates(const WorldState& world,
 		const DevelopmentIntent& intent, uint32_t stateSignature,
 		bool hasNetwork, std::vector<Candidate>& candidates);

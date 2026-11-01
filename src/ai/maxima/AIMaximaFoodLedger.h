@@ -153,6 +153,9 @@ struct Input
 	std::vector<uint32_t> yield;
 	/// Cells a harvesting worker may walk through, including protected wheat.
 	std::vector<uint8_t> traversable;
+	/// Forward travel edges in field::Surrounding order, including physical
+	/// diagonal clearance. Empty means unrestricted edges for synthetic inputs.
+	std::vector<uint8_t> connections;
 	std::vector<ConsumerInput> consumers;
 	int index(int x, int y) const;
 	int normalizeX(int x) const;

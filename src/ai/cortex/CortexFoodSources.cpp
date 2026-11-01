@@ -23,6 +23,14 @@
 
 namespace Cortex
 {
+inline MapState::View foodMovementView(const AIEngine::AIWorldView &m)
+{
+	return m.state();
+}
+inline MapState::View foodMovementView(const ::Map &m)
+{
+	return m.cellView();
+}
  inline int mapWidth(const AIEngine::AIWorldView& m){return m.width;} inline int mapWidth(const ::Map& m){return m.getW();}
  inline int mapHeight(const AIEngine::AIWorldView& m){return m.height;} inline int mapHeight(const ::Map& m){return m.getH();}
  inline unsigned mapIndex(const AIEngine::AIWorldView& m,int x,int y){return m.tileIndex(x,y);} inline unsigned mapIndex(const ::Map& m,int x,int y){return m.coordToIndex(x,y);}
@@ -167,6 +175,9 @@ inline auto canPaintFarmArea(const ::Map& m,int x,int y){return m.canPaintFarmAr
 				if(!inBox(nx,ny))return;
 				const int ni=static_cast<int>(mapIndex(map,nx,ny));
 				if(depth[ni]!=INT_MAX)return;
+				if (!MapState::groundSidesClear(foodMovementView(map), cur % w, cur / w,
+												nx - cur % w, ny - cur / w, 0, 0))
+					return;
 				const bool wheat=isField(nx,ny);
 				if(!wheat && !isLand(nx,ny))return;
 				depth[ni]=depth[cur]+(wheat?1:0);q.push_back(ni);

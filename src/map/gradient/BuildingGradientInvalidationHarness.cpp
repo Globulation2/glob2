@@ -325,12 +325,14 @@ static void publicReadsResolveTheirInputs()
 	Building *centre = world.place(20, 20);
 	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
 	{
-        // Water-only callers need water outside the inn's occupied grass island.
-        // Retain the original all-grass setup for walking/swimming classes0-6.
-        if(swim==SWIM_CLASS_COUNT-1)
+		// Water-only callers need four water corners right up to the intended
+		// building endpoint. Keeping grass under the existing inn would leave
+		// an impassable mixed-material moat around it. Placement is not under
+		// test; retain the original grass for walking/swimming classes0-6.
+		if(swim==SWIM_CLASS_COUNT-1)
             for(int y=0;y<map.getH();++y)
                 for(int x=0;x<map.getW();++x)
-                    if(map.getBuilding(x,y)==NOGBID) map.paintCell(x,y,WATER);
+					map.paintCell(x, y, WATER);
 		world.warm(centre,swim);
 		const Uint16 *full = map.buildingGradient(centre, swim);
 		require(full != nullptr, "public field is reachable");
@@ -382,7 +384,11 @@ static void delayedFields()
 			if(kind==0) map.seedMaterialGradient(0, 0, swim, values.data());
 			else if(kind==1) map.seedGuardAreasGradient(0, swim, values.data());
 			else map.seedClearAreasGradient(0, swim, values.data());
-			map.propagateGradient(values.data(), swim);
+			map.propagateGradient(values.data(), swim, gradient_kernel::COST_LIMIT,
+								  kind == 0   ? gradient_kernel::Family::Materials
+								  : kind == 1 ? gradient_kernel::Family::Guard
+											  : gradient_kernel::Family::Clear,
+								  Uint32(1));
 			return values;
 		};
 		const auto original=reference();
@@ -527,7 +533,8 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 				m.finishBuildingGradient(b, swim, route);
 				const Uint16* expected = b->globalGradient[slot];
 				const auto seed = captureBuildingSeed(*b, swim, route);
-				const auto inputs = BuildingGradientSearch::Inputs::ofSnapshot(snapshot, swim);
+				const auto inputs =
+					BuildingGradientSearch::Inputs::ofSnapshot(snapshot, swim, seed.teamMask);
 				BuildingGradientSearch search;
 				const auto result = buildBuilding(seed, snapshot, inputs, actual.data(), search, gradient_kernel::COST_LIMIT);
 				INFO(what);
@@ -1783,8 +1790,9 @@ TEST_SUITE("BuildingGradientInvalidation")
 		glob2test::HeadlessGlobals globals;
 		scheduledEmptyPipelineFollowsHeaderDelay();
 	}
-    TEST_CASE("retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]")
-    {
+	TEST_CASE("retained format126 access flags are consumed then expired at terrain migration and "
+			  "current saves continue [save-format]")
+	{
         glob2test::HeadlessGlobals globals;
         const auto original=glob2test::readFile(glob2test::inflated("team-limit/pre-v127-maxima.game.gz"));
         GameGUI observed;
@@ -1821,11 +1829,12 @@ TEST_SUITE("BuildingGradientInvalidation")
             REQUIRE(load(legacy.game,patched));
             for(const auto& flag:tracker.flags) {
                 const auto* building=legacy.game.teams[flag.team]->myBuildings[flag.building];
-                // Concrete row zero is independent of the Automatic sentinel's
-                // numeric value. Other routes and the new water-only row remain clear.
-                for(int index=0;index<BUILDING_ACCESS_COUNT;++index)
-                    REQUIRE(building->isLocked(index)==(index<2 && bool((pattern>>index)&1u)));
-            }
+				// All legacy access rows must be read, but their locks describe
+				// routes under the old terrain rules. Migration expires these
+				// derived results instead of carrying stale denials forward.
+				for(int index=0;index<BUILDING_ACCESS_COUNT;++index)
+					REQUIRE(!building->isLocked(index));
+			}
             GameGUI current,repeated;
             REQUIRE(load(current.game,save(legacy.game)));
             REQUIRE(current.game.mapHeader.getVersionMinor()==VERSION_MINOR);

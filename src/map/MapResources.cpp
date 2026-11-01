@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "MovementConnections.h"
 #include "Map.h"
 #include "gradient/ResourceSeedCache.h"
 #include "gradient/GradientRuntime.h"
@@ -329,7 +330,8 @@ bool Map::materialAvailableUpdateSlot(int team, int material, int swim, int x, i
 	// Supplier seeds include a pickup penalty, so their valid local peak can
 	// sit below GRADIENT_AT_GOAL. Availability comes from the complete field;
 	// ascent selects its pickup coordinate without redefining reachability.
-	getGlobalGradientDestination(field,x,y,targetX,targetY);
+	MapState::gradientDestination(cellView(), field, x, y, targetX, targetY, swim,
+								  Team::teamNumberToMask(team));
 	return true;
 }
 

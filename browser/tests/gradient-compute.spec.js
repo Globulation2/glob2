@@ -29,11 +29,12 @@ test('WebGPU compute algorithms match exact weighted fields and preserve cancele
       function reference(seeds,costs,w,h,cap){const out=seeds.slice();let changes=true;
         while(changes){changes=false;for(let i=0;i<out.length;i++)if(out[i]){
           let value=out[i];const x=i%w,y=Math.floor(i/w);
-          for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(dx||dy){const k=wrap(y+dy,h)*w+wrap(x+dx,w),step=dx&&dy?costs[k]>>>16:costs[k]&65535,candidate=out[k]-step;if(candidate>=Math.max(2,65535-cap))value=Math.max(value,candidate);}
+          for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(dx||dy){const k=wrap(y+dy,h)*w+wrap(x+dx,w),step=dx&&dy?costs[k]>>>16:costs[k]&65535,candidate=out[k]-step;let slot=(1-dy)*3+1-dx;slot-=slot>4?1:0;if(!(costs[w*h+k]&(1<<slot)))continue;if(candidate>=Math.max(2,65535-cap))value=Math.max(value,candidate);}
           if(value!==out[i]){out[i]=value;changes=true;}
         }}return out;}
       for(const frozen of[0,1])for(const[w,h]of[[1,1],[1,32],[32,1],[2,16],[17,19],[32,32]])for(const cap of[0,70,65500]){
         const n=w*h,seeds=Array(n).fill(1),costs=Array.from({length:n},(_,i)=>{const c=1+(i*71)%181;return c|(Math.floor(c*14/10)<<16);});
+        costs.push(...Array.from({length:n},(_,i)=>cap===70 ? ((i*71)^165)&255 : 255));
         for(let i=7;i<n;i+=11)seeds[i]=0;seeds[0]=65535;seeds[n-1]=65135;
         HEAP32.fill(0,0,4);HEAPU32.set(seeds,1024);HEAPU32.set(costs,32768);HEAPU32.fill(999,65536,65536+n);
         if(!await g.execute(0,4096,131072,262144,w,h,cap,frozen))throw Error('Unexpected decline');
@@ -44,7 +45,7 @@ test('WebGPU compute algorithms match exact weighted fields and preserve cancele
       for(const runs of retained){
         const seeds=[];for(const run of runs)for(let n=run>>>2;n;n--)seeds.push((run&3)===2?65535:run&3);
         if(seeds.length!==128*128)throw Error('Malformed retained field');
-        const costs=Array(seeds.length).fill(10|(14<<16)),expected=reference(seeds,costs,128,128,65491);
+        const costs=[...Array(seeds.length).fill(10|(14<<16)),...Array(seeds.length).fill(255)],expected=reference(seeds,costs,128,128,65491);
         for(const frozen of[0,1])for(let repeat=0;repeat<3;repeat++){
           HEAP32.fill(0,0,4);HEAPU32.set(seeds,1024);HEAPU32.set(costs,32768);HEAPU32.fill(999,65536,65536+seeds.length);
           if(!await g.execute(0,4096,131072,262144,128,128,65491,frozen))throw Error('Retained device execution declined');

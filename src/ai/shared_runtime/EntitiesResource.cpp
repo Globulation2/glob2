@@ -95,8 +95,9 @@ void Entities::AnyResource::save(GAGCore::OutputStream *stream)
 
 bool Entities::MaterialSources::is_entity(Map* map,int x,int y)
 {
- if(mask==0) return map->terrainPropertiesAt(x,y).walkable;
- return (map->materialMaskAt(map->coordToIndex(x,y)) & mask)!=0;
+	if (mask == 0)
+		return map->terrainAllowsMovementAt(x, y, 0);
+	return (map->materialMaskAt(map->coordToIndex(x, y)) & mask) != 0;
 }
 bool Entities::MaterialSources::can_change(const ResourceRegistry& registry)
 {
@@ -124,8 +125,9 @@ bool Entities::AnyResource::is_entity(const AIEngine::AIWorldView& world,int x,i
 bool Entities::MaterialSources::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 {
     const auto index=world.tileIndex(x,y);
-    if(!mask) return world.state().terrainProperties(index).walkable;
-    return (MapState::materialMaskAt(world.state(),index)&mask)!=0;
+	if (!mask)
+		return MapState::terrainAllowsMovement(world.state(), index, 0);
+	return (MapState::materialMaskAt(world.state(),index)&mask)!=0;
 }
 bool Entities::ResourceGroundObstacle::is_entity(Map* map, int x, int y)
 { return map->resourceBlocksGround(map->coordToIndex(x,y)); }

@@ -153,6 +153,10 @@ struct GatePartitionCheck
 GatePartitionCheck checkGatePartition(const Torus &, const std::vector<unsigned char> &passable,
 									  const std::vector<int> &labels,
 									  const std::vector<TileGate> &gates);
+/// The same partition proof using finished-map terrain connections and diagonal clearance.
+GatePartitionCheck checkGatePartition(const Map &, const std::vector<unsigned char> &passable,
+									  const std::vector<int> &labels,
+									  const std::vector<TileGate> &gates, bool canSwim = false);
 /// The first two colonies that can walk to each other with the `shut` tiles closed, over land that
 /// is not stone, crops and buildings counted as the ground they will leave (only water, stone and
 /// the shut tiles part two colonies for good): {-1, -1} when every colony keeps to itself. The

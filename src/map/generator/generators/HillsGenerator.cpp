@@ -453,7 +453,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		// even after every crop and building is removed.
 		const auto grass = pureTiles(L.terrain, t, GRASS);
 		const auto fromHome = stepsFrom(t, home, grass);
-		const auto fromWorkers = stepsFrom(t, tileMask(t, workers[k]), open);
+		const auto fromWorkers = stepsFrom(map, tileMask(t, workers[k]), open);
 		for (int i = 0; i < t.size(); ++i)
 		{
 			if (fromHome[i] >= 0 && L.farm.row[i] >= 0)

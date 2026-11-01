@@ -840,12 +840,13 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		!error.empty())
 		return error;
 	// Even cleared estates must be islands: crops and buildings cannot disguise a land
-	// bridge. Eight-neighbour components include diagonal beach contacts and torus seams.
+	// bridge. Ground components follow legal shore edges and diagonal clearances
+	// across torus seams.
 	std::vector<unsigned char> clearedGround(t.size());
 	for (int i = 0; i < t.size(); ++i)
 		clearedGround[i] =
 			game.map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable && !permanentResourceBarrier(game.map, i);
-	const auto regions = connectedRegions(clearedGround, t.w, t.h, true, GridNeighbors::Eight);
+	const auto regions = groundRegions(game.map, clearedGround, GridNeighbors::Eight);
 	const auto ownership = labelComponents(regions, L.homeOf);
 	if (ownership.conflictTile >= 0)
 		return "Two harbour estates have a walking connection.";
@@ -855,7 +856,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				return "An island service court has the wrong walking connection.";
 	const auto workers = unitTilesByTeam(game.map, context.request.nbTeams);
 	const auto swimming =
-		stepsFrom(t, tileMask(t, workers.front()), groundUnitTiles(game.map, true));
+		stepsFrom(game.map, tileMask(t, workers.front()), groundUnitTiles(game.map, true), true);
 	if (firstColonyCutOff(swimming, workers) >= 0)
 		return "A harbour estate cannot be reached by swimming.";
 	for (const auto &key : L.keys)
@@ -875,7 +876,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	{
 		if (countBuildings(game, team, "swimmingpool") != 1)
 			return "A harbour town lost its swimming pool.";
-		const auto reach = reachFrom(t, {L.at(team, 0, -12)}, swim, t.size());
+		const auto reach = reachFrom(game.map, {L.at(team, 0, -12)}, swim, t.size(), true);
 		for (int i : reach.tiles)
 			if (L.homeOf[i] != team)
 				return "A swimmer can bypass a harbour fort's gates.";

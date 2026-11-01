@@ -20,6 +20,7 @@
 #include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/UniformTraversal.h"
+#include "map/MovementConnections.h"
 #include "GameDiagnostics.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
@@ -163,9 +164,10 @@ namespace
 		return left.team<right.team;
 	}
 
-	void compute_preemptive_distance_field(int w, int h,
-		const std::vector<Uint8>& walkable, const std::vector<int>& sources,
-		std::vector<int>& distances)
+	void compute_preemptive_distance_field(int w, int h, const std::vector<Uint8> &walkable,
+										   const std::vector<int> &sources,
+										   std::vector<int> &distances,
+										   const field::Grid &connections)
 	{
 		distances.assign(w*h, PREEMPTIVE_UNREACHABLE);
 		field::Frontier queue;
@@ -178,7 +180,21 @@ namespace
 			distances[*source]=0;
 			queue.push_back(*source);
 		}
-		field::expandDistances(distances,queue,{w,h},field::Surrounding,PREEMPTIVE_UNREACHABLE,[&](int next){return walkable[next]!=0;});
+		const field::Grid grid(w, h);
+		field::traverse(
+			queue, grid, field::Surrounding, [](int) { return field::Visit::Expand; },
+			[&](int index, int x, int y)
+			{
+				const int next = grid.index(x, y), sx = index % w, sy = index / w;
+				if (distances[next] != PREEMPTIVE_UNREACHABLE || !walkable[next] ||
+					!(connections.incomingMask(next) &
+					  (1u << field::directionIndex(sx - x, sy - y))) ||
+					(x != sx && y != sy &&
+					 (!walkable[grid.index(x, sy)] || !walkable[grid.index(sx, y)])))
+					return;
+				distances[next] = distances[index] + 1;
+				queue.push_back(next);
+			});
 	}
 
 	struct ResourceAccessObservation
@@ -202,8 +218,9 @@ namespace
         std::vector<MaterialMask> reachableMaterials;
 	};
 
-	void collect_worker_sources(const AIEngine::AIWorldView& world,unsigned observedTeam, bool swimming,
-		const std::vector<Uint8>& walkable, std::vector<int>& sources)
+	void collect_worker_sources(const AIEngine::AIWorldView &world, unsigned observedTeam,
+								bool swimming, const std::vector<Uint8> &walkable,
+								std::vector<int> &sources, int profile = -1)
 	{
 		const AIEngine::AIWorldView* map=&world;
 		const int width=(*map).width;
@@ -230,7 +247,12 @@ namespace
 					{
 						const int neighbor=(powerOfTwoRemainder(y+dy+height, height))*width
 							+(powerOfTwoRemainder(x+dx+width, width));
-						if(walkable[neighbor])
+						if (walkable[neighbor] &&
+							MapState::terrainConnection(world.state(), x, y, dx, dy,
+														profile < 0 ? int(swimming) : profile) &&
+							(!dx || !dy ||
+							 (walkable[map->tileIndex(x + dx, y)] &&
+							  walkable[map->tileIndex(x, y + dy)])))
 							sources.push_back(neighbor);
 					}
 		}
@@ -256,8 +278,8 @@ namespace
 					&& !(tile.forbidden&world.teams[observedTeam].mask)
 					&& tile.building==NOGBID
 					&& !MapState::resourceBlocksGround(map->state(),index);
-				swimming[index]=clear && (map->state().terrainProperties(index).walkable || map->state().terrainProperties(index).swimmable);
-				walking[index]=clear && map->state().terrainProperties(index).walkable;
+				swimming[index] = clear && map->terrainAllowsMovementAt(x, y, 1);
+				walking[index] = clear && map->terrainAllowsMovementAt(x, y, 0);
 			}
 
 		std::vector<int> walkingSources;
@@ -266,10 +288,12 @@ namespace
 		collect_worker_sources(world,observedTeam, true, swimming, swimmingSources);
 		std::vector<int> walkingDistance;
 		std::vector<int> swimmingDistance;
-		compute_preemptive_distance_field(width, height, walking, walkingSources,
-			walkingDistance);
-		compute_preemptive_distance_field(width, height, swimming, swimmingSources,
-			swimmingDistance);
+		compute_preemptive_distance_field(
+			width, height, walking, walkingSources, walkingDistance,
+			MapState::movementGrid(world.state(), 0, world.teams[observedTeam].mask, false));
+		compute_preemptive_distance_field(
+			width, height, swimming, swimmingSources, swimmingDistance,
+			MapState::movementGrid(world.state(), 1, world.teams[observedTeam].mask, false));
 
 		for(int y=0; y<height; ++y)
 			for(int x=0; x<width; ++x)
@@ -802,13 +826,18 @@ void Maxima::initialize_topology_profile(Context& runtime)
 	int fruit=0;
 	int grass=0;
 	std::vector<int> component(tiles, -1);
+	const auto landStep = [&](int x, int y, int dx, int dy)
+	{
+		return runtime.observation().terrainAllowsMovementAt(x + dx, y + dy, 0) &&
+			   MapState::terrainConnection(runtime.observation().state(), x, y, dx, dy, 0);
+	};
 	for(int x=0; x<width; ++x)
 		for(int y=0; y<height; ++y)
 		{
 			const bool here=map.is_water(x, y);
 			const bool resource=map.is_resource(x, y);
 			water+=here ? 1 : 0;
-			land+=map.is_walkable(x,y) ? 1 : 0;
+			land += runtime.observation().terrainAllowsMovementAt(x, y, 0) ? 1 : 0;
 			grass+=map.is_crop_habitat(x, y) ? 1 : 0;
 			buildable+=map.is_grass(x, y) && !resource ? 1 : 0;
 			corn+=map.is_resource(x, y, materialIndex(MaterialId::Food)) ? 1 : 0;
@@ -820,16 +849,13 @@ void Maxima::initialize_topology_profile(Context& runtime)
 				|| map.is_resource(x, y, materialIndex(MaterialId::Prunes)) ? 1 : 0;
 			shoreline_edges+=here!=map.is_water(powerOfTwoRemainder(x+1, width), y) ? 1 : 0;
 			shoreline_edges+=here!=map.is_water(x, powerOfTwoRemainder(y+1, height)) ? 1 : 0;
-			if(map.is_walkable(x,y))
+			if (runtime.observation().terrainAllowsMovementAt(x, y, 0))
 			{
-				const bool horizontal=map.is_walkable(powerOfTwoRemainder(x+width-1, width), y)
-					&& map.is_walkable(powerOfTwoRemainder(x+1, width), y);
-				const bool vertical=map.is_walkable(x, powerOfTwoRemainder(y+height-1, height))
-					&& map.is_walkable(x, powerOfTwoRemainder(y+1, height));
-				const bool blocked_horizontal=!map.is_walkable(powerOfTwoRemainder(x+width-1, width), y)
-					&& !map.is_walkable(powerOfTwoRemainder(x+1, width), y);
-				const bool blocked_vertical=!map.is_walkable(x, powerOfTwoRemainder(y+height-1, height))
-					&& !map.is_walkable(x, powerOfTwoRemainder(y+1, height));
+				const bool left = landStep(x, y, -1, 0), right = landStep(x, y, 1, 0);
+				const bool up = landStep(x, y, 0, -1), down = landStep(x, y, 0, 1);
+				const bool horizontal = left && right, vertical = up && down;
+				const bool blocked_horizontal = !left && !right;
+				const bool blocked_vertical = !up && !down;
 				if((horizontal && blocked_vertical)
 				   || (vertical && blocked_horizontal))
 					chokepoints+=1;
@@ -846,7 +872,7 @@ void Maxima::initialize_topology_profile(Context& runtime)
 		for(int y=0; y<height; ++y)
 		{
 			const int origin=y*width+x;
-			if(!map.is_walkable(x, y) || component[origin]>=0)
+			if (!runtime.observation().terrainAllowsMovementAt(x, y, 0) || component[origin] >= 0)
 				continue;
 			const int label=component_sizes.size();
 			int size=0;
@@ -860,14 +886,14 @@ void Maxima::initialize_topology_profile(Context& runtime)
 				size+=1;
 				const int cx=powerOfTwoRemainder(current, width);
 				const int cy=current/width;
-				const int nx[4]={ powerOfTwoRemainder(cx+width-1, width), powerOfTwoRemainder(cx+1, width), cx, cx };
-				const int ny[4]={ cy, cy, powerOfTwoRemainder(cy+height-1, height), powerOfTwoRemainder(cy+1, height) };
-				for(int direction=0; direction<4; ++direction)
+				for (const auto [dx, dy] : field::Cardinal)
 				{
-					const int next=ny[direction]*width+nx[direction];
-					if(component[next]<0 && map.is_walkable(nx[direction], ny[direction]))
+					const int nx = powerOfTwoRemainder(cx + dx, width);
+					const int ny = powerOfTwoRemainder(cy + dy, height);
+					const int next = ny * width + nx;
+					if (component[next] < 0 && landStep(cx, cy, dx, dy))
 					{
-						component[next]=label;
+						component[next] = label;
 						pending.push_back(next);
 					}
 				}
@@ -4495,11 +4521,23 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		const int index=y*world.width+x;
 		WorldTile& tile=world.tiles[index];const auto cell=AIEngine::ObservationQueries::spatialTile((*map),x,y);
 		tile.discovered=(cell.discovered&runtime.observedTeam().allies)!=0;
-		// Terrain is immutable during a match. Classifying the already-fetched
+		// The captured observation has immutable terrain. Classifying the already-fetched
 		// cell avoids three wrapped MapInfo calls per tile on every planner scan.
 		const auto& terrain=AIEngine::ObservationQueries::terrain((*map),index);
-		tile.swimmable=terrain.swimmable;
-		tile.walkable=terrain.walkable;
+		tile.walkable = map->terrainAllowsMovementAt(x, y, 0);
+		tile.swimmable = !tile.walkable && map->terrainAllowsMovementAt(x, y, 1);
+		tile.walkingConnections = tile.amphibiousConnections = 0;
+		for (unsigned d = 0; d < field::Surrounding.size(); ++d)
+		{
+			const auto [dx, dy] = field::Surrounding[d];
+			for (int movement : {0, 1})
+				if (map->terrainAllowsMovementAt(x + dx, y + dy, movement) &&
+					MapState::terrainConnection(map->state(), x, y, dx, dy, movement) &&
+					(!dx || !dy ||
+					 (map->terrainAllowsMovementAt(x + dx, y, movement) &&
+					  map->terrainAllowsMovementAt(x, y + dy, movement))))
+					(movement ? tile.amphibiousConnections : tile.walkingConnections) |= 1u << d;
+		}
 		tile.fertilitySource=terrainProvidesFertility(terrain);
 		tile.growthInhibiting=terrain.inhibitionQ8 != 0;
 		tile.buildable=terrain.buildable;tile.occupied=cell.building!=NOGBID;
@@ -4529,6 +4567,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u)|(tile.woodReserve?256u:0u)
 			|(tile.walkable?512u:0u)|(tile.fertilitySource?1024u:0u)|(tile.resourceBlocksGround?2048u:0u);
 		add_preemptive_hash(worldSignature,flags);
+		add_preemptive_hash(worldSignature, tile.walkingConnections);
+		add_preemptive_hash(worldSignature, tile.amphibiousConnections);
 		add_preemptive_hash(worldSignature,Uint32(tile.materialType+1)); add_preemptive_hash(worldSignature,tile.materialSources);
 		// Resource amounts fluctuate on virtually every harvest. Placement routes,
 		// legality and blocked intents depend on resource presence, not stack size;
@@ -6055,14 +6095,18 @@ void Maxima::manage_buildings(Context& runtime)
 	{
 		// Unexplored space cannot prove a route blocked.
 		if(!(world.visibilityAt(index).discovered&runtime.observedTeam().allies))
-		{access[index]=1;continue;}
-		const auto& terrain=AIEngine::ObservationQueries::terrain(world,index);
-		access[index]=(terrain.walkable||terrain.swimmable)
-			&&world.occupancyAt(index).building==NOGBID
-			&&!MapState::resourceBlocksGround(world.state(),index);
+		{
+			access[index] = !(world.areasAt(index).forbidden & runtime.observedTeam().mask);
+			continue;
+		}
+		access[index] =
+			world.terrainAllowsMovementAt(index % world.width, index / world.width, 1) &&
+			!(world.areasAt(index).forbidden & runtime.observedTeam().mask) &&
+			world.occupancyAt(index).building == NOGBID &&
+			!MapState::resourceBlocksGround(world.state(), index);
 	}
 	std::vector<int> sources;
-	collect_worker_sources(world,runtime.teamNumber(),false,access,sources);
+	collect_worker_sources(world, runtime.teamNumber(), false, access, sources, 1);
 	if(!sources.empty())
 	{
 		// Check the whole route, not just the apron: a resource ring can leave
@@ -6070,7 +6114,9 @@ void Maxima::manage_buildings(Context& runtime)
 		// even before training; a disconnected colony with its own workers is
 		// also useful. With no workers yet, only reject fully blocked aprons.
 		std::vector<int> distance;
-		compute_preemptive_distance_field(world.width,world.height,access,sources,distance);
+		compute_preemptive_distance_field(
+			world.width, world.height, access, sources, distance,
+			MapState::movementGrid(world.state(), 1, runtime.observedTeam().mask, false));
 		for(int index=0;index<int(access.size());++index)
 			access[index]=distance[index]!=PREEMPTIVE_UNREACHABLE;
 	}
@@ -6315,16 +6361,19 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
 	const AIEngine::AIWorldView* map=&runtime.observation();
 	field.width=(*map).width;
 	field.height=(*map).height;
+	field.connections =
+		MapState::movementGrid(map->state(), budget.can_swim ? 1 : 0, runtime.observedTeam().mask);
 	field.tiles.resize(field.width*field.height);
 	for(int y=0;y<field.height;++y)for(int x=0;x<field.width;++x)
 	{
 		AIMaximaFruit::Tile& tile=field.tiles[field.index(x,y)];
-		const auto cell=AIEngine::ObservationQueries::spatialTile((*map),x,y);
-		const auto& terrain=AIEngine::ObservationQueries::terrain((*map),y*field.width+x);
+		const auto cell = AIEngine::ObservationQueries::spatialTile((*map), x, y);
 		const auto cellIndex=(*map).tileIndex(x,y);
-		tile.passable=cell.building==NOGBID && !MapState::resourceBlocksGround((*map).state(),cellIndex)
-			&& !(cell.forbidden&runtime.observedTeam().mask)
-			&& (terrain.walkable || (budget.can_swim && terrain.swimmable));
+		tile.endpointAllowed =
+			cell.building == NOGBID && !(cell.forbidden & runtime.observedTeam().mask);
+		tile.passable = tile.endpointAllowed &&
+						map->terrainAllowsMovementAt(x, y, budget.can_swim ? 1 : 0) &&
+						!MapState::resourceBlocksGround((*map).state(), cellIndex);
 		tile.visible=cell.resource.amount>0 && (cell.visible&runtime.observedTeam().allies)!=0;
         if((cell.discovered&runtime.observedTeam().allies)!=0)
             tile.varieties=(MapState::materialMaskAt((*map).state(),cellIndex)>>HAPPINESS_BASE)&((1u<<HAPPINESS_COUNT)-1);

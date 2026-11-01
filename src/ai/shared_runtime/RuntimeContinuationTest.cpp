@@ -8,6 +8,7 @@
 #include "shared_runtime/BuildingDemands.h"
 #include "Game.h"
 #include "Version.h"
+#include "FileFormatVersions.h"
 #include "ai/observation/AIWorldView.h"
 #include "shared_runtime/Runtime.h"
 #include "AIMaximaRuntime.h"
@@ -291,7 +292,54 @@ class RuntimeContinuationTest
     }
     static void terrainTravelContinuation()
     {
-        {
+		// The traversal upgrade adds no serialized gradient fields to v191.
+		// Read that exact layout through the old boundary and verify that the
+		// following record survives migration in binary and text streams.
+		for (bool text : {false, true})
+		{
+			Map map;
+			map.setSize(4, 4, GRASS);
+			auto walking = info(new Entities::Position(1, 1));
+			walking.terrainTravel = field::TerrainTravel::Walk;
+			auto geometry = info(new Entities::Position(1, 1));
+			auto terrainObstacle = geometry;
+			terrainObstacle.add_obstacle(new Entities::Unwalkable);
+			GradientManager original(&map);
+			original.get_gradient(walking);
+			original.get_gradient(geometry);
+			original.get_gradient(terrainObstacle);
+			for (int version : {FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS - 1, VERSION_MINOR})
+			{
+				auto *outputBackend = new MemoryStreamBackend;
+				std::unique_ptr<OutputStream> out(
+					text ? static_cast<OutputStream *>(new TextOutputStream(outputBackend))
+						 : static_cast<OutputStream *>(new BinaryOutputStream(outputBackend)));
+				original.save(out.get());
+				out->writeUint32(0x32434f4e, "followingRecord");
+				out->flush();
+				const auto bytes = outputBackend->takeContents();
+				auto *inputBackend = new MemoryStreamBackend;
+				inputBackend->write(bytes.data(), bytes.size());
+				inputBackend->seekFromStart(0);
+				std::unique_ptr<InputStream> in(
+					text ? static_cast<InputStream *>(new TextInputStream(inputBackend))
+						 : static_cast<InputStream *>(new BinaryInputStream(inputBackend)));
+				GradientManager restored(&map);
+				REQUIRE(restored.load(in.get(), nullptr, version));
+				CHECK(in->readUint32("followingRecord") == 0x32434f4e);
+				CHECK(restored.is_updated(geometry));
+				CHECK(restored.is_updated(walking) ==
+					  (version >= FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS));
+				CHECK(restored.is_updated(terrainObstacle) ==
+					  (version >= FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS));
+				if (version >= FILE_FORMAT_VERSION_TERRAIN_CONNECTIONS)
+					CHECK(save(restored, text) == save(original, text));
+				REQUIRE(restored.get_gradient(walking).get_height(4, 1) == 3);
+				CHECK(restored.is_updated(walking));
+			}
+		}
+
+		{
             Map neutral; neutral.setSize(4,4,GRASS);
             auto diagonal=info(new Entities::Position(0,0));
             diagonal.terrainTravel=field::TerrainTravel::Walk;

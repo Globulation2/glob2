@@ -63,9 +63,9 @@ GradientQueryResult Map::selectGradientQueryImpl(GradientQueryContext& context,c
         Uint16 bestBase=0,bestOption=0;int best=0;
         for(int di=0;di<8;++di) {
             const int nx=(x+tabClose[di][0])&wMask,ny=(y+tabClose[di][1])&hMask;
-            if(swim==AIR_MOVEMENT_CLASS?!isFreeForAirUnit(nx,ny):
-                ((swim==WATER_ONLY_CLASS&&!terrainPropertiesAt(nx,ny).swimmable)||!isFreeForGroundUnitNoForbidden(nx,ny,swim>0)))continue;
-            const auto at=coordToIndex(nx,ny);
+			if (!canTraverse(x, y, tabClose[di][0], tabClose[di][1], swim, 0))
+				continue;
+			const auto at=coordToIndex(nx,ny);
             const Uint16 base=cells[at],option=context.option?context.option[at]:0;
             if(base>bestBase || (base==bestBase && option>bestOption)) {bestBase=base;bestOption=option;best=di;}
         }

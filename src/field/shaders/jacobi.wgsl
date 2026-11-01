@@ -40,19 +40,19 @@ var<storage, read_write> unnamed_4: Changed_1;
 fn wrap_u0028_i1_u003b_u1_u003b(x: ptr<function, i32>, size: ptr<function, u32>) -> u32 {
     var local: u32;
 
-    let _e20 = (*x);
-    if (_e20 < 0i) {
-        let _e22 = (*size);
-        let _e24 = (*x);
-        let _e28 = (*size);
-        local = ((_e22 - 1u) - (bitcast<u32>((-(_e24) - 1i)) % _e28));
+    let _e22 = (*x);
+    if (_e22 < 0i) {
+        let _e24 = (*size);
+        let _e26 = (*x);
+        let _e30 = (*size);
+        local = ((_e24 - 1u) - (bitcast<u32>((-(_e26) - 1i)) % _e30));
     } else {
-        let _e31 = (*x);
-        let _e33 = (*size);
-        local = (bitcast<u32>(_e31) % _e33);
+        let _e33 = (*x);
+        let _e35 = (*size);
+        local = (bitcast<u32>(_e33) % _e35);
     }
-    let _e35 = local;
-    return _e35;
+    let _e37 = local;
+    return _e37;
 }
 
 fn main_1() {
@@ -69,81 +69,96 @@ fn main_1() {
     var param_1: u32;
     var param_2: i32;
     var param_3: u32;
+    var slot: i32;
     var step: u32;
     var local_1: u32;
     var candidate: i32;
 
-    let _e34 = gl_GlobalInvocationID_1[0u];
-    i = _e34;
-    let _e35 = i;
-    let _e37 = unnamed.width;
-    let _e39 = unnamed.height;
-    if (_e35 >= (_e37 * _e39)) {
+    let _e37 = gl_GlobalInvocationID_1[0u];
+    i = _e37;
+    let _e38 = i;
+    let _e40 = unnamed.width;
+    let _e42 = unnamed.height;
+    if (_e38 >= (_e40 * _e42)) {
         return;
     }
-    let _e42 = i;
-    let _e45 = unnamed_1.a[_e42];
-    value = _e45;
-    let _e46 = value;
-    old = _e46;
-    let _e47 = value;
-    if (_e47 != 0u) {
-        let _e49 = i;
-        let _e51 = unnamed.width;
-        x_1 = bitcast<i32>((_e49 % _e51));
-        let _e54 = i;
-        let _e56 = unnamed.width;
-        y = bitcast<i32>((_e54 / _e56));
-        let _e60 = unnamed.cap;
-        threshold = max(2i, (65535i - bitcast<i32>(_e60)));
+    let _e45 = i;
+    let _e48 = unnamed_1.a[_e45];
+    value = _e48;
+    let _e49 = value;
+    old = _e49;
+    let _e50 = value;
+    if (_e50 != 0u) {
+        let _e52 = i;
+        let _e54 = unnamed.width;
+        x_1 = bitcast<i32>((_e52 % _e54));
+        let _e57 = i;
+        let _e59 = unnamed.width;
+        y = bitcast<i32>((_e57 / _e59));
+        let _e63 = unnamed.cap;
+        threshold = max(2i, (65535i - bitcast<i32>(_e63)));
         dy = -1i;
         loop {
-            let _e64 = dy;
-            if (_e64 <= 1i) {
+            let _e67 = dy;
+            if (_e67 <= 1i) {
                 dx = -1i;
                 loop {
-                    let _e66 = dx;
-                    if (_e66 <= 1i) {
-                        let _e68 = dx;
-                        let _e70 = dy;
-                        if ((_e68 != 0i) || (_e70 != 0i)) {
-                            let _e73 = y;
-                            let _e74 = dy;
-                            param = (_e73 + _e74);
-                            let _e77 = unnamed.height;
-                            param_1 = _e77;
-                            let _e78 = wrap_u0028_i1_u003b_u1_u003b((&param), (&param_1));
-                            let _e80 = unnamed.width;
-                            let _e82 = x_1;
-                            let _e83 = dx;
-                            param_2 = (_e82 + _e83);
-                            let _e86 = unnamed.width;
-                            param_3 = _e86;
-                            let _e87 = wrap_u0028_i1_u003b_u1_u003b((&param_2), (&param_3));
-                            k = ((_e78 * _e80) + _e87);
-                            let _e89 = dx;
-                            let _e91 = dy;
-                            if ((_e89 != 0i) && (_e91 != 0i)) {
-                                let _e94 = k;
-                                let _e97 = unnamed_2.costs[_e94];
-                                local_1 = (_e97 >> bitcast<u32>(16i));
-                            } else {
-                                let _e100 = k;
-                                let _e103 = unnamed_2.costs[_e100];
-                                local_1 = (_e103 & 65535u);
+                    let _e69 = dx;
+                    if (_e69 <= 1i) {
+                        let _e71 = dx;
+                        let _e73 = dy;
+                        if ((_e71 != 0i) || (_e73 != 0i)) {
+                            let _e76 = y;
+                            let _e77 = dy;
+                            param = (_e76 + _e77);
+                            let _e80 = unnamed.height;
+                            param_1 = _e80;
+                            let _e81 = wrap_u0028_i1_u003b_u1_u003b((&param), (&param_1));
+                            let _e83 = unnamed.width;
+                            let _e85 = x_1;
+                            let _e86 = dx;
+                            param_2 = (_e85 + _e86);
+                            let _e89 = unnamed.width;
+                            param_3 = _e89;
+                            let _e90 = wrap_u0028_i1_u003b_u1_u003b((&param_2), (&param_3));
+                            k = ((_e81 * _e83) + _e90);
+                            let _e92 = dy;
+                            let _e96 = dx;
+                            slot = ((((1i - _e92) * 3i) + 1i) - _e96);
+                            let _e98 = slot;
+                            let _e101 = slot;
+                            slot = (_e101 - select(0i, 1i, (_e98 > 4i)));
+                            let _e104 = unnamed.width;
+                            let _e106 = unnamed.height;
+                            let _e108 = k;
+                            let _e112 = unnamed_2.costs[((_e104 * _e106) + _e108)];
+                            let _e113 = slot;
+                            if ((_e112 & (1u << bitcast<u32>(_e113))) == 0u) {
+                                continue;
                             }
-                            let _e105 = local_1;
-                            step = _e105;
-                            let _e106 = k;
-                            let _e109 = unnamed_1.a[_e106];
-                            let _e111 = step;
-                            candidate = (bitcast<i32>(_e109) - bitcast<i32>(_e111));
-                            let _e114 = candidate;
-                            let _e115 = threshold;
-                            if (_e114 >= _e115) {
-                                let _e117 = value;
-                                let _e118 = candidate;
-                                value = max(_e117, bitcast<u32>(_e118));
+                            let _e118 = dx;
+                            let _e120 = dy;
+                            if ((_e118 != 0i) && (_e120 != 0i)) {
+                                let _e123 = k;
+                                let _e126 = unnamed_2.costs[_e123];
+                                local_1 = (_e126 >> bitcast<u32>(16i));
+                            } else {
+                                let _e129 = k;
+                                let _e132 = unnamed_2.costs[_e129];
+                                local_1 = (_e132 & 65535u);
+                            }
+                            let _e134 = local_1;
+                            step = _e134;
+                            let _e135 = k;
+                            let _e138 = unnamed_1.a[_e135];
+                            let _e140 = step;
+                            candidate = (bitcast<i32>(_e138) - bitcast<i32>(_e140));
+                            let _e143 = candidate;
+                            let _e144 = threshold;
+                            if (_e143 >= _e144) {
+                                let _e146 = value;
+                                let _e147 = candidate;
+                                value = max(_e146, bitcast<u32>(_e147));
                             }
                         }
                         continue;
@@ -151,8 +166,8 @@ fn main_1() {
                         break;
                     }
                     continuing {
-                        let _e121 = dx;
-                        dx = (_e121 + 1i);
+                        let _e150 = dx;
+                        dx = (_e150 + 1i);
                     }
                 }
                 continue;
@@ -160,18 +175,18 @@ fn main_1() {
                 break;
             }
             continuing {
-                let _e123 = dy;
-                dy = (_e123 + 1i);
+                let _e152 = dy;
+                dy = (_e152 + 1i);
             }
         }
     }
-    let _e125 = i;
-    let _e126 = value;
-    unnamed_3.b[_e125] = _e126;
-    let _e129 = value;
-    let _e130 = old;
-    if (_e129 != _e130) {
-        let _e134 = atomicOr((&unnamed_4.changed[0i]), 1u);
+    let _e154 = i;
+    let _e155 = value;
+    unnamed_3.b[_e154] = _e155;
+    let _e158 = value;
+    let _e159 = old;
+    if (_e158 != _e159) {
+        let _e163 = atomicOr((&unnamed_4.changed[0i]), 1u);
     }
     return;
 }

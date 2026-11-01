@@ -78,7 +78,6 @@ std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
 	const std::vector<Uint16>& terrain, int width, int height, int swimClass, int maxCost, const std::vector<TerrainType>* semantic = nullptr,
 	bool semanticPerCell = false, const TerrainRegistry* registry = nullptr)
 {
-	constexpr int waterSteps[] = {10, 5, 7, 10, 13, 20, 30};
 	constexpr int Infinity = INT_MAX / 2;
 	const int limit = std::min(maxCost, CostLimit);
 	std::vector<int> distance(seeds.size(), Infinity);
@@ -90,6 +89,37 @@ std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
 			distance[i] = Goal - seeds[i];
 			frontier.emplace(distance[i], i);
 		}
+	const auto properties = [&](TerrainType t) -> const TerrainProperties &
+	{ return registry ? registry->properties(t) : terrainProperties(t); };
+	const auto cornerTypes = [&](size_t i)
+	{
+		const int x = i % width, y = i / width;
+		const size_t indices[] = {i, size_t(y) * width + (x + 1) % width,
+								  size_t((y + 1) % height) * width + x,
+								  size_t((y + 1) % height) * width + (x + 1) % width};
+		std::array<TerrainType, 4> types;
+		for (unsigned k = 0; k < 4; ++k)
+			types[k] = semantic ? (*semantic)[semanticPerCell ? i : indices[k]]
+					   : PathMap::isWater(terrain[indices[k]]) ? WATER
+															   : GRASS;
+		return types;
+	};
+	const auto allowed = [&](int x, int y)
+	{
+		const auto types = cornerTypes(size_t((y + height) % height) * width + (x + width) % width);
+		unsigned land = 0;
+		for (unsigned k = 0; k < 4; ++k)
+		{
+			const auto &p = properties(types[k]);
+			if (p.walkable)
+				land |= 1u << k;
+			if (swimClass == 0 ? !(p.walkable || p.swimmable)
+							   : !gradient_kernel::terrainAllowsMovement(p, swimClass))
+				return false;
+		}
+		return swimClass != 0 || (land & 3) == 3 || (land & 12) == 12 || (land & 5) == 5 ||
+			   (land & 10) == 10;
+	};
 	while (!frontier.empty())
 	{
 		const auto [cost, i] = frontier.top(); frontier.pop();
@@ -97,26 +127,45 @@ std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
 		if (cost != distance[i]) continue;
 		const int x = static_cast<int>(i % width), y = static_cast<int>(i / width);
 		// Reverse traversal enters this settled cell in the forward path.
-		const size_t corners[4] = {i, size_t(y) * width + (x + 1) % width, size_t((y + 1) % height) * width + x,
-			size_t((y + 1) % height) * width + (x + 1) % width};
-		bool water = true;
-		for (const auto corner : corners) water = water && PathMap::isWater(terrain[corner]);
-		int cardinal = water && swimClass<AIR_MOVEMENT_CLASS ? waterSteps[swimClass] : 10;
-        if (semantic)
-        {
-            // The type-indexed kernels read one terrain per cell.
-            const auto &s = *semantic;
-            const auto properties=[&](TerrainType t)->const TerrainProperties& {
-                return registry ? registry->properties(t) : terrainProperties(t);
-            };
-            const auto p = semanticPerCell ? properties(s[i])
-                : combineCornerRules(properties(s[corners[0]]), properties(s[corners[1]]),
-                    properties(s[corners[2]]), properties(s[corners[3]]));
-            const int base = swimClass==AIR_MOVEMENT_CLASS ? 10 : p.swimmable ? waterSteps[swimClass] : 10;
-            const unsigned speed=swimClass==AIR_MOVEMENT_CLASS ? p.airSpeedQ8 : p.groundSpeedQ8;
-            cardinal = std::max(1u, (base*256 + speed/2)/speed);
-            cardinal = std::min(181, (cardinal*(256+20*std::max(0,-int(swimClass==AIR_MOVEMENT_CLASS ? p.airHealthQ8 : p.groundHealthQ8)))+128)/256);
-        }
+		int cardinal = 10;
+		if (!semanticPerCell && swimClass != AIR_MOVEMENT_CLASS && !allowed(x, y))
+			continue;
+		const auto types = cornerTypes(i);
+		auto p = semanticPerCell ? properties(types[0])
+								 : combineCornerRules(properties(types[0]), properties(types[1]),
+													  properties(types[2]), properties(types[3]));
+		if (!semanticPerCell && swimClass != AIR_MOVEMENT_CLASS)
+		{
+			unsigned swimmingSpeed = 1024;
+			bool water = false;
+			for (auto type : types)
+				if (properties(type).swimmable)
+				{
+					water = true;
+					swimmingSpeed =
+						std::min(swimmingSpeed, unsigned(properties(type).groundSpeedQ8));
+				}
+			unsigned land = 0;
+			for (unsigned k = 0; k < 4; ++k)
+				if (properties(types[k]).walkable)
+					land |= 1u << k;
+			const bool walking =
+				(land & 3) == 3 || (land & 12) == 12 || (land & 5) == 5 || (land & 10) == 10;
+			p.swimmable = water && (swimClass == WATER_ONLY_CLASS || !walking);
+			if (p.swimmable)
+				p.groundSpeedQ8 = swimmingSpeed;
+		}
+		const int base = swimClass == AIR_MOVEMENT_CLASS ? 10
+						 : p.swimmable && swimClass > 0  ? gradient_kernel::WATER_STEP[swimClass]
+														 : 10;
+		const unsigned speed = swimClass == AIR_MOVEMENT_CLASS ? p.airSpeedQ8 : p.groundSpeedQ8;
+		cardinal = std::max(1u, (base * 256 + speed / 2) / speed);
+		cardinal =
+			std::min(181, (cardinal * (256 + 20 * std::max(0, -int(swimClass == AIR_MOVEMENT_CLASS
+																	   ? p.airHealthQ8
+																	   : p.groundHealthQ8))) +
+						   128) /
+							  256);
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
@@ -125,6 +174,32 @@ std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
 				const int ny = (y + dy + height) % height;
 				const size_t next = static_cast<size_t>(ny) * width + nx;
 				if (seeds[next] == Blocked) continue;
+				if (!semanticPerCell && swimClass != AIR_MOVEMENT_CLASS &&
+					(!allowed(nx, ny) || (dx && dy && (!allowed(nx, y) || !allowed(x, ny)))))
+					continue;
+				if (!semanticPerCell && swimClass == 0)
+				{
+					// Independent forward geometry from predecessor to settled cell.
+					const auto source = cornerTypes(next);
+					const auto land = [&](unsigned k) { return properties(source[k]).walkable; };
+					if (dx && dy)
+					{
+						if (!land((dx < 0 ? 1 : 0) + (dy < 0 ? 2 : 0)))
+							continue;
+					}
+					else if (dx)
+					{
+						const unsigned edge = dx < 0 ? 1 : 0;
+						if (!land(edge) && !land(edge + 2))
+							continue;
+					}
+					else
+					{
+						const unsigned edge = dy < 0 ? 2 : 0;
+						if (!land(edge) && !land(edge + 1))
+							continue;
+					}
+				}
 				const int candidate = cost + (dx && dy ? cardinal * 14 / 10 : cardinal);
 				if (candidate <= limit && candidate < distance[next])
 				{
@@ -177,7 +252,7 @@ void lazyBuildingChecks()
 	{
 		// Stop near a source, change live terrain, then resume far away. The
 		// snapshot must still equal the original eager solve, for every class.
-		std::vector<Uint16> terrain(4096, 256), seeds(4096, Unreached);
+		std::vector<Uint16> terrain(4096, swim == 0 ? 0 : 256), seeds(4096, Unreached);
 		seeds[0] = Goal;
 		PathMap map(6, 6, terrain);
 		const auto expected = oracle(seeds, terrain, 64, 64, swim, CostLimit);

@@ -79,7 +79,7 @@ inline bool isHardSpaceForGroundUnitAt(const AIEngine::AIWorldView& map,std::siz
  if(MapState::resourceBlocksGround(map.state(),index))return false;
  const auto& o=map.occupancyAt(index);
  if(o.building!=0xffff||(free&&o.groundUnit!=0xffff)||(map.areasAt(index).forbidden&mask))return false;
- const auto& p=map.terrainPropertiesAt(index);return p.walkable||(swim&&p.swimmable);
+ return MapState::terrainAllowsMovement(map.state(), index, swim ? 1 : 0);
 }
 inline bool isHardSpaceForGroundUnit(const AIEngine::AIWorldView& map,int x,int y,bool swim,Uint32 mask){return isHardSpaceForGroundUnitAt(map,map.tileIndex(x,y),swim,mask);}
 inline bool isFreeForGroundUnitNoForbidden(const AIEngine::AIWorldView& map,int x,int y,bool swim){return isHardSpaceForGroundUnitAt(map,map.tileIndex(x,y),swim,0,true);}

@@ -54,7 +54,9 @@ std::vector<std::uint16_t> oracle(std::vector<std::uint16_t> out, field::Grid gr
             continue;
         for (auto d : field::Surrounding)
         {
-            const auto j = grid.index(int(i % grid.width()) + d.x, int(i / grid.width()) + d.y);
+			if (!(grid.incomingMask(i) & (1u << field::directionIndex(d.x, d.y))))
+				continue;
+			const auto j = grid.index(int(i % grid.width()) + d.x, int(i / grid.width()) + d.y);
             const auto next = cost + (d.x && d.y ? costs[i].diagonal : costs[i].cardinal);
             if (out[j] && next <= unsigned(cap) && 65535 - next > out[j])
             {
@@ -68,7 +70,42 @@ std::vector<std::uint16_t> oracle(std::vector<std::uint16_t> out, field::Grid gr
 } // namespace
 TEST_SUITE("OpenCLGradient")
 {
-    TEST_CASE("full fields agree with heap oracle across costs caps seeds and wrapping")
+	TEST_CASE("connection changes invalidate uniform cost proofs and identity cache hits")
+	{
+		initializeForTest();
+		onWorker(
+			[&]
+			{
+				using namespace gradient_kernel;
+				RestoreBackend restore;
+				const bool supported = (readyPlans.load() & (1u << unsigned(Plan::Frozen8))) != 0;
+				setBackend(supported ? Backend::OpenCL : Backend::CPU);
+				auto owner = std::make_shared<int>(1);
+				GradientWorkspace scratch;
+				const CostIdentity identity{
+					owner, 17,          1,
+					true,  sizeof(int), LAND_STEPS.cardinal | (LAND_STEPS.diagonal << 16)};
+				const auto before = openCLStatus();
+				for (unsigned pattern : {0u, 1u, 0u})
+				{
+					auto edges = std::make_shared<std::vector<std::uint8_t>>(64, 0);
+					(*edges)[pattern ? 19 : 18] = 1u << field::directionIndex(pattern ? -1 : 1, 0);
+					const auto grid = field::Grid(8, 8).withConnections(edges);
+					std::vector<std::uint16_t> seeds(64, 1);
+					seeds[19] = 65535;
+					const std::vector<EntrySteps> costs(64, LAND_STEPS);
+					const auto expected = oracle(seeds, grid, costs, COST_LIMIT);
+					propagateField(
+						seeds.data(), 0, COST_LIMIT, grid, scratch, [](size_t) { return false; },
+						identity);
+					CHECK(seeds == expected);
+				}
+				if (supported)
+					CHECK(openCLStatus().committedFields == before.committedFields + 3);
+			});
+	}
+
+	TEST_CASE("full fields agree with heap oracle across costs caps seeds and wrapping")
     {
         initializeForTest();
         onWorker([&] {
@@ -100,7 +137,14 @@ TEST_SUITE("OpenCLGradient")
                         costs[i] =
                             weightedClass(swim) && water[i] ? entrySteps(WATER_STEP[swim]) : LAND_STEPS;
                     }
-                    seeds[0] = 65535;
+					if (cap == 60)
+					{
+						auto edges = std::make_shared<std::vector<std::uint8_t>>(grid.cells());
+						for (auto &mask : *edges)
+							mask = random() & 255;
+						grid = grid.withConnections(edges);
+					}
+					seeds[0] = 65535;
                     if (swim == WATER_ONLY_CLASS) water[0] = 1;
                     const auto expected = oracle(seeds, grid, costs, cap);
                     auto actual = seeds;
@@ -397,9 +441,20 @@ TEST_SUITE("OpenCLGradient")
                                 {}});
         const auto before = openCLStatus();
         REQUIRE(batchAccelerator(requests, Plan::Frozen8));
-        for (const auto &context : contexts)
-            CHECK(context.seeds == context.expected);
-        const auto after = openCLStatus();
+		for (const auto &context : contexts)
+		{
+			const auto mismatch =
+				std::mismatch(context.seeds.begin(), context.seeds.end(), context.expected.begin());
+			INFO("shape=" << context.grid.width() << "x" << context.grid.height()
+						  << " cap=" << context.cap);
+			if (mismatch.first != context.seeds.end())
+			{
+				INFO("index=" << (mismatch.first - context.seeds.begin())
+							  << " actual=" << *mismatch.first << " expected=" << *mismatch.second);
+				CHECK(context.seeds == context.expected);
+			}
+		}
+		const auto after = openCLStatus();
         REQUIRE_MESSAGE(after.available, after.error);
         CHECK(after.schedulerBatches == before.schedulerBatches + 1);
         CHECK(after.batches == before.batches + 2);
@@ -529,7 +584,9 @@ TEST_SUITE("OpenCLGradient")
         for (auto& worker : workers) worker.join();
         for (unsigned worker = 0; worker < count; ++worker)
             for (unsigned repeat = 0; repeat < repeats; ++repeat) {
-                CHECK(handled[worker][repeat]);
+				INFO("worker=" << worker << " repeat=" << repeat
+							   << " fixture=" << ((worker + repeat) % fixtures.size()));
+				CHECK(handled[worker][repeat]);
                 CHECK(exact[worker][repeat]);
             }
         CHECK_FALSE(session.failed.load());
@@ -672,8 +729,8 @@ TEST_CASE("device service calls preserve exact fields and release lane buffer bu
         const std::size_t tiles=((grid.width()+15)/16)*((grid.height()+15)/16);
         // One cost plane, two field buffers and two tile masks; no eight-field
         // reservation for this singleton. Existing cache eviction may lower it.
-        CHECK(running.deviceBytes<=before.deviceBytes+grid.cells()*8+tiles*8+288);
-        CHECK(running.hostBytes<=OpenCLHostBudget);
+		CHECK(running.deviceBytes <= before.deviceBytes + grid.cells() * 12 + tiles * 8 + 288);
+		CHECK(running.hostBytes<=OpenCLHostBudget);
         CHECK(running.deviceBytes<=OpenCLDeviceBudget);
     });
     service.join();

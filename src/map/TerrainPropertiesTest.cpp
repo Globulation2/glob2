@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "MovementConnections.h"
 #include "EngineFixtures.h"
 #include "GradientFixture.h"
 #include "TerrainLine.h"
@@ -518,14 +519,16 @@ TEST_SUITE("TerrainRuntime")
 			CHECK(lazy == eager);
 			ComputeExecutor executor; executor.configure(2);
 			GradientPipeline pipeline;
-			pipeline.configure(executor, 2, 1024,
-                               [profiles=map.frozenTerrainMovementSnapshot(swim), buckets=map.terrainQueueBuckets()](auto &job, auto &scratch)
-							   {
-								   gradient_kernel::propagateTerrainProfiles(
-									   job.data.get(), job.swim, gradient_kernel::COST_LIMIT,
-									   {32, 32}, scratch, profiles->data(),
-									   profiles->movement, buckets);
-							   });
+			pipeline.configure(
+				executor, 2, 1024,
+				[profiles = map.frozenTerrainMovementSnapshot(swim),
+				 buckets = map.terrainQueueBuckets(),
+				 grid = MapState::movementGrid(map.cellView(), swim, 0)](auto &job, auto &scratch)
+				{
+					gradient_kernel::propagateTerrainProfiles(
+						job.data.get(), job.swim, gradient_kernel::COST_LIMIT, grid, scratch,
+						profiles->data(), profiles->movement, buckets);
+				});
 			auto owned = std::make_unique<Uint16[]>(1024);
 			std::copy(pipelined.begin(), pipelined.end(), owned.get());
 			auto *field = owned.release();
@@ -696,10 +699,11 @@ TEST_SUITE("TerrainRuntime")
 		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
 		importBeforeMatch(world.game);
 		auto &map = world.game.map;
-		map.paintCell(8, 8, *map.terrainRegistry().find("test:hazard"));
-		map.paintCell(9, 8, *map.terrainRegistry().find("test:bog"));
 		auto *worker = world.addUnit(WORKER, 8, 8);
 		REQUIRE(worker);
+		// Editing under an existing unit exercises migration/escape as well as persistence.
+		map.paintCell(8, 8, *map.terrainRegistry().find("test:hazard"));
+		map.paintCell(9, 8, *map.terrainRegistry().find("test:bog"));
 		for (int i = 0; i < 7; ++i)
 			worker->applyTerrainHealth();
 		map.setResourceByIndex(15, 15, WHEAT, 1);
@@ -1070,13 +1074,18 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
         {
             if (!dx && !dy) continue;
             const auto next=map.coordToIndex(x+dx,y+dy);
-            if (!map.terrainPropertiesAt(next).swimmable) continue;
-            const int candidate=cost+(dx && dy ? 7 : 5);
+			if (!map.cellRule(next).allowsMovement(WATER_ONLY_CLASS))
+				continue;
+			if (dx && dy &&
+				(!map.cellRule(map.coordToIndex(x + dx, y)).allowsMovement(WATER_ONLY_CLASS) ||
+				 !map.cellRule(map.coordToIndex(x, y + dy)).allowsMovement(WATER_ONLY_CLASS)))
+				continue;
+			const int candidate=cost+(dx && dy ? 7 : 5);
             if (candidate<distance[next]) { distance[next]=candidate; pending.emplace(candidate,next); }
         }
     }
-    REQUIRE(distance[map.coordToIndex(startX,startY)]==92);
-    int x=startX,y=startY,travelCost=0;
+	REQUIRE(distance[map.coordToIndex(startX, startY)] == 95);
+	int x=startX,y=startY,travelCost=0;
     for (int step=0;step<64 && (x!=targetX || y!=targetY);++step)
     {
         int dx=0,dy=0;
@@ -1088,8 +1097,10 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
         travelCost+=edge;
         x=(x+dx)&map.wMask; y=(y+dy)&map.hMask;
     }
-    CHECK(x==targetX); CHECK(y==targetY); CHECK(travelCost==92);
-    map.fillTerrain(WATER);
+	CHECK(x == targetX);
+	CHECK(y == targetY);
+	CHECK(travelCost == 95);
+	map.fillTerrain(WATER);
     CHECK(map.minStepCost(WATER_ONLY_CLASS)==10);
 }
 
@@ -1106,21 +1117,21 @@ TEST_CASE("ice costs twenty recovery ticks per HP and remains traversable")
     int dx=0,dy=0;
     REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,0,world.game.teams[0]->me,100));
     CHECK(dy==-1); // two diagonals and a step above cost 38; the icy row costs 76.
-    // A corridor offers no safe alternative but must remain routable. Grass
-    // vertices along row 8 make the cells of rows 7 and 8 walkable.
-    map.fillTerrain(WATER);
-    paintVertices(map,7,8,13,8,GRASS);
-    map.setVertexTerrain(10,8,ICE);
+	// A corridor offers no safe alternative but must remain routable. Rock borders prevent shoreline detours; two grass
+	// vertex rows make a fully walkable one-cell corridor.
+	map.fillTerrain(OUTCROP);
+	paintVertices(map, 7, 8, 13, 9, GRASS);
+	map.setVertexTerrain(10,8,ICE);
     REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,0,world.game.teams[0]->me,100));
     CHECK(dx==1); CHECK(dy==0);
     dx=dy=1;
     CHECK_FALSE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,0,world.game.teams[0]->me,2));
     CHECK(dx==0); CHECK(dy==0);
     // A safe loop exists, but it costs more than the icy route.
-    paintVertices(map,7,9,7,14,GRASS);
-    paintVertices(map,13,9,13,14,GRASS);
-    paintVertices(map,7,14,13,14,GRASS);
-    REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,0,world.game.teams[0]->me,100));
+	paintVertices(map, 7, 9, 8, 15, GRASS);
+	paintVertices(map, 12, 9, 13, 15, GRASS);
+	paintVertices(map, 7, 14, 13, 15, GRASS);
+	REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,0,world.game.teams[0]->me,100));
     CHECK(dx==1); CHECK(dy==0);
 }
 

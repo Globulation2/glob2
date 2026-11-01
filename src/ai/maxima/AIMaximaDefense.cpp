@@ -15,6 +15,18 @@ namespace
 {
 	const int Unreachable=-1;
 
+	// These planning planes already encode the selected movement profile and
+	// permanent obstacles. Diagonals require both physical side cells.
+	bool connected(const field::Grid &grid, const std::vector<unsigned char> &passage, int from,
+				   int x, int y)
+	{
+		const int sx = from % grid.width(), sy = from / grid.width();
+		return passage[grid.index(x, y)] &&
+			   (!grid.hasConnections() || (grid.incomingMask(grid.index(x, y)) &
+										   (1u << field::directionIndex(sx - x, sy - y)))) &&
+			   (x == sx || y == sy || (passage[grid.index(x, sy)] && passage[grid.index(sx, y)]));
+	}
+
 	bool contains(const std::vector<int>& values, int value)
 	{
 		return std::find(values.begin(), values.end(), value)!=values.end();
@@ -48,9 +60,9 @@ PlanResult::PlanResult()
 {
 }
 
-void computeDistanceField(int width, int height,
-	const std::vector<unsigned char>& walkable,
-	const std::vector<int>& sources, std::vector<int>& distances)
+void computeDistanceField(int width, int height, const std::vector<unsigned char> &walkable,
+						  const std::vector<int> &sources, std::vector<int> &distances,
+						  field::Grid connections)
 {
 	const int size=width*height;
 	distances.assign(size, Unreachable);
@@ -66,7 +78,19 @@ void computeDistanceField(int width, int height,
 		distances[*source]=0;
 		queue.push_back(*source);
 	}
-	field::expandDistances(distances,queue,{width,height},field::Surrounding,Unreachable,[&](int next){return walkable[next]!=0;});
+	const field::Grid grid =
+		connections.hasConnections() ? connections : field::Grid(width, height);
+	field::traverse(
+		queue, grid, field::Surrounding, [](int) { return field::Visit::Expand; },
+		[&](int index, int x, int y)
+		{
+			const int next = grid.index(x, y);
+			if (distances[next] == Unreachable && connected(grid, walkable, index, x, y))
+			{
+				distances[next] = distances[index] + 1;
+				queue.push_back(next);
+			}
+		});
 }
 
 bool betterCandidate(const Candidate& left, const Candidate& right)
@@ -120,13 +144,14 @@ ModeResult analyzeMode(const ModeInput& input, const Policy& policy)
 	result.width=input.width;
 	result.height=input.height;
 	result.walkable=input.walkable;
+	result.connections = input.connections;
 	const int size=input.width*input.height;
 	result.memberships.assign(size, 0);
 	result.minimumCrossSection.assign(size, INT_MAX);
 	result.minimumTerrainCrossSection.assign(size, INT_MAX);
 	result.qualified.assign(size, 0);
-	computeDistanceField(input.width, input.height, input.walkable,
-		input.homeSources, result.homeDistance);
+	computeDistanceField(input.width, input.height, input.walkable, input.homeSources,
+						 result.homeDistance, input.connections);
 	if(size<=0 || int(input.walkable.size())!=size)
 		return result;
 
@@ -142,8 +167,8 @@ ModeResult analyzeMode(const ModeInput& input, const Policy& policy)
 			if(*source>=0 && *source<size && result.homeDistance[*source]>=0)
 				field.shortestDistance=std::min(field.shortestDistance,
 					result.homeDistance[*source]);
-		computeDistanceField(input.width, input.height, input.walkable,
-			enemy->sources, field.enemyDistance);
+		computeDistanceField(input.width, input.height, input.walkable, enemy->sources,
+							 field.enemyDistance, input.connections);
 		field.corridor.assign(size, 0);
 		field.corridorWidth.assign(size, Unreachable);
 		field.terrainWidth.assign(size, Unreachable);
@@ -222,8 +247,10 @@ ModeResult analyzeMode(const ModeInput& input, const Policy& policy)
 		std::vector<int> component;
 		component.push_back(start);
 		visited[start]=1;
-		field::traverse(component,{input.width,input.height},field::Surrounding,
-			[&](int index) {
+		field::traverse(
+			component, {input.width, input.height}, field::Surrounding,
+			[&](int index)
+			{
 				Candidate candidate;
 				candidate.mode=input.mode;
 				candidate.index=index;
@@ -239,10 +266,19 @@ ModeResult analyzeMode(const ModeInput& input, const Policy& policy)
 					best=candidate;
 
 				return field::Visit::Expand;
-			},[&](int,int x,int y) {
+			},
+			[&](int index, int x, int y)
+			{
 				const int neighbor=(dimensionRemainder(y+input.height, input.height))*input.width+dimensionRemainder(x+input.width, input.width);
-				if(result.qualified[neighbor] && !visited[neighbor])
-				{visited[neighbor]=1;component.push_back(neighbor);}
+				if (result.qualified[neighbor] && !visited[neighbor] &&
+					connected(input.connections.hasConnections()
+								  ? input.connections
+								  : field::Grid(input.width, input.height),
+							  input.walkable, index, x, y))
+				{
+					visited[neighbor] = 1;
+					component.push_back(neighbor);
+				}
 			});
 		result.candidates.push_back(best);
 	}
@@ -268,7 +304,10 @@ std::vector<int> buildFootprint(const ModeResult& mode, int center, int radius)
 			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
 		},[&](int index,int x,int y) {
 			const int neighbor=(dimensionRemainder(y+mode.height, mode.height))*mode.width+dimensionRemainder(x+mode.width, mode.width);
-			if(mode.walkable[neighbor] && distance[neighbor]==Unreachable)
+			if (distance[neighbor] == Unreachable &&
+				connected(mode.connections.hasConnections() ? mode.connections
+															: field::Grid(mode.width, mode.height),
+						  mode.walkable, index, x, y))
 			{distance[neighbor]=distance[index]+1;queue.push_back(neighbor);}
 		});
 	std::sort(footprint.begin(), footprint.end());

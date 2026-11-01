@@ -975,7 +975,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	{
 		if (workers[k].empty())
 			return "Colony " + std::to_string(k) + " has no workers.";
-		const std::vector<int> steps = stepsFrom(t, tileMask(t, workers[k]), walkable);
+		const std::vector<int> steps = stepsFrom(map, tileMask(t, workers[k]), walkable);
 		bool reached = false;
 		for (int i = 0; i < t.size() && !reached; ++i)
 			reached = L.tipOf[i] == k && steps[i] >= 0;

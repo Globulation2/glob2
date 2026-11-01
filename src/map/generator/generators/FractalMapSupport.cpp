@@ -1017,9 +1017,9 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	{
 		const Home home = L.homes[h];
 		const auto walk =
-			floodFrom(t, tileMask(t, {t.at(home.x, home.y - kStarterNorthOffset)}), open);
-		const auto swim =
-			stepsFrom(t, tileMask(t, {t.at(home.x, home.y - kStarterNorthOffset)}), swimming);
+			floodFrom(map, tileMask(t, {t.at(home.x, home.y - kStarterNorthOffset)}), open);
+		const auto swim = stepsFrom(map, tileMask(t, {t.at(home.x, home.y - kStarterNorthOffset)}),
+									swimming, true);
 		for (size_t other = 0; other < L.homes.size(); ++other)
 		{
 			const Home target = L.homes[other];
@@ -1129,7 +1129,7 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 	const auto finishedOpen = groundUnitTiles(map);
 	for (size_t team = 0; team < walk.workers.size(); ++team)
 	{
-		const auto access = floodFrom(t, tileMask(t, walk.workers[team]), finishedOpen, 32);
+		const auto access = floodFrom(map, tileMask(t, walk.workers[team]), finishedOpen, 32);
 		auto frontage = materialFrontages(map, access, 32);
 		if (!frontage[MaterialId::Food].edges || !frontage[MaterialId::Wood].edges || !frontage[MaterialId::Stone].edges)
 			return "Colony " + std::to_string(team) +

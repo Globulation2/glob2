@@ -13,10 +13,9 @@
 void Unit::setNewValidDirectionGround(void)
 {
 	assert(!performance[FLY]);
-	int i=0;
-	bool swim=(performance[SWIM]>0);
+	int i = 0;
 	Uint32 me=owner->me;
-	while ( i<8 && ((!performance[WALK] && !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) || !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim, me)))
+	while (i < 8 && !owner->map->canTraverse(posX, posY, dx, dy, swimClass(), me))
 	{
 		direction=(direction+1)&UNIT_DIRECTION_MASK;
 		dxDyFromDirection();
@@ -70,38 +69,37 @@ void Unit::escapeGroundTarget()
 	int ldy=posY-targetY;
 	findDisplacement([&](int* pathDx, int* pathDy) { simplifyDirection(ldx, ldy, pathDx, pathDy); return true; });
 	directionFromDxDy();
-	bool canSwim=performance[SWIM];
 	Map *map=owner->map;
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if (map->canTraverse(posX, posY, dx, dy, swimClass(), 0))
 		return;
 	int cDirection=direction;
 	direction=(cDirection+1)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if (map->canTraverse(posX, posY, dx, dy, swimClass(), 0))
 		return;
 	direction=(cDirection+7)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if (map->canTraverse(posX, posY, dx, dy, swimClass(), 0))
 		return;
 	direction=(cDirection+2)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if (map->canTraverse(posX, posY, dx, dy, swimClass(), 0))
 		return;
 	direction=(cDirection+6)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if (map->canTraverse(posX, posY, dx, dy, swimClass(), 0))
 		return;
 	direction=(cDirection+3)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if (map->canTraverse(posX, posY, dx, dy, swimClass(), 0))
 		return;
 	direction=(cDirection+5)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if (map->canTraverse(posX, posY, dx, dy, swimClass(), 0))
 		return;
 	direction=(cDirection+4)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if (map->canTraverse(posX, posY, dx, dy, swimClass(), 0))
 		return;
 	dx=0;
 	dy=0;

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "field/GradientBucket.h"
+#include "field/Grid.h"
 #include "map/TerrainType.h"
 #include "map/TerrainRegistry.h"
 #include "field/TerrainGradientWorkspace.h"
@@ -23,17 +24,19 @@ namespace SimulationSnapshot { struct Handle; }
 class BuildingGradientSearch
 {
   public:
-	// The immutable cost planes a search reads. The owner takes them from the
-	// Map's frozen snapshots in O(1); a worker search never touches the Map.
+	// Immutable costs and connections for this search. Cost planes share the
+	// Map's frozen snapshots; connection masks capture current physical obstacles.
+	// Workers read only these retained inputs, never the live Map.
 	struct Inputs
 	{
 		std::shared_ptr<const TerrainRegistry> registry;
 		std::shared_ptr<const TerrainMovementSnapshot> profiles;
 		std::shared_ptr<const std::vector<std::uint8_t>> water;
+		field::Grid grid{1, 1};
 		bool modifiedCosts = false;
 		unsigned buckets = 64;
-		static Inputs of(const Map &map, int swim);
-        static Inputs ofSnapshot(const SimulationSnapshot::Handle&,int swim);
+		static Inputs of(const Map &map, int swim, Uint32 teamMask = 0);
+		static Inputs ofSnapshot(const SimulationSnapshot::Handle &, int swim, Uint32 teamMask = 0);
 	};
 
   private:
@@ -43,6 +46,7 @@ class BuildingGradientSearch
 	std::shared_ptr<const std::vector<std::uint8_t>> water;
 	std::unique_ptr<TerrainGradientWorkspace> custom;
 	unsigned terrainBuckets = 64;
+	field::Grid grid{1, 1};
 	bool modifiedCosts = false;
 	std::uint16_t *gradient = nullptr;
 	std::size_t cells = 0, pending = 0;

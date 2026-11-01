@@ -197,9 +197,14 @@ TEST_SUITE("UnitCustomization")
             configureSteeringUnits(world);
             auto& game=world.game; auto& map=game.map;
             const int type=mode==0?3:mode==1?WARRIOR:mode==2?EXPLORER:4;
-            if(mode==0) map.paintCell(8,8,WATER);
-            map.paintCell(9,8,WATER); // The only water neighbour is east.
-            auto* unit=world.addUnit(type,8,8); REQUIRE(unit);
+			if (mode == 0)
+			{
+				map.paintCell(8, 8, WATER);
+				map.paintCell(9, 8, WATER); // The only pure-water neighbour is east.
+			}
+			// Keep controls on grass: a shared water vertex would make their
+			// starting/steering cells blocked for walking under strict access.
+			auto* unit=world.addUnit(type,8,8); REQUIRE(unit);
             auto* flag=world.addBuilding("warflag",8,10); REQUIRE(flag);
             flag->unitStayRange=10;
             flag->desiredMaxUnitWorking=flag->maxUnitWorking=flag->maxUnitWorkingPreferred=0;
@@ -209,9 +214,9 @@ TEST_SUITE("UnitCustomization")
             // has a larger score. A dry winner used to be cancelled at action.
             for(const auto& point:std::array<std::array<int,2>,3>{{{10,6},{11,7},{9,5}}})
                 map.exploredArea[0][map.coordToIndex(point[0],point[1])]=0;
-            REQUIRE_FALSE(map.terrainPropertiesAt(9,7).swimmable);
-            REQUIRE(map.terrainPropertiesAt(9,8).swimmable);
-            REQUIRE(map.isFreeForGroundUnit(9,7,true,unit->owner->me));
+			REQUIRE_FALSE(map.terrainAllowsMovementAt(9, 7, WATER_ONLY_CLASS));
+			REQUIRE(map.terrainAllowsMovementAt(9, 8, unit->movementClass()));
+			REQUIRE(map.isFreeForGroundUnit(9,7,true,unit->owner->me));
             REQUIRE(map.isFreeForGroundUnit(9,8,true,unit->owner->me));
             unit->direction=2;
             const auto random=game.syncRandom; const auto entity=unit->entityRandom;
@@ -254,15 +259,20 @@ TEST_SUITE("UnitCustomization")
             configureSteeringUnits(world);
             auto& game=world.game; auto& map=game.map;
             const int type=mode==0?3:mode==1?WORKER:mode==2?EXPLORER:4;
-            if(mode==0) map.paintCell(8,8,WATER);
-            map.paintCell(9,8,WATER); // A single eligible alternative makes RNG exact.
-            auto* unit=world.addUnit(type,8,8); REQUIRE(unit);
+			if (mode == 0)
+			{
+				map.paintCell(8, 8, WATER);
+				map.paintCell(9, 8, WATER); // A single eligible alternative makes RNG exact.
+			}
+			// Walking controls need dry source and steering cells; the
+			// swimmer's pond would otherwise contaminate their shared corners.
+			auto* unit=world.addUnit(type,8,8); REQUIRE(unit);
             auto* flag=world.addBuilding("explorationflag",8,10); REQUIRE(flag);
             flag->desiredMaxUnitWorking=flag->maxUnitWorking=flag->maxUnitWorkingPreferred=0;
             REQUIRE(map.isMapDiscovered(8,12,unit->owner->sharedVisionOther));
-            REQUIRE_FALSE(map.terrainPropertiesAt(7,8).swimmable);
-            REQUIRE(map.terrainPropertiesAt(9,8).swimmable);
-            const auto random=game.syncRandom; auto expectedEntity=unit->entityRandom;
+			REQUIRE_FALSE(map.terrainAllowsMovementAt(7, 8, WATER_ONLY_CLASS));
+			REQUIRE(map.terrainAllowsMovementAt(9, 8, unit->movementClass()));
+			const auto random=game.syncRandom; auto expectedEntity=unit->entityRandom;
             REQUIRE(unit->attachedBuilding==nullptr);
             unit->attachedBuilding=flag;
             unit->handleMovementRemovingBlackAround();
@@ -2329,9 +2339,13 @@ TEST_SUITE("UnitCustomization")
             game.buildingsTypes.loadSnapshotJson(buildings.dump()); game.configureBuildingCatalog();
             auto* inn=world.addBuilding("inn",10,8); REQUIRE(inn);
             const int shore=inn->posY+inn->type->height, y=shore+1;
-            for (int row=shore;row<=shore+2;++row)
-                for (int x=4;x<=14;++x) map.paintCell(x,row,WATER);
-            deposit(map,7,y,ALGA,3);
+			// This fixture's intended delivery endpoint sits in water. Cover
+			// its existing footprint too: leaving grass beneath the inn makes
+			// its bottom row mixed and invalid for a water-only entry step.
+			for (int row = inn->posY; row <= shore + 2; ++row)
+				for (int x=4;x<=14;++x) map.paintCell(x,row,WATER);
+			REQUIRE(map.terrainAllowsMovementAt(inn->posX, shore - 1, WATER_ONLY_CLASS));
+			deposit(map,7,y,ALGA,3);
             auto* unit=world.addUnit(type,5,y); REQUIRE(unit);
             const auto unitId=Unit::GIDtoID(unit->gid), buildingId=Building::GIDtoID(inn->gid);
             REQUIRE(game.hasWaterOnlyUnits()); REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
@@ -2505,8 +2519,16 @@ TEST_SUITE("UnitCustomization")
                 }
                 auto* inn=world.addBuilding("inn",10,8); REQUIRE(inn);
                 const int shore=inn->posY+inn->type->height;
-                if(waterOnly) for(int y=shore;y<=shore+2;++y) for(int x=4;x<=14;++x) world.game.map.paintCell(x,y,WATER);
-                const int material=waterOnly?ALGA:WHEAT;
+				// Keep all four corners water through the intended inn
+				// endpoint, not only through the corridor leading to its bank.
+				if (waterOnly)
+					for (int y = inn->posY; y <= shore + 2; ++y)
+						for (int x = 4; x <= 14; ++x)
+							world.game.map.paintCell(x, y, WATER);
+				if (waterOnly)
+					REQUIRE(world.game.map.terrainAllowsMovementAt(inn->posX, shore - 1,
+																   WATER_ONLY_CLASS));
+				const int material=waterOnly?ALGA:WHEAT;
                 const int y=waterOnly?shore+1:8;
                 deposit(world.game.map,7,y,material,3);
                 auto* unit=world.addUnit(type,5,y); REQUIRE(unit);
@@ -2914,7 +2936,68 @@ TEST_SUITE("UnitCustomization")
         CHECK(world.team->stats.events().trainingVisits[3]==1); CHECK(unit->integrity());
     }
 
-    TEST_CASE("restored unsafe ongoing training exits without charging materials or changing levels")
+	TEST_CASE("ground-only training cannot use an isolated diagonal building exit")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(
+			{.discovered = true, .clearImmobile = true, .header = true, .seed = 4921});
+		auto units = nlohmann::json::parse(world.game.unitCatalog().serialize());
+		auto custom = units["units"][WORKER];
+		custom["key"] = "training-corner-exit";
+		custom["behaviors"]["hungerRate"] = 0;
+		custom["levels"][0]["performance"][SWIM] = 16;
+		custom["levels"][1]["performance"][SWIM] = 0;
+		units["units"].push_back(custom);
+		world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+		auto buildings = nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+		auto &semantics = buildings["variants"][3]["semantics"];
+		semantics["admittedUnits"] = {"training-corner-exit"};
+		semantics["training"] = nlohmann::json::object();
+		semantics["training"]["swim"] = {{"enabled", true},
+										 {"units", {"training-corner-exit"}},
+										 {"targetLevel", 1},
+										 {"duration", 3},
+										 {"cost", nlohmann::json::object()}};
+		world.game.buildingsTypes.loadSnapshotJson(buildings.dump());
+		world.game.configureBuildingCatalog();
+		auto *inn = world.addBuilding("inn", 10, 8);
+		auto *unit = world.addUnit(3, 6, 8);
+		REQUIRE(inn);
+		REQUIRE(unit);
+		auto &map = world.game.map;
+		map.fillTerrain(OUTCROP);
+		for (int y = inn->posY; y < inn->posY + inn->type->height; ++y)
+			for (int x = inn->posX; x < inn->posX + inn->type->width; ++x)
+				map.paintCell(x, y, GRASS);
+		map.paintCell(unit->posX, unit->posY, GRASS);
+		map.paintCell(inn->posX - 1, inn->posY - 1, GRASS);
+		REQUIRE(map.terrainAllowsMovementAt(inn->posX - 1, inn->posY - 1, 0));
+		int exitX = 0, exitY = 0, exitDx = 0, exitDy = 0;
+		CHECK_FALSE(inn->findGroundExit(&exitX, &exitY, &exitDx, &exitDy, false, true));
+		CHECK_FALSE(inn->canOfferService(unit, SWIM));
+		CHECK_FALSE(unit->trainingVisitSafe(*inn, SWIM));
+		auto captured = AIEngine::AIWorldView::capture(
+			world.game, AIEngine::AIWorldView::captureCatalog(world.game));
+		REQUIRE(captured->unitAtSlot(unit->gid));
+		REQUIRE(captured->buildingAtSlot(inn->gid));
+		CHECK_FALSE(AIEngine::ObservationQueries::trainingVisitSafe(
+			*captured, *captured->unitAtSlot(unit->gid), *captured->buildingAtSlot(inn->gid),
+			SWIM));
+		CHECK(unit->level[SWIM] == 0);
+		CHECK(unit->performance[SWIM] == 16);
+		CHECK_FALSE(unit->serviceResourcesReserved());
+		// A real cardinal exit admits the same course in both live and captured queries.
+		map.paintCell(inn->posX, inn->posY - 1, GRASS);
+		REQUIRE(inn->findGroundExit(&exitX, &exitY, &exitDx, &exitDy, false, true));
+		CHECK(inn->canOfferService(unit, SWIM));
+		captured = AIEngine::AIWorldView::capture(
+			world.game, AIEngine::AIWorldView::captureCatalog(world.game));
+		CHECK(AIEngine::ObservationQueries::trainingVisitSafe(
+			*captured, *captured->unitAtSlot(unit->gid), *captured->buildingAtSlot(inn->gid),
+			SWIM));
+	}
+
+	TEST_CASE("restored unsafe ongoing training exits without charging materials or changing levels")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});

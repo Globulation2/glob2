@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+
+// Distances and reach counts below are geometric catchment heuristics on open
+// cells, preserving established roll scoring. They are not physical movement
+// certificates; final connectivity validation uses the Map-based Grid floods.
 #include "Ressource.h"
 #include <array>
 #include <vector>

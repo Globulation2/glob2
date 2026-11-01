@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
+#include "MovementConnections.h"
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
@@ -20,28 +21,28 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 {
     propagateGradient(gradient, swimClass, maxCost, gradient_kernel::Family::Generic);
 }
-void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family)
+void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost,
+							gradient_kernel::Family family, Uint32 teamMask)
 {
 	GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
 	PERF_SCOPE_TIME(Propagation);
-    auto& scratch = gradientRuntime->workspaces[compute.slot()].propagation;
+	const auto grid = MapState::movementGrid(cellView(), swimClass, teamMask);
+	auto& scratch = gradientRuntime->workspaces[compute.slot()].propagation;
     scratch.family = family;
 	// Cells carry rules, not built-in types: unmodified costs only need to
 	// know which cells swim, and modified ones the map's compact profiles.
 	if (!hasMovementCostModifiers(swimClass))
 	{
 		const auto water = frozenWaterSnapshot();
-		gradient_kernel::propagateField(gradient, swimClass, maxCost, {getW(), getH()},
-										scratch,
-										[water = water->data()](size_t i)
-										{ return water[i] != 0; }, {water, std::uint64_t(swimClass), 0, true});
+		gradient_kernel::propagateField(gradient, swimClass, maxCost, grid, scratch,
+										[water = water->data()](size_t i) { return water[i] != 0; },
+										{water, std::uint64_t(swimClass), 0, true});
 		return;
 	}
 	const auto profiles = frozenTerrainMovementSnapshot(swimClass);
     const bool allCells = std::all_of(profiles->movement.profiles.begin(), profiles->movement.profiles.end(),
         [](const auto step) { return step.cardinal && step.diagonal && step.cardinal <= 65535 && step.diagonal <= 65535; });
 	gradient_kernel::propagateTerrainProfiles(
-		gradient, swimClass, maxCost, {getW(), getH()},
-		scratch, profiles->data(),
-		profiles->movement, movementQueueBuckets(swimClass), {profiles, std::uint64_t(swimClass), 0, allCells});
+		gradient, swimClass, maxCost, grid, scratch, profiles->data(), profiles->movement,
+		movementQueueBuckets(swimClass), {profiles, std::uint64_t(swimClass), 0, allCells});
 }

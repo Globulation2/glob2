@@ -171,11 +171,11 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 	{
 		const auto n = request.grid.cells(), tiles = std::size_t((request.grid.width() + 15) / 16) *
 													 ((request.grid.height() + 15) / 16);
-		if (n > OpenCLHostBudget / 20)
+		if (n > OpenCLHostBudget / 24)
 			return false;
 		auto task = std::make_unique<Task>();
-		const auto hostBytes = sizeof(Task) + 128 + n * 20 + tiles * 4 + 20,
-				   deviceBytes = n * 16 + 20 + tiles * 8;
+		const auto hostBytes = sizeof(Task) + 128 + n * 24 + tiles * 4 + 20,
+				   deviceBytes = n * 20 + 20 + tiles * 8;
 		if (!reserveOpenCLHostBytes(hostBytes))
 			return false;
 		task->hostBytes = hostBytes;
@@ -183,7 +183,7 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 			return false;
 		task->deviceBytes = deviceBytes;
 		task->seeds.resize(n);
-		task->costs.resize(n);
+		task->costs.resize(n * 2);
 		task->output.resize(n);
 		for (std::size_t i = 0; i < n; ++i)
 		{
@@ -194,6 +194,7 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 			if (!c.cardinal || !c.diagonal || c.cardinal > 65535 || c.diagonal > 65535)
 				return false;
 			task->costs[i] = c.cardinal | (c.diagonal << 16);
+			task->costs[n + i] = request.grid.incomingMask(i);
 		}
 		glob2_gradient_execute(task->signal.data(), task->seeds.data(), task->costs.data(),
 							   task->output.data(), request.grid.width(), request.grid.height(),

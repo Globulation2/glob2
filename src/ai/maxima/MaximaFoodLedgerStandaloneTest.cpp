@@ -676,3 +676,35 @@ TEST_CASE("masked food walks preserve modulo claims and query results" * doctest
 		}
 	}
 }
+
+TEST_CASE("food ledger respects forward edges and diagonal physical clearance" *
+		  doctest::test_suite("Maxima.FoodLedger"))
+{
+	Input input = makeInput(8, 8);
+	std::fill(input.traversable.begin(), input.traversable.end(), 0);
+	input.traversable[input.index(2, 2)] = input.traversable[input.index(3, 3)] = 1;
+	input.yield[input.index(3, 3)] = 100;
+	input.consumers.push_back(makeConsumer(1, InnConsumer, 1, 2, 100));
+	Ledger ledger;
+	Result result;
+	ledger.evaluate(input, result);
+	REQUIRE(result.consumers.size() == 1);
+	CHECK(result.consumers.front().claimed == 0);
+	input.traversable[input.index(3, 2)] = input.traversable[input.index(2, 3)] = 1;
+	ledger.evaluate(input, result);
+	CHECK(result.consumers.front().claimed == 100);
+
+	input = makeInput(8, 8);
+	std::fill(input.traversable.begin(), input.traversable.end(), 0);
+	input.traversable[input.index(2, 2)] = input.traversable[input.index(3, 2)] = 1;
+	input.yield[input.index(3, 2)] = 100;
+	input.consumers.push_back(makeConsumer(1, InnConsumer, 1, 2, 100));
+	input.connections.assign(64, 0);
+	input.connections[input.index(2, 2)] = 1u << 4; // east, toward the wheat
+	ledger.evaluate(input, result);
+	CHECK(result.consumers.front().claimed == 100);
+	input.connections[input.index(2, 2)] = 0;
+	input.connections[input.index(3, 2)] = 1u << 3; // reverse edge does not grant access
+	ledger.evaluate(input, result);
+	CHECK(result.consumers.front().claimed == 0);
+}

@@ -6,6 +6,7 @@
 #include "render/scene/SceneMap.h"
 #include <Toolkit.h>
 #include <algorithm>
+#include <tuple>
 #include <stdexcept>
 #include <cstring>
 
@@ -393,47 +394,56 @@ MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const 
             return found->second;
     return terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
 }
-std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, int x, int y) const
-{
-	// The decorated material most corners share: all four draw its full decor,
-	// two or three its edge decor, a single corner none.
-	MaterialId best = 0;
-	unsigned count = 0;
-	const auto corners = map.cellCorners(x & map.getMaskW(), y & map.getMaskH());
-	std::array<MaterialId, 4> materials;
-	for (unsigned k = 0; k < corners.size(); ++k)
-		materials[k] = materialFor(map, corners[k]);
-	for (const auto id : materials)
-	{
-		if (definitions.materials[id].decor.full.empty())
-			continue;
-		const auto same = unsigned(std::count(materials.begin(), materials.end(), id));
-		if (same > count)
-		{
-			best = id;
-			count = same;
-		}
-	}
-	return {best, count};
-}
-GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
-{
-    return decorSprites[decorMaterial(map, x, y).first];
-}
-int Compositor::decorFrame(const SceneMap &map, int x, int y) const
+Compositor::Decorations Compositor::decorations(const SceneMap &map, int x, int y) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
-	const auto [best, count] = decorMaterial(map, x, y);
-	const auto &decor = definitions.materials[best].decor;
-	if (count == 0 || (count < 2 && decor.connected.empty())) return -1;
-	unsigned mask = 0;
+	Decorations result;
 	const auto corners = map.cellCorners(x, y);
+	std::array<MaterialId, 4> materials;
 	for (unsigned k = 0; k < corners.size(); ++k)
-		if (const auto id = materialFor(map, corners[k]); id == best ||
-			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty())) mask |= 1u << k;
-	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed(), mask,
-		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
+	{
+		materials[k] = materialFor(map, corners[k]);
+		if (!decorSprites[materials[k]] || definitions.materials[materials[k]].decor.full.empty())
+			return result;
+	}
+	const auto colours = cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed());
+	for (unsigned k = 0; k < materials.size(); ++k)
+	{
+		const auto material = materials[k];
+		if (std::find(materials.begin(), materials.begin() + k, material) != materials.begin() + k)
+			continue;
+		unsigned mask = 0, count = 0;
+		int offsetX = 0, offsetY = 0;
+		for (unsigned corner = 0; corner < materials.size(); ++corner)
+			if (materials[corner] == material)
+			{
+				mask |= 1u << corner;
+				++count;
+				offsetX += corner & 1u ? 6 : -6;
+				offsetY += corner & 2u ? 6 : -6;
+			}
+		const int frame =
+			definitions.decorFrame(material, x, y, mask != 15, map.terrainSeed(), mask, colours);
+		if (frame < 0)
+			continue;
+		// Edge objects lean toward their own corners rather than obscuring the
+		// other decorated material. Uniform cells retain their exact old anchor.
+		// Connected foliage artwork already encodes its corner geometry.
+		if (!definitions.materials[material].decor.connected.empty())
+			offsetX = offsetY = 0;
+		result.samples[result.count++] = {
+			material, decorSprites[material], frame, offsetX / int(count), offsetY / int(count),
+			mask};
+	}
+	// Within a cell use the same back-to-front order as the row renderer.
+	std::sort(result.samples.begin(), result.samples.begin() + result.count,
+			  [](const auto &a, const auto &b)
+			  {
+				  return std::tie(a.offsetY, a.offsetX, a.material) <
+						 std::tie(b.offsetY, b.offsetX, b.material);
+			  });
+	return result;
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {

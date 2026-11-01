@@ -4,6 +4,7 @@
 #include "Drawing.h"
 #include "Farmland.h"
 #include "Game.h"
+#include "field/Grid.h"
 #include "GenerationContext.h"
 #include "Growth.h"
 #include "Landmass.h"
@@ -88,7 +89,8 @@ std::vector<unsigned char> land(const Layout &L)
 }
 // Endpoint queries need only the first arrival, not a complete catchment. Keep
 // reachFrom's eight-neighbour topology, admitted source and 256-step limit.
-int distance(const Torus &t, const std::vector<unsigned char> &open, int a, int b)
+int distance(const Torus &t, const std::vector<unsigned char> &open, int a, int b,
+			 const Map *map = nullptr, bool canSwim = false)
 {
 	thread_local std::vector<int> steps, queue;
 	if (steps.size() != size_t(t.size()))
@@ -107,12 +109,19 @@ int distance(const Torus &t, const std::vector<unsigned char> &open, int a, int 
 		}
 		if (d >= 256)
 			continue;
+		const auto connections =
+			map ? map->terrainConnections(t.remainderX(i), i / t.w, canSwim ? 1 : 0) : 255;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				if (!dx && !dy)
 					continue;
 				const int q = t.at(t.remainderX(i) + dx, i / t.w + dy);
+				if (map && (!(connections & (1u << field::directionIndex(dx, dy))) ||
+							(dx && dy &&
+							 (!open[t.at(t.remainderX(i) + dx, i / t.w)] ||
+							  !open[t.at(t.remainderX(i), i / t.w + dy)]))))
+					continue;
 				if (steps[q] < 0 && open[q])
 				{
 					steps[q] = d + 1;
@@ -1116,7 +1125,7 @@ std::string mechanismFailure(const Map &map, const Layout &L, bool checkOpeningA
 	auto workers = unitTilesByTeam(map, int(L.homes.size()));
 	if (workers.empty() || workers[0].empty())
 		return "A Portage Lakes settlement has no workers.";
-	auto connected = floodFrom(t, tileMask(t, workers[0]), walking).steps;
+	auto connected = floodFrom(map, tileMask(t, workers[0]), walking).steps;
 	// Opening courts may grow over when unused, so this belongs to initial
 	// materialization rather than the persistent terrain/growth contract.
 	if (checkOpeningAccess)
@@ -1146,7 +1155,8 @@ std::string mechanismFailure(const Map &map, const Layout &L, bool checkOpeningA
 		auto opened = walking;
 		for (int i : p.cut)
 			opened[i] = 1;
-		int before = distance(t, walking, p.a, p.b), after = distance(t, opened, p.a, p.b);
+		int before = distance(t, walking, p.a, p.b, &map),
+			after = distance(t, opened, p.a, p.b, &map);
 		if (after < 0 ||
 			before - after < std::max(L.compact ? 4 : 8, before / (L.compact ? 10 : 5)))
 			return "A Portage Lakes shortcut does not shorten its finished route.";
@@ -1166,8 +1176,8 @@ std::string mechanismFailure(const Map &map, const Layout &L, bool checkOpeningA
 		auto otherOptions = combined;
 		for (int i : p.cut)
 			otherOptions[i] = walking[i];
-		const int before = distance(t, otherOptions, p.a, p.b);
-		const int after = distance(t, combined, p.a, p.b);
+		const int before = distance(t, otherOptions, p.a, p.b, &map, true);
+		const int after = distance(t, combined, p.a, p.b, &map, true);
 		if (before < 0 || after < 0 || before <= after)
 			return "Portage Lakes shortcuts duplicate the same connection.";
 		if (record)
@@ -1177,8 +1187,8 @@ std::string mechanismFailure(const Map &map, const Layout &L, bool checkOpeningA
 	for (int kind = 0; kind < 2; ++kind)
 	{
 		const auto &p = kind ? L.swim : L.portage;
-		int before = distance(t, kind ? cut : swimming, p.a, p.b),
-			after = distance(t, combined, p.a, p.b);
+		int before = distance(t, kind ? cut : swimming, p.a, p.b, &map, !kind),
+			after = distance(t, combined, p.a, p.b, &map, true);
 		if (before < 0 || after < 0 || before <= after)
 			return "Portage Lakes shortcuts duplicate the same connection.";
 		if (record)
@@ -1192,8 +1202,8 @@ std::string mechanismFailure(const Map &map, const Layout &L, bool checkOpeningA
 		const auto &p = kind ? L.swim : L.portage;
 		if (p.a < 0 || p.b < 0 || !walking[p.a] || !walking[p.b])
 			return "A Portage Lakes shortcut has an obstructed landing.";
-		int before = distance(t, walking, p.a, p.b),
-			after = distance(t, kind ? swimming : cut, p.a, p.b);
+		int before = distance(t, walking, p.a, p.b, &map),
+			after = distance(t, kind ? swimming : cut, p.a, p.b, &map, kind);
 		if (before < 0 || after < 0 || before - after < std::max(minimum, before / divisor))
 			return "A Portage Lakes shortcut does not shorten its finished route.";
 		if (record)
@@ -1539,7 +1549,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			6,
+			8,
 			false,
 			{GeneratorControl{"lake-elongation", "Lake elongation", 125, 300, 25, 200,
 							  ControlGroup::Terrain}

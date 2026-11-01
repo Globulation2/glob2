@@ -409,7 +409,7 @@ bool generate(Game &game, GenerationContext &context)
 			[&](int k) { return MapGeneratorPoint(t.remainderX(sites[k]) - 2, sites[k] / t.w - 2); }))
 		return false;
 	const auto bare = walkableTiles(map);
-	const auto labels = connectedRegions(bare, t.w, t.h, true, GridNeighbors::Eight);
+	const auto labels = groundRegions(map, bare, GridNeighbors::Eight);
 	const auto units = unitTilesByTeam(map, context.request.nbTeams);
 	const auto fertility = Fertility::forMap(map, false);
 	std::vector<unsigned char> reserved = swarmSurroundings(t, context), ambient(t.size(), 1);
@@ -427,7 +427,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < context.request.nbTeams; ++k)
 	{
 		const int s = sites[k];
-		const auto walk = stepsFrom(t, tileMask(t, units[k]), bare);
+		const auto walk = stepsFrom(map, tileMask(t, units[k]), bare);
 		for (int type : {WHEAT, WOOD})
 		{
 			const auto kit =
@@ -520,7 +520,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			(++occupants[component] > islands.capacity[component] ||
 			 servicePlots[component] < 2 * occupants[component]))
 			return "A detached colony lacks local swimming infrastructure space.";
-		const auto reach = floodFrom(t, tileMask(t, units[k]), open, 24);
+		const auto reach = floodFrom(game.map, tileMask(t, units[k]), open, 24);
 		int room = 0;
 		std::set<int> wheat, wood;
 		int fertileWheat = 0, fertileWood = 0;
@@ -543,7 +543,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			return "An island colony lacks accessible crops or construction room.";
 	}
 	const auto swimming = groundUnitTiles(game.map, true);
-	const auto reach = stepsFrom(t, tileMask(t, units[0]), swimming);
+	const auto reach = stepsFrom(game.map, tileMask(t, units[0]), swimming, true);
 	for (const auto &team : units)
 		if (reach[team[0]] < 0)
 			return "An island colony cannot reach its rivals even with swimming.";

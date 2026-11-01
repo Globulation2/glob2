@@ -515,7 +515,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	// The entire crop footprint may fill. Check the broad route network and both
 	// gathering flanks against that future, not only against today's scattered trees.
 	const auto broad = erode(t, future, 1);
-	const auto regions = connectedRegions(broad, t.w, t.h, true);
+	const auto regions = groundRegions(map, broad, GridNeighbors::Cardinal);
 	int common = -1;
 	for (const ShapePoint q : L.courts)
 	{
@@ -530,7 +530,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	std::vector<unsigned char> frontierSources(t.size(), 0);
 	for (const ShapePoint q : L.courts)
 		frontierSources[t.at(int(q.x), int(q.y))] = 1;
-	const auto futureReach = stepsFrom(t, frontierSources, future);
+	const auto futureReach = stepsFrom(map, frontierSources, future);
 	for (int g = 0; g < c.request.nbTeams; ++g)
 	{
 		const Patch &p = L.patches[g];
@@ -570,22 +570,14 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	std::vector<int> first;
 	for (int k = 0; k < c.request.nbTeams; ++k)
 	{
-		const int sx = game.teams[k]->startPosX, sy = game.teams[k]->startPosY;
-		std::vector<unsigned char> sources(t.size(), 0);
-		for (int dy = -1; dy <= 4; ++dy)
-			for (int dx = -1; dx <= 4; ++dx)
-			{
-				const int i = t.at(sx + dx, sy + dy);
-				if (open[i])
-					sources[i] = 1;
-			}
+		const auto exits = colonyGroundExits(game, k, open);
+		const auto sources = tileMask(t, exits);
 		bool futureExit = false;
-		for (int dy = -1; dy <= 4; ++dy)
-			for (int dx = -1; dx <= 4; ++dx)
-				futureExit |= futureReach[t.at(sx + dx, sy + dy)] >= 0;
+		for (int i : colonyGroundExits(game, k, future))
+			futureExit |= futureReach[i] >= 0;
 		if (!futureExit)
 			return "A colony cannot reach the woodland network after crops fill.";
-		const auto d = stepsFrom(t, sources, open);
+		const auto d = stepsFrom(map, sources, open);
 		int room = 0, food = 0, earlyFood = 0, timber = 0;
 		for (int i = 0; i < t.size(); ++i)
 		{

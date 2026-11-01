@@ -17,6 +17,10 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "Grid.h"
+#include "Pipeline.h"
+#include "Roads.h"
+#include "Contact.h"
+#include "Walls.h"
 #include "Growth.h"
 #include "Planting.h"
 #include "Room.h"
@@ -399,6 +403,123 @@ TEST_SUITE("CombGenerator")
 					const double cpuMs = 1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC;
 					std::printf("Comb benchmark maps=%d telemetry=%d wall-ms/map=%.3f cpu-ms/map=%.3f\n", count,
 								telemetry, ms / count, cpuMs / count);
+		}
+	}
+}
+
+TEST_SUITE("GeneratorGroundConnectivity")
+{
+	TEST_CASE(
+		"physical floods reject a diagonal rock seam while geometric masks stay eight connected")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.wDec = 4, .hDec = 4, .header = true});
+		auto &map = world.game.map;
+		const Torus t(map);
+		map.fillTerrain(OUTCROP);
+		map.paintCell(4, 4, GRASS);
+		map.paintCell(5, 5, GRASS);
+		const auto open = groundUnitTiles(map);
+		REQUIRE(open[t.at(4, 4)]);
+		REQUIRE(open[t.at(5, 5)]);
+		REQUIRE_FALSE(open[t.at(5, 4)]);
+		REQUIRE_FALSE(open[t.at(4, 5)]);
+		const auto source = tileMask(t, {t.at(4, 4)});
+		CHECK(stepsFrom(t, source, open)[t.at(5, 5)] == 1);
+		CHECK(stepsFrom(map, source, open)[t.at(5, 5)] == -1);
+		const auto regions = groundRegions(map, open, GridNeighbors::Eight);
+		CHECK(regions[t.at(4, 4)] != regions[t.at(5, 5)]);
+		CHECK(costsFrom(map, t, {t.at(4, 4)}, StepCosts::walking())[t.at(5, 5)] == -1);
+		CHECK_FALSE(openRoad(map, t, {t.at(4, 4)}, tileMask(t, {t.at(5, 5)})));
+		CHECK(floodFrom(map, source, open, 1).visited == std::vector<int>{t.at(4, 4)});
+		const auto reached = reachFrom(map, {t.at(4, 4)}, open, 1);
+		CHECK(reached.tiles == std::vector<int>{t.at(4, 4)});
+		CHECK(reached.steps == std::vector<int>{0});
+	}
+
+	TEST_CASE("physical gate partition rejects diagonal-only contact and clearing masks preserve "
+			  "clearance")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.wDec = 4, .hDec = 4, .header = true});
+		auto &map = world.game.map;
+		const Torus t(map);
+		const int a = t.at(4, 4), gate = t.at(5, 5), b = t.at(6, 6);
+		const auto open = tileMask(t, {a, gate, b});
+		std::vector<int> owners(t.size(), -1);
+		owners[a] = 0;
+		owners[b] = 1;
+		const std::vector<TileGate> gates{{{0, 1}, {gate}}};
+		CHECK(checkGatePartition(t, open, owners, gates).badGate == -1);
+		CHECK(checkGatePartition(map, open, owners, gates).badGate == 0);
+		// Side deposits obstruct a real walk but a caller may explicitly model
+		// their removal when evaluating a chopping shortcut.
+		map.setResourceByIndex(5, 4, WOOD, 1);
+		map.setResourceByIndex(4, 5, WOOD, 1);
+		auto physical = groundUnitTiles(map);
+		CHECK(floodFrom(map, tileMask(t, {a}), physical, 1).steps[gate] == -1);
+		physical[t.at(5, 4)] = physical[t.at(4, 5)] = 1;
+		CHECK(floodFrom(map, tileMask(t, {a}), physical, 1).steps[gate] == 1);
+		CHECK(costsFrom(map, t, {a}, StepCosts::walking())[gate] > 1);
+		CHECK(costsFrom(map, t, {a}, StepCosts::chopping())[gate] == 1);
+	}
+
+	TEST_CASE("colony reach sources use actual cardinal building exits")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(
+			{.wDec = 4, .hDec = 4, .loadDefaultRace = true, .header = true});
+		auto *swarm = world.addBuilding("swarm", 4, 4);
+		REQUIRE(swarm);
+		auto &map = world.game.map;
+		const Torus t(map);
+		map.fillTerrain(OUTCROP);
+		for (int y = swarm->posY; y < swarm->posY + swarm->type->height; ++y)
+			for (int x = swarm->posX; x < swarm->posX + swarm->type->width; ++x)
+				map.paintCell(x, y, GRASS);
+		map.paintCell(swarm->posX - 1, swarm->posY - 1, GRASS);
+		REQUIRE(map.terrainAllowsMovementAt(swarm->posX - 1, swarm->posY - 1, 0));
+		CHECK(colonyGroundExits(world.game, 0, groundUnitTiles(map)).empty());
+		map.paintCell(swarm->posX, swarm->posY - 1, GRASS);
+		const auto exits = colonyGroundExits(world.game, 0, groundUnitTiles(map));
+		CHECK(exits == std::vector<int>{t.at(swarm->posX, swarm->posY - 1)});
+	}
+
+	TEST_CASE("physical floods follow dry shore edges across wrapped seams")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (bool vertical : {false, true})
+		{
+			CAPTURE(vertical);
+			glob2test::HeadlessGame world({.wDec = 4, .hDec = 4, .header = true});
+			auto &map = world.game.map;
+			const Torus t(map);
+			for (int y = 0; y < t.h; ++y)
+				for (int x = 0; x < t.w; ++x)
+					map.setVertexTerrain(x, y, (vertical ? y : x) % 2 ? WATER : GRASS);
+			const int a = t.at(4, 4), b = vertical ? t.at(4, 5) : t.at(5, 4);
+			auto open = tileMask(t, {a, b});
+			const auto source = tileMask(t, {a});
+			CHECK(stepsFrom(t, source, open)[b] == 1);
+			CHECK(stepsFrom(map, source, open)[b] == -1); // shared edge is entirely water
+			CHECK(stepsFrom(map, source, open, true)[b] == 1);
+			CHECK(groundRegions(map, open, GridNeighbors::Cardinal)[a] !=
+				  groundRegions(map, open, GridNeighbors::Cardinal)[b]);
+			const int seamA = vertical ? t.at(4, 15) : t.at(15, 4);
+			const int seamB = vertical ? t.at(4, 0) : t.at(0, 4);
+			open = tileMask(t, {seamA, seamB});
+			CHECK(stepsFrom(map, tileMask(t, {seamA}), open)[seamB] == 1); // dry wrap edge
+			for (int i = 0; i < t.w; ++i)
+			{
+				map.setVertexTerrain(vertical ? i : 15, vertical ? 15 : i, GRASS);
+				map.setVertexTerrain(vertical ? i : 0, vertical ? 0 : i, WATER);
+				map.setVertexTerrain(vertical ? i : 1, vertical ? 1 : i, GRASS);
+			}
+			REQUIRE(groundUnitTiles(map)[seamA]);
+			REQUIRE(groundUnitTiles(map)[seamB]);
+			CHECK(stepsFrom(map, tileMask(t, {seamA}), open)[seamB] == -1);
+			CHECK(stepsFrom(map, tileMask(t, {seamB}), open)[seamA] == -1);
+			CHECK(floodFrom(map, tileMask(t, {seamA}), open, 1, true).steps[seamB] == 1);
 		}
 	}
 }

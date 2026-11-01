@@ -284,6 +284,7 @@ public:
 	//! Simulation-owner service shared by AI, gradients and presentation.
 	SimulationSnapshot::Store& snapshots() const { return worldSnapshots; }
 	void clearAI();
+	void invalidateTerrainAI();
 	void saveAI(GAGCore::OutputStream* stream);
 	bool loadAI(GAGCore::InputStream* stream);
 	void observeUnpolledAI(const SimulationSnapshot::Handle&);
