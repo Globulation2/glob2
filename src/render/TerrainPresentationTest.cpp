@@ -1729,9 +1729,12 @@ TEST_SUITE("TerrainValidation")
 										  whole ? Game::DRAW_WHOLE_MAP : 0, scene);
 			GAGCore::Sprite::flushBatches(&gfx);
 			gfx.endMapTransform();
-			gfx.renderer->flush();
+			if (gfx.renderer)
+				gfx.renderer->flush();
+			// Software mode can draw directly to its surface without a backend.
 			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(
-				gfx.renderer->capture(), SDL_DestroySurface);
+				gfx.renderer ? gfx.renderer->capture() : SDL_DuplicateSurface(gfx.getSDLSurface()),
+				SDL_DestroySurface);
 			REQUIRE(captured);
 			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
 				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
