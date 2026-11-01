@@ -586,7 +586,7 @@ int Glob2::run(const Cli::Request &request)
 				delete globalContainer;
 				return 3;
 			}
-			path = globalContainer->fileManager->getDir(0) + "/videoshots/" + name + ".mp4";
+			path = globalContainer->fileManager->getDir(0) + "/videoshots/" + name + GAGCore::Recording::Extension;
 		}
 		if (!GAGCore::Recording::recorder().start(path))
 		{

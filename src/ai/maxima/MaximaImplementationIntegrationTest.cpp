@@ -1972,3 +1972,78 @@ TEST_CASE("prepared resource obstacles match scalar entity gradients" * doctest:
         CHECK(actual.values==expected);
     }
 }
+
+TEST_CASE("economic worker priorities rank each role and boost emergency inn sites" * doctest::test_suite("Maxima.Implementation"))
+{
+    glob2test::HeadlessGlobals globals;
+    Game game(nullptr);
+    game.map.setSize(6,6,GRASS);game.map.setGame(&game);
+    game.addTeam();game.teams[0]->race.loadDefault();
+    Player player;player.setTeam(game.teams[0]);
+    std::vector<Building*> buildings;
+    for(int i=0;i<9;++i)
+    {
+        const char* name=i==8 ? "hospital" : i>=3 && i<6 ? "swarm" : "inn";
+        auto* b=game.addBuilding(5+(i%4)*12,5+(i/4)*20,
+            globalContainer->buildingsTypes.getTypeNum(name,0,false),0);
+        REQUIRE(b);buildings.push_back(b);
+    }
+    AIMaxima::Maxima ai(&player);Context& c=ai.context;
+    c.initialize();c.activeAI=&ai;
+    glob2test::withMaximaObservation(c,[&]{ai.configure_development_planner();});
+    auto world=ai.collect_development_world(c);
+    REQUIRE(world.buildings.size()==9);
+    AIMaximaFoodLedger::Result ledger;
+    std::map<int,int> expected;
+    for(auto& b:world.buildings)
+    {
+        const auto it=std::find_if(buildings.begin(),buildings.end(),
+            [&](const auto* live){return live->gid==b.gid;});
+        REQUIRE(it!=buildings.end());
+        const int index=int(it-buildings.begin());
+        AIMaximaFoodLedger::ConsumerResult value;
+        value.key=b.id;
+        value.kind=index>=3 && index<6 ? AIMaximaFoodLedger::SwarmConsumer : AIMaximaFoodLedger::InnConsumer;
+        // Inn scores tie (ID breaks the tie); the last swarm has the worst route.
+        value.quality=index>=3 && index<6 ? index*100 : 100;
+        if(index==6 || index==7)b.site=true;
+        if(index==7)b.upgrading=true;
+        ledger.consumers.push_back(value);
+        expected[b.id]=index==5 ? -1 : index==6 ? 1 : 0;
+    }
+    int lowestInn=std::numeric_limits<int>::max();
+    for(const auto& value:ledger.consumers)
+        if(value.kind==AIMaximaFoodLedger::InnConsumer && !world.building(value.key)->site
+           && world.building(value.key)->gid!=buildings[8]->gid)
+            lowestInn=std::min(lowestInn,value.key);
+    expected[lowestInn]=-1;
+    // An upgrade's existing high priority must survive the economic review.
+    buildings[7]->priority=1;
+    for(const auto& b:world.buildings)if(b.gid==buildings[7]->gid)expected[b.id]=1;
+    ai.budget.food_emergency=true;
+    auto review=[&]
+    {
+        c.orders.clear();
+        ai.update_worker_priorities(c,world,ledger);
+        c.update_management_orders();
+        for(const auto& order:c.orders)
+            if(const auto change=std::dynamic_pointer_cast<OrderChangePriority>(order))
+                for(auto* b:buildings)if(b->gid==change->gid)b->priority=change->priority;
+        for(const auto& b:world.buildings)
+            for(const auto* live:buildings)if(live->gid==b.gid)
+                CHECK(live->priority==expected.at(b.id));
+    };
+    review();
+    // A settled review emits no redundant priority orders.
+    review();
+    for(const auto& order:c.orders)CHECK(!std::dynamic_pointer_cast<OrderChangePriority>(order));
+    ai.budget.food_emergency=false;
+    for(const auto& b:world.buildings)if(b.gid==buildings[6]->gid)expected[b.id]=0;
+    review();
+    // A lone completed building remains normal, even if it used to rank low.
+    auto lone=world;
+    lone.buildings.erase(std::remove_if(lone.buildings.begin(),lone.buildings.end(),
+        [&](const auto& b){return b.id!=lowestInn;}),lone.buildings.end());
+    world=std::move(lone);expected[lowestInn]=0;
+    review();
+}

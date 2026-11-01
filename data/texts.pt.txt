@@ -4884,6 +4884,34 @@ Unidades encurraladas sem nenhum quadrado livre para onde avançar.
 Recursos limpos
 [stat cleared about]
 Recursos removidos pelos trabalhadores nas zonas de limpeza para abrir espaço.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestígio
 [stat prestige about]

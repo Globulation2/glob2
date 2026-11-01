@@ -21,6 +21,7 @@
 
 namespace WinProbability
 {
+inline constexpr char MODEL_ID[] = "conditional-logit-v1-1991b39cc920b525c4110c5bed70e08a419a6eb263d2fffb0e57774cc0d22861";
 /// Softmax fixes the scale of F but not its zero, so this level is a
 /// convention and cancels between competitors. Differences are what the
 /// games determined.

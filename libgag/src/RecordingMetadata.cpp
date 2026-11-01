@@ -43,7 +43,7 @@ void publishCompletedRecording(const std::filesystem::path &work,
 	const std::array<Pair, 3> files{
 		{{work / "manifest.json", std::filesystem::path(video).concat(".json")},
 		 {work / "events.jsonl", std::filesystem::path(video).concat(".events.jsonl")},
-		 {work / "final.mp4", video}}};
+		 {work / ("final" + video.extension().string()), video}}};
 	std::size_t published = 0;
 	try
 	{

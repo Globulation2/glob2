@@ -16,8 +16,10 @@ namespace Headless
 std::string quote(const std::string &value);
 void writeJson(const std::string &path, const std::string &json);
 /// The "players" ... "unresolved" members of a game result.json (no braces), as
-/// game run and match verify write them. eliminatedTicks is per team, -1 if alive.
-void playersAndTeamsJson(std::ostream &result, Game &game, const std::vector<Sint32> &eliminatedTicks);
+/// game run, match verify and online turn-client write them. eliminatedTicks is
+/// per team, -1 if alive. The owner must finalize probability history first;
+/// serialization only reads the supplied state.
+void playersAndTeamsJson(std::ostream &result, const Game &game, const std::vector<Sint32> &eliminatedTicks);
 /// Writes <directory>/artifacts.json listing every file in it.
 void writeManifest(const std::string &directory);
 }

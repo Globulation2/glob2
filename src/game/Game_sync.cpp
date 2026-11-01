@@ -115,23 +115,32 @@ void Game::wonSyncStep(void)
 
 }
 
-void Game::winProbabilitySyncStep()
+void Game::winProbabilitySyncStep(bool force)
 {
-	// Diagnostic only, and off unless GLOB2_TEAM_TIMELINE asks for it. The
-	// numbers are the ones the optional win probability victory condition reads,
-	// so a test can check the engine and tools/win_probability_model.py agree
-	// sample by sample instead of only at the end, and a divergence between two
-	// platforms shows up as a diff rather than as a desynchronised game.
-	//
-	// Runs on the 512-tick boundary TeamStats samples at, after the teams have
-	// stepped, so it reports exactly the state the condition was evaluated on.
-	if ((stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) != 0)
+	// Read the same state as the victory condition, regardless of whether the
+	// rule or detailed telemetry is enabled. This history never drives play.
+	if ((stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) != 0 && !isGameEnded && !force)
 		return;
-	if (!getenv("GLOB2_TEAM_TIMELINE"))
-		return;
+	bool newSample = false;
+	for (int t = 0; t < teamsCount(); ++t)
+	{
+		const auto &history = teams[t]->stats.getWinProbabilityHistory();
+		newSample |= history.empty() || history.back().tick != stepCounter;
+	}
+	if (!newSample) return;
 	std::vector<int> allianceOf;
-	const std::vector<WinProbability::Slot> slots = WinProbability::slotsOf(*this, allianceOf);
+	// The probability rule has just assigned loss flags. Preserve the actual
+	// prediction that ended the match instead of turning a 95% call into 100%.
+	Uint32 ignoreLostTeams = 0;
+	for (int t = 0; t < teamsCount(); ++t)
+	{
+		if (teams[t]->winCondition == WCWinProbability) ignoreLostTeams |= 1u << t;
+	}
+	const std::vector<WinProbability::Slot> slots = WinProbability::slotsOf(*this, allianceOf, ignoreLostTeams);
 	const std::vector<int> chances = WinProbability::permille(slots);
+	for (int t = 0; t < teamsCount(); ++t)
+		teams[t]->stats.recordWinProbability(stepCounter, chances[allianceOf[t]], WinProbability::modelId());
+	if (!getenv("GLOB2_TEAM_TIMELINE")) return;
 	for (size_t i = 0; i < slots.size(); ++i)
 		std::cout << "GLOB2_WINPROB alliance=" << i
 			<< " tick=" << stepCounter

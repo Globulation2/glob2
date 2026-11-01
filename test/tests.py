@@ -115,6 +115,7 @@ ENGINE_TESTS = [
     '#src/hud/GameGUISelectionHarness.cpp',
     '#src/render/scene/SceneExtractTest.cpp',
     '#src/game/diagnostics/GameDiagnosticsTest.cpp',
+    '#src/game/diagnostics/WarriorTacticsTraceTest.cpp',
     ('#src/team/stats/WinProbabilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/engine/sim/ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/HiringBucketHarness.cpp',
