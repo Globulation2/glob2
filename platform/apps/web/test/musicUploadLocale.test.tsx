@@ -53,6 +53,7 @@ it('uses canonical upload paths and uploaded markers with translated mood and co
   registerCatalog('ms', {
     Calm: 'Tenang',
     Building: 'Pembinaan',
+    'Building (music mood)': 'Pembinaan',
     Combat: 'Pertempuran',
     Cover: 'Kulit muka',
     '✓ uploaded': '✓ dimuat naik',
@@ -92,7 +93,12 @@ it('uses canonical upload paths and uploaded markers with translated mood and co
 });
 
 it('translates mood labels in inspection and length-repair summaries', async () => {
-  registerCatalog('ms', { Calm: 'Tenang', Building: 'Pembinaan', Combat: 'Pertempuran' });
+  registerCatalog('ms', {
+    Calm: 'Tenang',
+    Building: 'Pembinaan',
+    'Building (music mood)': 'Pembinaan',
+    Combat: 'Pertempuran',
+  });
   await setLocale('ms');
   release.inspection = { frames: [480000, 528000, 576000], seconds: [10, 11, 12], equal: false };
   render(
