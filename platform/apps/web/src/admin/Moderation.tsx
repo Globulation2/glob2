@@ -136,7 +136,9 @@ export function UnifiedReports({ library }: { library?: string }) {
           {t('Status')}{' '}
           <select value={values['status']} onChange={(e) => set({ status: e.target.value })}>
             {['open', 'resolved', 'dismissed', 'all'].map((s) => (
-              <option key={s}>{s}</option>
+              <option key={s} value={s}>
+                {s === 'all' ? t('All') : statusLabel(s)}
+              </option>
             ))}
           </select>
         </label>

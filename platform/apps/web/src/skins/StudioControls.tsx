@@ -292,7 +292,7 @@ function SwatchStrip({
             aria-checked={selected === m.id}
             onClick={() => onSelect(m.id)}
           >
-            <span>{m.name}</span>
+            <span>{t(m.name)}</span>
           </button>
         ))}
       </div>
@@ -323,7 +323,7 @@ export function MaterialSwatches({
     <div role="radiogroup" aria-label={t('Material')} className="skin-material-groups">
       {MATERIAL_GROUPS.map((group, index) => (
         <section key={group.name} className="skin-material-group">
-          <h4>{group.name}</h4>
+          <h4>{t(group.name)}</h4>
           <SwatchStrip
             source={source}
             color={color}

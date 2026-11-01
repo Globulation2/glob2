@@ -167,11 +167,11 @@ export function MusicPlayer({
             onClick={() => player.selectMood(i)}
             className={`mood-${i}`}
             aria-pressed={player.mode !== 'manual' && player.mood === i}
-            aria-label={t('Crossfade to {value0}', { value0: mood })}
+            aria-label={t('Crossfade to {value0}', { value0: t(mood) })}
           >
             <MoodIcon mood={i} />
             <span>
-              <strong>{mood}</strong>
+              <strong>{t(mood)}</strong>
               <small>{t(MOOD_DESCRIPTIONS[i])}</small>
             </span>
             <span className="music-mood-mark" aria-hidden="true">

@@ -145,7 +145,7 @@ export function MusicValidation({
                   check.measures.find((m) => m.status === 'warn' || m.status === 'fail')?.detail ??
                   t('Review the technical results for this finding.')}
               </p>
-              {category(check)?.guidance && <small>{category(check)?.guidance}</small>}
+              {category(check)?.guidance && <small>{t(category(check)?.guidance)}</small>}
             </article>
           ))}
         </div>
