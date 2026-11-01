@@ -109,6 +109,11 @@ class FailureEvidence(unittest.TestCase):
             calls=[]
             def run(parts,**kwargs):
                 parts=list(map(str,parts));calls.append(parts);text=''
+                if parts[:2] == ['xcrun','simctl']:
+                    # Actual run41257767175: simctl rejected inventory with
+                    # 'Provided set path does not exist'. Assert the precondition
+                    # for every simulator call, including the first list runtimes.
+                    self.assertTrue(Path(parts[parts.index('--set')+1]).is_dir())
                 if parts[:3]==['git','rev-parse','HEAD']:text='abc123'
                 elif 'runtimes' in parts:text=json.dumps({'runtimes':[dict(identifier='com.apple.iOS-27',version='27',isAvailable=True)]})
                 elif 'devicetypes' in parts:text=json.dumps({'devicetypes':[dict(identifier='phone',name='iPhone A')]})

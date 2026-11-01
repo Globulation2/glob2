@@ -136,6 +136,9 @@ def run_qa(root, output, locale):
         run(['plutil', '-lint', str(app/'Info.plist'), str(thai_file)])
         thai = run(['plutil', '-extract', 'NSLocalNetworkUsageDescription', 'raw', '-o', '-', str(thai_file)])
         summary['bundle_hashes'] = bundle_checks(root, app, thai)
+        # simctl --set requires an existing directory, even for inventory.
+        device_set.mkdir(parents=True, exist_ok=False)
+        summary['simulator_set'] = str(device_set)
         runtimes = json.loads(sim('list', 'runtimes', '--json'))
         types = json.loads(sim('list', 'devicetypes', '--json'))
         (output/'runtimes.json').write_text(json.dumps(runtimes, indent=2)+'\n')
