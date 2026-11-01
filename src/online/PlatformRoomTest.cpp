@@ -13,6 +13,7 @@
 #include "OnlineFakes.h"
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
+#include "PlatformApi.h"
 #include "PlatformRoom.h"
 #include "CustomGameSetup.h"
 #include "RoomSetup.h"
@@ -144,6 +145,40 @@ struct Fixture
 
 TEST_SUITE("PlatformRoom")
 {
+	TEST_CASE("Bengali room names chat and uploaded filenames preserve complete UTF-8")
+	{
+		Fixture f;
+		std::string name, message;
+		for (int i = 0; i < 22; ++i) name += "ক";
+		for (int i = 0; i < 167; ++i) message += "ক";
+		REQUIRE(name.size() == 66);
+		REQUIRE(message.size() == 501);
+		RoomMapChoice choice{"5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c", HASH, "Map"};
+		auto r = PlatformRoom::create(f.client, f.maps, f.storage, name, false, defaultRoomSetup(2, 0), false, choice);
+		f.client.update();
+		const auto request = f.world.socket().find("room.create");
+		REQUIRE(!request.is_null());
+		CHECK(request["params"]["name"] == name);
+		auto state = room(3, ME, Json::array({seat(0, ME, "Guest-1234"), seat(1, "", "")}),
+						  Json::array({member(ME, "Guest-1234")}));
+		state["name"] = name;
+		f.world.socket().respond(request, Json{{"room", state}});
+		f.client.update();
+		r->sendChat(message);
+		f.client.update();
+		const auto chat = f.world.socket().find("room.chat");
+		REQUIRE(!chat.is_null());
+		CHECK(chat["params"]["text"] == message);
+		std::string title = "a";
+		for (int i = 0; i < 40; ++i) title += "ক";
+		REQUIRE(title.size() == 121);
+		r->useMapBytes("GLOB2 MAP BYTES", title, defaultRoomSetup(2, 0));
+		f.client.update();
+		auto upload = f.world.http.pending("/api/v1/uploads");
+		REQUIRE(upload);
+		CHECK(upload->request.url.ends_with("&fileName=" + urlEncode(title + ".map")));
+	}
+
 	TEST_CASE("scripted launch pins a release and reroll retains that identity")
 	{
 		Fixture f;
