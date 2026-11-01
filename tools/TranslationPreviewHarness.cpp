@@ -708,8 +708,12 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             auto liveCapture = [&](const std::string &name) {
                 capture("gameplay-live-statistics-" + name);
                 require(before == gui.game.checkSum(), "Live statistics navigation must preserve simulation state");
+                const auto chart = panel.host().bounds("stats/inline/chart");
                 states.push_back({{"name", name}, {"topic", int(panel.topic())},
-                    {"selected_metric", panel.selectedMetric()}, {"recorded_history_available", panel.history() != nullptr}});
+                    {"selected_metric", panel.selectedMetric()}, {"recorded_history_available", panel.history() != nullptr},
+                    {"inline_chart_bounds", {chart.x, chart.y, chart.w, chart.h}},
+                    {"chart_font_line_height", globals.littleFont->getStringHeight("0") * panel.presentation().unit},
+                    {"chart_point_unit", panel.presentation().unit}});
             };
             auto reveal = [&](const std::string &key) {
                 require(draw(), "Render live statistics controls");
