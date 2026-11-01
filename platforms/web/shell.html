@@ -142,7 +142,7 @@ fitCanvas();
 // Download progress for the WebAssembly module and the startup data packages, with a
 // time estimate from the rate so far. Downloads report decoded bytes; responses
 // served from a compressed copy are scaled to its transfer size, which
-// browser/precompress.py records in data-wire-sizes, so the bar and estimate
+// platforms/web/precompress.py records in data-wire-sizes, so the bar and estimate
 // follow the bytes actually on the wire. Cached visits finish before the
 // estimate appears.
 function loadingEstimate(loaded, total, elapsedMs) {
@@ -168,7 +168,7 @@ function wireSize(name, encoding) {
 let wasmSizes = {};
 try { wasmSizes = JSON.parse(document.body.dataset.wasmBytes || '{}') || {}; } catch (_) {}
 if (typeof wasmSizes !== 'object') wasmSizes = {};
-// The module of the runtime browser/loader.js picked (serial or threaded).
+// The module of the runtime platforms/web/loader.js picked (serial or threaded).
 function wasmName(url) {
   if (url !== undefined) return /(?:^|\/)threaded\/[^/]*\.wasm(?:[?#]|$)/.test(url) ? 'threaded/index.wasm' : 'index.wasm';
   return Module?.executionMode === 'threaded' ? 'threaded/index.wasm' : 'index.wasm';

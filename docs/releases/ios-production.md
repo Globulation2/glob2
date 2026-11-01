@@ -64,7 +64,7 @@ after Apple returns `PENDING_DEVELOPER_RELEASE` for the same manually released
 version and build, requests public distribution. An accepted upload or pending
 review never counts as production availability for the website launch gate.
 
-`mobile/ios_release.py` encodes the four-component game version `a.b.c.d` as
+`platforms/mobile/ios_release.py` encodes the four-component game version `a.b.c.d` as
 App Store marketing version `a.b.(100*c+d)`. Each component is numeric without
 leading zeroes and `d` must be below 100 to avoid collisions. Unsupported versions
 fail before the iOS build; the generated Info.plist and provenance use this exact

@@ -144,7 +144,7 @@ def main():
               'note': 'Compile/link work totals sum command durations and are not parallel wall times.'}
     report['dependency_input_hashes'] = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
         for path in [*sorted((ROOT / 'scons').glob('*versions.json')), *sorted((ROOT / 'scons').glob('*vendored.json')),
-                     *sorted((ROOT / 'scons/vcpkg-ports').glob('**/*.patch')), ROOT / 'browser/toolchain.json', ROOT / 'vcpkg.json']}
+                     *sorted((ROOT / 'scons/vcpkg-ports').glob('**/*.patch')), ROOT / 'platforms/web/toolchain.json', ROOT / 'vcpkg.json']}
     report['external_manifests'] = {str(path): json.loads(path.read_text())
         for prefix in filter(None, report['dependency_overrides'].values())
         for path in Path(prefix).glob('*manifest.json')}

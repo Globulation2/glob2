@@ -7,7 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
 from build_layout import BuildLock
 from dev_store import Lease, cache, isolated, mobile_tools
 from mobile_toolchain import LOCK, ROOT

@@ -35,7 +35,7 @@ async function startMusic(page, url) {
   await page.addScriptTag({
     content: fs.readFileSync(path.join(__dirname, '../audio.js'), 'utf8'),
   });
-  const track = fs.readFileSync(path.join(__dirname, '../../data/zik/original/a1.opus'));
+  const track = fs.readFileSync(path.join(__dirname, '../../../data/zik/original/a1.opus'));
   await page.evaluate((bytes) => {
     Module.glob2Music.send({ type: 'load', index: 0, bytes: Uint8Array.from(bytes).buffer });
     Module.glob2Music.send({ type: 'select', index: 0, value: false });

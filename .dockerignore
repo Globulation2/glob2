@@ -4,7 +4,7 @@ build-*
 artifacts
 docs/.work
 tools/browser-emsdk
-browser/node_modules
+platforms/web/node_modules
 .codex
 **/__pycache__
 *.o

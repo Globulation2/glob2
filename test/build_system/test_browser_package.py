@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location(
-    "package_static", Path(__file__).resolve().parents[2] / "browser/package-static.py"
+    "package_static", Path(__file__).resolve().parents[2] / "platforms/web/package-static.py"
 )
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
@@ -21,7 +21,7 @@ class BrowserPackageTests(unittest.TestCase):
     def test_ci_artifacts_publish_music_and_launcher_runtime_closures(self):
         workflow = (module.ROOT / ".github/workflows/build.yml").read_text()
         steps = workflow.split("\n      - ")
-        shell = (module.ROOT / "browser/shell.html").read_text()
+        shell = (module.ROOT / "platforms/web/shell.html").read_text()
         scripts = re.findall(r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']', shell)
         relative_scripts = [name for name in scripts if not name.startswith(("/", "http:", "https:"))]
         for artifact in ("web-client", "glob2-web-development"):

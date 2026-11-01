@@ -38,7 +38,7 @@ def render(platform, depot, output, build_version, product_id, base_product_id):
         "@DEPOT@": str(depot_folder.resolve()),
         "@LAUNCH_PATH@": launch,
     }
-    template = (ROOT / "gog/project-template.json").read_text()
+    template = (ROOT / "platforms/stores/gog/project-template.json").read_text()
     for token, value in replacements.items():
         template = template.replace(token, value.replace("\\", "\\\\"))
     if re.search(r"@[A-Z_]+@", template):

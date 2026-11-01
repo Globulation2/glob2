@@ -33,7 +33,7 @@ Builds:
       - maps/*.map.gz
       - campaigns/*.map.gz
       - data/menu/colony.bin
-    build: python3 mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
+    build: python3 platforms/mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
       $$SDK$$ --android-ndk $$NDK$$
     ndk: 28.2.13676358
 
@@ -60,7 +60,7 @@ Builds:
       - maps/*.map.gz
       - campaigns/*.map.gz
       - data/menu/colony.bin
-    build: python3 mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
+    build: python3 platforms/mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
       $$SDK$$ --android-ndk $$NDK$$
     ndk: 28.2.13676358
 
@@ -87,7 +87,7 @@ Builds:
       - maps/*.map.gz
       - campaigns/*.map.gz
       - data/menu/colony.bin
-    build: python3 mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
+    build: python3 platforms/mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
       $$SDK$$ --android-ndk $$NDK$$
     ndk: 28.2.13676358
 
@@ -97,6 +97,6 @@ VercodeOperation:
   - 10 * %c + 1
   - 10 * %c + 2
   - 10 * %c + 3
-UpdateCheckData: mobile/android-release.json|"versionCodeBase":\s*(\d+)|.|"versionName":\s*"([0-9.]+)"
+UpdateCheckData: platforms/mobile/android-release.json|"versionCodeBase":\s*(\d+)|.|"versionName":\s*"([0-9.]+)"
 CurrentVersion: 0.11.0.0
 CurrentVersionCode: 1100003

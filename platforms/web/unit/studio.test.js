@@ -8,7 +8,7 @@ const run = "37a04960-d807-40ce-b578-289c251fa161";
 const map = readFileSync(
   require("node:path").join(
     __dirname,
-    "../../platform/apps/engine-agent/fixtures/ais/two.map.gz",
+    "../../../platform/apps/engine-agent/fixtures/ais/two.map.gz",
   ),
 );
 const mapBuffer = () =>

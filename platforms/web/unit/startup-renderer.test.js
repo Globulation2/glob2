@@ -33,7 +33,7 @@ test('legacy preferences match Settings screenFlags migration', () => {
     assert.equal(transport('screenFlags='+flags+'\n', null, 'webgl2'), 'software');
   for (const flags of [1,32,33,35])
     assert.equal(transport('screenFlags='+flags+'\n', null, 'software'), 'webgl2');
-  const header=readFileSync(path.join(__dirname,'../../libs/gag/include/SDLGraphicContext.h'),'utf8');
+  const header=readFileSync(path.join(__dirname,'../../../libs/gag/include/SDLGraphicContext.h'),'utf8');
   assert.match(header,/USEGPU = 1,/);assert.match(header,/PORTABLEGPU = 32,/);
 });
 test('fresh, Automatic and unrecognized preferences retain the automatic policy', () => {

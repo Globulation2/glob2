@@ -36,14 +36,14 @@ TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_c
                      'OnlineScreensProbe.cpp', 'RelayTestMain.cpp', 'ResourceGrowthFixtures.cpp'}
 # Build-system and service suites: unknown to the selector, so every check.
 TOOLING_TESTS = ('test/build_system/', 'test/baselines/', 'test/relay_service/', 'test/online_service/')
-TEST_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'mobile/')
+TEST_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'platforms/mobile/')
 SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/EngineRun.cpp',
                     'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
 THREAD_FILES = {'src/map/ResourceGrowth.cpp', 'src/map/ResourceGrowth.h', 'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
                 'src/hud/draw/GameGUIDraw.cpp', 'src/hud/GameGUIStep.cpp', 'src/hud/GameGUIOrders.cpp',
                 'libs/gag/src/PerformanceTelemetry.cpp', 'libs/gag/src/AssetLoader.cpp',
                 'libs/gag/include/AssetLoader.h', 'libs/gag/src/SpriteLoad.cpp',
-                'src/audio/SoundMixer.cpp', 'src/audio/MusicBuffer.h', 'browser/Audio.cpp'}
+                'src/audio/SoundMixer.cpp', 'src/audio/MusicBuffer.h', 'platforms/web/Audio.cpp'}
 # Paths whose changes rebuild and smoke-test the whole self-hosted stack
 # (deploy/compose.yaml). Its images compile the engine, so engine changes that
 # do not otherwise select every check skip it rather than adding a second
@@ -87,13 +87,13 @@ def unclassified(path):
 
 
 def cheap_path(path):
-    return (path.startswith(('docs/', 'test/build_system/test_ci', 'fdroid/', 'fastlane/'))
+    return (path.startswith(('docs/', 'test/build_system/test_ci', 'platforms/stores/fdroid/', 'fastlane/'))
             or path.endswith('.md') or path in MIRROR_DEPLOY_FILES or path in {
                 'INSTALL', 'AUTHORS', 'tools/README', 'debian/README.Debian', 'debian/README.source',
                 'requirements-dev.txt', 'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
                 'tools/check_docs.py', 'tools/docs/navigation.json', 'tools/docs/requirements.txt', 'test/test_check_docs.py',
                 'tools/package_steam_windows.py', 'test/test_steam_windows_package.py',
-                'mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
+                'platforms/mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
                 '.github/workflows/mac-app-store.yml'})
 
 
@@ -175,11 +175,11 @@ def select(paths, labels=(), known=False):
             'test/maxima/check_save_continuation_fixture.py',
             'test/build_provenance.py'} or path.startswith('test/ci-timings/'):
             add(path, *FLAGS)
-        elif path.startswith(('mobile/',)):
+        elif path.startswith(('platforms/mobile/',)):
             add(path, 'native', 'android')
-        elif path.startswith('darwin/'):
+        elif path.startswith('platforms/macos/'):
             add(path, 'native', 'macos')
-        elif path.startswith('windows/'):
+        elif path.startswith('platforms/windows/'):
             add(path, 'native', 'windows')
         elif path.startswith('src/hive/'):
             add(path, *FLAGS)
@@ -187,10 +187,10 @@ def select(paths, labels=(), known=False):
             add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform', 'deployment')
         elif path.startswith(('deploy/', 'test/deployment/')):
             add(path, 'browser', 'deployment')
-        elif path.startswith('browser/'):
-            if path == 'browser/toolchain.json':
+        elif path.startswith('platforms/web/'):
+            if path == 'platforms/web/toolchain.json':
                 add(path, *FLAGS)
-            elif path == 'browser/tests/determinism.spec.js' or path.startswith('browser/tests/fixtures/'):
+            elif path == 'platforms/web/tests/determinism.spec.js' or path.startswith('platforms/web/tests/fixtures/'):
                 add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform')
             else:
                 add(path, 'browser')
@@ -231,7 +231,7 @@ def browser_matrix(selected, paths, complete=False):
     entries = json.loads((ROOT / '.github/scripts/ci_browser_matrix.json').read_text())
     if not selected['browser']:
         return []
-    presentation = any(p.startswith(('browser/',) + PRESENTATION) or p in RENDER or 'Screen' in Path(p).name for p in paths)
+    presentation = any(p.startswith(('platforms/web/',) + PRESENTATION) or p in RENDER or 'Screen' in Path(p).name for p in paths)
     if complete:
         return entries
     if presentation:

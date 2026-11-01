@@ -43,7 +43,7 @@ def git(*args):
 
 def validate(tag=None):
     current = version()
-    spec = (ROOT / "fedora" / "glob2.spec").read_text()
+    spec = (ROOT / "platforms/linux/fedora" / "glob2.spec").read_text()
     spec_version = re.search(r"^Version:\s*(\S+)\s*$", spec, re.MULTILINE)
     if spec_version is None or spec_version.group(1) != current:
         raise SystemExit(f"Fedora spec Version must match PACKAGE_VERSION {current}")

@@ -23,7 +23,7 @@
 #if defined(__APPLE__)
 #include <TargetConditionals.h>
 #if TARGET_OS_IPHONE
-#include "mobile/ios/LaunchLinks.h"
+#include "platforms/mobile/ios/LaunchLinks.h"
 #endif
 #endif
 

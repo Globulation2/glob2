@@ -2,10 +2,10 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const root = path.resolve(__dirname, '../..');
+const root = path.resolve(__dirname, '../../..');
 
 test('browser replay fixture stays within the engine replay acceptance boundary', () => {
-  const bytes = fs.readFileSync(path.join(root, 'browser/tests/fixtures/cross-replay.replay'));
+  const bytes = fs.readFileSync(path.join(root, 'platforms/web/tests/fixtures/cross-replay.replay'));
   assert.equal(bytes.subarray(4, 16).toString(), 'replayHeader');
   const version = bytes.readUInt32BE(20);
   const reader = fs.readFileSync(path.join(root, 'src/replay/ReplayReader.h'), 'utf8');
@@ -18,7 +18,7 @@ test('browser replay fixture stays within the engine replay acceptance boundary'
 
 for (const name of ['generator-studio-trace.json', 'studio-trace.json']) {
   test(`${name} tracks the engine and simulation revisions`, () => {
-    const fixture = JSON.parse(fs.readFileSync(path.join(root, 'browser/tests/fixtures', name)));
+    const fixture = JSON.parse(fs.readFileSync(path.join(root, 'platforms/web/tests/fixtures', name)));
     const versions = fs.readFileSync(path.join(root, 'src/app/Version.h'), 'utf8');
     const simulation = fs.readFileSync(path.join(root, 'src/game/SimRevision.h'), 'utf8');
     assert.equal(fixture.versionMinor, Number(versions.match(/#define VERSION_MINOR\s+(\d+)/)[1]),

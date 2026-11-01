@@ -6,9 +6,9 @@ WebGL2 is the default where the browser accelerates it; otherwise the game uses
 the software renderer. `?renderer=webgl2` or `?renderer=software` forces either
 one. The pinned Emscripten 4.0.15 build
 shares game logic and the GPU renderer with desktop. The browser host schedules frames and cooperative jobs without Asyncify. Build and verification instructions below cover the desktop browser target.
-The [browser documentation hub](../docs/browser/README.md) links architecture, platform contracts and accepted design decisions.
+The [browser documentation hub](../../docs/browser/README.md) links architecture, platform contracts and accepted design decisions.
 Browser SDK calls for viewport metrics and text editing live in
-`browser/ApplicationHost.cpp`; shared UI code uses the `ApplicationHost` and
+`platforms/web/ApplicationHost.cpp`; shared UI code uses the `ApplicationHost` and
 `BrowserTextInput` interfaces, with native implementations in libgag.
 
 The desktop browser uses the system mouse cursor, including when an older profile
@@ -24,16 +24,16 @@ review remains necessary before release.
 From the repository root:
 
 ```sh
-python3 browser/setup.py
+python3 platforms/web/setup.py
 scons target=web release=1 -j8
-python3 browser/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
+python3 platforms/web/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
 ```
 
 For routine editing, build one threaded runtime with basic debug symbols:
 
 ```sh
 python3 tools/dev_build.py target=web
-python3 browser/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-threaded
+python3 platforms/web/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-threaded
 ```
 
 Use `web_variant=serial` for a serial-only development client. All game features
@@ -41,7 +41,7 @@ and shared assets remain present; a threaded-only client reports an error when
 the host cannot support threads. Ordinary SCons defaults to both runtimes,
 and `web-package` requires both. Full browser compatibility verification also
 uses both. `pch=1` and `unity=1` are explicit experiments; see
-[development build profiles](../docs/development/build-options.md#fast-development-builds)
+[development build profiles](../../docs/development/build-options.md#fast-development-builds)
 for cache controls and debugging limits.
 
 Open http://127.0.0.1:8765. The game starts automatically and fills the page.
@@ -52,19 +52,19 @@ configuration, objects, compilation database, and signature database. Compatible
 SDK library and port caches are shared across worktrees.
 Native builds do not require Emscripten; browser builds do not probe system libraries.
 
-`browser/toolchain.json` pins the SDK revision and version. `emsdk=/path/to/emsdk`
+`platforms/web/toolchain.json` pins the SDK revision and version. `emsdk=/path/to/emsdk`
 selects an already installed matching SDK. `GLOB2_DEV_MODE=isolated` restores
 checkout-local SDK and library/port caches for independent verification.
-See [development storage](../docs/development/development-storage.md#shared-development-storage)
+See [development storage](../../docs/development/development-storage.md#shared-development-storage)
 for configuration and cleanup. Omit `release=1` for a debug build.
-`python3 browser/build.py` remains a compatibility wrapper for the release build.
-See [delivery contracts](../docs/browser/implementation.md) for output paths and
+`python3 platforms/web/build.py` remains a compatibility wrapper for the release build.
+See [delivery contracts](../../docs/browser/implementation.md) for output paths and
 platform boundaries.
 
 The default build packages two runtimes: the root `index.js`/`index.wasm` serial
 fallback and `threaded/index.js`/`threaded/index.wasm`. Both load the same game
 data packages from `assets/` (see below). Keep `index.html`, `loader.js`, both
-runtime directories and `assets/` together when publishing. `python3 browser/package-static.py` produces
+runtime directories and `assets/` together when publishing. `python3 platforms/web/package-static.py` produces
 the versioned release package with verified gzip sidecars for both runtimes, the
 independent music backend, and its Opus license notices. `web-tests` additionally builds serial and
 threaded `script-tests.js` harnesses.
@@ -102,7 +102,7 @@ The build packs the files the game reads at run time into content-addressed
 packages under `assets/` (`scons/web_assets.py`); build scripts, translation
 tooling, documentation, icons and store screenshots stay out.
 `python3 scons/web_assets.py --report` lists the size of each category and package.
-`browser/asset-loader.js` downloads `core` and `game` in parallel while the WebAssembly
+`platforms/web/asset-loader.js` downloads `core` and `game` in parallel while the WebAssembly
 module streams in. The game starts once all three are ready, and prepares the
 live menu colony before hiding the loading page. This keeps the sprite download
 and decoding under visible progress instead of showing a motionless menu.
@@ -110,14 +110,14 @@ and decoding under visible progress instead of showing a motionless menu.
 font, English and every language's own name, maps, campaigns, scripts and every
 simulation data file, so
 the sim version and checksum traces are unchanged. Three of its files are smaller
-browser copies checked in under `browser/assets/` (`browser/derive_assets.py`):
+browser copies checked in under `platforms/web/assets/` (`platforms/web/derive_assets.py`):
 the font without its Chinese, Japanese and Korean outlines, the menu's still
 backdrop and the wordmark without the area the menu never shows. Both images
 use the shared exporter's smallest permitted lossy/lossless WebP selection, including Q90
 WebP/method 6 with exact alpha. Target-keyed `sources.json` records source/content
 hashes and image recipe identity; old Q85 derivatives are rejected. The build
 uses a copy only while its hashes and recipe match; regenerate with
-`"$(python3 tools/package_assets.py --encoder-python)" browser/derive_assets.py`
+`"$(python3 tools/package_assets.py --encoder-python)" platforms/web/derive_assets.py`
 after changing source images, the font, language names or the encoding recipe.
 The selected filename is used to locate the derivative, while the package retains
 the runtime export's WebP lookup path.
@@ -159,7 +159,7 @@ as before (`ApplicationHost::assetPackageReady` is always true there).
 
 Package parts are kept in the browser's Cache Storage, so later visits read them
 from the device. A new build changes only the names of the packages whose
-content changed. `python3 browser/precompress.py` writes Brotli and gzip copies
+content changed. `python3 platforms/web/precompress.py` writes Brotli and gzip copies
 of both runtimes' modules and scripts, the loader and the packages for servers that
 serve precompressed files (`deploy/Caddyfile` does).
 
@@ -183,7 +183,7 @@ once every ten seconds. Native installations already contain these assets.
 
 `?replay=<url>` downloads a replay while the game loads and opens it in the replay
 viewer (the platform's "Watch in browser"; see
-[match history and the web app](../docs/multiplayer/history-and-web.md#watch-in-browser)).
+[match history and the web app](../../docs/multiplayer/history-and-web.md#watch-in-browser)).
 With WebGL2, press G in a match for the torus overview. Both rendering paths
 support the flat map camera's zoom and picking. Native HTML text fields handle
 browser keyboard editing, selection, paste, composition and password masking;
@@ -196,7 +196,7 @@ You can enable them in Settings; existing saved preferences are preserved.
 Manual game/editor saves wait for durable IndexedDB persistence and offer retry
 and export on failure. Saves belong to this browser profile and origin
 (including the port); clearing site data deletes them. Use the in-game import
-and export controls for backups. See [storage](../docs/browser/storage.md) for
+and export controls for backups. See [storage](../../docs/browser/storage.md) for
 format validation, campaign backups and remaining legacy-writer limitations.
 Settings also waits for durable preferences/keyboard storage and offers Retry or
 Continue on failure; Continue does not confirm a saved copy.
@@ -220,7 +220,7 @@ there is no mobile UI adaptation.
 
 Browser and desktop players in one match must run builds with the same sim
 version; the platform and relay check it (see the
-[turn protocol](../docs/multiplayer/turn-protocol.md)).
+[turn protocol](../../docs/multiplayer/turn-protocol.md)).
 
 ## Compatibility
 
@@ -228,11 +228,11 @@ Map generation follows the current native `GenerationService`, including its
 landscape picker and start-quality scoring. The browser services preview
 candidates cooperatively in the serial fallback. Threaded browser builds use the
 same preview workers as native builds. In the serial fallback an individual
-roll can pause the UI; see [ADR 005](../docs/browser/adr-005-generation-randomness.md).
+roll can pause the UI; see [ADR 005](../../docs/browser/adr-005-generation-randomness.md).
 
 Saved-game compatibility remains durable. Replays must meet the current
 `REPLAY_MINIMUM_VERSION_MINOR`; browser import tests use a separately recorded
-fixture under `browser/tests/fixtures`, without replacing shared determinism
+fixture under `platforms/web/tests/fixtures`, without replacing shared determinism
 baselines. Online and LAN players fetch the room's map by its hash.
 
 ## Automated tests
@@ -322,7 +322,7 @@ Build outputs and the SDK are ignored local files. Serve the output directory;
 opening the HTML as a `file:` URL is unsupported. Music uses a dedicated decoder worker and AudioWorklet in both serial and threaded
 builds, with a half-second prepared-audio target (512 ms in whole blocks). Isolated
 browsers use shared memory when supported; other browsers retain bounded MessagePort transport. Hidden tabs
-pause music. See [audio ownership](../docs/browser/implementation.md) for buffering,
+pause music. See [audio ownership](../../docs/browser/implementation.md) for buffering,
 recording, and the MessagePort limitation in some WebKit builds.
 
 ### Performance investigation
@@ -333,7 +333,7 @@ browser test dependencies, serve the build, then run from the repository root:
 
 ```sh
 GLOB2_PROFILE_FIXTURE=games/gd-bigarena-long.game.gz \
-node browser/profile.js 'http://127.0.0.1:8765/?renderer=webgl2&threads=serial' \
+node platforms/web/profile.js 'http://127.0.0.1:8765/?renderer=webgl2&threads=serial' \
   artifacts/browser-performance/serial
 ```
 
@@ -443,7 +443,7 @@ uses no Asyncify, shared-memory requirement or main-thread codec proxy.
 Run `recording.spec.js` in Chromium, Firefox and WebKit for both runtime transports,
 resize segmentation, exports, missing WebCodecs and unavailable storage. Independent
 media decoding requires an external validator; recording itself does not. See
-[gameplay footage](../docs/features/gameplay-recording.md) for defaults and limits.
+[gameplay footage](../../docs/features/gameplay-recording.md) for defaults and limits.
 
 ## Embedded AI Studio tests
 
@@ -461,7 +461,7 @@ The parent document must also have COOP/COEP isolation headers for pthreads.
 `deploy/Caddyfile` permits same-origin framing only for `studio.html`, and the
 platform router reloads the document when crossing the Studio route boundary.
 During web-app development, run the browser host on port 8765; Vite proxies `/play`.
-The studio bridge unit tests run with `node --test browser/unit/studio.test.js`.
+The studio bridge unit tests run with `node --test platforms/web/unit/studio.test.js`.
 
 Bridge messages carry `channel: "glob2-ai-studio"`, `version: 1`, the UUID `runId`,
 and the positive integer `revision`. Parent-to-child `launch` includes the UTF-8
@@ -472,7 +472,7 @@ source (up to 128 KiB), seed, curated opponent ID, and transferred map ArrayBuff
 `event.source` before accepting the envelope; a readiness repeat resends the same
 run, never newer source. Each document accepts at most one launch.
 
-`browser/tests/studio.spec.js` covers live startup, cleanup, controller diagnostics,
+`platforms/web/tests/studio.spec.js` covers live startup, cleanup, controller diagnostics,
 and both runtimes' exact native checksum reference. Regeneration instructions are
 in [the fixture guide](tests/fixtures/README.md#studio-nativebrowser-checksums).
 The deployment stack smoke test also checks isolation and framing policies for

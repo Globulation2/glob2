@@ -36,7 +36,7 @@ import { Link } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 import { useTheme } from '../theme.tsx';
 
-/** The browser build of the game; `?replay=<url>` opens a replay (browser/shell.html). */
+/** The browser build of the game; `?replay=<url>` opens a replay (platforms/web/shell.html). */
 export function watchUrl(replayUrl: string): string {
   return `/play/?replay=${encodeURIComponent(replayUrl)}`;
 }

@@ -585,9 +585,9 @@ def main():
             BUNDLE_SYMBOL_DIR=bdir+"/symbols",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts",
-                                 "darwin/en.lproj", "darwin/mr.lproj"],
-            BUNDLE_PLIST="darwin/Info.plist",
-            BUNDLE_ICON="darwin/Glob2.icns" )
+                                 "platforms/macos/en.lproj", "platforms/macos/mr.lproj"],
+            BUNDLE_PLIST="platforms/macos/Info.plist",
+            BUNDLE_ICON="platforms/macos/Glob2.icns" )
         # Go through the builders rather than calling their actions directly.
         # A direct call runs while scons is still *reading* this file, before
         # anything has been compiled, so the bundle gets whatever binary happens
@@ -627,7 +627,7 @@ def main():
         "campaigns",
         "data",
         "debian",
-        "fedora",
+        "platforms/linux/fedora",
         "libs/gag",
         "libs/usl",
         "maps",
@@ -637,7 +637,7 @@ def main():
         "src",
         "test",
         "tools",
-        "windows"
+        "platforms/windows"
     ]
     optimized_install = not env['server'] and env.get('role') != 'relay' and 'install' in COMMAND_LINE_TARGETS
     if optimized_install and 'dist' in COMMAND_LINE_TARGETS:

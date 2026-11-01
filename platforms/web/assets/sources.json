@@ -1,5 +1,5 @@
 {
-  "browser/assets/menu-colony.webp": {
+  "platforms/web/assets/menu-colony.webp": {
     "image_recipe": {
       "conversion": "16-bit-rgba-to-renderer-8-bit; reject-other-high-depth",
       "exact": true,
@@ -17,7 +17,7 @@
     "sha256": "42af3e40fdb860aa3ca67cb212944a8768948786b4d5ce15cc1adf5dcad8bfe7",
     "source": "data/gfx/menu-colony.png"
   },
-  "browser/assets/menu-wordmark.webp": {
+  "platforms/web/assets/menu-wordmark.webp": {
     "image_recipe": {
       "conversion": "16-bit-rgba-to-renderer-8-bit; reject-other-high-depth",
       "exact": true,
@@ -35,7 +35,7 @@
     "sha256": "020f34e218f137b34f9af53c85532662a9efebcf7b4b8f955b761b07528cd32d",
     "source": "data/gfx/menu-wordmark.png"
   },
-  "browser/assets/sans-core.ttf": {
+  "platforms/web/assets/sans-core.ttf": {
     "languageNames": "a5ec32b7188bb9d97e027c9fd274053b900e9d6b1be54f490d19b0e59b1d9e91",
     "output_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
     "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",

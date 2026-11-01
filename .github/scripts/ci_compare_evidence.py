@@ -37,7 +37,7 @@ def validate_traces(root, native, browsers):
             raise ValueError(f'Browser simulation differs: {identity}')
         found.add(identity)
     if found != expected:
-        raise ValueError(f'Missing browser/thread traces: {sorted(expected - found, key=str)}')
+        raise ValueError(f'Missing platforms/web/thread traces: {sorted(expected - found, key=str)}')
     return len(native) + len(found)
 
 

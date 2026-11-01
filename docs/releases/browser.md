@@ -12,7 +12,7 @@ workflow trigger.
 The build job verifies the exact public tag commit and matching game version
 (without requiring desktop store metadata), installs the locked
 Emscripten SDK, builds `scons target=web release=1`, and packages the client with
-`browser/package-static.py`. Its `browser-release` artifact includes SHA-256
+`platforms/web/package-static.py`. Its `browser-release` artifact includes SHA-256
 checksums. The package includes the versioned presentation-surface runtime and
 each Emscripten shader preload (`index.data`, including the separate threaded
 preload). These payloads participate in the release identity and require verified

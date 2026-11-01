@@ -9,7 +9,7 @@ import re
 import subprocess
 import time
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = 'org.globulation2.glob2'
 
 

@@ -552,7 +552,7 @@ test('watch in browser opens the replay in the browser game', async ({ page }, i
   await page.goto(`/matches/${seed.featuredMatch}`);
   await page.getByTestId('watch').click();
   await expect(page).toHaveURL(/\/play\/\?replay=/);
-  // glob2Diagnostics is the browser shell's read-only diagnostics (browser/shell.html).
+  // glob2Diagnostics is the browser shell's read-only diagnostics (platforms/web/shell.html).
   const snapshot = () =>
     page.evaluate(() =>
       (

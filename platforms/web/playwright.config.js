@@ -2,7 +2,7 @@ const {defineConfig} = require('@playwright/test');
 const path = require('node:path');
 module.exports = defineConfig({
   testDir: './tests',
-  outputDir: '../build/browser-test-results',
+  outputDir: '../../build/browser-test-results',
   // Software-backed WebGL2 on CI can spend longer preparing a generated map
   // and rendering saved-game transitions than the browser's software path.
   timeout: process.env.GLOB2_TEST_RENDERER === 'webgl2' ? 180000 : 90000,
@@ -10,7 +10,7 @@ module.exports = defineConfig({
   workers: 1,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
-  reporter: [['list'], ['html', {outputFolder:'../build/browser-test-report', open:'never'}]],
+  reporter: [['list'], ['html', {outputFolder:'../../build/browser-test-report', open:'never'}]],
   use: {
     baseURL: process.env.GLOB2_TEST_URL || 'http://127.0.0.1:8770',
     viewport: {width:1200, height:900},
@@ -22,8 +22,8 @@ module.exports = defineConfig({
     use:{browserName, ...(browserName === 'chromium' && process.env.GLOB2_CHROMIUM_ANGLE ? {launchOptions:{args:['--use-angle=' + process.env.GLOB2_CHROMIUM_ANGLE]}} : {}), ...(browserName === 'firefox' && process.env.GLOB2_FIREFOX_HEADED === '1' ? {headless:false} : {})},
   })),
   webServer: process.env.GLOB2_TEST_URL ? undefined : {
-    command: 'python3 browser/serve.py 8770 --bind 127.0.0.1 --directory build/emscripten/client/release',
-    cwd: path.resolve(__dirname, '..'),
+    command: 'python3 platforms/web/serve.py 8770 --bind 127.0.0.1 --directory build/emscripten/client/release',
+    cwd: path.resolve(__dirname, '../..'),
     url: 'http://127.0.0.1:8770',
     reuseExistingServer: false,
   },

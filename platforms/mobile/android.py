@@ -9,7 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scons'))
 from build_layout import build_identity, default_directory, BuildLock, PACKAGE_VERSION
 from dev_build import dependency_identity
 import official_instance
@@ -148,13 +148,13 @@ def main():
         for source_tree in ('app/src/main/java', 'app/src/androidTest/java'):
             staged = project/source_tree
             if staged.exists(): shutil.rmtree(staged)
-        shutil.copytree(ROOT/'mobile/android',project,dirs_exist_ok=True)
+        shutil.copytree(ROOT/'platforms/mobile/android',project,dirs_exist_ok=True)
         if args.amazon_apk or args.china:
             # These editions build without online play, so they claim no invite links.
             staged_manifest=project/'app/src/main/AndroidManifest.xml'
             staged_manifest.write_text(without_invite_links(staged_manifest.read_text()))
         shutil.copy2(LOCK,project/'glob2-toolchain.json')
-        native_command=[sys.executable,str(ROOT/'mobile/android.py'),'configure','--arch',args.arch,
+        native_command=[sys.executable,str(ROOT/'platforms/mobile/android.py'),'configure','--arch',args.arch,
             '--android-sdk',str(sdk),'--jobs',str(args.jobs),'--version-code',str(args.version_code)]
         if args.amazon_apk: native_command.append('--amazon-apk')
         if args.version_name: native_command.extend(['--version-name',args.version_name])

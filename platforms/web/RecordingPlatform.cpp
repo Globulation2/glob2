@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "../libs/gag/src/RecordingPlatform.h"
+#include "../../libs/gag/src/RecordingPlatform.h"
 #include <emscripten.h>
 EM_JS(int, browserRecordingAvailable, (), { return typeof Worker === 'function'; });
 EM_JS(int, browserRecordingRoom, (), { return Module.glob2Recording.active && Module.glob2Recording.frames < 3; });

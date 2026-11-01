@@ -138,7 +138,7 @@ class PolicyTest(unittest.TestCase):
                      'platform/apps/worker/src/main.ts', 'platform/package-lock.json']:
             self.assertTrue(self.select([path])['platform_stack'], path)
         for path in ['deploy/README.md', 'platform/apps/api/src/play/rooms.ts', 'src/ai/Maxima.cpp',
-                     'src/hud/input/GameGUIInput.cpp', 'browser/shell.html']:
+                     'src/hud/input/GameGUIInput.cpp', 'platforms/web/shell.html']:
             self.assertFalse(self.select([path])['platform_stack'], path)
 
     def test_terrain_catalog_and_compiler_are_shared_boundaries(self):
@@ -188,9 +188,9 @@ class PolicyTest(unittest.TestCase):
                         self.assertRegex(title, re.compile(pattern))
 
     def test_release_metadata_does_not_compile_engine(self):
-        paths=['fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py',
+        paths=['platforms/stores/fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py',
                '.github/workflows/steam-windows-package.yml','.github/workflows/mac-app-store.yml',
-               'mobile/android_release.py',
+               'platforms/mobile/android_release.py',
                '.github/workflows/deploy-online.yml','deploy/online-deploy.sh','deploy/online_remote.py',
                'test/deployment/test_online_deploy.py']
         self.assertFalse(any(self.select(paths).values()))
@@ -333,7 +333,7 @@ class ReuseTest(unittest.TestCase):
         import ast
         import hashlib
         import re
-        producer = (ROOT / 'browser/tests/determinism.spec.js').read_text()
+        producer = (ROOT / 'platforms/web/tests/determinism.spec.js').read_text()
         variants = ast.literal_eval(re.search(
             r'for \(const \[variant, threads\] of (\[.*?\])\) \{', producer).group(1))
         self.assertEqual(tuple(map(tuple, variants)), evidence.BROWSER_TRACE_VARIANTS)
@@ -350,7 +350,7 @@ class ReuseTest(unittest.TestCase):
             for threads in (8, 'auto'):
                 path=root/'browser-determinism-wasm-0'/'wasm'/f'threaded-{threads}'
                 manifest=path/'manifest.json';saved=manifest.read_text();manifest.unlink()
-                with self.subTest(missing=threads), self.assertRaisesRegex(ValueError, 'Missing browser/thread traces'):
+                with self.subTest(missing=threads), self.assertRaisesRegex(ValueError, 'Missing platforms/web/thread traces'):
                     evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'})
                 manifest.write_text(saved)
                 checksum=path/'wasm.replay.checksums';checksum.write_bytes(b'y'*1501)

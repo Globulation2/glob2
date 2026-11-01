@@ -14,7 +14,7 @@
 #include <glob2/BuildConfig.h>
 #endif
 #ifdef GLOB2_MOBILE
-#include "../../../mobile/Documents.h"
+#include "../../../platforms/mobile/Documents.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #endif

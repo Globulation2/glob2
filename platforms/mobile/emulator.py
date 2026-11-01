@@ -11,7 +11,7 @@ from developer_apk import java_environment
 from dev_paths import android_sdk
 from dev_store import android_java_command
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[2]
 
 
 def properties(path):
@@ -30,7 +30,7 @@ def main():
     if args.port%2 or not 5554<=args.port<=5682: raise ValueError('Emulator --port must be even, between 5554 and 5682')
     if not 1024<=args.adb_port<=65535 or args.adb_port in (5037,args.port,args.port+1):
         raise ValueError('Choose a separate unprivileged ADB port, outside the emulator console/transport ports')
-    lock=json.loads((ROOT/'mobile/emulator.json').read_text())
+    lock=json.loads((ROOT/'platforms/mobile/emulator.json').read_text())
     tools=ROOT/'build/mobile-tools';sdk=android_sdk(ROOT)
     env=java_environment(ROOT)
     env.pop('ADB_SERVER_SOCKET',None)
@@ -59,9 +59,9 @@ def main():
         return 0 if ready=='1' else 1
     image=sdk/'system-images'/('android-'+str(lock['api']))/lock['tag']/args.arch
     if properties(sdk/'emulator/source.properties').get('Pkg.Revision')!=lock['emulator_revision']:
-        raise ValueError('Emulator version differs from mobile/emulator.json')
+        raise ValueError('Emulator version differs from platforms/mobile/emulator.json')
     if properties(image/'source.properties').get('Pkg.Revision')!=lock['image_revision']:
-        raise ValueError('System image version differs from mobile/emulator.json')
+        raise ValueError('System image version differs from platforms/mobile/emulator.json')
     if args.command=='configure':
         if (avd/'config.ini').exists():
             print('Existing task-local AVD:',avd);return
@@ -77,7 +77,7 @@ def main():
                          'hw.keyboard': 'yes'})
         config.write_text(''.join(key+'='+value+'\n' for key,value in settings.items()))
         return
-    if not (avd/'config.ini').is_file(): raise ValueError('Run mobile/emulator.py configure first')
+    if not (avd/'config.ini').is_file(): raise ValueError('Run platforms/mobile/emulator.py configure first')
     emulator=str(sdk/'emulator/emulator')
     command=[emulator,'-avd',name,'-port',str(args.port),'-no-audio','-no-boot-anim','-no-snapshot',
         '-no-metrics','-crash-report-mode','disabled','-datadir',str(avd),'-data',str(avd/'userdata-qemu.img'),

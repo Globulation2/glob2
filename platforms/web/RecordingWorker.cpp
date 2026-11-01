@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "../libs/gag/src/RecordingSession.h"
+#include "../../libs/gag/src/RecordingSession.h"
 #include <emscripten.h>
 #include <nlohmann/json.hpp>
 #include <deque>

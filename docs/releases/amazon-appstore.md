@@ -10,10 +10,10 @@ remains limited to Fire OS 7/8 tablets; Fire OS 5/6 are not qualified. Build bot
 sets, then package the APK from the arm64 configuration:
 
 ```sh
-python3 mobile/dependencies.py --arch arm64-v8a --release
-python3 mobile/dependencies.py --arch armeabi-v7a --release
-python3 mobile/android.py build --arch arm64-v8a --release --amazon-apk \
-  --version-code "$(python3 mobile/amazon_release.py version-code)"
+python3 platforms/mobile/dependencies.py --arch arm64-v8a --release
+python3 platforms/mobile/dependencies.py --arch armeabi-v7a --release
+python3 platforms/mobile/android.py build --arch arm64-v8a --release --amazon-apk \
+  --version-code "$(python3 platforms/mobile/amazon_release.py version-code)"
 ```
 
 Supporting Fire OS 5/6 requires a separate compatibility change: lower the Android API

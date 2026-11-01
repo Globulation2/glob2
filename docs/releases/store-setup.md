@@ -132,7 +132,7 @@ includes all eleven playable packages plus the tagged source archive.
 `promote-downloads.yml` independently downloads and validates these bytes before
 publication; see the [qualified manifest procedure](downloads.md#qualified-downloads-manifest).
 
-The Flatpak recipe in `flatpak/org.globulation2.Globulation2.yml.in` pins every
+The Flatpak recipe in `platforms/linux/flatpak/org.globulation2.Globulation2.yml.in` pins every
 third-party source and is rendered with the selected commit for our package
 builds. Before preparing a Flathub submission, read its current
 [requirements](https://docs.flathub.org/docs/for-app-authors/requirements#generative-ai-policy).

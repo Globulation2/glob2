@@ -48,7 +48,7 @@ for (const shared of [true, false])
         };
       }, rate);
       await page.addScriptTag({ content: host });
-      const pcm = fs.readFileSync(path.join(__dirname, '../../data/zik/original/a1.opus'));
+      const pcm = fs.readFileSync(path.join(__dirname, '../../../data/zik/original/a1.opus'));
       await page.evaluate((bytes) => {
         Module.glob2Music.send({ type: 'load', index: 0, bytes: Uint8Array.from(bytes).buffer });
         Module.glob2Music.send({ type: 'select', index: 0, value: false });
@@ -127,7 +127,7 @@ test('worker stalls consume the cushion and recover once after exhaustion', asyn
     };
   });
   await page.addScriptTag({ content: host });
-  const pcm = fs.readFileSync(path.join(__dirname, '../../data/zik/original/a1.opus'));
+  const pcm = fs.readFileSync(path.join(__dirname, '../../../data/zik/original/a1.opus'));
   await page.evaluate((bytes) => {
     Module.glob2Music.send({ type: 'load', index: 0, bytes: Uint8Array.from(bytes).buffer });
     Module.glob2Music.send({ type: 'select', index: 0, value: false });

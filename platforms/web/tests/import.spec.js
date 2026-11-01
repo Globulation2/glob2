@@ -74,7 +74,7 @@ test('imports an exported save, preserves duplicate names, rejects corruption an
 });
 
 test('imports a custom map and starts it through the normal setup screen', async ({page},info) => {
-  const bytes=await fs.readFile(path.resolve(__dirname,'../../maps/balanced.map.gz'));
+  const bytes=await fs.readFile(path.resolve(__dirname,'../../../maps/balanced.map.gz'));
   // CustomGameScreen has no import affordance of its own (#237 replaced its
   // map browsing with "Premade maps"/"Your maps" library tabs); importing a
   // map still only happens through the editor's "Load Map" chooser, which

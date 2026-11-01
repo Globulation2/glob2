@@ -28,6 +28,6 @@ if 'windows-installer' in COMMAND_LINE_TARGETS:
                ('COPYING', 'docs/assets/source-attribution.md',
                 'tools/release/windows_runtime.py', 'tools/release/package_windows.py',
                 'tools/release/package_nsis.py', 'tools/package_assets.py',
-                'windows/win32_installer.nsi')]
+                'platforms/windows/win32_installer.nsi')]
     output = '#' + env['BUILDDIR'] + '/glob2-' + env['VERSION'] + '-windows-x86_64-setup.exe'
     env.Alias('windows-installer', env.Command(output, inputs, installer))

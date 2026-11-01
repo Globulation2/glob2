@@ -11,8 +11,8 @@ price does not authorize a mainland download.
 Build the local-play client with `scons china=1 release=1`. The China identity
 uses its own build directory. The Android and iOS targets also accept
 `china=1`; see [mobile builds](../mobile/development.md) for toolchains and
-packaging. Pass `--china` to `mobile/dependencies.py` and the matching
-`mobile/android.py` or `mobile/ios.py` command for every mobile stage. The China
+packaging. Pass `--china` to `platforms/mobile/dependencies.py` and the matching
+`platforms/mobile/android.py` or `platforms/mobile/ios.py` command for every mobile stage. The China
 client omits the main menu's Play online entry and never opens the online hub,
 including from invite links. Offline play and LAN sessions remain available. This build mode is a technical release candidate, not
 proof of approval or completion of required identity and anti-addiction controls.

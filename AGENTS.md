@@ -150,7 +150,7 @@ Treat runtime and development dependencies differently.
 
 Pin exact versions. General Python tooling installs from `requirements-dev.txt`;
 add new packages there, or in a focused requirements file that it includes.
-Hash-pinned isolated environments (`mobile/play-api-requirements.txt`) and
+Hash-pinned isolated environments (`platforms/mobile/play-api-requirements.txt`) and
 large, hardware-specific extras (`tools/music/requirements-*.txt`) stay separate.
 A development dependency that starts to affect runtime becomes a runtime
 dependency and needs approval.

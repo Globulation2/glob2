@@ -259,7 +259,7 @@ approve the audible changes from the fixed 48 kbps target.
 The browser build downloads `data/zik/original/` in its `music` package and every
 other set in `music-sets`. Both are background packages that arrive after the main
 menu, so the extra sets never delay startup. Until `music-sets` arrives, the game
-offers only the original set (`scons/web_assets.py`, `browser/README.md`).
+offers only the original set (`scons/web_assets.py`, `platforms/web/README.md`).
 
 ## Tests
 

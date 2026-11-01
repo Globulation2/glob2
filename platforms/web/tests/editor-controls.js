@@ -15,7 +15,7 @@ function editorLandscapeNames() {
   if (!landscapeNames) {
     const path = require('node:path');
     const platform = require('node:os').platform();
-    const root = path.resolve(__dirname, '../..');
+    const root = path.resolve(__dirname, '../../..');
     const toolchain = platform === 'win32' ? 'mingw' : platform;
     const build = path.resolve(root, process.env.GLOB2_BUILD_DIR || `build/${toolchain}/client/release`);
     const binary = path.join(build, 'src', `glob2${platform === 'win32' ? '.exe' : ''}`);

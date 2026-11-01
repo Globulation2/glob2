@@ -131,13 +131,13 @@ export function sourceErrors(
 /** The pre-game browser launcher uses the same catalogs as the online app. */
 export function browserSourceErrors(
   english: Record<string, unknown>,
-  html = readFileSync(new URL('../../../../browser/shell.html', import.meta.url), 'utf8'),
+  html = readFileSync(new URL('../../../../platforms/web/shell.html', import.meta.url), 'utf8'),
 ): string[] {
   const errors: string[] = [];
   const requireKey = (text: string, offset: number) => {
     if (!Object.hasOwn(english, text)) {
       const line = html.slice(0, offset).split('\n').length;
-      errors.push(`browser/shell.html:${line}: missing browser catalog key: ${text}`);
+      errors.push(`platforms/web/shell.html:${line}: missing browser catalog key: ${text}`);
     }
   };
   // These attributes are literal HTML bindings. Decode the entities allowed in them.

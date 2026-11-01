@@ -100,7 +100,7 @@ browserText('Missing');
 -->
 <script>browserText('Visible');</script>`;
     expect(browserSourceErrors({}, html)).toEqual([
-      'browser/shell.html:4: missing browser catalog key: Visible',
+      'platforms/web/shell.html:4: missing browser catalog key: Visible',
     ]);
   });
   it('retains calls between HTML-comment markers inside JavaScript strings', () => {
@@ -110,12 +110,12 @@ browserText('Visible');
 const end = '-->';
 </script>`;
     expect(browserSourceErrors({}, html)).toEqual([
-      'browser/shell.html:3: missing browser catalog key: Visible',
+      'platforms/web/shell.html:3: missing browser catalog key: Visible',
     ]);
   });
   it('detects a missing accessibility binding with a source location', () => {
     expect(browserSourceErrors({}, `<div>\n<input data-i18n-aria="Language"></div>`)).toEqual([
-      'browser/shell.html:2: missing browser catalog key: Language',
+      'platforms/web/shell.html:2: missing browser catalog key: Language',
     ]);
   });
 });

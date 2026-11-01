@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
-#include "../mobile/TemporaryFiles.h"
+#include "TemporaryFiles.h"
 #include <filesystem>
 #include <fstream>
 #include <string>

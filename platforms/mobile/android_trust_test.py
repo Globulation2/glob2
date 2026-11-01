@@ -10,7 +10,7 @@ from developer_apk import build_tools, java_environment, verify_alignment
 from smoke import validate_target
 from dev_paths import android_sdk, mobile_tools, gradle_home
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def main():
@@ -30,7 +30,7 @@ def main():
     project = output/'android-project'
     env = java_environment(ROOT)
     env.update(GRADLE_USER_HOME=str(gradle_home(ROOT)), ANDROID_USER_HOME=str(tools/'android-user'), TMPDIR=str(output/'tmp'))
-    subprocess.run([sys.executable, str(ROOT/'mobile/android.py'), 'configure', '--release', '--arch', args.arch], env=env, check=True)
+    subprocess.run([sys.executable, str(ROOT/'platforms/mobile/android.py'), 'configure', '--release', '--arch', args.arch], env=env, check=True)
     subprocess.run([str(mobile_tools(ROOT)/'gradle-8.13/bin/gradle'), '--no-daemon', '--project-dir', str(project), 'assembleReleaseAndroidTest'], env=env, check=True)
     original = project/'app/build/outputs/apk/androidTest/release/app-release-androidTest.apk'
     signed = original.with_name('app-release-androidTest-development.apk')

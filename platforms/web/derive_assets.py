@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Smaller browser copies of three startup files, checked in under browser/assets/.
+"""Smaller browser copies of three startup files, checked in under platforms/web/assets/.
 
 The browser downloads the `core` package before the main menu, so these copies
 replace their runtime counterparts there (scons/web_assets.py); native bundles
@@ -16,7 +16,7 @@ test/build_system/test_web_assets.py fails.
 
 Needs fontTools 4.66.1 (requirements-dev.txt) and the pinned exporter interpreter:
 
-    "$(python3 tools/package_assets.py --encoder-python)" browser/derive_assets.py
+    "$(python3 tools/package_assets.py --encoder-python)" platforms/web/derive_assets.py
 """
 import hashlib
 import io
@@ -26,10 +26,10 @@ import sys
 import tempfile
 import shutil
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 from tools.package_assets import encode_image, image_recipe, encoder_ready, encoder_python
-OUTPUT = ROOT / 'browser/assets'
+OUTPUT = ROOT / 'platforms/web/assets'
 FONT = 'data/fonts/sans.ttf'
 COLONY = 'data/gfx/menu-colony.png'
 WORDMARK = 'data/gfx/menu-wordmark.png'
@@ -38,9 +38,9 @@ WORDMARK_CROP = (76, 232, 1956, 284)
 WORDMARK_MARGIN = 8
 # Every file that replaces a core file, with the source it is derived from.
 DERIVED = {
-    FONT: 'browser/assets/sans-core.ttf',
-    COLONY: 'browser/assets/menu-colony.webp',
-    WORDMARK: 'browser/assets/menu-wordmark.webp',
+    FONT: 'platforms/web/assets/sans-core.ttf',
+    COLONY: 'platforms/web/assets/menu-colony.webp',
+    WORDMARK: 'platforms/web/assets/menu-wordmark.webp',
 }
 
 
@@ -122,7 +122,7 @@ def main():
                     shutil.copyfile(ROOT / source, reference)
                 blob, record = encode_image(reference, source, ROOT / 'build/asset-cache', True)
                 data = blob.read_bytes()
-                target = 'browser/assets/' + Path(source).stem + record['suffix']
+                target = 'platforms/web/assets/' + Path(source).stem + record['suffix']
                 entry = {'image_recipe': image_recipe(), 'lossy': record['lossy']}
             for suffix in ('.png', '.webp', '.jpg'):
                 stale = OUTPUT / (Path(source).stem + suffix)
@@ -133,7 +133,7 @@ def main():
                                output_sha256=hashlib.sha256(data).hexdigest())
         print(f'{target}: {len(data) / 1e6:.2f} MB (from {(ROOT / source).stat().st_size / 1e6:.2f} MB)')
     names = ''.join(sorted(language_names(ROOT)))
-    sources['browser/assets/sans-core.ttf']['languageNames'] = hashlib.sha256(names.encode()).hexdigest()
+    sources['platforms/web/assets/sans-core.ttf']['languageNames'] = hashlib.sha256(names.encode()).hexdigest()
     (OUTPUT / 'sources.json').write_text(json.dumps(sources, indent=2, sort_keys=True) + '\n')
 
 

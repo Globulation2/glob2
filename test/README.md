@@ -153,7 +153,7 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 | `[maxima]`, `[save-format]` | selection only |
 
 Where a test file lives: beside the code it tests, in that code's directory under
-`src/`, `libs/gag/src/`, `libs/usl/test/`, `third_party/natsort/` or `mobile/`, named `*Test.cpp`,
+`src/`, `libs/gag/src/`, `libs/usl/test/`, `third_party/natsort/` or `platforms/mobile/`, named `*Test.cpp`,
 `*Harness.cpp`, `*Benchmark.cpp` or `*Fixture.cpp` so CI and coverage tell it from
 production code (`is_test_source` in `.github/scripts/ci_policy.py`). Tests that span
 domains, shared support, stubs and fixtures stay in `test/`. Registry entries outside

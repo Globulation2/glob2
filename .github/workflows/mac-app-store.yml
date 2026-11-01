@@ -139,7 +139,7 @@ jobs:
           BUILD_NUMBER: ${{ inputs.build_number || github.run_number }}
           BUNDLE_ID: ${{ vars.APPLE_BUNDLE_ID }}
         run: |
-          python3 darwin/package_app_store.py --build "$BUILD_NUMBER" \
+          python3 platforms/macos/package_app_store.py --build "$BUILD_NUMBER" \
             --bundle-id "${BUNDLE_ID:-org.globulation2.glob2}"
 
       - name: Smoke test sandboxed candidate
@@ -283,7 +283,7 @@ jobs:
         run: |
           test -n "$APP_IDENTITY"
           test -n "$INSTALLER_IDENTITY"
-          python3 darwin/package_app_store.py \
+          python3 platforms/macos/package_app_store.py \
             --source artifacts/mac-app-store/source/Glob2.app \
             --output artifacts/mac-app-store/signed/Glob2.app \
             --bundle-id "${BUNDLE_ID:-org.globulation2.glob2}" \

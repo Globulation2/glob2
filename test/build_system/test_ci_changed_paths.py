@@ -95,7 +95,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_documentation_only(self):
         self.assert_jobs(
-            ["docs/browser/implementation.md", "README.md", "browser/README.md"],
+            ["docs/browser/implementation.md", "README.md", "platforms/web/README.md"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False,
         )
@@ -131,7 +131,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_browser_shell_only(self):
         self.assert_jobs(
-            ["browser/storage.js", "browser/tests/storage.spec.js"],
+            ["platforms/web/storage.js", "platforms/web/tests/storage.spec.js"],
             native=False, browser=True, map_generators=False,
             deployment=False, cross_platform=False,
         )
@@ -206,7 +206,7 @@ class ChangedPathsTest(unittest.TestCase):
         )
 
     def test_cross_platform_fixtures_run_everything(self):
-        for path in ("browser/tests/determinism.spec.js", "browser/tests/fixtures/cross-replay.replay",
+        for path in ("platforms/web/tests/determinism.spec.js", "platforms/web/tests/fixtures/cross-replay.replay",
                      "test/run-browser-determinism.py", "src/map/generator/MapGeneratorGoldenTest.cpp",
                      ".github/workflows/build.yml"):
             with self.subTest(path=path):
@@ -217,7 +217,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_mixed_independent_changes(self):
         self.assert_jobs(
-            ["browser/storage.js", "src/map/gradient/PathGradientHarness.cpp"],
+            ["platforms/web/storage.js", "src/map/gradient/PathGradientHarness.cpp"],
             native=True, browser=True, map_generators=False,
             deployment=False, cross_platform=False,
         )

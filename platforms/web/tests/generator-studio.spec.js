@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { openRuntimeHost } = require("./runtime-host");
 const traceFixture = require("./fixtures/generator-studio-trace.json");
-const root = path.resolve(__dirname, "../..");
+const root = path.resolve(__dirname, "../../..");
 const manifest = JSON.parse(
   fs.readFileSync(
     path.join(root, "data/generators/examples/swamp/manifest.json"),

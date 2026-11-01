@@ -38,7 +38,7 @@ def main():
     arch = matching[0]
     source_sdk = args.android_sdk.resolve()
     source_ndk = args.android_ndk.resolve()
-    toolchain = json.loads((ROOT / "mobile/toolchain.json").read_text())["android"]
+    toolchain = json.loads((ROOT / "platforms/mobile/toolchain.json").read_text())["android"]
     for required in (f"platforms/android-{toolchain['compile_api']}",
                      f"build-tools/{toolchain['build_tools']}", "platform-tools"):
         if not (source_sdk / required).exists():
@@ -64,15 +64,15 @@ def main():
     env = build_environment()
     # Use the same checksum-pinned JDK as the GitHub validation build. The
     # buildserver image's default JDK changes the optimized classes.dex.
-    subprocess.run([sys.executable, "mobile/setup_tools.py"], cwd=ROOT, env=env, check=True)
-    jdk = json.loads((ROOT / "mobile/android-tools.json").read_text())[
+    subprocess.run([sys.executable, "platforms/mobile/setup_tools.py"], cwd=ROOT, env=env, check=True)
+    jdk = json.loads((ROOT / "platforms/mobile/android-tools.json").read_text())[
         f"jdk-{platform.system()}-{platform.machine()}"
     ]
     env["JAVA_HOME"] = str(mobile_tools(ROOT) / jdk["directory"] / jdk["java_home"])
     gradle = mobile_tools(ROOT) / "gradle-8.13/bin/gradle"
-    subprocess.run([sys.executable, "mobile/dependencies.py", "--arch", arch, "--release", "--jobs", "2",
+    subprocess.run([sys.executable, "platforms/mobile/dependencies.py", "--arch", arch, "--release", "--jobs", "2",
                     "--android-sdk", str(sdk)], cwd=ROOT, env=env, check=True)
-    subprocess.run([sys.executable, "mobile/android.py", "build", "--arch", arch, "--release", "--fdroid", "--jobs", "2",
+    subprocess.run([sys.executable, "platforms/mobile/android.py", "build", "--arch", arch, "--release", "--fdroid", "--jobs", "2",
                     "--android-sdk", str(sdk), "--gradle", str(gradle)], cwd=ROOT, env=env, check=True)
     source = (ROOT / "build/android/device" / arch / str(toolchain["min_api"]) /
               "client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk")

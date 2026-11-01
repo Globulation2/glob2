@@ -39,8 +39,8 @@ cp ../platform/instance.example.yaml instance.yaml
 3. Optionally build the WebAssembly client to serve "Play in browser" at `/play/`:
    `./build-web-client.sh <served-dir>` builds it with the pinned Emscripten
    SDK in a container (`scons target=web release=1 web-package`, see
-   [browser/README.md](../../browser/README.md)), writes the Brotli and gzip copies
-   (`browser/precompress.py`) and installs the result into `<served-dir>`; set
+   [platforms/web/README.md](../../platforms/web/README.md)), writes the Brotli and gzip copies
+   (`platforms/web/precompress.py`) and installs the result into `<served-dir>`; set
    `GLOB2_WEB_CLIENT_DIR` in `.env` to that directory. Caddy serves it with the
    cross-origin isolation headers the threaded client needs. Without it `/play/`
    answers 404 and everything else works.

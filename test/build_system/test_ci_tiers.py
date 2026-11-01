@@ -26,7 +26,7 @@ class TierTest(unittest.TestCase):
         self.assertFalse(gui['compatibility']);self.assertTrue(gui['browsers_all']);self.assertTrue(gui['android'])
         self.assertEqual(gui['android_arches'],['arm64-v8a'])
     def test_shared_simulation_platform_and_unknown_paths_are_full(self):
-        for path in ['src/hud/GameGUI.h','src/game/Game_sync.cpp','src/ai/AI.cpp','src/net/Net.cpp','SConstruct','mobile/android.py','new-unknown-directory/thing.cpp','test/fixtures/javascript/profile.game.gz']:
+        for path in ['src/hud/GameGUI.h','src/game/Game_sync.cpp','src/ai/AI.cpp','src/net/Net.cpp','SConstruct','platforms/mobile/android.py','new-unknown-directory/thing.cpp','test/fixtures/javascript/profile.game.gz']:
             with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
         self.assertTrue(self.profile(['src/map/gradient/PathGradientHarness.cpp','SConstruct'])['compatibility'])
         self.assertTrue(self.profile([])['android'])
@@ -39,7 +39,7 @@ class TierTest(unittest.TestCase):
             with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
 
     def test_release_metadata_defers_to_release_but_mobile_workflow_stays_relevant(self):
-        for path in ['fdroid/metadata.yml','fastlane/metadata/title.txt']:
+        for path in ['platforms/stores/fdroid/metadata.yml','fastlane/metadata/title.txt']:
             self.assertFalse(self.profile([path])['android'])
         self.assertTrue(self.profile(['.github/workflows/mobile.yml'])['android'])
     def test_ci_contract_tests_do_not_select_mobile_or_compatibility(self):

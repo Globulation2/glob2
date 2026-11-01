@@ -90,7 +90,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/release/release.py check --tag "$RELEASE_TAG"
-          python3 -c 'import sys; sys.path.insert(0,"mobile"); sys.path.insert(0,"scons"); from ios_release import marketing_version; from build_layout import PACKAGE_VERSION; print(marketing_version(PACKAGE_VERSION))'
+          python3 -c 'import sys; sys.path.insert(0,"platforms/mobile"); sys.path.insert(0,"scons"); from ios_release import marketing_version; from build_layout import PACKAGE_VERSION; print(marketing_version(PACKAGE_VERSION))'
           if [[ -n "$EXPECTED_COMMIT" ]]; then test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"; fi
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
@@ -132,7 +132,7 @@ jobs:
           set -euo pipefail
           test "$(uname -m)" = arm64
           xcodebuild -version
-          python3 mobile/doctor.py ios
+          python3 platforms/mobile/doctor.py ios
           build_number=$((1000000 + GITHUB_RUN_NUMBER * 100 + GITHUB_RUN_ATTEMPT))
           echo "BUILD_NUMBER=$build_number" >> "$GITHUB_ENV"
           echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
@@ -146,11 +146,11 @@ jobs:
           echo "$RUNNER_TEMP/ios-build-tools/bin" >> "$GITHUB_PATH"
 
       - name: Build pinned iPhone dependencies
-        run: python3 mobile/dependencies.py --target ios --environment device --release --jobs 2
+        run: python3 platforms/mobile/dependencies.py --target ios --environment device --release --jobs 2
 
       - name: Compile game and generate Xcode project
         run: |
-          python3 mobile/ios.py configure --environment device --release \
+          python3 platforms/mobile/ios.py configure --environment device --release \
             --unsigned --build-number "$BUILD_NUMBER" --jobs 2
 
       - name: Archive iPhone app
@@ -178,7 +178,7 @@ jobs:
           binary_uuid="$(dwarfdump --uuid "$app/Glob2" | awk '{print $2}')"
           symbol_uuid="$(dwarfdump --uuid "$symbols" | awk '{print $2}')"
           test "$binary_uuid" = "$symbol_uuid"
-          python3 mobile/ios_privacy.py "$app"
+          python3 platforms/mobile/ios_privacy.py "$app"
           plutil -p "$ARCHIVE_PATH/Info.plist"
 
       - name: Preserve archive permissions
@@ -318,7 +318,7 @@ jobs:
         run: |
           set -euo pipefail
           marketing_version="$(plutil -extract CFBundleShortVersionString raw "$ARCHIVE_PATH/Products/Applications/Glob2.app/Info.plist")"
-          python3 mobile/ios_processing.py --key-path "$ASC_KEY_PATH" \
+          python3 platforms/mobile/ios_processing.py --key-path "$ASC_KEY_PATH" \
             --key-id "$ASC_KEY_ID" --issuer-id "$ASC_ISSUER_ID" \
             --build-number "$BUILD_NUMBER" --marketing-version "$marketing_version" \
             --audience "$TESTFLIGHT_AUDIENCE"

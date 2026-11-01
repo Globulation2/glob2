@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import sys
 from dev_paths import dependency_prefix
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scons'))
 from build_layout import PACKAGE_VERSION, build_identity, default_directory, write_if_changed
 from dev_build import dependency_identity
 from ios_release import marketing_version
@@ -86,14 +86,14 @@ def main():
         subprocess.run(command,env=env,check=True);return
     triplet='glob2-arm64-ios'+('-simulator' if args.environment=='simulator' else '')
     prefix=args.mobile_deps.resolve() if args.mobile_deps else dependency_prefix(ROOT, dependency_identity(identity), discover(identity,options)['fingerprint'])
-    if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with mobile/dependencies.py --target ios --environment '+args.environment)
+    if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with platforms/mobile/dependencies.py --target ios --environment '+args.environment)
     scons=shutil.which('scons')
     if not scons: raise ValueError('SCons is required')
     command=[scons]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
     if args.script_tests: command += ['ios-tests']
     subprocess.run(command,cwd=ROOT,env=env,check=True)
     project.mkdir(parents=True,exist_ok=True)
-    info=plistlib.loads((ROOT/'mobile/ios/Info.plist.in').read_bytes())
+    info=plistlib.loads((ROOT/'platforms/mobile/ios/Info.plist.in').read_bytes())
     if info['CFBundleIdentifier'] != BUNDLE_ID:
         raise ValueError('iOS Info.plist bundle ID does not match the Xcode project')
     info['CFBundleIdentifier']=bundle_id
@@ -112,7 +112,7 @@ def main():
     libraries += [recording_prefix/'lib'/('lib'+name+'.a') for name in ('avformat','avcodec','swscale','swresample','avutil','x264')]
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',
-        'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/('mobile/ios/ScriptTests.mm' if args.script_tests else 'src/app/Glob2.cpp'))+')',
+        'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/('platforms/mobile/ios/ScriptTests.mm' if args.script_tests else 'src/app/Glob2.cpp'))+')',
         'install(TARGETS Glob2 BUNDLE DESTINATION Applications)',
         'target_compile_definitions(Glob2 PRIVATE HAVE_CONFIG_H)',
         'target_include_directories(Glob2 PRIVATE '+' '.join(map(cmake_quote,include))+')',
@@ -124,7 +124,7 @@ def main():
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(project/'Info.plist')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
     # Associated domain of the official instance (scons/official_instance.py); none
     # for the China edition, which has no online play.
-    entitlements=plistlib.loads((ROOT/'mobile/ios/Glob2.entitlements').read_bytes())
+    entitlements=plistlib.loads((ROOT/'platforms/mobile/ios/Glob2.entitlements').read_bytes())
     if args.china:
         entitlements.pop('com.apple.developer.associated-domains',None)
     else:
@@ -143,12 +143,12 @@ def main():
         lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(metadata)+')',
                   'set_source_files_properties('+cmake_quote(metadata)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)']
     # Xcode compiles the catalog and merges its icon metadata into Info.plist.
-    icons=ROOT/'mobile/ios/Assets.xcassets'
+    icons=ROOT/'platforms/mobile/ios/Assets.xcassets'
     lines += [
         'target_sources(Glob2 PRIVATE '+cmake_quote(icons)+')',
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
-    lines += localized_resource_lines(ROOT / 'mobile/ios')
+    lines += localized_resource_lines(ROOT / 'platforms/mobile/ios')
     sys.path.insert(0, str(ROOT / 'scons'))
     from moltenvk import prepare as prepare_moltenvk
     compute_framework, compute_license = prepare_moltenvk('ios', output, args.environment)

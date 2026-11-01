@@ -20,7 +20,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / 'mobile'))
+sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 sys.path.insert(0, str(ROOT / 'scons'))
 import ios
 from apple_localizations import localization_files
@@ -124,9 +124,9 @@ class AppleLocalizationTests(unittest.TestCase):
                 for keyword in node.keywords:
                     if keyword.arg == 'BUNDLE_RESOURCEDIRS':
                         declared.extend(ast.literal_eval(keyword.value))
-        self.assertTrue({'darwin/en.lproj', 'darwin/mr.lproj'} <= set(declared))
-        for base, plist_path in ((ROOT / 'darwin', ROOT / 'darwin/Info.plist'),
-                                 (ROOT / 'mobile/ios', ROOT / 'mobile/ios/Info.plist.in')):
+        self.assertTrue({'platforms/macos/en.lproj', 'platforms/macos/mr.lproj'} <= set(declared))
+        for base, plist_path in ((ROOT / 'platforms/macos', ROOT / 'platforms/macos/Info.plist'),
+                                 (ROOT / 'platforms/mobile/ios', ROOT / 'platforms/mobile/ios/Info.plist.in')):
             with self.subTest(platform=base):
                 info = plistlib.loads(plist_path.read_bytes())
                 self.assertEqual(info['CFBundleDevelopmentRegion'], 'en')

@@ -376,7 +376,7 @@ def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None):
     binaries fail closed; source translation alone never advertises Metal.
     """
     lock = json.loads(Path(tool_lock).read_text())
-    xcode_pin = json.loads((root / 'mobile/toolchain.json').read_text())['ios']['xcode']
+    xcode_pin = json.loads((root / 'platforms/mobile/toolchain.json').read_text())['ios']['xcode']
     prefix = ['/usr/bin/env', 'DEVELOPER_DIR=' + developer_dir] if developer_dir else []
     xcrun = prefix + ['xcrun', '--sdk', sdk]
     xcode = subprocess.check_output(prefix + ['xcodebuild', '-version'], text=True).strip()

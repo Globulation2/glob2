@@ -24,7 +24,7 @@ it('browser check rejects stale copies without rewriting or creating development
     mkdirSync(join(pkg, 'scripts'), { recursive: true });
     mkdirSync(join(pkg, 'src'), { recursive: true });
     mkdirSync(join(pkg, 'locales'), { recursive: true });
-    mkdirSync(join(fixture, 'browser'));
+    mkdirSync(join(fixture, 'platforms/web'), { recursive: true });
     symlinkSync(
       join(packageRoot, '../../node_modules'),
       join(fixture, 'platform/node_modules'),
@@ -61,7 +61,7 @@ it('browser check rejects stale copies without rewriting or creating development
       spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', cwd: fixture });
     const built = run();
     expect(built.status, built.stderr).toBe(0);
-    const path = join(fixture, 'browser/locales/fr.json');
+    const path = join(fixture, 'platforms/web/locales/fr.json');
     const stale = '{"Language":"stale fixture"}';
     writeFileSync(path, stale);
     const failed = run('--check');
@@ -69,7 +69,7 @@ it('browser check rejects stale copies without rewriting or creating development
     expect(failed.stderr).toContain('fr catalog is stale');
     expect(readFileSync(path, 'utf8')).toBe(stale);
     copyFileSync(join(pkg, 'locales/fr.json'), path);
-    rmSync(join(fixture, 'browser/locales'), { recursive: true });
+    rmSync(join(fixture, 'platforms/web/locales'), { recursive: true });
     const absent = run('--check');
     expect(absent.status, absent.stderr).toBe(0);
     expect(existsSync(dirname(path))).toBe(false);

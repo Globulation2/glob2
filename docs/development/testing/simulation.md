@@ -309,7 +309,7 @@ admitted jobs and queued demand also checks that text serialization preserves
 the two inventories independently.
 
 The publication suite is included in `web-tests`. After building the serial
-and threaded Wasm harnesses, run from `browser/`:
+and threaded Wasm harnesses, run from `platforms/web/`:
 
 ```sh
 npx playwright test determinism.spec.js --grep 'ground gradient publication'
@@ -405,7 +405,7 @@ routes, and binary/text continuation. Simulation traces compare every checksum
 part except the MapHeader part, which includes the deliberately changed file-format
 version. The benchmark cases report identical market delivery workloads (including
 heavy checksums and save/load) and isolated resource-gradient refresh CPU/time and
-field memory. `browser/tests/determinism.spec.js` runs the same Markets V2 cases
+field memory. `platforms/web/tests/determinism.spec.js` runs the same Markets V2 cases
 and frozen traces in serial and threaded Wasm builds.
 
 

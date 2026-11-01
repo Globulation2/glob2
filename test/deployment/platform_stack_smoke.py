@@ -218,7 +218,7 @@ class Smoke:
         for entry in ('index.html', 'studio.html', 'generator-studio.html'):
             (self.directory / 'web-client' / entry).write_text('<!doctype html><title>glob2 web client</title>')
         # A content-addressed data package with a precompressed copy, as
-        # browser/precompress.py and deploy/install-web-client.py lay them out.
+        # platforms/web/precompress.py and deploy/install-web-client.py lay them out.
         (self.directory / 'web-client/assets').mkdir()
         (self.directory / f'web-client/{SMOKE_PACKAGE}').write_bytes(b'package')
         (self.directory / f'web-client/{SMOKE_PACKAGE}.br').write_bytes(b'brotli')

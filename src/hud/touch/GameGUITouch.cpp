@@ -33,7 +33,7 @@
 #include <jni.h>
 #endif
 #if defined(SDL_PLATFORM_IOS)
-#include "mobile/ios/SafeArea.h"
+#include "platforms/mobile/ios/SafeArea.h"
 #endif
 using namespace GAGCore;
 

@@ -6,7 +6,7 @@ to them; a bucket can use Content-Encoding metadata) then send them
 without compressing on every request. Copies newer than their source are kept, so
 unchanged content-addressed data packages are not compressed again.
 
-    python3 browser/precompress.py [build/emscripten/client/release]
+    python3 platforms/web/precompress.py [build/emscripten/client/release]
 """
 import argparse
 import gzip

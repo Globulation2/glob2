@@ -73,7 +73,7 @@ game version directly. Mirror only reviewed public commits. Review of workflow c
 the mirror and dispatch gates alone do not make unreviewed code safe to run.
 Before tagging a new release, choose an unused version, update
 `PACKAGE_VERSION` in `scons/build_layout.py`, `vcpkg.json`, and
-`fedora/glob2.spec`, and add its AppStream release notes. Do not move an
+`platforms/linux/fedora/glob2.spec`, and add its AppStream release notes. Do not move an
 existing tag.
 Mac package jobs pin Python 3.14.8 and SCons 4.11.1 and set `PYTHONPATH` to the
 checkout so spawned asset encoder workers can import the source helpers.

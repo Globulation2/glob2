@@ -176,7 +176,7 @@ for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
 Audit platform startup text outside these two catalogs as well. Android shows
-`preparing_game` from `mobile/android/app/src/main/res/values/strings.xml` while
+`preparing_game` from `platforms/mobile/android/app/src/main/res/values/strings.xml` while
 staging assets, before the native catalog can load. Add the reviewed counterpart
 in the locale's Android resource directory (for example `values-mr/strings.xml`),
 retain separate source/value hashes and independent review records, and check
@@ -184,7 +184,7 @@ the actual first-run overlay in the packaged application. The catalog inventory
 checks alone do not establish that this startup text is translated.
 
 Apple's local-network permission explanations also live outside the engine
-catalog: `darwin/Info.plist` and `mobile/ios/Info.plist.in` have distinct source
+catalog: `platforms/macos/Info.plist` and `platforms/mobile/ios/Info.plist.in` have distinct source
 purposes. Review their localized `InfoPlist.strings` separately. macOS bundles
 copy the declared `.lproj` directories into `Contents/Resources`; iOS CMake
 resources use `Resources/<language>.lproj` (CMake removes the `Resources` prefix
@@ -420,7 +420,7 @@ packages. Check conjuncts, reph, vowel signs, mixed Latin text and Bengali digit
 at small sizes; glyph coverage alone does not establish correct shaping or fit.
 Explicit non-Bengali script tags must not select the Bengali-script catalog.
 After adding or changing a language's displayed name, regenerate the checked-in
-browser assets with the pinned exporter command in `browser/derive_assets.py`.
+browser assets with the pinned exporter command in `platforms/web/derive_assets.py`.
 Its font fingerprint includes the language-name inventory even when the resulting
 subset font bytes stay identical.
 

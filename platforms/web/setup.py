@@ -7,11 +7,11 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
 from dev_store import Lease, browser_sdk, isolated
 
-root = Path(__file__).resolve().parents[1]
-lock = json.loads((root / "browser/toolchain.json").read_text())
+root = Path(__file__).resolve().parents[2]
+lock = json.loads((root / "platforms/web/toolchain.json").read_text())
 sdk = browser_sdk(root, lease=False)
 sdk.parent.mkdir(parents=True, exist_ok=True)
 guard = Lease(sdk, exclusive=True)

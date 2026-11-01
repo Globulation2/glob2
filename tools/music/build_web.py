@@ -13,7 +13,7 @@ from opus_dependencies import build
 sdk = browser_sdk(root, lease=False)
 cc = sdk / "upstream/emscripten"
 if not (cc / "em++").exists():
-    subprocess.run([sys.executable, str(root / "browser/setup.py")], check=True)
+    subprocess.run([sys.executable, str(root / "platforms/web/setup.py")], check=True)
 prefix = build(
     root / "build/music-web/opus", root / "build/music-web/sources", cc, jobs=4
 )

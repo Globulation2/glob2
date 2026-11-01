@@ -439,7 +439,7 @@ std::unique_ptr<FileSelection> selectFile(const std::string& extension) {
     return std::make_unique<BrowserFileSelection>(extension);
 }
 bool storageRestoreFailed() { return MAIN_THREAD_EM_ASM_INT({ return Module.storageRestore === 'failed'; }); }
-// Packages come from browser/asset-loader.js on the page's thread. A build without a package of that
+// Packages come from platforms/web/asset-loader.js on the page's thread. A build without a package of that
 // name (for instance the test harness, which preloads everything) has the data.
 bool assetPackageReady(const char* name)
 {

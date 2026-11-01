@@ -14,12 +14,12 @@ import urllib.parse
 import urllib.request
 import zipfile
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scons'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
 from build_layout import PACKAGE_VERSION
 from dev_store import android_sdk
 from asset_bundle import verify_apk_assets
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = 'org.globulation2.glob2'
 ABIS = ('arm64-v8a', 'armeabi-v7a')
 API = 'https://developer.amazon.com/api/appstore/v1/applications'

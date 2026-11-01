@@ -10,10 +10,10 @@ import time
 import uuid
 import sys
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "test"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "test"))
 from build_provenance import source_identity, build_issues
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 BUNDLE = 'org.globulation2.glob2.script-tests'
 
 

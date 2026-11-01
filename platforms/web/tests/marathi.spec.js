@@ -83,7 +83,7 @@ for (const device of [
   test.use({viewport: device.viewport, hasTouch: device.hasTouch});
   for (const variant of ['serial', 'threaded']) test(`${variant} native catalog, settings and tutorial render in Marathi`, async ({page, context, baseURL}, info) => {
     test.setTimeout(360000);
-    const evidence = path.resolve(__dirname, '../../artifacts/marathi-localization/browser-game', info.project.name, variant, device.name);
+    const evidence = path.resolve(__dirname, '../../../artifacts/marathi-localization/browser-game', info.project.name, variant, device.name);
     fs.mkdirSync(evidence, {recursive: true});
     const errors = [];
     page.on('pageerror', error => errors.push(String(error)));
@@ -104,8 +104,8 @@ for (const device of [
     const font = await readBrowserFile(page, '/data/fonts/scripts/NotoSansDevanagari-Regular.ttf');
     const inventory = await readBrowserFile(page, '/data/texts.list.txt');
     expect(inventory.toString('utf8').split(/\r?\n/)).toContain('data/texts.mr.txt');
-    expect(sha256(catalog)).toBe(sha256(fs.readFileSync(path.resolve(__dirname, '../../data/texts.mr.txt'))));
-    const fonts = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../data/fonts/scripts/manifest.json'), 'utf8'));
+    expect(sha256(catalog)).toBe(sha256(fs.readFileSync(path.resolve(__dirname, '../../../data/texts.mr.txt'))));
+    const fonts = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../data/fonts/scripts/manifest.json'), 'utf8'));
     expect(sha256(font)).toBe(fonts.fonts.find(entry => entry.name === 'NotoSansDevanagari').sha256);
     const records = {variant, device: device.name, browser: info.project.name,
       catalogSha256: sha256(catalog), devanagariFontSha256: sha256(font), main: await snapshot(page)};

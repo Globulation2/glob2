@@ -11,7 +11,7 @@ from android_release import verify_apk
 from developer_apk import build_tools, java_environment, verify_alignment
 from dev_paths import android_sdk
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[2]
 
 
 def sign(original, output, arch, keystore, alias, expected_certificate, sdk):

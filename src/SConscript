@@ -38,8 +38,8 @@ from skin_render import configure as configure_skin_render
 configure_skin_render(local)
 platform_trust_sources = []
 if env['PLATFORM'] in ('darwin', 'win32') or env.get('mingw') or env.get('mingwcross'):
-    platform_trust_sources = local.Object('PlatformTrustCore.o', '#mobile/CertificateTrust.cpp')
-    platform_trust_sources += local.Object('PlatformTrustPolicy.o', '#mobile/ios/CertificateTrust.cpp' if env['PLATFORM'] == 'darwin' else 'net/WindowsCertificateTrust.cpp')
+    platform_trust_sources = local.Object('PlatformTrustCore.o', '#platforms/mobile/CertificateTrust.cpp')
+    platform_trust_sources += local.Object('PlatformTrustPolicy.o', '#platforms/mobile/ios/CertificateTrust.cpp' if env['PLATFORM'] == 'darwin' else 'net/WindowsCertificateTrust.cpp')
 source_files += platform_trust_sources
 js_library = SConscript('#third_party/SConscript', variant_dir=Dir('#' + env['BUILDDIR'] + '/third_party'), duplicate=0, exports={'env': env})
 local.Append(CPPPATH=['#third_party/quickjs-ng'])

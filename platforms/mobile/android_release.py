@@ -13,13 +13,13 @@ import zipfile
 
 from asset_bundle import verify_apk_assets
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = "org.globulation2.glob2"
 ABI_CODES = {"armeabi-v7a": 1, "arm64-v8a": 2, "x86_64": 3}
 
 
 def release_identity(root=ROOT):
-    identity = json.loads((root / "mobile/android-release.json").read_text())
+    identity = json.loads((root / "platforms/mobile/android-release.json").read_text())
     name, base = identity.get("versionName"), identity.get("versionCodeBase")
     parts = name.split(".") if isinstance(name, str) else []
     if len(parts) != 4 or any(not part.isdecimal() or int(part) >= 100 or
@@ -102,9 +102,9 @@ def check_listing(root=ROOT):
 
 
 def check_recipe(root=ROOT):
-    recipe = (root / "fdroid/metadata/org.globulation2.glob2.yml").read_text()
+    recipe = (root / "platforms/stores/fdroid/metadata/org.globulation2.glob2.yml").read_text()
     identity = release_identity(root)
-    toolchain = json.loads((root / "mobile/toolchain.json").read_text())["android"]
+    toolchain = json.loads((root / "platforms/mobile/toolchain.json").read_text())["android"]
     codes = [int(code) for code in re.findall(r"^    versionCode: (\d+)$", recipe, re.MULTILINE)]
     names = re.findall(r"^  - versionName: ([^\n]+)$", recipe, re.MULTILINE)
     commits = re.findall(r"^    commit: ([^\n]+)$", recipe, re.MULTILINE)
@@ -180,7 +180,7 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
     expected_code = version_code(arch, root)
     if not apk.is_file():
         raise ValueError("Missing Android APK: " + str(apk))
-    toolchain = json.loads((root / "mobile/toolchain.json").read_text())["android"]
+    toolchain = json.loads((root / "platforms/mobile/toolchain.json").read_text())["android"]
     expected_libraries = None
     if require_dependency_manifest:
         if isolated():

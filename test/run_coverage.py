@@ -77,7 +77,7 @@ def profile_pattern(pool_size):
     return f'%{pool_size}m.profraw' if pool_size else '%m-%p.profraw'
 
 
-COVERED_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'mobile/')
+COVERED_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'platforms/mobile/')
 
 
 def area(path):

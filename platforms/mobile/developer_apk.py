@@ -15,7 +15,7 @@ def digest(path):
 def java_environment(root):
     env=dict(os.environ)
     if 'JAVA_HOME' not in env:
-        lock = json.loads((root/'mobile/android-tools.json').read_text())
+        lock = json.loads((root/'platforms/mobile/android-tools.json').read_text())
         artifact = lock.get('jdk-' + platform.system() + '-' + platform.machine())
         if artifact:
             bundled = mobile_tools(root)/artifact['directory']/artifact.get('java_home', '.')
@@ -25,7 +25,7 @@ def java_environment(root):
 
 
 def build_tools(root,sdk):
-    lock=json.loads((root/'mobile/toolchain.json').read_text())
+    lock=json.loads((root/'platforms/mobile/toolchain.json').read_text())
     return sdk/'build-tools'/lock['android']['build_tools']
 
 
@@ -73,7 +73,7 @@ def verified(root,sdk,project):
     original=directory/'app-release-unsigned.apk'
     metadata=apk.with_suffix('.json')
     if not apk.is_file() or not metadata.is_file() or not original.is_file():
-        raise ValueError('Run mobile/android.py sign --release for this architecture before installing')
+        raise ValueError('Run platforms/mobile/android.py sign --release for this architecture before installing')
     provenance=json.loads(metadata.read_text())
     if provenance.get('signed_sha256')!=digest(apk) or provenance.get('unsigned_sha256')!=digest(original):
         raise ValueError('Developer APK is stale or changed; sign the current release APK again')

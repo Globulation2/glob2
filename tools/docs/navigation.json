@@ -19,7 +19,7 @@
     "test/data/**": "Test inputs.",
     "test/maxima/fixtures/**": "Fixture descriptions.",
     "fastlane/**": "Store metadata, maintained by release workflows.",
-    "browser/tests/fixtures/**": "Fixture regeneration instructions; reviewed with browser fixture contracts.",
+    "platforms/web/tests/fixtures/**": "Fixture regeneration instructions; reviewed with browser fixture contracts.",
     "third_party/*/**": "Upstream-owned documentation."
   },
   "structure_exempt": {

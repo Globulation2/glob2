@@ -191,7 +191,7 @@ class WebAssetPlanTests(unittest.TestCase):
     def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):
         self.assertEqual(sorted(self.substitutes), ['data/fonts/sans.ttf', 'data/gfx/menu-colony.png',
                                                     'data/gfx/menu-wordmark.png'],
-                         'browser/assets is stale: run python3 browser/derive_assets.py')
+                         'platforms/web/assets is stale: run python3 platforms/web/derive_assets.py')
         self.assertEqual(self.packages['font-cjk'], ['data/fonts/sans.ttf'])
         self.assertIn('data/fonts/sans.ttf', self.packages['core'])
 
@@ -288,9 +288,9 @@ class BrowserCopyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             texts = [p.relative_to(ROOT).as_posix() for p in (ROOT / 'data').glob('texts.*.txt')]
-            for path in texts + ['browser/derive_assets.py', 'tools/package_assets.py', 'browser/assets/sources.json',
+            for path in texts + ['platforms/web/derive_assets.py', 'tools/package_assets.py', 'platforms/web/assets/sources.json',
                          'data/gfx/menu-colony.png', 'data/gfx/menu-wordmark.png', 'data/fonts/sans.ttf',
-                         'browser/assets/sans-core.ttf', 'browser/assets/menu-colony.webp', 'browser/assets/menu-wordmark.webp']:
+                         'platforms/web/assets/sans-core.ttf', 'platforms/web/assets/menu-colony.webp', 'platforms/web/assets/menu-wordmark.webp']:
                 (root / path).parent.mkdir(parents=True, exist_ok=True)
                 (root / path).write_bytes((ROOT / path).read_bytes())
             self.assertEqual(len(web_assets.derived_assets(root)), 3)
@@ -306,21 +306,21 @@ class BrowserCopyTests(unittest.TestCase):
             files = ['data/gfx/menu-wordmark.webp', 'data/gfx/menu-colony.webp', 'data/fonts/sans.ttf']
             derived = web_assets.derived_assets(ROOT)
             self.assertEqual(web_assets.exported_substitutes(ROOT, source, files, derived),
-                             {'data/gfx/menu-wordmark.webp': 'browser/assets/menu-wordmark.webp',
-                              'data/fonts/sans.ttf': 'browser/assets/sans-core.ttf'})
+                             {'data/gfx/menu-wordmark.webp': 'platforms/web/assets/menu-wordmark.webp',
+                              'data/fonts/sans.ttf': 'platforms/web/assets/sans-core.ttf'})
 
     def test_png_derivative_is_rejected_and_original_profile_keeps_font(self):
         from unittest.mock import patch
-        current = json.loads((ROOT / 'browser/assets/sources.json').read_text())
-        entry = current.pop('browser/assets/menu-colony.webp')
-        current['browser/assets/menu-colony.png'] = entry
+        current = json.loads((ROOT / 'platforms/web/assets/sources.json').read_text())
+        entry = current.pop('platforms/web/assets/menu-colony.webp')
+        current['platforms/web/assets/menu-colony.png'] = entry
         exists = Path.is_file
         def selected_file(path):
-            return str(path).endswith('browser/assets/menu-colony.png') or exists(path)
-        derive = web_assets.load_module(ROOT, 'selected_derive', 'browser/derive_assets.py')
+            return str(path).endswith('platforms/web/assets/menu-colony.png') or exists(path)
+        derive = web_assets.load_module(ROOT, 'selected_derive', 'platforms/web/derive_assets.py')
         digest = derive.digest
         def selected_digest(path):
-            return entry['output_sha256'] if str(path).endswith('browser/assets/menu-colony.png') else digest(path)
+            return entry['output_sha256'] if str(path).endswith('platforms/web/assets/menu-colony.png') else digest(path)
         with patch.object(web_assets.json, 'loads', return_value=current), \
                 patch.object(Path, 'is_file', selected_file), \
                 patch.object(derive, 'digest', selected_digest), \
@@ -330,15 +330,15 @@ class BrowserCopyTests(unittest.TestCase):
 
     def test_q85_or_corrupt_derivatives_are_rejected(self):
         import json
-        current = json.loads((ROOT / 'browser/assets/sources.json').read_text())
+        current = json.loads((ROOT / 'platforms/web/assets/sources.json').read_text())
         stale = json.loads(json.dumps(current))
-        stale['browser/assets/menu-colony.webp']['image_recipe']['lossy_quality'] = 85
+        stale['platforms/web/assets/menu-colony.webp']['image_recipe']['lossy_quality'] = 85
         from unittest.mock import patch
         with patch.object(web_assets.json, 'loads', return_value=stale):
             self.assertNotIn('data/gfx/menu-colony.png', web_assets.derived_assets(ROOT))
         self.assertNotIn('data/gfx/menu-colony.png', web_assets.derived_assets(ROOT, lossy=False))
         stale = json.loads(json.dumps(current))
-        stale['browser/assets/menu-colony.webp']['output_sha256'] = 'bad'
+        stale['platforms/web/assets/menu-colony.webp']['output_sha256'] = 'bad'
         with patch.object(web_assets.json, 'loads', return_value=stale):
             self.assertNotIn('data/gfx/menu-colony.png', web_assets.derived_assets(ROOT))
 
@@ -349,7 +349,7 @@ class BrowserCopyTests(unittest.TestCase):
         except ImportError:
             self.skipTest('fontTools is not installed')
         full = TTFont(ROOT / 'data/fonts/sans.ttf', lazy=True)
-        core = TTFont(ROOT / 'browser/assets/sans-core.ttf', lazy=True)
+        core = TTFont(ROOT / 'platforms/web/assets/sans-core.ttf', lazy=True)
         full_map, core_map = full.getBestCmap(), core.getBestCmap()
         original = {cp for cp, name in full_map.items() if not name.startswith('cjk')}
         self.assertLessEqual(original, set(core_map))

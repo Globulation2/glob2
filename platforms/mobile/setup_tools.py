@@ -10,7 +10,7 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
 
 from build_layout import BuildLock, write_if_changed
 from dev_store import Lease, android_java_command, cache, isolated, mobile_tools
@@ -71,7 +71,7 @@ def main():
         help="Install pinned platform/build packages; accept licenses explicitly with sdkmanager --licenses first",
     )
     args = parser.parse_args()
-    lock = json.loads((ROOT / "mobile/android-tools.json").read_text())
+    lock = json.loads((ROOT / "platforms/mobile/android-tools.json").read_text())
     tools = mobile_tools(ROOT, lease=False)
     tools.mkdir(parents=True, exist_ok=True)
     downloads = cache(ROOT, "downloads")
@@ -81,7 +81,7 @@ def main():
         if args.emulator and args.gradle_only:
             parser.error("--emulator and --gradle-only cannot be combined")
         if args.emulator:
-            emulators = json.loads((ROOT / "mobile/emulator.json").read_text())[
+            emulators = json.loads((ROOT / "platforms/mobile/emulator.json").read_text())[
                 "archives"
             ]
             host = platform.system() + "-" + platform.machine()
@@ -115,7 +115,7 @@ def main():
             print("Installed", destination)
         if args.sdk_packages:
             sdk = tools / "android-sdk"
-            android = json.loads((ROOT / "mobile/toolchain.json").read_text())[
+            android = json.loads((ROOT / "platforms/mobile/toolchain.json").read_text())[
                 "android"
             ]
             jdk = lock.get("jdk-" + platform.system() + "-" + platform.machine())

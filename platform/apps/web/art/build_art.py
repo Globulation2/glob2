@@ -205,7 +205,7 @@ def main() -> None:
     # Favicons from the game icon.
     PUBLIC.mkdir(parents=True, exist_ok=True)
     shutil.copy(REPO / "data/icons/glob2-icon-32x32.png", PUBLIC / "favicon-32.png")
-    shutil.copy(REPO / "mobile/ios/Assets.xcassets/AppIcon.appiconset/icon-180.png",
+    shutil.copy(REPO / "platforms/mobile/ios/Assets.xcassets/AppIcon.appiconset/icon-180.png",
                 PUBLIC / "apple-touch-icon.png")
     shutil.copy(REPO / "data/icons/glob2-icon-32x32.png", STATIC / "favicon-32.png")
     shutil.copy(REPO / "data/icons/glob2-icon-64x64.png", OUT / "glob-64.png")

@@ -15,7 +15,7 @@ import tempfile
 
 POLICY = b"browser-static-gzip-v1\0"
 MARKER = "package.json"
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 MUSIC_FILES = ("music-worker.js", "music-output.js", "music-runtime.js", "music-runtime.wasm")
 
 

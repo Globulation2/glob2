@@ -89,7 +89,7 @@ test('live colony meshes render through WebGL2 and survive context restoration',
     });
   }
   // colony-v2 preview pair: a 512x512 colour atlas and its material-id map.
-  const fixture = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../test/fixtures/skins/authorization.json'), 'utf8'));
+  const fixture = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../test/fixtures/skins/authorization.json'), 'utf8'));
   const paint = [...Buffer.from(fixture.textureHex, 'hex')];
   const material = [...Buffer.from(fixture.materialHex, 'hex')];
   // Use the current production shell even after a serial-only runtime build;
@@ -115,7 +115,7 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   await clickCustomGameStart(page);
   await expect.poll(async () => (await state()).screen, {timeout:120000}).toContain('match');
   await expect.poll(() => page.evaluate(() => globalThis.skinDraws), {timeout:60000}).toBeGreaterThan(5);
-  const manifest = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../data/skins/colony-v1/manifest.json'), 'utf8'));
+  const manifest = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../data/skins/colony-v1/manifest.json'), 'utf8'));
   for (const name of ['worker-walk.gsk', 'swarm.gsk'])
     await expect.poll(() => page.evaluate(() => globalThis.skinMeshCounts), {timeout:60000}).toContain(manifest.meshes[name].triangles * 3);
   expect((await state()).assets.skins).toBe('ready');

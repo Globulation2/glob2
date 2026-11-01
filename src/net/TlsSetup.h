@@ -10,7 +10,7 @@
 #include <glob2/BuildConfig.h>
 #endif
 #if defined(GLOB2_MOBILE) || defined(__APPLE__) || defined(_WIN32)
-#include "mobile/CertificateTrust.h"
+#include "platforms/mobile/CertificateTrust.h"
 #endif
 #include <boost/asio/buffer.hpp>
 #include <boost/asio/ssl.hpp>

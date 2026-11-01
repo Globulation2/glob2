@@ -38,7 +38,7 @@
   ],
   "vcpkg-configuration": {
     "overlay-ports": [
-      "../scons/vcpkg-ports"
+      "../../scons/vcpkg-ports"
     ]
   }
 }

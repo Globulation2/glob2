@@ -218,7 +218,7 @@ For matched local performance qualification, use the busy saved battle and keep
 rendering, camera movement, audio, runtime, dimensions and warmup identical:
 
 ```sh
-node browser/benchmarks/recording.cjs http://127.0.0.1:8770 artifacts/recording-benchmark
+node platforms/web/benchmarks/recording.cjs http://127.0.0.1:8770 artifacts/recording-benchmark
 GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 software-render-benchmark
 PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=off PROFILE_SECONDS=20 \
   PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \

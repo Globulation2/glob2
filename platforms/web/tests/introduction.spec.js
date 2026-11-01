@@ -29,7 +29,7 @@ for (const variant of ['serial', 'threaded']) {
     await page.waitForFunction(() => window.introDone, null, {timeout:500000});
     const result=await page.evaluate(()=>({exit:window.introExit,error:window.introError,files:window.introFiles,log:window.introLog}));
     fs.mkdirSync(info.outputDir,{recursive:true});
-    const evidence=path.resolve(__dirname,'../../artifacts/introduction/browser',variant,info.project.name);
+    const evidence=path.resolve(__dirname,'../../../artifacts/introduction/browser',variant,info.project.name);
     fs.mkdirSync(evidence,{recursive:true});
     fs.writeFileSync(info.outputPath('introduction.log'),result.log.join('\n'));
     fs.writeFileSync(path.join(evidence,'introduction.log'),result.log.join('\n'));

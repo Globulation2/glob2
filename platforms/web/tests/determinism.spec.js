@@ -9,7 +9,7 @@ const {compiledSuiteInventory,compareCaseInventory} = require('./compiled-case-i
 // lanes. A minimal host supplies CLI arguments without changing the game shell.
 for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4], ['threaded',8], ['threaded','auto']]) {
 test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${threads})`, async ({page}, info) => {
-  const root = path.resolve(__dirname, '../..');
+  const root = path.resolve(__dirname, '../../..');
   const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game.gz'));
   await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
       window.engineLog = [];
@@ -64,7 +64,7 @@ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${th
 for (const variant of ['serial','threaded']) {
 test(`WebAssembly verifies the committed match record (${variant})`, async ({page}, info) => {
   test.setTimeout(300000);
-  const root = path.resolve(__dirname, '../..');
+  const root = path.resolve(__dirname, '../../..');
   const record = fs.readFileSync(path.join(root, 'test/fixtures/multiplayer/FourSquares1.g2mr'));
   const map = fs.readFileSync(path.join(root, 'maps/FourSquares1.map.gz'));
   await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
@@ -112,7 +112,7 @@ test(`WebAssembly verifies the committed match record (${variant})`, async ({pag
 for (const variant of ['serial','threaded']) {
 test(`WebAssembly executes the shared scripting corpus (${variant})`, async ({page}, info) => {
   test.setTimeout(600000);
-  const root = path.resolve(__dirname, '../..');
+  const root = path.resolve(__dirname, '../../..');
   const output=path.join(root,'artifacts/browser-determinism',variant==='serial'?'script-corpus':'script-corpus-threaded',info.project.name);
   // Remove only this case's previous exports, so a new successful manifest
   // cannot accidentally certify artifacts left by an earlier execution.
@@ -191,7 +191,7 @@ test(`WebAssembly executes the shared scripting corpus (${variant})`, async ({pa
       .map(key=>'Executed binary differs from runner source: '+key);
   fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({...source,build:producer||null,provenanceIssues,
     browser:info.project.name,browserVersion:page.context().browser().version(),
-    toolchain:JSON.parse(fs.readFileSync(path.join(root,'browser/toolchain.json'))),
+    toolchain:JSON.parse(fs.readFileSync(path.join(root,'platforms/web/toolchain.json'))),
     buildIdentity:JSON.parse(fs.readFileSync(path.join(build,'identity.json'))),
     binaries:Object.fromEntries(['script-tests.js','script-tests.wasm','script-tests.data']
       .map(file=>[file,hash(path.join(file.endsWith('.data')?packageRoot:build,file))])),fixtureHashes:fixtures,
@@ -211,7 +211,7 @@ test(`WebAssembly executes the shared scripting corpus (${variant})`, async ({pa
 for (const variant of ['serial', 'threaded']) {
   test(`WebAssembly preserves Markets V2 off/on traces (${variant})`, async ({page}, info) => {
     test.setTimeout(300000);
-    const root = path.resolve(__dirname, '../..');
+    const root = path.resolve(__dirname, '../../..');
     const output = path.join(root, 'artifacts/browser-determinism/markets-v2', variant, info.project.name);
     fs.rmSync(output, {recursive:true, force:true});
     fs.mkdirSync(output, {recursive:true});
@@ -274,7 +274,7 @@ for (const variant of ['serial', 'threaded']) {
 for (const variant of ['serial', 'threaded']) {
   test(`WebAssembly preserves custom building compositions (${variant})`, async ({page}, info) => {
     test.setTimeout(300000);
-    const output=path.resolve(__dirname,'../../artifacts/browser-determinism/buildings',variant,info.project.name);
+    const output=path.resolve(__dirname,'../../../artifacts/browser-determinism/buildings',variant,info.project.name);
     fs.mkdirSync(output,{recursive:true});
     const progress=[];
     page.on('console',message=>progress.push(message.text()));
@@ -300,7 +300,7 @@ for (const variant of ['serial', 'threaded']) {
     fs.writeFileSync(path.join(output,'tests.xml'),result.xml);
     fs.writeFileSync(path.join(output,'build-provenance.json'),result.producer);
     const source=JSON.parse(require('node:child_process').execFileSync('python3',
-      [path.resolve(__dirname,'../../test/build_provenance.py')],{cwd:path.resolve(__dirname,'../..'),encoding:'utf8'}));
+      [path.resolve(__dirname,'../../../test/build_provenance.py')],{cwd:path.resolve(__dirname,'../../..'),encoding:'utf8'}));
     const producer=JSON.parse(result.producer);
     for(const key of ['revision','dirty','sourceTreeSha256']) expect(producer[key]).toEqual(source[key]);
     fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({variant,
@@ -324,7 +324,7 @@ for (const variant of ['serial', 'threaded']) {
   ]) {
     test(`WebAssembly preserves runtime catalog ${selection.name} contracts (${variant})`, async ({page}, info) => {
       test.setTimeout(300000);
-      const root=path.resolve(__dirname,'../..');
+      const root=path.resolve(__dirname,'../../..');
       const output=path.join(root,'artifacts/browser-determinism/resources',variant,info.project.name,selection.name);
       fs.mkdirSync(output,{recursive:true});
       const progress=[];
@@ -389,7 +389,7 @@ for (const variant of ['serial', 'threaded']) {
 for (const variant of ['serial', 'threaded']) {
   test(`WebAssembly preserves shared generator worlds and save continuation (${variant})`, async ({page}, info) => {
     test.setTimeout(300000);
-    const root=path.resolve(__dirname,'../..');
+    const root=path.resolve(__dirname,'../../..');
     const output=path.join(root,'artifacts/browser-determinism/shared-generators',variant,info.project.name);
     fs.rmSync(output,{recursive:true,force:true});
     fs.mkdirSync(output,{recursive:true});
@@ -447,7 +447,7 @@ test('WebAssembly verifies ground gradient publication across serial and threade
   for (const variant of ['serial', 'threaded']) {
     // This corpus includes binary/text checkpoints and all 1/2/4/8 participant
     // configurations. Allow correctness work to finish on shared browser hosts.
-    const root = path.resolve(__dirname, '../..');
+    const root = path.resolve(__dirname, '../../..');
     const output = path.join(root, 'artifacts/browser-determinism/gradient-publication', variant, info.project.name);
     fs.mkdirSync(output, {recursive: true});
     const listing=await compiledSuiteInventory(page,variant,'DelayedGradientPublication');

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
-#include "../mobile/CertificateTrust.h"
+#include "CertificateTrust.h"
 #include <openssl/pem.h>
 #include <cstdlib>
 #include <memory>

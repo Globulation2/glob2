@@ -20,7 +20,7 @@
 #include <stdexcept>
 #include <string>
 #ifdef GLOB2_MOBILE
-#include "mobile/MobilePaths.h"
+#include "platforms/mobile/MobilePaths.h"
 #include <exception>
 #include <SDL3/SDL_log.h>
 #endif

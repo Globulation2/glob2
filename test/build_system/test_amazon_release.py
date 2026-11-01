@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 import zipfile
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
 import amazon_release as release
 
 

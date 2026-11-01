@@ -3,7 +3,7 @@ import { readFile, mkdir, copyFile, writeFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { locales } from '../src/locales.ts';
 const root = fileURLToPath(new URL('../../../../', import.meta.url));
-const browser = `${root}/browser`;
+const browser = `${root}/platforms/web`;
 const output = await build({
   stdin: {
     contents: `import * as i18n from './platform/packages/i18n/src/index.ts';

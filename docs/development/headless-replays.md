@@ -360,7 +360,7 @@ partition verification jobs by it; the definition of the data hash is in the
 [turn protocol](../multiplayer/turn-engine.md#simulation-version).
 
 CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows, macOS and in
-three browsers (`test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`)
+three browsers (`test/run-browser-determinism.py` and `platforms/web/tests/determinism.spec.js`)
 and requires every selected `checksums.txt` trace to be identical. Full verification
 compares seven traces: two Linux builds, Windows, macOS and three browsers. The committed
 `FourSquares1.verify-trace.txt` is the expected trace, and CI fails when the platforms

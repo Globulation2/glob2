@@ -2,7 +2,7 @@
 #include "Glob2Test.h"
 #include <vector>
 #include <string>
-#include "../mobile/Documents.h"
+#include "Documents.h"
 #include <thread>
 
 using namespace GAGCore::ApplicationHost;

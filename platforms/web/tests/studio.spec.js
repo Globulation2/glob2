@@ -5,7 +5,7 @@ const { createHash } = require("node:crypto");
 const { openRuntimeHost } = require("./runtime-host");
 const fixture = require("./fixtures/studio-trace.json");
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const root = path.resolve(__dirname, "../..");
+const root = path.resolve(__dirname, "../../..");
 const source = fs.readFileSync(path.join(root, fixture.source), "utf8");
 const map = fs.readFileSync(path.join(root, fixture.map)).toString("base64");
 test("Studio launches an ephemeral AI-only game and reports live progress", async ({

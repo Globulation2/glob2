@@ -23,9 +23,9 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scons'))
-sys.path.insert(0, str(ROOT / 'mobile'))
+sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 
 PACKAGE = 'org.globulation2.glob2'
 BUNDLE_ID = 'org.globulation2.glob2'

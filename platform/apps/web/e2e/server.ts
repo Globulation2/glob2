@@ -239,7 +239,7 @@ if (process.env['GENERATOR_E2E_BINARY']) {
       });
   }, 500);
 }
-const replayFixture = join(repo, 'browser/tests/fixtures/cross-replay.replay');
+const replayFixture = join(repo, 'platforms/web/tests/fixtures/cross-replay.replay');
 const seed = await seedHistory(harness.database.db, harness.blobs, {
   ...(existsSync(replayFixture) ? { replayBytes: readFileSync(replayFixture) } : {}),
   mapPreview: previewFixture('even-ground'),

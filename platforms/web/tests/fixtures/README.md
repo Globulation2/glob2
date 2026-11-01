@@ -50,8 +50,8 @@ wc -c artifacts/studio-reference/result/game.replay.checksums
 Use the corresponding native build path on other platforms. Update the manifest
 only after reviewing why the native trace changed; apply the repository's
 simulation revision and golden-match requirements when simulation behavior
-changes. Then run `npx playwright test studio.spec.js` from `browser/` against the
-rebuilt engine. All six browser/runtime combinations must match the native digest.
+changes. Then run `npx playwright test studio.spec.js` from `platforms/web/` against the
+rebuilt engine. All six platforms/web/runtime combinations must match the native digest.
 Keep the native trace and browser traces as review evidence.
 
 `generator-studio-trace.json` similarly pins the single-module Swamp package,
@@ -76,14 +76,14 @@ It draws a software DOM canvas, replaces it with WebGL2, checks a red GPU pixel,
 and switches back to DOM software without replacing the Wasm instance. Run it
 in both serial and pthread modes when changing the surface bridge or SDK.
 
-Compile with the pinned SDK's `emcc`, `--js-library browser/canvas-size.js`,
+Compile with the pinned SDK's `emcc`, `--js-library platforms/web/canvas-size.js`,
 `-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sEXIT_RUNTIME=0`, and an output
 under `artifacts/`. Add `-pthread -sPTHREAD_POOL_SIZE=1
 -sOFFSCREENCANVAS_SUPPORT=1` for the threaded fixture. A host page must load
-`browser/presentation-surface.js`, provide `Module.canvas` and `executionMode`,
+`platforms/web/presentation-surface.js`, provide `Module.canvas` and `executionMode`,
 create `Module.glob2PresentationSurface`, and attach each pthread Worker through
 its `attachWorker()` method before loading the generated runtime. Serve with
-cross-origin isolation headers using `browser/serve.py`. Completion reports
+cross-origin isolation headers using `platforms/web/serve.py`. Completion reports
 `Module.probe`; verify `ok`, token `0x13579`, two committed surface generations,
 and a green software pixel. The fixture proves SDK surface ownership, not full
 game rendering or SDL lifecycle integration.

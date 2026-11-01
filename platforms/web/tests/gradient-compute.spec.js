@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test,expect,chromium}=require('@playwright/test');
 const fs=require('node:fs'),path=require('node:path');
-const root=path.resolve(__dirname,'../..');
-const library=fs.readFileSync(path.join(root,'browser/gradient-compute.js'),'utf8');
+const root=path.resolve(__dirname,'../../..');
+const library=fs.readFileSync(path.join(root,'platforms/web/gradient-compute.js'),'utf8');
 const shaders=['frozen8','jacobi'].map(name=>fs.readFileSync(path.join(root,'src/field/shaders',name+'.wgsl'),'utf8'));
 const retainedSource=fs.readFileSync(path.join(root,'test/fixtures/gradients/RetainedVulkanSeeds.h'),'utf8');
 const retained=[...retainedSource.matchAll(/retainedVulkanRuns\d+\{([\s\S]*?)\};/g)].map(match=>match[1].match(/\d+/g).map(Number));

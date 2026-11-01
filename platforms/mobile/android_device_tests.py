@@ -18,10 +18,10 @@ import uuid
 import sys
 import xml.etree.ElementTree as ET
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "test"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "test"))
 from build_provenance import source_identity, build_issues
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 BINARIES = ('glob2-unit-tests', 'glob2-engine-tests')
 
 
@@ -68,7 +68,7 @@ def main():
     for name in names:
         if not (build / 'tests' / name).is_file():
             raise RuntimeError('Build android-tests before running: ' + name)
-    ndk = json.loads((ROOT / 'mobile/toolchain.json').read_text())['android']['ndk']
+    ndk = json.loads((ROOT / 'platforms/mobile/toolchain.json').read_text())['android']['ndk']
     prebuilt = next((args.android_sdk / 'ndk' / ndk / 'toolchains/llvm/prebuilt').iterdir())
     remote = '/data/local/tmp/glob2-tests-' + uuid.uuid4().hex
     output = args.output.resolve()

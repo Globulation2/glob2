@@ -10,7 +10,7 @@ from pathlib import Path
 
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "data/icons/glob2-icon-128x128.png"
 BACKGROUND = (43, 28, 66, 255)
 IOS_BACKGROUND = (76, 54, 118, 255)
@@ -27,7 +27,7 @@ def render(source, path, size, fraction, transparent=False, background=BACKGROUN
 
 def main():
     source = Image.open(SOURCE).convert("RGBA")
-    res = ROOT / "mobile/android/app/src/main/res"
+    res = ROOT / "platforms/mobile/android/app/src/main/res"
     for density, scale in (("mdpi", 1), ("hdpi", 1.5), ("xhdpi", 2),
                            ("xxhdpi", 3), ("xxxhdpi", 4)):
         folder = res / ("mipmap-" + density)
@@ -35,7 +35,7 @@ def main():
         # The outer adaptive layer is reserved for launcher masks and motion.
         render(source, folder / "ic_launcher_foreground.png", round(108 * scale), .5, True)
 
-    catalog = ROOT / "mobile/ios/Assets.xcassets"
+    catalog = ROOT / "platforms/mobile/ios/Assets.xcassets"
     catalog.mkdir(parents=True, exist_ok=True)
     info = {"author": "xcode", "version": 1}
     (catalog / "Contents.json").write_text(json.dumps({"info": info}, indent=2) + "\n")

@@ -17,7 +17,7 @@ test('Tutorial opens the lesson catalog as the only tutorial menu on phones',asy
   expect(await page.evaluate(()=>glob2Diagnostics.snapshot().controls['menu/10'])).toBeUndefined();
   await clickMainMenu(page,'tutorial');
   await expect.poll(()=>page.evaluate(()=>{const s=glob2Diagnostics.snapshot();return s.screen+' '+s.screenClass;})).toContain('LessonCatalogScreen');
-  const out=path.resolve(__dirname,'../../artifacts/training/retire-browser-ui');fs.mkdirSync(out,{recursive:true});
+  const out=path.resolve(__dirname,'../../../artifacts/training/retire-browser-ui');fs.mkdirSync(out,{recursive:true});
   for(const [width,height,label] of [[400,800,'portrait'],[800,400,'landscape']]) {
     await page.setViewportSize({width,height});await control(page,'tutorial/lesson/0');
     await page.screenshot({path:path.join(out,'catalog-'+label+'.png')});
@@ -37,7 +37,7 @@ test('shared training tutorial keeps touch actions usable across rotation',async
     return s.screen==='match' || name.includes('GameSessionScreen');
   },{timeout:180000}).toBe(true);
   await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().tick),{timeout:60000}).toBeGreaterThan(32);
-  const out=path.resolve(__dirname,'../../artifacts/training/browser-ui');fs.mkdirSync(out,{recursive:true});
+  const out=path.resolve(__dirname,'../../../artifacts/training/browser-ui');fs.mkdirSync(out,{recursive:true});
   for(const [width,height,label] of [[400,800,'portrait'],[800,400,'landscape']]) {
     await page.setViewportSize({width,height});
     for(const key of ['intro/destination','intro/help','intro/collapse']) {

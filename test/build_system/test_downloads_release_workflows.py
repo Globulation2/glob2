@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[2]
-sys.path.insert(0,str(ROOT/'mobile'))
+sys.path.insert(0,str(ROOT/'platforms/mobile'))
 sys.path.insert(0,str(ROOT/'tools/release'))
 import sideload_release
 import sign_macos

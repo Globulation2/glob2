@@ -417,7 +417,7 @@ On an Apple build host, compile the translated output separately with
 contains the exact `xcodebuild -version` output (`xcodeVersion`), SDK name and
 version (`sdk`, `sdkVersion`), and SHA-256 digests of the resolved `metal` and
 `metallib` executables (`metalSha256`, `metallibSha256`). It must match the existing
-Xcode pin in `mobile/toolchain.json`; `--developer-dir` selects a bundle without
+Xcode pin in `platforms/mobile/toolchain.json`; `--developer-dir` selects a bundle without
 changing the system selection. This separate step compiles MSL to AIR, links
 `.metallib`, checks the library magic and compiled function name, and records
 source and library hashes with the entrypoint. Failed or incomplete builds leave
@@ -540,7 +540,7 @@ capabilities, even when the window uses a GPU device. Graphics settings are also
 available from the in-game and editor menus; the running engine or editor is retained
 while settings are open.
 
-The browser WebGPU adapter (`browser/webgpu-device.js` and `WebGPUDevice.cpp`)
+The browser WebGPU adapter (`platforms/web/webgpu-device.js` and `WebGPUDevice.cpp`)
 prepares adapters, devices and shader pipelines asynchronously before changing
 presentation ownership. `glob2_webgpu_prepare(shaderDirectory)` and
 `glob2_webgpu_poll()` return pending (0), ready (1), or failed (-1), with
@@ -593,8 +593,8 @@ browser acceptance.
 The packed C++ wrapper has a separate regression proof. Build it with
 `tools/shaders/build_webgpu_cpp_proof.py`, supplying `--emxx` from the pinned
 Emscripten SDK, the browser SDL prefix with `--sdl-prefix`, and generated shaders
-with `--shader-directory`. Serve its output with `browser/serve.py`, then run
-`NODE_PATH=browser/node_modules node tools/shaders/prove_webgpu_cpp.cjs URL`.
+with `--shader-directory`. Serve its output with `platforms/web/serve.py`, then run
+`NODE_PATH=platforms/web/node_modules node tools/shaders/prove_webgpu_cpp.cjs URL`.
 It checks all four textured skin atlas offsets, straight and premultiplied
 render-target sampling, and pressure eviction with live restoration sources and
 an unpresented frame lease. Exercising only JavaScript records would miss C++

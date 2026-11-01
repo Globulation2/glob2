@@ -164,7 +164,7 @@ without menu controls or status bars; no separate sprite animations are overlaid
   (`src/ui/FrontendUI.cpp`). The theme follows the system unless the viewer
   picks one with the navigation toggle (stored in that browser only; `public/theme.js`
   applies it before the first paint).
-  The browser download screen (`browser/shell.html`) uses the same theme choice
+  The browser download screen (`platforms/web/shell.html`) uses the same theme choice
   and palette, with the shared wordmark, Glob icon and Nunito font served from
   `/signin/assets/`, and the site's `/favicon-32.png` favicon.
 - **Type**: Glob2 Sans (the game font, a Latin subset of `data/fonts/sans.ttf`)
@@ -287,7 +287,7 @@ the instance description) load on demand.
 ### Watch in browser
 
 The match page links "Watch in browser" to `/play/?replay=<replay URL>`. The
-browser shell (`browser/shell.html`) downloads that replay while the game loads,
+browser shell (`platforms/web/shell.html`) downloads that replay while the game loads,
 writes it to the in-memory `/tmp` (never to saved storage), and starts the game
 with `replay <file>`, the existing replay viewer. It accepts http(s) URLs only,
 sends credentials only to its own origin, and caps the file at 64 MiB. When the
@@ -309,7 +309,7 @@ previews and an open room (`apps/web/e2e/showcase.ts`), the API with local
 accounts enabled, and a front server that routes like the Caddyfile. When a
 browser game build exists (`build/emscripten/client/release`, or
 `GLOB2_WEB_CLIENT_DIR`) it also plays the seeded replay
-(`browser/tests/fixtures/cross-replay.replay`) through Watch in browser.
+(`platforms/web/tests/fixtures/cross-replay.replay`) through Watch in browser.
 
 Every page, including the sign-in and invite pages, is checked with axe in both
 themes on desktop and phone and must have no violations: `a11y.spec.ts` runs

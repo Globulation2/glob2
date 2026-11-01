@@ -364,7 +364,7 @@ jobs:
           BUILDER_URL: ${{ secrets.GOG_BUILDER_URL }}
         run: |
           set -euo pipefail
-          BUILDER_SHA256="$(jq -r '.builderSha256' gog/release-config.json)"
+          BUILDER_SHA256="$(jq -r '.builderSha256' platforms/stores/gog/release-config.json)"
           test -n "$BUILDER_URL"
           [[ "$BUILDER_SHA256" =~ ^[0-9a-f]{64}$ ]]
           curl --fail --location --silent --show-error --proto '=https' \
@@ -379,8 +379,8 @@ jobs:
           VERSION: ${{ needs.preflight.outputs.version }}
         run: |
           set -euo pipefail
-          PRODUCT_ID="$(jq -r '.productId' gog/release-config.json)"
-          BASE_PRODUCT_ID="$(jq -r '.baseProductId' gog/release-config.json)"
+          PRODUCT_ID="$(jq -r '.productId' platforms/stores/gog/release-config.json)"
+          BASE_PRODUCT_ID="$(jq -r '.baseProductId' platforms/stores/gog/release-config.json)"
           build_version="${VERSION}-r${GITHUB_RUN_ID}-a${GITHUB_RUN_ATTEMPT}"
           for platform in windows linux macos; do
             python3 tools/gog_pipeline.py --platform "$platform" \

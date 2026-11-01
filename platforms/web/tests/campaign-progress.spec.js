@@ -11,7 +11,7 @@ const screen=async(page,name)=>{
   return expect.poll(async()=>(await state(page)).screen).toContain(name);
 };
 const stored=page=>page.evaluate(()=>glob2Diagnostics.campaignDigest('Browser_Test_Campaign.txt'));
-const fixture=require('node:fs').readFileSync(require('node:path').resolve(__dirname,'../../test/fixtures/campaign/Browser_Test_Campaign.txt'),'utf8');
+const fixture=require('node:fs').readFileSync(require('node:path').resolve(__dirname,'../../../test/fixtures/campaign/Browser_Test_Campaign.txt'),'utf8');
 async function campaign(page) {
   // A fixture definition is file input only; all progress and UI changes use real controls.
   await page.evaluate(text=>FS.writeFile('/campaigns/Browser_Test_Campaign.txt',text),fixture);

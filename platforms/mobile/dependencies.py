@@ -11,7 +11,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
 from build_layout import (
     BuildLock,
     build_identity,
@@ -57,7 +57,7 @@ def validate_bundle(prefix, identity, fingerprint):
 
 
 def java_sources(vcpkg, prefix, downloads):
-    artifact = json.loads((ROOT / "mobile/sdl-java.json").read_text())
+    artifact = json.loads((ROOT / "platforms/mobile/sdl-java.json").read_text())
     port = (ROOT / "scons/vcpkg-ports/sdl3/portfile.cmake").read_text()
     version = json.loads((ROOT / "scons/vcpkg-ports/sdl3/vcpkg.json").read_text())["version"]
     if version != artifact["version"] or artifact["sha512"] not in port:
@@ -130,13 +130,13 @@ def main():
             validate_bundle(final, identity, toolchain["fingerprint"])
             print("Dependency prefix:", final)
             return 0
-        revision = json.loads((ROOT / "mobile/vcpkg.json").read_text())[
+        revision = json.loads((ROOT / "platforms/mobile/vcpkg.json").read_text())[
             "builtin-baseline"
         ]
         vcpkg = (
             mobile_tools(ROOT, lease=False) / "vcpkg"
             if isolated()
-            else home() / "toolchains/vcpkg" / key(ROOT, ["mobile/vcpkg.json"])
+            else home() / "toolchains/vcpkg" / key(ROOT, ["platforms/mobile/vcpkg.json"])
         )
         vcpkg.parent.mkdir(parents=True, exist_ok=True)
         # vcpkg's own internal tools directory is mutable; serialize cold builds using this revision.
@@ -235,9 +235,9 @@ def main():
                     str(vcpkg / "vcpkg"),
                     "install",
                     "--triplet=" + triplet,
-                    "--overlay-triplets=" + str(ROOT / "mobile/triplets"),
+                    "--overlay-triplets=" + str(ROOT / "platforms/mobile/triplets"),
                     "--overlay-ports=" + str(ROOT / "scons/vcpkg-ports"),
-                    "--x-manifest-root=" + str(ROOT / "mobile"),
+                    "--x-manifest-root=" + str(ROOT / "platforms/mobile"),
                     "--x-install-root=" + str(installed),
                     "--x-buildtrees-root=" + str(scratch / "vcpkg-buildtrees"),
                     "--x-packages-root=" + str(scratch / "vcpkg-packages"),
