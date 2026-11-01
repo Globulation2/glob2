@@ -1,0 +1,12 @@
+{
+  "revision": "71ca6c559fea4e173cc6e3c839b406159b6bef73",
+  "reviewed_master": "23edd38f4af1e6787f5e01920fc672a297eeaa4d",
+  "environment": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "build": "PYTHONPATH=\"$PWD${PYTHONPATH:+:$PYTHONPATH}\" python3 tools/dev_build.py engine-tests",
+  "tests": "python3 test/run_tests.py --build-dir build/darwin/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'GameSpeed/desktop statistics*' --filter 'GameSpeed/settings*' --artifacts artifacts/top-statistics/screenshots --junit artifacts/top-statistics/junit.xml --verbose",
+  "results": "Committed revision build exit 0; two display cases passed, zero failed/skipped (14.5s). Real GPU readbacks, nonblank pixels, clear speed gutter and chevron clicks verified at 640/1280 with zero/five-digit values.",
+  "coverage": "Desktop render-only change: layout, GPU captures, nonblank content, clear gutter, and speed input. Simulation/save/replay formats unchanged. Other platforms not run.",
+  "integration": "Reviewed new master commit 23edd38f4a: its statistics history and win-probability changes do not change the top-bar values or layout interfaces. No rebase performed. git merge-tree --write-tree HEAD origin/master exited 0 (clean integration tree 049e163274c597ba17bb7c0daf10f617a5b1fcca).",
+  "build_workaround": "Asset worker initially failed to import tools under SCons/Python 3.14; setting PYTHONPATH to the source root fixed it.",
+  "base_revision": "80596f1477a1e3736d3b60287a62b6702e13c546"
+}

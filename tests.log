@@ -1,0 +1,5 @@
+PASS GameSpeed/settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences] (6.9s)
+PASS GameSpeed/desktop statistics spacing and speed hit target [display][artifacts][writes-preferences] (7.6s)
+
+2 passed, 0 failed, 0 skipped (14.5s of test time)
+[run_tests] JUnit report: artifacts/top-statistics/junit.xml (2 cases)

@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="GameSpeed"><testcase classname="GameSpeed" name="desktop statistics spacing and speed hit target [display][artifacts][writes-preferences]" time="6.95895" status="run" />
+  <testcase classname="GameSpeed" name="settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]" time="6.26971" status="run" />
+  </testsuite></testsuites>
