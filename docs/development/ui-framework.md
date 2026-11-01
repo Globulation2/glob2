@@ -502,6 +502,11 @@ bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
 
+Script-layout locales, Swahili and Norwegian Bokmål draw high-DPI text at the
+authored width used by wrapping and hit testing. The complete high-resolution
+bitmap is resampled into that destination: font hinting at a larger raster size
+must not make a fitted line overflow its layout.
+
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored
 resolution. The touch inspector's curved labels rasterize their source at twice
