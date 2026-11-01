@@ -1,0 +1,24 @@
+{
+  "code_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "CXX=g++-13",
+    "-j8",
+    "unit-tests",
+    "engine-tests"
+  ],
+  "exit_code": 0,
+  "profile": "Linux GCC13.4 full-feature fast development, default H264 recording; not a shipping release build.",
+  "dependencies": {
+    "sdl_prefix": "/home/bradley/.codex/worktrees/83ab/glob2/build/sdl3-ci/prefix",
+    "recording_prefix": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/recording-prefix",
+    "prior_recording_reuse_proof": "../bengali-localization-v3/native-recording-prefix-reuse.json"
+  }
+}

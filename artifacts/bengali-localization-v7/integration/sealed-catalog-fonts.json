@@ -1,0 +1,1193 @@
+{
+  "status": "PASS",
+  "reviewer_identity": "/root/rendering_audit",
+  "observed_at": "2026-11-01T09:34:23.346163+00:00",
+  "actual_source_revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "source_manifest_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "git_tree": "4b8131ecb89f597bdc492bddbe2cbc2828ef6da2",
+  "producer_receipt_sha256": "bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8",
+  "asset_manifest_sha256": "6e9881793350d9fcf5ee3dac53a304b464b9cce6ebde49198d40c3b1b6c1c555",
+  "package_directory": "/home/bradley/.codex/worktrees/83ab/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto",
+  "native_catalog_count": 39,
+  "online_catalog_count": 39,
+  "bengali_online_messages": 2947,
+  "checked_extractions": [
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.ar.txt",
+      "bytes": 265795,
+      "sha256": "8f7d458e548a9fae1df8b6e03778ce8fb9eb87bd8c7f248c35ec80259fe4798c",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.br.txt",
+      "bytes": 211593,
+      "sha256": "eadfffbb2ffeb6e291033529f1fc640a241ef2eb9779285a7b559e137af2e0db",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.ca.txt",
+      "bytes": 212342,
+      "sha256": "617002a9dbc221310063400a893f1d162751379209d4e19f69331f7ebac2b28d",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.cz.txt",
+      "bytes": 208236,
+      "sha256": "ee0f4ca1ade67678bc2d621b7dcd0b801b211c86d0769380dc051b4d0c3ec79e",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.de.txt",
+      "bytes": 211710,
+      "sha256": "9e613076012f3e58cac53c753fa90e97a49d7b823c5a79c41333be53433d117e",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.dk.txt",
+      "bytes": 198684,
+      "sha256": "109d35ba43b55814ba108ab8c6d143a5c4b1040608167c229a12266ac70b4bec",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/texts.en.txt",
+      "bytes": 190754,
+      "sha256": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.es.txt",
+      "bytes": 213982,
+      "sha256": "82e695681d63e29c9e01421feca77f50fff26d2ea7cf9be1c4c12d369b67caff",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.eo.txt",
+      "bytes": 206041,
+      "sha256": "9d2024a0cd6622147e98e99f0dfe76f7e007a9e4642e6de52f2a7bd72003b1a3",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.eu.txt",
+      "bytes": 211678,
+      "sha256": "6c1e81e3a603e43252b7b8f197707f40fbea0ad8af7c39e54d618140631b6860",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.fa.txt",
+      "bytes": 282618,
+      "sha256": "421a5a0cb977ea096e888f407435c4863cfef92983b396f0c2d9cafcba37e0a8",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.fr.txt",
+      "bytes": 221174,
+      "sha256": "a3e68814c86c46cefeaadd141f95036dbccc4033db4a16bce138ed9b3e71d775",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.gr.txt",
+      "bytes": 328771,
+      "sha256": "ddfd6db804eea55453304ff58aaf304f7d14e803f6199537ebb08ef724080f11",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.hu.txt",
+      "bytes": 222890,
+      "sha256": "36f155abc525276b85373ae14837fe8e4311133865c6a63792f8d8d2fc748d33",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.it.txt",
+      "bytes": 213233,
+      "sha256": "6acb1bdebba515bd9ae003af58f97e1fb18f9725d51f06a105b2489717aeaddb",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.nl.txt",
+      "bytes": 207442,
+      "sha256": "e703f3cce8d2c4bde6d5155305a5812035af2e12d18e4711bf87c92b9975aa75",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.pl.txt",
+      "bytes": 207784,
+      "sha256": "d1497ad18ca233c9aa7ac6292c1f09b7fc7d10e9a3d9e15459c6c6f1e5a7404b",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.pt.txt",
+      "bytes": 214666,
+      "sha256": "4a2b1c287475f4aef784a7ec604ccb2dd9ada9d659ff344ea29b3a2b92c3e0c4",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.ro.txt",
+      "bytes": 218893,
+      "sha256": "344158c80aaad1a9d327e9d3b87da577ee51b070b46bae4af2c6fdef4d9139c8",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.ru.txt",
+      "bytes": 297349,
+      "sha256": "1ae01ed3fe360a5edd5172fc12a79cce75001663f0e1a508e7cb403b36c7e970",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.si.txt",
+      "bytes": 203789,
+      "sha256": "8684c43f6487fe6d6a992b4b08924106c9a87c55dcef5578b9fec0492219eaa0",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.sk.txt",
+      "bytes": 210341,
+      "sha256": "59fb432d66fae9e6c69e9821abb1c328b64b4b1712a69095d4d8ba601d9ad5a4",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.sr.txt",
+      "bytes": 288996,
+      "sha256": "84a9fdea5658115f28c31c9d81e63e7d900f8791b309c8fe977862e4053c1158",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.fi.txt",
+      "bytes": 208942,
+      "sha256": "1d3c14abbf947ff05e0617b58165d9e730bc8f7d0db4eb35fcd3d1ba3087f3bc",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.sv.txt",
+      "bytes": 200994,
+      "sha256": "5c8e4a72c935157064eb89d7380a028a1ce9e4a51150d72742836ca4ade240d0",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.tr.txt",
+      "bytes": 209640,
+      "sha256": "de1c27a5a24eee934fa5cc69b48747fc1b63e4d91a3b35f98d73e4cd884c592f",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.zh-tw.txt",
+      "bytes": 187730,
+      "sha256": "1d75151622588d488c3159cc9d907327a6b1cc87bfe015a8127f976b810ae992",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.zh-cn.txt",
+      "bytes": 187310,
+      "sha256": "5383312809c969aa47645597ff70ba751d5211e036a1882f563efc328dafb31a",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.uk.txt",
+      "bytes": 297373,
+      "sha256": "93163376b90b8c7691f4353438574b550359d5ab19d24eccea9ec9d3b7751f3d",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.id.txt",
+      "bytes": 203870,
+      "sha256": "6369667d3ecc531a5f71f91b0c89fc4fcb5d622ff97511b922315efee298e205",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.vi.txt",
+      "bytes": 232948,
+      "sha256": "67365eca739994b3544b7555d47cc5d25d6dec6357fc4a44ab33215f682116c1",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.ja.txt",
+      "bytes": 233422,
+      "sha256": "a94c7d025fe27353fb669282c364ec77796d48ed1adb31dc265de9c920783b7a",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.ko.txt",
+      "bytes": 221409,
+      "sha256": "d601eb2c384057ccbad8e211e3768c812693fa5b0ae86c556cc20b5a63e9c2eb",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.hi.txt",
+      "bytes": 375017,
+      "sha256": "81a4243f010075376661c22ac3a3fc6cdd25e2c1e9681adfffe8d7f6ee3018ce",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.ur.txt",
+      "bytes": 283865,
+      "sha256": "302c80cd0e57cbca93c6a85120084fc9a7223dbc8c32f4d1ef4dfc5daf9dcf27",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.sw.txt",
+      "bytes": 210712,
+      "sha256": "11543b008318b91764e03d578f506f632f75c1da3b9661df80ce93af36e3e5c9",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.bn.txt",
+      "bytes": 400627,
+      "sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.nb.txt",
+      "bytes": 201437,
+      "sha256": "342fa3f82803806e166f1b06ca1d160b1a90d5fda1f1b9814cf6f0a01560bb17",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "translations",
+      "virtual_path": "/data/texts.ms.txt",
+      "bytes": 213356,
+      "sha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/texts.keys.txt",
+      "bytes": 82157,
+      "sha256": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/texts.list.txt",
+      "bytes": 728,
+      "sha256": "e2f60e175359637a250b42e55f45e2e5bf5261a032ef8c021ab6d488cf5bc262",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/texts.incomplete.txt",
+      "bytes": 743,
+      "sha256": "797131c9e3bcf08f2fa8affbd7aee226e6e8cd7b3cb108b29031dd843c8fbdac",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/manifest.json",
+      "bytes": 4543,
+      "sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "bytes": 219212,
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "bytes": 200048,
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+      "bytes": 208452,
+      "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+      "bytes": 53000,
+      "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansTamil-Regular.ttf",
+      "bytes": 74248,
+      "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+      "bytes": 197228,
+      "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansKannada-Regular.ttf",
+      "bytes": 151940,
+      "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+      "bytes": 111724,
+      "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansOriya-Regular.ttf",
+      "bytes": 95776,
+      "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansThai-Regular.ttf",
+      "bytes": 37752,
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+      "bytes": 195408,
+      "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+      "bytes": 344328,
+      "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/scripts/NotoSansArabic-Regular.ttf",
+      "bytes": 240456,
+      "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/LICENSE-Noto.txt",
+      "bytes": 4377,
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "core",
+      "virtual_path": "/data/fonts/sans.ttf",
+      "bytes": 597784,
+      "sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+      "exact_source_bytes": true
+    },
+    {
+      "package": "font-cjk",
+      "virtual_path": "/data/fonts/sans.ttf",
+      "bytes": 8137448,
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "exact_source_bytes": true
+    }
+  ],
+  "online_http_catalogs": [
+    {
+      "locale": "ar",
+      "sha256": "e3176a85f4bd1f31a7ec1ac6acd03151ddf728988e88769543149b29d2cecd8f",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "bn",
+      "sha256": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "ca",
+      "sha256": "528316bc42c85d6e63f4183db0c595bfc202e3e2dc322beeac2c92128bea530f",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "cs",
+      "sha256": "2e651919b7501cfbbf8c4900eb3d782841577bf615a78dc5ec287e3fe88622cb",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "da",
+      "sha256": "9c482dbc9c0a969bbd1c47bdc64b0a917a5354942dcb4e2bc0cfa840e70ac15f",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "de",
+      "sha256": "abc30cfa45adcb383df1009e9f918f6851f73a36bef0b2c405fa9358aa2f807e",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "el",
+      "sha256": "8d033eeff0d6b0f8eb923194ac3fabf0e2907cd9bd564c8be973ba1cf1aa019c",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "en",
+      "sha256": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "eo",
+      "sha256": "e91c65a9abf320c7daca78a11e84c39d66da0f322f1c434c1503a116fead4ffd",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "es",
+      "sha256": "f90d8c5d40dd8ce68b1ddee9dee6f1b6b4d01ab9290868f9f32387e26f3ed2bf",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "eu",
+      "sha256": "92059a8870b70189463986d352b917cb75ec89c6d0222217bc090df6c2e0700e",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "fa",
+      "sha256": "12f557048464ea327788c87aee47d63ca8dfe9253e8a8f892a446283be7daba5",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "fi",
+      "sha256": "d36f7ce8825970c1fc98c2a691d9559c7a2e94d4e958a122999a0771b7df756c",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "fr",
+      "sha256": "8e9e08b1ba7e16254b98710d46e76ba8309c67f0c3cf3f05f42caabdc2832d01",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "hi",
+      "sha256": "b023d1e924d4b5e8cf1e48e87d62baf9dcb36fcc3c60159eaad921e8973fdd4f",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "hu",
+      "sha256": "490357927a6c07a8b9974e0a01d41612749d9bbce60325aa450dd5fbc3e4c15e",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "id",
+      "sha256": "fb1a3da8c04bec2f1d734bb3d125f2ca046c8ba582a594fdfd81dbd1f6387d86",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "it",
+      "sha256": "8bf47efcd21aa29e5e6bc1078a30da3cd2ee5d2442f018c569846ed15e46715f",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "ja",
+      "sha256": "6071c4c7e953216807f3c50bd3107e4f31e67e8bab8796532b4b35290d127887",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "ko",
+      "sha256": "7636ea166960c74888dc06b3ca12927071ef2e92e1f16ef828e5e7d8f7faebd1",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "ms",
+      "sha256": "eb18efdc85988b0379ad0c33affd880e4be83651d9955be9b0f3d772a5d03064",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "nb",
+      "sha256": "d191838e041223908d5442adaf99b4861214eef50eeed11146e13f94c6cbe73f",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "nl",
+      "sha256": "cb0caaaa5a1f3ff1602203f0dba0d4220d9517e8416401d8e45d7031cca3e362",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "pl",
+      "sha256": "571b438ba21425e013fc18998a24240120a90a9aa21b230a671bd1de3d53b4bb",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "pt-BR",
+      "sha256": "d0e8912033fa6b7642b0ff0f1f316322838c52118d9e8d1bc531f9c023374765",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "pt-PT",
+      "sha256": "6152244b3c17abdb9ff8106632bf01196aa3973e05e3bfa0b6ff80a09b28b36a",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "ro",
+      "sha256": "f7c98a6498b9a0fe1bdec8b05fde902d36d28fd9672c291bb2c5caf397468a2f",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "ru",
+      "sha256": "9b5512ef8f761d083c24eeef3890ca65c3f367df663d446708f3ffc33bace55e",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "sk",
+      "sha256": "cc2f38fa942e2a4846c499b58460da0f1507099f8c538419a042b2114270a4cb",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "sl",
+      "sha256": "8d536a39628459eeeaebd0f824b141465b08f1dabc77b875e58857c2cdda6fe3",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "sr-Cyrl",
+      "sha256": "8f4c58824be0614e2171415bf57ba27068587629243569edaac76510f56bde50",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "sv",
+      "sha256": "a2ee3e246abb88c04aaba8f4f021938f19b902a6ffaf81d075802f8f06dc5618",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "sw",
+      "sha256": "5accf754f74c410bc1bb8849839aeffbb6adec9a8c4f8e82b9030475499b9878",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "tr",
+      "sha256": "d97558a6db8c78923b56db0735711cc91101c21469e5b5dc900be680590a1967",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "uk",
+      "sha256": "980adc143492f2aa302bc8945d06f0b7cf4e716dea1545c346854b71b55b767d",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "ur",
+      "sha256": "27a8129e47eff97a7fe2ca1885ad9877cd73efb7ad0853f57267b63b53a027d0",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "vi",
+      "sha256": "60972ca2d6f8ea43ea1ad968b2ef3b0104784a567ba2195888991a09fcf0179d",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "zh-Hans",
+      "sha256": "bba4b2808f90690dc23a1521de7507ce5ee25a307394a0064e10fe4b4685a1c8",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    },
+    {
+      "locale": "zh-Hant",
+      "sha256": "997f65964bd617b1b93f667e786d265f184f9c9c84bc5f3527d21b5043a2e0c8",
+      "messages": 2947,
+      "exact_canonical_bytes": true
+    }
+  ],
+  "http_script_fonts": [
+    {
+      "name": "NotoSansDevanagari-Regular.ttf",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansBengali-Regular.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansGujarati-Regular.ttf",
+      "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansGurmukhi-Regular.ttf",
+      "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansTamil-Regular.ttf",
+      "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansTelugu-Regular.ttf",
+      "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansKannada-Regular.ttf",
+      "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansMalayalam-Regular.ttf",
+      "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansOriya-Regular.ttf",
+      "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansThai-Regular.ttf",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansMyanmar-Regular.ttf",
+      "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansEthiopic-Regular.ttf",
+      "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "exact_source_bytes": true
+    },
+    {
+      "name": "NotoSansArabic-Regular.ttf",
+      "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "exact_source_bytes": true
+    }
+  ],
+  "all_part_hashes": [
+    {
+      "package": "core",
+      "url": "assets/core.06da0f1fba26b436.data",
+      "bytes": 9166322,
+      "sha256": "06da0f1fba26b436756b13aca3d53c60dc21c7bdfeca56869eb1a09f190df41f"
+    },
+    {
+      "package": "game",
+      "url": "assets/game-1.e5347e01af620593.data",
+      "bytes": 4194060,
+      "sha256": "e5347e01af620593579d9cee6a9de4f13dde15f1711d17bda33b8267785e3805"
+    },
+    {
+      "package": "game",
+      "url": "assets/game-2.d2f3f499b0b4ab1b.data",
+      "bytes": 4193418,
+      "sha256": "d2f3f499b0b4ab1be7ba5d75c67958cfae8fd0f8e26aa898f7cb49fa16ece663"
+    },
+    {
+      "package": "game",
+      "url": "assets/game-3.d5658b392a8460d0.data",
+      "bytes": 4193302,
+      "sha256": "d5658b392a8460d0a94d5ac4872a91c85e0a14276e8d8b20ab06af779d7c7838"
+    },
+    {
+      "package": "game",
+      "url": "assets/game-4.db7fc6881bef2304.data",
+      "bytes": 3755019,
+      "sha256": "db7fc6881bef2304e45ec44af06559b837d9428146da01573e1c315835216a53"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-1.1b46c97e0303b531.data",
+      "bytes": 8207092,
+      "sha256": "1b46c97e0303b5317083d218414fa5c3c86654037f5a502c84b57a55ac3a5a49"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-2.52a73a5d6dfa72ca.data",
+      "bytes": 1631773,
+      "sha256": "52a73a5d6dfa72ca044dac302a3fba3db5f0d4ceff82734204d04a5fc7cd90d3"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-3.7e34666a64a82144.data",
+      "bytes": 15524900,
+      "sha256": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-4.9db418c630f9487a.data",
+      "bytes": 1104152,
+      "sha256": "9db418c630f9487a45a31949ace181bd31d0878cf59a9ace19c1292893922e17"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-5.989e22f6965c83f1.data",
+      "bytes": 15524900,
+      "sha256": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-6.5fe8cfde0df15bdc.data",
+      "bytes": 1063939,
+      "sha256": "5fe8cfde0df15bdc1f9d04116d9a8566d3d60b8bad9b4ae332103b5a9c28d031"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-7.a284a1de5163b617.data",
+      "bytes": 15524900,
+      "sha256": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-8.d6cf242d3126756c.data",
+      "bytes": 1214472,
+      "sha256": "d6cf242d3126756cbd63d97fb2049689c8953cd31e7afaaabc4a6add349b7249"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-9.ce14b8e276b5356a.data",
+      "bytes": 17896484,
+      "sha256": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-10.a1749111f4898205.data",
+      "bytes": 1264282,
+      "sha256": "a1749111f489820585106f792891838fc96908a9907b0e31f7bc3478fb510d42"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-11.8cfcdf0ae4f64626.data",
+      "bytes": 17896484,
+      "sha256": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-12.b19606116df83b1d.data",
+      "bytes": 1217544,
+      "sha256": "b19606116df83b1dab7745486ffd855a00de4d5b8979512c2b166786203eddc5"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-13.0e34bee54d15567b.data",
+      "bytes": 17896484,
+      "sha256": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-14.a8c6fda2e24c3301.data",
+      "bytes": 24377,
+      "sha256": "a8c6fda2e24c33015f3ff572a408091d247201b4c9c7828feed2724fc9777ebe"
+    },
+    {
+      "package": "font-cjk",
+      "url": "assets/font-cjk.5701af4422583342.data",
+      "bytes": 8137448,
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+    },
+    {
+      "package": "menu-music",
+      "url": "assets/menu-music.5294ed91abf32cfe.data",
+      "bytes": 264097,
+      "sha256": "5294ed91abf32cfea540641622fb6b0f21b5a5446f35b165e94ae75f9dddb70c"
+    },
+    {
+      "package": "translations",
+      "url": "assets/translations-1.7d25e8a5731b6ce6.data",
+      "bytes": 4183970,
+      "sha256": "7d25e8a5731b6ce637e42870328160e98f6ffdda98821d39e0bf45dd067f93d5"
+    },
+    {
+      "package": "translations",
+      "url": "assets/translations-2.28fb46e734d3bc9e.data",
+      "bytes": 4134701,
+      "sha256": "28fb46e734d3bc9e9e8c011aa7dce10ecdb59fc3109853ad67cd28678120119e"
+    },
+    {
+      "package": "translations",
+      "url": "assets/translations-3.1595371eddd6d423.data",
+      "bytes": 607988,
+      "sha256": "1595371eddd6d423fd01c98fc49a9aaeef3ac485f236f8fb94c0e058029c0f14"
+    },
+    {
+      "package": "music",
+      "url": "assets/music.67f422aa69c5356d.data",
+      "bytes": 1252275,
+      "sha256": "67f422aa69c5356d139763a490f1f6547030247951ef074034309f9f05e600b0"
+    },
+    {
+      "package": "music-sets",
+      "url": "assets/music-sets-1.602de095eeed505a.data",
+      "bytes": 4001177,
+      "sha256": "602de095eeed505ac5065746be6b80f44ad30ccbbb471169eeb3877a06d91eb6"
+    },
+    {
+      "package": "music-sets",
+      "url": "assets/music-sets-2.be883b1c072a2166.data",
+      "bytes": 4168611,
+      "sha256": "be883b1c072a2166e46a024fb8d306a0f07b7fddb186e287f2c3d8ca383218c1"
+    },
+    {
+      "package": "music-sets",
+      "url": "assets/music-sets-3.163578e1e9d60971.data",
+      "bytes": 450081,
+      "sha256": "163578e1e9d60971b90813251c94502854b2ca4a42a658f2093c023a810363c2"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-1.6ae772470b0392c5.data",
+      "bytes": 4194189,
+      "sha256": "6ae772470b0392c564f7dfe10450825c0a4524d7ba5189af3d44c95d8d8d26d9"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-2.1a49fdd84767b826.data",
+      "bytes": 3960380,
+      "sha256": "1a49fdd84767b826bfb672a8d27150da60d6bdd0cb3d379d7aad08a55a603927"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-3.8bb50dac1db55a47.data",
+      "bytes": 4141738,
+      "sha256": "8bb50dac1db55a47bc7e0f349ce64dfcf3b6a5505373be36bf3c68414b99e96d"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-4.53eba4c73b03db03.data",
+      "bytes": 4172580,
+      "sha256": "53eba4c73b03db03991774bf45bf0fb93bd741ff3248f5c1470111aa22bc3d8a"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-5.91416d931b355dc5.data",
+      "bytes": 4190664,
+      "sha256": "91416d931b355dc592910718d6a0b4546496e8f484e06116191653ce54359c44"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-6.d824775ef3fc4c90.data",
+      "bytes": 4193404,
+      "sha256": "d824775ef3fc4c90a628ebfd7d421f6b5bf1f0a679d1fe679cd9385e95950d79"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-7.77d138f050b10df1.data",
+      "bytes": 4192328,
+      "sha256": "77d138f050b10df19875f3306ebf217d75e69c8ad80439ab217d6085e00bff59"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-8.e6860a799a23584c.data",
+      "bytes": 4193776,
+      "sha256": "e6860a799a23584caf5f6b2c4cd68931f052c858feb014a07106a1c8eaf7d03a"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-9.61334f730f3bffdc.data",
+      "bytes": 4193624,
+      "sha256": "61334f730f3bffdcbda2ef1189afb1ba16c42f1e43752f0dc543ce173d586571"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-10.81071e6d47d0423c.data",
+      "bytes": 4175410,
+      "sha256": "81071e6d47d0423cc55bcbbdefd0b7f72482fcff1040ce4f68a3a157de2b2de4"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-11.b19cec53d257e6dc.data",
+      "bytes": 4184994,
+      "sha256": "b19cec53d257e6dc3353cb6193873866a1467feff318227f9327322579f41b26"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-12.fd673e25e0498af7.data",
+      "bytes": 4172612,
+      "sha256": "fd673e25e0498af77348ad067559135ee5a760b53576c5347a943c91c7989c4a"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-13.255b6e5447117df7.data",
+      "bytes": 4184156,
+      "sha256": "255b6e5447117df7832e5a5d84d1127faf7c903e44c4c99ef4d6d3d797f816ac"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-14.5c10c253256c51b8.data",
+      "bytes": 4185310,
+      "sha256": "5c10c253256c51b82185291ebdd43703a40efde686664936e285003310410235"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-15.3f00c1005c5a3007.data",
+      "bytes": 4185712,
+      "sha256": "3f00c1005c5a3007f2bdc771ca42e60a4ae5780502fe8f8a111460f1eaf04748"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-16.5aff8e4516d2f32c.data",
+      "bytes": 4193586,
+      "sha256": "5aff8e4516d2f32c02b1662576c750ed134fb03f9b92c70d0a5a5d5d9098ac94"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-17.895895d7f7904293.data",
+      "bytes": 4190756,
+      "sha256": "895895d7f79042932712ad87d865928905b2657cc86e08c880f22134ac294c09"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-18.df2ee46ab0af7530.data",
+      "bytes": 4192250,
+      "sha256": "df2ee46ab0af753072f8900c0b019c853d6168d2a088d72ce4b9b3b27a7e76ea"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-19.73acb354e05f78a5.data",
+      "bytes": 4190780,
+      "sha256": "73acb354e05f78a590573cd8b6ce52fa22254fe0c33261157296248a373306e4"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-20.a9e3f7b9bb5c1153.data",
+      "bytes": 4177776,
+      "sha256": "a9e3f7b9bb5c115300ba7dc9aff99a9251d2c58666f9f8d1c9ad8bad3083418d"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-21.dd91eb4cfa173448.data",
+      "bytes": 4191672,
+      "sha256": "dd91eb4cfa1734484cc9c3893dd5c40cf6e7f55a5798993beae81b73fecd1469"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-22.38010a231e07b98e.data",
+      "bytes": 4188066,
+      "sha256": "38010a231e07b98ebc50751a96ccc856117c302851f2e178e776dfad246f2a76"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-23.c0cfedcbdd6340b0.data",
+      "bytes": 4188620,
+      "sha256": "c0cfedcbdd6340b00cc3af18148692e34a5470e9ed60ecee26344e547339c3c4"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-24.797f35ee19550342.data",
+      "bytes": 4189782,
+      "sha256": "797f35ee195503429c908e734b3ad31382ae08933421c7e17accdac16be38bd4"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-25.20d84fb0e0d71f86.data",
+      "bytes": 4193212,
+      "sha256": "20d84fb0e0d71f861bf83d5b3ff72ea0733f1b92308af5eb43960f86b2903df6"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-26.9844862e2472cd31.data",
+      "bytes": 4188520,
+      "sha256": "9844862e2472cd3116654615ce5fc695b095da9db8e72c335d7487f47120ec61"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-27.a10f07d49b2a1f2d.data",
+      "bytes": 4190882,
+      "sha256": "a10f07d49b2a1f2ddb77516d476e3a555d45f44a64dcf347ad234e5eb4059f20"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-28.d8aa0f3686067f85.data",
+      "bytes": 4193058,
+      "sha256": "d8aa0f3686067f859d4d3cb6cf918a33168088302e83576b61b6b21e93f00dc5"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-29.d97c8f59ef903b7b.data",
+      "bytes": 4182814,
+      "sha256": "d97c8f59ef903b7bf09e76b08e9a6847aa6cd3d0046206a1c8062f45aa031234"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-30.c9b72940e93a4332.data",
+      "bytes": 4188670,
+      "sha256": "c9b72940e93a4332fbb6ea480b337b90dff64b148d850e35c6cb86869810e6f8"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-31.14931caaf15ca9c4.data",
+      "bytes": 4179044,
+      "sha256": "14931caaf15ca9c40584a8ab61028fea16e2b9eea0b847bb63f6d7c683271034"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-32.a79a110574c55697.data",
+      "bytes": 4192094,
+      "sha256": "a79a110574c55697142db6ae542ef386f1014b74c9783f729c9b6c2eecb81517"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-33.8d3a0628e0b912a8.data",
+      "bytes": 4189122,
+      "sha256": "8d3a0628e0b912a8bc1a9b3d1a4eebace71ebf765b9a88ec40740537df594732"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-34.bceb407bb73fa4ac.data",
+      "bytes": 4190986,
+      "sha256": "bceb407bb73fa4ac95b230b31262dc0ea6804b692a481d5260b90ec5e69d955e"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-35.76239358bf30ff5d.data",
+      "bytes": 4183178,
+      "sha256": "76239358bf30ff5d2d15c2160646d65a577b092e6dc2b7908be2f4820feeb611"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-36.6ecf6a2a00a37b5d.data",
+      "bytes": 4193738,
+      "sha256": "6ecf6a2a00a37b5d2d2f66c21d5c821c3131c9cd61a8cc154e8f179d33573b56"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-37.0eb155943bbbc482.data",
+      "bytes": 4194298,
+      "sha256": "0eb155943bbbc482814a6c6c06913b102c8881bc5a6fe728b0482aa9c8e2cb88"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-38.941f8b9939d512ad.data",
+      "bytes": 4190598,
+      "sha256": "941f8b9939d512adaa4f9f09a614362ce31ee8570e06e718f354dbc4b3a20c7e"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-39.ae1fdbf3c3cb6a85.data",
+      "bytes": 4191676,
+      "sha256": "ae1fdbf3c3cb6a85bba25155a6d7c08b009df4185f3c5754b09e64bbedc36020"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-40.3ce695cbe82be717.data",
+      "bytes": 1235448,
+      "sha256": "3ce695cbe82be7170ed470e9fb638aa308200f9c3f122e743506d9bb41b3555c"
+    }
+  ],
+  "runtime_identities": [
+    {
+      "file": "identity.json",
+      "sha256": "81ebfeba4a8103c094ad347756a8a96eb3a9e79d4593df736864f0233bf6f897",
+      "identity": {
+        "client_features": {
+          "authoring_links": true,
+          "commander": true,
+          "community_ai": true,
+          "community_generators": true
+        },
+        "client_profile": "full",
+        "dev_fast": true,
+        "distribution": "browser",
+        "linker": "auto",
+        "mode": "debug",
+        "native_wss": false,
+        "role": "client",
+        "target": "web",
+        "toolchain": "emscripten"
+      }
+    },
+    {
+      "file": "threaded/identity.json",
+      "sha256": "888e34dae473c439878d53f027129c8fa55f902f917151c6a9c7c0017b7c8bf5",
+      "identity": {
+        "client_features": {
+          "authoring_links": true,
+          "commander": true,
+          "community_ai": true,
+          "community_generators": true
+        },
+        "client_profile": "full",
+        "dev_fast": true,
+        "distribution": "browser",
+        "linker": "auto",
+        "mode": "debug",
+        "native_wss": false,
+        "role": "client",
+        "target": "web",
+        "toolchain": "emscripten",
+        "web_threads": true
+      }
+    }
+  ],
+  "licence_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+  "limits": [
+    "Bounded actual locale/font extraction and sealed package content hashes, not a rerun of the broad3400-image roundtrip.",
+    "No actual startup, renderer appearance, OS IME, mobile binary or simulation determinism claim.",
+    "Runtime/compiler/dependency identities remain those in the producer receipt; this does not relabel old binaries."
+  ]
+}

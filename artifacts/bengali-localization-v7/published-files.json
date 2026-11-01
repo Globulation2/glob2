@@ -1,0 +1,2876 @@
+[
+  {
+    "path": "artifacts/bengali-localization/adversarial-work/final-native-review.json",
+    "sha256": "a86b1a93f5a3d620af907c28f23941f10ba7554e7b97c0a25919c237bd77bc6a",
+    "bytes": 1043138,
+    "git_blob": "decc00136ea9afdf7a53a420b6b093e28560f98c"
+  },
+  {
+    "path": "artifacts/bengali-localization/adversarial-work/final-online-review.json",
+    "sha256": "d63c06958ab1db67d89cf303899e4dd0d442cc74e2d80887df4757fe51cc610b",
+    "bytes": 874587,
+    "git_blob": "80e3097eae133cc708864749e4444e7ae3515abe"
+  },
+  {
+    "path": "artifacts/bengali-localization/author-delta.json",
+    "sha256": "f41ebb77f8624eae00a86108446ae9b1b6c7123c04980978c2189dd68d3284b0",
+    "bytes": 26661,
+    "git_blob": "c7ed2ab2558a0b15b5af8429374bc9f7d04fe28f"
+  },
+  {
+    "path": "artifacts/bengali-localization/author-native-complete.json",
+    "sha256": "debcc49c16a773fe0caba0cfedf54bda8902bd4ca7c7ec0f165b8e4e0aff158b",
+    "bytes": 280582,
+    "git_blob": "cf7cab34fc37833ba7c6daa3dbcea207a49f92ca"
+  },
+  {
+    "path": "artifacts/bengali-localization/editorial-pilot-review.json",
+    "sha256": "068ab30a23b62e7b73db243371c0096ecadcf75ade4551a51ff0553cee87e1c3",
+    "bytes": 6034,
+    "git_blob": "c4c94e83f1e6d17e3c616fa09f7e035fca4e0719"
+  },
+  {
+    "path": "artifacts/bengali-localization/editorial-work/online-editorial-review.json",
+    "sha256": "8050e5a5c335965a758f2b69cf06cf0d010d437e41d8a4e2534c847fa889d16c",
+    "bytes": 1566828,
+    "git_blob": "369d5df64f2cd5f5a4b141eb3ea848cdca5d8147"
+  },
+  {
+    "path": "artifacts/bengali-localization/final-native-semantic-review.json",
+    "sha256": "5354a3d62148bcfe3d840c5e15cbc22381acbf0b504f3a3cf692216f2b16c1ef",
+    "bytes": 2971325,
+    "git_blob": "b4641ee67e6842a379d470f5ec0dff6f85119365"
+  },
+  {
+    "path": "artifacts/bengali-localization/final-online-semantic-review.json",
+    "sha256": "09f6a18e3733ee9f27a8627b00dfa11372029d9b8f35899ae692fe4e88559f65",
+    "bytes": 2707332,
+    "git_blob": "9311ff26da8f182a1a3665c98c47ae765e36f92c"
+  },
+  {
+    "path": "artifacts/bengali-localization/language-brief.json",
+    "sha256": "233679fda80c94c92500fd52d58dae10445bf20d31dc80398c0df6fc7b6e13ef",
+    "bytes": 8139,
+    "git_blob": "c88409015e82254c6583c7dffe77e3a5db1293d9"
+  },
+  {
+    "path": "artifacts/bengali-localization/native-editorial-review.json",
+    "sha256": "bdb70ae00f6e99e877f462615e0b8fa0e659e47a9f803979fe724804f8e68c9a",
+    "bytes": 792950,
+    "git_blob": "e0b2bbcbb6e97bccc759394535f6a3b3d597e9c9"
+  },
+  {
+    "path": "artifacts/bengali-localization/online-author-review.json",
+    "sha256": "f7c70772967c54c58aa2cfb946b712ce7a7fe95ae6973dbee87599f5b0008a52",
+    "bytes": 553230,
+    "git_blob": "05fa73013efb8ed38c2cf13d8e7e91b289f15644"
+  },
+  {
+    "path": "artifacts/bengali-localization/repaired-pilot-semantic-review.json",
+    "sha256": "933ad76475df637332ba1a344328d71f9767782aaea089482d999c711c2a1f55",
+    "bytes": 26036,
+    "git_blob": "3f2f1bd33f5afb23c10eaaf758404bb9abc49d5c"
+  },
+  {
+    "path": "artifacts/bengali-localization/reviews/bn.json",
+    "sha256": "c8fae5e54ac6ba7761ee09703ec467ef921244e78100c09c82fd9f29a526580e",
+    "bytes": 1197578,
+    "git_blob": "9d04dc7f134611894e5cdaf26359343676c88e07"
+  },
+  {
+    "path": "artifacts/bengali-localization/source-based-pilot.json",
+    "sha256": "ad77d64a00f9a00028266b9b3f2aa672defd8b58e10d70075ae609a662bf8107",
+    "bytes": 17959,
+    "git_blob": "268f08111ad2597bd3ba9bbf59364cb75377eaaf"
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/adversarial-delta.json",
+    "sha256": "0f918176f472cab8f6a4cefdac515f2c31efe53f7a89e63325f7196ff86df535",
+    "bytes": 3924,
+    "git_blob": "9ad31bb4bac3d6afe786d7dc1e0f9156de9513a9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/assemble_review.py",
+    "sha256": "a3cc1163ad443397c21b3c91cad68b433ea13530fbd99aa2899d8add2f361c01",
+    "bytes": 13095,
+    "git_blob": "c218b1dda929eef8025c3379970a46bb3bdc0bdb"
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/carry-forward.json",
+    "sha256": "e78bf57da22cabd5ee58f8eb1b2241c23f4788dd9ac06c6c71600addd7a71020",
+    "bytes": 1381335,
+    "git_blob": "2b8e080a5300fb7a218cf55d5b6bc341f9ea49db"
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/editor-delta.json",
+    "sha256": "a5f129fd99d2a25d05a8a8c0729c870dd54f50c9dc31e57200fcf84030fe564c",
+    "bytes": 5822,
+    "git_blob": "2c698e714da8b0203cec6d1bb5aaa64de11a9ae2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/manifest.json",
+    "sha256": "8d14a54425f1a1c368531f398ea827c37e74a5c0cdb391fb95dcf2994dc9e05e",
+    "bytes": 284694,
+    "git_blob": "2964715993c8babe2c6466204dba6ff126d43651"
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/reviews/bn.json",
+    "sha256": "d20b97811c6f6bb48cfd51c110882340d0c67b9d61be0ec084d2d5e7a9f07220",
+    "bytes": 3794903,
+    "git_blob": "66e95cce35500735c7382471b46c9e3b85696c69"
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/semantic-delta.json",
+    "sha256": "bb6b52d013dff71df8826f8ab4191cb6b80ac615cf1ee477e0f5d059160ee2fa",
+    "bytes": 5535,
+    "git_blob": "ff38398bc1bf6bbf5aca1a2601dff88342803e72"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/adversarial-delta.json",
+    "sha256": "97eb5e22b023c26f3d07cfd28cb5ef9d4df8fd6cf8658bef117cdca875b9d5f7",
+    "bytes": 3634,
+    "git_blob": "cc21cef5f3b7359e417f0ce4d95727e7049541c5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/assemble_review.py",
+    "sha256": "90f082e1e16c49c37ffe04f8c1a7347af49623b87b6bc6486c0c3825c9fd4238",
+    "bytes": 9844,
+    "git_blob": "1081ac46ca8390b6e58421a941c45448b0528132"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/author-delta.json",
+    "sha256": "04c3905b5152ae7eb86e71d6f07a5213148609a22889664f90bf1fee978fc3ec",
+    "bytes": 5809,
+    "git_blob": "fafb3c594a0d93bb4076d8fd244a749188fbb29e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bengali-runtime-review.json",
+    "sha256": "630cd20971b41cb40924001fe27c19b75aa78d7af6e3bd1c452cd70e15881ac5",
+    "bytes": 5954,
+    "git_blob": "478be4533189b640c5e4f1d12d06605bdb4deea4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/shutdown.json",
+    "sha256": "048e1ac4def195927ce6e2d89e0d91cb7e45f6854657fe41941766693e70d9e0",
+    "bytes": 401,
+    "git_blob": "49b7774243dacc61930cf73c71b72b44e1c95ea6"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/editor-delta.json",
+    "sha256": "63534bfd7c836edb4dc5682a9e36bb7a496891d01ad4e6df74b02bc7d9e666df",
+    "bytes": 5555,
+    "git_blob": "88badcb8aa8a9606580300ce25d60ea9283b88a9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/installed-source-binding.json",
+    "sha256": "39cfafaf7b3353bba61e84529bb3bc41f9eddb9e13be438517e649d3871c5a38",
+    "bytes": 1321,
+    "git_blob": "8bd9f620e1e01096e05278cae960da55d1c00664"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/runtime-recovery/independent-review.json",
+    "sha256": "f86981d7b67f96c0df5083495a35c5bc0c8b5255eba2261dccfcf2c9b94bc7bc",
+    "bytes": 6458,
+    "git_blob": "94d583d4cd14fe60e5292f19f9a051fd2f61fa67"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/manifest.json",
+    "sha256": "0dded56f09e18062684bb1e5bad29f5a9cdd1ef01a0e31e5403ee19187c74089",
+    "bytes": 284782,
+    "git_blob": "ffbd2fc7d7f5415271cd25334397aa829aeef058"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/reviews/bn.json",
+    "sha256": "63587e705007718c1cf5b447278b4ed6bd76bd2814702e7aa1c93263b780fa39",
+    "bytes": 3777438,
+    "git_blob": "fb9c32d07f9027784f34be4d82ba84981963d4c5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/semantic-final.json",
+    "sha256": "c8c50e6d5b16c777c88fd46cbb00589d6a8214b89d8841d463550e1a039c0539",
+    "bytes": 5465,
+    "git_blob": "9e1c9a1333565146118369bf27d70978651b087a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/semantic-initial.json",
+    "sha256": "bb4df7eaec0926e7f773fe667969badcaa1050b3dff38a36cdcd95221d7be762",
+    "bytes": 5126,
+    "git_blob": "2cc83c51ac5697ff3ff94fdc19dfab5d5e92cdf5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/source-contract-compatibility.json",
+    "sha256": "6a16f674c7ed7c4f6dec899e878f1d76ca5046c3d4ed0a6e7a30a1970370c20f",
+    "bytes": 1273,
+    "git_blob": "6047dcb3385e3229b0592078b261e643b2b91054"
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/source-provenance.json",
+    "sha256": "ffd9844ee1fb67e39166b578b972f3ee637034c38e12e3a3a85bf2000c0f86af",
+    "bytes": 1051,
+    "git_blob": "b48005ec3e55cebcf837b61480db7576643110bc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/adversarial-delta.json",
+    "sha256": "05449d73738549208aa9b6948d86769a7d0981e0b993087f62c4f844165d75a6",
+    "bytes": 8748,
+    "git_blob": "ed4503e85364da78a33375ae2166ede3d8b4bf98"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/assemble_review.py",
+    "sha256": "4e4b5288aa92a6ec0d519dc271a4fb2e599b1918f35fea32fbbfcdb0ff84430a",
+    "bytes": 10708,
+    "git_blob": "0de84e0736393ed9d4d2472ebfd24d954725af2b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/author-delta.json",
+    "sha256": "61bd1755eecec117e555cfc6fd4769039ab339b54811c055ec5c794313a37ab0",
+    "bytes": 13227,
+    "git_blob": "f42853f84ed777f5cf9c8ef16749c0d19a0a6a9d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/ci/41279287886/macos/coverage-and-failures.json",
+    "sha256": "78040c491ecfdc77fad4607ac8a41a814be3f6ae14d04de6631f5dfedb3d2bee",
+    "bytes": 16373,
+    "git_blob": "676ae159513a9460c1428fd0fe603e5516a19be0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/ci/windows-final/actual-runtime-review.json",
+    "sha256": "7ab66e5bc10e2aa2a16cfc0c7f989e7cbfbd4800b5d7e74f20a0175e2cc19ef9",
+    "bytes": 342705,
+    "git_blob": "1ec10aae094e05ca90b805595f0fbe78cc41dd93"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/editor-delta.json",
+    "sha256": "c77f36d20c235c18cda2fa7e73ff31ec0e3b63ed252be3225ec54562aef62d00",
+    "bytes": 13340,
+    "git_blob": "13f8348ff825826a4b45995a844d8b9458b693ee"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/installed-source-binding.json",
+    "sha256": "92279bbc94ea6d05d39272607ea4673d02fc34a10d0b6a58d474d5ad173bb804",
+    "bytes": 1520,
+    "git_blob": "ee1d2855d46133ad6173cdc9449ca501f68a6ef8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/manifest.json",
+    "sha256": "7b161f59163011a549543366871e0ad5a11c951023195d826f2dc19f2030c1f3",
+    "bytes": 285360,
+    "git_blob": "7d9a40d961c19b1a5d0336e7bc71fcc50d28e705"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/reviews/bn.json",
+    "sha256": "157fd8ffa621fefcf7364306e707472fa1afc0bba837c700ef491f4ad8b032aa",
+    "bytes": 3791535,
+    "git_blob": "12b01d20f28d4a23c69cbd74f4fdad1ba6278c72"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/semantic-final.json",
+    "sha256": "3961048a9d7fd7f4077b0321a446642b510528598d39fd5b4f5f65ce344ed36f",
+    "bytes": 13495,
+    "git_blob": "094d4ddb8c56dd10347f6663cc9831dc711de580"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/semantic-initial.json",
+    "sha256": "8e936d6ebbaf6e1045054ebe315751ca4d65b4eeadf5574b33320b9a9daedf17",
+    "bytes": 13646,
+    "git_blob": "b52feed316018ed02b10d3fc16a2d0078795a62f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v4/source-provenance.json",
+    "sha256": "242ecba262e4817b4046386c5f74905b2d78e59cd1a659fcc2b9e15cf57f1c1a",
+    "bytes": 1191,
+    "git_blob": "19d1e6de325fcb4093f99fabc2cf1bb843d1b720"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/EVIDENCE.md",
+    "sha256": "6c4a093cbd7db36ed820ae2301dcc2af908aed968a00757480a6ead760cf7f2f",
+    "bytes": 2789,
+    "git_blob": "671ffb1a7ae0536e19b4ad4faa80d4f3b420b954"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/additional-current-checks.json",
+    "sha256": "58e36355cc1784e2b61da0bd08e369dc7fd610226aec8f5e1ef86cd59c85970b",
+    "bytes": 1055,
+    "git_blob": "c53536f4bce52227ee609f7a34b979bfda138076"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/adversarial-delta.json",
+    "sha256": "90ecdbc80cd747a6d30eea69d14924dd1b85436510da9841480cd1e1dda741b2",
+    "bytes": 67886,
+    "git_blob": "24c4209f908ccb37d16f19a29cae9a5ac376ba5a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/api-delta-105.json",
+    "sha256": "cd73f496f6a33a55a22f60748759a1a86af8679b2eae22621d96b2efcee5e940",
+    "bytes": 25213,
+    "git_blob": "2cefa561df1f92cacf955947d7ccc09a0e1c8205"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/api-pages-tests.log",
+    "sha256": "32ac9d6439d8f9d8ce1dc9f73defca05798bfd05e528aca55852ec40b8ef93da",
+    "bytes": 263,
+    "git_blob": "ae232f2c572fdbcd97687092f27c2e43612feee1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/assemble_review.py",
+    "sha256": "905589509cd422793affe599b3aecf74d7f19b2283f89b326482c8062862872b",
+    "bytes": 9770,
+    "git_blob": "fe880feb0241a318b0e1c02354ad7e6d95399df1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/assembly-audit.json",
+    "sha256": "cd66f25035b16362234e9933c8b3243aae81846bc2e58085ce713c7ce5bf398e",
+    "bytes": 857,
+    "git_blob": "aa69697e4c97ec261072762d6b3853ed4b1fc7c6"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/author-output/author-delta.json",
+    "sha256": "21970a0268856d1269cbe71e64c9e628ecccefa7b430e689eb8754fa5e8006a3",
+    "bytes": 49477,
+    "git_blob": "fe2996f264f5eb1f69d3ef934a08fda4e3609625"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/author-output/bn.json",
+    "sha256": "b72dd0184067245ce3c289693dd1b787e2c7eec6eac902671448359a779dc47a",
+    "bytes": 366921,
+    "git_blob": "97522cb44653ff67eedb4204625c104b07196eba"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/author-output/proposals.json",
+    "sha256": "a4ac9d625c797204f9596d7eecc5bf99e8eff1dfb71c1f799f8de57c2fb7ee3a",
+    "bytes": 10844,
+    "git_blob": "c94d844ab8a27b6ca68a06babc858b312effcc94"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/backend-readback-independent-review.json",
+    "sha256": "6da40b171e57fcd87b5422f06f004df11336e9f7136cd51ffdba869172262232",
+    "bytes": 721,
+    "git_blob": "66cadb74b90745e3e8599731f41bb29a8bbcd0fc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-colony-001.json",
+    "sha256": "922853a4b86b9500df43d107fb7b495b6764c9d63be3c3e7f733f6cd93a44ee8",
+    "bytes": 25851,
+    "git_blob": "d52f2798eb675192d5c7220243710c6cb449ab57"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-colony-002.json",
+    "sha256": "1b620fa8f5c5cf449287004672e66cd7aa4237c12fcfb4cd911e20a1dd642fd3",
+    "bytes": 6150,
+    "git_blob": "a85147da991bc3fe83deca3676677939ea940c70"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-001.json",
+    "sha256": "112f257fb93ab4a84f96bfff79a2b8dc044afe3270163f01e677170f52c32805",
+    "bytes": 18956,
+    "git_blob": "a2c6cc926bae18109e6d5850b5093a69387c2876"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-002.json",
+    "sha256": "0f4e8bc1d1af5bf17a1f89e6d90320909e724f3ed3174d688d35bb8c39a2657d",
+    "bytes": 17962,
+    "git_blob": "c7c5f654549afa910156ff6c212ffbd3cb62c4df"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-003.json",
+    "sha256": "8aa62be27791a74bdf255cc905ad3d5902431a85350bd32bb4ad0eb3c2892ceb",
+    "bytes": 30852,
+    "git_blob": "a171c25582988c302cacbb8859430ba014cdb761"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-004.json",
+    "sha256": "14ae7c761f729c2fe8cc064dc806adea821f1f456b0d7cbc38ce9f62da31316b",
+    "bytes": 20526,
+    "git_blob": "5869f5aca6660c72b1a16c77474469c202df351c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-005.json",
+    "sha256": "0bbaf4a98063d03c73a5ca5f0973c8fae7ab4b7919ef83dbbc0e697e7235f589",
+    "bytes": 21088,
+    "git_blob": "fd1f5c09b1e4e199bd5b42f8f83f6ea9c9d0b419"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-006.json",
+    "sha256": "3d025d544956911ecabd0faafb394dd832372248c50f5b214d324954c42e7131",
+    "bytes": 18977,
+    "git_blob": "cd49005c014cf02f1691fc73436c3329aa9a6eac"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-007.json",
+    "sha256": "cbc418e351109cbf98f8b522d2847ff98e61601e15bb7486555fa135e76d3692",
+    "bytes": 23003,
+    "git_blob": "d5fa4a45104a93606f56e0a852d3cc41a6706baa"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-008.json",
+    "sha256": "ababf67f561d3616641754313f18c7eb714a3be0674dd2ea9db0bdac803d610e",
+    "bytes": 21105,
+    "git_blob": "d4805191cde4f729b2ac068891793b84a21367e3"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-009.json",
+    "sha256": "17be13543f63787e0504b8aeb6d5bacdfa73310f97aca1a9e6cc75ff48225dae",
+    "bytes": 21244,
+    "git_blob": "b11ef5910e0dc3ab1c939a5064012238f7a48b37"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-010.json",
+    "sha256": "bdb39a7dc3241e82dfd11af496445a3ffa8394652c278013d265e2b690b1f390",
+    "bytes": 21086,
+    "git_blob": "70a29a2486a665319263f9d0033b2fbe31ae0c42"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-011.json",
+    "sha256": "a6f677ab2ba959e495ae98ab1263f42137a064b1e215620406d2d81324514d7f",
+    "bytes": 21987,
+    "git_blob": "9b35a61dd289c573e1365a8caa3c7ea840c55f8d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-012.json",
+    "sha256": "bc44e5d04fbed58a2a1ea99e637208278e4ef2159f7b0f14ee25dbb76046d00d",
+    "bytes": 25556,
+    "git_blob": "46a6d148a2195d1ad732bd2659d8deb4516e2c83"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-013.json",
+    "sha256": "e8c0cef6ddbdf2648f544fcddc824822b263943d6ef7b98688f8d7c94178eb89",
+    "bytes": 23424,
+    "git_blob": "7ffb16bf56c69130c8a4551aeb2463aca0dfe1fc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-014.json",
+    "sha256": "154d573e3a6c877157870d425626ebf832c8f66bc6951138a334ee8e60766540",
+    "bytes": 19706,
+    "git_blob": "444a392aa64d588cd9794e158913abc7f18e5a1f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-015.json",
+    "sha256": "b83f3731e80897a4760387ed9d0d29c7647c81782877be77836bb5ffc4df5f5f",
+    "bytes": 24239,
+    "git_blob": "5cd4f8089838ac781547ab6f239de5ea8e911c17"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-016.json",
+    "sha256": "0b97fb47318fbb637ea8f943dd0ce6961636cd6103d9f98c5484f93c34503d10",
+    "bytes": 34349,
+    "git_blob": "fa24e802c9f3edbba9f8f500293cfdb617432943"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-general-017.json",
+    "sha256": "89d6e923ce8902b3417ee30f536404868d90fef3fb048279daccfdf3a339bd22",
+    "bytes": 11725,
+    "git_blob": "b040bc70bd00d2a95334b2762f8ab80b8af9d4c6"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-maps-001.json",
+    "sha256": "0862e9df9935eab822e440771c0ee7034ba258283a002bb8fb00cdaa6e180942",
+    "bytes": 27089,
+    "git_blob": "628f027e7addb669463a97c207cdf5b552f2381c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-maps-002.json",
+    "sha256": "ff0bd7f9a0d9b3fafc5743d6bb7a683d339739eb777ea36bbcac055a9dd819ee",
+    "bytes": 4376,
+    "git_blob": "9d7969f91bc4bcb20007e897242099c4300407b1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-settings-001.json",
+    "sha256": "4b8bf95739d3a3cfcc86d24c4ecd68e752fa118aa6f17706604c2cc18e82aceb",
+    "bytes": 26691,
+    "git_blob": "d52664ef80af7c9bd260f6a256385e99d11456f3"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-settings-002.json",
+    "sha256": "7d9d69a7bcbd5251121c640ca8e609bb89b69d5dcf432b391b8c396c3ed3f43e",
+    "bytes": 28852,
+    "git_blob": "7d56b3edb4ff810f39ddaaf5c3ba0d9b01525a68"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-settings-003.json",
+    "sha256": "dfa97e4cc04aceb1a1b38df7d6921c42abb26cfac0e9d23f5f897dd061ed7785",
+    "bytes": 18406,
+    "git_blob": "11f924777652f2e377532b1552d58180ced05c67"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/native-tutorial-001.json",
+    "sha256": "34aaf3aaef690574a8a04ce6e846cc91f1f2b6727aac80871dfb51afc7534646",
+    "bytes": 2707,
+    "git_blob": "4aea6faf59acb00f16cbb72b3c125a2fd682fac7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-001.json",
+    "sha256": "a377913e15e2aafb90971698b44638d50e1937a49105872ff471c130a72f4a0a",
+    "bytes": 24271,
+    "git_blob": "52001c4423d77823418cffa7ced7d31e3b58eb60"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-002.json",
+    "sha256": "430efd9952c53b43479f5f68f7be4eb10abf0862dd1ae11df2c3d0c4221cdd8e",
+    "bytes": 23727,
+    "git_blob": "113bd804a802ab7694c17070369ddecd9878bf33"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-003.json",
+    "sha256": "054082c11636656a748ca322393e48d2e8c6d456c978926b8d1c70a85524f5a9",
+    "bytes": 26980,
+    "git_blob": "72d124b8609f306e19a0c0523f615c8732f19e48"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-004.json",
+    "sha256": "2f5994add2e174f87db6d6f69d277034f8bc05b138446f32bcbf7da36099bc5e",
+    "bytes": 27541,
+    "git_blob": "ce27ec364531b181cf85dd54a97e2e8237da3699"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-005.json",
+    "sha256": "170c20fb00534ebcbfe133d3ce28c030f24452f4e630ec5dc9e08f201bcd3adb",
+    "bytes": 25861,
+    "git_blob": "9dd143aba740802ace87cf1f93717a06952f780c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-006.json",
+    "sha256": "56c29015a0da3c2cbe92bb4bc4bc0a7335b38f0fb64c22c153cb478377f8a025",
+    "bytes": 24643,
+    "git_blob": "65196ae978b51ca2a344e74083db1c5377c019be"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-007.json",
+    "sha256": "7c1a9b963b3b80763b2a48cc553a2b5d972ce16954366922aa27b09fd208859b",
+    "bytes": 22489,
+    "git_blob": "8c88dd9ea9db76da2577ce0990342c2deb64ff8f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-008.json",
+    "sha256": "5f9082ab4c692b9e91fd22f4c1a353d3c9ac5cb4e4a3ac8cfb74504b8aa2375c",
+    "bytes": 26968,
+    "git_blob": "02348f92206cfbcfd7921347ff98016841a27428"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-009.json",
+    "sha256": "dbdf7365058a6513a7dc26473482e0b0385a244a98650e5cba86c15422f1edd7",
+    "bytes": 24814,
+    "git_blob": "3699c61d7dc79bf2c0cea49ffd171eb824993f3e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-010.json",
+    "sha256": "ab4f87be0b58965ba2ae4db1528aea87ea74ca6f2dbb2893a79ec15f5664832b",
+    "bytes": 25531,
+    "git_blob": "c4894deda1ba1cf2c0cd4505a30973c4ddae491c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-011.json",
+    "sha256": "0c13b6e1672c26436bc766bd5ec2f9dc7f603b8ae182fa7bee0e05675738f237",
+    "bytes": 25783,
+    "git_blob": "e96c6313ab69dd4fb9b043fe20ee2ff15b7b533a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-012.json",
+    "sha256": "e0a946ceda0aca0ec00849efc2c9ad157705b7f13400b4fed09d37f16e91277e",
+    "bytes": 24277,
+    "git_blob": "52b21d6784906e1df2783e1730221232099c8afe"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-013.json",
+    "sha256": "609835912e9e2474ba6049a4afb15b67ff45cfe27bee682824784b50918944ee",
+    "bytes": 33118,
+    "git_blob": "de307681f7ee8a3cd56d0c37394b051378c4bca8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-014.json",
+    "sha256": "81da503383e3594c197012768f60d0b9ce4c899906961edc6932160f32221e8c",
+    "bytes": 27451,
+    "git_blob": "8cad49eff2d871f832b82fed147f86c175fadb63"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-015.json",
+    "sha256": "d059deba6315d08dcb870e08ad16a59ef5140d61ca02dd4c3cb4f92ed1a8e3d0",
+    "bytes": 24363,
+    "git_blob": "f153ff543dc76e8fac171ba9d949662d0a0eb632"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-016.json",
+    "sha256": "f55d38fcf9f220ed5818cc877a28a3cb4b95a8fd1c61068b92263804469b6704",
+    "bytes": 27408,
+    "git_blob": "ad87916330abe9f389e2ba8e65bf4973656ece43"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-017.json",
+    "sha256": "7c921af47e9f4c69b893093fa0764a6029c56346f4ed3b52cf4e3d1b686e17cd",
+    "bytes": 23696,
+    "git_blob": "92971a04300160cd71e583c8f1e501147279623b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-018.json",
+    "sha256": "613610806255627e21e81799294a30e2b8e8f194f3f02441b973fb587f0cce9a",
+    "bytes": 24680,
+    "git_blob": "402cde72fee59c95988ed27baae7769369d2f1c7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/batches/online-online-019.json",
+    "sha256": "841c951d3682abb03554d4a6fcd08a88cbbcfd544e7ff9f985c060a3d71ecb24",
+    "bytes": 10123,
+    "git_blob": "9c323c086b7da2d76e00e31b9fe2e87c2fbf275d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-build-state.json",
+    "sha256": "cd69845a1db4b90eb49743b067d3dc5fddc2ecb84e1b99b27bd41b16804f1a33",
+    "bytes": 1074,
+    "git_blob": "a1db0397bc87f94191e80dcfdbe6fa71ad7027e7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-final-production-provenance.json",
+    "sha256": "bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8",
+    "bytes": 506497,
+    "git_blob": "3da03ee1b00069f332ae5b66740fd2746b2f942f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-game-build.log",
+    "sha256": "ab0e119257b6fb696b541e904cab4654b447dcd0b63feb935a55db990040977b",
+    "bytes": 2993072,
+    "git_blob": "f78e768329c83f2f34039b57360985f2aef0f762"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-gate-attestation.json",
+    "sha256": "90ffe3d628f34284f0d10c1e7c20fe2cc6975418ae27aefcbde0417e4c66b192",
+    "bytes": 13359,
+    "git_blob": "2cdb994906efe0feddc74772b316227e618e1051"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/action-1.json",
+    "sha256": "d5331c28445e4e19a08050400a5072523834245349c7a1096bb59c64d3b862c0",
+    "bytes": 30,
+    "git_blob": "b025a3a8ab8554f090b7f155c2bd58cfa09b32a1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/action-2.json",
+    "sha256": "6bc4dffb02d84e94aeb28e3d01610f2eaf6bc99abdeed0075e0b99511d19c93e",
+    "bytes": 30,
+    "git_blob": "9a8b76fced49af85dc947cc5690c65ba247ed3b3"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/action-3.json",
+    "sha256": "2d285ed58ab24665381e4a40b5b48649423db2c52afdea678b2194a6cb58f64a",
+    "bytes": 29,
+    "git_blob": "3e966446ca746010377146b6f5866fdd7d17d393"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/action-4.json",
+    "sha256": "e03b95c2e9745aef255e0726eef77f2fcfb151926d95885a20097b4dae1c0266",
+    "bytes": 30,
+    "git_blob": "e14d6cb52ff38de67aa2ce3adecc47d1cf227c35"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/action-5.json",
+    "sha256": "58a3a0ed889643bf338a55b35d47c2ce647fe2526cb500e044963a2d573f96f7",
+    "bytes": 29,
+    "git_blob": "0dd83bcad75c134641f419c0c4f7dab3f0178c27"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/action-6.json",
+    "sha256": "d5331c28445e4e19a08050400a5072523834245349c7a1096bb59c64d3b862c0",
+    "bytes": 30,
+    "git_blob": "b025a3a8ab8554f090b7f155c2bd58cfa09b32a1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/action-7.json",
+    "sha256": "61b37a833873b7cacda7a730e3909f1e5f59f4ab1426a794cc4605afa51ce927",
+    "bytes": 716,
+    "git_blob": "b1fd5e8103bfefb5f7f8f0441b2e7fb69610f441"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-1.json",
+    "sha256": "20fe1adf7c68e6420cce1a08ca2fc51d78448af96d66efce47178eaf3f03e646",
+    "bytes": 2179,
+    "git_blob": "c2dd60321f53a5fcabf4ca464be4e2bee17367bb"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-1.png",
+    "sha256": "2b160cb10512e5a57ece8d95e17dbc570d33c41d34f09b605313eb5de0863c36",
+    "bytes": 534900,
+    "git_blob": "96530b655129db58daf3c29d656bfbc8732b0d56"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-2.json",
+    "sha256": "9a3dcfae3f73c339db23d8c8b381416cd4c44d0a342c5d81d565e1261cee07cd",
+    "bytes": 8735,
+    "git_blob": "5866b63bb1b79b1264a8fba1a99a1cbdc2f09966"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-2.png",
+    "sha256": "10add406acf632807a9adb2449634efbdb29b9ca1b61dde96bbd5c9ea45f4884",
+    "bytes": 113791,
+    "git_blob": "82931f854a1533b09c05557b96dba7806ddc41a0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-3.json",
+    "sha256": "1d648a01280a41e1f9ede7293a2d874e6800540b62a2acd4b314a453bc7e6175",
+    "bytes": 8733,
+    "git_blob": "19c6c264d925c2e589409a593906b7e8608b9153"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-3.png",
+    "sha256": "ad325227e8a465f87eb1ffd83ed9b313c116608029f8867c5119433b0686d9f8",
+    "bytes": 549864,
+    "git_blob": "0c11525c9c37c99e663f18a780348203ce00e130"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-4.json",
+    "sha256": "16019145932ed57fcfca8e1804a3030a4b0a0a26b38e0f0f409767ece5a99956",
+    "bytes": 8735,
+    "git_blob": "985e376c8baf40c2b4a4a760a9f413c23fc646c7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-4.png",
+    "sha256": "ad42d6da306f27ca4a4ab0231649b3ee4b4dcb1347ba7d5b97a7df0e617cda91",
+    "bytes": 219775,
+    "git_blob": "06a4b0db9f0e79077e18a72fa1ecdefdc7975235"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-5.json",
+    "sha256": "710782aea2c35ef9a0680f0f27b6adaff054112b436cb1183c4d8dc2c3d624e1",
+    "bytes": 8735,
+    "git_blob": "613dda80a7f2081220b9d0fad44215becd4a7ed8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-5.png",
+    "sha256": "9c40e541ab52f72916571fadb28b78c2ef976b5d4e924ee32e0cb0506f660344",
+    "bytes": 574627,
+    "git_blob": "52d61b0089511582abc1e18e77f6629da66b7e51"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-6.json",
+    "sha256": "8888ad6e0626ebba9d447bb014a8356c62764d84399795302a27db59fa75b8cd",
+    "bytes": 8732,
+    "git_blob": "1ef46be6a8fded43e064038521ecbac643199729"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/after-6.png",
+    "sha256": "e3630225e82f0ca891a74dad5cd32ea15462f13c0fc2f70ae2e87e3f03a13ace",
+    "bytes": 334980,
+    "git_blob": "6af307c7023f51364137c603a1bc1845e2c07bd1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/phone-overlay-audio-preference.png",
+    "sha256": "384c0187bc69c2f1e8287edb22fec23d1c028d3470fe51309593139c9f209017",
+    "bytes": 172057,
+    "git_blob": "abae09d6e0c10af880209cdc31aea067c7f1ac9e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/phone-overlay-hand-preference.png",
+    "sha256": "d87cb74a4755b1da640390e6e1fe20f70bb0989ff61cb534e80a1d267b0e6dd3",
+    "bytes": 185764,
+    "git_blob": "a15c0a5aea0368dc5839bd639a24e7dc0a8ce5ca"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/ready.json",
+    "sha256": "8fc72a8f39b0f7b990e7e0bffb34b1d7a8f58b04e02d869c2b4182cffbfe8fd0",
+    "bytes": 2588,
+    "git_blob": "f656f4794b677a6404cade0d8efc67c0f3c80073"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/report.json",
+    "sha256": "fb48e9cb5826d51e59f8b687dcc6117ba1f4be011a90fa9bcb4e136cd0681b90",
+    "bytes": 9023,
+    "git_blob": "b39cb3c9a4dc7bd868439482443dde89fbc5a937"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/server-error.log",
+    "sha256": "225310c2267864c33ea0f201e65d23adedcbffe4f443f5399e680371cd403887",
+    "bytes": 3172,
+    "git_blob": "2fe75fc2ade69de08a36a769ef8372f7e7379785"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/server.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/tutorial-collapsed.png",
+    "sha256": "2cb590666dc806a006bfd18eb605f0f4638b69a63d5586f6bb2aad1cc8e26941",
+    "bytes": 613070,
+    "git_blob": "e57fbda1363519866bd4a281dd0d6a9680e46d64"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-attempt-001/tutorial-expanded.png",
+    "sha256": "66549bfc819f3dc05aa45caddde6c9e49137984093374de5d131d76e76c5ca54",
+    "bytes": 258603,
+    "git_blob": "14d857e391198bda2506e8cb2b230e32f43522d7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools-execute.log",
+    "sha256": "df5b6c74ac04681bf63912b9ed257a751c0fa549e7af91d3fd355fab79c92608",
+    "bytes": 2842,
+    "git_blob": "90e2680578528daadbd6261e4e5a32d057c11f3c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-phone-tools.log",
+    "sha256": "d439608176735f91c2b025196f00604e1469b167883817dc2c1dede0af1c1662",
+    "bytes": 1235,
+    "git_blob": "619d3a72886ce1b7c461300bc3fbedaee9092463"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-preparation.json",
+    "sha256": "2df6e535f5485c7c496e161ea0a68a2921e7ec94131c9b144951a7b07af6b127",
+    "bytes": 1560,
+    "git_blob": "f5ba41fd33a974aa11ca13d9d31d72e0f6ad7180"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-qa-status.json",
+    "sha256": "2075d16fcc32916c52e2afb9d65a9f1b2ffc35f6763b1c1332252a04efc0b8aa",
+    "bytes": 1145,
+    "git_blob": "0ccaeb607f9973be9679cbcb010f97632f6bf073"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/bengali-unicode-name.game.gz",
+    "sha256": "2d8a99ca908b3cad7e058e8d280d64d581bee07c305f9b06fef401ed43783362",
+    "bytes": 199623,
+    "git_blob": "5fbca7021fa166c220a23a996a9d6296bd3e749c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/final-visual-contact-sheet.jpg",
+    "sha256": "45f80cbefa3e6627fb64e55264c27e6df581726e59d78060a9eed81fc388ca6a",
+    "bytes": 372357,
+    "git_blob": "e80344e521e869351626d6516a217e9db12d8ac0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/opaque-panel/black.png",
+    "sha256": "83eea882ba36e3d725778040b1f1cb605a917b6a036027771f84aa786155bfd1",
+    "bytes": 18653,
+    "git_blob": "e7b100c57c24ac578b195ccbf210d06db1877fbd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/opaque-panel/result.json",
+    "sha256": "2778b09273b576d5d62d88a707a5cb7496f39607a4cb8e3c31e9bc6cec206fda",
+    "bytes": 381,
+    "git_blob": "465282c9b6fe2d17ed8ca647172f6a47efc95dfa"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/opaque-panel/white.png",
+    "sha256": "83eea882ba36e3d725778040b1f1cb605a917b6a036027771f84aa786155bfd1",
+    "bytes": 18653,
+    "git_blob": "e7b100c57c24ac578b195ccbf210d06db1877fbd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-desktop-bengali-input.png",
+    "sha256": "4e5154b84b58170ab209c2dc2ea62d50b12a63da6c9a577b65800efef1a9c23e",
+    "bytes": 681148,
+    "git_blob": "87982d41fa8c09cc6b52979697712915f5216ad6"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-desktop-launcher.png",
+    "sha256": "4430412e9e037bfb75c2f8f7b1554536db6450c19827afae81617c9c3e15cc89",
+    "bytes": 18668,
+    "git_blob": "69fb924fea3ea32a75ccc980b06bbad2320d4ea0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-desktop-main.png",
+    "sha256": "6a545baecf77379ff94a2e61598d36d1e3ce165e8711e87c0b8bbf6bec129875",
+    "bytes": 1311628,
+    "git_blob": "f655cfe2c7c6a99a9eb082b0f80df9bbf7f8854c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-desktop-settings.png",
+    "sha256": "20fb35335cc2aa289c3d6ebb00014a8cf117e83c6417d8c412403f45a88bb463",
+    "bytes": 713479,
+    "git_blob": "6d94fb8199c870f612595997fd2eaccc541871b0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-desktop.json",
+    "sha256": "69db57e7639b042e9c8e3515873924d5c40ffbf019b3646f2b55bc753e9c6cec",
+    "bytes": 36108,
+    "git_blob": "0a14db06c84236adba17f497342c96c4eb0a1ef0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-phone-audio-preference.png",
+    "sha256": "497f90b2ec2cf3f6eae3c60fae355f53c67d44194184109f42bf3f3abe04dca9",
+    "bytes": 411223,
+    "git_blob": "5564840634bb650682c2e2252d3aa6b2699a30e8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-phone-bengali-input.png",
+    "sha256": "3b92ac77bf3f09789ebc8c24ce78077c83637871fccca38bd4fa571e564c70fc",
+    "bytes": 41274,
+    "git_blob": "b82b9ed7e5f4b402bfd62cb748b4de0714b3467d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-phone-hand-preference.png",
+    "sha256": "48840e4b6881d11ada1d71a0bab9831949f1773c8c2c363150534e58a7625f3f",
+    "bytes": 309478,
+    "git_blob": "bb34c25c4b4422672ceae7ac7b8d343f1049f6ea"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-phone-launcher.png",
+    "sha256": "8b0a17f3517b6127673788fc92d3e36c30d2170e5127eaa375bef39e7d531894",
+    "bytes": 35665,
+    "git_blob": "b4063339d47c9cfae0f873b52f3c808435bc8301"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-phone-main.png",
+    "sha256": "65116311c5a5a24deb7c0ee5fbcfa12307dd3a99bb14e502359254a694d96891",
+    "bytes": 446665,
+    "git_blob": "712191edcd8d83dc8857fd432abc70eafa365684"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-phone-settings.png",
+    "sha256": "ea2f5da7715455d9a7729d98e0b3cde8a26d09c7b0f4741acf4a825b60030676",
+    "bytes": 83258,
+    "git_blob": "1497f32a1013ce7ee28975ca2a8c22b77899b120"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/serial-phone.json",
+    "sha256": "3edab7d4ded4255f21bd62a6542b88e5dbc5458c263866564c07a7fc5524cb4b",
+    "bytes": 29193,
+    "git_blob": "ace797dbaa6b0ab48459ccc4aa90ece80f79098c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/server.log",
+    "sha256": "0bec78683a6b73b651ed8f03c0c017b3437d42768ea08216be6c67a0c774347e",
+    "bytes": 23568,
+    "git_blob": "8fb59e793d94ef27e9a2c1ee33330ea619725f50"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/startup-report.json",
+    "sha256": "182ef1f9b2f49943f0e40e501c4f578a66a99e4e3995f765720a751d504e0310",
+    "bytes": 257535,
+    "git_blob": "88ab57a2ba4d93e1371b25b2804595640ccca593"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-bengali-input.png",
+    "sha256": "08f467e58143f673bc6dad4a0db622fcbc0b08bbbc6eb268e5f9f3d6395b8877",
+    "bytes": 679282,
+    "git_blob": "47f31430141104b67a7f2d24c146b55bd521007f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-launcher.png",
+    "sha256": "06330cd49b66f7cdab30859322afc02e7c2c14feb8a3add503bc1cf396cc0a21",
+    "bytes": 18223,
+    "git_blob": "fe132731b3a8e864ac27b732e22b1752d6c8e6fd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-main.png",
+    "sha256": "0eea86acb6866723cce3e02a0ed244eea8f4da8785f26ced03d08670f9f86c3a",
+    "bytes": 1314256,
+    "git_blob": "2973e84d26607bee7a5e6af8702e77146393f738"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-settings.png",
+    "sha256": "801e11e25e29549ad48791981d4fe7a10e4447804d7f2ea908d9d7da64b9fdb0",
+    "bytes": 715042,
+    "git_blob": "96f200c338f268de448950aef9f9b1873dc61c81"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-bengali-input.png",
+    "sha256": "6a466da297782c4e832819d3c18ab1e4bf95c1de80258cfaefa501a7c1f0b16a",
+    "bytes": 680448,
+    "git_blob": "8e70818577b5d79dd7ef59ee9adf6e331eb09a3c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-bengali-save-input.png",
+    "sha256": "3d242d9e6f602383daa62d55d0c419aacdcdf1526b78de06a6c5e759c9a78c16",
+    "bytes": 55775,
+    "git_blob": "2ed94c045273993de4d2dfa6a11e65136e99e71a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-custom-hud.png",
+    "sha256": "4ed92ce780d5df341073090a732251de8d77671bd7efc7891d48cbb0488ea17a",
+    "bytes": 267263,
+    "git_blob": "97098c996104009981115310b09943cd8503acd1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-custom-lobby.png",
+    "sha256": "615305571367e3a77f987a7aac20a3efdb7a93fde56001cae0759a5a03ab8435",
+    "bytes": 223669,
+    "git_blob": "dd202d862181399278f65c1e64b1f8d77bfe92a5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-language-bengali.png",
+    "sha256": "c27b8614d8a50b264f329e815249fa28060284f9d39e34943c2f2128d4047974",
+    "bytes": 679381,
+    "git_blob": "83e04d16b4c91ff974ee32475a1e59bd2df42883"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-language-english.png",
+    "sha256": "f42e0004831f8d71775f1f9f4f4f5d54189be0cc933123cc0f39f0e8e858e55a",
+    "bytes": 673247,
+    "git_blob": "8bf3c943cc4f70b78d01f00712598eafe332b4a6"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-launcher.png",
+    "sha256": "9b4c2cda7b269eac43d1bf753a38e2a938af95653c555fbc4b627326b43c624c",
+    "bytes": 18188,
+    "git_blob": "451277d47c444c819b9f25b85441907ef2d9fde9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-main.png",
+    "sha256": "2f98976139a29782fedb7faa9e05c5bea61c6e7d326bd10841d4e1b7f6638727",
+    "bytes": 1282461,
+    "git_blob": "383b9ea0816dc7ac439c27cfb4b6c2debc9d06aa"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2-settings.png",
+    "sha256": "1559f5adbc8c9a8c11f5539ef14f8ff2e8487e76d65d57b9fd84b31fb5e8671b",
+    "bytes": 714528,
+    "git_blob": "93722d8c2aff3440e0eef0550be53413b62953c1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop-webgl2.json",
+    "sha256": "49335bce683c69f554fac615951260750cbdb07f742ac0d110528ecff3681327",
+    "bytes": 62284,
+    "git_blob": "db2243bf738b37ad37c79e6ecb0874d1f0455a10"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-desktop.json",
+    "sha256": "af73ab46172147012ac997303da140dd78aa5208ba8b4d003f11321ef9b6e18b",
+    "bytes": 42739,
+    "git_blob": "50c46953492ee9e92aa1f89c77624896340ca691"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-phone-audio-preference.png",
+    "sha256": "56b0f3373b4257c898fa7261efd6c19f99f9b8fdf86c81078ebd523e8e37dfa0",
+    "bytes": 461133,
+    "git_blob": "9cac8f86c610b860f47fec78c54f94322c8cb6ed"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-phone-bengali-input.png",
+    "sha256": "63182ab652cb3c54cc3b987e7ccfa06319603bb88c5885d755b3adfe98bd0690",
+    "bytes": 41280,
+    "git_blob": "9962c58fef0184645e3309a0d71fcad41eb1806f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-phone-hand-preference.png",
+    "sha256": "b982a81f265923d7311d85d541a88e99d0c62c67b02b1b5552fecd8ddfe306d4",
+    "bytes": 410765,
+    "git_blob": "891ae81e002717e71ea54b8f5dddb67fbb276b92"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-phone-launcher.png",
+    "sha256": "33c78ae557aa23aae548414d3c4c6d9f2048bbb5859d94c7178512e887948be4",
+    "bytes": 35674,
+    "git_blob": "d1b663bb05a173dffa482ce61f44099403b19609"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-phone-main.png",
+    "sha256": "7ec2728d34a1af0982c4918ee54dfbab542191db249c5ab4b8acd3f7a2982e18",
+    "bytes": 457464,
+    "git_blob": "9b5b9719179e4a91d7f83e5a871ab68fb30d5773"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-phone-settings.png",
+    "sha256": "0014d54a3508d403d908a8d7ac3d35294a3a2a9447748aa16d63d14057311b3f",
+    "bytes": 83263,
+    "git_blob": "b5cd39518eb53801aa8161fdeec5528c95d0b850"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/attempt-001/threaded-phone.json",
+    "sha256": "001e9dcf9797fba9934cee442ae5cd4fac27cd2320ea300863ac1a0e13013a55",
+    "bytes": 36145,
+    "git_blob": "03285fa1f9790bca23b9a2622b2de652929307a7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/final-browser-summary.json",
+    "sha256": "2dde587165ed19bd79329c03cb22eee78d4cada88418ce8cf226b9a8a393f349",
+    "bytes": 3543,
+    "git_blob": "38f6ad0acc234dabf9fa8becd10cc57b8d10ddf1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/final-owned-process-cleanup.json",
+    "sha256": "742c37b052d80a783484eb0fbe25ae4a13f36e8da831b1a41f7f90c8bd224c82",
+    "bytes": 804,
+    "git_blob": "adeeeb214944073b802ab7e6245be07a2ffd667b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/final-visual-review.json",
+    "sha256": "043f3f49565663b9ce8d09a8614523da2870e23b718e7290e07079a0b2cbba13",
+    "bytes": 2885,
+    "git_blob": "96a24d65574359c3b6f1507c38cb6a4a130656c9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/launcher-brand/overlay-server.log",
+    "sha256": "0dfba13f5c4ad89428e5a5ae8ed4308a8f68771d27d855eadcabd7a8065045db",
+    "bytes": 4808,
+    "git_blob": "7ec34fb0ae9712e31194b7014f5731a46197098a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/launcher-brand/platform-desktop.png",
+    "sha256": "f2859a757b956bed770ce88bf844bfba4a8a1923e30d80abf9ad51034104b3e1",
+    "bytes": 28291,
+    "git_blob": "4b8a53aae688332e499378931a456abf5b30bd80"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/launcher-brand/platform-phone.png",
+    "sha256": "bc223d2ae8734decf8e892923586c3af15562e72074ca0432529ff3f74ac42d5",
+    "bytes": 59837,
+    "git_blob": "a330d64780a622868943306d5c66da3e54b5dc98"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/launcher-brand/raw-desktop.png",
+    "sha256": "b75b7930484f7c0d7af717adefa6b08fc6a9b6e0957661aee043b3f1dad1c898",
+    "bytes": 18595,
+    "git_blob": "cf378e3c6e57cafe3370dd4227222c5caf466b2c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/launcher-brand/raw-server.log",
+    "sha256": "719cad887529ded81fbd1074bd5369b43c738523878f911afeb709d996c06d0f",
+    "bytes": 2377,
+    "git_blob": "1724c7cf179989a66a93318a7ae5d458d088ee94"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/launcher-brand/report.json",
+    "sha256": "9b9b504a5e0f8ea0c50d679bfdd783c4b36c29d17019a775a965c86dd92eda44",
+    "bytes": 11539,
+    "git_blob": "32e21e518d3426040acfd4c2af4e8e9104a75fac"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/package-manifest.json",
+    "sha256": "3d10d1926fff2d71f4451b73894f3989479e00732d471d5e9d28e4b1b1912c08",
+    "bytes": 24285,
+    "git_blob": "9a6cda6818f80d86d65d07ec2c7e7ff7fdb21f4d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/platform-brand-routes.json",
+    "sha256": "b3088445a20ab49579a070d07accc431f8b776528de8795ac639759e1b7d0aa6",
+    "bytes": 3253,
+    "git_blob": "b0ec7b9a224d744b35a91c14a48548bd511403e9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime/producers/bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8.json",
+    "sha256": "bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8",
+    "bytes": 506497,
+    "git_blob": "3da03ee1b00069f332ae5b66740fd2746b2f942f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-runtime-five.log",
+    "sha256": "25ffac557f158c262dd77e22b2faf38c14db159783419054a423ec1aada52460",
+    "bytes": 1683,
+    "git_blob": "6a873732e5fd0a71767d135af662d42e891fbf03"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-seal.log",
+    "sha256": "34c8bacabac9d56b6dcbf20dc567924365a0c6768a082d88e18c37985df97a74",
+    "bytes": 172,
+    "git_blob": "68642d8e11f5bd28f4554defd03aca58921bbf63"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-source-history.json",
+    "sha256": "4fdc15176fa861f1d6d9657f59f004ac3a7187c9b94e466aacf85a634878746b",
+    "bytes": 324,
+    "git_blob": "4527a94285aa148e3ba383446d70047ee5602b8d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-unit-tests.log",
+    "sha256": "eab70f138f0b0d01be82f568fa7b836d648af05084a1304a12b4368e90ad998e",
+    "bytes": 2292,
+    "git_blob": "c6534efc90a4dabe215c9410814c0bb896e39fdb"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/browser-visual-review.json",
+    "sha256": "09de1b2341eba5f06a4663398f1aeac5201eee7ec56cd6f4d4547236072b714b",
+    "bytes": 16596,
+    "git_blob": "da54a76f166efc62a28df957ae2c9ba17c576e93"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/canonical-browser-generation.log",
+    "sha256": "3d9398b7de9a75406e8ad5b896d41ac5b4fe2e959657e4191afae7818956e4ca",
+    "bytes": 102,
+    "git_blob": "3d6fe7166862ba37c23e8cc753029039ebc63f26"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/canonical-derivative-generation.log",
+    "sha256": "1a5f7555a1a2fdc3f15395f0101aab8d8a0197dddbcdadf08776613b57e43a5a",
+    "bytes": 218,
+    "git_blob": "fd31cc17772424ba637443aca0719e816130683a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/check-browser-startup.cjs",
+    "sha256": "00c565861c9a41829347afd63997c3cef06ba4fbd89c31c617cb76d2d10c74c6",
+    "bytes": 33506,
+    "git_blob": "5b439b81e066ddbf2f34073b78cd4a7a3b87e444"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/check-draft-after-api-handoff.json",
+    "sha256": "9ba42c3adfceb1abafb8eebcc39b0942ca6bead0d22978320635f490a8e198e1",
+    "bytes": 4344,
+    "git_blob": "d9a0ceddb43674a17ab29838f70fb7b3d8f0b5bc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/check-launcher-brand.cjs",
+    "sha256": "154c6800fca59d5b1a1e0f96e39a5074168522e76e071271b1096c8294673fcb",
+    "bytes": 4559,
+    "git_blob": "3b1f7cda5f32062cdd020881b42530e67072322a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/check-phone-tools.cjs",
+    "sha256": "b673731aac7d45843735620fd7a764c196b03a776fcdf691e20873af42bf8848",
+    "bytes": 6748,
+    "git_blob": "aacec9edcd310b4309e3d300a2633dca9409827b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/ci/assemble-platform-summary.py",
+    "sha256": "3f0d2fd41a889a54e10a1bfc454d38d9b7146240f959050afc754c28908bffe8",
+    "bytes": 13183,
+    "git_blob": "fd94700fd06bce19996afd5830ff80e54f7d57b3"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/ci/check-mobile-asset-inputs.py",
+    "sha256": "f892c90bc275aa3d0ef7d9305d63ab7babb81d04bc0d9622b5a069939b2a150a",
+    "bytes": 3175,
+    "git_blob": "def3288996424d9bb0c44010ae3a28bd890283a8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/ci/component-input-comparisons.json",
+    "sha256": "f587239e7961d9c2670f6ebc96059ee0cc46594d8c29ee703daef6d68c84f9e7",
+    "bytes": 82123,
+    "git_blob": "dfb64af49c027340e83ff6cf445ec0e306e5a107"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/ci/current-hosted-snapshot.json",
+    "sha256": "554785393fa4d76f16cb13cfdef7b5b9fc6e0f702fe611abcecc05aadb13f60e",
+    "bytes": 15970,
+    "git_blob": "e8e7101fcf40bf819b0c98eabe2371443e645c11"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/ci/mobile-current-asset-inputs.json",
+    "sha256": "c1b3037f59f7ad64d0e4c37df362d856328fbb9fdff8e5f48630fbb71dcafb0e",
+    "bytes": 24726,
+    "git_blob": "27d066222278d19f7119cad516c31f82c397a408"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/ci/platform-coverage-summary.json",
+    "sha256": "c8241ef23eeb68962c8170c0ca94b0222df71e919f776818bed15e7ae5cd70c6",
+    "bytes": 831833,
+    "git_blob": "8d3cfdef5721b6f0f482a8184f571eb30544ac36"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/ci/superseded-fd76-precondition.json",
+    "sha256": "6a601641241b60d1be5b844a38ed70a4a7cfe7cd586be99ea67f8615a0258494",
+    "bytes": 20120,
+    "git_blob": "964e1f2d292128e5c63b34772a6401c17abfaa33"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/cloud/bn/accounting.json",
+    "sha256": "394442c3759da68a15c64cce99da649ceaa8efef1de26ebe6ff43d13e986b8bc",
+    "bytes": 4652,
+    "git_blob": "0dc397f0f37f363a8d4b6d6a2d62d71490915980"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/cloud/bn/cache.json",
+    "sha256": "8a708978dbfb54e2be2edbf8441471e517c9a61c62417e7842ee1845546baf7d",
+    "bytes": 931750,
+    "git_blob": "715fd2911bf24f38976a4074f37fae94c6ebc229"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/cloud/bn/rejected.json",
+    "sha256": "f73636f5eca7ef5a4bc6e072a1621e95f13f6bd36a303969ef8084bc336302ed",
+    "bytes": 52184,
+    "git_blob": "4b770c93135889aef594729f7259e75865e6d116"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/cloud/bn/responses/00001.json",
+    "sha256": "9f67997802c1777dbe04fb180f96b2c33bdeb1aa7ff547f49b9253b50451fcc2",
+    "bytes": 10873,
+    "git_blob": "af8778e30e16d7867ba24e4f5e76bbbb8529be57"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/cloud-api-handoff-receipt.json",
+    "sha256": "9c9c08e406813bf083ac4e7b641278865f2f18c83c059f8aa0a6eefaa1f7205c",
+    "bytes": 1020,
+    "git_blob": "3d20c4d14b2b048265e9bc47e9093ae85d29e84b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/cloud-dry-run.json",
+    "sha256": "df823db5167d87382952697107d1ac76ea8ea81cda722f7e5edf55f7cb12b875",
+    "bytes": 240,
+    "git_blob": "419da7f1e40f3c5be902b6fe71bcd5bb27dd3392"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/cloud-execute.log",
+    "sha256": "759b3032d2b10a6484f1ea1a54b36576bb5bc150013c162c8c1b7ef0f9fe8ccd",
+    "bytes": 240,
+    "git_blob": "f67041601112cd8c8332eee5efcbca8dd8dd010d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/delta-105-sources.json",
+    "sha256": "9f5de9060bf4cb0c1cfdff4c9e3411e6e7149f79b65ef5a171df92dc4a1a6ed8",
+    "bytes": 5825,
+    "git_blob": "29698b6b76449b9e906e4800a905c7c8fda5a0b1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/delta-import-provenance.json",
+    "sha256": "cd929fa5dfa04ea17590118f4b485e9872b58f8afc75dbd586116e8865451f3b",
+    "bytes": 4416,
+    "git_blob": "bf7971afa86243d43def1af32d5b827fca7beb77"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/drafts/bn/bn.json",
+    "sha256": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+    "bytes": 366934,
+    "git_blob": "d2318723b98883dad5b3066470391a3123fc4cda"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/drafts/bn/texts.bn.txt",
+    "sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "bytes": 400627,
+    "git_blob": "f9ef251fcb5502f489cbc9f79131f21d203aae2f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/editor-output/bn.json",
+    "sha256": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+    "bytes": 366934,
+    "git_blob": "d2318723b98883dad5b3066470391a3123fc4cda"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/editor-output/editor-delta.json",
+    "sha256": "77aa905961d3b2de2fcab22e6caa404bbd3eb5ca557e4b0587ada47c7a9df860",
+    "bytes": 77040,
+    "git_blob": "c4df6c0673ce1c06e7d021ba81853445b32b58f0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/expected-producer.json",
+    "sha256": "b9031fe249a468071dec6dab94b774087d6363edf84df03766039f446216427a",
+    "bytes": 559,
+    "git_blob": "8aef4c026658e97b57bec25712a0bb7e84aa2767"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/final-audit.json",
+    "sha256": "c8012ce319bbafd3deb41d625b91d05e670a92562bc0fa1c12c4b1b3babffac5",
+    "bytes": 62,
+    "git_blob": "09f845a477e451235d2507b35b91bed11b61d0c8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/final-master-fetch.log",
+    "sha256": "e515be93029743a92e5798919458ba66d707dce1b578a2bae8e57dc87a475e9a",
+    "bytes": 87,
+    "git_blob": "f7807216d125a05efdc3dadb46a50d1e77586a2f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/final-push.log",
+    "sha256": "907f2daa8aac12877bb5b4b1f7170c5b07d9fc5fffaafa2d80ffd1e6a6259b21",
+    "bytes": 355,
+    "git_blob": "b2ac23de96a6281b16c4b6da2ebf3ba6187ed2f3"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/final-tool-status.json",
+    "sha256": "c8012ce319bbafd3deb41d625b91d05e670a92562bc0fa1c12c4b1b3babffac5",
+    "bytes": 62,
+    "git_blob": "09f845a477e451235d2507b35b91bed11b61d0c8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/finalize-browser-evidence.py",
+    "sha256": "5573e6fd334574d422473b74aef633a8faf4b329acf4a13f4194dcd65098937e",
+    "bytes": 5911,
+    "git_blob": "00981c4145ab5aee87fc2fdf962edc15d00494b8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/installed-source-binding.json",
+    "sha256": "70342c52d4a1dd277712982e954d5300cfc72bacf07c531777de47a24d9f9115",
+    "bytes": 1963,
+    "git_blob": "3542db503c8e38e0513e8f314257e341a0abce43"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/assemble-release-gates.py",
+    "sha256": "6cfd18eb494a56118c4e41d34527afb5adb1a312de943feff3727a53bebb56e8",
+    "bytes": 8899,
+    "git_blob": "016349b1b2a9763b3ade12f7078cc06669e33d60"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/assemble-structural-gate.py",
+    "sha256": "2931f2c8333713d2f356ba25e11643034042a7233209a3f6da4078708697ee0b",
+    "bytes": 3966,
+    "git_blob": "14f49376e07c507077ed7a7519f8118d4164cf5b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/attest-browser-gates.py",
+    "sha256": "27b5ae33f200ddd0545522bbe0f13e5ea3455bb3510503a3e80a23e873a55431",
+    "bytes": 4177,
+    "git_blob": "d52acca4c326f2bced49a713737ec725b8d3c21d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/check-sealed-catalog-fonts.py",
+    "sha256": "c68deb4b794ea8d5c2889a9444289bf5fdbcfb7e5db5a7e5cea60167a66e3bf0",
+    "bytes": 6395,
+    "git_blob": "f595e1c33e21cae79ce216937926a8b1cdfb88b0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/final-static-runner.log",
+    "sha256": "7bd63933da0f2160c0f2169ee5743b44c19b545c3b1e772719ebc1b39bcdc960",
+    "bytes": 158,
+    "git_blob": "7ccb50f1fc0c5f5946d0506173b2575c9801a373"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/language-union-review.json",
+    "sha256": "ed5b420d9f33c71344b232154470563aec864eabac749b6e79b1983ae899c89f",
+    "bytes": 2066,
+    "git_blob": "75cec69b6d742596f33c742aff9460d70e3cd5b4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/merged-locale-union-tests.json",
+    "sha256": "91af1d965586d38b88ffa53551c56f2951bcde2a75b3d56c39313967ac03df55",
+    "bytes": 432,
+    "git_blob": "26f24db8d9870da6f7e0f10c543781dc9716972d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/merged-locale-union-tests.log",
+    "sha256": "e4216bf7254895c8fecbe2b83229854a9218744b40b7b9eea78c71ebfef772c8",
+    "bytes": 301,
+    "git_blob": "afdd15ea7e4d59022363b76044dcf579d6405f27"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/non-bengali-catalog-semantic-comparison.json",
+    "sha256": "57853599d9a73272f807c617f224828114de5c3190e60f8b28be8aaf93e2e49b",
+    "bytes": 4380,
+    "git_blob": "a68674dba1a9a671d5ab56492fd37b8cd90c9724"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/publish-final-evidence.py",
+    "sha256": "c1ca92e59dd647343565cbc5ce2f2d21cdaf4a841f25e874ac1d3163df0aaf06",
+    "bytes": 5660,
+    "git_blob": "b468665e66cd50a44753a4ae636f1403834f62de"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/sealed-catalog-fonts-independent-review.json",
+    "sha256": "dafdfa72db4eac8631c9ce068c0efb1a4c98c122805112006bdf2c0e0872465d",
+    "bytes": 2393,
+    "git_blob": "7e108b66b19d3fe32228c8b88b4ebc3eba2f7472"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/sealed-catalog-fonts.json",
+    "sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a",
+    "bytes": 39078,
+    "git_blob": "8f729d9af461ae6a79d252ee9ee06c70a76ea9e0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/bengali-draft.log",
+    "sha256": "9ba42c3adfceb1abafb8eebcc39b0942ca6bead0d22978320635f490a8e198e1",
+    "bytes": 4344,
+    "git_blob": "d9a0ceddb43674a17ab29838f70fb7b3d8f0b5bc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/cloud-draft-tests.log",
+    "sha256": "61dfd593d1d904e4cc379b965f05bb47411aab31cc1b9eac93ed48b7b441c853",
+    "bytes": 279,
+    "git_blob": "1186fcd21c3da2d1630a63cfe6ccbe1405e26997"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/google-draft-tests.log",
+    "sha256": "45629e08d8c41ba474e149425cf4477b6ed2d14afbd48b41a5dea35ddb36ae32",
+    "bytes": 109,
+    "git_blob": "e06da7f95daa0a53918f68f711452bda50c056bd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/native-font-coverage.log",
+    "sha256": "4390eef64364c0b3eb1bf4a05aa3983556023e81570681a8817395ef88b3d1d9",
+    "bytes": 98,
+    "git_blob": "2c50d099ee5ae1f4d52d7c0fe6f01596257a09b4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/native-strict.log",
+    "sha256": "4a7c86cd17d33924b711b03caa7b9b6189e20a8171567209405ed9ea85f2d6e5",
+    "bytes": 3260,
+    "git_blob": "5793ad51042b122db7aa9efc1c27f8d112f2ea10"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/native-translation-tests.log",
+    "sha256": "c000c38213628f55f53157d12f8338f771926e11caca0ea1fbcebcf5147f65db",
+    "bytes": 109,
+    "git_blob": "9512667e054e96880c4eafc3fef8b845065bbd17"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/online-contract.log",
+    "sha256": "012394bc07e5ff534d2f84ffa77656dcf3710efc0387a017fdbabf88d5123424",
+    "bytes": 224,
+    "git_blob": "261bf125349896cd87c1023de05493cc849d92f5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/online-units.log",
+    "sha256": "249bf1d783478ceb3d7b326e6c8215a6c9affd57e986dc1368027428e74e26f3",
+    "bytes": 288,
+    "git_blob": "b5cd72b41b37218363704e3a27491ea6df1ed27b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/pinned-script-fonts.log",
+    "sha256": "b8f4fbc2b06450688b45e37b8188349784db856c2986cc9eb92b7589b24f7d3f",
+    "bytes": 66,
+    "git_blob": "ea633fc1f342db667c9b55a36d2c60496b3a8e77"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/platform-typecheck.log",
+    "sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd",
+    "bytes": 107,
+    "git_blob": "9404a5222d0e9cb7b0b02bda784d379efefbdd4f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/result.json",
+    "sha256": "8bd9c719bc398543dd05e774d24dadfe2db029cc78c6ffb15a646b2290913074",
+    "bytes": 7230,
+    "git_blob": "1aad57110fb19b4b42605f9397503477f53c8eea"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/scoped-format.log",
+    "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "bytes": 66,
+    "git_blob": "4aa0d16e7a0ff5c16269bf45771cebe89cc2e81d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/static-all-20261101T092900Z/translation-program-tests.log",
+    "sha256": "3b0cc1c42bd567f1adc4b6a79a17dd86bf92f7c40d98bcb79f9e4fbee9b12111",
+    "bytes": 112,
+    "git_blob": "e19e5cc63f42ed897869b472ab952a1ff9941c24"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/verify-final-static.py",
+    "sha256": "f2f3287d26e422c9300604f9a1207e0e0a25bd292a29b9fe6169b00f042bdd1f",
+    "bytes": 4342,
+    "git_blob": "244d7a78fb202f1e89cd4d27fe3896fca980fb60"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/write-semantic-final.py",
+    "sha256": "8378a005598493e3f35fce592ee882c92eb0bcad5573ae28d737d721c9b91ca9",
+    "bytes": 4569,
+    "git_blob": "0c642ce2d1cbb3e469007eacad5b1ac4f9c52346"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/integration/write-semantic-initial.py",
+    "sha256": "b56b92cb980501e3de43d1cef887874e2ccfead57e7c5e6819e06368c1ff1215",
+    "bytes": 9901,
+    "git_blob": "cc90336d2a271b71ae973a29200050cb3b334c57"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/launch_interactive_native.py",
+    "sha256": "825b6391ad72297a4eb92f77ea9b4a463d072e20ee34ae70fe4cd3356cab4106",
+    "bytes": 4099,
+    "git_blob": "b1b1c6bd0062f774618ac86a32a993cb6c02c9d1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/launch_phone_native.py",
+    "sha256": "0bd12a9cc68befd7515f19e4eecf34b3dc505b877db91f7aea93c8250cea6b33",
+    "bytes": 3389,
+    "git_blob": "2174c0a06e11fbb9e89baac0cbede80ebaa83f1e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/launcher-brand-check.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/manifest.json",
+    "sha256": "ebefcbefcdea7a54ecf8f613a5c7f0e22f9bd75ddda375493a02d18383c55e70",
+    "bytes": 289858,
+    "git_blob": "5b81b3fc689d56fd7e66ea1abd73eef8db633492"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-app-build.json",
+    "sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac",
+    "bytes": 1423,
+    "git_blob": "b3bbbb803085d206a2ef153c2a4b4c5c92f63a1a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-app-build.log",
+    "sha256": "99cbf0599b87bf264be08eef423f8057954d4234dcf42c7051f98ac035c44439",
+    "bytes": 123504,
+    "git_blob": "c05ae96440fc7bd850e29d7751a9961a26be27a3"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-0.log",
+    "sha256": "87c7519d60b0b2a24e420482bc3d7df414f7bc1658bfd9abcafe417f848495ca",
+    "bytes": 1009,
+    "git_blob": "32cd068bb2a0cdbe87f903523c11ca7d8a65ab28"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-0.xml",
+    "sha256": "d7ec20979e51074b0bfa9eb28d3a9fb60c302cb3a4d4c55aff83f3ea8f0cc154",
+    "bytes": 498,
+    "git_blob": "039c7d453c1c088bc48b10f9cba89f26ab356698"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-1.log",
+    "sha256": "45b5f36e651a15d4e1b57aef882c6f2b01e1852cba2ab588efdefed9680c65a3",
+    "bytes": 1271,
+    "git_blob": "2d528bf0f69e112c8381e60ffd85faeb3027d4fa"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-1.xml",
+    "sha256": "e38515e4d0e6948a7a40b7149a57541a0705308aa594e1f1b4498569e282b0f1",
+    "bytes": 501,
+    "git_blob": "5221f465d09cc9ad6ade2bec0ea855b37e4a0e8c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-2.log",
+    "sha256": "8535353d7fded79c0eab5a04a43b952758a2b0d0cde682cf14164efc299475ff",
+    "bytes": 1405,
+    "git_blob": "fe5e0a54aae48ce421edfa68747e3f2f55c21728"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-2.xml",
+    "sha256": "7c7ddf2c47d90090d22beddeaf0cadc94fc9809e3c8a5f1359b59d6e5fcf2b6b",
+    "bytes": 487,
+    "git_blob": "8988cf6577ee289e2992e50a698d08d047d1ccab"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-3.log",
+    "sha256": "87c7519d60b0b2a24e420482bc3d7df414f7bc1658bfd9abcafe417f848495ca",
+    "bytes": 1009,
+    "git_blob": "32cd068bb2a0cdbe87f903523c11ca7d8a65ab28"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-3.xml",
+    "sha256": "b5bc3ae0a0c7116ca58bcf64cbcb7a5e601edf6c563a3c876fdbb3783ea65ebf",
+    "bytes": 495,
+    "git_blob": "e3ec92a82adecb742172ca5c1f737e5d14c2fc45"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-4.log",
+    "sha256": "87c7519d60b0b2a24e420482bc3d7df414f7bc1658bfd9abcafe417f848495ca",
+    "bytes": 1009,
+    "git_blob": "32cd068bb2a0cdbe87f903523c11ca7d8a65ab28"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-4.xml",
+    "sha256": "f8e11ec8e9d1a3e200c1f19f5a9186a3ad1bb24bc14fce30f9ebbbf297ad280d",
+    "bytes": 522,
+    "git_blob": "8579f78be1915fd7fc48b75850329281400e3079"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-orchestration.log",
+    "sha256": "c315ef57a42234f3442aab9c098f30a51efe4692892db4316f0b3f86128cb1e1",
+    "bytes": 20,
+    "git_blob": "1e5f9b86fb926fc1308793f9d9e33917590ce52e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-0/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "git_blob": "667fcb80421857d6b918570b39bddbb67deb11f4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-0/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "git_blob": "f8dad30cebe22c802657b39b69e7f3bb1db91caf"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-1/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "git_blob": "667fcb80421857d6b918570b39bddbb67deb11f4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-1/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "git_blob": "f8dad30cebe22c802657b39b69e7f3bb1db91caf"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-2/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "git_blob": "667fcb80421857d6b918570b39bddbb67deb11f4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-2/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "git_blob": "f8dad30cebe22c802657b39b69e7f3bb1db91caf"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-3/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "git_blob": "667fcb80421857d6b918570b39bddbb67deb11f4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-3/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "git_blob": "f8dad30cebe22c802657b39b69e7f3bb1db91caf"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-4/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "git_blob": "667fcb80421857d6b918570b39bddbb67deb11f4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-profile-4/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "git_blob": "f8dad30cebe22c802657b39b69e7f3bb1db91caf"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-display-tests.json",
+    "sha256": "d408a30f01eeea18d984ef5b6d7b1c5b87324b42698ba16600e7f8e5a4dd7bc2",
+    "bytes": 5484,
+    "git_blob": "e442651d3f9ded8abbe6e5e8212bcd09af82cfd5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-focused.json",
+    "sha256": "98af84435d4e084a9417d8cebd57f5a1b8732e31b90322d267f5e69d53bb08ad",
+    "bytes": 1561,
+    "git_blob": "89f892cb70c323032d79c7e00cd27b83e5aa8f2a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-focused.log",
+    "sha256": "7038c28efd6c26307d7abe77552ef75658dbce56c862e901fe75beb0dfe41103",
+    "bytes": 3318,
+    "git_blob": "aa28393f5d70467135199ea2fbbbba5faa49f3fa"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/app-quit.json",
+    "sha256": "0e6fd64d04030754a31805f15ba11c9aad50a8bf9bcab184b135177deb9652e4",
+    "bytes": 785,
+    "git_blob": "f83d1702d6820357dacd088c5b271f934836a482"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/before-collapse.json",
+    "sha256": "e34fc677baf8047a092fe746f0167079b5ee8450e6ad51de043cc1a4dc8d14b5",
+    "bytes": 808,
+    "git_blob": "a622235595a5ec6ba88d366ecb12e69ce2b5761d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/before-collapse.png",
+    "sha256": "f72501920e05eedb9866e072214f44f868e802e2c285f2fb4a1c4a0bb2af3602",
+    "bytes": 332137,
+    "git_blob": "98e13f009ddbd798f35458a0a3ed2c6612929604"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/bounded-lesson-actual.json",
+    "sha256": "ad603189dfaf02758f109ba853174b7e57cd31f76290966cc30334b5d9f76c8f",
+    "bytes": 880,
+    "git_blob": "c9c06b9d320de18ce4fcc364bcb769817b7fd906"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/bounded-lesson-actual.png",
+    "sha256": "2ebdbfb3d21ed899f73cbe10859da996d5448d6c76c335c0f3472cea88fb5ebb",
+    "bytes": 371723,
+    "git_blob": "51ef4c0a73708d2d0ee94b9483e645edbae53cf4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/bounded-lesson.json",
+    "sha256": "e104d5927b731a11e0f84173192412c17481c62ba7550b495e24e7d45d74683a",
+    "bytes": 907,
+    "git_blob": "ad78b6e2171b7d93f2659477372c1ca99729b809"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/chat-cancel.json",
+    "sha256": "158200fd1f74726a7de1d9cebf0244b0342336fe061c55ff6f1f83d0067f1c44",
+    "bytes": 754,
+    "git_blob": "24b2d8025d30b28d6e44e82dafc9dd798a4bb368"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/colony.json",
+    "sha256": "8eeb2d5241e37a5037c4f7cf5042e4934b4bab86796561aa5690f5ef7f175eae",
+    "bytes": 785,
+    "git_blob": "8211e230b0df9d2d188dbba316f453c5cbf704c8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/control.json",
+    "sha256": "33c12dcb2ef1481be56cd3d549310021e14b063011d43b1359f5a5d8ec79b208",
+    "bytes": 687,
+    "git_blob": "3170745c93c9679727ae6b2bfc9f8457650a79ff"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/economy.json",
+    "sha256": "630f3e8fdd8ae1491e1702f6d8164a878cb63ff4f0b27b3e1eec710c52d4d0b7",
+    "bytes": 880,
+    "git_blob": "558bca34d231dfdfc1a0ca890a24e07107610366"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/economy.png",
+    "sha256": "f1a8d530357d32a9c692c0f293b6d5f75b18a6e412d467b87f8ab663444806e6",
+    "bytes": 200563,
+    "git_blob": "e0384d360e5cbe1284ff9b395a195c7d4badb26a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/full-title.json",
+    "sha256": "ecfecf9eb7a355288b3075ca836d82a74f03eac5db31bfb71d3cf44ac2780dfb",
+    "bytes": 880,
+    "git_blob": "eb9c6cdf1563beaf4f59e5e1c7483e85cee44786"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/full-title.png",
+    "sha256": "df5780cd3c8174ef6a1fa721732e118af20267e06882a1d9f683257a86eeaa9d",
+    "bytes": 338667,
+    "git_blob": "d01bb945face8cdb6a2f3e0bc699b4396ddb7183"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/game.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/initialize.json",
+    "sha256": "07d6ddd222b6bcfb9625645fb96f86e82dfed0926a0c1f06a93da6153539f8fb",
+    "bytes": 308,
+    "git_blob": "7070f2f93aed3abd88768b715be555ce9661820b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/intro.json",
+    "sha256": "d503619bbde6362a5ad72abb03d38928c54d7c549c501ea1b5510cccf09caaae",
+    "bytes": 782,
+    "git_blob": "75a52e9e67b79a5ab76ad44dde5a9aaecc637d94"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/lesson-restored.json",
+    "sha256": "98087b2fdba7c09a3ca359f228590d9a235196703d553837373752c3b50af80e",
+    "bytes": 880,
+    "git_blob": "d8c7d93feff2549d50af91be35cfc3cec63fa38f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/lesson-restored.png",
+    "sha256": "8360f652d0525259bf06ab6e79b65d85ca7faf96318773b3e5de0504b9b32c23",
+    "bytes": 381717,
+    "git_blob": "488ad6252b79108456f084315a8eeeeb0867cf3d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/lesson.json",
+    "sha256": "e80be9d704763534142d71bc1bd736a2134c4bb5e4b1c44d9a65f4606d7a8d04",
+    "bytes": 808,
+    "git_blob": "9e6f7d5547154dc864cbcee316e3c535a24d6233"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/lesson.png",
+    "sha256": "fddd45d36e4b883ffe62e503e44678cb16f7a5e5f4569d289fdbc61714ee279e",
+    "bytes": 335830,
+    "git_blob": "1cfe818e1b903a94f8d36504cb3ef5320175f201"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/main-scroll.json",
+    "sha256": "cdbbadb9a31aca7462f67f69cb939327937d7e445c5a546963df33e7b38d2943",
+    "bytes": 814,
+    "git_blob": "1aeeb8ab7a58a799220dcfe68607f6de9b5b5662"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/map-peek.json",
+    "sha256": "c5e82747fe429fc15a257e61155f81a740f94cf26924f82e8b7784118b0cce60",
+    "bytes": 879,
+    "git_blob": "ef5d5f1be5fd853f5f3cc4eb196665d16665703f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/map-peek.png",
+    "sha256": "931d017036b947879a6440036c0e0e09c34b0c5e43a9bb218228632cfb3a5d63",
+    "bytes": 239767,
+    "git_blob": "c2fc7fbecd81653ae90c7547071ff2cf6b90651c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/menu.json",
+    "sha256": "f08bc8a3cc672b6e9c812afffba1efc4b75ea040b3938943ca9f17a56e2bfbf7",
+    "bytes": 785,
+    "git_blob": "ffe4272f82ceb5b785cc08f726ae09ca3b818280"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/military.json",
+    "sha256": "3ef3c7f5a665feea193e1d50edd200049897bd66154a045ad697ee52a31fa579",
+    "bytes": 785,
+    "git_blob": "6232d4c22e4b0c60d620ce70bfa089d3ab6911c3"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/more.json",
+    "sha256": "a990bb36b8301624a4cc3bf53ef8912e73473ac4e8e768792e135b7d36c34c93",
+    "bytes": 785,
+    "git_blob": "eb67ab9d123dd5a24611385e2c76e31cb0f83d65"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/quit-local.json",
+    "sha256": "c2b189563d866187900f46ec4f2e25c7002d57efb971ac414ef69c21e3240996",
+    "bytes": 785,
+    "git_blob": "1176786779d709188ba5eb8ba94fa636e28fe04d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/renewed-control.json",
+    "sha256": "7d2d0a5483e37a38aea33947108c529beaccc01e57266f180986bcf535a42153",
+    "bytes": 689,
+    "git_blob": "d4484557d4828cf1ae1359fb3200d211b56ee6fc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/result-leave.json",
+    "sha256": "473dd1a15b90e0ed2320a00ee24ff3f36bca09ebd0ce5b3b522d3df1c1d833f7",
+    "bytes": 785,
+    "git_blob": "a1a6a68188518a6abf1d2c70031e903af099d48a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/run.json",
+    "sha256": "c88e0a0a50c8600fa3e6632f2b312f26fcea49230555d773b37017ca2e2d8721",
+    "bytes": 2081,
+    "git_blob": "8c160d86837bbf121784558a55903341e7e34a40"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/stats-overview.json",
+    "sha256": "ee878b2a21790152a15f54e39072af5e8226efe50efc8bb62ee8827de48a995d",
+    "bytes": 879,
+    "git_blob": "8e52a83bce038e23805e1d58b0f00a8d539d363e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/stats-overview.png",
+    "sha256": "b2ccd16f38f57e2dadc9c3e44eaa070fe9c80ddbf05ff5e174cf7cbe1c7e0830",
+    "bytes": 189106,
+    "git_blob": "c8648884eb7e73b184654a3e3276b69f59699823"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/tools-after-peek.json",
+    "sha256": "8a89df56da5d8db139f9681f4babe96ea451a7a39c76d92263ef7ac6f412998e",
+    "bytes": 880,
+    "git_blob": "eb54ed2da649f5320e2405682d9719604d0cefcd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/tools-after-peek.png",
+    "sha256": "516ade68329f59d8e871545677758197fb472e5d467fe162bc6a8f3efea4fbf9",
+    "bytes": 384238,
+    "git_blob": "526d02aafbbe2deaf1b2529daef5755b8bb1cd47"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/tools-after-stats.json",
+    "sha256": "d8c07d74798d0bf4754f2147c11687f570ac4f9ec5f2e15d63514c3f5e98ef22",
+    "bytes": 879,
+    "git_blob": "cf08b65f92faf5fc6a8b6a95c80e178335a59003"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/tools-after-stats.png",
+    "sha256": "10b1e77ae473154fc5b1cde33bcf02c2a118eae04c11ba9857f4ae17db99026f",
+    "bytes": 384910,
+    "git_blob": "6906be40a99dd1cdfe7535c7e1867874f6ecaa40"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/tools-all-rows-actual.json",
+    "sha256": "f967631e08a83ad69fde20b5ba8dccdd47e675322f7b5f6440ca8552b2b3b1dd",
+    "bytes": 880,
+    "git_blob": "cbc88980aa3b865de81e9f41e0c4944027507bd5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/tools-all-rows-actual.png",
+    "sha256": "03bc232cb5afd2446a330de9ffe885069e9cac1dd2e029ee93ec7768543de99f",
+    "bytes": 376202,
+    "git_blob": "7b8af9576f47f93accd4f937077cb2f78d73c180"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/tools-all-rows.json",
+    "sha256": "8f061ae3621c382ece3558aaf4425294c4c3232d0b473ea4b5cb938f8d1335c2",
+    "bytes": 907,
+    "git_blob": "61ceac4749374b723cde895a69165d21db7864be"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/top-chat-action.json",
+    "sha256": "3a9c6c1e2e6baac286977f868a268cd8e7e2e9e12c4c071b6813df326629b260",
+    "bytes": 879,
+    "git_blob": "afb817cfdf3d58035874dbab815c5907ea521c33"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/top-chat-action.png",
+    "sha256": "76a91fc501f9db265bae461d0e002924e5dd23de1c81799ef602f4532024e470",
+    "bytes": 377171,
+    "git_blob": "f57552f68ad25ea47e553cbf0cc219a4824435d7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/training-main.json",
+    "sha256": "97d69747952c4a26369249bd800461b704d2718dba8a6b6eed70d3e18b059d3b",
+    "bytes": 785,
+    "git_blob": "b94941786dd3078db08b7c42b7b33fa25a210961"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/training.json",
+    "sha256": "0d53845d229d970f5a75adbb4521a402fd469f7d4c47f7b5e4b38f8677ce1883",
+    "bytes": 783,
+    "git_blob": "5a2ad0f0c00e84d9b02b4811fef9ff7ef816a0ae"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone/world.json",
+    "sha256": "a402520a1302a4c5f262cf02ee7389c34b10a22b07c1a1a6b60f6f6a284ffc48",
+    "bytes": 785,
+    "git_blob": "40d75541b50e1d2a7b98a94500f5e24ef45dcb4e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/app-quit.json",
+    "sha256": "82d8f65f6af654efba4c81fb95254b46a9e8848d1ae1e975cf9ab2ed5c47bd6a",
+    "bytes": 785,
+    "git_blob": "8eca338a3a49d87504cac6fa2564e64452f6b37d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/bounded-lesson.json",
+    "sha256": "bee01f416873372652d9689d9ceeefac05649a82d170fa73758f98ce9f64e133",
+    "bytes": 880,
+    "git_blob": "c6b4d108b04e30aeb3a9b48cf92294125f211f59"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/bounded-lesson.png",
+    "sha256": "d41f789ca317f76c0d9d3806c9462443fb49459a3623780ceff5a65a4c67f885",
+    "bytes": 195861,
+    "git_blob": "2b33064f7578343fb86a3b2e397fd88146a23afc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/chat-action.json",
+    "sha256": "7ec99e62014fb82fc2affd58b5664b6e8d9d5fabcbe854e79b642ddbd2dc0f26",
+    "bytes": 880,
+    "git_blob": "e53f78d16195f2b6603a4e743cf9e376cb948099"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/chat-action.png",
+    "sha256": "f3517e1c40c646ec3454456d832f5ee098581c1c5c1c384ff2ce557d7f815693",
+    "bytes": 214033,
+    "git_blob": "df78b9dd712156e8d885085473758e15ea66831a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/chat-cancel.json",
+    "sha256": "356f92e78bd4e3452a91c46187965e616806ba0d73a4d49fc7c117ca38eef120",
+    "bytes": 754,
+    "git_blob": "afe8578a75af6cbaac9c03659617fc8fe675d5b2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/colony.json",
+    "sha256": "c99ff1b9d3f5f572730ddd59b6963b225157474e54fe2d409e4498f3f7864657",
+    "bytes": 785,
+    "git_blob": "adbf81167253a3a6ead804616697abc2f1390bdc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/control.json",
+    "sha256": "0d254fe56c58cd742c5d3a92345e78955512db3bd93fabd737c4c3e7f3b69502",
+    "bytes": 687,
+    "git_blob": "f5394f1d0a0d9dda54e32a5d0a8e66f174f7bdb0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/economy.json",
+    "sha256": "75d5a84167f696a164469038efec7e04e1449157d03d3e57ac200fecafe5b824",
+    "bytes": 879,
+    "git_blob": "af6506f53ab26de17ecd77f6d97a7567271895b9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/economy.png",
+    "sha256": "8acecb0a1a56440039580a6900ed7b285a290a479c835fda32915a773714af30",
+    "bytes": 78320,
+    "git_blob": "b8f9c51ccc32491ff663c41b90658e1d76465ba8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/full-title.json",
+    "sha256": "2d2e34c33931948102fb011cd3fc301e3ca5fcc949b4a3dc9c4c1d8f3368b447",
+    "bytes": 880,
+    "git_blob": "06ea4acc34d7f1f9ca91f0b3bdfc2dd1d9c2ea0b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/full-title.png",
+    "sha256": "e52e51fbb6d62e7ab4687db11469b67b6c8bbfd72f899890cf64994113061a8b",
+    "bytes": 124186,
+    "git_blob": "8363f676edd98ce42cbd94d9fc0cec17bd308b53"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/game.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/initialize.json",
+    "sha256": "07d6ddd222b6bcfb9625645fb96f86e82dfed0926a0c1f06a93da6153539f8fb",
+    "bytes": 308,
+    "git_blob": "7070f2f93aed3abd88768b715be555ce9661820b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/intro.json",
+    "sha256": "ad88c1255f8cda3006b48c024de6b4e1af83120278d212cabd2c983c1d9779ba",
+    "bytes": 783,
+    "git_blob": "806b8530990ba2442eb21a021e527f3db84ccdb1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/lesson-restored.json",
+    "sha256": "e8e20a171e45d1a935b512ad316b4826ace820204f5160b8f8c13650095e59da",
+    "bytes": 880,
+    "git_blob": "0fb5d354d0ad9c7ad2bea390f20df5d09b23ac02"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/lesson-restored.png",
+    "sha256": "9a31b8dd36ca351f8b3b5e8d92e53c79da412f4bb9000c25f3097946cf899f54",
+    "bytes": 124425,
+    "git_blob": "5cea3314889dac9249c2eb143ebcd808d27d690b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/loaded-state.json",
+    "sha256": "e272cfe2f64c585a9f9d693f84eb3fd2e8fdb5a29f902afe9c6b9bf78042fc85",
+    "bytes": 806,
+    "git_blob": "6a901618289b364c3fd711529b5ff86105a10627"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/loaded-state.png",
+    "sha256": "0cb6d624483a8825ba6cdfa520b1d49c0d72cbc6f3de3cbb2d1fb81e1903e855",
+    "bytes": 115211,
+    "git_blob": "ec27184c8c86cf48d7965f0962f3d93f94b9d495"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/main-scroll.json",
+    "sha256": "ecd43f6dcd66e27ef6cc30ce8c04819dffac2e3e179d0adb1cf2935e6e400c50",
+    "bytes": 814,
+    "git_blob": "9f6fa259020c9a414ca51228720b1ffd58c3be52"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/map-peek.json",
+    "sha256": "76e1e6405710bd52414479efddbdd116d1c52cceb48eda1893d78f777b8068f0",
+    "bytes": 880,
+    "git_blob": "86ece304479d19906f816432607591e23ea49348"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/map-peek.png",
+    "sha256": "85e827402a8bd624bad31aabdda216d6214f1d30c6817c07800c684a4f868f22",
+    "bytes": 83459,
+    "git_blob": "66c2b11a0a4f9ad39b4ca72fad7498b05d9521cb"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/menu-scroll.json",
+    "sha256": "9a5aa06350496f724cf3fa46a2e9000f5d67bad680223713a350291a47ec0c51",
+    "bytes": 813,
+    "git_blob": "535a1f72ff8acee31cdd74af03b93d4805b96a5c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/menu.json",
+    "sha256": "f0602b5c42f17bb69c5e01a27b00f00c6bbda51f6afaffd3becc7a570e3c1048",
+    "bytes": 754,
+    "git_blob": "46a560f8ceba88d311dea8ea9c798394a6cdea0b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/military.json",
+    "sha256": "70c85ebcc26881e1c7dd782a77597abc976fc5c5451c29e5bce38767b5f7a1b4",
+    "bytes": 785,
+    "git_blob": "10f83580194975b68f251739e47573db81a8ca97"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/more.json",
+    "sha256": "154cb16348fff37d3643bbd10f37aa3d739e0c7c0c6804ac3a7c19fafd7b7762",
+    "bytes": 785,
+    "git_blob": "bfe86e0a93cba707a94936820b5535fbf0c1c954"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/quit-lesson.json",
+    "sha256": "835db96882a0492bc55e042b7a5decfe13da4359bd41e5310053eff841328bd7",
+    "bytes": 785,
+    "git_blob": "bb83931aff03c0cae243ffde82cb9e1ba51e91c8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/result-leave.json",
+    "sha256": "2ebc03ff624dca335b7402b5db0dc98e66b9831eeb00a856947193cf8a1d61d8",
+    "bytes": 785,
+    "git_blob": "8a28992c0890ac2db5840f4da3aad7cc946af204"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/run.json",
+    "sha256": "0eb86e56a6d3d4de6d6f178af6dd4f4eae9fe9f0b9ad28b2b5ba78fd7257d7c6",
+    "bytes": 2087,
+    "git_blob": "d50ed41f707d49342478978c75e0e7f868a1be34"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/stable-collapse.json",
+    "sha256": "e7d8ca8c1e1e13830ced56bea66f10fc73efbf4f3cc14f22a4f0d702d7c35080",
+    "bytes": 785,
+    "git_blob": "0bddf702f57c587943249330896b201d1516f8de"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/stable-collapsed-restore.json",
+    "sha256": "41a1de01150d4eaeb246bf4d80371a9f1e8d249e9d732254af73fc94dcf4eeda",
+    "bytes": 880,
+    "git_blob": "4f103eb5e2e19084b819d2d46544f5163284e6b9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/stable-collapsed-restore.png",
+    "sha256": "2ed0e8ead2cc70d3d4524bf3e174571dcd3c24e259e5fb8e8ee0ee7d7a23132a",
+    "bytes": 191686,
+    "git_blob": "19bfb32761b3c68eb50662e25bde6b43e143e3ff"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/stable-full-title.json",
+    "sha256": "e7ed6f44e4b9070561107d6aa8571ea47fd876b7cec66536e276a016ee33ca30",
+    "bytes": 880,
+    "git_blob": "3d067c35daf1b07527519f2a9c945fbff8ff27d7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/stable-full-title.png",
+    "sha256": "07026892625a63c716d49c1b9b350b6d0c27b013cde5a0c272f9719b739f75d8",
+    "bytes": 124659,
+    "git_blob": "770608271d9721d29739db7091f837e03040e149"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/stable-tools.json",
+    "sha256": "a923ebf57dadf0ff4c5c18529bcb8fe36eb4c8dd4450866de3179ed94eb76afa",
+    "bytes": 785,
+    "git_blob": "9a9bbd707130343f442509035f9ba5a96a63046a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/stats-overview.json",
+    "sha256": "be590f8ec0bfb4798646cb62a89e2de85a583cdaf4f11557e31f4307d4441cf3",
+    "bytes": 880,
+    "git_blob": "90e1b996a68d8ca34da1f0bb42466758ac640753"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/stats-overview.png",
+    "sha256": "9645351a02966b8df9df1967a497f330a928e7f37ea1ad8c06aa4d4713328c5c",
+    "bytes": 74839,
+    "git_blob": "4d26be7576fa1bc000284db40639790ced281446"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/tools-after-peek.json",
+    "sha256": "eb1cbc904693ec90a78990044caed6d5a4272b1d406e0cf2927a5352aa007f83",
+    "bytes": 879,
+    "git_blob": "22551434cb70164ac8b0f1c24f403179e221da3e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/tools-after-peek.png",
+    "sha256": "02bc969dde1de78dcecaaa36139299129074b2bc6eb1b1241e96f5ac8584cfc6",
+    "bytes": 188333,
+    "git_blob": "eccbadc08e472b3aeea7003098fc1b2c0cb6d4ce"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/tools-after-stats.json",
+    "sha256": "e988444bf665512a7584ae6043450c3fdec982fdd4897a91c990889960e72dc4",
+    "bytes": 879,
+    "git_blob": "6ea3e577bf3a455d4a9d3a60cc8f17c5188fe57b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/tools-after-stats.png",
+    "sha256": "93623efeed3d4a71241f71b95b4c8b70045a9e5ba98c0679e281cb00126a6a02",
+    "bytes": 189307,
+    "git_blob": "a64e3f385e48dbf7453f8d0819f3af2aa475aa9e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/tools-all-rows.json",
+    "sha256": "f3798b104256b96265c0578156e0bf38ca49a106b4bedc2c450838c51df64052",
+    "bytes": 880,
+    "git_blob": "a199317562fd8e3d0f16b46c8cefb5d79bbe3320"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/tools-all-rows.png",
+    "sha256": "d7ddf6cf5bd52f1ce4b9acf180067ec90b9b7d0b139fc1fb504d67dcfe62d58a",
+    "bytes": 190918,
+    "git_blob": "1a45c7d3f6de963f20245e66590a7f2f3a09068f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/training-main.json",
+    "sha256": "75f92f189510a1ba7fe2f69e551de5d8f83ebb88ed276c205f9f56bafb69abf9",
+    "bytes": 785,
+    "git_blob": "38663982121e1291d5d0512e26eba4369b82d7ca"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/training.json",
+    "sha256": "d417176bad3088c318f7c9086981426ac8e3301bd940d5ac36055da2ae169a23",
+    "bytes": 783,
+    "git_blob": "acc7dbfa178adf8773d77b5a5cc3e40a5861222e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-phone-small/world.json",
+    "sha256": "e89d4bea2f5f21b39e873faaca3ac211781148ed7a7d55bdeadb53a43f88b280",
+    "bytes": 785,
+    "git_blob": "8f8d0776dac2e20e4411ac30447083b48e4fcce5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-interactive-summary.json",
+    "sha256": "42e9121e8fd223ed182fb5572f8da8be8fca63c9d3220936f197eddd265c4422",
+    "bytes": 21154,
+    "git_blob": "9088e1b7e762cac021c9926c9cda82aaeac8f8d2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-orchestration.log",
+    "sha256": "02ae91904821937a8f8c4a05f45d724bf4eb8be624a379bbba07d1f72d9397f3",
+    "bytes": 57,
+    "git_blob": "617b5e679757d102d21d4f18d84b9a83a7b783e2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-preflight-artifacts/compact-bn-statistics.png",
+    "sha256": "d60b0db4b95500631971b1193a3bf43134bd71352a1fc3843a7dfac184dfa2fc",
+    "bytes": 874,
+    "git_blob": "ab5e6f683caec10204d70b6fbc32c343566eb86f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-preflight-capture-build.log",
+    "sha256": "9ac2b1e192ce5044ed9b0996b1747f2f43008392484217f19571fff31fe2c56f",
+    "bytes": 87055,
+    "git_blob": "535fea29c59941eff27dea55d7a2c0dbb375beee"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-preflight.log",
+    "sha256": "6292bc13e8abef12f85c986678ff0a344ab1b6e03521e35954493e95737fb32d",
+    "bytes": 1009,
+    "git_blob": "a80dc99c41ce5ffb3f9b602b7ccc60dd992e154c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-preflight.xml",
+    "sha256": "a0de2c21d63419b1c488d469b18fc50ea4594fad2d8095b2095012b998630667",
+    "bytes": 1134,
+    "git_blob": "dcf20dcf15883cdf600610f5948dd182bfda291d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-readback-artifacts/compact-bn-statistics.png",
+    "sha256": "b467ca6d4eaf76ae7caf2a386a9b36aa5fceedd80a5568353d58330345a28975",
+    "bytes": 44318,
+    "git_blob": "fdaa990c24f0d32944467a0bf3eff9885ff99ad6"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-readback.log",
+    "sha256": "40d23c35a4fd6d2ab7913551009fbcedb955133362c35682344b2650e0ee9ccd",
+    "bytes": 1050,
+    "git_blob": "46bd54366f591b1dec2a47ef4472baf551da58e5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-readback.xml",
+    "sha256": "ece46a4c22cbe87e55337ea8ddbff7c0209182b58168d9015186c2a01609e811",
+    "bytes": 480,
+    "git_blob": "76f21faaaf01413ffb9618f75328b9f1c975d412"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-regression-preflight-summary.json",
+    "sha256": "0b1ae15ed7a58780e0e9b29dc24dd95ab6b2de010e1e9d1f056a8ab9d488881f",
+    "bytes": 1514,
+    "git_blob": "96f620d86ac893f32ce812801b65c7aff8657599"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-tests/build-provenance.json",
+    "sha256": "5820d60267e1f2394a12b6fcb887f2c4127b638539c0ee5d4ad80c97035e8f74",
+    "bytes": 863,
+    "git_blob": "9d81b6c41ef3a0fc4d39cc46a27da5865cbd6168"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-tests-build.json",
+    "sha256": "e3d2528ef179e8bb6ca6c2d07453f38ef97e5f841be0088630bfd66cb5f27462",
+    "bytes": 870,
+    "git_blob": "fc0fc8f13c3d2cf1aad723e82b8a57bd61df9cb7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-tests-build.log",
+    "sha256": "f6157cf597076a6df7390baceb8cb167f0b8e00c0ad1cc2e38b29830b59fac4f",
+    "bytes": 112461,
+    "git_blob": "ca7ebeb8a7ceb9924a7cbeeff6d6b8eb06c716ca"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-tests-summary.json",
+    "sha256": "16e80c5548ca9a3271499ff9fc867440496f122fc1ecd3d57402a946b2ab305e",
+    "bytes": 1523,
+    "git_blob": "5ed7bcb354cfe3a3b89d5e37d07ec606ed4691df"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-tests.xml",
+    "sha256": "55b7e7cd2fec343a8fc872fd86096b45c5d1f49f547c66dbfcf3f276a1071b98",
+    "bytes": 11797,
+    "git_blob": "0a58cc184bd61f7bcd61bf9b1f3404a0acb495db"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native-visual-review.json",
+    "sha256": "675df29334899e2bd4d468dbd2ea7ecef95b98ff70439fb9956f96e08547b4d7",
+    "bytes": 10929,
+    "git_blob": "1b29dfa0e40fd7b3991b54a56747f0833acbd7d8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/native_mcp.py",
+    "sha256": "998cf2780ce51283b89ebb16edb9e9677c43cf756d6938dc4df25bd9b02c3225",
+    "bytes": 2570,
+    "git_blob": "98bfb0a4f762d12359a735ad9869db49b7cf1dca"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/postgres-cleanup.log",
+    "sha256": "66b5de2ee0c588a1e3e4aad25411f3101be18eeb7b39eb54cb71b862405f58ce",
+    "bytes": 23,
+    "git_blob": "a0231b7db21b9b2e3377d288d1e318d3c66f10d9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/precommit-native-strict-repaired.log",
+    "sha256": "4a7c86cd17d33924b711b03caa7b9b6189e20a8171567209405ed9ea85f2d6e5",
+    "bytes": 3260,
+    "git_blob": "5793ad51042b122db7aa9efc1c27f8d112f2ea10"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/precommit-native-strict.log",
+    "sha256": "cead7f346f8e04b7aff58c3c718b2bbcb25bf5162e481714b60dd408b2fe3457",
+    "bytes": 4818,
+    "git_blob": "1a5754849e4d10542ac1554a3a41c72f3d357a24"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/precommit-online-contract.log",
+    "sha256": "012394bc07e5ff534d2f84ffa77656dcf3710efc0387a017fdbabf88d5123424",
+    "bytes": 224,
+    "git_blob": "261bf125349896cd87c1023de05493cc849d92f5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/publication-output.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/publish_evidence.py",
+    "sha256": "62e49e3c6c1cc172add9d905c3fe6a9dfff34e62670daa4f513891d20d0c9dff",
+    "bytes": 7962,
+    "git_blob": "5990235c4da17ec6a5635616c076b666fb3cec47"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/release-gates.json",
+    "sha256": "4aecbe6b2e2c146915356582582eb648f925b382a27ffe33efa69971f1d81e45",
+    "bytes": 30343,
+    "git_blob": "6e824ffc61032647b4dacc791382c0c31a04f42b"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/reviews/bn.json",
+    "sha256": "b53322067999bb7173537942f97963460e0328ac40fd971595b6b3f1bfa37175",
+    "bytes": 7044121,
+    "git_blob": "261abd65b9b4c74242a5f8a8e6f8a695af36441c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/root-owned-cleanup.json",
+    "sha256": "9cd94e5a8e37d578d484ece177ff761cfaef0368ac4c24b4d1cffabfd0c6b948",
+    "bytes": 600,
+    "git_blob": "89b40e94eba7fb00a4f0c1ee2f3bae0871fe12ec"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/run-final-browser.py",
+    "sha256": "3a2174b97da9922b51ae6b5ce0942117bf7b278715094a20d134b87c34b1cd35",
+    "bytes": 3384,
+    "git_blob": "65aeb0230d08f06ffee17a9dd3802139b54f2cf8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/run-final-qa.py",
+    "sha256": "d08e51363aa8718a0a98a13c233f04194d013244364e77c7c4f11221b0556078",
+    "bytes": 3112,
+    "git_blob": "7502a03d309e96a57e471ae827f931e32f5a4bf5"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/seal-final-browser.py",
+    "sha256": "f3c89f8bfc1a044dfa0175a80b87c5a6a2c1fb175f58a0eea9b8c6d9e8c7a090",
+    "bytes": 4544,
+    "git_blob": "1d9e1ff7aa2ff6de7b889f5bf3da138bc0da8798"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/seal-platform-brand-routes.cjs",
+    "sha256": "98f9bd9920fa6763af1dc797ee8fd0485e68971e026c31b0a771f3d06568ebf0",
+    "bytes": 2689,
+    "git_blob": "d9029300eabd9e2ff4dc757a25d3714d3e30367d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/semantic-final.json",
+    "sha256": "17903f7ab28c772e0b8333cdd223e4b919bb4a28bea263ac56623d99cdde3cff",
+    "bytes": 73636,
+    "git_blob": "4615fc914b1cdae321d6bc09fb1da358f1dc5606"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/semantic-initial.json",
+    "sha256": "fcb4d977d760269b1afbe49e41acf5a5045390b8966d5baf5588c67de76cabd2",
+    "bytes": 62538,
+    "git_blob": "c1cd66a1f8ab36e403092423a8073c34afe47e3a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/source/native-keys.txt",
+    "sha256": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+    "bytes": 82157,
+    "git_blob": "f208976425497ad9fd56accee85bff01c1e0144e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/source/native.json",
+    "sha256": "2e8ecfd5117d4bce19aa250dd2aa652ea7a0f6a386bc182e5cccf2e30800df61",
+    "bytes": 218153,
+    "git_blob": "988d4f10a0c1fe83f6d724dbbffeaf24b2d608b2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/source/online.json",
+    "sha256": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+    "bytes": 200409,
+    "git_blob": "840274c64b02b61e5889d74decf4d9715e4151a9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/structural-gate.json",
+    "sha256": "e8730b7e04ae2ab6ff92a69c47562a245a3aab4fe9d6ee27875db207f67631e7",
+    "bytes": 4674,
+    "git_blob": "e2ef75599873ad0552d0b08fc101e19355302337"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/tracked-responsive-output/.last-run.json",
+    "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "bytes": 45,
+    "git_blob": "cbcc1fbac11a74b608b2b3edc3a2ffd6ab639cb2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/tracked-responsive-output/responsive-presentation-op-a1c4d--the-presented-panel-opaque-chromium/opaque-panel-black.png",
+    "sha256": "d267825ca9c14aa89c3b377bfa45fc7eadb0aacee31160812c3844283c9e4e3f",
+    "bytes": 12113,
+    "git_blob": "b4daffa724ae4fcfe76ff9a50ad76d3903d5b892"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/tracked-responsive-output/responsive-presentation-op-a1c4d--the-presented-panel-opaque-chromium/opaque-panel-white.png",
+    "sha256": "d267825ca9c14aa89c3b377bfa45fc7eadb0aacee31160812c3844283c9e4e3f",
+    "bytes": 12113,
+    "git_blob": "b4daffa724ae4fcfe76ff9a50ad76d3903d5b892"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/tracked-responsive-report.json",
+    "sha256": "0b411133310e919f31c16b42fa3fe4e7f8f9d128292d3a52ffd2eecc98e459a3",
+    "bytes": 4697,
+    "git_blob": "c0dd9a6239ebdb21406a9bf5c5e26e958a076a9f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/tracked-responsive-server.log",
+    "sha256": "5d20de44f139fa7a53f9abb6cdcecee3d1104c337a6e3b6ef2b8722eb61de82c",
+    "bytes": 6921,
+    "git_blob": "e61eef548e6e62a646858956e6e85d497664250a"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/tracked-startup-timeout.cjs",
+    "sha256": "c08f7a4fe5f071f480138695be8ef4a37f33b78dba09fe3fd649b128d86ebfde",
+    "bytes": 402,
+    "git_blob": "6e00e9fc5a789867c7c83dff9872c7de1b2b0952"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/verify_native.py",
+    "sha256": "43a20a70f4a54bf4f5625538cd7316db487f37ec37531963d949e74499c33f30",
+    "bytes": 2535,
+    "git_blob": "c30da4c5ccc7cb87ada3b5de734b681958f7ef2e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/verify_native_display.py",
+    "sha256": "9eddc396e6df94753c479ecdddbb193044e75062eb7113a6ab7343b96739bee4",
+    "bytes": 2548,
+    "git_blob": "495d6590c286f01dba35ad1ad48f59544f9212b2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/verify_website.py",
+    "sha256": "f9c93a6342f9510f6dad56b3214e39de524f395d9a06dd78cc5004bfc83ecc28",
+    "bytes": 2673,
+    "git_blob": "70405cdc734e50797c17c84e48e7f3157b44a897"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-build.json",
+    "sha256": "a34a01e6ca0212a68e24d41cd43e4757a6bd7865cd92588a0c7c5d5852260c3e",
+    "bytes": 546,
+    "git_blob": "71105e735d0c1bd4869d6e37deb49246a9b76077"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-build.log",
+    "sha256": "ba1693ae900a6eaa57b93879cb78935854632c252954b86962927f68e3d9cb29",
+    "bytes": 23829,
+    "git_blob": "c48adf9cdeafbe828b06f1ab51282cfc1ef81bdd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-e2e-results.json",
+    "sha256": "a96cbf077f19a52539cccc3572185dfd1b7cce0f4a5b03e2d29558386d1182c8",
+    "bytes": 32617462,
+    "git_blob": "efa672157c3854300162a64a830168409d402fcd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-e2e.json",
+    "sha256": "9930c148a3b38afa8dae87bec4e1ebb4a5101a2051944256990793efa17fbb0b",
+    "bytes": 687,
+    "git_blob": "f15792ce54c620e16564113969ae8edb4bd0663e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-e2e.log",
+    "sha256": "45b02f586088f97cb8ee725431c6fbe68bd804a2d273003f0fa43bd56d3e7917",
+    "bytes": 3590,
+    "git_blob": "87207a5aeab37d7536ff0f9c4a4776e4d3679f17"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-orchestration.log",
+    "sha256": "55230157fe02fe5009dfbce82ff8aacef3f7b853ace8cc979e6134e05ed5a9b6",
+    "bytes": 22,
+    "git_blob": "6fd4e63d4f692a739b6107aed17d8cc1db4a4ac2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-results/.last-run.json",
+    "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "bytes": 45,
+    "git_blob": "cbcc1fbac11a74b608b2b3edc3a2ffd6ab639cb2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-desktop/bn-account.png",
+    "sha256": "e2aa91e3d4593a87cdbbfb5ec119df99ae92448ea195f458b2903b807983d731",
+    "bytes": 87458,
+    "git_blob": "69477a2534993c833729415df1c24f5701191b68"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-desktop/bn-ais.png",
+    "sha256": "dabe20e9ea14c62a3c3696d096a7d9197ae89ac693929985209818a4510ffc6d",
+    "bytes": 157266,
+    "git_blob": "5448f9dbc8b36caa335c054ced5b2f5342428373"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-desktop/bn-buildings.png",
+    "sha256": "2f7a19173f93f7d1f580503385aa6a1acc38013f3a4e9393fd2dffab10f7bd81",
+    "bytes": 137945,
+    "git_blob": "6e57f37a3f511deb1cf30b75170adb3382eca8e6"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-desktop/bn-home.png",
+    "sha256": "ac76dfa4e8bbb5c3e8b468194d80283aa1fa0f4bc4930a159c4693b830918ca2",
+    "bytes": 835902,
+    "git_blob": "b3ec0436d6235d9a6e4aee544fea66f7b79543dd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-desktop/bn-invite.png",
+    "sha256": "dd528291bfe302fd0581eb7e517a7476eae18d052099e4fde9d282c4996baf2c",
+    "bytes": 1118873,
+    "git_blob": "426cf4e68793fcb015661cbbca20b3cb4190508c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-desktop/bn-maps.png",
+    "sha256": "96d189b0bc27adb2593276b2e10e9d8348a1056071cceb60d0eb3a45c0e3d7f6",
+    "bytes": 181723,
+    "git_blob": "886628c62cb0c0f04f1224426b1ff8838cede32d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-desktop/bn-sets.png",
+    "sha256": "6041365d41781adcaffef2793e43be747a30e29c95456ca2a5aefcb7a5f672f1",
+    "bytes": 144102,
+    "git_blob": "2283dd579a535b7dc332b9e97b9e93d3642e61c8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-desktop/bn-signin.png",
+    "sha256": "268abb6b16baef03da02810281af8c7d3d2523e04c72fb820d7d97118e774750",
+    "bytes": 986015,
+    "git_blob": "520d52e0634729b82f366701e1a4c912edaf9ec0"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-phone/bn-account.png",
+    "sha256": "9785ec6297d65cec964150d46f5b137433e6bbb5859e19cd300d1cc1b06fbe84",
+    "bytes": 130982,
+    "git_blob": "c060701503f851112cb46be2b758e1925d812264"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-phone/bn-ais.png",
+    "sha256": "8ca178ccb5afb39b2efccb4f4ac6c09bd2eafe576f1a32d0a9fcf6ba8326c3f6",
+    "bytes": 327256,
+    "git_blob": "34b4248162d73009e629b042c97ac7f33bf5bc56"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-phone/bn-buildings.png",
+    "sha256": "5db32c402d0c5ab800a76999d9d401d4d92f215c4166e3a671e76a81841cc973",
+    "bytes": 259418,
+    "git_blob": "32e423124bfb19163957cc861f5ca430718d42b9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-phone/bn-home.png",
+    "sha256": "3180af292cc0c2e8d0bd11cab1bf57c8d41cccb9d55c52ef8290c432b896c2a8",
+    "bytes": 925692,
+    "git_blob": "54e59def7d98e51f81f01033e1b88021bdf532b2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-phone/bn-invite.png",
+    "sha256": "acbf7bd6e18e531c1d459eec1d7a742cb0ce3528410652d808cafde53287e8e1",
+    "bytes": 588456,
+    "git_blob": "0095be87c77923885e3abcfd66efba7a4b0fb1e9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-phone/bn-maps.png",
+    "sha256": "7cb3506ef5e1503bb2daee96e398dc7a3259a286249635e4b18e40fc45d8fb71",
+    "bytes": 366257,
+    "git_blob": "fa444d4a8006107b56c9824adca96340d4395362"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-phone/bn-sets.png",
+    "sha256": "8f35da72f181066c66d239049b31f8fbd15182799290bb58d75334ec8281e267",
+    "bytes": 275992,
+    "git_blob": "1a10e44c6bd8560627eed0c97b1b08d155761624"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/chromium-phone/bn-signin.png",
+    "sha256": "4e2ee122792d8f0fbd7bff31889071a2e8129b16ed668781c621332098df966e",
+    "bytes": 383225,
+    "git_blob": "549b7491c4b46ccfd8afded9ec7fb4ed310509d8"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-desktop/bn-account.png",
+    "sha256": "7495da797ab3abb1199cd8c295fd5ad5b3f026dc362f92e5aa93dcfed57f1211",
+    "bytes": 106068,
+    "git_blob": "d0ea4fc1d0b88a534112c519f989572178d269aa"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-desktop/bn-ais.png",
+    "sha256": "de871ef407aeefd71f071aae347af5dba847a5e9fcf4e1f9d2b30380c59affe7",
+    "bytes": 189138,
+    "git_blob": "4c0f83582bea2ccca22d3d20f4718a9c18b2e58f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-desktop/bn-buildings.png",
+    "sha256": "4acc1e2433cf1c14453afe336d0e675dc61693839efede670eb7a794ad5839fd",
+    "bytes": 165539,
+    "git_blob": "ad23e18e6b1143d0f8e1ab2a5dd0fdca84aa51b6"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-desktop/bn-home.png",
+    "sha256": "9742841bdf5b45efeacd28b4e1b23ec1d7ef7d98e12840188c2ea878bce2b94d",
+    "bytes": 1060420,
+    "git_blob": "27763132efeafc3eda165e55fd0cc27ac11db5ee"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-desktop/bn-invite.png",
+    "sha256": "2083e085249f842707535d057b256245004cc580368cc773870165f80943db19",
+    "bytes": 1505264,
+    "git_blob": "4464085bf8026a075a1266e81e56f5013e42969c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-desktop/bn-maps.png",
+    "sha256": "f096511414e4937510409215ca014158cc75d58f3f3c121a20a466bb0b2ccb46",
+    "bytes": 260901,
+    "git_blob": "43705952454d3be7e5e119d3272c78a69d95a00c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-desktop/bn-sets.png",
+    "sha256": "ba7fb4905da4281d127a6215d8e1a8fefe5233f5adaf88c1c3007e8db7da7fb5",
+    "bytes": 169964,
+    "git_blob": "784c13dbb474f55207466a0edb7a29b5c4b41e81"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-desktop/bn-signin.png",
+    "sha256": "f7bfc9b0930c9924a1eac5a28c8e321bf53c62140e38c899732c1119e96fa4da",
+    "bytes": 1604301,
+    "git_blob": "7914f330afddc9f1ee31a9c891512a4809296ba4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-phone/bn-account.png",
+    "sha256": "1163c61b76236d1b70bf13184c4741eaffc7d5da82dbba7b9f779422e211bd09",
+    "bytes": 159308,
+    "git_blob": "f51ad87142d0bd0058b1028844903d8f69a84c5f"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-phone/bn-ais.png",
+    "sha256": "24acbe8f1fbabe6e706fbddfb0f3719cf5c3ef8b7706293c6c2dcb8403694f92",
+    "bytes": 403646,
+    "git_blob": "89de1680a97d80714bca0a5be5816195b7efb04c"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-phone/bn-buildings.png",
+    "sha256": "1b83a66bdebc0256975acce7cd2b0f6ed45adf5393e23e967af6d020df001095",
+    "bytes": 315878,
+    "git_blob": "16411a70c6f1e4b82ffea93a7d18c48e2c4444cc"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-phone/bn-home.png",
+    "sha256": "f920c0855cc280984970fc37809d47ff07cb0a0668008ef24a05075298b6727b",
+    "bytes": 1274528,
+    "git_blob": "a69b8bf41ab9c752fe26c830d8a06f3b5fa7f197"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-phone/bn-invite.png",
+    "sha256": "fa67b64afd249f1ab1fe204323e0983f6680cda607b07f3127bfbbc100e8a0d0",
+    "bytes": 784021,
+    "git_blob": "4f1e7f12098b4ca8c51305ba0f71b1e34634b6c4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-phone/bn-maps.png",
+    "sha256": "60bcc9da609905380c0dc8200da49316251e4482dd767315c0599f6c4febd01d",
+    "bytes": 451907,
+    "git_blob": "4714008949e9f76363cc30ecbf8fcf492eb5f428"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-phone/bn-sets.png",
+    "sha256": "a2ce8a673db876afd07de6e85544d81812c1c1d1d33b0e6f1d33cb9c2fd2def9",
+    "bytes": 329437,
+    "git_blob": "01ff2a3b544902f5112330f5c085588761b29dc1"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/firefox-phone/bn-signin.png",
+    "sha256": "d3d68accdf669a0363c9c83f998afd74f24878db6527d027b37529a7bcea0085",
+    "bytes": 694145,
+    "git_blob": "298f3433a200997f8e45b33aefbd2c2bd29f4752"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-desktop/bn-account.png",
+    "sha256": "0224960b10c342a4f651854a3b0af3da722f3fda76dc363dd567912199e96e1a",
+    "bytes": 105048,
+    "git_blob": "33b3b7ffe003995d725b98f28148484e1b6f1112"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-desktop/bn-ais.png",
+    "sha256": "fc834e32f24ccae6ed470924fe0eba821be4d721f512f6b3b92e2c583f394180",
+    "bytes": 198558,
+    "git_blob": "6a904f1d0d6485b7de2eebf08e5ae688a5ec49ca"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-desktop/bn-buildings.png",
+    "sha256": "0d2904032350e710bf0615b7aa6c5ec6fa1d99ea74252e6dfe1d5f44f59a4aad",
+    "bytes": 166827,
+    "git_blob": "d0e75f00eda11549179616230341eb9178cc5697"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-desktop/bn-home.png",
+    "sha256": "1e3f4032ab0af53dafed8a72d4739c0223cc8d3537ead28befae9157967c21cd",
+    "bytes": 989318,
+    "git_blob": "7ccacd995dfb3783419a6846ffcea48a6a85dc35"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-desktop/bn-invite.png",
+    "sha256": "2ff76c05b5e1785caaaf7a42d24c368fdfe185e1122c19ea9531db9dd88a2d25",
+    "bytes": 1231801,
+    "git_blob": "21aba11e6396ec2669d6f492eea41c978002b816"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-desktop/bn-maps.png",
+    "sha256": "7b0f65dca553e5ec2fc0acb22ec88a43a5a945ce79b3578c9ca2c0e3c73cc1f6",
+    "bytes": 228495,
+    "git_blob": "5e7e6eb1a25d3ee33174a70f569c0141181fdfb4"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-desktop/bn-sets.png",
+    "sha256": "e16ac6f498391d9dfc5d5d7ead29c06b4e6c1d935f2cbcd58094357cbf3eafa8",
+    "bytes": 172928,
+    "git_blob": "f61edaffdb2f7eb2021f6599690fe23e1024e073"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-desktop/bn-signin.png",
+    "sha256": "c92ad5daf3a2d30e413fb6ceee4bd9bbb5a62e2bb30d808e3685964a28950c7c",
+    "bytes": 1091067,
+    "git_blob": "1986510a21331bdd6b3c1da76048214a370096d2"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-phone/bn-account.png",
+    "sha256": "bcc3c84653ff57ab423e2707a620ff35d21088ccd55d6c232a2a13749d264e0f",
+    "bytes": 154804,
+    "git_blob": "90e5c9c1f4b88ed4390fa2cb59ce3e58e160a8f7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-phone/bn-ais.png",
+    "sha256": "cd9813a936af97ac6368aa273c03c4be6c7a6d1f998b733bedaac8d58fe1d950",
+    "bytes": 401434,
+    "git_blob": "e58b08300f0a1c07c8ee9fc1151f0758187509dd"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-phone/bn-buildings.png",
+    "sha256": "3b77b03415f99d86fa29ff70cd0d8927c3888ea838b588949d95805b27f0b473",
+    "bytes": 309347,
+    "git_blob": "bcf84444f2e9743f14223aa8fb4c1358ce8db24e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-phone/bn-home.png",
+    "sha256": "017a81c03fd03423931a9a74e1356c69557ff3fe9e4b0704fc4e6845aff65d16",
+    "bytes": 1134966,
+    "git_blob": "8838a1650ec0efa364eb5c3a5d77ad7d6ae8faa7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-phone/bn-invite.png",
+    "sha256": "7631e0b54da8ae16975c7b85cf3bedb16ffad8caba8934b771cadb778c5b7756",
+    "bytes": 676706,
+    "git_blob": "bfabc9a9a2e732a90ccb30b6471155bdb8ee5368"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-phone/bn-maps.png",
+    "sha256": "b763f7c5a3ba3792563a2ecd847b75c9f332ab4965edeb5454419639b651be3a",
+    "bytes": 417366,
+    "git_blob": "6b8e3b4b314f64252b260253c7bbbae80a890bd7"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-phone/bn-sets.png",
+    "sha256": "6df5d29a7308d205452054a7e97364c9e0b53bc5ef43165ca8a8944a6a8e7d39",
+    "bytes": 322398,
+    "git_blob": "75220fc8dfb68ca91b3e50d490af8b15ce1fe57d"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web-screens/webkit-phone/bn-signin.png",
+    "sha256": "e347723e26262662a79a2b57230bdcf342aab66875dd3e89379cb956eb31bdf3",
+    "bytes": 456569,
+    "git_blob": "2b1cded56a00e9cebaa9d84a528c94eec7694d9e"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/web.config.cjs",
+    "sha256": "cbdf052ccca0eb3e0bfbc9521d6ec83f7488d71a4ef1debeebbaed9c39610470",
+    "bytes": 2467,
+    "git_blob": "6b32a495ab736740d77fccc2fa664f0de4a2eaf9"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/webgl-text-audit/check-opaque-panel.cjs",
+    "sha256": "84d265bed3bf7f6c2767146616c1022484e509435c59066876cb52870639a78c",
+    "bytes": 3399,
+    "git_blob": "40305a4e4b6db9163ccd23804cb69b6260017c92"
+  },
+  {
+    "path": "artifacts/bengali-localization-v7/website-visual-review.json",
+    "sha256": "65b7e5a593b3816422ac70c387c54eb05652e23f23abc26d84e9685658131fb8",
+    "bytes": 13864,
+    "git_blob": "79c9ebb2e09f02f7b8ae7ee60ccf4b15b33f72e7"
+  }
+]

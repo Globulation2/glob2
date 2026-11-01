@@ -1,0 +1,904 @@
+{
+  "agent": "/root/bengali_author",
+  "role": "draft author",
+  "label": "agent-reviewed; not native-human certified",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "manifest_sha256": "ebefcbefcdea7a54ecf8f613a5c7f0e22f9bd75ddda375493a02d18383c55e70",
+  "api_delta_sha256": "cd73f496f6a33a55a22f60748759a1a86af8679b2eae22621d96b2efcee5e940",
+  "api_raw_response_sha256": "9f67997802c1777dbe04fb180f96b2c33bdeb1aa7ff547f49b9253b50451fcc2",
+  "draft_catalog_sha256": "a001c01138ddf4fef157164afde84c377aa93a087043b310793a4abbbfd571ed",
+  "authored_catalog_sha256": "b72dd0184067245ce3c289693dd1b787e2c7eec6eac902671448359a779dc47a",
+  "scope": {
+    "new_online_keys_examined": 105,
+    "old_online_pairs_preserved": 2842,
+    "native_catalog_untouched": true,
+    "installed_catalogs_untouched": true
+  },
+  "changed_count": 74,
+  "retained_count": 31,
+  "context_files_sha256": {
+    "platform/packages/protocol/src/ais.ts": "120f6770dd2c674f1b2fc28c176387ae913e9bde00100fd26b3cfa560f6d3a79",
+    "platform/packages/protocol/src/connectionQuality.ts": "2fd67ad4985a3ddcea1fb904f997aa2cae9c1619167bcdfb4d193cadec546fb4",
+    "platform/packages/protocol/src/skins.ts": "2386cc2256d611204b25d575e22170c0cfb923d234c6fa53694f1b02ef983376",
+    "platform/apps/web/src/skins/swarmShapes.ts": "572b3e8caec0e0b1448ac758a42a2c2eed93de1b5426483d1a58c8009185796a",
+    "platform/apps/web/src/skins/geometry.ts": "41dc05269007bf2d8aaebcc6184d8d4b944c133fbff3b3825b08e569f43fd08e",
+    "platform/apps/web/src/music/Validation.tsx": "6d850d73787b388f8e1145fd75f3a28ea785a31bb769775877d9ec1eeac082a7",
+    "platform/apps/web/src/pages/Maps.tsx": "381a68e8c1cd01207426e932e53ff8fc016a597fa4a8eeb2f92e673a09e054d1",
+    "platform/apps/web/src/pages/Match.tsx": "b598e3d5877ec9ad7e5616ba672ba3195ee0278c14d34d3e4a235ca827ec362a",
+    "platform/apps/web/src/admin/presentation.ts": "203418b2a70fc6e4b716ceedc2fa8b9eb37b681ee6fabe60644a827639f73924"
+  },
+  "reference_languages": [
+    "English source governs meaning",
+    "Existing reviewed Bengali glossary",
+    "Hindi",
+    "Urdu",
+    "French",
+    "Malay contextual comparison"
+  ],
+  "findings_resolved": {
+    "Fair": "Connection quality is moderate, not fairness.",
+    "Poor": "Connection quality is weak, not poverty.",
+    "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.": "Relay is a network relay, not a race; preserve region probe and estimate.",
+    "Swarm": "Use existing building glossary মৌচাক, not moving swarm ঝাঁক.",
+    "Explorer": "Use existing role glossary অনুসন্ধানকারী.",
+    "Clutch": "Skin mesh depicts brood eggs; not a mechanical clutch.",
+    "Skep": "Skin mesh depicts a coiled woven hive.",
+    "Fly": "Animation action means flying, not insect.",
+    "Harvest": "Animation action means gathering, not the noun crop.",
+    "Scales": "Material surface depicts animal scales, not measuring scales.",
+    "Cloud": "Material surface resembles a cloud, not a cloud service.",
+    "Oozy goo": "Avoid vulgar Bengali homophone in API output; describe flowing sticky material.",
+    "Finances": "Admin financial overview, not financing activity.",
+    "Dispute closed": "Payment objection process closed; do not imply a particular financial outcome.",
+    "1 hour": "Keep existing catalog numeral convention; standard spelling ঘণ্টা.",
+    "This match is not checked.": "not_applicable verification status; match is not subject to checking, not yet-unchecked pending.",
+    "Persistent state": "State retained by the controller across callbacks/save continuation.",
+    "Repeatable simulation": "Determinism check: repeated simulation must agree.",
+    "Seeded gameplay": "Game validation uses a specified random seed, not planted seeds.",
+    "Switch moods and listen for changes in timing or harmony.": "Music mood tracks, timing alignment and harmony; no emotional mood switching.",
+    "Listen for unexpected jumps in volume between moods.": "Audio loudness between music moods; not speaking voice."
+  },
+  "uncertainty": [],
+  "pairs": [
+    {
+      "key": "File and API profile",
+      "english": "File and API profile",
+      "api_draft": "ফাইল এবং এপিআই প্রোফাইল",
+      "authored": "ফাইল ও API প্রোফাইল",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Syntax and profile restrictions",
+      "english": "Syntax and profile restrictions",
+      "api_draft": "সিনট্যাক্স এবং প্রোফাইল সীমাবদ্ধতা",
+      "authored": "সিনট্যাক্স ও প্রোফাইলের বিধিনিষেধ",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Startup and callback",
+      "english": "Startup and callback",
+      "api_draft": "স্টার্টআপ এবং কলব্যাক",
+      "authored": "চালু হওয়া ও কলব্যাক",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Persistent state",
+      "english": "Persistent state",
+      "api_draft": "স্থায়ী অবস্থা",
+      "authored": "সংরক্ষিত অবস্থা",
+      "changed": true,
+      "reason": "State retained by the controller across callbacks/save continuation."
+    },
+    {
+      "key": "Seeded gameplay",
+      "english": "Seeded gameplay",
+      "api_draft": "বীজযুক্ত গেমপ্লে",
+      "authored": "নির্দিষ্ট বীজ দিয়ে খেলা",
+      "changed": true,
+      "reason": "Game validation uses a specified random seed, not planted seeds."
+    },
+    {
+      "key": "Repeatable simulation",
+      "english": "Repeatable simulation",
+      "api_draft": "পুনরাবৃত্তিযোগ্য সিমুলেশন",
+      "authored": "পুনরাবৃত্তিতে অভিন্ন সিমুলেশন",
+      "changed": true,
+      "reason": "Determinism check: repeated simulation must agree."
+    },
+    {
+      "key": "Save and resume",
+      "english": "Save and resume",
+      "api_draft": "সংরক্ষণ করুন এবং পুনরায় শুরু করুন",
+      "authored": "সংরক্ষণ ও আবার চালু করা",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Good",
+      "english": "Good",
+      "api_draft": "ভালো",
+      "authored": "ভালো",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Fair",
+      "english": "Fair",
+      "api_draft": "ন্যায্য",
+      "authored": "মোটামুটি",
+      "changed": true,
+      "reason": "Connection quality is moderate, not fairness."
+    },
+    {
+      "key": "Poor",
+      "english": "Poor",
+      "api_draft": "দরিদ্র",
+      "authored": "দুর্বল",
+      "changed": true,
+      "reason": "Connection quality is weak, not poverty."
+    },
+    {
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "english": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "api_draft": "একজন খেলোয়াড় এবং রিলে দৌড়ের মধ্যে আসা-যাওয়া। একটি ম্যাচের আগে (দ্রুত ম্যাচ, শুরুর চেকলিস্ট) এটি অঞ্চলটির একটি অনুসন্ধান, একটি অনুমান।",
+      "authored": "একজন খেলোয়াড় ও রিলের মধ্যে তথ্য যাওয়া-আসার সময়। ম্যাচের আগে (দ্রুত ম্যাচ বা শুরুর যাচাইতালিকায়) সংশ্লিষ্ট অঞ্চলে পরীক্ষামূলক সংকেত পাঠিয়ে এটি অনুমান করা হয়।",
+      "changed": true,
+      "reason": "Relay is a network relay, not a race; preserve region probe and estimate."
+    },
+    {
+      "key": "Delay",
+      "english": "Delay",
+      "api_draft": "বিলম্ব",
+      "authored": "বিলম্ব",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "english": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "api_draft": "আপনার ইনপুট ডিলে: আপনার ক্লিক করা থেকে শুরু করে ইনপুটটি সম্পন্ন হওয়া পর্যন্ত, সবার জন্য। আপনার পিং-এর অর্ধেক এবং জিটার প্রতিরোধের জন্য আপনার গেমের বাফার।",
+      "authored": "আপনার ইনপুটের বিলম্ব: ক্লিক করা থেকে সবার খেলায় সেই কাজটি কার্যকর হওয়া পর্যন্ত সময়। এটি আপনার পিংয়ের অর্ধেক এবং নেটওয়ার্ক বিলম্বের ওঠানামা সামলাতে গেমের রাখা বাফারের যোগফল।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "english": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "api_draft": "একজন খেলোয়াড়ের খেলা ম্যাচ ক্লকের থেকে কতটা পিছিয়ে থাকে। এক সেকেন্ডের কম সময় স্বাভাবিক (এর মধ্যে তাদের বিলম্বও অন্তর্ভুক্ত); ২ সেকেন্ড থেকে রিলে একজন খেলোয়াড়কে ধীরগতির হিসেবে চিহ্নিত করে।",
+      "authored": "ম্যাচের ঘড়ির তুলনায় একজন খেলোয়াড়ের গেম কতটা পিছিয়ে চলছে। এক সেকেন্ডের কম স্বাভাবিক (এতে তাঁর ইনপুটের বিলম্বও অন্তর্ভুক্ত); 2 সেকেন্ড থেকে রিলে খেলোয়াড়কে ধীর হিসেবে চিহ্নিত করে।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Classic glossy",
+      "english": "Classic glossy",
+      "api_draft": "ক্লাসিক চকচকে",
+      "authored": "চিরাচরিত চকচকে",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Basics",
+      "english": "Basics",
+      "api_draft": "মৌলিক বিষয়",
+      "authored": "মৌলিক",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Matte",
+      "english": "Matte",
+      "api_draft": "ম্যাট",
+      "authored": "অনুজ্জ্বল",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Riveted metal",
+      "english": "Riveted metal",
+      "api_draft": "রিভেটেড ধাতু",
+      "authored": "রিভেট লাগানো ধাতু",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Metal",
+      "english": "Metal",
+      "api_draft": "ধাতু",
+      "authored": "ধাতু",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Hairy",
+      "english": "Hairy",
+      "api_draft": "লোমশ",
+      "authored": "লোমশ",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Organic",
+      "english": "Organic",
+      "api_draft": "জৈব",
+      "authored": "জৈব",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Cartoon",
+      "english": "Cartoon",
+      "api_draft": "কার্টুন",
+      "authored": "কার্টুন",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Woven fabric",
+      "english": "Woven fabric",
+      "api_draft": "বোনা কাপড়",
+      "authored": "বোনা কাপড়",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Craft",
+      "english": "Craft",
+      "api_draft": "কারুশিল্প",
+      "authored": "কারুশিল্প",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Oozy goo",
+      "english": "Oozy goo",
+      "api_draft": "আঠালো গু",
+      "authored": "চুইয়ে পড়া আঠালো পদার্থ",
+      "changed": true,
+      "reason": "Avoid vulgar Bengali homophone in API output; describe flowing sticky material."
+    },
+    {
+      "key": "Wet",
+      "english": "Wet",
+      "api_draft": "ভেজা",
+      "authored": "ভেজা",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Wood",
+      "english": "Wood",
+      "api_draft": "কাঠ",
+      "authored": "কাঠ",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Stone",
+      "english": "Stone",
+      "api_draft": "পাথর",
+      "authored": "পাথর",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Mineral",
+      "english": "Mineral",
+      "api_draft": "খনিজ",
+      "authored": "খনিজ",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Scales",
+      "english": "Scales",
+      "api_draft": "স্কেল",
+      "authored": "আঁশ",
+      "changed": true,
+      "reason": "Material surface depicts animal scales, not measuring scales."
+    },
+    {
+      "key": "Leather",
+      "english": "Leather",
+      "api_draft": "চামড়া",
+      "authored": "চামড়া",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Crystal",
+      "english": "Crystal",
+      "api_draft": "ক্রিস্টাল",
+      "authored": "স্ফটিক",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Lava",
+      "english": "Lava",
+      "api_draft": "লাভা",
+      "authored": "লাভা",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Chrome",
+      "english": "Chrome",
+      "api_draft": "ক্রোম",
+      "authored": "ক্রোম",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Carbon fibre",
+      "english": "Carbon fibre",
+      "api_draft": "কার্বন ফাইবার",
+      "authored": "কার্বন ফাইবার",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Velvet",
+      "english": "Velvet",
+      "api_draft": "ভেলভেট",
+      "authored": "মখমল",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Honeycomb",
+      "english": "Honeycomb",
+      "api_draft": "মৌচাক",
+      "authored": "মৌচাকের খোপ",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Ice",
+      "english": "Ice",
+      "api_draft": "বরফ",
+      "authored": "বরফ",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Cloud",
+      "english": "Cloud",
+      "api_draft": "ক্লাউড",
+      "authored": "মেঘ",
+      "changed": true,
+      "reason": "Material surface resembles a cloud, not a cloud service."
+    },
+    {
+      "key": "Hammered metal",
+      "english": "Hammered metal",
+      "api_draft": "হাতুড়ি দিয়ে পেটানো ধাতু",
+      "authored": "পেটানো ধাতু",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Candy",
+      "english": "Candy",
+      "api_draft": "ক্যান্ডি",
+      "authored": "ক্যান্ডি",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Slime",
+      "english": "Slime",
+      "api_draft": "স্লাইম",
+      "authored": "পিচ্ছিল আঠালো পদার্থ",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "AI player",
+      "english": "AI player",
+      "api_draft": "এআই প্লেয়ার",
+      "authored": "এআই খেলোয়াড়",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Finances",
+      "english": "Finances",
+      "api_draft": "অর্থায়ন",
+      "authored": "অর্থব্যবস্থা",
+      "changed": true,
+      "reason": "Admin financial overview, not financing activity."
+    },
+    {
+      "key": "Accounts",
+      "english": "Accounts",
+      "api_draft": "অ্যাকাউন্ট",
+      "authored": "অ্যাকাউন্ট",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Audit",
+      "english": "Audit",
+      "api_draft": "নিরীক্ষা",
+      "authored": "নিরীক্ষা",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "1 hour",
+      "english": "1 hour",
+      "api_draft": "১ ঘন্টা",
+      "authored": "1 ঘণ্টা",
+      "changed": true,
+      "reason": "Keep existing catalog numeral convention; standard spelling ঘণ্টা."
+    },
+    {
+      "key": "1 day",
+      "english": "1 day",
+      "api_draft": "১ দিন",
+      "authored": "1 দিন",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "1 week",
+      "english": "1 week",
+      "api_draft": "১ সপ্তাহ",
+      "authored": "1 সপ্তাহ",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "30 days",
+      "english": "30 days",
+      "api_draft": "৩০ দিন",
+      "authored": "30 দিন",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Most played",
+      "english": "Most played",
+      "api_draft": "সবচেয়ে বেশি খেলা হয়েছে",
+      "authored": "সবচেয়ে বেশি খেলা হয়েছে",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Listen for the musical structure and development.",
+      "english": "Listen for the musical structure and development.",
+      "api_draft": "সঙ্গীতের গঠন ও ক্রমবিকাশের দিকে মনোযোগ দিন।",
+      "authored": "সুরের গঠন ও ক্রমবিকাশ খেয়াল করে শুনুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Check that all three moods play correctly.",
+      "english": "Check that all three moods play correctly.",
+      "api_draft": "যাচাই করুন যে তিনটি মুডই সঠিকভাবে বাজছে কিনা।",
+      "authored": "তিনটি আবহের সুরই ঠিকমতো বাজে কি না দেখুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "english": "Listen for unexpected jumps in volume between moods.",
+      "api_draft": "মেজাজ পরিবর্তনের সময় কণ্ঠস্বরের আকস্মিক তারতম্যের দিকে খেয়াল রাখুন।",
+      "authored": "আবহ বদলানোর সময় শব্দের মাত্রা অপ্রত্যাশিতভাবে লাফিয়ে বদলায় কি না শুনুন।",
+      "changed": true,
+      "reason": "Audio loudness between music moods; not speaking voice."
+    },
+    {
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "english": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "api_draft": "লুপটি পুনরাবৃত্তি হওয়ার সময় একটি ক্লিক, ফাঁক বা আকস্মিক পরিবর্তনের দিকে খেয়াল রাখুন।",
+      "authored": "লুপ আবার শুরু হলে খট শব্দ, বিরতি বা হঠাৎ কোনো পরিবর্তন হয় কি না শুনুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "english": "Listen for short phrases that repeat too mechanically.",
+      "api_draft": "খুব যান্ত্রিকভাবে পুনরাবৃত্ত হওয়া ছোট ছোট বাক্যাংশগুলোর দিকে মনোযোগ দিন।",
+      "authored": "ছোট ছোট সুরের অংশ অতিরিক্ত যান্ত্রিকভাবে বারবার বাজে কি না শুনুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "english": "Switch moods and listen for changes in timing or harmony.",
+      "api_draft": "মেজাজ বদলান এবং তাল বা সুরের পরিবর্তনে মনোযোগ দিন।",
+      "authored": "আবহ বদলে তালের সময়মিল বা সুরের সামঞ্জস্যে পরিবর্তন হয় কি না শুনুন।",
+      "changed": true,
+      "reason": "Music mood tracks, timing alignment and harmony; no emotional mood switching."
+    },
+    {
+      "key": "Check that building and combat feel distinct from calm.",
+      "english": "Check that building and combat feel distinct from calm.",
+      "api_draft": "নিশ্চিত করুন যে ভবন নির্মাণ এবং যুদ্ধ পরিস্থিতি শান্ত অবস্থা থেকে স্বতন্ত্র।",
+      "authored": "নির্মাণ ও যুদ্ধের আবহ শান্ত আবহের চেয়ে আলাদা শোনায় কি না দেখুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "english": "Listen for hiss or scratchiness in quiet passages.",
+      "api_draft": "শান্ত অংশগুলোতে হিসহিস বা খসখসে শব্দের দিকে মনোযোগ দিন।",
+      "authored": "সুরের মৃদু অংশে হিসহিস বা খসখসে শব্দ শোনা যায় কি না শুনুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "english": "Listen for muddy bass or harsh high frequencies.",
+      "api_draft": "ঘোলাটে বেস বা কর্কশ উচ্চ কম্পাঙ্কের দিকে কান পাতুন।",
+      "authored": "নিচু সুর ঘোলাটে বা উঁচু সুর কর্কশ শোনায় কি না শুনুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "english": "Check that calm passages remain audible alongside game sound.",
+      "api_draft": "নিশ্চিত করুন যে খেলার শব্দের পাশাপাশি শান্ত অংশগুলোও শোনা যায়।",
+      "authored": "গেমের অন্যান্য শব্দের মধ্যেও সুরের শান্ত অংশ শোনা যায় কি না দেখুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Listen for notes that cut off unexpectedly.",
+      "english": "Listen for notes that cut off unexpectedly.",
+      "api_draft": "যে সুরগুলো অপ্রত্যাশিতভাবে থেমে যায়, সেগুলোর দিকে খেয়াল রাখুন।",
+      "authored": "কোনো স্বর অপ্রত্যাশিতভাবে থেমে যায় কি না শুনুন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Worker",
+      "english": "Worker",
+      "api_draft": "শ্রমিক",
+      "authored": "শ্রমিক",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Warrior",
+      "english": "Warrior",
+      "api_draft": "যোদ্ধা",
+      "authored": "যোদ্ধা",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Explorer",
+      "english": "Explorer",
+      "api_draft": "অভিযাত্রী",
+      "authored": "অনুসন্ধানকারী",
+      "changed": true,
+      "reason": "Use existing role glossary অনুসন্ধানকারী."
+    },
+    {
+      "key": "Swarm",
+      "english": "Swarm",
+      "api_draft": "ঝাঁক",
+      "authored": "মৌচাক",
+      "changed": true,
+      "reason": "Use existing building glossary মৌচাক, not moving swarm ঝাঁক."
+    },
+    {
+      "key": "Classic",
+      "english": "Classic",
+      "api_draft": "ক্লাসিক",
+      "authored": "চিরাচরিত",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Crown",
+      "english": "Crown",
+      "api_draft": "মুকুট",
+      "authored": "মুকুট",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Clutch",
+      "english": "Clutch",
+      "api_draft": "ক্লাচ",
+      "authored": "ডিমের গুচ্ছ",
+      "changed": true,
+      "reason": "Skin mesh depicts brood eggs; not a mechanical clutch."
+    },
+    {
+      "key": "Toadstool",
+      "english": "Toadstool",
+      "api_draft": "ব্যাঙের ছাতা",
+      "authored": "ব্যাঙের ছাতা",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "A broad-capped toadstool with young caps.",
+      "english": "A broad-capped toadstool with young caps.",
+      "api_draft": "চওড়া চূড়াবিশিষ্ট একটি ব্যাঙের ছাতা, যার মাথায় নতুন টুপি রয়েছে।",
+      "authored": "চওড়া ছাতার মাশরুম, পাশে ছোট ছোট কচি ছাতা।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Coral",
+      "english": "Coral",
+      "api_draft": "প্রবাল",
+      "authored": "প্রবাল",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Skep",
+      "english": "Skep",
+      "api_draft": "স্কেপ",
+      "authored": "বোনা মৌচাক",
+      "changed": true,
+      "reason": "Skin mesh depicts a coiled woven hive."
+    },
+    {
+      "key": "A coiled hive on a stand, its door facing you.",
+      "english": "A coiled hive on a stand, its door facing you.",
+      "api_draft": "একটি স্ট্যান্ডের উপর পেঁচানো একটি মৌচাক, যার দরজাটি আপনার দিকে মুখ করা।",
+      "authored": "উঁচু পাটাতনে প্যাঁচ দিয়ে গড়া মৌচাক, যার দরজা আপনার দিকে।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Bloom",
+      "english": "Bloom",
+      "api_draft": "ব্লুম",
+      "authored": "ফুল",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Public: listed in the catalog",
+      "english": "Public: listed in the catalog",
+      "api_draft": "সর্বসাধারণ: ক্যাটালগে তালিকাভুক্ত",
+      "authored": "সর্বজনীন: ক্যাটালগে তালিকাভুক্ত",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Unlisted: anyone with the link",
+      "english": "Unlisted: anyone with the link",
+      "api_draft": "তালিকাভুক্ত নয়: যার কাছে লিঙ্কটি আছে",
+      "authored": "তালিকাবহির্ভূত: লিংক থাকলে যে কেউ দেখতে পারবেন",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Private: only you",
+      "english": "Private: only you",
+      "api_draft": "ব্যক্তিগত: শুধু আপনার জন্য",
+      "authored": "ব্যক্তিগত: শুধু আপনি",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "english": "The server replayed this match and every player’s game agreed with it.",
+      "api_draft": "সার্ভার এই ম্যাচটি পুনরায় চালিয়েছে এবং প্রত্যেক খেলোয়াড়ের খেলা তার সাথে মিলে গেছে।",
+      "authored": "সার্ভার ম্যাচটি আবার চালিয়ে দেখেছে এবং প্রত্যেক খেলোয়াড়ের গেম তার সঙ্গে মিলেছে।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "english": "The server is checking this match. Ratings change once it is verified.",
+      "api_draft": "সার্ভার এই ম্যাচটি যাচাই করছে। যাচাই সম্পন্ন হলে রেটিং পরিবর্তিত হবে।",
+      "authored": "সার্ভার এই ম্যাচ যাচাই করছে। যাচাই শেষ হলে রেটিং বদলাবে।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "english": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "api_draft": "খেলোয়াড়ের খেলাটি সার্ভারের ম্যাচ রিপ্লের সাথে মেলেনি; তাই সার্ভারের ফলাফলই চূড়ান্ত বলে গণ্য হবে।",
+      "authored": "একজন খেলোয়াড়ের গেম সার্ভারে আবার চালানো ম্যাচের সঙ্গে মেলেনি; সার্ভারের ফলই গণ্য হবে।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "english": "The server could not reproduce this match, so it changes no rating.",
+      "api_draft": "সার্ভার এই ম্যাচটি পুনরায় তৈরি করতে পারেনি, তাই রেটিং-এ কোনো পরিবর্তন আসছে না।",
+      "authored": "সার্ভার ম্যাচটি একইভাবে আবার চালাতে পারেনি, তাই এর জন্য কোনো রেটিং বদলাবে না।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "This match is not checked.",
+      "english": "This match is not checked.",
+      "api_draft": "এই মিলটি যাচাই করা হয়নি।",
+      "authored": "এই ম্যাচ যাচাই করা হয় না।",
+      "changed": true,
+      "reason": "not_applicable verification status; match is not subject to checking, not yet-unchecked pending."
+    },
+    {
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "english": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "api_draft": "সার্ভার এই ম্যাচটির যাচাই সম্পন্ন করতে পারেনি, তাই আপাতত কোনো রেটিং পরিবর্তন হচ্ছে না। একজন প্রশাসক পুনরায় যাচাইটি চালাতে পারেন।",
+      "authored": "সার্ভার এই ম্যাচের যাচাই শেষ করতে পারেনি, তাই আপাতত কোনো রেটিং বদলাবে না। একজন প্রশাসক আবার যাচাই চালাতে পারবেন।",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Walk",
+      "english": "Walk",
+      "api_draft": "হাঁটা",
+      "authored": "হাঁটা",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Swim",
+      "english": "Swim",
+      "api_draft": "সাঁতার",
+      "authored": "সাঁতার",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Harvest",
+      "english": "Harvest",
+      "api_draft": "ফসল",
+      "authored": "সংগ্রহ",
+      "changed": true,
+      "reason": "Animation action means gathering, not the noun crop."
+    },
+    {
+      "key": "Fight",
+      "english": "Fight",
+      "api_draft": "লড়াই",
+      "authored": "লড়াই",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Fly",
+      "english": "Fly",
+      "api_draft": "মাছি",
+      "authored": "ওড়া",
+      "changed": true,
+      "reason": "Animation action means flying, not insect."
+    },
+    {
+      "key": "Live payments",
+      "english": "Live payments",
+      "api_draft": "লাইভ পেমেন্ট",
+      "authored": "আসল পেমেন্ট",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Test payments",
+      "english": "Test payments",
+      "api_draft": "পরীক্ষার পেমেন্ট",
+      "authored": "পরীক্ষামূলক পেমেন্ট",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Unclassified payments",
+      "english": "Unclassified payments",
+      "api_draft": "অশ্রেণীবদ্ধ অর্থপ্রদান",
+      "authored": "শ্রেণিবিন্যাসহীন পেমেন্ট",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Current period",
+      "english": "Current period",
+      "api_draft": "বর্তমান সময়কাল",
+      "authored": "বর্তমান সময়কাল",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "Previous period",
+      "english": "Previous period",
+      "api_draft": "পূর্ববর্তী সময়কাল",
+      "authored": "আগের সময়কাল",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Credit grant",
+      "english": "Credit grant",
+      "api_draft": "ক্রেডিট অনুদান",
+      "authored": "ক্রেডিট প্রদান",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Returned credits",
+      "english": "Returned credits",
+      "api_draft": "ফেরত ক্রেডিট",
+      "authored": "ফেরত দেওয়া ক্রেডিট",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Dispute",
+      "english": "Dispute",
+      "api_draft": "বিবাদ",
+      "authored": "পেমেন্ট নিয়ে আপত্তি",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Dispute closed",
+      "english": "Dispute closed",
+      "api_draft": "বিরোধ নিষ্পত্তি হয়েছে",
+      "authored": "পেমেন্ট নিয়ে আপত্তির প্রক্রিয়া বন্ধ হয়েছে",
+      "changed": true,
+      "reason": "Payment objection process closed; do not imply a particular financial outcome."
+    },
+    {
+      "key": "Matches started",
+      "english": "Matches started",
+      "api_draft": "ম্যাচ শুরু হয়েছে",
+      "authored": "শুরু হওয়া ম্যাচ",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Matches completed",
+      "english": "Matches completed",
+      "api_draft": "ম্যাচ সম্পন্ন হয়েছে",
+      "authored": "সম্পন্ন ম্যাচ",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "Matches cancelled",
+      "english": "Matches cancelled",
+      "api_draft": "ম্যাচ বাতিল করা হয়েছে",
+      "authored": "বাতিল ম্যাচ",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "{value0} publications",
+      "english": "{value0} publications",
+      "api_draft": "{value0} প্রকাশনা",
+      "authored": "{value0} প্রকাশনা",
+      "changed": false,
+      "reason": "Examined in actual UI context against English, existing Bengali terminology and Hindi/Urdu/French references; retained suitable wording."
+    },
+    {
+      "key": "{value0} recorded downloads",
+      "english": "{value0} recorded downloads",
+      "api_draft": "{value0} রেকর্ডকৃত ডাউনলোড",
+      "authored": "{value0} রেকর্ড করা ডাউনলোড",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "{value0} completion time (seconds)",
+      "english": "{value0} completion time (seconds)",
+      "api_draft": "{value0} সম্পন্ন হওয়ার সময় (সেকেন্ডে)",
+      "authored": "{value0} সম্পন্ন করার সময় (সেকেন্ড)",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    },
+    {
+      "key": "{value0} completion samples",
+      "english": "{value0} completion samples",
+      "api_draft": "{value0} সমাপ্তির নমুনা",
+      "authored": "{value0} সম্পন্ন হওয়ার নমুনা",
+      "changed": true,
+      "reason": "Revised for contextual meaning, natural Bengali, existing terminology and concise respectful UI register."
+    }
+  ]
+}

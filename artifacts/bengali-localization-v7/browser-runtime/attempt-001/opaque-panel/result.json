@@ -1,0 +1,16 @@
+{
+  "renderer": "webgl2",
+  "executionMode": "threaded",
+  "clip": {
+    "x": 180,
+    "y": 149,
+    "width": 176,
+    "height": 548
+  },
+  "maximumChannelDifference": 0,
+  "affectedPixels": 0,
+  "totalAbsoluteChannelDifference": 0,
+  "inferredMinimumOpaquePanelAlpha": 1,
+  "passed": true,
+  "reason": "CSS behind an opaque presented panel must not change its text/icon pixels"
+}

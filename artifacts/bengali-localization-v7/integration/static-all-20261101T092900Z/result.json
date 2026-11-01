@@ -1,0 +1,188 @@
+{
+  "source_revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "git_tree": "4b8131ecb89f597bdc492bddbe2cbc2828ef6da2",
+  "source_manifest_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "node": "v24.19.0",
+  "sdl_prefix": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix",
+  "sdl_library_sha256": {
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3.so": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3.so.0": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3.so.0.4.16": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_image.so": "deb2f6e8802ba9754ce5afde891c9680c537acb61191d4e697e760d39702b41f",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_image.so.0": "deb2f6e8802ba9754ce5afde891c9680c537acb61191d4e697e760d39702b41f",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_image.so.0.4.6": "deb2f6e8802ba9754ce5afde891c9680c537acb61191d4e697e760d39702b41f",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_net.so": "081a1c662e14f79af52bdbe55d0def447f73c09b0f2a9e3caa2a397ef224a56e",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_net.so.0": "081a1c662e14f79af52bdbe55d0def447f73c09b0f2a9e3caa2a397ef224a56e",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_net.so.0.2.0": "081a1c662e14f79af52bdbe55d0def447f73c09b0f2a9e3caa2a397ef224a56e",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_ttf.so": "8856147ebf498b2b0fe7d957c66921849d689a8c938a8889869d197f06e8ac38",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_ttf.so.0": "8856147ebf498b2b0fe7d957c66921849d689a8c938a8889869d197f06e8ac38",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib/libSDL3_ttf.so.0.2.2": "8856147ebf498b2b0fe7d957c66921849d689a8c938a8889869d197f06e8ac38"
+  },
+  "note": "Actual checks only; this does not set any review gate or claim rendering/platform execution.",
+  "checks": [
+    {
+      "name": "pinned-script-fonts",
+      "command": [
+        "python3",
+        "data/fonts/fetch_script_fonts.py"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 0.16606668200984132,
+      "log": "pinned-script-fonts.log",
+      "sha256": "b8f4fbc2b06450688b45e37b8188349784db856c2986cc9eb92b7589b24f7d3f"
+    },
+    {
+      "name": "native-font-coverage",
+      "command": [
+        "python3",
+        "test/test_font_coverage.py"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 0.3671520809875801,
+      "log": "native-font-coverage.log",
+      "sha256": "4390eef64364c0b3eb1bf4a05aa3983556023e81570681a8817395ef88b3d1d9"
+    },
+    {
+      "name": "native-strict",
+      "command": [
+        "python3",
+        "data/check_translations.py",
+        "--strict"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 6.7024013369955355,
+      "log": "native-strict.log",
+      "sha256": "4a7c86cd17d33924b711b03caa7b9b6189e20a8171567209405ed9ea85f2d6e5"
+    },
+    {
+      "name": "native-translation-tests",
+      "command": [
+        "python3",
+        "test/test_translations.py"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 1.7826406940002926,
+      "log": "native-translation-tests.log",
+      "sha256": "c000c38213628f55f53157d12f8338f771926e11caca0ea1fbcebcf5147f65db"
+    },
+    {
+      "name": "translation-program-tests",
+      "command": [
+        "python3",
+        "test/test_translation_program.py"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 0.3156945280061336,
+      "log": "translation-program-tests.log",
+      "sha256": "3b0cc1c42bd567f1adc4b6a79a17dd86bf92f7c40d98bcb79f9e4fbee9b12111"
+    },
+    {
+      "name": "cloud-draft-tests",
+      "command": [
+        "python3",
+        "test/test_cloud_draft.py"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 0.3172824689972913,
+      "log": "cloud-draft-tests.log",
+      "sha256": "61dfd593d1d904e4cc379b965f05bb47411aab31cc1b9eac93ed48b7b441c853"
+    },
+    {
+      "name": "google-draft-tests",
+      "command": [
+        "python3",
+        "test/test_google_draft.py"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 0.21495356000377797,
+      "log": "google-draft-tests.log",
+      "sha256": "45629e08d8c41ba474e149425cf4477b6ed2d14afbd48b41a5dea35ddb36ae32"
+    },
+    {
+      "name": "bengali-draft",
+      "command": [
+        "python3",
+        "tools/localization/translation_program.py",
+        "check-draft",
+        "--output",
+        "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7",
+        "--locale",
+        "bn"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 0.31587734700588044,
+      "log": "bengali-draft.log",
+      "sha256": "9ba42c3adfceb1abafb8eebcc39b0942ca6bead0d22978320635f490a8e198e1"
+    },
+    {
+      "name": "online-contract",
+      "command": [
+        "npm",
+        "run",
+        "i18n:check"
+      ],
+      "cwd": "platform",
+      "exit_code": 0,
+      "seconds": 2.831676581001375,
+      "log": "online-contract.log",
+      "sha256": "012394bc07e5ff534d2f84ffa77656dcf3710efc0387a017fdbabf88d5123424"
+    },
+    {
+      "name": "online-units",
+      "command": [
+        "npm",
+        "test",
+        "--",
+        "packages/i18n/test",
+        "apps/web/test/i18n.test.tsx"
+      ],
+      "cwd": "platform",
+      "exit_code": 0,
+      "seconds": 5.528431671002181,
+      "log": "online-units.log",
+      "sha256": "249bf1d783478ceb3d7b326e6c8215a6c9affd57e986dc1368027428e74e26f3"
+    },
+    {
+      "name": "platform-typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "cwd": "platform",
+      "exit_code": 0,
+      "seconds": 99.45999940000183,
+      "log": "platform-typecheck.log",
+      "sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd"
+    },
+    {
+      "name": "scoped-format",
+      "command": [
+        "node_modules/.bin/prettier",
+        "--check",
+        "packages/i18n/src",
+        "packages/i18n/scripts",
+        "packages/i18n/test",
+        "packages/i18n/locales/bn.json",
+        "apps/web/src/App.tsx",
+        "apps/web/src/styles/layout.css",
+        "apps/web/e2e/i18n.spec.ts"
+      ],
+      "cwd": "platform",
+      "exit_code": 0,
+      "seconds": 1.0664886470040074,
+      "log": "scoped-format.log",
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    }
+  ],
+  "source_stable_after_check": true,
+  "all_executed_checks_passed": true
+}

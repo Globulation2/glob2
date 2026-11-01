@@ -1,0 +1,48 @@
+{
+  "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "runtime_checkout_revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "command": [
+    "xvfb-run",
+    "-a",
+    "-s",
+    "-screen 0 1280x900x24",
+    "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+    "play",
+    "--mute",
+    "--renderer",
+    "software",
+    "--no-fullscreen",
+    "--resizable",
+    "--compute-threads",
+    "2"
+  ],
+  "port": 59447,
+  "profile": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-interactive-phone/profile",
+  "seeded_profile_sha256": "6a8cd977fab8bd33dcb56271ed21c21b394f26176674706a0a9b8e78340bab93",
+  "layout_adjustments": [
+    "screenWidth",
+    "screenHeight",
+    "interfacePresentation",
+    "mcpPort",
+    "textSizePercent"
+  ],
+  "language_and_username_copied_unchanged": true,
+  "executable_sha256": "68b9fdc1e93e7c016f8993b44eba6c7f7e9b277cdbdb1dba944de0e0730ceda0",
+  "scope": "Fresh native process loads a private seeded Bengali profile for focused final foreground QA; compact Linux presentation, not Android/iOS or persistence certification.",
+  "code_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "producer_build_sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac",
+  "input_sha256": {
+    "data/texts.bn.txt": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "platform/packages/i18n/locales/bn.json": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+    "data/fonts/scripts/manifest.json": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  "wrapper_pid": 3900105,
+  "exit_code": 0
+}

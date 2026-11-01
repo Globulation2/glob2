@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/api/test/pages.test.ts
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/83ab/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  04:39:25
+   Duration  940ms (tests 38%, import 38%, transform 23%, worker 1%)
+

@@ -1,0 +1,476 @@
+{
+  "version": 1,
+  "executionMode": "serial",
+  "threadFallback": "serial requested",
+  "workerCount": 0,
+  "renderer": "software",
+  "renderContext": null,
+  "contextLost": false,
+  "contextRestores": 0,
+  "screen": "match",
+  "screenClass": "17GameSessionScreen",
+  "roomCanStart": false,
+  "customGameReady": false,
+  "tick": 1118,
+  "frames": 498,
+  "loop": 1717,
+  "paused": false,
+  "torus": false,
+  "torusSettled": false,
+  "width": 640,
+  "height": 1280,
+  "heapBytes": 278396928,
+  "artworkReady": true,
+  "restore": "ready",
+  "watchReplay": "none",
+  "import": "idle",
+  "persisting": false,
+  "persistence": "persisted",
+  "audio": "inactive",
+  "assets": {
+    "core": "ready",
+    "game": "ready",
+    "skins": "idle",
+    "font-cjk": "ready",
+    "menu-music": "ready",
+    "translations": "ready",
+    "music": "ready",
+    "music-sets": "ready",
+    "hd": "skipped"
+  },
+  "opened": [],
+  "controls": {
+    "intro/destination": {
+      "x": 405,
+      "y": 435,
+      "w": 110,
+      "h": 124,
+      "visible": {
+        "x": 405,
+        "y": 435,
+        "w": 110,
+        "h": 124
+      },
+      "enabled": true,
+      "label": "গন্তব্য দেখান",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 55,
+        "y": 435,
+        "w": 690,
+        "h": 124
+      }
+    },
+    "intro/help": {
+      "x": 520,
+      "y": 435,
+      "w": 110,
+      "h": 124,
+      "visible": {
+        "x": 520,
+        "y": 435,
+        "w": 110,
+        "h": 124
+      },
+      "enabled": true,
+      "label": "সাহায্য / কেন?",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 55,
+        "y": 435,
+        "w": 690,
+        "h": 124
+      }
+    },
+    "intro/collapse": {
+      "x": 635,
+      "y": 437,
+      "w": 110,
+      "h": 120,
+      "visible": {
+        "x": 635,
+        "y": 437,
+        "w": 110,
+        "h": 120
+      },
+      "enabled": true,
+      "label": "+",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 55,
+        "y": 435,
+        "w": 690,
+        "h": 124
+      }
+    },
+    "stats/topic/0": {
+      "x": 15,
+      "y": 420,
+      "w": 770,
+      "h": 120,
+      "visible": {
+        "x": 15,
+        "y": 420,
+        "w": 770,
+        "h": 120
+      },
+      "enabled": true,
+      "label": "সংক্ষিপ্ত বিবরণ",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/topic/1": {
+      "x": 15,
+      "y": 550,
+      "w": 380,
+      "h": 120,
+      "visible": {
+        "x": 15,
+        "y": 550,
+        "w": 380,
+        "h": 120
+      },
+      "enabled": true,
+      "label": "উপনিবেশ",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/topic/2": {
+      "x": 405,
+      "y": 550,
+      "w": 380,
+      "h": 120,
+      "visible": {
+        "x": 405,
+        "y": 550,
+        "w": 380,
+        "h": 120
+      },
+      "enabled": true,
+      "label": "অর্থনীতি",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/topic/3": {
+      "x": 15,
+      "y": 680,
+      "w": 380,
+      "h": 120,
+      "visible": {
+        "x": 15,
+        "y": 680,
+        "w": 380,
+        "h": 120
+      },
+      "enabled": true,
+      "label": "সামরিক",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/topic/4": {
+      "x": 405,
+      "y": 680,
+      "w": 380,
+      "h": 120,
+      "visible": {
+        "x": 405,
+        "y": 680,
+        "w": 380,
+        "h": 120
+      },
+      "enabled": true,
+      "label": "বিশ্ব",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/metric/population": {
+      "x": 15,
+      "y": 914,
+      "w": 735,
+      "h": 243,
+      "visible": {
+        "x": 15,
+        "y": 914,
+        "w": 735,
+        "h": 243
+      },
+      "enabled": true,
+      "label": "জনসংখ্যা 17",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/metric/net growth": {
+      "x": 15,
+      "y": 1165,
+      "w": 735,
+      "h": 243,
+      "visible": {
+        "x": 15,
+        "y": 1165,
+        "w": 735,
+        "h": 125
+      },
+      "enabled": true,
+      "label": "জনসংখ্যা বৃদ্ধি 7/মিনিট",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/inline/chart": {
+      "x": 15,
+      "y": 1517,
+      "w": 735,
+      "h": 375,
+      "visible": {
+        "x": 15,
+        "y": 1517,
+        "w": 735,
+        "h": 0
+      },
+      "enabled": true,
+      "label": "জনসংখ্যা: ইতিহাস দেখুন",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/full-history/population": {
+      "x": 15,
+      "y": 1902,
+      "w": 735,
+      "h": 120,
+      "visible": {
+        "x": 15,
+        "y": 1902,
+        "w": 735,
+        "h": 0
+      },
+      "enabled": true,
+      "label": "সম্পূর্ণ ইতিহাস খুলুন",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/metric/hunger": {
+      "x": 15,
+      "y": 2157,
+      "w": 735,
+      "h": 243,
+      "visible": {
+        "x": 15,
+        "y": 2157,
+        "w": 735,
+        "h": 0
+      },
+      "enabled": true,
+      "label": "খাদ্য মজুদ 0%",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/metric/health": {
+      "x": 15,
+      "y": 2408,
+      "w": 735,
+      "h": 243,
+      "visible": {
+        "x": 15,
+        "y": 2408,
+        "w": 735,
+        "h": 0
+      },
+      "enabled": true,
+      "label": "স্বাস্থ্য 0%",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/metric/idle workers": {
+      "x": 15,
+      "y": 2786,
+      "w": 735,
+      "h": 243,
+      "visible": {
+        "x": 15,
+        "y": 2786,
+        "w": 735,
+        "h": 0
+      },
+      "enabled": true,
+      "label": "অলস শ্রমিক 100%",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/metric/blocked buildings": {
+      "x": 15,
+      "y": 3037,
+      "w": 735,
+      "h": 357,
+      "visible": {
+        "x": 15,
+        "y": 3037,
+        "w": 735,
+        "h": 0
+      },
+      "enabled": true,
+      "label": "যেসব ভবনে প্রবেশের কোনো পথ নেই 0",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/metric/warriors": {
+      "x": 15,
+      "y": 3529,
+      "w": 735,
+      "h": 243,
+      "visible": {
+        "x": 15,
+        "y": 3529,
+        "w": 735,
+        "h": 0
+      },
+      "enabled": true,
+      "label": "যোদ্ধারা 4",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    },
+    "stats/metric/intruders": {
+      "x": 15,
+      "y": 3780,
+      "w": 735,
+      "h": 243,
+      "visible": {
+        "x": 15,
+        "y": 3780,
+        "w": 735,
+        "h": 0
+      },
+      "enabled": true,
+      "label": "নিজ এলাকায় শত্রু যোদ্ধা 0",
+      "surface": {
+        "w": 800,
+        "h": 1600
+      },
+      "root": {
+        "x": 0,
+        "y": 405,
+        "w": 800,
+        "h": 900
+      }
+    }
+  }
+}

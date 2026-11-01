@@ -1,0 +1,545 @@
+{
+  "observed_at": "2026-11-01T08:12:45.858166+00:00",
+  "run_id": 41279287886,
+  "job_id": 124777165149,
+  "actual_source": "6c4b0eb44b16bd68b4774ae20279741cdb7bfcd3",
+  "actual_parents": [
+    "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+    "fda5e076eafc103b59b18136c137abdb6262d981"
+  ],
+  "head": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "overall_job": "FAILURE",
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/runner/work/glob2/glob2/build/darwin/client/release/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-I/opt/homebrew/opt/openssl@3/include -std=gnu++20 -Wall -fPIC -O3",
+      "LINKFLAGS": "-L/opt/homebrew/opt/openssl@3/lib -Wall -O3 -Wl,-rpath,/Users/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib"
+    },
+    "revision": "6c4b0eb44b16bd68b4774ae20279741cdb7bfcd3",
+    "sourceStatus": [],
+    "sourceTreeSha256": "56423f9e399c964bf8cbcae80cef057759af5c8037578b8fe04c4da1d9781266"
+  },
+  "artifact_id": 13074918958,
+  "artifact_sha256": "7ade741f0d27b6f53f038ed235f769444e2292749a05da601870bf85bede6afc",
+  "artifact_api_digest_verified": true,
+  "log_sha256": "7210839a11c8c3674d3ed978fc470c6ac39f8d77f0ac2da08a895f6d535dea9f",
+  "binaries": {
+    "unit": {
+      "testcase_count": 1276,
+      "outcomes": {
+        "pass": 1184,
+        "skip": 92
+      },
+      "junit_attributes": {
+        "tests": "1276",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "92"
+      },
+      "junit_sha256": "00687b0eea78ea183d60ef396e23f874e8c98de795f8fa6e5894ffdca594f3dd"
+    },
+    "engine": {
+      "testcase_count": 1969,
+      "outcomes": {
+        "pass": 1719,
+        "skip": 240,
+        "fail": 10
+      },
+      "junit_attributes": {
+        "tests": "1969",
+        "failures": "5",
+        "errors": "7",
+        "skipped": "240"
+      },
+      "junit_sha256": "087a0fb91e642281eb88222fc345ab858e350c8ce223d0f65941a58de32212e2"
+    }
+  },
+  "focused_cases": [
+    {
+      "suite": "BidiText",
+      "name": "logical shaping runs preserve Arabic codepoints and numeric ratios",
+      "outcome": "pass"
+    },
+    {
+      "suite": "BidiText",
+      "name": "logical shaping keeps both ends of spaced numeric brackets in one direction",
+      "outcome": "pass"
+    },
+    {
+      "suite": "BidiText",
+      "name": "left-to-right text is unchanged",
+      "outcome": "pass"
+    },
+    {
+      "suite": "BidiText",
+      "name": "Arabic letters join and read right to left",
+      "outcome": "pass"
+    },
+    {
+      "suite": "BidiText",
+      "name": "numbers and Latin words keep their own order inside right-to-left text",
+      "outcome": "pass"
+    },
+    {
+      "suite": "BidiText",
+      "name": "matches fribidi on every Arabic and Persian catalog value",
+      "outcome": "pass"
+    },
+    {
+      "suite": "TextMetrics",
+      "name": "offscreen transformed text rasterizes at the requested resolution",
+      "outcome": "pass"
+    },
+    {
+      "suite": "TextMetrics",
+      "name": "font metrics do not rasterize or evict rendered text",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "icons and tooltips",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "settings toggles keep captions left and the full row actionable",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "geometry",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "wrap and ellipsis preserve shaping clusters",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "column and flex",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "row cross align",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "paragraph wraps with width",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text fields retain the touch target with compact control metrics",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "wrap columns",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "footer folds",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "scroll clamp and wheel",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "tap versus pan",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "native gestures retain fractions ownership and survive rebuilds",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "native gesture bounds settle and external jumps cancel the tail",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "native nested capture does not transfer to parent and missing owners consume tails",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "native popup scrolling owns its tail after dismissal",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "fling continues after release",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "overscroll springs back",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "touch wheel and programmatic scroll stop a fling",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "scrollbar press stops a fling",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "mouse drag does not fling",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "list and text overscroll",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "press survives resize",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "focus and keyboard",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "choice popup",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "icon segments and choices",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text field",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text field UTF-8 byte limit preserves Bengali edits",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text field character limits preserve Bengali and non-BMP input",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "list view",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "copy field",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "adaptive and field",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "invariants",
+      "outcome": "pass"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text stays inside its control at every size",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "Arabic and Persian visual-order text is not reordered again by SDL_ttf",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "high-DPI Hindi wrapping width is preserved without cropping the raw raster",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "kerned words have no gap wider than the same words unkerned",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "language changes refresh default line height and Arabic shaping caches",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "pair advances equal the glyph advances plus kerning",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "script fonts shape clusters and preserve measured raster sizes after reload",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "script run composition preserves straight-alpha antialiasing",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "shaping clusters keep conjuncts and combining marks together",
+      "outcome": "pass"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "the bundled SDL3_ttf moves the pen for kerned pairs",
+      "outcome": "pass"
+    },
+    {
+      "suite": "Settings",
+      "name": "username byte limits reject whole Bengali edits without truncation",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "Bengali regions share the Bengali script catalog",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "Bengali startup respects the system and saved language",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "ISO locales map to the historical catalog codes",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "Norwegian Bokmaal accepts generic Norwegian but never Nynorsk",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "Norwegian startup follows preferences and preserves a saved language",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "expanded locales distinguish scripts and the precise Pulaar variety",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "languages without a catalog are not confused with catalog codes",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "regional and script variants pick the matching catalog",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "startup follows the system only when the profile has no usable language",
+      "outcome": "pass"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "the first available preference wins, then English",
+      "outcome": "pass"
+    }
+  ],
+  "failed_cases": [
+    {
+      "suite": "BuildingStock",
+      "name": "canceled entering explorers wait for a free exit before medical rebound [save-format]",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "error",
+          "message": "exception",
+          "text": "\n        Race unit count does not match catalog\n      "
+        }
+      ]
+    },
+    {
+      "suite": "BuildingStock",
+      "name": "canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "error",
+          "message": "exception",
+          "text": "\n        Race unit count does not match catalog\n      "
+        }
+      ]
+    },
+    {
+      "suite": "BuildingStock",
+      "name": "canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "error",
+          "message": "exception",
+          "text": "\n        Race unit count does not match catalog\n      "
+        }
+      ]
+    },
+    {
+      "suite": "DelayedGradientPublication",
+      "name": "private174 migration profile is explicit and does not replace published layouts",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "error",
+          "message": "exception",
+          "text": "\n        Incomplete binary field: count: unspecified iostream_category error\n      "
+        }
+      ]
+    },
+    {
+      "suite": "EntityRandomLifecycle",
+      "name": "format 150 text area saves retain funded services through current saves [save-format][artifacts]",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "failure",
+          "message": "false",
+          "text": "\nsrc/unit/EntityRandomLifecycleTest.cpp:451:\nREQUIRE( load(migrated.game, bytes, true) ) is NOT correct!\n  values: REQUIRE( false )\n\n      "
+        }
+      ]
+    },
+    {
+      "suite": "IntrusivePopulationSave",
+      "name": "format166 pending jobs and append order survive an immediate upgrade before observation",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "error",
+          "message": "exception",
+          "text": "\n        Race unit count does not match catalog\n      "
+        }
+      ]
+    },
+    {
+      "suite": "IntrusivePopulationSave",
+      "name": "formats164 through166 preserve population encoding and scheduler boundaries",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "error",
+          "message": "exception",
+          "text": "\n        Race unit count does not match catalog\n      "
+        }
+      ]
+    },
+    {
+      "suite": "JavaScriptCompatibility",
+      "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "failure",
+          "message": "187 == 186",
+          "text": "\nsrc/scripting/javascript/ScriptCompatibilityTest.cpp:139:\nCHECK( REPLAY_MINIMUM_VERSION_MINOR == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )\n\n      "
+        },
+        {
+          "tag": "failure",
+          "message": "191 == 186",
+          "text": "\nsrc/scripting/javascript/ScriptCompatibilityTest.cpp:140:\nCHECK( 191 == 186 ) is NOT correct!\n  values: CHECK( 191 == 186 )\n\n      "
+        },
+        {
+          "tag": "failure",
+          "message": "73 == 72",
+          "text": "\nsrc/scripting/javascript/ScriptCompatibilityTest.cpp:142:\nCHECK( 73 == 72 ) is NOT correct!\n  values: CHECK( 73 == 72 )\n\n      "
+        }
+      ]
+    },
+    {
+      "suite": "RuntimeResources",
+      "name": "frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "failure",
+          "message": "golden mismatch against resources/seeded-compositions-units.trace at line 1   expected: 410362371 0 3456291229 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1   actual:   410362371 0 3431125405 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1",
+          "text": "\ntest/support/Glob2Test.cpp:207:\ngolden mismatch against resources/seeded-compositions-units.trace at line 1\n  expected: 410362371 0 3456291229 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1\n  actual:   410362371 0 3431125405 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1\n\n      "
+        }
+      ]
+    },
+    {
+      "suite": "UnitCustomization",
+      "name": "shared air routing stress exports a reproducible benchmark setup [artifacts]",
+      "outcome": "fail",
+      "details": [
+        {
+          "tag": "error",
+          "message": "exception",
+          "text": "\n        Race unit count does not match catalog\n      "
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Actual synthetic merge6c4b execution, not literal fda relabelled.",
+    "Headless job skips display-tagged cases; no macOS Bengali screen or input visual pass claimed.",
+    "Prepared tutorial/layout correction not covered by this frozen fda cohort."
+  ],
+  "focused_outcomes": {
+    "BidiText": {
+      "pass": 6
+    },
+    "FontKerning": {
+      "pass": 9
+    },
+    "Settings": {
+      "pass": 1
+    },
+    "SystemLanguage": {
+      "pass": 10
+    },
+    "TextMetrics": {
+      "pass": 2
+    },
+    "UILayout": {
+      "pass": 35
+    }
+  },
+  "previous_942_failure_name_comparison": {
+    "same_failed_case_names": true,
+    "previous_actual_source": "942d138b609ad8e0c425d974042b6e3983a717a4",
+    "scope": "Name equality only; full actual diagnostics retained. Existing families already failed before final integration."
+  },
+  "compiler_and_runner_log_evidence": [
+    "2026-11-01T07:58:00.9780100Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64",
+    "2026-11-01T06:52:26.7585060Z Image: macos-26-arm64",
+    "2026-11-01T08:02:55.5419350Z macos-arm64: 564 golden rows compared, 0 failures"
+  ],
+  "engine_inventory_sha256": "00e63ffd1c4129f120c7866cfb98f046ecd6c88ca05e73238a2bf98c149d80d8"
+}

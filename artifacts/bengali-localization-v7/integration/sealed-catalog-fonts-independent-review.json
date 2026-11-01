@@ -1,0 +1,59 @@
+{
+  "reviewer_identity": "/root/rendering_audit",
+  "checker_execution_owner": "/root/cloud_runner",
+  "checker_author_identity": "/root/rendering_audit",
+  "reviewed_at": "2026-11-01T09:41:34.080156+00:00",
+  "status": "PASS",
+  "actual_source_revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "executed_checker_receipt_sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a",
+  "reviewed_checker_source_sha256": "c68deb4b794ea8d5c2889a9444289bf5fdbcfb7e5db5a7e5cea60167a66e3bf0",
+  "producer_receipt_sha256": "bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8",
+  "receipt_counts_verified": {
+    "native_catalogs": 39,
+    "online_catalogs": 39,
+    "bengali_online_messages": 2947,
+    "script_fonts": 13
+  },
+  "independent_critical_payload_byte_checks": [
+    {
+      "package": "translations",
+      "path": "/data/texts.bn.txt",
+      "sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "bytes": 400627
+    },
+    {
+      "package": "core",
+      "path": "/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "bytes": 200048
+    },
+    {
+      "package": "core",
+      "path": "/data/fonts/LICENSE-Noto.txt",
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "bytes": 4377
+    },
+    {
+      "package": "core",
+      "path": "/data/fonts/scripts/manifest.json",
+      "sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "bytes": 4543
+    },
+    {
+      "HTTP_path": "locales/bn.json",
+      "sha256": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+      "bytes": 366934
+    },
+    {
+      "HTTP_path": "fonts/NotoSansBengali-Regular.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "bytes": 200048
+    },
+    {
+      "HTTP_path": "fonts/LICENSE-Noto.txt",
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "bytes": 4377
+    }
+  ],
+  "scope": "Independent review of the actual full39-catalog/font checker receipt and actual producer, plus independent byte extraction/comparison of the critical Bengali/font/licence payloads listed. Full checker execution belongs to cloud_runner; no broad3400-image test, renderer or mobile runtime inferred."
+}

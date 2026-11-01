@@ -1,0 +1,1760 @@
+{
+  "current_revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "current_git_tree_sha1": "4b8131ecb89f597bdc492bddbe2cbc2828ef6da2",
+  "current_producer_source_fingerprint_sha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64",
+  "note": "Git tree SHA1 and producer fingerprint SHA256 are distinct. Whole-tree differences are not component equality.",
+  "comparisons": {
+    "Windows": {
+      "actual_source": "fda5e076eafc103b59b18136c137abdb6262d981",
+      "actual_git_tree_sha1": "6ecf7d8cdd678459c78d65243ef8f85801a8858d",
+      "whole_tree_equal": false,
+      "whole_changed_path_count": 120,
+      "whole_changed_path_inventory_sha256": "99ad759797ffdb097971118657f654e606daaff18cc353cc0822b67aea584be4",
+      "groups": {
+        "all_full_native_font_assets_and_licences": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "data/fonts/LICENSE-DejaVu.txt",
+              "producer_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "current_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Droid.txt",
+              "producer_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "current_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-HarfBuzz.txt",
+              "producer_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "current_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Noto.txt",
+              "producer_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "current_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/README.md",
+              "producer_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "current_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/SConscript",
+              "producer_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "current_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/build_chinese_font.py",
+              "producer_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "current_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/check_script_support.py",
+              "producer_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "current_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/fetch_script_fonts.py",
+              "producer_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "current_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/sans.ttf",
+              "producer_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "current_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/script-probes.json",
+              "producer_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "current_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+              "producer_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "current_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+              "producer_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "current_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+              "producer_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "current_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+              "producer_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "current_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+              "producer_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "current_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+              "producer_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "current_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+              "producer_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "current_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+              "producer_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "current_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+              "producer_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "current_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+              "producer_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "current_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+              "producer_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "current_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+              "producer_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "current_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+              "producer_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "current_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/manifest.json",
+              "producer_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "current_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "shaping_and_locale": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/TrueTypeFont.cpp",
+              "producer_git_blob": "1d686605090ce8590df3b778f5559c27dcd74a20",
+              "current_git_blob": "c0cd746918850d9c37689d007982d08810d0b2f8",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "libgag/include/TrueTypeFont.h",
+              "producer_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "current_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/BidiText.cpp",
+              "producer_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "current_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/ui/TextLayout.cpp",
+              "producer_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "current_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/include/ui/TextLayout.h",
+              "producer_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "current_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/SystemLanguage.cpp",
+              "producer_git_blob": "69f9c3630cdc2c5918337da98489712b5e1748c1",
+              "current_git_blob": "8b6565474366704bdb8e2282f13b22920620b64b",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguage.h",
+              "producer_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "current_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "controls_settings_metrics": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "libgag/src/ui/Controls.cpp",
+              "producer_git_blob": "770878cc301a83e5a15752b57a3c3162333c470f",
+              "current_git_blob": "770878cc301a83e5a15752b57a3c3162333c470f",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/include/ui/Controls.h",
+              "producer_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "current_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/Settings.cpp",
+              "producer_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "current_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/Settings.h",
+              "producer_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "current_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "mobile_packaging_rules": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "mobile/MobilePaths.cpp",
+              "producer_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "current_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/android.py",
+              "producer_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "current_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/ios.py",
+              "producer_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "current_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/asset_bundle.py",
+              "producer_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "current_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "tools/package_assets.py",
+              "producer_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "current_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "current_compact_foreground_paths": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "src/tutorial/TutorialGuidance.h",
+              "producer_git_blob": "e346bd0bf2aaf8b8d04b11f98115f9e1d7c3bc28",
+              "current_git_blob": "0d21c72d83800bdeaaf22d30e0f939bbf972ae49",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/tutorial/Tutorial.cpp",
+              "producer_git_blob": "f411b05812a9f7edbb0a00ed027187d52e524c50",
+              "current_git_blob": "1155e61a9c67f82bf487263331a0e9a8fd5ad019",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/draw/GameGUIDraw.cpp",
+              "producer_git_blob": "4746ef9cf8ea894560c86a71dc0c489760ddf720",
+              "current_git_blob": "778cc8ea7d25c89dd4ec5b401956e3067485600c",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/input/GameGUIInput.cpp",
+              "producer_git_blob": "d1da723df9fdf553880e970588b7c72a80b5f93f",
+              "current_git_blob": "f36acf3f698f67068cf5af4c34cbcbe485d2fa06",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouchView.cpp",
+              "producer_git_blob": "fb1d43245943bc503fcbebfcd8040fe0dd6e2de4",
+              "current_git_blob": "e47ff00dde02abaf8ce77ded674d16ba9119220a",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouch.h",
+              "producer_git_blob": "3f7bf245bae680e1657f271496f348596e2b9f61",
+              "current_git_blob": "5a58fad0a2f8b097c2c0ff63c9cb8a8dbe2d3ed9",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "browser_derivative": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "browser/assets/sans-core.ttf",
+              "producer_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "current_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "browser/assets/sources.json",
+              "producer_git_blob": "1cd6b1bd4cec0ae164739b4ab3054d81fb717378",
+              "current_git_blob": "1cd6b1bd4cec0ae164739b4ab3054d81fb717378",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "font_locale_test_code": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/FontKerningTest.cpp",
+              "producer_git_blob": "6383c74df7a30489275522b139fa19ee55cdfb0a",
+              "current_git_blob": "101161f06d1ec2e8a24ba7b0bf5286beaf1ad4b9",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguageTest.cpp",
+              "producer_git_blob": "cf309ba0f70f7a454d094a582859c5addf613364",
+              "current_git_blob": "40b24f0e26c73814f16b5e29e625ab82f66cfed8",
+              "exact_blob_equal": false
+            }
+          ]
+        }
+      }
+    },
+    "macOS": {
+      "actual_source": "6c4b0eb44b16bd68b4774ae20279741cdb7bfcd3",
+      "actual_git_tree_sha1": "3119ac5146e44863a63abc1f10c623bcc12d5cc1",
+      "whole_tree_equal": false,
+      "whole_changed_path_count": 116,
+      "whole_changed_path_inventory_sha256": "16c66828e9e7ed72503ced7e5eb2fdce3efb47f3b49ae830eeb16104c0cf6298",
+      "groups": {
+        "all_full_native_font_assets_and_licences": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "data/fonts/LICENSE-DejaVu.txt",
+              "producer_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "current_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Droid.txt",
+              "producer_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "current_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-HarfBuzz.txt",
+              "producer_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "current_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Noto.txt",
+              "producer_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "current_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/README.md",
+              "producer_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "current_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/SConscript",
+              "producer_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "current_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/build_chinese_font.py",
+              "producer_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "current_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/check_script_support.py",
+              "producer_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "current_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/fetch_script_fonts.py",
+              "producer_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "current_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/sans.ttf",
+              "producer_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "current_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/script-probes.json",
+              "producer_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "current_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+              "producer_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "current_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+              "producer_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "current_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+              "producer_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "current_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+              "producer_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "current_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+              "producer_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "current_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+              "producer_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "current_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+              "producer_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "current_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+              "producer_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "current_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+              "producer_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "current_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+              "producer_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "current_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+              "producer_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "current_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+              "producer_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "current_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+              "producer_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "current_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/manifest.json",
+              "producer_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "current_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "shaping_and_locale": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/TrueTypeFont.cpp",
+              "producer_git_blob": "1d686605090ce8590df3b778f5559c27dcd74a20",
+              "current_git_blob": "c0cd746918850d9c37689d007982d08810d0b2f8",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "libgag/include/TrueTypeFont.h",
+              "producer_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "current_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/BidiText.cpp",
+              "producer_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "current_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/ui/TextLayout.cpp",
+              "producer_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "current_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/include/ui/TextLayout.h",
+              "producer_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "current_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/SystemLanguage.cpp",
+              "producer_git_blob": "69f9c3630cdc2c5918337da98489712b5e1748c1",
+              "current_git_blob": "8b6565474366704bdb8e2282f13b22920620b64b",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguage.h",
+              "producer_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "current_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "controls_settings_metrics": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "libgag/src/ui/Controls.cpp",
+              "producer_git_blob": "770878cc301a83e5a15752b57a3c3162333c470f",
+              "current_git_blob": "770878cc301a83e5a15752b57a3c3162333c470f",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/include/ui/Controls.h",
+              "producer_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "current_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/Settings.cpp",
+              "producer_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "current_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/Settings.h",
+              "producer_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "current_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "mobile_packaging_rules": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "mobile/MobilePaths.cpp",
+              "producer_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "current_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/android.py",
+              "producer_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "current_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/ios.py",
+              "producer_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "current_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/asset_bundle.py",
+              "producer_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "current_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "tools/package_assets.py",
+              "producer_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "current_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "current_compact_foreground_paths": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "src/tutorial/TutorialGuidance.h",
+              "producer_git_blob": "e346bd0bf2aaf8b8d04b11f98115f9e1d7c3bc28",
+              "current_git_blob": "0d21c72d83800bdeaaf22d30e0f939bbf972ae49",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/tutorial/Tutorial.cpp",
+              "producer_git_blob": "f411b05812a9f7edbb0a00ed027187d52e524c50",
+              "current_git_blob": "1155e61a9c67f82bf487263331a0e9a8fd5ad019",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/draw/GameGUIDraw.cpp",
+              "producer_git_blob": "4746ef9cf8ea894560c86a71dc0c489760ddf720",
+              "current_git_blob": "778cc8ea7d25c89dd4ec5b401956e3067485600c",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/input/GameGUIInput.cpp",
+              "producer_git_blob": "d1da723df9fdf553880e970588b7c72a80b5f93f",
+              "current_git_blob": "f36acf3f698f67068cf5af4c34cbcbe485d2fa06",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouchView.cpp",
+              "producer_git_blob": "fb1d43245943bc503fcbebfcd8040fe0dd6e2de4",
+              "current_git_blob": "e47ff00dde02abaf8ce77ded674d16ba9119220a",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouch.h",
+              "producer_git_blob": "3f7bf245bae680e1657f271496f348596e2b9f61",
+              "current_git_blob": "5a58fad0a2f8b097c2c0ff63c9cb8a8dbe2d3ed9",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "browser_derivative": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "browser/assets/sans-core.ttf",
+              "producer_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "current_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "browser/assets/sources.json",
+              "producer_git_blob": "1cd6b1bd4cec0ae164739b4ab3054d81fb717378",
+              "current_git_blob": "1cd6b1bd4cec0ae164739b4ab3054d81fb717378",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "font_locale_test_code": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/FontKerningTest.cpp",
+              "producer_git_blob": "6383c74df7a30489275522b139fa19ee55cdfb0a",
+              "current_git_blob": "101161f06d1ec2e8a24ba7b0bf5286beaf1ad4b9",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguageTest.cpp",
+              "producer_git_blob": "cf309ba0f70f7a454d094a582859c5addf613364",
+              "current_git_blob": "40b24f0e26c73814f16b5e29e625ab82f66cfed8",
+              "exact_blob_equal": false
+            }
+          ]
+        }
+      }
+    },
+    "Android": {
+      "actual_source": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "actual_git_tree_sha1": "f9b9439fbf06e70d723d20461ed7232b01f9f642",
+      "whole_tree_equal": false,
+      "whole_changed_path_count": 26490,
+      "whole_changed_path_inventory_sha256": "06a9032315dd89025124f635be0b58947d9a2a4cd42737e52bb705b03677f6a7",
+      "groups": {
+        "all_full_native_font_assets_and_licences": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "data/fonts/LICENSE-DejaVu.txt",
+              "producer_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "current_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Droid.txt",
+              "producer_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "current_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-HarfBuzz.txt",
+              "producer_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "current_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Noto.txt",
+              "producer_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "current_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/README.md",
+              "producer_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "current_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/SConscript",
+              "producer_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "current_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/build_chinese_font.py",
+              "producer_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "current_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/check_script_support.py",
+              "producer_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "current_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/fetch_script_fonts.py",
+              "producer_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "current_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/sans.ttf",
+              "producer_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "current_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/script-probes.json",
+              "producer_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "current_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+              "producer_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "current_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+              "producer_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "current_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+              "producer_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "current_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+              "producer_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "current_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+              "producer_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "current_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+              "producer_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "current_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+              "producer_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "current_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+              "producer_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "current_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+              "producer_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "current_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+              "producer_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "current_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+              "producer_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "current_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+              "producer_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "current_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+              "producer_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "current_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/manifest.json",
+              "producer_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "current_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "shaping_and_locale": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/TrueTypeFont.cpp",
+              "producer_git_blob": "356e8f9839d3b3a73258e945094065fd8db73ca0",
+              "current_git_blob": "c0cd746918850d9c37689d007982d08810d0b2f8",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "libgag/include/TrueTypeFont.h",
+              "producer_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "current_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/BidiText.cpp",
+              "producer_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "current_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/ui/TextLayout.cpp",
+              "producer_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "current_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/include/ui/TextLayout.h",
+              "producer_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "current_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/SystemLanguage.cpp",
+              "producer_git_blob": "c04282a01422035da7724326b24dad50789362e9",
+              "current_git_blob": "8b6565474366704bdb8e2282f13b22920620b64b",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguage.h",
+              "producer_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "current_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "controls_settings_metrics": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/ui/Controls.cpp",
+              "producer_git_blob": "53aef7f6fa3a7f8125c66b42db443a0e651e0b86",
+              "current_git_blob": "770878cc301a83e5a15752b57a3c3162333c470f",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "libgag/include/ui/Controls.h",
+              "producer_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "current_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/Settings.cpp",
+              "producer_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "current_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/Settings.h",
+              "producer_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "current_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "mobile_packaging_rules": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "mobile/MobilePaths.cpp",
+              "producer_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "current_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/android.py",
+              "producer_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "current_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/ios.py",
+              "producer_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "current_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/asset_bundle.py",
+              "producer_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "current_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "tools/package_assets.py",
+              "producer_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "current_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "current_compact_foreground_paths": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "src/tutorial/TutorialGuidance.h",
+              "producer_git_blob": "e346bd0bf2aaf8b8d04b11f98115f9e1d7c3bc28",
+              "current_git_blob": "0d21c72d83800bdeaaf22d30e0f939bbf972ae49",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/tutorial/Tutorial.cpp",
+              "producer_git_blob": "f411b05812a9f7edbb0a00ed027187d52e524c50",
+              "current_git_blob": "1155e61a9c67f82bf487263331a0e9a8fd5ad019",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/draw/GameGUIDraw.cpp",
+              "producer_git_blob": "fcda479a98c22d298f3f12fa99b2067f1947a1bc",
+              "current_git_blob": "778cc8ea7d25c89dd4ec5b401956e3067485600c",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/input/GameGUIInput.cpp",
+              "producer_git_blob": "fcafaaeaa1cd1c8d2f46f31804bb86bc9350935a",
+              "current_git_blob": "f36acf3f698f67068cf5af4c34cbcbe485d2fa06",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouchView.cpp",
+              "producer_git_blob": "0d0c2f8cd97b8a828665e7099b6e452aa593ea25",
+              "current_git_blob": "e47ff00dde02abaf8ce77ded674d16ba9119220a",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouch.h",
+              "producer_git_blob": "5c43a892333501e6121738225fb932d257d45b4e",
+              "current_git_blob": "5a58fad0a2f8b097c2c0ff63c9cb8a8dbe2d3ed9",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "browser_derivative": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "browser/assets/sans-core.ttf",
+              "producer_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "current_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "browser/assets/sources.json",
+              "producer_git_blob": "da386fed429660784fb646aef4c728be96b7a838",
+              "current_git_blob": "1cd6b1bd4cec0ae164739b4ab3054d81fb717378",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "font_locale_test_code": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/FontKerningTest.cpp",
+              "producer_git_blob": "7e0a1c61b893d24bc5ff210ff0bbf3a225aee74f",
+              "current_git_blob": "101161f06d1ec2e8a24ba7b0bf5286beaf1ad4b9",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguageTest.cpp",
+              "producer_git_blob": "5f753466fc229ad583c984ec7bb835a2f2bbc11d",
+              "current_git_blob": "40b24f0e26c73814f16b5e29e625ab82f66cfed8",
+              "exact_blob_equal": false
+            }
+          ]
+        }
+      }
+    },
+    "iOS": {
+      "actual_source": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "actual_git_tree_sha1": "f9b9439fbf06e70d723d20461ed7232b01f9f642",
+      "whole_tree_equal": false,
+      "whole_changed_path_count": 26490,
+      "whole_changed_path_inventory_sha256": "06a9032315dd89025124f635be0b58947d9a2a4cd42737e52bb705b03677f6a7",
+      "groups": {
+        "all_full_native_font_assets_and_licences": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "data/fonts/LICENSE-DejaVu.txt",
+              "producer_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "current_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Droid.txt",
+              "producer_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "current_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-HarfBuzz.txt",
+              "producer_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "current_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Noto.txt",
+              "producer_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "current_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/README.md",
+              "producer_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "current_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/SConscript",
+              "producer_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "current_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/build_chinese_font.py",
+              "producer_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "current_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/check_script_support.py",
+              "producer_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "current_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/fetch_script_fonts.py",
+              "producer_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "current_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/sans.ttf",
+              "producer_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "current_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/script-probes.json",
+              "producer_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "current_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+              "producer_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "current_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+              "producer_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "current_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+              "producer_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "current_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+              "producer_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "current_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+              "producer_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "current_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+              "producer_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "current_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+              "producer_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "current_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+              "producer_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "current_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+              "producer_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "current_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+              "producer_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "current_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+              "producer_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "current_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+              "producer_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "current_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+              "producer_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "current_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/manifest.json",
+              "producer_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "current_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "shaping_and_locale": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/TrueTypeFont.cpp",
+              "producer_git_blob": "356e8f9839d3b3a73258e945094065fd8db73ca0",
+              "current_git_blob": "c0cd746918850d9c37689d007982d08810d0b2f8",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "libgag/include/TrueTypeFont.h",
+              "producer_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "current_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/BidiText.cpp",
+              "producer_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "current_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/ui/TextLayout.cpp",
+              "producer_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "current_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/include/ui/TextLayout.h",
+              "producer_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "current_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/SystemLanguage.cpp",
+              "producer_git_blob": "c04282a01422035da7724326b24dad50789362e9",
+              "current_git_blob": "8b6565474366704bdb8e2282f13b22920620b64b",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguage.h",
+              "producer_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "current_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "controls_settings_metrics": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/ui/Controls.cpp",
+              "producer_git_blob": "53aef7f6fa3a7f8125c66b42db443a0e651e0b86",
+              "current_git_blob": "770878cc301a83e5a15752b57a3c3162333c470f",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "libgag/include/ui/Controls.h",
+              "producer_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "current_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/Settings.cpp",
+              "producer_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "current_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/Settings.h",
+              "producer_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "current_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "mobile_packaging_rules": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "mobile/MobilePaths.cpp",
+              "producer_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "current_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/android.py",
+              "producer_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "current_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/ios.py",
+              "producer_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "current_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/asset_bundle.py",
+              "producer_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "current_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "tools/package_assets.py",
+              "producer_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "current_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "current_compact_foreground_paths": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "src/tutorial/TutorialGuidance.h",
+              "producer_git_blob": "e346bd0bf2aaf8b8d04b11f98115f9e1d7c3bc28",
+              "current_git_blob": "0d21c72d83800bdeaaf22d30e0f939bbf972ae49",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/tutorial/Tutorial.cpp",
+              "producer_git_blob": "f411b05812a9f7edbb0a00ed027187d52e524c50",
+              "current_git_blob": "1155e61a9c67f82bf487263331a0e9a8fd5ad019",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/draw/GameGUIDraw.cpp",
+              "producer_git_blob": "fcda479a98c22d298f3f12fa99b2067f1947a1bc",
+              "current_git_blob": "778cc8ea7d25c89dd4ec5b401956e3067485600c",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/input/GameGUIInput.cpp",
+              "producer_git_blob": "fcafaaeaa1cd1c8d2f46f31804bb86bc9350935a",
+              "current_git_blob": "f36acf3f698f67068cf5af4c34cbcbe485d2fa06",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouchView.cpp",
+              "producer_git_blob": "0d0c2f8cd97b8a828665e7099b6e452aa593ea25",
+              "current_git_blob": "e47ff00dde02abaf8ce77ded674d16ba9119220a",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouch.h",
+              "producer_git_blob": "5c43a892333501e6121738225fb932d257d45b4e",
+              "current_git_blob": "5a58fad0a2f8b097c2c0ff63c9cb8a8dbe2d3ed9",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "browser_derivative": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "browser/assets/sans-core.ttf",
+              "producer_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "current_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "browser/assets/sources.json",
+              "producer_git_blob": "da386fed429660784fb646aef4c728be96b7a838",
+              "current_git_blob": "1cd6b1bd4cec0ae164739b4ab3054d81fb717378",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "font_locale_test_code": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/FontKerningTest.cpp",
+              "producer_git_blob": "7e0a1c61b893d24bc5ff210ff0bbf3a225aee74f",
+              "current_git_blob": "101161f06d1ec2e8a24ba7b0bf5286beaf1ad4b9",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguageTest.cpp",
+              "producer_git_blob": "5f753466fc229ad583c984ec7bb835a2f2bbc11d",
+              "current_git_blob": "40b24f0e26c73814f16b5e29e625ab82f66cfed8",
+              "exact_blob_equal": false
+            }
+          ]
+        }
+      }
+    },
+    "integrated_master": {
+      "actual_source": "ffabe1b9ef4e2a9986b1d6321c356124480b8a2d",
+      "actual_git_tree_sha1": "a6ca5086d1047ee4faecf211a860824a09f84697",
+      "whole_tree_equal": false,
+      "whole_changed_path_count": 91,
+      "whole_changed_path_inventory_sha256": "c10a94087b2d753597ff4896fe5ff493eaec6ac00bead10e8ea4caf49313c401",
+      "groups": {
+        "all_full_native_font_assets_and_licences": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "data/fonts/LICENSE-DejaVu.txt",
+              "producer_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "current_git_blob": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Droid.txt",
+              "producer_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "current_git_blob": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-HarfBuzz.txt",
+              "producer_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "current_git_blob": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/LICENSE-Noto.txt",
+              "producer_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "current_git_blob": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/README.md",
+              "producer_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "current_git_blob": "66e3e61933243e9a95f175737d176669a79f4fae",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/SConscript",
+              "producer_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "current_git_blob": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/build_chinese_font.py",
+              "producer_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "current_git_blob": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/check_script_support.py",
+              "producer_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "current_git_blob": "94498067f273ee41d4bdd0374efed89b11f33c60",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/fetch_script_fonts.py",
+              "producer_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "current_git_blob": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/sans.ttf",
+              "producer_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "current_git_blob": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/script-probes.json",
+              "producer_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "current_git_blob": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+              "producer_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "current_git_blob": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+              "producer_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "current_git_blob": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+              "producer_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "current_git_blob": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+              "producer_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "current_git_blob": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+              "producer_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "current_git_blob": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+              "producer_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "current_git_blob": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+              "producer_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "current_git_blob": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+              "producer_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "current_git_blob": "49312218c4b22396446706e76745c4027f6ae0ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+              "producer_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "current_git_blob": "3d7178c35ba81b213270068d278fe70a530422ff",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+              "producer_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "current_git_blob": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+              "producer_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "current_git_blob": "e64d13fe042ce2705eba95658c481552044f3476",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+              "producer_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "current_git_blob": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+              "producer_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "current_git_blob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "data/fonts/scripts/manifest.json",
+              "producer_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "current_git_blob": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "shaping_and_locale": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/TrueTypeFont.cpp",
+              "producer_git_blob": "c0cd746918850d9c37689d007982d08810d0b2f8",
+              "current_git_blob": "c0cd746918850d9c37689d007982d08810d0b2f8",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/include/TrueTypeFont.h",
+              "producer_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "current_git_blob": "73eb0073514e5e58d04abd5585ceed4f0975eeb3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/BidiText.cpp",
+              "producer_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "current_git_blob": "2f4974c82022871015905f9241b621bcda5221ef",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "libgag/src/ui/TextLayout.cpp",
+              "producer_git_blob": "4f5518af9b63a9c16e35eaa91084906766caf965",
+              "current_git_blob": "f1f7a58eff9301c4e65588374dc4264b3647a08d",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "libgag/include/ui/TextLayout.h",
+              "producer_git_blob": "8a3449d2559e7cb9a2b3dcb76d5f678a39dea294",
+              "current_git_blob": "2fc4a866be9ae84c0e89e3e4b1bd0ee62aab10e5",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguage.cpp",
+              "producer_git_blob": "8b6565474366704bdb8e2282f13b22920620b64b",
+              "current_git_blob": "8b6565474366704bdb8e2282f13b22920620b64b",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "src/app/SystemLanguage.h",
+              "producer_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "current_git_blob": "66c666b4303652ee5394a04b4d7ff2b2d16207dc",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "controls_settings_metrics": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/ui/Controls.cpp",
+              "producer_git_blob": "171fbb7f198f0e020c8c15f5319e9257b864dc06",
+              "current_git_blob": "770878cc301a83e5a15752b57a3c3162333c470f",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "libgag/include/ui/Controls.h",
+              "producer_git_blob": "b554d6ab8097df94bab4b639c411e9671168f5cd",
+              "current_git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/Settings.cpp",
+              "producer_git_blob": "8ceaad39e515918d1f907ebc5b87d95ffa35eb3e",
+              "current_git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/Settings.h",
+              "producer_git_blob": "a9eb14b93488c7c0b51a681e3882d135ac99a8d2",
+              "current_git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "mobile_packaging_rules": {
+          "all_listed_files_equal": true,
+          "files": [
+            {
+              "path": "mobile/MobilePaths.cpp",
+              "producer_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "current_git_blob": "3db446d841485d10c1bd9ddf3ff4bdfaf32cdaac",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/android.py",
+              "producer_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "current_git_blob": "3f0235359b7c72ddd589411afff0ea2213358913",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/ios.py",
+              "producer_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "current_git_blob": "9d8f47f1cef8217425542b2e451cf50e5f35a0c4",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "mobile/asset_bundle.py",
+              "producer_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "current_git_blob": "4594b71272a3a83895a48ca1df59ca0da1ba06d3",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "tools/package_assets.py",
+              "producer_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "current_git_blob": "144aac6f4f255933151611eb0ec1a94f2a4ae8ac",
+              "exact_blob_equal": true
+            }
+          ]
+        },
+        "current_compact_foreground_paths": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "src/tutorial/TutorialGuidance.h",
+              "producer_git_blob": "e346bd0bf2aaf8b8d04b11f98115f9e1d7c3bc28",
+              "current_git_blob": "0d21c72d83800bdeaaf22d30e0f939bbf972ae49",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/tutorial/Tutorial.cpp",
+              "producer_git_blob": "f411b05812a9f7edbb0a00ed027187d52e524c50",
+              "current_git_blob": "1155e61a9c67f82bf487263331a0e9a8fd5ad019",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/draw/GameGUIDraw.cpp",
+              "producer_git_blob": "4746ef9cf8ea894560c86a71dc0c489760ddf720",
+              "current_git_blob": "778cc8ea7d25c89dd4ec5b401956e3067485600c",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/input/GameGUIInput.cpp",
+              "producer_git_blob": "d1da723df9fdf553880e970588b7c72a80b5f93f",
+              "current_git_blob": "f36acf3f698f67068cf5af4c34cbcbe485d2fa06",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouchView.cpp",
+              "producer_git_blob": "fb1d43245943bc503fcbebfcd8040fe0dd6e2de4",
+              "current_git_blob": "e47ff00dde02abaf8ce77ded674d16ba9119220a",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/hud/touch/GameGUITouch.h",
+              "producer_git_blob": "3f7bf245bae680e1657f271496f348596e2b9f61",
+              "current_git_blob": "5a58fad0a2f8b097c2c0ff63c9cb8a8dbe2d3ed9",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "browser_derivative": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "browser/assets/sans-core.ttf",
+              "producer_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "current_git_blob": "30266307d528ec9eb349bbf749d254d84992281c",
+              "exact_blob_equal": true
+            },
+            {
+              "path": "browser/assets/sources.json",
+              "producer_git_blob": "a8a30aec0f35271d0e07500bd180e8d75f4c50ab",
+              "current_git_blob": "1cd6b1bd4cec0ae164739b4ab3054d81fb717378",
+              "exact_blob_equal": false
+            }
+          ]
+        },
+        "font_locale_test_code": {
+          "all_listed_files_equal": false,
+          "files": [
+            {
+              "path": "libgag/src/FontKerningTest.cpp",
+              "producer_git_blob": "1c628e50d948c31e1d40edaa628897a1fc8fb7ca",
+              "current_git_blob": "101161f06d1ec2e8a24ba7b0bf5286beaf1ad4b9",
+              "exact_blob_equal": false
+            },
+            {
+              "path": "src/app/SystemLanguageTest.cpp",
+              "producer_git_blob": "53e332ceff588a84fb230200f95c8bf2af40f11a",
+              "current_git_blob": "40b24f0e26c73814f16b5e29e625ab82f66cfed8",
+              "exact_blob_equal": false
+            }
+          ]
+        }
+      }
+    }
+  },
+  "actual_fda_to_current_shape_and_locale_patch": "diff --git a/libgag/src/TrueTypeFont.cpp b/libgag/src/TrueTypeFont.cpp\nindex 1d68660509..c0cd746918 100644\n--- a/libgag/src/TrueTypeFont.cpp\n+++ b/libgag/src/TrueTypeFont.cpp\n@@ -734,11 +734,11 @@ const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string t\n \t\t// create key\n \t\tCacheData data;\n \t\t// New locales opt into authored advances; preserve the existing Latin\n-\t\t// geometry for legacy locales. Swahili and Bokm\u00e5l use the original Latin font,\n-\t\t// not the script-font/bidi composition path.\n+\t\t// geometry for legacy locales. Swahili, Bokm\u00e5l and Malay use the original Latin\n+\t\t// font, not the script-font/bidi composition path.\n \t\tconst std::string language = SDL_GetStringProperty(\n \t\t\tTTF_GetFontProperties(font), \"glob2.script-language\", \"\");\n-\t\tdata.authoredDrawWidth = scripts || language == \"sw\" || language == \"nb\";\n+\t\tdata.authoredDrawWidth = scripts || language == \"sw\" || language == \"nb\" || language == \"ms\";\n \t\tdata.lastAccessed = now;\n \t\tdata.s = new DrawableSurface(temp);\n \t\tassert(data.s);\ndiff --git a/src/app/SystemLanguage.cpp b/src/app/SystemLanguage.cpp\nindex 69f9c3630c..8b65654743 100644\n--- a/src/app/SystemLanguage.cpp\n+++ b/src/app/SystemLanguage.cpp\n@@ -67,7 +67,7 @@ namespace SystemLanguage\n \t\t\t{\"am\", \"ethi\"}, {\"bho\", \"deva\"}, {\"bn\", \"beng\"}, {\"ff\", \"latn\"}, {\"fuc\", \"latn\"},\n \t\t\t{\"fil\", \"latn\"}, {\"tl\", \"latn\"}, {\"gu\", \"gujr\"}, {\"ha\", \"latn\"}, {\"hi\", \"deva\"},\n \t\t\t{\"ig\", \"latn\"}, {\"jv\", \"latn\"}, {\"jw\", \"latn\"}, {\"kn\", \"knda\"}, {\"ln\", \"latn\"},\n-\t\t\t{\"ml\", \"mlym\"}, {\"mr\", \"deva\"}, {\"my\", \"mymr\"}, {\"ne\", \"deva\"}, {\"om\", \"latn\"},\n+\t\t\t{\"ml\", \"mlym\"}, {\"mr\", \"deva\"}, {\"ms\", \"latn\"}, {\"my\", \"mymr\"}, {\"ne\", \"deva\"}, {\"om\", \"latn\"},\n \t\t\t{\"or\", \"orya\"}, {\"pcm\", \"latn\"}, {\"ps\", \"arab\"}, {\"sd\", \"arab\"}, {\"su\", \"latn\"},\n \t\t\t{\"sw\", \"latn\"}, {\"ta\", \"taml\"}, {\"te\", \"telu\"}, {\"th\", \"thai\"}, {\"ur\", \"arab\"},\n \t\t\t{\"uz\", \"latn\"}, {\"yo\", \"latn\"},\n@@ -95,7 +95,7 @@ namespace SystemLanguage\n \t\t\t{\"sl\", \"si\"}, {\"sr\", \"sr\"}, {\"sv\", \"sv\"}, {\"tr\", \"tr\"}, {\"uk\", \"uk\"}, {\"vi\", \"vi\"},\n \t\t\t{\"am\", \"am\"}, {\"bho\", \"bho\"}, {\"bn\", \"bn\"}, {\"fil\", \"fil\"}, {\"tl\", \"fil\"},\n \t\t\t{\"gu\", \"gu\"}, {\"ha\", \"ha\"}, {\"hi\", \"hi\"}, {\"ig\", \"ig\"}, {\"jv\", \"jv\"}, {\"jw\", \"jv\"},\n-\t\t\t{\"kn\", \"kn\"}, {\"ln\", \"ln\"}, {\"ml\", \"ml\"}, {\"mr\", \"mr\"}, {\"my\", \"my\"},\n+\t\t\t{\"kn\", \"kn\"}, {\"ln\", \"ln\"}, {\"ml\", \"ml\"}, {\"mr\", \"mr\"}, {\"ms\", \"ms\"}, {\"my\", \"my\"},\n \t\t\t{\"ne\", \"ne\"}, {\"om\", \"om\"}, {\"or\", \"or\"}, {\"pcm\", \"pcm\"}, {\"ps\", \"ps\"},\n \t\t\t{\"sd\", \"sd\"}, {\"su\", \"su\"}, {\"sw\", \"sw\"}, {\"ta\", \"ta\"}, {\"te\", \"te\"},\n \t\t\t{\"th\", \"th\"}, {\"ur\", \"ur\"}, {\"uz\", \"uz\"}, {\"yo\", \"yo\"},",
+  "reviewed_patch_scope": "The current change adds Malay authored Latin width and Malay locale/script mappings; Bengali entries/script condition remain as before. Entire files differ, so no byte-identical shaping/locale-implementation claim. Both current files equal integrated master ffabe. Actual final Linux cases cover current code."
+}

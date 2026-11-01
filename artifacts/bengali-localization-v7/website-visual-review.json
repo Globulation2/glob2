@@ -1,0 +1,365 @@
+{
+  "agent": "/root/bengali_adversary",
+  "review": "Independent actual-image visual review; agent review, not native-human certification",
+  "status": "pass",
+  "producer": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    }
+  },
+  "input_sha256": {
+    "data/texts.bn.txt": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "platform/packages/i18n/locales/bn.json": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+    "data/fonts/scripts/manifest.json": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  "method": "All listed PNGs individually displayed and visually examined; original-byte SHA256 recorded. No image was inferred from another capture.",
+  "findings": [],
+  "unresolved_uncertainty": [],
+  "full_catalog_pixel_coverage_claim": false,
+  "examined_png_count": 48,
+  "examined_images": [
+    {
+      "path": "web-screens/chromium-desktop/bn-account.png",
+      "sha256": "e2aa91e3d4593a87cdbbfb5ec119df99ae92448ea195f458b2903b807983d731",
+      "bytes": 87458,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-desktop/bn-ais.png",
+      "sha256": "dabe20e9ea14c62a3c3696d096a7d9197ae89ac693929985209818a4510ffc6d",
+      "bytes": 157266,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-desktop/bn-buildings.png",
+      "sha256": "2f7a19173f93f7d1f580503385aa6a1acc38013f3a4e9393fd2dffab10f7bd81",
+      "bytes": 137945,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-desktop/bn-home.png",
+      "sha256": "ac76dfa4e8bbb5c3e8b468194d80283aa1fa0f4bc4930a159c4693b830918ca2",
+      "bytes": 835902,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-desktop/bn-invite.png",
+      "sha256": "dd528291bfe302fd0581eb7e517a7476eae18d052099e4fde9d282c4996baf2c",
+      "bytes": 1118873,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-desktop/bn-maps.png",
+      "sha256": "96d189b0bc27adb2593276b2e10e9d8348a1056071cceb60d0eb3a45c0e3d7f6",
+      "bytes": 181723,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-desktop/bn-sets.png",
+      "sha256": "6041365d41781adcaffef2793e43be747a30e29c95456ca2a5aefcb7a5f672f1",
+      "bytes": 144102,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-desktop/bn-signin.png",
+      "sha256": "268abb6b16baef03da02810281af8c7d3d2523e04c72fb820d7d97118e774750",
+      "bytes": 986015,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-phone/bn-account.png",
+      "sha256": "9785ec6297d65cec964150d46f5b137433e6bbb5859e19cd300d1cc1b06fbe84",
+      "bytes": 130982,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-phone/bn-ais.png",
+      "sha256": "8ca178ccb5afb39b2efccb4f4ac6c09bd2eafe576f1a32d0a9fcf6ba8326c3f6",
+      "bytes": 327256,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-phone/bn-buildings.png",
+      "sha256": "5db32c402d0c5ab800a76999d9d401d4d92f215c4166e3a671e76a81841cc973",
+      "bytes": 259418,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-phone/bn-home.png",
+      "sha256": "3180af292cc0c2e8d0bd11cab1bf57c8d41cccb9d55c52ef8290c432b896c2a8",
+      "bytes": 925692,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-phone/bn-invite.png",
+      "sha256": "acbf7bd6e18e531c1d459eec1d7a742cb0ce3528410652d808cafde53287e8e1",
+      "bytes": 588456,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-phone/bn-maps.png",
+      "sha256": "7cb3506ef5e1503bb2daee96e398dc7a3259a286249635e4b18e40fc45d8fb71",
+      "bytes": 366257,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-phone/bn-sets.png",
+      "sha256": "8f35da72f181066c66d239049b31f8fbd15182799290bb58d75334ec8281e267",
+      "bytes": 275992,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/chromium-phone/bn-signin.png",
+      "sha256": "4e2ee122792d8f0fbd7bff31889071a2e8129b16ed668781c621332098df966e",
+      "bytes": 383225,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-desktop/bn-account.png",
+      "sha256": "7495da797ab3abb1199cd8c295fd5ad5b3f026dc362f92e5aa93dcfed57f1211",
+      "bytes": 106068,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-desktop/bn-ais.png",
+      "sha256": "de871ef407aeefd71f071aae347af5dba847a5e9fcf4e1f9d2b30380c59affe7",
+      "bytes": 189138,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-desktop/bn-buildings.png",
+      "sha256": "4acc1e2433cf1c14453afe336d0e675dc61693839efede670eb7a794ad5839fd",
+      "bytes": 165539,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-desktop/bn-home.png",
+      "sha256": "9742841bdf5b45efeacd28b4e1b23ec1d7ef7d98e12840188c2ea878bce2b94d",
+      "bytes": 1060420,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-desktop/bn-invite.png",
+      "sha256": "2083e085249f842707535d057b256245004cc580368cc773870165f80943db19",
+      "bytes": 1505264,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-desktop/bn-maps.png",
+      "sha256": "f096511414e4937510409215ca014158cc75d58f3f3c121a20a466bb0b2ccb46",
+      "bytes": 260901,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-desktop/bn-sets.png",
+      "sha256": "ba7fb4905da4281d127a6215d8e1a8fefe5233f5adaf88c1c3007e8db7da7fb5",
+      "bytes": 169964,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-desktop/bn-signin.png",
+      "sha256": "f7bfc9b0930c9924a1eac5a28c8e321bf53c62140e38c899732c1119e96fa4da",
+      "bytes": 1604301,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-phone/bn-account.png",
+      "sha256": "1163c61b76236d1b70bf13184c4741eaffc7d5da82dbba7b9f779422e211bd09",
+      "bytes": 159308,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-phone/bn-ais.png",
+      "sha256": "24acbe8f1fbabe6e706fbddfb0f3719cf5c3ef8b7706293c6c2dcb8403694f92",
+      "bytes": 403646,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-phone/bn-buildings.png",
+      "sha256": "1b83a66bdebc0256975acce7cd2b0f6ed45adf5393e23e967af6d020df001095",
+      "bytes": 315878,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-phone/bn-home.png",
+      "sha256": "f920c0855cc280984970fc37809d47ff07cb0a0668008ef24a05075298b6727b",
+      "bytes": 1274528,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-phone/bn-invite.png",
+      "sha256": "fa67b64afd249f1ab1fe204323e0983f6680cda607b07f3127bfbbc100e8a0d0",
+      "bytes": 784021,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-phone/bn-maps.png",
+      "sha256": "60bcc9da609905380c0dc8200da49316251e4482dd767315c0599f6c4febd01d",
+      "bytes": 451907,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-phone/bn-sets.png",
+      "sha256": "a2ce8a673db876afd07de6e85544d81812c1c1d1d33b0e6f1d33cb9c2fd2def9",
+      "bytes": 329437,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/firefox-phone/bn-signin.png",
+      "sha256": "d3d68accdf669a0363c9c83f998afd74f24878db6527d027b37529a7bcea0085",
+      "bytes": 694145,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-desktop/bn-account.png",
+      "sha256": "0224960b10c342a4f651854a3b0af3da722f3fda76dc363dd567912199e96e1a",
+      "bytes": 105048,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-desktop/bn-ais.png",
+      "sha256": "fc834e32f24ccae6ed470924fe0eba821be4d721f512f6b3b92e2c583f394180",
+      "bytes": 198558,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-desktop/bn-buildings.png",
+      "sha256": "0d2904032350e710bf0615b7aa6c5ec6fa1d99ea74252e6dfe1d5f44f59a4aad",
+      "bytes": 166827,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-desktop/bn-home.png",
+      "sha256": "1e3f4032ab0af53dafed8a72d4739c0223cc8d3537ead28befae9157967c21cd",
+      "bytes": 989318,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-desktop/bn-invite.png",
+      "sha256": "2ff76c05b5e1785caaaf7a42d24c368fdfe185e1122c19ea9531db9dd88a2d25",
+      "bytes": 1231801,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-desktop/bn-maps.png",
+      "sha256": "7b0f65dca553e5ec2fc0acb22ec88a43a5a945ce79b3578c9ca2c0e3c73cc1f6",
+      "bytes": 228495,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-desktop/bn-sets.png",
+      "sha256": "e16ac6f498391d9dfc5d5d7ead29c06b4e6c1d935f2cbcd58094357cbf3eafa8",
+      "bytes": 172928,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-desktop/bn-signin.png",
+      "sha256": "c92ad5daf3a2d30e413fb6ceee4bd9bbb5a62e2bb30d808e3685964a28950c7c",
+      "bytes": 1091067,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-phone/bn-account.png",
+      "sha256": "bcc3c84653ff57ab423e2707a620ff35d21088ccd55d6c232a2a13749d264e0f",
+      "bytes": 154804,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-phone/bn-ais.png",
+      "sha256": "cd9813a936af97ac6368aa273c03c4be6c7a6d1f998b733bedaac8d58fe1d950",
+      "bytes": 401434,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-phone/bn-buildings.png",
+      "sha256": "3b77b03415f99d86fa29ff70cd0d8927c3888ea838b588949d95805b27f0b473",
+      "bytes": 309347,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-phone/bn-home.png",
+      "sha256": "017a81c03fd03423931a9a74e1356c69557ff3fe9e4b0704fc4e6845aff65d16",
+      "bytes": 1134966,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-phone/bn-invite.png",
+      "sha256": "7631e0b54da8ae16975c7b85cf3bedb16ffad8caba8934b771cadb778c5b7756",
+      "bytes": 676706,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-phone/bn-maps.png",
+      "sha256": "b763f7c5a3ba3792563a2ecd847b75c9f332ab4965edeb5454419639b651be3a",
+      "bytes": 417366,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-phone/bn-sets.png",
+      "sha256": "6df5d29a7308d205452054a7e97364c9e0b53bc5ef43165ca8a8944a6a8e7d39",
+      "bytes": 322398,
+      "actually_viewed": true
+    },
+    {
+      "path": "web-screens/webkit-phone/bn-signin.png",
+      "sha256": "e347723e26262662a79a2b57230bdcf342aab66875dd3e89379cb956eb31bdf3",
+      "bytes": 456569,
+      "actually_viewed": true
+    }
+  ],
+  "receipts": {
+    "web-build.json": "a34a01e6ca0212a68e24d41cd43e4757a6bd7865cd92588a0c7c5d5852260c3e",
+    "web-e2e.json": "9930c148a3b38afa8dae87bec4e1ebb4a5101a2051944256990793efa17fbb0b",
+    "web-e2e-results.json": "a96cbf077f19a52539cccc3572185dfd1b7cce0f4a5b03e2d29558386d1182c8"
+  },
+  "build_exit_code": 0,
+  "e2e": {
+    "passed": 18,
+    "failed": 0,
+    "projects": [
+      "chromium-desktop",
+      "chromium-phone",
+      "firefox-desktop",
+      "firefox-phone",
+      "webkit-desktop",
+      "webkit-phone"
+    ],
+    "test_source": "platform/apps/web/e2e/i18n.spec.ts",
+    "test_source_sha256": "81b42c03f588ee43bf11aa449cb84eb70a1e943e739f059b2eff0fb41755016c"
+  },
+  "resolved_findings": [
+    {
+      "id": "V4-phone-auth-rail-clipping",
+      "result": "resolved",
+      "evidence": [
+        "web-screens/chromium-phone/bn-account.png",
+        "web-screens/firefox-phone/bn-account.png",
+        "web-screens/webkit-phone/bn-account.png"
+      ],
+      "observation": "Collapsed authentication uses contained users icon with no Bengali text spill. Current18-test E2E separately asserts44px minimum target, icon4px inset, Bengali accessibleName and visible full Bengali label after expansion."
+    }
+  ],
+  "observations": [
+    "All8 routes for each Chromium/Firefox/WebKit desktop and phone individually viewed. Bengali headings, forms, AI tags and invite composed wording remain readable.",
+    "English user-authored map/building/player/room text and technical identifiers preserved.",
+    "Firefox/WebKit phone below-viewport map/home cards retain lazy-image placeholders; visual text review passes without asserting all thumbnails loaded.",
+    "Fullpage captures retain viewport-bounded rail bottom; all scroll positions are not established by these images."
+  ],
+  "limits": [
+    "Screenshots cover guest account/sign-in/invite/library routes; not current authenticated edit/create-room workflows. Prior independent evidence remains separate.",
+    "AccessibleName/geometry assertions are DOM automation, not screen-reader or physical-device certification.",
+    "New105 labels have actual linguistic review separately; these8 routes do not render every new admin/music/material string.",
+    "No full6358-pair pixel coverage or OS IME claim."
+  ]
+}

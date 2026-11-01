@@ -1,0 +1,474 @@
+{
+  "agent": "/root/bengali_author",
+  "label": "Actual final compact native foreground QA; agent-observed, not native-human certification",
+  "result": "foreground_pass_with_topic_selection_coverage_limit",
+  "producer": {
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "command": [
+      "python3",
+      "tools/dev_build.py",
+      "CXX=g++-13",
+      "-j8",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "translation-preview-harness"
+    ],
+    "exit_code": 0,
+    "profile": "Linux GCC13.4 full-feature fast development, default H264 recording; not a shipping release build.",
+    "dependencies": {
+      "sdl_prefix": "/home/bradley/.codex/worktrees/83ab/glob2/build/sdl3-ci/prefix",
+      "recording_prefix": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/recording-prefix",
+      "prior_recording_reuse_proof": "../bengali-localization-v3/native-recording-prefix-reuse.json"
+    },
+    "executables": [
+      {
+        "path": "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "sha256": "68b9fdc1e93e7c016f8993b44eba6c7f7e9b277cdbdb1dba944de0e0730ceda0"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "sha256": "e31040952b5ebb95090bcbaa2aaff9232760c8da9de658549adab6c221711c70"
+      }
+    ]
+  },
+  "producer_marker_sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac",
+  "expected_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    }
+  },
+  "input_sha256": {
+    "data/texts.bn.txt": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "platform/packages/i18n/locales/bn.json": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+    "data/fonts/scripts/manifest.json": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  "scope": "Private seeded Bengali profiles; Linux Xvfb, SDL x11 software renderer. Local introduction scenario only. No external players, messages or sign-in. No tracked edits or builds by this agent.",
+  "viewports": [
+    "412×839 at100% text",
+    "320×640 at150% text"
+  ],
+  "observations": [
+    "All eleven Tools lens rows remain visible without the tutorial card covering the upper rows. The top Chat action opens and cancels without sending a message.",
+    "Statistics displays the full Bengali title above the minimap, with all five complete topic labels visible. Closing statistics returns to the visible Tools strip with the tutorial still hidden. Distinct selection of every topic is not established on320 because its final row geometry changed from the earlier coordinate route.",
+    "Map peek is unobscured. Its Done action returns to Tools. Closing Tools restores the same introduction lesson.",
+    "Once the lesson hint is stable, the explicitly collapsed title stays collapsed across Tools open/close. Expansion restores the complete wrapped title.",
+    "No new visual findings. The earlier statistics/minimap and tutorial/Tools overlap findings are resolved on this exact producer."
+  ],
+  "evidence_selection": {
+    "412": [
+      "tools-all-rows-actual.png",
+      "top-chat-action.png",
+      "stats-overview.png",
+      "economy.png",
+      "tools-after-stats.png",
+      "map-peek.png",
+      "tools-after-peek.png",
+      "lesson-restored.png",
+      "full-title.png"
+    ],
+    "320": [
+      "tools-all-rows.png",
+      "chat-action.png",
+      "stats-overview.png",
+      "economy.png",
+      "tools-after-stats.png",
+      "map-peek.png",
+      "tools-after-peek.png",
+      "stable-collapsed-restore.png",
+      "stable-full-title.png"
+    ]
+  },
+  "execution_notes": [
+    "Two initial412 inputs were denied after lease expiration, both with input_started=false. No input was dispatched. Control was explicitly reacquired, current UI inspected, then new explicit actions performed. Failed request records are retained. No automatic input retry.",
+    "An incoming tutorial hint expands the lesson through existing behavior; the320 first lesson-restored/full-title captures show this expanded state. stable-collapsed-restore/stable-full-title explicitly verify collapse preservation after the hint stabilized.",
+    "Final screenshot inspection found the320 topic rows changed: Overview spans the first row; Colony/Economy occupy the second, Military/World the third. Actions used prior geometry. All five visible labels are proven, but complete distinct selection coverage is unverified and must not be claimed."
+  ],
+  "limits": [
+    "Compact Linux presentation is not native Android/iOS, OS IME or screen-reader certification.",
+    "These fresh seeded profiles do not establish language persistence through save/restart.",
+    "This is a focused final foreground regression. Earlier broader GUI evidence retains its actual producer identity and is not relabeled.",
+    "Fast development software-renderer build, not shipping release configuration."
+  ],
+  "process_receipts": {
+    "native-interactive-phone": {
+      "exit_code": 0,
+      "run_sha256": "c88e0a0a50c8600fa3e6632f2b312f26fcea49230555d773b37017ca2e2d8721",
+      "executable_sha256": "68b9fdc1e93e7c016f8993b44eba6c7f7e9b277cdbdb1dba944de0e0730ceda0"
+    },
+    "native-interactive-phone-small": {
+      "exit_code": 0,
+      "run_sha256": "0eb86e56a6d3d4de6d6f178af6dd4f4eae9fe9f0b9ad28b2b5ba78fd7257d7c6",
+      "executable_sha256": "68b9fdc1e93e7c016f8993b44eba6c7f7e9b277cdbdb1dba944de0e0730ceda0"
+    }
+  },
+  "evidence": {
+    "native-interactive-phone/run.json": {
+      "sha256": "c88e0a0a50c8600fa3e6632f2b312f26fcea49230555d773b37017ca2e2d8721",
+      "bytes": 2081
+    },
+    "native-interactive-phone/initialize.json": {
+      "sha256": "07d6ddd222b6bcfb9625645fb96f86e82dfed0926a0c1f06a93da6153539f8fb",
+      "bytes": 308
+    },
+    "native-interactive-phone/control.json": {
+      "sha256": "33c12dcb2ef1481be56cd3d549310021e14b063011d43b1359f5a5d8ec79b208",
+      "bytes": 687
+    },
+    "native-interactive-phone/training.json": {
+      "sha256": "0d53845d229d970f5a75adbb4521a402fd469f7d4c47f7b5e4b38f8677ce1883",
+      "bytes": 783
+    },
+    "native-interactive-phone/intro.json": {
+      "sha256": "d503619bbde6362a5ad72abb03d38928c54d7c549c501ea1b5510cccf09caaae",
+      "bytes": 782
+    },
+    "native-interactive-phone/lesson.png": {
+      "sha256": "fddd45d36e4b883ffe62e503e44678cb16f7a5e5f4569d289fdbc61714ee279e",
+      "bytes": 335830
+    },
+    "native-interactive-phone/lesson.json": {
+      "sha256": "e80be9d704763534142d71bc1bd736a2134c4bb5e4b1c44d9a65f4606d7a8d04",
+      "bytes": 808
+    },
+    "native-interactive-phone/bounded-lesson.json": {
+      "sha256": "e104d5927b731a11e0f84173192412c17481c62ba7550b495e24e7d45d74683a",
+      "bytes": 907
+    },
+    "native-interactive-phone/tools-all-rows.json": {
+      "sha256": "8f061ae3621c382ece3558aaf4425294c4c3232d0b473ea4b5cb938f8d1335c2",
+      "bytes": 907
+    },
+    "native-interactive-phone/renewed-control.json": {
+      "sha256": "7d2d0a5483e37a38aea33947108c529beaccc01e57266f180986bcf535a42153",
+      "bytes": 689
+    },
+    "native-interactive-phone/before-collapse.png": {
+      "sha256": "f72501920e05eedb9866e072214f44f868e802e2c285f2fb4a1c4a0bb2af3602",
+      "bytes": 332137
+    },
+    "native-interactive-phone/before-collapse.json": {
+      "sha256": "e34fc677baf8047a092fe746f0167079b5ee8450e6ad51de043cc1a4dc8d14b5",
+      "bytes": 808
+    },
+    "native-interactive-phone/bounded-lesson-actual.png": {
+      "sha256": "2ebdbfb3d21ed899f73cbe10859da996d5448d6c76c335c0f3472cea88fb5ebb",
+      "bytes": 371723
+    },
+    "native-interactive-phone/bounded-lesson-actual.json": {
+      "sha256": "ad603189dfaf02758f109ba853174b7e57cd31f76290966cc30334b5d9f76c8f",
+      "bytes": 880
+    },
+    "native-interactive-phone/tools-all-rows-actual.png": {
+      "sha256": "03bc232cb5afd2446a330de9ffe885069e9cac1dd2e029ee93ec7768543de99f",
+      "bytes": 376202
+    },
+    "native-interactive-phone/tools-all-rows-actual.json": {
+      "sha256": "f967631e08a83ad69fde20b5ba8dccdd47e675322f7b5f6440ca8552b2b3b1dd",
+      "bytes": 880
+    },
+    "native-interactive-phone/top-chat-action.png": {
+      "sha256": "76a91fc501f9db265bae461d0e002924e5dd23de1c81799ef602f4532024e470",
+      "bytes": 377171
+    },
+    "native-interactive-phone/top-chat-action.json": {
+      "sha256": "3a9c6c1e2e6baac286977f868a268cd8e7e2e9e12c4c071b6813df326629b260",
+      "bytes": 879
+    },
+    "native-interactive-phone/chat-cancel.json": {
+      "sha256": "158200fd1f74726a7de1d9cebf0244b0342336fe061c55ff6f1f83d0067f1c44",
+      "bytes": 754
+    },
+    "native-interactive-phone/stats-overview.png": {
+      "sha256": "b2ccd16f38f57e2dadc9c3e44eaa070fe9c80ddbf05ff5e174cf7cbe1c7e0830",
+      "bytes": 189106
+    },
+    "native-interactive-phone/stats-overview.json": {
+      "sha256": "ee878b2a21790152a15f54e39072af5e8226efe50efc8bb62ee8827de48a995d",
+      "bytes": 879
+    },
+    "native-interactive-phone/colony.json": {
+      "sha256": "8eeb2d5241e37a5037c4f7cf5042e4934b4bab86796561aa5690f5ef7f175eae",
+      "bytes": 785
+    },
+    "native-interactive-phone/military.json": {
+      "sha256": "3ef3c7f5a665feea193e1d50edd200049897bd66154a045ad697ee52a31fa579",
+      "bytes": 785
+    },
+    "native-interactive-phone/world.json": {
+      "sha256": "a402520a1302a4c5f262cf02ee7389c34b10a22b07c1a1a6b60f6f6a284ffc48",
+      "bytes": 785
+    },
+    "native-interactive-phone/economy.png": {
+      "sha256": "f1a8d530357d32a9c692c0f293b6d5f75b18a6e412d467b87f8ab663444806e6",
+      "bytes": 200563
+    },
+    "native-interactive-phone/economy.json": {
+      "sha256": "630f3e8fdd8ae1491e1702f6d8164a878cb63ff4f0b27b3e1eec710c52d4d0b7",
+      "bytes": 880
+    },
+    "native-interactive-phone/tools-after-stats.png": {
+      "sha256": "10b1e77ae473154fc5b1cde33bcf02c2a118eae04c11ba9857f4ae17db99026f",
+      "bytes": 384910
+    },
+    "native-interactive-phone/tools-after-stats.json": {
+      "sha256": "d8c07d74798d0bf4754f2147c11687f570ac4f9ec5f2e15d63514c3f5e98ef22",
+      "bytes": 879
+    },
+    "native-interactive-phone/map-peek.png": {
+      "sha256": "931d017036b947879a6440036c0e0e09c34b0c5e43a9bb218228632cfb3a5d63",
+      "bytes": 239767
+    },
+    "native-interactive-phone/map-peek.json": {
+      "sha256": "c5e82747fe429fc15a257e61155f81a740f94cf26924f82e8b7784118b0cce60",
+      "bytes": 879
+    },
+    "native-interactive-phone/tools-after-peek.png": {
+      "sha256": "516ade68329f59d8e871545677758197fb472e5d467fe162bc6a8f3efea4fbf9",
+      "bytes": 384238
+    },
+    "native-interactive-phone/tools-after-peek.json": {
+      "sha256": "8a89df56da5d8db139f9681f4babe96ea451a7a39c76d92263ef7ac6f412998e",
+      "bytes": 880
+    },
+    "native-interactive-phone/lesson-restored.png": {
+      "sha256": "8360f652d0525259bf06ab6e79b65d85ca7faf96318773b3e5de0504b9b32c23",
+      "bytes": 381717
+    },
+    "native-interactive-phone/lesson-restored.json": {
+      "sha256": "98087b2fdba7c09a3ca359f228590d9a235196703d553837373752c3b50af80e",
+      "bytes": 880
+    },
+    "native-interactive-phone/full-title.png": {
+      "sha256": "df5780cd3c8174ef6a1fa721732e118af20267e06882a1d9f683257a86eeaa9d",
+      "bytes": 338667
+    },
+    "native-interactive-phone/full-title.json": {
+      "sha256": "ecfecf9eb7a355288b3075ca836d82a74f03eac5db31bfb71d3cf44ac2780dfb",
+      "bytes": 880
+    },
+    "native-interactive-phone/menu.json": {
+      "sha256": "f08bc8a3cc672b6e9c812afffba1efc4b75ea040b3938943ca9f17a56e2bfbf7",
+      "bytes": 785
+    },
+    "native-interactive-phone/quit-local.json": {
+      "sha256": "c2b189563d866187900f46ec4f2e25c7002d57efb971ac414ef69c21e3240996",
+      "bytes": 785
+    },
+    "native-interactive-phone/result-leave.json": {
+      "sha256": "473dd1a15b90e0ed2320a00ee24ff3f36bca09ebd0ce5b3b522d3df1c1d833f7",
+      "bytes": 785
+    },
+    "native-interactive-phone/training-main.json": {
+      "sha256": "97d69747952c4a26369249bd800461b704d2718dba8a6b6eed70d3e18b059d3b",
+      "bytes": 785
+    },
+    "native-interactive-phone/main-scroll.json": {
+      "sha256": "cdbbadb9a31aca7462f67f69cb939327937d7e445c5a546963df33e7b38d2943",
+      "bytes": 814
+    },
+    "native-interactive-phone/more.json": {
+      "sha256": "a990bb36b8301624a4cc3bf53ef8912e73473ac4e8e768792e135b7d36c34c93",
+      "bytes": 785
+    },
+    "native-interactive-phone/app-quit.json": {
+      "sha256": "0e6fd64d04030754a31805f15ba11c9aad50a8bf9bcab184b135177deb9652e4",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/run.json": {
+      "sha256": "0eb86e56a6d3d4de6d6f178af6dd4f4eae9fe9f0b9ad28b2b5ba78fd7257d7c6",
+      "bytes": 2087
+    },
+    "native-interactive-phone-small/initialize.json": {
+      "sha256": "07d6ddd222b6bcfb9625645fb96f86e82dfed0926a0c1f06a93da6153539f8fb",
+      "bytes": 308
+    },
+    "native-interactive-phone-small/control.json": {
+      "sha256": "0d254fe56c58cd742c5d3a92345e78955512db3bd93fabd737c4c3e7f3b69502",
+      "bytes": 687
+    },
+    "native-interactive-phone-small/training.json": {
+      "sha256": "d417176bad3088c318f7c9086981426ac8e3301bd940d5ac36055da2ae169a23",
+      "bytes": 783
+    },
+    "native-interactive-phone-small/intro.json": {
+      "sha256": "ad88c1255f8cda3006b48c024de6b4e1af83120278d212cabd2c983c1d9779ba",
+      "bytes": 783
+    },
+    "native-interactive-phone-small/loaded-state.png": {
+      "sha256": "0cb6d624483a8825ba6cdfa520b1d49c0d72cbc6f3de3cbb2d1fb81e1903e855",
+      "bytes": 115211
+    },
+    "native-interactive-phone-small/loaded-state.json": {
+      "sha256": "e272cfe2f64c585a9f9d693f84eb3fd2e8fdb5a29f902afe9c6b9bf78042fc85",
+      "bytes": 806
+    },
+    "native-interactive-phone-small/bounded-lesson.png": {
+      "sha256": "d41f789ca317f76c0d9d3806c9462443fb49459a3623780ceff5a65a4c67f885",
+      "bytes": 195861
+    },
+    "native-interactive-phone-small/bounded-lesson.json": {
+      "sha256": "bee01f416873372652d9689d9ceeefac05649a82d170fa73758f98ce9f64e133",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/tools-all-rows.png": {
+      "sha256": "d7ddf6cf5bd52f1ce4b9acf180067ec90b9b7d0b139fc1fb504d67dcfe62d58a",
+      "bytes": 190918
+    },
+    "native-interactive-phone-small/tools-all-rows.json": {
+      "sha256": "f3798b104256b96265c0578156e0bf38ca49a106b4bedc2c450838c51df64052",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/chat-action.png": {
+      "sha256": "f3517e1c40c646ec3454456d832f5ee098581c1c5c1c384ff2ce557d7f815693",
+      "bytes": 214033
+    },
+    "native-interactive-phone-small/chat-action.json": {
+      "sha256": "7ec99e62014fb82fc2affd58b5664b6e8d9d5fabcbe854e79b642ddbd2dc0f26",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/chat-cancel.json": {
+      "sha256": "356f92e78bd4e3452a91c46187965e616806ba0d73a4d49fc7c117ca38eef120",
+      "bytes": 754
+    },
+    "native-interactive-phone-small/stats-overview.png": {
+      "sha256": "9645351a02966b8df9df1967a497f330a928e7f37ea1ad8c06aa4d4713328c5c",
+      "bytes": 74839
+    },
+    "native-interactive-phone-small/stats-overview.json": {
+      "sha256": "be590f8ec0bfb4798646cb62a89e2de85a583cdaf4f11557e31f4307d4441cf3",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/colony.json": {
+      "sha256": "c99ff1b9d3f5f572730ddd59b6963b225157474e54fe2d409e4498f3f7864657",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/military.json": {
+      "sha256": "70c85ebcc26881e1c7dd782a77597abc976fc5c5451c29e5bce38767b5f7a1b4",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/world.json": {
+      "sha256": "e89d4bea2f5f21b39e873faaca3ac211781148ed7a7d55bdeadb53a43f88b280",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/economy.png": {
+      "sha256": "8acecb0a1a56440039580a6900ed7b285a290a479c835fda32915a773714af30",
+      "bytes": 78320
+    },
+    "native-interactive-phone-small/economy.json": {
+      "sha256": "75d5a84167f696a164469038efec7e04e1449157d03d3e57ac200fecafe5b824",
+      "bytes": 879
+    },
+    "native-interactive-phone-small/tools-after-stats.png": {
+      "sha256": "93623efeed3d4a71241f71b95b4c8b70045a9e5ba98c0679e281cb00126a6a02",
+      "bytes": 189307
+    },
+    "native-interactive-phone-small/tools-after-stats.json": {
+      "sha256": "e988444bf665512a7584ae6043450c3fdec982fdd4897a91c990889960e72dc4",
+      "bytes": 879
+    },
+    "native-interactive-phone-small/map-peek.png": {
+      "sha256": "85e827402a8bd624bad31aabdda216d6214f1d30c6817c07800c684a4f868f22",
+      "bytes": 83459
+    },
+    "native-interactive-phone-small/map-peek.json": {
+      "sha256": "76e1e6405710bd52414479efddbdd116d1c52cceb48eda1893d78f777b8068f0",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/tools-after-peek.png": {
+      "sha256": "02bc969dde1de78dcecaaa36139299129074b2bc6eb1b1241e96f5ac8584cfc6",
+      "bytes": 188333
+    },
+    "native-interactive-phone-small/tools-after-peek.json": {
+      "sha256": "eb1cbc904693ec90a78990044caed6d5a4272b1d406e0cf2927a5352aa007f83",
+      "bytes": 879
+    },
+    "native-interactive-phone-small/lesson-restored.png": {
+      "sha256": "9a31b8dd36ca351f8b3b5e8d92e53c79da412f4bb9000c25f3097946cf899f54",
+      "bytes": 124425
+    },
+    "native-interactive-phone-small/lesson-restored.json": {
+      "sha256": "e8e20a171e45d1a935b512ad316b4826ace820204f5160b8f8c13650095e59da",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/full-title.png": {
+      "sha256": "e52e51fbb6d62e7ab4687db11469b67b6c8bbfd72f899890cf64994113061a8b",
+      "bytes": 124186
+    },
+    "native-interactive-phone-small/full-title.json": {
+      "sha256": "2d2e34c33931948102fb011cd3fc301e3ca5fcc949b4a3dc9c4c1d8f3368b447",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/stable-collapse.json": {
+      "sha256": "e7d8ca8c1e1e13830ced56bea66f10fc73efbf4f3cc14f22a4f0d702d7c35080",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/stable-tools.json": {
+      "sha256": "a923ebf57dadf0ff4c5c18529bcb8fe36eb4c8dd4450866de3179ed94eb76afa",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/stable-collapsed-restore.png": {
+      "sha256": "2ed0e8ead2cc70d3d4524bf3e174571dcd3c24e259e5fb8e8ee0ee7d7a23132a",
+      "bytes": 191686
+    },
+    "native-interactive-phone-small/stable-collapsed-restore.json": {
+      "sha256": "41a1de01150d4eaeb246bf4d80371a9f1e8d249e9d732254af73fc94dcf4eeda",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/stable-full-title.png": {
+      "sha256": "07026892625a63c716d49c1b9b350b6d0c27b013cde5a0c272f9719b739f75d8",
+      "bytes": 124659
+    },
+    "native-interactive-phone-small/stable-full-title.json": {
+      "sha256": "e7ed6f44e4b9070561107d6aa8571ea47fd876b7cec66536e276a016ee33ca30",
+      "bytes": 880
+    },
+    "native-interactive-phone-small/menu.json": {
+      "sha256": "f0602b5c42f17bb69c5e01a27b00f00c6bbda51f6afaffd3becc7a570e3c1048",
+      "bytes": 754
+    },
+    "native-interactive-phone-small/menu-scroll.json": {
+      "sha256": "9a5aa06350496f724cf3fa46a2e9000f5d67bad680223713a350291a47ec0c51",
+      "bytes": 813
+    },
+    "native-interactive-phone-small/quit-lesson.json": {
+      "sha256": "835db96882a0492bc55e042b7a5decfe13da4359bd41e5310053eff841328bd7",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/result-leave.json": {
+      "sha256": "2ebc03ff624dca335b7402b5db0dc98e66b9831eeb00a856947193cf8a1d61d8",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/training-main.json": {
+      "sha256": "75f92f189510a1ba7fe2f69e551de5d8f83ebb88ed276c205f9f56bafb69abf9",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/main-scroll.json": {
+      "sha256": "ecd43f6dcd66e27ef6cc30ce8c04819dffac2e3e179d0adb1cf2935e6e400c50",
+      "bytes": 814
+    },
+    "native-interactive-phone-small/more.json": {
+      "sha256": "154cb16348fff37d3643bbd10f37aa3d739e0c7c0c6804ac3a7c19fafd7b7762",
+      "bytes": 785
+    },
+    "native-interactive-phone-small/app-quit.json": {
+      "sha256": "82d8f65f6af654efba4c81fb95254b46a9e8848d1ae1e975cf9ab2ed5c47bd6a",
+      "bytes": 785
+    }
+  }
+}

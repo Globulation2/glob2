@@ -1,0 +1,16 @@
+{
+  "source_revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "root_completed_sessions": {
+    "native_build_and_92_headless": 0,
+    "five_X11_display_cases": 0,
+    "production_website_and_18_browser_cases": 0,
+    "push": 0,
+    "browser_language_and_input_25_units": 0,
+    "API_pages_10_units": 0
+  },
+  "owned_postgres_container": "glob2-bengali-postgres",
+  "owned_postgres_running": false,
+  "other_worktree_processes_untouched": true,
+  "native_interactive_receipt": "native-interactive-summary.json",
+  "browser_cleanup_receipt": "browser-runtime/final-owned-process-cleanup.json"
+}

@@ -1,0 +1,207 @@
+{
+  "base": "ffabe1b9ef",
+  "current": "4d77f031",
+  "comparisons": [
+    {
+      "file": "platform/packages/i18n/locales/ca.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Beginner-friendly",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/cs.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/da.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/el.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Beginner-friendly",
+        "Experimental",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/eo.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/es.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Beginner-friendly",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/eu.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/fa.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Expansion"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/fi.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/fr.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Beginner-friendly",
+        "Experimental",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/hi.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/hu.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/id.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/it.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Beginner-friendly",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/nb.json",
+      "semantic_changed_keys": []
+    },
+    {
+      "file": "platform/packages/i18n/locales/nl.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/pl.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Experimental",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/pt-BR.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Beginner-friendly",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/pt-PT.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Beginner-friendly",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/ro.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Beginner-friendly",
+        "Experimental",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/ru.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Expansion"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/sk.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Experimental",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/sl.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Experimental",
+        "Defensive"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/sr-Cyrl.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/sv.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/tr.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/uk.json",
+      "semantic_changed_keys": [
+        "Rush",
+        "Expansion"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/ur.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    },
+    {
+      "file": "platform/packages/i18n/locales/vi.json",
+      "semantic_changed_keys": [
+        "Rush"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "status": "PASS within explicit scope",
+  "sourceRevision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64",
+  "catalogSha256": {
+    "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "bothVariantsBuildExitStatus": 0,
+  "buildSeconds": 313.51755160400353,
+  "fiveColdCases": [
+    {
+      "name": "serial-desktop",
+      "variant": "serial",
+      "renderer": "software",
+      "automatedPassed": true
+    },
+    {
+      "name": "serial-phone",
+      "variant": "serial",
+      "renderer": "software",
+      "automatedPassed": true
+    },
+    {
+      "name": "threaded-desktop",
+      "variant": "threaded",
+      "renderer": "software",
+      "automatedPassed": true
+    },
+    {
+      "name": "threaded-phone",
+      "variant": "threaded",
+      "renderer": "software",
+      "automatedPassed": true
+    },
+    {
+      "name": "threaded-desktop-webgl2",
+      "variant": "threaded",
+      "renderer": "webgl2",
+      "automatedPassed": true
+    }
+  ],
+  "actualThreadedWebGLOpaque": {
+    "renderer": "webgl2",
+    "executionMode": "threaded",
+    "clip": {
+      "x": 180,
+      "y": 149,
+      "width": 176,
+      "height": 548
+    },
+    "maximumChannelDifference": 0,
+    "affectedPixels": 0,
+    "totalAbsoluteChannelDifference": 0,
+    "inferredMinimumOpaquePanelAlpha": 1,
+    "passed": true,
+    "reason": "CSS behind an opaque presented panel must not change its text/icon pixels"
+  },
+  "actualSaveBoundary": {
+    "owner": 283545804,
+    "exclusiveMaximumBytes": 0,
+    "inclusiveMaximumCodepoints": 64
+  },
+  "trackedResponsiveExitStatus": 0,
+  "actual320x640150ToolsRegressionPassed": true,
+  "nativeCatalogs": 39,
+  "onlineCatalogs": 39,
+  "bnOnlineMessages": 2947,
+  "pinnedScriptFontPayloads": 13,
+  "receiptSha256": {
+    "browser-final-production-provenance.json": "bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8",
+    "browser-build-state.json": "cd69845a1db4b90eb49743b067d3dc5fddc2ecb84e1b99b27bd41b16804f1a33",
+    "browser-qa-status.json": "2075d16fcc32916c52e2afb9d65a9f1b2ffc35f6763b1c1332252a04efc0b8aa",
+    "integration/sealed-catalog-fonts.json": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a",
+    "browser-phone-tools-attempt-001/report.json": "fb48e9cb5826d51e59f8b687dcc6117ba1f4be011a90fa9bcb4e136cd0681b90",
+    "browser-runtime/package-manifest.json": "3d10d1926fff2d71f4451b73894f3989479e00732d471d5e9d28e4b1b1912c08",
+    "browser-runtime/attempt-001/startup-report.json": "182ef1f9b2f49943f0e40e501c4f578a66a99e4e3995f765720a751d504e0310",
+    "browser-runtime/launcher-brand/report.json": "9b9b504a5e0f8ea0c50d679bfdd783c4b36c29d17019a775a965c86dd92eda44",
+    "browser-runtime/final-visual-review.json": "043f3f49565663b9ce8d09a8614523da2870e23b718e7290e07079a0b2cbba13",
+    "browser-runtime/final-owned-process-cleanup.json": "742c37b052d80a783484eb0fbe25ae4a13f36e8da831b1a41f7f90c8bd224c82"
+  },
+  "limits": [
+    "Agent visual review, not native-human language certification.",
+    "Standalone browser/serve.py intentionally lacks platform branding routes; original raw404 image evidence retained. Overlay supplies only existing pinned production assets.",
+    "Chromium desktop/phone presentation is not Android/iOS device or OS-IME evidence.",
+    "Full-feature fast development build; no release-performance claim."
+  ],
+  "cleanupComplete": true
+}

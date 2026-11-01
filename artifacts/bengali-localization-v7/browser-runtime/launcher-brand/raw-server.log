@@ -1,0 +1,30 @@
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /index.html?threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /presentation-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /loader.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /locales/bn.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /index.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /fonts/NotoSansBengali-Regular.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /fonts/NotoSansArabic-Regular.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /fonts/NotoSansDevanagari-Regular.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /index.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /assets/core.06da0f1fba26b436.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /assets/game-1.e5347e01af620593.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /assets/game-3.d5658b392a8460d0.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:31] "GET /assets/game-2.d2f3f499b0b4ab1b.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:32] "GET /assets/game-4.db7fc6881bef2304.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 04:43:32] "GET /index.wasm HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 46100)

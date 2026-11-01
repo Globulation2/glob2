@@ -1,0 +1,20 @@
+serial-desktop cold startup http://127.0.0.1:32839/index.html?renderer=software&threads=serial
+serial-desktop dismiss actual startup screen 23IntroductionOfferScreen 23IntroductionOfferScreen intro/menu
+serial-desktop passed
+serial-phone cold startup http://127.0.0.1:32839/index.html?renderer=software&threads=serial
+serial-phone dismiss actual startup screen 21AudioPreferenceScreen 21AudioPreferenceScreen audio.silence
+serial-phone dismiss actual startup screen 20HandPreferenceScreen 20HandPreferenceScreen hand.right
+serial-phone dismiss actual startup screen 23IntroductionOfferScreen 23IntroductionOfferScreen intro/menu
+serial-phone passed
+threaded-desktop cold startup http://127.0.0.1:32839/index.html?renderer=software
+threaded-desktop dismiss actual startup screen 23IntroductionOfferScreen 23IntroductionOfferScreen intro/menu
+threaded-desktop passed
+threaded-phone cold startup http://127.0.0.1:32839/index.html?renderer=software
+threaded-phone dismiss actual startup screen 21AudioPreferenceScreen 21AudioPreferenceScreen audio.silence
+threaded-phone dismiss actual startup screen 20HandPreferenceScreen 20HandPreferenceScreen hand.right
+threaded-phone dismiss actual startup screen 23IntroductionOfferScreen 23IntroductionOfferScreen intro/menu
+threaded-phone passed
+threaded-desktop-webgl2 cold startup http://127.0.0.1:32839/index.html?renderer=webgl2
+threaded-desktop-webgl2 dismiss actual startup screen 23IntroductionOfferScreen 23IntroductionOfferScreen intro/menu
+threaded-desktop-webgl2 passed
+Selected Bengali runtime cases passed: serial-desktop, serial-phone, threaded-desktop, threaded-phone, threaded-desktop-webgl2 ; screenshots require visual review.

@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="92" failures="0" errors="0" skipped="0"><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.053911" status="run" />
+  <testcase classname="FontKerning" name="high-DPI Hindi wrapping width is preserved without cropping the raw raster" time="0.034287" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.093979" status="run" />
+  <testcase classname="FontKerning" name="language changes refresh default line height and Arabic shaping caches" time="0.297947" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.056691" status="run" />
+  <testcase classname="FontKerning" name="script fonts shape clusters and preserve measured raster sizes after reload" time="0.393264" status="run" />
+  <testcase classname="FontKerning" name="script run composition preserves straight-alpha antialiasing" time="0.026019" status="run" />
+  <testcase classname="FontKerning" name="shaping clusters keep conjuncts and combining marks together" time="0.035133" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.003522" status="run" />
+  </testsuite><testsuite name="OnlineWording"><testcase classname="OnlineWording" name="a pairing link's fingerprint becomes a short code" time="0" status="run" />
+  <testcase classname="OnlineWording" name="menus read larger on big desktop windows that follow the desktop scale" time="0" status="run" />
+  <testcase classname="OnlineWording" name="queue names, durations and estimates read the same everywhere" time="1.3541" status="run" />
+  </testsuite><testsuite name="PlatformRoom"><testcase classname="PlatformRoom" name="Bengali room names chat and uploaded filenames preserve complete UTF-8" time="1.5797" status="run" />
+  <testcase classname="PlatformRoom" name="a map change is announced once; a status change is not" time="1.5834" status="run" />
+  <testcase classname="PlatformRoom" name="a member without a seat is listed, and Ready says why it is unavailable" time="1.39027" status="run" />
+  <testcase classname="PlatformRoom" name="a premade map is uploaded and chosen for the room, then named by the server" time="1.46964" status="run" />
+  <testcase classname="PlatformRoom" name="a room's teams are named from their alliances, in team order" time="1.70268" status="run" />
+  <testcase classname="PlatformRoom" name="catalog launch creates the room with its map in the initial request" time="1.31955" status="run" />
+  <testcase classname="PlatformRoom" name="scripted launch pins a release and reroll retains that identity" time="1.50002" status="run" />
+  <testcase classname="PlatformRoom" name="the server's start notice is shown once in the room chat" time="1.55426" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="username byte limits reject whole Bengali edits without truncation" time="0" status="run" />
+  </testsuite><testsuite name="SystemLanguage"><testcase classname="SystemLanguage" name="Bengali regions share the Bengali script catalog" time="0.000232" status="run" />
+  <testcase classname="SystemLanguage" name="Bengali startup respects the system and saved language" time="4.13246" status="run" />
+  <testcase classname="SystemLanguage" name="ISO locales map to the historical catalog codes" time="0.000229" status="run" />
+  <testcase classname="SystemLanguage" name="Malay selects Rumi without advertising Jawi coverage" time="0.000244" status="run" />
+  <testcase classname="SystemLanguage" name="Malay startup preserves an explicit saved choice" time="3.8705" status="run" />
+  <testcase classname="SystemLanguage" name="Norwegian Bokmaal accepts generic Norwegian but never Nynorsk" time="0.000274" status="run" />
+  <testcase classname="SystemLanguage" name="Norwegian startup follows preferences and preserves a saved language" time="4.04225" status="run" />
+  <testcase classname="SystemLanguage" name="expanded locales distinguish scripts and the precise Pulaar variety" time="0.000326" status="run" />
+  <testcase classname="SystemLanguage" name="languages without a catalog are not confused with catalog codes" time="0.000954" status="run" />
+  <testcase classname="SystemLanguage" name="regional and script variants pick the matching catalog" time="0" status="run" />
+  <testcase classname="SystemLanguage" name="startup follows the system only when the profile has no usable language" time="4.26603" status="run" />
+  <testcase classname="SystemLanguage" name="the first available preference wins, then English" time="0.000334" status="run" />
+  </testsuite><testsuite name="BidiText"><testcase classname="BidiText" name="logical shaping runs preserve Arabic codepoints and numeric ratios" time="0.00041" status="run" />
+    <testcase classname="BidiText" name="logical shaping keeps both ends of spaced numeric brackets in one direction" time="0.000292" status="run" />
+    <testcase classname="BidiText" name="left-to-right text is unchanged" time="0" status="run" />
+    <testcase classname="BidiText" name="Arabic letters join and read right to left" time="0" status="run" />
+    <testcase classname="BidiText" name="numbers and Latin words keep their own order inside right-to-left text" time="0" status="run" />
+    <testcase classname="BidiText" name="matches fribidi on every Arabic and Persian catalog value" time="0.466109" status="run" />
+  </testsuite><testsuite name="InviteLink"><testcase classname="InviteLink" name="catalog launches preserve mode origin and exact version across URL forms" time="0.000335" status="run" />
+    <testcase classname="InviteLink" name="catalog CLI arguments open the selected destination" time="0.003121" status="run" />
+    <testcase classname="InviteLink" name="Bengali map titles survive URL and CLI handoff past ASCII byte limits" time="0.000115" status="run" />
+    <testcase classname="InviteLink" name="the latest invite or map launch replaces the older destination" time="0" status="run" />
+    <testcase classname="InviteLink" name="glob2:// links name the instance and code" time="0.000211" status="run" />
+    <testcase classname="InviteLink" name="https links are &lt;instance&gt;/j/&lt;code&gt;" time="0" status="run" />
+    <testcase classname="InviteLink" name="former official origins mean the official instance" time="0" status="run" />
+    <testcase classname="InviteLink" name="bare codes use the given instance; links format back" time="0" status="run" />
+    <testcase classname="InviteLink" name="the newest link becomes the pending join until taken" time="0" status="run" />
+    <testcase classname="InviteLink" name="launch requests accept links codes and origins and reject invalid invites" time="0.000306" status="run" />
+  </testsuite><testsuite name="MapCatalog"><testcase classname="MapCatalog" name="list queries encode the filters the browser offers" time="0" status="run" />
+    <testcase classname="MapCatalog" name="Bengali catalog queries and share payloads preserve complete UTF-8" time="0.003532" status="run" />
+    <testcase classname="MapCatalog" name="sharing creates the map, uploads the raw bytes and waits for validation and the preview" time="0.002308" status="run" />
+    <testcase classname="MapCatalog" name="a map the server cannot load is rejected with its reason; a new version skips creation" time="0.001" status="run" />
+    <testcase classname="MapCatalog" name="upload errors end the flow with the server's message" time="0.001001" status="run" />
+    <testcase classname="MapCatalog" name="hand-offs wait for their handler" time="0" status="run" />
+  </testsuite><testsuite name="TextMetrics"><testcase classname="TextMetrics" name="offscreen transformed text rasterizes at the requested resolution" time="0.029911" status="run" />
+    <testcase classname="TextMetrics" name="font metrics do not rasterize or evict rendered text" time="1.33011" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.000986" status="run" />
+    <testcase classname="UILayout" name="settings toggles keep captions left and the full row actionable" time="0.02297" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0.000109" status="run" />
+    <testcase classname="UILayout" name="wrap and ellipsis preserve shaping clusters" time="0.00107" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0.000233" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0.000391" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0.000719" status="run" />
+    <testcase classname="UILayout" name="native gestures retain fractions ownership and survive rebuilds" time="0.000986" status="run" />
+    <testcase classname="UILayout" name="native gesture bounds settle and external jumps cancel the tail" time="0.002896" status="run" />
+    <testcase classname="UILayout" name="native nested capture does not transfer to parent and missing owners consume tails" time="0.000385" status="run" />
+    <testcase classname="UILayout" name="native popup scrolling owns its tail after dismissal" time="0.001103" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.01935" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.004015" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.003124" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0.004378" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0.001777" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.025876" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0.000381" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0.000394" status="run" />
+    <testcase classname="UILayout" name="icon segments and choices" time="0.000988" status="run" />
+    <testcase classname="UILayout" name="text field" time="0.00014" status="run" />
+    <testcase classname="UILayout" name="text field UTF-8 byte limit preserves Bengali edits" time="0" status="run" />
+    <testcase classname="UILayout" name="text field character limits preserve Bengali and non-BMP input" time="0.000184" status="run" />
+    <testcase classname="UILayout" name="list view" time="0.000102" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0.000228" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.029534" status="run" />
+  </testsuite></testsuites>

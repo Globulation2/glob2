@@ -1,0 +1,13 @@
+
+> test
+> vitest run packages/i18n/test/runtime.test.ts packages/i18n/test/source-contract.test.ts
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/83ab/glob2/platform
+
+
+ Test Files  2 passed (2)
+      Tests  69 passed (69)
+   Start at  04:14:25
+   Duration  5.14s (tests 78%, import 13%, transform 9%)
+

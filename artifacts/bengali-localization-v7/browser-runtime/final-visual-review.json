@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "reviewer_identity": "/root/cloud_runner",
+  "observed_at": "2026-11-01T09:44:39.430904+00:00",
+  "sourceRevision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "reviewedImages": {
+    "attempt-001/final-visual-contact-sheet.jpg": "45f80cbefa3e6627fb64e55264c27e6df581726e59d78060a9eed81fc388ca6a",
+    "attempt-001/serial-desktop-settings.png": "20fb35335cc2aa289c3d6ebb00014a8cf117e83c6417d8c412403f45a88bb463",
+    "attempt-001/threaded-phone-settings.png": "0014d54a3508d403d908a8d7ac3d35294a3a2a9447748aa16d63d14057311b3f",
+    "attempt-001/serial-phone-bengali-input.png": "3b92ac77bf3f09789ebc8c24ce78077c83637871fccca38bd4fa571e564c70fc",
+    "attempt-001/threaded-desktop-webgl2-bengali-input.png": "6a466da297782c4e832819d3c18ab1e4bf95c1de80258cfaefa501a7c1f0b16a",
+    "attempt-001/threaded-desktop-webgl2-bengali-save-input.png": "3d242d9e6f602383daa62d55d0c419aacdcdf1526b78de06a6c5e759c9a78c16",
+    "attempt-001/threaded-desktop-webgl2-custom-hud.png": "4ed92ce780d5df341073090a732251de8d77671bd7efc7891d48cbb0488ea17a",
+    "launcher-brand/platform-desktop.png": "f2859a757b956bed770ce88bf844bfba4a8a1923e30d80abf9ad51034104b3e1",
+    "launcher-brand/platform-phone.png": "bc223d2ae8734decf8e892923586c3af15562e72074ca0432529ff3f74ac42d5"
+  },
+  "phoneToolsReviewedImages": {
+    "after-1.png": "2b160cb10512e5a57ece8d95e17dbc570d33c41d34f09b605313eb5de0863c36",
+    "after-2.png": "10add406acf632807a9adb2449634efbdb29b9ca1b61dde96bbd5c9ea45f4884",
+    "after-3.png": "ad325227e8a465f87eb1ffd83ed9b313c116608029f8867c5119433b0686d9f8",
+    "after-4.png": "ad42d6da306f27ca4a4ab0231649b3ee4b4dcb1347ba7d5b97a7df0e617cda91",
+    "after-5.png": "9c40e541ab52f72916571fadb28b78c2ef976b5d4e924ee32e0cb0506f660344",
+    "after-6.png": "e3630225e82f0ca891a74dad5cd32ea15462f13c0fc2f70ae2e87e3f03a13ace"
+  },
+  "observations": [
+    "Bengali is connected, readable and unclipped in the reviewed menus/settings/lobby and editable fields on desktop and phone.",
+    "Actual WebGL Bengali input and43-character129-byte Save field are readable; custom game HUD starts.",
+    "At320x640 CSS/DPR2/150% all11 Tools tiles remain visible; statistics header/topics clear; closing statistics leaves Tools clear; map peek has no tutorial overlap; closing Tools restores readable guidance.",
+    "Final production-route overlay launcher logo/status/progress/language selection are readable and contained at desktop/phone sizes."
+  ],
+  "limits": [
+    "Agent visual review, not native-human language certification.",
+    "Standalone browser/serve.py intentionally lacks platform branding routes; original raw404 image evidence retained. Overlay supplies only existing pinned production assets.",
+    "Chromium desktop/phone presentation is not Android/iOS device or OS-IME evidence.",
+    "Full-feature fast development build; no release-performance claim."
+  ]
+}

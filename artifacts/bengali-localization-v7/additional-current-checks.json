@@ -1,0 +1,38 @@
+{
+  "code_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "checks": [
+    {
+      "name": "browser language handoff and Unicode text bridge",
+      "command": [
+        "node",
+        "--test",
+        "browser/unit/language.test.js",
+        "browser/unit/text-bridge.test.js"
+      ],
+      "tests": 25,
+      "exit_code": 0,
+      "log": "browser-unit-tests.log",
+      "log_sha256": "eab70f138f0b0d01be82f568fa7b836d648af05084a1304a12b4368e90ad998e"
+    },
+    {
+      "name": "API pages / bundled fonts / CSP / shared bootstrap / invitation composition",
+      "command": [
+        "npm",
+        "--prefix",
+        "platform",
+        "test",
+        "--",
+        "apps/api/test/pages.test.ts"
+      ],
+      "tests": 10,
+      "exit_code": 0,
+      "log": "api-pages-tests.log",
+      "log_sha256": "32ac9d6439d8f9d8ce1dc9f73defca05798bfd05e528aca55852ec40b8ef93da"
+    }
+  ]
+}

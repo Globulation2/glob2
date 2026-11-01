@@ -1,0 +1,252 @@
+{
+  "agent": "/root/bengali_adversary",
+  "review": "Independent actual-image visual review; agent review, not native-human certification",
+  "status": "pass",
+  "producer": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    }
+  },
+  "input_sha256": {
+    "data/texts.bn.txt": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "platform/packages/i18n/locales/bn.json": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+    "data/fonts/scripts/manifest.json": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  "method": "All listed PNGs individually displayed and visually examined; original-byte SHA256 recorded. No image was inferred from another capture.",
+  "findings": [],
+  "unresolved_uncertainty": [],
+  "full_catalog_pixel_coverage_claim": false,
+  "examined_png_count": 25,
+  "examined_images": [
+    {
+      "path": "native-interactive-phone/before-collapse.png",
+      "sha256": "f72501920e05eedb9866e072214f44f868e802e2c285f2fb4a1c4a0bb2af3602",
+      "bytes": 332137,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/bounded-lesson-actual.png",
+      "sha256": "2ebdbfb3d21ed899f73cbe10859da996d5448d6c76c335c0f3472cea88fb5ebb",
+      "bytes": 371723,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/economy.png",
+      "sha256": "f1a8d530357d32a9c692c0f293b6d5f75b18a6e412d467b87f8ab663444806e6",
+      "bytes": 200563,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/full-title.png",
+      "sha256": "df5780cd3c8174ef6a1fa721732e118af20267e06882a1d9f683257a86eeaa9d",
+      "bytes": 338667,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/lesson-restored.png",
+      "sha256": "8360f652d0525259bf06ab6e79b65d85ca7faf96318773b3e5de0504b9b32c23",
+      "bytes": 381717,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/lesson.png",
+      "sha256": "fddd45d36e4b883ffe62e503e44678cb16f7a5e5f4569d289fdbc61714ee279e",
+      "bytes": 335830,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/map-peek.png",
+      "sha256": "931d017036b947879a6440036c0e0e09c34b0c5e43a9bb218228632cfb3a5d63",
+      "bytes": 239767,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/stats-overview.png",
+      "sha256": "b2ccd16f38f57e2dadc9c3e44eaa070fe9c80ddbf05ff5e174cf7cbe1c7e0830",
+      "bytes": 189106,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/tools-after-peek.png",
+      "sha256": "516ade68329f59d8e871545677758197fb472e5d467fe162bc6a8f3efea4fbf9",
+      "bytes": 384238,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/tools-after-stats.png",
+      "sha256": "10b1e77ae473154fc5b1cde33bcf02c2a118eae04c11ba9857f4ae17db99026f",
+      "bytes": 384910,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/tools-all-rows-actual.png",
+      "sha256": "03bc232cb5afd2446a330de9ffe885069e9cac1dd2e029ee93ec7768543de99f",
+      "bytes": 376202,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone/top-chat-action.png",
+      "sha256": "76a91fc501f9db265bae461d0e002924e5dd23de1c81799ef602f4532024e470",
+      "bytes": 377171,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/bounded-lesson.png",
+      "sha256": "d41f789ca317f76c0d9d3806c9462443fb49459a3623780ceff5a65a4c67f885",
+      "bytes": 195861,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/chat-action.png",
+      "sha256": "f3517e1c40c646ec3454456d832f5ee098581c1c5c1c384ff2ce557d7f815693",
+      "bytes": 214033,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/economy.png",
+      "sha256": "8acecb0a1a56440039580a6900ed7b285a290a479c835fda32915a773714af30",
+      "bytes": 78320,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/full-title.png",
+      "sha256": "e52e51fbb6d62e7ab4687db11469b67b6c8bbfd72f899890cf64994113061a8b",
+      "bytes": 124186,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/lesson-restored.png",
+      "sha256": "9a31b8dd36ca351f8b3b5e8d92e53c79da412f4bb9000c25f3097946cf899f54",
+      "bytes": 124425,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/loaded-state.png",
+      "sha256": "0cb6d624483a8825ba6cdfa520b1d49c0d72cbc6f3de3cbb2d1fb81e1903e855",
+      "bytes": 115211,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/map-peek.png",
+      "sha256": "85e827402a8bd624bad31aabdda216d6214f1d30c6817c07800c684a4f868f22",
+      "bytes": 83459,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/stable-collapsed-restore.png",
+      "sha256": "2ed0e8ead2cc70d3d4524bf3e174571dcd3c24e259e5fb8e8ee0ee7d7a23132a",
+      "bytes": 191686,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/stable-full-title.png",
+      "sha256": "07026892625a63c716d49c1b9b350b6d0c27b013cde5a0c272f9719b739f75d8",
+      "bytes": 124659,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/stats-overview.png",
+      "sha256": "9645351a02966b8df9df1967a497f330a928e7f37ea1ad8c06aa4d4713328c5c",
+      "bytes": 74839,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/tools-after-peek.png",
+      "sha256": "02bc969dde1de78dcecaaa36139299129074b2bc6eb1b1241e96f5ac8584cfc6",
+      "bytes": 188333,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/tools-after-stats.png",
+      "sha256": "93623efeed3d4a71241f71b95b4c8b70045a9e5ba98c0679e281cb00126a6a02",
+      "bytes": 189307,
+      "actually_viewed": true
+    },
+    {
+      "path": "native-interactive-phone-small/tools-all-rows.png",
+      "sha256": "d7ddf6cf5bd52f1ce4b9acf180067ec90b9b7d0b139fc1fb504d67dcfe62d58a",
+      "bytes": 190918,
+      "actually_viewed": true
+    }
+  ],
+  "process_receipts": {
+    "native-interactive-phone": {
+      "exit_code": 0,
+      "run_sha256": "c88e0a0a50c8600fa3e6632f2b312f26fcea49230555d773b37017ca2e2d8721",
+      "executable_sha256": "68b9fdc1e93e7c016f8993b44eba6c7f7e9b277cdbdb1dba944de0e0730ceda0"
+    },
+    "native-interactive-phone-small": {
+      "exit_code": 0,
+      "run_sha256": "0eb86e56a6d3d4de6d6f178af6dd4f4eae9fe9f0b9ad28b2b5ba78fd7257d7c6",
+      "executable_sha256": "68b9fdc1e93e7c016f8993b44eba6c7f7e9b277cdbdb1dba944de0e0730ceda0"
+    }
+  },
+  "summary_sha256": "42e9121e8fd223ed182fb5572f8da8be8fca63c9d3220936f197eddd265c4422",
+  "resolved_findings": [
+    {
+      "id": "V4-collapsed-tutorial-statistics-topics",
+      "result": "resolved",
+      "evidence": [
+        "native-interactive-phone-small/stats-overview.png",
+        "native-interactive-phone-small/stable-collapsed-restore.png",
+        "native-interactive-phone-small/stable-full-title.png"
+      ],
+      "observation": "All5 complete topic labels are visible without tutorial obscuring them at320x640150%. The compact title remains bounded/ellipsized and the full wrapped title is restored on expansion."
+    },
+    {
+      "id": "V4-minimap-over-statistics-title",
+      "result": "resolved",
+      "evidence": [
+        "native-interactive-phone/stats-overview.png",
+        "native-interactive-phone-small/stats-overview.png"
+      ],
+      "observation": "Full Bengali statistics title paints above minimap and remains readable."
+    },
+    {
+      "id": "V5-tools-tutorial-first-row-occlusion",
+      "result": "resolved",
+      "evidence": [
+        "native-interactive-phone/tools-all-rows-actual.png",
+        "native-interactive-phone/top-chat-action.png",
+        "native-interactive-phone-small/tools-all-rows.png",
+        "native-interactive-phone-small/chat-action.png",
+        "native-interactive-phone-small/tools-after-stats.png",
+        "native-interactive-phone-small/tools-after-peek.png"
+      ],
+      "observation": "Tutorial absent while Tools or map peek owns foreground. All11 rows visible. Chat action opens an empty composer; map peek and return states remain unobscured. Closing Tools restores tutorial."
+    }
+  ],
+  "automated_supplement": {
+    "path": "native-display-4.xml",
+    "sha256": "f8e11ec8e9d1a3e200c1f19f5a9186a3ad1bb24bc14fce30f9ebbbf297ad280d",
+    "receipt": "native-display-tests.json",
+    "receipt_sha256": "d408a30f01eeea18d984ef5b6d7b1c5b87324b42698ba16600e7f8e5a4dd7bc2",
+    "producer_receipt_sha256": "5820d60267e1f2394a12b6fcb887f2c4127b638539c0ee5d4ad80c97035e8f74",
+    "result": "0 errors/0 failures; current-source regression taps actual stats/topic/0..4 host bounds and checks resulting selected topic for each.",
+    "test_source": "src/hud/touch/GameGUITouchHarness.cpp",
+    "test_source_sha256": "7d8a2707b628d4b8344f54d2835036724d75cfc275c2961c6f791e10d60b3529"
+  },
+  "observations": [
+    "Bengali title, guidance, statistics and Tools labels retain readable glyphs/marks in reviewed captures.",
+    "At320x640150% bottom toolbar words wrap heavily within narrow columns, including syllable-level splits. This is a compact-layout readability limitation; no missing marks, unseen labels or actionable control occlusion observed.",
+    "Tutorial instruction body is scrollable at150%; only actual visible content is claimed.",
+    "Some filenames reflect intended tap route rather than selected topic: economy.png at320 shows Military. No claim manual route proved all5 distinct selections. Automated actual bounds test supplies separate coverage."
+  ],
+  "limits": [
+    "Linux X11 software rendering fast-development producer; not physical Android/iOS or shipping release runtime.",
+    "No OS IME or screen-reader certification, no fresh profile language-persistence claim.",
+    "No full6358-pair pixel coverage or fresh complete linguistic reread.",
+    "Broader earlier interactive evidence retains its own actual producer identity."
+  ]
+}

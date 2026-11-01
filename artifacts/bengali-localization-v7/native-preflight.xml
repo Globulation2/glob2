@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests" errors="0" failures="3" tests="41" time="27.8307" timestamp="2026-11-01T09:17:43Z" doctest_version="2.4.11">
+    <testcase classname="src/hud/touch/GameGUITouchHarness.cpp" name="compact Bengali tutorial yields to statistics and covers the minimap [display][artifacts]" time="27.8307" status="run">
+      <failure message="29 &lt;= 17" type="CHECK">
+src/hud/touch/GameGUITouchHarness.cpp:5468:
+CHECK( std::abs(int(r)-int(paper.r))&lt;=tolerance ) is NOT correct!
+  values: CHECK( 29 &lt;= 17 )
+
+      </failure>
+      <failure message="18 &lt;= 17" type="CHECK">
+src/hud/touch/GameGUITouchHarness.cpp:5469:
+CHECK( std::abs(int(g)-int(paper.g))&lt;=tolerance ) is NOT correct!
+  values: CHECK( 18 &lt;= 17 )
+
+      </failure>
+      <failure message="46 &lt;= 17" type="CHECK">
+src/hud/touch/GameGUITouchHarness.cpp:5470:
+CHECK( std::abs(int(b)-int(paper.b))&lt;=tolerance ) is NOT correct!
+  values: CHECK( 46 &lt;= 17 )
+
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>

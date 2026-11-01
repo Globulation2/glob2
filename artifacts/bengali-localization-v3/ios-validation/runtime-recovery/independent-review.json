@@ -1,0 +1,135 @@
+{
+  "reviewer": "/root/bengali_adversary",
+  "certification": "Agent-reviewed actual iOS Simulator evidence; not native-human certification",
+  "status": "pass",
+  "verdict": "pass within explicit source/component scope",
+  "run_id": 41273431150,
+  "url": "https://github.com/Globulation2/glob2/actions/runs/41273431150",
+  "workflow_commit": "0445397603447ff3ca0922784ee17beb86ece528",
+  "actual_app_producer": {
+    "revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "f901203694a93fe2783dee8a7d76584caca25ce710e2a9fdccd8373058351fde"
+  },
+  "actual_app_executable": {
+    "path": "Glob2",
+    "bytes": 64245456,
+    "sha256": "e3b66757e85955947ae441b75179482004d24e56d30b75299315165e48427227"
+  },
+  "actual_original_build_run": 41266250711,
+  "actual_app_archive_sha256": "c3e1143f9dbd0a89f94c2291fdac0cc827ae83690ae211ae9ee3aa0eed0415b3",
+  "app_files_verified": 7938,
+  "no_app_or_dependency_rebuild": true,
+  "original_bundle_receipts_byte_identical": true,
+  "source_catalogs": {
+    "data/texts.bn.txt": {
+      "sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+      "keys": 3395
+    },
+    "platform/packages/i18n/locales/bn.json": {
+      "sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+      "keys": 2842
+    }
+  },
+  "toolchain": {
+    "identity": {
+      "target": "ios",
+      "role": "client",
+      "toolchain": "ios",
+      "mode": "release",
+      "arch": "arm64",
+      "environment": "simulator",
+      "api": "15.0",
+      "client_profile": "free",
+      "distribution": "app_store",
+      "client_features": {
+        "commander": false,
+        "authoring_links": false,
+        "community_ai": false,
+        "community_generators": false
+      }
+    },
+    "output": "build/ios/simulator/arm64/15.0/client/release",
+    "toolchain": {
+      "cc": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+      "cxx": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+      "ar": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar",
+      "cflags": [
+        "-target",
+        "arm64-apple-ios15.0-simulator",
+        "-isysroot",
+        "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk"
+      ],
+      "ldflags": [
+        "-target",
+        "arm64-apple-ios15.0-simulator",
+        "-isysroot",
+        "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk"
+      ],
+      "fingerprint": "7cb87de72584a53fe9f178cd0e288b6560a677574a15dcffeeec0d03e612e025",
+      "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+      "sdk": "27.0"
+    }
+  },
+  "runtime": {
+    "version": "27.0",
+    "build": "24A434",
+    "device_type": "iPhone 18 Pro",
+    "owned_uuid": "29F8541E-62C9-4B34-9B6C-2491239100F3"
+  },
+  "profile": {
+    "relative_path": "Library/Application Support/Globulation2/glob2",
+    "seed_sha256": "e9299a411c8ed6aea98a11fe67edfa65c9444f5ad60e4a8880336c55088f2aae",
+    "persisted_language": "bn",
+    "scope": "Explicitly seeded locale, audio/thumb choices and introduction already acknowledged. No auth/session profile data published."
+  },
+  "lifecycle_checks": [
+    "native startup and bundled assets",
+    "retained-process background/resume",
+    "termination and fresh-process relaunch"
+  ],
+  "commands_sha256": "f9b78775a0133fdaeeadb86aa47c318da4e11253e6f63beababd42abf2b1a757",
+  "lifecycle_commands_sha256": "f0b2314f94615daf65d6dd272ee4659e27c04689be6ec41452017c7cd485dc17",
+  "lifecycle_result_sha256": "247e9ebd464c3656b6e50bfa428dd2e76cc1272851f0ebc67e0cc8d11191330e",
+  "images": [
+    {
+      "path": "artifacts/bengali-ios-runtime-recovery-942d138/lifecycle/startup.png",
+      "sha256": "f2e056326a49bea0a54cde7d25ea45d7d9608c46efeb4cc0e68b3655a3c438fa",
+      "actually_viewed": true,
+      "finding": null
+    },
+    {
+      "path": "artifacts/bengali-ios-runtime-recovery-942d138/lifecycle/resumed.png",
+      "sha256": "a8b619f15e4daed7fe8648999a595e3b7ab456a071c9fc0602aaa578980fb9eb",
+      "actually_viewed": true,
+      "finding": null
+    },
+    {
+      "path": "artifacts/bengali-ios-runtime-recovery-942d138/lifecycle/relaunched.png",
+      "sha256": "6cc84d10137904e790d885af5c285beee66413a72941df111ebbfb81eac7ccc1",
+      "actually_viewed": true,
+      "finding": null
+    }
+  ],
+  "image_count": 3,
+  "observations": [
+    "Actual iOS startup/resumed/relaunched main-menu screenshots all visually read. Bengali কাস্টম গেম, অনলাইনে খেলুন, অভিযান, গেম লোড করুন, প্রশিক্ষণ are shaped and readable, with visible marks/conjuncts and no missing-glyph boxes, clipping or overlap.",
+    "Resume screenshot includes OS-owned English Settings return breadcrumb; it is platform chrome, not leaked game localization.",
+    "Production ios_smoke asserts same PID on resume and different PID after termination/relaunch; all3checks and cleanup succeeded.",
+    "Previously failed English AudioPreferenceScreen result retained separately; corrected wrapper seeds actual SDL Cocoa preference path after tracing mobile initializeMobilePaths override and pinned SDL3.4.16 source. No product fix was required."
+  ],
+  "findings": [],
+  "artifact": {
+    "id": 13070413891,
+    "name": "bengali-ios-runtime-recovery-942d138",
+    "bytes": 2443237,
+    "github_reported_zip_digest": "sha256:f6c79d0240bd96692cc01c6f6e0549a588fd8dc9f791ab145d62108d2767a15f"
+  },
+  "limits": [
+    "Producer remains exact942, native3395/V3catalog3b9a... and online2842/5776..., not later7f/V4 source or package.",
+    "No physical-device, OS first-visit onboarding, OS keyboard/IME, input-boundary, comprehensive gameplay or simulation determinism claim.",
+    "Only main-menu rendering and startup/background/resume/relaunch were executed on iOS; later chat254/browser guard and b34 statistics redesign were not exercised by this app.",
+    "Shipped asset closure establishes actual942 app contents; newer V4 catalog packaging is not represented."
+  ]
+}

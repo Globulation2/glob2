@@ -1,0 +1,7 @@
+GLOB2_TEST_BUILD compiler=13.4.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++-13", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"}, "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f", "sourceStatus": [], "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"}
+Settings::load("preferences.txt") : error, can't open file.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.

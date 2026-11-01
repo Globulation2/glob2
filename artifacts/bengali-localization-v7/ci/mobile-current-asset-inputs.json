@@ -1,0 +1,532 @@
+{
+  "status": "PASS_SCOPED_INPUT_CHECK",
+  "reviewer": "/root/rendering_audit",
+  "observed_at": "2026-11-01T09:38:24.016602+00:00",
+  "actual_source_revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "native_app_producer_receipt_sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac",
+  "current_packaging_rule_sha256": {
+    "tools/package_assets.py": "43c5f4bbbeceb096ce28c1110ceab98505fe3d27f76c95c719dd0c28ee347465",
+    "mobile/asset_bundle.py": "83781e932e9ebcf0143ec8ded1140cc92472781958362c8f8c2844c4429f274c",
+    "mobile/android.py": "e436abbfa8ac02fb9fca73cc2fcdea9bfaffe813f977868b5f37911203f06b71",
+    "mobile/ios.py": "3899b74ca5dd96dd247e6c193fd2f7e281dceeac82972ec09ed086e564f9d3c6",
+    "mobile/MobilePaths.cpp": "d48b1b36f5a548393c81f05ecd67ef014cf349bef2344417acc96cfaa8d81538"
+  },
+  "selected_asset_count": 56,
+  "full_native_catalog_count": 39,
+  "selected_exact_byte_checks": [
+    {
+      "path": "data/texts.keys.txt",
+      "source_sha256": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+      "current_native_export_sha256": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.ar.txt",
+      "source_sha256": "8f7d458e548a9fae1df8b6e03778ce8fb9eb87bd8c7f248c35ec80259fe4798c",
+      "current_native_export_sha256": "8f7d458e548a9fae1df8b6e03778ce8fb9eb87bd8c7f248c35ec80259fe4798c",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.br.txt",
+      "source_sha256": "eadfffbb2ffeb6e291033529f1fc640a241ef2eb9779285a7b559e137af2e0db",
+      "current_native_export_sha256": "eadfffbb2ffeb6e291033529f1fc640a241ef2eb9779285a7b559e137af2e0db",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.ca.txt",
+      "source_sha256": "617002a9dbc221310063400a893f1d162751379209d4e19f69331f7ebac2b28d",
+      "current_native_export_sha256": "617002a9dbc221310063400a893f1d162751379209d4e19f69331f7ebac2b28d",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.cz.txt",
+      "source_sha256": "ee0f4ca1ade67678bc2d621b7dcd0b801b211c86d0769380dc051b4d0c3ec79e",
+      "current_native_export_sha256": "ee0f4ca1ade67678bc2d621b7dcd0b801b211c86d0769380dc051b4d0c3ec79e",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.de.txt",
+      "source_sha256": "9e613076012f3e58cac53c753fa90e97a49d7b823c5a79c41333be53433d117e",
+      "current_native_export_sha256": "9e613076012f3e58cac53c753fa90e97a49d7b823c5a79c41333be53433d117e",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.dk.txt",
+      "source_sha256": "109d35ba43b55814ba108ab8c6d143a5c4b1040608167c229a12266ac70b4bec",
+      "current_native_export_sha256": "109d35ba43b55814ba108ab8c6d143a5c4b1040608167c229a12266ac70b4bec",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.en.txt",
+      "source_sha256": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+      "current_native_export_sha256": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.es.txt",
+      "source_sha256": "82e695681d63e29c9e01421feca77f50fff26d2ea7cf9be1c4c12d369b67caff",
+      "current_native_export_sha256": "82e695681d63e29c9e01421feca77f50fff26d2ea7cf9be1c4c12d369b67caff",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.eo.txt",
+      "source_sha256": "9d2024a0cd6622147e98e99f0dfe76f7e007a9e4642e6de52f2a7bd72003b1a3",
+      "current_native_export_sha256": "9d2024a0cd6622147e98e99f0dfe76f7e007a9e4642e6de52f2a7bd72003b1a3",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.eu.txt",
+      "source_sha256": "6c1e81e3a603e43252b7b8f197707f40fbea0ad8af7c39e54d618140631b6860",
+      "current_native_export_sha256": "6c1e81e3a603e43252b7b8f197707f40fbea0ad8af7c39e54d618140631b6860",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.fa.txt",
+      "source_sha256": "421a5a0cb977ea096e888f407435c4863cfef92983b396f0c2d9cafcba37e0a8",
+      "current_native_export_sha256": "421a5a0cb977ea096e888f407435c4863cfef92983b396f0c2d9cafcba37e0a8",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.fr.txt",
+      "source_sha256": "a3e68814c86c46cefeaadd141f95036dbccc4033db4a16bce138ed9b3e71d775",
+      "current_native_export_sha256": "a3e68814c86c46cefeaadd141f95036dbccc4033db4a16bce138ed9b3e71d775",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.gr.txt",
+      "source_sha256": "ddfd6db804eea55453304ff58aaf304f7d14e803f6199537ebb08ef724080f11",
+      "current_native_export_sha256": "ddfd6db804eea55453304ff58aaf304f7d14e803f6199537ebb08ef724080f11",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.hu.txt",
+      "source_sha256": "36f155abc525276b85373ae14837fe8e4311133865c6a63792f8d8d2fc748d33",
+      "current_native_export_sha256": "36f155abc525276b85373ae14837fe8e4311133865c6a63792f8d8d2fc748d33",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.it.txt",
+      "source_sha256": "6acb1bdebba515bd9ae003af58f97e1fb18f9725d51f06a105b2489717aeaddb",
+      "current_native_export_sha256": "6acb1bdebba515bd9ae003af58f97e1fb18f9725d51f06a105b2489717aeaddb",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.nl.txt",
+      "source_sha256": "e703f3cce8d2c4bde6d5155305a5812035af2e12d18e4711bf87c92b9975aa75",
+      "current_native_export_sha256": "e703f3cce8d2c4bde6d5155305a5812035af2e12d18e4711bf87c92b9975aa75",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.pl.txt",
+      "source_sha256": "d1497ad18ca233c9aa7ac6292c1f09b7fc7d10e9a3d9e15459c6c6f1e5a7404b",
+      "current_native_export_sha256": "d1497ad18ca233c9aa7ac6292c1f09b7fc7d10e9a3d9e15459c6c6f1e5a7404b",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.pt.txt",
+      "source_sha256": "4a2b1c287475f4aef784a7ec604ccb2dd9ada9d659ff344ea29b3a2b92c3e0c4",
+      "current_native_export_sha256": "4a2b1c287475f4aef784a7ec604ccb2dd9ada9d659ff344ea29b3a2b92c3e0c4",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.ro.txt",
+      "source_sha256": "344158c80aaad1a9d327e9d3b87da577ee51b070b46bae4af2c6fdef4d9139c8",
+      "current_native_export_sha256": "344158c80aaad1a9d327e9d3b87da577ee51b070b46bae4af2c6fdef4d9139c8",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.ru.txt",
+      "source_sha256": "1ae01ed3fe360a5edd5172fc12a79cce75001663f0e1a508e7cb403b36c7e970",
+      "current_native_export_sha256": "1ae01ed3fe360a5edd5172fc12a79cce75001663f0e1a508e7cb403b36c7e970",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.si.txt",
+      "source_sha256": "8684c43f6487fe6d6a992b4b08924106c9a87c55dcef5578b9fec0492219eaa0",
+      "current_native_export_sha256": "8684c43f6487fe6d6a992b4b08924106c9a87c55dcef5578b9fec0492219eaa0",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.sk.txt",
+      "source_sha256": "59fb432d66fae9e6c69e9821abb1c328b64b4b1712a69095d4d8ba601d9ad5a4",
+      "current_native_export_sha256": "59fb432d66fae9e6c69e9821abb1c328b64b4b1712a69095d4d8ba601d9ad5a4",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.sr.txt",
+      "source_sha256": "84a9fdea5658115f28c31c9d81e63e7d900f8791b309c8fe977862e4053c1158",
+      "current_native_export_sha256": "84a9fdea5658115f28c31c9d81e63e7d900f8791b309c8fe977862e4053c1158",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.fi.txt",
+      "source_sha256": "1d3c14abbf947ff05e0617b58165d9e730bc8f7d0db4eb35fcd3d1ba3087f3bc",
+      "current_native_export_sha256": "1d3c14abbf947ff05e0617b58165d9e730bc8f7d0db4eb35fcd3d1ba3087f3bc",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.sv.txt",
+      "source_sha256": "5c8e4a72c935157064eb89d7380a028a1ce9e4a51150d72742836ca4ade240d0",
+      "current_native_export_sha256": "5c8e4a72c935157064eb89d7380a028a1ce9e4a51150d72742836ca4ade240d0",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.tr.txt",
+      "source_sha256": "de1c27a5a24eee934fa5cc69b48747fc1b63e4d91a3b35f98d73e4cd884c592f",
+      "current_native_export_sha256": "de1c27a5a24eee934fa5cc69b48747fc1b63e4d91a3b35f98d73e4cd884c592f",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.zh-tw.txt",
+      "source_sha256": "1d75151622588d488c3159cc9d907327a6b1cc87bfe015a8127f976b810ae992",
+      "current_native_export_sha256": "1d75151622588d488c3159cc9d907327a6b1cc87bfe015a8127f976b810ae992",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.zh-cn.txt",
+      "source_sha256": "5383312809c969aa47645597ff70ba751d5211e036a1882f563efc328dafb31a",
+      "current_native_export_sha256": "5383312809c969aa47645597ff70ba751d5211e036a1882f563efc328dafb31a",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.uk.txt",
+      "source_sha256": "93163376b90b8c7691f4353438574b550359d5ab19d24eccea9ec9d3b7751f3d",
+      "current_native_export_sha256": "93163376b90b8c7691f4353438574b550359d5ab19d24eccea9ec9d3b7751f3d",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.id.txt",
+      "source_sha256": "6369667d3ecc531a5f71f91b0c89fc4fcb5d622ff97511b922315efee298e205",
+      "current_native_export_sha256": "6369667d3ecc531a5f71f91b0c89fc4fcb5d622ff97511b922315efee298e205",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.vi.txt",
+      "source_sha256": "67365eca739994b3544b7555d47cc5d25d6dec6357fc4a44ab33215f682116c1",
+      "current_native_export_sha256": "67365eca739994b3544b7555d47cc5d25d6dec6357fc4a44ab33215f682116c1",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.ja.txt",
+      "source_sha256": "a94c7d025fe27353fb669282c364ec77796d48ed1adb31dc265de9c920783b7a",
+      "current_native_export_sha256": "a94c7d025fe27353fb669282c364ec77796d48ed1adb31dc265de9c920783b7a",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.ko.txt",
+      "source_sha256": "d601eb2c384057ccbad8e211e3768c812693fa5b0ae86c556cc20b5a63e9c2eb",
+      "current_native_export_sha256": "d601eb2c384057ccbad8e211e3768c812693fa5b0ae86c556cc20b5a63e9c2eb",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.hi.txt",
+      "source_sha256": "81a4243f010075376661c22ac3a3fc6cdd25e2c1e9681adfffe8d7f6ee3018ce",
+      "current_native_export_sha256": "81a4243f010075376661c22ac3a3fc6cdd25e2c1e9681adfffe8d7f6ee3018ce",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.ur.txt",
+      "source_sha256": "302c80cd0e57cbca93c6a85120084fc9a7223dbc8c32f4d1ef4dfc5daf9dcf27",
+      "current_native_export_sha256": "302c80cd0e57cbca93c6a85120084fc9a7223dbc8c32f4d1ef4dfc5daf9dcf27",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.sw.txt",
+      "source_sha256": "11543b008318b91764e03d578f506f632f75c1da3b9661df80ce93af36e3e5c9",
+      "current_native_export_sha256": "11543b008318b91764e03d578f506f632f75c1da3b9661df80ce93af36e3e5c9",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.bn.txt",
+      "source_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "current_native_export_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.nb.txt",
+      "source_sha256": "342fa3f82803806e166f1b06ca1d160b1a90d5fda1f1b9814cf6f0a01560bb17",
+      "current_native_export_sha256": "342fa3f82803806e166f1b06ca1d160b1a90d5fda1f1b9814cf6f0a01560bb17",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/texts.ms.txt",
+      "source_sha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+      "current_native_export_sha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+      "source_sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "current_native_export_sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "source_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "current_native_export_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "source_sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "current_native_export_sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+      "source_sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "current_native_export_sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+      "source_sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "current_native_export_sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+      "source_sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "current_native_export_sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+      "source_sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "current_native_export_sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+      "source_sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "current_native_export_sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+      "source_sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "current_native_export_sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+      "source_sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "current_native_export_sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+      "source_sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "current_native_export_sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+      "source_sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "current_native_export_sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+      "source_sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "current_native_export_sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/scripts/manifest.json",
+      "source_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "current_native_export_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/LICENSE-Noto.txt",
+      "source_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "current_native_export_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    },
+    {
+      "path": "data/fonts/sans.ttf",
+      "source_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "current_native_export_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "android_export_included": true,
+      "ios_export_included": true,
+      "android_index_filter_included": true,
+      "raw_copy_non_image_payload": true
+    }
+  ],
+  "limits": [
+    "Actual current source admission + current Linux runtime export byte checks only. No new Android APK or iOS app assembled by this script.",
+    "Old942 packaged/runtime evidence retains its own catalog/hash identity. It does not contain the16 added native keys or later compact/input fixes.",
+    "Not an Android/iOS whole-binary, current compact runtime, store-signing or physical-device/IME pass."
+  ]
+}

@@ -1,0 +1,2640 @@
+{
+  "name": "threaded-desktop-webgl2",
+  "variant": "threaded",
+  "renderer": "webgl2",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "deviceScaleFactor": 1,
+  "freshStorage": true,
+  "externalRequestsBlocked": [],
+  "pageErrors": [],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "readlink() error: No such file or directory"
+    },
+    {
+      "type": "error",
+      "text": "Settings::load(\"preferences.txt\") : error, can't open file."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+    },
+    {
+      "type": "log",
+      "text": "Map generation: lava-shield revision 7 seed 595206071 [complete]: "
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:32839/index.html?renderer=webgl2",
+      "status": 200,
+      "type": "text/html"
+    },
+    {
+      "url": "http://127.0.0.1:32839/theme.js",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/script-fonts.css",
+      "status": 200,
+      "type": "text/css"
+    },
+    {
+      "url": "http://127.0.0.1:32839/presentation-surface.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/loader.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/i18n.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/signin/assets/glob-64.png",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/signin/assets/nunito.woff2",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/signin/assets/wordmark-two.webp",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/signin/assets/wordmark-letters.webp",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/locales/bn.json",
+      "status": 200,
+      "type": "application/json"
+    },
+    {
+      "url": "http://127.0.0.1:32839/fonts/NotoSansBengali-Regular.ttf",
+      "status": 200,
+      "type": "font/ttf"
+    },
+    {
+      "url": "http://127.0.0.1:32839/fonts/NotoSansArabic-Regular.ttf",
+      "status": 200,
+      "type": "font/ttf"
+    },
+    {
+      "url": "http://127.0.0.1:32839/fonts/NotoSansDevanagari-Regular.ttf",
+      "status": 200,
+      "type": "font/ttf"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/core.06da0f1fba26b436.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/game-2.d2f3f499b0b4ab1b.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/game-1.e5347e01af620593.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/game-3.d5658b392a8460d0.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/game-4.db7fc6881bef2304.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.wasm",
+      "status": 200,
+      "type": "application/wasm"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/translations-1.7d25e8a5731b6ce6.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/translations-2.28fb46e734d3bc9e.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/translations-3.1595371eddd6d423.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/menu-music.5294ed91abf32cfe.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/font-cjk.5701af4422583342.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/music.67f422aa69c5356d.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/music-sets-1.602de095eeed505a.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/music-sets-2.be883b1c072a2166.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/music-sets-3.163578e1e9d60971.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-1.6ae772470b0392c5.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-4.53eba4c73b03db03.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-2.1a49fdd84767b826.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-3.8bb50dac1db55a47.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-5.91416d931b355dc5.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-6.d824775ef3fc4c90.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-7.77d138f050b10df1.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-8.e6860a799a23584c.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-9.61334f730f3bffdc.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-10.81071e6d47d0423c.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-11.b19cec53d257e6dc.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-12.fd673e25e0498af7.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-13.255b6e5447117df7.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-15.3f00c1005c5a3007.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-14.5c10c253256c51b8.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-16.5aff8e4516d2f32c.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-17.895895d7f7904293.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-20.a9e3f7b9bb5c1153.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-19.73acb354e05f78a5.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-18.df2ee46ab0af7530.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-22.38010a231e07b98e.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-21.dd91eb4cfa173448.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-23.c0cfedcbdd6340b0.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-24.797f35ee19550342.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-25.20d84fb0e0d71f86.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-26.9844862e2472cd31.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-27.a10f07d49b2a1f2d.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-28.d8aa0f3686067f85.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-29.d97c8f59ef903b7b.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-30.c9b72940e93a4332.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-32.a79a110574c55697.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-31.14931caaf15ca9c4.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-33.8d3a0628e0b912a8.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-34.bceb407bb73fa4ac.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-35.76239358bf30ff5d.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-36.6ecf6a2a00a37b5d.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-37.0eb155943bbbc482.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-38.941f8b9939d512ad.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-39.ae1fdbf3c3cb6a85.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/hd-40.3ce695cbe82be717.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    }
+  ],
+  "localeSelection": "locale cookie bn",
+  "isolationHeaders": {
+    "cache-control": "no-cache",
+    "content-length": "59434",
+    "content-type": "text/html",
+    "cross-origin-embedder-policy": "require-corp",
+    "cross-origin-opener-policy": "same-origin",
+    "date": "Sun, 01 Nov 2026 09:38:07 GMT",
+    "last-modified": "Sun, 01 Nov 2026 09:33:49 GMT",
+    "server": "SimpleHTTP/0.6 Python/3.14.4"
+  },
+  "httpFont": {
+    "url": "http://127.0.0.1:32839/fonts/NotoSansBengali-Regular.ttf",
+    "headers": {
+      "cache-control": "no-cache",
+      "cross-origin-opener-policy": "same-origin",
+      "cross-origin-embedder-policy": "require-corp",
+      "content-length": "200048",
+      "date": "Sun, 01 Nov 2026 09:38:08 GMT",
+      "content-type": "font/ttf",
+      "last-modified": "Sun, 01 Nov 2026 05:11:25 GMT",
+      "server": "SimpleHTTP/0.6 Python/3.14.4"
+    },
+    "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+  },
+  "httpCatalog": {
+    "url": "http://127.0.0.1:32839/locales/bn.json",
+    "sha256": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "launcherPlatformFonts": [
+    {
+      "familyName": "Noto Sans",
+      "postScriptName": "NotoSans-Bold",
+      "isCustomFont": false,
+      "glyphCount": 4
+    },
+    {
+      "familyName": "Noto Sans Bengali",
+      "postScriptName": "NotoSansBengali-Regular",
+      "isCustomFont": true,
+      "glyphCount": 18
+    }
+  ],
+  "launcher": {
+    "language": "bn",
+    "text": "গেমটি ডাউনলোড করা হচ্ছে…",
+    "fonts": [
+      {
+        "family": "Glob2 Scripts",
+        "status": "loaded",
+        "unicodeRange": "U+900-97F, U+1CD0-1CFF, U+A8E0-A8FF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "loaded",
+        "unicodeRange": "U+980-9FF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+A00-A7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+A80-AFF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+B00-B7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+B80-BFF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+C00-C7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+C80-CFF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+D00-D7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+E00-E7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+1000-109F, U+A9E0-A9FF, U+AA60-AA7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+1200-139F, U+2D80-2DDF, U+AB00-AB2F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "loaded",
+        "unicodeRange": "U+600-6FF, U+750-77F, U+870-8FF, U+FB50-FDFF, U+FE70-FEFF"
+      }
+    ],
+    "bodyWidth": 1280,
+    "viewportWidth": 1280
+  },
+  "packageClosure": {
+    "manifestSha256": "b5dcfdac57ff08f69c9fefb0cd842c5456927d00aebf627f6509d3a07f8ddd2f",
+    "coreSans": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+    "coreBengaliFont": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "fullBengaliCatalog": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "cjkFontSeparate": true,
+    "derivedSourceMetadata": {
+      "languageNames": "9f031b020c2620e0149db58d607ffb158b5a781ac4532917425abd5ef8e9f790",
+      "output_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "source": "data/fonts/sans.ttf"
+    }
+  },
+  "startupInteractions": [
+    {
+      "screen": "23IntroductionOfferScreen 23IntroductionOfferScreen",
+      "control": "intro/menu",
+      "bounds": {
+        "x": 809,
+        "y": 656,
+        "w": 141,
+        "h": 34,
+        "visible": {
+          "x": 809,
+          "y": 656,
+          "w": 141,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "মূল মেনুতে ফিরে যান",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      }
+    }
+  ],
+  "mainMenu": {
+    "diagnostics": {
+      "version": 1,
+      "executionMode": "threaded",
+      "threadFallback": null,
+      "workerCount": 8,
+      "renderer": "webgl2",
+      "renderContext": {
+        "width": 1280,
+        "height": 900,
+        "error": null
+      },
+      "contextLost": false,
+      "contextRestores": 0,
+      "screen": "14MainMenuScreen",
+      "screenClass": "14MainMenuScreen",
+      "roomCanStart": false,
+      "customGameReady": false,
+      "tick": 0,
+      "frames": 0,
+      "loop": 1963,
+      "paused": false,
+      "torus": false,
+      "torusSettled": false,
+      "width": 1280,
+      "height": 900,
+      "heapBytes": 334102528,
+      "artworkReady": true,
+      "restore": "ready",
+      "watchReplay": "none",
+      "import": "idle",
+      "persisting": false,
+      "persistence": "persisted",
+      "audio": "inactive",
+      "assets": {
+        "core": "ready",
+        "game": "ready",
+        "skins": "idle",
+        "font-cjk": "ready",
+        "menu-music": "ready",
+        "translations": "ready",
+        "music": "ready",
+        "music-sets": "ready",
+        "hd": "ready"
+      },
+      "opened": [],
+      "controls": {
+        "menu/3": {
+          "x": 88,
+          "y": 258,
+          "w": 320,
+          "h": 48,
+          "visible": {
+            "x": 88,
+            "y": 258,
+            "w": 320,
+            "h": 48
+          },
+          "enabled": true,
+          "label": "কাস্টম গেম",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/4": {
+          "x": 88,
+          "y": 312,
+          "w": 320,
+          "h": 42,
+          "visible": {
+            "x": 88,
+            "y": 312,
+            "w": 320,
+            "h": 42
+          },
+          "enabled": true,
+          "label": "অনলাইনে খেলুন",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/0": {
+          "x": 88,
+          "y": 360,
+          "w": 320,
+          "h": 42,
+          "visible": {
+            "x": 88,
+            "y": 360,
+            "w": 320,
+            "h": 42
+          },
+          "enabled": true,
+          "label": "অভিযান",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/2": {
+          "x": 88,
+          "y": 408,
+          "w": 320,
+          "h": 42,
+          "visible": {
+            "x": 88,
+            "y": 408,
+            "w": 320,
+            "h": 42
+          },
+          "enabled": true,
+          "label": "গেম লোড করুন",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/1": {
+          "x": 88,
+          "y": 456,
+          "w": 320,
+          "h": 42,
+          "visible": {
+            "x": 88,
+            "y": 456,
+            "w": 320,
+            "h": 42
+          },
+          "enabled": true,
+          "label": "প্রশিক্ষণ",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/6": {
+          "x": 88,
+          "y": 540,
+          "w": 156,
+          "h": 34,
+          "visible": {
+            "x": 88,
+            "y": 540,
+            "w": 156,
+            "h": 34
+          },
+          "enabled": true,
+          "label": "সেটিংস",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/7": {
+          "x": 252,
+          "y": 540,
+          "w": 156,
+          "h": 34,
+          "visible": {
+            "x": 252,
+            "y": 540,
+            "w": 156,
+            "h": 34
+          },
+          "enabled": true,
+          "label": "সম্পাদক",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/8": {
+          "x": 88,
+          "y": 582,
+          "w": 156,
+          "h": 34,
+          "visible": {
+            "x": 88,
+            "y": 582,
+            "w": 156,
+            "h": 34
+          },
+          "enabled": true,
+          "label": "অবদানকারীরা",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/discord": {
+          "x": 252,
+          "y": 582,
+          "w": 156,
+          "h": 34,
+          "visible": {
+            "x": 252,
+            "y": 582,
+            "w": 156,
+            "h": 34
+          },
+          "enabled": true,
+          "label": "Discord সম্প্রদায়",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        },
+        "menu/9": {
+          "x": 88,
+          "y": 624,
+          "w": 156,
+          "h": 34,
+          "visible": {
+            "x": 88,
+            "y": 624,
+            "w": 156,
+            "h": 34
+          },
+          "enabled": true,
+          "label": "ছেড়ে দিন",
+          "surface": {
+            "w": 1280,
+            "h": 900
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 900
+          }
+        }
+      }
+    },
+    "onlineLanguage": "bn",
+    "preferredLocales": "bn",
+    "crossOriginIsolated": true,
+    "sharedMemory": true
+  },
+  "vfs": {
+    "bengaliFont": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "bengaliCatalog": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "languageList": "e2f60e175359637a250b42e55f45e2e5bf5261a032ef8c021ab6d488cf5bc262"
+  },
+  "settings": {
+    "version": 1,
+    "executionMode": "threaded",
+    "threadFallback": null,
+    "workerCount": 8,
+    "renderer": "webgl2",
+    "renderContext": {
+      "width": 1280,
+      "height": 900,
+      "error": null
+    },
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "14SettingsScreen",
+    "screenClass": "14SettingsScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 0,
+    "frames": 0,
+    "loop": 1980,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 1280,
+    "height": 900,
+    "heapBytes": 334102528,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "ready"
+    },
+    "opened": [],
+    "controls": {
+      "nav.0": {
+        "x": 180,
+        "y": 149,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 149,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "ডিসপ্লে এবং গ্রাফিক্স",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.1": {
+        "x": 180,
+        "y": 195,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 195,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "অডিও",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.2": {
+        "x": 180,
+        "y": 241,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 241,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "গেমপ্লে",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.3": {
+        "x": 180,
+        "y": 287,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 287,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "ভবনের পূর্বনির্ধারিত মান",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.4": {
+        "x": 180,
+        "y": 333,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 333,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "নিয়ন্ত্রণ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.5": {
+        "x": 180,
+        "y": 379,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 379,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "ভাষা ও খেলোয়াড়",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.6": {
+        "x": 180,
+        "y": 425,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 425,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "অনলাইন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.7": {
+        "x": 180,
+        "y": 471,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 471,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "Hive Mind",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.8": {
+        "x": 180,
+        "y": 517,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 517,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "রেকর্ডিং",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.9": {
+        "x": 180,
+        "y": 563,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 563,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "পরীক্ষাগুলি",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.10": {
+        "x": 180,
+        "y": 609,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 609,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "কাস্টম এআই",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.11": {
+        "x": 180,
+        "y": 655,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 655,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "মানচিত্র জেনারেটর",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "display.mode": {
+        "x": 950,
+        "y": 236,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 236,
+          "w": 140,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "উইন্ডোতে",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "display.uiscale": {
+        "x": 950,
+        "y": 297,
+        "w": 140,
+        "h": 54,
+        "visible": {
+          "x": 950,
+          "y": 297,
+          "w": 140,
+          "h": 54
+        },
+        "enabled": true,
+        "label": "ডেস্কটপের সাথে মেলান (100 %)",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.skins": {
+        "x": 372,
+        "y": 454,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 454,
+          "w": 718,
+          "h": 45
+        },
+        "enabled": true,
+        "label": "[x] উপনিবেশের রূপসজ্জা দেখান",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.clouds": {
+        "x": 372,
+        "y": 520,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 520,
+          "w": 718,
+          "h": 45
+        },
+        "enabled": true,
+        "label": "[ ] মেঘ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.shadows": {
+        "x": 372,
+        "y": 586,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 586,
+          "w": 718,
+          "h": 45
+        },
+        "enabled": true,
+        "label": "[ ] মেঘের ছায়া",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.particles": {
+        "x": 372,
+        "y": 652,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 652,
+          "w": 718,
+          "h": 45
+        },
+        "enabled": true,
+        "label": "[ ] ভবনের কণার প্রভাব",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.magic": {
+        "x": 950,
+        "y": 723,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 723,
+          "w": 140,
+          "h": 12
+        },
+        "enabled": true,
+        "label": "সহজ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.artwork": {
+        "x": 950,
+        "y": 789,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 789,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "উচ্চ রেজোলিউশন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.torus": {
+        "x": 372,
+        "y": 850,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 850,
+          "w": 718,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[ ] স্বয়ংক্রিয় টোরাস ভিউ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "display.menutheme": {
+        "x": 950,
+        "y": 972,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 972,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "হালকা",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "display.gametheme": {
+        "x": 950,
+        "y": 1038,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 1038,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "গাঢ়",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.panels": {
+        "x": 950,
+        "y": 1104,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 1104,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "অস্বচ্ছ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "display.textsize": {
+        "x": 950,
+        "y": 1170,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 1170,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "100 %",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "display.presentation": {
+        "x": 950,
+        "y": 1236,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 1236,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "স্বয়ংক্রিয়",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.fps": {
+        "x": 950,
+        "y": 1353,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 1353,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "60 FPS",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.paths": {
+        "x": 950,
+        "y": 1419,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 950,
+          "y": 1419,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "অস্বচ্ছ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.indicators": {
+        "x": 372,
+        "y": 1480,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 1480,
+          "w": 718,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[ ] মসৃণ অগ্রগতি সূচক",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.animation": {
+        "x": 372,
+        "y": 1546,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 1546,
+          "w": 718,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[ ] আলংকারিক ইন্টারফেস অ্যানিমেশন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.zoomdetail": {
+        "x": 372,
+        "y": 1612,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 1612,
+          "w": 718,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[x] অভিযোজিত জুমের বিবরণ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.unitmotion": {
+        "x": 372,
+        "y": 1678,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 1678,
+          "w": 718,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[x] মসৃণ ইউনিট গতি",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.smoothfog": {
+        "x": 372,
+        "y": 1744,
+        "w": 718,
+        "h": 45,
+        "visible": {
+          "x": 372,
+          "y": 1744,
+          "w": 718,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[x] যুদ্ধের মসৃণ কুয়াশা",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "graphics.renderer": {
+        "x": 950,
+        "y": 1810,
+        "w": 140,
+        "h": 54,
+        "visible": {
+          "x": 950,
+          "y": 1810,
+          "w": 140,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "Legacy OpenGL",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "done": {
+        "x": 1020,
+        "y": 756,
+        "w": 70,
+        "h": 34,
+        "visible": {
+          "x": 1020,
+          "y": 756,
+          "w": 70,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "সম্পন্ন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      }
+    }
+  },
+  "nativeLanguageSwitch": {
+    "selected": [
+      "en",
+      "bn"
+    ],
+    "savedPreference": "bn",
+    "renderer": "webgl2"
+  },
+  "opaquePanel": {
+    "renderer": "webgl2",
+    "executionMode": "threaded",
+    "clip": {
+      "x": 180,
+      "y": 149,
+      "width": 176,
+      "height": 548
+    },
+    "maximumChannelDifference": 0,
+    "affectedPixels": 0,
+    "totalAbsoluteChannelDifference": 0,
+    "inferredMinimumOpaquePanelAlpha": 1,
+    "passed": true,
+    "reason": "CSS behind an opaque presented panel must not change its text/icon pixels"
+  },
+  "usernameCppBoundary": {
+    "owner": 265210996,
+    "exclusiveMaximumBytes": 33,
+    "inclusiveMaximumCodepoints": 32
+  },
+  "textInput": {
+    "value": "ক্ষুদ্র ১২",
+    "ariaLabel": "খেলার লেখার ঘর",
+    "fontFamily": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+    "selectionStart": 10,
+    "selectionEnd": 10,
+    "persistedUtf8Exactly": true,
+    "byteLimitPaste": {
+      "input": "ককককককককক্ষ",
+      "inputBytes": 33,
+      "actual": "কককককককক",
+      "expected": "কককককককক"
+    },
+    "asciiByteLimit": {
+      "maximumStoredBytes": 32,
+      "accepted32": true,
+      "rejectedExtraByte": true
+    },
+    "compositionEventBridgePreservedClusters": true
+  },
+  "hudFixturePlayerName": "ক্ষুদ্র ১২",
+  "customLobby": {
+    "version": 1,
+    "executionMode": "threaded",
+    "threadFallback": null,
+    "workerCount": 8,
+    "renderer": "webgl2",
+    "renderContext": {
+      "width": 1280,
+      "height": 900,
+      "error": null
+    },
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "16CustomGameScreen",
+    "screenClass": "16CustomGameScreen",
+    "roomCanStart": false,
+    "customGameReady": true,
+    "tick": 0,
+    "frames": 0,
+    "loop": 2264,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 1280,
+    "height": 900,
+    "heapBytes": 400949248,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "ready"
+    },
+    "opened": [],
+    "controls": {
+      "tab/0": {
+        "x": 66,
+        "y": 24,
+        "w": 378,
+        "h": 34,
+        "visible": {
+          "x": 66,
+          "y": 24,
+          "w": 378,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "মানচিত্র",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "tab/1": {
+        "x": 450,
+        "y": 24,
+        "w": 378,
+        "h": 34,
+        "visible": {
+          "x": 450,
+          "y": 24,
+          "w": 378,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "খেলোয়াড় ও দল",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "tab/2": {
+        "x": 834,
+        "y": 24,
+        "w": 380,
+        "h": 34,
+        "visible": {
+          "x": 834,
+          "y": 24,
+          "w": 380,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "খেলার নিয়ম",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "map/mode/0": {
+        "x": 74,
+        "y": 84,
+        "w": 189,
+        "h": 34,
+        "visible": {
+          "x": 74,
+          "y": 84,
+          "w": 189,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "আগে থেকে তৈরি মানচিত্র",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "map/mode/1": {
+        "x": 287,
+        "y": 84,
+        "w": 122,
+        "h": 34,
+        "visible": {
+          "x": 287,
+          "y": 84,
+          "w": 122,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "দৈব মানচিত্র",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/landscape": {
+        "x": 468,
+        "y": 126,
+        "w": 220,
+        "h": 34,
+        "visible": {
+          "x": 468,
+          "y": 126,
+          "w": 220,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "লাভা ঢাল",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/reset": {
+        "x": 66,
+        "y": 168,
+        "w": 307,
+        "h": 34,
+        "visible": {
+          "x": 66,
+          "y": 168,
+          "w": 307,
+          "h": 34
+        },
+        "enabled": false,
+        "label": "ডিফল্টে রিসেট করুন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/random": {
+        "x": 381,
+        "y": 168,
+        "w": 307,
+        "h": 34,
+        "visible": {
+          "x": 381,
+          "y": 168,
+          "w": 307,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "দৈব পরামিতি",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/width": {
+        "x": 528,
+        "y": 210,
+        "w": 160,
+        "h": 34,
+        "visible": {
+          "x": 528,
+          "y": 210,
+          "w": 160,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "256",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/height": {
+        "x": 528,
+        "y": 252,
+        "w": 160,
+        "h": 34,
+        "visible": {
+          "x": 528,
+          "y": 252,
+          "w": 160,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "256",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/colonies": {
+        "x": 528,
+        "y": 294,
+        "w": 160,
+        "h": 34,
+        "visible": {
+          "x": 528,
+          "y": 294,
+          "w": 160,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "4",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/section/0": {
+        "x": 66,
+        "y": 360,
+        "w": 622,
+        "h": 34,
+        "visible": {
+          "x": 66,
+          "y": 360,
+          "w": 622,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "ভূখণ্ড",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/section/1": {
+        "x": 66,
+        "y": 402,
+        "w": 622,
+        "h": 34,
+        "visible": {
+          "x": 66,
+          "y": 402,
+          "w": 622,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "সম্পদ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "generator/section/2": {
+        "x": 66,
+        "y": 444,
+        "w": 622,
+        "h": 34,
+        "visible": {
+          "x": 66,
+          "y": 444,
+          "w": 622,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "বিন্যাস",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "map/buildings": {
+        "x": 66,
+        "y": 486,
+        "w": 622,
+        "h": 34,
+        "visible": {
+          "x": 66,
+          "y": 486,
+          "w": 622,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "ভবনগুচ্ছ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "quality/info": {
+        "x": 1161,
+        "y": 121,
+        "w": 52,
+        "h": 34,
+        "visible": {
+          "x": 1161,
+          "y": 121,
+          "w": 52,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "শুরুর মান",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "map/preview": {
+        "x": 738,
+        "y": 163,
+        "w": 440,
+        "h": 440,
+        "visible": {
+          "x": 738,
+          "y": 163,
+          "w": 440,
+          "h": 440
+        },
+        "enabled": true,
+        "label": "map preview",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "map/randomize": {
+        "x": 887,
+        "y": 635,
+        "w": 143,
+        "h": 34,
+        "visible": {
+          "x": 887,
+          "y": 635,
+          "w": 143,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "দৈবভাবে সাজান",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "back": {
+        "x": 910,
+        "y": 820,
+        "w": 108,
+        "h": 34,
+        "visible": {
+          "x": 910,
+          "y": 820,
+          "w": 108,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "ফিরে যান",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "start": {
+        "x": 1048,
+        "y": 820,
+        "w": 156,
+        "h": 34,
+        "visible": {
+          "x": 1048,
+          "y": 820,
+          "w": 156,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "এই মানচিত্রে খেলুন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      }
+    }
+  },
+  "hud": {
+    "version": 1,
+    "executionMode": "threaded",
+    "threadFallback": null,
+    "workerCount": 15,
+    "renderer": "webgl2",
+    "renderContext": {
+      "width": 1280,
+      "height": 900,
+      "error": null
+    },
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "match",
+    "screenClass": "17GameSessionScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 27,
+    "frames": 9,
+    "loop": 2292,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 1280,
+    "height": 900,
+    "heapBytes": 1174470656,
+    "artworkReady": false,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "ready"
+    },
+    "opened": [],
+    "controls": {}
+  },
+  "saveCppBoundary": {
+    "owner": 283545804,
+    "exclusiveMaximumBytes": 0,
+    "inclusiveMaximumCodepoints": 64
+  },
+  "genericCharacterField": {
+    "nativeMaximumCharacters": 64,
+    "name": "ককককককককককককককককককককককককককককককককককককককককককক",
+    "codepoints": 43,
+    "utf8Bytes": 129,
+    "validValueIntact": true,
+    "overflowClippedTo64WholeCharacters": true,
+    "persistedSave": {
+      "actualFilename": "ককককককককককককককককককককককককককককককককককককককককককক.game.gz",
+      "bytes": 199623,
+      "sha256": "2d8a99ca908b3cad7e058e8d280d64d581bee07c305f9b06fef401ed43783362",
+      "evidenceFile": "bengali-unicode-name.game.gz"
+    }
+  },
+  "automatedPassed": true,
+  "cppTextBoundaries": [
+    {
+      "owner": 265210996,
+      "exclusiveMaximumBytes": 33,
+      "inclusiveMaximumCodepoints": 32
+    },
+    {
+      "owner": 283545804,
+      "exclusiveMaximumBytes": 0,
+      "inclusiveMaximumCodepoints": 64
+    }
+  ]
+}

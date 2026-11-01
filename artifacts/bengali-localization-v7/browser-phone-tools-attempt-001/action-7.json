@@ -1,0 +1,19 @@
+{
+  "type": "complete",
+  "reviewedScopes": [
+    "all-tools-rows-visible",
+    "statistics-reached",
+    "statistics-closed-tools-clear",
+    "map-peek-visible",
+    "guidance-restored"
+  ],
+  "evidence": {
+    "allToolsRows": "after-1.png",
+    "statistics": "after-2.png",
+    "statsClosedTools": "after-3.png",
+    "mapPeek": "after-4.png",
+    "peekClosedTools": "after-5.png",
+    "guidanceRestored": "after-6.png",
+    "observation": "Actual settled screenshots inspected at 320x640 CSS, DPR2, 150% text. All11 Tools tiles are visible and unobscured; statistics header/topics unobscured; no tutorial card overlays Tools after statistics closes or map peek; readable guidance returns after Tools closes."
+  }
+}

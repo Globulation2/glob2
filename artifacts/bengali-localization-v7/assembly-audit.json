@@ -1,0 +1,25 @@
+{
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "coverage": {
+    "complete_keys": 6358,
+    "native_keys": 3411,
+    "online_keys": 2947,
+    "carried_actual_prior_read_pairs": 6253,
+    "freshly_reviewed_new_pairs": 105,
+    "initial_semantic_findings": 2,
+    "initial_findings_resolved": 2,
+    "actual_per_key_role_provenance": true,
+    "mechanical_rebinding_is_not_fresh_review": true
+  },
+  "accepted_english": 162,
+  "canonical_batches": 44,
+  "composite_author_batches": [
+    "online-online-018"
+  ],
+  "audit_issues": [],
+  "status": "Complete only when actual scoped gate attestations leave no pending issue"
+}

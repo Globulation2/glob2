@@ -1,0 +1,58 @@
+{
+  "scope": "Existing production platform routes overlay for launcher-only QA; raw standalone404 receipts retained, no product or runtime-package bytes changed",
+  "designSystem": {
+    "repository": "https://github.com/Globulation2/glob2-design-system.git",
+    "sha": "220b965b061e402df7531fa0f9ad5104bf29a638",
+    "installHash": "77b70b8612178fab88485ca1c3d9b898914bc4678ba19b68f361de04f070dbb6"
+  },
+  "installedHashRechecked": "77b70b8612178fab88485ca1c3d9b898914bc4678ba19b68f361de04f070dbb6",
+  "routes": {
+    "/signin/assets/glob-64.png": {
+      "source": "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/@glob2/design-system/assets/glob-64.png",
+      "sha256": "d83f50b574c7ab09fde87c39b45b4d78ee3af7cc0485bfe90825c9ebabb4e90d",
+      "bytes": 4518
+    },
+    "/signin/assets/wordmark-letters.webp": {
+      "source": "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/@glob2/design-system/assets/wordmark-letters.webp",
+      "sha256": "428fc52ed064debfe273d529c4cd81284a45160879d05afff7775929a35d206d",
+      "bytes": 14870
+    },
+    "/signin/assets/wordmark-two.webp": {
+      "source": "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/@glob2/design-system/assets/wordmark-two.webp",
+      "sha256": "a33008a9088f98edb64ff494bc38f3888849f562113be90ca191c48bbb5291a2",
+      "bytes": 3836
+    },
+    "/signin/assets/nunito.woff2": {
+      "source": "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/@glob2/design-system/assets/nunito.woff2",
+      "sha256": "ba344451eab25b217a165363b1982048a5e5830a0daf36577973955a04cac793",
+      "bytes": 39128
+    },
+    "/signin/assets/favicon-32.png": {
+      "source": "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/@glob2/design-system/assets/favicon-32.png",
+      "sha256": "284ad78ca2b4786641a551a3d36e4a5ffab3fe20e96d02060c89f40322cca6a1",
+      "bytes": 1800
+    },
+    "/theme.js": {
+      "source": "/home/bradley/.codex/worktrees/83ab/glob2/platform/apps/web/public/theme.js",
+      "sha256": "8445913b06d7b709c8629b532be0c4f01784d43b72616f8a525c1d7cc746666d",
+      "bytes": 2228
+    },
+    "/favicon-32.png": {
+      "source": "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/@glob2/design-system/assets/favicon-32.png",
+      "sha256": "284ad78ca2b4786641a551a3d36e4a5ffab3fe20e96d02060c89f40322cca6a1",
+      "bytes": 1800
+    }
+  },
+  "productionEvidence": {
+    "assetRoute": "platform/apps/api/src/web/pages.ts:155",
+    "themeStaging": "platform/scripts/design-system.mjs:130",
+    "fileSha256": {
+      "platform/apps/api/src/web/pages.ts": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+      "platform/scripts/design-system.mjs": "8b86441b765599386e9ccbac20261264a06d690e8ac58a6b56d6fb99011a2a6f",
+      "platform/package.json": "26cd1ef419106f8d36a1f41949b116b0d252207203ea39986a871609477f0d1c",
+      "platform/package-lock.json": "97395497eef79bab58b489381e45056d25a6de1d2d1a553fc98c3aea74418392",
+      "platform/.cache/design-system.json": "dcb39e8021fd2f2d98480907e459d5ed4d49d75c586927aca41711d8ebae2f34",
+      "artifacts/bengali-localization/qa-platform-brand-server.py": "307c82885073f41a92efd266e533d3d4b8195e12e73e7bf9086ebb7e2ecf76c0"
+    }
+  }
+}

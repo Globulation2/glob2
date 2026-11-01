@@ -1,0 +1,13 @@
+
+> test
+> vitest run packages/i18n/test apps/web/test/i18n.test.tsx
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/83ab/glob2/platform
+
+
+ Test Files  4 passed (4)
+      Tests  82 passed (82)
+   Start at  04:29:16
+   Duration  4.66s (tests 63%, environment 15%, import 11%, transform 11%)
+

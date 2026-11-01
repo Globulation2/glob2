@@ -1,0 +1,344 @@
+{
+  "id": "online-online-019",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Cloud",
+      "key": "Cloud",
+      "source": "Cloud"
+    },
+    {
+      "id": "online:Hammered metal",
+      "key": "Hammered metal",
+      "source": "Hammered metal"
+    },
+    {
+      "id": "online:Candy",
+      "key": "Candy",
+      "source": "Candy"
+    },
+    {
+      "id": "online:Slime",
+      "key": "Slime",
+      "source": "Slime"
+    },
+    {
+      "id": "online:AI player",
+      "key": "AI player",
+      "source": "AI player"
+    },
+    {
+      "id": "online:Finances",
+      "key": "Finances",
+      "source": "Finances"
+    },
+    {
+      "id": "online:Accounts",
+      "key": "Accounts",
+      "source": "Accounts"
+    },
+    {
+      "id": "online:Audit",
+      "key": "Audit",
+      "source": "Audit"
+    },
+    {
+      "id": "online:1 hour",
+      "key": "1 hour",
+      "source": "1 hour"
+    },
+    {
+      "id": "online:1 day",
+      "key": "1 day",
+      "source": "1 day"
+    },
+    {
+      "id": "online:1 week",
+      "key": "1 week",
+      "source": "1 week"
+    },
+    {
+      "id": "online:30 days",
+      "key": "30 days",
+      "source": "30 days"
+    },
+    {
+      "id": "online:Most played",
+      "key": "Most played",
+      "source": "Most played"
+    },
+    {
+      "id": "online:Listen for the musical structure and development.",
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development."
+    },
+    {
+      "id": "online:Check that all three moods play correctly.",
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly."
+    },
+    {
+      "id": "online:Listen for unexpected jumps in volume between moods.",
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods."
+    },
+    {
+      "id": "online:Listen for a click, gap, or abrupt change when the loop repeats.",
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats."
+    },
+    {
+      "id": "online:Listen for short phrases that repeat too mechanically.",
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically."
+    },
+    {
+      "id": "online:Switch moods and listen for changes in timing or harmony.",
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony."
+    },
+    {
+      "id": "online:Check that building and combat feel distinct from calm.",
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm."
+    },
+    {
+      "id": "online:Listen for hiss or scratchiness in quiet passages.",
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages."
+    },
+    {
+      "id": "online:Listen for muddy bass or harsh high frequencies.",
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies."
+    },
+    {
+      "id": "online:Check that calm passages remain audible alongside game sound.",
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound."
+    },
+    {
+      "id": "online:Listen for notes that cut off unexpectedly.",
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly."
+    },
+    {
+      "id": "online:Worker",
+      "key": "Worker",
+      "source": "Worker"
+    },
+    {
+      "id": "online:Warrior",
+      "key": "Warrior",
+      "source": "Warrior"
+    },
+    {
+      "id": "online:Explorer",
+      "key": "Explorer",
+      "source": "Explorer"
+    },
+    {
+      "id": "online:Swarm",
+      "key": "Swarm",
+      "source": "Swarm"
+    },
+    {
+      "id": "online:Classic",
+      "key": "Classic",
+      "source": "Classic"
+    },
+    {
+      "id": "online:Crown",
+      "key": "Crown",
+      "source": "Crown"
+    },
+    {
+      "id": "online:Clutch",
+      "key": "Clutch",
+      "source": "Clutch"
+    },
+    {
+      "id": "online:Toadstool",
+      "key": "Toadstool",
+      "source": "Toadstool"
+    },
+    {
+      "id": "online:A broad-capped toadstool with young caps.",
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps."
+    },
+    {
+      "id": "online:Coral",
+      "key": "Coral",
+      "source": "Coral"
+    },
+    {
+      "id": "online:Skep",
+      "key": "Skep",
+      "source": "Skep"
+    },
+    {
+      "id": "online:A coiled hive on a stand, its door facing you.",
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you."
+    },
+    {
+      "id": "online:Bloom",
+      "key": "Bloom",
+      "source": "Bloom"
+    },
+    {
+      "id": "online:Public: listed in the catalog",
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog"
+    },
+    {
+      "id": "online:Unlisted: anyone with the link",
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link"
+    },
+    {
+      "id": "online:Private: only you",
+      "key": "Private: only you",
+      "source": "Private: only you"
+    },
+    {
+      "id": "online:The server replayed this match and every player’s game agreed with it.",
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it."
+    },
+    {
+      "id": "online:The server is checking this match. Ratings change once it is verified.",
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified."
+    },
+    {
+      "id": "online:A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts."
+    },
+    {
+      "id": "online:The server could not reproduce this match, so it changes no rating.",
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating."
+    },
+    {
+      "id": "online:This match is not checked.",
+      "key": "This match is not checked.",
+      "source": "This match is not checked."
+    },
+    {
+      "id": "online:The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again."
+    },
+    {
+      "id": "online:Walk",
+      "key": "Walk",
+      "source": "Walk"
+    },
+    {
+      "id": "online:Swim",
+      "key": "Swim",
+      "source": "Swim"
+    },
+    {
+      "id": "online:Harvest",
+      "key": "Harvest",
+      "source": "Harvest"
+    },
+    {
+      "id": "online:Fight",
+      "key": "Fight",
+      "source": "Fight"
+    },
+    {
+      "id": "online:Fly",
+      "key": "Fly",
+      "source": "Fly"
+    },
+    {
+      "id": "online:Live payments",
+      "key": "Live payments",
+      "source": "Live payments"
+    },
+    {
+      "id": "online:Test payments",
+      "key": "Test payments",
+      "source": "Test payments"
+    },
+    {
+      "id": "online:Unclassified payments",
+      "key": "Unclassified payments",
+      "source": "Unclassified payments"
+    },
+    {
+      "id": "online:Current period",
+      "key": "Current period",
+      "source": "Current period"
+    },
+    {
+      "id": "online:Previous period",
+      "key": "Previous period",
+      "source": "Previous period"
+    },
+    {
+      "id": "online:Credit grant",
+      "key": "Credit grant",
+      "source": "Credit grant"
+    },
+    {
+      "id": "online:Returned credits",
+      "key": "Returned credits",
+      "source": "Returned credits"
+    },
+    {
+      "id": "online:Dispute",
+      "key": "Dispute",
+      "source": "Dispute"
+    },
+    {
+      "id": "online:Dispute closed",
+      "key": "Dispute closed",
+      "source": "Dispute closed"
+    },
+    {
+      "id": "online:Matches started",
+      "key": "Matches started",
+      "source": "Matches started"
+    },
+    {
+      "id": "online:Matches completed",
+      "key": "Matches completed",
+      "source": "Matches completed"
+    },
+    {
+      "id": "online:Matches cancelled",
+      "key": "Matches cancelled",
+      "source": "Matches cancelled"
+    },
+    {
+      "id": "online:{value0} publications",
+      "key": "{value0} publications",
+      "source": "{value0} publications"
+    },
+    {
+      "id": "online:{value0} recorded downloads",
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads"
+    },
+    {
+      "id": "online:{value0} completion time (seconds)",
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)"
+    },
+    {
+      "id": "online:{value0} completion samples",
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples"
+    }
+  ]
+}

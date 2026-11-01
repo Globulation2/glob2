@@ -1,0 +1,126 @@
+{
+  "code_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "command": [
+    "python3",
+    "artifacts/bengali-localization-v7/verify_native_display.py"
+  ],
+  "exit_code": 0,
+  "results": [
+    {
+      "suite": "OnlineWording",
+      "case": "Bengali account avatar retains its complete first shaping cluster [display]",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-0.xml",
+        "--no-breaks=true",
+        "--test-suite=OnlineWording",
+        "--test-case=Bengali account avatar retains its complete first shaping cluster [display]"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-0.xml",
+      "junit_sha256": "d7ec20979e51074b0bfa9eb28d3a9fb60c302cb3a4d4c55aff83f3ea8f0cc154"
+    },
+    {
+      "suite": "OnlineWording",
+      "case": "an unrated search shows no ratings; a ranked one explains its range [display]",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-1.xml",
+        "--no-breaks=true",
+        "--test-suite=OnlineWording",
+        "--test-case=an unrated search shows no ratings; a ranked one explains its range [display]"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-1.xml",
+      "junit_sha256": "e38515e4d0e6948a7a40b7149a57541a0705308aa594e1f1b4498569e282b0f1"
+    },
+    {
+      "suite": "OnlineWording",
+      "case": "an unserved version blames the side that is out of date [display]",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-2.xml",
+        "--no-breaks=true",
+        "--test-suite=OnlineWording",
+        "--test-case=an unserved version blames the side that is out of date [display]"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-2.xml",
+      "junit_sha256": "7c7ddf2c47d90090d22beddeaf0cadc94fc9809e3c8a5f1359b59d6e5fcf2b6b"
+    },
+    {
+      "suite": "OnlineWording",
+      "case": "the room reads positively and hides seeds and pairing strings [display]",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-3.xml",
+        "--no-breaks=true",
+        "--test-suite=OnlineWording",
+        "--test-case=the room reads positively and hides seeds and pairing strings [display]"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-3.xml",
+      "junit_sha256": "b5bc3ae0a0c7116ca58bcf64cbcb7a5e601edf6c563a3c876fdbb3783ea65ebf"
+    },
+    {
+      "suite": "GameGUITouch",
+      "case": "compact Bengali tutorial yields to statistics and covers the minimap*",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-4.xml",
+        "--no-breaks=true",
+        "--test-suite=GameGUITouch",
+        "--test-case=compact Bengali tutorial yields to statistics and covers the minimap*"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/native-display-4.xml",
+      "junit_sha256": "f8e11ec8e9d1a3e200c1f19f5a9186a3ad1bb24bc14fce30f9ebbbf297ad280d"
+    }
+  ],
+  "binary_sha256": "b860033200af9fda97ebfbc7a15d10da247401b344ddafe71b3b31f78e627446",
+  "environment": {
+    "SDL_VIDEODRIVER": "x11",
+    "GLOB2_TEST_DISPLAY": "1"
+  },
+  "scope": "Four explicit X11 online display cases plus focused actual320x640 Bengali150percent tutorial/statistics pixel/input/state regression; all isolated owned Xvfb/Openbox profiles."
+}

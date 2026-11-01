@@ -1,0 +1,41 @@
+{
+  "scope": "Actual pre-final test fixture verification; final clean revision must rerun. Compiled merge405 +exact dirtytest patch, never relabeled finalproducer.",
+  "compile_exit_code": 0,
+  "initial_failures": 3,
+  "initial_reason": "unused software completedFrame black with programmable backend",
+  "corrected_exit_code": 0,
+  "corrected_cases": 1,
+  "corrected_assertions": 45,
+  "preserved_pixel_assertions": true,
+  "production_code_changed_by_capture_fix": false,
+  "evidence": [
+    {
+      "path": "native-preflight.log",
+      "sha256": "6292bc13e8abef12f85c986678ff0a344ab1b6e03521e35954493e95737fb32d"
+    },
+    {
+      "path": "native-preflight.xml",
+      "sha256": "a0de2c21d63419b1c488d469b18fc50ea4594fad2d8095b2095012b998630667"
+    },
+    {
+      "path": "native-readback.log",
+      "sha256": "40d23c35a4fd6d2ab7913551009fbcedb955133362c35682344b2650e0ee9ccd"
+    },
+    {
+      "path": "native-readback.xml",
+      "sha256": "ece46a4c22cbe87e55337ea8ddbff7c0209182b58168d9015186c2a01609e811"
+    },
+    {
+      "path": "native-preflight-artifacts/compact-bn-statistics.png",
+      "sha256": "d60b0db4b95500631971b1193a3bf43134bd71352a1fc3843a7dfac184dfa2fc"
+    },
+    {
+      "path": "native-readback-artifacts/compact-bn-statistics.png",
+      "sha256": "b467ca6d4eaf76ae7caf2a386a9b36aa5fceedd80a5568353d58330345a28975"
+    },
+    {
+      "path": "backend-readback-independent-review.json",
+      "sha256": "6da40b171e57fcd87b5422f06f004df11336e9f7136cd51ffdba869172262232"
+    }
+  ]
+}

@@ -1,0 +1,1463 @@
+{
+  "name": "threaded-phone",
+  "variant": "threaded",
+  "renderer": "software",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "deviceScaleFactor": 2,
+  "freshStorage": true,
+  "externalRequestsBlocked": [],
+  "pageErrors": [],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0"
+    },
+    {
+      "type": "error",
+      "text": "readlink() error: No such file or directory"
+    },
+    {
+      "type": "error",
+      "text": "Settings::load(\"preferences.txt\") : error, can't open file."
+    },
+    {
+      "type": "error",
+      "text": "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:32839/index.html?renderer=software",
+      "status": 200,
+      "type": "text/html"
+    },
+    {
+      "url": "http://127.0.0.1:32839/script-fonts.css",
+      "status": 200,
+      "type": "text/css"
+    },
+    {
+      "url": "http://127.0.0.1:32839/theme.js",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/i18n.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/loader.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/presentation-surface.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/signin/assets/glob-64.png",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/locales/bn.json",
+      "status": 200,
+      "type": "application/json"
+    },
+    {
+      "url": "http://127.0.0.1:32839/signin/assets/nunito.woff2",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/signin/assets/wordmark-letters.webp",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/signin/assets/wordmark-two.webp",
+      "status": 404,
+      "type": "text/html;charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:32839/fonts/NotoSansBengali-Regular.ttf",
+      "status": 200,
+      "type": "font/ttf"
+    },
+    {
+      "url": "http://127.0.0.1:32839/fonts/NotoSansArabic-Regular.ttf",
+      "status": 200,
+      "type": "font/ttf"
+    },
+    {
+      "url": "http://127.0.0.1:32839/fonts/NotoSansDevanagari-Regular.ttf",
+      "status": 200,
+      "type": "font/ttf"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/core.06da0f1fba26b436.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/game-1.e5347e01af620593.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/game-2.d2f3f499b0b4ab1b.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/game-3.d5658b392a8460d0.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/game-4.db7fc6881bef2304.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/threaded/index.wasm",
+      "status": 200,
+      "type": "application/wasm"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/translations-1.7d25e8a5731b6ce6.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/translations-3.1595371eddd6d423.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/translations-2.28fb46e734d3bc9e.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/menu-music.5294ed91abf32cfe.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/font-cjk.5701af4422583342.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/music.67f422aa69c5356d.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/music-sets-1.602de095eeed505a.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/music-sets-3.163578e1e9d60971.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:32839/assets/music-sets-2.be883b1c072a2166.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    }
+  ],
+  "localeSelection": "locale cookie bn",
+  "isolationHeaders": {
+    "cache-control": "no-cache",
+    "content-length": "59434",
+    "content-type": "text/html",
+    "cross-origin-embedder-policy": "require-corp",
+    "cross-origin-opener-policy": "same-origin",
+    "date": "Sun, 01 Nov 2026 09:37:18 GMT",
+    "last-modified": "Sun, 01 Nov 2026 09:33:49 GMT",
+    "server": "SimpleHTTP/0.6 Python/3.14.4"
+  },
+  "httpFont": {
+    "url": "http://127.0.0.1:32839/fonts/NotoSansBengali-Regular.ttf",
+    "headers": {
+      "cache-control": "no-cache",
+      "cross-origin-opener-policy": "same-origin",
+      "cross-origin-embedder-policy": "require-corp",
+      "content-length": "200048",
+      "date": "Sun, 01 Nov 2026 09:37:19 GMT",
+      "content-type": "font/ttf",
+      "last-modified": "Sun, 01 Nov 2026 05:11:25 GMT",
+      "server": "SimpleHTTP/0.6 Python/3.14.4"
+    },
+    "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+  },
+  "httpCatalog": {
+    "url": "http://127.0.0.1:32839/locales/bn.json",
+    "sha256": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "launcherPlatformFonts": [
+    {
+      "familyName": "Noto Sans",
+      "postScriptName": "NotoSans-Bold",
+      "isCustomFont": false,
+      "glyphCount": 4
+    },
+    {
+      "familyName": "Noto Sans Bengali",
+      "postScriptName": "NotoSansBengali-Regular",
+      "isCustomFont": true,
+      "glyphCount": 18
+    }
+  ],
+  "launcher": {
+    "language": "bn",
+    "text": "গেমটি ডাউনলোড করা হচ্ছে…",
+    "fonts": [
+      {
+        "family": "Glob2 Scripts",
+        "status": "loaded",
+        "unicodeRange": "U+900-97F, U+1CD0-1CFF, U+A8E0-A8FF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "loaded",
+        "unicodeRange": "U+980-9FF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+A00-A7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+A80-AFF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+B00-B7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+B80-BFF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+C00-C7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+C80-CFF"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+D00-D7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+E00-E7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+1000-109F, U+A9E0-A9FF, U+AA60-AA7F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "unloaded",
+        "unicodeRange": "U+1200-139F, U+2D80-2DDF, U+AB00-AB2F"
+      },
+      {
+        "family": "Glob2 Scripts",
+        "status": "loaded",
+        "unicodeRange": "U+600-6FF, U+750-77F, U+870-8FF, U+FB50-FDFF, U+FE70-FEFF"
+      }
+    ],
+    "bodyWidth": 390,
+    "viewportWidth": 390
+  },
+  "packageClosure": {
+    "manifestSha256": "b5dcfdac57ff08f69c9fefb0cd842c5456927d00aebf627f6509d3a07f8ddd2f",
+    "coreSans": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+    "coreBengaliFont": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "fullBengaliCatalog": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "cjkFontSeparate": true,
+    "derivedSourceMetadata": {
+      "languageNames": "9f031b020c2620e0149db58d607ffb158b5a781ac4532917425abd5ef8e9f790",
+      "output_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "source": "data/fonts/sans.ttf"
+    }
+  },
+  "startupInteractions": [
+    {
+      "screen": "21AudioPreferenceScreen 21AudioPreferenceScreen",
+      "control": "audio.silence",
+      "bounds": {
+        "x": 16,
+        "y": 588,
+        "w": 175,
+        "h": 48,
+        "visible": {
+          "x": 16,
+          "y": 588,
+          "w": 175,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "নীরবতা",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      }
+    },
+    {
+      "screen": "20HandPreferenceScreen 20HandPreferenceScreen",
+      "control": "hand.right",
+      "bounds": {
+        "x": 199,
+        "y": 619,
+        "w": 175,
+        "h": 48,
+        "visible": {
+          "x": 199,
+          "y": 619,
+          "w": 175,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "ডান হাত",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      }
+    },
+    {
+      "screen": "23IntroductionOfferScreen 23IntroductionOfferScreen",
+      "control": "intro/menu",
+      "bounds": {
+        "x": 199,
+        "y": 579,
+        "w": 175,
+        "h": 78,
+        "visible": {
+          "x": 199,
+          "y": 579,
+          "w": 175,
+          "h": 78
+        },
+        "enabled": true,
+        "label": "মূল মেনুতে ফিরে যান",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      }
+    }
+  ],
+  "mainMenu": {
+    "diagnostics": {
+      "version": 1,
+      "executionMode": "threaded",
+      "threadFallback": null,
+      "workerCount": 8,
+      "renderer": "software",
+      "renderContext": null,
+      "contextLost": false,
+      "contextRestores": 0,
+      "screen": "14MainMenuScreen",
+      "screenClass": "14MainMenuScreen",
+      "roomCanStart": false,
+      "customGameReady": false,
+      "tick": 0,
+      "frames": 0,
+      "loop": 1605,
+      "paused": false,
+      "torus": false,
+      "torusSettled": false,
+      "width": 780,
+      "height": 1688,
+      "heapBytes": 334102528,
+      "artworkReady": true,
+      "restore": "ready",
+      "watchReplay": "none",
+      "import": "idle",
+      "persisting": false,
+      "persistence": "persisted",
+      "audio": "inactive",
+      "assets": {
+        "core": "ready",
+        "game": "ready",
+        "skins": "idle",
+        "font-cjk": "ready",
+        "menu-music": "ready",
+        "translations": "ready",
+        "music": "ready",
+        "music-sets": "ready",
+        "hd": "skipped"
+      },
+      "opened": [],
+      "controls": {
+        "menu/settings": {
+          "x": 318,
+          "y": 224,
+          "w": 48,
+          "h": 48,
+          "visible": {
+            "x": 318,
+            "y": 224,
+            "w": 48,
+            "h": 48
+          },
+          "enabled": true,
+          "label": "সেটিংস",
+          "surface": {
+            "w": 390,
+            "h": 844
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 844
+          }
+        },
+        "menu/3": {
+          "x": 24,
+          "y": 284,
+          "w": 328,
+          "h": 56,
+          "visible": {
+            "x": 24,
+            "y": 284,
+            "w": 328,
+            "h": 56
+          },
+          "enabled": true,
+          "label": "কাস্টম গেম",
+          "surface": {
+            "w": 390,
+            "h": 844
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 844
+          }
+        },
+        "menu/4": {
+          "x": 24,
+          "y": 348,
+          "w": 328,
+          "h": 56,
+          "visible": {
+            "x": 24,
+            "y": 348,
+            "w": 328,
+            "h": 56
+          },
+          "enabled": true,
+          "label": "অনলাইনে খেলুন",
+          "surface": {
+            "w": 390,
+            "h": 844
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 844
+          }
+        },
+        "menu/0": {
+          "x": 24,
+          "y": 424,
+          "w": 328,
+          "h": 56,
+          "visible": {
+            "x": 24,
+            "y": 424,
+            "w": 328,
+            "h": 56
+          },
+          "enabled": true,
+          "label": "অভিযান",
+          "surface": {
+            "w": 390,
+            "h": 844
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 844
+          }
+        },
+        "menu/2": {
+          "x": 24,
+          "y": 488,
+          "w": 328,
+          "h": 56,
+          "visible": {
+            "x": 24,
+            "y": 488,
+            "w": 328,
+            "h": 56
+          },
+          "enabled": true,
+          "label": "গেম লোড করুন",
+          "surface": {
+            "w": 390,
+            "h": 844
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 844
+          }
+        },
+        "menu/1": {
+          "x": 24,
+          "y": 552,
+          "w": 328,
+          "h": 56,
+          "visible": {
+            "x": 24,
+            "y": 552,
+            "w": 328,
+            "h": 56
+          },
+          "enabled": true,
+          "label": "প্রশিক্ষণ",
+          "surface": {
+            "w": 390,
+            "h": 844
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 844
+          }
+        },
+        "menu/more": {
+          "x": 24,
+          "y": 628,
+          "w": 328,
+          "h": 48,
+          "visible": {
+            "x": 24,
+            "y": 628,
+            "w": 328,
+            "h": 0
+          },
+          "enabled": true,
+          "label": "আরও",
+          "surface": {
+            "w": 390,
+            "h": 844
+          },
+          "root": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 844
+          }
+        }
+      }
+    },
+    "onlineLanguage": "bn",
+    "preferredLocales": "bn",
+    "crossOriginIsolated": true,
+    "sharedMemory": true
+  },
+  "vfs": {
+    "bengaliFont": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "bengaliCatalog": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "languageList": "e2f60e175359637a250b42e55f45e2e5bf5261a032ef8c021ab6d488cf5bc262"
+  },
+  "settings": {
+    "version": 1,
+    "executionMode": "threaded",
+    "threadFallback": null,
+    "workerCount": 8,
+    "renderer": "software",
+    "renderContext": null,
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "14SettingsScreen",
+    "screenClass": "14SettingsScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 0,
+    "frames": 0,
+    "loop": 1621,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 780,
+    "height": 1688,
+    "heapBytes": 334102528,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "skipped"
+    },
+    "opened": [],
+    "controls": {
+      "nav.current": {
+        "x": 12,
+        "y": 12,
+        "w": 366,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 12,
+          "w": 366,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "ডিসপ্লে এবং গ্রাফিক্স",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.skins": {
+        "x": 12,
+        "y": 195,
+        "w": 352,
+        "h": 88,
+        "visible": {
+          "x": 12,
+          "y": 195,
+          "w": 352,
+          "h": 88
+        },
+        "enabled": true,
+        "label": "[x] উপনিবেশের রূপসজ্জা দেখান",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.clouds": {
+        "x": 12,
+        "y": 293,
+        "w": 352,
+        "h": 60,
+        "visible": {
+          "x": 12,
+          "y": 293,
+          "w": 352,
+          "h": 60
+        },
+        "enabled": true,
+        "label": "[ ] মেঘ",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.shadows": {
+        "x": 12,
+        "y": 363,
+        "w": 352,
+        "h": 88,
+        "visible": {
+          "x": 12,
+          "y": 363,
+          "w": 352,
+          "h": 88
+        },
+        "enabled": true,
+        "label": "[ ] মেঘের ছায়া",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.particles": {
+        "x": 12,
+        "y": 461,
+        "w": 352,
+        "h": 60,
+        "visible": {
+          "x": 12,
+          "y": 461,
+          "w": 352,
+          "h": 60
+        },
+        "enabled": true,
+        "label": "[ ] ভবনের কণার প্রভাব",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.magic": {
+        "x": 12,
+        "y": 627,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 627,
+          "w": 352,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "সহজ",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "display.menutheme": {
+        "x": 12,
+        "y": 808,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 808,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "হালকা",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "display.gametheme": {
+        "x": 12,
+        "y": 962,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 962,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "গাঢ়",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.panels": {
+        "x": 12,
+        "y": 1088,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 1088,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "অস্বচ্ছ",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "display.textsize": {
+        "x": 12,
+        "y": 1242,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 1242,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "100 %",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "display.presentation": {
+        "x": 12,
+        "y": 1424,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 1424,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "স্বয়ংক্রিয়",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.fps": {
+        "x": 12,
+        "y": 1661,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 1661,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "60 FPS",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.paths": {
+        "x": 12,
+        "y": 1815,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 1815,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "অস্বচ্ছ",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.indicators": {
+        "x": 12,
+        "y": 1873,
+        "w": 352,
+        "h": 88,
+        "visible": {
+          "x": 12,
+          "y": 1873,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[ ] মসৃণ অগ্রগতি সূচক",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.animation": {
+        "x": 12,
+        "y": 1971,
+        "w": 352,
+        "h": 116,
+        "visible": {
+          "x": 12,
+          "y": 1971,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[ ] আলংকারিক ইন্টারফেস অ্যানিমেশন",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.zoomdetail": {
+        "x": 12,
+        "y": 2097,
+        "w": 352,
+        "h": 116,
+        "visible": {
+          "x": 12,
+          "y": 2097,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[x] অভিযোজিত জুমের বিবরণ",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.unitmotion": {
+        "x": 12,
+        "y": 2223,
+        "w": 352,
+        "h": 88,
+        "visible": {
+          "x": 12,
+          "y": 2223,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[x] মসৃণ ইউনিট গতি",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.smoothfog": {
+        "x": 12,
+        "y": 2321,
+        "w": 352,
+        "h": 88,
+        "visible": {
+          "x": 12,
+          "y": 2321,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "[x] যুদ্ধের মসৃণ কুয়াশা",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "graphics.renderer": {
+        "x": 12,
+        "y": 2515,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 2515,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "সফটওয়্যার",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "display.zoomdrag": {
+        "x": 12,
+        "y": 2707,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 2707,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "প্ল্যাটফর্ম ডিফল্ট",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "display.thumb": {
+        "x": 12,
+        "y": 2861,
+        "w": 352,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 2861,
+          "w": 352,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "ডান",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "done": {
+        "x": 279,
+        "y": 784,
+        "w": 99,
+        "h": 48,
+        "visible": {
+          "x": 279,
+          "y": 784,
+          "w": 99,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "সম্পন্ন",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      }
+    }
+  },
+  "usernameCppBoundary": {
+    "owner": 242379724,
+    "exclusiveMaximumBytes": 33,
+    "inclusiveMaximumCodepoints": 32
+  },
+  "textInput": {
+    "value": "ক্ষুদ্র ১২",
+    "ariaLabel": "খেলার লেখার ঘর",
+    "fontFamily": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+    "selectionStart": 10,
+    "selectionEnd": 10,
+    "persistedUtf8Exactly": true,
+    "byteLimitPaste": {
+      "input": "ককককককককক্ষ",
+      "inputBytes": 33,
+      "actual": "কককককককক",
+      "expected": "কককককককক"
+    },
+    "asciiByteLimit": {
+      "maximumStoredBytes": 32,
+      "accepted32": true,
+      "rejectedExtraByte": true
+    },
+    "compositionEventBridgePreservedClusters": true
+  },
+  "automatedPassed": true,
+  "cppTextBoundaries": [
+    {
+      "owner": 242379724,
+      "exclusiveMaximumBytes": 33,
+      "inclusiveMaximumCodepoints": 32
+    }
+  ]
+}

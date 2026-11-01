@@ -1,0 +1,39 @@
+{
+  "installed_revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "code_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "source_files": {
+    "data/texts.keys.txt": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+    "data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+    "platform/packages/i18n/locales/en.json": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "catalog_sha256": {
+    "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "integrated_master": "ffabe1b9ef4e2a9986b1d6321c356124480b8a2d",
+  "source_freeze_revision": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+  "freeze_note": "English and contract inputs frozen at405757 merge, target-only integration and test harness readback correction committed4d77. All source hashes still exact. Actual builds retain compiled identities.",
+  "canonical_generation": {
+    "browser_exit_code": 0,
+    "derivatives_exit_code": 0,
+    "logs": [
+      {
+        "path": "canonical-browser-generation.log",
+        "sha256": "3d9398b7de9a75406e8ad5b896d41ac5b4fe2e959657e4191afae7818956e4ca"
+      },
+      {
+        "path": "canonical-derivative-generation.log",
+        "sha256": "1a5f7555a1a2fdc3f15395f0101aab8d8a0197dddbcdadf08776613b57e43a5a"
+      }
+    ]
+  },
+  "simulation_version_and_golden_equal_master": true
+}

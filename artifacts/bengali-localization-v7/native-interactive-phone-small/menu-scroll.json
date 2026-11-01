@@ -1,0 +1,34 @@
+{
+  "method": "ui_scroll",
+  "arguments": {
+    "x": 200,
+    "y": 450,
+    "dx": 0,
+    "dy": -6,
+    "viewport_id": 1
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": true, \"controller\": \"Local MCP client\", \"dispatched\": true, \"frame_id\": 3513, \"height\": 640, \"input_started\": true, \"viewport_id\": 1, \"width\": 320}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "available": true,
+        "controlled": true,
+        "controller": "Local MCP client",
+        "dispatched": true,
+        "frame_id": 3513,
+        "height": 640,
+        "input_started": true,
+        "viewport_id": 1,
+        "width": 320
+      }
+    }
+  }
+}

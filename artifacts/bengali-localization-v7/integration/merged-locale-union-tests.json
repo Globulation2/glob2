@@ -1,0 +1,15 @@
+{
+  "revision_before": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+  "revision_after": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+  "command": [
+    "npm",
+    "test",
+    "--",
+    "packages/i18n/test/runtime.test.ts",
+    "packages/i18n/test/source-contract.test.ts"
+  ],
+  "node": "v24.19.0",
+  "exit_code": 0,
+  "seconds": 6.055352649986162,
+  "log_sha256": "e4216bf7254895c8fecbe2b83229854a9218744b40b7b9eea78c71ebfef772c8"
+}

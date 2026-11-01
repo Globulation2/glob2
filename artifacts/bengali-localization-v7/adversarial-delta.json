@@ -1,0 +1,1794 @@
+{
+  "agent": "/root/bengali_adversary",
+  "role": "Independent adversarial reviewer",
+  "certification": "Agent review; not native-human certification",
+  "status": "pass",
+  "source_revision": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "manifest_sha256": "ebefcbefcdea7a54ecf8f613a5c7f0e22f9bd75ddda375493a02d18383c55e70",
+  "online_catalog_sha256": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1",
+  "native_catalog_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "freshly_reviewed_count": 105,
+  "freshly_reviewed_pairs": [
+    {
+      "id": "online:File and API profile",
+      "source": "File and API profile",
+      "target": "ফাইল ও API প্রোফাইল",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/ais.ts",
+          "line": 23,
+          "text": "file: 'File and API profile',"
+        }
+      ],
+      "notes": "AI validation check label preserves its technical lifecycle/profile meaning.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "target": "সিনট্যাক্স ও প্রোফাইলের বিধিনিষেধ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/ais.ts",
+          "line": 24,
+          "text": "syntax: 'Syntax and profile restrictions',"
+        }
+      ],
+      "notes": "AI validation check label preserves its technical lifecycle/profile meaning.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Startup and callback",
+      "source": "Startup and callback",
+      "target": "চালু হওয়া ও কলব্যাক",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/ais.ts",
+          "line": 25,
+          "text": "startup: 'Startup and callback',"
+        }
+      ],
+      "notes": "AI validation check label preserves its technical lifecycle/profile meaning.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Persistent state",
+      "source": "Persistent state",
+      "target": "সংরক্ষিত অবস্থা",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/ais.ts",
+          "line": 26,
+          "text": "state: 'Persistent state',"
+        }
+      ],
+      "notes": "AI validation check label preserves its technical lifecycle/profile meaning.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Seeded gameplay",
+      "source": "Seeded gameplay",
+      "target": "নির্দিষ্ট বীজ দিয়ে খেলা",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/ais.ts",
+          "line": 27,
+          "text": "gameplay: 'Seeded gameplay',"
+        }
+      ],
+      "notes": "Seed means reproducible random seed, not planting; নির্দিষ্ট বীজ preserves technical context.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Repeatable simulation",
+      "source": "Repeatable simulation",
+      "target": "পুনরাবৃত্তিতে অভিন্ন সিমুলেশন",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/ais.ts",
+          "line": 28,
+          "text": "determinism: 'Repeatable simulation',"
+        }
+      ],
+      "notes": "Identical repeated simulation, not merely repeated play.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Save and resume",
+      "source": "Save and resume",
+      "target": "সংরক্ষণ ও চালিয়ে যাওয়া",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/ais.ts",
+          "line": 29,
+          "text": "continuation: 'Save and resume',"
+        }
+      ],
+      "notes": "Resume preserved as continuation rather than restart.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Good",
+      "source": "Good",
+      "target": "ভালো",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/connectionQuality.ts",
+          "line": 55,
+          "text": "good: 'Good',"
+        },
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 215,
+          "text": "* (\"84 ms · Good\"), the 95th percentile underneath. The same words and limits"
+        },
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 247,
+          "text": "/** \"Good under 150 ms, Fair under 300 ms, Poor from 300 ms.\" */"
+        },
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 251,
+          "text": "return translate('Good under {value0}, fair under {value1}, poor from {value2}.', {"
+        }
+      ],
+      "notes": "Connection-quality display label preserves quality/delay meaning.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Fair",
+      "source": "Fair",
+      "target": "মোটামুটি",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/connectionQuality.ts",
+          "line": 56,
+          "text": "fair: 'Fair',"
+        },
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 247,
+          "text": "/** \"Good under 150 ms, Fair under 300 ms, Poor from 300 ms.\" */"
+        }
+      ],
+      "notes": "Connection rating means moderate quality, not fairness.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Poor",
+      "source": "Poor",
+      "target": "দুর্বল",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/connectionQuality.ts",
+          "line": 57,
+          "text": "poor: 'Poor',"
+        },
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 247,
+          "text": "/** \"Good under 150 ms, Fair under 300 ms, Poor from 300 ms.\" */"
+        }
+      ],
+      "notes": "Connection rating means weak quality, not poverty.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "target": "একজন খেলোয়াড় ও রিলের মধ্যে তথ্য যাওয়া-আসার সময়। ম্যাচের আগে (দ্রুত ম্যাচ বা শুরুর যাচাইতালিকায়) সংশ্লিষ্ট অঞ্চলে পরীক্ষামূলক সংকেত পাঠিয়ে এটি অনুমান করা হয়।",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/connectionQuality.ts",
+          "line": 34,
+          "text": "'Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.',"
+        }
+      ],
+      "notes": "Relay is networking relay; preserves round trip, regional probe and estimate.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Delay",
+      "source": "Delay",
+      "target": "বিলম্ব",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/connectionQuality.ts",
+          "line": 37,
+          "text": "label: 'Delay',"
+        },
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 287,
+          "text": "<th className=\"num\">{translate('Delayed orders')}</th>"
+        },
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 332,
+          "text": "<td className=\"num\" data-label={translate('Delayed orders')}>"
+        },
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 347,
+          "text": "'Measured by the relay; typical value first, then the 95th percentile. Ping: round trip between the player and the relay. {slot0} Behind: how far the player’s game ran behind the match clock, their input delay included. {slot1} Quality is the worst of these and of reconnects, time offline and delayed orders. Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later than asked.'"
+        }
+      ],
+      "notes": "Connection-quality display label preserves quality/delay meaning.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "target": "আপনার ইনপুটের বিলম্ব: ক্লিক করা থেকে সবার খেলায় সেই কাজটি কার্যকর হওয়া পর্যন্ত সময়। এটি আপনার পিংয়ের অর্ধেক এবং নেটওয়ার্ক বিলম্বের ওঠানামা সামলাতে গেমের রাখা বাফারের যোগফল।",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/connectionQuality.ts",
+          "line": 42,
+          "text": "'Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.',"
+        }
+      ],
+      "notes": "Preserves click-to-shared-action interval and half-ping plus jitter-buffer sum.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "target": "ম্যাচের ঘড়ির তুলনায় একজন খেলোয়াড়ের গেম কতটা পিছিয়ে চলছে। এক সেকেন্ডের কম স্বাভাবিক (এতে তাঁর ইনপুটের বিলম্বও অন্তর্ভুক্ত); 2 সেকেন্ড থেকে রিলে খেলোয়াড়কে ধীর হিসেবে চিহ্নিত করে।",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/connectionQuality.ts",
+          "line": 50,
+          "text": "'How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.',"
+        }
+      ],
+      "notes": "Preserves below-one-second normality, included input delay and slow threshold from2seconds.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Classic glossy",
+      "source": "Classic glossy",
+      "target": "চিরাচরিত চকচকে",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 27,
+          "text": "{ id: 0, key: 'glossy', name: 'Classic glossy', group: 'Basics', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Basics",
+      "source": "Basics",
+      "target": "মৌলিক",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 27,
+          "text": "{ id: 0, key: 'glossy', name: 'Classic glossy', group: 'Basics', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 28,
+          "text": "{ id: 1, key: 'matte', name: 'Matte', group: 'Basics', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 31,
+          "text": "{ id: 4, key: 'cartoon', name: 'Cartoon', group: 'Basics', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 47,
+          "text": "{ id: 20, key: 'candy', name: 'Candy', group: 'Basics', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Matte",
+      "source": "Matte",
+      "target": "ম্যাট",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 28,
+          "text": "{ id: 1, key: 'matte', name: 'Matte', group: 'Basics', shells: false },"
+        }
+      ],
+      "notes": "ম্যাট is the familiar Bengali loan for non-glossy material finish; distinct from glossy.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Riveted metal",
+      "source": "Riveted metal",
+      "target": "রিভেট লাগানো ধাতু",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 29,
+          "text": "{ id: 2, key: 'metallic', name: 'Riveted metal', group: 'Metal', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Metal",
+      "source": "Metal",
+      "target": "ধাতু",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 29,
+          "text": "{ id: 2, key: 'metallic', name: 'Riveted metal', group: 'Metal', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 40,
+          "text": "{ id: 13, key: 'chrome', name: 'Chrome', group: 'Metal', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 41,
+          "text": "{ id: 14, key: 'carbon', name: 'Carbon fibre', group: 'Metal', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 46,
+          "text": "{ id: 19, key: 'hammered', name: 'Hammered metal', group: 'Metal', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Hairy",
+      "source": "Hairy",
+      "target": "লোমশ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 30,
+          "text": "{ id: 3, key: 'hairy', name: 'Hairy', group: 'Organic', shells: true },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Organic",
+      "source": "Organic",
+      "target": "জৈব",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 30,
+          "text": "{ id: 3, key: 'hairy', name: 'Hairy', group: 'Organic', shells: true },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 36,
+          "text": "{ id: 9, key: 'scales', name: 'Scales', group: 'Organic', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 37,
+          "text": "{ id: 10, key: 'leather', name: 'Leather', group: 'Organic', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 42,
+          "text": "{ id: 15, key: 'velvet', name: 'Velvet', group: 'Organic', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 45,
+          "text": "{ id: 18, key: 'cloud', name: 'Cloud', group: 'Organic', shells: true },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Cartoon",
+      "source": "Cartoon",
+      "target": "কার্টুন",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 31,
+          "text": "{ id: 4, key: 'cartoon', name: 'Cartoon', group: 'Basics', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Woven fabric",
+      "source": "Woven fabric",
+      "target": "বোনা কাপড়",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 32,
+          "text": "{ id: 5, key: 'woven', name: 'Woven fabric', group: 'Craft', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Craft",
+      "source": "Craft",
+      "target": "কারুশিল্প",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 32,
+          "text": "{ id: 5, key: 'woven', name: 'Woven fabric', group: 'Craft', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 34,
+          "text": "{ id: 7, key: 'wood', name: 'Wood', group: 'Craft', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 43,
+          "text": "{ id: 16, key: 'honeycomb', name: 'Honeycomb', group: 'Craft', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Oozy goo",
+      "source": "Oozy goo",
+      "target": "চুইয়ে পড়া আঠালো পদার্থ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 33,
+          "text": "{ id: 6, key: 'goo', name: 'Oozy goo', group: 'Wet', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Wet",
+      "source": "Wet",
+      "target": "ভেজা",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 33,
+          "text": "{ id: 6, key: 'goo', name: 'Oozy goo', group: 'Wet', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 39,
+          "text": "{ id: 12, key: 'lava', name: 'Lava', group: 'Wet', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 48,
+          "text": "{ id: 21, key: 'slime', name: 'Slime', group: 'Wet', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Wood",
+      "source": "Wood",
+      "target": "কাঠ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 34,
+          "text": "{ id: 7, key: 'wood', name: 'Wood', group: 'Craft', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Stone",
+      "source": "Stone",
+      "target": "পাথর",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 35,
+          "text": "{ id: 8, key: 'stone', name: 'Stone', group: 'Mineral', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Mineral",
+      "source": "Mineral",
+      "target": "খনিজ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 35,
+          "text": "{ id: 8, key: 'stone', name: 'Stone', group: 'Mineral', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 38,
+          "text": "{ id: 11, key: 'crystal', name: 'Crystal', group: 'Mineral', shells: false },"
+        },
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 44,
+          "text": "{ id: 17, key: 'ice', name: 'Ice', group: 'Mineral', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Scales",
+      "source": "Scales",
+      "target": "আঁশ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 36,
+          "text": "{ id: 9, key: 'scales', name: 'Scales', group: 'Organic', shells: false },"
+        }
+      ],
+      "notes": "Material surface scales/আঁশ, not measuring scales.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Leather",
+      "source": "Leather",
+      "target": "চামড়া",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 37,
+          "text": "{ id: 10, key: 'leather', name: 'Leather', group: 'Organic', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Crystal",
+      "source": "Crystal",
+      "target": "স্ফটিক",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 38,
+          "text": "{ id: 11, key: 'crystal', name: 'Crystal', group: 'Mineral', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Lava",
+      "source": "Lava",
+      "target": "লাভা",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 39,
+          "text": "{ id: 12, key: 'lava', name: 'Lava', group: 'Wet', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Chrome",
+      "source": "Chrome",
+      "target": "ক্রোম",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 40,
+          "text": "{ id: 13, key: 'chrome', name: 'Chrome', group: 'Metal', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Carbon fibre",
+      "source": "Carbon fibre",
+      "target": "কার্বন ফাইবার",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 41,
+          "text": "{ id: 14, key: 'carbon', name: 'Carbon fibre', group: 'Metal', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Velvet",
+      "source": "Velvet",
+      "target": "মখমল",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 42,
+          "text": "{ id: 15, key: 'velvet', name: 'Velvet', group: 'Organic', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Honeycomb",
+      "source": "Honeycomb",
+      "target": "মৌচাকের খোপ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 43,
+          "text": "{ id: 16, key: 'honeycomb', name: 'Honeycomb', group: 'Craft', shells: false },"
+        }
+      ],
+      "notes": "Honeycomb patterned material is মৌচাকের খোপ, distinct from building মৌচাক.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Ice",
+      "source": "Ice",
+      "target": "বরফ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 44,
+          "text": "{ id: 17, key: 'ice', name: 'Ice', group: 'Mineral', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Cloud",
+      "source": "Cloud",
+      "target": "মেঘ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 45,
+          "text": "{ id: 18, key: 'cloud', name: 'Cloud', group: 'Organic', shells: true },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Hammered metal",
+      "source": "Hammered metal",
+      "target": "পেটানো ধাতু",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 46,
+          "text": "{ id: 19, key: 'hammered', name: 'Hammered metal', group: 'Metal', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Candy",
+      "source": "Candy",
+      "target": "ক্যান্ডি",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 47,
+          "text": "{ id: 20, key: 'candy', name: 'Candy', group: 'Basics', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Slime",
+      "source": "Slime",
+      "target": "পিচ্ছিল আঠালো পদার্থ",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 48,
+          "text": "{ id: 21, key: 'slime', name: 'Slime', group: 'Wet', shells: false },"
+        }
+      ],
+      "notes": "Material/group name preserves visual substance or finish; no gameplay claim added.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:AI player",
+      "source": "AI player",
+      "target": "এআই খেলোয়াড়",
+      "references": [
+        {
+          "path": "platform/apps/web/src/App.tsx",
+          "line": 248,
+          "text": "title: 'AI player',"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Finances",
+      "source": "Finances",
+      "target": "আর্থিক হিসাব",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 7,
+          "text": "import { Finances } from './Finances.tsx';"
+        },
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 18,
+          "text": "{ id: 'finances', name: 'Finances' },"
+        },
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 89,
+          "text": "(account.role === 'admin' ? <Finances /> : <p>{t('Administrator access is required.')}</p>)}"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Accounts",
+      "source": "Accounts",
+      "target": "অ্যাকাউন্ট",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 9,
+          "text": "import { Accounts } from './Accounts.tsx';"
+        },
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 19,
+          "text": "{ id: 'accounts', name: 'Accounts' },"
+        },
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 79,
+          "text": "{current === 'accounts' && <Accounts isAdmin={account.role === 'admin'} />}"
+        },
+        {
+          "path": "platform/apps/web/src/admin/Accounts.tsx",
+          "line": 221,
+          "text": "export function Accounts({ isAdmin }: { isAdmin: boolean }) {"
+        },
+        {
+          "path": "platform/apps/web/src/admin/Accounts.tsx",
+          "line": 225,
+          "text": "const load = useLoad((signal) => api.adminAccounts(values, signal), [JSON.stringify(values)]);"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Audit",
+      "source": "Audit",
+      "target": "নিরীক্ষা",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 8,
+          "text": "import { UnifiedReports, Content, Audit } from './Moderation.tsx';"
+        },
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 23,
+          "text": "{ id: 'audit', name: 'Audit' },"
+        },
+        {
+          "path": "platform/apps/web/src/admin/Admin.tsx",
+          "line": 85,
+          "text": "{current === 'audit' && <Audit />}"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:1 hour",
+      "source": "1 hour",
+      "target": "1 ঘণ্টা",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/Accounts.tsx",
+          "line": 12,
+          "text": "{ minutes: 60, name: '1 hour' },"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:1 day",
+      "source": "1 day",
+      "target": "1 দিন",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/Accounts.tsx",
+          "line": 13,
+          "text": "{ minutes: 1440, name: '1 day' },"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:1 week",
+      "source": "1 week",
+      "target": "1 সপ্তাহ",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/Accounts.tsx",
+          "line": 14,
+          "text": "{ minutes: 10080, name: '1 week' },"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:30 days",
+      "source": "30 days",
+      "target": "30 দিন",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/Accounts.tsx",
+          "line": 15,
+          "text": "{ minutes: 43200, name: '30 days' },"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Most played",
+      "source": "Most played",
+      "target": "সবচেয়ে বেশি খেলা হয়েছে",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Maps.tsx",
+          "line": 180,
+          "text": "{ id: 'plays', name: 'Most played' },"
+        }
+      ],
+      "notes": "Player/admin/filter label preserves category or exact time quantity.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "target": "সুরের গঠন ও ক্রমবিকাশ খেয়াল করে শুনুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 5,
+          "text": "score: { label: 'Composition', guidance: 'Listen for the musical structure and development.' },"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "target": "তিনটি আবহের সুরই ঠিকমতো বাজে কি না দেখুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 6,
+          "text": "format: { label: 'Playback format', guidance: 'Check that all three moods play correctly.' },"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "target": "আবহ বদলানোর সময় শব্দের মাত্রা অপ্রত্যাশিতভাবে লাফিয়ে বদলায় কি না শুনুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 9,
+          "text": "guidance: 'Listen for unexpected jumps in volume between moods.',"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "target": "লুপ আবার শুরু হলে খট শব্দ, বিরতি বা হঠাৎ কোনো পরিবর্তন হয় কি না শুনুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 13,
+          "text": "guidance: 'Listen for a click, gap, or abrupt change when the loop repeats.',"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "target": "ছোট ছোট সুরের অংশ অতিরিক্ত যান্ত্রিকভাবে বারবার বাজে কি না শুনুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 17,
+          "text": "guidance: 'Listen for short phrases that repeat too mechanically.',"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "target": "আবহ বদলে তালের সময়মিল বা সুরের সামঞ্জস্যে পরিবর্তন হয় কি না শুনুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 21,
+          "text": "guidance: 'Switch moods and listen for changes in timing or harmony.',"
+        }
+      ],
+      "notes": "Timing and harmonic compatibility both preserved in music mood transition guidance.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "target": "নির্মাণ ও যুদ্ধের আবহ শান্ত আবহের চেয়ে আলাদা শোনায় কি না দেখুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 25,
+          "text": "guidance: 'Check that building and combat feel distinct from calm.',"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "target": "সুরের মৃদু অংশে হিসহিস বা খসখসে শব্দ শোনা যায় কি না শুনুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 29,
+          "text": "guidance: 'Listen for hiss or scratchiness in quiet passages.',"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "target": "নিচু সুর ঘোলাটে বা উঁচু সুর কর্কশ শোনায় কি না শুনুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 31,
+          "text": "balance: { label: 'Mix balance', guidance: 'Listen for muddy bass or harsh high frequencies.' },"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "target": "গেমের অন্যান্য শব্দের মধ্যেও সুরের শান্ত অংশ শোনা যায় কি না দেখুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 34,
+          "text": "guidance: 'Check that calm passages remain audible alongside game sound.',"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "target": "কোনো স্বর অপ্রত্যাশিতভাবে থেমে যায় কি না শুনুন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/music/Validation.tsx",
+          "line": 36,
+          "text": "dropout: { label: 'Sustained notes', guidance: 'Listen for notes that cut off unexpectedly.' },"
+        }
+      ],
+      "notes": "Listening instruction preserves named defect or musical distinction and respectful imperative.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Worker",
+      "source": "Worker",
+      "target": "শ্রমিক",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/atlas.ts",
+          "line": 10,
+          "text": "{ id: 'worker', name: 'Worker', mesh: 'worker-walk', x: 0, y: 0 },"
+        }
+      ],
+      "notes": "Role/mesh label follows game object context and established glossary.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Warrior",
+      "source": "Warrior",
+      "target": "যোদ্ধা",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/atlas.ts",
+          "line": 11,
+          "text": "{ id: 'warrior', name: 'Warrior', mesh: 'warrior-walk', x: 256, y: 0 },"
+        }
+      ],
+      "notes": "Role/mesh label follows game object context and established glossary.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Explorer",
+      "source": "Explorer",
+      "target": "অনুসন্ধানকারী",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/atlas.ts",
+          "line": 12,
+          "text": "{ id: 'explorer', name: 'Explorer', mesh: 'explorer-fly', x: 0, y: 256 },"
+        }
+      ],
+      "notes": "Role/mesh label follows game object context and established glossary.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Swarm",
+      "source": "Swarm",
+      "target": "মৌচাক",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/atlas.ts",
+          "line": 13,
+          "text": "{ id: 'swarm', name: 'Swarm', mesh: 'swarm', x: 256, y: 256 },"
+        }
+      ],
+      "notes": "Building glossary মৌচাক, not moving swarm.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Classic",
+      "source": "Classic",
+      "target": "চিরাচরিত",
+      "references": [
+        {
+          "path": "platform/packages/protocol/src/skins.ts",
+          "line": 27,
+          "text": "{ id: 0, key: 'glossy', name: 'Classic glossy', group: 'Basics', shells: false },"
+        },
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 5,
+          "text": "classic: { name: 'Classic', description: 'The original swarm: spires ringed around an egg.' },"
+        }
+      ],
+      "notes": "Role/mesh label follows game object context and established glossary.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Crown",
+      "source": "Crown",
+      "target": "মুকুট",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 6,
+          "text": "crown: { name: 'Crown', description: 'Seven smooth spires around a central egg.' },"
+        }
+      ],
+      "notes": "Role/mesh label follows game object context and established glossary.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Clutch",
+      "source": "Clutch",
+      "target": "ডিমের গুচ্ছ",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 7,
+          "text": "clutch: { name: 'Clutch', description: 'Six brood eggs nested in a low rim.' },"
+        }
+      ],
+      "notes": "Brood egg cluster per mesh description, not mechanical clutch.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Toadstool",
+      "source": "Toadstool",
+      "target": "ব্যাঙের ছাতা",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 8,
+          "text": "toadstool: { name: 'Toadstool', description: 'A broad-capped toadstool with young caps.' },"
+        }
+      ],
+      "notes": "Bengali idiomatic mushroom name, not literal animal stool.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "target": "চওড়া ছাতার মাশরুম, পাশে ছোট ছোট কচি ছাতা।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 8,
+          "text": "toadstool: { name: 'Toadstool', description: 'A broad-capped toadstool with young caps.' },"
+        }
+      ],
+      "notes": "Role/mesh label follows game object context and established glossary.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Coral",
+      "source": "Coral",
+      "target": "প্রবাল",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 9,
+          "text": "coral: { name: 'Coral', description: 'Branching spires rising from a mound.' },"
+        }
+      ],
+      "notes": "Role/mesh label follows game object context and established glossary.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Skep",
+      "source": "Skep",
+      "target": "বোনা মৌচাক",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 10,
+          "text": "skep: { name: 'Skep', description: 'A coiled hive on a stand, its door facing you.' },"
+        }
+      ],
+      "notes": "Woven/coiled hive mesh sense, not unknown brand.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "target": "উঁচু পাটাতনে প্যাঁচ দিয়ে গড়া মৌচাক, যার দরজা আপনার দিকে।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 10,
+          "text": "skep: { name: 'Skep', description: 'A coiled hive on a stand, its door facing you.' },"
+        }
+      ],
+      "notes": "Stand, coiled hive and viewer-facing door all retained.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Bloom",
+      "source": "Bloom",
+      "target": "ফুল",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/swarmShapes.ts",
+          "line": 11,
+          "text": "bloom: { name: 'Bloom', description: 'Petals cupped open around a central bud.' },"
+        }
+      ],
+      "notes": "Role/mesh label follows game object context and established glossary.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "target": "সর্বজনীন: ক্যাটালগে তালিকাভুক্ত",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Maps.tsx",
+          "line": 29,
+          "text": "public: 'Public: listed in the catalog',"
+        }
+      ],
+      "notes": "Visibility/verifier message preserves access or rating-result conditions.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "target": "তালিকাবহির্ভূত: লিংক থাকলে যে কেউ দেখতে পারবেন",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Maps.tsx",
+          "line": 30,
+          "text": "unlisted: 'Unlisted: anyone with the link',"
+        }
+      ],
+      "notes": "Unlisted means link access remains available, not private.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Private: only you",
+      "source": "Private: only you",
+      "target": "ব্যক্তিগত: শুধু আপনি",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Maps.tsx",
+          "line": 31,
+          "text": "private: 'Private: only you',"
+        }
+      ],
+      "notes": "Visibility/verifier message preserves access or rating-result conditions.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "target": "সার্ভার ম্যাচটি আবার চালিয়ে দেখেছে এবং প্রত্যেক খেলোয়াড়ের গেম তার সঙ্গে মিলেছে।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 45,
+          "text": "verified: 'The server replayed this match and every player’s game agreed with it.',"
+        }
+      ],
+      "notes": "Visibility/verifier message preserves access or rating-result conditions.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "target": "সার্ভার এই ম্যাচ যাচাই করছে। যাচাই সফল হলে রেটিং বদলাবে।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 46,
+          "text": "pending: 'The server is checking this match. Ratings change once it is verified.',"
+        }
+      ],
+      "notes": "Rating update conditioned on successful verification, not merely checking finishing.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "target": "একজন খেলোয়াড়ের গেম সার্ভারে আবার চালানো ম্যাচের সঙ্গে মেলেনি; সার্ভারের ফলই গণ্য হবে।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 48,
+          "text": "'A player’s game disagreed with the server’s replay of the match; the server’s result counts.',"
+        }
+      ],
+      "notes": "Mismatch and authoritative server result preserved.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "target": "সার্ভার ম্যাচটি একইভাবে আবার চালাতে পারেনি, তাই এর জন্য কোনো রেটিং বদলাবে না।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 49,
+          "text": "unverifiable: 'The server could not reproduce this match, so it changes no rating.',"
+        }
+      ],
+      "notes": "Unreproducible match does not affect ratings.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:This match is not checked.",
+      "source": "This match is not checked.",
+      "target": "এই ম্যাচ যাচাই করা হয় না।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 50,
+          "text": "not_applicable: 'This match is not checked.',"
+        }
+      ],
+      "notes": "not_applicable verdict explains match is not checked, distinct from pending checking.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "target": "সার্ভার এই ম্যাচের যাচাই শেষ করতে পারেনি, তাই আপাতত কোনো রেটিং বদলাবে না। একজন প্রশাসক আবার যাচাই চালাতে পারবেন।",
+      "references": [
+        {
+          "path": "platform/apps/web/src/pages/Match.tsx",
+          "line": 52,
+          "text": "'The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.',"
+        }
+      ],
+      "notes": "Temporary no-rating effect plus administrator retry retained.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Walk",
+      "source": "Walk",
+      "target": "হাঁটা",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/geometry.ts",
+          "line": 61,
+          "text": "walk: 'Walk',"
+        }
+      ],
+      "notes": "Animation action label uses Bengali verbal noun; technical clip identifier unchanged.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Swim",
+      "source": "Swim",
+      "target": "সাঁতার",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/geometry.ts",
+          "line": 62,
+          "text": "swim: 'Swim',"
+        }
+      ],
+      "notes": "Animation action label uses Bengali verbal noun; technical clip identifier unchanged.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Harvest",
+      "source": "Harvest",
+      "target": "সংগ্রহ",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/geometry.ts",
+          "line": 63,
+          "text": "harvest: 'Harvest',"
+        }
+      ],
+      "notes": "Animation action label uses Bengali verbal noun; technical clip identifier unchanged.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Fight",
+      "source": "Fight",
+      "target": "লড়াই",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/geometry.ts",
+          "line": 64,
+          "text": "fight: 'Fight',"
+        }
+      ],
+      "notes": "Animation action label uses Bengali verbal noun; technical clip identifier unchanged.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Fly",
+      "source": "Fly",
+      "target": "ওড়া",
+      "references": [
+        {
+          "path": "platform/apps/web/src/skins/geometry.ts",
+          "line": 65,
+          "text": "fly: 'Fly',"
+        }
+      ],
+      "notes": "Animation action label uses Bengali verbal noun; technical clip identifier unchanged.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Live payments",
+      "source": "Live payments",
+      "target": "আসল পেমেন্ট",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 20,
+          "text": "live: 'Live payments',"
+        }
+      ],
+      "notes": "Live means real payment processing, distinct from test mode.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Test payments",
+      "source": "Test payments",
+      "target": "পরীক্ষামূলক পেমেন্ট",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 21,
+          "text": "test: 'Test payments',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Unclassified payments",
+      "source": "Unclassified payments",
+      "target": "শ্রেণিবিন্যাসহীন পেমেন্ট",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 22,
+          "text": "unclassified: 'Unclassified payments',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Current period",
+      "source": "Current period",
+      "target": "বর্তমান সময়কাল",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 25,
+          "text": "current: 'Current period',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Previous period",
+      "source": "Previous period",
+      "target": "আগের সময়কাল",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 26,
+          "text": "previous: 'Previous period',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Credit grant",
+      "source": "Credit grant",
+      "target": "ক্রেডিট প্রদান",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 35,
+          "text": "grant: 'Credit grant',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Returned credits",
+      "source": "Returned credits",
+      "target": "ফেরত দেওয়া ক্রেডিট",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 36,
+          "text": "returned: 'Returned credits',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Dispute",
+      "source": "Dispute",
+      "target": "পেমেন্ট নিয়ে আপত্তি",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 37,
+          "text": "dispute: 'Dispute',"
+        },
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 38,
+          "text": "dispute_closed: 'Dispute closed',"
+        }
+      ],
+      "notes": "Financial dispute means payment objection, not game conflict.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Dispute closed",
+      "source": "Dispute closed",
+      "target": "পেমেন্ট নিয়ে আপত্তির প্রক্রিয়া বন্ধ হয়েছে",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 38,
+          "text": "dispute_closed: 'Dispute closed',"
+        }
+      ],
+      "notes": "Dispute closure does not invent successful refund or outcome.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Matches started",
+      "source": "Matches started",
+      "target": "শুরু হওয়া ম্যাচ",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 41,
+          "text": "'matches.started': 'Matches started',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Matches completed",
+      "source": "Matches completed",
+      "target": "সম্পন্ন ম্যাচ",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 42,
+          "text": "'matches.completed': 'Matches completed',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:Matches cancelled",
+      "source": "Matches cancelled",
+      "target": "বাতিল ম্যাচ",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 43,
+          "text": "'matches.cancelled': 'Matches cancelled',"
+        }
+      ],
+      "notes": "Financial/admin measurement label preserves event/category/unit; no monetary amount invented.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:{value0} publications",
+      "source": "{value0} publications",
+      "target": "{value0} প্রকাশনা",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 82,
+          "text": "return t('{value0} publications', { value0: libraryName(dimension) });"
+        }
+      ],
+      "notes": "Library name composes as Bengali noun modifier before publication label.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "target": "{value0}-এর নথিভুক্ত ডাউনলোড",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 84,
+          "text": "return t('{value0} recorded downloads', { value0: libraryName(dimension) });"
+        }
+      ],
+      "notes": "Genitive suffix composes library name with recorded downloads.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "target": "{value0}-এর কাজ শেষ হতে লাগা সময় (সেকেন্ড)",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 46,
+          "text": "seconds: '{value0} completion time (seconds)',"
+        }
+      ],
+      "notes": "Product genitive plus completion duration; seconds explicitly retained.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "online:{value0} completion samples",
+      "source": "{value0} completion samples",
+      "target": "{value0}-এর সম্পন্ন কাজের নমুনা",
+      "references": [
+        {
+          "path": "platform/apps/web/src/admin/presentation.ts",
+          "line": 47,
+          "text": "samples: '{value0} completion samples',"
+        }
+      ],
+      "notes": "Product genitive plus countable completion observations, not audio samples.",
+      "verdict": "pass",
+      "findings": []
+    }
+  ],
+  "context_files_sha256": {
+    "platform/packages/protocol/src/ais.ts": "120f6770dd2c674f1b2fc28c176387ae913e9bde00100fd26b3cfa560f6d3a79",
+    "platform/packages/protocol/src/connectionQuality.ts": "2fd67ad4985a3ddcea1fb904f997aa2cae9c1619167bcdfb4d193cadec546fb4",
+    "platform/packages/protocol/src/skins.ts": "2386cc2256d611204b25d575e22170c0cfb923d234c6fa53694f1b02ef983376",
+    "platform/apps/web/src/skins/swarmShapes.ts": "572b3e8caec0e0b1448ac758a42a2c2eed93de1b5426483d1a58c8009185796a",
+    "platform/apps/web/src/skins/geometry.ts": "41dc05269007bf2d8aaebcc6184d8d4b944c133fbff3b3825b08e569f43fd08e",
+    "platform/apps/web/src/music/Validation.tsx": "6d850d73787b388f8e1145fd75f3a28ea785a31bb769775877d9ec1eeac082a7",
+    "platform/apps/web/src/pages/Maps.tsx": "381a68e8c1cd01207426e932e53ff8fc016a597fa4a8eeb2f92e673a09e054d1",
+    "platform/apps/web/src/pages/Match.tsx": "b598e3d5877ec9ad7e5616ba672ba3195ee0278c14d34d3e4a235ca827ec362a",
+    "platform/apps/web/src/admin/presentation.ts": "203418b2a70fc6e4b716ceedc2fa8b9eb37b681ee6fabe60644a827639f73924",
+    "platform/apps/web/src/admin/Admin.tsx": "22f29a600bd29e5c945650aa9594b2d8018da86cac42454ddac67204155cc844",
+    "platform/apps/web/src/admin/Accounts.tsx": "6b22bccd38c01928e1989fba182964f1460eaa8952b6decb91099eab1f2e0c25",
+    "platform/apps/web/src/App.tsx": "5cd0124f69331770aaa636a9c9ca1e4bd9d7b7384cda518ace919c7a670694bc",
+    "platform/apps/web/src/skins/atlas.ts": "5c50f363ac19055192ddec593b122a384bfe273cd4223ff9ccd95f2213d75751"
+  },
+  "examined_snapshot": {
+    "path": "editor-output/bn.json",
+    "sha256": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "carry_forward": {
+    "old_online_pairs_mechanically_identical": 2842,
+    "native_bytes_identical_to_v6": true,
+    "native_key_count": 3411,
+    "old_total_pairs": 6253,
+    "fresh_read_old_pairs": false,
+    "comparison_catalog": "artifacts/bengali-localization-v6/drafts/bn/bn.json",
+    "comparison_catalog_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "findings": [],
+  "unresolved_uncertainty": [],
+  "limits": [
+    "All105 final English/target pairs were freshly read; old6253 pairs are mechanical carry-forward only.",
+    "Read-only linguistic/context review, not rendering/accessibility/platform execution certification.",
+    "Any later edited target requires affected-key reread; this approval binds only the exact edited catalog hash."
+  ]
+}

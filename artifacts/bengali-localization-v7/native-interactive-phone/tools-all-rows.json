@@ -1,0 +1,34 @@
+{
+  "method": "ui_click",
+  "arguments": {
+    "x": 170,
+    "y": 812,
+    "viewport_id": 1,
+    "capture_after": true
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": false, \"controller\": \"None\", \"dispatched\": false, \"error\": \"Controller lease lost or token invalid\", \"frame_id\": 2874, \"height\": 839, \"input_started\": false, \"viewport_id\": 1, \"width\": 412}",
+          "type": "text"
+        }
+      ],
+      "isError": true,
+      "structuredContent": {
+        "available": true,
+        "controlled": false,
+        "controller": "None",
+        "dispatched": false,
+        "error": "Controller lease lost or token invalid",
+        "frame_id": 2874,
+        "height": 839,
+        "input_started": false,
+        "viewport_id": 1,
+        "width": 412
+      }
+    }
+  }
+}

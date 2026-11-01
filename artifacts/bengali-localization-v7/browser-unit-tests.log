@@ -1,0 +1,33 @@
+✔ the online choice supplies a first-visit SDL hint and startup language (2.637995ms)
+✔ Norwegian online startup uses the core font and preserves the saved game choice (2.776954ms)
+✔ a saved game language takes priority and receives no online override (0.845025ms)
+✔ Bengali is handed to the game and a saved Bengali choice persists (1.336723ms)
+✔ both Chinese scripts and Japanese/Korean require the full startup font (3.666919ms)
+✔ unavailable preference storage still permits the online startup language (0.741415ms)
+✔ translated blocked-link labels isolate the technical URL from RTL text (1.031084ms)
+✔ Malay starts from the online choice with the core Latin font and preserves saved choices (2.306546ms)
+✔ Bengali byte limit preserves the complete final conjunct (22.072403ms)
+✔ byte limits do not split reph, vowels, decomposed marks or emoji ZWJ (5.363559ms)
+✔ exclusive ASCII byte maximum is preserved, including a one-byte buffer (2.493245ms)
+✔ maximum zero leaves Unicode edits unrestricted (1.221503ms)
+✔ a 32-byte username accepts all ASCII bytes and keeps overflowing Bengali clusters whole (1.107304ms)
+✔ composition is neither truncated nor delivered until compositionend (0.920915ms)
+✔ without Segmenter, overflowing Unicode retains the last accepted edit (0.839075ms)
+✔ fallback accepted value follows programmatic native updates (0.842676ms)
+✔ fallback preserves composition and unlimited input contracts (1.450252ms)
+✔ a character-limited account name accepts all 32 Bengali codepoints (1.240353ms)
+✔ a 128-character map title accepts 43 Bengali characters and all 128 (1.538031ms)
+✔ character bounds count Unicode codepoints rather than UTF-16 code units (1.209823ms)
+✔ character overflow preserves complete conjuncts, reph, marks and emoji ZWJ (3.630469ms)
+✔ character and byte bounds are both enforced independently (4.710374ms)
+✔ explicit chat and LAN byte limits retain their inclusive payload capacities (3.695998ms)
+✔ character limits wait for compositionend before delivering a whole prefix (1.265033ms)
+✔ without Segmenter character limits retain accepted Unicode and native updates (2.036389ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 156.805405

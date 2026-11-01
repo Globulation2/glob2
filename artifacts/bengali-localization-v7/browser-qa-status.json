@@ -1,0 +1,26 @@
+{
+  "producer": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/browser-final-production-provenance.json",
+  "fiveCaseEvidence": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/browser-runtime/attempt-001",
+  "fiveCaseExitStatus": 0,
+  "trackedStartupTimeoutAdapter": {
+    "path": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/tracked-startup-timeout.cjs",
+    "sha256": "c08f7a4fe5f071f480138695be8ef4a37f33b78dba09fe3fd649b128d86ebfde",
+    "timeoutMilliseconds": 180000,
+    "pixelAssertionChanged": false
+  },
+  "trackedCommand": [
+    "node",
+    "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/@playwright/test/cli.js",
+    "test",
+    "--config=browser/playwright.config.js",
+    "responsive-presentation.spec.js",
+    "--project=chromium",
+    "--grep=antialiased Bengali",
+    "--timeout=300000",
+    "--workers=1",
+    "--reporter=json",
+    "--output=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/tracked-responsive-output"
+  ],
+  "trackedResponsiveExitStatus": 0,
+  "ownedQaServerExited": true
+}

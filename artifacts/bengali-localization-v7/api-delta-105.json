@@ -1,0 +1,650 @@
+{
+  "label": "Initial machine drafts only; no linguistic approval",
+  "locale": "bn",
+  "revision": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "entries": [
+    {
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "api_draft": "ফাইল এবং এপিআই প্রোফাইল",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "api_draft": "সিনট্যাক্স এবং প্রোফাইল সীমাবদ্ধতা",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Startup and callback",
+      "source": "Startup and callback",
+      "api_draft": "স্টার্টআপ এবং কলব্যাক",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Persistent state",
+      "source": "Persistent state",
+      "api_draft": "স্থায়ী অবস্থা",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "api_draft": "বীজযুক্ত গেমপ্লে",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Repeatable simulation",
+      "source": "Repeatable simulation",
+      "api_draft": "পুনরাবৃত্তিযোগ্য সিমুলেশন",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Save and resume",
+      "source": "Save and resume",
+      "api_draft": "সংরক্ষণ করুন এবং পুনরায় শুরু করুন",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Good",
+      "source": "Good",
+      "api_draft": "ভালো",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Fair",
+      "source": "Fair",
+      "api_draft": "ন্যায্য",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Poor",
+      "source": "Poor",
+      "api_draft": "দরিদ্র",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "api_draft": "একজন খেলোয়াড় এবং রিলে দৌড়ের মধ্যে আসা-যাওয়া। একটি ম্যাচের আগে (দ্রুত ম্যাচ, শুরুর চেকলিস্ট) এটি অঞ্চলটির একটি অনুসন্ধান, একটি অনুমান।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Delay",
+      "source": "Delay",
+      "api_draft": "বিলম্ব",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "api_draft": "আপনার ইনপুট ডিলে: আপনার ক্লিক করা থেকে শুরু করে ইনপুটটি সম্পন্ন হওয়া পর্যন্ত, সবার জন্য। আপনার পিং-এর অর্ধেক এবং জিটার প্রতিরোধের জন্য আপনার গেমের বাফার।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "api_draft": "একজন খেলোয়াড়ের খেলা ম্যাচ ক্লকের থেকে কতটা পিছিয়ে থাকে। এক সেকেন্ডের কম সময় স্বাভাবিক (এর মধ্যে তাদের বিলম্বও অন্তর্ভুক্ত); ২ সেকেন্ড থেকে রিলে একজন খেলোয়াড়কে ধীরগতির হিসেবে চিহ্নিত করে।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Classic glossy",
+      "source": "Classic glossy",
+      "api_draft": "ক্লাসিক চকচকে",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Basics",
+      "source": "Basics",
+      "api_draft": "মৌলিক বিষয়",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Matte",
+      "source": "Matte",
+      "api_draft": "ম্যাট",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "api_draft": "রিভেটেড ধাতু",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Metal",
+      "source": "Metal",
+      "api_draft": "ধাতু",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Hairy",
+      "source": "Hairy",
+      "api_draft": "লোমশ",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Organic",
+      "source": "Organic",
+      "api_draft": "জৈব",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Cartoon",
+      "source": "Cartoon",
+      "api_draft": "কার্টুন",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Woven fabric",
+      "source": "Woven fabric",
+      "api_draft": "বোনা কাপড়",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Craft",
+      "source": "Craft",
+      "api_draft": "কারুশিল্প",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "api_draft": "আঠালো গু",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Wet",
+      "source": "Wet",
+      "api_draft": "ভেজা",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Wood",
+      "source": "Wood",
+      "api_draft": "কাঠ",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Stone",
+      "source": "Stone",
+      "api_draft": "পাথর",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Mineral",
+      "source": "Mineral",
+      "api_draft": "খনিজ",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Scales",
+      "source": "Scales",
+      "api_draft": "স্কেল",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Leather",
+      "source": "Leather",
+      "api_draft": "চামড়া",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Crystal",
+      "source": "Crystal",
+      "api_draft": "ক্রিস্টাল",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Lava",
+      "source": "Lava",
+      "api_draft": "লাভা",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Chrome",
+      "source": "Chrome",
+      "api_draft": "ক্রোম",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Carbon fibre",
+      "source": "Carbon fibre",
+      "api_draft": "কার্বন ফাইবার",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Velvet",
+      "source": "Velvet",
+      "api_draft": "ভেলভেট",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "api_draft": "মৌচাক",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Ice",
+      "source": "Ice",
+      "api_draft": "বরফ",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Cloud",
+      "source": "Cloud",
+      "api_draft": "ক্লাউড",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Hammered metal",
+      "source": "Hammered metal",
+      "api_draft": "হাতুড়ি দিয়ে পেটানো ধাতু",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Candy",
+      "source": "Candy",
+      "api_draft": "ক্যান্ডি",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Slime",
+      "source": "Slime",
+      "api_draft": "স্লাইম",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "AI player",
+      "source": "AI player",
+      "api_draft": "এআই প্লেয়ার",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Finances",
+      "source": "Finances",
+      "api_draft": "অর্থায়ন",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Accounts",
+      "source": "Accounts",
+      "api_draft": "অ্যাকাউন্ট",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Audit",
+      "source": "Audit",
+      "api_draft": "নিরীক্ষা",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "1 hour",
+      "source": "1 hour",
+      "api_draft": "১ ঘন্টা",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "1 day",
+      "source": "1 day",
+      "api_draft": "১ দিন",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "1 week",
+      "source": "1 week",
+      "api_draft": "১ সপ্তাহ",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "30 days",
+      "source": "30 days",
+      "api_draft": "৩০ দিন",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Most played",
+      "source": "Most played",
+      "api_draft": "সবচেয়ে বেশি খেলা হয়েছে",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "api_draft": "সঙ্গীতের গঠন ও ক্রমবিকাশের দিকে মনোযোগ দিন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "api_draft": "যাচাই করুন যে তিনটি মুডই সঠিকভাবে বাজছে কিনা।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "api_draft": "মেজাজ পরিবর্তনের সময় কণ্ঠস্বরের আকস্মিক তারতম্যের দিকে খেয়াল রাখুন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "api_draft": "লুপটি পুনরাবৃত্তি হওয়ার সময় একটি ক্লিক, ফাঁক বা আকস্মিক পরিবর্তনের দিকে খেয়াল রাখুন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "api_draft": "খুব যান্ত্রিকভাবে পুনরাবৃত্ত হওয়া ছোট ছোট বাক্যাংশগুলোর দিকে মনোযোগ দিন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "api_draft": "মেজাজ বদলান এবং তাল বা সুরের পরিবর্তনে মনোযোগ দিন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "api_draft": "নিশ্চিত করুন যে ভবন নির্মাণ এবং যুদ্ধ পরিস্থিতি শান্ত অবস্থা থেকে স্বতন্ত্র।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "api_draft": "শান্ত অংশগুলোতে হিসহিস বা খসখসে শব্দের দিকে মনোযোগ দিন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "api_draft": "ঘোলাটে বেস বা কর্কশ উচ্চ কম্পাঙ্কের দিকে কান পাতুন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "api_draft": "নিশ্চিত করুন যে খেলার শব্দের পাশাপাশি শান্ত অংশগুলোও শোনা যায়।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "api_draft": "যে সুরগুলো অপ্রত্যাশিতভাবে থেমে যায়, সেগুলোর দিকে খেয়াল রাখুন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Worker",
+      "source": "Worker",
+      "api_draft": "শ্রমিক",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Warrior",
+      "source": "Warrior",
+      "api_draft": "যোদ্ধা",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Explorer",
+      "source": "Explorer",
+      "api_draft": "অভিযাত্রী",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Swarm",
+      "source": "Swarm",
+      "api_draft": "ঝাঁক",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Classic",
+      "source": "Classic",
+      "api_draft": "ক্লাসিক",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Crown",
+      "source": "Crown",
+      "api_draft": "মুকুট",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Clutch",
+      "source": "Clutch",
+      "api_draft": "ক্লাচ",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "api_draft": "ব্যাঙের ছাতা",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "api_draft": "চওড়া চূড়াবিশিষ্ট একটি ব্যাঙের ছাতা, যার মাথায় নতুন টুপি রয়েছে।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Coral",
+      "source": "Coral",
+      "api_draft": "প্রবাল",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Skep",
+      "source": "Skep",
+      "api_draft": "স্কেপ",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "api_draft": "একটি স্ট্যান্ডের উপর পেঁচানো একটি মৌচাক, যার দরজাটি আপনার দিকে মুখ করা।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Bloom",
+      "source": "Bloom",
+      "api_draft": "ব্লুম",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "api_draft": "সর্বসাধারণ: ক্যাটালগে তালিকাভুক্ত",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "api_draft": "তালিকাভুক্ত নয়: যার কাছে লিঙ্কটি আছে",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Private: only you",
+      "source": "Private: only you",
+      "api_draft": "ব্যক্তিগত: শুধু আপনার জন্য",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "api_draft": "সার্ভার এই ম্যাচটি পুনরায় চালিয়েছে এবং প্রত্যেক খেলোয়াড়ের খেলা তার সাথে মিলে গেছে।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "api_draft": "সার্ভার এই ম্যাচটি যাচাই করছে। যাচাই সম্পন্ন হলে রেটিং পরিবর্তিত হবে।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "api_draft": "খেলোয়াড়ের খেলাটি সার্ভারের ম্যাচ রিপ্লের সাথে মেলেনি; তাই সার্ভারের ফলাফলই চূড়ান্ত বলে গণ্য হবে।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "api_draft": "সার্ভার এই ম্যাচটি পুনরায় তৈরি করতে পারেনি, তাই রেটিং-এ কোনো পরিবর্তন আসছে না।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "This match is not checked.",
+      "source": "This match is not checked.",
+      "api_draft": "এই মিলটি যাচাই করা হয়নি।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "api_draft": "সার্ভার এই ম্যাচটির যাচাই সম্পন্ন করতে পারেনি, তাই আপাতত কোনো রেটিং পরিবর্তন হচ্ছে না। একজন প্রশাসক পুনরায় যাচাইটি চালাতে পারেন।",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Walk",
+      "source": "Walk",
+      "api_draft": "হাঁটা",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Swim",
+      "source": "Swim",
+      "api_draft": "সাঁতার",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Harvest",
+      "source": "Harvest",
+      "api_draft": "ফসল",
+      "draft_origin": "unchanged_English_API_cache"
+    },
+    {
+      "key": "Fight",
+      "source": "Fight",
+      "api_draft": "লড়াই",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Fly",
+      "source": "Fly",
+      "api_draft": "মাছি",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Live payments",
+      "source": "Live payments",
+      "api_draft": "লাইভ পেমেন্ট",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Test payments",
+      "source": "Test payments",
+      "api_draft": "পরীক্ষার পেমেন্ট",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "api_draft": "অশ্রেণীবদ্ধ অর্থপ্রদান",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Current period",
+      "source": "Current period",
+      "api_draft": "বর্তমান সময়কাল",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Previous period",
+      "source": "Previous period",
+      "api_draft": "পূর্ববর্তী সময়কাল",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "api_draft": "ক্রেডিট অনুদান",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Returned credits",
+      "source": "Returned credits",
+      "api_draft": "ফেরত ক্রেডিট",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Dispute",
+      "source": "Dispute",
+      "api_draft": "বিবাদ",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "api_draft": "বিরোধ নিষ্পত্তি হয়েছে",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Matches started",
+      "source": "Matches started",
+      "api_draft": "ম্যাচ শুরু হয়েছে",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Matches completed",
+      "source": "Matches completed",
+      "api_draft": "ম্যাচ সম্পন্ন হয়েছে",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "Matches cancelled",
+      "source": "Matches cancelled",
+      "api_draft": "ম্যাচ বাতিল করা হয়েছে",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "{value0} publications",
+      "source": "{value0} publications",
+      "api_draft": "{value0} প্রকাশনা",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "api_draft": "{value0} রেকর্ডকৃত ডাউনলোড",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "api_draft": "{value0} সম্পন্ন হওয়ার সময় (সেকেন্ডে)",
+      "draft_origin": "new_api_request"
+    },
+    {
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "api_draft": "{value0} সমাপ্তির নমুনা",
+      "draft_origin": "new_api_request"
+    }
+  ],
+  "native_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "online_sha256_at_api_completion": "a001c01138ddf4fef157164afde84c377aa93a087043b310793a4abbbfd571ed",
+  "reserved_characters_before": 189106,
+  "new_reserved_characters": 2320,
+  "reserved_characters_cumulative": 191426,
+  "estimated_usd_cumulative_without_free_credits": "3.82852",
+  "price_usd_per_million_characters": "20",
+  "spending_ceiling_usd": "10",
+  "request_count": 1,
+  "original6253pairsPreserved": true,
+  "accountingSha256": "394442c3759da68a15c64cce99da649ceaa8efef1de26ebe6ff43d13e986b8bc",
+  "rawResponse": "cloud/bn/responses/00001.json"
+}

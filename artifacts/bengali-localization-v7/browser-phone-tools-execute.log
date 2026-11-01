@@ -1,0 +1,105 @@
+phone-overlay dismiss actual startup screen 21AudioPreferenceScreen 21AudioPreferenceScreen audio.silence
+phone-overlay dismiss actual startup screen 20HandPreferenceScreen 20HandPreferenceScreen hand.right
+phone-overlay dismiss actual startup screen 23IntroductionOfferScreen 23IntroductionOfferScreen intro/menu
+READY_FOR_INSPECTED_INPUT /home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/browser-phone-tools-attempt-001
+ACTION_FINISHED 1 [ 'intro/destination', 'intro/help', 'intro/collapse' ]
+ACTION_FINISHED 2 [
+  'intro/destination',
+  'intro/help',
+  'intro/collapse',
+  'stats/topic/0',
+  'stats/topic/1',
+  'stats/topic/2',
+  'stats/topic/3',
+  'stats/topic/4',
+  'stats/metric/population',
+  'stats/metric/net growth',
+  'stats/inline/chart',
+  'stats/full-history/population',
+  'stats/metric/hunger',
+  'stats/metric/health',
+  'stats/metric/idle workers',
+  'stats/metric/blocked buildings',
+  'stats/metric/warriors',
+  'stats/metric/intruders'
+]
+ACTION_FINISHED 3 [
+  'intro/destination',
+  'intro/help',
+  'intro/collapse',
+  'stats/topic/0',
+  'stats/topic/1',
+  'stats/topic/2',
+  'stats/topic/3',
+  'stats/topic/4',
+  'stats/metric/population',
+  'stats/metric/net growth',
+  'stats/inline/chart',
+  'stats/full-history/population',
+  'stats/metric/hunger',
+  'stats/metric/health',
+  'stats/metric/idle workers',
+  'stats/metric/blocked buildings',
+  'stats/metric/warriors',
+  'stats/metric/intruders'
+]
+ACTION_FINISHED 4 [
+  'intro/destination',
+  'intro/help',
+  'intro/collapse',
+  'stats/topic/0',
+  'stats/topic/1',
+  'stats/topic/2',
+  'stats/topic/3',
+  'stats/topic/4',
+  'stats/metric/population',
+  'stats/metric/net growth',
+  'stats/inline/chart',
+  'stats/full-history/population',
+  'stats/metric/hunger',
+  'stats/metric/health',
+  'stats/metric/idle workers',
+  'stats/metric/blocked buildings',
+  'stats/metric/warriors',
+  'stats/metric/intruders'
+]
+ACTION_FINISHED 5 [
+  'intro/destination',
+  'intro/help',
+  'intro/collapse',
+  'stats/topic/0',
+  'stats/topic/1',
+  'stats/topic/2',
+  'stats/topic/3',
+  'stats/topic/4',
+  'stats/metric/population',
+  'stats/metric/net growth',
+  'stats/inline/chart',
+  'stats/full-history/population',
+  'stats/metric/hunger',
+  'stats/metric/health',
+  'stats/metric/idle workers',
+  'stats/metric/blocked buildings',
+  'stats/metric/warriors',
+  'stats/metric/intruders'
+]
+ACTION_FINISHED 6 [
+  'intro/destination',
+  'intro/help',
+  'intro/collapse',
+  'stats/topic/0',
+  'stats/topic/1',
+  'stats/topic/2',
+  'stats/topic/3',
+  'stats/topic/4',
+  'stats/metric/population',
+  'stats/metric/net growth',
+  'stats/inline/chart',
+  'stats/full-history/population',
+  'stats/metric/hunger',
+  'stats/metric/health',
+  'stats/metric/idle workers',
+  'stats/metric/blocked buildings',
+  'stats/metric/warriors',
+  'stats/metric/intruders'
+]

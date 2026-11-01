@@ -1,0 +1,387 @@
+{
+  "producerRevision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "producerSha256": "bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8",
+  "scope": "Launcher only, unmodified final 4d77 package. Overlay supplies existing production platform routes; original standalone missing branding retained.",
+  "cases": [
+    {
+      "overlay": false,
+      "phone": false,
+      "responses": [
+        {
+          "url": "http://127.0.0.1:45739/index.html?threads=serial",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/theme.js",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:45739/script-fonts.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/presentation-surface.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/i18n.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/signin/assets/glob-64.png",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:45739/loader.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/locales/bn.json",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/signin/assets/wordmark-letters.webp",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:45739/signin/assets/nunito.woff2",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:45739/signin/assets/wordmark-two.webp",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:45739/index.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/fonts/NotoSansBengali-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/fonts/NotoSansArabic-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/fonts/NotoSansDevanagari-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/index.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/assets/core.06da0f1fba26b436.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/assets/game-1.e5347e01af620593.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/assets/game-3.d5658b392a8460d0.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/assets/game-2.d2f3f499b0b4ab1b.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:45739/assets/game-4.db7fc6881bef2304.data",
+          "status": 200
+        }
+      ],
+      "images": [
+        {
+          "src": "http://127.0.0.1:45739/signin/assets/glob-64.png",
+          "complete": true,
+          "naturalWidth": 0,
+          "naturalHeight": 0
+        }
+      ],
+      "layout": {
+        "width": 1280,
+        "bodyWidth": 1280,
+        "status": "গেমটি ডাউনলোড করা হচ্ছে…",
+        "locale": "bn"
+      },
+      "screenshot": {
+        "file": "raw-desktop.png",
+        "sha256": "b75b7930484f7c0d7af717adefa6b08fc6a9b6e0957661aee043b3f1dad1c898"
+      },
+      "passed": true
+    },
+    {
+      "overlay": true,
+      "phone": false,
+      "responses": [
+        {
+          "url": "http://127.0.0.1:38863/index.html?threads=serial",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/theme.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/i18n.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/script-fonts.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/loader.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/presentation-surface.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/signin/assets/glob-64.png",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/signin/assets/nunito.woff2",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/signin/assets/wordmark-two.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/locales/bn.json",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/signin/assets/wordmark-letters.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/fonts/NotoSansBengali-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/fonts/NotoSansDevanagari-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/fonts/NotoSansArabic-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/index.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/index.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/assets/core.06da0f1fba26b436.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/assets/game-1.e5347e01af620593.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/assets/game-3.d5658b392a8460d0.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/assets/game-2.d2f3f499b0b4ab1b.data",
+          "status": 200
+        }
+      ],
+      "images": [
+        {
+          "src": "http://127.0.0.1:38863/signin/assets/glob-64.png",
+          "complete": true,
+          "naturalWidth": 64,
+          "naturalHeight": 64
+        }
+      ],
+      "layout": {
+        "width": 1280,
+        "bodyWidth": 1280,
+        "status": "গেমটি ডাউনলোড করা হচ্ছে…",
+        "locale": "bn"
+      },
+      "verifiedRoutes": {
+        "/signin/assets/glob-64.png": {
+          "status": 200,
+          "sha256": "d83f50b574c7ab09fde87c39b45b4d78ee3af7cc0485bfe90825c9ebabb4e90d"
+        },
+        "/signin/assets/wordmark-letters.webp": {
+          "status": 200,
+          "sha256": "428fc52ed064debfe273d529c4cd81284a45160879d05afff7775929a35d206d"
+        },
+        "/signin/assets/wordmark-two.webp": {
+          "status": 200,
+          "sha256": "a33008a9088f98edb64ff494bc38f3888849f562113be90ca191c48bbb5291a2"
+        },
+        "/signin/assets/nunito.woff2": {
+          "status": 200,
+          "sha256": "ba344451eab25b217a165363b1982048a5e5830a0daf36577973955a04cac793"
+        },
+        "/signin/assets/favicon-32.png": {
+          "status": 200,
+          "sha256": "284ad78ca2b4786641a551a3d36e4a5ffab3fe20e96d02060c89f40322cca6a1"
+        },
+        "/theme.js": {
+          "status": 200,
+          "sha256": "8445913b06d7b709c8629b532be0c4f01784d43b72616f8a525c1d7cc746666d"
+        },
+        "/favicon-32.png": {
+          "status": 200,
+          "sha256": "284ad78ca2b4786641a551a3d36e4a5ffab3fe20e96d02060c89f40322cca6a1"
+        }
+      },
+      "screenshot": {
+        "file": "platform-desktop.png",
+        "sha256": "f2859a757b956bed770ce88bf844bfba4a8a1923e30d80abf9ad51034104b3e1"
+      },
+      "passed": true
+    },
+    {
+      "overlay": true,
+      "phone": true,
+      "responses": [
+        {
+          "url": "http://127.0.0.1:38863/index.html?threads=serial",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/theme.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/script-fonts.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/loader.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/i18n.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/presentation-surface.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/signin/assets/glob-64.png",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/locales/bn.json",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/signin/assets/wordmark-two.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/signin/assets/wordmark-letters.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/signin/assets/nunito.woff2",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/fonts/NotoSansBengali-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/fonts/NotoSansArabic-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/fonts/NotoSansDevanagari-Regular.ttf",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/index.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/index.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/assets/core.06da0f1fba26b436.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/assets/game-1.e5347e01af620593.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/assets/game-2.d2f3f499b0b4ab1b.data",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:38863/assets/game-3.d5658b392a8460d0.data",
+          "status": 200
+        }
+      ],
+      "images": [
+        {
+          "src": "http://127.0.0.1:38863/signin/assets/glob-64.png",
+          "complete": true,
+          "naturalWidth": 64,
+          "naturalHeight": 64
+        }
+      ],
+      "layout": {
+        "width": 390,
+        "bodyWidth": 390,
+        "status": "গেমটি ডাউনলোড করা হচ্ছে…",
+        "locale": "bn"
+      },
+      "verifiedRoutes": {
+        "/signin/assets/glob-64.png": {
+          "status": 200,
+          "sha256": "d83f50b574c7ab09fde87c39b45b4d78ee3af7cc0485bfe90825c9ebabb4e90d"
+        },
+        "/signin/assets/wordmark-letters.webp": {
+          "status": 200,
+          "sha256": "428fc52ed064debfe273d529c4cd81284a45160879d05afff7775929a35d206d"
+        },
+        "/signin/assets/wordmark-two.webp": {
+          "status": 200,
+          "sha256": "a33008a9088f98edb64ff494bc38f3888849f562113be90ca191c48bbb5291a2"
+        },
+        "/signin/assets/nunito.woff2": {
+          "status": 200,
+          "sha256": "ba344451eab25b217a165363b1982048a5e5830a0daf36577973955a04cac793"
+        },
+        "/signin/assets/favicon-32.png": {
+          "status": 200,
+          "sha256": "284ad78ca2b4786641a551a3d36e4a5ffab3fe20e96d02060c89f40322cca6a1"
+        },
+        "/theme.js": {
+          "status": 200,
+          "sha256": "8445913b06d7b709c8629b532be0c4f01784d43b72616f8a525c1d7cc746666d"
+        },
+        "/favicon-32.png": {
+          "status": 200,
+          "sha256": "284ad78ca2b4786641a551a3d36e4a5ffab3fe20e96d02060c89f40322cca6a1"
+        }
+      },
+      "screenshot": {
+        "file": "platform-phone.png",
+        "sha256": "bc223d2ae8734decf8e892923586c3af15562e72074ca0432529ff3f74ac42d5"
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}

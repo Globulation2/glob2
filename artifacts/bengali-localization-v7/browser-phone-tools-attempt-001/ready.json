@@ -1,0 +1,123 @@
+{
+  "viewport": {
+    "width": 320,
+    "height": 640
+  },
+  "snapshot": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "software",
+    "renderContext": null,
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "match",
+    "screenClass": "17GameSessionScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 141,
+    "frames": 64,
+    "loop": 1283,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 640,
+    "height": 1280,
+    "heapBytes": 278396928,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "skipped"
+    },
+    "opened": [],
+    "controls": {
+      "intro/destination": {
+        "x": 405,
+        "y": 435,
+        "w": 110,
+        "h": 124,
+        "visible": {
+          "x": 405,
+          "y": 435,
+          "w": 110,
+          "h": 124
+        },
+        "enabled": true,
+        "label": "গন্তব্য দেখান",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 124
+        }
+      },
+      "intro/help": {
+        "x": 520,
+        "y": 435,
+        "w": 110,
+        "h": 124,
+        "visible": {
+          "x": 520,
+          "y": 435,
+          "w": 110,
+          "h": 124
+        },
+        "enabled": true,
+        "label": "সাহায্য / কেন?",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 124
+        }
+      },
+      "intro/collapse": {
+        "x": 635,
+        "y": 437,
+        "w": 110,
+        "h": 120,
+        "visible": {
+          "x": 635,
+          "y": 437,
+          "w": 110,
+          "h": 120
+        },
+        "enabled": true,
+        "label": "+",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 124
+        }
+      }
+    }
+  },
+  "message": "Inspect tutorial-collapsed.png and submit bounded actual canvas action via action-1.json"
+}

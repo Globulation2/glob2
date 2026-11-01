@@ -1,0 +1,161 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config=browser/playwright.config.js",
+      "responsive-presentation.spec.js",
+      "--project=chromium",
+      "--grep=antialiased Bengali",
+      "--timeout=300000",
+      "--workers=1",
+      "--reporter=json",
+      "--output=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/tracked-responsive-output"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/83ab/glob2/browser/playwright.config.js",
+    "rootDir": "/home/bradley/.codex/worktrees/83ab/glob2/browser/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/tracked-responsive-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/bradley/.codex/worktrees/83ab/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 300000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/tracked-responsive-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/home/bradley/.codex/worktrees/83ab/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 300000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v7/tracked-responsive-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/home/bradley/.codex/worktrees/83ab/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 300000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "responsive-presentation.spec.js",
+      "file": "responsive-presentation.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "opaque WebGL settings panel",
+          "file": "responsive-presentation.spec.js",
+          "line": 143,
+          "column": 6,
+          "specs": [
+            {
+              "title": "antialiased Bengali text and icons keep the presented panel opaque",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 300000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 64095,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-01T09:40:03.847Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "57f93fb4c4a266c362fa-189fea227b250e6ef491",
+              "file": "responsive-presentation.spec.js",
+              "line": 145,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T09:40:03.005Z",
+    "duration": 65398.560999999994,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

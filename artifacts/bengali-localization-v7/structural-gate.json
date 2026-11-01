@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "attested_by": "/root/rendering_audit",
+  "attested_at": "2026-11-01T09:43:15.934778+00:00",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "code_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "scope": "Actual clean4d77 structural checks: strict native39-language inventory and no Bengali gaps,6358-entry draft/token/plural checks,50 Python tests including actual bundled-SDL native font coverage,13 pinned script-font+OFL asset hashes,39×2947 online catalog/source and generated-browser freshness,82 i18n units,3 TypeScript projects and scoped formatting. Separate actual25 browser language/Unicode bridge units and10 API page/font/CSP/invite cases also passed. No full image roundtrip, renderer, startup, OS IME or platform execution inferred.",
+  "actual_python_test_counts": {
+    "native-font-coverage": 1,
+    "native-translation-tests": 10,
+    "translation-program-tests": 13,
+    "cloud-draft-tests": 16,
+    "google-draft-tests": 10
+  },
+  "actual_online_unit_tests": 82,
+  "evidence": [
+    {
+      "path": "integration/static-all-20261101T092900Z/result.json",
+      "sha256": "8bd9c719bc398543dd05e774d24dadfe2db029cc78c6ffb15a646b2290913074"
+    },
+    {
+      "path": "installed-source-binding.json",
+      "sha256": "70342c52d4a1dd277712982e954d5300cfc72bacf07c531777de47a24d9f9115"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/pinned-script-fonts.log",
+      "sha256": "b8f4fbc2b06450688b45e37b8188349784db856c2986cc9eb92b7589b24f7d3f"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/native-font-coverage.log",
+      "sha256": "4390eef64364c0b3eb1bf4a05aa3983556023e81570681a8817395ef88b3d1d9"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/native-strict.log",
+      "sha256": "4a7c86cd17d33924b711b03caa7b9b6189e20a8171567209405ed9ea85f2d6e5"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/native-translation-tests.log",
+      "sha256": "c000c38213628f55f53157d12f8338f771926e11caca0ea1fbcebcf5147f65db"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/translation-program-tests.log",
+      "sha256": "3b0cc1c42bd567f1adc4b6a79a17dd86bf92f7c40d98bcb79f9e4fbee9b12111"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/cloud-draft-tests.log",
+      "sha256": "61dfd593d1d904e4cc379b965f05bb47411aab31cc1b9eac93ed48b7b441c853"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/google-draft-tests.log",
+      "sha256": "45629e08d8c41ba474e149425cf4477b6ed2d14afbd48b41a5dea35ddb36ae32"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/bengali-draft.log",
+      "sha256": "9ba42c3adfceb1abafb8eebcc39b0942ca6bead0d22978320635f490a8e198e1"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/online-contract.log",
+      "sha256": "012394bc07e5ff534d2f84ffa77656dcf3710efc0387a017fdbabf88d5123424"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/online-units.log",
+      "sha256": "249bf1d783478ceb3d7b326e6c8215a6c9affd57e986dc1368027428e74e26f3"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/platform-typecheck.log",
+      "sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd"
+    },
+    {
+      "path": "integration/static-all-20261101T092900Z/scoped-format.log",
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "additional-current-checks.json",
+      "sha256": "58e36355cc1784e2b61da0bd08e369dc7fd610226aec8f5e1ef86cd59c85970b"
+    },
+    {
+      "path": "browser-unit-tests.log",
+      "sha256": "eab70f138f0b0d01be82f568fa7b836d648af05084a1304a12b4368e90ad998e"
+    },
+    {
+      "path": "api-pages-tests.log",
+      "sha256": "32ac9d6439d8f9d8ce1dc9f73defca05798bfd05e528aca55852ec40b8ef93da"
+    }
+  ],
+  "limits": [
+    "The old V4 broad package/image roundtrip retains its own source/inputs; changed catalogs require separate fresh sealed payload extraction.",
+    "The mocked cloud ResourceWarning from a fake403 HTTPError is retained;16 mocked cloud tests passed.",
+    "V6 online command initially used Node22 without TS stripping and failed before reading catalogs; current actual Node24 contract pass is separate."
+  ]
+}

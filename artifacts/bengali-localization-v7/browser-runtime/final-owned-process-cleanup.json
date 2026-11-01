@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "observed_at": "2026-11-01T09:44:39.430904+00:00",
+  "source": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "ownedProcessesRemaining": [],
+  "ownedProducerExited": true,
+  "ownedQaControllerExited": true,
+  "ownedPhoneContextAndHostExited": true,
+  "ownedLauncherContextsAndHostsExited": true,
+  "ownedTrackedContextAndHostExited": true,
+  "basis": "All owned execution sessions returned exit0; scripts await browser.close and own host exit in finally. No matching owned V7 controller/runtime process remains. Other worktree/processes untouched.",
+  "packageFilesRehashed": 161,
+  "packageUnchangedSinceSeal": true
+}

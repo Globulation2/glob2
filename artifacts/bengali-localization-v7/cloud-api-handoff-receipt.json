@@ -1,0 +1,18 @@
+{
+  "scope": "Completed initial API draft handoff only; agent linguistic approvals remain independent/pending",
+  "sourceSha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "apiSnapshotSha256": "cd73f496f6a33a55a22f60748759a1a86af8679b2eae22621d96b2efcee5e940",
+  "accountingSha256": "394442c3759da68a15c64cce99da649ceaa8efef1de26ebe6ff43d13e986b8bc",
+  "checkDraftSha256": "9ba42c3adfceb1abafb8eebcc39b0942ca6bead0d22978320635f490a8e198e1",
+  "draftNativeSha256AtHandoffCheck": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "draftOnlineSha256AtHandoffCheck": "a001c01138ddf4fef157164afde84c377aa93a087043b310793a4abbbfd571ed",
+  "old6253PairsImportedUnchangedAtApiCompletion": true,
+  "new105InitialMachineDrafts": true,
+  "submittedCharactersNew": 2320,
+  "cumulativeReservedCharacters": 191426,
+  "estimatedCumulativeUsdNoFreeCredit": "3.82852",
+  "spendingCeilingUsd": "10",
+  "credentialLogging": false,
+  "ownedBuildReaders": false,
+  "paidCallsComplete": true
+}

@@ -1,0 +1,24 @@
+{
+  "status": "prepared-not-executed",
+  "currentSourceRevision": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+  "startRequiresRootFinalCleanCommit": true,
+  "dependencyBuilderDiffSince7f": [],
+  "scripts": {
+    "run-final-browser.py": "3a2174b97da9922b51ae6b5ce0942117bf7b278715094a20d134b87c34b1cd35",
+    "seal-final-browser.py": "f3c89f8bfc1a044dfa0175a80b87c5a6a2c1fb175f58a0eea9b8c6d9e8c7a090",
+    "run-final-qa.py": "d08e51363aa8718a0a98a13c233f04194d013244364e77c7c4f11221b0556078",
+    "check-browser-startup.cjs": "00c565861c9a41829347afd63997c3cef06ba4fbd89c31c617cb76d2d10c74c6",
+    "check-phone-tools.cjs": "b673731aac7d45843735620fd7a764c196b03a776fcdf691e20873af42bf8848",
+    "tracked-startup-timeout.cjs": "c08f7a4fe5f071f480138695be8ef4a37f33b78dba09fe3fd649b128d86ebfde",
+    "webgl-text-audit/check-opaque-panel.cjs": "84d265bed3bf7f6c2767146616c1022484e509435c59066876cb52870639a78c"
+  },
+  "packageChecker": "integration/check-sealed-catalog-fonts.py --revision FINAL_SHA --package PACKAGE --producer PRODUCER --kit artifacts/bengali-localization-v7 --output artifacts/bengali-localization-v7/integration/sealed-catalog-fonts.json",
+  "checks": [
+    "both variants full graph/seal",
+    "five actual fresh contexts, input and real Save",
+    "opaque panel regression plus tracked responsive assertion with recorded180s helper option",
+    "320x640 150% real Tools all rows/stats close/map peek/guidance restoration",
+    "39 native and39 online catalogs,2947 BN keys, all pinned font payloads"
+  ],
+  "executedBuildOrRuntime": false
+}

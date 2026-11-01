@@ -1,0 +1,69 @@
+data/texts.ar.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.br.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ca.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.cz.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.de.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.dk.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.en.txt: 0 untranslated (0 pending), 0 missing keys, 0 obsolete keys
+data/texts.es.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.eo.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.eu.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.fa.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.fr.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.gr.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.hu.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.it.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.nl.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.pl.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.pt.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ro.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ru.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.si.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.sk.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.sr.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.fi.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.sv.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.tr.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.zh-tw.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.zh-cn.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.uk.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.id.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.vi.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ja.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ko.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.hi.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ur.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.sw.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.bn.txt: 0 untranslated (0 pending), 0 missing keys, 0 obsolete keys
+data/texts.nb.txt: 0 untranslated (0 pending), 0 missing keys, 0 obsolete keys
+data/texts.ms.txt: 0 untranslated (0 pending), 0 missing keys, 0 obsolete keys
+ERROR: texts.hi.txt:6823: duplicate key [lush_grass]
+ERROR: texts.hi.txt:6825: duplicate key [dry_grass]
+ERROR: texts.hi.txt:6827: duplicate key [dune_sand]
+ERROR: texts.hi.txt:6829: duplicate key [pale_sand]
+ERROR: texts.ur.txt:6823: duplicate key [lush_grass]
+ERROR: texts.ur.txt:6825: duplicate key [dry_grass]
+ERROR: texts.ur.txt:6827: duplicate key [dune_sand]
+ERROR: texts.ur.txt:6829: duplicate key [pale_sand]
+ERROR: texts.sw.txt:6823: duplicate key [lush_grass]
+ERROR: texts.sw.txt:6825: duplicate key [dry_grass]
+ERROR: texts.sw.txt:6827: duplicate key [dune_sand]
+ERROR: texts.sw.txt:6829: duplicate key [pale_sand]
+ERROR: texts.nb.txt:6823: duplicate key [stats topic overview]
+ERROR: texts.nb.txt:6825: duplicate key [stats topic economy]
+ERROR: texts.nb.txt:6827: duplicate key [stats topic world]
+ERROR: texts.nb.txt:6829: duplicate key [stats work construction]
+ERROR: texts.nb.txt:6831: duplicate key [stats defence]
+ERROR: texts.nb.txt:6833: duplicate key [stats history]
+ERROR: texts.nb.txt:6835: duplicate key [stats waiting]
+ERROR: texts.nb.txt:6837: duplicate key [stats unit details]
+ERROR: texts.nb.txt:6839: duplicate key [stats map overlays]
+ERROR: texts.nb.txt:6841: duplicate key [stats topic]
+ERROR: texts.nb.txt:6843: duplicate key [stats full history]
+ERROR: texts.nb.txt:6845: duplicate key [stats missing readings]
+ERROR: texts.nb.txt:6847: duplicate key [lush_grass]
+ERROR: texts.nb.txt:6849: duplicate key [dry_grass]
+ERROR: texts.nb.txt:6851: duplicate key [dune_sand]
+ERROR: texts.nb.txt:6853: duplicate key [pale_sand]
+28 structural errors
+Coverage limits (including tutorial languages): use --json for the full inventory.

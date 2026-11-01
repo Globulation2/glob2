@@ -1,0 +1,621 @@
+{
+  "desktop_rendering": {
+    "passed": true,
+    "attested_by": "/root/rendering_audit",
+    "attested_at": "2026-11-01T09:47:32.586583+00:00",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    },
+    "scope": "Actual current4d77 desktop browser-game and production website rendering, with current Linux native compact presentation: independent actual25 native phone screenshots and48 website images,97 executed native cases and18 website workflows, current bundled font/glyph checks. Current desktop browser-game images and their independent review are included in the browser gate receipts. Representative coverage only; no full6358-entry pixel claim. Historical font matrices retain their actual old producer and are supplemental, not fresh execution.",
+    "evidence": [
+      {
+        "path": "expected-producer.json",
+        "sha256": "b9031fe249a468071dec6dab94b774087d6363edf84df03766039f446216427a"
+      },
+      {
+        "path": "native-app-build.json",
+        "sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac"
+      },
+      {
+        "path": "native-tests-summary.json",
+        "sha256": "16e80c5548ca9a3271499ff9fc867440496f122fc1ecd3d57402a946b2ab305e"
+      },
+      {
+        "path": "native-focused.json",
+        "sha256": "98af84435d4e084a9417d8cebd57f5a1b8732e31b90322d267f5e69d53bb08ad"
+      },
+      {
+        "path": "native-display-tests.json",
+        "sha256": "d408a30f01eeea18d984ef5b6d7b1c5b87324b42698ba16600e7f8e5a4dd7bc2"
+      },
+      {
+        "path": "native-interactive-summary.json",
+        "sha256": "42e9121e8fd223ed182fb5572f8da8be8fca63c9d3220936f197eddd265c4422"
+      },
+      {
+        "path": "native-visual-review.json",
+        "sha256": "675df29334899e2bd4d468dbd2ea7ecef95b98ff70439fb9956f96e08547b4d7"
+      },
+      {
+        "path": "website-visual-review.json",
+        "sha256": "65b7e5a593b3816422ac70c387c54eb05652e23f23abc26d84e9685658131fb8"
+      },
+      {
+        "path": "web-build.json",
+        "sha256": "a34a01e6ca0212a68e24d41cd43e4757a6bd7865cd92588a0c7c5d5852260c3e"
+      },
+      {
+        "path": "web-e2e.json",
+        "sha256": "9930c148a3b38afa8dae87bec4e1ebb4a5101a2051944256990793efa17fbb0b"
+      },
+      {
+        "path": "web-e2e-results.json",
+        "sha256": "a96cbf077f19a52539cccc3572185dfd1b7cce0f4a5b03e2d29558386d1182c8"
+      },
+      {
+        "path": "structural-gate.json",
+        "sha256": "e8730b7e04ae2ab6ff92a69c47562a245a3aab4fe9d6ee27875db207f67631e7"
+      },
+      {
+        "path": "ci/platform-coverage-summary.json",
+        "sha256": "c8241ef23eeb68962c8170c0ca94b0222df71e919f776818bed15e7ae5cd70c6"
+      },
+      {
+        "path": "ci/component-input-comparisons.json",
+        "sha256": "f587239e7961d9c2670f6ebc96059ee0cc46594d8c29ee703daef6d68c84f9e7"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts.json",
+        "sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts-independent-review.json",
+        "sha256": "dafdfa72db4eac8631c9ce068c0efb1a4c98c122805112006bdf2c0e0872465d"
+      }
+    ],
+    "review_scope": "current representative screenshots plus actual current tests",
+    "limits": [
+      "No current Windows/macOS interactive screenshot or physical OS IME certification.",
+      "Fast development app rendering is not shipping-release performance evidence."
+    ]
+  },
+  "phone_rendering": {
+    "passed": true,
+    "attested_by": "/root/rendering_audit",
+    "attested_at": "2026-11-01T09:47:32.641387+00:00",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    },
+    "scope": "Actual current4d77 compact Linux game presentation at412×839100% and320×640150% plus current production website phones. Fresh independent native/site pixel review closes statistics/minimap/tutorial/Tools foreground and collapsed auth-rail findings; shared layout/shaped glyph and97 native/18 website cases supply the recorded interaction coverage. Actual Android/iOS native compact execution is explicitly outside this current phone-presentation scope.",
+    "evidence": [
+      {
+        "path": "expected-producer.json",
+        "sha256": "b9031fe249a468071dec6dab94b774087d6363edf84df03766039f446216427a"
+      },
+      {
+        "path": "native-app-build.json",
+        "sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac"
+      },
+      {
+        "path": "native-tests-summary.json",
+        "sha256": "16e80c5548ca9a3271499ff9fc867440496f122fc1ecd3d57402a946b2ab305e"
+      },
+      {
+        "path": "native-focused.json",
+        "sha256": "98af84435d4e084a9417d8cebd57f5a1b8732e31b90322d267f5e69d53bb08ad"
+      },
+      {
+        "path": "native-display-tests.json",
+        "sha256": "d408a30f01eeea18d984ef5b6d7b1c5b87324b42698ba16600e7f8e5a4dd7bc2"
+      },
+      {
+        "path": "native-interactive-summary.json",
+        "sha256": "42e9121e8fd223ed182fb5572f8da8be8fca63c9d3220936f197eddd265c4422"
+      },
+      {
+        "path": "native-visual-review.json",
+        "sha256": "675df29334899e2bd4d468dbd2ea7ecef95b98ff70439fb9956f96e08547b4d7"
+      },
+      {
+        "path": "website-visual-review.json",
+        "sha256": "65b7e5a593b3816422ac70c387c54eb05652e23f23abc26d84e9685658131fb8"
+      },
+      {
+        "path": "web-build.json",
+        "sha256": "a34a01e6ca0212a68e24d41cd43e4757a6bd7865cd92588a0c7c5d5852260c3e"
+      },
+      {
+        "path": "web-e2e.json",
+        "sha256": "9930c148a3b38afa8dae87bec4e1ebb4a5101a2051944256990793efa17fbb0b"
+      },
+      {
+        "path": "web-e2e-results.json",
+        "sha256": "a96cbf077f19a52539cccc3572185dfd1b7cce0f4a5b03e2d29558386d1182c8"
+      },
+      {
+        "path": "structural-gate.json",
+        "sha256": "e8730b7e04ae2ab6ff92a69c47562a245a3aab4fe9d6ee27875db207f67631e7"
+      },
+      {
+        "path": "ci/platform-coverage-summary.json",
+        "sha256": "c8241ef23eeb68962c8170c0ca94b0222df71e919f776818bed15e7ae5cd70c6"
+      },
+      {
+        "path": "ci/component-input-comparisons.json",
+        "sha256": "f587239e7961d9c2670f6ebc96059ee0cc46594d8c29ee703daef6d68c84f9e7"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts.json",
+        "sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts-independent-review.json",
+        "sha256": "dafdfa72db4eac8631c9ce068c0efb1a4c98c122805112006bdf2c0e0872465d"
+      }
+    ],
+    "limits": [
+      "Linux phone viewport and browser mobile emulation are not physical Android/iOS execution.",
+      "Native interactive owner records its exact topic-click coverage limits; current native display regression supplies actual topic routing assertions.",
+      "No physical Bengali keyboard/IME or full-catalog pixel claim."
+    ]
+  },
+  "native_platforms": {
+    "passed": true,
+    "attested_by": "/root/rendering_audit",
+    "attested_at": "2026-11-01T09:47:32.690805+00:00",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    },
+    "scope": "Scoped available native verification: actual current4d77 Linux full-feature app/build and97 executed focused cases including font/shaping/metrics/layout/system-language and explicitX11 display/compact regression; supplemental actual Windows-fda63 and macOS-merge6c63 affected-case executions preserve their producer/compiler identities. Exact per-file comparisons distinguish unchanged font/Bidi/layout/controls/settings assets from upstream Malay additions to TrueTypeFont/SystemLanguage. This attests the available affected native checks, not execution of all current native platform binaries.",
+    "evidence": [
+      {
+        "path": "expected-producer.json",
+        "sha256": "b9031fe249a468071dec6dab94b774087d6363edf84df03766039f446216427a"
+      },
+      {
+        "path": "native-app-build.json",
+        "sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac"
+      },
+      {
+        "path": "native-tests-summary.json",
+        "sha256": "16e80c5548ca9a3271499ff9fc867440496f122fc1ecd3d57402a946b2ab305e"
+      },
+      {
+        "path": "native-focused.json",
+        "sha256": "98af84435d4e084a9417d8cebd57f5a1b8732e31b90322d267f5e69d53bb08ad"
+      },
+      {
+        "path": "native-display-tests.json",
+        "sha256": "d408a30f01eeea18d984ef5b6d7b1c5b87324b42698ba16600e7f8e5a4dd7bc2"
+      },
+      {
+        "path": "native-interactive-summary.json",
+        "sha256": "42e9121e8fd223ed182fb5572f8da8be8fca63c9d3220936f197eddd265c4422"
+      },
+      {
+        "path": "native-visual-review.json",
+        "sha256": "675df29334899e2bd4d468dbd2ea7ecef95b98ff70439fb9956f96e08547b4d7"
+      },
+      {
+        "path": "website-visual-review.json",
+        "sha256": "65b7e5a593b3816422ac70c387c54eb05652e23f23abc26d84e9685658131fb8"
+      },
+      {
+        "path": "web-build.json",
+        "sha256": "a34a01e6ca0212a68e24d41cd43e4757a6bd7865cd92588a0c7c5d5852260c3e"
+      },
+      {
+        "path": "web-e2e.json",
+        "sha256": "9930c148a3b38afa8dae87bec4e1ebb4a5101a2051944256990793efa17fbb0b"
+      },
+      {
+        "path": "web-e2e-results.json",
+        "sha256": "a96cbf077f19a52539cccc3572185dfd1b7cce0f4a5b03e2d29558386d1182c8"
+      },
+      {
+        "path": "structural-gate.json",
+        "sha256": "e8730b7e04ae2ab6ff92a69c47562a245a3aab4fe9d6ee27875db207f67631e7"
+      },
+      {
+        "path": "ci/platform-coverage-summary.json",
+        "sha256": "c8241ef23eeb68962c8170c0ca94b0222df71e919f776818bed15e7ae5cd70c6"
+      },
+      {
+        "path": "ci/component-input-comparisons.json",
+        "sha256": "f587239e7961d9c2670f6ebc96059ee0cc46594d8c29ee703daef6d68c84f9e7"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts.json",
+        "sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts-independent-review.json",
+        "sha256": "dafdfa72db4eac8631c9ce068c0efb1a4c98c122805112006bdf2c0e0872465d"
+      },
+      {
+        "path": "../bengali-localization-v4/ci/windows-final/actual-runtime-review.json",
+        "sha256": "7ab66e5bc10e2aa2a16cfc0c7f989e7cbfbd4800b5d7e74f20a0175e2cc19ef9"
+      },
+      {
+        "path": "../bengali-localization-v4/ci/41279287886/macos/coverage-and-failures.json",
+        "sha256": "78040c491ecfdc77fad4607ac8a41a814be3f6ae14d04de6631f5dfedb3d2bee"
+      }
+    ],
+    "actual_execution_sources": {
+      "Linux": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "Windows": "fda5e076eafc103b59b18136c137abdb6262d981",
+      "macOS": "6c4b0eb44b16bd68b4774ae20279741cdb7bfcd3"
+    },
+    "unexecuted_current_binaries": [
+      "Windows4d77",
+      "macOS4d77"
+    ],
+    "known_failures": "Old macOS full suite has10 known unrelated failures; main old Windows JS corpus has1 stale replay case/3assertions and skipped downstream fullunit/engine steps. These remain failures; separate affected-case results are separately scoped.",
+    "limits": [
+      "No current Windows/macOS whole-binary or new compact display execution inferred.",
+      "No source reuse claim where file comparison differs; inspected Malay additions are explicitly recorded and current Linux code tested."
+    ]
+  },
+  "mobile_platforms": {
+    "passed": true,
+    "attested_by": "/root/rendering_audit",
+    "attested_at": "2026-11-01T09:47:32.722120+00:00",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    },
+    "scope": "Scoped available mobile-language evidence: actual old942 release Android package closure and owned emulator Bengali OS-first-visit/render/settings/lifecycle, plus actual retained942 iOS simulator Bengali/font/package startup/resume/relaunch. Current4d77 checks verify56 admitted mobile text/font inputs against current native export bytes (39 native catalogs,13 script fonts, Noto licence/manifest), current39-catalog browser package font closure, current97-case portable font/layout/input/display tests and current compact Linux/website visuals. Old mobile native3395-key catalog retains its exact hash; current3411 adds16 previously reviewed/rendered native labels, and105 new online labels have current bundled website/font evidence. This is acceptance of the recorded available affected mobile checks with omissions, never a current Android/iOS whole-binary pass.",
+    "evidence": [
+      {
+        "path": "expected-producer.json",
+        "sha256": "b9031fe249a468071dec6dab94b774087d6363edf84df03766039f446216427a"
+      },
+      {
+        "path": "native-app-build.json",
+        "sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac"
+      },
+      {
+        "path": "native-tests-summary.json",
+        "sha256": "16e80c5548ca9a3271499ff9fc867440496f122fc1ecd3d57402a946b2ab305e"
+      },
+      {
+        "path": "native-focused.json",
+        "sha256": "98af84435d4e084a9417d8cebd57f5a1b8732e31b90322d267f5e69d53bb08ad"
+      },
+      {
+        "path": "native-display-tests.json",
+        "sha256": "d408a30f01eeea18d984ef5b6d7b1c5b87324b42698ba16600e7f8e5a4dd7bc2"
+      },
+      {
+        "path": "native-interactive-summary.json",
+        "sha256": "42e9121e8fd223ed182fb5572f8da8be8fca63c9d3220936f197eddd265c4422"
+      },
+      {
+        "path": "native-visual-review.json",
+        "sha256": "675df29334899e2bd4d468dbd2ea7ecef95b98ff70439fb9956f96e08547b4d7"
+      },
+      {
+        "path": "website-visual-review.json",
+        "sha256": "65b7e5a593b3816422ac70c387c54eb05652e23f23abc26d84e9685658131fb8"
+      },
+      {
+        "path": "web-build.json",
+        "sha256": "a34a01e6ca0212a68e24d41cd43e4757a6bd7865cd92588a0c7c5d5852260c3e"
+      },
+      {
+        "path": "web-e2e.json",
+        "sha256": "9930c148a3b38afa8dae87bec4e1ebb4a5101a2051944256990793efa17fbb0b"
+      },
+      {
+        "path": "web-e2e-results.json",
+        "sha256": "a96cbf077f19a52539cccc3572185dfd1b7cce0f4a5b03e2d29558386d1182c8"
+      },
+      {
+        "path": "structural-gate.json",
+        "sha256": "e8730b7e04ae2ab6ff92a69c47562a245a3aab4fe9d6ee27875db207f67631e7"
+      },
+      {
+        "path": "ci/platform-coverage-summary.json",
+        "sha256": "c8241ef23eeb68962c8170c0ca94b0222df71e919f776818bed15e7ae5cd70c6"
+      },
+      {
+        "path": "ci/component-input-comparisons.json",
+        "sha256": "f587239e7961d9c2670f6ebc96059ee0cc46594d8c29ee703daef6d68c84f9e7"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts.json",
+        "sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts-independent-review.json",
+        "sha256": "dafdfa72db4eac8631c9ce068c0efb1a4c98c122805112006bdf2c0e0872465d"
+      },
+      {
+        "path": "ci/mobile-current-asset-inputs.json",
+        "sha256": "c1b3037f59f7ad64d0e4c37df362d856328fbb9fdff8e5f48630fbb71dcafb0e"
+      },
+      {
+        "path": "../bengali-localization-v3/ci/41266158472/bengali-runtime-review.json",
+        "sha256": "630cd20971b41cb40924001fe27c19b75aa78d7af6e3bd1c452cd70e15881ac5"
+      },
+      {
+        "path": "../bengali-localization-v3/ci/41266158472/shutdown.json",
+        "sha256": "048e1ac4def195927ce6e2d89e0d91cb7e45f6854657fe41941766693e70d9e0"
+      },
+      {
+        "path": "../bengali-localization-v3/ios-validation/runtime-recovery/independent-review.json",
+        "sha256": "f86981d7b67f96c0df5083495a35c5bc0c8b5255eba2261dccfcf2c9b94bc7bc"
+      }
+    ],
+    "actual_execution_sources": {
+      "Android": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "iOS": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "current_mobile_asset_input_probe": "4d77f0315f62504afd2669cb7dd12369f8e0b43f"
+    },
+    "unexecuted_current_binaries": [
+      "Android4d77",
+      "iOS4d77"
+    ],
+    "limits": [
+      "Current Android/iOS binary and compact foreground/input paths are not executed on those native OSes.",
+      "Old Android actual x86_64 emulator is not arm64/armv7/physical-device runtime coverage.",
+      "iOS uses a seeded actual SDL preference directory, not automatic system-locale first visit.",
+      "No physical Bengali IME, store signing/submission or physical-device certification."
+    ]
+  },
+  "browser_startup": {
+    "passed": true,
+    "attested_by": "/root/rendering_audit",
+    "attested_at": "2026-11-01T09:47:32.770318+00:00",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    },
+    "scope": "Actual clean4d77 full-feature serial/threaded software desktop+phone and threaded desktopWebGL2 cold launches, Bengali locale/font/catalog loading, selection/persistence and input. Five cases executed successfully, bothvariants freshly built/sealed, all161 members unchanged after owned processes exited; independent adversary actually inspected44 PNGs. Actual opaque panel contrast diff0, valid43-character/129-byte save, tracked alpha regression and actual320×640150% Tools/statistics-close/map-peek/guidance passed.",
+    "evidence": [
+      {
+        "path": "expected-producer.json",
+        "sha256": "b9031fe249a468071dec6dab94b774087d6363edf84df03766039f446216427a"
+      },
+      {
+        "path": "native-app-build.json",
+        "sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac"
+      },
+      {
+        "path": "native-tests-summary.json",
+        "sha256": "16e80c5548ca9a3271499ff9fc867440496f122fc1ecd3d57402a946b2ab305e"
+      },
+      {
+        "path": "native-focused.json",
+        "sha256": "98af84435d4e084a9417d8cebd57f5a1b8732e31b90322d267f5e69d53bb08ad"
+      },
+      {
+        "path": "native-display-tests.json",
+        "sha256": "d408a30f01eeea18d984ef5b6d7b1c5b87324b42698ba16600e7f8e5a4dd7bc2"
+      },
+      {
+        "path": "native-interactive-summary.json",
+        "sha256": "42e9121e8fd223ed182fb5572f8da8be8fca63c9d3220936f197eddd265c4422"
+      },
+      {
+        "path": "native-visual-review.json",
+        "sha256": "675df29334899e2bd4d468dbd2ea7ecef95b98ff70439fb9956f96e08547b4d7"
+      },
+      {
+        "path": "website-visual-review.json",
+        "sha256": "65b7e5a593b3816422ac70c387c54eb05652e23f23abc26d84e9685658131fb8"
+      },
+      {
+        "path": "web-build.json",
+        "sha256": "a34a01e6ca0212a68e24d41cd43e4757a6bd7865cd92588a0c7c5d5852260c3e"
+      },
+      {
+        "path": "web-e2e.json",
+        "sha256": "9930c148a3b38afa8dae87bec4e1ebb4a5101a2051944256990793efa17fbb0b"
+      },
+      {
+        "path": "web-e2e-results.json",
+        "sha256": "a96cbf077f19a52539cccc3572185dfd1b7cce0f4a5b03e2d29558386d1182c8"
+      },
+      {
+        "path": "structural-gate.json",
+        "sha256": "e8730b7e04ae2ab6ff92a69c47562a245a3aab4fe9d6ee27875db207f67631e7"
+      },
+      {
+        "path": "ci/platform-coverage-summary.json",
+        "sha256": "c8241ef23eeb68962c8170c0ca94b0222df71e919f776818bed15e7ae5cd70c6"
+      },
+      {
+        "path": "ci/component-input-comparisons.json",
+        "sha256": "f587239e7961d9c2670f6ebc96059ee0cc46594d8c29ee703daef6d68c84f9e7"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts.json",
+        "sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts-independent-review.json",
+        "sha256": "dafdfa72db4eac8631c9ce068c0efb1a4c98c122805112006bdf2c0e0872465d"
+      },
+      {
+        "path": "browser-runtime/final-browser-summary.json",
+        "sha256": "2dde587165ed19bd79329c03cb22eee78d4cada88418ce8cf226b9a8a393f349"
+      },
+      {
+        "path": "browser-runtime/final-visual-review.json",
+        "sha256": "043f3f49565663b9ce8d09a8614523da2870e23b718e7290e07079a0b2cbba13"
+      },
+      {
+        "path": "browser-runtime/final-owned-process-cleanup.json",
+        "sha256": "742c37b052d80a783484eb0fbe25ae4a13f36e8da831b1a41f7f90c8bd224c82"
+      },
+      {
+        "path": "browser-gate-attestation.json",
+        "sha256": "90ffe3d628f34284f0d10c1e7c20fe2cc6975418ae27aefcbde0417e4c66b192"
+      }
+    ],
+    "limits": [
+      "Raw standalone cold launcher PNGs and launcher-brand/raw-desktop.png visibly contain broken brand icon; receipt shows existing production platform theme/signin asset routes404 on the isolated raw-package server. Overlay supplies existing hashed design-system/platform routes without modifying final package bytes. This review does not claim raw standalone branding is complete.",
+      "threaded-phone-audio-preference.png actually shows splash; threaded-phone-hand-preference.png actually shows audio preference due capture timing. Labels do not establish a hand screen capture for that case. Actual serial-phone and focused-phone hand preference PNGs are separately viewed.",
+      "after-6 tutorial is expanded, apparently after existing hint update. No assertion stable collapsed state preserved in this browser sequence. Native separate evidence owns that scope.",
+      "Focused phone route opens statistics and shows5labels; does not prove manual distinct selection of all5topics. Separate current native bounds test owns that assertion.",
+      "Linux Chromium scripted desktop/phone viewport browser evidence only; no physical Android/iOS, real OS keyboard/IME, assistive-technology, release-performance or simulation-determinism certification.",
+      "No claim all6358 localized pairs rendered or freshly linguistically reread by this visual pass.",
+      "Earlier source-bound reviews retain their actual producer identities; no relabeling.",
+      "Agent visual review, not native-human language certification.",
+      "Standalone browser/serve.py intentionally lacks platform branding routes; original raw404 image evidence retained. Overlay supplies only existing pinned production assets.",
+      "Chromium desktop/phone presentation is not Android/iOS device or OS-IME evidence.",
+      "Full-feature fast development build; no release-performance claim."
+    ]
+  },
+  "browser_platforms": {
+    "passed": true,
+    "attested_by": "/root/rendering_audit",
+    "attested_at": "2026-11-01T09:47:32.801631+00:00",
+    "code_identity": {
+      "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+    },
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+      "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+    },
+    "scope": "Actual current Chromium desktop/phone browser-game execution with software andWebGL2 renderers, serial/threaded variants, plus current18 productionwebsite workflows and48 actual independent website PNG inspections onChromium/Firefox/WebKit desktop+phone. Sealed39native/39online catalogs(Bengali2947),13script fonts/OFL/core-CJK split verified. This is representative available browser coverage, not allbrowsers×allgamepaths or physicalmobile/OSIME coverage.",
+    "evidence": [
+      {
+        "path": "expected-producer.json",
+        "sha256": "b9031fe249a468071dec6dab94b774087d6363edf84df03766039f446216427a"
+      },
+      {
+        "path": "native-app-build.json",
+        "sha256": "f8403744be6997de1267cd28a0bb839405fbdd0ea3f48bc9868f71968355e0ac"
+      },
+      {
+        "path": "native-tests-summary.json",
+        "sha256": "16e80c5548ca9a3271499ff9fc867440496f122fc1ecd3d57402a946b2ab305e"
+      },
+      {
+        "path": "native-focused.json",
+        "sha256": "98af84435d4e084a9417d8cebd57f5a1b8732e31b90322d267f5e69d53bb08ad"
+      },
+      {
+        "path": "native-display-tests.json",
+        "sha256": "d408a30f01eeea18d984ef5b6d7b1c5b87324b42698ba16600e7f8e5a4dd7bc2"
+      },
+      {
+        "path": "native-interactive-summary.json",
+        "sha256": "42e9121e8fd223ed182fb5572f8da8be8fca63c9d3220936f197eddd265c4422"
+      },
+      {
+        "path": "native-visual-review.json",
+        "sha256": "675df29334899e2bd4d468dbd2ea7ecef95b98ff70439fb9956f96e08547b4d7"
+      },
+      {
+        "path": "website-visual-review.json",
+        "sha256": "65b7e5a593b3816422ac70c387c54eb05652e23f23abc26d84e9685658131fb8"
+      },
+      {
+        "path": "web-build.json",
+        "sha256": "a34a01e6ca0212a68e24d41cd43e4757a6bd7865cd92588a0c7c5d5852260c3e"
+      },
+      {
+        "path": "web-e2e.json",
+        "sha256": "9930c148a3b38afa8dae87bec4e1ebb4a5101a2051944256990793efa17fbb0b"
+      },
+      {
+        "path": "web-e2e-results.json",
+        "sha256": "a96cbf077f19a52539cccc3572185dfd1b7cce0f4a5b03e2d29558386d1182c8"
+      },
+      {
+        "path": "structural-gate.json",
+        "sha256": "e8730b7e04ae2ab6ff92a69c47562a245a3aab4fe9d6ee27875db207f67631e7"
+      },
+      {
+        "path": "ci/platform-coverage-summary.json",
+        "sha256": "c8241ef23eeb68962c8170c0ca94b0222df71e919f776818bed15e7ae5cd70c6"
+      },
+      {
+        "path": "ci/component-input-comparisons.json",
+        "sha256": "f587239e7961d9c2670f6ebc96059ee0cc46594d8c29ee703daef6d68c84f9e7"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts.json",
+        "sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a"
+      },
+      {
+        "path": "integration/sealed-catalog-fonts-independent-review.json",
+        "sha256": "dafdfa72db4eac8631c9ce068c0efb1a4c98c122805112006bdf2c0e0872465d"
+      },
+      {
+        "path": "browser-runtime/final-browser-summary.json",
+        "sha256": "2dde587165ed19bd79329c03cb22eee78d4cada88418ce8cf226b9a8a393f349"
+      },
+      {
+        "path": "browser-runtime/final-visual-review.json",
+        "sha256": "043f3f49565663b9ce8d09a8614523da2870e23b718e7290e07079a0b2cbba13"
+      },
+      {
+        "path": "browser-runtime/final-owned-process-cleanup.json",
+        "sha256": "742c37b052d80a783484eb0fbe25ae4a13f36e8da831b1a41f7f90c8bd224c82"
+      },
+      {
+        "path": "browser-gate-attestation.json",
+        "sha256": "90ffe3d628f34284f0d10c1e7c20fe2cc6975418ae27aefcbde0417e4c66b192"
+      }
+    ],
+    "limits": [
+      "Raw standalone cold launcher PNGs and launcher-brand/raw-desktop.png visibly contain broken brand icon; receipt shows existing production platform theme/signin asset routes404 on the isolated raw-package server. Overlay supplies existing hashed design-system/platform routes without modifying final package bytes. This review does not claim raw standalone branding is complete.",
+      "threaded-phone-audio-preference.png actually shows splash; threaded-phone-hand-preference.png actually shows audio preference due capture timing. Labels do not establish a hand screen capture for that case. Actual serial-phone and focused-phone hand preference PNGs are separately viewed.",
+      "after-6 tutorial is expanded, apparently after existing hint update. No assertion stable collapsed state preserved in this browser sequence. Native separate evidence owns that scope.",
+      "Focused phone route opens statistics and shows5labels; does not prove manual distinct selection of all5topics. Separate current native bounds test owns that assertion.",
+      "Linux Chromium scripted desktop/phone viewport browser evidence only; no physical Android/iOS, real OS keyboard/IME, assistive-technology, release-performance or simulation-determinism certification.",
+      "No claim all6358 localized pairs rendered or freshly linguistically reread by this visual pass.",
+      "Earlier source-bound reviews retain their actual producer identities; no relabeling.",
+      "Agent visual review, not native-human language certification.",
+      "Standalone browser/serve.py intentionally lacks platform branding routes; original raw404 image evidence retained. Overlay supplies only existing pinned production assets.",
+      "Chromium desktop/phone presentation is not Android/iOS device or OS-IME evidence.",
+      "Full-feature fast development build; no release-performance claim."
+    ]
+  }
+}

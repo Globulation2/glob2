@@ -1,0 +1,30 @@
+{
+  "method": "ui_key",
+  "arguments": {
+    "key": "Escape"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": true, \"controller\": \"Local MCP client\", \"dispatched\": true, \"frame_id\": 4121, \"height\": 839, \"input_started\": true, \"viewport_id\": 1, \"width\": 412}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "available": true,
+        "controlled": true,
+        "controller": "Local MCP client",
+        "dispatched": true,
+        "frame_id": 4121,
+        "height": 839,
+        "input_started": true,
+        "viewport_id": 1,
+        "width": 412
+      }
+    }
+  }
+}

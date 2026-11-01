@@ -1,0 +1,74 @@
+{
+  "id": "native-tutorial-001",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "surface": "native",
+  "domain": "tutorial",
+  "context": "Teach the player the action shown. Preserve tutorial execution and mission identifiers; translate display text only.",
+  "entries": [
+    {
+      "id": "native:[tutorial text 1]",
+      "key": "[tutorial text 1]",
+      "source": "Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!"
+    },
+    {
+      "id": "native:[tutorial text 2]",
+      "key": "[tutorial text 2]",
+      "source": "Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools."
+    },
+    {
+      "id": "native:[tutorial text 3]",
+      "key": "[tutorial text 3]",
+      "source": "You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades."
+    },
+    {
+      "id": "native:[tutorial text 4]",
+      "key": "[tutorial text 4]",
+      "source": "You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players."
+    },
+    {
+      "id": "native:[tutorial]",
+      "key": "[tutorial]",
+      "source": "Tutorial"
+    },
+    {
+      "id": "native:[tutorial lessons]",
+      "key": "[tutorial lessons]",
+      "source": "Tutorial lessons"
+    },
+    {
+      "id": "native:[tutorial restart]",
+      "key": "[tutorial restart]",
+      "source": "Restart lesson"
+    },
+    {
+      "id": "native:[tutorial restart body]",
+      "key": "[tutorial restart body]",
+      "source": "Restart this lesson from its prepared colony? Unsaved progress will be lost."
+    },
+    {
+      "id": "native:[tutorial complete]",
+      "key": "[tutorial complete]",
+      "source": "Lesson complete"
+    },
+    {
+      "id": "native:[tutorial food title]",
+      "key": "[tutorial food title]",
+      "source": "Food supply practice"
+    },
+    {
+      "id": "native:[tutorial food briefing]",
+      "key": "[tutorial food briefing]",
+      "source": "Practice expanding food supply: build another Inn, then assign suppliers and watch wheat arrive."
+    },
+    {
+      "id": "native:[tutorial food complete]",
+      "key": "[tutorial food complete]",
+      "source": "You built an Inn and supplied it with wheat. Try another lesson or return to the main menu."
+    },
+    {
+      "id": "native:[tutorial unavailable]",
+      "key": "[tutorial unavailable]",
+      "source": "Tutorial lessons could not be loaded."
+    }
+  ]
+}

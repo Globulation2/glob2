@@ -1,0 +1,401 @@
+{
+  "producerSha256": "bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8",
+  "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "viewport": {
+    "width": 320,
+    "height": 640
+  },
+  "textSizePercent": 150,
+  "actions": [
+    {
+      "type": "tap",
+      "x": 133,
+      "y": 538
+    },
+    {
+      "type": "tap",
+      "x": 207,
+      "y": 490
+    },
+    {
+      "type": "tap",
+      "x": 26,
+      "y": 128
+    },
+    {
+      "type": "tap",
+      "x": 207,
+      "y": 438
+    },
+    {
+      "type": "tap",
+      "x": 60,
+      "y": 405
+    },
+    {
+      "type": "tap",
+      "x": 133,
+      "y": 538
+    },
+    {
+      "type": "complete",
+      "reviewedScopes": [
+        "all-tools-rows-visible",
+        "statistics-reached",
+        "statistics-closed-tools-clear",
+        "map-peek-visible",
+        "guidance-restored"
+      ],
+      "evidence": {
+        "allToolsRows": "after-1.png",
+        "statistics": "after-2.png",
+        "statsClosedTools": "after-3.png",
+        "mapPeek": "after-4.png",
+        "peekClosedTools": "after-5.png",
+        "guidanceRestored": "after-6.png",
+        "observation": "Actual settled screenshots inspected at 320x640 CSS, DPR2, 150% text. All11 Tools tiles are visible and unobscured; statistics header/topics unobscured; no tutorial card overlays Tools after statistics closes or map peek; readable guidance returns after Tools closes."
+      }
+    }
+  ],
+  "passed": true,
+  "scope": "Chromium real serial software browser compact Tools/statistics/map-peek/guidance foreground regression; native platform coverage separate",
+  "pageErrors": [],
+  "startupInteractions": [
+    {
+      "screen": "21AudioPreferenceScreen 21AudioPreferenceScreen",
+      "control": "audio.silence",
+      "bounds": {
+        "x": 16,
+        "y": 502,
+        "w": 140,
+        "h": 48,
+        "visible": {
+          "x": 16,
+          "y": 502,
+          "w": 140,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "নীরবতা",
+        "surface": {
+          "w": 320,
+          "h": 640
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 320,
+          "h": 640
+        }
+      }
+    },
+    {
+      "screen": "20HandPreferenceScreen 20HandPreferenceScreen",
+      "control": "hand.right",
+      "bounds": {
+        "x": 164,
+        "y": 472,
+        "w": 140,
+        "h": 48,
+        "visible": {
+          "x": 164,
+          "y": 472,
+          "w": 140,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "ডান হাত",
+        "surface": {
+          "w": 320,
+          "h": 640
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 320,
+          "h": 640
+        }
+      }
+    },
+    {
+      "screen": "23IntroductionOfferScreen 23IntroductionOfferScreen",
+      "control": "intro/menu",
+      "bounds": {
+        "x": 16,
+        "y": 550,
+        "w": 288,
+        "h": 48,
+        "visible": {
+          "x": 16,
+          "y": 550,
+          "w": 288,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "মূল মেনুতে ফিরে যান",
+        "surface": {
+          "w": 320,
+          "h": 640
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 320,
+          "h": 640
+        }
+      }
+    }
+  ],
+  "expanded": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "software",
+    "renderContext": null,
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "match",
+    "screenClass": "17GameSessionScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 39,
+    "frames": 13,
+    "loop": 1232,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 640,
+    "height": 1280,
+    "heapBytes": 278396928,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "skipped"
+    },
+    "opened": [],
+    "controls": {
+      "intro/destination": {
+        "x": 405,
+        "y": 570,
+        "w": 110,
+        "h": 124,
+        "visible": {
+          "x": 405,
+          "y": 570,
+          "w": 110,
+          "h": 124
+        },
+        "enabled": true,
+        "label": "গন্তব্য দেখান",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 815
+        }
+      },
+      "intro/help": {
+        "x": 520,
+        "y": 570,
+        "w": 110,
+        "h": 124,
+        "visible": {
+          "x": 520,
+          "y": 570,
+          "w": 110,
+          "h": 124
+        },
+        "enabled": true,
+        "label": "সাহায্য / কেন?",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 815
+        }
+      },
+      "intro/collapse": {
+        "x": 635,
+        "y": 572,
+        "w": 110,
+        "h": 120,
+        "visible": {
+          "x": 635,
+          "y": 572,
+          "w": 110,
+          "h": 120
+        },
+        "enabled": true,
+        "label": "−",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 815
+        }
+      }
+    }
+  },
+  "collapsed": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "software",
+    "renderContext": null,
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "match",
+    "screenClass": "17GameSessionScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 141,
+    "frames": 64,
+    "loop": 1283,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 640,
+    "height": 1280,
+    "heapBytes": 278396928,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "skipped"
+    },
+    "opened": [],
+    "controls": {
+      "intro/destination": {
+        "x": 405,
+        "y": 435,
+        "w": 110,
+        "h": 124,
+        "visible": {
+          "x": 405,
+          "y": 435,
+          "w": 110,
+          "h": 124
+        },
+        "enabled": true,
+        "label": "গন্তব্য দেখান",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 124
+        }
+      },
+      "intro/help": {
+        "x": 520,
+        "y": 435,
+        "w": 110,
+        "h": 124,
+        "visible": {
+          "x": 520,
+          "y": 435,
+          "w": 110,
+          "h": 124
+        },
+        "enabled": true,
+        "label": "সাহায্য / কেন?",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 124
+        }
+      },
+      "intro/collapse": {
+        "x": 635,
+        "y": 437,
+        "w": 110,
+        "h": 120,
+        "visible": {
+          "x": 635,
+          "y": 437,
+          "w": 110,
+          "h": 120
+        },
+        "enabled": true,
+        "label": "+",
+        "surface": {
+          "w": 800,
+          "h": 1600
+        },
+        "root": {
+          "x": 55,
+          "y": 435,
+          "w": 690,
+          "h": 124
+        }
+      }
+    }
+  },
+  "collapsedCardCssHeight": 49.6,
+  "actualVisualReview": {
+    "reviewer": "/root/cloud_runner",
+    "scopes": [
+      "all-tools-rows-visible",
+      "statistics-reached",
+      "statistics-closed-tools-clear",
+      "map-peek-visible",
+      "guidance-restored"
+    ],
+    "evidence": {
+      "allToolsRows": "after-1.png",
+      "statistics": "after-2.png",
+      "statsClosedTools": "after-3.png",
+      "mapPeek": "after-4.png",
+      "peekClosedTools": "after-5.png",
+      "guidanceRestored": "after-6.png",
+      "observation": "Actual settled screenshots inspected at 320x640 CSS, DPR2, 150% text. All11 Tools tiles are visible and unobscured; statistics header/topics unobscured; no tutorial card overlays Tools after statistics closes or map peek; readable guidance returns after Tools closes."
+    }
+  }
+}

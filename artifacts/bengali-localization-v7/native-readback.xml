@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests" errors="0" failures="0" tests="45" time="17.3929" timestamp="2026-11-01T09:20:36Z" doctest_version="2.4.11">
+    <testcase classname="src/hud/touch/GameGUITouchHarness.cpp" name="compact Bengali tutorial yields to statistics and covers the minimap [display][artifacts]" time="17.3929" status="run"/>
+  </testsuite>
+</testsuites>

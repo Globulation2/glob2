@@ -1,0 +1,39 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "actual_merge": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+  "actual_parents": [
+    "ea3500b24b50d66b512bfc3538b5955c5be5fbc5",
+    "ffabe1b9ef4e2a9986b1d6321c356124480b8a2d"
+  ],
+  "reviewed_at": "2026-11-01T09:15:19.620503+00:00",
+  "files": {
+    "platform/packages/i18n/scripts/check.ts": "0ee541445771379b806649854772972c2ee39b53e0b1b149461da28d8803b769",
+    "platform/packages/i18n/scripts/source-contract.ts": "1ffd6e4a190c22fb7ead5634fbc7b158b2476915da8aea4c4832a58864f863a4",
+    "platform/packages/i18n/src/index.ts": "0cde09525a546c3665cade1f235c26727dfb131064056969ba1d445aac17a050",
+    "platform/packages/i18n/test/runtime.test.ts": "68a884f274544f6091e4b0c654bb696216eb12b5f7a9152ac0b79e7477c0d91b",
+    "platform/packages/i18n/test/source-contract.test.ts": "3a5693e0055ee0737cccc4916349779a4c110062f862f3b8810933960324f0c7"
+  },
+  "reviewed_union": [
+    "Bengali Beng and Malay Latn written-script fallback rules both retained, including extension/private-use separation.",
+    "Both bn and ms default catalog import loaders retained.",
+    "All installed languages exercise the default browser loader, including Bengali and Malay.",
+    "Both targeted fixedLabelErrors(AI_TAGS) and general declaration-derived fixedMetadataSources/Errors source inventory checks retained.",
+    "All old Bengali locale tests, incoming Malay Rumi/Jawi tests and future-metadata declaration tests retained."
+  ],
+  "executed_test_result": {
+    "revision_before": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+    "revision_after": "405757f7b1ebf8b52cce62c057906c77c4b2317c",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "packages/i18n/test/runtime.test.ts",
+      "packages/i18n/test/source-contract.test.ts"
+    ],
+    "node": "v24.19.0",
+    "exit_code": 0,
+    "seconds": 6.055352649986162,
+    "log_sha256": "e4216bf7254895c8fecbe2b83229854a9218744b40b7b9eea78c71ebfef772c8"
+  },
+  "scope": "Actual clean merge unit verification, not final105 Bengali translation or final renderer/platform proof."
+}

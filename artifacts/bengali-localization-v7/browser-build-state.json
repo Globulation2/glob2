@@ -1,0 +1,31 @@
+{
+  "productionRevision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+  "sourceBefore": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "target=web",
+    "web_variant=both",
+    "emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39",
+    "-j4",
+    "web-package"
+  ],
+  "dependencySealSha256": "ea7aaee550ea46a7ade59502f33471babf42555b02aee47a491a471da566e88d",
+  "status": "complete",
+  "ownedChildPid": 3881126,
+  "exitStatus": 0,
+  "wallSeconds": 313.51755160400353,
+  "sourceAfter": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "buildLogSha256": "ab0e119257b6fb696b541e904cab4654b447dcd0b63feb935a55db990040977b",
+  "sourceStable": true
+}

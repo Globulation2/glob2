@@ -1,0 +1,269 @@
+{
+  "passed": true,
+  "attested_by": "/root/rendering_audit",
+  "attested_at": "2026-11-01T09:47:32.316342+00:00",
+  "code_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "online": "488dd5ff63f1d7ec86b6c1d4b98b10011a51fe9fd00486c093a78f9cee9209d1"
+  },
+  "startup_scope": "Actual clean4d77 full-feature serial/threaded software desktop+phone and threaded desktopWebGL2 cold launches, Bengali locale/font/catalog loading, selection/persistence and input. Five cases executed successfully, bothvariants freshly built/sealed, all161 members unchanged after owned processes exited; independent adversary actually inspected44 PNGs. Actual opaque panel contrast diff0, valid43-character/129-byte save, tracked alpha regression and actual320×640150% Tools/statistics-close/map-peek/guidance passed.",
+  "platform_scope": "Actual current Chromium desktop/phone browser-game execution with software andWebGL2 renderers, serial/threaded variants, plus current18 productionwebsite workflows and48 actual independent website PNG inspections onChromium/Firefox/WebKit desktop+phone. Sealed39native/39online catalogs(Bengali2947),13script fonts/OFL/core-CJK split verified. This is representative available browser coverage, not allbrowsers×allgamepaths or physicalmobile/OSIME coverage.",
+  "limits": [
+    "Raw standalone cold launcher PNGs and launcher-brand/raw-desktop.png visibly contain broken brand icon; receipt shows existing production platform theme/signin asset routes404 on the isolated raw-package server. Overlay supplies existing hashed design-system/platform routes without modifying final package bytes. This review does not claim raw standalone branding is complete.",
+    "threaded-phone-audio-preference.png actually shows splash; threaded-phone-hand-preference.png actually shows audio preference due capture timing. Labels do not establish a hand screen capture for that case. Actual serial-phone and focused-phone hand preference PNGs are separately viewed.",
+    "after-6 tutorial is expanded, apparently after existing hint update. No assertion stable collapsed state preserved in this browser sequence. Native separate evidence owns that scope.",
+    "Focused phone route opens statistics and shows5labels; does not prove manual distinct selection of all5topics. Separate current native bounds test owns that assertion.",
+    "Linux Chromium scripted desktop/phone viewport browser evidence only; no physical Android/iOS, real OS keyboard/IME, assistive-technology, release-performance or simulation-determinism certification.",
+    "No claim all6358 localized pairs rendered or freshly linguistically reread by this visual pass.",
+    "Earlier source-bound reviews retain their actual producer identities; no relabeling.",
+    "Agent visual review, not native-human language certification.",
+    "Standalone browser/serve.py intentionally lacks platform branding routes; original raw404 image evidence retained. Overlay supplies only existing pinned production assets.",
+    "Chromium desktop/phone presentation is not Android/iOS device or OS-IME evidence.",
+    "Full-feature fast development build; no release-performance claim."
+  ],
+  "evidence": [
+    {
+      "path": "browser-runtime/final-browser-summary.json",
+      "sha256": "2dde587165ed19bd79329c03cb22eee78d4cada88418ce8cf226b9a8a393f349"
+    },
+    {
+      "path": "browser-runtime/final-owned-process-cleanup.json",
+      "sha256": "742c37b052d80a783484eb0fbe25ae4a13f36e8da831b1a41f7f90c8bd224c82"
+    },
+    {
+      "path": "browser-visual-review.json",
+      "sha256": "09de1b2341eba5f06a4663398f1aeac5201eee7ec56cd6f4d4547236072b714b"
+    },
+    {
+      "path": "browser-runtime/final-visual-review.json",
+      "sha256": "043f3f49565663b9ce8d09a8614523da2870e23b718e7290e07079a0b2cbba13"
+    },
+    {
+      "path": "browser-final-production-provenance.json",
+      "sha256": "bc36c1263d78e85d767f7af9b0701976ef07bbe5255a91de49b88d78a8fac6f8"
+    },
+    {
+      "path": "integration/sealed-catalog-fonts.json",
+      "sha256": "4bda123379aee8fc20237ec08dec05bb5fc9a543231046bea6d80333ea24244a"
+    },
+    {
+      "path": "integration/sealed-catalog-fonts-independent-review.json",
+      "sha256": "dafdfa72db4eac8631c9ce068c0efb1a4c98c122805112006bdf2c0e0872465d"
+    },
+    {
+      "path": "browser-build-state.json",
+      "sha256": "cd69845a1db4b90eb49743b067d3dc5fddc2ecb84e1b99b27bd41b16804f1a33"
+    },
+    {
+      "path": "browser-qa-status.json",
+      "sha256": "2075d16fcc32916c52e2afb9d65a9f1b2ffc35f6763b1c1332252a04efc0b8aa"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/report.json",
+      "sha256": "fb48e9cb5826d51e59f8b687dcc6117ba1f4be011a90fa9bcb4e136cd0681b90"
+    },
+    {
+      "path": "browser-runtime/package-manifest.json",
+      "sha256": "3d10d1926fff2d71f4451b73894f3989479e00732d471d5e9d28e4b1b1912c08"
+    },
+    {
+      "path": "browser-runtime/attempt-001/startup-report.json",
+      "sha256": "182ef1f9b2f49943f0e40e501c4f578a66a99e4e3995f765720a751d504e0310"
+    },
+    {
+      "path": "browser-runtime/launcher-brand/report.json",
+      "sha256": "9b9b504a5e0f8ea0c50d679bfdd783c4b36c29d17019a775a965c86dd92eda44"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-desktop-bengali-input.png",
+      "sha256": "4e5154b84b58170ab209c2dc2ea62d50b12a63da6c9a577b65800efef1a9c23e"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-desktop-launcher.png",
+      "sha256": "4430412e9e037bfb75c2f8f7b1554536db6450c19827afae81617c9c3e15cc89"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-desktop-main.png",
+      "sha256": "6a545baecf77379ff94a2e61598d36d1e3ce165e8711e87c0b8bbf6bec129875"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-desktop-settings.png",
+      "sha256": "20fb35335cc2aa289c3d6ebb00014a8cf117e83c6417d8c412403f45a88bb463"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-phone-audio-preference.png",
+      "sha256": "497f90b2ec2cf3f6eae3c60fae355f53c67d44194184109f42bf3f3abe04dca9"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-phone-bengali-input.png",
+      "sha256": "3b92ac77bf3f09789ebc8c24ce78077c83637871fccca38bd4fa571e564c70fc"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-phone-hand-preference.png",
+      "sha256": "48840e4b6881d11ada1d71a0bab9831949f1773c8c2c363150534e58a7625f3f"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-phone-launcher.png",
+      "sha256": "8b0a17f3517b6127673788fc92d3e36c30d2170e5127eaa375bef39e7d531894"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-phone-main.png",
+      "sha256": "65116311c5a5a24deb7c0ee5fbcfa12307dd3a99bb14e502359254a694d96891"
+    },
+    {
+      "path": "browser-runtime/attempt-001/serial-phone-settings.png",
+      "sha256": "ea2f5da7715455d9a7729d98e0b3cde8a26d09c7b0f4741acf4a825b60030676"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-bengali-input.png",
+      "sha256": "08f467e58143f673bc6dad4a0db622fcbc0b08bbbc6eb268e5f9f3d6395b8877"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-launcher.png",
+      "sha256": "06330cd49b66f7cdab30859322afc02e7c2c14feb8a3add503bc1cf396cc0a21"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-main.png",
+      "sha256": "0eea86acb6866723cce3e02a0ed244eea8f4da8785f26ced03d08670f9f86c3a"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-settings.png",
+      "sha256": "801e11e25e29549ad48791981d4fe7a10e4447804d7f2ea908d9d7da64b9fdb0"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-bengali-input.png",
+      "sha256": "6a466da297782c4e832819d3c18ab1e4bf95c1de80258cfaefa501a7c1f0b16a"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-bengali-save-input.png",
+      "sha256": "3d242d9e6f602383daa62d55d0c419aacdcdf1526b78de06a6c5e759c9a78c16"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-custom-hud.png",
+      "sha256": "4ed92ce780d5df341073090a732251de8d77671bd7efc7891d48cbb0488ea17a"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-custom-lobby.png",
+      "sha256": "615305571367e3a77f987a7aac20a3efdb7a93fde56001cae0759a5a03ab8435"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-language-bengali.png",
+      "sha256": "c27b8614d8a50b264f329e815249fa28060284f9d39e34943c2f2128d4047974"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-language-english.png",
+      "sha256": "f42e0004831f8d71775f1f9f4f4f5d54189be0cc933123cc0f39f0e8e858e55a"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-launcher.png",
+      "sha256": "9b4c2cda7b269eac43d1bf753a38e2a938af95653c555fbc4b627326b43c624c"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-main.png",
+      "sha256": "2f98976139a29782fedb7faa9e05c5bea61c6e7d326bd10841d4e1b7f6638727"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2-settings.png",
+      "sha256": "1559f5adbc8c9a8c11f5539ef14f8ff2e8487e76d65d57b9fd84b31fb5e8671b"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-phone-audio-preference.png",
+      "sha256": "56b0f3373b4257c898fa7261efd6c19f99f9b8fdf86c81078ebd523e8e37dfa0"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-phone-bengali-input.png",
+      "sha256": "63182ab652cb3c54cc3b987e7ccfa06319603bb88c5885d755b3adfe98bd0690"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-phone-hand-preference.png",
+      "sha256": "b982a81f265923d7311d85d541a88e99d0c62c67b02b1b5552fecd8ddfe306d4"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-phone-launcher.png",
+      "sha256": "33c78ae557aa23aae548414d3c4c6d9f2048bbb5859d94c7178512e887948be4"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-phone-main.png",
+      "sha256": "7ec2728d34a1af0982c4918ee54dfbab542191db249c5ab4b8acd3f7a2982e18"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-phone-settings.png",
+      "sha256": "0014d54a3508d403d908a8d7ac3d35294a3a2a9447748aa16d63d14057311b3f"
+    },
+    {
+      "path": "browser-runtime/attempt-001/opaque-panel/black.png",
+      "sha256": "83eea882ba36e3d725778040b1f1cb605a917b6a036027771f84aa786155bfd1"
+    },
+    {
+      "path": "browser-runtime/attempt-001/opaque-panel/white.png",
+      "sha256": "83eea882ba36e3d725778040b1f1cb605a917b6a036027771f84aa786155bfd1"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/after-1.png",
+      "sha256": "2b160cb10512e5a57ece8d95e17dbc570d33c41d34f09b605313eb5de0863c36"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/after-2.png",
+      "sha256": "10add406acf632807a9adb2449634efbdb29b9ca1b61dde96bbd5c9ea45f4884"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/after-3.png",
+      "sha256": "ad325227e8a465f87eb1ffd83ed9b313c116608029f8867c5119433b0686d9f8"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/after-4.png",
+      "sha256": "ad42d6da306f27ca4a4ab0231649b3ee4b4dcb1347ba7d5b97a7df0e617cda91"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/after-5.png",
+      "sha256": "9c40e541ab52f72916571fadb28b78c2ef976b5d4e924ee32e0cb0506f660344"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/after-6.png",
+      "sha256": "e3630225e82f0ca891a74dad5cd32ea15462f13c0fc2f70ae2e87e3f03a13ace"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/phone-overlay-audio-preference.png",
+      "sha256": "384c0187bc69c2f1e8287edb22fec23d1c028d3470fe51309593139c9f209017"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/phone-overlay-hand-preference.png",
+      "sha256": "d87cb74a4755b1da640390e6e1fe20f70bb0989ff61cb534e80a1d267b0e6dd3"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/tutorial-collapsed.png",
+      "sha256": "2cb590666dc806a006bfd18eb605f0f4638b69a63d5586f6bb2aad1cc8e26941"
+    },
+    {
+      "path": "browser-phone-tools-attempt-001/tutorial-expanded.png",
+      "sha256": "66549bfc819f3dc05aa45caddde6c9e49137984093374de5d131d76e76c5ca54"
+    },
+    {
+      "path": "browser-runtime/launcher-brand/platform-desktop.png",
+      "sha256": "f2859a757b956bed770ce88bf844bfba4a8a1923e30d80abf9ad51034104b3e1"
+    },
+    {
+      "path": "browser-runtime/launcher-brand/platform-phone.png",
+      "sha256": "bc223d2ae8734decf8e892923586c3af15562e72074ca0432529ff3f74ac42d5"
+    },
+    {
+      "path": "browser-runtime/launcher-brand/raw-desktop.png",
+      "sha256": "b75b7930484f7c0d7af717adefa6b08fc6a9b6e0957661aee043b3f1dad1c898"
+    },
+    {
+      "path": "browser-runtime/attempt-001/threaded-desktop-webgl2.json",
+      "sha256": "49335bce683c69f554fac615951260750cbdb07f742ac0d110528ecff3681327"
+    },
+    {
+      "path": "browser-runtime/attempt-001/bengali-unicode-name.game.gz",
+      "sha256": "2d8a99ca908b3cad7e058e8d280d64d581bee07c305f9b06fef401ed43783362"
+    }
+  ]
+}

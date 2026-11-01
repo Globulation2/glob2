@@ -1,0 +1,46 @@
+{
+  "code_identity": {
+    "revision": "4d77f0315f62504afd2669cb7dd12369f8e0b43f",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "8396fcb85d6ca0955aa9d29c3e473b19753ce64a66441014df00d714b7245c64"
+  },
+  "actual_total_cases": 97,
+  "headless": 92,
+  "explicit_X11_display": 5,
+  "failures": 0,
+  "skips": 0,
+  "evidence": [
+    {
+      "path": "native-tests.xml",
+      "cases": 92,
+      "sha256": "55b7e7cd2fec343a8fc872fd86096b45c5d1f49f547c66dbfcf3f276a1071b98"
+    },
+    {
+      "path": "native-display-0.xml",
+      "cases": 1,
+      "sha256": "d7ec20979e51074b0bfa9eb28d3a9fb60c302cb3a4d4c55aff83f3ea8f0cc154"
+    },
+    {
+      "path": "native-display-1.xml",
+      "cases": 1,
+      "sha256": "e38515e4d0e6948a7a40b7149a57541a0705308aa594e1f1b4498569e282b0f1"
+    },
+    {
+      "path": "native-display-2.xml",
+      "cases": 1,
+      "sha256": "7c7ddf2c47d90090d22beddeaf0cadc94fc9809e3c8a5f1359b59d6e5fcf2b6b"
+    },
+    {
+      "path": "native-display-3.xml",
+      "cases": 1,
+      "sha256": "b5bc3ae0a0c7116ca58bcf64cbcb7a5e601edf6c563a3c876fdbb3783ea65ebf"
+    },
+    {
+      "path": "native-display-4.xml",
+      "cases": 1,
+      "sha256": "f8e11ec8e9d1a3e200c1f19f5a9186a3ad1bb24bc14fce30f9ebbbf297ad280d"
+    }
+  ],
+  "scope": "Focused font/locale/metrics/bidi/layout/username/online-room-map-invite suites and four actual online displays plus actual320x640 Bengali150percent tutorial/tools/mappeek/stats pixel+input+state regression. Not a full native suite or shipping build."
+}
