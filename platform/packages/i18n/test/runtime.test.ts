@@ -152,6 +152,16 @@ describe('message presentation', () => {
     expect(locales).toHaveLength(38);
     expect(new Set(locales.map((l) => l.gameCode)).size).toBe(38);
     expect(new Set(locales.map((l) => l.code)).size).toBe(38);
+    expect(locales.find((locale) => locale.code === 'th')).toMatchObject({
+      gameCode: 'th',
+      name: 'ไทย',
+      dir: 'ltr',
+    });
+    expect(locales.find((locale) => locale.code === 'nb')).toMatchObject({
+      gameCode: 'nb',
+      name: 'Norsk bokmål',
+      dir: 'ltr',
+    });
   });
 });
 
