@@ -887,6 +887,12 @@
       "group": "Gameplay"
     },
     {
+      "id": "game-results-win-probability",
+      "title": "Results \u00b7 win probability",
+      "description": "Alliance win-probability history with the localized metric title, axis and model limitations.",
+      "group": "Gameplay"
+    },
+    {
       "id": "editor-palette-resources",
       "title": "Editor \u00b7 resource palette",
       "group": "Map & campaign editor",
