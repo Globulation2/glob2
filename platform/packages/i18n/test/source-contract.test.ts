@@ -5,9 +5,12 @@ import { describe, expect, it } from 'vitest';
 import {
   sourceErrors,
   browserSourceErrors,
+  fixedLabelErrors,
   fixedMetadataSourceErrors,
   fixedMetadataSources,
 } from '../scripts/source-contract.ts';
+import { AI_TAGS } from '../../protocol/src/ais.ts';
+import english from '../locales/en.json' with { type: 'json' };
 
 function check(source: string) {
   const root = mkdtempSync(join(tmpdir(), 'glob2-source-contract-'));
@@ -20,6 +23,14 @@ function check(source: string) {
 }
 
 describe('localized source contract', () => {
+  it('requires English keys for fixed AI labels used through computed calls', () => {
+    expect(fixedLabelErrors(english, AI_TAGS, 'AI tags')).toEqual([]);
+    const incomplete: Record<string, unknown> = { ...english };
+    delete incomplete.Rush;
+    expect(fixedLabelErrors(incomplete, AI_TAGS, 'AI tags')).toEqual([
+      'AI tags: missing catalog key: Rush',
+    ]);
+  });
   it('catches inaccessible labels and render-prop copy as well as visible text', () => {
     const errors = check(
       `const x = <button aria-label="Delete account">Delete{() => <span>{'Save'}</span>}</button>;`,

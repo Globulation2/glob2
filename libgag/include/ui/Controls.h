@@ -130,6 +130,9 @@ struct TextFieldOptions
 	// Text to copy by hand: editing starts with all of it selected and edits are
 	// ignored (the browser shows a read-only, selected DOM field).
 	bool selectForCopy = false;
+	// Optional UTF-8 byte limit for storage/protocol fields. Reject an edit
+	// exceeding it as a whole, without cutting a character or shaping cluster.
+	std::size_t maxBytes = 0;
 };
 // Single-line editor. `change` receives the draft on every edit.
 Element textField(const std::string &key, const std::string &value,

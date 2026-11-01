@@ -6820,3 +6820,5 @@ Fiskemængde
 Beskeder ▸
 [Camp-site amount]
 Antal lejrpladser
+[AI for all computer colonies]
+AI for alle computerstyrede kolonier

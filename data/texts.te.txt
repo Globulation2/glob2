@@ -6796,6 +6796,8 @@ GL మాత్రమే
 శిబిర-స్థలం మొత్తం
 [scenario messages]
 సందేశాలు ▸
+[AI for all computer colonies]
+అన్ని కంప్యూటర్ కాలనీలకు AI
 [stats topic overview]
 అవలోకనం
 [stats topic economy]

@@ -19,12 +19,89 @@ const SceneBuildingPanel& presentedBuilding(GameGUI& gui, const Building& buildi
 
 TEST_SUITE("GUIOrderCoverage")
 {
-    TEST_CASE("worker requests clamp deduplicate and retain newer pending changes")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world(glob2test::GameOptions{.teams=2,.header=true});
-        auto& gui=world.gui;
-        gui.localPlayer=0; gui.localTeamNo=0;
+	TEST_CASE("headless receipts without pending GUI fields do not accumulate")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world;
+		auto& gui=world.gui;
+		for (Uint64 revision=1;revision<=1000;++revision)
+		{
+			auto order=std::make_shared<OrderChangePriority>(19,1);
+			gui.handleClientEvent(ClientEventVariant{ClientEvent::OrderExecuted{order,revision}});
+			gui.handleClientEvent(ClientEventVariant{ClientEvent::OrderExecuted{std::make_shared<NullOrder>(),revision+1000}});
+		}
+		CHECK(gui.pendingBuildingReconciliations.empty());
+		CHECK(gui.buildingGuiState.empty());
+	}
+
+	TEST_CASE("compound production edits retain acknowledged values until their Scene is published")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(glob2test::GameOptions{.header = true});
+		auto &gui = world.gui;
+		gui.localPlayer = 0;
+		gui.localTeamNo = 0;
+		auto *building = world.addBuilding("swarm", 4, 4);
+		REQUIRE(building);
+		const auto &panel = presentedBuilding(gui, *building);
+		const auto original = gui.displayedRatio(panel);
+		auto first = original;
+		first[WORKER] = original[WORKER] + 3;
+		gui.pendingFor(building->gid).pendingRatio = first;
+		auto firstOrder = std::make_shared<OrderModifySwarm>(building->gid, first.data());
+		firstOrder->sender = 0;
+		const auto revision = gui.drawnScene().executedOrderRevision + 1;
+		gui.handleClientEvent(ClientEventVariant{ClientEvent::OrderExecuted{firstOrder, revision}});
+		REQUIRE(gui.pendingFor(building->gid).pendingRatio.has_value());
+		// The second component edit still reads the old published frame. It
+		// must compose with the acknowledged first edit, not its old baseline.
+		auto second = gui.displayedRatio(panel);
+		CHECK(second[WORKER] == first[WORKER]);
+		second[EXPLORER] = original[EXPLORER] + 2;
+		gui.pendingFor(building->gid).pendingRatio = second;
+		auto secondOrder = std::make_shared<OrderModifySwarm>(building->gid, second.data());
+		secondOrder->sender = 0;
+		gui.handleClientEvent(
+			ClientEventVariant{ClientEvent::OrderExecuted{secondOrder, revision + 1}});
+		// Publishing the older receipt cannot erase the newer compound edit.
+		auto scene = gui.drawnScene();
+		scene.executedOrderRevision = revision;
+		gui.setPublishedScene(&scene);
+		REQUIRE(gui.pendingFor(building->gid).pendingRatio.has_value());
+		CHECK(gui.displayedRatio(panel) == second);
+		CHECK(gui.displayedRatio(panel)[WORKER] == first[WORKER]);
+		// Once that latest receipt is represented by a frame, ordinary
+		// authoritative presentation takes over again.
+		scene.executedOrderRevision = revision + 1;
+		gui.setPublishedScene(&scene);
+		CHECK_FALSE(gui.pendingFor(building->gid).pendingRatio.has_value());
+		CHECK(gui.pendingBuildingReconciliations.empty());
+		gui.setPublishedScene(nullptr);
+		// A removal invalidates old receipts before a gid can be recycled.
+		gui.pendingFor(building->gid).pendingRatio=first;
+		gui.handleClientEvent(ClientEventVariant{ClientEvent::OrderExecuted{firstOrder,revision+2}});
+		REQUIRE_FALSE(gui.pendingBuildingReconciliations.empty());
+		gui.handleClientEvent(ClientEventVariant{ClientEvent::BuildingRemoved{building->gid}});
+		CHECK(gui.pendingBuildingReconciliations.empty());
+		gui.pendingFor(building->gid).pendingRatio=second;
+		scene.executedOrderRevision=revision+2;
+		gui.setPublishedScene(&scene);
+		CHECK(gui.pendingFor(building->gid).pendingRatio==second);
+		// Reload/init retires the entire session's acknowledgement journal.
+		gui.handleClientEvent(ClientEventVariant{ClientEvent::OrderExecuted{firstOrder,revision+3}});
+		REQUIRE_FALSE(gui.pendingBuildingReconciliations.empty());
+		gui.init();
+		CHECK(gui.pendingBuildingReconciliations.empty());
+		CHECK(gui.buildingGuiState.empty());
+		gui.setPublishedScene(nullptr);
+	}
+
+	TEST_CASE("worker requests clamp deduplicate and retain newer pending changes")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(glob2test::GameOptions{.teams = 2, .header = true});
+		auto &gui = world.gui;
+		gui.localPlayer=0; gui.localTeamNo=0;
         auto* building=world.addBuilding("swarm",4,4);
         auto* enemy=world.addBuilding("swarm",20,20,0,1);
         CHECK_FALSE(gui.requestWorkerAllocation(presentedBuilding(gui, *enemy),5));
@@ -42,11 +119,12 @@ TEST_SUITE("GUIOrderCoverage")
         auto latest=gui.orderQueue.front(); gui.orderQueue.pop_front(); latest->sender=0;
         gui.executeOrder(latest);
         CHECK(building->maxUnitWorking==0);
+        presentedBuilding(gui, *building);
         CHECK_FALSE(gui.pendingFor(building->gid).pendingMaxUnitWorking.has_value());
         CHECK_FALSE(gui.requestWorkerAllocation(presentedBuilding(gui, *building),0));
-    }
+	}
 
-    TEST_CASE("priority and radius requests clamp and reconcile against real orders")
+	TEST_CASE("priority and radius requests clamp and reconcile against real orders")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world(glob2test::GameOptions{.header=true});
@@ -66,6 +144,7 @@ TEST_SUITE("GUIOrderCoverage")
         }
         CHECK(flag->priority==1);
         CHECK(flag->unitStayRange==flag->type->maxUnitStayRange);
+        presentedBuilding(gui, *flag);
         CHECK_FALSE(gui.pendingFor(flag->gid).pendingPriority.has_value());
         CHECK_FALSE(gui.pendingFor(flag->gid).pendingUnitStayRange.has_value());
         globals->replaying=true;

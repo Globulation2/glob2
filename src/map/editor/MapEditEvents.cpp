@@ -46,6 +46,12 @@ void MapEdit::processEvent(SDL_Event& event)
 		delegateMenu(event);
 		return;
 	}
+	else if (GAGGUI::ui::isSemanticEvent(event))
+	{
+		for (auto *host : inspectionHosts())
+			if (host->event(event)) break;
+		return;
+	}
 	else if (dock && routeToDock(event))
 	{
 		return;

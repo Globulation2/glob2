@@ -124,8 +124,11 @@ class CustomGameScreen : public Glob2UI::Screen
 	std::unique_ptr<Script::Library> aiLibrary;
 	std::map<std::string, std::string> frozenAIs;
 	std::vector<std::string> aiChoices() const;
+	std::string aiChoicesIdentity() const;
 	int aiSelection(int colony) const;
 	void selectAI(int colony, int selection);
+	int commonAISelection() const; // -2: no active computer colony; -1: mixed.
+	void selectAIForComputers(int selection);
 	std::string aiLabel(int colony) const;
 	void freezeAIs();
 	// Serialized bytes of the last successfully generated map (see generateMap()), read
@@ -174,7 +177,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	{
 		Glob2UI::Element identity, controller, ai, team;
 	};
-	ColonyFields colonyFields(int colony, const Glob2UI::Presentation &p);
+	ColonyFields colonyFields(int colony, const Glob2UI::Presentation &p, const std::string &catalogIdentity = {});
 	// Game Rules tab view state, and the one group a narrow layout shows in All rules.
 	RulesView rulesView = RulesView::Summary;
 	CustomGameRules::Group rulesGroup = CustomGameRules::Group::Match;

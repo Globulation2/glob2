@@ -6820,3 +6820,5 @@ MCP 服务器
 消息 ▸
 [Camp-site amount]
 营地数量
+[AI for all computer colonies]
+所有电脑控制殖民地的 AI

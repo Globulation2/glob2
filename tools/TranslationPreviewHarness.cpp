@@ -71,6 +71,7 @@ struct TranslationPreviewAccess
         gui.statistics().selectTopic(topic);
     }
     static InGameStatisticsPanel &statistics(GameGUI &gui) { return gui.statistics(); }
+    static GAGGUI::ui::Host &statisticsHost(GameGUI &gui) { return gui.statisticsHost(); }
     static bool liveStatisticsVisible(const GameGUI &gui) { return gui.statisticsVisible(); }
     static bool statisticsHistoryOpen(const GameGUI &gui) {
         return gui.inGameMenu == GameGUI::IGM_STATISTICS && gui.activeDialog();
@@ -163,6 +164,10 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "src/hud/touch/GameGUITouch.cpp", "src/hud/touch/GameGUITouch.h",
              "libgag/include/TouchText.h", "libgag/include/TrueTypeFont.h",
              "libgag/include/ui/TextLayout.h", "libgag/src/DrawableSurfaceCompound.cpp",
+             "libgag/include/ui/Inspection.h", "libgag/include/ui/PositionedControls.h",
+             "libgag/include/ui/Controls.h", "libgag/src/ui/Controls.cpp",
+             "src/hud/GameGUIControls.cpp", "src/hud/touch/GameGUITouchInspection.cpp",
+             "browser/shell.html", "browser/ApplicationHost.cpp",
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
              "src/game/screens/EndGameScreen.cpp", "src/team/stats/TeamStatChart.cpp",
              "src/team/stats/MetricCatalog.cpp", "src/hud/InGameStatistics.cpp",
@@ -740,7 +745,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
         if (liveStatistics) {
             auto &panel = TranslationPreviewAccess::statistics(gui);
             result["live_statistics"]["selected_metric"] = panel.selectedMetric();
-            result["live_statistics"]["controls"] = controlBounds(panel.host());
+            result["live_statistics"]["controls"] = controlBounds(TranslationPreviewAccess::statisticsHost(gui));
             if (history) {
                 require(TranslationPreviewAccess::statisticsHistoryOpen(gui), "Production history remains open after capture");
                 result["live_statistics"]["dialog_controls"] = controlBounds(TranslationPreviewAccess::dialog(gui)->host());

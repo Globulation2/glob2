@@ -75,6 +75,29 @@ TEST_SUITE("MapCatalog")
 		CHECK(std::string(DEFAULT_MAP_VISIBILITY) == "unlisted");
 	}
 
+	TEST_CASE("Bengali catalog queries and share payloads preserve complete UTF-8")
+	{
+		Fixture f;
+		std::string title, description;
+		for (int i = 0; i < 43; ++i) title += "ক";
+		for (int i = 0; i < 1334; ++i) description += "ক";
+		REQUIRE(title.size() == 129);
+		REQUIRE(description.size() == 4002);
+		MapQuery query;
+		query.search = title;
+		CHECK(query.path().find("&q=" + urlEncode(title)) != std::string::npos);
+		MapShare::Details details;
+		details.title = title;
+		details.description = description;
+		MapShare share(f.client, {}, details, "bytes", {}, [&f] { return f.world.wall; });
+		auto create = f.world.http.pending("/api/v1/maps");
+		REQUIRE(create);
+		// body() parses the actual serialized HTTP bytes, so malformed UTF-8
+		// or an invalid JSON boundary fails before the equality assertion.
+		CHECK(create->body().at("title") == title);
+		CHECK(create->body().at("description") == description);
+	}
+
 	TEST_CASE("sharing creates the map, uploads the raw bytes and waits for validation and the preview")
 	{
 		Fixture f;

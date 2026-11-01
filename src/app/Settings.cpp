@@ -14,9 +14,9 @@
 #include <StringTable.h>
 #include <string>
 #include <algorithm>
-#include <array>
 #include <charconv>
 #include <iterator>
+#include <utility>
 #include <StreamBackend.h>
 
 using namespace GAGCore;
@@ -112,10 +112,10 @@ void Settings::setGraphicsDetail(bool full)
 std::string Settings::getUsername() { return username; }
 void Settings::setUsername(std::string s)
 {
-	// Keep the existing byte limit without cutting a multi-byte character.
-	std::array<char, BasePlayer::MAX_NAME_LENGTH + 1> bounded;
-	const auto length = SDL_utf8strlcpy(bounded.data(), s.c_str(), bounded.size());
-	username.assign(bounded.data(), length);
+	// A byte slice can leave invalid UTF-8 or half a Bengali conjunct. Keep
+	// the previous name when a caller exceeds the stored-name byte limit.
+	if (s.size() <= BasePlayer::MAX_NAME_LENGTH)
+		username = std::move(s);
 }
 
 void Settings::setTextSizePercent(int percent)

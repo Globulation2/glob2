@@ -1,5 +1,11 @@
-Hive Mind API version 1. Every source is standalone synchronous JavaScript source declaring step(ctx). No imports, async callbacks, filesystem, network, console, or external libraries. Top-level plain data persists between invocations. Use structured return data; do not retain ctx or entity snapshots globally. Source limit 128 KiB; globals limit 1 MiB; output limit 64 KiB; 8 standing orders; 32 gameplay orders per invocation; schedule intervals >=25 simulation ticks.
-The tool accepts execute, install, replace, list, pause, resume and remove operations. Install requires a new UUID and revision 1. Replacement requires expectedRevision and new revision=expectedRevision+1; replacement resets globals unless migration source is supplied. A step returns {output: JSON-compatible value, orders: array of order descriptors}. Omit either field when unused. ctx.wakeAgent({key,reason,data}) requests an optional paid follow-up for an ongoing task; it is not a direct model call. Triggers should be edge-triggered, meaningful, and deduplicated using persistent state. Do not wake on every invocation.
+Hive Mind API version 1. Every source is standalone synchronous JavaScript source declaring step(ctx). No imports, async callbacks, filesystem, network, console, or external libraries. Top-level plain data persists between invocations. Use structured return data; do not retain ctx or entity snapshots globally. Source limit 128 KiB; globals limit 1 MiB; output limit 64 KiB; 8 standing orders; 32 gameplay orders per invocation; schedule intervals >=25 simulation ticks. A step returns {output: JSON-compatible value, orders: array of order descriptors}. Omit either field when unused.
+
+## Online program management
+
+The tool accepts execute, install, replace, list, pause, resume and remove operations. Install requires a new UUID and revision 1. Replacement requires expectedRevision and new revision=expectedRevision+1; replacement resets globals unless migration source is supplied. ctx.wakeAgent({key,reason,data}) requests an optional paid follow-up for an ongoing task; it is not a direct model call. Triggers should be edge-triggered, meaningful, and deduplicated using persistent state. Do not wake on every invocation.
+
+## Player API
+
 Example: let alerted=false; function step(ctx) { const own=ctx.game.units({team:ctx.myTeam,limit:50}); if(!alerted && own.some(u=>u.medical===1)){ alerted=true; ctx.wakeAgent({key:'food',reason:'Workers are hungry',data:{tick:ctx.tick}}); } return {output:{workers:own.length},orders:[]}; }
 All reads are fixed to the authenticated team and one observation tick. Other-team observations follow fog of war. Omniscient and scenario APIs do not exist. Own-team rules below apply. The following engine order descriptor contract is reused as the entries of the orders array (the old single-order callback restriction does not apply to Hive Mind).
 
@@ -32,6 +38,7 @@ All reads are fixed to the authenticated team and one observation tick. Other-te
 | `ctx.myTeam` | Authenticated player team ID |
 | `ctx.random()` | Next private deterministic random number in `[0, 1)` |
 | `ctx.game` | Read API described below |
+| `ctx.wakeAgent({key,reason,data})` | Publish a commander event; the local or online control contract defines its delivery |
 
 `Math.random()` consumes the same stream as `ctx.random()`. Other scripts and the
 simulation RNG have separate streams. Changing `ctx.myTeam` or another context

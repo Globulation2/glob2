@@ -222,6 +222,12 @@ export const locales = [
     dir: 'ltr',
   },
   {
+    code: 'bn',
+    gameCode: 'bn',
+    name: 'বাংলা',
+    dir: 'ltr',
+  },
+  {
     code: 'nb',
     gameCode: 'nb',
     name: 'Norsk bokmål',

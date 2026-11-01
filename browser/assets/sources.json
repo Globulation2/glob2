@@ -36,7 +36,7 @@
     "source": "data/gfx/menu-wordmark.png"
   },
   "browser/assets/sans-core.ttf": {
-    "languageNames": "4e9f647fde85b08d6581fe8e33d9b840df1b97d713ef7026632f9c0e431377c4",
+    "languageNames": "9f3adee60d6dabdd55163a50685d09efe8ffc6956ba9b25d869013fd5c99aaef",
     "output_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
     "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
     "source": "data/fonts/sans.ttf"
