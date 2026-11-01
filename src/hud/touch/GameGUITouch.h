@@ -49,6 +49,8 @@ class GameGUITouch
 	void dismissMapPanels();
 	bool scrollAnimating() const;
 	void prepareDraw();
+	// Share the cached trophy artwork with the compact desktop statistics bar.
+	void drawPrestigeIcon(GAGCore::ViewPoint center, double logicalSize);
 	void drawControls();
 	void drawKeyboardFocus();
 	bool active() const { return touchActive || usesHUD(); }

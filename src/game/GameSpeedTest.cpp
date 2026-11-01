@@ -295,6 +295,72 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
     NET_Quit();
 }
 
+TEST_CASE("desktop statistics spacing and speed hit target [display][artifacts][writes-preferences]")
+{
+    glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
+    glob2test::HeadlessGlobals globals(displayOptions());
+    GameGUI gui;
+    auto map=Engine::loadMapHeader("maps/balanced.map");
+    GameHeader header;
+    header.setNumberOfPlayers(1);
+    header.setRandomSeed(123456);
+    header.getBasePlayer(0)=BasePlayer(0,"Test",0,BasePlayer::P_LOCAL);
+    REQUIRE(gui.loadFromHeaders(map,header,true,true));
+    gui.localPlayer=gui.localTeamNo=0;
+    gui.adjustLocalTeam();
+    auto* gfx=globalContainer->gfx;
+    globals->settings.translucentPanels=false;
+    for (int width : {640, 1280})
+    {
+        REQUIRE(SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,480));
+        REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+        SDL_Event resize{}; resize.type=SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+        GAGCore::GraphicContext::translateMouseEvent(&resize);
+        REQUIRE(gfx->getW()==width);
+        for (int count : {0, 12345})
+        {
+            CAPTURE(width); CAPTURE(count);
+            gui.game.teams[0]->prestige=count;
+            gui.game.teams[0]->unitConversionGained=count;
+            gui.game.teams[0]->unitConversionLost=count;
+            gui.game.prestigeToReach=20000;
+            gui.game.totalPrestige=count;
+            glob2test::drawGUI(gui,0);
+            // Native GL's completedFrame() is its CPU facade, not a readback.
+            GAGCore::Sprite::flushBatches(gfx);
+            GAGCore::DrawableSurface capture(gfx->getW(),gfx->getH());
+            capture.drawSurface(0,0,gfx);
+            auto* image=capture.getSDLSurface(); REQUIRE(image);
+            gfx->nextFrame();
+            const int speedX=gui.topBarSpeedX();
+            unsigned visible=0;
+            for (int y=0;y<16;++y) for (int x=0;x<speedX;++x)
+            {
+                Uint8 r,g,b,a;
+                REQUIRE(SDL_ReadSurfacePixel(image,x,y,&r,&g,&b,&a));
+                visible += r!=0 || g!=0 || b!=0;
+            }
+            CHECK(visible>100);
+            // The loss counter must leave a clear gutter before speed, even
+            // at minimum desktop width with five-digit conversion totals.
+            // Native GL antialiasing extends the chevrons one pixel left.
+            for (int y=0;y<16;++y) for (int x=speedX-11;x<speedX-1;++x)
+            {
+                Uint8 r,g,b,a;
+                REQUIRE(SDL_ReadSurfacePixel(image,x*image->w/gfx->getW(),y*image->h/gfx->getH(),&r,&g,&b,&a));
+                CHECK((r==0 && g==0 && b==0));
+            }
+            REQUIRE(SDL_SaveBMP(image,(glob2test::artifactDir()/("desktop-stats-"+
+                std::to_string(width)+"-"+std::to_string(count)+".bmp")).string().c_str()));
+            globals->settings.gameSpeed=0;
+            SDL_Event click{}; click.type=SDL_EVENT_MOUSE_BUTTON_DOWN;
+            click.button.button=SDL_BUTTON_LEFT; click.button.x=speedX+10; click.button.y=8;
+            gui.processEvent(&click);
+            CHECK(globals->settings.gameSpeed==3);
+        }
+    }
+}
+
 TEST_CASE("live engine speed; pause; hard pause and replay playback [display][writes-preferences]")
 {
     glob2test::HeadlessGlobals globals(displayOptions());
