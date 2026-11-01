@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Canvas.h"
+#include "Inspection.h"
 #include <SDL3/SDL.h>
 #include <functional>
 #include <memory>
@@ -118,6 +119,22 @@ class Node
 	virtual std::string accessibleText() const { return {}; }
 	virtual std::string tooltipText() const { return {}; }
 
+	// Shared semantic contract. Overrides use the same callbacks as pointer/key input.
+	virtual ControlValue controlValue() const { return {}; }
+	// Domain context that changes an action's meaning without changing its key.
+	virtual std::string semanticIdentity() const { return {}; }
+	virtual bool selected() const { return false; }
+	virtual std::vector<ActionKind> supportedActions() const
+	{
+		std::vector<ActionKind> actions;
+		if (interactive())
+			actions.push_back(ActionKind::Activate);
+		if (scrollable())
+			actions.push_back(ActionKind::Scroll);
+		return actions;
+	}
+	virtual bool perform(const SemanticAction &action, Host &host);
+
 	// Interaction. Interactive nodes receive taps and keyboard activation.
 	virtual bool interactive() const { return false; }
 	virtual bool enabled() const { return true; }
@@ -128,6 +145,7 @@ class Node
 		std::string suffix;
 		Rect bounds;
 		std::string label;
+		bool enabled = true, selected = false;
 	};
 	virtual std::vector<SubTarget> subTargets() const { return {}; }
 	virtual bool focusable() const { return interactive() && enabled(); }

@@ -6784,3 +6784,5 @@ Količina rib
 
 [Camp-site amount]
 Število taborišč
+[AI for all computer colonies]
+Umetna inteligenca za vse računalniško vodene kolonije

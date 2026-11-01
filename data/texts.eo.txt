@@ -6784,3 +6784,5 @@ Kvanto da fiŝoj
 
 [Camp-site amount]
 Nombro de kampadejoj
+[AI for all computer colonies]
+AI por ĉiuj komputile regataj kolonioj

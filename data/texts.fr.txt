@@ -6784,3 +6784,5 @@ Quantité de poissons
 
 [Camp-site amount]
 Nombre de campements
+[AI for all computer colonies]
+IA de toutes les colonies contrôlées par l’ordinateur

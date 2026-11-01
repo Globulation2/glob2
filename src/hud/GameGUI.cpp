@@ -99,6 +99,10 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 
 void GameGUI::init()
 {
+	hudHost.reset();
+	buildingGuiState.clear();
+	pendingBuildingReconciliations = {};
+	buildingInfoScrollTarget.reset();
     pendingSettings = false;
     tutorialGuidance.reset();
     tutorialHighlights.clear();
@@ -407,4 +411,33 @@ void GameGUI::updateCommander(bool caughtUp)
  hiveCards=std::make_unique<Hive::Dialog>(hive); hiveCards->compose=[this]{openCommander();}; hiveCards->attach(*globalContainer->gfx);
  }
  if(hiveCards)hiveCards->invalidate();
+}
+
+bool GameGUI::hiveCardsVisible() const
+{
+	return hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu &&
+		(!connectionOverlay || !connectionOverlay->blocksGameplay()) &&
+		(hiveCards->local() || globalContainer->settings.hiveMindEnabled);
+}
+
+std::vector<GAGGUI::ui::Host *> GameGUI::inspectionHosts()
+{
+	if (auto *dialog = activeDialog(); dialog && dialog != typingInputScreen.get())
+		return {&dialog->host()};
+	std::vector<GAGGUI::ui::Host *> hosts;
+	if (typingInputScreen)
+	{
+		prepareHudOwnership();
+		hosts.push_back(&typingInputScreen->host());
+	}
+	else
+	{
+		updateTutorial();
+		hosts.push_back(&hudInspectionHost());
+		if (tutorialGuidance && (!connectionOverlay || !connectionOverlay->blocksGameplay()))
+			hosts.push_back(&tutorialGuidance->host());
+	}
+	if (hiveCardsVisible())
+		hosts.push_back(&hiveCards->host());
+	return hosts;
 }

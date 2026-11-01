@@ -36,6 +36,7 @@
 
 void GameGUI::drawPanelButtons(int y)
 {
+	HudControlPaint controls(*this);
 	if (!globalContainer->isViewingGame())
 	{
 		if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
@@ -98,7 +99,8 @@ void GameGUI::drawPanelButton(int y, int pos, int numButtons, int sprite)
 {
 	int dec = (RIGHT_MENU_WIDTH - numButtons*PANEL_BUTTON_WIDTH)/2;
 
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + dec + pos*PANEL_BUTTON_WIDTH, y, globalContainer->gamegui, sprite);
+	const auto control=hudControlBounds("game/panel/"+std::to_string(pos),{globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+pos*PANEL_BUTTON_WIDTH,y,PANEL_BUTTON_WIDTH,32});
+	globalContainer->gfx->drawSprite(control.x,control.y,globalContainer->gamegui,sprite);
 }
 
 void GameGUI::drawValueAlignedRight(int y, int v)
@@ -148,6 +150,7 @@ void GameGUI::drawRadioButton(int x, int y, bool isSet)
 
 void GameGUI::drawPanel(void)
 {
+	HudControlPaint controls(*this);
 	PERF_SCOPE_TIME(Panel);
 	// ensure we have a valid selection and associate pointers (with a simulation
 	// thread, threadedClientStep checks the immutable PresentationFrame)
@@ -255,6 +258,7 @@ int GameGUI::topBarSpeedX() const
 
 void GameGUI::drawTopScreenBar(void)
 {
+	HudControlPaint controls(*this);
     if (touch->usesHUD()) return;
 	// bar background
 	if (!globalContainer->settings.translucentPanels)
@@ -597,7 +601,7 @@ void GameGUI::drawOverlayInfos(void)
 			yinc = std::max(yinc, 32);
 		}
 
-		ymesg += yinc+2;
+		ymesg = eventFeedStartY().value_or(ymesg+yinc+2);
 
 		ymesg = drawEventFeed(32, ymesg);
 		if (touch->usesHUD())
@@ -714,6 +718,8 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
     if (touch) touch->prepareDraw();
+	prepareHudOwnership();
+	HudControlPaint controls(*this);
     const int sidebar=touch->usesHUD() ? 0 : RIGHT_MENU_WIDTH;
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
@@ -830,53 +836,28 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
     touch->drawHUD();
-	if (connectionOverlay)
-	{
-		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-		SDL_Rect area{0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16};
-		if (touch->usesHUD())
-		{
-			// Under the status strip, away from the thumb corner (layout is in drawable pixels).
-			const auto ui = touch->hudLayout();
-			area = {int(ui.world.x), int(ui.status.y+ui.status.h), int(ui.world.w), int(ui.world.y+ui.world.h-ui.status.y-ui.status.h)};
-			// Narrow portrait phones wrap the status strip onto a second row.
-			if (ui.world.h > ui.world.w)
-			{
-				area.y += int(28*unit);
-				area.h -= int(28*unit);
-			}
-		}
-		connectionOverlay->draw(touch->usesHUD(), area, unit);
-	}
 
-	if ((torusView.enabled() || !torusView.active()) && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
-	// draw menu if any
-	if (inGameMenu)
-	{
-		globalContainer->gfx->setClipRect();
-		drawInGameMenu();
-	}
+    // Painting follows the same ownership order as input: base HUD, guidance,
+    // connection panel, Hive cards, then modal dialogs and text input.
+    if ((torusView.enabled() || !torusView.active()) && !touch->usesHUD()) drawMapZoomControls(camera,true,true);
+    for(const auto &arrow:arrowPositions)
+        globalContainer->gfx->drawSprite(arrow.x,arrow.y,globalContainer->gamegui,arrow.sprite);
+    if(touch){touch->drawControls();touch->drawKeyboardFocus();}
+    const bool connectionModal=connectionOverlay && connectionOverlay->blocksGameplay();
+    if(!activeDialog() && !connectionModal)Tutorial::drawDestination(*this);
+    if(tutorialGuidance && !activeDialog() && !typingInputScreen && !connectionModal)
+        tutorialGuidance->draw(SDL_GetTicks());
+    if(connectionOverlay)
+        connectionOverlay->draw(touch->usesHUD(),connectionOverlayArea(),globalContainer->gfx->logicalUnitsPerPoint());
+    if(hiveCardsVisible())
+    {
+        hiveCards->setComposerOpen(bool(typingInputScreen));
+        hiveCards->draw(SDL_GetTicks());
+    }
+    if(inGameMenu){globalContainer->gfx->setClipRect();drawInGameMenu();}
+    if(typingInputScreen){globalContainer->gfx->setClipRect();drawInGameTextInput();}
+    if(scrollableText)drawInGameScrollableText();
 
-	if(hiveCards && !inGameMenu && !scrollableText && globalContainer->settings.hiveMindEnabled){hiveCards->setComposerOpen(bool(typingInputScreen));hiveCards->draw(SDL_GetTicks());}
-
-	// draw input box if any
-	if (typingInputScreen)
-	{
-		globalContainer->gfx->setClipRect();
-		drawInGameTextInput();
-	}
-	if (scrollableText)
-		drawInGameScrollableText();
-
-	// draw the highlight arrows
-	for(int i=0; i<(int)arrowPositions.size(); ++i)
-	{
-		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
-
-	}
-    if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
-    if (!activeDialog()) Tutorial::drawDestination(*this);
-    if (tutorialGuidance && !activeDialog() && !typingInputScreen) tutorialGuidance->draw(SDL_GetTicks());
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

@@ -11,66 +11,12 @@
 
 namespace GAGGUI::ui
 {
-namespace
-{
-std::string quoted(const std::string &text)
-{
-	std::string out = "\"";
-	for (unsigned char c : text)
-	{
-		if (c == '"' || c == '\\')
-			out += '\\';
-		if (c < 0x20)
-			out += ' ';
-		else
-			out += char(c);
-	}
-	return out + "\"";
-}
-// Bounds are the element's own; "visible" is the part left after every
-// enclosing scroll region's clip (empty when scrolled out of view).
-void appendTarget(std::ostringstream &out, bool &first, const std::string &key, Rect r, Rect clip, bool enabled, const std::string &label)
-{
-	if (key.empty())
-		return;
-	const Rect v = r.intersect(clip);
-	out << (first ? "" : ",") << quoted(key) << ":{\"x\":" << r.x << ",\"y\":" << r.y << ",\"w\":" << r.w << ",\"h\":" << r.h
-		<< ",\"visible\":{\"x\":" << v.x << ",\"y\":" << v.y << ",\"w\":" << std::max(0, v.w) << ",\"h\":" << std::max(0, v.h) << "}"
-		<< ",\"enabled\":" << (enabled ? "true" : "false") << ",\"label\":" << quoted(label) << "}";
-	first = false;
-}
-void appendTree(std::ostringstream &out, bool &first, Node &node, Rect clip)
-{
-	if (node.scrollable())
-		clip = clip.intersect(node.bounds);
-	if (node.interactive())
-	{
-		appendTarget(out, first, node.key, node.bounds, clip, node.enabled(), node.accessibleText());
-		for (const auto &target : node.subTargets())
-			appendTarget(out, first, node.key + "/" + target.suffix, target.bounds, clip, node.enabled(), target.label);
-	}
-	for (auto &child : node.children)
-		if (child)
-			appendTree(out, first, *child, clip);
-}
-} // namespace
-
 void publishControls(const void *owner, const Host &host)
 {
 	if (!GAGCore::ApplicationHost::controlsObserved())
 		return;
-	std::ostringstream out;
-	out << "{\"surface\":{\"w\":" << host.presentation().viewport.w << ",\"h\":" << host.presentation().viewport.h << "},\"root\":{\"x\":"
-		<< host.rootBounds().x << ",\"y\":" << host.rootBounds().y << ",\"w\":" << host.rootBounds().w << ",\"h\":" << host.rootBounds().h
-		<< "},\"controls\":{";
-	bool first = true;
-	const Rect surface{0, 0, host.presentation().viewport.w, host.presentation().viewport.h};
-	if (auto *root = host.root())
-		appendTree(out, first, *root, surface);
-	if (auto *popup = host.popupRoot())
-		appendTree(out, first, *popup, surface);
-	out << "}}";
-	GAGCore::ApplicationHost::controlsChanged(owner, out.str().c_str());
+	const auto json = diagnosticJSON(host.inspect());
+	GAGCore::ApplicationHost::controlsChanged(owner, json.c_str());
 }
 
 namespace

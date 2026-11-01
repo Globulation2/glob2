@@ -6784,3 +6784,5 @@ Cantidad de peces
 
 [Camp-site amount]
 Número de campamentos
+[AI for all computer colonies]
+IA para todas las colonias controladas por ordenador

@@ -201,3 +201,11 @@ enum GameGUIGfxId
 };
 
 
+// Playback button geometry is one model shared by renderer, human input, and
+// the domain's framework controls. The progress track itself is informational.
+inline std::array<GAGGUI::ui::Rect, 3> replayPlaybackControlBounds()
+{
+    const int x=REPLAY_BAR_WIDTH-REPLAY_PROGRESS_BAR_X_OFFSET-REPLAY_PROGRESS_BAR_CAP_WIDTH;
+    const int y=REPLAY_BAR_Y+REPLAY_PROGRESS_BAR_Y_OFFSET,inc=REPLAY_PROGRESS_BAR_BUTTON_WIDTH;
+    return {{{x-3*inc,y,inc,20},{x-2*inc,y,inc,20},{x-inc,y,inc,20}}};
+}

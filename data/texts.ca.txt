@@ -6784,3 +6784,5 @@ Quantitat de peixos
 
 [Camp-site amount]
 Nombre de campaments
+[AI for all computer colonies]
+IA per a totes les colònies controlades per l’ordinador

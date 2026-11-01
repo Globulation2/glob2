@@ -6784,3 +6784,5 @@ Kiasi cha samaki
 Idadi ya maeneo ya kambi
 [scenario messages]
 Ujumbe ▸
+[AI for all computer colonies]
+AI kwa makoloni yote ya kompyuta

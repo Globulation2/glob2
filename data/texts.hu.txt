@@ -6784,3 +6784,5 @@ Halak mennyisége
 
 [Camp-site amount]
 Táborhelyek száma
+[AI for all computer colonies]
+MI minden számítógép vezérelte kolóniához

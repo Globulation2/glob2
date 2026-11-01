@@ -175,6 +175,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
     env['BUILDDIR'] = str(output)
+    from hive_api import configure as configure_hive_api
+    hive_contract = configure_hive_api(env, output)
     configure_development(env, identity)
     if ccache.enabled():
         ccache.enable(env)

@@ -130,14 +130,43 @@ void GameGUI::processEvent(SDL_Event *event)
     const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
     const bool ownerDialog = gameMenuScreen && inGameMenu != IGM_TELEMETRY
         && inGameMenu != IGM_ALLIANCE && inGameMenu != IGM_OBJECTIVES;
-    if ((diagnostic || ownerDialog || hive) && parkForClient([&]{processEvent(event);})) return;
-    if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
-    if (event->type == SDL_EVENT_MOUSE_WHEEL) {
-        mouseX=event->wheel.mouse_x; mouseY=event->wheel.mouse_y;
+    if ((diagnostic || ownerDialog || hive || GAGGUI::ui::isSemanticEvent(*event)) && parkForClient([&]{processEvent(event);})) return;
+	ConnectionOverlay::InputSnapshot connectionInput(connectionOverlay.get());
+	if (!activeDialog()) updateTutorial();
+	prepareHudOwnership();
+	if (GAGGUI::ui::isSemanticEvent(*event))
+	{
+		if (hiveCardsVisible() && hiveCards->host().event(*event)) return;
+		if (gameMenuScreen)
+			processGameMenu(event);
+		else if (typingInputScreen)
+			processTypingInput(event);
+		else if (scrollableText)
+			processScrollableWidget(event);
+		else
+		{
+            if (tutorialGuidance && (!connectionOverlay || !connectionOverlay->blocksGameplay()) &&
+                tutorialGuidance->host().event(*event)) return;
+			hudInspectionHost().event(*event);
+			if (connectionOverlay && connectionOverlay->blocksGameplay()) suspendInput();
+		}
+		return;
+	}
+	if (GAGCore::scrollGesture(*event) && !inputState.hasFocus())
+		return;
+	if (event->type == SDL_EVENT_MOUSE_WHEEL)
+	{
+		mouseX = event->wheel.mouse_x;
+		mouseY = event->wheel.mouse_y;
+	}
+	inputState.observe(*event);
+	if (hiveCardsVisible() && hiveCards->handle(*event))
+		return;
+    if (connectionOverlay && !activeDialog() && !inGameMenu)
+    {
+        if(connectionOverlay->blocksGameplay())suspendInput();
+        if(connectionOverlay->handle(*event))return;
     }
-    inputState.observe(*event);
-    if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
-    if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;
     if (tutorialGuidance && !activeDialog() && !typingInputScreen && tutorialGuidance->handle(*event)) return;
     if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_MIDDLE) ||
@@ -318,15 +347,7 @@ void GameGUI::centerViewportOn(int x, int y)
 
 bool GameGUI::handleEventFeedClick(int mx, int my)
 {
-	for (const EventFeedHit &hit : eventFeedHits)
-	{
-		if (mx >= hit.x && mx < hit.x + hit.w && my >= hit.y && my < hit.y + hit.h)
-		{
-			centerViewportOn(hit.mapX, hit.mapY);
-			return true;
-		}
-	}
-	return false;
+    return activateHudControlAt({mx, my}, "game/events/");
 }
 
 // Mouse-button press on the game view (only reached when no in-game menu is
@@ -337,17 +358,38 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 	updateCamera();
     // On the ring the controls zoom about its focus, as the wheel does there.
     const bool ring=torusView.enabled();
-    if(mouseEvent.button==SDL_BUTTON_LEFT && (ring || !torusView.active()) &&
-        clickMapZoomControls(camera,mouseEvent.x,mouseEvent.y,true,true,
-            ring ? (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2.0 : -1, ring ? (globalContainer->gfx->getH()+16)/2.0 : -1))
-    {viewportX=camera.tileX();viewportY=camera.tileY();torusView.rebaseViewport(viewportX,viewportY);zoomControlPushed=true;return;}
+    if (mouseEvent.button == SDL_BUTTON_LEFT && (ring || !torusView.active()) &&
+        activateHudControlAt({int(mouseEvent.x), int(mouseEvent.y)}, "game/zoom/"))
+    {
+        // The shared Host consumes covered/disabled buttons without acting.
+        // Its callback preserves the same centre/ring anchor as semantic input.
+        zoomControlPushed = true;
+        return;
+    }
+    // Consume the panel/readout without any fallback mutation if a button
+    // descriptor was absent, hidden or blocked by a higher surface.
+    const auto zoomBox = mapZoomControlsLayout(camera, true, true);
+    if (mouseEvent.button == SDL_BUTTON_LEFT && (ring || !torusView.active()) &&
+        GAGGUI::ui::Rect{zoomBox.x, zoomBox.y, zoomBox.width, zoomBox.height}.contains(
+            GAGGUI::ui::Point{int(mouseEvent.x), int(mouseEvent.y)}))
+    {
+        zoomControlPushed = true;
+        return;
+    }
 	int button=mouseEvent.button;
 
 	// The top bar's speed chevrons: left click speeds up, right click slows down.
 	if ((button==SDL_BUTTON_LEFT || button==SDL_BUTTON_RIGHT) && !touch->usesHUD() && canChangeGameSpeed()
 		&& mouseEvent.y<16 && mouseEvent.x>=topBarSpeedX()-4 && mouseEvent.x<topBarSpeedX()+TOP_BAR_SPEED_WIDTH-4)
 	{
-		cycleGameSpeed(button==SDL_BUTTON_LEFT);
+		if (button == SDL_BUTTON_LEFT)
+			activateHudControlAt({int(mouseEvent.x), int(mouseEvent.y)}, "game/speed");
+		else
+		{
+			std::string error;
+			if (hudInspectionHost().actionAllowed("game/speed", GAGGUI::ui::ActionKind::SetValue, error))
+				cycleGameSpeed(false);
+		}
 		return;
 	}
 

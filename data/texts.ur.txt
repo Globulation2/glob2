@@ -6784,3 +6784,5 @@ MCP سرور چالو کریں
 خیمہ گاہوں کی تعداد
 [scenario messages]
 پیغامات ▸
+[AI for all computer colonies]
+تمام کمپیوٹر کالونیوں کے لیے اے آئی

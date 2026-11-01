@@ -3391,3 +3391,4 @@
 [Fish amount]
 [Camp-site amount]
 [scenario messages]
+[AI for all computer colonies]

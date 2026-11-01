@@ -6784,3 +6784,5 @@ Cantitate de pește
 
 [Camp-site amount]
 Număr de tabere
+[AI for all computer colonies]
+IA pentru toate coloniile controlate de calculator

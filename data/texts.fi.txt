@@ -6784,3 +6784,5 @@ Kalojen määrä
 
 [Camp-site amount]
 Leiripaikkojen määrä
+[AI for all computer colonies]
+Tekoäly kaikille tietokoneen ohjaamille siirtokunnille

@@ -6784,3 +6784,5 @@ Fish amount
 Messages ▸
 [Camp-site amount]
 Camp-site amount
+[AI for all computer colonies]
+AI for all computer colonies

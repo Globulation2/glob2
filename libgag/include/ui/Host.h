@@ -6,6 +6,8 @@
 #include <TouchInput.h>
 #include <functional>
 #include <optional>
+#include <map>
+#include <unordered_map>
 
 namespace GAGGUI::ui
 {
@@ -19,6 +21,8 @@ struct PopupSpec
 	int selected = 0;
 	std::string help;
 	std::function<void(int)> pick;
+	// Optional framework control whose current meaning owns this popup.
+	std::string ownerKey;
 };
 
 // Owns one element tree: rebuild on invalidation, measure/arrange, hit testing,
@@ -44,6 +48,14 @@ class Host
 	void setEscape(std::function<void()> handler) { escape = std::move(handler); }
 	// Called after every measure/arrange pass (tree or popup), for diagnostics.
 	void setLayoutListener(std::function<void()> listener) { layoutListener = std::move(listener); }
+	// Higher input owners obscure these logical surface regions. Overlapping
+	// interactive targets are conservatively blocked, including human input.
+	// Newly covered captures are cancelled; text drafts are never committed or cancelled.
+	void setBlockedRegions(std::vector<Rect> regions);
+	// Raw domain canvases use point ownership rather than blocking their entire
+	// extent for a small card. Any popup owns input over the underlying canvas.
+	bool inputBlockedAt(Point point) const;
+
 	// Popup items ("popup/<i>") when a choice is open, else null.
 	Node *popupRoot() const;
 
@@ -83,6 +95,13 @@ class Host
 	// Aligns the element's top with its scroll container's top (a section heading).
 	void scrollToTop(const std::string &key);
 
+	// Snapshot and dispatch are application-thread APIs. Inspecting never mutates the model.
+	SurfaceSnapshot inspect() const;
+	bool act(const std::string &key, const SemanticAction &action, std::string &error);
+	// Validate a domain's exact-shape human hit before invoking its shared callback.
+	// This uses the identical ownership/visibility/action checks as act(), without effects.
+	bool actionAllowed(const std::string &key, ActionKind kind, std::string &error);
+
 	// Queries, also for harnesses.
 	Node *root() const { return tree.get(); }
 	Node *find(const std::string &key) const;
@@ -95,11 +114,22 @@ class Host
 	bool debugOverlay = false;
 
   private:
+	const std::uint64_t instance;
+	mutable std::uint64_t inspectionRevision = 0;
+	mutable std::map<std::string, ControlSnapshot> inspected;
+	mutable std::vector<ControlSnapshot> previousInspection;
 	const Theme &themeValue;
 	Builder build;
 	const TextMeasurer *measurer = nullptr;
 	Presentation current;
 	Metrics metricsValue;
+    std::optional<ControlSnapshot> actionTarget(const std::string &key,ActionKind kind,std::string &error);
+    std::vector<Rect> blockedRegions;
+    std::unordered_map<const Node *,Rect> effectiveBounds;
+    void refreshBlockedGeometry();
+    bool obscures(Rect visible) const;
+    bool externallyBlocked(const Node &node) const;
+    bool externallyBlockedAt(const Node &node,Point point) const;
 	Available availableFn;
 	Placement placeFn;
 	std::function<void()> escape, layoutListener;
@@ -140,12 +170,16 @@ class Host
 		Rect bounds;
 		int highlight = 0;
 		std::string scrollKey;
+		std::optional<ControlSnapshot> owner;
 	};
 	std::unique_ptr<Popup> popup;
+	std::uint64_t popupGeneration = 0;
 	void layoutPopup();
 	Element buildPopup(const PopupSpec &spec);
 	bool popupKey(const KeyEvent &key);
 	void pickPopup(int index);
+	std::optional<ControlSnapshot> popupOwner(const std::string &key) const;
+	void validatePopupOwner();
 
 	LayoutContext context() const;
 	void saveStates();

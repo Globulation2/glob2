@@ -95,6 +95,8 @@ def build_mobile(directory, identity, arguments):
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
+    from hive_api import configure as configure_hive_api
+    hive_contract = configure_hive_api(env, output)
     configure_development(env, identity)
     if ccache.enabled():
         from dev_build import cache_flags
@@ -131,6 +133,9 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
             tests = env.Clone()
+            # The engine registry exceeds Linux's per-argument shell limit when
+            # expanded into one link command. Clang accepts SCons response files.
+            tests['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
             # Retain build definitions (including the official origin).
             # TestMain.cpp defines SDL_MAIN_HANDLED itself.
             tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])

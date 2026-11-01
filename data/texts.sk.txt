@@ -6784,3 +6784,5 @@ Množstvo rýb
 
 [Camp-site amount]
 Počet táborísk
+[AI for all computer colonies]
+UI pre všetky kolónie ovládané počítačom
