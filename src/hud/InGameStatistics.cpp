@@ -6,12 +6,30 @@
 #include "UnitConsts.h"
 #include <FormatableString.h>
 #include <GestureScroll.h>
+#include <GraphicContext.h>
 #include <algorithm>
+#include <cmath>
 #include <sstream>
 
 namespace fe = Glob2UI;
 namespace {
 const char *topicKeys[] = {"[stats topic overview]", "[stat page colony]", "[stats topic economy]", "[stat group military]", "[stats topic world]"};
+void paintWaiting(fe::Canvas &canvas, fe::Rect rect, fe::FontRole role, int inset)
+{
+    const auto &measure = canvas.measurer();
+    const auto *toolkit = dynamic_cast<const fe::ToolkitTextMeasurer *>(&measure);
+    auto *font = toolkit ? toolkit->font(role) : nullptr;
+    if (font) font->pushStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, TeamStatChart::ink));
+    int y = rect.y + inset;
+    for (const auto &line : fe::wrapText(measure, role, fe::tr("[stats waiting]"), std::max(1, rect.w - 2 * inset))) {
+        const int lineHeight = std::max(measure.lineHeight(role), font
+            ? int(std::ceil(font->getStringHeight(line) * toolkit->scale())) : 0);
+        if (y + lineHeight > rect.bottom() - inset) break;
+        canvas.text({rect.x + inset, y}, role, line, TeamStatChart::ink);
+        y += lineHeight + 2;
+    }
+    if (font) font->popStyle();
+}
 std::string reading(const Stats::Metric &metric, const Stats::View &view, const TeamStats *stats, int team)
 {
     if (!stats) return fe::tr("[stats waiting]");
@@ -228,12 +246,12 @@ fe::Element InGameStatisticsPanel::inlineHistory(const fe::Presentation &p)
         fe::canvas("stats/inline/chart", {p.pt(240), p.pt(150)}, [this, id, inset = p.pt(4)](fe::Canvas &canvas, fe::Rect rect, const fe::Frame &) {
             auto *surface = canvas.surface();
             const auto *m = metric(id);
-            if (!surface || !m) return;
+            if (!m) return;
             canvas.fillRect(rect, TeamStatChart::background);
             canvas.pushClip(rect);
             if (const auto *stats = history()) {
                 const double unit = presentation().unit;
-                canvas.transformed(unit, {rect.x, rect.y}, rect, [&] {
+                if (surface) canvas.transformed(unit, {rect.x, rect.y}, rect, [&] {
                     TeamStatChart::Options options;
                     options.metric = m;
                     const auto chosen = views.find(id);
@@ -244,8 +262,7 @@ fe::Element InGameStatisticsPanel::inlineHistory(const fe::Presentation &p)
                     TeamStatChart::paint({Stats::historyOf(teamId, *stats)}, sampleTick, *surface,
                         0, 0, int(rect.w/unit), int(rect.h/unit), options);
                 });
-            } else canvas.text({rect.x + inset, rect.y + inset}, fe::FontRole::Support,
-                fe::tr("[stats waiting]"), TeamStatChart::ink);
+            } else paintWaiting(canvas, rect, fe::FontRole::Support, inset);
             canvas.popClip();
         }, options),
         fe::button("stats/full-history/" + id, fe::tr("[stats full history]"), [this, id] { openMetric(id); },
@@ -413,19 +430,19 @@ void InGameStatisticsHistory::paintChart(fe::Canvas &canvas, fe::Rect rect)
 {
     auto *surface = canvas.surface();
     const auto *m = panel.metric(id);
-    if (!surface || !m) return;
+    if (!m) return;
     canvas.fillRect(rect, TeamStatChart::background);
     canvas.pushClip(rect);
     if (const auto *stats = panel.history()) {
         const double unit = presentation().unit;
         // Legacy chart text and hit coordinates use the same point-space transform on both hosts.
-        canvas.transformed(unit, {rect.x, rect.y}, rect, [&] {
+        if (surface) canvas.transformed(unit, {rect.x, rect.y}, rect, [&] {
             TeamStatChart::Options o;
             o.metric = m; o.view = panel.views.at(id);
             o.teams.push_back({panel.team(), panel.teamColor(), panel.teamName()});
             o.hoverX = hoverX < 0 ? -1 : int(hoverX / unit); o.hoverY = hoverY < 0 ? -1 : int(hoverY / unit);
             TeamStatChart::paint({Stats::historyOf(panel.team(), *stats)}, panel.tick(), *surface, 0, 0, int(rect.w / unit), int(rect.h / unit), o);
         });
-    } else canvas.text({rect.x + 8, rect.y + 8}, fe::FontRole::Body, fe::tr("[stats waiting]"), TeamStatChart::ink);
+    } else paintWaiting(canvas, rect, fe::FontRole::Body, 8);
     canvas.popClip();
 }

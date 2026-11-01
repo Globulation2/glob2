@@ -40,19 +40,21 @@ export function Finances() {
             ))}
           </select>
         </label>
-        <label>
-          {t('Payment mode')}{' '}
-          <select value={values['mode']} onChange={(e) => set({ mode: e.target.value })}>
-            {['live', 'test', 'unclassified'].map((m) => (
-              <option key={m} value={m}>
-                {paymentModeName(m)}
-              </option>
-            ))}
-          </select>
+        <div className="admin-payment-mode-field">
+          <label>
+            {t('Payment mode')}{' '}
+            <select value={values['mode']} onChange={(e) => set({ mode: e.target.value })}>
+              {['live', 'test', 'unclassified'].map((m) => (
+                <option key={m} value={m}>
+                  {paymentModeName(m)}
+                </option>
+              ))}
+            </select>
+          </label>
           <span className="admin-payment-mode-caption" aria-hidden="true">
             {paymentModeName(values['mode'] ?? 'live')}
           </span>
-        </label>
+        </div>
         <button onClick={load.reload}>{t('Refresh')}</button>
       </div>
       <Loaded load={load}>

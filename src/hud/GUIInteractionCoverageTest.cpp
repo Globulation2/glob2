@@ -21,6 +21,7 @@
 #include <ScopedEnvironment.h>
 #include <InterfacePresentation.h>
 #include <algorithm>
+#include <cmath>
 #include <set>
 
 namespace
@@ -901,6 +902,40 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
     // Joining the actually painted lines with spaces must preserve whole words;
     // the narrow half-width button split "Gambaran keseluruhan" inside both words.
     CHECK(paintedOverview==overview->accessibleText());
+    CHECK(world.game.checkSum()==checksum);
+    // A pending read-only history projection must show the complete Tamil
+    // waiting status inside the real narrow chart, including its second line.
+    strings->setLang(strings->getLangCode("ta")); GAGCore::userTextScale=textScale;
+    auto pendingHistory=fixture;
+    pendingHistory.world.history.reset(); pendingHistory.panels.localStats.reset();
+    gui.setPublishedScene(&pendingHistory);
+    panel.invalidate(); draw("statistics-desktop-tamil-waiting.bmp");
+    REQUIRE(panel.history()==nullptr);
+    const auto waitingChart=panel.host().bounds("stats/inline/chart");
+    REQUIRE_FALSE(waitingChart.empty());
+    const auto &waitingPresentation=panel.host().presentation();
+    GAGGUI::ui::ToolkitTextMeasurer waitingMeasure(panel.host().theme(),waitingPresentation.touch,waitingPresentation.textUnit);
+    glob2test::RecordingCanvas waitingCanvas(waitingPresentation.viewport.size(),waitingMeasure);
+    panel.host().paint(waitingCanvas,0);
+    std::string paintedWaiting;
+    unsigned waitingLines=0;
+    int previousWaitingBottom=waitingChart.y;
+    auto *waitingFont=waitingMeasure.font(GAGGUI::ui::FontRole::Support);
+    REQUIRE(waitingFont);
+    waitingFont->pushStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL,GAGCore::Color(249,232,187)));
+    for (const auto &[at,line]:waitingCanvas.texts) {
+        if (!waitingChart.contains(at)) continue;
+        if (!paintedWaiting.empty()) paintedWaiting+=' ';
+        paintedWaiting+=line; ++waitingLines;
+        const int glyphHeight=int(std::ceil(waitingFont->getStringHeight(line)*waitingMeasure.scale()));
+        CHECK(at.y>=previousWaitingBottom);
+        previousWaitingBottom=at.y+glyphHeight;
+        CHECK(waitingChart.contains(GAGGUI::ui::Rect{at.x,at.y,
+            waitingMeasure.width(GAGGUI::ui::FontRole::Support,line),glyphHeight}));
+    }
+    waitingFont->popStyle();
+    CHECK(waitingLines>1);
+    CHECK(paintedWaiting==strings->getString("[stats waiting]"));
     CHECK(world.game.checkSum()==checksum);
     strings->setLang(language);GAGCore::userTextScale=textScale;
     gui.setPublishedScene(nullptr);

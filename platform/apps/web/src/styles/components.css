@@ -341,7 +341,8 @@
 
 /* Native select options do not wrap; preserve the whole selected payment mode
    beside the bounded phone control without duplicating its accessible value. */
-.admin-finances .toolbar > label {
+.admin-finances .toolbar > label,
+.admin-finances .admin-payment-mode-field {
   min-inline-size: 0;
   max-inline-size: 100%;
 }
@@ -353,7 +354,8 @@
   display: none;
 }
 @media (max-width: 600px) {
-  .admin-finances .toolbar > label {
+  .admin-finances .toolbar > label,
+  .admin-finances .admin-payment-mode-field > label {
     display: grid;
     gap: var(--sp-1);
   }
