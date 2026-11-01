@@ -1,0 +1,509 @@
+{
+  "id": "online-online-010",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:In the game, choose",
+      "key": "In the game, choose",
+      "source": "In the game, choose"
+    },
+    {
+      "id": "online:In the map editor",
+      "key": "In the map editor",
+      "source": "In the map editor"
+    },
+    {
+      "id": "online:In use",
+      "key": "In use",
+      "source": "In use"
+    },
+    {
+      "id": "online:In use · changes not applied",
+      "key": "In use · changes not applied",
+      "source": "In use · changes not applied"
+    },
+    {
+      "id": "online:Inappropriate content",
+      "key": "Inappropriate content",
+      "source": "Inappropriate content"
+    },
+    {
+      "id": "online:Incomplete music release.",
+      "key": "Incomplete music release.",
+      "source": "Incomplete music release."
+    },
+    {
+      "id": "online:Increase the manifest revision for a new release.",
+      "key": "Increase the manifest revision for a new release.",
+      "source": "Increase the manifest revision for a new release."
+    },
+    {
+      "id": "online:Individual moods",
+      "key": "Individual moods",
+      "source": "Individual moods"
+    },
+    {
+      "id": "online:Information",
+      "key": "Information",
+      "source": "Information"
+    },
+    {
+      "id": "online:Initial health",
+      "key": "Initial health",
+      "source": "Initial health"
+    },
+    {
+      "id": "online:Initials only",
+      "key": "Initials only",
+      "source": "Initials only"
+    },
+    {
+      "id": "online:Inn capacity",
+      "key": "Inn capacity",
+      "source": "Inn capacity"
+    },
+    {
+      "id": "online:Input tokens",
+      "key": "Input tokens",
+      "source": "Input tokens"
+    },
+    {
+      "id": "online:Input tokens (including cached)",
+      "key": "Input tokens (including cached)",
+      "source": "Input tokens (including cached)"
+    },
+    {
+      "id": "online:Inspect candidate",
+      "key": "Inspect candidate",
+      "source": "Inspect candidate"
+    },
+    {
+      "id": "online:Inspect latest release",
+      "key": "Inspect latest release",
+      "source": "Inspect latest release"
+    },
+    {
+      "id": "online:Inspect library content",
+      "key": "Inspect library content",
+      "source": "Inspect library content"
+    },
+    {
+      "id": "online:Inspect match verification",
+      "key": "Inspect match verification",
+      "source": "Inspect match verification"
+    },
+    {
+      "id": "online:Inspect matches",
+      "key": "Inspect matches",
+      "source": "Inspect matches"
+    },
+    {
+      "id": "online:Inspect recovery details",
+      "key": "Inspect recovery details",
+      "source": "Inspect recovery details"
+    },
+    {
+      "id": "online:Inspect requesting account",
+      "key": "Inspect requesting account",
+      "source": "Inspect requesting account"
+    },
+    {
+      "id": "online:Inspect sheet",
+      "key": "Inspect sheet",
+      "source": "Inspect sheet"
+    },
+    {
+      "id": "online:Inspect this version",
+      "key": "Inspect this version",
+      "source": "Inspect this version"
+    },
+    {
+      "id": "online:Inspect tracks",
+      "key": "Inspect tracks",
+      "source": "Inspect tracks"
+    },
+    {
+      "id": "online:Inspect version ",
+      "key": "Inspect version ",
+      "source": "Inspect version "
+    },
+    {
+      "id": "online:Inspect version {slot0} · {slot1}",
+      "key": "Inspect version {slot0} · {slot1}",
+      "source": "Inspect version {slot0} · {slot1}"
+    },
+    {
+      "id": "online:Inspected",
+      "key": "Inspected",
+      "source": "Inspected"
+    },
+    {
+      "id": "online:Inspecting",
+      "key": "Inspecting",
+      "source": "Inspecting"
+    },
+    {
+      "id": "online:Inspection zoom",
+      "key": "Inspection zoom",
+      "source": "Inspection zoom"
+    },
+    {
+      "id": "online:Install community AIs for local games. Versions work offline. Only run code from authors you trust.",
+      "key": "Install community AIs for local games. Versions work offline. Only run code from authors you trust.",
+      "source": "Install community AIs for local games. Versions work offline. Only run code from authors you trust."
+    },
+    {
+      "id": "online:Installed preset artwork",
+      "key": "Installed preset artwork",
+      "source": "Installed preset artwork"
+    },
+    {
+      "id": "online:Integer rate: 196608 means one growth opportunity or probability one. Zero disables it.",
+      "key": "Integer rate: 196608 means one growth opportunity or probability one. Zero disables it.",
+      "source": "Integer rate: 196608 means one growth opportunity or probability one. Zero disables it."
+    },
+    {
+      "id": "online:Internal server error.",
+      "key": "Internal server error.",
+      "source": "Internal server error."
+    },
+    {
+      "id": "online:Into the fray",
+      "key": "Into the fray",
+      "source": "Into the fray"
+    },
+    {
+      "id": "online:Invalid",
+      "key": "Invalid",
+      "source": "Invalid"
+    },
+    {
+      "id": "online:Invalid account cursor.",
+      "key": "Invalid account cursor.",
+      "source": "Invalid account cursor."
+    },
+    {
+      "id": "online:Invalid audit cursor.",
+      "key": "Invalid audit cursor.",
+      "source": "Invalid audit cursor."
+    },
+    {
+      "id": "online:Invalid checkout destination",
+      "key": "Invalid checkout destination",
+      "source": "Invalid checkout destination"
+    },
+    {
+      "id": "online:Invalid checkout destination.",
+      "key": "Invalid checkout destination.",
+      "source": "Invalid checkout destination."
+    },
+    {
+      "id": "online:Invalid claimed generator provenance.",
+      "key": "Invalid claimed generator provenance.",
+      "source": "Invalid claimed generator provenance."
+    },
+    {
+      "id": "online:Invalid cursor.",
+      "key": "Invalid cursor.",
+      "source": "Invalid cursor."
+    },
+    {
+      "id": "online:Invalid date.",
+      "key": "Invalid date.",
+      "source": "Invalid date."
+    },
+    {
+      "id": "online:Invalid duration filter.",
+      "key": "Invalid duration filter.",
+      "source": "Invalid duration filter."
+    },
+    {
+      "id": "online:Invalid editor-only filter.",
+      "key": "Invalid editor-only filter.",
+      "source": "Invalid editor-only filter."
+    },
+    {
+      "id": "online:Invalid engine version.",
+      "key": "Invalid engine version.",
+      "source": "Invalid engine version."
+    },
+    {
+      "id": "online:Invalid identifier.",
+      "key": "Invalid identifier.",
+      "source": "Invalid identifier."
+    },
+    {
+      "id": "online:Invalid manifest JSON.",
+      "key": "Invalid manifest JSON.",
+      "source": "Invalid manifest JSON."
+    },
+    {
+      "id": "online:Invalid mapId.",
+      "key": "Invalid mapId.",
+      "source": "Invalid mapId."
+    },
+    {
+      "id": "online:Invalid material map dimensions.",
+      "key": "Invalid material map dimensions.",
+      "source": "Invalid material map dimensions."
+    },
+    {
+      "id": "online:Invalid material map.",
+      "key": "Invalid material map.",
+      "source": "Invalid material map."
+    },
+    {
+      "id": "online:Invalid material unwrap coordinate.",
+      "key": "Invalid material unwrap coordinate.",
+      "source": "Invalid material unwrap coordinate."
+    },
+    {
+      "id": "online:Invalid material unwrap dimensions.",
+      "key": "Invalid material unwrap dimensions.",
+      "source": "Invalid material unwrap dimensions."
+    },
+    {
+      "id": "online:Invalid model camera",
+      "key": "Invalid model camera",
+      "source": "Invalid model camera"
+    },
+    {
+      "id": "online:Invalid model dimensions",
+      "key": "Invalid model dimensions",
+      "source": "Invalid model dimensions"
+    },
+    {
+      "id": "online:Invalid model geometry",
+      "key": "Invalid model geometry",
+      "source": "Invalid model geometry"
+    },
+    {
+      "id": "online:Invalid model size",
+      "key": "Invalid model size",
+      "source": "Invalid model size"
+    },
+    {
+      "id": "online:Invalid model transform",
+      "key": "Invalid model transform",
+      "source": "Invalid model transform"
+    },
+    {
+      "id": "online:Invalid page cursor.",
+      "key": "Invalid page cursor.",
+      "source": "Invalid page cursor."
+    },
+    {
+      "id": "online:Invalid page size.",
+      "key": "Invalid page size.",
+      "source": "Invalid page size."
+    },
+    {
+      "id": "online:Invalid pagination cursor.",
+      "key": "Invalid pagination cursor.",
+      "source": "Invalid pagination cursor."
+    },
+    {
+      "id": "online:Invalid pagination.",
+      "key": "Invalid pagination.",
+      "source": "Invalid pagination."
+    },
+    {
+      "id": "online:Invalid payment signature.",
+      "key": "Invalid payment signature.",
+      "source": "Invalid payment signature."
+    },
+    {
+      "id": "online:Invalid provider.",
+      "key": "Invalid provider.",
+      "source": "Invalid provider."
+    },
+    {
+      "id": "online:Invalid range or payment mode.",
+      "key": "Invalid range or payment mode.",
+      "source": "Invalid range or payment mode."
+    },
+    {
+      "id": "online:Invalid recovery reason.",
+      "key": "Invalid recovery reason.",
+      "source": "Invalid recovery reason."
+    },
+    {
+      "id": "online:Invalid report cursor.",
+      "key": "Invalid report cursor.",
+      "source": "Invalid report cursor."
+    },
+    {
+      "id": "online:Invalid report identifier.",
+      "key": "Invalid report identifier.",
+      "source": "Invalid report identifier."
+    },
+    {
+      "id": "online:Invalid report status.",
+      "key": "Invalid report status.",
+      "source": "Invalid report status."
+    },
+    {
+      "id": "online:Invalid request body.",
+      "key": "Invalid request body.",
+      "source": "Invalid request body."
+    },
+    {
+      "id": "online:Invalid request identifier.",
+      "key": "Invalid request identifier.",
+      "source": "Invalid request identifier."
+    },
+    {
+      "id": "online:Invalid rig UV",
+      "key": "Invalid rig UV",
+      "source": "Invalid rig UV"
+    },
+    {
+      "id": "online:Invalid rig clip",
+      "key": "Invalid rig clip",
+      "source": "Invalid rig clip"
+    },
+    {
+      "id": "online:Invalid rig dimensions",
+      "key": "Invalid rig dimensions",
+      "source": "Invalid rig dimensions"
+    },
+    {
+      "id": "online:Invalid rig frame mapping",
+      "key": "Invalid rig frame mapping",
+      "source": "Invalid rig frame mapping"
+    },
+    {
+      "id": "online:Invalid rig hierarchy",
+      "key": "Invalid rig hierarchy",
+      "source": "Invalid rig hierarchy"
+    },
+    {
+      "id": "online:Invalid rig index",
+      "key": "Invalid rig index",
+      "source": "Invalid rig index"
+    },
+    {
+      "id": "online:Invalid rig influence bone",
+      "key": "Invalid rig influence bone",
+      "source": "Invalid rig influence bone"
+    },
+    {
+      "id": "online:Invalid rig inverse bind",
+      "key": "Invalid rig inverse bind",
+      "source": "Invalid rig inverse bind"
+    },
+    {
+      "id": "online:Invalid rig normal",
+      "key": "Invalid rig normal",
+      "source": "Invalid rig normal"
+    },
+    {
+      "id": "online:Invalid rig pose",
+      "key": "Invalid rig pose",
+      "source": "Invalid rig pose"
+    },
+    {
+      "id": "online:Invalid rig radius",
+      "key": "Invalid rig radius",
+      "source": "Invalid rig radius"
+    },
+    {
+      "id": "online:Invalid rig sample",
+      "key": "Invalid rig sample",
+      "source": "Invalid rig sample"
+    },
+    {
+      "id": "online:Invalid rig size",
+      "key": "Invalid rig size",
+      "source": "Invalid rig size"
+    },
+    {
+      "id": "online:Invalid rig track dimensions",
+      "key": "Invalid rig track dimensions",
+      "source": "Invalid rig track dimensions"
+    },
+    {
+      "id": "online:Invalid rig transform",
+      "key": "Invalid rig transform",
+      "source": "Invalid rig transform"
+    },
+    {
+      "id": "online:Invalid rig weights",
+      "key": "Invalid rig weights",
+      "source": "Invalid rig weights"
+    },
+    {
+      "id": "online:Invalid shape UV",
+      "key": "Invalid shape UV",
+      "source": "Invalid shape UV"
+    },
+    {
+      "id": "online:Invalid shape clip",
+      "key": "Invalid shape clip",
+      "source": "Invalid shape clip"
+    },
+    {
+      "id": "online:Invalid shape dimensions",
+      "key": "Invalid shape dimensions",
+      "source": "Invalid shape dimensions"
+    },
+    {
+      "id": "online:Invalid shape frame",
+      "key": "Invalid shape frame",
+      "source": "Invalid shape frame"
+    },
+    {
+      "id": "online:Invalid shape heading",
+      "key": "Invalid shape heading",
+      "source": "Invalid shape heading"
+    },
+    {
+      "id": "online:Invalid shape index",
+      "key": "Invalid shape index",
+      "source": "Invalid shape index"
+    },
+    {
+      "id": "online:Invalid shape scale",
+      "key": "Invalid shape scale",
+      "source": "Invalid shape scale"
+    },
+    {
+      "id": "online:Invalid shape size",
+      "key": "Invalid shape size",
+      "source": "Invalid shape size"
+    },
+    {
+      "id": "online:Invalid skin dimensions.",
+      "key": "Invalid skin dimensions.",
+      "source": "Invalid skin dimensions."
+    },
+    {
+      "id": "online:Invalid studio event cursor.",
+      "key": "Invalid studio event cursor.",
+      "source": "Invalid studio event cursor."
+    },
+    {
+      "id": "online:Invalid visibility.",
+      "key": "Invalid visibility.",
+      "source": "Invalid visibility."
+    },
+    {
+      "id": "online:Invalid webhook signature.",
+      "key": "Invalid webhook signature.",
+      "source": "Invalid webhook signature."
+    },
+    {
+      "id": "online:Invalid webhook.",
+      "key": "Invalid webhook.",
+      "source": "Invalid webhook."
+    },
+    {
+      "id": "online:Invalid {value0} camera",
+      "key": "Invalid {value0} camera",
+      "source": "Invalid {value0} camera"
+    }
+  ]
+}

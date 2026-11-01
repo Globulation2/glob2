@@ -1,0 +1,12 @@
+{
+  "classification": "Actual visible System UI not responding Marathi OS dialog during emulator boot, before current APK install or app start. Not game rendering evidence.",
+  "owned_avd": "glob2-api35-x64",
+  "action": [
+    "input",
+    "tap",
+    "170",
+    "460"
+  ],
+  "selected_visible_action": "प्रतीक्षा करा (Wait)",
+  "production_or_profile_edits": false
+}

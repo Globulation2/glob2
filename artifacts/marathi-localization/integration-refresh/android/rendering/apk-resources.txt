@@ -1,0 +1,26 @@
+Binary APK
+Package name=org.globulation2.glob2 id=7f
+  type color id=01 entryCount=1
+    resource 0x7f010000 color/ic_launcher_background
+      () #ff2b1c42
+  type mipmap id=02 entryCount=2
+    resource 0x7f020000 mipmap/ic_launcher
+      (mdpi) (file) res/9w.png type=PNG
+      (hdpi) (file) res/yn.png type=PNG
+      (xhdpi) (file) res/FS.png type=PNG
+      (xxhdpi) (file) res/RJ.png type=PNG
+      (xxxhdpi) (file) res/o-.png type=PNG
+      (anydpi-v26) (file) res/BW.xml type=XML
+    resource 0x7f020001 mipmap/ic_launcher_foreground
+      (mdpi) (file) res/QZ.png type=PNG
+      (hdpi) (file) res/zr.png type=PNG
+      (xhdpi) (file) res/Em.png type=PNG
+      (xxhdpi) (file) res/Lf.png type=PNG
+      (xxxhdpi) (file) res/as.png type=PNG
+  type string id=03 entryCount=1
+    resource 0x7f030000 string/preparing_game
+      () "Preparing game…"
+      (hi) "खेल तैयार हो रहा है…"
+      (mr) "खेळाची तयारी सुरू आहे…"
+      (ur) "کھیل تیار ہو رہا ہے…"
+      (sw) "Mchezo unaandaliwa…"

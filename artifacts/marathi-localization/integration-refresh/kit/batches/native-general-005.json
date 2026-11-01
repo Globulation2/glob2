@@ -1,0 +1,509 @@
+{
+  "id": "native-general-005",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Unit editor]",
+      "key": "[Unit editor]",
+      "source": "Unit editor"
+    },
+    {
+      "id": "native:[units working]",
+      "key": "[units working]",
+      "source": " units working"
+    },
+    {
+      "id": "native:[Units]",
+      "key": "[Units]",
+      "source": "Units"
+    },
+    {
+      "id": "native:[unlocked at start]",
+      "key": "[unlocked at start]",
+      "source": "Unlocked At Start"
+    },
+    {
+      "id": "native:[unlocked by]",
+      "key": "[unlocked by]",
+      "source": "Unlocked By"
+    },
+    {
+      "id": "native:[Unnamed Area]",
+      "key": "[Unnamed Area]",
+      "source": "Unnamed area"
+    },
+    {
+      "id": "native:[up]",
+      "key": "[up]",
+      "source": "up"
+    },
+    {
+      "id": "native:[Upgrade Defaults]",
+      "key": "[Upgrade Defaults]",
+      "source": "Upgrade Defaults"
+    },
+    {
+      "id": "native:[upgrade]",
+      "key": "[upgrade]",
+      "source": "Upgrade"
+    },
+    {
+      "id": "native:[username]",
+      "key": "[username]",
+      "source": "Username"
+    },
+    {
+      "id": "native:[Version]",
+      "key": "[Version]",
+      "source": "Version"
+    },
+    {
+      "id": "native:[view history]",
+      "key": "[view history]",
+      "source": "View History"
+    },
+    {
+      "id": "native:[Voice volume]",
+      "key": "[Voice volume]",
+      "source": "Volume (voice)"
+    },
+    {
+      "id": "native:[waiting for %0]",
+      "key": "[waiting for %0]",
+      "source": "Waiting for %0"
+    },
+    {
+      "id": "native:[waiting for key]",
+      "key": "[waiting for key]",
+      "source": "waiting for key..."
+    },
+    {
+      "id": "native:[Walk]",
+      "key": "[Walk]",
+      "source": "Walk"
+    },
+    {
+      "id": "native:[Warning, you need to reboot the game for changes to take effect]",
+      "key": "[Warning, you need to reboot the game for changes to take effect]",
+      "source": "Warning, you need to restart the game for changes to take effect"
+    },
+    {
+      "id": "native:[watch again]",
+      "key": "[watch again]",
+      "source": "Watch again"
+    },
+    {
+      "id": "native:[watching:]",
+      "key": "[watching:]",
+      "source": "Watching:"
+    },
+    {
+      "id": "native:[water]",
+      "key": "[water]",
+      "source": "Water"
+    },
+    {
+      "id": "native:[Wheat]",
+      "key": "[Wheat]",
+      "source": "Wheat"
+    },
+    {
+      "id": "native:[Won : you defeated your opponents]",
+      "key": "[Won : you defeated your opponents]",
+      "source": "Won: you defeated your opponents"
+    },
+    {
+      "id": "native:[Won : you have the most prestige]",
+      "key": "[Won : you have the most prestige]",
+      "source": "Won: you have the most prestige"
+    },
+    {
+      "id": "native:[Won : your ally %0 has the most prestige]",
+      "key": "[Won : your ally %0 has the most prestige]",
+      "source": "Won: your ally %0 has the most prestige"
+    },
+    {
+      "id": "native:[Wood]",
+      "key": "[Wood]",
+      "source": "Wood"
+    },
+    {
+      "id": "native:[wood]",
+      "key": "[wood]",
+      "source": "wood"
+    },
+    {
+      "id": "native:[working]",
+      "key": "[working]",
+      "source": "Working"
+    },
+    {
+      "id": "native:[wounded]",
+      "key": "[wounded]",
+      "source": "wounded"
+    },
+    {
+      "id": "native:[Yes]",
+      "key": "[Yes]",
+      "source": "Yes"
+    },
+    {
+      "id": "native:[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]",
+      "key": "[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]",
+      "source": "The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online."
+    },
+    {
+      "id": "native:[you have lost]",
+      "key": "[you have lost]",
+      "source": "You have lost!"
+    },
+    {
+      "id": "native:[you have won]",
+      "key": "[you have won]",
+      "source": "You have won!"
+    },
+    {
+      "id": "native:[You where kicked from the game]",
+      "key": "[You where kicked from the game]",
+      "source": "You were kicked from the game"
+    },
+    {
+      "id": "native:[Your %0 are under attack]",
+      "key": "[Your %0 are under attack]",
+      "source": "Your %0 is under attack"
+    },
+    {
+      "id": "native:[Your unit got converted to %0's team]",
+      "key": "[Your unit got converted to %0's team]",
+      "source": "Your unit has joined %0's team"
+    },
+    {
+      "id": "native:[game speed help]",
+      "key": "[game speed help]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x."
+    },
+    {
+      "id": "native:[maximum game speed]",
+      "key": "[maximum game speed]",
+      "source": "Maximum"
+    },
+    {
+      "id": "native:[multiplayer game speed]",
+      "key": "[multiplayer game speed]",
+      "source": "Game speed: 1x (multiplayer)"
+    },
+    {
+      "id": "native:[Units still inside: %0]",
+      "key": "[Units still inside: %0]",
+      "source": "Still inside: %0"
+    },
+    {
+      "id": "native:[Units still working: %0]",
+      "key": "[Units still working: %0]",
+      "source": "Still working: %0"
+    },
+    {
+      "id": "native:[2 vs 2]",
+      "key": "[2 vs 2]",
+      "source": "2 vs 2"
+    },
+    {
+      "id": "native:[AI strategy & counterplay]",
+      "key": "[AI strategy & counterplay]",
+      "source": "AI strategy & counterplay"
+    },
+    {
+      "id": "native:[AICastor-Profile]",
+      "key": "[AICastor-Profile]",
+      "source": "Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.\\n\\nEconomy and development: Studies hydration, food-source growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.\\n\\nAttack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.\\n\\nCompared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.\\n\\nStrengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.\\n\\nCounterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement."
+    },
+    {
+      "id": "native:[AICastor-Summary]",
+      "key": "[AICastor-Summary]",
+      "source": "Develops a fortified colony, then strikes at military and science buildings."
+    },
+    {
+      "id": "native:[AICortex-Profile]",
+      "key": "[AICortex-Profile]",
+      "source": "Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.\\n\\nEconomy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.\\n\\nAttack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.\\n\\nCommitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.\\n\\nCompared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.\\n\\nStrengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.\\n\\nCounterplay to try: Contest forward inns, hospitals and food sources. Keep defenders together against its push; minor harassment may not persuade it to retreat.\\n\\nScouting: Uses discovered enemy buildings and observed enemy troops."
+    },
+    {
+      "id": "native:[AICortex-Summary]",
+      "key": "[AICortex-Summary]",
+      "source": "Supports committed military pushes with forward food and healing."
+    },
+    {
+      "id": "native:[AINicowar-Profile]",
+      "key": "[AINicowar-Profile]",
+      "source": "Core strategy: Combines growth, training, upgrades and warfare through overlapping conditions. Can attack while expanding, and redirect economic effort toward recovery when feeding fails.\\n\\nOpening: The shipped aggressive profile begins war preparation at five total units and permits war at five warriors, counting level-zero warriors too. Aims for three attack flags with five warriors each. Custom strategy files can change these thresholds.\\n\\nEconomy and development: Expands food and birth capacity, trains workers, develops swimming and movement, and upgrades buildings. Adjusts food staffing, responds to starvation and pursues fruit.\\n\\nAttack and defense: Samples reachable enemy buildings for attacks. Can use clearing flags to open resource-blocked routes. Defensive flags cover clusters of threatened units and buildings. Later, trained ground-attacking explorers target enemy unit groups.\\n\\nCompared with other AIs: Shares Warrush's early aggression but has more follow-through. Unlike Cabino, does not consistently prioritize hospitals and inns.\\n\\nStrengths and weaknesses: Broad tactical coverage combines early pressure with continued development. Random target selection can spend effort on less valuable buildings. Its thresholds do not provide Maxima's detailed estimate of opposing fighting power.\\n\\nCounterplay to try: Expect an early attack. Protect food and workers, contest expansion, and prepare for explorer attacks if it reaches advanced training."
+    },
+    {
+      "id": "native:[AINicowar-Summary]",
+      "key": "[AINicowar-Summary]",
+      "source": "An early rush supported by farming, upgrades, defense and explorer attacks."
+    },
+    {
+      "id": "native:[AINone-Profile]",
+      "key": "[AINone-Profile]",
+      "source": "Core strategy: Issues no AI orders.\\n\\nStrengths: A predictable idle opponent for experiments.\\n\\nWeaknesses: Does not expand or adapt."
+    },
+    {
+      "id": "native:[AINone-Summary]",
+      "key": "[AINone-Summary]",
+      "source": "An idle colony for experiments."
+    },
+    {
+      "id": "native:[AINumbi-Profile]",
+      "key": "[AINumbi-Profile]",
+      "source": "Core strategy: Builds food and population first, adds healing, science and training, then shifts toward warfare. Its broad phases advance with time rather than with the opponent's progress.\\n\\nEconomy and development: Scales building demand with population and estimates nearby food sources. Later phases add upgrades, defenses and expansion to support its growing army.\\n\\nAttack and defense: Attacks when enough healthy fighters exist or a timeout expires. Places war flags on sampled enemy buildings. When its fighting force falls too low, removes attack flags and raises the thresholds for another attempt.\\n\\nCompared with other AIs: More predictable than Castor or Nicowar. Castor considers terrain and target value more carefully; Nicowar applies pressure much earlier.\\n\\nStrengths and weaknesses: Broad supporting infrastructure can make it dangerous after an uninterrupted buildup, but its timetable may not match the battle. Simple target selection and longer pauses after losses make its attacks easier to anticipate.\\n\\nCounterplay to try: Apply pressure before its military phase. Grow food and training behind your attacks, and exploit the pause after defeating an assault.\\n\\nScouting: Its attack routine reads enemy building positions directly without a visibility check."
+    },
+    {
+      "id": "native:[AINumbi-Summary]",
+      "key": "[AINumbi-Summary]",
+      "source": "A gradual colony builder that follows a timetable, then attacks in numbers."
+    },
+    {
+      "id": "native:[AIEcono-Profile]",
+      "key": "[AIEcono-Profile]",
+      "source": "Core strategy: Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.\\n\\nEconomy and development: Builds inns and swarms near food sources, adds education and movement training, and upgrades infrastructure. Tracks food supplies and retains its buildings and exploration flags even when supplies deteriorate or targets disappear.\\n\\nFarming and conversion: Protects renewable food and wood sources near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.\\n\\nCompared with other AIs: The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.\\n\\nStrengths and weaknesses: Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.\\n\\nCounterplay to try: Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows."
+    },
+    {
+      "id": "native:[AIEcono-Summary]",
+      "key": "[AIEcono-Summary]",
+      "source": "Grows a food-rich colony and competes for converts without producing warriors."
+    },
+    {
+      "id": "native:[AIWarrush-Profile]",
+      "key": "[AIWarrush-Profile]",
+      "source": "Core strategy: Attacks before opponents finish a long economic or technological buildup. Expects combat to decide the game before a large support network becomes necessary.\\n\\nEconomy and development: Once six units can harvest, sets production to four workers, one explorer and three warriors. Adds barracks as training fills up, but restricts new inns. Spare construction often goes toward hospitals and movement training.\\n\\nAttack and defense: Marks discovered enemy buildings with guard areas so warriors apply continuing pressure. Does not wait for a carefully assembled wave. Clears obstructing resources and protects some renewable sources.\\n\\nFruit policy: Forbids fruit harvesting, avoiding fruit-related armor penalties and declining Econo's conversion strategy.\\n\\nCompared with other AIs: More committed to early pressure than Numbi or Castor. Nicowar also opens aggressively, but follows through with a broader upgrade and tactical program.\\n\\nStrengths and weaknesses: Punishes slow openings and forces early defensive spending. Limited systematic upgrading and lean food support make a stalled offensive costly. Terrain and long journeys can erode its early advantage.\\n\\nCounterplay to try: Protect inns and swarms early. Replace workers as well as defenders, develop training, then counterattack once its rush loses momentum.\\n\\nScouting: Opening exploration flags use enemy starting locations directly. Later attack-area placement requires visibility."
+    },
+    {
+      "id": "native:[AIWarrush-Summary]",
+      "key": "[AIWarrush-Summary]",
+      "source": "Early warrior pressure backed by a deliberately lean support economy."
+    },
+    {
+      "id": "native:[AICabino-Profile]",
+      "key": "[AICabino-Profile]",
+      "source": "Core strategy: Shares unit production among construction, upgrades, defense, attacks and exploration. Separate managers request and reserve units, developing economy and military together.\\n\\nEconomy and development: Builds and upgrades a broad settlement, manages inn and tower staffing, clears building surroundings and protects renewable resources. Scouts fruit and advertises food to compete for converts.\\n\\nAttack and defense: Chooses an enemy and prioritizes hospitals, then inns, then barracks. Supports up to four attacks, generally assigning eight to twenty warriors per target according to availability and nearby enemies. Uses separate defensive flags around threatened buildings.\\n\\nTraining: Requires enough suitable warriors and a completed barracks to attack, but does not wait for maximum technology. Continued upgrades and training strengthen later attacks.\\n\\nCompared with other AIs: More purposeful about dismantling support buildings than Nicowar. Spreads attacks more than Maxima's gathered waves, using unit reservations to manage competing demands.\\n\\nStrengths and weaknesses: Combines growth, training, defense and several attacks. Destroying food and healing can weaken an entire colony. Random opponent selection and fixed building priorities may miss opportunities; multiple attacks can divide its force.\\n\\nCounterplay to try: Defend hospitals and inns. Contest exposed expansion and concentrate defenders against individual attacks. Damage food or training before it sustains several fronts.\\n\\nScouting: Its attack selector reads enemy building lists without an explicit visibility check. Some economic comparisons use enemy statistics directly."
+    },
+    {
+      "id": "native:[AICabino-Summary]",
+      "key": "[AICabino-Summary]",
+      "source": "Coordinates colony growth and trained attacks, targeting healing and food first."
+    },
+    {
+      "id": "native:[Algae]",
+      "key": "[Algae]",
+      "source": "Algae"
+    },
+    {
+      "id": "native:[Beach size]",
+      "key": "[Beach size]",
+      "source": "Beach size"
+    },
+    {
+      "id": "native:[Blue]",
+      "key": "[Blue]",
+      "source": "Blue"
+    },
+    {
+      "id": "native:[Brown]",
+      "key": "[Brown]",
+      "source": "Brown"
+    },
+    {
+      "id": "native:[Built-in maps]",
+      "key": "[Built-in maps]",
+      "source": "Built-in maps"
+    },
+    {
+      "id": "native:[Closed]",
+      "key": "[Closed]",
+      "source": "Closed"
+    },
+    {
+      "id": "native:[Colonies]",
+      "key": "[Colonies]",
+      "source": "Colonies"
+    },
+    {
+      "id": "native:[Colony]",
+      "key": "[Colony]",
+      "source": "Colony"
+    },
+    {
+      "id": "native:[Conquest only]",
+      "key": "[Conquest only]",
+      "source": "Conquest only"
+    },
+    {
+      "id": "native:[Conquest or prestige]",
+      "key": "[Conquest or prestige]",
+      "source": "Conquest or prestige"
+    },
+    {
+      "id": "native:[Could not launch this map. Your setup is retained; try again.]",
+      "key": "[Could not launch this map. Your setup is retained; try again.]",
+      "source": "Could not launch this map. Your setup is retained; try again."
+    },
+    {
+      "id": "native:[Custom]",
+      "key": "[Custom]",
+      "source": "Custom"
+    },
+    {
+      "id": "native:[Custom teams]",
+      "key": "[Custom teams]",
+      "source": "Custom teams"
+    },
+    {
+      "id": "native:[Cyan]",
+      "key": "[Cyan]",
+      "source": "Cyan"
+    },
+    {
+      "id": "native:[Desert weight]",
+      "key": "[Desert weight]",
+      "source": "Desert weight"
+    },
+    {
+      "id": "native:[Easy]",
+      "key": "[Easy]",
+      "source": "Easy"
+    },
+    {
+      "id": "native:[Extra colony assignments are retained for larger maps.]",
+      "key": "[Extra colony assignments are retained for larger maps.]",
+      "source": "Extra colony assignments are retained for larger maps."
+    },
+    {
+      "id": "native:[FFA]",
+      "key": "[FFA]",
+      "source": "FFA"
+    },
+    {
+      "id": "native:[Game Rules]",
+      "key": "[Game Rules]",
+      "source": "Game Rules"
+    },
+    {
+      "id": "native:[Game speed]",
+      "key": "[Game speed]",
+      "source": "Game speed"
+    },
+    {
+      "id": "native:[Generate & play]",
+      "key": "[Generate & play]",
+      "source": "Generate & play"
+    },
+    {
+      "id": "native:[Grass weight]",
+      "key": "[Grass weight]",
+      "source": "Grass weight"
+    },
+    {
+      "id": "native:[Gray]",
+      "key": "[Gray]",
+      "source": "Gray"
+    },
+    {
+      "id": "native:[Green]",
+      "key": "[Green]",
+      "source": "Green"
+    },
+    {
+      "id": "native:[Hard]",
+      "key": "[Hard]",
+      "source": "Hard"
+    },
+    {
+      "id": "native:[Height]",
+      "key": "[Height]",
+      "source": "Height"
+    },
+    {
+      "id": "native:[Invalid colony count.]",
+      "key": "[Invalid colony count.]",
+      "source": "Invalid colony count."
+    },
+    {
+      "id": "native:[Isles]",
+      "key": "[Isles]",
+      "source": "Isles"
+    },
+    {
+      "id": "native:[Landscape]",
+      "key": "[Landscape]",
+      "source": "Landscape"
+    },
+    {
+      "id": "native:[Last colony standing]",
+      "key": "[Last colony standing]",
+      "source": "Last colony standing"
+    },
+    {
+      "id": "native:[Layout]",
+      "key": "[Layout]",
+      "source": "Layout"
+    },
+    {
+      "id": "native:[Magenta]",
+      "key": "[Magenta]",
+      "source": "Magenta"
+    },
+    {
+      "id": "native:[Map]",
+      "key": "[Map]",
+      "source": "Map"
+    },
+    {
+      "id": "native:[Match finished]",
+      "key": "[Match finished]",
+      "source": "Match finished"
+    },
+    {
+      "id": "native:[Medium]",
+      "key": "[Medium]",
+      "source": "Medium"
+    },
+    {
+      "id": "native:[Medium - Experimental]",
+      "key": "[Medium - Experimental]",
+      "source": "Medium - Experimental"
+    },
+    {
+      "id": "native:[No AI orders]",
+      "key": "[No AI orders]",
+      "source": "No AI orders"
+    },
+    {
+      "id": "native:[Old random]",
+      "key": "[Old random]",
+      "source": "Shattered Coast"
+    },
+    {
+      "id": "native:[Open at least one colony to start a match.]",
+      "key": "[Open at least one colony to start a match.]",
+      "source": "Open at least one colony to start a match."
+    },
+    {
+      "id": "native:[Open book]",
+      "key": "[Open book]",
+      "source": "Open book"
+    },
+    {
+      "id": "native:[Pink]",
+      "key": "[Pink]",
+      "source": "Pink"
+    },
+    {
+      "id": "native:[Play this map]",
+      "key": "[Play this map]",
+      "source": "Play this map"
+    }
+  ]
+}

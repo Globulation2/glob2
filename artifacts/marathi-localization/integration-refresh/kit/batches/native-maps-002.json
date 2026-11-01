@@ -1,0 +1,399 @@
+{
+  "id": "native-maps-002",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "native",
+  "domain": "maps",
+  "context": "Procedural terrain controls: passes are mountain routes, reach is stream length, and banks/bars are terrain, not finance/weapons.",
+  "entries": [
+    {
+      "id": "native:[Portage Lakes cannot connect its shoreline trails.]",
+      "key": "[Portage Lakes cannot connect its shoreline trails.]",
+      "source": "Portage Lakes cannot connect its shoreline trails."
+    },
+    {
+      "id": "native:[Portage Lakes needs separate swimming lakes on this seed.]",
+      "key": "[Portage Lakes needs separate swimming lakes on this seed.]",
+      "source": "Portage Lakes needs separate swimming lakes on this seed."
+    },
+    {
+      "id": "native:[Sandbar connections]",
+      "key": "[Sandbar connections]",
+      "source": "Sandbar connections"
+    },
+    {
+      "id": "native:[Outlying islands]",
+      "key": "[Outlying islands]",
+      "source": "Outlying islands"
+    },
+    {
+      "id": "native:[Loading terrain]",
+      "key": "[Loading terrain]",
+      "source": "Loading terrain..."
+    },
+    {
+      "id": "native:[Map settings]",
+      "key": "[Map settings]",
+      "source": "Map settings"
+    },
+    {
+      "id": "native:[Release on valid terrain to place]",
+      "key": "[Release on valid terrain to place]",
+      "source": "Release on valid terrain to place"
+    },
+    {
+      "id": "native:[Mark map for allies]",
+      "key": "[Mark map for allies]",
+      "source": "Mark map for allies"
+    },
+    {
+      "id": "native:[Tap to write the map script]",
+      "key": "[Tap to write the map script]",
+      "source": "Tap to write the map script"
+    },
+    {
+      "id": "native:[Starting terrain]",
+      "key": "[Starting terrain]",
+      "source": "Starting terrain"
+    },
+    {
+      "id": "native:[Map momentum]",
+      "key": "[Map momentum]",
+      "source": "Map momentum"
+    },
+    {
+      "id": "native:[match downloading map %0]",
+      "key": "[match downloading map %0]",
+      "source": "Downloading map %0"
+    },
+    {
+      "id": "native:[match map cached]",
+      "key": "[match map cached]",
+      "source": "already on this device"
+    },
+    {
+      "id": "native:[room map changed %0]",
+      "key": "[room map changed %0]",
+      "source": "The map changed to %0."
+    },
+    {
+      "id": "native:[room map failed]",
+      "key": "[room map failed]",
+      "source": "The map could not be prepared"
+    },
+    {
+      "id": "native:[maps map page]",
+      "key": "[maps map page]",
+      "source": "Map page"
+    },
+    {
+      "id": "native:[maps upload a map title]",
+      "key": "[maps upload a map title]",
+      "source": "Upload a map"
+    },
+    {
+      "id": "native:[maps update map title]",
+      "key": "[maps update map title]",
+      "source": "Update a map"
+    },
+    {
+      "id": "native:[room map read failed]",
+      "key": "[room map read failed]",
+      "source": "This map file could not be read."
+    },
+    {
+      "id": "native:[room map upload failed]",
+      "key": "[room map upload failed]",
+      "source": "The map could not be shared with the room."
+    },
+    {
+      "id": "native:[room map upload failed %0]",
+      "key": "[room map upload failed %0]",
+      "source": "The map could not be shared with the room: %0"
+    },
+    {
+      "id": "native:[room premade map shared]",
+      "key": "[room premade map shared]",
+      "source": "Everyone in the room plays this map file; it downloads before the match."
+    },
+    {
+      "id": "native:[room map ready title %0]",
+      "key": "[room map ready title %0]",
+      "source": "Play %0"
+    },
+    {
+      "id": "native:[room map ready unnamed]",
+      "key": "[room map ready unnamed]",
+      "source": "this map"
+    },
+    {
+      "id": "native:[room map ready body]",
+      "key": "[room map ready body]",
+      "source": "Create a room and invite your friends: the room plays this map."
+    },
+    {
+      "id": "native:[Map repetition failed]",
+      "key": "[Map repetition failed]",
+      "source": "Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases."
+    },
+    {
+      "id": "native:[repeat map horizontally]",
+      "key": "[repeat map horizontally]",
+      "source": "Repeat map horizontally"
+    },
+    {
+      "id": "native:[repeat map vertically]",
+      "key": "[repeat map vertically]",
+      "source": "Repeat map vertically"
+    },
+    {
+      "id": "native:[stat growth map about]",
+      "key": "[stat growth map about]",
+      "source": "How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony."
+    },
+    {
+      "id": "native:[Reveal terrain]",
+      "key": "[Reveal terrain]",
+      "source": "Reveal terrain"
+    },
+    {
+      "id": "native:[Players see the map's terrain from the start; enemy units stay hidden.]",
+      "key": "[Players see the map's terrain from the start; enemy units stay hidden.]",
+      "source": "Players see the map's terrain from the start; enemy units stay hidden."
+    },
+    {
+      "id": "native:[Import Terrain Definitions]",
+      "key": "[Import Terrain Definitions]",
+      "source": "Import Terrain Definitions"
+    },
+    {
+      "id": "native:[Terrain palette]",
+      "key": "[Terrain palette]",
+      "source": "Terrain palette"
+    },
+    {
+      "id": "native:[terrain group water]",
+      "key": "[terrain group water]",
+      "source": "Water"
+    },
+    {
+      "id": "native:[terrain group sand]",
+      "key": "[terrain group sand]",
+      "source": "Sand"
+    },
+    {
+      "id": "native:[terrain group grass]",
+      "key": "[terrain group grass]",
+      "source": "Grass"
+    },
+    {
+      "id": "native:[terrain group ice]",
+      "key": "[terrain group ice]",
+      "source": "Ice"
+    },
+    {
+      "id": "native:[terrain group paths]",
+      "key": "[terrain group paths]",
+      "source": "Paths"
+    },
+    {
+      "id": "native:[terrain group obstacles]",
+      "key": "[terrain group obstacles]",
+      "source": "Obstacles"
+    },
+    {
+      "id": "native:[terrain group ridges]",
+      "key": "[terrain group ridges]",
+      "source": "Ridges"
+    },
+    {
+      "id": "native:[terrain group barren]",
+      "key": "[terrain group barren]",
+      "source": "Barren ground"
+    },
+    {
+      "id": "native:[terrain group rough]",
+      "key": "[terrain group rough]",
+      "source": "Rough ground"
+    },
+    {
+      "id": "native:[terrain group lava]",
+      "key": "[terrain group lava]",
+      "source": "Lava"
+    },
+    {
+      "id": "native:[terrain group fertile]",
+      "key": "[terrain group fertile]",
+      "source": "Fertile ground"
+    },
+    {
+      "id": "native:[terrain group deep-water]",
+      "key": "[terrain group deep-water]",
+      "source": "Deep water"
+    },
+    {
+      "id": "native:[terrain group void]",
+      "key": "[terrain group void]",
+      "source": "Void"
+    },
+    {
+      "id": "native:[terrain group custom]",
+      "key": "[terrain group custom]",
+      "source": "Custom"
+    },
+    {
+      "id": "native:[terrain group classic]",
+      "key": "[terrain group classic]",
+      "source": "Classic ground"
+    },
+    {
+      "id": "native:[terrain rule walkable]",
+      "key": "[terrain rule walkable]",
+      "source": "Walkable"
+    },
+    {
+      "id": "native:[terrain rule swimmable]",
+      "key": "[terrain rule swimmable]",
+      "source": "Swimmable"
+    },
+    {
+      "id": "native:[terrain rule impassable]",
+      "key": "[terrain rule impassable]",
+      "source": "Impassable"
+    },
+    {
+      "id": "native:[terrain rule no flying]",
+      "key": "[terrain rule no flying]",
+      "source": "No flying"
+    },
+    {
+      "id": "native:[terrain rule buildable]",
+      "key": "[terrain rule buildable]",
+      "source": "Buildable"
+    },
+    {
+      "id": "native:[terrain rule speed %0]",
+      "key": "[terrain rule speed %0]",
+      "source": "Speed %0%"
+    },
+    {
+      "id": "native:[terrain rule crops grow]",
+      "key": "[terrain rule crops grow]",
+      "source": "Crops grow"
+    },
+    {
+      "id": "native:[terrain rule irrigates]",
+      "key": "[terrain rule irrigates]",
+      "source": "Irrigates nearby land"
+    },
+    {
+      "id": "native:[terrain rule stops nearby growth]",
+      "key": "[terrain rule stops nearby growth]",
+      "source": "Stops nearby growth"
+    },
+    {
+      "id": "native:[terrain rule blocks shots]",
+      "key": "[terrain rule blocks shots]",
+      "source": "Blocks shots"
+    },
+    {
+      "id": "native:[terrain rule hurts walkers]",
+      "key": "[terrain rule hurts walkers]",
+      "source": "Hurts walkers"
+    },
+    {
+      "id": "native:[terrain rule hurts fliers]",
+      "key": "[terrain rule hurts fliers]",
+      "source": "Hurts fliers"
+    },
+    {
+      "id": "native:[terrain palette hint]",
+      "key": "[terrain palette hint]",
+      "source": "Pick a brush. Groups share one set of rules; their members differ only in look."
+    },
+    {
+      "id": "native:[terrain rule algae grow]",
+      "key": "[terrain rule algae grow]",
+      "source": "Algae grow"
+    },
+    {
+      "id": "native:[editor map saved]",
+      "key": "[editor map saved]",
+      "source": "Map saved"
+    },
+    {
+      "id": "native:[editor map shared]",
+      "key": "[editor map shared]",
+      "source": "Map shared online"
+    },
+    {
+      "id": "native:[editor menu import terrain]",
+      "key": "[editor menu import terrain]",
+      "source": "Import terrain definitions…"
+    },
+    {
+      "id": "native:[library All generators]",
+      "key": "[library All generators]",
+      "source": "All generators"
+    },
+    {
+      "id": "native:[library Downloading generator…]",
+      "key": "[library Downloading generator…]",
+      "source": "Downloading generator…"
+    },
+    {
+      "id": "native:[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "key": "[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown."
+    },
+    {
+      "id": "native:[library Editor tool: generates terrain for the map editor.]",
+      "key": "[library Editor tool: generates terrain for the map editor.]",
+      "source": "Editor tool: generates terrain for the map editor."
+    },
+    {
+      "id": "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "key": "[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "source": "Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room."
+    },
+    {
+      "id": "native:[library Generator file hash mismatch]",
+      "key": "[library Generator file hash mismatch]",
+      "source": "Generator file hash mismatch"
+    },
+    {
+      "id": "native:[library Generator installed. Future selections use this release.]",
+      "key": "[library Generator installed. Future selections use this release.]",
+      "source": "Generator installed. Future selections use this release."
+    },
+    {
+      "id": "native:[library Generator package identity mismatch]",
+      "key": "[library Generator package identity mismatch]",
+      "source": "Generator package identity mismatch"
+    },
+    {
+      "id": "native:[library Generators]",
+      "key": "[library Generators]",
+      "source": "Generators"
+    },
+    {
+      "id": "native:[library Map generators]",
+      "key": "[library Map generators]",
+      "source": "Map generators"
+    },
+    {
+      "id": "native:[library My generators]",
+      "key": "[library My generators]",
+      "source": "My generators"
+    },
+    {
+      "id": "native:[library Playable generator]",
+      "key": "[library Playable generator]",
+      "source": "Playable generator"
+    },
+    {
+      "id": "native:[library Saving generator library…]",
+      "key": "[library Saving generator library…]",
+      "source": "Saving generator library…"
+    }
+  ]
+}

@@ -1,0 +1,509 @@
+{
+  "id": "online-online-022",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Timeline",
+      "key": "Timeline",
+      "source": "Timeline"
+    },
+    {
+      "id": "online:Title",
+      "key": "Title",
+      "source": "Title"
+    },
+    {
+      "id": "online:Title, artist, description…",
+      "key": "Title, artist, description…",
+      "source": "Title, artist, description…"
+    },
+    {
+      "id": "online:To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+      "key": "To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+      "source": "To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio."
+    },
+    {
+      "id": "online:Too many live Building Studio connections.",
+      "key": "Too many live Building Studio connections.",
+      "source": "Too many live Building Studio connections."
+    },
+    {
+      "id": "online:Too many live Music Studio connections.",
+      "key": "Too many live Music Studio connections.",
+      "source": "Too many live Music Studio connections."
+    },
+    {
+      "id": "online:Too many live Terrain Studio connections.",
+      "key": "Too many live Terrain Studio connections.",
+      "source": "Too many live Terrain Studio connections."
+    },
+    {
+      "id": "online:Too many requests.",
+      "key": "Too many requests.",
+      "source": "Too many requests."
+    },
+    {
+      "id": "online:Too many sign-in attempts from here. Wait a minute and try again.",
+      "key": "Too many sign-in attempts from here. Wait a minute and try again.",
+      "source": "Too many sign-in attempts from here. Wait a minute and try again."
+    },
+    {
+      "id": "online:Too many sign-ins in progress on this connection.",
+      "key": "Too many sign-ins in progress on this connection.",
+      "source": "Too many sign-ins in progress on this connection."
+    },
+    {
+      "id": "online:Too many unknown invite codes; try again later.",
+      "key": "Too many unknown invite codes; try again later.",
+      "source": "Too many unknown invite codes; try again later."
+    },
+    {
+      "id": "online:Too many wrong codes, so this sign-in was stopped. Start signing in again from the game.",
+      "key": "Too many wrong codes, so this sign-in was stopped. Start signing in again from the game.",
+      "source": "Too many wrong codes, so this sign-in was stopped. Start signing in again from the game."
+    },
+    {
+      "id": "online:Too many wrong passwords. Wait 15 minutes and try again, or sign in another way.",
+      "key": "Too many wrong passwords. Wait 15 minutes and try again, or sign in another way.",
+      "source": "Too many wrong passwords. Wait 15 minutes and try again, or sign in another way."
+    },
+    {
+      "id": "online:Toolbox options",
+      "key": "Toolbox options",
+      "source": "Toolbox options"
+    },
+    {
+      "id": "online:Top library content by lifetime recorded downloads",
+      "key": "Top library content by lifetime recorded downloads",
+      "source": "Top library content by lifetime recorded downloads"
+    },
+    {
+      "id": "online:Total health",
+      "key": "Total health",
+      "source": "Total health"
+    },
+    {
+      "id": "online:Toubib",
+      "key": "Toubib",
+      "source": "Toubib"
+    },
+    {
+      "id": "online:Trailing {value0} data",
+      "key": "Trailing {value0} data",
+      "source": "Trailing {value0} data"
+    },
+    {
+      "id": "online:Transitioning to {value0}…",
+      "key": "Transitioning to {value0}…",
+      "source": "Transitioning to {value0}…"
+    },
+    {
+      "id": "online:Trim ends to shortest",
+      "key": "Trim ends to shortest",
+      "source": "Trim ends to shortest"
+    },
+    {
+      "id": "online:Truncated rig geometry",
+      "key": "Truncated rig geometry",
+      "source": "Truncated rig geometry"
+    },
+    {
+      "id": "online:Truncated rig tracks",
+      "key": "Truncated rig tracks",
+      "source": "Truncated rig tracks"
+    },
+    {
+      "id": "online:Truncated {value0} payload",
+      "key": "Truncated {value0} payload",
+      "source": "Truncated {value0} payload"
+    },
+    {
+      "id": "online:Try again",
+      "key": "Try again",
+      "source": "Try again"
+    },
+    {
+      "id": "online:Turn around the ring. Height and scale stay fixed.",
+      "key": "Turn around the ring. Height and scale stay fixed.",
+      "source": "Turn around the ring. Height and scale stay fixed."
+    },
+    {
+      "id": "online:Type",
+      "key": "Type",
+      "source": "Type"
+    },
+    {
+      "id": "online:Type ",
+      "key": "Type ",
+      "source": "Type "
+    },
+    {
+      "id": "online:Type your display name exactly to confirm.",
+      "key": "Type your display name exactly to confirm.",
+      "source": "Type your display name exactly to confirm."
+    },
+    {
+      "id": "online:Type your name, ",
+      "key": "Type your name, ",
+      "source": "Type your name, "
+    },
+    {
+      "id": "online:Typical game",
+      "key": "Typical game",
+      "source": "Typical game"
+    },
+    {
+      "id": "online:UTC day",
+      "key": "UTC day",
+      "source": "UTC day"
+    },
+    {
+      "id": "online:Unavailable",
+      "key": "Unavailable",
+      "source": "Unavailable"
+    },
+    {
+      "id": "online:Unavailable cost",
+      "key": "Unavailable cost",
+      "source": "Unavailable cost"
+    },
+    {
+      "id": "online:Unbounded rig scale",
+      "key": "Unbounded rig scale",
+      "source": "Unbounded rig scale"
+    },
+    {
+      "id": "online:Uncertain",
+      "key": "Uncertain",
+      "source": "Uncertain"
+    },
+    {
+      "id": "online:Uncertain requests and queued/failed engine jobs, oldest first.",
+      "key": "Uncertain requests and queued/failed engine jobs, oldest first.",
+      "source": "Uncertain requests and queued/failed engine jobs, oldest first."
+    },
+    {
+      "id": "online:Undo",
+      "key": "Undo",
+      "source": "Undo"
+    },
+    {
+      "id": "online:Undo revision",
+      "key": "Undo revision",
+      "source": "Undo revision"
+    },
+    {
+      "id": "online:Unexpected checkout address.",
+      "key": "Unexpected checkout address.",
+      "source": "Unexpected checkout address."
+    },
+    {
+      "id": "online:Unhide",
+      "key": "Unhide",
+      "source": "Unhide"
+    },
+    {
+      "id": "online:Units",
+      "key": "Units",
+      "source": "Units"
+    },
+    {
+      "id": "online:Units can cross",
+      "key": "Units can cross",
+      "source": "Units can cross"
+    },
+    {
+      "id": "online:Units: latest verified match against recent average",
+      "key": "Units: latest verified match against recent average",
+      "source": "Units: latest verified match against recent average"
+    },
+    {
+      "id": "online:Unknown",
+      "key": "Unknown",
+      "source": "Unknown"
+    },
+    {
+      "id": "online:Unknown AI tag.",
+      "key": "Unknown AI tag.",
+      "source": "Unknown AI tag."
+    },
+    {
+      "id": "online:Unknown building sort.",
+      "key": "Unknown building sort.",
+      "source": "Unknown building sort."
+    },
+    {
+      "id": "online:Unknown contentType.",
+      "key": "Unknown contentType.",
+      "source": "Unknown contentType."
+    },
+    {
+      "id": "online:Unknown device credential.",
+      "key": "Unknown device credential.",
+      "source": "Unknown device credential."
+    },
+    {
+      "id": "online:Unknown engine agent key.",
+      "key": "Unknown engine agent key.",
+      "source": "Unknown engine agent key."
+    },
+    {
+      "id": "online:Unknown generator tag.",
+      "key": "Unknown generator tag.",
+      "source": "Unknown generator tag."
+    },
+    {
+      "id": "online:Unknown library.",
+      "key": "Unknown library.",
+      "source": "Unknown library."
+    },
+    {
+      "id": "online:Unknown license.",
+      "key": "Unknown license.",
+      "source": "Unknown license."
+    },
+    {
+      "id": "online:Unknown or unavailable catalog map.",
+      "key": "Unknown or unavailable catalog map.",
+      "source": "Unknown or unavailable catalog map."
+    },
+    {
+      "id": "online:Unknown product.",
+      "key": "Unknown product.",
+      "source": "Unknown product."
+    },
+    {
+      "id": "online:Unknown queue result.",
+      "key": "Unknown queue result.",
+      "source": "Unknown queue result."
+    },
+    {
+      "id": "online:Unknown queue.",
+      "key": "Unknown queue.",
+      "source": "Unknown queue."
+    },
+    {
+      "id": "online:Unknown relay key.",
+      "key": "Unknown relay key.",
+      "source": "Unknown relay key."
+    },
+    {
+      "id": "online:Unknown set kind.",
+      "key": "Unknown set kind.",
+      "source": "Unknown set kind."
+    },
+    {
+      "id": "online:Unknown sign-in provider.",
+      "key": "Unknown sign-in provider.",
+      "source": "Unknown sign-in provider."
+    },
+    {
+      "id": "online:Unknown sort.",
+      "key": "Unknown sort.",
+      "source": "Unknown sort."
+    },
+    {
+      "id": "online:Unknown status.",
+      "key": "Unknown status.",
+      "source": "Unknown status."
+    },
+    {
+      "id": "online:Unknown upload slot.",
+      "key": "Unknown upload slot.",
+      "source": "Unknown upload slot."
+    },
+    {
+      "id": "online:Unknown verification state.",
+      "key": "Unknown verification state.",
+      "source": "Unknown verification state."
+    },
+    {
+      "id": "online:Unlike",
+      "key": "Unlike",
+      "source": "Unlike"
+    },
+    {
+      "id": "online:Unlisted",
+      "key": "Unlisted",
+      "source": "Unlisted"
+    },
+    {
+      "id": "online:Unlisted (people with the link)",
+      "key": "Unlisted (people with the link)",
+      "source": "Unlisted (people with the link)"
+    },
+    {
+      "id": "online:Unlisted — accessible by link",
+      "key": "Unlisted — accessible by link",
+      "source": "Unlisted — accessible by link"
+    },
+    {
+      "id": "online:Unlock designer",
+      "key": "Unlock designer",
+      "source": "Unlock designer"
+    },
+    {
+      "id": "online:Unlock the skin designer to use custom skins.",
+      "key": "Unlock the skin designer to use custom skins.",
+      "source": "Unlock the skin designer to use custom skins."
+    },
+    {
+      "id": "online:Unmute",
+      "key": "Unmute",
+      "source": "Unmute"
+    },
+    {
+      "id": "online:Unreadable icon source: {value0}",
+      "key": "Unreadable icon source: {value0}",
+      "source": "Unreadable icon source: {value0}"
+    },
+    {
+      "id": "online:Unsaved changes",
+      "key": "Unsaved changes",
+      "source": "Unsaved changes"
+    },
+    {
+      "id": "online:Unsupported realtime protocol version.",
+      "key": "Unsupported realtime protocol version.",
+      "source": "Unsupported realtime protocol version."
+    },
+    {
+      "id": "online:Unsupported rig format",
+      "key": "Unsupported rig format",
+      "source": "Unsupported rig format"
+    },
+    {
+      "id": "online:Unsupported shape clip frames",
+      "key": "Unsupported shape clip frames",
+      "source": "Unsupported shape clip frames"
+    },
+    {
+      "id": "online:Unsupported shape format",
+      "key": "Unsupported shape format",
+      "source": "Unsupported shape format"
+    },
+    {
+      "id": "online:Unverifiable",
+      "key": "Unverifiable",
+      "source": "Unverifiable"
+    },
+    {
+      "id": "online:Unverified",
+      "key": "Unverified",
+      "source": "Unverified"
+    },
+    {
+      "id": "online:Up / down",
+      "key": "Up / down",
+      "source": "Up / down"
+    },
+    {
+      "id": "online:Update the game to join rooms using shared generators.",
+      "key": "Update the game to join rooms using shared generators.",
+      "source": "Update the game to join rooms using shared generators."
+    },
+    {
+      "id": "online:Update the game to reconnect to this shared generator match.",
+      "key": "Update the game to reconnect to this shared generator match.",
+      "source": "Update the game to reconnect to this shared generator match."
+    },
+    {
+      "id": "online:Update the game to reconnect to your shared generator room or match.",
+      "key": "Update the game to reconnect to your shared generator room or match.",
+      "source": "Update the game to reconnect to your shared generator room or match."
+    },
+    {
+      "id": "online:Update the game to use shared generator rooms and matches.",
+      "key": "Update the game to use shared generator rooms and matches.",
+      "source": "Update the game to use shared generator rooms and matches."
+    },
+    {
+      "id": "online:Update the game to use shared generators.",
+      "key": "Update the game to use shared generators.",
+      "source": "Update the game to use shared generators."
+    },
+    {
+      "id": "online:Updated",
+      "key": "Updated",
+      "source": "Updated"
+    },
+    {
+      "id": "online:Updated {slot0} · UTC days · {slot1}",
+      "key": "Updated {slot0} · UTC days · {slot1}",
+      "source": "Updated {slot0} · UTC days · {slot1}"
+    },
+    {
+      "id": "online:Updated {slot0} · UTC periods · {slot1} payments",
+      "key": "Updated {slot0} · UTC periods · {slot1} payments",
+      "source": "Updated {slot0} · UTC periods · {slot1} payments"
+    },
+    {
+      "id": "online:Upload",
+      "key": "Upload",
+      "source": "Upload"
+    },
+    {
+      "id": "online:Upload PNG",
+      "key": "Upload PNG",
+      "source": "Upload PNG"
+    },
+    {
+      "id": "online:Upload a map",
+      "key": "Upload a map",
+      "source": "Upload a map"
+    },
+    {
+      "id": "online:Upload all three moods first.",
+      "key": "Upload all three moods first.",
+      "source": "Upload all three moods first."
+    },
+    {
+      "id": "online:Upload already published elsewhere.",
+      "key": "Upload already published elsewhere.",
+      "source": "Upload already published elsewhere."
+    },
+    {
+      "id": "online:Upload an audio file, or cover art up to 8 MiB.",
+      "key": "Upload an audio file, or cover art up to 8 MiB.",
+      "source": "Upload an audio file, or cover art up to 8 MiB."
+    },
+    {
+      "id": "online:Upload an image as binary data.",
+      "key": "Upload an image as binary data.",
+      "source": "Upload an image as binary data."
+    },
+    {
+      "id": "online:Upload artwork you may use as a reference. Up to four selected images guide the visual style.",
+      "key": "Upload artwork you may use as a reference. Up to four selected images guide the visual style.",
+      "source": "Upload artwork you may use as a reference. Up to four selected images guide the visual style."
+    },
+    {
+      "id": "online:Upload expired; choose the file again.",
+      "key": "Upload expired; choose the file again.",
+      "source": "Upload expired; choose the file again."
+    },
+    {
+      "id": "online:Upload expired; validate again.",
+      "key": "Upload expired; validate again.",
+      "source": "Upload expired; validate again."
+    },
+    {
+      "id": "online:Upload frame",
+      "key": "Upload frame",
+      "source": "Upload frame"
+    },
+    {
+      "id": "online:Upload image bytes.",
+      "key": "Upload image bytes.",
+      "source": "Upload image bytes."
+    },
+    {
+      "id": "online:Upload photo",
+      "key": "Upload photo",
+      "source": "Upload photo"
+    }
+  ]
+}

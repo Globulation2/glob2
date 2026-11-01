@@ -1,150 +1,100 @@
 {
-  "stage": "browser-game runtime pending",
-  "validation_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
-  "feature_base": "ed4ac0901f85a8e13d11b741ad3dea1f0a31df54",
-  "native_and_browser_build_producer": "671894f2a43a677e15a71cb4d45c81b758943f1a",
-  "test_only_followup": "ba890 differs only optionalSCons test import; production inputs byte-identical, actual producer identities retained.",
-  "android_final_official_build": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "stage": "Integrated-current checkpoint; native refresh and both browser-game variants/runtime pending",
+  "validation_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "integrated_master": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "active_review_kit": "integration-refresh/kit",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
   "canonical_catalog_sha256": {
-    "data/texts.mr.txt": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
-    "platform/packages/i18n/locales/mr.json": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+    "native": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
   },
-  "completed": {
-    "native": "34jobs/75072samples/83292lines;0missingglyphs/actualdrawboundsfailures;590rawbitmapdiagnostics retained;67UIimages,34agent-inspected;15registeredfont/languagecases pass",
-    "online": "6Chromiumdesktop/phonecases acrossinitial+capture-retry and8Firefox/WebKitdesktop/phonecases; allpass at recordedsourcecohorts",
-    "android": "API35x86_64emulator; finalcleanreleasebuild+effectivepackagedMRcatalog/font/resources/licenses; actualpreparing/nativefirst-run/settings andlocale/profile/lifecycle pass;12imagesinspected; ownedruntimecleaned",
-    "apple_packaging": "4passwithSCons; isolatedPython3pass1skip; runtimeunverified",
-    "browser_packaging_contracts": "27pass1skip",
-    "structural_reviews": "Sourcecurrent; allreviewbatch/Englishqueue/structural checks pass; only2browser-game gates pending"
+  "counts": {
+    "native_keys": 3395,
+    "online_keys": 2836,
+    "online_plural_text_variants": 2863,
+    "combined_text_variants": 6258
   },
+  "passed_gates": [
+    "language_brief",
+    "source_based_pilot",
+    "structural",
+    "mobile_platforms"
+  ],
+  "pending_gates": [
+    "desktop_rendering",
+    "phone_rendering",
+    "browser_startup",
+    "native_platforms",
+    "browser_platforms"
+  ],
+  "google_estimate_usd_before_credits": "3.8773",
+  "current_android": "Official cleanffbd release; unsignedacfa7ddf\u2026, signed+actuallyinstalledb0d77346\u2026, nativebuildID262d072c\u2026; exact3395MRcatalog/Deva/resource/notices; lifecycle7 and actualtutorial/HUD portrait+landscape pass; ownedruntimecleaned. Full hashes in gate-recommendation.",
+  "historical_native": "671producer/3393catalog,34jobs75072samples83292lines0missingglyphs/drawboundsfailures; oldmatrix/font tests retained under actual identities, not relabeled current. Current native capture refresh pending.",
+  "website_carry": "Entire platform tracked tree and dependencies exactly identical671\u2192ffbd; previous6Chromium and8Firefox/WebKit desktop/phone cases retained under actual producers. Current fulltypecheck and37\u00d72836contracts pass.",
+  "browser_units": "147/150; exact unmodified integrated master0d54 inputs reproduce all3replayfixture failures; proof+logs included.",
   "stable_evidence": [
     {
       "path": "artifacts/marathi-localization/checks/google-final-budget.json",
-      "sha256": "8827ad8eaca16cc8ee3a53c2b3dd5d7b9b8e887aa55ab1bc83bb2f4646f35b27"
+      "sha256": "f89068a948ae27afb7cb60ac5920477aa3f539b204670a3d588c2c3fbfc7ebb9"
     },
     {
-      "path": "artifacts/marathi-localization/checks/google-draft-tests-final.log",
-      "sha256": "859603908ee816878fc3f2ed35ebf312a87a459d97a6490aec559f9af15d0dce"
+      "path": "artifacts/marathi-localization/integration-refresh/kit/reviews/mr.json",
+      "sha256": "e92335b6fffe3a2fa998eb474278a28948347fc3112957b2956a1e11e3cd1d05"
     },
     {
-      "path": "artifacts/marathi-localization/checks/translation-program-tests-final.log",
-      "sha256": "2ef945e4d4101b7ba08a66255b80a7e6262e8b862f0d81eca8481041a3dd67c5"
+      "path": "artifacts/marathi-localization/integration-refresh/source-target-carry.json",
+      "sha256": "8b43091c797b531a9df698bbeb10e3d7378fe120fb8b7be49cb1ffa1322f1151"
     },
     {
-      "path": "artifacts/marathi-localization/apple-permission-review/packaging-tests-optional-scons.log",
-      "sha256": "1c3697bbb10cab48674f3564b575526ef39d3c6f0dcb6506ec16b669a52876e5"
+      "path": "artifacts/marathi-localization/integration-refresh/semantic-final.json",
+      "sha256": "e6583f67fd1ad8730719dfb1b04652a2e07c3ef2f6d325861c32e3aedf11a12e"
     },
     {
-      "path": "artifacts/marathi-localization/apple-permission-review/packaging-tests-no-site.log",
-      "sha256": "e06923d4c0b912be66a3e2db9758fb16c62f0c74dab743e152575c87c91d4379"
+      "path": "artifacts/marathi-localization/integration-refresh/editorial-final.json",
+      "sha256": "15d585c2fa57afc9c72c969e4533d3c55a9a18043eed8db3e150ad0e1f2f8de5"
     },
     {
-      "path": "artifacts/marathi-localization/checks/gog-release-tests-final.log",
-      "sha256": "93f6c99510fe6fd8ad68d2d578418379093aa499a086bd9b40b4d33dc2eb32d2"
+      "path": "artifacts/marathi-localization/integration-refresh/adversarial-final.json",
+      "sha256": "2c9697e8cb0e2e13d45e9d8e494c942926ffb850f5c989545f903cbfafa59899"
     },
     {
-      "path": "artifacts/marathi-localization/checks/browser-unit-final.log",
-      "sha256": "e50c571f3e73ead634d28b641d9bf570c2eca069dea088ed6619d06f0820ca13"
+      "path": "artifacts/marathi-localization/integration-refresh/root-checks.json",
+      "sha256": "d24f9870a08991890e0c62e53953cd28ec94ffb9f88c4c1df59f7cba707514cb"
     },
     {
-      "path": "artifacts/marathi-localization/checks/browser-baseline-failures-final.log",
-      "sha256": "f8ec82f7e30708a8cff2c401ee0e1eb50594886058dd3e77bbb7acd9b12bdb66"
+      "path": "artifacts/marathi-localization/integration-refresh/online-runtime-carry.json",
+      "sha256": "afcc7f08bb7b9bf5dad03334c685d6b6dcb12b649f8d5a5a170b7dc8e318d92a"
     },
     {
-      "path": "artifacts/marathi-localization/checks/web-packaging-tests-final.log",
-      "sha256": "1588d32dccf6da5037b52f2c9c23bb84e2fde8f251cd209597e7072827f24f39"
+      "path": "artifacts/marathi-localization/integration-refresh/clean-browser-catalog-inputs.json",
+      "sha256": "2ffcf84976c5fd1fd756d3e75d0a1d96f35fecf6dfdb8929fefd0d563bd1d2ed"
     },
     {
-      "path": "artifacts/marathi-localization/registration-checks.json",
-      "sha256": "1f4d665cbd72b791392f03d0d062d73dca68fadb368b183ac618ce170d3f3f47"
+      "path": "artifacts/marathi-localization/integration-refresh/android/gate-recommendation.json",
+      "sha256": "ddc053df9936c513132b7b145a5234fd225f4391f051a5a1ba3d2ada88b0c777"
     },
     {
-      "path": "artifacts/marathi-localization/web-visual-review.json",
-      "sha256": "d6b28c7098cf12d49a91d1c8ba54fb40c08ba1176186d8b8b2719fc6903303b6"
+      "path": "artifacts/marathi-localization/integration-refresh/android/runtime-cleanup.json",
+      "sha256": "e5949213b40eb0a496f6974b49d08265eb250461eae47993670c5a2313f68aad"
     },
     {
-      "path": "artifacts/marathi-localization/web-cross-browser-provenance.json",
-      "sha256": "4367857d10957d41990cff426899f3c570344e91efe3a515d6b71a23701ea28b"
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/root-overlay-visual-review.json",
+      "sha256": "73c616bdfb83075980c677b5ef86cf27c696815ac8eaf3ceadaf946fa26bd458"
     },
     {
-      "path": "artifacts/marathi-localization/checks/online-cross-browser-results.json",
-      "sha256": "bcadf9c1bbcdfa8eeba12138b5657fd06cc12f4cac0bb7cd51460a04a4fca0e3"
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/root-native-menu-visual-review.json",
+      "sha256": "143268cc652853de0abacf291fcda26a8d37afb341a5d2a9486cf8be9d3218f4"
     },
     {
-      "path": "artifacts/marathi-localization/checks/web-cross-browser-visual-review.json",
-      "sha256": "e5e10777eb1cc1f5948a912a25385e603436f89f04ded3e69ee43bbb8221974b"
-    },
-    {
-      "path": "artifacts/marathi-localization/supplemental-review-summary.json",
-      "sha256": "ebd420485ffbcc4b24257915dfcc0b463a2c54f906dcffc02185a892415622a5"
-    },
-    {
-      "path": "artifacts/marathi-localization/native-render-clean671/summary.json",
-      "sha256": "32d3fb41bc3bcb149e4fe830ac7268a7cefc5f334bf17c4db0b1b4d55dc57cbd"
-    },
-    {
-      "path": "artifacts/marathi-localization/native-render-clean671/overlay-equivalence.json",
-      "sha256": "2a3f484f8d5e6334ccf648ba9716180223fd4b94a30253029750f49f7ff3176e"
-    },
-    {
-      "path": "artifacts/marathi-localization/native-render-clean671/final-head-production-carry.json",
-      "sha256": "b28b0a4f6011e6ad44a8cceae188f208ac6785f8ffb8fded5109235b2be012e8"
-    },
-    {
-      "path": "artifacts/marathi-localization/native-focused-provenance.json",
-      "sha256": "a4cb14c446b36b79dac191528ab1f589ad99ea8ffe566410e73b2b749b114e80"
-    },
-    {
-      "path": "artifacts/marathi-localization/checks/root-native-visual-review.json",
-      "sha256": "50e7173602dd7bfe1c294834689bd96864d9ffbc3a4e0420d91e7f7fe1a03313"
-    },
-    {
-      "path": "artifacts/marathi-localization/android-final-producer-provenance.json",
-      "sha256": "6b0e5f542e1d92d4039cc03e3ab3e289472d00d9c5a5818ae942dfe1d6679fba"
-    },
-    {
-      "path": "artifacts/marathi-localization/android-final-visual-review.json",
-      "sha256": "a2ad45f4c63b1afdbb7c9051327ea525325478077211ebf7b09b9b7f4bc7f2e6"
-    },
-    {
-      "path": "artifacts/marathi-localization/android-evidence-gate-recommendation.json",
-      "sha256": "91bc27214beb3ce7394b88ffd3bf4eaa2de80b47ea44586d3c16bb237f099162"
-    },
-    {
-      "path": "artifacts/marathi-localization/android-runtime-cleanup.json",
-      "sha256": "122289be16389c4b89c37c92185860785efdd7e1740ed839b7efea5d194318fa"
-    },
-    {
-      "path": "artifacts/marathi-localization/android-rendering/lifecycle/result.json",
-      "sha256": "0811594ab7770163a9c198fbe2cf7f77c58e4cf5c43506c68927c9a009df746f"
-    },
-    {
-      "path": "artifacts/marathi-localization/android-rendering/root-startup-visual-review.json",
-      "sha256": "ad494998b4983fb2ec1ad314d6d2cc82643723de53fc9ea745191d0686e05a98"
-    },
-    {
-      "path": "artifacts/marathi-localization/android-rendering/root-native-visual-review.json",
-      "sha256": "1630c6660bdef0d588e7ed35ca4477a6f732aa930908debc6fef296f49087924"
-    },
-    {
-      "path": "artifacts/marathi-localization/checks/review-status-after-native-mobile.json",
-      "sha256": "c5f7cccf7dac35106cdc3c37df0a3e35e54b44c43e9ed0b6f5566b54ea810284"
-    },
-    {
-      "path": "artifacts/marathi-localization/checks/current-master-integration-scope.json",
-      "sha256": "fc9b6f96223b60a2e19d9a12d3f9bc296e0bfcf55082249124ee252a587ad1b1"
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/root-visual-review.json",
+      "sha256": "f0982342f2e37e2673f6cee695fd1ebf1d7413b7e201828f79a5f4ec0649cddf"
     }
   ],
-  "pending": [
-    "both releaseWASMvariants completeand12actualChromium/Firefox/WebKitserial/threadeddesktop/phonegame-runtimecases",
-    "finalbrowsergates/evidencepublication/CIreviewand authorizedPRmerge"
-  ],
   "limits": [
-    "Agent review, not native-human certification.",
-    "macOS, Windows and iOSruntime execution andphysicalAndroidhardware unverified.",
-    "NativeLinuxharness uses exactlyequivalent finalcatalogoverlays; actualregistered/package startup separatelyvalidatedAndroid and stillpendingWASM.",
-    "Initialtutorialstates/dialogs andliteralfontmatrices do not provefulltutorialplaythroughs/everydynamicargument combination.",
-    "Browserunit3replayfixturefailures reproduceexactuneditedfeaturebase; notattributedtoMarathi orassertedagainstlatermaster.",
-    "No simulation/save/replay/networkbehavior changeintroducedbythisPR."
+    "Agent-reviewed, not native-human-certified.",
+    "Only API35x86_64 emulator Android runtime; physicalAndroid/otherABI/macOS/Windows/iOS runtime unverified. Apple resource4contracts executedLinux.",
+    "Native current producer and bothWASM/current12case runtime gates pending, no completion claim.",
+    "No fullmatch/fulltutorial playthrough, all dynamicargument or performance claim.",
+    "No simulation/save/replay/network behavior change authored relative integrated master."
   ]
 }

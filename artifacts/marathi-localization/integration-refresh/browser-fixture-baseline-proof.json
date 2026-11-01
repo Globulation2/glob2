@@ -1,0 +1,41 @@
+{
+  "base": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "feature": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "files": [
+    {
+      "path": "browser/unit/replay-fixture.test.js",
+      "sha256": "23cf5c4b60914584af87cdbb3bb38aed3b74eaa54997c9516de6a6a19dab3e65",
+      "identical_to_feature": true
+    },
+    {
+      "path": "browser/tests/fixtures/cross-replay.replay",
+      "sha256": "b3a790e27500b8c6ab0765d961f7b4ace74d4fbbc86fee2fd98651c0e2a323cf",
+      "identical_to_feature": true
+    },
+    {
+      "path": "browser/tests/fixtures/generator-studio-trace.json",
+      "sha256": "ac17d312ce1d882b36889d12a5da1a9431c19741e38516bf456b012dfb816ff1",
+      "identical_to_feature": true
+    },
+    {
+      "path": "browser/tests/fixtures/studio-trace.json",
+      "sha256": "32f77e2323e8154732f501438a93868221b5c0847fcfcc35ee3e058c0354cd1d",
+      "identical_to_feature": true
+    },
+    {
+      "path": "src/replay/ReplayReader.h",
+      "sha256": "486b4d6e8e6a26b4aa716792b0a3ef2b396b26bbb425c5434a034853114e244b",
+      "identical_to_feature": true
+    },
+    {
+      "path": "src/app/Version.h",
+      "sha256": "636d8fdebcecb2bc4e163d3fd5f3da500ce6ff255697b949150bc4429f2cf228",
+      "identical_to_feature": true
+    },
+    {
+      "path": "src/game/SimRevision.h",
+      "sha256": "06da7036a862410714610339cfbafac9f759a0f116cd251105bc4a7eb2322712",
+      "identical_to_feature": true
+    }
+  ]
+}

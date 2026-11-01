@@ -1,0 +1,189 @@
+{
+  "id": "online-online-029",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Native terrain preview · awaiting checks",
+      "key": "Native terrain preview · awaiting checks",
+      "source": "Native terrain preview · awaiting checks"
+    },
+    {
+      "id": "online:Generated layout · intermediate image",
+      "key": "Generated layout · intermediate image",
+      "source": "Generated layout · intermediate image"
+    },
+    {
+      "id": "online:Selected map area",
+      "key": "Selected map area",
+      "source": "Selected map area"
+    },
+    {
+      "id": "online:Cropped layout · intermediate image",
+      "key": "Cropped layout · intermediate image",
+      "source": "Cropped layout · intermediate image"
+    },
+    {
+      "id": "online:Landscape reference {count}",
+      "key": "Landscape reference {count}",
+      "source": "Landscape reference {count}"
+    },
+    {
+      "id": "online:Composition source · edit {count}",
+      "key": "Composition source · edit {count}",
+      "source": "Composition source · edit {count}"
+    },
+    {
+      "id": "online:Candidate {count} execution report",
+      "key": "Candidate {count} execution report",
+      "source": "Candidate {count} execution report"
+    },
+    {
+      "id": "online:Candidate {count} score",
+      "key": "Candidate {count} score",
+      "source": "Candidate {count} score"
+    },
+    {
+      "id": "online:Candidate {count} · validated",
+      "key": "Candidate {count} · validated",
+      "source": "Candidate {count} · validated"
+    },
+    {
+      "id": "online:Candidate {count} · needs repairs",
+      "key": "Candidate {count} · needs repairs",
+      "source": "Candidate {count} · needs repairs"
+    },
+    {
+      "id": "online:Candidate {count} report",
+      "key": "Candidate {count} report",
+      "source": "Candidate {count} report"
+    },
+    {
+      "id": "online:Validation report",
+      "key": "Validation report",
+      "source": "Validation report"
+    },
+    {
+      "id": "online:Game-rendered scene and resource gallery",
+      "key": "Game-rendered scene and resource gallery",
+      "source": "Game-rendered scene and resource gallery"
+    },
+    {
+      "id": "online:Native validation report",
+      "key": "Native validation report",
+      "source": "Native validation report"
+    },
+    {
+      "id": "online:Engine import and artwork",
+      "key": "Engine import and artwork",
+      "source": "Engine import and artwork"
+    },
+    {
+      "id": "online:Engine definitions and artwork",
+      "key": "Engine definitions and artwork",
+      "source": "Engine definitions and artwork"
+    },
+    {
+      "id": "online:Requested size and players",
+      "key": "Requested size and players",
+      "source": "Requested size and players"
+    },
+    {
+      "id": "online:Valid colony starts",
+      "key": "Valid colony starts",
+      "source": "Valid colony starts"
+    },
+    {
+      "id": "online:Resource growth enabled",
+      "key": "Resource growth enabled",
+      "source": "Resource growth enabled"
+    },
+    {
+      "id": "online:Connected walking routes",
+      "key": "Connected walking routes",
+      "source": "Connected walking routes"
+    },
+    {
+      "id": "online:Opening economy measured",
+      "key": "Opening economy measured",
+      "source": "Opening economy measured"
+    },
+    {
+      "id": "online:Colony {count}: building space",
+      "key": "Colony {count}: building space",
+      "source": "Colony {count}: building space"
+    },
+    {
+      "id": "online:Colony {count}: starter food",
+      "key": "Colony {count}: starter food",
+      "source": "Colony {count}: starter food"
+    },
+    {
+      "id": "online:Colony {count}: starter timber",
+      "key": "Colony {count}: starter timber",
+      "source": "Colony {count}: starter timber"
+    },
+    {
+      "id": "online:Colony {count}: renewable food ground",
+      "key": "Colony {count}: renewable food ground",
+      "source": "Colony {count}: renewable food ground"
+    },
+    {
+      "id": "online:Properties",
+      "key": "Properties",
+      "source": "Properties"
+    },
+    {
+      "id": "online:Semantics",
+      "key": "Semantics",
+      "source": "Semantics"
+    },
+    {
+      "id": "online:Presentation",
+      "key": "Presentation",
+      "source": "Presentation"
+    },
+    {
+      "id": "online:{value0} source",
+      "key": "{value0} source",
+      "source": "{value0} source"
+    },
+    {
+      "id": "online:{value0} decor source",
+      "key": "{value0} decor source",
+      "source": "{value0} decor source"
+    },
+    {
+      "id": "online:Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+      "key": "Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+      "source": "Your draft changed while the design was loading. Your changes were kept; try opening the design again."
+    },
+    {
+      "id": "online:More filters",
+      "key": "More filters",
+      "source": "More filters"
+    },
+    {
+      "id": "online:Clear filters",
+      "key": "Clear filters",
+      "source": "Clear filters"
+    },
+    {
+      "id": "online:No results match these filters.",
+      "key": "No results match these filters.",
+      "source": "No results match these filters."
+    },
+    {
+      "id": "online:Results: {value0}",
+      "key": "Results: {value0}",
+      "source": "Results: {value0}"
+    },
+    {
+      "id": "online:Game text field",
+      "key": "Game text field",
+      "source": "Game text field"
+    }
+  ]
+}

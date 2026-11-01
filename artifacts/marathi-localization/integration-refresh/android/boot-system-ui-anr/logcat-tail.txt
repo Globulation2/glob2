@@ -1,0 +1,535 @@
+--------- beginning of main
+10-31 23:23:38.289   777   777 D DefaultDeviceEntrySection: isUdfpsSupported=false
+10-31 23:23:38.291  1672  1690 I MessagingAppDataModel: SyncMessagesAction: Starting batch for messages from 1793487855601 to 1793503417830 (message update limit = 80, message scan limit = 4000)
+10-31 23:23:38.293  1672  1699 E SmsApplication: com.android.messaging lost android:receive_wap_push:  (no permission to fix)
+--------- beginning of system
+10-31 23:23:38.307   537   569 I DropBoxManagerService: add tag=system_app_strictmode isTagEnabled=true flags=0x2
+10-31 23:23:38.312   537   562 D SystemServerTiming: getUserSwitchability-0
+10-31 23:23:38.312   537   562 D SystemServerTiming: TM.isInCall
+10-31 23:23:38.312   537   562 V SystemServerTiming: TM.isInCall took to complete: 0ms
+10-31 23:23:38.312   537   562 D SystemServerTiming: hasUserRestriction-DISALLOW_USER_SWITCH
+10-31 23:23:38.312   537   562 V SystemServerTiming: hasUserRestriction-DISALLOW_USER_SWITCH took to complete: 0ms
+10-31 23:23:38.312   537   562 D SystemServerTiming: getInt-ALLOW_USER_SWITCHING_WHEN_SYSTEM_USER_LOCKED
+10-31 23:23:38.312   537   562 V SystemServerTiming: getInt-ALLOW_USER_SWITCHING_WHEN_SYSTEM_USER_LOCKED took to complete: 0ms
+10-31 23:23:38.312   537   562 D SystemServerTiming: isUserUnlocked-USER_SYSTEM
+10-31 23:23:38.312   537   562 V SystemServerTiming: isUserUnlocked-USER_SYSTEM took to complete: 0ms
+10-31 23:23:38.312   537   562 V SystemServerTiming: getUserSwitchability-0 took to complete: 0ms
+10-31 23:23:38.337   537   690 D ConnectivityService: NetReassign [no changes] [c ०] [a ०] [i १]
+10-31 23:23:38.340  1704  1704 D nativeloader: Configuring clns-shared-7 for other apk /system/priv-app/PackageInstaller/PackageInstaller.apk. target_sdk_version=35, uses_libraries=, library_path=/system/priv-app/PackageInstaller/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user_de/0/com.android.packageinstaller:/system/priv-app/PackageInstaller:/system/lib64:/system_ext/lib64
+10-31 23:23:38.356  1704  1704 D CompatChangeReporter: Compat change id reported: 202956589; UID 10063; state: ENABLED
+10-31 23:23:38.366   777   777 I Choreographer: Skipped 32 frames!  The application may be doing too much work on its main thread.
+10-31 23:23:38.368   777   777 W View    : requestLayout() improperly called by ModernStatusBarMobileView(slot='mobile', subId=1, isCollecting=true, visibleState=ICON); viewString=com.android.systemui.statusbar.pipeline.mobile.ui.view.ModernStatusBarMobileView{64980bc V.E...... ......ID 0,0-22,22 #7f0a04bb app:id/mobile_combo} during layout: running second layout pass
+10-31 23:23:38.383  1704  1704 V GraphicsEnvironment: Currently set values for:
+10-31 23:23:38.384  1704  1704 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-31 23:23:38.384  1704  1704 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-31 23:23:38.384  1704  1704 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+10-31 23:23:38.384  1704  1704 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-31 23:23:38.407   777   777 D ZenModeController: Added callback class com.android.systemui.qs.tiles.DndTile$3
+10-31 23:23:38.413   537   929 D SystemServerTiming: getUserSwitchability-0
+10-31 23:23:38.413   537   562 D SystemServerTiming: getUserSwitchability-0
+10-31 23:23:38.413   537   562 D SystemServerTiming: TM.isInCall
+10-31 23:23:38.414   537   562 V SystemServerTiming: TM.isInCall took to complete: 1ms
+10-31 23:23:38.414   537   562 D SystemServerTiming: hasUserRestriction-DISALLOW_USER_SWITCH
+10-31 23:23:38.414   537   562 V SystemServerTiming: hasUserRestriction-DISALLOW_USER_SWITCH took to complete: 0ms
+10-31 23:23:38.414   537   562 D SystemServerTiming: getInt-ALLOW_USER_SWITCHING_WHEN_SYSTEM_USER_LOCKED
+10-31 23:23:38.414   537   562 V SystemServerTiming: getInt-ALLOW_USER_SWITCHING_WHEN_SYSTEM_USER_LOCKED took to complete: 0ms
+10-31 23:23:38.414   537   562 D SystemServerTiming: isUserUnlocked-USER_SYSTEM
+10-31 23:23:38.414   537   562 V SystemServerTiming: isUserUnlocked-USER_SYSTEM took to complete: 0ms
+10-31 23:23:38.414   537   562 V SystemServerTiming: getUserSwitchability-0 took to complete: 1ms
+10-31 23:23:38.414   537   929 D SystemServerTiming: TM.isInCall
+10-31 23:23:38.415   537   929 V SystemServerTiming: TM.isInCall took to complete: 0ms
+10-31 23:23:38.416   537   929 D SystemServerTiming: hasUserRestriction-DISALLOW_USER_SWITCH
+10-31 23:23:38.417   537   929 V SystemServerTiming: hasUserRestriction-DISALLOW_USER_SWITCH took to complete: 0ms
+10-31 23:23:38.417   537   929 D SystemServerTiming: getInt-ALLOW_USER_SWITCHING_WHEN_SYSTEM_USER_LOCKED
+10-31 23:23:38.417   537   929 V SystemServerTiming: getInt-ALLOW_USER_SWITCHING_WHEN_SYSTEM_USER_LOCKED took to complete: 0ms
+10-31 23:23:38.417   537   929 D SystemServerTiming: isUserUnlocked-USER_SYSTEM
+10-31 23:23:38.417   537   929 V SystemServerTiming: isUserUnlocked-USER_SYSTEM took to complete: 0ms
+10-31 23:23:38.417   537   929 V SystemServerTiming: getUserSwitchability-0 took to complete: 2ms
+10-31 23:23:38.434   537   582 D CompatChangeReporter: Compat change id reported: 151861875; UID 10079; state: ENABLED
+10-31 23:23:38.434   537   582 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10079, packageName = null, attributionTag = null, token = android.os.Binder@1f5d6db, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-31 23:23:38.450   340   340 D Zygote  : Forked child process 1717
+10-31 23:23:38.454   537   583 I ActivityManager: Start proc 1717:com.android.providers.calendar/u0a79 for broadcast {com.android.providers.calendar/com.android.providers.calendar.CalendarReceiver}
+10-31 23:23:38.464   777   777 D ZenModeController: Removed callback class com.android.systemui.qs.tiles.DndTile$3
+10-31 23:23:38.476  1717  1717 I viders.calendar: Using CollectorTypeCMC GC.
+10-31 23:23:38.477  1717  1717 W viders.calendar: Unexpected CPU variant for x86: x86_64.
+10-31 23:23:38.477  1717  1717 W viders.calendar: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, default
+10-31 23:23:38.479  1717  1717 E viders.calendar: Not starting debugger since process cannot load the jdwp agent.
+10-31 23:23:38.481  1717  1717 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-31 23:23:38.486   777   780 W ndroid.systemui: Missing inline cache for java.lang.Object com.android.systemui.statusbar.pipeline.mobile.ui.binder.MobileIconBinder$bind$1$2$1$2$1.emit(java.lang.Object, kotlin.coroutines.Continuation)
+10-31 23:23:38.571   777   904 I QuickAccessWalletTile: QAW service is unavailable, recreating the wallet client.
+10-31 23:23:38.573   777   904 D ControlsListingControllerImpl: Subscribing callback, service count: 0
+10-31 23:23:38.575   871  1090 V MmsProvider: accessRestricted=false
+10-31 23:23:38.584   537  1429 W JobInfo : Job 'com.android.messaging/.datamodel.action.ActionServiceImpl#1000' has a deadline with no functional constraints. The deadline won't improve job execution latency. Consider removing the deadline.
+10-31 23:23:38.601   777   904 D ControlsListingControllerImpl: Unsubscribing callback
+10-31 23:23:38.605  1717  1717 D nativeloader: Configuring clns-shared-7 for other apk /system/priv-app/CalendarProvider/CalendarProvider.apk. target_sdk_version=35, uses_libraries=, library_path=/system/priv-app/CalendarProvider/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.android.providers.calendar:/system/priv-app/CalendarProvider:/system/lib64:/system_ext/lib64
+10-31 23:23:38.608  1717  1717 D CompatChangeReporter: Compat change id reported: 202956589; UID 10079; state: ENABLED
+10-31 23:23:38.612  1717  1717 V GraphicsEnvironment: Currently set values for:
+10-31 23:23:38.612  1717  1717 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-31 23:23:38.612  1717  1717 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-31 23:23:38.612  1717  1717 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+10-31 23:23:38.613  1717  1717 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-31 23:23:38.636   871  1090 V MmsProvider: accessRestricted=false
+10-31 23:23:38.649  1717  1717 I CalendarProvider2: Created com.android.providers.calendar.CalendarAlarmManager@fabfd6e(com.android.providers.calendar.CalendarProvider2@4869c0f)
+10-31 23:23:38.662   777  1287 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+10-31 23:23:38.664   537   582 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10133, packageName = null, attributionTag = null, token = android.os.Binder@1f5d6db, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-31 23:23:38.679   871   900 V MmsProvider: accessRestricted=false
+10-31 23:23:38.682   340   340 D Zygote  : Forked child process 1732
+10-31 23:23:38.690  1672  1699 I MessagingAppDataModel: SyncMessagesAction: All messages now in sync
+10-31 23:23:38.695   777   904 W System  : ClassLoader referenced unknown path: 
+10-31 23:23:38.696   777   904 D nativeloader: Configuring clns-shared-8 for other apk . target_sdk_version=35, uses_libraries=, library_path=/system_ext/priv-app/SystemUI/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user_de/0/com.android.systemui:/system_ext/priv-app/SystemUI:/system/lib64:/system_ext/lib64
+10-31 23:23:38.702   537   583 I ActivityManager: Start proc 1732:com.android.rkpdapp/u0a133 for broadcast {com.android.rkpdapp/com.android.rkpdapp.BootReceiver}
+10-31 23:23:38.710  1732  1732 I android.rkpdapp: Using CollectorTypeCMC GC.
+10-31 23:23:38.711  1732  1732 W android.rkpdapp: Unexpected CPU variant for x86: x86_64.
+10-31 23:23:38.711  1732  1732 W android.rkpdapp: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, default
+10-31 23:23:38.713  1732  1732 E android.rkpdapp: Not starting debugger since process cannot load the jdwp agent.
+10-31 23:23:38.716  1732  1732 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-31 23:23:38.732   777  1287 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+10-31 23:23:38.742  1732  1732 D CompatChangeReporter: Compat change id reported: 242716250; UID 10133; state: ENABLED
+10-31 23:23:38.747  1732  1732 D CompatChangeReporter: Compat change id reported: 3400644; UID 10133; state: ENABLED
+10-31 23:23:38.757   777  1287 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+10-31 23:23:38.775   777  1287 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+10-31 23:23:38.776  1732  1732 D nativeloader: Configuring clns-shared-7 for other apk /apex/com.android.rkpd/priv-app/rkpdapp@AE3A.240806.019/rkpdapp.apk. target_sdk_version=34, uses_libraries=, library_path=/apex/com.android.rkpd/priv-app/rkpdapp@AE3A.240806.019/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.android.rkpdapp:/apex/com.android.rkpd/priv-app/rkpdapp@AE3A.240806.019:/system/lib64:/system_ext/lib64
+10-31 23:23:38.777  1732  1732 D nativeloader: InitApexLibraries:
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_adservices: libhpke_jni.so:libtflite_support_classifiers_native.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_appsearch: libicing.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_art: libartservice.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_btservices: libbluetooth_jni.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_conscrypt: libjavacrypto.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_extservices: libtflite_support_classifiers_native.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_mediaprovider: libpdfclient.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_nfcservices: libnfc_nci_jni.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_ondevicepersonalization: libfcp_cpp_dep_jni.so:libfcp_hpke_jni.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_os_statsd: libstats_jni.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_tethering: libandroid_net_connectivity_com_android_net_module_util_jni.so:libcrypto.so:libframework-connectivity-jni.so:libframework-connectivity-tiramisu-jni.so:libmainlinecronet.121.0.6167.71.so:libservice-connectivity.so:libservice-thread-jni.so:libssl.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_uwb: libuwb_uci_jni_rust.so
+10-31 23:23:38.777  1732  1732 D nativeloader:   com_android_virt: libvirtualizationservice_jni.so:libvirtualmachine_jni.so
+10-31 23:23:38.793   777  1743 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-31 23:23:38.796  1732  1732 V GraphicsEnvironment: Currently set values for:
+10-31 23:23:38.796  1732  1732 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-31 23:23:38.796  1732  1732 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-31 23:23:38.796  1732  1732 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+10-31 23:23:38.796  1732  1732 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-31 23:23:38.809  1732  1732 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+10-31 23:23:38.824  1732  1732 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemjob.SystemJobService
+10-31 23:23:38.824  1732  1732 D WM-Schedulers: Created SystemJobScheduler and enabled SystemJobService
+10-31 23:23:38.827  1732  1745 D WM-ForceStopRunnable: The default process name was not specified.
+10-31 23:23:38.827  1732  1745 D WM-ForceStopRunnable: Performing cleanup operations.
+10-31 23:23:38.831  1732  1732 I RkpdBootReceiver: Caught boot intent, waking up.
+10-31 23:23:38.833  1155  1309 D EGL_emulation: app_time_stats: avg=88.68ms min=5.43ms max=1189.77ms count=23
+10-31 23:23:38.846  1732  1732 I RkpdBootReceiver: Queueing a one-time provisioning job for widevine provisioning.
+10-31 23:23:38.850   537   582 D CompatChangeReporter: Compat change id reported: 151861875; UID 2000; state: ENABLED
+10-31 23:23:38.864  1732  1732 D WM-RescheduleReceiver: Received intent Intent { act=android.intent.action.BOOT_COMPLETED flg=0x89000010 cmp=com.android.rkpdapp/androidx.work.impl.background.systemalarm.RescheduleReceiver (has extras) }
+10-31 23:23:38.890   340   340 D Zygote  : Forked child process 1747
+10-31 23:23:38.891   537   583 I ActivityManager: Start proc 1747:com.android.shell/2000 for broadcast {com.android.shell/com.android.shell.HeapDumpReceiver}
+10-31 23:23:38.892  1732  1745 D WM-SystemJobScheduler: Reconciling jobs
+10-31 23:23:38.898  1732  1745 D WM-ForceStopRunnable: Found unfinished work, scheduling it.
+10-31 23:23:38.906   777   777 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+10-31 23:23:38.907  1732  1745 D CompatChangeReporter: Compat change id reported: 253665015; UID 10133; state: ENABLED
+10-31 23:23:38.908  1732  1745 D WM-SystemJobScheduler: Scheduling work ID af1c1752-f6c3-40fa-b41a-016a3b0e2788Job ID 2
+10-31 23:23:38.915  1747  1747 I m.android.shell: Using CollectorTypeCMC GC.
+10-31 23:23:38.917  1747  1747 W m.android.shell: Unexpected CPU variant for x86: x86_64.
+10-31 23:23:38.917  1747  1747 W m.android.shell: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, default
+10-31 23:23:38.927  1747  1747 E m.android.shell: Not starting debugger since process cannot load the jdwp agent.
+10-31 23:23:38.932  1747  1747 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-31 23:23:38.942   537   929 D CompatChangeReporter: Compat change id reported: 271850009; UID 10133; state: ENABLED
+10-31 23:23:38.947   537   929 D CompatChangeReporter: Compat change id reported: 253665015; UID 10133; state: ENABLED
+10-31 23:23:38.948   537   929 D ConnectivityService: requestNetwork for uid/pid:1000/537 asUid: 10133 activeRequest: null callbackRequest: 50 [NetworkRequest [ REQUEST id=51, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false
+10-31 23:23:38.949   537   690 D ConnectivityService: NetReassign [51 : null → 100] [c ०] [a ०] [i ०]
+10-31 23:23:38.949   537   683 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=51, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]
+10-31 23:23:38.949   537   683 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=51, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]
+10-31 23:23:38.949   537   683 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=51, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]
+10-31 23:23:38.949   537   683 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=51, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]
+10-31 23:23:38.961   764   764 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+10-31 23:23:38.983  1732  1757 D WM-Processor: Processor cancelling af1c1752-f6c3-40fa-b41a-016a3b0e2788
+10-31 23:23:38.993  1732  1757 D WM-Processor: WorkerWrapper could not be found for af1c1752-f6c3-40fa-b41a-016a3b0e2788
+10-31 23:23:39.011  1732  1757 D WM-GreedyScheduler: Cancelling work ID af1c1752-f6c3-40fa-b41a-016a3b0e2788
+10-31 23:23:39.034  1732  1757 D WM-SystemJobScheduler: Scheduling work ID 387c954e-3837-4649-83fc-e9927be436c7Job ID 4
+10-31 23:23:39.064  1732  1732 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=387c954e-3837-4649-83fc-e9927be436c7, generation=0)
+10-31 23:23:39.066  1732  1757 D WM-GreedyScheduler: Starting tracking for 387c954e-3837-4649-83fc-e9927be436c7
+10-31 23:23:39.105  1732  1745 D WM-SystemJobScheduler: Scheduling work ID d3ee580a-c086-44f1-b663-444ff0a8fd6fJob ID 5
+10-31 23:23:39.129  1732  1732 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=d3ee580a-c086-44f1-b663-444ff0a8fd6f, generation=0)
+10-31 23:23:39.132  1732  1745 D WM-GreedyScheduler: Starting tracking for 387c954e-3837-4649-83fc-e9927be436c7,d3ee580a-c086-44f1-b663-444ff0a8fd6f
+10-31 23:23:39.147  1732  1745 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=387c954e-3837-4649-83fc-e9927be436c7, generation=0)
+10-31 23:23:39.150  1732  1757 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=d3ee580a-c086-44f1-b663-444ff0a8fd6f, generation=0)
+10-31 23:23:39.154  1732  1757 D CompatChangeReporter: Compat change id reported: 263076149; UID 10133; state: ENABLED
+10-31 23:23:39.157  1747  1747 D nativeloader: Configuring clns-shared-7 for other apk /system/priv-app/Shell/Shell.apk. target_sdk_version=35, uses_libraries=, library_path=/system/priv-app/Shell/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user_de/0/com.android.shell:/system/priv-app/Shell:/system/lib64:/system_ext/lib64
+10-31 23:23:39.163  1732  1732 D WM-WorkerWrapper: Starting work for com.android.rkpdapp.provisioner.PeriodicProvisioner
+10-31 23:23:39.163  1747  1747 D CompatChangeReporter: Compat change id reported: 202956589; UID 2000; state: ENABLED
+10-31 23:23:39.178  1747  1747 V GraphicsEnvironment: Currently set values for:
+10-31 23:23:39.178  1747  1747 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-31 23:23:39.178  1747  1747 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-31 23:23:39.178  1747  1747 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+10-31 23:23:39.178  1747  1747 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-31 23:23:39.178  1732  1759 I RkpdPeriodicProvisioner: Waking up; checking provisioning state.
+10-31 23:23:39.200  1732  1732 D WM-WorkerWrapper: Starting work for com.android.rkpdapp.provisioner.WidevineProvisioner
+10-31 23:23:39.204  1747  1747 D HeapDumpReceiver: onReceive(): Intent { act=android.intent.action.BOOT_COMPLETED flg=0x89000010 cmp=com.android.shell/.HeapDumpReceiver (has extras) }
+10-31 23:23:39.213  1747  1762 D HeapDumpReceiver: Deleting from /data/user_de/0/com.android.shell/files/heapdumps
+--------- beginning of kernel
+10-31 23:23:39.345     0     0 I servicemanager: Caller(pid=1732,uid=10133,sid=u:r:rkpdapp:s0:c133,c256,c512,c768) Found android.hardware.security.keymint.IRemotelyProvisionedComponent/default in device VINTF manifest.
+10-31 23:23:39.216   537   582 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10076, packageName = null, attributionTag = null, token = android.os.Binder@1f5d6db, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-31 23:23:39.225  1732  1745 D WM-ConstraintTracker: NetworkStateTracker24: initial state = NetworkState(isConnected=true, isValidated=true, isMetered=false, isNotRoaming=true)
+10-31 23:23:39.225  1732  1745 D WM-NetworkStateTracker: Registering network callback
+10-31 23:23:39.248   339   394 I netd    : tetherGetStats() -> {[]} <0.54ms>
+10-31 23:23:39.262   537   929 D ConnectivityService: requestNetwork for uid/pid:10133/1732 activeRequest: null callbackRequest: 52 [NetworkRequest [ REQUEST id=53, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 10133 RequestorPkg: com.android.rkpdapp UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false
+10-31 23:23:39.263   340   340 D Zygote  : Forked child process 1765
+10-31 23:23:39.265  1732  1763 D WM-NetworkStateTracker: Network capabilities changed: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED LinkUpBandwidth>=12000Kbps LinkDnBandwidth>=30000Kbps TransportInfo: <SSID: <unknown ssid>, BSSID: 02:00:00:00:00:00, MAC: 02:00:00:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: -1, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: -1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none><none>MLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>> SignalStrength: -50 UnderlyingNetworks: Null]
+10-31 23:23:39.269  1732  1757 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemalarm.RescheduleReceiver
+10-31 23:23:39.273  1732  1761 I DrmHalHidl: No hidl drm factories found
+10-31 23:23:39.273   145   145 I hwservicemanager: getTransport: Cannot find entry android.hardware.drm@1.0::IDrmFactory/default in either framework or device VINTF manifest.
+10-31 23:23:39.274  1732  1761 E DrmHalHidl: Failed to find passthrough drm factories
+10-31 23:23:39.282  1732  1759 D CompatChangeReporter: Compat change id reported: 247079863; UID 10133; state: ENABLED
+10-31 23:23:39.283  1732  1759 V RkpdServerInterface: Requesting data from server. Attempt 1
+10-31 23:23:39.285   537   683 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=53, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 10133 RequestorPkg: com.android.rkpdapp UnderlyingNetworks: Null] ]
+10-31 23:23:39.285   537   683 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=53, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 10133 RequestorPkg: com.android.rkpdapp UnderlyingNetworks: Null] ]
+10-31 23:23:39.288   537   683 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=53, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 10133 RequestorPkg: com.android.rkpdapp UnderlyingNetworks: Null] ]
+10-31 23:23:39.288   537   683 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=53, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10133 RequestorUid: 10133 RequestorPkg: com.android.rkpdapp UnderlyingNetworks: Null] ]
+10-31 23:23:39.288   537   583 W ActivityManager: Slow operation: 72ms so far, now at startProcess: returned from zygote!
+10-31 23:23:39.289   537   583 W ActivityManager: Slow operation: 72ms so far, now at startProcess: done updating battery stats
+10-31 23:23:39.289   537   583 W ActivityManager: Slow operation: 72ms so far, now at startProcess: building log message
+10-31 23:23:39.289   537   583 I ActivityManager: Start proc 1765:com.android.statementservice/u0a76 for broadcast {com.android.statementservice/com.android.statementservice.domain.BootCompletedReceiver}
+10-31 23:23:39.289   537   583 W ActivityManager: Slow operation: 72ms so far, now at startProcess: starting to update pids map
+10-31 23:23:39.289   537   583 W ActivityManager: Slow operation: 72ms so far, now at startProcess: done updating pids map
+10-31 23:23:39.292  1732  1757 D WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=387c954e-3837-4649-83fc-e9927be436c7, generation=0)
+10-31 23:23:39.292  1732  1757 D WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=d3ee580a-c086-44f1-b663-444ff0a8fd6f, generation=0)
+10-31 23:23:39.293  1732  1757 D WM-Processor: Work WorkGenerationalId(workSpecId=387c954e-3837-4649-83fc-e9927be436c7, generation=0) is already enqueued for processing
+10-31 23:23:39.294  1732  1757 D WM-Processor: Work WorkGenerationalId(workSpecId=d3ee580a-c086-44f1-b663-444ff0a8fd6f, generation=0) is already enqueued for processing
+10-31 23:23:39.435     0     0 I servicemanager: Caller(pid=1732,uid=10133,sid=u:r:rkpdapp:s0:c133,c256,c512,c768) Since 'android.hardware.drm.IDrmFactory/clearkey' could not be found trying to start it as a lazy AIDL service. (if it's not configured to be a lazy service, it may be stuck starting or still starting).
+10-31 23:23:39.456     0     0 I init    : starting service 'vendor.drm-clearkey-service'...
+10-31 23:23:39.297   537   690 D ConnectivityService: NetReassign [53 : null → 100] [c ०] [a २] [i १९]
+10-31 23:23:39.300   339  1768 I resolv  : GetAddrInfoHandler::run: {100 100 100 983140 10133 0}
+10-31 23:23:39.307   339  1769 I resolv  : res_nmkquery: (QUERY, IN, AAAA)
+10-31 23:23:39.308   339  1770 I resolv  : res_nmkquery: (QUERY, IN, A)
+10-31 23:23:39.474     0     0 I init    : ... started service 'vendor.drm-clearkey-service' has pid 1767
+10-31 23:23:39.480     0     0 I init    : Control message: Processed ctl.interface_start for 'aidl/android.hardware.drm.IDrmFactory/clearkey' from pid: 144 (/system/bin/servicemanager)
+10-31 23:23:39.326  1765  1765 I tatementservice: Using CollectorTypeCMC GC.
+10-31 23:23:39.328  1765  1765 W tatementservice: Unexpected CPU variant for x86: x86_64.
+10-31 23:23:39.328  1765  1765 W tatementservice: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, default
+10-31 23:23:39.329  1765  1765 E tatementservice: Not starting debugger since process cannot load the jdwp agent.
+10-31 23:23:39.331  1765  1765 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-31 23:23:39.414   339  1769 I resolv  : res_nsend: used send_dg 275 terrno: 0
+10-31 23:23:39.414   339  1769 I resolv  : doQuery: rcode=0, ancount=8, return value=275
+10-31 23:23:39.415   339  1770 I resolv  : res_nsend: used send_dg 179 terrno: 0
+10-31 23:23:39.415   339  1770 I resolv  : doQuery: rcode=0, ancount=8, return value=179
+10-31 23:23:39.417   537   929 W ActivityManager: Slow operation: 68ms so far, now at attachApplicationLocked: after updateOomAdjLocked
+10-31 23:23:39.418  1732  1759 D TrafficStats: tagSocket(79) with statsTag=0x1, statsUid=-1
+10-31 23:23:39.427  1767  1767 I AidlLazyServiceRegistrar: Registering service android.hardware.drm.IDrmFactory/clearkey
+10-31 23:23:39.589     0     0 I servicemanager: Caller(pid=1767,uid=1013,sid=u:r:hal_drm_clearkey_aidl:s0) Found android.hardware.drm.IDrmFactory/clearkey in device VINTF manifest.
+10-31 23:23:39.594     0     0 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-31 23:23:39.595     0     0 I servicemanager: Notifying android.hardware.drm.IDrmFactory/clearkey they do (previously: don't) have clients when we now have a record of a client
+10-31 23:23:39.445  1732  1761 I DrmUtils: found IDrmFactory. Instance name:[android.hardware.drm.IDrmFactory/clearkey]
+10-31 23:23:39.445  1767  1767 I AidlLazyServiceRegistrar: Process has 1 (of 1 available) client(s) in use after notification android.hardware.drm.IDrmFactory/clearkey has clients: 1
+10-31 23:23:39.447  1732  1761 E DrmHalHidl: uuid=[edef8ba979d64ace a3c827dcd51d21ed] No supported hal instance found
+10-31 23:23:39.449  1732  1761 I RkpdWidevine: Widevine not supported. No need to provision widevine certificates.
+10-31 23:23:39.453  1732  1757 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=d3ee580a-c086-44f1-b663-444ff0a8fd6f, tags={ com.android.rkpdapp.provisioner.WidevineProvisioner,WidevineProvisioner } ]
+10-31 23:23:39.457  1732  1732 D WM-Processor: Processor d3ee580a-c086-44f1-b663-444ff0a8fd6f executed; reschedule = false
+10-31 23:23:39.457  1732  1732 D WM-GreedyScheduler: Stopping tracking for WorkGenerationalId(workSpecId=d3ee580a-c086-44f1-b663-444ff0a8fd6f, generation=0)
+10-31 23:23:39.460  1765  1765 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-31 23:23:39.462  1732  1732 D WM-SystemJobService: d3ee580a-c086-44f1-b663-444ff0a8fd6f executed on JobScheduler
+10-31 23:23:39.468   537   634 D ActivityManager: freezing 1267 com.android.quicksearchbox
+10-31 23:23:39.469  1732  1745 D WM-GreedyScheduler: Cancelling work ID d3ee580a-c086-44f1-b663-444ff0a8fd6f
+10-31 23:23:39.480   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:39.483   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:39.484   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10104} in 6ms
+10-31 23:23:39.490   537  1001 W JobScheduler: Job didn't exist in JobStore: 45d3f7e {androidx.work.systemjobscheduler} #u0a133/5 @androidx.work.systemjobscheduler@com.android.rkpdapp/androidx.work.impl.background.systemjob.SystemJobService
+10-31 23:23:39.494  1732  1732 D WM-SystemJobService: onStopJob for WorkGenerationalId(workSpecId=d3ee580a-c086-44f1-b663-444ff0a8fd6f, generation=0)
+10-31 23:23:39.518  1765  1765 D nativeloader: Configuring clns-shared-7 for other apk /system/priv-app/StatementService/StatementService.apk. target_sdk_version=29, uses_libraries=, library_path=/system/priv-app/StatementService/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.android.statementservice:/system/priv-app/StatementService:/system/lib64:/system_ext/lib64
+10-31 23:23:39.594  1765  1765 V GraphicsEnvironment: Currently set values for:
+10-31 23:23:39.594  1765  1765 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-31 23:23:39.594  1765  1765 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-31 23:23:39.605  1765  1765 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+10-31 23:23:39.605  1765  1765 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-31 23:23:39.605   537   634 D ActivityManager: freezing 1280 com.android.music
+10-31 23:23:39.632   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:39.643  1765  1765 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+10-31 23:23:39.658  1765  1765 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemjob.SystemJobService
+10-31 23:23:39.658  1765  1765 D WM-Schedulers: Created SystemJobScheduler and enabled SystemJobService
+10-31 23:23:39.663  1765  1782 D WM-ForceStopRunnable: The default process name was not specified.
+10-31 23:23:39.666  1765  1782 D WM-ForceStopRunnable: Performing cleanup operations.
+10-31 23:23:39.700  1765  1765 D WM-RescheduleReceiver: Received intent Intent { act=android.intent.action.BOOT_COMPLETED flg=0x89000010 cmp=com.android.statementservice/androidx.work.impl.background.systemalarm.RescheduleReceiver (has extras) }
+10-31 23:23:39.779   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:39.779   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10105} in 165ms
+10-31 23:23:39.815  1765  1782 D WM-SystemJobScheduler: Reconciling jobs
+10-31 23:23:39.827  1765  1782 D WM-ForceStopRunnable: Found unfinished work, scheduling it.
+10-31 23:23:39.834  1765  1782 D WM-SystemJobScheduler: Scheduling work ID 66615272-38ad-4b78-9d4f-21ccb21a51b2Job ID 0
+10-31 23:23:39.835   537   560 D ConnectivityService: requestNetwork for uid/pid:1000/537 asUid: 10076 activeRequest: null callbackRequest: 54 [NetworkRequest [ REQUEST id=55, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false
+10-31 23:23:39.836   537   690 D ConnectivityService: NetReassign [55 : null → 100] [c ०] [a ०] [i ०]
+10-31 23:23:39.837  1765  1782 D WM-SystemJobScheduler: Scheduling work ID f4a7f1c1-cc24-4846-8f92-b3522a998ac2Job ID 1
+10-31 23:23:39.840   537   683 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=55, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]
+10-31 23:23:39.840   537   683 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=55, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]
+10-31 23:23:39.840   537   683 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=55, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]
+10-31 23:23:39.840   537   683 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=55, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 1000 RequestorPkg: android UnderlyingNetworks: Null] ]
+10-31 23:23:39.841  1765  1782 D WM-GreedyScheduler: Ignoring {WorkSpec: 66615272-38ad-4b78-9d4f-21ccb21a51b2}. Requires device idle.
+10-31 23:23:39.841  1765  1782 D WM-GreedyScheduler: Ignoring {WorkSpec: f4a7f1c1-cc24-4846-8f92-b3522a998ac2}. Requires device idle.
+10-31 23:23:39.841   537   560 I BroadcastQueue: BOOT_COMPLETED_BROADCAST_COMPLETION_LATENCY_REPORTED action:android.intent.action.BOOT_COMPLETED dispatchLatency:2122 completeLatency:11517 dispatchRealLatency:2122 completeRealLatency:11517 receiversSize:49 userId:0 userType:android.os.usertype.full.SYSTEM
+10-31 23:23:39.842   537   567 I ActivityManager: Finished processing BOOT_COMPLETED for u0
+10-31 23:23:39.860  1765  1783 D WM-SystemJobScheduler: Scheduling work ID 7a8c2894-269b-4d0d-80df-78a681f00913Job ID 10
+10-31 23:23:39.867  1765  1783 D WM-GreedyScheduler: Ignoring {WorkSpec: 66615272-38ad-4b78-9d4f-21ccb21a51b2}. Requires device idle.
+10-31 23:23:39.867  1765  1783 D WM-GreedyScheduler: Ignoring {WorkSpec: f4a7f1c1-cc24-4846-8f92-b3522a998ac2}. Requires device idle.
+10-31 23:23:39.867  1765  1783 D WM-GreedyScheduler: Starting tracking for 7a8c2894-269b-4d0d-80df-78a681f00913
+10-31 23:23:39.875  1765  1765 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=7a8c2894-269b-4d0d-80df-78a681f00913, generation=0)
+10-31 23:23:39.877  1765  1782 D WM-ConstraintTracker: NetworkStateTracker24: initial state = NetworkState(isConnected=true, isValidated=true, isMetered=false, isNotRoaming=true)
+10-31 23:23:39.877  1765  1782 D WM-NetworkStateTracker: Registering network callback
+10-31 23:23:39.878   537   560 D ConnectivityService: requestNetwork for uid/pid:10076/1765 activeRequest: null callbackRequest: 56 [NetworkRequest [ REQUEST id=57, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 10076 RequestorPkg: com.android.statementservice UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false
+10-31 23:23:39.880  1765  1782 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemalarm.RescheduleReceiver
+10-31 23:23:39.880  1765  1785 D WM-NetworkStateTracker: Network capabilities changed: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED LinkUpBandwidth>=12000Kbps LinkDnBandwidth>=30000Kbps TransportInfo: <SSID: <unknown ssid>, BSSID: 02:00:00:00:00:00, MAC: 02:00:00:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: -1, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: -1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none><none>MLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>> SignalStrength: -50 UnderlyingNetworks: Null]
+10-31 23:23:39.881   537   690 D ConnectivityService: NetReassign [57 : null → 100] [c ०] [a ०] [i २]
+10-31 23:23:39.881   537   683 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=57, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 10076 RequestorPkg: com.android.statementservice UnderlyingNetworks: Null] ]
+10-31 23:23:39.881   537   683 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=57, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 10076 RequestorPkg: com.android.statementservice UnderlyingNetworks: Null] ]
+10-31 23:23:39.881   537   683 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=57, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 10076 RequestorPkg: com.android.statementservice UnderlyingNetworks: Null] ]
+10-31 23:23:39.881   537   683 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=57, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10076 RequestorUid: 10076 RequestorPkg: com.android.statementservice UnderlyingNetworks: Null] ]
+10-31 23:23:39.883  1765  1783 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=7a8c2894-269b-4d0d-80df-78a681f00913, generation=0)
+10-31 23:23:39.889  1765  1783 D WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=7a8c2894-269b-4d0d-80df-78a681f00913, generation=0)
+10-31 23:23:39.889  1765  1765 D WM-WorkerWrapper: Starting work for com.android.statementservice.domain.worker.RetryRequestWorker
+10-31 23:23:39.893  1765  1782 D WM-Processor: Work WorkGenerationalId(workSpecId=7a8c2894-269b-4d0d-80df-78a681f00913, generation=0) is already enqueued for processing
+10-31 23:23:39.895  1765  1783 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=7a8c2894-269b-4d0d-80df-78a681f00913, tags={ com.android.statementservice.domain.worker.RetryRequestWorker } ]
+10-31 23:23:39.897  1765  1765 D WM-Processor: Processor 7a8c2894-269b-4d0d-80df-78a681f00913 executed; reschedule = false
+10-31 23:23:39.897  1765  1765 D WM-GreedyScheduler: Stopping tracking for WorkGenerationalId(workSpecId=7a8c2894-269b-4d0d-80df-78a681f00913, generation=0)
+10-31 23:23:39.897  1765  1765 D WM-SystemJobService: 7a8c2894-269b-4d0d-80df-78a681f00913 executed on JobScheduler
+10-31 23:23:39.906  1765  1782 D WM-GreedyScheduler: Cancelling work ID 7a8c2894-269b-4d0d-80df-78a681f00913
+10-31 23:23:39.908  1765  1782 D WM-GreedyScheduler: Ignoring {WorkSpec: 66615272-38ad-4b78-9d4f-21ccb21a51b2}. Requires device idle.
+10-31 23:23:39.908  1765  1782 D WM-GreedyScheduler: Ignoring {WorkSpec: f4a7f1c1-cc24-4846-8f92-b3522a998ac2}. Requires device idle.
+10-31 23:23:39.909  1765  1782 D WM-NetworkStateTracker: Unregistering network callback
+10-31 23:23:39.987   777   945 D EGL_emulation: app_time_stats: avg=297.68ms min=13.50ms max=1020.24ms count=6
+10-31 23:23:39.988   777   777 I Choreographer: Skipped 55 frames!  The application may be doing too much work on its main thread.
+10-31 23:23:40.009   777  1535 I HWUI    : Davey! duration=966ms; Flags=0, FrameTimelineVsyncId=8274, IntendedVsync=61016590078, Vsync=61016590078, InputEventId=0, HandleInputStart=61016815157, AnimationStart=61016815987, PerformTraversalsStart=61017001443, DrawStart=61017059705, FrameDeadline=61033256744, FrameInterval=61016811457, FrameStartTime=16666666, SyncQueued=61017136908, SyncStart=61017168339, IssueDrawCommandsStart=61017234481, SwapBuffers=61770494704, FrameCompleted=61982994046, DequeueBufferDuration=3890, QueueBufferDuration=269449, GpuCompleted=61982994046, SwapBuffersCompleted=61968921291, DisplayPresentTime=0, CommandSubmissionCompleted=61770494704, 
+10-31 23:23:40.454  1732  1732 W JobService: onNetworkChanged() not implemented in androidx.work.impl.background.systemjob.SystemJobService. Must override in a subclass.
+10-31 23:23:40.461  1732  1763 D WM-NetworkStateTracker: Network capabilities changed: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED LinkUpBandwidth>=12000Kbps LinkDnBandwidth>=30000Kbps TransportInfo: <SSID: <unknown ssid>, BSSID: 02:00:00:00:00:00, MAC: 02:00:00:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 2Mbps, Tx Link speed: 2Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: -1, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: -1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none><none>MLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>> SignalStrength: -50 UnderlyingNetworks: Null]
+10-31 23:23:40.473  1732  1759 V RkpdServerInterface: Network request completed successfully.
+10-31 23:23:40.474  1732  1759 I RkpdPeriodicProvisioner: Total services found implementing IRPC: 1
+10-31 23:23:40.474  1732  1759 I RkpdPeriodicProvisioner: Starting provisioning for com.android.rkpdapp.interfaces.SystemInterface{android.hardware.security.keymint.IRemotelyProvisionedComponent/default}
+10-31 23:23:40.475  1732  1759 I RkpdKeyPoolStats: Sufficient keys are available, no CSR needed.
+10-31 23:23:40.476  1732  1759 I RkpdKeyPoolStats: PoolStats{keysInUse=0, idealTotalSignedKeys=12, keysToGenerate=0, keysUnassigned=12}
+10-31 23:23:40.476  1732  1759 I RkpdProvisioner: Requested number of keys for provisioning: 0
+10-31 23:23:40.477  1732  1759 I RkpdPeriodicProvisioner: Logging atom metric for pool status, total: 12, numExpiring: 0, numUnassigned: 12
+10-31 23:23:40.477  1732  1759 I RkpdPeriodicProvisioner: Successfully provisioned com.android.rkpdapp.interfaces.SystemInterface{android.hardware.security.keymint.IRemotelyProvisionedComponent/default}
+10-31 23:23:40.479  1732  1757 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=387c954e-3837-4649-83fc-e9927be436c7, tags={ com.android.rkpdapp.provisioner.PeriodicProvisioner } ]
+10-31 23:23:40.485  1732  1732 D WM-Processor: Processor 387c954e-3837-4649-83fc-e9927be436c7 executed; reschedule = false
+10-31 23:23:40.485  1732  1732 D WM-GreedyScheduler: Stopping tracking for WorkGenerationalId(workSpecId=387c954e-3837-4649-83fc-e9927be436c7, generation=0)
+10-31 23:23:40.487  1732  1732 D WM-SystemJobService: 387c954e-3837-4649-83fc-e9927be436c7 executed on JobScheduler
+10-31 23:23:40.489   537   562 D OomAdjuster: Not killing cached processes
+10-31 23:23:40.493  1732  1757 D WM-GreedyScheduler: Cancelling work ID 387c954e-3837-4649-83fc-e9927be436c7
+10-31 23:23:40.497  1732  1757 D WM-SystemJobScheduler: Scheduling work ID 387c954e-3837-4649-83fc-e9927be436c7Job ID 6
+10-31 23:23:40.500  1732  1757 D WM-NetworkStateTracker: Unregistering network callback
+10-31 23:23:40.503   339   394 I netd    : tetherGetStats() -> {[]} <0.65ms>
+10-31 23:23:40.682   873   873 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.sendBroadcast:1249 android.content.ContextWrapper.sendBroadcast:506 android.content.ContextWrapper.sendBroadcast:506 com.android.settings.fuelgauge.batteryusage.BootBroadcastReceiver.lambda$onReceive$0:86 com.android.settings.fuelgauge.batteryusage.BootBroadcastReceiver.$r8$lambda$NYbzklSftprvatAlISPsV0wCKqc:0 
+10-31 23:23:40.706   873   873 D BootBroadcastReceiver: refresh periodic job from action=com.android.settings.battery.action.PERIODIC_JOB_RECHECK
+10-31 23:23:40.868     0     0 I servicemanager: Notifying android.hardware.drm.IDrmFactory/clearkey they don't (previously: do) have clients when we now have no record of a client
+10-31 23:23:40.870     0     0 I servicemanager: Notifying apexservice they don't (previously: do) have clients when we now have no record of a client
+10-31 23:23:40.714  1767  1767 I AidlLazyServiceRegistrar: Process has 0 (of 1 available) client(s) in use after notification android.hardware.drm.IDrmFactory/clearkey has clients: 0
+10-31 23:23:40.714  1767  1767 I AidlLazyServiceRegistrar: Trying to shut down the service. No clients in use for any service in process.
+10-31 23:23:40.881     0     0 I servicemanager: Caller(pid=1767,uid=1013,sid=u:r:hal_drm_clearkey_aidl:s0) Unregistering android.hardware.drm.IDrmFactory/clearkey
+10-31 23:23:40.883     0     0 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-31 23:23:40.732  1767  1767 I AidlLazyServiceRegistrar: Unregistered all clients and exiting
+10-31 23:23:40.890     0     0 I AidlLazyServiceRegistrar: Process has 0 (of 1 available) client(s) in use after notification apexservice has clients: 0
+10-31 23:23:40.892     0     0 I AidlLazyServiceRegistrar: Trying to shut down the service. No clients in use for any service in process.
+10-31 23:23:40.895     0     0 I init    : Service 'vendor.drm-clearkey-service' (pid 1767) exited with status 0 oneshot service took 1.434000 seconds in background
+10-31 23:23:40.901     0     0 I init    : Sending signal 9 to service 'vendor.drm-clearkey-service' (pid 1767) process group...
+10-31 23:23:40.749   873   873 D PeriodicJobManager: schedule next alarm job at नोव्हें ०१, २०२६, ०१:००:००
+10-31 23:23:40.904     0     0 I servicemanager: Caller(pid=203,uid=0,sid=u:r:apexd:s0) Unregistering apexservice
+10-31 23:23:40.910     0     0 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-31 23:23:40.754   873   878 W ndroid.settings: Missing inline cache for void com.android.settings.fuelgauge.batteryusage.bugreport.BatteryUsageLogUtils.writeLog(android.content.Context, com.android.settings.fuelgauge.BatteryUsageHistoricalLogEntry$Action, java.lang.String)
+10-31 23:23:40.916     0     0 I libprocessgroup: Removed cgroup /sys/fs/cgroup/uid_1013/pid_1767
+10-31 23:23:40.920     0     0 I AidlLazyServiceRegistrar: Unregistered all clients and exiting
+10-31 23:23:40.936     0     0 I init    : Service 'apexd' (pid 203) exited with status 0 oneshot service took 53.382999 seconds in background
+10-31 23:23:40.939     0     0 I init    : Sending signal 9 to service 'apexd' (pid 203) process group...
+10-31 23:23:40.941     0     0 I libprocessgroup: Removed cgroup /sys/fs/cgroup/uid_0/pid_203
+10-31 23:23:41.003  1155  1309 D EGL_emulation: app_time_stats: avg=46.94ms min=4.90ms max=1437.16ms count=42
+10-31 23:23:41.021   777   945 D EGL_emulation: app_time_stats: avg=101.15ms min=12.47ms max=483.06ms count=10
+10-31 23:23:42.023   339   394 I netd    : tetherGetStats() -> {[]} <7.88ms>
+10-31 23:23:42.964   537   634 D ActivityManager: freezing 1478 com.android.externalstorage
+10-31 23:23:42.974   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:42.975   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:42.975   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10065} in 5ms
+10-31 23:23:43.164  1155  1309 D EGL_emulation: app_time_stats: avg=41.38ms min=3.26ms max=1404.02ms count=43
+10-31 23:23:43.692  1717  1717 D CompatChangeReporter: Compat change id reported: 311402873; UID 10079; state: ENABLED
+10-31 23:23:43.694  1717  1717 D CompatChangeReporter: Compat change id reported: 323349338; UID 10079; state: ENABLED
+10-31 23:23:43.698   537   929 D CompatChangeReporter: Compat change id reported: 311402873; UID 10079; state: ENABLED
+10-31 23:23:43.698   537   929 D CompatChangeReporter: Compat change id reported: 323349338; UID 10079; state: ENABLED
+10-31 23:23:43.715   339   394 I netd    : tetherGetStats() -> {[]} <6.29ms>
+10-31 23:23:43.797   537   929 D CompatChangeReporter: Compat change id reported: 311208629; UID 10079; state: ENABLED
+10-31 23:23:44.266   537   634 D ActivityManager: freezing 1234 com.android.printspooler
+10-31 23:23:44.267   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:44.285   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:44.285   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10083} in 18ms
+10-31 23:23:45.332  1155  1309 D EGL_emulation: app_time_stats: avg=47.76ms min=3.55ms max=1422.19ms count=37
+10-31 23:23:45.543   537   562 D WifiNl80211Manager: Scan result ready event
+10-31 23:23:45.543   537   562 D WifiNative: Scan result ready event
+10-31 23:23:45.559   537   683 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+10-31 23:23:45.947   169  1188 I keystore2: system/security/keystore2/watchdog/src/lib.rs:319 - Watchdog thread idle -> terminating. Have a great day.
+10-31 23:23:46.777  1155  1309 D EGL_emulation: app_time_stats: avg=27.14ms min=3.42ms max=687.32ms count=37
+10-31 23:23:47.654   537   746 I SdkSandboxManager: Reconciling sdk data package directories for 0
+10-31 23:23:49.091  1143  1147 W putmethod.latin: Cleared Reference was only reachable from finalizer (only reported once)
+10-31 23:23:49.520   537   683 D WifiConfigStore: Writing to stores completed in 10 ms.
+10-31 23:23:50.500   537   627 D OomAdjuster: Not killing cached processes
+10-31 23:23:50.690     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+10-31 23:23:51.707   814   980 D DhcpClient: Received packet: 02:16:2e:00:00:00 OFFER, ip /10.0.2.16, netmask /255.255.255.0, DNS servers: /10.0.2.3 , gateways [/10.0.2.2], lease time 86400, domain null
+10-31 23:23:51.707   814   980 D DhcpClient: Received packet: 02:16:2e:00:00:00 ACK: your new IP /10.0.2.16, netmask /255.255.255.0, gateways [/10.0.2.2] DNS servers: /10.0.2.3 , lease time 86400, domain null
+10-31 23:23:53.035   764   764 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+10-31 23:23:55.522   537   627 D OomAdjuster: Not killing cached processes
+10-31 23:23:55.530   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:55.533   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:55.533   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10111} in 5ms
+10-31 23:23:55.535   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:55.537   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:55.537   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20111} in 4ms
+10-31 23:23:55.753   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:55.756   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:55.757   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10107} in 4ms
+10-31 23:23:55.758   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:55.759   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:55.760   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20107} in 3ms
+10-31 23:23:56.077   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:56.078   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:56.078   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10101} in 1ms
+10-31 23:23:56.079   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:56.079   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:56.079   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20101} in 2ms
+10-31 23:23:56.288   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:56.292   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:56.292   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10138} in 4ms
+10-31 23:23:56.292   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:56.293   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:56.293   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20138} in 1ms
+10-31 23:23:56.903   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:56.904   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:56.908   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10068} in 6ms
+10-31 23:23:56.909   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:56.909   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:56.909   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20068} in 1ms
+10-31 23:23:57.862   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:57.866   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:57.870   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10114} in 8ms
+10-31 23:23:57.871   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:57.871   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:57.871   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20114} in 2ms
+10-31 23:23:58.187   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:58.189   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:58.189   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10137} in 4ms
+10-31 23:23:58.190   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:58.190   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:58.190   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20137} in 1ms
+10-31 23:23:58.876   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:58.877   537   690 D InetDiagMessage: Destroyed 1 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:58.877   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10133} in 2ms
+10-31 23:23:58.878   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:58.878   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:58.878   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20133} in 1ms
+10-31 23:23:59.695   537  1169 W BatteryExternalStatsWorker: error reading Bluetooth stats: 11
+10-31 23:23:59.774   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:59.775   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:59.775   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10076} in 1ms
+10-31 23:23:59.776   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:23:59.779   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:23:59.779   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={20076} in 4ms
+10-31 23:24:00.062   777   945 D EGL_emulation: app_time_stats: avg=6345.06ms min=5.51ms max=18784.33ms count=3
+10-31 23:24:00.367  1341  1352 W d.process.acore: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/Contacts/Contacts.apk' with 1 weak references
+10-31 23:24:00.551   537   634 D ActivityManager: freezing 1324 com.android.traceur
+10-31 23:24:00.553   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:00.553   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:00.553   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10096} in 1ms
+10-31 23:24:00.971   764   764 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+10-31 23:24:02.375   537   757 D OomAdjuster: Not killing cached processes
+10-31 23:24:02.389   983  1795 I PermissionControllerServiceImpl: Updating user sensitive for user 0
+10-31 23:24:02.409   339   394 I netd    : tetherGetStats() -> {[]} <0.52ms>
+10-31 23:24:02.420   537   813 W ParceledListSlice: Element #52 is 139560 bytes.
+10-31 23:24:02.420   537   813 W ParceledListSlice: Overly large reply size: 186660
+10-31 23:24:02.437   537  1169 W ParceledListSlice: Element #157 is 29100 bytes.
+10-31 23:24:03.494   537   690 D ConnectivityService: handleLingerComplete for [101 CELLULAR]
+10-31 23:24:03.494   537   690 I ConnectivityService: Update capabilities for net 101 : -FOREGROUND
+10-31 23:24:03.499   339   394 I netd    : networkSetPermissionForNetwork(101, 1) <5.02ms>
+10-31 23:24:03.511   537   681 D CompatChangeReporter: Compat change id reported: 297989574; UID 1000; state: ENABLED
+10-31 23:24:03.647   777   945 D EGL_emulation: app_time_stats: avg=3584.39ms min=3584.39ms max=3584.39ms count=1
+10-31 23:24:04.138   537   634 D ActivityManager: freezing 1358 com.android.imsserviceentitlement
+10-31 23:24:04.139   537   634 D ActivityManager: freezing 1039 com.android.cellbroadcastreceiver.module
+10-31 23:24:04.143   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:04.143   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:04.143   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10100} in 4ms
+10-31 23:24:04.159   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:04.159   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:04.159   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10126} in 1ms
+10-31 23:24:04.799  1800  1800 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+10-31 23:24:04.800  1800  1800 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+10-31 23:24:04.948   145   145 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-31 23:24:04.948  1800  1801 I Gralloc4: mapper 4.x is not supported
+10-31 23:24:05.105     0     0 I servicemanager: Caller(pid=1800,uid=2000,sid=u:r:shell:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+10-31 23:24:05.068   537   634 D ActivityManager: freezing 1541 .adservices
+10-31 23:24:05.519   537  1169 D WifiNl80211Manager: Scan result ready event
+10-31 23:24:05.519   537  1169 D WifiNative: Scan result ready event
+10-31 23:24:05.523   537   683 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+10-31 23:24:05.527   537   634 D ActivityManager: freezing 1564 com.android.calendar
+10-31 23:24:05.528   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:05.529   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:05.529   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10111} in 2ms
+10-31 23:24:05.755   537   634 D ActivityManager: freezing 1577 com.android.camera2
+10-31 23:24:05.805   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:05.806   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:05.806   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10107} in 1ms
+10-31 23:24:06.077   537   634 D ActivityManager: freezing 1592 com.android.contacts
+10-31 23:24:06.091   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:06.103   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:06.103   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10101} in 23ms
+10-31 23:24:06.177   537   634 D ActivityManager: freezing 873 com.android.settings
+10-31 23:24:06.178   537   634 D ActivityManager: freezing 1315 com.android.keychain
+10-31 23:24:06.178   537   634 D ActivityManager: freezing 1633 com.android.dynsystem:dynsystem
+10-31 23:24:06.178   537   634 D ActivityManager: freezing 1609 com.android.dynsystem
+10-31 23:24:06.178   537   634 D ActivityManager: freezing 1377 com.android.localtransport
+10-31 23:24:06.296   537   634 D ActivityManager: freezing 1623 com.android.federatedcompute.services
+10-31 23:24:06.297   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:06.298   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:06.298   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10138} in 1ms
+10-31 23:24:06.550   537   634 D ActivityManager: freezing 1645 com.android.healthconnect.controller
+10-31 23:24:06.566   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:06.572   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:06.572   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10146} in 17ms
+10-31 23:24:06.903   537   634 D ActivityManager: freezing 1659 com.android.managedprovisioning
+10-31 23:24:06.922   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:06.938   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:06.938   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10068} in 31ms
+10-31 23:24:07.864   537   634 D ActivityManager: freezing 1672 com.android.messaging
+10-31 23:24:07.866   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:07.866   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:07.866   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10114} in 1ms
+10-31 23:24:08.185   537   634 D ActivityManager: freezing 1691 com.android.ondevicepersonalization.services
+10-31 23:24:08.198   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:08.205   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:08.205   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10137} in 17ms
+10-31 23:24:08.445   537   634 D ActivityManager: freezing 1704 com.android.packageinstaller
+10-31 23:24:08.464   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:08.473   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:08.473   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10063} in 21ms
+10-31 23:24:08.664   537   634 D ActivityManager: freezing 1717 com.android.providers.calendar
+10-31 23:24:08.665   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:08.665   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:08.665   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10079} in 1ms
+10-31 23:24:08.755   537   813 D OomAdjuster: Not killing cached processes
+10-31 23:24:08.875   537   634 D ActivityManager: freezing 1732 com.android.rkpdapp
+10-31 23:24:08.877   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:08.878   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:08.878   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10133} in 2ms
+10-31 23:24:09.001   537   683 E WifiHealthMonitor:  Hit PackageManager exception
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: android.content.pm.PackageManager$NameNotFoundException: No module info for package: com.android.wifi
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at android.app.ApplicationPackageManager.getModuleInfo(ApplicationPackageManager.java:1215)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at com.android.server.wifi.WifiHealthMonitor.getWifiStackVersion(WifiHealthMonitor.java:369)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at com.android.server.wifi.WifiHealthMonitor.extractCurrentSoftwareBuildInfo(WifiHealthMonitor.java:590)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at com.android.server.wifi.WifiHealthMonitor.postBootSwBuildCheck(WifiHealthMonitor.java:525)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at com.android.server.wifi.WifiHealthMonitor.postBootDetectionHandler(WifiHealthMonitor.java:516)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at com.android.server.wifi.WifiHealthMonitor.-$$Nest$mpostBootDetectionHandler(WifiHealthMonitor.java:0)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at com.android.server.wifi.WifiHealthMonitor$2.onAlarm(WifiHealthMonitor.java:192)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at android.app.AlarmManager$ListenerWrapper.run(AlarmManager.java:375)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at android.os.Handler.handleCallback(Handler.java:959)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at com.android.server.wifi.RunnerHandler.dispatchMessage(RunnerHandler.java:124)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at android.os.Looper.loopOnce(Looper.java:232)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at android.os.Looper.loop(Looper.java:317)
+10-31 23:24:09.001   537   683 E WifiHealthMonitor: 	at android.os.HandlerThread.run(HandlerThread.java:85)
+10-31 23:24:09.201   537   634 D ActivityManager: freezing 1747 com.android.shell
+10-31 23:24:09.205   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:09.205   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:09.205   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={2000} in 2ms
+10-31 23:24:09.776   537   634 D ActivityManager: freezing 1765 com.android.statementservice
+10-31 23:24:09.788   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-31 23:24:09.792   537   690 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-31 23:24:09.792   537   690 D InetDiagMessage: Destroyed live tcp sockets for uids={10076} in 15ms
+10-31 23:24:12.803   339   394 I netd    : tetherGetStats() -> {[]} <0.50ms>
+10-31 23:24:12.810   983   989 W ssioncontroller: ApkAssets: Deleting an ApkAssets object '<empty> and /system/framework/framework-res.apk' with 1 weak references
+10-31 23:24:13.003   764   764 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 

@@ -1,0 +1,36 @@
+{
+  "machine_only_dispatcher": "/root/draft_tool",
+  "author": "/root",
+  "locale": "mr",
+  "project": "bradley-personal-20261027",
+  "source_record_sha256": "1221b1cca577c6de46e4bfddfc5c5c6d56c4075c37a6ec3510cf01e52ec022d5",
+  "source_revision": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "mr",
+    "mimeType": "text/plain",
+    "contents": [
+      "Win probability",
+      "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history."
+    ]
+  },
+  "response_cache": "google-responses/f0ef9d4866bed5b66f881fc9726f24ae4c7bf1d3762a551eddd7446bb531db70.json",
+  "response_cache_sha256": "228131c1f5bc132151c958fd9e231a85c7cbdf22d199fd4ea8115ef2d3fbb7eb",
+  "response_sha256": "bb5e84c88d4f69ad06ada1d67bc9ff3b969ff2940fa9fdd0a0d58e88f78d083e",
+  "budget_before_usd": "3.8723",
+  "budget_reserved_usd": "3.8773",
+  "ledger_sha256": "4681166df828d9f21658241dfa05a774e191b3504f8a15b0d7026e728c0586a9",
+  "entries": [
+    {
+      "key": "[stat win probability]",
+      "source": "Win probability",
+      "google_draft": "जिंकण्याची शक्यता"
+    },
+    {
+      "key": "[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "google_draft": "तुमच्या गटाच्या जिंकण्याची अंदाजित शक्यता, जी संपूर्ण सामन्यादरम्यान तपासली जाते. सर्व गटांची संभाव्यता एकच असते. हे मॉडेल एआय (AI) खेळांवर प्रशिक्षित केले गेले आहे; या अंदाजांमध्ये स्थिती किंवा नियोजित चालींचा विचार केलेला नाही. जुन्या सेव्ह फाइल्समध्ये अपूर्ण इतिहास असू शकतो."
+    }
+  ],
+  "status": "machine draft only; independent semantic/editorial/adversarial reviews pending; no canonical catalog edits"
+}

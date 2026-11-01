@@ -1,0 +1,22 @@
+{
+  "old_source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "new_source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "new_source_reference": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "old_native_target_sha256": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+  "new_native_target_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+  "unchanged_native_source_and_target_keys": 3393,
+  "unchanged_online_source_and_target_keys": 2836,
+  "added_native_keys": [
+    "[stat win probability about]",
+    "[stat win probability]"
+  ],
+  "removed_or_modified_old_keys": [],
+  "source_reference_blobs": {
+    "data/texts.keys.txt": "dced6619c89b3ef966135bf8cab28967e169381b",
+    "data/texts.en.txt": "de7bf160d15c5a60f438ef5554cf0e1f434860f0",
+    "platform/packages/i18n/locales/en.json": "4e93d5de67515f96d10220c511184bb9bc2687e6",
+    "platform/packages/i18n/plural-sources.json": "ed9015a390d0fbbd56f262328f046377d9b15956",
+    "platform/packages/i18n/invariants.json": "bf64a954ea956a44ad40246d714c81fcf1cbffa8"
+  },
+  "scope": "Explicit per-key value equality; prior reviews are carried for unchanged source/target pairs, not described as a new full reread. New2 keys require separate final semantic/editorial/adversarial signoffs."
+}

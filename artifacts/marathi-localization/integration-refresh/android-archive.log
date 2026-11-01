@@ -1,0 +1,8 @@
+{
+  "archive": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ba890",
+  "bytes": 626630485,
+  "cap": 2147483648,
+  "unsigned_apk_sha256": "b2be7a19831e9c1bed3b906b0dd99f56cd887cb14f2d30d10793b47a324e044f",
+  "signed_apk_sha256": "71c047ec0b5d045c5a29257679accdc637656a1a0ab9687114d1a6b2dd66f2f2",
+  "elf_original_sha256": "a0a05eeaa6c6fa89bc734faab3cf09b9f3ee663ff258f5acc3e0507315fadd50"
+}

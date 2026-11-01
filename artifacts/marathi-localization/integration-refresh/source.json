@@ -1,0 +1,19 @@
+{
+  "upstream_revision": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "source_path": "data/texts.en.txt",
+  "git_blob_sha1": "de7bf160d15c5a60f438ef5554cf0e1f434860f0",
+  "source_file_sha256": "5bf563d2f81beab9f79e80982ffda38a3c451e783f70417609bb059474986147",
+  "source_file_copy": "integration-refresh/upstream-texts.en.txt",
+  "entries": [
+    {
+      "id": "native:[stat win probability]",
+      "key": "[stat win probability]",
+      "source": "Win probability"
+    },
+    {
+      "id": "native:[stat win probability about]",
+      "key": "[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history."
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+PASS native startup and bundled assets, settings input and dismissal, mr-IN system locale selects and saves native mr catalog, retained-process background/resume, landscape/portrait rotation, force-stop and fresh-process relaunch, application profile persistence

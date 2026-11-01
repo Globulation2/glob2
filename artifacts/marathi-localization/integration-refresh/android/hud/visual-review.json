@@ -1,0 +1,57 @@
+{
+  "reviewer": "/root/locale_integration",
+  "producer_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "installed_apk_sha256": "b0d77346e3223bbdae2ce6f85baa8c120e437d50c4caf8b35ebafafefdab7be2",
+  "method": "Actual own current installed release, launch menu→Tutorial with six real Tab focus movements+Enter→first Introduction lesson with Tab+Enter; use visible Tools→Statistics controls; real display rotation; collapse lesson instruction body; close statistics; restore original rotation and force-stop only own app.",
+  "actions_sha256": "f8ec04df95a055cba3b5c9c21230dc8d140f8ce21b12f63b7a47fb1d44a01e13",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/menu.png",
+      "sha256": "883de7cd118c0cbbefcb4e4c0b907dc371b122b4afe6c4addcf88c62a5284926"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/lesson-catalog.png",
+      "sha256": "0ba10f92b50146a045b624fa841c9f249d6f7a19aa8767247e1d8bae2ca80dcc"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/intro-launch.png",
+      "sha256": "4d9ae711dd613ea755e999342c102a350e134a75d1f075ba32c92aba0b5a97d0"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/gameplay-portrait.png",
+      "sha256": "1a61a1d4da7f37f456e62a4fa1ea3a8f91643eea89e070ebb2c49e20e4f7acd8"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/tools.png",
+      "sha256": "e31676a53739a53719d68596a3dcf44f95d7409b6b3b2f0d3745b35a7f51a739"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/statistics-portrait.png",
+      "sha256": "d0a257bc99c45b8ce855cf4a6c090e104ecc7e97acc7c6434340684d5584e2f1"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/statistics-landscape.png",
+      "sha256": "ae039d31e36c786937e0d45d99fdac75c664f8c59b1500410a5a1e4d06f77c18"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/statistics-landscape-collapsed-instructions.png",
+      "sha256": "57191c6384ce3f30a0fe7de04e254014d8fa625b33322b7a612b300f6b9c0cfd"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/gameplay-landscape.png",
+      "sha256": "474ca4015e0758df3b5a6737ee06dbde7a42a0251265c64091561ffced5be36a"
+    }
+  ],
+  "assessment": "Marathi lesson catalog and loading status, live tutorial instructions, portrait HUD navigation, actual Tools palette and Statistics sheet, landscape statistics/instruction collapse and landscape HUD/Tools were viewed. Devanagari is shaped and wraps within its text panels and button cells; no tofu or Marathi text clipping observed. Tools and chart-summary captions use the existing small compact HUD style; captures are retained for direct review. Portrait instruction body and landscape instruction header naturally overlay part of the map/chart. Collapsing instruction body retains its header, so the collapsed image is not described as completely unobscured.",
+  "new_win_probability_text_runtime_scope": "Compact live touch statistics intentionally exclude winProbability in current src/hud/touch/GameGUITouch.cpp; no claim the two new probability strings were displayed here. They are verified present in packaged native catalog.",
+  "limits": [
+    "API35 x86_64 emulator at390x844 portrait/844x390 landscape, not physical phone readability/performance",
+    "No complete match or deterministic checksum comparison claimed",
+    "No canonical or production source changes made during QA"
+  ],
+  "screenshot_byte_cap": 8388608,
+  "actual_screenshot_bytes": 3200379,
+  "rotation_restored": true,
+  "own_app_force_stopped": true,
+  "result": "accepted observed current Marathi tutorial/HUD rendering"
+}

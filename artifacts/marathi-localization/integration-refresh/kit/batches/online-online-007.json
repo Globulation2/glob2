@@ -1,0 +1,509 @@
+{
+  "id": "online-online-007",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Designer status",
+      "key": "Designer status",
+      "source": "Designer status"
+    },
+    {
+      "id": "online:Destination: {slot0} library. Run checks before publication.",
+      "key": "Destination: {slot0} library. Run checks before publication.",
+      "source": "Destination: {slot0} library. Run checks before publication."
+    },
+    {
+      "id": "online:Detailed usage rates",
+      "key": "Detailed usage rates",
+      "source": "Detailed usage rates"
+    },
+    {
+      "id": "online:Details",
+      "key": "Details",
+      "source": "Details"
+    },
+    {
+      "id": "online:Development credits",
+      "key": "Development credits",
+      "source": "Development credits"
+    },
+    {
+      "id": "online:Dimension",
+      "key": "Dimension",
+      "source": "Dimension"
+    },
+    {
+      "id": "online:Disable",
+      "key": "Disable",
+      "source": "Disable"
+    },
+    {
+      "id": "online:Disable skin and resolve",
+      "key": "Disable skin and resolve",
+      "source": "Disable skin and resolve"
+    },
+    {
+      "id": "online:Disabled",
+      "key": "Disabled",
+      "source": "Disabled"
+    },
+    {
+      "id": "online:Discard local retry",
+      "key": "Discard local retry",
+      "source": "Discard local retry"
+    },
+    {
+      "id": "online:Discard manual edits and load saved revision",
+      "key": "Discard manual edits and load saved revision",
+      "source": "Discard manual edits and load saved revision"
+    },
+    {
+      "id": "online:Disconnected",
+      "key": "Disconnected",
+      "source": "Disconnected"
+    },
+    {
+      "id": "online:Disconnects",
+      "key": "Disconnects",
+      "source": "Disconnects"
+    },
+    {
+      "id": "online:Discover",
+      "key": "Discover",
+      "source": "Discover"
+    },
+    {
+      "id": "online:Discover a new opponent. Find a new way to play.",
+      "key": "Discover a new opponent. Find a new way to play.",
+      "source": "Discover a new opponent. Find a new way to play."
+    },
+    {
+      "id": "online:Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.",
+      "key": "Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.",
+      "source": "Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery."
+    },
+    {
+      "id": "online:Dismiss",
+      "key": "Dismiss",
+      "source": "Dismiss"
+    },
+    {
+      "id": "online:Dismiss notification",
+      "key": "Dismiss notification",
+      "source": "Dismiss notification"
+    },
+    {
+      "id": "online:Dismiss report",
+      "key": "Dismiss report",
+      "source": "Dismiss report"
+    },
+    {
+      "id": "online:Dismissed",
+      "key": "Dismissed",
+      "source": "Dismissed"
+    },
+    {
+      "id": "online:Display names are at most {p0} bytes.",
+      "key": "Display names are at most {p0} bytes.",
+      "source": "Display names are at most {p0} bytes."
+    },
+    {
+      "id": "online:Display names can only be changed once per interval.",
+      "key": "Display names can only be changed once per interval.",
+      "source": "Display names can only be changed once per interval."
+    },
+    {
+      "id": "online:Display names cannot contain control characters.",
+      "key": "Display names cannot contain control characters.",
+      "source": "Display names cannot contain control characters."
+    },
+    {
+      "id": "online:Display names cannot start or end with spaces.",
+      "key": "Display names cannot start or end with spaces.",
+      "source": "Display names cannot start or end with spaces."
+    },
+    {
+      "id": "online:Diverged",
+      "key": "Diverged",
+      "source": "Diverged"
+    },
+    {
+      "id": "online:Download",
+      "key": "Download",
+      "source": "Download"
+    },
+    {
+      "id": "online:Download JavaScript (.js)",
+      "key": "Download JavaScript (.js)",
+      "source": "Download JavaScript (.js)"
+    },
+    {
+      "id": "online:Download SHA-256: {slot0}",
+      "key": "Download SHA-256: {slot0}",
+      "source": "Download SHA-256: {slot0}"
+    },
+    {
+      "id": "online:Download ZIP",
+      "key": "Download ZIP",
+      "source": "Download ZIP"
+    },
+    {
+      "id": "online:Download candidate",
+      "key": "Download candidate",
+      "source": "Download candidate"
+    },
+    {
+      "id": "online:Download exact package",
+      "key": "Download exact package",
+      "source": "Download exact package"
+    },
+    {
+      "id": "online:Download family",
+      "key": "Download family",
+      "source": "Download family"
+    },
+    {
+      "id": "online:Download local changes",
+      "key": "Download local changes",
+      "source": "Download local changes"
+    },
+    {
+      "id": "online:Download local edits",
+      "key": "Download local edits",
+      "source": "Download local edits"
+    },
+    {
+      "id": "online:Download my data",
+      "key": "Download my data",
+      "source": "Download my data"
+    },
+    {
+      "id": "online:Download progress",
+      "key": "Download progress",
+      "source": "Download progress"
+    },
+    {
+      "id": "online:Download replay",
+      "key": "Download replay",
+      "source": "Download replay"
+    },
+    {
+      "id": "online:Download saved draft",
+      "key": "Download saved draft",
+      "source": "Download saved draft"
+    },
+    {
+      "id": "online:Download selected",
+      "key": "Download selected",
+      "source": "Download selected"
+    },
+    {
+      "id": "online:Download set",
+      "key": "Download set",
+      "source": "Download set"
+    },
+    {
+      "id": "online:Download the game",
+      "key": "Download the game",
+      "source": "Download the game"
+    },
+    {
+      "id": "online:Download this release",
+      "key": "Download this release",
+      "source": "Download this release"
+    },
+    {
+      "id": "online:Download {slot0}",
+      "key": "Download {slot0}",
+      "source": "Download {slot0}"
+    },
+    {
+      "id": "online:Downloading replay…",
+      "key": "Downloading replay…",
+      "source": "Downloading replay…"
+    },
+    {
+      "id": "online:Downloading the game…",
+      "key": "Downloading the game…",
+      "source": "Downloading the game…"
+    },
+    {
+      "id": "online:Downloads",
+      "key": "Downloads",
+      "source": "Downloads"
+    },
+    {
+      "id": "online:Download{slot0}",
+      "key": "Download{slot0}",
+      "source": "Download{slot0}"
+    },
+    {
+      "id": "online:Draft",
+      "key": "Draft",
+      "source": "Draft"
+    },
+    {
+      "id": "online:Draft identities cannot change.",
+      "key": "Draft identities cannot change.",
+      "source": "Draft identities cannot change."
+    },
+    {
+      "id": "online:Draft is temporarily empty. Add source to save.",
+      "key": "Draft is temporarily empty. Add source to save.",
+      "source": "Draft is temporarily empty. Add source to save."
+    },
+    {
+      "id": "online:Draft not found.",
+      "key": "Draft not found.",
+      "source": "Draft not found."
+    },
+    {
+      "id": "online:Draft recovery failed",
+      "key": "Draft recovery failed",
+      "source": "Draft recovery failed"
+    },
+    {
+      "id": "online:Draft recovery failed.",
+      "key": "Draft recovery failed.",
+      "source": "Draft recovery failed."
+    },
+    {
+      "id": "online:Draft saved",
+      "key": "Draft saved",
+      "source": "Draft saved"
+    },
+    {
+      "id": "online:Draft saved.",
+      "key": "Draft saved.",
+      "source": "Draft saved."
+    },
+    {
+      "id": "online:Drafts",
+      "key": "Drafts",
+      "source": "Drafts"
+    },
+    {
+      "id": "online:Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "key": "Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "source": "Drafts are private. Publish a saved family to share it in the {slot0}."
+    },
+    {
+      "id": "online:Drag or use arrow keys to explore the wraparound map.",
+      "key": "Drag or use arrow keys to explore the wraparound map.",
+      "source": "Drag or use arrow keys to explore the wraparound map."
+    },
+    {
+      "id": "online:Drag the playhead to explore",
+      "key": "Drag the playhead to explore",
+      "source": "Drag the playhead to explore"
+    },
+    {
+      "id": "online:Drag to choose your {slot0} angle",
+      "key": "Drag to choose your {slot0} angle",
+      "source": "Drag to choose your {slot0} angle"
+    },
+    {
+      "id": "online:Drag to explore when zoomed",
+      "key": "Drag to explore when zoomed",
+      "source": "Drag to explore when zoomed"
+    },
+    {
+      "id": "online:Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "key": "Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "source": "Drag to paint · Rotate tool to turn · scroll or pinch to zoom"
+    },
+    {
+      "id": "online:Drag to position. Use arrow keys to move and the slider to zoom.",
+      "key": "Drag to position. Use arrow keys to move and the slider to zoom.",
+      "source": "Drag to position. Use arrow keys to move and the slider to zoom."
+    },
+    {
+      "id": "online:Drag to rotate and tilt · scroll or pinch to zoom",
+      "key": "Drag to rotate and tilt · scroll or pinch to zoom",
+      "source": "Drag to rotate and tilt · scroll or pinch to zoom"
+    },
+    {
+      "id": "online:Drag to turn · fixed height and scale",
+      "key": "Drag to turn · fixed height and scale",
+      "source": "Drag to turn · fixed height and scale"
+    },
+    {
+      "id": "online:Draw",
+      "key": "Draw",
+      "source": "Draw"
+    },
+    {
+      "id": "online:Duplicate",
+      "key": "Duplicate",
+      "source": "Duplicate"
+    },
+    {
+      "id": "online:Duplicate rig clip",
+      "key": "Duplicate rig clip",
+      "source": "Duplicate rig clip"
+    },
+    {
+      "id": "online:Duplicate shape clip",
+      "key": "Duplicate shape clip",
+      "source": "Duplicate shape clip"
+    },
+    {
+      "id": "online:Duration (steps)",
+      "key": "Duration (steps)",
+      "source": "Duration (steps)"
+    },
+    {
+      "id": "online:Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "key": "Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "source": "Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values."
+    },
+    {
+      "id": "online:Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "key": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "source": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots."
+    },
+    {
+      "id": "online:Each shape shares the swarm paint area. Check the result after switching.",
+      "key": "Each shape shares the swarm paint area. Check the result after switching.",
+      "source": "Each shape shares the swarm paint area. Check the result after switching."
+    },
+    {
+      "id": "online:Econo",
+      "key": "Econo",
+      "source": "Econo"
+    },
+    {
+      "id": "online:Economy against each player’s average",
+      "key": "Economy against each player’s average",
+      "source": "Economy against each player’s average"
+    },
+    {
+      "id": "online:Economy {slot0}",
+      "key": "Economy {slot0}",
+      "source": "Economy {slot0}"
+    },
+    {
+      "id": "online:Edit",
+      "key": "Edit",
+      "source": "Edit"
+    },
+    {
+      "id": "online:Edit AI details",
+      "key": "Edit AI details",
+      "source": "Edit AI details"
+    },
+    {
+      "id": "online:Edit details",
+      "key": "Edit details",
+      "source": "Edit details"
+    },
+    {
+      "id": "online:Edit in AI Studio",
+      "key": "Edit in AI Studio",
+      "source": "Edit in AI Studio"
+    },
+    {
+      "id": "online:Edit in Generator Studio",
+      "key": "Edit in Generator Studio",
+      "source": "Edit in Generator Studio"
+    },
+    {
+      "id": "online:Edit this saved draft",
+      "key": "Edit this saved draft",
+      "source": "Edit this saved draft"
+    },
+    {
+      "id": "online:Edit this version",
+      "key": "Edit this version",
+      "source": "Edit this version"
+    },
+    {
+      "id": "online:Edit this version in chat",
+      "key": "Edit this version in chat",
+      "source": "Edit this version in chat"
+    },
+    {
+      "id": "online:Edit with AI",
+      "key": "Edit with AI",
+      "source": "Edit with AI"
+    },
+    {
+      "id": "online:Edit your map",
+      "key": "Edit your map",
+      "source": "Edit your map"
+    },
+    {
+      "id": "online:Edit your soundtrack",
+      "key": "Edit your soundtrack",
+      "source": "Edit your soundtrack"
+    },
+    {
+      "id": "online:Edit {value0}",
+      "key": "Edit {value0}",
+      "source": "Edit {value0}"
+    },
+    {
+      "id": "online:Editing current saved draft · {slot0}",
+      "key": "Editing current saved draft · {slot0}",
+      "source": "Editing current saved draft · {slot0}"
+    },
+    {
+      "id": "online:Editing version {value0}",
+      "key": "Editing version {value0}",
+      "source": "Editing version {value0}"
+    },
+    {
+      "id": "online:Editing {slot0}",
+      "key": "Editing {slot0}",
+      "source": "Editing {slot0}"
+    },
+    {
+      "id": "online:Editor tool",
+      "key": "Editor tool",
+      "source": "Editor tool"
+    },
+    {
+      "id": "online:Editor tools",
+      "key": "Editor tools",
+      "source": "Editor tools"
+    },
+    {
+      "id": "online:Editor-only terrain cannot launch a colony game.",
+      "key": "Editor-only terrain cannot launch a colony game.",
+      "source": "Editor-only terrain cannot launch a colony game."
+    },
+    {
+      "id": "online:Empty the seat before locking it.",
+      "key": "Empty the seat before locking it.",
+      "source": "Empty the seat before locking it."
+    },
+    {
+      "id": "online:Empty the seat before putting an AI in it.",
+      "key": "Empty the seat before putting an AI in it.",
+      "source": "Empty the seat before putting an AI in it."
+    },
+    {
+      "id": "online:Ended",
+      "key": "Ended",
+      "source": "Ended"
+    },
+    {
+      "id": "online:Engine agent key required.",
+      "key": "Engine agent key required.",
+      "source": "Engine agent key required."
+    },
+    {
+      "id": "online:Engine agents",
+      "key": "Engine agents",
+      "source": "Engine agents"
+    },
+    {
+      "id": "online:Engine jobs",
+      "key": "Engine jobs",
+      "source": "Engine jobs"
+    }
+  ]
+}

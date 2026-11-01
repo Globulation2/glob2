@@ -1,0 +1,509 @@
+{
+  "id": "online-online-019",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Sign in to see your sets.",
+      "key": "Sign in to see your sets.",
+      "source": "Sign in to see your sets."
+    },
+    {
+      "id": "online:Sign in to upload a map",
+      "key": "Sign in to upload a map",
+      "source": "Sign in to upload a map"
+    },
+    {
+      "id": "online:Sign in to upload a photo.",
+      "key": "Sign in to upload a photo.",
+      "source": "Sign in to upload a photo."
+    },
+    {
+      "id": "online:Sign in to view draft artwork.",
+      "key": "Sign in to view draft artwork.",
+      "source": "Sign in to view draft artwork."
+    },
+    {
+      "id": "online:Sign in to view your commander and credits.",
+      "key": "Sign in to view your commander and credits.",
+      "source": "Sign in to view your commander and credits."
+    },
+    {
+      "id": "online:Sign in with a registered account to compose, refine, and share your own soundtrack.",
+      "key": "Sign in with a registered account to compose, refine, and share your own soundtrack.",
+      "source": "Sign in with a registered account to compose, refine, and share your own soundtrack."
+    },
+    {
+      "id": "online:Sign in with a registered account to design, refine, and play your own maps.",
+      "key": "Sign in with a registered account to design, refine, and play your own maps.",
+      "source": "Sign in with a registered account to design, refine, and play your own maps."
+    },
+    {
+      "id": "online:Sign in with a registered account to publish music.",
+      "key": "Sign in with a registered account to publish music.",
+      "source": "Sign in with a registered account to publish music."
+    },
+    {
+      "id": "online:Sign in with a registered account to save and publish custom sets.",
+      "key": "Sign in with a registered account to save and publish custom sets.",
+      "source": "Sign in with a registered account to save and publish custom sets."
+    },
+    {
+      "id": "online:Sign in with a registered account to use AI Building Studio.",
+      "key": "Sign in with a registered account to use AI Building Studio.",
+      "source": "Sign in with a registered account to use AI Building Studio."
+    },
+    {
+      "id": "online:Sign in with a registered account to use AI Map Studio.",
+      "key": "Sign in with a registered account to use AI Map Studio.",
+      "source": "Sign in with a registered account to use AI Map Studio."
+    },
+    {
+      "id": "online:Sign in with a registered account to use AI Music Studio.",
+      "key": "Sign in with a registered account to use AI Music Studio.",
+      "source": "Sign in with a registered account to use AI Music Studio."
+    },
+    {
+      "id": "online:Sign in with a registered account to use AI Terrain Studio.",
+      "key": "Sign in with a registered account to use AI Terrain Studio.",
+      "source": "Sign in with a registered account to use AI Terrain Studio."
+    },
+    {
+      "id": "online:Sign in with a registered account.",
+      "key": "Sign in with a registered account.",
+      "source": "Sign in with a registered account."
+    },
+    {
+      "id": "online:Sign in with an account to like maps.",
+      "key": "Sign in with an account to like maps.",
+      "source": "Sign in with an account to like maps."
+    },
+    {
+      "id": "online:Sign in with an account to publish maps; guests can share unlisted maps.",
+      "key": "Sign in with an account to publish maps; guests can share unlisted maps.",
+      "source": "Sign in with an account to publish maps; guests can share unlisted maps."
+    },
+    {
+      "id": "online:Sign in with an account to publish publicly.",
+      "key": "Sign in with an account to publish publicly.",
+      "source": "Sign in with an account to publish publicly."
+    },
+    {
+      "id": "online:Sign in with an account to save favourites and like AIs.",
+      "key": "Sign in with an account to save favourites and like AIs.",
+      "source": "Sign in with an account to save favourites and like AIs."
+    },
+    {
+      "id": "online:Sign in with an account to save favourites and like generators.",
+      "key": "Sign in with an account to save favourites and like generators.",
+      "source": "Sign in with an account to save favourites and like generators."
+    },
+    {
+      "id": "online:Sign in with an active account to save building drafts.",
+      "key": "Sign in with an active account to save building drafts.",
+      "source": "Sign in with an active account to save building drafts."
+    },
+    {
+      "id": "online:Sign in with an active account to save skins.",
+      "key": "Sign in with an active account to save skins.",
+      "source": "Sign in with an active account to save skins."
+    },
+    {
+      "id": "online:Sign in with an active account to use a custom skin.",
+      "key": "Sign in with an active account to use a custom skin.",
+      "source": "Sign in with an active account to use a custom skin."
+    },
+    {
+      "id": "online:Sign in with an active registered account.",
+      "key": "Sign in with an active registered account.",
+      "source": "Sign in with an active registered account."
+    },
+    {
+      "id": "online:Sign out",
+      "key": "Sign out",
+      "source": "Sign out"
+    },
+    {
+      "id": "online:Sign-in cancelled",
+      "key": "Sign-in cancelled",
+      "source": "Sign-in cancelled"
+    },
+    {
+      "id": "online:Sign-in methods",
+      "key": "Sign-in methods",
+      "source": "Sign-in methods"
+    },
+    {
+      "id": "online:Sign-in problem",
+      "key": "Sign-in problem",
+      "source": "Sign-in problem"
+    },
+    {
+      "id": "online:Sign-in was cancelled.",
+      "key": "Sign-in was cancelled.",
+      "source": "Sign-in was cancelled."
+    },
+    {
+      "id": "online:Signed in",
+      "key": "Signed in",
+      "source": "Signed in"
+    },
+    {
+      "id": "online:Signed in as",
+      "key": "Signed in as",
+      "source": "Signed in as"
+    },
+    {
+      "id": "online:Signed in as {slot0} ({slot1}). Every administrative change is recorded.",
+      "key": "Signed in as {slot0} ({slot1}). Every administrative change is recorded.",
+      "source": "Signed in as {slot0} ({slot1}). Every administrative change is recorded."
+    },
+    {
+      "id": "online:Signing in with {p0} did not work. Please try again.",
+      "key": "Signing in with {p0} did not work. Please try again.",
+      "source": "Signing in with {p0} did not work. Please try again."
+    },
+    {
+      "id": "online:Simulation {slot0}",
+      "key": "Simulation {slot0}",
+      "source": "Simulation {slot0}"
+    },
+    {
+      "id": "online:Singular {value0} camera",
+      "key": "Singular {value0} camera",
+      "source": "Singular {value0} camera"
+    },
+    {
+      "id": "online:Six brood eggs nested in a low rim.",
+      "key": "Six brood eggs nested in a low rim.",
+      "source": "Six brood eggs nested in a low rim."
+    },
+    {
+      "id": "online:Size",
+      "key": "Size",
+      "source": "Size"
+    },
+    {
+      "id": "online:Skin artwork is unavailable.",
+      "key": "Skin artwork is unavailable.",
+      "source": "Skin artwork is unavailable."
+    },
+    {
+      "id": "online:Skin artwork not found.",
+      "key": "Skin artwork not found.",
+      "source": "Skin artwork not found."
+    },
+    {
+      "id": "online:Skin collection pages",
+      "key": "Skin collection pages",
+      "source": "Skin collection pages"
+    },
+    {
+      "id": "online:Skin deleted.",
+      "key": "Skin deleted.",
+      "source": "Skin deleted."
+    },
+    {
+      "id": "online:Skin designer",
+      "key": "Skin designer",
+      "source": "Skin designer"
+    },
+    {
+      "id": "online:Skin disabled",
+      "key": "Skin disabled",
+      "source": "Skin disabled"
+    },
+    {
+      "id": "online:Skin name",
+      "key": "Skin name",
+      "source": "Skin name"
+    },
+    {
+      "id": "online:Skin not found.",
+      "key": "Skin not found.",
+      "source": "Skin not found."
+    },
+    {
+      "id": "online:Skin page not found.",
+      "key": "Skin page not found.",
+      "source": "Skin page not found."
+    },
+    {
+      "id": "online:Skin report resolutions need at most 1000 characters and disabling for a resolved report.",
+      "key": "Skin report resolutions need at most 1000 characters and disabling for a resolved report.",
+      "source": "Skin report resolutions need at most 1000 characters and disabling for a resolved report."
+    },
+    {
+      "id": "online:Skin report status",
+      "key": "Skin report status",
+      "source": "Skin report status"
+    },
+    {
+      "id": "online:Skin reports",
+      "key": "Skin reports",
+      "source": "Skin reports"
+    },
+    {
+      "id": "online:Skin shop",
+      "key": "Skin shop",
+      "source": "Skin shop"
+    },
+    {
+      "id": "online:Skin texture",
+      "key": "Skin texture",
+      "source": "Skin texture"
+    },
+    {
+      "id": "online:Skin version not found.",
+      "key": "Skin version not found.",
+      "source": "Skin version not found."
+    },
+    {
+      "id": "online:Skins",
+      "key": "Skins",
+      "source": "Skins"
+    },
+    {
+      "id": "online:Skip to content",
+      "key": "Skip to content",
+      "source": "Skip to content"
+    },
+    {
+      "id": "online:Skipped",
+      "key": "Skipped",
+      "source": "Skipped"
+    },
+    {
+      "id": "online:Small",
+      "key": "Small",
+      "source": "Small"
+    },
+    {
+      "id": "online:Solid",
+      "key": "Solid",
+      "source": "Solid"
+    },
+    {
+      "id": "online:Some results could not be displayed.",
+      "key": "Some results could not be displayed.",
+      "source": "Some results could not be displayed."
+    },
+    {
+      "id": "online:Something else",
+      "key": "Something else",
+      "source": "Something else"
+    },
+    {
+      "id": "online:Something went wrong. Please try again.",
+      "key": "Something went wrong. Please try again.",
+      "source": "Something went wrong. Please try again."
+    },
+    {
+      "id": "online:Sort",
+      "key": "Sort",
+      "source": "Sort"
+    },
+    {
+      "id": "online:Sort AIs",
+      "key": "Sort AIs",
+      "source": "Sort AIs"
+    },
+    {
+      "id": "online:Sound palette",
+      "key": "Sound palette",
+      "source": "Sound palette"
+    },
+    {
+      "id": "online:Soundtrack mood",
+      "key": "Soundtrack mood",
+      "source": "Soundtrack mood"
+    },
+    {
+      "id": "online:Source code",
+      "key": "Source code",
+      "source": "Source code"
+    },
+    {
+      "id": "online:Source identity",
+      "key": "Source identity",
+      "source": "Source identity"
+    },
+    {
+      "id": "online:Source links (one per line)",
+      "key": "Source links (one per line)",
+      "source": "Source links (one per line)"
+    },
+    {
+      "id": "online:Source set",
+      "key": "Source set",
+      "source": "Source set"
+    },
+    {
+      "id": "online:Source too large.",
+      "key": "Source too large.",
+      "source": "Source too large."
+    },
+    {
+      "id": "online:Source unavailable.",
+      "key": "Source unavailable.",
+      "source": "Source unavailable."
+    },
+    {
+      "id": "online:Speckles",
+      "key": "Speckles",
+      "source": "Speckles"
+    },
+    {
+      "id": "online:Spot size",
+      "key": "Spot size",
+      "source": "Spot size"
+    },
+    {
+      "id": "online:Spots",
+      "key": "Spots",
+      "source": "Spots"
+    },
+    {
+      "id": "online:Spread rate",
+      "key": "Spread rate",
+      "source": "Spread rate"
+    },
+    {
+      "id": "online:Sprite key",
+      "key": "Sprite key",
+      "source": "Sprite key"
+    },
+    {
+      "id": "online:Sprite manifest",
+      "key": "Sprite manifest",
+      "source": "Sprite manifest"
+    },
+    {
+      "id": "online:Sprite manifest JSON",
+      "key": "Sprite manifest JSON",
+      "source": "Sprite manifest JSON"
+    },
+    {
+      "id": "online:Spritesheet",
+      "key": "Spritesheet",
+      "source": "Spritesheet"
+    },
+    {
+      "id": "online:Spritesheets",
+      "key": "Spritesheets",
+      "source": "Spritesheets"
+    },
+    {
+      "id": "online:Stable key",
+      "key": "Stable key",
+      "source": "Stable key"
+    },
+    {
+      "id": "online:Stage",
+      "key": "Stage",
+      "source": "Stage"
+    },
+    {
+      "id": "online:Stage details are not available for this version.",
+      "key": "Stage details are not available for this version.",
+      "source": "Stage details are not available for this version."
+    },
+    {
+      "id": "online:Stage details could not be loaded.",
+      "key": "Stage details could not be loaded.",
+      "source": "Stage details could not be loaded."
+    },
+    {
+      "id": "online:Start a project",
+      "key": "Start a project",
+      "source": "Start a project"
+    },
+    {
+      "id": "online:Start building an AI ↗",
+      "key": "Start building an AI ↗",
+      "source": "Start building an AI ↗"
+    },
+    {
+      "id": "online:Start fresh",
+      "key": "Start fresh",
+      "source": "Start fresh"
+    },
+    {
+      "id": "online:Start from a preset",
+      "key": "Start from a preset",
+      "source": "Start from a preset"
+    },
+    {
+      "id": "online:Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.",
+      "key": "Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.",
+      "source": "Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite."
+    },
+    {
+      "id": "online:Starting",
+      "key": "Starting",
+      "source": "Starting"
+    },
+    {
+      "id": "online:Starting the game…",
+      "key": "Starting the game…",
+      "source": "Starting the game…"
+    },
+    {
+      "id": "online:Starting workers",
+      "key": "Starting workers",
+      "source": "Starting workers"
+    },
+    {
+      "id": "online:Statistic",
+      "key": "Statistic",
+      "source": "Statistic"
+    },
+    {
+      "id": "online:Status",
+      "key": "Status",
+      "source": "Status"
+    },
+    {
+      "id": "online:Status: {slot0}",
+      "key": "Status: {slot0}",
+      "source": "Status: {slot0}"
+    },
+    {
+      "id": "online:Status: {slot0} · Created {slot1}{slot2}",
+      "key": "Status: {slot0} · Created {slot1}{slot2}",
+      "source": "Status: {slot0} · Created {slot1}{slot2}"
+    },
+    {
+      "id": "online:Still JPEG, PNG or WebP · up to 10 MiB and 25 megapixels. Choosing Gravatar or initials removes your uploaded photo.",
+      "key": "Still JPEG, PNG or WebP · up to 10 MiB and 25 megapixels. Choosing Gravatar or initials removes your uploaded photo.",
+      "source": "Still JPEG, PNG or WebP · up to 10 MiB and 25 megapixels. Choosing Gravatar or initials removes your uploaded photo."
+    },
+    {
+      "id": "online:Stock levels",
+      "key": "Stock levels",
+      "source": "Stock levels"
+    },
+    {
+      "id": "online:Stop game",
+      "key": "Stop game",
+      "source": "Stop game"
+    },
+    {
+      "id": "online:Stop preview",
+      "key": "Stop preview",
+      "source": "Stop preview"
+    },
+    {
+      "id": "online:Stop request",
+      "key": "Stop request",
+      "source": "Stop request"
+    },
+    {
+      "id": "online:Stop transition preview",
+      "key": "Stop transition preview",
+      "source": "Stop transition preview"
+    }
+  ]
+}

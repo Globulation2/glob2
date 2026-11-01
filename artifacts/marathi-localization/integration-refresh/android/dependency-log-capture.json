@@ -1,0 +1,36 @@
+{
+  "source": "/tmp/glob2-dependency-p7ogeqr7",
+  "scope": "Only task-owned recording temporary staging",
+  "compressed_byte_cap": 8388608,
+  "source_file_byte_cap": 4194304,
+  "files": {
+    "sources/x264-build/build.log": {
+      "bytes": 21387,
+      "sha256": "4db1e825cd29862b1bde1e3c76b193b45d5e9637c5ae8a768c68826f5411e200",
+      "compressed_bytes": 2409,
+      "snapshot_complete_file": true
+    },
+    "sources/x264-build/config.log": {
+      "bytes": 7806,
+      "sha256": "6913557923c16e58c1c743a4d71122fe24225002f75a164ea9f780a33b20dc88",
+      "compressed_bytes": 1995,
+      "snapshot_complete_file": true
+    },
+    "sources/ffmpeg-build/build.log": {
+      "bytes": 17112,
+      "sha256": "d3ac4054571f76f4e5b703b0605c91bac6d2689282e91a2878e87ab0093cbfbe",
+      "compressed_bytes": 3940,
+      "snapshot_complete_file": true
+    },
+    "sources/ffmpeg-build/ffbuild/config.log": {
+      "bytes": 609006,
+      "sha256": "63f57082c88bedacd1cdcc278e42209ac0f5c98faca341e389f1c3c8a9a1487a",
+      "compressed_bytes": 94009,
+      "snapshot_complete_file": true
+    }
+  },
+  "omitted": {},
+  "last_snapshot_compressed_bytes": 102353,
+  "temporary_staging_removed": true,
+  "snapshot_scope": "Complete file bytes at last bounded snapshot, not a claim of final subprocess log completeness. Official staging is automatically removed after publishing."
+}

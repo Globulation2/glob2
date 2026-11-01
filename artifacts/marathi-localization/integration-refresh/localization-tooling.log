@@ -1,0 +1,35 @@
+EEE
+======================================================================
+ERROR: test_google_draft (unittest.loader._FailedTest.test_google_draft)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_google_draft
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.test_google_draft'
+
+
+======================================================================
+ERROR: build_system (unittest.loader._FailedTest.build_system)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: build_system
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.build_system'
+
+
+======================================================================
+ERROR: test_gog_release (unittest.loader._FailedTest.test_gog_release)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_gog_release
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.test_gog_release'
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+FAILED (errors=3)

@@ -1,0 +1,19 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T04:49:32.580155+00:00",
+  "producer": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "native_catalog_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+  "signed_and_installed_apk_sha256": "b0d77346e3223bbdae2ce6f85baa8c120e437d50c4caf8b35ebafafefdab7be2",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/startup.png",
+      "sha256": "07d87058cbe315e711730e08c7ec93c3d56a138e7d374021448cff1a3b274013"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/settings.png",
+      "sha256": "ba114cee1f9811d65dfade5738c34bd84095b56d5301ae7529406de47d7a8c57"
+    }
+  ],
+  "observations": "Actually viewed current main menu and display/settings at390x844. Conjuncts/matras clear; all visible labels and descriptions fit. Settings paragraphs wrap cleanly, menu uses normal scrolling, confirmation button text fits. No tofu or clipping observed. This root review covers only the two named frames; it does not independently claim viewing all lifecycle/gameplay frames.",
+  "findings": []
+}

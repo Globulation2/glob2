@@ -1,0 +1,14 @@
+{
+  "revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "finding": "Release SCons installs catalogs directly from tracked platform/packages/i18n/locales/*.json; static packaging checks its complete canonical catalog inventory. Generated ignored browser/locales/mr.json is not required as a release input.",
+  "source_references": {
+    "scons/web_build.py": 384,
+    "browser/package-static.py": 25
+  },
+  "sha256": {
+    "scons/web_build.py": "4fd387cf50a7b26b294ab3acba2d3b9b9ef3f2ddc253438045ff5bceea22e295",
+    "browser/package-static.py": "8fbbfb4f9d6e019effc5556f13c1c12cc98efa6ca6ce6fcb4112fd4905ecbee3",
+    "platform/packages/i18n/locales/mr.json": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+    "browser/i18n.js": "ef1cafb103446eb76ef7c95d9ea1fc41b53ba3dec8f5e85972da333ed0905be4"
+  }
+}

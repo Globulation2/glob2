@@ -1,0 +1,80 @@
+{
+  "reviewer": "/root/locale_integration",
+  "role": "native Marathi editorial and Android visual QA",
+  "source_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "unsigned_apk_sha256": "acfa7ddf22bef8e2fdf78e39c0a2268e4bb902011fa87aa2576987549081af0c",
+  "signed_and_installed_apk_sha256": "b0d77346e3223bbdae2ce6f85baa8c120e437d50c4caf8b35ebafafefdab7be2",
+  "native_catalog_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/first-run-AudioPreferenceScreen.png",
+      "sha256": "ea966978e742ae8f495e41d613628a03c038be987256ed85f7bfeca3e723dac5"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/first-run-HandPreferenceScreen.png",
+      "sha256": "d34ad9ce19fbde3b71a7203051f172aaccee559629b25ef2f1c2b06bc18a1b91"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/introduction-offer.png",
+      "sha256": "4b5d6d41ddd42083ad9782684b55cd40431836b06b1de43bb4cd9b6115e6d26b"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/startup.png",
+      "sha256": "07d87058cbe315e711730e08c7ec93c3d56a138e7d374021448cff1a3b274013"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/settings.png",
+      "sha256": "ba114cee1f9811d65dfade5738c34bd84095b56d5301ae7529406de47d7a8c57"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/resumed.png",
+      "sha256": "36c0586e26232544b1c85e6d4f0b43f8c94c2a75e1a534cfcd8a8a99e7541591"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/rotation-1.png",
+      "sha256": "c5e8177555903250e25d8751960358b59ef08ded90cdb47956f0b3fca36cd266"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/rotation-0.png",
+      "sha256": "965d12af6b30ad75beab10005eec8ff7cc4f883fba27cda861b514f59752376e"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/lifecycle/relaunched.png",
+      "sha256": "c7bac22db2cf5c44a3d5178d50c8ad3ae4d1b24cf3fdcfea8a51fe271daf24a0"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/first-run-00.png",
+      "sha256": "c8b733a1fe7f900ab172107551c3883f043f92094c22733b3afbe64e7fcb1f9e"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/first-run-09.png",
+      "sha256": "0dbbd091fadedc311363f8d803eb8f30a8dd5950f8fdd63e8c480380ef7c2b3b"
+    }
+  ],
+  "assessment": "Actual current Java preparing overlay, native first-run audio/hand/introduction, main menu, display settings, resumed portrait, landscape/portrait orientation and fresh-process relaunched menu were independently viewed. Devanagari conjuncts and matras are shaped, text wraps within panels/buttons, and no tofu or text clipping was observed. The portrait main menu scrolls normally; its labels are fully rendered. Android splash logo frame00 is startup-only and contains no Marathi claim.",
+  "lifecycle_result_sha256": "0811594ab7770163a9c198fbe2cf7f77c58e4cf5c43506c68927c9a009df746f",
+  "lifecycle_checks": {
+    "serial": "emulator-5678",
+    "avd": "glob2-api35-x64",
+    "checks": [
+      "native startup and bundled assets",
+      "settings input and dismissal",
+      "mr-IN system locale selects and saves native mr catalog",
+      "retained-process background/resume",
+      "landscape/portrait rotation",
+      "force-stop and fresh-process relaunch",
+      "application profile persistence"
+    ],
+    "passed": true
+  },
+  "limits": [
+    "API35 x86_64 task-owned emulator, not physical Android hardware",
+    "Boot SystemUI ANR captured and recovered before current APK install; excluded from product success evidence"
+  ],
+  "status": "accepted current overlay, native menus/preferences/settings/lifecycle and bounded current tutorial/HUD rendering",
+  "hud_visual_review": {
+    "path": "artifacts/marathi-localization/integration-refresh/android/hud/visual-review.json",
+    "sha256": "604294ffbee28fcb04e967639c01a255d3092eb1567d41cbdd37947e3753aa84"
+  }
+}

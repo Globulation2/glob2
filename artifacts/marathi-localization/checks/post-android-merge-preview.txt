@@ -1,0 +1,8 @@
+ea790191bf0b9a346cfc22ad20da7c7b88bb6f72
+100644 90983e26b6d5f995fed1c975102a72c500c49e87 1	data/texts.incomplete.txt
+100644 5683e946aec8566c39d77c69c329c34ce35c690e 2	data/texts.incomplete.txt
+100644 91fef97ecf43cd30b56bdcb1562af8dc17975313 3	data/texts.incomplete.txt
+
+Auto-merging SConstruct
+Auto-merging data/texts.incomplete.txt
+CONFLICT (content): Merge conflict in data/texts.incomplete.txt

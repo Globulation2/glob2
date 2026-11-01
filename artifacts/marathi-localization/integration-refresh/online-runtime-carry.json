@@ -1,0 +1,42 @@
+{
+  "previous_producer": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "integrated_head": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "scope": "Previous Chromium/Firefox/WebKit website runtime evidence retained under its actual producer. Exact source/dependency inventories below allow unchanged website behavior carry; this does not establish current native/browser-game runtime.",
+  "inventories": [
+    {
+      "path": "platform/apps/web",
+      "old_git_listing_sha256": "a3a95196c391c26f8a9e728a03dd28cb719cf472f7f8fc50c313ac18e4f4465c",
+      "new_git_listing_sha256": "a3a95196c391c26f8a9e728a03dd28cb719cf472f7f8fc50c313ac18e4f4465c",
+      "exact_git_blob_inventory_identical": true
+    },
+    {
+      "path": "platform/packages/i18n",
+      "old_git_listing_sha256": "e87a66e2a8d57e780e0fd92ea1658450722eb8bbce72a0a8481f9f8634478159",
+      "new_git_listing_sha256": "e87a66e2a8d57e780e0fd92ea1658450722eb8bbce72a0a8481f9f8634478159",
+      "exact_git_blob_inventory_identical": true
+    },
+    {
+      "path": "platform/apps/api",
+      "old_git_listing_sha256": "8fad9f2d70ba87a9d85a5193aac9ab858a4265c9ca47ee278a004b1cf683527a",
+      "new_git_listing_sha256": "8fad9f2d70ba87a9d85a5193aac9ab858a4265c9ca47ee278a004b1cf683527a",
+      "exact_git_blob_inventory_identical": true
+    },
+    {
+      "path": "platform/package.json",
+      "old_git_listing_sha256": "9c20f589f7a1bb6862748a90fae8e1c265aef8fdca02fbeca2795caba33edd6e",
+      "new_git_listing_sha256": "9c20f589f7a1bb6862748a90fae8e1c265aef8fdca02fbeca2795caba33edd6e",
+      "exact_git_blob_inventory_identical": true
+    },
+    {
+      "path": "platform/package-lock.json",
+      "old_git_listing_sha256": "e05eb296fcd797e6f0fb451b91011bc15a38356ce1aa20d11b096d650cdf79f5",
+      "new_git_listing_sha256": "e05eb296fcd797e6f0fb451b91011bc15a38356ce1aa20d11b096d650cdf79f5",
+      "exact_git_blob_inventory_identical": true
+    }
+  ],
+  "entire_platform_inventory": {
+    "old_git_listing_sha256": "fd10f0d50c5df2488f56471ae99ec8dbfd00a214845c334ec59fe13c399ddc0e",
+    "new_git_listing_sha256": "fd10f0d50c5df2488f56471ae99ec8dbfd00a214845c334ec59fe13c399ddc0e",
+    "exact_git_blob_inventory_identical": true
+  }
+}

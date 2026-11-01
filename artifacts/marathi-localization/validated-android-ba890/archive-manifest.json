@@ -1,0 +1,73 @@
+{
+  "validated_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "producer_history": {
+    "initial": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+    "intermediate": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+    "official_final": "ba890db53e67617fb3cb1033c157ca578781196e"
+  },
+  "byte_cap": 2147483648,
+  "archive_bytes": 626630485,
+  "free_space_floor": 10737418240,
+  "outputs": [
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ba890/app-release-unsigned.apk",
+      "sha256": "b2be7a19831e9c1bed3b906b0dd99f56cd887cb14f2d30d10793b47a324e044f",
+      "bytes": 208207672,
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ba890/app-release-development.apk",
+      "sha256": "71c047ec0b5d045c5a29257679accdc637656a1a0ab9687114d1a6b2dd66f2f2",
+      "bytes": 208866461,
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ba890/app-release-unsigned.symbols.json",
+      "sha256": "a625025f8fe1a061d5f07464fe6d1bae43ddf31d54f8aaf701d361028a357552",
+      "bytes": 89,
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.json",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ba890/app-release-development.json",
+      "sha256": "6b4ec0bf259fc4f29f076cb58b6109af45ab02a46e2452e857997826c6cea865",
+      "bytes": 179,
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/lib/libmain.so",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ba890/libmain.so.gz",
+      "original_sha256": "a0a05eeaa6c6fa89bc734faab3cf09b9f3ee663ff258f5acc3e0507315fadd50",
+      "original_bytes": 772864520,
+      "archive_sha256": "c7004730ad53e48c97a72b0295865d7a1cde5faf1e9d1abeb2cebde24096fd1d",
+      "bytes": 209307509,
+      "encoding": "gzip lossless; mtime0"
+    }
+  ],
+  "proof_file_sha256": {
+    "android-final-producer-provenance.json": "6b0e5f542e1d92d4039cc03e3ab3e289472d00d9c5a5818ae942dfe1d6679fba",
+    "android-initial-producer-provenance.json": "02f2563b250ceb591c39f151dd3b3426530b5d8004794fa6c4cc9070f5fa6887",
+    "android-final-head-approval.json": "882897365ece5b7a3b4485162b9d0b6a0a86dce0c3c220a29d81bf32092535dd",
+    "android-object-inputs-before-final.json": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f",
+    "android-object-inputs-after-final.json": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f",
+    "android-evidence-gate-recommendation.json": "91bc27214beb3ce7394b88ffd3bf4eaa2de80b47ea44586d3c16bb237f099162",
+    "android-runtime-cleanup.json": "122289be16389c4b89c37c92185860785efdd7e1740ed839b7efea5d194318fa",
+    "android-final-visual-review.json": "a2ad45f4c63b1afdbb7c9051327ea525325478077211ebf7b09b9b7f4bc7f2e6",
+    "android-overlay-visual-review.json": "558e752369452659002971bd45a0419307dc1992e0ba9d42ea876175ff59465c",
+    "android-smoke-adaptation.json": "1825a28a914179a8e1cd01d3af9559c5fb85b775e3af8716d41f2a22c75d7f88",
+    "apk-and-install.json": "7c437d555e7bd02f9ed473fcd880f5c621365b57cf4b962cf3c30c385e7d22bd",
+    "lifecycle-result.json": "0811594ab7770163a9c198fbe2cf7f77c58e4cf5c43506c68927c9a009df746f"
+  },
+  "evidence_directories_retained_in_place": [
+    "android-rendering",
+    "android-attempt1-system-ui-anr"
+  ],
+  "preservation_notes": [
+    "Existing old-scope evidence remains intact and is not relabeled as the future integrated producer.",
+    "Original working build paths may be reused by official incremental builds; archived files preserve validated old bytes.",
+    "AVD files remain in place; future task-owned runtime tests may reuse that AVD, without deleting its files."
+  ]
+}

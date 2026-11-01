@@ -1,0 +1,509 @@
+{
+  "id": "native-general-025",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[library By %0]",
+      "key": "[library By %0]",
+      "source": "By %0"
+    },
+    {
+      "id": "native:[library Installed release %0]",
+      "key": "[library Installed release %0]",
+      "source": "Installed release %0"
+    },
+    {
+      "id": "native:[library Release %0]",
+      "key": "[library Release %0]",
+      "source": "Release %0"
+    },
+    {
+      "id": "native:[library Remove %0]",
+      "key": "[library Remove %0]",
+      "source": "Remove %0"
+    },
+    {
+      "id": "native:[library Seed: %0]",
+      "key": "[library Seed: %0]",
+      "source": "Seed: %0"
+    },
+    {
+      "id": "native:[library %0 · revision %1]",
+      "key": "[library %0 · revision %1]",
+      "source": "%0 · revision %1"
+    },
+    {
+      "id": "native:[library Fit]",
+      "key": "[library Fit]",
+      "source": "Fit"
+    },
+    {
+      "id": "native:[library GL only]",
+      "key": "[library GL only]",
+      "source": "GL only"
+    },
+    {
+      "id": "native:[Sound or silence?]",
+      "key": "[Sound or silence?]",
+      "source": "Sound or silence?"
+    },
+    {
+      "id": "native:[Silence]",
+      "key": "[Silence]",
+      "source": "Silence"
+    },
+    {
+      "id": "native:[Sound]",
+      "key": "[Sound]",
+      "source": "Sound"
+    },
+    {
+      "id": "native:[audio preference explanation]",
+      "key": "[audio preference explanation]",
+      "source": "The game starts quietly. Would you like silence, or music and game audio?"
+    },
+    {
+      "id": "native:[audio preference change later]",
+      "key": "[audio preference change later]",
+      "source": "You can change this anytime in Settings → Audio."
+    },
+    {
+      "id": "native:[audio preference save failed]",
+      "key": "[audio preference save failed]",
+      "source": "Your choice could not be saved. Audio is still off. Please try again."
+    },
+    {
+      "id": "native:[audio choices description]",
+      "key": "[audio choices description]",
+      "source": "Silence: a muted speaker. Sound: a speaker with sound waves."
+    },
+    {
+      "id": "native:[intro menu]",
+      "key": "[intro menu]",
+      "source": "Introduction"
+    },
+    {
+      "id": "native:[intro briefing]",
+      "key": "[intro briefing]",
+      "source": "Learn indirect control: scout with a flag, supply your colony, and direct an attack."
+    },
+    {
+      "id": "native:[intro try]",
+      "key": "[intro try]",
+      "source": "Start introduction"
+    },
+    {
+      "id": "native:[intro preflight]",
+      "key": "[intro preflight]",
+      "source": "Your globules act on their own. You choose their jobs through buildings and flags. In this short introduction, scout a landmark, expand food supply, grow your workforce, and direct a small attack."
+    },
+    {
+      "id": "native:[intro preflight save]",
+      "key": "[intro preflight save]",
+      "source": "Allow about 10 minutes. You can save from the game menu and resume through Load game. Normal hunger and combat rules apply. Choose Tutorial lessons from the main menu to practice more skills."
+    },
+    {
+      "id": "native:[intro preference failed]",
+      "key": "[intro preference failed]",
+      "source": "Your choice could not be saved. You can continue playing; this recommendation may appear again next time."
+    },
+    {
+      "id": "native:[intro goal scout]",
+      "key": "[intro goal scout]",
+      "source": "Scout the stone landmark"
+    },
+    {
+      "id": "native:[intro goal build]",
+      "key": "[intro goal build]",
+      "source": "Build another Inn"
+    },
+    {
+      "id": "native:[intro goal supply]",
+      "key": "[intro goal supply]",
+      "source": "Supply your new Inn"
+    },
+    {
+      "id": "native:[intro goal grow]",
+      "key": "[intro goal grow]",
+      "source": "Grow the workforce"
+    },
+    {
+      "id": "native:[intro goal attack]",
+      "key": "[intro goal attack]",
+      "source": "Destroy the enemy Swarm"
+    },
+    {
+      "id": "native:[intro instruction scout]",
+      "key": "[intro instruction scout]",
+      "source": "Open Flags and place an Exploration Flag over the stone patch east of your colony. Assign one explorer. Watch it travel to the flag."
+    },
+    {
+      "id": "native:[intro instruction build]",
+      "key": "[intro instruction build]",
+      "source": "Open Build and place an Inn near wheat. Assign available workers to construct it. Leave your existing Inn supplied."
+    },
+    {
+      "id": "native:[intro instruction supply]",
+      "key": "[intro instruction supply]",
+      "source": "Select your finished new Inn and give it at least one supplier. Wait for a worker to deliver wheat."
+    },
+    {
+      "id": "native:[intro instruction grow]",
+      "key": "[intro instruction grow]",
+      "source": "Select the Swarm. Set its worker target to at least 2, and its production ratios to workers only. Keep both Inns supplied while a new worker is born."
+    },
+    {
+      "id": "native:[intro instruction attack]",
+      "key": "[intro instruction attack]",
+      "source": "Find the enemy Swarm farther east. Use a War Flag to direct your warriors against it. Help is available if you need a reminder."
+    },
+    {
+      "id": "native:[intro help]",
+      "key": "[intro help]",
+      "source": "Help / why?"
+    },
+    {
+      "id": "native:[intro help scout]",
+      "key": "[intro help scout]",
+      "source": "Use the minimap to move the view east and find the stone patch. Choose Exploration Flag in Flags, place it on the stone, then leave placement with the secondary mouse button. Select the flag and request 1 explorer. Flags request units; they do not move them instantly. Explorers may stop to eat."
+    },
+    {
+      "id": "native:[intro help build]",
+      "key": "[intro help build]",
+      "source": "Construction consumes wood delivered by workers. Choose Inn from the building controls (the building palette), place it in clear ground near wheat, and request 2 builders. A worker target is a request, not a count of workers already present. Keep suppliers at your existing Inn and Swarm. Any valid location counts."
+    },
+    {
+      "id": "native:[intro help supply]",
+      "key": "[intro help supply]",
+      "source": "Construction and everyday supply have separate worker targets. Select the finished Inn and increase its operating target. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers will eventually run out. Keep the wheat patch accessible."
+    },
+    {
+      "id": "native:[intro help grow]",
+      "key": "[intro help grow]",
+      "source": "The Swarm consumes wheat to produce units. Set worker production to 1 and explorer and warrior production to 0. Increase the Swarm worker target to 2 or more. More suppliers can deliver wheat faster, but they compete with other jobs. Maintain food supply at both Inns."
+    },
+    {
+      "id": "native:[intro help attack]",
+      "key": "[intro help attack]",
+      "source": "Open Flags, choose War Flag, and place it over the enemy Swarm east of the stone. Select the flag and request up to 4 warriors. A small radius keeps them concentrated. Leave placement with the secondary mouse button before selecting the flag. If no warriors remain, produce more at the Swarm. Warriors may stop to eat; keep the Inns supplied."
+    },
+    {
+      "id": "native:[intro hint scout]",
+      "key": "[intro hint scout]",
+      "source": "Your explorer needs an assigned Exploration Flag at the eastern stone patch. Check its target and explorer count."
+    },
+    {
+      "id": "native:[intro hint build]",
+      "key": "[intro hint build]",
+      "source": "If you removed the new Inn, build another. Otherwise check the construction site and its worker target. Existing supply jobs may occupy your workers; keep food running while making builders available."
+    },
+    {
+      "id": "native:[intro hint supply]",
+      "key": "[intro hint supply]",
+      "source": "Select the finished new Inn. Check its worker target and watch for wheat deliveries. Workers may need time to travel or eat."
+    },
+    {
+      "id": "native:[intro hint grow]",
+      "key": "[intro hint grow]",
+      "source": "Check Swarm supply and worker-only production. Keep the Inns supplied while waiting for another worker."
+    },
+    {
+      "id": "native:[intro hint attack]",
+      "key": "[intro hint attack]",
+      "source": "Check your War Flag, requested warrior count, and food supply. Your warriors need time to travel and attack."
+    },
+    {
+      "id": "native:[intro hint no suppliers]",
+      "key": "[intro hint no suppliers]",
+      "source": "Your new Inn or building site has a worker target of 0. Select it and request workers."
+    },
+    {
+      "id": "native:[intro hint retry]",
+      "key": "[intro hint retry]",
+      "source": "A unit or building needed for this lesson has been lost. Load an earlier save or restart this lesson from the game menu."
+    },
+    {
+      "id": "native:[intro complete]",
+      "key": "[intro complete]",
+      "source": "Introduction complete"
+    },
+    {
+      "id": "native:[intro complete body]",
+      "key": "[intro complete body]",
+      "source": "You directed autonomous globules, expanded food supply, grew the colony, and organized an attack. Continue with Tutorial lessons for training, upgrades, and defense, or return to the main menu to start a match."
+    },
+    {
+      "id": "native:[intro play again]",
+      "key": "[intro play again]",
+      "source": "Play again"
+    },
+    {
+      "id": "native:[intro restart]",
+      "key": "[intro restart]",
+      "source": "Restart introduction"
+    },
+    {
+      "id": "native:[intro restart body]",
+      "key": "[intro restart body]",
+      "source": "Restart from the prepared colony? Unsaved progress in this introduction will be lost."
+    },
+    {
+      "id": "native:[intro help touch scout]",
+      "key": "[intro help touch scout]",
+      "source": "Drag empty ground to move the view before placing a flag. Find the stone patch east of the colony. Open Flags, choose Exploration Flag, place it on the stone and confirm. Select the flag and request 1 explorer using its assigned-unit target. Globules travel on their own and may stop to eat."
+    },
+    {
+      "id": "native:[intro help touch build]",
+      "key": "[intro help touch build]",
+      "source": "Choose Inn from Build. Place it in clear ground near wheat and confirm. Select the site and request 2 builders. A worker target is a request, not a count of workers already present. Keep the existing Inn and Swarm supplied. Any valid location counts."
+    },
+    {
+      "id": "native:[intro help touch supply]",
+      "key": "[intro help touch supply]",
+      "source": "Select the finished new Inn and increase its assigned-worker target. Construction and everyday supply have separate targets. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers eventually runs out. Keep the wheat accessible."
+    },
+    {
+      "id": "native:[intro help touch grow]",
+      "key": "[intro help touch grow]",
+      "source": "Select the Swarm. Set worker production to 1 and explorer and warrior production to 0. Increase its assigned-worker target to 2 or more. Suppliers bring wheat for new units, but they compete with other jobs. Keep both Inns supplied."
+    },
+    {
+      "id": "native:[intro help touch attack]",
+      "key": "[intro help touch attack]",
+      "source": "Open Flags, choose War Flag, place it over the enemy Swarm east of the stone and confirm. Select the flag and request up to 4 warriors. A small radius concentrates them. If none remain, produce warriors at your Swarm. Warriors may stop to eat; keep the Inns supplied."
+    },
+    {
+      "id": "native:[intro show destination]",
+      "key": "[intro show destination]",
+      "source": "Show destination"
+    },
+    {
+      "id": "native:[intro scout destination]",
+      "key": "[intro scout destination]",
+      "source": "Scout here"
+    },
+    {
+      "id": "native:[intro compact scout]",
+      "key": "[intro compact scout]",
+      "source": "Flags → Exploration Flag. Place it on the stone; assign 1 explorer."
+    },
+    {
+      "id": "native:[intro compact build]",
+      "key": "[intro compact build]",
+      "source": "Build → Inn. Place near wheat; assign 2 builders."
+    },
+    {
+      "id": "native:[intro compact supply]",
+      "key": "[intro compact supply]",
+      "source": "Select your new Inn; assign at least 1 supplier. Wait for wheat."
+    },
+    {
+      "id": "native:[intro compact grow]",
+      "key": "[intro compact grow]",
+      "source": "Select the Swarm; assign 2 suppliers. Produce workers only."
+    },
+    {
+      "id": "native:[intro compact attack]",
+      "key": "[intro compact attack]",
+      "source": "Flags → War Flag. Place over the enemy Swarm; assign warriors."
+    },
+    {
+      "id": "native:[lesson healing title]",
+      "key": "[lesson healing title]",
+      "source": "Hospitals and healing"
+    },
+    {
+      "id": "native:[lesson healing briefing]",
+      "key": "[lesson healing briefing]",
+      "source": "Build a Hospital and help a wounded worker recover. The colony starts fed, with one injured worker."
+    },
+    {
+      "id": "native:[lesson healing complete]",
+      "key": "[lesson healing complete]",
+      "source": "Your Hospital restored an injured globule. Keep Inns supplied: hunger can injure units again."
+    },
+    {
+      "id": "native:[lesson healing build hint]",
+      "key": "[lesson healing build hint]",
+      "source": "Build a Hospital in clear ground; assign 2 builders. Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed."
+    },
+    {
+      "id": "native:[lesson healing build title]",
+      "key": "[lesson healing build title]",
+      "source": "Build a Hospital"
+    },
+    {
+      "id": "native:[lesson healing build instruction]",
+      "key": "[lesson healing build instruction]",
+      "source": "Build a Hospital in clear ground; assign 2 builders."
+    },
+    {
+      "id": "native:[lesson healing build help]",
+      "key": "[lesson healing build help]",
+      "source": "Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed."
+    },
+    {
+      "id": "native:[lesson healing build marker]",
+      "key": "[lesson healing build marker]",
+      "source": "Build a Hospital"
+    },
+    {
+      "id": "native:[lesson healing heal hint]",
+      "key": "[lesson healing heal hint]",
+      "source": "Keep the Hospital accessible. Watch the injured worker recover. Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save."
+    },
+    {
+      "id": "native:[lesson healing heal title]",
+      "key": "[lesson healing heal title]",
+      "source": "Let the patient recover"
+    },
+    {
+      "id": "native:[lesson healing heal instruction]",
+      "key": "[lesson healing heal instruction]",
+      "source": "Keep the Hospital accessible. Watch the injured worker recover."
+    },
+    {
+      "id": "native:[lesson healing heal help]",
+      "key": "[lesson healing heal help]",
+      "source": "Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save."
+    },
+    {
+      "id": "native:[lesson healing heal marker]",
+      "key": "[lesson healing heal marker]",
+      "source": "Let the patient recover"
+    },
+    {
+      "id": "native:[lesson walking-training title]",
+      "key": "[lesson walking-training title]",
+      "source": "Walking training"
+    },
+    {
+      "id": "native:[lesson walking-training briefing]",
+      "key": "[lesson walking-training briefing]",
+      "source": "Build a Racetrack and observe an existing worker learn to walk faster."
+    },
+    {
+      "id": "native:[lesson walking-training complete]",
+      "key": "[lesson walking-training complete]",
+      "source": "Your workers learned faster walking. Training improves the workers you have; it does not replace the colony food supply."
+    },
+    {
+      "id": "native:[lesson walking-training build hint]",
+      "key": "[lesson walking-training build hint]",
+      "source": "Build a Racetrack in the marked clearing; assign builders. A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion."
+    },
+    {
+      "id": "native:[lesson walking-training build title]",
+      "key": "[lesson walking-training build title]",
+      "source": "Build a Racetrack"
+    },
+    {
+      "id": "native:[lesson walking-training build instruction]",
+      "key": "[lesson walking-training build instruction]",
+      "source": "Build a Racetrack in the marked clearing; assign builders."
+    },
+    {
+      "id": "native:[lesson walking-training build help]",
+      "key": "[lesson walking-training build help]",
+      "source": "A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion."
+    },
+    {
+      "id": "native:[lesson walking-training build marker]",
+      "key": "[lesson walking-training build marker]",
+      "source": "Build a Racetrack"
+    },
+    {
+      "id": "native:[lesson walking-training train hint]",
+      "key": "[lesson walking-training train hint]",
+      "source": "Keep the Racetrack accessible and let a worker finish training. Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked."
+    },
+    {
+      "id": "native:[lesson walking-training train title]",
+      "key": "[lesson walking-training train title]",
+      "source": "Train an existing worker"
+    },
+    {
+      "id": "native:[lesson walking-training train instruction]",
+      "key": "[lesson walking-training train instruction]",
+      "source": "Keep the Racetrack accessible and let a worker finish training."
+    },
+    {
+      "id": "native:[lesson walking-training train help]",
+      "key": "[lesson walking-training train help]",
+      "source": "Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked."
+    },
+    {
+      "id": "native:[lesson swimming title]",
+      "key": "[lesson swimming title]",
+      "source": "Swimming and water resources"
+    },
+    {
+      "id": "native:[lesson swimming briefing]",
+      "key": "[lesson swimming briefing]",
+      "source": "Train swimmers, then use algae from the pond to construct a School."
+    },
+    {
+      "id": "native:[lesson swimming complete]",
+      "key": "[lesson swimming complete]",
+      "source": "A swimmer delivered water resources for your School. Water access expands the jobs your colony can perform."
+    },
+    {
+      "id": "native:[lesson swimming build hint]",
+      "key": "[lesson swimming build hint]",
+      "source": "Build a Swimming Pool west of the pond; assign builders. Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim."
+    },
+    {
+      "id": "native:[lesson swimming build title]",
+      "key": "[lesson swimming build title]",
+      "source": "Build a Swimming Pool"
+    },
+    {
+      "id": "native:[lesson swimming build instruction]",
+      "key": "[lesson swimming build instruction]",
+      "source": "Build a Swimming Pool west of the pond; assign builders."
+    },
+    {
+      "id": "native:[lesson swimming build help]",
+      "key": "[lesson swimming build help]",
+      "source": "Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim."
+    },
+    {
+      "id": "native:[lesson swimming build marker]",
+      "key": "[lesson swimming build marker]",
+      "source": "Build a Swimming Pool"
+    },
+    {
+      "id": "native:[lesson swimming train hint]",
+      "key": "[lesson swimming train hint]",
+      "source": "Let an existing worker finish swimming training. Units choose training automatically. Keep supply running and allow free workers to reach the pool."
+    },
+    {
+      "id": "native:[lesson swimming train title]",
+      "key": "[lesson swimming train title]",
+      "source": "Train a swimmer"
+    },
+    {
+      "id": "native:[lesson swimming train instruction]",
+      "key": "[lesson swimming train instruction]",
+      "source": "Let an existing worker finish swimming training."
+    },
+    {
+      "id": "native:[lesson swimming train help]",
+      "key": "[lesson swimming train help]",
+      "source": "Units choose training automatically. Keep supply running and allow free workers to reach the pool."
+    },
+    {
+      "id": "native:[lesson swimming water-job hint]",
+      "key": "[lesson swimming water-job hint]",
+      "source": "Build a School near the colony; assign builders to fetch wood and algae. The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers."
+    },
+    {
+      "id": "native:[lesson swimming water-job title]",
+      "key": "[lesson swimming water-job title]",
+      "source": "Use algae from the pond"
+    }
+  ]
+}

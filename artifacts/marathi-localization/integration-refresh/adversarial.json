@@ -1,0 +1,87 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent adversarial linguistic review; machine dispatcher is not author",
+  "author": "/root",
+  "source_revision": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "source_record_sha256": "1221b1cca577c6de46e4bfddfc5c5c6d56c4075c37a6ec3510cf01e52ec022d5",
+  "draft_record_sha256": "c93b8e5c71cdd1270abd3f639f8a22aae2cd81d4d7e0c7799e8387a62d7d8d72",
+  "reviewed_keys": [
+    "native:[stat win probability]",
+    "native:[stat win probability about]"
+  ],
+  "entries": [
+    {
+      "key": "[stat win probability]",
+      "source": "Win probability",
+      "google_draft": "जिंकण्याची शक्यता",
+      "proposal": "जिंकण्याची शक्यता",
+      "disposition": "accepted",
+      "rationale": "जिंकण्याची शक्यता is natural Marathi and exactly matches the approved existing [Win chance] translation. Short enough for the percentage-axis title; no formatting tokens to integrate."
+    },
+    {
+      "key": "[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "google_draft": "तुमच्या गटाच्या जिंकण्याची अंदाजित शक्यता, जी संपूर्ण सामन्यादरम्यान तपासली जाते. सर्व गटांची संभाव्यता एकच असते. हे मॉडेल एआय (AI) खेळांवर प्रशिक्षित केले गेले आहे; या अंदाजांमध्ये स्थिती किंवा नियोजित चालींचा विचार केलेला नाही. जुन्या सेव्ह फाइल्समध्ये अपूर्ण इतिहास असू शकतो.",
+      "proposal": "तुमच्या युतीच्या जिंकण्याची अंदाजित शक्यता. सामनाभर तिची वेळोवेळी नोंद केली जाते. युतीतील सर्व मित्रपक्षांसाठी ही शक्यता समान असते. या मॉडेलला एआय सामन्यांवर प्रशिक्षण दिले आहे; या अंदाजांत नकाशावर कोण कुठे आहे किंवा कोणत्या चाली नियोजित आहेत याचा विचार केला जात नाही. जुन्या जतन केलेल्या खेळांचा इतिहास अपूर्ण असू शकतो.",
+      "disposition": "changes requested",
+      "severity": "major",
+      "rationale": [
+        "Google says सर्व गटांची संभाव्यता एकच असते, falsely implying every opposing group has the same probability. Source/code/docs say members of one alliance share one prediction; different opponents have different estimates.",
+        "Use the established alliance term युती rather than generic गट, and explicitly restrict equality to allies in that alliance.",
+        "सामनाभर वेळोवेळी नोंद specifies stored temporal sampling instead of vague checking.",
+        "कोण कुठे आहे makes positional information explicit rather than confusing स्थिती with the overall game state that the numeric model actually does use. Preserve planned-move exclusion and AI-training limitation.",
+        "जुन्या जतन केलेल्या खेळांचा इतिहास अपूर्ण असू शकतो preserves uncertainty and partial history without claiming saved games are corrupt."
+      ]
+    }
+  ],
+  "references": [
+    {
+      "path": "data/texts.fr.txt",
+      "git_blob_sha1": "b8509bac8cbaf46ea5e7f202739b61dc46a45559",
+      "sha256": "fcc93172740aaa8bddad53cc63329ed408ecf80ca50f89b158006eb7963b8a5a",
+      "consulted_entries": {
+        "[stat win probability]": "",
+        "[stat win probability about]": ""
+      },
+      "interpretation": "Both new target values are blank; these languages supply no semantic translation precedent for these two keys."
+    },
+    {
+      "path": "data/texts.hi.txt",
+      "git_blob_sha1": "a529792c608baab901e8e56b4cd30b4e62ef6802",
+      "sha256": "bf3de8c77007585b9e8fe1c38371d3ffa2f333449372d1c9b5ccb05e5055cc27",
+      "consulted_entries": {
+        "[stat win probability]": "",
+        "[stat win probability about]": ""
+      },
+      "interpretation": "Both new target values are blank; these languages supply no semantic translation precedent for these two keys."
+    }
+  ],
+  "actual_source_context": [
+    {
+      "path": "src/team/stats/TeamStatChart.cpp",
+      "git_blob_sha1": "6546ccd3bec6b0449ce94c5c75b9d319d078ca9b",
+      "sha256": "972b2808a8dc84f9251fed8060a9fcc99540f9ac8ae25fd998f20fa82fcfbf97",
+      "actually_consulted_context": "axisTitle appends (%) to [stat win probability]; about(metric) translates the metric help key."
+    },
+    {
+      "path": "src/team/stats/MetricCatalog.cpp",
+      "git_blob_sha1": "21b5cac66079c6c63fcfe4ef4e0336d0c82fc62c",
+      "sha256": "3b91e76dddddc46d36c1a2c315cb71394def304096075790698d2ca5ae5fae26",
+      "actually_consulted_context": "Win-probability metric turns recorded permille samples into per-team percentage series; an actual0% value is valid data."
+    },
+    {
+      "path": "docs/ai/architecture/win-probability-model.md",
+      "git_blob_sha1": "0260e0688b781be0d129aad1de1fda376696bf03",
+      "sha256": "c1c4d14ab88e1a8f5049fb7f5ab113e75a179b9fcfd99c44bc49991ca574f5a2",
+      "actually_consulted_context": "Allies are one competitor because they win/lose together. The model reads six numeric features; position, terrain, adjacency and future events are invisible. Old saves preserve only newly recorded probability history."
+    },
+    {
+      "path": "docs/ai/gameplay-statistics.md",
+      "git_blob_sha1": "703ce528e5bc1041ba6bf8c60ae65cf2376febd7",
+      "sha256": "488d6737649fe0d2d8296884e6531bf0990ef98b92686ae80cb6859b82ecaa10",
+      "actually_consulted_context": "Alliance-wide 0–100% estimate recorded every512ticks; old saves have a gap before new samples start."
+    }
+  ],
+  "review_method": "Actually read both exact upstream English values, both Google outputs, current approved Marathi alliance/win-chance terminology, source usages and model limitations. No other new review proposals read. No canonical catalog writes.",
+  "limits": "Two-key linguistic/context review only; final editor/author wording still requires actual source-to-final rereads, token checks and affected rendering evidence. No full old-key reread is claimed."
+}

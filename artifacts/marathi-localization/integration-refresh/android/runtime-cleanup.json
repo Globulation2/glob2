@@ -1,0 +1,120 @@
+{
+  "ownership_verified": {
+    "container_id": "5c8f8e01656f7241d24361039a9aec844bba3d0727339f9754216e9a8d57cc88",
+    "container_name": "/glob2-marathi-emulator",
+    "command": [
+      "chroot",
+      "--userspec=1000:1000",
+      "--groups=992",
+      "/host",
+      "/usr/bin/env",
+      "ANDROID_USER_HOME=/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/android-user",
+      "ANDROID_EMULATOR_HOME=/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/android-user",
+      "ANDROID_AVD_HOME=/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/avd",
+      "ANDROID_HOME=/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk",
+      "ANDROID_SDK_ROOT=/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk",
+      "ANDROID_ADB_SERVER_PORT=15187",
+      "ANDROID_EMU_CRASH_REPORTING_DATABASE=/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/emulator-crash.db",
+      "ANDROID_EMULATOR_DISCOVERY_DIR=/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/emulator-discovery",
+      "ADB_MDNS_AUTO_CONNECT=",
+      "ADB_LOCAL_TRANSPORT_MAX_PORT=0",
+      "TMPDIR=/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/tmp",
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/emulator/emulator",
+      "-avd",
+      "glob2-api35-x64",
+      "-port",
+      "5678",
+      "-no-window",
+      "-no-audio",
+      "-no-boot-anim",
+      "-no-snapshot",
+      "-no-metrics",
+      "-crash-report-mode",
+      "disabled",
+      "-datadir",
+      "/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/avd/glob2-api35-x64.avd",
+      "-data",
+      "/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/avd/glob2-api35-x64.avd/userdata-qemu.img",
+      "-gpu",
+      "swiftshader",
+      "-memory",
+      "2048",
+      "-cores",
+      "2"
+    ],
+    "mounts": [
+      {
+        "Type": "bind",
+        "Source": "/",
+        "Destination": "/host",
+        "Mode": "",
+        "RW": false,
+        "Propagation": "rslave"
+      },
+      {
+        "Type": "bind",
+        "Source": "/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools",
+        "Destination": "/host/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+      }
+    ],
+    "devices": [
+      {
+        "PathOnHost": "/dev/kvm",
+        "PathInContainer": "/dev/kvm",
+        "CgroupPermissions": "rwm"
+      }
+    ],
+    "adb_server_pid": 2669910,
+    "adb_server_command": [
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/platform-tools/adb",
+      "-P",
+      "15187",
+      "--one-device",
+      "glob2-mobile-no-usb",
+      "server",
+      "nodaemon"
+    ],
+    "adb_server_cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+    "isolated_devices_before": "List of devices attached\nemulator-5678          device product:sdk_phone64_x86_64 model:Android_SDK_built_for_x86_64 device:emu64x transport_id:2\n\n"
+  },
+  "operations": [
+    {
+      "command": [
+        "docker",
+        "stop",
+        "--time",
+        "30",
+        "5c8f8e01656f7241d24361039a9aec844bba3d0727339f9754216e9a8d57cc88"
+      ],
+      "exit_code": 0,
+      "stdout": "Flag --time has been deprecated, use --timeout instead\n5c8f8e01656f7241d24361039a9aec844bba3d0727339f9754216e9a8d57cc88\n"
+    },
+    {
+      "command": [
+        "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/platform-tools/adb",
+        "-P",
+        "15187",
+        "kill-server"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "devices_before_kill": "List of devices attached\n\n"
+    }
+  ],
+  "preserved_apks_sha256": {
+    "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk": "acfa7ddf22bef8e2fdf78e39c0a2268e4bb902011fa87aa2576987549081af0c",
+    "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk": "b0d77346e3223bbdae2ce6f85baa8c120e437d50c4caf8b35ebafafefdab7be2"
+  },
+  "no_host_acl_or_group_change": true,
+  "shared_sdk_modified": false,
+  "container_removed_after_graceful_stop": true,
+  "adb_server_gone": true,
+  "adb_listener_after": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+  "avd_files_preserved": "/home/bradley/.codex/worktrees/45cd/glob2/build/mobile-tools/avd/glob2-api35-x64.avd",
+  "reproducibility_artifacts_preserved": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-refresh/android",
+  "apks_rehashed_unchanged_after_cleanup": true,
+  "status": "owned runtime stopped; artifacts preserved"
+}

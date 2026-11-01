@@ -1,0 +1,38 @@
+{
+  "reviewer": "/root/locale_integration",
+  "role": "native editorial reviewer",
+  "result": "accepted",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "catalog_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+  "actual_final_entries_read": [
+    {
+      "key": "[stat win probability]",
+      "source": "Win probability",
+      "final_target": "जिंकण्याची शक्यता",
+      "target_sha256": "12bb266bd0f38cb84627ed73156d2e30486c497c08d1fd7e1bdf2a7043fc73ea"
+    },
+    {
+      "key": "[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "final_target": "तुमची युती जिंकण्याची अंदाजित शक्यता, जी संपूर्ण सामन्यादरम्यान वेळोवेळी नोंदवली जाते. एका युतीतील सर्व संघांसाठी ही शक्यता एकच असते. हे मॉडेल एआय सामन्यांच्या आधारे प्रशिक्षित केलेले आहे; अंदाजात नकाशावरील स्थान किंवा नियोजित चालींचा विचार केला जात नाही. जुन्या जतन केलेल्या खेळांमध्ये या नोंदी अपूर्ण असू शकतात.",
+      "target_sha256": "794bae913564d0fc03e22c7dd627d04db7e7337bc715316e95a751ec57b0ea28"
+    }
+  ],
+  "assessment": "The concise label follows existing win-chance wording. The paragraph accurately conveys alliance-level shared probability, repeated sampling, AI-match training, spatial/planned-move limitations, and incomplete older-save history. सर्व संघांसाठी explicitly preserves same-alliance team scope. Marathi grammar, agreement, punctuation and glossary usage are sound.",
+  "carry_forward": {
+    "method": "Exact parsed source and target equality for each previously reviewed native key; exact old online source mapping and canonical target byte identity. This is unchanged-content carry, not a new full reread.",
+    "native_unchanged_source_keys": 3393,
+    "native_unchanged_target_keys": 3393,
+    "native_prior_target_snapshot": "editorial-review/native-editor-current-final.json",
+    "native_prior_signoff": "editorial-review/native-editor-signoff.json",
+    "new_native_keys_actual_read": 2,
+    "native_total": 3395,
+    "online_unchanged_keys": 2836,
+    "online_sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+    "online_prior_signoff": "online-adversarial/final-signoff.json",
+    "frozen_source_native_sha256": "48a993de84cae8cbadcd7577ce2bf93131299248eb5a93c902f48835e4c471cf",
+    "frozen_source_online_sha256": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69"
+  },
+  "findings": [],
+  "canonical_writes": false
+}

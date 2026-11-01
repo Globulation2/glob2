@@ -1,0 +1,118 @@
+{
+  "producer": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "scope": "Actual current release tutorial and gameplay HUD via production input, bounded captures",
+  "actions": [
+    {
+      "command": [
+        "logcat",
+        "-c"
+      ],
+      "output": ""
+    },
+    {
+      "command": [
+        "shell",
+        "am",
+        "start",
+        "-W",
+        "-n",
+        "org.globulation2.glob2/org.globulation2.glob2.Glob2Activity"
+      ],
+      "output": "Starting: Intent { cmp=org.globulation2.glob2/.Glob2Activity }\nStatus: ok\nLaunchState: COLD\nActivity: org.globulation2.glob2/.Glob2Activity\nTotalTime: 1271\nWaitTime: 1274\nComplete\n"
+    },
+    {
+      "command": [
+        "shell",
+        "input",
+        "keyevent",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_ENTER"
+      ],
+      "meaning": "Actual menu focus Settings\u2192Custom\u2192Online\u2192Campaign\u2192Load\u2192Tutorial; actual lesson catalog image read"
+    },
+    {
+      "command": [
+        "shell",
+        "input",
+        "keyevent",
+        "KEYCODE_TAB",
+        "KEYCODE_ENTER"
+      ],
+      "meaning": "Select first Introduction lesson via real keyboard focus"
+    },
+    {
+      "command": [
+        "shell",
+        "input",
+        "tap",
+        "160",
+        "765"
+      ],
+      "meaning": "Tap actual visible Marathi \u0938\u093e\u0927\u0928\u0947 Tools footer in current portrait HUD"
+    },
+    {
+      "command": [
+        "shell",
+        "input",
+        "tap",
+        "310",
+        "397"
+      ],
+      "meaning": "Tap actual visible \u0906\u0915\u0921\u0947\u0935\u093e\u0930\u0940 Statistics tool"
+    },
+    {
+      "command": [
+        "shell",
+        "settings",
+        "put",
+        "system",
+        "accelerometer_rotation",
+        "0"
+      ],
+      "meaning": "Actual emulator display rotation for current gameplay/statistics landscape rendering"
+    },
+    {
+      "command": [
+        "shell",
+        "settings",
+        "put",
+        "system",
+        "user_rotation",
+        "1"
+      ],
+      "meaning": "Actual emulator display rotation for current gameplay/statistics landscape rendering"
+    },
+    {
+      "command": [
+        "shell",
+        "input",
+        "tap",
+        "387",
+        "155"
+      ],
+      "meaning": "Collapse actual lesson instructions"
+    },
+    {
+      "command": [
+        "shell",
+        "input",
+        "tap",
+        "672",
+        "59"
+      ],
+      "meaning": "Close actual statistics sheet to inspect current landscape HUD"
+    }
+  ],
+  "rotation_before": {
+    "accelerometer_rotation": "0",
+    "user_rotation": "0"
+  },
+  "rotation_restored": true,
+  "own_app_force_stopped_after_hud": true,
+  "screenshots_total_bytes": 3200379
+}

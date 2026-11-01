@@ -1,0 +1,13 @@
+{
+  "source_current": true,
+  "locales": {
+    "mr": [
+      "desktop_rendering is pending or lacks evidence",
+      "phone_rendering is pending or lacks evidence",
+      "browser_startup is pending or lacks evidence",
+      "native_platforms is pending or lacks evidence",
+      "browser_platforms is pending or lacks evidence",
+      "mobile_platforms is pending or lacks evidence"
+    ]
+  }
+}

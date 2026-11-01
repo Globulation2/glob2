@@ -1,0 +1,28 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Win probability",
+        "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "जिंकण्याची शक्यता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या गटाच्या जिंकण्याची अंदाजित शक्यता, जी संपूर्ण सामन्यादरम्यान तपासली जाते. सर्व गटांची संभाव्यता एकच असते. हे मॉडेल एआय (AI) खेळांवर प्रशिक्षित केले गेले आहे; या अंदाजांमध्ये स्थिती किंवा नियोजित चालींचा विचार केलेला नाही. जुन्या सेव्ह फाइल्समध्ये अपूर्ण इतिहास असू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "bb5e84c88d4f69ad06ada1d67bc9ff3b969ff2940fa9fdd0a0d58e88f78d083e"
+}

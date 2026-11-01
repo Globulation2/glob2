@@ -1,0 +1,7 @@
+{
+  "method": "Unicode scalar difference between two actual new final targets and all old3393 final target values; this is glyph-inventory evidence, not shaping/layout/runtime evidence.",
+  "new_target_codepoints_not_in_prior_catalog": [],
+  "old_key_count": 3393,
+  "new_entry_count": 2,
+  "canonical_native_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf"
+}

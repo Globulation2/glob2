@@ -1,0 +1,512 @@
+{
+  "id": "online-online-001",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online: (provisional)",
+      "key": " (provisional)",
+      "source": " (provisional)"
+    },
+    {
+      "id": "online: ({slot0})",
+      "key": " ({slot0})",
+      "source": " ({slot0})"
+    },
+    {
+      "id": "online: / {slot0}",
+      "key": " / {slot0}",
+      "source": " / {slot0}"
+    },
+    {
+      "id": "online: Building credits",
+      "key": " Building credits",
+      "source": " Building credits"
+    },
+    {
+      "id": "online: COMPOSITION COMPLETE",
+      "key": " COMPOSITION COMPLETE",
+      "source": " COMPOSITION COMPLETE"
+    },
+    {
+      "id": "online: Edit & release settings",
+      "key": " Edit & release settings",
+      "source": " Edit & release settings"
+    },
+    {
+      "id": "online: Follow latest",
+      "key": " Follow latest",
+      "source": " Follow latest"
+    },
+    {
+      "id": "online: I can share these recordings and artwork under the selected licence.",
+      "key": " I can share these recordings and artwork under the selected licence.",
+      "source": " I can share these recordings and artwork under the selected licence."
+    },
+    {
+      "id": "online: Loading…",
+      "key": " Loading…",
+      "source": " Loading…"
+    },
+    {
+      "id": "online: My releases and uploads",
+      "key": " My releases and uploads",
+      "source": " My releases and uploads"
+    },
+    {
+      "id": "online: Pane widths",
+      "key": " Pane widths",
+      "source": " Pane widths"
+    },
+    {
+      "id": "online: Projects",
+      "key": " Projects",
+      "source": " Projects"
+    },
+    {
+      "id": "online: Publish",
+      "key": " Publish",
+      "source": " Publish"
+    },
+    {
+      "id": "online: Reference images",
+      "key": " Reference images",
+      "source": " Reference images"
+    },
+    {
+      "id": "online: Review & publish",
+      "key": " Review & publish",
+      "source": " Review & publish"
+    },
+    {
+      "id": "online: Review release settings",
+      "key": " Review release settings",
+      "source": " Review release settings"
+    },
+    {
+      "id": "online: Send",
+      "key": " Send",
+      "source": " Send"
+    },
+    {
+      "id": "online: Settings & references",
+      "key": " Settings & references",
+      "source": " Settings & references"
+    },
+    {
+      "id": "online: Terrain credits",
+      "key": " Terrain credits",
+      "source": " Terrain credits"
+    },
+    {
+      "id": "online: Undo",
+      "key": " Undo",
+      "source": " Undo"
+    },
+    {
+      "id": "online: Your next match will use the default colony.",
+      "key": " Your next match will use the default colony.",
+      "source": " Your next match will use the default colony."
+    },
+    {
+      "id": "online: checks",
+      "key": " checks",
+      "source": " checks"
+    },
+    {
+      "id": "online: credits",
+      "key": " credits",
+      "source": " credits"
+    },
+    {
+      "id": "online: diverged",
+      "key": " diverged",
+      "source": " diverged"
+    },
+    {
+      "id": "online: likes",
+      "key": " likes",
+      "source": " likes"
+    },
+    {
+      "id": "online: on {p0}",
+      "key": " on {p0}",
+      "source": " on {p0}"
+    },
+    {
+      "id": "online: refused orders",
+      "key": " refused orders",
+      "source": " refused orders"
+    },
+    {
+      "id": "online: seconds",
+      "key": " seconds",
+      "source": " seconds"
+    },
+    {
+      "id": "online: this version",
+      "key": " this version",
+      "source": " this version"
+    },
+    {
+      "id": "online: to confirm",
+      "key": " to confirm",
+      "source": " to confirm"
+    },
+    {
+      "id": "online: · ",
+      "key": " · ",
+      "source": " · "
+    },
+    {
+      "id": "online: · Charged: ",
+      "key": " · Charged: ",
+      "source": " · Charged: "
+    },
+    {
+      "id": "online: · Completed ",
+      "key": " · Completed ",
+      "source": " · Completed "
+    },
+    {
+      "id": "online: · Content hidden",
+      "key": " · Content hidden",
+      "source": " · Content hidden"
+    },
+    {
+      "id": "online: · hidden",
+      "key": " · hidden",
+      "source": " · hidden"
+    },
+    {
+      "id": "online: · incomplete historical data",
+      "key": " · incomplete historical data",
+      "source": " · incomplete historical data"
+    },
+    {
+      "id": "online: · stale",
+      "key": " · stale",
+      "source": " · stale"
+    },
+    {
+      "id": "online: · updated ",
+      "key": " · updated ",
+      "source": " · updated "
+    },
+    {
+      "id": "online: · {slot0}",
+      "key": " · {slot0}",
+      "source": " · {slot0}"
+    },
+    {
+      "id": "online: · {slot0} disconnect",
+      "key": " · {slot0} disconnect",
+      "source": {
+        "one": " · {slot0} disconnect",
+        "other": " · {slot0} disconnects"
+      }
+    },
+    {
+      "id": "online: · {slot0} disconnects",
+      "key": " · {slot0} disconnects",
+      "source": " · {slot0} disconnects"
+    },
+    {
+      "id": "online: — ",
+      "key": " — ",
+      "source": " — "
+    },
+    {
+      "id": "online: → ",
+      "key": " → ",
+      "source": " → "
+    },
+    {
+      "id": "online:#{slot0}",
+      "key": "#{slot0}",
+      "source": "#{slot0}"
+    },
+    {
+      "id": "online:(match)",
+      "key": "(match)",
+      "source": "(match)"
+    },
+    {
+      "id": "online:, and enter:",
+      "key": ", and enter:",
+      "source": ", and enter:"
+    },
+    {
+      "id": "online:, or create an account below",
+      "key": ", or create an account below",
+      "source": ", or create an account below"
+    },
+    {
+      "id": "online:, so it cannot be added to the account you are playing as. Accounts are never merged.",
+      "key": ", so it cannot be added to the account you are playing as. Accounts are never merged.",
+      "source": ", so it cannot be added to the account you are playing as. Accounts are never merged."
+    },
+    {
+      "id": "online:, then",
+      "key": ", then",
+      "source": ", then"
+    },
+    {
+      "id": "online:, to confirm",
+      "key": ", to confirm",
+      "source": ", to confirm"
+    },
+    {
+      "id": "online:.",
+      "key": ".",
+      "source": "."
+    },
+    {
+      "id": "online:. You can close this page.",
+      "key": ". You can close this page.",
+      "source": ". You can close this page."
+    },
+    {
+      "id": "online:/ais/favourites",
+      "key": "/ais/favourites",
+      "source": "/ais/favourites"
+    },
+    {
+      "id": "online:/ais/mine",
+      "key": "/ais/mine",
+      "source": "/ais/mine"
+    },
+    {
+      "id": "online:1.0.0",
+      "key": "1.0.0",
+      "source": "1.0.0"
+    },
+    {
+      "id": "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+      "key": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+      "source": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it."
+    },
+    {
+      "id": "online:95%: {slot0}",
+      "key": "95%: {slot0}",
+      "source": "95%: {slot0}"
+    },
+    {
+      "id": "online:: ",
+      "key": ": ",
+      "source": ": "
+    },
+    {
+      "id": "online:: create a room and invite your friends, or find a quick match.",
+      "key": ": create a room and invite your friends, or find a quick match.",
+      "source": ": create a room and invite your friends, or find a quick match."
+    },
+    {
+      "id": "online:; nothing to install.",
+      "key": "; nothing to install.",
+      "source": "; nothing to install."
+    },
+    {
+      "id": "online:A Globulation 2 colony: globs at work around their swarm",
+      "key": "A Globulation 2 colony: globs at work around their swarm",
+      "source": "A Globulation 2 colony: globs at work around their swarm"
+    },
+    {
+      "id": "online:A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+      "key": "A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+      "source": "A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records."
+    },
+    {
+      "id": "online:A SOUNDTRACK FOR YOUR COLONY",
+      "key": "A SOUNDTRACK FOR YOUR COLONY",
+      "source": "A SOUNDTRACK FOR YOUR COLONY"
+    },
+    {
+      "id": "online:A colony takes shape",
+      "key": "A colony takes shape",
+      "source": "A colony takes shape"
+    },
+    {
+      "id": "online:A dismissed report cannot hide content.",
+      "key": "A dismissed report cannot hide content.",
+      "source": "A dismissed report cannot hide content."
+    },
+    {
+      "id": "online:A generated room map needs params.teams between 1 and 12.",
+      "key": "A generated room map needs params.teams between 1 and 12.",
+      "source": "A generated room map needs params.teams between 1 and 12."
+    },
+    {
+      "id": "online:A hand-made map has no generator.",
+      "key": "A hand-made map has no generator.",
+      "source": "A hand-made map has no generator."
+    },
+    {
+      "id": "online:A hidden set cannot publish new releases.",
+      "key": "A hidden set cannot publish new releases.",
+      "source": "A hidden set cannot publish new releases."
+    },
+    {
+      "id": "online:A map keeps at most {p0} versions; delete old ones first.",
+      "key": "A map keeps at most {p0} versions; delete old ones first.",
+      "source": "A map keeps at most {p0} versions; delete old ones first."
+    },
+    {
+      "id": "online:A new library is taking shape. Share the first AI.",
+      "key": "A new library is taking shape. Share the first AI.",
+      "source": "A new library is taking shape. Share the first AI."
+    },
+    {
+      "id": "online:A new mind for your colony",
+      "key": "A new mind for your colony",
+      "source": "A new mind for your colony"
+    },
+    {
+      "id": "online:A newer draft prevents undo. Use history to restore it.",
+      "key": "A newer draft prevents undo. Use history to restore it.",
+      "source": "A newer draft prevents undo. Use history to restore it."
+    },
+    {
+      "id": "online:A newer revision prevents undo. Restore a version in Changes.",
+      "key": "A newer revision prevents undo. Restore a version in Changes.",
+      "source": "A newer revision prevents undo. Restore a version in Changes."
+    },
+    {
+      "id": "online:A previous submission was not acknowledged. Sending it again safely retries the same request.",
+      "key": "A previous submission was not acknowledged. Sending it again safely retries the same request.",
+      "source": "A previous submission was not acknowledged. Sending it again safely retries the same request."
+    },
+    {
+      "id": "online:A recoverable active account is required for colony skins.",
+      "key": "A recoverable active account is required for colony skins.",
+      "source": "A recoverable active account is required for colony skins."
+    },
+    {
+      "id": "online:A registered account is required.",
+      "key": "A registered account is required.",
+      "source": "A registered account is required."
+    },
+    {
+      "id": "online:A release must retain its package ID.",
+      "key": "A release must retain its package ID.",
+      "source": "A release must retain its package ID."
+    },
+    {
+      "id": "online:A saved request is ready to send again safely.",
+      "key": "A saved request is ready to send again safely.",
+      "source": "A saved request is ready to send again safely."
+    },
+    {
+      "id": "online:A world of possibilities",
+      "key": "A world of possibilities",
+      "source": "A world of possibilities"
+    },
+    {
+      "id": "online:A · V{slot0}",
+      "key": "A · V{slot0}",
+      "source": "A · V{slot0}"
+    },
+    {
+      "id": "online:AI",
+      "key": "AI",
+      "source": "AI"
+    },
+    {
+      "id": "online:AI Building Studio",
+      "key": "AI Building Studio",
+      "source": "AI Building Studio"
+    },
+    {
+      "id": "online:AI Building Studio is not enabled on this instance.",
+      "key": "AI Building Studio is not enabled on this instance.",
+      "source": "AI Building Studio is not enabled on this instance."
+    },
+    {
+      "id": "online:AI JavaScript source",
+      "key": "AI JavaScript source",
+      "source": "AI JavaScript source"
+    },
+    {
+      "id": "online:AI Library",
+      "key": "AI Library",
+      "source": "AI Library"
+    },
+    {
+      "id": "online:AI MAP STUDIO",
+      "key": "AI MAP STUDIO",
+      "source": "AI MAP STUDIO"
+    },
+    {
+      "id": "online:AI MUSIC STUDIO",
+      "key": "AI MUSIC STUDIO",
+      "source": "AI MUSIC STUDIO"
+    },
+    {
+      "id": "online:AI Map Studio",
+      "key": "AI Map Studio",
+      "source": "AI Map Studio"
+    },
+    {
+      "id": "online:AI Map Studio is not enabled on this instance.",
+      "key": "AI Map Studio is not enabled on this instance.",
+      "source": "AI Map Studio is not enabled on this instance."
+    },
+    {
+      "id": "online:AI Map Studio is not enabled on this instance. Your saved projects remain available.",
+      "key": "AI Map Studio is not enabled on this instance. Your saved projects remain available.",
+      "source": "AI Map Studio is not enabled on this instance. Your saved projects remain available."
+    },
+    {
+      "id": "online:AI Music Studio",
+      "key": "AI Music Studio",
+      "source": "AI Music Studio"
+    },
+    {
+      "id": "online:AI Music Studio is not enabled on this instance.",
+      "key": "AI Music Studio is not enabled on this instance.",
+      "source": "AI Music Studio is not enabled on this instance."
+    },
+    {
+      "id": "online:AI Music Studio is not enabled on this instance. Your saved projects remain available.",
+      "key": "AI Music Studio is not enabled on this instance. Your saved projects remain available.",
+      "source": "AI Music Studio is not enabled on this instance. Your saved projects remain available."
+    },
+    {
+      "id": "online:AI Studio",
+      "key": "AI Studio",
+      "source": "AI Studio"
+    },
+    {
+      "id": "online:AI Terrain Studio",
+      "key": "AI Terrain Studio",
+      "source": "AI Terrain Studio"
+    },
+    {
+      "id": "online:AI Terrain Studio is not enabled on this instance.",
+      "key": "AI Terrain Studio is not enabled on this instance.",
+      "source": "AI Terrain Studio is not enabled on this instance."
+    },
+    {
+      "id": "online:AI authoring resources",
+      "key": "AI authoring resources",
+      "source": "AI authoring resources"
+    },
+    {
+      "id": "online:AI disclosure",
+      "key": "AI disclosure",
+      "source": "AI disclosure"
+    },
+    {
+      "id": "online:AI generated map",
+      "key": "AI generated map",
+      "source": "AI generated map"
+    },
+    {
+      "id": "online:AI library views",
+      "key": "AI library views",
+      "source": "AI library views"
+    }
+  ]
+}

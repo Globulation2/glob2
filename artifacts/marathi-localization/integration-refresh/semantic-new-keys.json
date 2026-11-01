@@ -1,0 +1,62 @@
+{
+  "reviewer": "/root/semantic_review",
+  "read_by": "/root/semantic_review",
+  "source_upstream_revision": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "source_file_sha256": "5bf563d2f81beab9f79e80982ffda38a3c451e783f70417609bb059474986147",
+  "source_record_sha256": "1221b1cca577c6de46e4bfddfc5c5c6d56c4075c37a6ec3510cf01e52ec022d5",
+  "reviewed_keys": [
+    "native:[stat win probability]",
+    "native:[stat win probability about]"
+  ],
+  "entries": [
+    {
+      "id": "native:[stat win probability]",
+      "source": "Win probability",
+      "google_draft": "जिंकण्याची शक्यता",
+      "proposed_final": "जिंकण्याची शक्यता",
+      "severity": "none",
+      "state": "accepted_draft",
+      "rationale": "Matches existing [Win chance] terminology जिंकण्याची शक्यता; neutral probability label and percent axis in TeamStatChart."
+    },
+    {
+      "id": "native:[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "google_draft": "तुमच्या गटाच्या जिंकण्याची अंदाजित शक्यता, जी संपूर्ण सामन्यादरम्यान तपासली जाते. सर्व गटांची संभाव्यता एकच असते. हे मॉडेल एआय (AI) खेळांवर प्रशिक्षित केले गेले आहे; या अंदाजांमध्ये स्थिती किंवा नियोजित चालींचा विचार केलेला नाही. जुन्या सेव्ह फाइल्समध्ये अपूर्ण इतिहास असू शकतो.",
+      "proposed_final": "तुमच्या युतीच्या जिंकण्याची अंदाजित शक्यता, जी सामन्यादरम्यान वेळोवेळी नोंदवली जाते. एका युतीतील सर्व संघांसाठी ही शक्यता एकच असते. हे मॉडेल संगणकीय खेळाडूंच्या सामन्यांवर प्रशिक्षित केले आहे; या अंदाजात नकाशावरील स्थिती किंवा नियोजित कृतींचा विचार केला जात नाही. जुन्या जतन केलेल्या खेळांमध्ये या शक्यतेचा इतिहास अपूर्ण असू शकतो.",
+      "severity": "major",
+      "state": "correction_requested",
+      "rationale": "Google incorrectly says all groups have the same probability; actual WinProbability::slotsOf groups teams into one slot per alliance, and distinct alliances compete. Preserve per-alliance sharing, periodic sampling, model-training origin, omitted positional/planned-action inputs and potentially partial history in older saves. Use glossary युती/संघ/संगणकीय खेळाडू; नकाशावरील स्थिती distinguishes tactical position from leaderboard rank."
+    }
+  ],
+  "contexts": [
+    {
+      "path": "src/team/stats/MetricCatalog.cpp",
+      "sha256": "3b91e76dddddc46d36c1a2c315cb71394def304096075790698d2ca5ae5fae26"
+    },
+    {
+      "path": "src/team/stats/MetricCatalog.h",
+      "sha256": "c881717c7af08c39d753ca175db22640c07720b98be74df77bdc633b12fb90c8"
+    },
+    {
+      "path": "src/team/stats/TeamStatChart.cpp",
+      "sha256": "972b2808a8dc84f9251fed8060a9fcc99540f9ac8ae25fd998f20fa82fcfbf97"
+    },
+    {
+      "path": "src/team/stats/WinProbability.cpp",
+      "sha256": "a6364062a9f197df78645427a82046e9ba7d737bdee843b9a76c2a696491fc1b"
+    },
+    {
+      "path": "docs/ai/architecture/win-probability-model.md",
+      "sha256": "c1c4d14ab88e1a8f5049fb7f5ab113e75a179b9fcfd99c44bc49991ca574f5a2"
+    }
+  ],
+  "consulted_passages": [
+    "MetricCatalog.cpp462–464: score metric win probability; MetricCatalog.h126–127 constructs title/about keys.",
+    "TeamStatChart.cpp537–539: fixed percent axis title uses translated probability label.",
+    "WinProbability.cpp169–200: one slot per alliance; team allianceOf indexes slots; allies share fate.",
+    "Win-probability-model.md200–210 and259–268: per-alliance figure, samples every512ticks, old saves partial; model fitted on AI games only and reads six numbers without positional/near-future input."
+  ],
+  "status": "corrections_requested",
+  "unresolved_uncertainty": [],
+  "certification": "Independent agent semantic review; not native-human certification."
+}

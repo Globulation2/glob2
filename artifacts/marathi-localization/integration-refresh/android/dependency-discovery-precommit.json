@@ -1,0 +1,102 @@
+{
+  "state": "pre-clean-head read-only discovery, not build provenance",
+  "identity": {
+    "target": "android",
+    "role": "client",
+    "toolchain": "android",
+    "mode": "release",
+    "arch": "x86_64",
+    "environment": "device",
+    "api": "24"
+  },
+  "toolchain_fingerprint": "ad828a0b54137c813fcbb45de02dd65a16e7339be0b56767a339d231407e59a5",
+  "recording_prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-449cc50b7df0e9760cae8e97/prefix",
+  "existing_verified": false,
+  "recording_identity": {
+    "builder": "recording_dependencies",
+    "environment": {
+      "CFLAGS": "",
+      "CPPFLAGS": "",
+      "CXXFLAGS": "",
+      "DEVELOPER_DIR": "",
+      "LDFLAGS": "",
+      "MACOSX_DEPLOYMENT_TARGET": "",
+      "PKG_CONFIG_LIBDIR": "",
+      "PKG_CONFIG_PATH": "",
+      "SDKROOT": ""
+    },
+    "host": [
+      "Linux",
+      "x86_64"
+    ],
+    "options": {
+      "ar": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+      "arch": "x86_64",
+      "cc": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang",
+      "cflags": [
+        "-fPIC"
+      ],
+      "cxx": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang++",
+      "ldflags": [
+        "-Wl,--no-undefined",
+        "-Wl,--build-id=sha1",
+        "-Wl,-z,max-page-size=16384"
+      ],
+      "ranlib": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib",
+      "sdk_identity": "ad828a0b54137c813fcbb45de02dd65a16e7339be0b56767a339d231407e59a5",
+      "target": "android"
+    },
+    "platform": {},
+    "recipes": {
+      "fix-freebsd.patch": "b48ed962d22873d896f1f09800b3a781428a8425d912631a477f8669408b9d15",
+      "kerning-moves-pen.patch": "40885a6f8dd3018cd01721197b263b363bbb26c4b55ef21e0ad919823ac7bd4c",
+      "mingw-io-names.patch": "5cc1182280611f5a96f8660090bca054fa5a79b1f047a3a8ba4e65a650debb2f",
+      "opus-versions.json": "f66e4ab6c795dcaec89c269ca4e06a3394ec9f0ecf5184a5d91902948bc252e0",
+      "png16-preserve-channels.patch": "cfa402516b9692a8e50394e5f1dc659e5a7443cd99a4cbb59af2ac5d0fc05aee",
+      "recording-versions.json": "15dc0e70d4ea237b8cd2d700b0aae30c6ee70a534c5650d92d9e142a72f5a72c",
+      "recording_dependencies.py": "4399f09c38b89fd518e5d71ddadcaeda70fd86b94cc2debaebfdf667672d5382",
+      "sdl3-vendored.json": "98dbcf0823dcc0c059a331f8edcb04a3dff06d8943f8bdf58c68531a9ed6f8bc",
+      "sdl3-versions.json": "ed0147398a0a5c107b6cd16e178345deaf90b820484692850c44368c0e57fa9c",
+      "sdl3_dependencies.py": "588839d0ce3e6acdddeac5d2100b44ad2ea4e40d8017c330ec5fab841fb6750d",
+      "shared_dependencies.py": "e28844ec93ad52e1a2dc82d61e92eaa95e90b4dcd7cc73210ab594412397161e",
+      "x11-map-notify.patch": "a7ce2e7bc6773243ccda0282926ea92a9cce3023efa9289c81cc9dad0937f202",
+      "x11-reparent-race.patch": "7ebad866971a36c2c833d6d91977d2628f13c82a0eeae11fd917e5ee8f7dcfab"
+    },
+    "schema": 1,
+    "tools": {
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar": {
+        "binary": "fca4e66c591578b67dbd10e17e1112dc06fc02b202753bf91b4d2460083ab09e",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 19.0.1 (/mnt/disks/build-disk/src/android/llvm-r530567/out/llvm-project/llvm 97a699bf4812a18fb657c2779f5296a4ab2694d2)\n  Optimized build.\n"
+      },
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib": {
+        "binary": "fca4e66c591578b67dbd10e17e1112dc06fc02b202753bf91b4d2460083ab09e",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 19.0.1 (/mnt/disks/build-disk/src/android/llvm-r530567/out/llvm-project/llvm 97a699bf4812a18fb657c2779f5296a4ab2694d2)\n  Optimized build.\n"
+      },
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang": {
+        "binary": "2657210ebc03bd7db9208c3d6453d91851431053be94e9422628475bc2efde0a",
+        "version": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-android24\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin\n"
+      },
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang++": {
+        "binary": "b8afd37069ea2ea606ee2cd4674df0bae6118ea89f88d99f1c796d2a220b0c67",
+        "version": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-android24\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin\n"
+      },
+      "cmake": {
+        "binary": "6e1dccda39845415d68eabb934c598998949c99ec4668625d571aee1827b05c7",
+        "version": "cmake version 4.2.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+      },
+      "make": {
+        "binary": "27c9f6d806aee15882b01c2c61848f7aa75caa14bc7b6f608ba422f9e46a7d49",
+        "version": "GNU Make 4.4.1\nBuilt for x86_64-pc-linux-gnu\nCopyright (C) 1988-2023 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n"
+      },
+      "nasm": {
+        "binary": "57b8fc5957237b0d9b1ff48c8f5823780fb8ce968d9b8434850c06941ad5d5f5",
+        "version": "NASM version 3.01\n"
+      },
+      "pkg-config": {
+        "binary": "33fe3cef13ad2e476c13416867bf0ba152423738ce299e03cdd3859aff780a91",
+        "version": "2.5.1\n"
+      }
+    }
+  },
+  "no_receipt_rewrite": true
+}

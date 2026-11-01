@@ -1,0 +1,55 @@
+{
+  "editor": "/root/locale_integration",
+  "role": "independent Marathi editorial review of upstream integration delta",
+  "source_revision": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "source_record_sha256": "1221b1cca577c6de46e4bfddfc5c5c6d56c4075c37a6ec3510cf01e52ec022d5",
+  "google_draft_file_sha256": "c93b8e5c71cdd1270abd3f639f8a22aae2cd81d4d7e0c7799e8387a62d7d8d72",
+  "reviewed_keys": [
+    "native:[stat win probability]",
+    "native:[stat win probability about]"
+  ],
+  "references_actual_read": [
+    "Native [Win chance] = जिंकण्याची शक्यता; [Win chance: %0 · Fitness: %1] uses same phrase",
+    "Native [Alliance], [alliances], [Alliance group] = युती / युती गट",
+    "Native probability threshold/outcome wording and model-confidence help text",
+    "Upstream MetricCatalog.cpp chart.winProbability samples with ticks and permille/10 values",
+    "WinProbability.h per-alliance competitor contract; documented aggregate features and AI calibration campaign"
+  ],
+  "online_reference_limit": "Current portal mr/en catalogs have no dedicated win-probability or alliance UI key. The one probability occurrence concerns resource growth and is not a suitable label anchor; existing native player-facing win-chance labels are the direct reference.",
+  "other_agents_proposals_read": false,
+  "entries": [
+    {
+      "key": "[stat win probability]",
+      "source": "Win probability",
+      "google_draft": "जिंकण्याची शक्यता",
+      "proposed_final": "जिंकण्याची शक्यता",
+      "proposed_final_sha256": "12bb266bd0f38cb84627ed73156d2e30486c497c08d1fd7e1bdf2a7043fc73ea",
+      "disposition": "accept Google label unchanged; consistent with existing [Win chance]",
+      "rationale": [
+        "Natural concise probability label; preserve existing vocabulary."
+      ],
+      "findings": []
+    },
+    {
+      "key": "[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "google_draft": "तुमच्या गटाच्या जिंकण्याची अंदाजित शक्यता, जी संपूर्ण सामन्यादरम्यान तपासली जाते. सर्व गटांची संभाव्यता एकच असते. हे मॉडेल एआय (AI) खेळांवर प्रशिक्षित केले गेले आहे; या अंदाजांमध्ये स्थिती किंवा नियोजित चालींचा विचार केलेला नाही. जुन्या सेव्ह फाइल्समध्ये अपूर्ण इतिहास असू शकतो.",
+      "proposed_final": "तुमची युती जिंकण्याची अंदाजित शक्यता, जी संपूर्ण सामन्यादरम्यान वेळोवेळी नोंदवली जाते. एका युतीतील सर्वांसाठी ही शक्यता एकच असते. हे मॉडेल एआय सामन्यांच्या आधारे प्रशिक्षित केलेले आहे; अंदाजात नकाशावरील स्थान किंवा नियोजित चालींचा विचार केला जात नाही. जुन्या जतन केलेल्या खेळांमध्ये या नोंदी अपूर्ण असू शकतात.",
+      "proposed_final_sha256": "46ac930c570fcdf32ca8802712dfbcce9b70ce6da8dd9886255f6906affdc27b",
+      "disposition": "revise alliance scope, actual sampled-history meaning, spatial-position limitation and natural Marathi",
+      "rationale": [
+        "जिंकण्याची शक्यता matches existing [Win chance] and [Win chance: %0 · Fitness: %1].",
+        "Use established युती; Google गट weakens the specific alliance concept.",
+        "Google सर्व गटांची संभाव्यता एकच incorrectly claims ALL groups have equal probability. Same value is shared only by allies within ONE alliance.",
+        "वेळोवेळी नोंदवली जाते captures time-series samples; तपासली जाते merely says checked.",
+        "नकाशावरील स्थान preserves spatial-position limit; स्थिती could falsely imply the model ignores game state, despite its unit/prestige/attack/food features.",
+        "Model training on AI matches is retained, without redundant added (AI).",
+        "Old-save caveat concerns incomplete probability history, not a broken or incompatible saved game."
+      ],
+      "findings": []
+    }
+  ],
+  "width_assessment": "Keep short existing Win chance wording for the metric label. Description is an explanatory paragraph; normal wrapping preserves meaning without cramped invented abbreviations. Actual final HUD/tooltip layout must be checked on the integrated build.",
+  "certification": "Agent review, not native-human certification",
+  "canonical_files_written": false
+}

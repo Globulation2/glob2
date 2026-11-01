@@ -1,0 +1,19 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T04:53:44.672150+00:00",
+  "producer_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "installed_apk_sha256": "b0d77346e3223bbdae2ce6f85baa8c120e437d50c4caf8b35ebafafefdab7be2",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/gameplay-portrait.png",
+      "sha256": "1a61a1d4da7f37f456e62a4fa1ea3a8f91643eea89e070ebb2c49e20e4f7acd8"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/statistics-landscape-collapsed-instructions.png",
+      "sha256": "57191c6384ce3f30a0fe7de04e254014d8fa625b33322b7a612b300f6b9c0cfd"
+    }
+  ],
+  "assessment": "Actually viewed current tutorial portrait and landscape Statistics with collapsed lesson body. Marathi instruction/title and navigation are shaped and fit. Chart summary caption uses existing small compact style; no missing glyphs observed. Collapsed tutorial header still naturally overlays upper-left chart area, so image is not claimed unobscured. No full-match, physical-device, or new probability-text display claim.",
+  "findings": [],
+  "agent_review_sha256": "604294ffbee28fcb04e967639c01a255d3092eb1567d41cbdd37947e3753aa84"
+}

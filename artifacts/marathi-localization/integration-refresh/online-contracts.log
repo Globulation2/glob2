@@ -1,0 +1,11 @@
+npm ERR! Lifecycle script `check` failed with error: 
+npm ERR! Error: Missing script: "check"
+
+To see a list of scripts, run:
+  npm run 
+npm ERR!   in workspace: @glob2/i18n@0.1.0 
+npm ERR!   at location: /home/bradley/.codex/worktrees/45cd/glob2/platform/packages/i18n 
+npm ERR! Missing script: check
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/bradley/.npm/_logs/2026-11-01T03_31_35_323Z-debug-0.log

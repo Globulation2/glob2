@@ -1,0 +1,55 @@
+{
+  "revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "integrated_base": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "source_clean": true,
+  "passed": [
+    {
+      "command": "python3 test/test_google_draft.py",
+      "exit_code": 0,
+      "test_count": 10,
+      "log": "google-draft-tests.log",
+      "log_sha256": "a5041c3ec60e5a4282f304b718f150ba3af32bc27fdf851da23351a876b94c37"
+    },
+    {
+      "command": "python3 test/build_system/test_apple_localizations.py",
+      "exit_code": 0,
+      "test_count": 4,
+      "log": "apple-contracts.log",
+      "log_sha256": "b16c895cc9112090c3d3bc2b2529b307525f8915f106c0a8149c68d3d3643a18"
+    },
+    {
+      "command": "python3 test/test_gog_release.py",
+      "exit_code": 0,
+      "test_count": 27,
+      "log": "gog-tests.log",
+      "log_sha256": "5f246d58214285616f8ac6f87c3516d3cd37fcbe0c3e31402faff1d9df8d8969"
+    },
+    {
+      "command": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH npm run typecheck (cwd platform)",
+      "exit_code": 0,
+      "test_count": null,
+      "log": "platform-typecheck.log",
+      "log_sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd"
+    },
+    {
+      "command": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH npm run i18n:check (cwd platform)",
+      "exit_code": 0,
+      "test_count": null,
+      "log": "online-contracts-corrected.log",
+      "log_sha256": "6674d7827b773a6734b9e486cc713523ff9e6e4ad52536fbc031df793db5d44d"
+    }
+  ],
+  "retained_invocation_errors": [
+    "localization-tooling.log: test is a namespace shadowed by Python stdlib; corrected direct file invocations above pass",
+    "online-contracts.log: workspace has no check script; corrected repository i18n:check passes"
+  ],
+  "browser_unit": {
+    "passed": 147,
+    "failed": 3,
+    "log": "browser-unit.log",
+    "baseline_proof": "browser-fixture-baseline-proof.json",
+    "baseline_failure_log": "browser-fixture-baseline.log",
+    "scope": "Exact unmodified integrated master0d54 fixture inputs reproduce all3failure cases. No fixture/version acceptance inputs are changed by this PR."
+  },
+  "limits": "Native, Android and both browser-game runtime gates remain pending; these static/tooling checks do not establish rendering."
+}

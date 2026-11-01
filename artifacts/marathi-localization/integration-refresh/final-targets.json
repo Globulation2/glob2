@@ -1,0 +1,24 @@
+{
+  "author": "/root",
+  "source_reference_revision": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "catalog_path": "data/texts.mr.txt",
+  "catalog_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+  "entries": [
+    {
+      "key": "[stat win probability]",
+      "source": "Win probability",
+      "final_target": "जिंकण्याची शक्यता",
+      "target_sha256": "12bb266bd0f38cb84627ed73156d2e30486c497c08d1fd7e1bdf2a7043fc73ea"
+    },
+    {
+      "key": "[stat win probability about]",
+      "source": "Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.",
+      "final_target": "तुमची युती जिंकण्याची अंदाजित शक्यता, जी संपूर्ण सामन्यादरम्यान वेळोवेळी नोंदवली जाते. एका युतीतील सर्व संघांसाठी ही शक्यता एकच असते. हे मॉडेल एआय सामन्यांच्या आधारे प्रशिक्षित केलेले आहे; अंदाजात नकाशावरील स्थान किंवा नियोजित चालींचा विचार केला जात नाही. जुन्या जतन केलेल्या खेळांमध्ये या नोंदी अपूर्ण असू शकतात.",
+      "target_sha256": "794bae913564d0fc03e22c7dd627d04db7e7337bc715316e95a751ec57b0ea28"
+    }
+  ],
+  "choice": "Reviewed editorial paragraph with semantic reviewer exact alliance-team scope; existing concise win-chance label retained. Adversarial major all-groups error resolved. Three actual final-value rechecks pending.",
+  "old_3393_source_values_unchanged": true,
+  "old_3393_target_values_unchanged": true
+}
