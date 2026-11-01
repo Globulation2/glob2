@@ -70,6 +70,19 @@ jobs:
             os.environ['DEVELOPER_DIR']=exact[0]['path'];summary['developer_dir']=exact[0]['path']
             run('xcode',['xcodebuild','-version']);run('sdks',['xcodebuild','-showsdks'])
             doctor=run('doctor',['python3','mobile/doctor.py','ios','environment=simulator','release=1']);(proof/'toolchain.json').write_text(doctor)
+            device_set.mkdir(parents=True,exist_ok=True)
+            runtimes=json.loads(sim('runtimes','list','runtimes','--json'))['runtimes']
+            types=json.loads(sim('device-types','list','devicetypes','--json'))['devicetypes']
+            available=[x for x in runtimes if x.get('isAvailable') and '.iOS-' in x['identifier']]
+            assert available,'No installed available iOS Simulator runtime'
+            runtime=sorted(available,key=lambda x:tuple(int(t) for t in x['version'].split('.')))[-1]
+            phones=[x for x in types if x['name'].startswith('iPhone')]
+            assert phones
+            device_type=phones[-1]
+            device_set.mkdir(parents=True,exist_ok=True)
+            selected=sim('create','create','Glob2-Mobile',device_type['identifier'],runtime['identifier']).strip()
+            summary['simulator']={'uuid':selected,'runtime':runtime,'device_type':device_type}
+            sim('boot','boot',selected);sim('boot-wait','bootstatus',selected,'-b',timeout=600)
             run('dependencies',['python3','mobile/dependencies.py','--target','ios','--environment','simulator','--release','--jobs','2'],3600)
             run('build',['python3','mobile/ios.py','build','--environment','simulator','--release','--jobs','2'],7200)
             app=root/'build/ios/simulator/arm64/15.0/client/release/xcode-project/build/Release-iphonesimulator/Glob2.app'
@@ -99,18 +112,6 @@ jobs:
                     except (ValueError,OSError): pass
             assert manifests,'No dependency manifest retained'
             (proof/'dependency-manifests.json').write_text(json.dumps(manifests,indent=2))
-            runtimes=json.loads(sim('runtimes','list','runtimes','--json'))['runtimes']
-            types=json.loads(sim('device-types','list','devicetypes','--json'))['devicetypes']
-            available=[x for x in runtimes if x.get('isAvailable') and '.iOS-' in x['identifier']]
-            assert available,'No installed available iOS Simulator runtime'
-            runtime=sorted(available,key=lambda x:tuple(int(t) for t in x['version'].split('.')))[-1]
-            phones=[x for x in types if x['name'].startswith('iPhone')]
-            assert phones
-            device_type=phones[-1]
-            device_set.mkdir(parents=True,exist_ok=True)
-            selected=sim('create','create','Glob2-Mobile',device_type['identifier'],runtime['identifier']).strip()
-            summary['simulator']={'uuid':selected,'runtime':runtime,'device_type':device_type}
-            sim('boot','boot',selected);sim('boot-wait','bootstatus',selected,'-b',timeout=600)
             run('install',['python3','mobile/ios.py','install','--environment','simulator','--release','--device',selected],300)
             container=Path(sim('app-data','get_app_container',selected,'org.globulation2.glob2','data').strip())
             profile=container/'.glob2';profile.mkdir(parents=True,exist_ok=True)
