@@ -1,0 +1,23 @@
+{
+  "project": "bradley-personal-20261027",
+  "payload": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "ta",
+    "mimeType": "text/plain",
+    "model": "projects/bradley-personal-20261027/locations/global/models/general/nmt",
+    "contents": [
+      "AI for all computer colonies"
+    ]
+  },
+  "entries": [
+    {
+      "identity": "4ec2c7ba2c5dd56bd30d92ce3bdf2bfee423779f2ffcdd61a1fde86e5427bcef",
+      "surface": "native",
+      "key": "[AI for all computer colonies]",
+      "category": null,
+      "source": "AI for all computer colonies",
+      "content": "AI for all computer colonies",
+      "protected": []
+    }
+  ]
+}

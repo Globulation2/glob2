@@ -1,0 +1,323 @@
+{
+  "project": "bradley-personal-20261027",
+  "payload": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "bn",
+    "mimeType": "text/plain",
+    "model": "projects/bradley-personal-20261027/locations/global/models/general/nmt",
+    "contents": [
+      "Front view",
+      "Back view",
+      "Left view",
+      "Right view",
+      "Static pose",
+      "Artist",
+      "Started",
+      "Accounts per day",
+      "Matches per day",
+      "Guest accounts",
+      "Registered accounts",
+      "New soundtrack",
+      "Wait for the current request to finish.",
+      "Generation is unavailable. Saved music remains accessible.",
+      "An available Music credit is needed to chat or build.",
+      "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+      "Moss & morning light",
+      "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.",
+      "Little clockwork garden",
+      "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.",
+      "A waltz for the rain",
+      "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.",
+      "Generation is unavailable. Saved projects remain accessible.",
+      "An available Map credit is needed to chat or build.",
+      "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "Saving your project…",
+      "Generation is unavailable.",
+      "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "Colony stripes",
+      "Colony spots",
+      "Untitled skin"
+    ]
+  },
+  "entries": [
+    {
+      "identity": "2b844e63b54976e0ee54fb6283b2e3cbbc1f8776e4bd206b254db6d765b1f036",
+      "surface": "online",
+      "key": "Front view",
+      "category": null,
+      "source": "Front view",
+      "content": "Front view",
+      "protected": []
+    },
+    {
+      "identity": "dc69df24c53294836bab49a6b4baf131dc085c020f53a67eff78f5a6036215eb",
+      "surface": "online",
+      "key": "Back view",
+      "category": null,
+      "source": "Back view",
+      "content": "Back view",
+      "protected": []
+    },
+    {
+      "identity": "c48db05637d95eb762323fd31c51573ae34581ccf2f1ac16bef93ab7bc8263bf",
+      "surface": "online",
+      "key": "Left view",
+      "category": null,
+      "source": "Left view",
+      "content": "Left view",
+      "protected": []
+    },
+    {
+      "identity": "9645ae44d7f3f0e0f0a11de4db4d7fb4d0ac345340d8b7d045c50348b6484a00",
+      "surface": "online",
+      "key": "Right view",
+      "category": null,
+      "source": "Right view",
+      "content": "Right view",
+      "protected": []
+    },
+    {
+      "identity": "bb554cf120eb9baa97208a4b727e5b7eac351b6f543963f9413662fa1cacaf9c",
+      "surface": "online",
+      "key": "Static pose",
+      "category": null,
+      "source": "Static pose",
+      "content": "Static pose",
+      "protected": []
+    },
+    {
+      "identity": "299bb22ac28bdee8966085f3f1d85189a8799f606cbb178c11cf8f8ebc80e3ea",
+      "surface": "online",
+      "key": "Artist",
+      "category": null,
+      "source": "Artist",
+      "content": "Artist",
+      "protected": []
+    },
+    {
+      "identity": "e18077ea32845cde1b4a3ff0ecbae97e5b6ed59cb0c1e82da5360b3fbc1024f5",
+      "surface": "online",
+      "key": "Started",
+      "category": null,
+      "source": "Started",
+      "content": "Started",
+      "protected": []
+    },
+    {
+      "identity": "f1b1a166a5edb0082e7395ae40ba2e59ec999919229a8025b17d24b40b1b0fae",
+      "surface": "online",
+      "key": "Accounts per day",
+      "category": null,
+      "source": "Accounts per day",
+      "content": "Accounts per day",
+      "protected": []
+    },
+    {
+      "identity": "45b30a04006fad684e6f6bc6a64c2605fd339635952019277e2c8c33c9ca7617",
+      "surface": "online",
+      "key": "Matches per day",
+      "category": null,
+      "source": "Matches per day",
+      "content": "Matches per day",
+      "protected": []
+    },
+    {
+      "identity": "67d5de4eb6236467c44ddbed5ac5d20e7021c28f048619c9315bf7dadaff160e",
+      "surface": "online",
+      "key": "Guest accounts",
+      "category": null,
+      "source": "Guest accounts",
+      "content": "Guest accounts",
+      "protected": []
+    },
+    {
+      "identity": "a8422f40574f016555c4452c2d5063f4455138d6767511d065cf07b393b593c0",
+      "surface": "online",
+      "key": "Registered accounts",
+      "category": null,
+      "source": "Registered accounts",
+      "content": "Registered accounts",
+      "protected": []
+    },
+    {
+      "identity": "8e172566b475b9a2270a97142cad364e85aae7323e071a8d238c8005c1f3f20e",
+      "surface": "online",
+      "key": "New soundtrack",
+      "category": null,
+      "source": "New soundtrack",
+      "content": "New soundtrack",
+      "protected": []
+    },
+    {
+      "identity": "9e4578c66ce5abe2a1abfb596d0c22eb9c4519894a1e4c09655850d71208073f",
+      "surface": "online",
+      "key": "Wait for the current request to finish.",
+      "category": null,
+      "source": "Wait for the current request to finish.",
+      "content": "Wait for the current request to finish.",
+      "protected": []
+    },
+    {
+      "identity": "cb17da29c88f83cd01be28f04deec8a61662a5d38c1500b080eb4da65f3b3899",
+      "surface": "online",
+      "key": "Generation is unavailable. Saved music remains accessible.",
+      "category": null,
+      "source": "Generation is unavailable. Saved music remains accessible.",
+      "content": "Generation is unavailable. Saved music remains accessible.",
+      "protected": []
+    },
+    {
+      "identity": "b43065813093a7da0710f3e56bc5fca68b8ce4ba710abc2fd96ee4fa36e619f0",
+      "surface": "online",
+      "key": "An available Music credit is needed to chat or build.",
+      "category": null,
+      "source": "An available Music credit is needed to chat or build.",
+      "content": "An available Music credit is needed to chat or build.",
+      "protected": []
+    },
+    {
+      "identity": "68a322733db5a39a579b278150ecd58fec136973480712a208031c1fce941e20",
+      "surface": "online",
+      "key": "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+      "category": null,
+      "source": "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+      "content": "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+      "protected": []
+    },
+    {
+      "identity": "e6c5c682444815941513e216ef57d189087c2531f288eaf092ed17e346f130df",
+      "surface": "online",
+      "key": "Moss & morning light",
+      "category": null,
+      "source": "Moss & morning light",
+      "content": "Moss & morning light",
+      "protected": []
+    },
+    {
+      "identity": "879f77d50f8feb34759123999ab7c8e3cbd1717fdf3c2464bcaba174bdcdc8da",
+      "surface": "online",
+      "key": "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.",
+      "category": null,
+      "source": "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.",
+      "content": "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.",
+      "protected": []
+    },
+    {
+      "identity": "0246e07b0b39aca4cef92aa43c3780816f4876d161af501792057b887055e28d",
+      "surface": "online",
+      "key": "Little clockwork garden",
+      "category": null,
+      "source": "Little clockwork garden",
+      "content": "Little clockwork garden",
+      "protected": []
+    },
+    {
+      "identity": "5f86acdf9a7b6519b8194b8cadf9f5c353afbb50da3ce6f21faa5e1c1eae53e2",
+      "surface": "online",
+      "key": "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.",
+      "category": null,
+      "source": "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.",
+      "content": "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.",
+      "protected": []
+    },
+    {
+      "identity": "f5f92db968a3f2815ecbf050eeb782c05fc41a2ada90545e23193e4aeda64292",
+      "surface": "online",
+      "key": "A waltz for the rain",
+      "category": null,
+      "source": "A waltz for the rain",
+      "content": "A waltz for the rain",
+      "protected": []
+    },
+    {
+      "identity": "277c4977dccee51225e884c23a6e198be937007f6b32edc88119a9a5e4487b1f",
+      "surface": "online",
+      "key": "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.",
+      "category": null,
+      "source": "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.",
+      "content": "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.",
+      "protected": []
+    },
+    {
+      "identity": "f3b8d9a2e292bc66c3ad761caca43ad153830bf573c8472d09268099287ed6c1",
+      "surface": "online",
+      "key": "Generation is unavailable. Saved projects remain accessible.",
+      "category": null,
+      "source": "Generation is unavailable. Saved projects remain accessible.",
+      "content": "Generation is unavailable. Saved projects remain accessible.",
+      "protected": []
+    },
+    {
+      "identity": "c258f2ccaa97eb212fde1de9ed060e2f9cd65f601dc7c383524261e7ca6506f1",
+      "surface": "online",
+      "key": "An available Map credit is needed to chat or build.",
+      "category": null,
+      "source": "An available Map credit is needed to chat or build.",
+      "content": "An available Map credit is needed to chat or build.",
+      "protected": []
+    },
+    {
+      "identity": "aee0cbdb28effeb7bb3881ed98d84629d52aca02613145acb1490a7dd0049a07",
+      "surface": "online",
+      "key": "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "category": null,
+      "source": "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "content": "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "protected": []
+    },
+    {
+      "identity": "f168f34eb3be99bf006b1ba768dc46c7670445f61650e862f94ecf604c107fe7",
+      "surface": "online",
+      "key": "Saving your project…",
+      "category": null,
+      "source": "Saving your project…",
+      "content": "Saving your project…",
+      "protected": []
+    },
+    {
+      "identity": "f3c3143888f93c630c9149f1e8c97e3c7e929fe09f58407ec5566ee9a63d020b",
+      "surface": "online",
+      "key": "Generation is unavailable.",
+      "category": null,
+      "source": "Generation is unavailable.",
+      "content": "Generation is unavailable.",
+      "protected": []
+    },
+    {
+      "identity": "41caca49f9822999a7f9cefb106f249515b10266d9761bbc2927e2ab83b2fade",
+      "surface": "online",
+      "key": "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "category": null,
+      "source": "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "content": "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "protected": []
+    },
+    {
+      "identity": "ddbb65dc5d013b4e54bf81fbda8db168c15fa133baf778a4e2a73db2c62b3deb",
+      "surface": "online",
+      "key": "Colony stripes",
+      "category": null,
+      "source": "Colony stripes",
+      "content": "Colony stripes",
+      "protected": []
+    },
+    {
+      "identity": "574d4798988459e5d591cad5f48d418db2bb90d7ae716e0654340743c69f8e1a",
+      "surface": "online",
+      "key": "Colony spots",
+      "category": null,
+      "source": "Colony spots",
+      "content": "Colony spots",
+      "protected": []
+    },
+    {
+      "identity": "bdd0256338e7ce9cc176b7e57c8741d699598c1cdf9029f08d531251b590fff4",
+      "surface": "online",
+      "key": "Untitled skin",
+      "category": null,
+      "source": "Untitled skin",
+      "content": "Untitled skin",
+      "protected": []
+    }
+  ]
+}

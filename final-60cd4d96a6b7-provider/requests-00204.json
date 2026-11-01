@@ -1,0 +1,571 @@
+{
+  "project": "bradley-personal-20261027",
+  "payload": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "ta",
+    "mimeType": "text/plain",
+    "model": "projects/bradley-personal-20261027/locations/global/models/general/nmt",
+    "contents": [
+      "File and API profile",
+      "Syntax and profile restrictions",
+      "Startup and callback",
+      "Persistent state",
+      "Seeded gameplay",
+      "Repeatable simulation",
+      "Save and resume",
+      "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "Delay",
+      "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "AI player",
+      "Finances",
+      "Accounts",
+      "Audit",
+      "1 hour",
+      "1 day",
+      "1 week",
+      "30 days",
+      "Listen for the musical structure and development.",
+      "Check that all three moods play correctly.",
+      "Listen for unexpected jumps in volume between moods.",
+      "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "Listen for short phrases that repeat too mechanically.",
+      "Switch moods and listen for changes in timing or harmony.",
+      "Check that building and combat feel distinct from calm.",
+      "Listen for hiss or scratchiness in quiet passages.",
+      "Listen for muddy bass or harsh high frequencies.",
+      "Check that calm passages remain audible alongside game sound.",
+      "Listen for notes that cut off unexpectedly.",
+      "Public: listed in the catalog",
+      "Unlisted: anyone with the link",
+      "Private: only you",
+      "The server replayed this match and every player’s game agreed with it.",
+      "The server is checking this match. Ratings change once it is verified.",
+      "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "The server could not reproduce this match, so it changes no rating.",
+      "This match is not checked.",
+      "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "Live payments",
+      "Test payments",
+      "Unclassified payments",
+      "Current period",
+      "Previous period",
+      "Credit grant",
+      "Returned credits",
+      "Dispute",
+      "Dispute closed",
+      "Matches started",
+      "Matches completed",
+      "Matches cancelled",
+      "__G2P0__ publications",
+      "__G2P0__ recorded downloads",
+      "__G2P0__ completion time (seconds)",
+      "__G2P0__ completion samples"
+    ]
+  },
+  "entries": [
+    {
+      "identity": "2fe12b62d1a498a81451d614b3804db81a8e8058bb59251136badd0be29bd0e7",
+      "surface": "online",
+      "key": "File and API profile",
+      "category": null,
+      "source": "File and API profile",
+      "content": "File and API profile",
+      "protected": []
+    },
+    {
+      "identity": "7e96a8da75d6042494a82db2e05a5fe0285499851c54f342022f3da23b0fbaaa",
+      "surface": "online",
+      "key": "Syntax and profile restrictions",
+      "category": null,
+      "source": "Syntax and profile restrictions",
+      "content": "Syntax and profile restrictions",
+      "protected": []
+    },
+    {
+      "identity": "9ddfc5004be72f905da2e0ea6f8d7e9c07a67d839c0971be4016b0f7d5de27ef",
+      "surface": "online",
+      "key": "Startup and callback",
+      "category": null,
+      "source": "Startup and callback",
+      "content": "Startup and callback",
+      "protected": []
+    },
+    {
+      "identity": "e6cac42720b2fc8e6ba1db5ec513fe4eb9372bb11f137baf9ad45b3bc3f78e9f",
+      "surface": "online",
+      "key": "Persistent state",
+      "category": null,
+      "source": "Persistent state",
+      "content": "Persistent state",
+      "protected": []
+    },
+    {
+      "identity": "0316f501fddc3c3d6f3ba188ce756c269e326f2b92e87111607a54106afb5509",
+      "surface": "online",
+      "key": "Seeded gameplay",
+      "category": null,
+      "source": "Seeded gameplay",
+      "content": "Seeded gameplay",
+      "protected": []
+    },
+    {
+      "identity": "095eb00f405188b184a9e59e6cb95755ddb4a2da5a8ab233c09db999a8230e3e",
+      "surface": "online",
+      "key": "Repeatable simulation",
+      "category": null,
+      "source": "Repeatable simulation",
+      "content": "Repeatable simulation",
+      "protected": []
+    },
+    {
+      "identity": "57f88933fd7d6ed7139875100551e7d2a56b52101036cb62f09f51e129ee295c",
+      "surface": "online",
+      "key": "Save and resume",
+      "category": null,
+      "source": "Save and resume",
+      "content": "Save and resume",
+      "protected": []
+    },
+    {
+      "identity": "5878fd2a7d017ce37587b750ca9ec8e8e05971e1e86732e1e396efb799db05fa",
+      "surface": "online",
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "category": null,
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "content": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "protected": []
+    },
+    {
+      "identity": "34469e296915e67ef1000b256ebc8b786fcb69f37591198dd31ccc3c242029f8",
+      "surface": "online",
+      "key": "Delay",
+      "category": null,
+      "source": "Delay",
+      "content": "Delay",
+      "protected": []
+    },
+    {
+      "identity": "67adcb5fb85d27734e7114ad6e9376e1e434e8411d2d0347c0dce7836315b738",
+      "surface": "online",
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "category": null,
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "content": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "protected": []
+    },
+    {
+      "identity": "45e29d52aba6f3e8a93d07d8af2ce02c26008a84ade68a3b4a2c54eba909dba3",
+      "surface": "online",
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "category": null,
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "content": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "protected": []
+    },
+    {
+      "identity": "8629025ce4417f208b402efac6b49ae6abd2a1a6efc97819700005a970b7661e",
+      "surface": "online",
+      "key": "AI player",
+      "category": null,
+      "source": "AI player",
+      "content": "AI player",
+      "protected": []
+    },
+    {
+      "identity": "1b1430c0cad9e84015a22196e7c4f5d5f9111488872e992682eb5fb2d1a4e304",
+      "surface": "online",
+      "key": "Finances",
+      "category": null,
+      "source": "Finances",
+      "content": "Finances",
+      "protected": []
+    },
+    {
+      "identity": "c243fe8a097f714678dfa1c7d129365077b9483b69795749c0faea0a7eed0c43",
+      "surface": "online",
+      "key": "Accounts",
+      "category": null,
+      "source": "Accounts",
+      "content": "Accounts",
+      "protected": []
+    },
+    {
+      "identity": "89e2141ccb1b05b0861983e0c6b46e0d6c8481e038bed765d958546df436c3ac",
+      "surface": "online",
+      "key": "Audit",
+      "category": null,
+      "source": "Audit",
+      "content": "Audit",
+      "protected": []
+    },
+    {
+      "identity": "4e779990f2a20e8d8de28d17c297e5a4bc25c096a704d1d6e340acda6d633400",
+      "surface": "online",
+      "key": "1 hour",
+      "category": null,
+      "source": "1 hour",
+      "content": "1 hour",
+      "protected": []
+    },
+    {
+      "identity": "33225f3ed8d78adc1e5a5cd1f6ef7a338dcb9c6ede181b369f9e00949c7719e3",
+      "surface": "online",
+      "key": "1 day",
+      "category": null,
+      "source": "1 day",
+      "content": "1 day",
+      "protected": []
+    },
+    {
+      "identity": "faf88ca2a772f68c5bc8064c86d7add2f60a2acf2add67b4ec8c0b8aabede5c5",
+      "surface": "online",
+      "key": "1 week",
+      "category": null,
+      "source": "1 week",
+      "content": "1 week",
+      "protected": []
+    },
+    {
+      "identity": "9dcb6c4b0d3bc2cabf4d7b1de9605aa293556de3c95db256f07b02eb1b529a27",
+      "surface": "online",
+      "key": "30 days",
+      "category": null,
+      "source": "30 days",
+      "content": "30 days",
+      "protected": []
+    },
+    {
+      "identity": "0c349ffb02c5daea3c0ab33481ee181d7a7d0ed38c935e1dfb7b7cb914695bad",
+      "surface": "online",
+      "key": "Listen for the musical structure and development.",
+      "category": null,
+      "source": "Listen for the musical structure and development.",
+      "content": "Listen for the musical structure and development.",
+      "protected": []
+    },
+    {
+      "identity": "0ca951137989bb159b4849d451404208d2afde5665b8a381cac4a3642510b6d3",
+      "surface": "online",
+      "key": "Check that all three moods play correctly.",
+      "category": null,
+      "source": "Check that all three moods play correctly.",
+      "content": "Check that all three moods play correctly.",
+      "protected": []
+    },
+    {
+      "identity": "a22dea03af7fe1ce8156652ccd12cd9e4ce304dedd6a09121c803ccd008307d7",
+      "surface": "online",
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "category": null,
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "content": "Listen for unexpected jumps in volume between moods.",
+      "protected": []
+    },
+    {
+      "identity": "f7b1e9ad1222b2865ad3327179aeaf6d41c7194e8216ab8cae3f32befe6d0ff8",
+      "surface": "online",
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "category": null,
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "content": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "protected": []
+    },
+    {
+      "identity": "179693b93bb419fdd6c0d07634691408689deab7af0ad38e605fce6dace2565e",
+      "surface": "online",
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "category": null,
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "content": "Listen for short phrases that repeat too mechanically.",
+      "protected": []
+    },
+    {
+      "identity": "25a91d81f0b30fc7b9def8d46bdeef5c2249ddf8ceb0b98c303db54573f572f1",
+      "surface": "online",
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "category": null,
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "content": "Switch moods and listen for changes in timing or harmony.",
+      "protected": []
+    },
+    {
+      "identity": "7e49492d01b681566d91c56ca3accad3c2112b3defcc955c4dc2ab119fca426c",
+      "surface": "online",
+      "key": "Check that building and combat feel distinct from calm.",
+      "category": null,
+      "source": "Check that building and combat feel distinct from calm.",
+      "content": "Check that building and combat feel distinct from calm.",
+      "protected": []
+    },
+    {
+      "identity": "dc1d8a9357100170f5143fa59dbf050c97605b8e254d98ea56ebba0029631fa6",
+      "surface": "online",
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "category": null,
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "content": "Listen for hiss or scratchiness in quiet passages.",
+      "protected": []
+    },
+    {
+      "identity": "19b17382abc229aafdd3628a4e3eaf529510f4f9df63fd58e18ee1e098967180",
+      "surface": "online",
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "category": null,
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "content": "Listen for muddy bass or harsh high frequencies.",
+      "protected": []
+    },
+    {
+      "identity": "a1cf922a48f763507203394df13634eb95b7aac6f91d433a63d91b99642f8eb0",
+      "surface": "online",
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "category": null,
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "content": "Check that calm passages remain audible alongside game sound.",
+      "protected": []
+    },
+    {
+      "identity": "a697c8d464c25ffcc3e2221fbaf776cdba3eb75772c5f738c38e2f1109b9dcfc",
+      "surface": "online",
+      "key": "Listen for notes that cut off unexpectedly.",
+      "category": null,
+      "source": "Listen for notes that cut off unexpectedly.",
+      "content": "Listen for notes that cut off unexpectedly.",
+      "protected": []
+    },
+    {
+      "identity": "f209d4ee6d1c314425c322d01b93c31bd592563a5bec5ba9f5547319d4eb630e",
+      "surface": "online",
+      "key": "Public: listed in the catalog",
+      "category": null,
+      "source": "Public: listed in the catalog",
+      "content": "Public: listed in the catalog",
+      "protected": []
+    },
+    {
+      "identity": "04ddbc2cee14965ceae7465fcadaad2f1bff197fe9a9e27e925f79b8cfeffc64",
+      "surface": "online",
+      "key": "Unlisted: anyone with the link",
+      "category": null,
+      "source": "Unlisted: anyone with the link",
+      "content": "Unlisted: anyone with the link",
+      "protected": []
+    },
+    {
+      "identity": "9923d0d1e2e053858f556116466d03c5adb310a02954bf392e65518da3a5ddd2",
+      "surface": "online",
+      "key": "Private: only you",
+      "category": null,
+      "source": "Private: only you",
+      "content": "Private: only you",
+      "protected": []
+    },
+    {
+      "identity": "b136499f2b299a9c7b274916d3ab242373c8e5989d7eac695a4b2dae19337548",
+      "surface": "online",
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "category": null,
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "content": "The server replayed this match and every player’s game agreed with it.",
+      "protected": []
+    },
+    {
+      "identity": "f367b38383e63db253e5c00481a144edd3d9a53bbc3cc991dfc0e0351529e709",
+      "surface": "online",
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "category": null,
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "content": "The server is checking this match. Ratings change once it is verified.",
+      "protected": []
+    },
+    {
+      "identity": "7f6c6b4acb4ee7ef7f089eb0f520c1d3d16c88f394807818d390f58df3fd87b2",
+      "surface": "online",
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "category": null,
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "content": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "protected": []
+    },
+    {
+      "identity": "ddb9e729c91bcfdadb827f3ca0c063134219312d0b10d84c15c409b4152b4e99",
+      "surface": "online",
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "category": null,
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "content": "The server could not reproduce this match, so it changes no rating.",
+      "protected": []
+    },
+    {
+      "identity": "1264752c41cb1d7cce5614927d3b281c92eb16c0843e0f27a70760a2020ee27c",
+      "surface": "online",
+      "key": "This match is not checked.",
+      "category": null,
+      "source": "This match is not checked.",
+      "content": "This match is not checked.",
+      "protected": []
+    },
+    {
+      "identity": "0c68726ace4c8ed71e3129c56a8bbfd1f74cc88fd20dedd86453b351db5e5184",
+      "surface": "online",
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "category": null,
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "content": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "protected": []
+    },
+    {
+      "identity": "eab48c6c1e2350929756d0d70fa4082fac8c6be6508ca15746b17569df97a642",
+      "surface": "online",
+      "key": "Live payments",
+      "category": null,
+      "source": "Live payments",
+      "content": "Live payments",
+      "protected": []
+    },
+    {
+      "identity": "6e457f15d9033c3f993b5203a33d874851333b296c8e5921a507315576a09e79",
+      "surface": "online",
+      "key": "Test payments",
+      "category": null,
+      "source": "Test payments",
+      "content": "Test payments",
+      "protected": []
+    },
+    {
+      "identity": "4537768258568dd3479e8a7c3cbebbf77c0be90667ee89db1e5d509fe364f1db",
+      "surface": "online",
+      "key": "Unclassified payments",
+      "category": null,
+      "source": "Unclassified payments",
+      "content": "Unclassified payments",
+      "protected": []
+    },
+    {
+      "identity": "e870fe4f8a908ee1b405aedccaa67c75f2cf8b05177880d3716d7f1268090478",
+      "surface": "online",
+      "key": "Current period",
+      "category": null,
+      "source": "Current period",
+      "content": "Current period",
+      "protected": []
+    },
+    {
+      "identity": "4f0faaf8fadc57df7309aa558821e08226b8b0696f3c9c4466356232ecc30977",
+      "surface": "online",
+      "key": "Previous period",
+      "category": null,
+      "source": "Previous period",
+      "content": "Previous period",
+      "protected": []
+    },
+    {
+      "identity": "0f2eedac1eb98c04f4a730d2767b43e06914fcbe0c8516b8e3b64e175f021c0d",
+      "surface": "online",
+      "key": "Credit grant",
+      "category": null,
+      "source": "Credit grant",
+      "content": "Credit grant",
+      "protected": []
+    },
+    {
+      "identity": "7d679a7be4de59fedcc097692e9be6f77861447b7efa6cc7cef0ad661a121e67",
+      "surface": "online",
+      "key": "Returned credits",
+      "category": null,
+      "source": "Returned credits",
+      "content": "Returned credits",
+      "protected": []
+    },
+    {
+      "identity": "9bcbc226a2117015738989808ccb61dad2b30dd6a44834f70cc74ede4d20672d",
+      "surface": "online",
+      "key": "Dispute",
+      "category": null,
+      "source": "Dispute",
+      "content": "Dispute",
+      "protected": []
+    },
+    {
+      "identity": "c6e719309361b17cdd85ea10c8f0c979bbbd71097e2081707be3a833bfcdfc98",
+      "surface": "online",
+      "key": "Dispute closed",
+      "category": null,
+      "source": "Dispute closed",
+      "content": "Dispute closed",
+      "protected": []
+    },
+    {
+      "identity": "1dba9ac5dce194cfe02b07443e7d84b7b9e7a06bf9abf011857017bfbe410a08",
+      "surface": "online",
+      "key": "Matches started",
+      "category": null,
+      "source": "Matches started",
+      "content": "Matches started",
+      "protected": []
+    },
+    {
+      "identity": "5895ca9b38137ecdaa5d158eb5af32370e20a8bd2ad5b79dc62b8b0b13a1b9e2",
+      "surface": "online",
+      "key": "Matches completed",
+      "category": null,
+      "source": "Matches completed",
+      "content": "Matches completed",
+      "protected": []
+    },
+    {
+      "identity": "9cfcec729f5b37f7054cab05705229f7ba95990f29f97e05926e2f149cda9be0",
+      "surface": "online",
+      "key": "Matches cancelled",
+      "category": null,
+      "source": "Matches cancelled",
+      "content": "Matches cancelled",
+      "protected": []
+    },
+    {
+      "identity": "22fb0ac77ec40d4d982f20e7f5a679c7d8e9c41093be33899f3e5bd2f6dfa7af",
+      "surface": "online",
+      "key": "{value0} publications",
+      "category": null,
+      "source": "{value0} publications",
+      "content": "__G2P0__ publications",
+      "protected": [
+        "{value0}"
+      ]
+    },
+    {
+      "identity": "c67bb9f205ae5ae877d78ef1c862c361e13e9c2f437b0e06a48723d09555a968",
+      "surface": "online",
+      "key": "{value0} recorded downloads",
+      "category": null,
+      "source": "{value0} recorded downloads",
+      "content": "__G2P0__ recorded downloads",
+      "protected": [
+        "{value0}"
+      ]
+    },
+    {
+      "identity": "65d561276379e5b0debab48241e3c4cbdb640654dd6a75fe6de6f9284acfbbe9",
+      "surface": "online",
+      "key": "{value0} completion time (seconds)",
+      "category": null,
+      "source": "{value0} completion time (seconds)",
+      "content": "__G2P0__ completion time (seconds)",
+      "protected": [
+        "{value0}"
+      ]
+    },
+    {
+      "identity": "02ec69c8214aa6f9975caf60e5db1e5e392dd65c0245e126aee67d95239f1591",
+      "surface": "online",
+      "key": "{value0} completion samples",
+      "category": null,
+      "source": "{value0} completion samples",
+      "content": "__G2P0__ completion samples",
+      "protected": [
+        "{value0}"
+      ]
+    }
+  ]
+}

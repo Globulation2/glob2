@@ -1,0 +1,64 @@
+{
+  "final_code_sha": "60cd4d96a6b7de6e883e05074753003d6896d61f",
+  "purpose": "Raw Google request/response provenance for requests204–207 after immutable5cae baseline; no credentials or cache files. Complete earlier203requests remain in baseline.",
+  "project": "bradley-personal-20261027",
+  "requests_total": 207,
+  "reserved_characters": 250041,
+  "gross_estimated_usd": 5.00082,
+  "files": [
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/ledger.json",
+      "filename": "ledger.json",
+      "sha256": "e23a19aaaed16076612b1cc491f9a53b18506105bbd0da027a847f795f51285a",
+      "bytes": 34521
+    },
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/requests/00204.json",
+      "filename": "requests-00204.json",
+      "sha256": "5f0e8c2dcf40eb5c5f88c45fe266230870c3fdca3df3c5d1059f69fc37a91d62",
+      "bytes": 21556
+    },
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/requests/00205.json",
+      "filename": "requests-00205.json",
+      "sha256": "971c1f16a39c011abcbc3f233b736e02a8ebf1704da127878304ec0528cc00d4",
+      "bytes": 13280
+    },
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/requests/00206.json",
+      "filename": "requests-00206.json",
+      "sha256": "3dc9fefab2aa312bd13390676410b27e53f3713d3b6f1a87761d3ac34ef180ca",
+      "bytes": 13280
+    },
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/requests/00207.json",
+      "filename": "requests-00207.json",
+      "sha256": "bdc82a4daf0978586b9a38c55360485102ef70fda093fe533e2b36efe1ca00d8",
+      "bytes": 642
+    },
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/responses/00204.json",
+      "filename": "responses-00204.json",
+      "sha256": "5632b8f876a0675529ab67513f0e7a0f4aca9de1c56eea4bc85651e0804ea721",
+      "bytes": 14180
+    },
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/responses/00205.json",
+      "filename": "responses-00205.json",
+      "sha256": "7382376da118affc59c28fdc2add0674c72f49f58838ffe8a7a74a631f98b8a4",
+      "bytes": 5343
+    },
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/responses/00206.json",
+      "filename": "responses-00206.json",
+      "sha256": "6f7213b88a142f8b5748effe2c7743a322caaa9a30c6b779e5ff46dbbb61a08c",
+      "bytes": 7922
+    },
+    {
+      "source_path": "artifacts/localization-ta/google-nmt/responses/00207.json",
+      "filename": "responses-00207.json",
+      "sha256": "8f4f3d74a7d5b57c5e5bd8e3a53cafdb5de94db5c06df84ebfeaa18a6da4f71d",
+      "bytes": 273
+    }
+  ]
+}

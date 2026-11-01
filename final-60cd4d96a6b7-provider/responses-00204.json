@@ -1,0 +1,224 @@
+{
+  "translations": [
+    {
+      "translatedText": "கோப்பு மற்றும் API சுயவிவரம்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தொடரியல் மற்றும் சுயவிவரக் கட்டுப்பாடுகள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தொடக்கம் மற்றும் திரும்ப அழைத்தல்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "நிலையான நிலை",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "விதைக்கப்பட்ட விளையாட்டு",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "மீண்டும் செய்யக்கூடிய உருவகப்படுத்துதல்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "சேமித்து மீண்டும் தொடரவும்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "ஒரு வீரருக்கும் தொடர் ஓட்டத்திற்கும் இடையிலான இருவழிப் பயணம். ஒரு போட்டிக்கு முன்பு (விரைவுப் போட்டி, தொடக்க சரிபார்ப்புப் பட்டியல்), இது அப்பகுதியைப் பற்றிய ஒரு ஆய்வு, ஒரு மதிப்பீடு ஆகும்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தாமதம்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "உங்கள் உள்ளீட்டுத் தாமதம்: நீங்கள் கிளிக் செய்ததிலிருந்து அது நிகழும் வரை, அனைவருக்கும். உங்கள் பிங்கில் பாதி மற்றும் ஜிட்டருக்கு எதிராக உங்கள் கேம் வைத்திருக்கும் இடையக நேரம்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "ஒரு வீரரின் ஆட்டம், போட்டி நேரத்தை விட எவ்வளவு பின்தங்கியுள்ளது என்பதைக் குறிக்கும். ஒரு வினாடிக்கும் குறைவாக இருப்பது இயல்பானது (அதில் அவரது தாமதமும் அடங்கும்); 2 வினாடிகள் தாமதமானால், ரிலே கருவி அந்த வீரரை மெதுவாக விளையாடுவதாகக் குறிக்கும்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "AI வீரர்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "நிதி",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "கணக்குகள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தணிக்கை",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "1 மணி நேரம்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "1 நாள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "1 வாரம்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "30 நாட்கள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "இசைக் கட்டமைப்பையும் அதன் வளர்ச்சியையும் கூர்ந்து கவனியுங்கள்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "மூன்று மனநிலைகளும் சரியாக இயங்குகின்றனவா என்று சரிபார்க்கவும்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "மனநிலைகளுக்கு இடையில் ஒலியளவில் ஏற்படும் எதிர்பாராத ஏற்ற இறக்கங்களைக் கவனியுங்கள்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "லூப் மீண்டும் இயங்கும்போது ஏற்படும் கிளிக் சத்தம், இடைவெளி அல்லது திடீர் மாற்றத்தைக் கூர்ந்து கவனியுங்கள்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "மிகவும் இயந்திரத்தனமாக மீண்டும் மீண்டும் வரும் சிறிய சொற்றொடர்களைக் கவனமாகக் கேளுங்கள்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "மனநிலைகளை மாற்றி, தாளம் அல்லது இசை இணக்கத்தில் ஏற்படும் மாற்றங்களைக் கூர்ந்து கவனியுங்கள்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "கட்டடப் பணிகளும் சண்டையும் அமைதியிலிருந்து வேறுபட்டுத் தோன்றுகிறதா என்று சரிபார்க்கவும்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "அமைதியான பகுதிகளில் சீறல் அல்லது கீறல் போன்ற சத்தம் கேட்கிறதா என்று கவனியுங்கள்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தெளிவற்ற பேஸ் அல்லது கடுமையான உயர் அதிர்வெண்களைக் கவனியுங்கள்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "விளையாட்டு ஒலியுடன் அமைதியான பகுதிகளும் தொடர்ந்து கேட்கின்றனவா என்பதைச் சரிபார்க்கவும்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "எதிர்பாராத விதமாகத் தடைபடும் இசைக்குறிப்புகளைக் கவனமாகக் கேளுங்கள்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "பொது: பட்டியலில் இடம்பெற்றுள்ளது",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "பட்டியலிடப்படாதவர்: இணைப்பு உள்ள எவரும்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தனிப்பட்டது: நீங்கள் மட்டும்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "சர்வர் இந்தப் போட்டியை மீண்டும் இயக்கிப் பார்த்தது, மேலும் ஒவ்வொரு வீரரின் ஆட்டமும் அதனுடன் ஒத்துப்போனது.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "சேவையகம் இந்தப் போட்டியைச் சரிபார்த்துக் கொண்டிருக்கிறது. சரிபார்க்கப்பட்டவுடன் மதிப்பீடுகள் மாறும்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "ஒரு ஆட்டக்காரரின் ஆட்டம், போட்டியின் சேவையகத்தின் மறுஒளிபரப்புடன் முரண்பட்டது; சேவையகத்தின் முடிவே கணக்கில் எடுத்துக்கொள்ளப்படும்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "சேவையகத்தால் இந்தப் போட்டியை மீண்டும் உருவாக்க முடியவில்லை, எனவே மதிப்பீட்டில் எந்த மாற்றமும் இல்லை.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "இந்தப் பொருத்தம் சரிபார்க்கப்படவில்லை.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "சேவையகத்தால் இந்தப் போட்டியின் சரிபார்ப்பை முடிக்க முடியவில்லை, எனவே தற்போதைக்கு மதிப்பீட்டில் எந்த மாற்றமும் இல்லை. நிர்வாகி ஒருவர் இந்தச் சரிபார்ப்பை மீண்டும் இயக்கலாம்.",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "நேரடி கொடுப்பனவுகள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "சோதனை கொடுப்பனவுகள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "வகைப்படுத்தப்படாத கொடுப்பனவுகள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தற்போதைய காலம்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "முந்தைய காலம்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "கடன் மானியம்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "திரும்பப் பெறப்பட்ட வரவுகள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தகராறு",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "தகராறு முடிந்தது",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "போட்டிகள் தொடங்கின",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "போட்டிகள் நிறைவடைந்தன",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "போட்டிகள் ரத்து",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "__G2P0__ வெளியீடுகள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "__G2P0__ பதிவுசெய்யப்பட்ட பதிவிறக்கங்கள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "__G2P0__ நிறைவு நேரம் (வினாடிகள்)",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    },
+    {
+      "translatedText": "G2P0 நிறைவு மாதிரிகள்",
+      "model": "projects/888234813688/locations/global/models/general/nmt"
+    }
+  ]
+}
