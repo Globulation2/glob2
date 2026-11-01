@@ -4,9 +4,9 @@
 #include "TeamStatChart.h"
 #include "TeamDisplay.h"
 #include "UnitConsts.h"
+#include <GraphicContext.h>
 #include <FormatableString.h>
 #include <GestureScroll.h>
-#include <GraphicContext.h>
 #include <algorithm>
 #include <cmath>
 #include <sstream>

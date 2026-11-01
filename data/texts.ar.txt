@@ -6820,3 +6820,5 @@ GL فقط
 الرسائل ▸
 [Camp-site amount]
 عدد المخيمات
+[AI for all computer colonies]
+الذكاء الاصطناعي لكل المستعمرات التي يديرها الحاسوب

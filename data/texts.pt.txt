@@ -6820,3 +6820,5 @@ Quantidade de peixes
 Mensagens ▸
 [Camp-site amount]
 Número de acampamentos
+[AI for all computer colonies]
+IA para todas as colónias controladas pelo computador

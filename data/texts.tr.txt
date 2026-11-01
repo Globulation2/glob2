@@ -6820,3 +6820,5 @@ Balık miktarı
 İletiler ▸
 [Camp-site amount]
 Kamp yeri sayısı
+[AI for all computer colonies]
+Bilgisayar kontrollü tüm koloniler için yapay zekâ

@@ -6820,3 +6820,5 @@ Nyasi kavu
 Mchanga wa matuta
 [pale_sand]
 Mchanga wa rangi hafifu
+[AI for all computer colonies]
+AI kwa makoloni yote ya kompyuta
