@@ -316,7 +316,7 @@ occur after the measured phases. This is a bounded component benchmark, not a
 statistical gameplay comparison or proof of no regression against the old engine.
 Run it on an otherwise idle host, separately from builds and tournaments.
 
-The five explicit-design generator regressions use
+The explicit-design generator regressions use
 `test/map-generator-resource-epoch.json` to separate topology from initial stock.
 Resource epoch 1 removes resource-sprite draws from the simulation RNG; historical
 full hashes are retained, while new full hashes include the resulting stock
@@ -324,7 +324,7 @@ quantities. Topology hashes still cover every underlying/render terrain tile,
 resource identity/location, and colony start. A stock-only change cannot silently
 approve a changed route or deposit layout.
 
-To record an epoch row, first generate the five historical explicit designs with
+To record an epoch row, first generate the historical explicit designs with
 the archived engine (256², four teams, seed 1: maze `cell-shape=0`, fingerprint
 `pattern=0,barrier=0`, canals `block-shape=0`, caravanserai `desert=1`, honeycomb-isle
 `block-shape=1`). Keep their `.map.gz` files under their generator names in an
@@ -333,9 +333,12 @@ absolute directory and run the `MapGeneratorDefaults/Explicit designs*` test.
 Recording verifies the historical full hashes and compares topology before writing
 an `epoch1-<platform>.json` artifact. Review every comparison before copying rows
 into the fixture. Record other platform/compiler variants on those actual builds;
-unavailable full hashes produce an explicit unverified warning. The four designs
-whose historical full hashes matched across platforms retain portable topology
-checks; Fingerprint's known platform variant requires its own recorded topology.
+unavailable full hashes produce an explicit unverified warning. Retained portable
+references still check historical topology; Fingerprint requires its own platform
+reference. Honeycomb's redesigned layout is covered by revisioned generator goldens.
+Caravanserai's physical route repair intentionally changes resource placement, so
+its current platform references replace the historical topology check. Archived
+comparison records that difference without asserting historical equality for it.
 
 ### Generator fingerprint verification and observations
 
@@ -349,7 +352,7 @@ raw logs, normalized rows, checkout provenance, host compiler, stable binary has
 current/historical fixture hashes. Collection does not update expected output or
 replace the strict `--require-rows` gate. The macOS validation job runs that gate
 against its accepted platform rows before collecting observations; both checks
-and the five explicit-design checks are attempted even if another fails. Missing
+and the explicit-design checks are attempted even if another fails. Missing
 rows and full fingerprint changes fail verification. It uploads these
 observations as `generator-observations-macos`. The collector cannot infer the
 binary's build inputs from the checkout; its manifest marks that association
@@ -363,7 +366,7 @@ require investigation before acceptance. Agreement still does not establish
 historical topology preservation: independently verify against archived pre-epoch
 maps before adding new expected rows or the resource-epoch design hashes.
 
-The macOS job also runs the five explicit-design resource-epoch checks separately
+The macOS job also runs the explicit-design resource-epoch checks separately
 and retains `resource-design-observations.json` with every actual full and topology
 hash. Existing accepted-platform and portable-topology assertions still run;
 unverified full hashes are marked as observations, and the record distinguishes
