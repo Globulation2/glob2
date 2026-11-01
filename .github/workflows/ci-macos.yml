@@ -68,9 +68,11 @@ jobs:
           openssl="$(brew --prefix openssl@3)"
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          test_targets="engine-tests map-generator-golden-test"
           preview_target=""
           if test "${{ inputs.desktop_localization }}" = true; then
             preview_target="translation-preview-harness bundle"
+            test_targets=""
             export PKG_CONFIG_PATH="$PWD/build/sdl3-ci/prefix/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
             for library in webp webpdemux webpmux sharpyuv; do
               test -f "$PWD/build/sdl3-ci/prefix/lib/lib$library.a"
@@ -80,8 +82,15 @@ jobs:
             done
           fi
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 $preview_target \
-            build/darwin/client/release/src/glob2 unit-tests engine-tests map-generator-golden-test \
+            build/darwin/client/release/src/glob2 unit-tests $test_targets \
             CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib"
+      - name: Check focused native layout bidi and text metrics cases
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build.outcome == 'success' }}
+        run: |
+          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          python3 test/run_tests.py --binary unit --build-dir build/darwin/client/release \
+            --filter 'UILayout/*' --filter 'BidiText/*' --filter 'TextMetrics/*' \
+            --jobs 1 --timeout 180 --junit artifacts/localization-macos-tests/unit-junit.xml
       - name: Capture actual registered Thai menus and gameplay on macOS
         if: ${{ !cancelled() && inputs.desktop_localization && steps.build.outcome == 'success' }}
         run: |
@@ -94,9 +103,12 @@ jobs:
         if: ${{ always() && inputs.desktop_localization }}
         with:
           name: localization-macos
-          path: artifacts/localization-macos/
+          path: |
+            artifacts/localization-macos/
+            artifacts/localization-macos-tests/
           if-no-files-found: error
       - name: Execute selected regression cases and continuation
+        if: ${{ !inputs.desktop_localization }}
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
           python3 test/ci_run_commands.py \
@@ -104,14 +116,14 @@ jobs:
             --check 'unit tests' 'python3 test/run_tests.py --binary unit --build-dir build/darwin/client/release --no-display --junit artifacts/tests/unit-junit.xml' \
             --check 'CLI continuation' 'python3 test/test_cli_smoke.py --binary build/darwin/client/release/src/glob2 --artifacts artifacts/cli-smoke'
       - name: Retain native simulation and scripting evidence
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && !inputs.desktop_localization && steps.build.outcome == 'success' }}
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
           python3 test/run-browser-determinism.py build/darwin/client/release/src/glob2 artifacts/browser-determinism --engine-binary build/darwin/client/release/test/glob2-engine-tests
           python3 test/check_javascript.py build/darwin/client/release/src/glob2 --output artifacts/javascript-profile
           python3 test/check_javascript_corpus.py --build-dir build/darwin/client/release --output artifacts/javascript-corpus
       - name: Verify accepted generator fingerprints and retain observations
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && !inputs.desktop_localization && steps.build.outcome == 'success' }}
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
           mkdir -p artifacts/generator-check-profile
@@ -120,19 +132,19 @@ jobs:
             --check 'generator fingerprints' 'python3 test/collect_generator_evidence.py collect build/darwin/client/release/src/MapGeneratorGoldenTest artifacts/generator-evidence --platform macos-arm64' \
             --check 'resource design fingerprints' "python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release --in-process --no-display --filter 'MapGeneratorDefaults/Explicit designs preserve topology*' --artifacts artifacts/generator-evidence/designs --junit artifacts/generator-evidence/designs-junit.xml"
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && !inputs.desktop_localization }}
         with:
           name: generator-observations-macos
           path: artifacts/generator-evidence/
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && !inputs.desktop_localization }}
         with:
           name: browser-determinism-macos
           path: artifacts/browser-determinism/
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && !inputs.desktop_localization }}
         with:
           name: javascript-profile-macos
           path: |
@@ -140,7 +152,7 @@ jobs:
             artifacts/javascript-profile/
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && !inputs.desktop_localization }}
         with:
           name: native-macos-validation
           path: |

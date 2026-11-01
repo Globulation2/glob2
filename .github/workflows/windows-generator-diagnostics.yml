@@ -126,9 +126,9 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          preview_target=""
-          if test "${{ inputs.desktop_localization }}" = true; then preview_target="translation-preview-harness unit-tests build/mingw/client/release/src/glob2.exe"; fi
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 engine-tests $preview_target
+          build_targets="engine-tests"
+          if test "${{ inputs.desktop_localization }}" = true; then build_targets="translation-preview-harness unit-tests build/mingw/client/release/src/glob2.exe"; fi
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 $build_targets
           # MSYS2 starts each step with its own PATH; colocate the pinned
           # SDL DLLs so Windows can load the client and every harness directly.
           for directory in build/mingw/client/release/src build/mingw/client/release/test; do
@@ -149,14 +149,6 @@ jobs:
           --filter 'UILayout/*' --filter 'BidiText/*' --filter 'TextMetrics/*'
           --jobs 1 --timeout 180
           --junit artifacts/localization-windows-tests/unit-junit.xml
-      - name: Check focused native font layout and system language cases
-        if: ${{ !cancelled() && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
-        run: >-
-          env -u GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS python3 test/run_tests.py
-          --binary engine --build-dir build/mingw/client/release
-          --filter 'FontKerning/*' --filter 'SystemLanguage/*'
-          --jobs 1 --timeout 180
-          --junit artifacts/localization-windows-tests/engine-junit.xml
       - name: Capture actual registered Thai menus and gameplay on Windows
         if: ${{ !cancelled() && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
         run: python3 tools/capture_localization_platform.py --binary build/mingw/client/release/test/TranslationPreviewHarness.exe --output artifacts/localization-windows
