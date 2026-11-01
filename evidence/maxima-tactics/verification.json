@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "tested_commit": "ae6c748844f58fbfef8003f5e8ca3e08ef4b6c91",
+  "base": "738dd459f140addf4f817c13fc480c7363f0784a",
+  "fetched_master": "738dd459f140addf4f817c13fc480c7363f0784a",
+  "native": {
+    "total": 584,
+    "passed": 583,
+    "skipped": 1,
+    "failed": 0
+  },
+  "source_policy": {
+    "passed": 59,
+    "skipped": 2
+  },
+  "analyzer_tests_passed": 14,
+  "binary_sha256": "636e4603719f5ce1d801882fd4175007b81d68614559b6322357b949a00b709e",
+  "golden_record_sha256": "64cfc076a33e31a6f8baeed075226d4ae0ac2bb4245d52fe47c8522939860367",
+  "golden_trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "environment": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "compiler": "13.3.0"
+  },
+  "build_command": [
+    "python3",
+    "tools/dev_build.py",
+    "dev_fast=0",
+    "linker=default",
+    "release=1",
+    "client_profile=full",
+    "-j8",
+    "build/linux/client/release/client-full-direct-1111/src/glob2",
+    "unit-tests",
+    "engine-tests",
+    "build/linux/client/release/client-full-direct-1111/include/glob2/TestBuildProvenance.h"
+  ],
+  "build_environment": {
+    "GLOB2_SDL3_PREFIX": "/home/bradley/glob2/build/sdl3/prefix"
+  },
+  "save_format": 189,
+  "minimum_save_floor": 58,
+  "replay_floor": 187,
+  "network_protocol": 73,
+  "sim_revision": 108,
+  "limitations": [
+    "Other OS/architecture checksum comparisons unavailable",
+    "GPU execution unavailable",
+    "Maintainer play-through outstanding",
+    "Proximity preference has correctness coverage, not a tournament efficacy measurement"
+  ]
+}
