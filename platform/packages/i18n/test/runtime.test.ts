@@ -64,8 +64,14 @@ describe('online locale resolution', () => {
     expect(localeFromCookie('glob2_locale=%')).toBeUndefined();
     expect(localeFromCookie('glob2_locale=<script>')).toBeUndefined();
   });
-  it('respects written scripts for installed Hindi, Urdu and Swahili catalogs', () => {
+  it('respects written scripts for installed Devanagari, Urdu and Swahili catalogs', () => {
     expect(resolveLocale('hi-Deva-IN')).toBe('hi');
+    expect(resolveLocale('mr')).toBe('mr');
+    expect(resolveLocale('mr-IN')).toBe('mr');
+    expect(resolveLocale('mr-Deva-IN')).toBe('mr');
+    expect(resolveLocale(['mr-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('mr-u-nu-latn')).toBe('mr');
+    expect(resolveLocale('mr-x-arab')).toBe('mr');
     expect(resolveLocale(['hi-Latn', 'fr'])).toBe('fr');
     expect(resolveLocale('hi-u-nu-latn')).toBe('hi');
     expect(resolveLocale('hi-x-arab')).toBe('hi');
@@ -174,6 +180,21 @@ describe('message presentation', () => {
     const date = new Date('2026-10-31T00:00:00Z');
     const options = { dateStyle: 'long', timeZone: 'UTC' } as const;
     expect(formatDate(date, options)).toBe(new Intl.DateTimeFormat('fil', options).format(date));
+  });
+  it('uses Marathi plural categories and localized counts', async () => {
+    registerCatalog('mr', {
+      '{count} item': { one: '{count} एक', other: '{count} अनेक' },
+    });
+    await setLocale('mr');
+    expect(new Intl.PluralRules('mr').resolvedOptions().pluralCategories.sort()).toEqual([
+      'one',
+      'other',
+    ]);
+    for (const count of [0, 1, 2, 12, 1.5]) {
+      expect(tp('{count} item', '{count} items', count)).toBe(
+        `${new Intl.NumberFormat('mr').format(count)} ${count === 1 ? 'एक' : 'अनेक'}`,
+      );
+    }
   });
   it('notifies subscribers and formats with the selected locale', async () => {
     registerCatalog('de', {});
@@ -286,9 +307,10 @@ describe('startup loading and presentation', () => {
     runtime.configureCatalogLoader(async () => ({}));
     await runtime.initialize();
     expect(browserScope.document.documentElement.dir).toBe('rtl');
-    await runtime.setLocale('en');
-    expect(browserScope.document.documentElement.lang).toBe('en');
+    await runtime.setLocale('mr');
+    expect(browserScope.document.documentElement.lang).toBe('mr');
     expect(browserScope.document.documentElement.dir).toBe('ltr');
+    expect(browserScope.document.cookie).toContain('glob2_locale=mr');
   });
   it('English also hides unknown raw diagnostics while showing known public errors', async () => {
     const runtime = await fresh('glob2_locale=en');
