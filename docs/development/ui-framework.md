@@ -123,6 +123,10 @@ original mission IDs. Unrecognized custom text is displayed as authored. Legacy 
 history messages use the shared UTF-8 wrapper, including unspaced CJK text and
 explicit line breaks.
 
+Player-name entry retains the existing 32-byte limit. `Settings::setUsername`
+truncates only at UTF-8 codepoint boundaries, including for command-line names;
+preference loading and game/network name serialization keep their existing formats.
+
 The JSON tutorial inventory distinguishes legacy language blocks from current
 `display_catalog_gaps`. Generator/building/resource names and keyboard names
 built from runtime data and unregistered wrappers still need contextual review.

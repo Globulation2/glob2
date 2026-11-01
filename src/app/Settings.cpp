@@ -14,6 +14,7 @@
 #include <StringTable.h>
 #include <string>
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <iterator>
 #include <StreamBackend.h>
@@ -109,7 +110,13 @@ void Settings::setGraphicsDetail(bool full)
 }
 
 std::string Settings::getUsername() { return username; }
-void Settings::setUsername(std::string s) { username.assign(s, 0, BasePlayer::MAX_NAME_LENGTH); }
+void Settings::setUsername(std::string s)
+{
+	// Keep the existing byte limit without cutting a multi-byte character.
+	std::array<char, BasePlayer::MAX_NAME_LENGTH + 1> bounded;
+	const auto length = SDL_utf8strlcpy(bounded.data(), s.c_str(), bounded.size());
+	username.assign(bounded.data(), length);
+}
 
 void Settings::setTextSizePercent(int percent)
 {

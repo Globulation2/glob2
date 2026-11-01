@@ -11,6 +11,8 @@
 #include <FileManager.h>
 #include <fstream>
 #include <array>
+#include <utility>
+#include <vector>
 
 namespace
 {
@@ -21,6 +23,41 @@ const std::array<bool Settings::*, 8> effects = {
 }
 TEST_SUITE("SettingsGraphics")
 {
+    TEST_CASE("player names preserve UTF-8 boundaries and saved Telugu preferences [writes-preferences]")
+    {
+        glob2test::HeadlessGlobals globals;
+        Settings settings;
+        const std::vector<std::pair<std::string, std::string>> cases = {
+            {"", ""}, {"ASCII player", "ASCII player"}, {"తెలుగు", "తెలుగు"},
+            {"తెలుగు పరీక్ష", "తెలుగు పరీక"},
+            {std::string(32, 'a'), std::string(32, 'a')},
+            {std::string(33, 'a'), std::string(32, 'a')},
+            {std::string(29, 'a') + "గ", std::string(29, 'a') + "గ"},
+            {std::string(31, 'a') + "é", std::string(31, 'a')},
+            {std::string(31, 'a') + "😀", std::string(31, 'a')}
+        };
+        for (const auto &[input, expected] : cases)
+        {
+            settings.setUsername(input);
+            const auto name = settings.getUsername();
+            CHECK(name == expected);
+            CHECK(name.size() <= BasePlayer::MAX_NAME_LENGTH);
+            const char *cursor = name.c_str();
+            std::size_t remaining = name.size();
+            while (remaining)
+                CHECK(SDL_StepUTF8(&cursor, &remaining) != SDL_INVALID_UNICODE_CODEPOINT);
+        }
+        settings.setUsername("తెలుగు పరీక్ష");
+        settings.language = "te";
+        const std::string file = "telugu-player-preferences.txt";
+        REQUIRE(settings.save(file));
+        Settings loaded;
+        loaded.load(file);
+        CHECK(loaded.getUsername() == "తెలుగు పరీక");
+        CHECK(loaded.language == "te");
+        std::filesystem::remove(std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file);
+    }
+
     TEST_CASE("retired gradient verification preference is ignored and CLI options are rejected")
     {
         glob2test::HeadlessGlobals globals;
