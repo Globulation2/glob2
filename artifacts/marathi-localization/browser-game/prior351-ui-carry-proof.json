@@ -1,0 +1,54 @@
+{
+  "previous_validated_revision": "351a89e9f3cad5ba4473478e96a7dfa1b3658b78",
+  "current_runtime_source_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "previous_actual_coverage": "12PASS across3engines\u00d72variants\u00d72sizes; exact previous frozen gate/evidence retained under validated-browser-351/evidence.",
+  "carry_scope": "Unchanged Marathi main/settings/AI prose/tutorial/persistence flows and script-font assets. This is explicit input/behavior carry, not a claim that12cases were freshly rerun.",
+  "unchanged_inputs": [
+    {
+      "path": "browser/tests/marathi.spec.js",
+      "sha256": "f1c95c83c177caa039555aa516205d11227a8e1ba653a1b4e1dc3b48ce5e253f",
+      "bytes_unchanged": true
+    },
+    {
+      "path": "browser/tests/main-menu.js",
+      "sha256": "15bda955d941567db8d6a7d7a2aface1233d6e62d9c3ba030f18e2e1d8b4518f",
+      "bytes_unchanged": true
+    },
+    {
+      "path": "browser/tests/pixels.js",
+      "sha256": "ac0502922779fc9672e5542a896ea442daa8f6f7e7d3d7112de7352721ad0f56",
+      "bytes_unchanged": true
+    },
+    {
+      "path": "data/texts.mr.txt",
+      "sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+      "bytes_unchanged": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "bytes_unchanged": true
+    },
+    {
+      "path": "data/fonts/scripts/manifest.json",
+      "sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "bytes_unchanged": true
+    }
+  ],
+  "src_ui_changed_paths": [],
+  "shared_changes_requiring_fresh_checks": {
+    "browser/i18n.js": "Current39locale registration and current2947MR browser catalog package audit; actual startup/selector3cases.",
+    "libgag/src/TrueTypeFont.cpp": "Actual diff only adds language==ms to existing authoredDrawWidth predicate; Marathi scripts path remains true.",
+    "platform/packages/i18n/src/index.ts": "Malay registration plus reject-any-incompatible-script-subtag normalization; fresh actualMRcookie/currentregistry startup.",
+    "src/hud/InGameStatistics.cpp": "Narrow Overview now occupies its own topic row; fresh actualdesktop+phone statistics screenshots/manualinspection required."
+  },
+  "fresh_planned_checks": [
+    "6full-golden per-tick comparisons, serial/threaded in3engines",
+    "3representativeMRUIcases:Chromiumserialdesktop,Firefoxthreadedphone,WebKitthreadeddesktop"
+  ],
+  "not_claimed": [
+    "Fresh12-case fullmatrix",
+    "CurrentWASM-specificMRSGSLunitrun",
+    "Expanded1500tick/threadpool orsharedscriptingcorpus run"
+  ]
+}

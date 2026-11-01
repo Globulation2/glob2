@@ -1,0 +1,118 @@
+{
+  "display_environment": {
+    "SDL_VIDEO_DRIVER": "x11",
+    "SDL_VIDEODRIVER": "x11",
+    "XDG_SESSION_TYPE": "x11",
+    "ownership": "Runner-owned Xvfb, replacing inherited desktop DISPLAY"
+  },
+  "source": {
+    "locale": "mr",
+    "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+    "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+    "source_files": {
+      "data/texts.keys.txt": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+      "data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+      "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+      "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+      "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+    },
+    "original_catalog_sha256": {
+      "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+      "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+    },
+    "preview_catalog_sha256": {
+      "native": "ef10126800d525ad9963c42fe9bde2c975ddb7d03b067d255443017ef9cdb295",
+      "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+    },
+    "catalog_status": {
+      "native": "Complete independent semantic, editorial and adversarial reviews, with actual16-key final rereads and exact unchanged-old-value carry proofs",
+      "online": "Complete independent semantic, editorial and adversarial reviews, with actual16-key final rereads and exact unchanged-old-value carry proofs"
+    },
+    "limits": "Full canonical-value draft overlay in desktop production harness; registration/package startup is verified separately."
+  },
+  "binaries": {
+    "official": {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/TranslationPreviewHarness-stripped",
+      "sha256": "24eb9f5fdb3be8e294ce8caad53da68590b823865b6d301f4a0a5ef84a94d549"
+    },
+    "adapter": {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/ExtraPreviewHarness-v2-stripped",
+      "sha256": "f199e3c91f07d95e4090eb0aaa9d03af71311a738ab027968bbb6adf1803f82a"
+    }
+  },
+  "capture_wrapper_source": {
+    "base_adapter": "ExtraPreviewHarness.cpp",
+    "base_sha256": "c7e0e305251e5a05a6bf652006c2023e3dd2c22e96f703029ea36c85aac8acac",
+    "adapter": "artifacts/marathi-localization/integration-bc8/native/ExtraPreviewHarness-v2.cpp",
+    "adapter_sha256": "40a344505ef97ce47e06be46dbb6850c3e66e93b6679aabd0ff0cdcfc4b9e58d",
+    "purpose": "Refine actual UI fixture coverage, preserving first completed captures as distinct valid dock/hidden-lens states.",
+    "refinements": [
+      "Select the actual portable renderer for phone fixture; production editor deliberately requires it for the phone tray. Match MapEditorScreen responsive viewport policy.",
+      "Set the real statistics display mode before opening compact overlay lenses, matching lensVisible predicate.",
+      "After expanding actual unit-details control, align it to scroll top so real unit breakdown rows are visible."
+    ],
+    "unchanged": "No shipping/test source, catalog, simulation values, map paint/save or completed-match claims changed."
+  },
+  "jobs": [
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "name": "gameplay-extra",
+      "mode": "game",
+      "kind": "gameplay",
+      "producer": "adapter",
+      "command": [
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/ExtraPreviewHarness-v2-stripped",
+        "game",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-extra-clean64/refined/1280x900/gameplay-extra",
+        "1280",
+        "900",
+        "gameplay"
+      ],
+      "returncode": 0,
+      "seconds": 56.52,
+      "output": "1280x900/gameplay-extra"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "gameplay-extra",
+      "mode": "game",
+      "kind": "gameplay",
+      "producer": "adapter",
+      "command": [
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/ExtraPreviewHarness-v2-stripped",
+        "game",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-extra-clean64/refined/390x844/gameplay-extra",
+        "390",
+        "844",
+        "gameplay"
+      ],
+      "returncode": 0,
+      "seconds": 75.39,
+      "output": "390x844/gameplay-extra"
+    }
+  ],
+  "evidence_byte_cap": 2147483648,
+  "minimum_free_bytes": 2147483648,
+  "deadlines_seconds": {
+    "matrix": 600,
+    "screen": 240,
+    "tutorial": 300,
+    "gameplay_with_results_fixture": 600
+  },
+  "limits": [
+    "Current production native/harness renderer; full-value overlay equals registered 3411 native values.",
+    "Results screen is a production rendering fixture from a loaded game; no sampled values are injected and no match completion is claimed.",
+    "Phone post-game metric dropdown is distinct from live compact stats, which deliberately exclude win probability.",
+    "Fresh full current matrix is recorded separately in native-render-clean64; no stale font measurement carry is claimed."
+  ]
+}

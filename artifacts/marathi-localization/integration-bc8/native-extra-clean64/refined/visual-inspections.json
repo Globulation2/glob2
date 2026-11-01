@@ -1,0 +1,129 @@
+{
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "count": 15,
+  "inspections": [
+    {
+      "path": "1280x900/gameplay-extra/stats-unit-details.png",
+      "sha256": "cabf8ad60093c4d1f9a30c20d3262f70589eb99cda0d2ce0966c648287c03846",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact refined image. The expanded unit-details heading is aligned at the scroll top and the real units/workers/explorers/health/ability rows are visible and clearly shaped. Lower rows are intentionally scrollable, not all claimed visible.",
+      "finding": null
+    },
+    {
+      "path": "1280x900/gameplay-extra/stats-map-overlays.png",
+      "sha256": "836d1927a2400b6a44f06e96e1b0a4aea753d227b82c3a5f70dd232f3b60e96e",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact image. Desktop map-overlay header and all four checkbox labels are fully visible and shaped clearly.",
+      "finding": null
+    },
+    {
+      "path": "1280x900/gameplay-extra/editor-dune_sand.png",
+      "sha256": "2e32f7b2190a95b9f810bf1c01032c643aa470b354759a2f21a6c8485510f8e2",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact image. Actual dune-sand brush is selected. The fixed card intentionally ellipsizes the long caption; its accessible label/tooltip retain the full canonical translation. Search shows the full text in the wide viewport. No broken glyph cluster is visible.",
+      "finding": {
+        "kind": "intentional_card_ellipsis",
+        "translation_issue": false,
+        "details": "Fixed desktop card elides long caption. Full search value/accessibility label/tooltip retain canonical text."
+      }
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-overview.png",
+      "sha256": "4f449263cc5d6c40d67be26d291a9e10e802da19e99c64ac43b332879b6f6a6a",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact image. Overview topic tabs and wrapped summary labels render clearly; the real short session honestly reports insufficient recorded history. Content below the scroll viewport is not claimed visible.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-economy.png",
+      "sha256": "19a73af0cc381d8a29f9eb6aec20d7921b90dc06ca3c95f8083299397f931227",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact image. Economy topic and multi-line worker-time labels retain joined Marathi marks within their rows. Lower content is intentionally scrollable.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-world.png",
+      "sha256": "d1be40215989f46de5051ccfd20b22bcaa69f086cd705c974fa3b3d14635aa47",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact image. World topic/category and actual metric labels render legibly; no fabricated sample curve is shown. Missing-reading hint is legible where visible.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-overview-defence.png",
+      "sha256": "bd4c5e8d64eb0a0ce0bcfd28a562fb1d5531ea2c36da0f794169b91619b8dd3d",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact image. Scrolled Overview exposes complete Work/construction and Defence headings and metric rows. A partial row at the scroll boundary is intentional viewport clipping.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-inline-history.png",
+      "sha256": "dc58bf3ad44b64414e52c6e81cd655dd0bed9a3eb1334103d693b489f3b7037d",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact image. Selected idle-worker metric, inline history area and full-history action render clearly. The actual insufficient-history status is preserved instead of invented readings.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-full-history.png",
+      "sha256": "c28bbb83bb88ace249672afd9ecbd17abee5817648f2e726e6d44dd9c4af26f8",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact image. Production history modal title, minute-window controls, missing-history status, Details and Close controls fit with intact Marathi shaping.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-unit-details.png",
+      "sha256": "5f61db63e6f28d361f6e779c49dc9aefc8ba782e662a68d83b4cc1667201589e",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact refined image. The expanded unit-details heading is aligned at the scroll top and the real units/workers/explorers/health/ability rows are visible and clearly shaped. Lower rows are intentionally scrollable, not all claimed visible.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-map-overlays.png",
+      "sha256": "9efa5ed3bd7719a5133eaf9558cc018a18bc6af4023ecfd253cef6b4a033b719",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact refined image. The real compact lens column is now visible with complete Marathi overlay, history, minimap and chat labels. No missing glyph or broken conjunct is visible.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/editor-lush_grass.png",
+      "sha256": "82dc6be3a0d890f24d7a0b82119f08706da2c308fa67a4c5bc619c08a8eb3884",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact refined image. The actual portable-renderer phone tray displays the complete canonical terrain card caption with intact Marathi shaping; selection changes only the brush, never paints the map. Raw card bounds in gameplay.json are renderer logical coordinates, not physical screenshot pixels.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/editor-dry_grass.png",
+      "sha256": "655fec8d2107ae913dd2d9bf5d3d0749131d381df05b008d40f0f8422220b6aa",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact refined image. The actual portable-renderer phone tray displays the complete canonical terrain card caption with intact Marathi shaping; selection changes only the brush, never paints the map. Raw card bounds in gameplay.json are renderer logical coordinates, not physical screenshot pixels.",
+      "finding": null
+    },
+    {
+      "path": "390x844/gameplay-extra/editor-dune_sand.png",
+      "sha256": "0327cad799466ab0ad4682167d531b639e223887a7d2297203f36f55bf31a6b1",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact refined image. The actual portable-renderer phone tray displays the complete canonical terrain card caption with intact Marathi shaping; selection changes only the brush, never paints the map. Raw card bounds in gameplay.json are renderer logical coordinates, not physical screenshot pixels. The long dune-sand name fits completely in its selected scrolling card. The separate narrow selected-brush status at the top abbreviates/clips its value according to existing toolbar policy; the full card remains visible.",
+      "finding": {
+        "kind": "intentional_narrow_toolbar_truncation",
+        "translation_issue": false,
+        "details": "Full dune card caption is visible. Separate top selected-status field is width-limited; no translation shortening or shipping UI edits made."
+      }
+    },
+    {
+      "path": "390x844/gameplay-extra/editor-pale_sand.png",
+      "sha256": "34c3705a184cb3fdee68550e1cfc327b80bc704b14ea6a7e2afa4c639d5efc60",
+      "reviewer": "/root/draft_tool",
+      "inspection": "Actually inspected this exact refined image. The actual portable-renderer phone tray displays the complete canonical terrain card caption with intact Marathi shaping; selection changes only the brush, never paints the map. Raw card bounds in gameplay.json are renderer logical coordinates, not physical screenshot pixels.",
+      "finding": null
+    }
+  ],
+  "resolved_v1_fixture_gaps": [
+    "Actual compact lenses now visible after correct display-mode navigation.",
+    "Actual compact phone terrain tray now verified with production portable renderer and responsive editor viewport policy.",
+    "Expanded unit details now scrolled into view."
+  ],
+  "limits": [
+    "Only listed exact images actually inspected; no assertion that every image was manually read.",
+    "Fixture reads real partial game history and reports insufficient history honestly; no completed-match or calibrated-prediction claim.",
+    "Desktop/compact host rendering is not native Android/iOS runtime evidence."
+  ]
+}

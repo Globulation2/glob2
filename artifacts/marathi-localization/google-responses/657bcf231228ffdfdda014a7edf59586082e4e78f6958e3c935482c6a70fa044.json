@@ -1,0 +1,23 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "AI for all computer colonies"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "सर्व संगणक वसाहतींसाठी एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "bda66beb565f9f20bbfefa91fbebdc1bf0ace95ca32481a0f79c394807e059db"
+}

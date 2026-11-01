@@ -1,0 +1,54 @@
+{
+  "reviewer": "/root/locale_integration",
+  "mode": "Read-only source/helper semantic review; no browser launched, no competing test, no source edit, no paid APIcall.",
+  "head": "0e6e243e098cf32afbf303937ba4f55384685f37",
+  "file": "browser/tests/marathi.spec.js",
+  "file_sha256": "195bc734c80287b60f258b574251e2fed2b979792f55cf78fdfcc12eeec7c39a",
+  "changed_paths_since_android_producer187": [
+    "browser/tests/marathi.spec.js"
+  ],
+  "references_read_sha256": {
+    "browser/tests/main-menu.js": "15bda955d941567db8d6a7d7a2aface1233d6e62d9c3ba030f18e2e1d8b4518f",
+    "libgag/src/ui/Host.cpp": "35672214310c05c9ecf63a8ee21c17a53cff3796f561d56b896b14caa05028ef",
+    "src/game/screens/CustomGameScreen.cpp": "b843e385ba6c1cd206870b173ef43120052118bc70ea1dbfa4824fa22489c77a",
+    "src/ui/settings/SettingsScreenGeneral.cpp": "43cf6929dbcc023fbb7f200ef31e327bd59f3848c1f35c87ba120fdfb378558c",
+    "src/ui/settings/SettingsScreen.cpp": "efb4ff90107a7f74914bf0d02086980e4cb6496f08978b2a377b8c9ef504e990",
+    "src/tutorial/TutorialGuidance.h": "2898d4b07e8c2de3fbb4ce2770526b59b731f45941942540dc69ae1e9ba6b3f8"
+  },
+  "verdict": "No blocking real-input fixture defect found by static review; actual focused/full browser run remains required.",
+  "findings": [
+    {
+      "severity": "nonblocking-coverage-gap",
+      "location": "browser/tests/marathi.spec.js Help section afterintro/help click",
+      "observation": "Desktop help transition is clicked and captured without asserting keyedintro/help-text presence/content. Phone retainedinstruction assertion is meaningful butdoesnot independently assertHelp explanation.",
+      "recommendation": "Optionally assert expectedMarathi intro/help-text forbothlayouts beforefinalscreenshot; retainexistingphoneinstruction assertion anddo notreplace image review.",
+      "runtime_failure_claim": false
+    }
+  ],
+  "reviewed_flows": [
+    {
+      "flow": "Popup choices",
+      "assessment": "Numericallysorted publishedpopup/N labels exactly matchHost::openPopup buildordering; Host::popupKey mapsHome0/Endcount-1/ArrowUpDownclamped/Enterpick, sonearer-edge navigationcorrect. Popupfilterexcludespopup/scroll. Chosenoptionsareenabledin theseflows. Followupselectedlabelassertionspreserved."
+    },
+    {
+      "flow": "Profileprose scroll",
+      "assessment": "Actualadaptiveprofile screenuses fixedlist+expandeddetails ondesktopandchoiceselector+expandeddetails onphone. RootBox ownsprofile/use dialog; centerpositionrightofoptionallist landsindetails; centralopaquequartercrop excludesfooter/topselector/background. Actualwheelandchangedcropassertionremain, ratherthanjustassertingeventsent. Structuralstaticreviewcannotreplaceactualcapturedcropinspection."
+    },
+    {
+      "flow": "Native settings/persistence",
+      "assessment": "Playercategorynav.5 matchesenum; compactlabel usescurrentlocale. Realpublishedcontrols selected; doneawaited thenpersisted diagnostics, conflictingcookieafterreloadandactualnativeTutoriallabel checkestablishsavednativeprecedence. FreshPlaywrightcontext pertestpreventspriorprofilecontamination."
+    },
+    {
+      "flow": "Tutorial/touch",
+      "assessment": "ActualLessonCatalogfirstlessonclicked, GameSessionandtick>25waited. TouchGuidance Help setshelp=true/collapsed=false andretainsintro/instruction evenwithrecoveryhint; Marathi firstscoutinstructioncontainsexpectedशोध ध्वज. Helpactionremainsoutsidebody scroller onphone. Desktophelpercan scrollinteractiveHelp usingpublishedvisible/rootbounds. No fixedscreenspaceorstateinjection here."
+    },
+    {
+      "flow": "Assets/rendering/errors",
+      "assessment": "ActualVFSnativeMRcatalogbyteSHA vsrepository, DevaTTFSHA vsfontmanifest, inventoryregistration, nativeMarathilabel, selectedcontrolfullvisibilityandinteriorinkcheckremain. HasDarkTextisinkpresence onlyandnotlinguistic/glyphproof; actualscreenshotsstillneeded. Executionmodeandpageerrorassertionsretained."
+    }
+  ],
+  "limits": [
+    "This reviewdoesnot establishbrowsercasePASS, timingstability, physicalmobilecoverage orpixelquality.",
+    "Doesnot broadenunchangedAndroidproducer187claims; currentbrowsertest-onlyheadis0e6."
+  ]
+}

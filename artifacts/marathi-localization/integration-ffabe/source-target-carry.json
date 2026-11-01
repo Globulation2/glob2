@@ -1,0 +1,20 @@
+{
+  "source_revision_before_target_commit": "e564cf26cb156a5474dcb9102a65d64aab18fb85",
+  "old_validation_revision": "351a89e9f3cad5ba4473478e96a7dfa1b3658b78",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "native_key_count": 3411,
+  "native_canonical_bytes_unchanged": true,
+  "old_online_source_target_pairs_unchanged": 2836,
+  "fresh_online_key_count": 111,
+  "online_keys": 2947,
+  "online_variants": 2974,
+  "combined_variants": 6385,
+  "initial_google_full_draft_reconstructed_sha256": "098932c899a5e310f1662aa5c5d385f2820597e9606048f9bdc59c02236ea964",
+  "initial_draft_matches_reviewed_hash": true,
+  "new_english_exceptions": [],
+  "scope": "Exact source/target equality carry, not freshfullcatalogreread. All111newvalues fresh3rolefinalreread. Nativefont branchunchanged byMS-onlypredicate as separatelyaudited; changedstats/registration/compatibility needfreshactualruntime."
+}

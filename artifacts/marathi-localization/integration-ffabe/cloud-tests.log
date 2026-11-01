@@ -1,0 +1,11 @@
+....{"completed_values": 4, "locale": "sw", "project": "test-project", "pending_values": 4, "source_characters": 38, "requests": 1, "cache_hits": 0}
+{"completed_values": 1, "locale": "sw", "project": "test-project", "pending_values": 5, "source_characters": 6031, "requests": 1, "cache_hits": 0}
+..{"completed_values": 0, "locale": "sw", "project": "test-project", "pending_values": 4, "source_characters": 6030, "requests": 0, "cache_hits": 1}
+{"completed_values": 4, "locale": "sw", "project": "test-project", "pending_values": 4, "source_characters": 6030, "requests": 1, "cache_hits": 1}
+{"completed_values": 1, "locale": "sw", "project": "test-project", "pending_values": 1, "source_characters": 12, "requests": 1, "cache_hits": 0}
+{"completed_values": 4, "locale": "sw", "project": "test-project", "pending_values": 4, "source_characters": 38, "requests": 0, "cache_hits": 1}
+....
+----------------------------------------------------------------------
+Ran 10 tests in 0.736s
+
+OK

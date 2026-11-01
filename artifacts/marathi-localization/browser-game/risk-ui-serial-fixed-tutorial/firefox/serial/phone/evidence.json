@@ -1,0 +1,1105 @@
+{
+  "variant": "serial",
+  "device": "phone",
+  "browser": "firefox",
+  "catalogSha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "devanagariFontSha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+  "main": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "software",
+    "renderContext": null,
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "14MainMenuScreen",
+    "screenClass": "14MainMenuScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 0,
+    "frames": 0,
+    "loop": 2193,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 390,
+    "height": 844,
+    "heapBytes": 231997440,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "skipped"
+    },
+    "opened": [],
+    "controls": {
+      "menu/settings": {
+        "x": 318,
+        "y": 224,
+        "w": 48,
+        "h": 48,
+        "visible": {
+          "x": 318,
+          "y": 224,
+          "w": 48,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "सेटिंग्ज",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "menu/3": {
+        "x": 24,
+        "y": 284,
+        "w": 328,
+        "h": 56,
+        "visible": {
+          "x": 24,
+          "y": 284,
+          "w": 328,
+          "h": 56
+        },
+        "enabled": true,
+        "label": "सानुकूल खेळ",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "menu/4": {
+        "x": 24,
+        "y": 348,
+        "w": 328,
+        "h": 56,
+        "visible": {
+          "x": 24,
+          "y": 348,
+          "w": 328,
+          "h": 56
+        },
+        "enabled": true,
+        "label": "ऑनलाइन खेळा",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "menu/0": {
+        "x": 24,
+        "y": 424,
+        "w": 328,
+        "h": 56,
+        "visible": {
+          "x": 24,
+          "y": 424,
+          "w": 328,
+          "h": 56
+        },
+        "enabled": true,
+        "label": "मोहीम",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "menu/2": {
+        "x": 24,
+        "y": 488,
+        "w": 328,
+        "h": 56,
+        "visible": {
+          "x": 24,
+          "y": 488,
+          "w": 328,
+          "h": 56
+        },
+        "enabled": true,
+        "label": "गेम लोड करा",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "menu/1": {
+        "x": 24,
+        "y": 552,
+        "w": 328,
+        "h": 56,
+        "visible": {
+          "x": 24,
+          "y": 552,
+          "w": 328,
+          "h": 56
+        },
+        "enabled": true,
+        "label": "शिकवणी",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "menu/more": {
+        "x": 24,
+        "y": 628,
+        "w": 328,
+        "h": 48,
+        "visible": {
+          "x": 24,
+          "y": 628,
+          "w": 328,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "अधिक",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      }
+    }
+  },
+  "settings": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "software",
+    "renderContext": null,
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "14SettingsScreen",
+    "screenClass": "14SettingsScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 0,
+    "frames": 0,
+    "loop": 2342,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 390,
+    "height": 844,
+    "heapBytes": 231997440,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "skipped"
+    },
+    "opened": [],
+    "controls": {
+      "nav.current": {
+        "x": 12,
+        "y": 12,
+        "w": 366,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 12,
+          "w": 366,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "भाषा आणि खेळाडू",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "player.language": {
+        "x": 12,
+        "y": 172,
+        "w": 366,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 172,
+          "w": 366,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "मराठी",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "player.name": {
+        "x": 12,
+        "y": 296,
+        "w": 366,
+        "h": 48,
+        "visible": {
+          "x": 12,
+          "y": 296,
+          "w": 366,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "web_user",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      },
+      "done": {
+        "x": 263,
+        "y": 784,
+        "w": 115,
+        "h": 48,
+        "visible": {
+          "x": 263,
+          "y": 784,
+          "w": 115,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "पूर्ण झाले",
+        "surface": {
+          "w": 390,
+          "h": 844
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        }
+      }
+    }
+  },
+  "fixedMapRoute": "Actual published tutorial/lesson/0 (fixed authored map), no generated custom map or injected game state.",
+  "statisticsOverview": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "software",
+    "renderContext": null,
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "match",
+    "screenClass": "17GameSessionScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 227,
+    "frames": 106,
+    "loop": 1997,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 390,
+    "height": 844,
+    "heapBytes": 278396928,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "skipped"
+    },
+    "opened": [],
+    "controls": {
+      "intro/destination": {
+        "x": 476,
+        "y": 357,
+        "w": 90,
+        "h": 99,
+        "visible": {
+          "x": 476,
+          "y": 357,
+          "w": 90,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "गंतव्यस्थान दाखवा",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 45,
+          "y": 357,
+          "w": 709,
+          "h": 99
+        }
+      },
+      "intro/help": {
+        "x": 570,
+        "y": 357,
+        "w": 90,
+        "h": 99,
+        "visible": {
+          "x": 570,
+          "y": 357,
+          "w": 90,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "मदत / का?",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 45,
+          "y": 357,
+          "w": 709,
+          "h": 99
+        }
+      },
+      "intro/collapse": {
+        "x": 664,
+        "y": 357,
+        "w": 90,
+        "h": 99,
+        "visible": {
+          "x": 664,
+          "y": 357,
+          "w": 90,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "+",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 45,
+          "y": 357,
+          "w": 709,
+          "h": 99
+        }
+      },
+      "stats/topic/0": {
+        "x": 12,
+        "y": 763,
+        "w": 253,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 763,
+          "w": 253,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "आढावा",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/topic/1": {
+        "x": 273,
+        "y": 763,
+        "w": 253,
+        "h": 99,
+        "visible": {
+          "x": 273,
+          "y": 763,
+          "w": 253,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "वसाहत",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/topic/2": {
+        "x": 534,
+        "y": 763,
+        "w": 254,
+        "h": 99,
+        "visible": {
+          "x": 534,
+          "y": 763,
+          "w": 254,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "अर्थव्यवस्था",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/topic/3": {
+        "x": 12,
+        "y": 870,
+        "w": 384,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 870,
+          "w": 384,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "लष्करी",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/topic/4": {
+        "x": 404,
+        "y": 870,
+        "w": 384,
+        "h": 99,
+        "visible": {
+          "x": 404,
+          "y": 870,
+          "w": 384,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "जग",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/metric/population": {
+        "x": 12,
+        "y": 1037,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 1037,
+          "w": 747,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "लोकसंख्या 0",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/metric/net growth": {
+        "x": 12,
+        "y": 1142,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 1142,
+          "w": 747,
+          "h": 99
+        },
+        "enabled": true,
+        "label": "लोकसंख्या वाढ —",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/inline/chart": {
+        "x": 12,
+        "y": 1305,
+        "w": 747,
+        "h": 308,
+        "visible": {
+          "x": 12,
+          "y": 1305,
+          "w": 747,
+          "h": 304
+        },
+        "enabled": true,
+        "label": "लोकसंख्या: इतिहास पहा",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/full-history/population": {
+        "x": 12,
+        "y": 1621,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 1621,
+          "w": 747,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "संपूर्ण इतिहास उघडा",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/metric/hunger": {
+        "x": 12,
+        "y": 1804,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 1804,
+          "w": 747,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "अन्नसाठा 0%",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/metric/health": {
+        "x": 12,
+        "y": 1909,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 1909,
+          "w": 747,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "आरोग्य 0%",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/metric/idle workers": {
+        "x": 12,
+        "y": 2092,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 2092,
+          "w": 747,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "निष्क्रिय कामगार —",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/metric/blocked buildings": {
+        "x": 12,
+        "y": 2197,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 2197,
+          "w": 747,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "आत जाण्याचा मार्ग नसलेल्या इमारती 0",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/metric/warriors": {
+        "x": 12,
+        "y": 2380,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 2380,
+          "w": 747,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "योद्धे 4",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      },
+      "stats/metric/intruders": {
+        "x": 12,
+        "y": 2485,
+        "w": 747,
+        "h": 99,
+        "visible": {
+          "x": 12,
+          "y": 2485,
+          "w": 747,
+          "h": 0
+        },
+        "enabled": true,
+        "label": "घरी असलेले शत्रू योद्धे 0",
+        "surface": {
+          "w": 800,
+          "h": 1732
+        },
+        "root": {
+          "x": 0,
+          "y": 751,
+          "w": 800,
+          "h": 870
+        }
+      }
+    }
+  },
+  "statisticsTopicBounds": {
+    "0": {
+      "x": 5.85,
+      "y": 371.8083140877598,
+      "width": 123.3375,
+      "height": 48.24249422632795
+    },
+    "1": {
+      "x": 133.0875,
+      "y": 371.8083140877598,
+      "width": 123.3375,
+      "height": 48.24249422632795
+    },
+    "2": {
+      "x": 260.325,
+      "y": 371.8083140877598,
+      "width": 123.82499999999999,
+      "height": 48.24249422632795
+    },
+    "3": {
+      "x": 5.85,
+      "y": 423.94919168591224,
+      "width": 187.2,
+      "height": 48.24249422632795
+    },
+    "4": {
+      "x": 196.95,
+      "y": 423.94919168591224,
+      "width": 187.2,
+      "height": 48.24249422632795
+    }
+  },
+  "currentRegistry": [
+    {
+      "code": "ar",
+      "gameCode": "ar",
+      "name": "العربية",
+      "dir": "rtl"
+    },
+    {
+      "code": "pt-BR",
+      "gameCode": "br",
+      "name": "Português brasileiro",
+      "dir": "ltr"
+    },
+    {
+      "code": "ca",
+      "gameCode": "ca",
+      "name": "Català",
+      "dir": "ltr"
+    },
+    {
+      "code": "cs",
+      "gameCode": "cz",
+      "name": "Čeština",
+      "dir": "ltr"
+    },
+    {
+      "code": "de",
+      "gameCode": "de",
+      "name": "Deutsch",
+      "dir": "ltr"
+    },
+    {
+      "code": "da",
+      "gameCode": "dk",
+      "name": "Dansk",
+      "dir": "ltr"
+    },
+    {
+      "code": "en",
+      "gameCode": "en",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "es",
+      "gameCode": "es",
+      "name": "Español",
+      "dir": "ltr"
+    },
+    {
+      "code": "eo",
+      "gameCode": "eo",
+      "name": "Esperanto",
+      "dir": "ltr"
+    },
+    {
+      "code": "eu",
+      "gameCode": "eu",
+      "name": "Euskara",
+      "dir": "ltr"
+    },
+    {
+      "code": "fa",
+      "gameCode": "fa",
+      "name": "فارسی",
+      "dir": "rtl"
+    },
+    {
+      "code": "fr",
+      "gameCode": "fr",
+      "name": "Français",
+      "dir": "ltr"
+    },
+    {
+      "code": "el",
+      "gameCode": "gr",
+      "name": "Ελληνικά",
+      "dir": "ltr"
+    },
+    {
+      "code": "hu",
+      "gameCode": "hu",
+      "name": "Magyar",
+      "dir": "ltr"
+    },
+    {
+      "code": "it",
+      "gameCode": "it",
+      "name": "Italiano",
+      "dir": "ltr"
+    },
+    {
+      "code": "nl",
+      "gameCode": "nl",
+      "name": "Nederlands",
+      "dir": "ltr"
+    },
+    {
+      "code": "pl",
+      "gameCode": "pl",
+      "name": "Polski",
+      "dir": "ltr"
+    },
+    {
+      "code": "pt-PT",
+      "gameCode": "pt",
+      "name": "Português europeu",
+      "dir": "ltr"
+    },
+    {
+      "code": "ro",
+      "gameCode": "ro",
+      "name": "Română",
+      "dir": "ltr"
+    },
+    {
+      "code": "ru",
+      "gameCode": "ru",
+      "name": "Русский",
+      "dir": "ltr"
+    },
+    {
+      "code": "sl",
+      "gameCode": "si",
+      "name": "Slovenščina",
+      "dir": "ltr"
+    },
+    {
+      "code": "sk",
+      "gameCode": "sk",
+      "name": "Slovenčina",
+      "dir": "ltr"
+    },
+    {
+      "code": "sr-Cyrl",
+      "gameCode": "sr",
+      "name": "Српски",
+      "dir": "ltr"
+    },
+    {
+      "code": "fi",
+      "gameCode": "fi",
+      "name": "Suomi",
+      "dir": "ltr"
+    },
+    {
+      "code": "sv",
+      "gameCode": "sv",
+      "name": "Svenska",
+      "dir": "ltr"
+    },
+    {
+      "code": "tr",
+      "gameCode": "tr",
+      "name": "Türkçe",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-Hant",
+      "gameCode": "zh-tw",
+      "name": "繁體中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-Hans",
+      "gameCode": "zh-cn",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "uk",
+      "gameCode": "uk",
+      "name": "Українська",
+      "dir": "ltr"
+    },
+    {
+      "code": "id",
+      "gameCode": "id",
+      "name": "Bahasa Indonesia",
+      "dir": "ltr"
+    },
+    {
+      "code": "vi",
+      "gameCode": "vi",
+      "name": "Tiếng Việt",
+      "dir": "ltr"
+    },
+    {
+      "code": "ja",
+      "gameCode": "ja",
+      "name": "日本語",
+      "dir": "ltr"
+    },
+    {
+      "code": "ko",
+      "gameCode": "ko",
+      "name": "한국어",
+      "dir": "ltr"
+    },
+    {
+      "code": "hi",
+      "gameCode": "hi",
+      "name": "हिन्दी",
+      "dir": "ltr"
+    },
+    {
+      "code": "ur",
+      "gameCode": "ur",
+      "name": "اردو",
+      "dir": "rtl"
+    },
+    {
+      "code": "sw",
+      "gameCode": "sw",
+      "name": "Kiswahili",
+      "dir": "ltr"
+    },
+    {
+      "code": "mr",
+      "gameCode": "mr",
+      "name": "मराठी",
+      "dir": "ltr"
+    },
+    {
+      "code": "nb",
+      "gameCode": "nb",
+      "name": "Norsk bokmål",
+      "dir": "ltr"
+    },
+    {
+      "code": "ms",
+      "gameCode": "ms",
+      "name": "Bahasa Melayu",
+      "dir": "ltr"
+    }
+  ],
+  "errors": []
+}

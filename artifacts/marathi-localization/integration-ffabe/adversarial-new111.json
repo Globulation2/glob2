@@ -1,0 +1,2281 @@
+{
+  "role": "independent adversarial linguistic reviewer",
+  "independence": "Own source/context judgment before reading any other reviewer proposals. Every one of the 111 actual pairs was read; no full reread claim for unchanged previous 2836.",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "raw_draft_record_sha256": "645f2d13848edce4b03161a3fac3858a7db88fae7d1c21343f3db7db8db7ed7a",
+  "complete_draft_sha256": "098932c899a5e310f1662aa5c5d385f2820597e9606048f9bdc59c02236ea964",
+  "reviewed_key_count": 111,
+  "reviewed_keys": [
+    "Rush",
+    "Defensive",
+    "Economy",
+    "Expansion",
+    "Experimental",
+    "Beginner-friendly",
+    "File and API profile",
+    "Syntax and profile restrictions",
+    "Startup and callback",
+    "Persistent state",
+    "Seeded gameplay",
+    "Repeatable simulation",
+    "Save and resume",
+    "Good",
+    "Fair",
+    "Poor",
+    "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+    "Delay",
+    "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+    "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+    "Classic glossy",
+    "Basics",
+    "Matte",
+    "Riveted metal",
+    "Metal",
+    "Hairy",
+    "Organic",
+    "Cartoon",
+    "Woven fabric",
+    "Craft",
+    "Oozy goo",
+    "Wet",
+    "Wood",
+    "Stone",
+    "Mineral",
+    "Scales",
+    "Leather",
+    "Crystal",
+    "Lava",
+    "Chrome",
+    "Carbon fibre",
+    "Velvet",
+    "Honeycomb",
+    "Ice",
+    "Cloud",
+    "Hammered metal",
+    "Candy",
+    "Slime",
+    "AI player",
+    "Finances",
+    "Accounts",
+    "Audit",
+    "1 hour",
+    "1 day",
+    "1 week",
+    "30 days",
+    "Most played",
+    "Listen for the musical structure and development.",
+    "Check that all three moods play correctly.",
+    "Listen for unexpected jumps in volume between moods.",
+    "Listen for a click, gap, or abrupt change when the loop repeats.",
+    "Listen for short phrases that repeat too mechanically.",
+    "Switch moods and listen for changes in timing or harmony.",
+    "Check that building and combat feel distinct from calm.",
+    "Listen for hiss or scratchiness in quiet passages.",
+    "Listen for muddy bass or harsh high frequencies.",
+    "Check that calm passages remain audible alongside game sound.",
+    "Listen for notes that cut off unexpectedly.",
+    "Worker",
+    "Warrior",
+    "Explorer",
+    "Swarm",
+    "Classic",
+    "Crown",
+    "Clutch",
+    "Toadstool",
+    "A broad-capped toadstool with young caps.",
+    "Coral",
+    "Skep",
+    "A coiled hive on a stand, its door facing you.",
+    "Bloom",
+    "Public: listed in the catalog",
+    "Unlisted: anyone with the link",
+    "Private: only you",
+    "The server replayed this match and every player’s game agreed with it.",
+    "The server is checking this match. Ratings change once it is verified.",
+    "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+    "The server could not reproduce this match, so it changes no rating.",
+    "This match is not checked.",
+    "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+    "Walk",
+    "Swim",
+    "Harvest",
+    "Fight",
+    "Fly",
+    "Live payments",
+    "Test payments",
+    "Unclassified payments",
+    "Current period",
+    "Previous period",
+    "Credit grant",
+    "Returned credits",
+    "Dispute",
+    "Dispute closed",
+    "Matches started",
+    "Matches completed",
+    "Matches cancelled",
+    "{value0} publications",
+    "{value0} recorded downloads",
+    "{value0} completion time (seconds)",
+    "{value0} completion samples"
+  ],
+  "edit_count": 42,
+  "accepted_english": [],
+  "english_exception_note": "No new entire value is accepted unchanged in English. API is intentionally retained as a standard technical acronym inside a Marathi heading; established material loans are Marathi transliterations, not untranslated full UI values.",
+  "context_files": [
+    "platform/packages/protocol/src/ais.ts",
+    "platform/packages/protocol/src/skins.ts",
+    "platform/apps/web/src/pages/Match.tsx",
+    "platform/apps/web/src/pages/Maps.tsx",
+    "platform/apps/web/src/skins/swarmShapes.ts",
+    "platform/apps/web/src/skins/geometry.ts",
+    "platform/apps/web/src/music/Validation.tsx",
+    "platform/apps/web/src/admin/presentation.ts"
+  ],
+  "rows": [
+    {
+      "index": 1,
+      "key": "Rush",
+      "source": "Rush",
+      "before": "घाई",
+      "proposal": "सुरुवातीचा हल्ला",
+      "disposition": "edit",
+      "rationale": "AI strategy tag means an early attack, not the emotion or action of hurrying; French/Hindi/Malay corroborate.",
+      "references": {
+        "fr": "Attaque précoce",
+        "hi": "शुरुआती हमला",
+        "ms": "Serangan pantas"
+      }
+    },
+    {
+      "index": 2,
+      "key": "Defensive",
+      "source": "Defensive",
+      "before": "बचावात्मक",
+      "proposal": "बचावात्मक",
+      "disposition": "accept",
+      "rationale": "AI defensive strategy tag is accurately adjectival.",
+      "references": {
+        "fr": "Défensif",
+        "hi": "रक्षात्मक",
+        "ms": "Bertahan"
+      }
+    },
+    {
+      "index": 3,
+      "key": "Economy",
+      "source": "Economy",
+      "before": "अर्थव्यवस्था",
+      "proposal": "अर्थव्यवस्था",
+      "disposition": "accept",
+      "rationale": "Economy strategy tag matches existing अर्थव्यवस्था.",
+      "references": {
+        "fr": "Économie",
+        "hi": "अर्थव्यवस्था",
+        "ms": "Ekonomi"
+      }
+    },
+    {
+      "index": 4,
+      "key": "Expansion",
+      "source": "Expansion",
+      "before": "विस्तार",
+      "proposal": "विस्तार",
+      "disposition": "accept",
+      "rationale": "Expansion strategy describes territorial growth accurately.",
+      "references": {
+        "fr": "Expansion",
+        "hi": "विस्तार",
+        "ms": "Pengembangan"
+      }
+    },
+    {
+      "index": 5,
+      "key": "Experimental",
+      "source": "Experimental",
+      "before": "प्रायोगिक",
+      "proposal": "प्रायोगिक",
+      "disposition": "accept",
+      "rationale": "Experimental tag correctly marks an experimental controller.",
+      "references": {
+        "fr": "Expérimental",
+        "hi": "प्रयोगात्मक",
+        "ms": "Eksperimen"
+      }
+    },
+    {
+      "index": 6,
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "before": "नवशिक्यांसाठी अनुकूल",
+      "proposal": "नवशिक्यांसाठी अनुकूल",
+      "disposition": "accept",
+      "rationale": "Beginner-friendly tag is natural Marathi and retains intended audience.",
+      "references": {
+        "fr": "Adapté aux débutants",
+        "hi": "शुरुआती खिलाड़ियों के लिए",
+        "ms": "Mesra pemula"
+      }
+    },
+    {
+      "index": 7,
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "before": "फाइल आणि एपीआय प्रोफाइल",
+      "proposal": "फाइल आणि API प्रोफाइल",
+      "disposition": "edit",
+      "rationale": "Preserve the recognized API acronym in this technical validation heading; this is a file/API contract check.",
+      "references": {
+        "fr": "Fichier et profil d’API",
+        "hi": "फ़ाइल और एपीआई प्रोफ़ाइल",
+        "ms": "Fail dan profil API"
+      }
+    },
+    {
+      "index": 8,
+      "key": "Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "before": "वाक्यरचना आणि प्रोफाइल निर्बंध",
+      "proposal": "वाक्यरचना आणि प्रोफाइल निर्बंध",
+      "disposition": "accept",
+      "rationale": "Syntax/profile restrictions correctly describes grammar and allowed API/profile constraints.",
+      "references": {
+        "fr": "Restrictions de syntaxe et de profil",
+        "hi": "सिंटैक्स और प्रोफ़ाइल प्रतिबंध",
+        "ms": "Sintaks dan sekatan profil"
+      }
+    },
+    {
+      "index": 9,
+      "key": "Startup and callback",
+      "source": "Startup and callback",
+      "before": "स्टार्टअप आणि कॉलबॅक",
+      "proposal": "स्टार्टअप आणि कॉलबॅक",
+      "disposition": "accept",
+      "rationale": "Startup and callback are established technical loans in an AI callback validation heading.",
+      "references": {
+        "fr": "Démarrage et fonction de rappel",
+        "hi": "स्टार्टअप और कॉलबैक",
+        "ms": "Permulaan dan panggilan balik"
+      }
+    },
+    {
+      "index": 10,
+      "key": "Persistent state",
+      "source": "Persistent state",
+      "before": "कायमस्वरूपी स्थिती",
+      "proposal": "कायमस्वरूपी स्थिती",
+      "disposition": "accept",
+      "rationale": "Persistent state denotes data surviving continuation; कायमस्वरूपी स्थिती is acceptable here.",
+      "references": {
+        "fr": "État persistant",
+        "hi": "सहेजी गई अवस्था",
+        "ms": "Pengekalan keadaan"
+      }
+    },
+    {
+      "index": 11,
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "before": "सीडेड गेमप्ले",
+      "proposal": "निश्चित बीजासह खेळ",
+      "disposition": "edit",
+      "rationale": "AI validation runs a seeded game; opaque सीडेड loses the reproducible-random-seed meaning.",
+      "references": {
+        "fr": "Partie à graine aléatoire fixe",
+        "hi": "तय यादृच्छिक बीज के साथ गेमप्ले",
+        "ms": "Permainan dengan benih tetap"
+      }
+    },
+    {
+      "index": 12,
+      "key": "Repeatable simulation",
+      "source": "Repeatable simulation",
+      "before": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "proposal": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "disposition": "accept",
+      "rationale": "Repeatable simulation correctly denotes repeatable execution, not replay file format.",
+      "references": {
+        "fr": "Simulation reproductible",
+        "hi": "दोहराया जा सकने वाला सिमुलेशन",
+        "ms": "Simulasi yang boleh diulang"
+      }
+    },
+    {
+      "index": 13,
+      "key": "Save and resume",
+      "source": "Save and resume",
+      "before": "जतन करा आणि पुन्हा सुरू करा",
+      "proposal": "जतन करा आणि पुन्हा सुरू करा",
+      "disposition": "accept",
+      "rationale": "Save and resume preserves both actions and the pause/resumption meaning.",
+      "references": {
+        "fr": "Enregistrer et reprendre",
+        "hi": "सहेजें और जारी रखें",
+        "ms": "Simpan dan sambung semula"
+      }
+    },
+    {
+      "index": 14,
+      "key": "Good",
+      "source": "Good",
+      "before": "चांगले",
+      "proposal": "चांगले",
+      "disposition": "accept",
+      "rationale": "Good is the positive connection-quality band and चांगले fits a neutral quality label.",
+      "references": {
+        "fr": "Bon",
+        "hi": "अच्छा",
+        "ms": "Bagus"
+      }
+    },
+    {
+      "index": 15,
+      "key": "Fair",
+      "source": "Fair",
+      "before": "योग्य",
+      "proposal": "मध्यम",
+      "disposition": "edit",
+      "rationale": "Connection quality band between Good and Poor; योग्य means appropriate rather than fair/middling.",
+      "references": {
+        "fr": "Moyen",
+        "hi": "ठीक",
+        "ms": "Sederhana"
+      }
+    },
+    {
+      "index": 16,
+      "key": "Poor",
+      "source": "Poor",
+      "before": "गरीब",
+      "proposal": "खराब",
+      "disposition": "edit",
+      "rationale": "Connection quality, not economic poverty. गरीब is a false friend.",
+      "references": {
+        "fr": "Mauvais",
+        "hi": "खराब",
+        "ms": "Lemah"
+      }
+    },
+    {
+      "index": 17,
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "before": "खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) ही त्या प्रदेशाची एक चाचणी, एक अंदाज असतो.",
+      "proposal": "खेळाडू आणि रिले सर्व्हर यांच्यात संदेश जाऊन परत येण्यासाठी लागणारा वेळ. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) हा प्रदेशातील जोडणीची चाचणी घेऊन काढलेला अंदाज असतो.",
+      "disposition": "edit",
+      "rationale": "RTT measures elapsed network time; draft describes a journey and leaves relay context unclear. Preserve pre-match estimate distinction.",
+      "references": {
+        "fr": "Temps aller-retour entre un joueur et le serveur relais. Avant un match (match rapide, liste de vérification de démarrage), il s’agit d’une estimation fondée sur un test de connexion à la région.",
+        "hi": "खिलाड़ी और रिले सर्वर के बीच आने-जाने का समय। मैच से पहले (क्विक मैच, शुरुआती जाँच सूची), यह क्षेत्र से कनेक्शन जाँच पर आधारित एक अनुमान होता है।",
+        "ms": "Masa pergi balik antara pemain dan geganti. Sebelum perlawanan (perlawanan pantas, senarai semak permulaan), ini ialah anggaran berdasarkan ujian sambungan ke rantau tersebut."
+      }
+    },
+    {
+      "index": 18,
+      "key": "Delay",
+      "source": "Delay",
+      "before": "विलंब",
+      "proposal": "विलंब",
+      "disposition": "accept",
+      "rationale": "Delay correctly denotes elapsed latency, with explanation supplied separately.",
+      "references": {
+        "fr": "Retard",
+        "hi": "देरी",
+        "ms": "Kelewatan"
+      }
+    },
+    {
+      "index": 19,
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "before": "तुमचा इनपुट विलंब: तुमच्या क्लिकपासून ते कृती घटेपर्यंत, प्रत्येकासाठी. तुमच्या पिंगच्या निम्मा अधिक तुमचा गेम जिटरला रोखण्यासाठी वापरत असलेला बफर.",
+      "proposal": "तुमचा इनपुट विलंब: तुम्ही क्लिक केल्यापासून ती कृती सर्व खेळाडूंच्या खेळात होईपर्यंतचा वेळ. तुमच्या पिंगचा निम्मा वेळ आणि नेटवर्क विलंबातील चढउतार सांभाळण्यासाठी खेळाने ठेवलेला बफर यांची बेरीज.",
+      "disposition": "edit",
+      "rationale": "Fix corrupted घटेपर्यंत, preserve everyone seeing execution, express half-ping plus jitter buffer as an additive duration.",
+      "references": {
+        "fr": "Votre délai d’entrée : du clic à l’exécution de l’action pour tous les joueurs. La moitié de votre ping, plus la marge que le jeu conserve pour absorber les variations de latence.",
+        "hi": "आपका इनपुट विलंब: क्लिक से लेकर सभी खिलाड़ियों के खेल में कार्रवाई होने तक का समय। आपके पिंग का आधा, और नेटवर्क विलंब के उतार-चढ़ाव को सँभालने के लिए खेल में रखा बफ़र।",
+        "ms": "Kelewatan input anda: masa dari klik sehingga tindakan berlaku untuk semua pemain. Separuh ping anda ditambah penimbal permainan untuk menyerap turun naik kelewatan."
+      }
+    },
+    {
+      "index": 20,
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "before": "एखाद्या खेळाडूचा खेळ मॅच क्लॉकच्या किती मागे चालतो. एका सेकंदापेक्षा कमी वेळ सामान्य असतो (यात त्यांचा विलंब समाविष्ट असतो); रिलेनुसार खेळाडू २ सेकंदांपासून धीमा मानला जातो.",
+      "proposal": "एखाद्या खेळाडूचा खेळ सामन्याच्या घड्याळापेक्षा किती मागे चालतो. एका सेकंदापेक्षा कमी अंतर सामान्य असते (यात त्या खेळाडूचा इनपुट विलंबही येतो); २ सेकंदांपासून रिले सर्व्हर त्या खेळाडूला संथ म्हणून चिन्हांकित करतो.",
+      "disposition": "edit",
+      "rationale": "Preserve game-clock lag and inclusive 2-second marking threshold; avoid unexplained मॅच क्लॉक and distinguish relay marking from opinion.",
+      "references": {
+        "fr": "Retard du jeu d’un joueur par rapport à l’horloge du match. Moins d’une seconde est normal (cela inclut son délai d’entrée) ; le serveur relais signale le joueur comme lent à partir de 2 s.",
+        "hi": "खिलाड़ी का खेल मैच की घड़ी से कितना पीछे है। एक सेकंड से कम सामान्य है (इनपुट विलंब सहित); रिले सर्वर 2 सेकंड से खिलाड़ी को धीमा चिह्नित करता है।",
+        "ms": "Sejauh mana permainan pemain ketinggalan daripada jam perlawanan. Kurang daripada satu saat adalah biasa (termasuk kelewatannya); geganti menandakan pemain sebagai perlahan mulai 2 s."
+      }
+    },
+    {
+      "index": 21,
+      "key": "Classic glossy",
+      "source": "Classic glossy",
+      "before": "क्लासिक चकचकीत",
+      "proposal": "क्लासिक चकचकीत",
+      "disposition": "accept",
+      "rationale": "Glossy material label clearly names classic reflective appearance.",
+      "references": {
+        "fr": "Brillant classique",
+        "hi": "क्लासिक चमकदार",
+        "ms": "Klasik berkilat"
+      }
+    },
+    {
+      "index": 22,
+      "key": "Basics",
+      "source": "Basics",
+      "before": "मूलभूत गोष्टी",
+      "proposal": "मूलभूत गोष्टी",
+      "disposition": "accept",
+      "rationale": "Basics material group uses a natural Marathi category phrase.",
+      "references": {
+        "fr": "Bases",
+        "hi": "बुनियादी बातें",
+        "ms": "Asas"
+      }
+    },
+    {
+      "index": 23,
+      "key": "Matte",
+      "source": "Matte",
+      "before": "मॅट",
+      "proposal": "मॅट",
+      "disposition": "accept",
+      "rationale": "Matte is a recognized rendering/material loan; मॅट distinguishes non-gloss surface.",
+      "references": {
+        "fr": "Mat",
+        "hi": "मैट",
+        "ms": "Tanpa kilau"
+      }
+    },
+    {
+      "index": 24,
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "before": "रिव्हेट केलेले धातू",
+      "proposal": "रिव्हेट लावलेला धातू",
+      "disposition": "edit",
+      "rationale": "Material धातू is singular masculine; draft केलेले धातू has agreement mismatch.",
+      "references": {
+        "fr": "Métal riveté",
+        "hi": "रिवेटेड धातु",
+        "ms": "Logam berivet"
+      }
+    },
+    {
+      "index": 25,
+      "key": "Metal",
+      "source": "Metal",
+      "before": "धातू",
+      "proposal": "धातू",
+      "disposition": "accept",
+      "rationale": "Metal category is the substance धातू.",
+      "references": {
+        "fr": "Métal",
+        "hi": "धातु",
+        "ms": "Logam"
+      }
+    },
+    {
+      "index": 26,
+      "key": "Hairy",
+      "source": "Hairy",
+      "before": "केसाळ",
+      "proposal": "केसाळ",
+      "disposition": "accept",
+      "rationale": "Hairy labels fur-shell material and केसाळ is direct.",
+      "references": {
+        "fr": "Poilu",
+        "hi": "बालदार",
+        "ms": "Berbulu"
+      }
+    },
+    {
+      "index": 27,
+      "key": "Organic",
+      "source": "Organic",
+      "before": "सेंद्रिय",
+      "proposal": "जैविक",
+      "disposition": "edit",
+      "rationale": "Material family includes hair, scales and leather. जैविक avoids the narrower agricultural/chemical implication of सेंद्रिय.",
+      "references": {
+        "fr": "Organique",
+        "hi": "जैविक",
+        "ms": "Organik"
+      }
+    },
+    {
+      "index": 28,
+      "key": "Cartoon",
+      "source": "Cartoon",
+      "before": "कार्टून",
+      "proposal": "कार्टून",
+      "disposition": "accept",
+      "rationale": "Cartoon is an established visual-style loan.",
+      "references": {
+        "fr": "Dessin animé",
+        "hi": "कार्टून",
+        "ms": "Kartun"
+      }
+    },
+    {
+      "index": 29,
+      "key": "Woven fabric",
+      "source": "Woven fabric",
+      "before": "विणलेले कापड",
+      "proposal": "विणलेले कापड",
+      "disposition": "accept",
+      "rationale": "Woven fabric accurately names the woven texture.",
+      "references": {
+        "fr": "Tissu tissé",
+        "hi": "बुना हुआ कपड़ा",
+        "ms": "Kain tenun"
+      }
+    },
+    {
+      "index": 30,
+      "key": "Craft",
+      "source": "Craft",
+      "before": "कलाकुसर",
+      "proposal": "कलाकुसर",
+      "disposition": "accept",
+      "rationale": "Craft category names handmade material grouping.",
+      "references": {
+        "fr": "Artisanat",
+        "hi": "शिल्प",
+        "ms": "Kraf"
+      }
+    },
+    {
+      "index": 31,
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "before": "चिकट गोंद",
+      "proposal": "ओघळणारा चिकट पदार्थ",
+      "disposition": "edit",
+      "rationale": "Goo is viscous material, not adhesive glue; preserve oozy movement.",
+      "references": {
+        "fr": "Substance gluante",
+        "hi": "चिपचिपा पदार्थ",
+        "ms": "Lendir meleleh"
+      }
+    },
+    {
+      "index": 32,
+      "key": "Wet",
+      "source": "Wet",
+      "before": "ओले",
+      "proposal": "ओले",
+      "disposition": "accept",
+      "rationale": "Wet group is a valid neutral material-family adjective.",
+      "references": {
+        "fr": "Mouillé",
+        "hi": "गीला",
+        "ms": "Basah"
+      }
+    },
+    {
+      "index": 33,
+      "key": "Wood",
+      "source": "Wood",
+      "before": "लाकूड",
+      "proposal": "लाकूड",
+      "disposition": "accept",
+      "rationale": "Wood names the material, not a tree.",
+      "references": {
+        "fr": "Bois",
+        "hi": "लकड़ी",
+        "ms": "Kayu"
+      }
+    },
+    {
+      "index": 34,
+      "key": "Stone",
+      "source": "Stone",
+      "before": "दगड",
+      "proposal": "दगड",
+      "disposition": "accept",
+      "rationale": "Stone names the material.",
+      "references": {
+        "fr": "Pierre",
+        "hi": "पत्थर",
+        "ms": "Batu"
+      }
+    },
+    {
+      "index": 35,
+      "key": "Mineral",
+      "source": "Mineral",
+      "before": "खनिज",
+      "proposal": "खनिज",
+      "disposition": "accept",
+      "rationale": "Mineral names the material group.",
+      "references": {
+        "fr": "Minéral",
+        "hi": "खनिज",
+        "ms": "Mineral"
+      }
+    },
+    {
+      "index": 36,
+      "key": "Scales",
+      "source": "Scales",
+      "before": "स्केल",
+      "proposal": "खवले",
+      "disposition": "edit",
+      "rationale": "Skin material is animal scales, not a measurement scale; corroborated by actual material table and French écailles.",
+      "references": {
+        "fr": "Écailles",
+        "hi": "शल्क",
+        "ms": "Sisik"
+      }
+    },
+    {
+      "index": 37,
+      "key": "Leather",
+      "source": "Leather",
+      "before": "चामडे",
+      "proposal": "चामडे",
+      "disposition": "accept",
+      "rationale": "Leather names the surface material.",
+      "references": {
+        "fr": "Cuir",
+        "hi": "चमड़ा",
+        "ms": "Kulit"
+      }
+    },
+    {
+      "index": 38,
+      "key": "Crystal",
+      "source": "Crystal",
+      "before": "क्रिस्टल",
+      "proposal": "क्रिस्टल",
+      "disposition": "accept",
+      "rationale": "Crystal transliteration is a recognized mineral/material label.",
+      "references": {
+        "fr": "Cristal",
+        "hi": "क्रिस्टल",
+        "ms": "Kristal"
+      }
+    },
+    {
+      "index": 39,
+      "key": "Lava",
+      "source": "Lava",
+      "before": "लावा",
+      "proposal": "लावा",
+      "disposition": "accept",
+      "rationale": "Lava is an established material loan.",
+      "references": {
+        "fr": "Lave",
+        "hi": "लावा",
+        "ms": "Lava"
+      }
+    },
+    {
+      "index": 40,
+      "key": "Chrome",
+      "source": "Chrome",
+      "before": "क्रोम",
+      "proposal": "क्रोम",
+      "disposition": "accept",
+      "rationale": "Chrome is the recognized metallic finish, not the browser brand in this context.",
+      "references": {
+        "fr": "Chrome",
+        "hi": "क्रोम",
+        "ms": "Krom"
+      }
+    },
+    {
+      "index": 41,
+      "key": "Carbon fibre",
+      "source": "Carbon fibre",
+      "before": "कार्बन फायबर",
+      "proposal": "कार्बन फायबर",
+      "disposition": "accept",
+      "rationale": "Carbon fibre is a recognized material loan and retains fibre identity.",
+      "references": {
+        "fr": "Fibre de carbone",
+        "hi": "कार्बन फाइबर",
+        "ms": "Gentian karbon"
+      }
+    },
+    {
+      "index": 42,
+      "key": "Velvet",
+      "source": "Velvet",
+      "before": "मखमली",
+      "proposal": "मखमली",
+      "disposition": "accept",
+      "rationale": "Velvet is accurately conveyed by मखमली as a surface adjective.",
+      "references": {
+        "fr": "Velours",
+        "hi": "मख़मल",
+        "ms": "Baldu"
+      }
+    },
+    {
+      "index": 43,
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "before": "मधमाशांचे पोळे",
+      "proposal": "पोळ्याची जाळी",
+      "disposition": "edit",
+      "rationale": "Honeycomb surface pattern/material differs from the whole hive building; makes the repeated-cell texture clear.",
+      "references": {
+        "fr": "Alvéoles de ruche",
+        "hi": "मधुकोश",
+        "ms": "Sarang lebah"
+      }
+    },
+    {
+      "index": 44,
+      "key": "Ice",
+      "source": "Ice",
+      "before": "बर्फ",
+      "proposal": "बर्फ",
+      "disposition": "accept",
+      "rationale": "Ice correctly names frozen water material.",
+      "references": {
+        "fr": "Glace",
+        "hi": "बर्फ़",
+        "ms": "Ais"
+      }
+    },
+    {
+      "index": 45,
+      "key": "Cloud",
+      "source": "Cloud",
+      "before": "ढग",
+      "proposal": "ढग",
+      "disposition": "accept",
+      "rationale": "Cloud correctly names cloud-like material.",
+      "references": {
+        "fr": "Nuage",
+        "hi": "बादल",
+        "ms": "Awan"
+      }
+    },
+    {
+      "index": 46,
+      "key": "Hammered metal",
+      "source": "Hammered metal",
+      "before": "हातोड्याने ठोकलेला धातू",
+      "proposal": "हातोड्याने ठोकलेला धातू",
+      "disposition": "accept",
+      "rationale": "Hammered metal preserves textured manufacture and correct masculine agreement.",
+      "references": {
+        "fr": "Métal martelé",
+        "hi": "हथौड़े से पीटी हुई धातु",
+        "ms": "Logam diketuk"
+      }
+    },
+    {
+      "index": 47,
+      "key": "Candy",
+      "source": "Candy",
+      "before": "कँडी",
+      "proposal": "कँडी",
+      "disposition": "accept",
+      "rationale": "Candy is an established visual-material loan.",
+      "references": {
+        "fr": "Bonbons",
+        "hi": "कैंडी",
+        "ms": "Gula-gula"
+      }
+    },
+    {
+      "index": 48,
+      "key": "Slime",
+      "source": "Slime",
+      "before": "स्लाइम",
+      "proposal": "चिकट जेल",
+      "disposition": "edit",
+      "rationale": "Viscous surface material; meaningful label instead of opaque स्लाइम, and distinct from flowing goo.",
+      "references": {
+        "fr": "Gel visqueux",
+        "hi": "लिसलिसा जेल",
+        "ms": "Lendir"
+      }
+    },
+    {
+      "index": 49,
+      "key": "AI player",
+      "source": "AI player",
+      "before": "एआय खेळाडू",
+      "proposal": "एआय खेळाडू",
+      "disposition": "accept",
+      "rationale": "AI player correctly denotes a player controlled by AI; एआय is acceptable Marathi acronym transliteration.",
+      "references": {
+        "fr": "Joueur IA",
+        "hi": "एआई खिलाड़ी",
+        "ms": "Pemain AI"
+      }
+    },
+    {
+      "index": 50,
+      "key": "Finances",
+      "source": "Finances",
+      "before": "वित्त",
+      "proposal": "वित्त",
+      "disposition": "accept",
+      "rationale": "Finances is an administration financial section, and वित्त is suitable.",
+      "references": {
+        "fr": "Finances",
+        "hi": "वित्त",
+        "ms": "Kewangan"
+      }
+    },
+    {
+      "index": 51,
+      "key": "Accounts",
+      "source": "Accounts",
+      "before": "खाती",
+      "proposal": "खाती",
+      "disposition": "accept",
+      "rationale": "Accounts correctly denotes user accounts, not arithmetic.",
+      "references": {
+        "fr": "Comptes",
+        "hi": "खाते",
+        "ms": "Akaun"
+      }
+    },
+    {
+      "index": 52,
+      "key": "Audit",
+      "source": "Audit",
+      "before": "लेखापरीक्षण",
+      "proposal": "लेखापरीक्षण",
+      "disposition": "accept",
+      "rationale": "Audit correctly names the administrative audit section.",
+      "references": {
+        "fr": "Audit",
+        "hi": "अंकेक्षण",
+        "ms": "Audit"
+      }
+    },
+    {
+      "index": 53,
+      "key": "1 hour",
+      "source": "1 hour",
+      "before": "१ तास",
+      "proposal": "१ तास",
+      "disposition": "accept",
+      "rationale": "One-hour reporting window preserves value and hour unit using Devanagari digit.",
+      "references": {
+        "fr": "1 heure",
+        "hi": "1 घंटा",
+        "ms": "1 jam"
+      }
+    },
+    {
+      "index": 54,
+      "key": "1 day",
+      "source": "1 day",
+      "before": "१ दिवस",
+      "proposal": "१ दिवस",
+      "disposition": "accept",
+      "rationale": "One-day reporting window preserves value and day unit.",
+      "references": {
+        "fr": "1 jour",
+        "hi": "1 दिन",
+        "ms": "1 hari"
+      }
+    },
+    {
+      "index": 55,
+      "key": "1 week",
+      "source": "1 week",
+      "before": "१ आठवडा",
+      "proposal": "१ आठवडा",
+      "disposition": "accept",
+      "rationale": "One-week reporting window preserves value and week unit.",
+      "references": {
+        "fr": "1 semaine",
+        "hi": "1 सप्ताह",
+        "ms": "1 minggu"
+      }
+    },
+    {
+      "index": 56,
+      "key": "30 days",
+      "source": "30 days",
+      "before": "३० दिवस",
+      "proposal": "३० दिवस",
+      "disposition": "accept",
+      "rationale": "Thirty-day reporting window preserves exact duration.",
+      "references": {
+        "fr": "30 jours",
+        "hi": "30 दिन",
+        "ms": "30 hari"
+      }
+    },
+    {
+      "index": 57,
+      "key": "Most played",
+      "source": "Most played",
+      "before": "सर्वाधिक खेळले",
+      "proposal": "सर्वाधिक खेळलेले",
+      "disposition": "edit",
+      "rationale": "Map sorting option needs a descriptive participle, not the finite past सर्वाधिक खेळले.",
+      "references": {
+        "fr": "Plus jouées",
+        "hi": "सबसे अधिक खेला गया",
+        "ms": "Paling kerap dimainkan"
+      }
+    },
+    {
+      "index": 58,
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "before": "संगीताची रचना आणि विकास याकडे लक्ष द्या.",
+      "proposal": "संगीताची रचना आणि विकास याकडे लक्ष द्या.",
+      "disposition": "accept",
+      "rationale": "Musical structure and development are accurately conveyed as रचना आणि विकास.",
+      "references": {
+        "fr": "Soyez attentif à la structure et au développement musical.",
+        "hi": "संगीत की संरचना और विकास को ध्यान से सुनें।",
+        "ms": "Dengar struktur dan perkembangan muzik."
+      }
+    },
+    {
+      "index": 59,
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "before": "तिन्ही मूड योग्यरित्या कार्यरत आहेत याची खात्री करा.",
+      "proposal": "संगीताच्या तिन्ही मनःस्थिती योग्यरीत्या वाजतात याची खात्री करा.",
+      "disposition": "edit",
+      "rationale": "Actual music playback validation; moods are musical variants and play means audible playback, not merely operational status.",
+      "references": {
+        "fr": "Vérifiez que les trois ambiances fonctionnent correctement.",
+        "hi": "यह सुनिश्चित करें कि तीनों मूड सही ढंग से काम कर रहे हों।",
+        "ms": "Pastikan ketiga-tiga suasana muzik dimainkan dengan betul."
+      }
+    },
+    {
+      "index": 60,
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "before": "वेगवेगळ्या मनस्थितींमध्ये आवाजाच्या पातळीत होणाऱ्या अनपेक्षित बदलांकडे लक्ष द्या.",
+      "proposal": "संगीताच्या मनःस्थिती बदलताना आवाजाच्या पातळीत अचानक होणाऱ्या अनपेक्षित बदलांकडे लक्ष द्या.",
+      "disposition": "edit",
+      "rationale": "Mood refers to music, not the listener’s mental states; preserve sudden volume jumps.",
+      "references": {
+        "fr": "Soyez attentif aux variations de volume sonore inattendues entre les différentes ambiances.",
+        "hi": "विभिन्न मनोदशाओं के बीच ध्वनि की तीव्रता में अप्रत्याशित उतार-चढ़ाव पर ध्यान दें।",
+        "ms": "Dengar perubahan kelantangan mendadak yang tidak dijangka antara suasana muzik."
+      }
+    },
+    {
+      "index": 61,
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "before": "जेव्हा लूप पुन्हा सुरू होतो, तेव्हा क्लिक, खंड किंवा अचानक होणारा बदल ऐका.",
+      "proposal": "जेव्हा लूप पुन्हा सुरू होतो, तेव्हा क्लिक, खंड किंवा अचानक होणारा बदल ऐका.",
+      "disposition": "accept",
+      "rationale": "Loop instruction preserves audible click/gap/abrupt change and repeat timing.",
+      "references": {
+        "fr": "Soyez attentif à un clic, un silence ou un changement brusque lorsque la boucle se répète.",
+        "hi": "लूप दोहराते समय क्लिक की आवाज़, मौन अंतराल या अचानक बदलाव पर ध्यान दें।",
+        "ms": "Dengar bunyi klik, jeda atau perubahan mendadak apabila gelung berulang."
+      }
+    },
+    {
+      "index": 62,
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "before": "अतिशय यांत्रिकपणे पुनरावृत्ती होणाऱ्या लहान वाक्यांशांकडे लक्ष द्या.",
+      "proposal": "अतिशय यांत्रिकपणे पुन्हा पुन्हा वाजणाऱ्या छोट्या संगीतखंडांकडे लक्ष द्या.",
+      "disposition": "edit",
+      "rationale": "Musical phrases, not linguistic phrases; explicit audible repetitions fit the validation task.",
+      "references": {
+        "fr": "Soyez attentif aux phrases courtes qui se répètent de façon trop mécanique.",
+        "hi": "उन छोटे वाक्यांशों पर ध्यान दें जो बहुत ही यंत्रवत रूप से दोहराए जाते हैं।",
+        "ms": "Dengar frasa muzik pendek yang berulang secara terlalu kaku."
+      }
+    },
+    {
+      "index": 63,
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "before": "मूड बदला आणि तालात किंवा सुसंवादात होणारे बदल ऐका.",
+      "proposal": "संगीताची मनःस्थिती बदला आणि वेळेतील किंवा सुरांच्या मेळातील बदल ऐका.",
+      "disposition": "edit",
+      "rationale": "Timing may change independently of rhythm; harmony means simultaneous tonal relationships, not conversational concord.",
+      "references": {
+        "fr": "Changez d'ambiance et soyez attentif aux changements de rythme ou d'harmonie.",
+        "hi": "संगीत के मूड बदलें और समय-निर्धारण या सुर-संगति के बदलावों को सुनें।",
+        "ms": "Tukar suasana muzik dan dengar perubahan pada pemasaan atau harmoni."
+      }
+    },
+    {
+      "index": 64,
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "before": "बांधकाम आणि लढाई या शांततेपेक्षा वेगळ्या जाणवतात याची खात्री करा.",
+      "proposal": "बांधकाम आणि लढाई या संगीताच्या मनःस्थिती शांत मनःस्थितीपेक्षा वेगळ्या जाणवतात याची खात्री करा.",
+      "disposition": "edit",
+      "rationale": "Check contrast of actual named Calm/Building/Combat music variants, not the physical acts of construction/combat.",
+      "references": {
+        "fr": "Vérifiez que les ambiances « Construction » et « Combat » se distinguent de « Calme ».",
+        "hi": "यह सुनिश्चित करें कि निर्माण और युद्ध की अनुभूति शांत वातावरण से अलग हो।",
+        "ms": "Pastikan suasana Pembinaan dan Pertempuran terasa berbeza daripada Tenang."
+      }
+    },
+    {
+      "index": 65,
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "before": "शांत भागांमध्ये येणाऱ्या फुसफुसण्यासारख्या किंवा खरखराटासारख्या आवाजाकडे लक्ष द्या.",
+      "proposal": "कमी आवाजाच्या संगीतखंडांमध्ये सुसाट किंवा खरखरीत आवाज येतो का ते ऐका.",
+      "disposition": "edit",
+      "rationale": "Quiet passages are low-volume musical passages; hiss is unwanted noise, not human whispering.",
+      "references": {
+        "fr": "Soyez attentif aux sifflements ou aux grattements dans les passages calmes.",
+        "hi": "शांत संगीत के अंशों में सरसराहट या खरोंच जैसी आवाज़ पर ध्यान दें।",
+        "ms": "Dengar desisan atau bunyi kasar dalam bahagian yang berkelantangan rendah."
+      }
+    },
+    {
+      "index": 66,
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "before": "अस्पष्ट बास किंवा कर्कश उच्च फ्रिक्वेन्सीकडे लक्ष द्या.",
+      "proposal": "गढूळ वाटणारे खर्जाचे स्वर किंवा उच्च वारंवारतेचे कर्कश स्वर येतात का ते ऐका.",
+      "disposition": "edit",
+      "rationale": "Audio-specific bass muddiness and harsh high frequencies; retain low/high distinction without untranslated frequency loan.",
+      "references": {
+        "fr": "Soyez attentif aux basses brouillées ou aux hautes fréquences agressives.",
+        "hi": "अस्पष्ट बास या कर्कश उच्च आवृत्तियों पर ध्यान दें।",
+        "ms": "Dengar bunyi bes yang kurang jelas atau frekuensi tinggi yang terlalu tajam."
+      }
+    },
+    {
+      "index": 67,
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "before": "खेळाच्या आवाजासोबत शांत भागही ऐकू येत राहतील याची खात्री करा.",
+      "proposal": "खेळाच्या आवाजासोबत शांत भागही ऐकू येत राहतील याची खात्री करा.",
+      "disposition": "accept",
+      "rationale": "Audibility instruction correctly requires calm passages remain audible alongside game sound.",
+      "references": {
+        "fr": "Vérifiez que les passages calmes restent audibles en même temps que le son du jeu.",
+        "hi": "यह सुनिश्चित करें कि खेल की ध्वनि के साथ-साथ शांत अंश भी स्पष्ट रूप से सुनाई दें।",
+        "ms": "Pastikan bahagian Tenang masih dapat didengar bersama bunyi permainan."
+      }
+    },
+    {
+      "index": 68,
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "before": "अचानक बंद होणाऱ्या सुरांकडे लक्ष द्या.",
+      "proposal": "अचानक बंद होणाऱ्या सुरांकडे लक्ष द्या.",
+      "disposition": "accept",
+      "rationale": "Unexpected note cutoffs are accurately expressed with सुर and sudden stop.",
+      "references": {
+        "fr": "Soyez attentif aux notes qui s'interrompent brusquement.",
+        "hi": "उन सुरों पर ध्यान दें जो अचानक बंद हो जाते हैं।",
+        "ms": "Dengar not muzik yang terputus tanpa dijangka."
+      }
+    },
+    {
+      "index": 69,
+      "key": "Worker",
+      "source": "Worker",
+      "before": "कामगार",
+      "proposal": "कामगार",
+      "disposition": "accept",
+      "rationale": "Worker matches the established कामगार unit name.",
+      "references": {
+        "fr": "Ouvrière",
+        "hi": "श्रमिक",
+        "ms": "Pekerja"
+      }
+    },
+    {
+      "index": 70,
+      "key": "Warrior",
+      "source": "Warrior",
+      "before": "योद्धा",
+      "proposal": "योद्धा",
+      "disposition": "accept",
+      "rationale": "Warrior matches native योद्धा unit name.",
+      "references": {
+        "fr": "Guerrière",
+        "hi": "योद्धा",
+        "ms": "Pahlawan"
+      }
+    },
+    {
+      "index": 71,
+      "key": "Explorer",
+      "source": "Explorer",
+      "before": "शोधक",
+      "proposal": "शोधक",
+      "disposition": "accept",
+      "rationale": "Explorer matches established शोधक glossary.",
+      "references": {
+        "fr": "Exploratrice",
+        "hi": "खोजी",
+        "ms": "Penjelajah"
+      }
+    },
+    {
+      "index": 72,
+      "key": "Swarm",
+      "source": "Swarm",
+      "before": "थवा",
+      "proposal": "पोळे",
+      "disposition": "edit",
+      "rationale": "This is the colony swarm mesh/building shown alongside worker/warrior/explorer, not a moving flock; existing native [swarm]=पोळे and other-language refs agree.",
+      "references": {
+        "fr": "Ruche",
+        "hi": "छत्ता",
+        "ms": "Sarang"
+      }
+    },
+    {
+      "index": 73,
+      "key": "Classic",
+      "source": "Classic",
+      "before": "क्लासिक",
+      "proposal": "क्लासिक",
+      "disposition": "accept",
+      "rationale": "Classic identifies the original/default shape and the familiar loan is suitable.",
+      "references": {
+        "fr": "Classique",
+        "hi": "पारंपरिक",
+        "ms": "Klasik"
+      }
+    },
+    {
+      "index": 74,
+      "key": "Crown",
+      "source": "Crown",
+      "before": "मुकुट",
+      "proposal": "मुकुट",
+      "disposition": "accept",
+      "rationale": "Crown shape correctly refers to मुकुट.",
+      "references": {
+        "fr": "Couronne",
+        "hi": "ताज",
+        "ms": "Mahkota"
+      }
+    },
+    {
+      "index": 75,
+      "key": "Clutch",
+      "source": "Clutch",
+      "before": "क्लच",
+      "proposal": "अंड्यांचा समूह",
+      "disposition": "edit",
+      "rationale": "Shape consists of six brood eggs in a rim; mechanical क्लच is a false friend.",
+      "references": {
+        "fr": "Grappe d’œufs",
+        "hi": "अंडों का समूह",
+        "ms": "Kelompok telur"
+      }
+    },
+    {
+      "index": 76,
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "before": "बेडूक",
+      "proposal": "अळिंबी",
+      "disposition": "edit",
+      "rationale": "Toadstool mesh is a mushroom, not a toad; बेडूक is incorrect.",
+      "references": {
+        "fr": "Champignon vénéneux",
+        "hi": "कुकुरमुत्ता",
+        "ms": "Cendawan payung"
+      }
+    },
+    {
+      "index": 77,
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "before": "कोवळ्या टोपी असलेले रुंद टोपीधारी विषारी बुरशी.",
+      "proposal": "लहान छत्रांसह रुंद छत्र असलेली अळिंबी.",
+      "disposition": "edit",
+      "rationale": "Mushroom caps, not wearable hats; fix mixed singular/plural grammar and preserve large central plus young caps.",
+      "references": {
+        "fr": "Un champignon à large chapeau avec de jeunes chapeaux.",
+        "hi": "चौड़ी टोपी वाला कुकुरमुत्ता, जिसके साथ छोटी नई टोपियाँ हैं।",
+        "ms": "Cendawan bertudung lebar bersama cendawan-cendawan muda."
+      }
+    },
+    {
+      "index": 78,
+      "key": "Coral",
+      "source": "Coral",
+      "before": "प्रवाळ",
+      "proposal": "प्रवाळ",
+      "disposition": "accept",
+      "rationale": "Coral mesh correctly refers to प्रवाळ.",
+      "references": {
+        "fr": "Corail",
+        "hi": "मूँगा",
+        "ms": "Karang"
+      }
+    },
+    {
+      "index": 79,
+      "key": "Skep",
+      "source": "Skep",
+      "before": "स्केप",
+      "proposal": "विणलेले पोळे",
+      "disposition": "edit",
+      "rationale": "Skep is a woven/coiled hive shape, not an opaque proper product name; other-language references make construction explicit.",
+      "references": {
+        "fr": "Ruche en paille tressée",
+        "hi": "बुना हुआ मधुमक्खी छत्ता",
+        "ms": "Sarang lebah anyaman"
+      }
+    },
+    {
+      "index": 80,
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "before": "स्टँडवर वेटोळे घालून ठेवलेले मधमाशांचे पोळे, ज्याचे दार तुमच्या समोर आहे.",
+      "proposal": "आधारावर ठेवलेले वेटोळ्यांचे पोळे; त्याचे दार तुमच्याकडे आहे.",
+      "disposition": "edit",
+      "rationale": "The hive itself is coiled; it is not an animal coiling up while placed on a stand. Preserve front-facing entrance.",
+      "references": {
+        "fr": "Une ruche enroulée sur un support, sa porte face à vous.",
+        "hi": "एक स्टैंड पर कुंडली मारकर रखा हुआ मधुमक्खी का छत्ता, जिसका दरवाजा आपकी ओर है।",
+        "ms": "Sarang lebah berlingkar di atas tapak, dengan pintunya menghadap anda."
+      }
+    },
+    {
+      "index": 81,
+      "key": "Bloom",
+      "source": "Bloom",
+      "before": "फुलणे",
+      "proposal": "फुललेले फूल",
+      "disposition": "edit",
+      "rationale": "Shape label is the open flower form, not the verb फुलणे.",
+      "references": {
+        "fr": "Floraison",
+        "hi": "खिला फूल",
+        "ms": "Bunga mekar"
+      }
+    },
+    {
+      "index": 82,
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "before": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "proposal": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "disposition": "accept",
+      "rationale": "Public visibility explicitly retains listing in the catalog.",
+      "references": {
+        "fr": "Publique : répertoriée dans le catalogue",
+        "hi": "सार्वजनिक: कैटलॉग में सूचीबद्ध",
+        "ms": "Awam: disenaraikan dalam katalog"
+      }
+    },
+    {
+      "index": 83,
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "before": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही",
+      "proposal": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही",
+      "disposition": "accept",
+      "rationale": "Unlisted visibility accurately retains access for anyone with link.",
+      "references": {
+        "fr": "Non répertoriée : toute personne ayant le lien",
+        "hi": "सूची से बाहर: लिंक रखने वाला कोई भी व्यक्ति",
+        "ms": "Tidak tersenarai: sesiapa sahaja yang mempunyai pautan"
+      }
+    },
+    {
+      "index": 84,
+      "key": "Private: only you",
+      "source": "Private: only you",
+      "before": "खाजगी: फक्त तुम्ही",
+      "proposal": "खाजगी: फक्त तुम्ही",
+      "disposition": "accept",
+      "rationale": "Private visibility accurately restricts visibility to the owner.",
+      "references": {
+        "fr": "Privée : vous seul",
+        "hi": "निजी: केवल आप",
+        "ms": "Persendirian: hanya anda"
+      }
+    },
+    {
+      "index": 85,
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "before": "सर्वरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूचा खेळ त्याच्याशी सहमत होता.",
+      "proposal": "सर्व्हरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूच्या खेळाची स्थिती त्याच्याशी जुळली.",
+      "disposition": "edit",
+      "rationale": "Deterministic agreement is matching game state, not human assent; normalize server spelling.",
+      "references": {
+        "fr": "Le serveur a rejoué cette partie et les états de jeu de tous les joueurs correspondaient au replay.",
+        "hi": "सर्वर ने इस मैच का रीप्ले चलाया और सभी खिलाड़ियों के खेल की अवस्थाएँ रीप्ले से मेल खाती थीं।",
+        "ms": "Pelayan telah memainkan semula perlawanan ini dan keadaan permainan setiap pemain sepadan dengan hasilnya."
+      }
+    },
+    {
+      "index": 86,
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "before": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "proposal": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "disposition": "accept",
+      "rationale": "Pending server verification and later ratings update are accurately distinguished.",
+      "references": {
+        "fr": "Le serveur vérifie cette partie. Les évaluations changent une fois la partie vérifiée.",
+        "hi": "सर्वर इस मैच की जाँच कर रहा है। सत्यापन होने पर रेटिंग बदल जाएगी।",
+        "ms": "Pelayan sedang menyemak perlawanan ini. Penarafan berubah setelah perlawanan disahkan."
+      }
+    },
+    {
+      "index": 87,
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "before": "एखाद्या खेळाडूचा गेम सर्वरच्या मॅचच्या रिप्लेशी जुळत नसला तरी, सर्वरचा निकालच ग्राह्य धरला जाईल.",
+      "proposal": "एका खेळाडूच्या खेळाची स्थिती सर्व्हरने पुन्हा चालवलेल्या सामन्याशी जुळली नाही; सर्व्हरचा निकाल ग्राह्य धरला जातो.",
+      "disposition": "edit",
+      "rationale": "Actual divergence happened; draft concessive जुळत नसला तरी makes it hypothetical and loses direct state comparison.",
+      "references": {
+        "fr": "L’état de jeu d’un joueur divergeait du replay de la partie sur le serveur ; le résultat du serveur fait foi.",
+        "hi": "एक खिलाड़ी के खेल की अवस्था सर्वर के मैच रीप्ले से मेल नहीं खाई; सर्वर का परिणाम मान्य है।",
+        "ms": "Keadaan permainan seorang pemain tidak sepadan dengan ulang tayang perlawanan oleh pelayan; keputusan pelayan yang diambil kira."
+      }
+    },
+    {
+      "index": 88,
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "before": "सर्वरला हा सामना पुन्हा खेळवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+      "proposal": "सर्व्हरला हा सामना त्याच प्रकारे पुन्हा चालवता आला नाही, त्यामुळे कोणत्याही रेटिंगमध्ये बदल होत नाही.",
+      "disposition": "edit",
+      "rationale": "Reproduce means reproduce execution; preserve no rating changes and consistent सर्व्हर spelling.",
+      "references": {
+        "fr": "Le serveur n’a pas pu reproduire cette partie, donc aucune évaluation ne change.",
+        "hi": "सर्वर इस मैच को दोबारा नहीं चला सका, इसलिए रेटिंग में कोई बदलाव नहीं हुआ है।",
+        "ms": "Pelayan tidak dapat menghasilkan semula perlawanan ini, jadi tiada penarafan berubah."
+      }
+    },
+    {
+      "index": 89,
+      "key": "This match is not checked.",
+      "source": "This match is not checked.",
+      "before": "या सामन्याची तपासणी केलेली नाही.",
+      "proposal": "या सामन्याची तपासणी केलेली नाही.",
+      "disposition": "accept",
+      "rationale": "Unchecked match status is correctly stated without implying failed verification.",
+      "references": {
+        "fr": "Cette partie n’est pas vérifiée.",
+        "hi": "इस मैच की जाँच नहीं की गई है।",
+        "ms": "Perlawanan ini tidak disemak."
+      }
+    },
+    {
+      "index": 90,
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "before": "सर्व्हर या सामन्याची तपासणी पूर्ण करू शकला नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होणार नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "proposal": "सर्व्हर या सामन्याची तपासणी पूर्ण करू शकला नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होणार नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "disposition": "accept",
+      "rationale": "Incomplete verification status preserves temporary no-rating change and administrator retry.",
+      "references": {
+        "fr": "Le serveur n’a pas pu terminer la vérification de cette partie, donc aucune évaluation ne change pour le moment. Un administrateur peut relancer la vérification.",
+        "hi": "सर्वर इस मैच की जाँच पूरी नहीं कर सका, इसलिए फिलहाल रेटिंग में कोई बदलाव नहीं होगा। प्रशासक दोबारा जाँच कर सकते हैं।",
+        "ms": "Pelayan tidak dapat menyelesaikan semakan perlawanan ini, jadi tiada penarafan berubah buat masa ini. Pentadbir boleh menjalankan semakan sekali lagi."
+      }
+    },
+    {
+      "index": 91,
+      "key": "Walk",
+      "source": "Walk",
+      "before": "चालणे",
+      "proposal": "चालणे",
+      "disposition": "accept",
+      "rationale": "Walk is correctly a nominal animation verb.",
+      "references": {
+        "fr": "Marcher",
+        "hi": "चलना",
+        "ms": "Berjalan"
+      }
+    },
+    {
+      "index": 92,
+      "key": "Swim",
+      "source": "Swim",
+      "before": "पोहणे",
+      "proposal": "पोहणे",
+      "disposition": "accept",
+      "rationale": "Swim is correctly a nominal animation verb.",
+      "references": {
+        "fr": "Nager",
+        "hi": "तैरना",
+        "ms": "Berenang"
+      }
+    },
+    {
+      "index": 93,
+      "key": "Harvest",
+      "source": "Harvest",
+      "before": "कापणी",
+      "proposal": "कापणी",
+      "disposition": "accept",
+      "rationale": "Harvest is correctly an animation/activity name rather than a purchase operation.",
+      "references": {
+        "fr": "Récolter",
+        "hi": "संग्रह करना",
+        "ms": "Menuai"
+      }
+    },
+    {
+      "index": 94,
+      "key": "Fight",
+      "source": "Fight",
+      "before": "लढा",
+      "proposal": "लढणे",
+      "disposition": "edit",
+      "rationale": "Animation selector parallels चालणे/पोहणे; avoid imperative लढा.",
+      "references": {
+        "fr": "Combattre",
+        "hi": "लड़ना",
+        "ms": "Bertempur"
+      }
+    },
+    {
+      "index": 95,
+      "key": "Fly",
+      "source": "Fly",
+      "before": "माशी",
+      "proposal": "उडणे",
+      "disposition": "edit",
+      "rationale": "Animation verb Fly, not the insect माशी.",
+      "references": {
+        "fr": "Voler",
+        "hi": "उड़ना",
+        "ms": "Terbang"
+      }
+    },
+    {
+      "index": 96,
+      "key": "Live payments",
+      "source": "Live payments",
+      "before": "थेट पेमेंट",
+      "proposal": "वास्तविक देयके",
+      "disposition": "edit",
+      "rationale": "Live versus test payment environments: real transactions, not livestream/direct payments.",
+      "references": {
+        "fr": "Paiements réels",
+        "hi": "वास्तविक भुगतान",
+        "ms": "Pembayaran sebenar"
+      }
+    },
+    {
+      "index": 97,
+      "key": "Test payments",
+      "source": "Test payments",
+      "before": "चाचणी पेमेंट",
+      "proposal": "चाचणी देयके",
+      "disposition": "edit",
+      "rationale": "Align payment noun with real-payment category; no currency amount/unit conversion.",
+      "references": {
+        "fr": "Paiements tests",
+        "hi": "परीक्षण भुगतान",
+        "ms": "Pembayaran ujian"
+      }
+    },
+    {
+      "index": 98,
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "before": "अवर्गीकृत पेमेंट",
+      "proposal": "अवर्गीकृत देयके",
+      "disposition": "edit",
+      "rationale": "Align financial category wording; preserve unknown classification rather than test/live assumption.",
+      "references": {
+        "fr": "Paiements non classifiés",
+        "hi": "अवर्गीकृत भुगतान",
+        "ms": "Pembayaran tidak dikelaskan"
+      }
+    },
+    {
+      "index": 99,
+      "key": "Current period",
+      "source": "Current period",
+      "before": "चालू कालावधी",
+      "proposal": "चालू कालावधी",
+      "disposition": "accept",
+      "rationale": "Current reporting period is accurate.",
+      "references": {
+        "fr": "Période actuelle",
+        "hi": "वर्तमान अवधि",
+        "ms": "Tempoh semasa"
+      }
+    },
+    {
+      "index": 100,
+      "key": "Previous period",
+      "source": "Previous period",
+      "before": "मागील कालावधी",
+      "proposal": "मागील कालावधी",
+      "disposition": "accept",
+      "rationale": "Previous reporting period is accurate.",
+      "references": {
+        "fr": "Période précédente",
+        "hi": "पिछली अवधि",
+        "ms": "Tempoh sebelumnya"
+      }
+    },
+    {
+      "index": 101,
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "before": "पत अनुदान",
+      "proposal": "क्रेडिट्सचे वाटप",
+      "disposition": "edit",
+      "rationale": "Account balance credits being granted, not a loan/creditworthiness subsidy. Use established virtual-credit glossary.",
+      "references": {
+        "fr": "Attribution de crédits",
+        "hi": "क्रेडिट आवंटन",
+        "ms": "Pemberian kredit"
+      }
+    },
+    {
+      "index": 102,
+      "key": "Returned credits",
+      "source": "Returned credits",
+      "before": "परत केलेले क्रेडिट्स",
+      "proposal": "परत केलेले क्रेडिट्स",
+      "disposition": "accept",
+      "rationale": "Returned credits is accurate and keeps virtual-credit terminology.",
+      "references": {
+        "fr": "Crédits restitués",
+        "hi": "लौटाए गए क्रेडिट",
+        "ms": "Kredit dikembalikan"
+      }
+    },
+    {
+      "index": 103,
+      "key": "Dispute",
+      "source": "Dispute",
+      "before": "वाद",
+      "proposal": "वाद",
+      "disposition": "accept",
+      "rationale": "Dispute accurately names a payment dispute without asserting its outcome.",
+      "references": {
+        "fr": "Litige",
+        "hi": "विवाद",
+        "ms": "Pertikaian"
+      }
+    },
+    {
+      "index": 104,
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "before": "वाद मिटला",
+      "proposal": "वाद बंद झाला",
+      "disposition": "edit",
+      "rationale": "Payment dispute closed is a process status, not necessarily resolved or settled; मिटला overclaims successful resolution.",
+      "references": {
+        "fr": "Litige clos",
+        "hi": "विवाद समाप्त",
+        "ms": "Pertikaian ditutup"
+      }
+    },
+    {
+      "index": 105,
+      "key": "Matches started",
+      "source": "Matches started",
+      "before": "सामने सुरू झाले",
+      "proposal": "सामने सुरू झाले",
+      "disposition": "accept",
+      "rationale": "Matches-started metric counts matches whose start occurred; Marathi past-state label is acceptable.",
+      "references": {
+        "fr": "Parties commencées",
+        "hi": "शुरू हुए मैच",
+        "ms": "Perlawanan dimulakan"
+      }
+    },
+    {
+      "index": 106,
+      "key": "Matches completed",
+      "source": "Matches completed",
+      "before": "सामने पूर्ण झाले",
+      "proposal": "सामने पूर्ण झाले",
+      "disposition": "accept",
+      "rationale": "Matches-completed metric preserves completion status.",
+      "references": {
+        "fr": "Parties terminées",
+        "hi": "पूरे हुए मैच",
+        "ms": "Perlawanan selesai"
+      }
+    },
+    {
+      "index": 107,
+      "key": "Matches cancelled",
+      "source": "Matches cancelled",
+      "before": "सामने रद्द झाले",
+      "proposal": "सामने रद्द झाले",
+      "disposition": "accept",
+      "rationale": "Matches-cancelled metric preserves cancellation status.",
+      "references": {
+        "fr": "Parties annulées",
+        "hi": "रद्द हुए मैच",
+        "ms": "Perlawanan dibatalkan"
+      }
+    },
+    {
+      "index": 108,
+      "key": "{value0} publications",
+      "source": "{value0} publications",
+      "before": "{value0} प्रकाशने",
+      "proposal": "{value0} प्रकाशने",
+      "disposition": "accept",
+      "rationale": "Publication metric preserves placeholder and refers to library publications.",
+      "references": {
+        "fr": "Publications : {value0}",
+        "hi": "प्रकाशन: {value0}",
+        "ms": "Penerbitan {value0}"
+      }
+    },
+    {
+      "index": 109,
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "before": "{value0} रेकॉर्ड केलेले डाउनलोड",
+      "proposal": "{value0}: नोंदवलेले डाउनलोड",
+      "disposition": "edit",
+      "rationale": "value0 is a library name, not count. Recorded means counted/logged downloads, not downloaded audio recordings.",
+      "references": {
+        "fr": "Téléchargements enregistrés : {value0}",
+        "hi": "दर्ज डाउनलोड: {value0}",
+        "ms": "Muat turun {value0} yang direkodkan"
+      }
+    },
+    {
+      "index": 110,
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "before": "{value0} पूर्ण होण्याची वेळ (सेकंद)",
+      "proposal": "{value0}: पूर्ण होण्यासाठी लागलेला वेळ (सेकंद)",
+      "disposition": "edit",
+      "rationale": "value0 is a product name; completion duration, not time-of-day timestamp. Preserve seconds unit and token.",
+      "references": {
+        "fr": "Durée des opérations réussies : {value0} (secondes)",
+        "hi": "पूरा होने में लगा समय: {value0} (सेकंड)",
+        "ms": "Masa penyiapan {value0} (saat)"
+      }
+    },
+    {
+      "index": 111,
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "before": "{value0} पूर्णता नमुने",
+      "proposal": "{value0}: पूर्णतेचे मापन नमुने",
+      "disposition": "edit",
+      "rationale": "Samples are duration measurement observations for the named product, not example finished outputs. Preserve token.",
+      "references": {
+        "fr": "Échantillons d’opérations réussies : {value0}",
+        "hi": "पूर्णता के मापन नमूने: {value0}",
+        "ms": "Sampel penyiapan {value0}"
+      }
+    }
+  ],
+  "patches": [
+    {
+      "index": 1,
+      "key": "Rush",
+      "source": "Rush",
+      "before": "घाई",
+      "proposal": "सुरुवातीचा हल्ला",
+      "disposition": "edit",
+      "rationale": "AI strategy tag means an early attack, not the emotion or action of hurrying; French/Hindi/Malay corroborate.",
+      "references": {
+        "fr": "Attaque précoce",
+        "hi": "शुरुआती हमला",
+        "ms": "Serangan pantas"
+      }
+    },
+    {
+      "index": 7,
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "before": "फाइल आणि एपीआय प्रोफाइल",
+      "proposal": "फाइल आणि API प्रोफाइल",
+      "disposition": "edit",
+      "rationale": "Preserve the recognized API acronym in this technical validation heading; this is a file/API contract check.",
+      "references": {
+        "fr": "Fichier et profil d’API",
+        "hi": "फ़ाइल और एपीआई प्रोफ़ाइल",
+        "ms": "Fail dan profil API"
+      }
+    },
+    {
+      "index": 11,
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "before": "सीडेड गेमप्ले",
+      "proposal": "निश्चित बीजासह खेळ",
+      "disposition": "edit",
+      "rationale": "AI validation runs a seeded game; opaque सीडेड loses the reproducible-random-seed meaning.",
+      "references": {
+        "fr": "Partie à graine aléatoire fixe",
+        "hi": "तय यादृच्छिक बीज के साथ गेमप्ले",
+        "ms": "Permainan dengan benih tetap"
+      }
+    },
+    {
+      "index": 15,
+      "key": "Fair",
+      "source": "Fair",
+      "before": "योग्य",
+      "proposal": "मध्यम",
+      "disposition": "edit",
+      "rationale": "Connection quality band between Good and Poor; योग्य means appropriate rather than fair/middling.",
+      "references": {
+        "fr": "Moyen",
+        "hi": "ठीक",
+        "ms": "Sederhana"
+      }
+    },
+    {
+      "index": 16,
+      "key": "Poor",
+      "source": "Poor",
+      "before": "गरीब",
+      "proposal": "खराब",
+      "disposition": "edit",
+      "rationale": "Connection quality, not economic poverty. गरीब is a false friend.",
+      "references": {
+        "fr": "Mauvais",
+        "hi": "खराब",
+        "ms": "Lemah"
+      }
+    },
+    {
+      "index": 17,
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "before": "खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) ही त्या प्रदेशाची एक चाचणी, एक अंदाज असतो.",
+      "proposal": "खेळाडू आणि रिले सर्व्हर यांच्यात संदेश जाऊन परत येण्यासाठी लागणारा वेळ. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) हा प्रदेशातील जोडणीची चाचणी घेऊन काढलेला अंदाज असतो.",
+      "disposition": "edit",
+      "rationale": "RTT measures elapsed network time; draft describes a journey and leaves relay context unclear. Preserve pre-match estimate distinction.",
+      "references": {
+        "fr": "Temps aller-retour entre un joueur et le serveur relais. Avant un match (match rapide, liste de vérification de démarrage), il s’agit d’une estimation fondée sur un test de connexion à la région.",
+        "hi": "खिलाड़ी और रिले सर्वर के बीच आने-जाने का समय। मैच से पहले (क्विक मैच, शुरुआती जाँच सूची), यह क्षेत्र से कनेक्शन जाँच पर आधारित एक अनुमान होता है।",
+        "ms": "Masa pergi balik antara pemain dan geganti. Sebelum perlawanan (perlawanan pantas, senarai semak permulaan), ini ialah anggaran berdasarkan ujian sambungan ke rantau tersebut."
+      }
+    },
+    {
+      "index": 19,
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "before": "तुमचा इनपुट विलंब: तुमच्या क्लिकपासून ते कृती घटेपर्यंत, प्रत्येकासाठी. तुमच्या पिंगच्या निम्मा अधिक तुमचा गेम जिटरला रोखण्यासाठी वापरत असलेला बफर.",
+      "proposal": "तुमचा इनपुट विलंब: तुम्ही क्लिक केल्यापासून ती कृती सर्व खेळाडूंच्या खेळात होईपर्यंतचा वेळ. तुमच्या पिंगचा निम्मा वेळ आणि नेटवर्क विलंबातील चढउतार सांभाळण्यासाठी खेळाने ठेवलेला बफर यांची बेरीज.",
+      "disposition": "edit",
+      "rationale": "Fix corrupted घटेपर्यंत, preserve everyone seeing execution, express half-ping plus jitter buffer as an additive duration.",
+      "references": {
+        "fr": "Votre délai d’entrée : du clic à l’exécution de l’action pour tous les joueurs. La moitié de votre ping, plus la marge que le jeu conserve pour absorber les variations de latence.",
+        "hi": "आपका इनपुट विलंब: क्लिक से लेकर सभी खिलाड़ियों के खेल में कार्रवाई होने तक का समय। आपके पिंग का आधा, और नेटवर्क विलंब के उतार-चढ़ाव को सँभालने के लिए खेल में रखा बफ़र।",
+        "ms": "Kelewatan input anda: masa dari klik sehingga tindakan berlaku untuk semua pemain. Separuh ping anda ditambah penimbal permainan untuk menyerap turun naik kelewatan."
+      }
+    },
+    {
+      "index": 20,
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "before": "एखाद्या खेळाडूचा खेळ मॅच क्लॉकच्या किती मागे चालतो. एका सेकंदापेक्षा कमी वेळ सामान्य असतो (यात त्यांचा विलंब समाविष्ट असतो); रिलेनुसार खेळाडू २ सेकंदांपासून धीमा मानला जातो.",
+      "proposal": "एखाद्या खेळाडूचा खेळ सामन्याच्या घड्याळापेक्षा किती मागे चालतो. एका सेकंदापेक्षा कमी अंतर सामान्य असते (यात त्या खेळाडूचा इनपुट विलंबही येतो); २ सेकंदांपासून रिले सर्व्हर त्या खेळाडूला संथ म्हणून चिन्हांकित करतो.",
+      "disposition": "edit",
+      "rationale": "Preserve game-clock lag and inclusive 2-second marking threshold; avoid unexplained मॅच क्लॉक and distinguish relay marking from opinion.",
+      "references": {
+        "fr": "Retard du jeu d’un joueur par rapport à l’horloge du match. Moins d’une seconde est normal (cela inclut son délai d’entrée) ; le serveur relais signale le joueur comme lent à partir de 2 s.",
+        "hi": "खिलाड़ी का खेल मैच की घड़ी से कितना पीछे है। एक सेकंड से कम सामान्य है (इनपुट विलंब सहित); रिले सर्वर 2 सेकंड से खिलाड़ी को धीमा चिह्नित करता है।",
+        "ms": "Sejauh mana permainan pemain ketinggalan daripada jam perlawanan. Kurang daripada satu saat adalah biasa (termasuk kelewatannya); geganti menandakan pemain sebagai perlahan mulai 2 s."
+      }
+    },
+    {
+      "index": 24,
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "before": "रिव्हेट केलेले धातू",
+      "proposal": "रिव्हेट लावलेला धातू",
+      "disposition": "edit",
+      "rationale": "Material धातू is singular masculine; draft केलेले धातू has agreement mismatch.",
+      "references": {
+        "fr": "Métal riveté",
+        "hi": "रिवेटेड धातु",
+        "ms": "Logam berivet"
+      }
+    },
+    {
+      "index": 27,
+      "key": "Organic",
+      "source": "Organic",
+      "before": "सेंद्रिय",
+      "proposal": "जैविक",
+      "disposition": "edit",
+      "rationale": "Material family includes hair, scales and leather. जैविक avoids the narrower agricultural/chemical implication of सेंद्रिय.",
+      "references": {
+        "fr": "Organique",
+        "hi": "जैविक",
+        "ms": "Organik"
+      }
+    },
+    {
+      "index": 31,
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "before": "चिकट गोंद",
+      "proposal": "ओघळणारा चिकट पदार्थ",
+      "disposition": "edit",
+      "rationale": "Goo is viscous material, not adhesive glue; preserve oozy movement.",
+      "references": {
+        "fr": "Substance gluante",
+        "hi": "चिपचिपा पदार्थ",
+        "ms": "Lendir meleleh"
+      }
+    },
+    {
+      "index": 36,
+      "key": "Scales",
+      "source": "Scales",
+      "before": "स्केल",
+      "proposal": "खवले",
+      "disposition": "edit",
+      "rationale": "Skin material is animal scales, not a measurement scale; corroborated by actual material table and French écailles.",
+      "references": {
+        "fr": "Écailles",
+        "hi": "शल्क",
+        "ms": "Sisik"
+      }
+    },
+    {
+      "index": 43,
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "before": "मधमाशांचे पोळे",
+      "proposal": "पोळ्याची जाळी",
+      "disposition": "edit",
+      "rationale": "Honeycomb surface pattern/material differs from the whole hive building; makes the repeated-cell texture clear.",
+      "references": {
+        "fr": "Alvéoles de ruche",
+        "hi": "मधुकोश",
+        "ms": "Sarang lebah"
+      }
+    },
+    {
+      "index": 48,
+      "key": "Slime",
+      "source": "Slime",
+      "before": "स्लाइम",
+      "proposal": "चिकट जेल",
+      "disposition": "edit",
+      "rationale": "Viscous surface material; meaningful label instead of opaque स्लाइम, and distinct from flowing goo.",
+      "references": {
+        "fr": "Gel visqueux",
+        "hi": "लिसलिसा जेल",
+        "ms": "Lendir"
+      }
+    },
+    {
+      "index": 57,
+      "key": "Most played",
+      "source": "Most played",
+      "before": "सर्वाधिक खेळले",
+      "proposal": "सर्वाधिक खेळलेले",
+      "disposition": "edit",
+      "rationale": "Map sorting option needs a descriptive participle, not the finite past सर्वाधिक खेळले.",
+      "references": {
+        "fr": "Plus jouées",
+        "hi": "सबसे अधिक खेला गया",
+        "ms": "Paling kerap dimainkan"
+      }
+    },
+    {
+      "index": 59,
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "before": "तिन्ही मूड योग्यरित्या कार्यरत आहेत याची खात्री करा.",
+      "proposal": "संगीताच्या तिन्ही मनःस्थिती योग्यरीत्या वाजतात याची खात्री करा.",
+      "disposition": "edit",
+      "rationale": "Actual music playback validation; moods are musical variants and play means audible playback, not merely operational status.",
+      "references": {
+        "fr": "Vérifiez que les trois ambiances fonctionnent correctement.",
+        "hi": "यह सुनिश्चित करें कि तीनों मूड सही ढंग से काम कर रहे हों।",
+        "ms": "Pastikan ketiga-tiga suasana muzik dimainkan dengan betul."
+      }
+    },
+    {
+      "index": 60,
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "before": "वेगवेगळ्या मनस्थितींमध्ये आवाजाच्या पातळीत होणाऱ्या अनपेक्षित बदलांकडे लक्ष द्या.",
+      "proposal": "संगीताच्या मनःस्थिती बदलताना आवाजाच्या पातळीत अचानक होणाऱ्या अनपेक्षित बदलांकडे लक्ष द्या.",
+      "disposition": "edit",
+      "rationale": "Mood refers to music, not the listener’s mental states; preserve sudden volume jumps.",
+      "references": {
+        "fr": "Soyez attentif aux variations de volume sonore inattendues entre les différentes ambiances.",
+        "hi": "विभिन्न मनोदशाओं के बीच ध्वनि की तीव्रता में अप्रत्याशित उतार-चढ़ाव पर ध्यान दें।",
+        "ms": "Dengar perubahan kelantangan mendadak yang tidak dijangka antara suasana muzik."
+      }
+    },
+    {
+      "index": 62,
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "before": "अतिशय यांत्रिकपणे पुनरावृत्ती होणाऱ्या लहान वाक्यांशांकडे लक्ष द्या.",
+      "proposal": "अतिशय यांत्रिकपणे पुन्हा पुन्हा वाजणाऱ्या छोट्या संगीतखंडांकडे लक्ष द्या.",
+      "disposition": "edit",
+      "rationale": "Musical phrases, not linguistic phrases; explicit audible repetitions fit the validation task.",
+      "references": {
+        "fr": "Soyez attentif aux phrases courtes qui se répètent de façon trop mécanique.",
+        "hi": "उन छोटे वाक्यांशों पर ध्यान दें जो बहुत ही यंत्रवत रूप से दोहराए जाते हैं।",
+        "ms": "Dengar frasa muzik pendek yang berulang secara terlalu kaku."
+      }
+    },
+    {
+      "index": 63,
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "before": "मूड बदला आणि तालात किंवा सुसंवादात होणारे बदल ऐका.",
+      "proposal": "संगीताची मनःस्थिती बदला आणि वेळेतील किंवा सुरांच्या मेळातील बदल ऐका.",
+      "disposition": "edit",
+      "rationale": "Timing may change independently of rhythm; harmony means simultaneous tonal relationships, not conversational concord.",
+      "references": {
+        "fr": "Changez d'ambiance et soyez attentif aux changements de rythme ou d'harmonie.",
+        "hi": "संगीत के मूड बदलें और समय-निर्धारण या सुर-संगति के बदलावों को सुनें।",
+        "ms": "Tukar suasana muzik dan dengar perubahan pada pemasaan atau harmoni."
+      }
+    },
+    {
+      "index": 64,
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "before": "बांधकाम आणि लढाई या शांततेपेक्षा वेगळ्या जाणवतात याची खात्री करा.",
+      "proposal": "बांधकाम आणि लढाई या संगीताच्या मनःस्थिती शांत मनःस्थितीपेक्षा वेगळ्या जाणवतात याची खात्री करा.",
+      "disposition": "edit",
+      "rationale": "Check contrast of actual named Calm/Building/Combat music variants, not the physical acts of construction/combat.",
+      "references": {
+        "fr": "Vérifiez que les ambiances « Construction » et « Combat » se distinguent de « Calme ».",
+        "hi": "यह सुनिश्चित करें कि निर्माण और युद्ध की अनुभूति शांत वातावरण से अलग हो।",
+        "ms": "Pastikan suasana Pembinaan dan Pertempuran terasa berbeza daripada Tenang."
+      }
+    },
+    {
+      "index": 65,
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "before": "शांत भागांमध्ये येणाऱ्या फुसफुसण्यासारख्या किंवा खरखराटासारख्या आवाजाकडे लक्ष द्या.",
+      "proposal": "कमी आवाजाच्या संगीतखंडांमध्ये सुसाट किंवा खरखरीत आवाज येतो का ते ऐका.",
+      "disposition": "edit",
+      "rationale": "Quiet passages are low-volume musical passages; hiss is unwanted noise, not human whispering.",
+      "references": {
+        "fr": "Soyez attentif aux sifflements ou aux grattements dans les passages calmes.",
+        "hi": "शांत संगीत के अंशों में सरसराहट या खरोंच जैसी आवाज़ पर ध्यान दें।",
+        "ms": "Dengar desisan atau bunyi kasar dalam bahagian yang berkelantangan rendah."
+      }
+    },
+    {
+      "index": 66,
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "before": "अस्पष्ट बास किंवा कर्कश उच्च फ्रिक्वेन्सीकडे लक्ष द्या.",
+      "proposal": "गढूळ वाटणारे खर्जाचे स्वर किंवा उच्च वारंवारतेचे कर्कश स्वर येतात का ते ऐका.",
+      "disposition": "edit",
+      "rationale": "Audio-specific bass muddiness and harsh high frequencies; retain low/high distinction without untranslated frequency loan.",
+      "references": {
+        "fr": "Soyez attentif aux basses brouillées ou aux hautes fréquences agressives.",
+        "hi": "अस्पष्ट बास या कर्कश उच्च आवृत्तियों पर ध्यान दें।",
+        "ms": "Dengar bunyi bes yang kurang jelas atau frekuensi tinggi yang terlalu tajam."
+      }
+    },
+    {
+      "index": 72,
+      "key": "Swarm",
+      "source": "Swarm",
+      "before": "थवा",
+      "proposal": "पोळे",
+      "disposition": "edit",
+      "rationale": "This is the colony swarm mesh/building shown alongside worker/warrior/explorer, not a moving flock; existing native [swarm]=पोळे and other-language refs agree.",
+      "references": {
+        "fr": "Ruche",
+        "hi": "छत्ता",
+        "ms": "Sarang"
+      }
+    },
+    {
+      "index": 75,
+      "key": "Clutch",
+      "source": "Clutch",
+      "before": "क्लच",
+      "proposal": "अंड्यांचा समूह",
+      "disposition": "edit",
+      "rationale": "Shape consists of six brood eggs in a rim; mechanical क्लच is a false friend.",
+      "references": {
+        "fr": "Grappe d’œufs",
+        "hi": "अंडों का समूह",
+        "ms": "Kelompok telur"
+      }
+    },
+    {
+      "index": 76,
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "before": "बेडूक",
+      "proposal": "अळिंबी",
+      "disposition": "edit",
+      "rationale": "Toadstool mesh is a mushroom, not a toad; बेडूक is incorrect.",
+      "references": {
+        "fr": "Champignon vénéneux",
+        "hi": "कुकुरमुत्ता",
+        "ms": "Cendawan payung"
+      }
+    },
+    {
+      "index": 77,
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "before": "कोवळ्या टोपी असलेले रुंद टोपीधारी विषारी बुरशी.",
+      "proposal": "लहान छत्रांसह रुंद छत्र असलेली अळिंबी.",
+      "disposition": "edit",
+      "rationale": "Mushroom caps, not wearable hats; fix mixed singular/plural grammar and preserve large central plus young caps.",
+      "references": {
+        "fr": "Un champignon à large chapeau avec de jeunes chapeaux.",
+        "hi": "चौड़ी टोपी वाला कुकुरमुत्ता, जिसके साथ छोटी नई टोपियाँ हैं।",
+        "ms": "Cendawan bertudung lebar bersama cendawan-cendawan muda."
+      }
+    },
+    {
+      "index": 79,
+      "key": "Skep",
+      "source": "Skep",
+      "before": "स्केप",
+      "proposal": "विणलेले पोळे",
+      "disposition": "edit",
+      "rationale": "Skep is a woven/coiled hive shape, not an opaque proper product name; other-language references make construction explicit.",
+      "references": {
+        "fr": "Ruche en paille tressée",
+        "hi": "बुना हुआ मधुमक्खी छत्ता",
+        "ms": "Sarang lebah anyaman"
+      }
+    },
+    {
+      "index": 80,
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "before": "स्टँडवर वेटोळे घालून ठेवलेले मधमाशांचे पोळे, ज्याचे दार तुमच्या समोर आहे.",
+      "proposal": "आधारावर ठेवलेले वेटोळ्यांचे पोळे; त्याचे दार तुमच्याकडे आहे.",
+      "disposition": "edit",
+      "rationale": "The hive itself is coiled; it is not an animal coiling up while placed on a stand. Preserve front-facing entrance.",
+      "references": {
+        "fr": "Une ruche enroulée sur un support, sa porte face à vous.",
+        "hi": "एक स्टैंड पर कुंडली मारकर रखा हुआ मधुमक्खी का छत्ता, जिसका दरवाजा आपकी ओर है।",
+        "ms": "Sarang lebah berlingkar di atas tapak, dengan pintunya menghadap anda."
+      }
+    },
+    {
+      "index": 81,
+      "key": "Bloom",
+      "source": "Bloom",
+      "before": "फुलणे",
+      "proposal": "फुललेले फूल",
+      "disposition": "edit",
+      "rationale": "Shape label is the open flower form, not the verb फुलणे.",
+      "references": {
+        "fr": "Floraison",
+        "hi": "खिला फूल",
+        "ms": "Bunga mekar"
+      }
+    },
+    {
+      "index": 85,
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "before": "सर्वरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूचा खेळ त्याच्याशी सहमत होता.",
+      "proposal": "सर्व्हरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूच्या खेळाची स्थिती त्याच्याशी जुळली.",
+      "disposition": "edit",
+      "rationale": "Deterministic agreement is matching game state, not human assent; normalize server spelling.",
+      "references": {
+        "fr": "Le serveur a rejoué cette partie et les états de jeu de tous les joueurs correspondaient au replay.",
+        "hi": "सर्वर ने इस मैच का रीप्ले चलाया और सभी खिलाड़ियों के खेल की अवस्थाएँ रीप्ले से मेल खाती थीं।",
+        "ms": "Pelayan telah memainkan semula perlawanan ini dan keadaan permainan setiap pemain sepadan dengan hasilnya."
+      }
+    },
+    {
+      "index": 87,
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "before": "एखाद्या खेळाडूचा गेम सर्वरच्या मॅचच्या रिप्लेशी जुळत नसला तरी, सर्वरचा निकालच ग्राह्य धरला जाईल.",
+      "proposal": "एका खेळाडूच्या खेळाची स्थिती सर्व्हरने पुन्हा चालवलेल्या सामन्याशी जुळली नाही; सर्व्हरचा निकाल ग्राह्य धरला जातो.",
+      "disposition": "edit",
+      "rationale": "Actual divergence happened; draft concessive जुळत नसला तरी makes it hypothetical and loses direct state comparison.",
+      "references": {
+        "fr": "L’état de jeu d’un joueur divergeait du replay de la partie sur le serveur ; le résultat du serveur fait foi.",
+        "hi": "एक खिलाड़ी के खेल की अवस्था सर्वर के मैच रीप्ले से मेल नहीं खाई; सर्वर का परिणाम मान्य है।",
+        "ms": "Keadaan permainan seorang pemain tidak sepadan dengan ulang tayang perlawanan oleh pelayan; keputusan pelayan yang diambil kira."
+      }
+    },
+    {
+      "index": 88,
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "before": "सर्वरला हा सामना पुन्हा खेळवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+      "proposal": "सर्व्हरला हा सामना त्याच प्रकारे पुन्हा चालवता आला नाही, त्यामुळे कोणत्याही रेटिंगमध्ये बदल होत नाही.",
+      "disposition": "edit",
+      "rationale": "Reproduce means reproduce execution; preserve no rating changes and consistent सर्व्हर spelling.",
+      "references": {
+        "fr": "Le serveur n’a pas pu reproduire cette partie, donc aucune évaluation ne change.",
+        "hi": "सर्वर इस मैच को दोबारा नहीं चला सका, इसलिए रेटिंग में कोई बदलाव नहीं हुआ है।",
+        "ms": "Pelayan tidak dapat menghasilkan semula perlawanan ini, jadi tiada penarafan berubah."
+      }
+    },
+    {
+      "index": 94,
+      "key": "Fight",
+      "source": "Fight",
+      "before": "लढा",
+      "proposal": "लढणे",
+      "disposition": "edit",
+      "rationale": "Animation selector parallels चालणे/पोहणे; avoid imperative लढा.",
+      "references": {
+        "fr": "Combattre",
+        "hi": "लड़ना",
+        "ms": "Bertempur"
+      }
+    },
+    {
+      "index": 95,
+      "key": "Fly",
+      "source": "Fly",
+      "before": "माशी",
+      "proposal": "उडणे",
+      "disposition": "edit",
+      "rationale": "Animation verb Fly, not the insect माशी.",
+      "references": {
+        "fr": "Voler",
+        "hi": "उड़ना",
+        "ms": "Terbang"
+      }
+    },
+    {
+      "index": 96,
+      "key": "Live payments",
+      "source": "Live payments",
+      "before": "थेट पेमेंट",
+      "proposal": "वास्तविक देयके",
+      "disposition": "edit",
+      "rationale": "Live versus test payment environments: real transactions, not livestream/direct payments.",
+      "references": {
+        "fr": "Paiements réels",
+        "hi": "वास्तविक भुगतान",
+        "ms": "Pembayaran sebenar"
+      }
+    },
+    {
+      "index": 97,
+      "key": "Test payments",
+      "source": "Test payments",
+      "before": "चाचणी पेमेंट",
+      "proposal": "चाचणी देयके",
+      "disposition": "edit",
+      "rationale": "Align payment noun with real-payment category; no currency amount/unit conversion.",
+      "references": {
+        "fr": "Paiements tests",
+        "hi": "परीक्षण भुगतान",
+        "ms": "Pembayaran ujian"
+      }
+    },
+    {
+      "index": 98,
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "before": "अवर्गीकृत पेमेंट",
+      "proposal": "अवर्गीकृत देयके",
+      "disposition": "edit",
+      "rationale": "Align financial category wording; preserve unknown classification rather than test/live assumption.",
+      "references": {
+        "fr": "Paiements non classifiés",
+        "hi": "अवर्गीकृत भुगतान",
+        "ms": "Pembayaran tidak dikelaskan"
+      }
+    },
+    {
+      "index": 101,
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "before": "पत अनुदान",
+      "proposal": "क्रेडिट्सचे वाटप",
+      "disposition": "edit",
+      "rationale": "Account balance credits being granted, not a loan/creditworthiness subsidy. Use established virtual-credit glossary.",
+      "references": {
+        "fr": "Attribution de crédits",
+        "hi": "क्रेडिट आवंटन",
+        "ms": "Pemberian kredit"
+      }
+    },
+    {
+      "index": 104,
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "before": "वाद मिटला",
+      "proposal": "वाद बंद झाला",
+      "disposition": "edit",
+      "rationale": "Payment dispute closed is a process status, not necessarily resolved or settled; मिटला overclaims successful resolution.",
+      "references": {
+        "fr": "Litige clos",
+        "hi": "विवाद समाप्त",
+        "ms": "Pertikaian ditutup"
+      }
+    },
+    {
+      "index": 109,
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "before": "{value0} रेकॉर्ड केलेले डाउनलोड",
+      "proposal": "{value0}: नोंदवलेले डाउनलोड",
+      "disposition": "edit",
+      "rationale": "value0 is a library name, not count. Recorded means counted/logged downloads, not downloaded audio recordings.",
+      "references": {
+        "fr": "Téléchargements enregistrés : {value0}",
+        "hi": "दर्ज डाउनलोड: {value0}",
+        "ms": "Muat turun {value0} yang direkodkan"
+      }
+    },
+    {
+      "index": 110,
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "before": "{value0} पूर्ण होण्याची वेळ (सेकंद)",
+      "proposal": "{value0}: पूर्ण होण्यासाठी लागलेला वेळ (सेकंद)",
+      "disposition": "edit",
+      "rationale": "value0 is a product name; completion duration, not time-of-day timestamp. Preserve seconds unit and token.",
+      "references": {
+        "fr": "Durée des opérations réussies : {value0} (secondes)",
+        "hi": "पूरा होने में लगा समय: {value0} (सेकंड)",
+        "ms": "Masa penyiapan {value0} (saat)"
+      }
+    },
+    {
+      "index": 111,
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "before": "{value0} पूर्णता नमुने",
+      "proposal": "{value0}: पूर्णतेचे मापन नमुने",
+      "disposition": "edit",
+      "rationale": "Samples are duration measurement observations for the named product, not example finished outputs. Preserve token.",
+      "references": {
+        "fr": "Échantillons d’opérations réussies : {value0}",
+        "hi": "पूर्णता के मापन नमूने: {value0}",
+        "ms": "Sampel penyiapan {value0}"
+      }
+    }
+  ],
+  "limitations": "Language review only; no fresh visual fit, API calls or canonical/draft writes. Payment labels do not change any currency/unit/amount. All four dynamic value0 tokens preserved in proposed wording."
+}

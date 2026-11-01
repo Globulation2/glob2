@@ -30,6 +30,7 @@ def main():
     # The inventory describes the payload and is added once after it is
     # regenerated. It cannot hash or count an inherited copy of itself.
     files.discard(BASE / 'published-inventory.json')
+    files = {p for p in files if not {'profile', 'profiles', 'node_modules', 'cache'} & set(p.parts)}
     files = {p for p in files if not {'browser-fixture-baseline', 'baseline-browser-fixture'} & set(p.parts)}
     files = {p for p in files if not (p.name.startswith('publication-') and p.suffix == '.log')}
 
@@ -41,7 +42,7 @@ def main():
                    'web-cross-browser-screenshots', 'online-cross-browser-results',
                    'native-render-final', 'native-render-clean671-partial600s',
                    'native-render-clean671',
-                   'native-focused-results',
+                   'native-focused-results', 'integration-ffabe', 'integration-1801',
                    'browser-render-final', 'browser-game',
                    'android-rendering', 'android-attempt1-system-ui-anr', 'integration-refresh', 'integration-bc8']
     extensions = {'.json', '.log', '.png', '.txt', '.md', '.xml', '.py', '.cjs', '.js', '.mjs', '.cpp', '.h', '.sh'}
@@ -56,15 +57,13 @@ def main():
                 continue
             if str(relative).startswith(str(BASE / 'integration-bc8/preparation-kit') + '/') and path.name != 'manifest.json':
                 continue
-            if (args.checkpoint or args.pending_browser) and relative == BASE / 'integration-bc8/browser-packaging-contracts.log':
-                continue
             if path.name.startswith('publication-') and path.suffix == '.log':
                 continue
             if (args.checkpoint or args.pending_browser) and any(str(relative).startswith(str(BASE / x) + '/') for x in ['integration-refresh/native', 'integration-bc8/native', 'integration-bc8/android']):
                 continue
             if (path.is_file() and (path.suffix in extensions or path.name.endswith(('.json.gz', '.log.gz', '.txt.gz')))
                     and not {'baseline-browser-fixture', 'browser-fixture-baseline', 'previous671'} & set(relative.parts)
-                    and not {'profiles', 'node_modules', 'cache'} & set(relative.parts)):
+                    and not {'profiles', 'profile', 'node_modules', 'cache'} & set(relative.parts)):
                 files.add(relative)
     names = ['EVIDENCE.md', 'google-budget.json', 'registration-checks.json',
              'web-visual-review.json', 'private-web-provenance.json',
@@ -87,10 +86,15 @@ def main():
              'android_smoke_task.py']
     files.add(BASE / 'validated-android-ba890/archive-manifest.json')
     files.add(BASE / 'validated-android-ffbd/archive-manifest.json')
+    files.add(BASE / 'validated-android-64/archive-manifest.json')
+    files.add(BASE / 'validated-android-187/archive-manifest.json')
+    files.add(BASE / 'validated-browser-351/archive-manifest.json')
     for name in names:
         path = BASE / name
         if (ROOT / path).is_file(): files.add(path)
     for path in (ROOT / BASE).glob('*.log'):
+        if path.name.startswith('publication-'):
+            continue
         if args.checkpoint and path.name.startswith('android-'):
             continue
         if (args.checkpoint or args.pending_browser) and (
@@ -141,14 +145,14 @@ def main():
     compressed = {}
     for path in sorted(files):
         original = ROOT / path
-        if path.suffix == '.json' and original.stat().st_size > 90 * 1024**2:
+        if path.suffix in {'.json', '.log', '.txt'} and original.stat().st_size > 5 * 1024**2:
             packed = path.with_suffix(path.suffix + '.gz')
             contents = original.read_bytes()
             (ROOT / packed).write_bytes(gzip.compress(contents, compresslevel=6, mtime=0))
             compressed[str(path)] = {'published_as': str(packed),
                 'original_sha256': hashlib.sha256(contents).hexdigest(),
                 'original_bytes': len(contents),
-                'reason': 'Lossless compression to stay below GitHub single-file size limits.'}
+                'reason': 'Lossless compression of reports over5MiB to satisfy512MiB campaign publication budget.'}
             files.remove(path)
             files.add(packed)
     inventory = sorted(map(str, files))

@@ -1,0 +1,13 @@
+{
+  "revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "command": [
+    "python3",
+    "test/check_sim_revision.py",
+    "--base",
+    "ffabe1b9ef4e2a9986b1d6321c356124480b8a2d"
+  ],
+  "exit_code": 0,
+  "output": "The sim version key matches the committed match record and follows every change of the golden trace",
+  "source_code_producer": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "scope": "Staticversion/fixtureconsistency; actualgolden1casePASSandactualruntimeparityseparate."
+}

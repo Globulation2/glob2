@@ -1,0 +1,6 @@
+PASS GUIInteractionCoverage/statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts] (31.7s)
+PASS GameGUITouch/live statistics hide post-game probability across topics [display][artifacts] (19.7s)
+PASS GameGUITouch/tutorial wrapping preserves shaped clusters and refreshes font metrics [display] (22.5s)
+
+3 passed, 0 failed, 0 skipped (73.9s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/test-results-display-retry/junit.xml (3 cases)

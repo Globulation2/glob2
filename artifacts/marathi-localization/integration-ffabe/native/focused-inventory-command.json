@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-engine-tests",
+    "-ltc"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "deadline_seconds": 300,
+  "started_unix": 1793530703.1688147,
+  "explicit_video_driver": "dummy",
+  "exit_code": 0,
+  "elapsed_seconds": 2.0145695209503174,
+  "log_sha256": "55297b6e66fae8d216218833e35806866687941d175f7a45902aa3cf8988899c",
+  "capture_errors": []
+}

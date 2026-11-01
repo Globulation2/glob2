@@ -1,0 +1,63 @@
+{
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "reason": "Original lifecycle AudioPreferenceScreen filename captured wordmark before first paint. Retain that timing miss and all passed lifecycle results; this focused native-preference capture does not repeat lifecycle or modify production code.",
+  "original_missed_capture": "rendering/lifecycle/first-run-AudioPreferenceScreen.png",
+  "original_missed_capture_sha256": "eea86029427fa0b2f720a7c1f010bd20b1c0ca3354a05338b54f6c78e82c4014",
+  "profile_scope": "pmclear only task-owned app on validatedowned emulator; no tracked/source profile edits",
+  "actions": [
+    {
+      "command": [
+        "shell",
+        "am",
+        "force-stop",
+        "org.globulation2.glob2"
+      ],
+      "stdout": ""
+    },
+    {
+      "command": [
+        "shell",
+        "pm",
+        "clear",
+        "org.globulation2.glob2"
+      ],
+      "stdout": "Success\n"
+    },
+    {
+      "command": [
+        "logcat",
+        "-c"
+      ],
+      "stdout": ""
+    },
+    {
+      "command": [
+        "shell",
+        "am",
+        "start",
+        "-n",
+        "org.globulation2.glob2/org.globulation2.glob2.Glob2Activity"
+      ],
+      "stdout": "Starting: Intent { cmp=org.globulation2.glob2/.Glob2Activity }\n"
+    }
+  ],
+  "captures": [
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/focused-preferences/audio-after-ready-0.png",
+      "bytes": 351844,
+      "sha256": "219968d23ef44cc20565f19eadc236b1373e7765a5211c0efe84409cd2076ac7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/focused-preferences/audio-after-ready-1.png",
+      "bytes": 351237,
+      "sha256": "f5b793a671d147268584ac50f7f56eeac13d828270ef0289b938f5e82f0b1e69"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/focused-preferences/audio-after-ready-2.png",
+      "bytes": 351977,
+      "sha256": "d726f69a9b2f081def65cd3665f3c12e2fc987f3e90f7fe1cb813f08c2a87826"
+    }
+  ],
+  "scope": "Actual persistent nativeAudio screen afterboundedfirstpaintsettle, awaiting actualvisualreview beforeinput. Java transientoverlay was not paused/held; separateinitialcapturealreadyobserved actualMarathioverlay."
+}

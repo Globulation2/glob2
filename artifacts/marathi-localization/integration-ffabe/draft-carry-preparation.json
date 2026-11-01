@@ -1,0 +1,11 @@
+{
+  "clean_kit_revision": "e564cf26cb156a5474dcb9102a65d64aab18fb85",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "native_keys": 3411,
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "online_existing_keys": 2836,
+  "online_previous_catalog_sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+  "new_online_keys": 111,
+  "unchanged_existing_pairs": true,
+  "scope": "Copiedonlyexactpreviouscanonicaltargetsinto newclean frozenkit;111newEnglishkeys remainblank, no approvals or canonicaledits."
+}

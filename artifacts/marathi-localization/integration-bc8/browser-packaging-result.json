@@ -1,0 +1,19 @@
+{
+  "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "command": "artifacts/marathi-localization/font-tools/bin/python test/build_system/test_web_assets.py",
+  "fontTools_version": "4.64.0",
+  "passed": 28,
+  "failed": 0,
+  "skipped": 0,
+  "reported_duration_seconds": 2705.74,
+  "duration_scope": "Test elapsed time on contended host, not a performance benchmark.",
+  "log_sha256": "c951381e7f9a4c1b017284c6233793635a6ae7d4d831015ddb99b6f37145bf72",
+  "warnings": "Two FontTools unclosed-font ResourceWarnings retained in raw log; no test failure.",
+  "caddy_contract": {
+    "passed": 1,
+    "skipped": 0,
+    "log": "browser-font-contracts-caddy.log",
+    "sha256": "16bd17008595309c61e94b8e4a1e1645a4ba6b0f27d06eb378f76f7086ffc69a"
+  },
+  "source_status_clean": true
+}

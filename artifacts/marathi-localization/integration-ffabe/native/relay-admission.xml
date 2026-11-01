@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/bradley/.codex/worktrees/45cd/glob2/build/linux/relay/debug/dev-dev_fast-true-linker-auto/src/glob2-relay-tests" errors="0" failures="0" tests="93" time="0.004102" timestamp="2026-11-01T11:19:42Z" doctest_version="2.4.11">
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="the first valid ticket creates a match; agreeing tickets join it" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="tickets of one match must agree on simVersion and humanSeats" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="Marathi catalog registration separates revision 111 and 112 match admission" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="an ended match cannot be restarted by a late ticket until every ticket has expired" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="draining admits reconnects to running matches only; capacity limits new matches" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="RelayMatchEnded summarises seats, desync and the record" time="0.001882" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="RelayMatchEnded carries the relay's network summary, and /metrics its totals" time="0.00164" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="registration and heartbeat bodies carry the protocol's fields" time="0.000208" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="the map hash comes from MatchSetup.map.hash" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="configuration validates its environment" time="0.000372" status="run"/>
+  </testsuite>
+</testsuites>

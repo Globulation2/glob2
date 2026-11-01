@@ -1,0 +1,130 @@
+{
+  "unsigned_apk": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+  "unsigned_apk_sha256": "4ce57514ad63545ac564ed376c9d1a1020341bcaa2c19532be31f113591d6cf8",
+  "final_official_producer_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "initial_native_producer_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+  "producer_provenance": "integration-ffabe/android/producer-provenance.json",
+  "native_object_reuse": {
+    "before_count": 776,
+    "after_count": 776,
+    "unchanged_object_bytes": 770,
+    "changed_or_new": [
+      "obj/151e7b8007d9a5ca54a7/libgag/src/TrueTypeFont.cpp.o",
+      "obj/151e7b8007d9a5ca54a7/src/app/Glob2.cpp.o",
+      "obj/151e7b8007d9a5ca54a7/src/app/SystemLanguage.cpp.o",
+      "obj/151e7b8007d9a5ca54a7/src/game/screens/GeneratorStudioScreen.cpp.o",
+      "obj/151e7b8007d9a5ca54a7/src/hud/InGameStatistics.cpp.o",
+      "obj/151e7b8007d9a5ca54a7/src/online/SimVersion.cpp.o"
+    ],
+    "removed": [],
+    "before_manifest_sha256": "5eb8d8a3155a54ae8d4184036775a8ccf167e11a2a519eb75e12c72ccb6fc6d5",
+    "after_manifest_sha256": "ac665509bcdbf88dab1a95f14a5d5d20915f38422170eeb027fe443cdc26eb76"
+  },
+  "head_at_validation": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "adb_server": 15187,
+  "serial": "emulator-5678",
+  "avd": "glob2-api35-x64",
+  "locale": "mr-IN",
+  "java_home": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1",
+  "java_path_prefix": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1/bin",
+  "packaged_assets": {
+    "assets/glob2-bundle/data/texts.list.txt": "035fc441748d3dec86846c84fef50aeda50cf94b900d0b693eefac5f5feb3998",
+    "assets/glob2-bundle/data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+    "assets/glob2-bundle/data/texts.incomplete.txt": "a04c2c664e808aaac20faa7e0628561dd0802d65117fe3537659ea510792b8ba",
+    "assets/glob2-bundle/data/texts.mr.txt": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+  },
+  "packaged_marathi_completion_line": "data/texts.mr.txt",
+  "packaged_language_count": 39,
+  "packaged_MR_language_index": 38,
+  "packaged_language_registry_tail": [
+    "data/texts.ms.txt",
+    "data/texts.mr.txt"
+  ],
+  "compiled_marathi_resource_configuration_line": "      (mr) \"खेळाची तयारी सुरू आहे…\"",
+  "android_resource_verified": "Effective compiled APKresources include Marathi preparing_game with exact reviewed target खेळाची तयारी सुरू आहे…",
+  "android_source_xml_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "signed_apk_sha256": "5d261ae3fe66713ecadbd495be2d10cd306b0b8cf92c31ef502851d4c4d8e39e",
+  "installed_apk_sha256": "5d261ae3fe66713ecadbd495be2d10cd306b0b8cf92c31ef502851d4c4d8e39e",
+  "installed_apk_path": "/data/app/~~JcwcA3aYMQ36wKOKSA5XFA==/org.globulation2.glob2-8rmsG3nWPGYdYHHNeVKM1g==/base.apk",
+  "approved_golden_fixture_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "only_fixture_deltas_since_shipping": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "compiled_shipping_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "upgrade_start_captures": [
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-00.png",
+      "sha256": "999b26dd32044b5817817906b92a19d23c7602c37306ed472507f3ef11e87043",
+      "bytes": 163531,
+      "elapsed_seconds": 1.0603868949983735
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-01.png",
+      "sha256": "bad19f3f3ecf08c24ab252bb4fbded97123c296589b7e33550bbca64e74ac751",
+      "bytes": 16554,
+      "elapsed_seconds": 1.367817993988865
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-02.png",
+      "sha256": "bad19f3f3ecf08c24ab252bb4fbded97123c296589b7e33550bbca64e74ac751",
+      "bytes": 16554,
+      "elapsed_seconds": 1.7694695419922937
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-03.png",
+      "sha256": "bad19f3f3ecf08c24ab252bb4fbded97123c296589b7e33550bbca64e74ac751",
+      "bytes": 16554,
+      "elapsed_seconds": 2.3476134989905404
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-04.png",
+      "sha256": "62cf09c9ca4dc5d780397dd6536b32e80a3d1af3c56e5e9a4fd21f7c49155aed",
+      "bytes": 16785,
+      "elapsed_seconds": 3.010446290994878
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-05.png",
+      "sha256": "62cf09c9ca4dc5d780397dd6536b32e80a3d1af3c56e5e9a4fd21f7c49155aed",
+      "bytes": 16785,
+      "elapsed_seconds": 3.813744567989488
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-06.png",
+      "sha256": "62cf09c9ca4dc5d780397dd6536b32e80a3d1af3c56e5e9a4fd21f7c49155aed",
+      "bytes": 16785,
+      "elapsed_seconds": 4.1633842249866575
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-07.png",
+      "sha256": "62cf09c9ca4dc5d780397dd6536b32e80a3d1af3c56e5e9a4fd21f7c49155aed",
+      "bytes": 16785,
+      "elapsed_seconds": 4.559339266997995
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-08.png",
+      "sha256": "62cf09c9ca4dc5d780397dd6536b32e80a3d1af3c56e5e9a4fd21f7c49155aed",
+      "bytes": 16785,
+      "elapsed_seconds": 4.889754488991457
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/rendering/upgrade-start-09.png",
+      "sha256": "62cf09c9ca4dc5d780397dd6536b32e80a3d1af3c56e5e9a4fd21f7c49155aed",
+      "bytes": 16785,
+      "elapsed_seconds": 5.296128448986565
+    }
+  ],
+  "upgrade_start_capture_budget": {
+    "maximum_frames": 10,
+    "target_interval_seconds": 0.5,
+    "byte_cap": 12582912,
+    "maximum_capture_span_seconds": 6.0,
+    "actual_capture_bytes": 313903,
+    "not_stored_due_to_cap": [],
+    "capture_errors": [],
+    "not_attempted_due_to_deadline": 0,
+    "actual_span_seconds": 5.296613955986686
+  },
+  "overlay_visual_confirmation": "Pending actualimage review; compiledresource verified separately.",
+  "focused_runtime_scope": "Cold process startup + actualcompleteMRselector + changedstatisticslayout pendingrealUI. Preserveexistingprofile; unchangedJavaresources/DEX/setup/lifecyclecarry verifiedseparately."
+}

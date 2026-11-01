@@ -1,0 +1,12 @@
+{
+  "final_validation_revision": "351a89e9f3cad5ba4473478e96a7dfa1b3658b78",
+  "shipping_package_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "compiled_runtime_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "changes_after_packaging": [
+    "browser/tests/marathi.spec.js",
+    "browser/tests/pixels.js"
+  ],
+  "scope": "Only2browserTESTfiles differ from187: finalspecusesactualfirstsetupstep beforeBack, realpopupkeyboardnavigation, realprosewheel/crop and warmcream paragraphink+manualexacttextreview. Pixelhelperdefault200unchanged. Alltrackedshippingcode/resources/buildinputs byte-identicalto187. Preserveactualpackage187/compiled64producers. Focuseddesktop+phone andfull12 execute thisfinaltestcode.",
+  "final_browser_test_sha256": "f1c95c83c177caa039555aa516205d11227a8e1ba653a1b4e1dc3b48ce5e253f",
+  "final_pixel_helper_sha256": "ac0502922779fc9672e5542a896ea442daa8f6f7e7d3d7112de7352721ad0f56"
+}

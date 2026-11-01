@@ -1,0 +1,50 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T08:18:23.066913+00:00",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-render-clean64/1280x900/matrix/font-10-scale-1-page-001.png",
+      "sha256": "ebcaf8fa9f05923d914c4518f737caf93bdceb4784d7294f1bf9734ca0111716"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-extra-clean64/refined/1280x900/gameplay-extra/stats-world.png",
+      "sha256": "1bfab24b2b99ade5e727eefbd7c1b3425736cce790f1e340c98cfbdb2cbafe94"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-extra-clean64/refined/1280x900/gameplay-extra/stats-full-history.png",
+      "sha256": "fdfd5ae3c100e8cbc4205859df82c5880ac046145d344b368edc33a90a30f1e0"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-extra-clean64/refined/1280x900/gameplay-extra/editor-dune_sand.png",
+      "sha256": "2e32f7b2190a95b9f810bf1c01032c643aa470b354759a2f21a6c8485510f8e2"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-extra-clean64/refined/390x844/gameplay-extra/stats-map-overlays.png",
+      "sha256": "9efa5ed3bd7719a5133eaf9558cc018a18bc6af4023ecfd253cef6b4a033b719"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-extra-clean64/refined/390x844/gameplay-extra/stats-unit-details.png",
+      "sha256": "5f61db63e6f28d361f6e779c49dc9aefc8ba782e662a68d83b4cc1667201589e"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-extra-clean64/refined/390x844/gameplay-extra/editor-dune_sand.png",
+      "sha256": "0327cad799466ab0ad4682167d531b639e223887a7d2297203f36f55bf31a6b1"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-render-clean64/390x844/matrix/font-10-scale-1-page-001.png",
+      "sha256": "6545b55d219129fc287bfe95344924ffa2d74ceadc2f28f4df1c0d20fc6864b5"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-render-clean64/390x844/main/main.png",
+      "sha256": "09d8559939769504d312c99bf705eddf814b33ed35a3c90734938d63c30f43b9"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-render-clean64/390x844/tutorial-food-supply/tutorial-food-supply-briefing.png",
+      "sha256": "846be142891e1bb2b44c167524de6ffd7cee6fdf9278200a3b0a68cdae5565f7"
+    }
+  ],
+  "assessment": "Actually viewed desktop matrix font10 scale1 page1: small Marathi glyphs and conjuncts are legible with no visible tofu/overlap; literal placeholder values remain intentionally unexpanded in this matrix. Actual World stats and full history dialog show shaped Marathi, wrapping and fitting buttons. Desktop dune-sand card intentionally truncates with ellipsis, while the full Marathi label remains in the visible search field. No complete historical plot is claimed: this fresh fixture reports insufficient recorded history. Scope is these four images, not the entire matrix or all dynamic states. Additionally actually viewed three refined compact native frames: map overlay lens controls are visible and Marathi labels fit; expanded unit details wrap/scroll inside the statistics panel; all fully visible dune-sand terrain card text fits and is shaped clearly. The compact top selected-terrain status field is width limited; the full translation is visible on the selected terrain card. Unit-detail content continuing below the panel viewport is scrollable, not a claim every row is visible simultaneously. No visible tofu or broken conjuncts. Also actually viewed compact matrix font10/scale1/page1, mainmenu and food-supply briefing. Small glyphs clear; menu labels fit availablewidth; full Marathi briefing paragraphs wrap and controls fit. This is initial tutorial briefing rendering, not lessoncompletion. Registration-completeness proof remains separate normal-resource selector capture.",
+  "findings": []
+}

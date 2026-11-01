@@ -1,0 +1,10 @@
+{
+  "final_validation_revision": "0e6e243e098cf32afbf303937ba4f55384685f37",
+  "shipping_package_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "compiled_runtime_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "changes_after_packaging": [
+    "browser/tests/marathi.spec.js"
+  ],
+  "scope": "Only browser test scroll/popup fixtures changed after187; every tracked shipping code/resource/build input byte equals187. Actualpackages/compiledruntime keep true producer revisions. Focusedendtoend and browserfull12 must execute finaltestcode.",
+  "final_browser_test_sha256": "195bc734c80287b60f258b574251e2fed2b979792f55cf78fdfcc12eeec7c39a"
+}

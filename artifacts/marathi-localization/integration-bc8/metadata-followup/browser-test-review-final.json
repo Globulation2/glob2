@@ -1,0 +1,90 @@
+{
+  "reviewer": "/root/locale_integration",
+  "head": "ec243508d834183e84021eed5d5309e15d4b96aa",
+  "scope": "Independent readonlyfinal2testfiledelta0e6→ec+referencedhelpersemantics. ActualretainedphoneHelpfailurePNGviewed; no browserrun/sourceedit/paidcall. Notfull12runclaim.",
+  "verdict": "No blockingfixture/assertiondefectfound; actualfullbrowsermatrix ownedelsewhere.",
+  "file_sha256": {
+    "browser/tests/marathi.spec.js": "ac92d00fff4168f6dcdd7666ce8a9b40b5aaee85f95ee541083600149b57e541",
+    "browser/tests/pixels.js": "ac0502922779fc9672e5542a896ea442daa8f6f7e7d3d7112de7352721ad0f56",
+    "browser/tests/main-menu.js": "15bda955d941567db8d6a7d7a2aface1233d6e62d9c3ba030f18e2e1d8b4518f",
+    "libgag/src/ui/Screen.cpp": "c749fa8296f13ecbba0c40f6fa50d384dc7884436fa1891c408c23e02d3df60c",
+    "libgag/src/ui/Host.cpp": "35672214310c05c9ecf63a8ee21c17a53cff3796f561d56b896b14caa05028ef",
+    "src/tutorial/TutorialGuidance.h": "2898d4b07e8c2de3fbb4ce2770526b59b731f45941942540dc69ae1e9ba6b3f8",
+    "src/game/screens/CustomGameScreen.cpp": "b843e385ba6c1cd206870b173ef43120052118bc70ea1dbfa4824fa22489c77a"
+  },
+  "prior_review_preserved": {
+    "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/browser-test-review.json",
+    "sha256": "5c517ef423b22470d9a35d04b1c05ba6ac8f978f98a56a4a1c389beb6acc95d4"
+  },
+  "delta_changed_paths": [
+    "browser/tests/marathi.spec.js",
+    "browser/tests/pixels.js"
+  ],
+  "assessments": [
+    {
+      "area": "Real Backroute",
+      "finding": "CustomGameScreenphoneFlow Backselectstab-1beforecancelat0; desktopBackcancels. Up to3realpublishedbackclicks covercurrentplayers/tab1path; publishedsortedkeysetchangeassertionpreventsstalesameclassCustomGameScreenrace. MainMenuScreenassertionstillmandatory. No injectedstate orremovedproductflow."
+    },
+    {
+      "area": "Noninteractive paragraphs",
+      "finding": "Screen.cppappendTreepublishesonlynode.interactive; keyedGuidanceparagraphsintro/instruction/help-textareomitted. Removedphoneexpectationfor nonexistentdiagnosticlabelwasinvalidfixture. RealHelpactionremainsclicked; inkassertionplusexactmanualimagecoverageisexplicitlimitedreplacement."
+    },
+    {
+      "area": "PhoneHelpbodyclip",
+      "finding": "RootBoxandHelpcontrolBox derivebodybelowactions, positivewidth/heightassertionsretained. Actualviewedfailureclipcontainsinstructionandhelptextondarkpurplewithnoheadericons. Pixelinkpresenceonlydoesnotestablishexactlanguage/glyphshape; thisexactimageindependentmanualreadprovidesthatscope."
+    },
+    {
+      "area": "Thresholdhelpercompatibility",
+      "finding": "hasLightTextthirdargumentoptionaldefault200; previouscallerssemanticsunchanged. Screenshot→createImageBitmap→2Dpixelreadpathunchanged. Currentphone150thresholdmatchesactualwarmcreamblue187; notblankbackgroundacceptanceinthisobservedclip.50pixelminimumstillrequired."
+    }
+  ],
+  "actual_image_read": {
+    "path": "artifacts/marathi-localization/browser-game/smoke-a841-phone-cream-threshold/test-failed-1.png",
+    "sha256": "2394515cb8def4a3f97cf12dc2ac02156d848ff4c6557f212f0f9fc469053e4c",
+    "size": [
+      390,
+      844
+    ],
+    "producer_attempt": "HistoricalfocusedChromiumserialphonea841failure; notecproducer orcurrentfullrun.",
+    "text_keys_read": [
+      "[intro goal scout]",
+      "[intro compact scout]",
+      "[intro help touch scout]"
+    ],
+    "exact_canonical_text": {
+      "[intro goal scout]": "दगडी खुणांचा शोध घ्या",
+      "[intro compact scout]": "ध्वज → शोध ध्वज. दगडांवर ठेवा; १ शोधक नेमा.",
+      "[intro help touch scout]": "ध्वज ठेवण्याआधी मोकळी जमीन ओढून दृश्य सरकवा. वसाहतीच्या पूर्वेकडील दगडांचा साठा शोधा. ध्वज उघडून शोध ध्वज निवडा, दगडांवर ठेवा आणि पुष्टी करा. ध्वज निवडून त्याच्या मागणीत १ शोधक नेमा. युनिट्स स्वतःहून प्रवास करतात आणि जेवण्यासाठी थांबू शकतात."
+    },
+    "assessment": "Actuallyreadgoalheading, completecompactscoutinstructionandexpandedtouchhelpagainstcanonicalMarathi. Conjuncts/vowelmarkslookjoined; fullinstruction/helpwrapinsidecardwithnocroppedendingsorvisibletofu. Realmapbehindcardhasthinstripeartifacts, separatelyscopedbelow."
+  },
+  "independent_pixel_counts": {
+    "clip": {
+      "x": 26,
+      "y": 227,
+      "width": 337,
+      "height": 174
+    },
+    "all_channels_strictly_above150": 5711,
+    "all_channels_strictly_above200": 0,
+    "dominant_glyph_RGB": [
+      249,
+      232,
+      187
+    ],
+    "dominant_glyph_pixels": 4289,
+    "method": "ReadactualretainedPNGwithPillow, noimageediting/thresholdmaskpublished."
+  },
+  "separate_runtime_finding": {
+    "finding": "Thin green/blackhorizontalstripsactualmapoutsidecorrectMarathiHelpbody.",
+    "status": "Englishsame-runtimebaselinependingownedbyparent/runtimeagent; noattributiontolocalization andnoresolutionclaimhere.",
+    "not_hidden": true
+  },
+  "limits": [
+    "No full12browserPASSclaim ornewEnglishbaselineclaim.",
+    "No allscreens/pixelqualityclaim; onlyretainedexactphoneHelpimageactuallyreadhere.",
+    "DesktopHelpcontinuestoexplicitactualcapture/manualreviewratherthanparagraphdiagnosticassertion.",
+    "Nativeall-catalogmatrixindependentlycoversglyphsseparately; notsubstitutedforactualbrowsercoverage."
+  ],
+  "blocking_findings": []
+}

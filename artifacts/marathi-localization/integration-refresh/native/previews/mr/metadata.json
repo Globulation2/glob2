@@ -1,0 +1,16 @@
+{
+  "locale": "mr",
+  "name": "मराठी",
+  "direction": "ltr",
+  "source_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "original_catalog_sha256": {
+    "native": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "catalog_status": "3393 old native and all online values carried exactly; two new native values actually source/final reviewed by three independent agents.",
+  "preview_catalog_sha256": {
+    "native": "a624b719ed207fa294eaa72fa3e0721925d9a17cc2447a059b5f849b4ba37447",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  }
+}

@@ -34104,19 +34104,139 @@
         {
           "path": "../helper-independent-review.json",
           "sha256": "d1ec583e0f7f34a624a2aec032bc58607ce6607ef74ed6b767c77dc22f8d9355"
+        },
+        {
+          "path": "../metadata-followup/native-structural-proof.json",
+          "sha256": "359e754ecf17c059a5edb9e77b9c0bae532cd757f9b7e90ea424af445a801943"
         }
       ],
-      "scope": "Current3411MR draft/registered catalog has0missing/untranslated/pending/obsolete and validformats;38online×2836contracts pass. Broadnative strict BOTHexactbc8masterandmergedfailwithsameordered29errorsinotherlanguages;0introducedstructuralerrors. Globalstrict isNOTclaimedpassing. Exactbaselineproof/logs identifyallgaps; knownmasterregressions do notblockfeatureperAGENTS."
+      "scope": "Current3411MR draft/registered catalog has0missing/untranslated/pending/obsolete and validformats;38online×2836contracts pass. Broadnative strict BOTHexactbc8masterandmergedfailwithsameordered29errorsinotherlanguages;0introducedstructuralerrors. Globalstrict isNOTclaimedpassing. Exactbaselineproof/logs identifyallgaps; knownmasterregressions do notblockfeatureperAGENTS. Final187 recheck after MR completeflag fix again confirms MRzero gaps and exactsame29orderedmaster diagnostics."
     },
     "desktop_rendering": {
-      "passed": false,
-      "evidence": [],
-      "reason": "Currentclean64aeda producer/runtime gate pending; previous ffbd/671 evidence retained under its own actualscope, not relabeled."
+      "passed": true,
+      "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+      "catalog_sha256": {
+        "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+      },
+      "evidence": [
+        {
+          "path": "../native-gate-inputs.json",
+          "sha256": "c8b97eadafb4ee2e7269752083f16d36608b871250b2898d25c51918c7332775"
+        },
+        {
+          "path": "../native-final-summary.json",
+          "sha256": "10d38bd54e7a3a67f414115b3a7382fbfb3e2e8214bc5eb60f385b082ec742f6"
+        },
+        {
+          "path": "../native-independent-review-final.json",
+          "sha256": "fd8328fc754a21f37beed95b3895210c2fff6a08db82aa52137f72bf31095ac5"
+        },
+        {
+          "path": "../native-overlay-equivalence.json",
+          "sha256": "9d23004de50d4ed457efb2664ec8cd08215b7a3848df63f4a97717284625ac57"
+        },
+        {
+          "path": "../native-final-input-carry.json",
+          "sha256": "5006c1936b5d4425ed0d93d4956a4c506ba63f39098fb85dde26a5a28bd7a1f9"
+        },
+        {
+          "path": "../registration-metadata-transition.json",
+          "sha256": "22cde85f104be1ac0d1a54c53ca0f08c45ca53fa860f48d7d6794994529aa8ab"
+        },
+        {
+          "path": "../native/root-independent/visual-inspections.json",
+          "sha256": "ad8c15f95d2c9e01bd1fd2369dcfc71468f2ca9dbcda7e22b589e0a7a3884697"
+        },
+        {
+          "path": "../native-registration187/root-visual-review.json",
+          "sha256": "c37d58380d7ce7ab26bccdbfd09484da59528b5b49eac1cfc96d99b7d8881961"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-0e6.json",
+          "sha256": "a8bb60e0c5d8f2a98eda79c47320e62a6debfb7b8f0daa17415d651c51d17222"
+        },
+        {
+          "path": "../native/display-cleanup.json",
+          "sha256": "65a789e94b7dda4c77f0f3dee4efde9495ae4c988b8cabf3b419fd4e25b5b976"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-fb6.json",
+          "sha256": "f519db275c28c653dc0a2f00774a62111be286b261899a22a4f1060e6b9dcbdc"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-a841.json",
+          "sha256": "a7941d014a287fd3d777e97c77a863f0ed74e2e9040517cb6a6493bb16c57550"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-ec24.json",
+          "sha256": "e6fe2253265431acf2381f737f92e9876d7e2e3f2bfcf5b558b6f6986f72c708"
+        }
+      ],
+      "scope": "Linux desktop full-catalog matrix +real menus/game/all10initial tutorials and current stats/editor controls; actual normal-resource187 MR selector verified. Currentfinalvalidation0e6 carries true64compile and187normalregistration producers, with exactsource/catalog/font equality. Fullmatrices75288samples/83542lines, zeroactualmissingglyph/drawnbounds; raw592widthdiagnostics retained and independentlyverifiedscaledfittingdestinations. All34officialjobs plus4extraand4registrationcaptures complete. Independentquantitativeaudit is distinctfrommanualinspectionrecords. Explicitplatform/lesson/dynamicargument omissions in native-gate-inputs are partofthisscope. Finalfb6touchBack test-onlyfollowup leavesallshippinginputs identicalto187; finalinspectioncounter/cleanup audit bindstheactualstablefinalnativefiles. Latesta841 alsochangesonlybrowserfixture, leavingactual187shippingtree byte-identical. Latestec24touchhelp warmcreamthreshold changesonly2browserTESTfiles; finalshippingtree remains187 byte-identical."
     },
     "phone_rendering": {
-      "passed": false,
-      "evidence": [],
-      "reason": "Currentclean64aeda producer/runtime gate pending; previous ffbd/671 evidence retained under its own actualscope, not relabeled."
+      "passed": true,
+      "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+      "catalog_sha256": {
+        "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+      },
+      "evidence": [
+        {
+          "path": "../native-gate-inputs.json",
+          "sha256": "c8b97eadafb4ee2e7269752083f16d36608b871250b2898d25c51918c7332775"
+        },
+        {
+          "path": "../native-final-summary.json",
+          "sha256": "10d38bd54e7a3a67f414115b3a7382fbfb3e2e8214bc5eb60f385b082ec742f6"
+        },
+        {
+          "path": "../native-independent-review-final.json",
+          "sha256": "fd8328fc754a21f37beed95b3895210c2fff6a08db82aa52137f72bf31095ac5"
+        },
+        {
+          "path": "../native-overlay-equivalence.json",
+          "sha256": "9d23004de50d4ed457efb2664ec8cd08215b7a3848df63f4a97717284625ac57"
+        },
+        {
+          "path": "../native-final-input-carry.json",
+          "sha256": "5006c1936b5d4425ed0d93d4956a4c506ba63f39098fb85dde26a5a28bd7a1f9"
+        },
+        {
+          "path": "../registration-metadata-transition.json",
+          "sha256": "22cde85f104be1ac0d1a54c53ca0f08c45ca53fa860f48d7d6794994529aa8ab"
+        },
+        {
+          "path": "../native/root-independent/visual-inspections.json",
+          "sha256": "ad8c15f95d2c9e01bd1fd2369dcfc71468f2ca9dbcda7e22b589e0a7a3884697"
+        },
+        {
+          "path": "../native-registration187/root-visual-review.json",
+          "sha256": "c37d58380d7ce7ab26bccdbfd09484da59528b5b49eac1cfc96d99b7d8881961"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-0e6.json",
+          "sha256": "a8bb60e0c5d8f2a98eda79c47320e62a6debfb7b8f0daa17415d651c51d17222"
+        },
+        {
+          "path": "../native/display-cleanup.json",
+          "sha256": "65a789e94b7dda4c77f0f3dee4efde9495ae4c988b8cabf3b419fd4e25b5b976"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-fb6.json",
+          "sha256": "f519db275c28c653dc0a2f00774a62111be286b261899a22a4f1060e6b9dcbdc"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-a841.json",
+          "sha256": "a7941d014a287fd3d777e97c77a863f0ed74e2e9040517cb6a6493bb16c57550"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-ec24.json",
+          "sha256": "e6fe2253265431acf2381f737f92e9876d7e2e3f2bfcf5b558b6f6986f72c708"
+        }
+      ],
+      "scope": "Desktop-hosted390x844 full-catalog matrix, real compact game/tutorial UI, refined portable-renderer phone stats/lenses/editor cards, actual187registered selector. Physical device/platform runtime is a separate gate. Currentfinalvalidation0e6 carries true64compile and187normalregistration producers, with exactsource/catalog/font equality. Fullmatrices75288samples/83542lines, zeroactualmissingglyph/drawnbounds; raw592widthdiagnostics retained and independentlyverifiedscaledfittingdestinations. All34officialjobs plus4extraand4registrationcaptures complete. Independentquantitativeaudit is distinctfrommanualinspectionrecords. Explicitplatform/lesson/dynamicargument omissions in native-gate-inputs are partofthisscope. Finalfb6touchBack test-onlyfollowup leavesallshippinginputs identicalto187; finalinspectioncounter/cleanup audit bindstheactualstablefinalnativefiles. Latesta841 alsochangesonlybrowserfixture, leavingactual187shippingtree byte-identical. Latestec24touchhelp warmcreamthreshold changesonly2browserTESTfiles; finalshippingtree remains187 byte-identical."
     },
     "browser_startup": {
       "passed": false,
@@ -34124,9 +34244,67 @@
       "reason": "Currentclean64aeda producer/runtime gate pending; previous ffbd/671 evidence retained under its own actualscope, not relabeled."
     },
     "native_platforms": {
-      "passed": false,
-      "evidence": [],
-      "reason": "Currentclean64aeda producer/runtime gate pending; previous ffbd/671 evidence retained under its own actualscope, not relabeled."
+      "passed": true,
+      "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+      "catalog_sha256": {
+        "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+      },
+      "evidence": [
+        {
+          "path": "../native-gate-inputs.json",
+          "sha256": "c8b97eadafb4ee2e7269752083f16d36608b871250b2898d25c51918c7332775"
+        },
+        {
+          "path": "../native-final-summary.json",
+          "sha256": "10d38bd54e7a3a67f414115b3a7382fbfb3e2e8214bc5eb60f385b082ec742f6"
+        },
+        {
+          "path": "../native-independent-review-final.json",
+          "sha256": "fd8328fc754a21f37beed95b3895210c2fff6a08db82aa52137f72bf31095ac5"
+        },
+        {
+          "path": "../native-overlay-equivalence.json",
+          "sha256": "9d23004de50d4ed457efb2664ec8cd08215b7a3848df63f4a97717284625ac57"
+        },
+        {
+          "path": "../native-final-input-carry.json",
+          "sha256": "5006c1936b5d4425ed0d93d4956a4c506ba63f39098fb85dde26a5a28bd7a1f9"
+        },
+        {
+          "path": "../registration-metadata-transition.json",
+          "sha256": "22cde85f104be1ac0d1a54c53ca0f08c45ca53fa860f48d7d6794994529aa8ab"
+        },
+        {
+          "path": "../native/root-independent/visual-inspections.json",
+          "sha256": "ad8c15f95d2c9e01bd1fd2369dcfc71468f2ca9dbcda7e22b589e0a7a3884697"
+        },
+        {
+          "path": "../native-registration187/root-visual-review.json",
+          "sha256": "c37d58380d7ce7ab26bccdbfd09484da59528b5b49eac1cfc96d99b7d8881961"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-0e6.json",
+          "sha256": "a8bb60e0c5d8f2a98eda79c47320e62a6debfb7b8f0daa17415d651c51d17222"
+        },
+        {
+          "path": "../native/display-cleanup.json",
+          "sha256": "65a789e94b7dda4c77f0f3dee4efde9495ae4c988b8cabf3b419fd4e25b5b976"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-fb6.json",
+          "sha256": "f519db275c28c653dc0a2f00774a62111be286b261899a22a4f1060e6b9dcbdc"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-a841.json",
+          "sha256": "a7941d014a287fd3d777e97c77a863f0ed74e2e9040517cb6a6493bb16c57550"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-ec24.json",
+          "sha256": "e6fe2253265431acf2381f737f92e9876d7e2e3f2bfcf5b558b6f6986f72c708"
+        }
+      ],
+      "scope": "Linux scoped21 registered font/system-language/touch/statistics cases plus current shared production renderer. Initial3 display setup failures retained; only3 targeted X11 retries, all pass. No full native aggregate or macOS/Windows/iOS execution claim. Currentfinalvalidation0e6 carries true64compile and187normalregistration producers, with exactsource/catalog/font equality. Fullmatrices75288samples/83542lines, zeroactualmissingglyph/drawnbounds; raw592widthdiagnostics retained and independentlyverifiedscaledfittingdestinations. All34officialjobs plus4extraand4registrationcaptures complete. Independentquantitativeaudit is distinctfrommanualinspectionrecords. Explicitplatform/lesson/dynamicargument omissions in native-gate-inputs are partofthisscope. Finalfb6touchBack test-onlyfollowup leavesallshippinginputs identicalto187; finalinspectioncounter/cleanup audit bindstheactualstablefinalnativefiles. Latesta841 alsochangesonlybrowserfixture, leavingactual187shippingtree byte-identical. Latestec24touchhelp warmcreamthreshold changesonly2browserTESTfiles; finalshippingtree remains187 byte-identical."
     },
     "browser_platforms": {
       "passed": false,
@@ -34134,9 +34312,67 @@
       "reason": "Currentclean64aeda producer/runtime gate pending; previous ffbd/671 evidence retained under its own actualscope, not relabeled."
     },
     "mobile_platforms": {
-      "passed": false,
-      "evidence": [],
-      "reason": "Currentclean64aeda producer/runtime gate pending; previous ffbd/671 evidence retained under its own actualscope, not relabeled."
+      "passed": true,
+      "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+      "catalog_sha256": {
+        "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+      },
+      "evidence": [
+        {
+          "path": "../android/gate-recommendation.json",
+          "sha256": "adbf1a4bee00ad649ef11e6f6a04ae5e0bb903bf32f1eb569a6edb095526c2b7"
+        },
+        {
+          "path": "../android/rendering/apk-and-install.json",
+          "sha256": "034df53559274ede47ae48d582fb2db0c9f602f32059cb30ffa6883d8da5916b"
+        },
+        {
+          "path": "../android/runtime-cleanup.json",
+          "sha256": "db346fb50d28bfbcc022c0cb432829fac0f0908b5b894edcf481985350fde53a"
+        },
+        {
+          "path": "../apple-contracts.log",
+          "sha256": "56013940eef560025fa47f39113fe4745cdf0f6455dcd676e6f0e7028f738750"
+        },
+        {
+          "path": "../gog-contracts.log",
+          "sha256": "c18880bc4404b897dc39a8506bef770e42bc21a7ae1b193d839c5950601e813a"
+        },
+        {
+          "path": "../metadata-followup/android/gate-recommendation.json",
+          "sha256": "3837bbca9d95bf0069e2cfbe35be8ccad18cb4677ad9bbf55dfb8da24dd4c5f2"
+        },
+        {
+          "path": "../metadata-followup/android/apk-member-carry.json",
+          "sha256": "163cba9ec55d21e901c414a6bf773f1822ff441266df79e3ada09a2da9b090ac"
+        },
+        {
+          "path": "../metadata-followup/android/root-selector-visual-review.json",
+          "sha256": "f476045e9a14bc2c7503f2cbda6231fbe8c15089208c564ab06c542c41c6da36"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry.json",
+          "sha256": "16c245a041200c5f32fc591cf6c5ce9a2e7dd135d54d432dc8e76722d2f2cc96"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-0e6.json",
+          "sha256": "a8bb60e0c5d8f2a98eda79c47320e62a6debfb7b8f0daa17415d651c51d17222"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-fb6.json",
+          "sha256": "f519db275c28c653dc0a2f00774a62111be286b261899a22a4f1060e6b9dcbdc"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-a841.json",
+          "sha256": "a7941d014a287fd3d777e97c77a863f0ed74e2e9040517cb6a6493bb16c57550"
+        },
+        {
+          "path": "../metadata-followup/final-test-source-carry-ec24.json",
+          "sha256": "e6fe2253265431acf2381f737f92e9876d7e2e3f2bfcf5b558b6f6986f72c708"
+        }
+      ],
+      "scope": "Current clean64a official Android x86_64 release built and exact developer-signed APK installed on API35 emulator. Packaged3411MR/NotoDevanagari/XML/compiledMR/defaultEnglish/notices verified. Seven lifecycle checks and actually inspected startup/settings/statistics/history/unitdetails/overlay/allfourterrain labels pass, with capture-timing and viewport-route limits explicitly retained. Ownedruntime cleaned. Linux Apple resource contracts and GOG guards pass separately; no Apple device runtime, physical Android or other ABI execution claimed. Official187 metadata-refresh release installed and actualselector shows complete मराठी; sevenlifecycle checks passagain. All24392uncompressedAPKmembers compared to64, onlytexts.incomplete plusderivedindex changed, noadded/removed. Runtime/font/catalog identical, actualsignedinstalled70cc07…5d91; refreshedownruntimecleaned. Finalf8 onlybrowser-testfixture differs from187 shippingtree. Latest0e6 adds onlypopupkeyboardtestfixture; shippingtree remains187 byte-identical. Finalfb6touchBack fixture is alsotest-only; actual187Androidshippingtree remainsunchanged. Latesta841 alsochangesonlybrowserfixture, leavingactual187shippingtree byte-identical. Latestec24touchhelp warmcreamthreshold changesonly2browserTESTfiles; finalshippingtree remains187 byte-identical."
     }
   },
   "accepted_english": [

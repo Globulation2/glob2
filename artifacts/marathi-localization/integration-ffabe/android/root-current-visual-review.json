@@ -1,0 +1,23 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T11:38:14.923730+00:00",
+  "shipping_code_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "golden_fixture_epoch": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-player-marathi-complete.png",
+      "sha256": "1d7593e66598f9b304fcfe7f9710e354f727cd38a549b371171895a6fd15af06"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-narrow-150-overview.png",
+      "sha256": "56f5f750462bbf54cdff06bf828a31f9fe705fef5d9f2b0a7886e428c19f09ca"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-narrow-150-world.png",
+      "sha256": "421f39939835b5ef6cf37132195e08f20e27e4f018291c05e32175fec16ef49a"
+    }
+  ],
+  "assessment": "Actually viewed freshinstalledAndroidMRPlayerselector and150%TextsizeOverview+Worldstatistics. Selectedlanguage exactlyमराठीwithoutincomplete suffix; headings/buttons andvisiblelongmetriclabels shapedclearly andfit. Overviewalonefullrowabove2+2topics isactualchangednarrowbranch, enlargedvaluesstackunderlabelswithoutcollision. Bottomcontinuingrows arepartiallyoffscreeninside scrollviewport, not claimallrowsvisible. player isactualprofilevalue. RealUIpreferences restoredbyowner withactions recorded separately. No tofu orunexpectedvisiblelabelclipping.",
+  "findings": [],
+  "actually_signed_and_installed_apk_sha256": "5d261ae3fe66713ecadbd495be2d10cd306b0b8cf92c31ef502851d4c4d8e39e"
+}

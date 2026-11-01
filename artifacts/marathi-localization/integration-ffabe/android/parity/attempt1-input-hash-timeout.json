@@ -1,0 +1,6 @@
+{
+  "stage": "After successful278220083bytepush, before simulation; no verifiercommand executed.",
+  "error": "Inputlisting subprocess exceeded60seconds; original find-exec used escapedsemicolon/perfilecommand form.",
+  "disposition": "Retain attempt; resume exactownedalready-transferredpayload andverifyALL24345hashes withbatchedfind-execplus. No reducedinventory, no repush orsimulationPASSfromfailedattempt.",
+  "runner_sha256": "95a90469239191dd6cdc1482841852909c053cff3b8dc03089ef2d11ad3ed48d"
+}

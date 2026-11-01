@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/usr/lib/chatgpt/resources/cua_node/bin/node",
+    "packages/i18n/scripts/check.ts"
+  ],
+  "cwd": "platform",
+  "exit_code": 0,
+  "elapsed_seconds": 6.222389221002231,
+  "validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "log_sha256": "ee20a7c63f8712eaacfb09f70d88544c9f122dd09db17470a69de6db2aea7ae0"
+}

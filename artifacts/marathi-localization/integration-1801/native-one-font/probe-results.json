@@ -1,0 +1,162 @@
+{
+  "actual_executable": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-capture-stripped",
+  "actual_executable_sha256": "69a192395ae37fb2a661d16ef584e80c1babd8dbae7c15eabf931423518434e4",
+  "actual_executable_code_producer": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "input": {
+    "locale": "mr",
+    "source_snapshot": "Working-tree merge of origin/master1801; exact selected input/file hashes below, not a newly built executable.",
+    "base_head": "cfd397b3ff15d7a92fdd398efa9c6a0f5762fc5f",
+    "workspace_dirty": false,
+    "actual_native_catalog_sha256": "00905d1fe5c79a168ff1b425ae73f73648d3a1ad623ad7bc26a8196ba6d2c44b",
+    "actual_target": "सर्व संगणकनियंत्रित वसाहतींसाठी एआय",
+    "source_key": "[AI for all computer colonies]",
+    "source": "AI for all computer colonies",
+    "source_english_sha256": "e165c5672decb42ec6091e24a0c9a2d93a6e74c66f9461f40ed3b31d5d503932",
+    "current_font_wrap_code_and_assets_sha256": {
+      "tools/TranslationPreviewHarness.cpp": "171b36c1115043602bb8b6b9fcf442a1d8bd39bf3a65b2b372a5abc63382797c",
+      "libgag/src/TrueTypeFont.cpp": "2be0914833bb1fa6581f2c6945e45533ddaae747db2461e9d5e1ed8b2a261c06",
+      "libgag/src/BidiText.cpp": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+      "libgag/src/ui/TextLayout.cpp": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+      "libgag/src/DrawableSurfaceCompound.cpp": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810",
+      "libgag/include/TrueTypeFont.h": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+      "libgag/include/ui/TextLayout.h": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f",
+      "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "data/fonts/scripts/NotoSansArabic-Regular.ttf": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "data/fonts/scripts/NotoSansEthiopic-Regular.ttf": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "data/fonts/scripts/NotoSansGujarati-Regular.ttf": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "data/fonts/scripts/NotoSansKannada-Regular.ttf": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "data/fonts/scripts/NotoSansMalayalam-Regular.ttf": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "data/fonts/scripts/NotoSansMyanmar-Regular.ttf": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "data/fonts/scripts/NotoSansOriya-Regular.ttf": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "data/fonts/scripts/NotoSansTamil-Regular.ttf": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "data/fonts/scripts/NotoSansTelugu-Regular.ttf": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "data/fonts/scripts/NotoSansThai-Regular.ttf": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+    },
+    "exact_unchanged_files": [
+      "tools/TranslationPreviewHarness.cpp",
+      "libgag/src/TrueTypeFont.cpp",
+      "libgag/src/BidiText.cpp",
+      "libgag/src/DrawableSurfaceCompound.cpp",
+      "libgag/include/TrueTypeFont.h",
+      "data/fonts/sans.ttf",
+      "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+      "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+      "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+      "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+      "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+      "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+      "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+      "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+      "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+      "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+      "data/fonts/scripts/NotoSansThai-Regular.ttf"
+    ],
+    "text_layout_export_refactor_equivalence": {
+      "rule": "Entire TextLayout.cpp exact token/comment text after whitespace normalization, checkedClusterEnds->shapingClusterEnds identifier equivalence and anonymous namespace closing-boundary movement; function bodies/branches/call sites otherwise identical. Header merely declares newly exported helper.",
+      "old_cpp_sha256": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+      "new_cpp_sha256": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+      "new_header_sha256": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f",
+      "limits": "Old executable does not verify newly exported symbol linking or new text-input consumers."
+    },
+    "limits": "Existing actual official e481 font-matrix executable; selected new1 text rendered freshly. Does not execute newly changed CustomGameScreen widget."
+  },
+  "jobs": [
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "actual_line_width": 1256,
+      "exit_code": 0,
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-capture-stripped",
+        "matrix",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-1801/native-one-font/inputs/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-1801/native-one-font/1280x900",
+        "1280",
+        "900"
+      ],
+      "seconds": 5.287726718990598,
+      "report_sha256": "071a18523c55cd19fc6ca1088b2f6ecbc1b0d9d199c2be4ee2d6a04c488b51f7",
+      "samples": 6,
+      "actual_lines": 6,
+      "raw_diagnostics": []
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "actual_line_width": 366,
+      "exit_code": 0,
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-capture-stripped",
+        "matrix",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-1801/native-one-font/inputs/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-1801/native-one-font/390x844",
+        "390",
+        "844"
+      ],
+      "seconds": 4.624378287000582,
+      "report_sha256": "665be6f16053557fa3cbe4e66d649df99daca2f0b03bbe7c3c97c374527ca052",
+      "samples": 6,
+      "actual_lines": 6,
+      "raw_diagnostics": []
+    },
+    {
+      "viewport": [
+        304,
+        844
+      ],
+      "actual_line_width": 280,
+      "exit_code": 0,
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-capture-stripped",
+        "matrix",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-1801/native-one-font/inputs/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-1801/native-one-font/304x844",
+        "304",
+        "844"
+      ],
+      "seconds": 4.910397523010033,
+      "report_sha256": "cae1377d3bcec71491527cbf89b4a108b2959cb49ea1b21916e57bd2e5aad5e7",
+      "samples": 6,
+      "actual_lines": 8,
+      "raw_diagnostics": []
+    }
+  ],
+  "per_attempt_deadline_seconds": 180,
+  "campaign_byte_cap": 134217728,
+  "minimum_free_bytes": 2147483648,
+  "complete": true,
+  "actual_new_samples": 18,
+  "missing_glyphs": 0,
+  "drawn_bounds_failures": 0,
+  "scope": "12 actual samples at desktop/compact widths plus6 static280px label-line wrap probes. Not a new-widget runtime/layout claim."
+}

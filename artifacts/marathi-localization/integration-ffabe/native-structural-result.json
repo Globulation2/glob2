@@ -1,0 +1,48 @@
+{
+  "revision": "e564cf26cb156a5474dcb9102a65d64aab18fb85",
+  "command": [
+    "python3",
+    "data/check_translations.py",
+    "--strict",
+    "--json"
+  ],
+  "exit_code": 0,
+  "error_count": 0,
+  "errors": [],
+  "MR": {
+    "missing": [],
+    "untranslated": [],
+    "pending": [],
+    "extra": [],
+    "same_as_english": [
+      "[%0 %1]",
+      "[%0 / %1 HP · %2]",
+      "[%0 · %1]",
+      "[AICabino]",
+      "[AICastor]",
+      "[AICortex]",
+      "[AIEcono]",
+      "[AIJavaScript]",
+      "[AIMaxima]",
+      "[AINicowar]",
+      "[AINumbi]",
+      "[AIWarrush]",
+      "[CPU load %0]",
+      "[OpenGL]",
+      "[P %0/%1/%2]",
+      "[Stats low HP ranges]",
+      "[alt %0]",
+      "[control %0]",
+      "[hp]",
+      "[maps %0 kb]",
+      "[meta %0]",
+      "[profile draw letter]",
+      "[settings Hive Mind]",
+      "[shift %0]",
+      "[zoom factor %0]"
+    ],
+    "placeholder_text": []
+  },
+  "report_sha256": "704dd54594791f42cfcdc5965c1f5dd103337637674860fa0d1542bfac8f11a3",
+  "scope": "Currentmerged39-nativeinventory;old29bc8master gaps repairedbyupstreamMalay, not currentfailures. NativeMRcanonicalbytes unchanged."
+}

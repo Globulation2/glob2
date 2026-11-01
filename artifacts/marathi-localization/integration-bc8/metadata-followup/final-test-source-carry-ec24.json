@@ -1,0 +1,12 @@
+{
+  "final_validation_revision": "ec243508d834183e84021eed5d5309e15d4b96aa",
+  "shipping_package_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "compiled_runtime_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "changes_after_packaging": [
+    "browser/tests/marathi.spec.js",
+    "browser/tests/pixels.js"
+  ],
+  "scope": "Only browser TEST scroll/popup/touchnavigation/paragraph-observation fixtures and pixelhelper(optionalwarmcreamthreshold, existingdefault200unchanged) differ from187. Every tracked shippingcode/resource/buildinput remainsbyteidentical. Actualpackages/compiledruntime keeptrueproducer revisions. Focusedphoneandfull12 execute finaltestcode; manualexactinstruction imagecoverage distinctfrompixelinkassertion.",
+  "final_browser_test_sha256": "ac92d00fff4168f6dcdd7666ce8a9b40b5aaee85f95ee541083600149b57e541",
+  "final_pixel_helper_sha256": "ac0502922779fc9672e5542a896ea442daa8f6f7e7d3d7112de7352721ad0f56"
+}

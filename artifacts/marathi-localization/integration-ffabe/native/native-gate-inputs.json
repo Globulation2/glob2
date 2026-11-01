@@ -1,0 +1,194 @@
+{
+  "recommendation": "Accept scoped Linux native rendering/font/startup/compatibility evidence with explicit inherited3-constant test failure and compact enlarged-fixture/readback limitations; do not mark untested OS platforms or rejected screenshots passed. Gate author remains root.",
+  "source": {
+    "current_source_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+    "official_harness_and_registry_compiled_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+    "actual_cli_build_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+      "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+    },
+    "e481_to_cdd_only_changed_path": [
+      "test/fixtures/multiplayer/FourSquares1.g2mr"
+    ],
+    "map_gzip_sha256": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+    "map_decompressed_sha256": "5b470a3432a21d483be12f3fc63116f4a86c25e89a549a0fe71d753257e89c98",
+    "record_sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+    "committed_trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+  },
+  "evidence": [
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/native-final-summary.json",
+      "sha256": "8e34426b9030b147498b2da23ef368cac028f067f5f8c131cc88b22d49672c12"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/final-input-provenance.json",
+      "sha256": "1f1223b645308ce35482c643d0eb4e2a8e52683cf97cc1845e78d7b943730a89"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/new111-font-diagnostics.json",
+      "sha256": "fa71c63c582ac6d4328bb854d834bb2518b69f46a6c5a4d398b0bea6029167a5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/native-font-carry-inputs.json",
+      "sha256": "295863f23383c02f7243ec8ce8c2ce96a92cee92864b46a56230a52cf25680b9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/registry-verification-complete.json",
+      "sha256": "484ba808f47848006b07eead4ecaab0c1768c46d91d6155311901e0a08cb7915"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-headless-results/junit.xml",
+      "sha256": "8a935f03c5ec20a6367921fc1fd9ed81fc5a877652252b2ab60b909e9bbabcb4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-display-results/junit.xml",
+      "sha256": "7f9c1f3ad8dea88a4fb8ca0f963a6c5ef997c152e193a0a1e21721a7e14bf357"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/relay-admission.xml",
+      "sha256": "102c379bd43f689cda16e5cae173d0efcaf0f23de23dd0e59c7a1e2e18bd6bed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/replay-boundary-inherited.json",
+      "sha256": "48e30baa3246911128817090717c1a330e705e04f292ffa491e3429f36cab8af"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/replay-boundary-actual/assertions.xml",
+      "sha256": "f0155b525ff9c0d7988fe99bfecca86a8b43b44b16b40f26d7056509c5615ded"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/golden-fixture-mutation.json",
+      "sha256": "e6fbc638a3abc86da9951e1ffc7d7935c9f807905c85390c649fbcaac4483c92"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/golden-update/junit.xml",
+      "sha256": "2cdddb03785ea3915d0b7b6c24344b4b20aa5cb718dae8c7755824ec219db7e3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/authoritative-native-trace.json",
+      "sha256": "ee87d635b10d5dffc9c9d07182e7a9a681ad32a0175e50a634c10a13c4b440b1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/native-cli-producer.json",
+      "sha256": "9b12912a1fba80fe9daa84d14bca09fa0fd1ca0740f58e1234252b23e6aee6a7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/native-match-verify/checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/native-match-verify/verdict.json",
+      "sha256": "79dab35d78f48d8c0c40b69494535d112fb4dc18aa78eda412b9fff16e6913c5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/capture-variant-provenance.json",
+      "sha256": "31658f989352a6fece4c295ce033874ac837e2f1019df5f69a0de05483e03843"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/capture-variant-first-provenance.json",
+      "sha256": "745d8d0dfac47510dc80244d7c83422a8927b983a233f135b6a87318e24c4fe3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/first-capture-attempt-disposition.json",
+      "sha256": "984bf677acfca31622f308cb107edcece9176648f43b9188173c6053bec1763c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/first-attempt-provenance-map.json",
+      "sha256": "47961e43de254493004324e00e1f9bd1650a344dcb20cd1004820b804737dd03"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/runner.json",
+      "sha256": "e1f1cd19e34f1b4993ebd5ba3a83ed7753718c0b4298eac0830718829209ad23"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/runner.json",
+      "sha256": "64c1713a3a36422683fc0c20e60ca28db28446dc0960cfcccabc720643adcad5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/visual-inspections.json",
+      "sha256": "91ba17d9755696909bc744b5208d8d81d0fa7ef959a992517f7aaf1cf399586b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/display-cleanup.json",
+      "sha256": "8bf2e7887121541468faef8bd01debc157c045d40521f5134e39ba506ceeee29"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/bounded-storage-cleanup.json",
+      "sha256": "b6160a32507bd34c3a462a67a73242f94b9976c20d80fefd4eb9ef332e5c1516"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/zero-case-attempt-disposition.json",
+      "sha256": "941bbd83889de520a6d3acab8fd511d8931f8be4b465d5641a792728cf881836"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-build-command.json",
+      "sha256": "504bd4d90e4c37256d173db3c70e64aaa808cebe78407689e4dc54ebca8fdaad"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-object-build-command.json",
+      "sha256": "3a974afdb605e9e6725976bed1554a4b140ba9917d098762e254bdd1dd8ff894"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-link-command.json",
+      "sha256": "14d0208f12b699dfd21882e5f551a60440b8548174d15e88a766c58758f9390d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/relay-build-command.json",
+      "sha256": "ce50d21a35ceeb7f4a40e5d56ae8d42e5f3a3659931b3a5e9d98be39c0e3d891"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/explicit-native-cli-build-command.json",
+      "sha256": "8ad8ad7627825a9907836defa1832d1f30eba62f3ceea9b7d3838bd2a4bf5b12"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/sim-revision-check-command.json",
+      "sha256": "9c4f04b834dc230da26ce7ac483cd12f566664cf0faf86c9b1c138cc703ec39e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/main/main.json",
+      "sha256": "fed8a0865d6f204453d87c29dbf0f7be67d728c1047e136d71f344aa044b6fe4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/settings-player/settings-player.json",
+      "sha256": "35485f8c75e7861868f61163a45a7115cff1fbceb65f545f6edf418fcc5dcc54"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/main/main.json",
+      "sha256": "25c7fc09abcb6440006581e510daeac1e5f815f00bfbfe74fed3cc8a0dfcfcc4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/settings-player/settings-player.json",
+      "sha256": "d1786eae6adfa1254794ac1244cd2305c28dc01575a6235e088ef5ef9c0300a5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/1280x900/gameplay/gameplay.json",
+      "sha256": "a57e83e14f9c11dc9ab3d803072bdcceae1e9f9d03e2338b8d123652425eece1"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/native/preparation-failure-dispositions.json",
+      "sha256": "7ace0225210b37123acbd64736b077e4dd2ae917ee33ffb1d6059ec686d22598"
+    }
+  ],
+  "completed": [
+    "Independent final111 linguistic review, exact old-value carry",
+    "1332 actual new font/wrap samples and75288 old samples behaviorally carried with exact font/branch/source proof",
+    "69 focused registry cases +10 standalone relay admissions passed; old3 stale constants retained separately",
+    "Actual37 replay header acceptance assertions passed, current golden/version boundaries and saved SGSL PC/source continuity verified",
+    "Independent native production CLI842tick trace matches committed golden",
+    "39 registered languages/MR complete, actual main/settings readable at both viewports",
+    "Actual current desktop narrow stats Overview row manually viewed and checksummed"
+  ],
+  "omissions": [
+    "Linux X11/native only; compact native presentation is not Android/iOS runtime evidence.",
+    "No current macOS/Windows/iOS runtime executed by this agent.",
+    "Old initial tutorial/UI images carry only under unchanged relevant inputs; no new full tutorial sweep or lesson-completion claim.",
+    "Static font probes show placeholder tokens literally; no universal dynamic formatting claim.",
+    "Native failed readbacks/navigation retained; black/wrong-panel/partial pictures are not passed visual evidence.",
+    "Ignored wrapper whole-row predicate still fails; partial PNGs have no completed final report and are not a passing compact enlarged-layout probe. No shipping failure inferred; no further debug per parent cap. Current browser/Android shared-layout evidence is separate."
+  ],
+  "failed_attempts_preserved": true,
+  "not_a_review_gate_mutation": true,
+  "stable": true
+}

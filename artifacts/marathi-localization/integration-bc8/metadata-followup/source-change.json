@@ -1,0 +1,22 @@
+{
+  "utc": "2026-11-01T08:29:21.875979+00:00",
+  "previous_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "final_validation_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "tracked_change_paths": [
+    "data/texts.incomplete.txt"
+  ],
+  "exact_change": "Only Marathi complete flag: *data/texts.mr.txt becomes data/texts.mr.txt; row order and every other byte unchanged.",
+  "old_registration_sha256": "19b8439ee0ba99cde3ebc7a5b7f25c3a0eabf4b326c42f273155606af4a05437",
+  "new_registration_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+  "frozen_kit_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "source_files_byte_identical": {
+    "data/texts.keys.txt": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+    "data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+    "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "carry_scope": "All tracked code, native and online catalogs, fonts, browser runtime, tests and build inputs except this one metadata byte remain identical to64. Existing64 evidence retains its actual producer scope. Official incremental package builds and focused selector/startup tests must validate187 metadata; current browser full12cases rerun after repack. No unrelated complete flags changed.",
+  "status_at_write": "Affected package/selector checks running; no final pass claimed."
+}

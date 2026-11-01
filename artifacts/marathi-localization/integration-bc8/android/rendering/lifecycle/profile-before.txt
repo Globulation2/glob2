@@ -1,0 +1,3 @@
+128d22a78cc16b7fa7109e7e38b9e6db57ddeee0df51e6ba4c189b4361ea31e8  /data/user/0/org.globulation2.glob2/files/preferences.txt
+af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6  /data/user/0/org.globulation2.glob2/files/keyboard-gui.txt
+d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db  /data/user/0/org.globulation2.glob2/files/keyboard-mapedit.txt

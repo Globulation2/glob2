@@ -1,0 +1,17 @@
+{
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "translation-preview-harness",
+    "glob2",
+    "-j4"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "deadline_seconds": 7200,
+  "started_unix": 1793528950.582194,
+  "explicit_video_driver": null,
+  "exit_code": 0,
+  "elapsed_seconds": 1267.8930597305298,
+  "log_sha256": "1e98bf561ce3441be93de92b64e9d6860aa5717868e730345a1b76a8a9507758",
+  "capture_errors": []
+}

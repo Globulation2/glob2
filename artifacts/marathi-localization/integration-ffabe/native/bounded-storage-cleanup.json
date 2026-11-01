@@ -1,0 +1,10 @@
+{
+  "reason": "Remove reproducible zero-case failed helper executable to stay inside1.5GiB ignored-evidence campaign cap. All command/source/provenance/0-case JUnit and output retained. Current official/registry/capture producers are preserved.",
+  "removed_owned_path": "artifacts/marathi-localization/integration-ffabe/native/golden-only-tests",
+  "bytes": 328627768,
+  "sha256": "c643b09a67d84e0f7395b5a815edd53cb293d112a43f44044efc3e5b131d3b45",
+  "preserved_failure_record": "zero-case-attempt-disposition.json",
+  "actual_remaining_bytes": 1183604906,
+  "campaign_cap_bytes": 1610612736,
+  "free_bytes": 633645043712
+}

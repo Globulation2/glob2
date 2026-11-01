@@ -1,0 +1,27 @@
+{
+  "owned_files": {
+    "platform/apps/api/test/pages.test.ts": "8022bf797493128c99df7c27a1e4a466a1f41310316185450329ace249c798fc",
+    "platform/apps/web/e2e/i18n.spec.ts": "ae484e383b9f658eef04fe7fc0930b7ba1696b71bb5567e90d642139aa9c4e42",
+    "platform/packages/i18n/src/locales.ts": "0cb2f20db9bbfbcae339dab9440c4e35f483fa55efcf74e992f098137b22ec52"
+  },
+  "resolution": "Full upstream Bengali and generic logic preserved; MR server page, locale and switching/font/geometry assertions retained. Only these three files staged by this agent.",
+  "necessary_MR_test_adaptation": "Upstream hides sidebar utilities and duplicates them in an opened navigation drawer. MR geometry now opens actual rail if hidden, measures visible selector after fonts.ready and restores prior nav state; theme assertion scopes to visible toggle. No product-source/CSS edit.",
+  "upstream_generic_switch_loop": "Preserved stronger fr+bn input/direction/reload loop, rather than duplicate old fr-only test.",
+  "prettier": "Three owned TS files formatted successfully; no optional test/build launched.",
+  "online_English_delta": {
+    "old_keys": 2947,
+    "new_keys": 2947,
+    "added": 0,
+    "changed": 0,
+    "removed": 0,
+    "exact_parsed_catalog_equal": true,
+    "old_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+    "master": "1801e6a832657e183557f225abecee35e23250c2"
+  },
+  "locales": {
+    "count": 40,
+    "BN_present": true,
+    "MR_present": true,
+    "ordering": "Exact upstream locale array order followed by appended MR, all unique."
+  }
+}

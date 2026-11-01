@@ -1,0 +1,85 @@
+{
+  "reviewer": "/root/locale_integration",
+  "compiled_shipping_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "fixture_epoch": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "installed_APK_sha256": "5d261ae3fe66713ecadbd495be2d10cd306b0b8cf92c31ef502851d4c4d8e39e",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "online_catalog_sha256": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/native-main-after-environment-recovery.png",
+      "sha256": "cb5e734b5163a58c034bc63de4af8ef4007d888f174f64a93454eadcd49de3ba",
+      "assessment": "Current installed native Marathi main menu; labels shape and fit, after owned SystemUI Wait recovery."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-player-marathi-complete.png",
+      "sha256": "1d7593e66598f9b304fcfe7f9710e354f727cd38a549b371171895a6fd15af06",
+      "assessment": "Current Player selector reads मराठी without अपूर्ण; full field and caption fit at 390x844."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-gameplay-portrait.png",
+      "sha256": "5004eb6c6d2fe7d7de8d6ccba5f46a93cbb53dbde24b2697aebaff393d1bfd85",
+      "assessment": "Actual premade FourSquares1 gameplay, native Marathi toolbar; not a completed-match or performance claim."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-tools.png",
+      "sha256": "31b09ac00cb681639a7157dd5b55315aba550b586191447f7a0ca9c67244a27a",
+      "assessment": "Actual native tools popup and visible Marathi actions; ordinary viewport bounds."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-overview-portrait.png",
+      "sha256": "b86929ae8a79df8482e7dd93f1d4bcea7321666c2ae96c6a1ca16b12202c0c73",
+      "assessment": "Default 100% portrait full-width statistics drawer uses 3+2 topics and readable Overview content. Not the narrow branch."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-overview-landscape.png",
+      "sha256": "9c9571de58786e466888cb484052aed5c70575ac2f8f37346a35c849150d3d37",
+      "assessment": "Default 100% landscape full-width drawer uses 3+2 topics with clear Marathi labels; lower rows are scrollable."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-narrow-150-overview.png",
+      "sha256": "56f5f750462bbf54cdff06bf828a31f9fe705fef5d9f2b0a7886e428c19f09ca",
+      "assessment": "Real shipped 150% Text size option at 390x844 triggers the changed narrow branch: Overview alone, then two rows of two topics. Labels and stacked values fit."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-narrow-150-economy.png",
+      "sha256": "051e644966a5f31470322b3f139c46ebcb3f8d4b63dcc532295f67bdbe2db759",
+      "assessment": "Actual narrow 150% Economy topic; long Marathi worker-time label wraps inside the metric card, value fits. Below-fold content remains scrollable."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-narrow-150-world.png",
+      "sha256": "421f39939835b5ef6cf37132195e08f20e27e4f018291c05e32175fec16ef49a",
+      "assessment": "Actual narrow 150% World topic; Marathi resource-rate labels and values fit. The partial lower row is a normal scroll boundary."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-textsize-restored-100.png",
+      "sha256": "e5a93c09d9704cea75c1bd60136b4d49263086d58a192df31ec7f7924909b761",
+      "assessment": "Actual toolbar/tools are back at 100% text size following real Options input; no profile file was edited."
+    }
+  ],
+  "environment_failure": {
+    "finding": "Owned emulator System UI ANR on initial upgrade-start capture; actual visible Wait option used. Not attributed to product or counted as native UI success.",
+    "image": "ui-qa/current-main.png",
+    "image_sha256": "bae9de16fea71c56bd8b9ba2781bde4c41303b3bf3ff7afbc0a1e51d9c1a18b4",
+    "record_sha256": "3b3abce0d5ec2db948d746734a757c411dd7e1cc1912566dd567589f325f728e",
+    "intermediate_wordmark": "ui-qa/after-systemui-wait.png",
+    "intermediate_scope": "Brand/loading frame only, not Marathi label proof."
+  },
+  "input_adaptations": [
+    "Default full-width 100% drawers do not trigger narrow geometry; used supported 150% preference through real game Options, then restored 100%.",
+    "An attempted content scroll touched the list-bounce slider and set92%; restored50% through actual slider, then used actual scrollbar. Retained current-textsize-restore-options/scrolled images; no whole-profile byte-equality claim.",
+    "Rotation restored through recorded Android settings; own app force-stopped before CPU parity."
+  ],
+  "unchanged_carry": {
+    "path": "apk-member-carry-187.json",
+    "sha256": "a7a12c987c5ea5973aac6908bb0d78e1127e08e5919ea18fe981b7662a74213e",
+    "scope": "Actual DEX/resources/fonts/terrain and unchanged input member equality supports earlier187 Audio/Hand/Intro/terrain/lifecycle coverage. No fresh full7 or every-terrain rerun."
+  },
+  "limits": [
+    "Only explicitly listed images are asserted as new visual findings; other diagnostic captures remain evidence without a broad all-images success claim.",
+    "Initial10upgrade-start images are not asserted as current Marathi preparing-overlay proof; compiled MR XML and exact Java/resource carry are separately checked.",
+    "Androidx86_64 API35 emulator only, not physical hardware or iOS.",
+    "Partial actual custom game, no full match completion or runtime performance claim."
+  ],
+  "status": "PASS focused current installed MR startup/complete selector and changed narrow statistics rendering."
+}

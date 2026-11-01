@@ -1,0 +1,64 @@
+{
+  "auditor": "/root/locale_integration",
+  "result": "accepted for explicit incomplete current64 checkpoint publication; no material issue",
+  "evidence_commit": "2968b18a356e7a17f00c31f1dfa892281d4693af",
+  "previous_independently_accepted_commit": "d0795ed53c0e6fdd9a9ee17a7b483dbe1e589304",
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "file_count": 1342,
+  "total_bytes": 230555331,
+  "inventory_exact_to_git_tree": true,
+  "payload_hash_verification": "Every added/changed payload SHA recomputed from exact Git blob; all unchanged payload SHA values and Gitobject identities match independently auditedd079. Exact tree byte count matches.",
+  "delta": {
+    "added": [
+      "artifacts/marathi-localization/integration-bc8/audit_checkpoint_d079.py",
+      "artifacts/marathi-localization/integration-bc8/browser-baseline-reproduction.json",
+      "artifacts/marathi-localization/integration-bc8/browser-baseline-reproduction.log",
+      "artifacts/marathi-localization/integration-bc8/evidence-manual-audit-d079.json",
+      "artifacts/marathi-localization/integration-bc8/evidence-tree-audit-d079.json",
+      "artifacts/marathi-localization/integration-bc8/manual_audit_d079.py",
+      "artifacts/marathi-localization/integration-bc8/reproduce_browser_baseline.py"
+    ],
+    "removed": [
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/browser/tests/fixtures/generator-studio-trace.json",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/browser/tests/fixtures/studio-trace.json",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/browser/unit/replay-fixture.test.js",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/app/Version.h",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/game/SimRevision.h",
+      "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline/src/replay/ReplayReader.h"
+    ],
+    "changed": [
+      "artifacts/marathi-localization/EVIDENCE.md",
+      "artifacts/marathi-localization/publish_evidence.py"
+    ]
+  },
+  "delta_text_files_actual_read_scanned": [
+    "artifacts/marathi-localization/integration-bc8/browser-baseline-reproduction.log",
+    "artifacts/marathi-localization/integration-bc8/evidence-manual-audit-d079.json",
+    "artifacts/marathi-localization/integration-bc8/manual_audit_d079.py",
+    "artifacts/marathi-localization/integration-bc8/reproduce_browser_baseline.py",
+    "artifacts/marathi-localization/publish_evidence.py",
+    "artifacts/marathi-localization/integration-bc8/browser-baseline-reproduction.json",
+    "artifacts/marathi-localization/integration-bc8/audit_checkpoint_d079.py",
+    "artifacts/marathi-localization/integration-bc8/evidence-tree-audit-d079.json",
+    "artifacts/marathi-localization/EVIDENCE.md"
+  ],
+  "credential_pattern_matches": [],
+  "current_gates_unchanged": {
+    "passed": 3,
+    "pending": 6,
+    "passed_gate_ref_hashes_verified": 18,
+    "final_stable_ref_hashes_verified": 31
+  },
+  "baseline_reproduction_review": "Actual reproscript read: seven immutable recordedbc8Gitblobs,64MiB input/1MiB output/60s bound, temporary cleanup, no source/network changes. Actual TAP has exact expected three fixture/version assertion failures, no missingfiles. All7sourceblobs independently rehashed against exactmaster including2.785MBreplay asset. Partial publicsource snapshot omitted; actual proof/logs retained.",
+  "repro_inputs_verified": 7,
+  "repro_input_bytes": 2814149,
+  "same_current_claims": "Current64/sourceb7/native540/online0a/66batches, websites12pass and baseline29 remain unchanged; native/Android/WASMgame runtime truly pending. Historical671/ba/ffbd scopes remain explicit.",
+  "binary_exclusions": "NoCaddyGo/nativeobjects/APKs/SDKs/currentactivebuildoutputs/thinsnapshot; oldboundedPlaywright traces/knownsparsefailurelog remain unchanged acceptedexceptions.",
+  "old_audit_records_preserved": true,
+  "main_source_or_prepared_tree_mutated": false,
+  "limits": [
+    "Unchanged payload content/type/credential assessment carried only by exact SHAandGitobjectidentity from independently auditedd079",
+    "Bounded credential-pattern audit, not exhaustive secretcertification",
+    "Accepted incomplete publication checkpoint, not currentnative/Android/browser-game completion or overallmergegate"
+  ]
+}

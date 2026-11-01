@@ -1,0 +1,12 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T07:36:36.114379+00:00",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "unsigned_apk_sha256": "759e6601a50c58731455b76c07f878dc57c755421392127eec8be52b3548010d",
+  "signed_and_installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "actual_image": "artifacts/marathi-localization/integration-bc8/android/rendering/first-run-09.png",
+  "image_sha256": "7fcddf2c66442ad9de7f901c21fbed18a3e4867915b9d7306ddf44ce26314e6a",
+  "observation": "Actually viewed this current64 real AndroidJava preparing overlay. Marathi खेळाची तयारी सुरू आहे… is clearly shaped, centered and unclipped at390x844. This is startup-only proof, not later native/lifecycle/statistics/terrain success. Final mutable APK metadata record hash will bind after validator finishes.",
+  "findings": []
+}

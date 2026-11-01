@@ -1,0 +1,9 @@
+{
+  "finding": "Owned Android emulator System UI ANR dialog, not Glob2 UI.",
+  "actual_text": "सिस्टिम UI प्रतिसाद देत नाही",
+  "requested_capture_name": "current-main.png",
+  "actual_image": "artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-main.png",
+  "sha256": "bae9de16fea71c56bd8b9ba2781bde4c41303b3bf3ff7afbc0a1e51d9c1a18b4",
+  "scope": "Do not count this image as app/native/startup/render success. Existing host-load/SystemUI environment failure recurred.",
+  "recovery": "Use actual visible प्रतीक्षा करा (Wait) option in only the owned emulator; preserve initial frame and logs. No production/profile edits."
+}

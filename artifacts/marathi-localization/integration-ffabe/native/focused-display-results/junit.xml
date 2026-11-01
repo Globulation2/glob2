@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="0"><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="statistics sheet scroll stays open and fits phone rotations [display][artifacts]" time="10.5837" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" time="24.1017" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="live statistics hide post-game probability across topics [display][artifacts]" time="9.52919" status="run" />
+  <testcase classname="GameGUITouch" name="tutorial wrapping preserves shaped clusters and refreshes font metrics [display]" time="10.6441" status="run" />
+  </testsuite></testsuites>

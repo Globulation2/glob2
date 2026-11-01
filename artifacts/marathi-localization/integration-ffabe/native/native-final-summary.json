@@ -1,0 +1,187 @@
+{
+  "status": "Stable completed scoped native verification; inherited baseline failure and compact enlarged-fixture limitation explicit",
+  "source": {
+    "current_source_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+    "official_harness_and_registry_compiled_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+    "actual_cli_build_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+    "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "catalog_sha256": {
+      "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+      "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+    },
+    "e481_to_cdd_only_changed_path": [
+      "test/fixtures/multiplayer/FourSquares1.g2mr"
+    ],
+    "map_gzip_sha256": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+    "map_decompressed_sha256": "5b470a3432a21d483be12f3fc63116f4a86c25e89a549a0fe71d753257e89c98",
+    "record_sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+    "committed_trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+  },
+  "new_font_matrix": {
+    "keys": 111,
+    "samples": 1332,
+    "lines": 1430,
+    "pages": 60,
+    "missing_glyphs": 0,
+    "drawn_bounds_failures": 0,
+    "raw_scale2_width_diagnostics": 6,
+    "report": "new111-font-diagnostics.json"
+  },
+  "old_font_matrix_behavioral_carry": {
+    "old_actual_producer": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+    "samples": 75288,
+    "lines": 83542,
+    "raw_width_diagnostics": 592,
+    "proof": "native-font-carry-inputs.json",
+    "no_relabelled_execution": true
+  },
+  "combined_coverage": {
+    "samples": 76620,
+    "lines": 84972,
+    "missing": 0,
+    "drawn": 0,
+    "raw": 598
+  },
+  "registry": {
+    "passed": 69,
+    "legacy_sgsl_passed": 24,
+    "font_passed": 9,
+    "system_language_passed": 11,
+    "display_stats_touch_passed": 4,
+    "relay_admission_passed": 10,
+    "inherited_failed_case_count": 1,
+    "inherited_failed_assertions": 3,
+    "actual_extra_replay_assertions": {
+      "passed": 44,
+      "failed_inherited_constants": 3,
+      "dynamic_header_loads_passed": 37
+    },
+    "known_failure": "replay-boundary-inherited.json"
+  },
+  "native_cli_parity": {
+    "actual_verdict": "verified",
+    "actual_tick_checksums": 842,
+    "trace_lines_including_header": 843,
+    "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "record_sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+    "producer": "native-cli-producer.json",
+    "binding": "authoritative-native-trace.json"
+  },
+  "normal_registered_resource_captures": [
+    {
+      "report": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/main/main.json",
+      "sha256": "fed8a0865d6f204453d87c29dbf0f7be67d728c1047e136d71f344aa044b6fe4",
+      "viewport": "1280x900",
+      "screen": "main",
+      "probe": {
+        "locale": "mr",
+        "index": 38,
+        "registered_language_count": 39,
+        "complete": true,
+        "native_name": "मराठी",
+        "inventory_sha256": "035fc441748d3dec86846c84fef50aeda50cf94b900d0b693eefac5f5feb3998",
+        "completion_metadata_sha256": "a04c2c664e808aaac20faa7e0628561dd0802d65117fe3537659ea510792b8ba",
+        "actual_native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "overlay_keys_overridden": 0,
+        "scope": "Actual normal registered resources; no overlay/reordering."
+      },
+      "image": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/main/main.png",
+      "image_sha256": "97c26ac4614d9c9612461e1d8c248d02c223b5b0ff71de471a13d83ad7dd53ae"
+    },
+    {
+      "report": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/settings-player/settings-player.json",
+      "sha256": "35485f8c75e7861868f61163a45a7115cff1fbceb65f545f6edf418fcc5dcc54",
+      "viewport": "1280x900",
+      "screen": "settings-player",
+      "probe": {
+        "locale": "mr",
+        "index": 38,
+        "registered_language_count": 39,
+        "complete": true,
+        "native_name": "मराठी",
+        "inventory_sha256": "035fc441748d3dec86846c84fef50aeda50cf94b900d0b693eefac5f5feb3998",
+        "completion_metadata_sha256": "a04c2c664e808aaac20faa7e0628561dd0802d65117fe3537659ea510792b8ba",
+        "actual_native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "overlay_keys_overridden": 0,
+        "scope": "Actual normal registered resources; no overlay/reordering."
+      },
+      "image": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/settings-player/settings-player.png",
+      "image_sha256": "0ff68e7c1abfe55f4a9f65535399a09e76801e84ba95cc07fccf7f4bd06c3f4f"
+    },
+    {
+      "report": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/main/main.json",
+      "sha256": "25c7fc09abcb6440006581e510daeac1e5f815f00bfbfe74fed3cc8a0dfcfcc4",
+      "viewport": "390x844",
+      "screen": "main",
+      "probe": {
+        "locale": "mr",
+        "index": 38,
+        "registered_language_count": 39,
+        "complete": true,
+        "native_name": "मराठी",
+        "inventory_sha256": "035fc441748d3dec86846c84fef50aeda50cf94b900d0b693eefac5f5feb3998",
+        "completion_metadata_sha256": "a04c2c664e808aaac20faa7e0628561dd0802d65117fe3537659ea510792b8ba",
+        "actual_native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "overlay_keys_overridden": 0,
+        "scope": "Actual normal registered resources; no overlay/reordering."
+      },
+      "image": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/main/main.png",
+      "image_sha256": "d50c077e58887a007af149b0679e4d3ebfc36956b219491c3aa14f9653cffbb8"
+    },
+    {
+      "report": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/settings-player/settings-player.json",
+      "sha256": "d1786eae6adfa1254794ac1244cd2305c28dc01575a6235e088ef5ef9c0300a5",
+      "viewport": "390x844",
+      "screen": "settings-player",
+      "probe": {
+        "locale": "mr",
+        "index": 38,
+        "registered_language_count": 39,
+        "complete": true,
+        "native_name": "मराठी",
+        "inventory_sha256": "035fc441748d3dec86846c84fef50aeda50cf94b900d0b693eefac5f5feb3998",
+        "completion_metadata_sha256": "a04c2c664e808aaac20faa7e0628561dd0802d65117fe3537659ea510792b8ba",
+        "actual_native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "overlay_keys_overridden": 0,
+        "scope": "Actual normal registered resources; no overlay/reordering."
+      },
+      "image": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/settings-player/settings-player.png",
+      "image_sha256": "7432283e3db79b33e957daddc66911d60f31108095bcbb56e09940c465bfc9e5"
+    }
+  ],
+  "actual_language_inventory_count": 39,
+  "marathi_complete": true,
+  "native_overlay_keys_overridden": 0,
+  "desktop_current_statistics": {
+    "report": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/1280x900/gameplay/gameplay.json",
+    "sha256": "a57e83e14f9c11dc9ab3d803072bdcceae1e9f9d03e2338b8d123652425eece1",
+    "draw_checksums_unchanged": true,
+    "actual_capture_count": 18,
+    "enlarged_text_scale": 1.4,
+    "Overview_full_width_row": true,
+    "history_limit": "Fresh loaded game has insufficient history; no fabricated readings or completed match."
+  },
+  "capture_attempts": {
+    "first_successful_exit_jobs": 7,
+    "first_failed_jobs": 1,
+    "first_visual_rejections": [
+      "Both compact normal screen readbacks black; rejected.",
+      "Desktop old stats-overview-large shows overlays, rejected as stats evidence."
+    ],
+    "bounded_retry_successful_jobs": 3,
+    "bounded_retry_failed_jobs": 1,
+    "compact_enlarged_stats_limit": "Ignored wrapper whole-row predicate still fails; partial PNGs have no completed final report and are not a passing compact enlarged-layout probe. No shipping failure inferred; no further debug per parent cap. Current browser/Android shared-layout evidence is separate."
+  },
+  "visual_inspections": "visual-inspections.json",
+  "cleanup": "display-cleanup.json",
+  "platform_limits": [
+    "Linux X11/native only; compact native presentation is not Android/iOS runtime evidence.",
+    "No current macOS/Windows/iOS runtime executed by this agent.",
+    "Old initial tutorial/UI images carry only under unchanged relevant inputs; no new full tutorial sweep or lesson-completion claim.",
+    "Static font probes show placeholder tokens literally; no universal dynamic formatting claim.",
+    "Native failed readbacks/navigation retained; black/wrong-panel/partial pictures are not passed visual evidence."
+  ],
+  "stable": true,
+  "preparation_failure_dispositions": "preparation-failure-dispositions.json",
+  "actual_visual_inspection_refs": 10
+}

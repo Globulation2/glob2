@@ -1,0 +1,12 @@
+{
+  "authorized_by": "parent/root golden QA notice",
+  "approved_golden_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "compiled_shipping_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "actual_diff": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "record_sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+  "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "trace_lines": 843,
+  "scope": "Parent releasedholdafteractualgoldencommit. BuildmustfinishsuccessbeforeVM/QA/parity. No shippingproducerrelabel."
+}

@@ -1,0 +1,87 @@
+{
+  "recommendation": "PASS Android scoped release package/rendering + headless full-tick native parity; WASM equality remains separately pending until actual output is bound.",
+  "compiled_shipping_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "fixture_epoch": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "unsigned_apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+    "sha256": "4ce57514ad63545ac564ed376c9d1a1020341bcaa2c19532be31f113591d6cf8"
+  },
+  "developer_signed_release_apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk",
+    "sha256": "5d261ae3fe66713ecadbd495be2d10cd306b0b8cf92c31ef502851d4c4d8e39e"
+  },
+  "installed_apk_sha256": "5d261ae3fe66713ecadbd495be2d10cd306b0b8cf92c31ef502851d4c4d8e39e",
+  "checks": [
+    "Official release build success with exact SDK/config3 dependencies and features retained.",
+    "Packaged39 selectable languages, source list includes nonlanguage key-reference separately; Malay then Marathi, MR complete and exact catalog/font/XML/notices.",
+    "Signed development-release APK bytes equal actual installed base.apk.",
+    "Actual current native Marathi main and complete Player selector fit; actual changed narrow Overview/2+2 topic geometry at supported150% and default portrait/landscape read.",
+    "Actual unchanged APK member/source proof supports explicit old187 Java/setup/terrain/lifecycle carry.",
+    "Actual Android CPU PIE uses unchanged official engine objects with documented existing native-test bridges; exit0 verified, all842 ticks0–841 exactgolden+independentnative."
+  ],
+  "parity": {
+    "tick_checksums": 842,
+    "text_lines": 843,
+    "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "equals_committed": true,
+    "equals_independent_native": true,
+    "WASM": "pending actual current trace",
+    "scope": "Android x86_64 CPU/emulator headless fixture with filesystem/JNI/event bridges and official SDL mr_IN locale hint. This parity run is not the installed APK/JVM path."
+  },
+  "evidence": {
+    "artifacts/marathi-localization/integration-ffabe/android/producer-provenance.json": "bbe287ef0560842c1fa41061fcc6389b067d2e2263e97f88aaa325b293fff2f0",
+    "artifacts/marathi-localization/integration-ffabe/android/rendering/apk-and-install.json": "50a809257c886b9548ba7f5203148774ede00441d0b73da2391f9bba298ae446",
+    "artifacts/marathi-localization/integration-ffabe/android/apk-member-carry-187.json": "a7a12c987c5ea5973aac6908bb0d78e1127e08e5919ea18fe981b7662a74213e",
+    "artifacts/marathi-localization/integration-ffabe/android/golden-qa-authorization.json": "b7cbbc5f08b15653e9362ed800398ca548cf2352d8170389301d81cda54ed3c3",
+    "artifacts/marathi-localization/integration-ffabe/android/visual-review.json": "939ca19b8ee6f4fcacd1946f4de95e48d820636e5902db914e13c83ddbdb3f67",
+    "artifacts/marathi-localization/integration-ffabe/android/root-current-visual-review.json": "3786307dd0df58bc7cdafd7d0a2697ee9da0713b25b7203b9276d89fae4a7438",
+    "artifacts/marathi-localization/integration-ffabe/android/ui-qa/actions.json": "34095b5a730ccf421940fab57b0f1a949cecad1908312197d4ffab1a4603c9eb",
+    "artifacts/marathi-localization/integration-ffabe/android/systemui-anr-finding.json": "3b3abce0d5ec2db948d746734a757c411dd7e1cc1912566dd567589f325f728e",
+    "artifacts/marathi-localization/integration-ffabe/android/validation-count-failure.json": "fc95d7adffdb3cf9f5f95d4b7503e370a592bd4adaa47287c6e176a2644e7ba2",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/build-provenance.json": "f46b46473166da763d36490b4adba42f6f82d376db0a025944636253c16edf1d",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/device-result.json": "2e406d141c10b8dba362b6ee1cb38cf71576eb5bd173edfeac8a30503344b616",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/device-output/checksums.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/device-output/verdict.json": "79dab35d78f48d8c0c40b69494535d112fb4dc18aa78eda412b9fff16e6913c5",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/attempt1-input-hash-timeout.json": "02542bfcf903559ac10a54fd312ad3c116c8203563ac39f748dee7c21df7fdb0",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/attempt2-locale-crash.json": "45a2fafea7efc0cf3c8d240d3ecd61990680adf73265c4d11f5de8383deae432",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/attempt2-crash-logcat.txt": "8b9345148c6b2185f134b996598236be2fe28ef66756f5d70d02b79b1afbd963",
+    "artifacts/marathi-localization/integration-ffabe/android/runtime-cleanup.json": "67d21aa24ed8d90952d3b02a446cba82e2717eac1bd68c8a65f8ed2e7de7fc6c"
+  },
+  "limits": [
+    "Only explicitly listed images are asserted as new visual findings; other diagnostic captures remain evidence without a broad all-images success claim.",
+    "Initial10upgrade-start images are not asserted as current Marathi preparing-overlay proof; compiled MR XML and exact Java/resource carry are separately checked.",
+    "Androidx86_64 API35 emulator only, not physical hardware or iOS.",
+    "Partial actual custom game, no full match completion or runtime performance claim.",
+    "No ARM/iOS/macOS/Windows execution claim from this Android run.",
+    "No full simulation corpus; one exact committed setup/seed/map/order record, all ticks compared."
+  ],
+  "cleanup": "Completed: verified owned container and isolated ADB15187 stopped; remote parity payload removed after verified retrieval, AVD/APKs/evidence preserved.",
+  "failure_attempts_retained": [
+    {
+      "path": "validation-count-failure.json",
+      "scope": "Ignored QA counting error before install; package was correct."
+    },
+    {
+      "path": "systemui-anr-finding.json",
+      "scope": "Owned emulator SystemUI failure; initial frames not app-render success."
+    },
+    {
+      "path": "parity/attempt1-input-hash-timeout.json",
+      "scope": "Input-hash harness timeout before simulation; allinputs subsequently verified."
+    },
+    {
+      "path": "parity/attempt2-locale-crash.json",
+      "scope": "Shell has no JVM for OS locale query; official SDL locale hint resolved, same engine binary."
+    }
+  ],
+  "publication_exclusions": [
+    "parity/device-output/profile/** raw fresh test profile",
+    "parity/device-output/match.replay binary",
+    "All ignoredPIE/ELF/.o and Android APKs remain local; publish only manifests/proofs/text/images."
+  ]
+}

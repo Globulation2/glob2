@@ -1,0 +1,39 @@
+
+Running 1 test using 1 worker
+
+(node:43298) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [firefox] › artifacts/marathi-localization/browser-game/risk-ui.spec.js:84:49 › Marathi game phone › threaded native catalog, selector and statistics render in Marathi (6.9m)
+
+
+  1) [firefox] › artifacts/marathi-localization/browser-game/risk-ui.spec.js:84:49 › Marathi game phone › threaded native catalog, selector and statistics render in Marathi 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 25
+    Received:   1
+
+    Call Log:
+    - Timeout 120000ms exceeded while waiting on the predicate
+
+      132 |     await clickMainMenu(page, 'custom'); await clickControl(page, 'tab/2');
+      133 |     await require(path.resolve(__dirname, '../../../browser/tests/main-menu')).clickCustomGameStart(page);
+    > 134 |     await expect.poll(async () => (await snapshot(page)).tick, {timeout:120000}).toBeGreaterThan(25);
+          |                                                                                  ^
+      135 |     if (device.hasTouch) {
+      136 |       await page.touchscreen.tap(162,820);
+      137 |       const toolsFrame=(await snapshot(page)).frames;
+        at /home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/risk-ui.spec.js:134:82
+
+    Test timeout of 90000ms exceeded.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/marathi-localization/browser-game/minimal-qa/firefox-risk-ui/cases/risk-ui-Marathi-game-phone-d7bf2-tatistics-render-in-Marathi-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/marathi-localization/browser-game/minimal-qa/firefox-risk-ui/cases/risk-ui-Marathi-game-phone-d7bf2-tatistics-render-in-Marathi-firefox/error-context.md
+
+  Slow test file: [firefox] › artifacts/marathi-localization/browser-game/risk-ui.spec.js (6.9m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  1 failed
+    [firefox] › artifacts/marathi-localization/browser-game/risk-ui.spec.js:84:49 › Marathi game phone › threaded native catalog, selector and statistics render in Marathi 

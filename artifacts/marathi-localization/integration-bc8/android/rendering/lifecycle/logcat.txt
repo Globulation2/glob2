@@ -1,0 +1,1035 @@
+--------- beginning of kernel
+11-01 02:37:34.208     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3114 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+--------- beginning of main
+11-01 02:37:34.059  2109  2129 D EGL_emulation: app_time_stats: avg=62.52ms min=48.40ms max=87.35ms count=16
+11-01 02:37:34.140  2109  2129 I SDL/APP : Glob2 screen ready: 14MainMenuScreen
+11-01 02:37:34.205   765   939 D EGL_emulation: app_time_stats: avg=34136.14ms min=34136.14ms max=34136.14ms count=1
+11-01 02:37:35.074  2109  2129 D EGL_emulation: app_time_stats: avg=63.39ms min=47.81ms max=208.85ms count=16
+11-01 02:37:35.287     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3117 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:35.401     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3120 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:35.274   414  3123 I adbd    : adbd restarting as root
+11-01 02:37:35.281  1795  1795 E abb     : Failed to read message: protocol fault (couldn't read status length): Success: Success
+--------- beginning of system
+11-01 02:37:35.282   530  1149 W AdbDebuggingManager: Read failed with count -1
+11-01 02:37:35.282   530  1149 E AdbDebuggingManager: Caught an exception opening the socket: java.io.IOException: Connection refused
+11-01 02:37:35.460     0     0 I init    : Untracked pid 1795 exited with status 0
+11-01 02:37:35.460     0     0 I init    : Untracked pid 1795 did not have an associated service entry and will not be reaped
+11-01 02:37:35.466     0     0 I init    : Service 'adbd' (pid 414) exited with status 0
+11-01 02:37:35.467     0     0 I init    : Sending signal 9 to service 'adbd' (pid 414) process group...
+11-01 02:37:35.474     0     0 I libprocessgroup: Removed cgroup /sys/fs/cgroup/uid_0/pid_414
+11-01 02:37:35.484     0     0 I init    : starting service 'adbd'...
+11-01 02:37:35.489     0     0 I init    : Created socket '/dev/socket/adbd', mode 660, user 1000, group 1000
+11-01 02:37:35.520     0     0 I init    : ... started service 'adbd' has pid 3124
+11-01 02:37:35.405  3124  3124 I adbd    : persist.adb.watchdog set to ''
+11-01 02:37:35.405  3124  3124 I adbd    : persist.sys.test_harness set to ''
+11-01 02:37:35.405  3124  3124 I adbd    : adb watchdog timeout set to 600 seconds
+11-01 02:37:35.405  3124  3124 I adbd    : Setup mdns on port= 5555
+11-01 02:37:35.405  3124  3126 I adbd    : Waiting for persist.adb.tls_server.enable=1
+11-01 02:37:35.406  3124  3124 I adbd    : adbd listening on tcp:5555
+11-01 02:37:35.406  3124  3124 I adbd    : adbd listening on vsock:5555
+11-01 02:37:35.406  3124  3124 I adbd    : adbd started
+11-01 02:37:35.408  3124  3128 I adbd    : adbd mDNS service _adb._tcp registered: 1
+11-01 02:37:35.975  3124  3132 I adbd    : host-13: read thread spawning
+11-01 02:37:35.976  3124  3133 I adbd    : host-13: write thread spawning
+11-01 02:37:36.113  2109  2129 D EGL_emulation: app_time_stats: avg=57.67ms min=45.58ms max=66.03ms count=18
+11-01 02:37:36.480  3124  3134 I adbd    : host-17: read thread spawning
+11-01 02:37:36.480  3124  3135 I adbd    : host-17: write thread spawning
+11-01 02:37:36.493  3124  3124 I adbd    : host-17: already offline
+11-01 02:37:36.493  3124  3124 I adbd    : authentication not required
+11-01 02:37:37.151  2109  2129 D EGL_emulation: app_time_stats: avg=61.06ms min=41.56ms max=104.59ms count=17
+11-01 02:37:37.285  3124  3127 I adbd    : adbd_auth: received a new framework connection
+11-01 02:37:37.285  3124  3127 I adbd    : adbd_auth: received new framework fd 19 (current = -1)
+11-01 02:37:37.609   530   559 D AutofillManagerService: Close system dialogs
+11-01 02:37:37.618   765   765 I vol.VolumeDialogImpl: mDialog.dismiss() reason: volume_controller from: com.android.systemui.volume.VolumeDialogImpl$7.onDismissRequested:3
+11-01 02:37:37.628   530   560 W ActivityTaskManager: callingPackage for (uid=-1, pid=0) has no WPC
+11-01 02:37:37.638   530   560 D CompatChangeReporter: Compat change id reported: 151861875; UID 10120; state: ENABLED
+11-01 02:37:37.639   530   560 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+11-01 02:37:37.639   530   560 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+11-01 02:37:37.639   530   560 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+11-01 02:37:37.640   530   560 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10120, packageName = null, attributionTag = null, token = android.os.Binder@31ae056, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-01 02:37:37.687   765   804 V WindowManagerShell: Transition requested (#7): android.os.BinderProxy@9759357 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=20 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.uioverrides.QuickstepLauncher } baseActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} origActivity=null realActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} numActivities=1 lastActiveTime=2299317 supportsMultiWindow=true resizeMode=2 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@63e6e44} topActivityType=2 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{ac5db2d com.android.launcher3.uioverrides.QuickstepLauncher} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=true isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 7 }
+11-01 02:37:37.696   530   560 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.uioverrides.QuickstepLauncher (has extras)} with LAUNCH_SINGLE_TASK from uid 0 (BAL_ALLOW_ALLOWLISTED_UID) result code=2
+11-01 02:37:37.705   530  2098 I AppWidgetServiceImpl: startListening() 0
+11-01 02:37:37.708  2109  2109 V SDL     : onPause()
+11-01 02:37:37.719   530   560 W Looper  : Slow dispatch took 136ms android.ui h=com.android.server.policy.PhoneWindowManager$PolicyHandler c=com.android.server.policy.PhoneWindowManager$DisplayHomeButtonHandler$$ExternalSyntheticLambda0@63cb1b0 m=0
+11-01 02:37:37.721  2109  2109 V SDL     : onWindowFocusChanged(): false
+11-01 02:37:37.721  2109  2109 V SDL     : nativeFocusChanged()
+11-01 02:37:37.732   765   804 W Looper  : Slow dispatch took 46ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda1@d43862 m=0
+11-01 02:37:37.734   765   804 W Looper  : Slow delivery took 38ms wmshell.main h=android.os.Handler c=android.window.TaskOrganizer$1$$ExternalSyntheticLambda4@1560df3 m=0
+11-01 02:37:37.744   406   406 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+11-01 02:37:37.751   765   804 D WindowManagerShell: onActivityRestartAttempt: ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher}
+11-01 02:37:37.755  1130  1130 D OverviewCommandHelper: clearing pending commands - size: 0
+11-01 02:37:37.759   765   804 W Looper  : Drained
+11-01 02:37:37.781   765   804 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=true, height=112
+11-01 02:37:37.802   336   336 I netd    : tetherGetStats() -> {[]} <0.74ms>
+11-01 02:37:37.865  1130  1130 D BaseDepthController: setSurface:
+11-01 02:37:37.865  1130  1130 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+11-01 02:37:37.865  1130  1130 D BaseDepthController: 	mSurface: Surface(name=com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher)/@0xc75493f
+11-01 02:37:37.920  1130  1130 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=20, baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.uioverrides.QuickstepLauncher }
+11-01 02:37:37.922  1130  1130 D StatsLog: LAUNCHER_ONRESUME
+11-01 02:37:37.991   765   775 V WindowManagerShell: onTransitionReady(transaction=2276332667275)
+11-01 02:37:37.992   530  2098 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:37.994   765   804 V WindowManagerShell: onTransitionReady (#7) android.os.BinderProxy@9759357: {id=7 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@36442e5} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x6d62ab0 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@3071ba} m=TO_BACK f=NONE leash=Surface(name=Task=22)/@0xac178ae sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{48c1876 token=android.os.Binder@3779f11})/@0xbb9964f sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0}]}
+11-01 02:37:37.995   765   804 V WindowManagerShell: Playing animation for (#7) android.os.BinderProxy@9759357@0
+11-01 02:37:37.995   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 02:37:37.995   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 02:37:37.995   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 02:37:37.995   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 02:37:37.995   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 02:37:37.995   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 02:37:37.995   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 02:37:37.995   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:37:37.995   765   804 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=7 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@36442e5} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x6d62ab0 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@3071ba} m=TO_BACK f=NONE leash=Surface(name=Task=22)/@0xac178ae sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{48c1876 token=android.os.Binder@3779f11})/@0xbb9964f sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0}]}
+11-01 02:37:37.995   765   804 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }}
+11-01 02:37:37.995   765   804 D RemoteTransitionHandler: Found filterPair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }}
+11-01 02:37:37.995   765   804 V WindowManagerShell:  Delegate animation for (#7) to RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }
+11-01 02:37:38.021   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:37:38.024  1130  1130 D StateManager: createAtomicAnimation - fromState: Background, toState: Normal, partial trace:
+11-01 02:37:38.024  1130  1130 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.prepareToAnimate(WorkspaceRevealAnim.java:130)
+11-01 02:37:38.024  1130  1130 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.<init>(WorkspaceRevealAnim.java:66)
+11-01 02:37:38.024  1130  1130 D StateManager: 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(QuickstepTransitionManager.java:1716)
+11-01 02:37:38.039   530   559 V WindowManager: Sent Transition (#7) createdAt=११-०१ ०२:३७:३७.६५० via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=20 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.uioverrides.QuickstepLauncher } baseActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} origActivity=null realActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} numActivities=1 lastActiveTime=2299317 supportsMultiWindow=true resizeMode=2 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{a0e3de9 Task{3715c60 #20 type=home I=com.android.launcher3/.uioverrides.QuickstepLauncher}}} topActivityType=2 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{4e8eb6b com.android.launcher3.uioverrides.QuickstepLauncher} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=true isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 7 }
+11-01 02:37:38.039   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 02:37:38.039   530   559 V WindowManager:     info={id=7 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-01 02:37:38.039   530   559 V WindowManager:         {WCT{RemoteToken{45c5a60 Task{e1360ac #1 type=home}}} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x4908a48 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+11-01 02:37:38.039   530   559 V WindowManager:         {WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} m=TO_BACK f=NONE leash=Surface(name=Task=22)/@0x848beea sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+11-01 02:37:38.039   530   559 V WindowManager:         {null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{48c1876 token=android.os.Binder@3779f11})/@0x6f829f5 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0}
+11-01 02:37:38.039   530   559 V WindowManager:     ]}
+11-01 02:37:38.072  1130  1276 D EGL_emulation: app_time_stats: avg=3314.95ms min=1.78ms max=112150.99ms count=34
+11-01 02:37:38.179   530   645 I ImeTracker: com.android.launcher3:709d9ebe: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-01 02:37:38.179   530   645 I ImeTracker: com.android.launcher3:709d9ebe: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 02:37:38.203  2109  2129 D EGL_emulation: app_time_stats: avg=75.04ms min=47.55ms max=145.76ms count=14
+11-01 02:37:38.277   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:37:38.404   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#7) android.os.BinderProxy@9759357@0
+11-01 02:37:38.424   765   804 V WindowManagerShell: Track 0 became idle
+11-01 02:37:38.424   765   804 V WindowManagerShell: All active transition animations finished
+11-01 02:37:38.426   530   559 V WindowManager: Finish Transition (#7): created at ११-०१ ०२:३७:३७.६५० collect-started=0.107ms request-sent=32.231ms started=74.235ms ready=74.197ms sent=288.756ms finished=760.769ms
+11-01 02:37:38.429  2109  2109 D VRI[Glob2Activity]: visibilityChanged oldVisibility=true newVisibility=false
+11-01 02:37:38.443  2109  2109 V SDL     : surfaceDestroyed()
+11-01 02:37:38.443  2109  2109 V SDL     : nativePause()
+11-01 02:37:38.473   530   609 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:38.488   530   880 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 74, 57895, 83203032, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 74, 57895, 83203032, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 57903, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 57903, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 57903, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 74, 57910, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 74, 57910, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 57910, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 66, 57920, 77023879, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 57928, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 57928, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 57928, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 57952, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 57952, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 57960, 61959100, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 57983, 47331029, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 57991, 50420450, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 72, 58000, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.499  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 58000, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.500  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 72, 58016, 84163705, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:38.503  1130  1188 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-78 - not enough time since last trigger
+11-01 02:37:38.531  2109  2109 V SDL     : onTrimMemory()
+11-01 02:37:38.540  2109  2109 V SDL     : onStop()
+11-01 02:37:39.176  1130  1276 D EGL_emulation: app_time_stats: avg=80.68ms min=14.34ms max=706.20ms count=15
+11-01 02:37:39.960   530   880 W ActivityTaskManager: callingPackage for (uid=0, pid=3159) has no WPC
+11-01 02:37:39.965   530   880 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+11-01 02:37:39.965   530   880 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@31ae056, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-01 02:37:39.967   530   880 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+11-01 02:37:39.968   530   880 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+11-01 02:37:39.985   765   804 V WindowManagerShell: Transition requested (#8): android.os.BinderProxy@7d89fc8 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=22 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} topActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=1 lastActiveTime=2299301 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@49b2861} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{863ef86 org.globulation2.glob2.Glob2Activity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 8 }
+11-01 02:37:39.985   530   880 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity} with LAUNCH_SINGLE_TASK from uid 0 (BAL_ALLOW_ALLOWLISTED_UID) result code=2
+11-01 02:37:40.000   406   406 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+11-01 02:37:40.020  1130  1130 W SplitSelectStateCtor: Missing session instanceIds
+11-01 02:37:40.022  1130  1130 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+11-01 02:37:40.031   765   918 V SnapshotDrawerUtils: Drawing snapshot surface sizeMismatch=false
+11-01 02:37:40.034   765   804 D WindowManagerShell: onActivityRestartAttempt: ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity}
+11-01 02:37:40.041   765   804 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=112
+11-01 02:37:40.045  1130  1130 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=22, baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity }
+11-01 02:37:40.049  2109  2109 V SDL     : onStart()
+11-01 02:37:40.049  2109  2109 V SDL     : onResume()
+11-01 02:37:40.051   765  1689 V WindowManagerShell: onTransitionReady(transaction=2276332667302)
+11-01 02:37:40.053   530   559 V WindowManager: Sent Transition (#8) createdAt=११-०१ ०२:३७:३९.९७१ via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=22 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} topActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=1 lastActiveTime=2299301 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{6e8fb51 org.globulation2.glob2.Glob2Activity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 8 }
+11-01 02:37:40.053   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 02:37:40.053   530   559 V WindowManager:     info={id=8 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-01 02:37:40.053   530   559 V WindowManager:         {WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=22)/@0x848beea sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+11-01 02:37:40.053   530   559 V WindowManager:         {WCT{RemoteToken{45c5a60 Task{e1360ac #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x4908a48 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}
+11-01 02:37:40.053   530   559 V WindowManager:     ]}
+11-01 02:37:40.053   765   804 V WindowManagerShell: onTransitionReady (#8) android.os.BinderProxy@7d89fc8: {id=8 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@53695e} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=22)/@0xe1e59e3 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@a52b13f} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xae19fe0 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:37:40.054   765   804 V WindowManagerShell: Playing animation for (#8) android.os.BinderProxy@7d89fc8@0
+11-01 02:37:40.054   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 02:37:40.054   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 02:37:40.054   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 02:37:40.054   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 02:37:40.055   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 02:37:40.055   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 02:37:40.055   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 02:37:40.055   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:37:40.055   765   804 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=8 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@53695e} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=22)/@0xe1e59e3 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@a52b13f} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xae19fe0 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:37:40.055   765   804 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }}
+11-01 02:37:40.055   765   804 V WindowManagerShell:  Delegate animation for (#8) to null
+11-01 02:37:40.055   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:37:40.055   765   804 V WindowManagerShell: start default transition animation, info = {id=8 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@53695e} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=22)/@0xe1e59e3 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@a52b13f} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xae19fe0 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:37:40.056   765   804 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@cf0da0c animAttr=0x13 type=OPEN isEntrance=false
+11-01 02:37:40.057   765   804 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@644af55 animAttr=0x12 type=OPEN isEntrance=true
+11-01 02:37:40.067   336   336 I netd    : tetherGetStats() -> {[]} <0.70ms>
+11-01 02:37:40.068   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:37:40.071   530   798 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:40.102  1130  1276 D EGL_emulation: app_time_stats: avg=225.02ms min=7.57ms max=1761.38ms count=9
+11-01 02:37:40.108  2109  2109 V SDL     : surfaceCreated()
+11-01 02:37:40.108  2109  2109 V SDL     : surfaceChanged()
+11-01 02:37:40.108  2109  2109 V SDL     : Window size: 390x844
+11-01 02:37:40.108  2109  2109 V SDL     : Device size: 390x844
+11-01 02:37:40.114  2109  2109 I SDL/APP : pixel format wanted SDL_PIXELFORMAT_RGBA8888 (1), got SDL_PIXELFORMAT_RGBA8888 (1)
+11-01 02:37:40.114  2109  2109 V SDL     : nativeResume()
+11-01 02:37:40.190   765   887 W Looper  : Slow delivery took 40ms wmshell.anim h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver@9c95869 m=0
+11-01 02:37:40.190   765   887 W Looper  : Slow dispatch took 43ms wmshell.anim h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver@9c95869 m=0
+11-01 02:37:40.207  2109  2113 I bulation2.glob2: NativeAlloc concurrent mark compact GC freed 356KB AllocSpace bytes, 0(0B) LOS objects, 49% free, 4778KB/9556KB, paused 246us,14.387ms total 135.662ms
+11-01 02:37:40.217   765   887 W Looper  : Drained
+11-01 02:37:40.321   765   887 W Looper  : Slow dispatch took 35ms wmshell.anim h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver@9c95869 m=0
+11-01 02:37:40.324  2109  2109 V SDL     : onWindowFocusChanged(): true
+11-01 02:37:40.489  2109  2109 V SDL     : nativeFocusChanged()
+11-01 02:37:40.506   765   887 W Looper  : Slow delivery took 148ms wmshell.anim h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver@9c95869 m=0
+11-01 02:37:40.516   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#8) android.os.BinderProxy@7d89fc8@0
+11-01 02:37:40.533   530   645 I ImeTracker: org.globulation2.glob2:d31dc38b: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-01 02:37:40.533   530   645 I ImeTracker: org.globulation2.glob2:d31dc38b: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 02:37:40.538   765   804 V WindowManagerShell: Track 0 became idle
+11-01 02:37:40.538   765   804 V WindowManagerShell: All active transition animations finished
+11-01 02:37:40.539   530   880 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:40.539   530   880 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:40.540   530   559 V WindowManager: Finish Transition (#8): created at ११-०१ ०२:३७:३९.९७१ collect-started=0.087ms request-sent=12.279ms started=19.228ms ready=71.467ms sent=78.791ms finished=561.177ms
+11-01 02:37:40.574  1130  1130 D VRI[QuickstepLauncher]: visibilityChanged oldVisibility=true newVisibility=false
+11-01 02:37:40.656  1130  1130 D BaseDepthController: setSurface:
+11-01 02:37:40.656  1130  1130 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+11-01 02:37:40.656  1130  1130 D BaseDepthController: 	mSurface: null
+11-01 02:37:40.661  1130  1130 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+11-01 02:37:40.669  1130  1130 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+11-01 02:37:40.669  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:453)
+11-01 02:37:40.669  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:444)
+11-01 02:37:40.669  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(StatefulActivity.java:119)
+11-01 02:37:40.670  1130  1130 D StatsLog: LAUNCHER_ONSTOP
+11-01 02:37:40.670   530   798 I AppWidgetServiceImpl: setAppWidgetHidden() 0
+11-01 02:37:40.975  3169  3169 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:37:40.976  3169  3169 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:37:40.987   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:37:40.987  3169  3170 I Gralloc4: mapper 4.x is not supported
+11-01 02:37:41.154     0     0 I servicemanager: Caller(pid=3169,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:37:41.494  2109  2129 D EGL_emulation: app_time_stats: avg=86.90ms min=49.48ms max=297.56ms count=15
+11-01 02:37:41.777   765   804 V WindowManagerShell: Transition requested (#9): android.os.BinderProxy@5edebd1 TransitionRequestInfo { type = CHANGE, triggerTask = null, pipTask = null, remoteTransition = null, displayChange = DisplayChange { displayId = 0, startAbsBounds = null, endAbsBounds = null, startRotation = 0, endRotation = 1, physicalDisplayChanged = false }, flags = 0, debugId = 9 }
+11-01 02:37:41.792   406   406 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+11-01 02:37:41.793   530   562 I ActivityTaskManager: Config changes=20000480 {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.18 fontWeightAdjustment=0}
+11-01 02:37:41.799   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10073; state: ENABLED
+11-01 02:37:41.799   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10065; state: ENABLED
+11-01 02:37:41.799   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10062; state: ENABLED
+11-01 02:37:41.800   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 2000; state: ENABLED
+11-01 02:37:41.800   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10079; state: ENABLED
+11-01 02:37:41.800   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10063; state: ENABLED
+11-01 02:37:41.800   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10137; state: ENABLED
+11-01 02:37:41.800   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10068; state: ENABLED
+11-01 02:37:41.800   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 1000; state: ENABLED
+11-01 02:37:41.801   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10128; state: ENABLED
+11-01 02:37:41.802   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10066; state: ENABLED
+11-01 02:37:41.803   530   562 D CompatChangeReporter: Compat change id reported: 151861875; UID 10127; state: ENABLED
+11-01 02:37:41.805   530   562 V ActivityTaskManager: Sending to IME proc com.android.inputmethod.latin new config {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w796dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 796, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.35 fontWeightAdjustment=0}
+11-01 02:37:41.813   530   562 I WindowManager: Override config changes=20000480 {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.18 fontWeightAdjustment=0} for displayId=0
+11-01 02:37:41.826   530   562 W ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+11-01 02:37:41.856   530   530 W WindowTokenClientController: Can't find attached WindowTokenClient for android.window.WindowTokenClient@17721a7
+11-01 02:37:41.864   765   804 V ShellDragAndDrop: Display changed: 0
+11-01 02:37:41.877  1130  1130 D b/254119092: TaskbarManager#mComponentCallbacks.onConfigurationChanged: {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.18 fontWeightAdjustment=0}
+11-01 02:37:41.877  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 02:37:41.877  1130  1130 D b/254119092: ComponentCallbacks#onConfigurationChanged() configDiff={}
+11-01 02:37:41.877  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 02:37:41.877  1130  1130 D b/254119092: destroyExistingTaskbar: com.android.launcher3.taskbar.TaskbarActivityContext@b98f271
+11-01 02:37:41.877  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 02:37:41.878  1130  1130 D View    : ---- ST:requestLayout 
+11-01 02:37:41.878  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- removeAllViews(ViewGroup.java:5740) <- onDestroy(NavbarButtonsViewController.java:949) <- onDestroy(TaskbarControllers.java:232) <- onDestroy(TaskbarActivityContext.java:804) <- destroyExistingTaskbar(TaskbarManager.java:327) <- recreateTaskbar(TaskbarManager.java:454) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- 
+11-01 02:37:41.879  1130  1130 D b/254119092: recreateTaskbar: isTaskbarEnabled=true [dp != null (i.e. mUserUnlocked)]=true FLAG_HIDE_NAVBAR_WINDOW=true dp.isTaskbarPresent=false
+11-01 02:37:41.879  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 02:37:41.884   530   562 I InputManager-JNI: Viewport [0] to add: local:4619827259835644672, isActive: true
+11-01 02:37:41.885  2109  2109 V SDL     : onConfigurationChanged()
+11-01 02:37:41.890   530   638 I InputReader: Reconfiguring input devices, changes=DISPLAY_INFO
+11-01 02:37:41.891   530   638 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.891   765   804 D ShellSplitScreen: onTaskInfoChanged: taskId=4 taskAct=null
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.893   530   638 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:41.896   406   634 D PermissionCache: checking android.permission.READ_FRAME_BUFFER for uid=10120 => granted (218 us)
+11-01 02:37:41.897   530   562 W IPCThreadState: Sending oneway calls to frozen process.
+11-01 02:37:41.901  2109  2109 V SDL     : surfaceChanged()
+11-01 02:37:41.907  2109  2109 V SDL     : Window size: 844x390
+11-01 02:37:41.908  2109  2109 V SDL     : Device size: 844x390
+11-01 02:37:41.938   530   798 I WindowManager: finishDrawing of orientation change: Window{fa203bc u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} 72ms
+11-01 02:37:41.950   765   765 I NoBackGesture: Config changed: newConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.42 fontWeightAdjustment=0} lastReportedConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.16 fontWeightAdjustment=0}
+11-01 02:37:41.963   765  1689 V WindowManagerShell: onTransitionReady(transaction=2276332667344)
+11-01 02:37:41.965   530   559 V WindowManager: Sent Transition (#9) createdAt=११-०१ ०२:३७:४१.७७५ via request=TransitionRequestInfo { type = CHANGE, triggerTask = null, pipTask = null, remoteTransition = null, displayChange = DisplayChange { displayId = 0, startAbsBounds = null, endAbsBounds = null, startRotation = 0, endRotation = 1, physicalDisplayChanged = false }, flags = 0, debugId = 9 }
+11-01 02:37:41.965   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 02:37:41.965   530   559 V WindowManager:     info={id=9 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-01 02:37:41.965   530   559 V WindowManager:         {WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} m=CHANGE f=NONE p=WCT{RemoteToken{6517921 DefaultTaskDisplayArea@224221117}} leash=Surface(name=Task=22)/@0x848beea sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:0 taskParent=-1},
+11-01 02:37:41.965   530   559 V WindowManager:         {WCT{RemoteToken{6517921 DefaultTaskDisplayArea@224221117}} m=CHANGE f=NONE p=WCT{RemoteToken{41ed146 Display{#0 state=ON size=844x390 ROTATION_90}}} leash=Surface(name=DefaultTaskDisplayArea)/@0x8ad7b2b sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1},
+11-01 02:37:41.965   530   559 V WindowManager:         {WCT{RemoteToken{41ed146 Display{#0 state=ON size=844x390 ROTATION_90}}} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xa90bfc6 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1}
+11-01 02:37:41.965   530   559 V WindowManager:     ]}
+11-01 02:37:41.968   765   765 I NoBackGesture: NavbarController: newConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.42 fontWeightAdjustment=0} mTaskbarDelegate initialized=true willApplyConfigToNavbars=false navBarCount=0
+11-01 02:37:41.980  1130  1130 E Overrides: Bad overriden class
+11-01 02:37:41.980  1130  1130 E Overrides: java.lang.NoSuchMethodException: com.android.launcher3.taskbar.TaskbarModelCallbacksFactory.<init> [class android.content.Context]
+11-01 02:37:41.980  1130  1130 E Overrides: 	at java.lang.Class.getConstructor0(Class.java:3395)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at java.lang.Class.getDeclaredConstructor(Class.java:3077)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.launcher3.util.ResourceBasedOverride$Overrides.getObject(ResourceBasedOverride.java:42)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarModelCallbacksFactory$Companion.newInstance(TaskbarModelCallbacksFactory.kt:35)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarModelCallbacksFactory.newInstance(Unknown Source:2)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewController.<init>(TaskbarViewController.java:163)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarActivityContext.<init>(TaskbarActivityContext.java:271)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager.recreateTaskbar(TaskbarManager.java:468)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager$4.onConfigurationChanged(TaskbarManager.java:284)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController$$ExternalSyntheticLambda2.accept(D8$$SyntheticClass:0)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.forAllComponentCallbacks(ComponentCallbacksController.java:124)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.dispatchConfigurationChanged(ComponentCallbacksController.java:91)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.window.WindowContext.dispatchConfigurationChanged(WindowContext.java:142)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChangedInner(WindowTokenClient.java:205)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:155)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:112)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.window.WindowTokenClientController.onWindowContextInfoChanged(WindowTokenClientController.java:207)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.app.ActivityThread.handleWindowContextInfoChanged(ActivityThread.java:6595)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.app.servertransaction.WindowContextInfoChangeItem.execute(WindowContextInfoChangeItem.java:45)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:174)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:109)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.os.Looper.loop(Looper.java:317)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at java.lang.reflect.Method.invoke(Native Method)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-01 02:37:41.980  1130  1130 E Overrides: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-01 02:37:41.986   765   804 V WindowManagerShell: onTransitionReady (#9) android.os.BinderProxy@5edebd1: {id=9 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@9242a9c} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@a09dca5} leash=Surface(name=Task=22)/@0x814740d sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@40b687a} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@b0cd82b} leash=Surface(name=DefaultTaskDisplayArea)/@0xb1f8fc2 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@a975488} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xc4981d3 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1 snapshot=Surface(name=RotationLayer)/@0xd0cc110}]}
+11-01 02:37:41.986   765   804 V WindowManagerShell: Playing animation for (#9) android.os.BinderProxy@5edebd1@0
+11-01 02:37:41.986   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 02:37:41.986   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 02:37:41.986   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 02:37:41.986   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 02:37:41.986   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 02:37:41.986   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 02:37:41.986   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 02:37:41.986   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:37:41.986   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:37:41.986   765   804 V WindowManagerShell: start default transition animation, info = {id=9 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@9242a9c} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@a09dca5} leash=Surface(name=Task=22)/@0x814740d sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@40b687a} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@b0cd82b} leash=Surface(name=DefaultTaskDisplayArea)/@0xb1f8fc2 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@a975488} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xc4981d3 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1 snapshot=Surface(name=RotationLayer)/@0xd0cc110}]}
+11-01 02:37:41.986   765   804 V WindowManagerShell: Display is changing, resolve the animation hint.
+11-01 02:37:41.986   765   804 V WindowManagerShell:   task 22 isn't requesting seamless, so not seamless.
+11-01 02:37:41.998  1130  1130 E Overrides: Bad overriden class
+11-01 02:37:41.998  1130  1130 E Overrides: java.lang.NoSuchMethodException: com.android.launcher3.taskbar.TaskbarViewCallbacksFactory.<init> [class android.content.Context]
+11-01 02:37:41.998  1130  1130 E Overrides: 	at java.lang.Class.getConstructor0(Class.java:3395)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at java.lang.Class.getDeclaredConstructor(Class.java:3077)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.launcher3.util.ResourceBasedOverride$Overrides.getObject(ResourceBasedOverride.java:42)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewCallbacksFactory$Companion.newInstance(TaskbarViewCallbacksFactory.kt:36)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewCallbacksFactory.newInstance(Unknown Source:2)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewController.init(TaskbarViewController.java:177)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarControllers.init(TaskbarControllers.java:156)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarActivityContext.init(TaskbarActivityContext.java:367)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager.recreateTaskbar(TaskbarManager.java:477)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager$4.onConfigurationChanged(TaskbarManager.java:284)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController$$ExternalSyntheticLambda2.accept(D8$$SyntheticClass:0)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.forAllComponentCallbacks(ComponentCallbacksController.java:124)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.dispatchConfigurationChanged(ComponentCallbacksController.java:91)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.window.WindowContext.dispatchConfigurationChanged(WindowContext.java:142)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChangedInner(WindowTokenClient.java:205)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:155)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:112)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.window.WindowTokenClientController.onWindowContextInfoChanged(WindowTokenClientController.java:207)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.app.ActivityThread.handleWindowContextInfoChanged(ActivityThread.java:6595)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.app.servertransaction.WindowContextInfoChangeItem.execute(WindowContextInfoChangeItem.java:45)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:174)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:109)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.os.Looper.loop(Looper.java:317)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at java.lang.reflect.Method.invoke(Native Method)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-01 02:37:41.998  1130  1130 E Overrides: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-01 02:37:42.001   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: No service published for: ethernet
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: ethernet
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.os.ServiceManager.getServiceOrThrow(ServiceManager.java:203)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$145.createService(SystemServiceRegistry.java:2120)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$CachedServiceFetcher.getService(SystemServiceRegistry.java:2231)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry.getSystemService(SystemServiceRegistry.java:1812)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.app.ContextImpl.getSystemService(ContextImpl.java:2241)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.content.ContextWrapper.getSystemService(ContextWrapper.java:936)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.isEthernetSupported(Tethering.java:1579)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.makeSupportedDownstreams(Tethering.java:2562)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateSupportedDownstreams(Tethering.java:2536)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateConfiguration(Tethering.java:549)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.-$$Nest$mupdateConfiguration(Tethering.java:0)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering$StateReceiver.onReceive(Tethering.java:1186)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0(LoadedApk.java:1814)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.$r8$lambda$mcNAAl1SQ4MyJPyDg8TJ2x2h0Rk(Unknown Source:0)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.os.Looper.loop(Looper.java:317)
+11-01 02:37:42.018   818   937 E SystemServiceRegistry: 	at android.os.HandlerThread.run(HandlerThread.java:85)
+11-01 02:37:42.019   765   887 W Looper  : Drained
+11-01 02:37:42.024  1130  1130 D View    : ---- ST:requestLayout 
+11-01 02:37:42.025  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- removeAllViews(ViewGroup.java:5740) <- recreateTaskbar(TaskbarManager.java:486) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- executeNonLifecycleItem(TransactionExecutor.java:174) <- executeTransactionItems(TransactionExecutor.java:109) <- execute(TransactionExecutor.java:81) <- 
+11-01 02:37:42.025  1130  1130 D View    : ---- ST:requestLayout 
+11-01 02:37:42.025  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- addView(ViewGroup.java:5083) <- addView(ViewGroup.java:5025) <- addView(ViewGroup.java:4997) <- recreateTaskbar(TaskbarManager.java:487) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- executeNonLifecycleItem(TransactionExecutor.java:174) <- 
+11-01 02:37:42.026  1130  1130 D View    : ---- ST:requestLayout 
+11-01 02:37:42.026  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- setLayoutParams(View.java:20530) <- updateViewLayout(WindowManagerGlobal.java:464) <- updateViewLayout(WindowManagerImpl.java:165) <- notifyUpdateLayoutParams(TaskbarActivityContext.java:1528) <- recreateTaskbar(TaskbarManager.java:488) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- 
+11-01 02:37:42.027  2109  2109 V SDL     : onWindowFocusChanged(): false
+11-01 02:37:42.027  2109  2109 V SDL     : nativeFocusChanged()
+11-01 02:37:42.027  1130  1130 D b/254119092: DisplayController#onConfigurationChanged: {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.18 fontWeightAdjustment=0}
+11-01 02:37:42.042   360   382 I RanchuHwc: logCompositionFallbackIfChanged: layer 24 CompositionType fallback from 3 to 1
+11-01 02:37:42.048   366   366 I android.hardware.power-service.example: Power isModeSupported: 6
+11-01 02:37:42.142   765   804 W Looper  : Slow dispatch took 90ms wmshell.main h=android.os.Handler c=com.android.wm.shell.sysui.ShellController$ShellInterfaceImpl$$ExternalSyntheticLambda2@cbf3665 m=0
+11-01 02:37:42.142   765   887 W Looper  : Slow delivery took 51ms wmshell.anim h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver@9c95869 m=0
+11-01 02:37:42.144   765   804 W Looper  : Slow delivery took 68ms wmshell.main h=android.os.Handler c=com.android.wm.shell.draganddrop.DragAndDropController$$ExternalSyntheticLambda3@71b1f3a m=0
+11-01 02:37:42.153   530   880 I WindowManager: finishDrawing of orientation change: Window{a54b9ca u0 Taskbar} 287ms
+11-01 02:37:42.160   765   887 W Looper  : Drained
+11-01 02:37:42.160   765   804 W Looper  : Drained
+11-01 02:37:42.248   530  1295 I WindowManager: finishDrawing of orientation change: Window{8e26942 u0 StatusBar} 382ms
+11-01 02:37:42.254   765   765 D DisplayRepository: combining enabled=[0], connectedExternalDisplayIds=[], ignored=[]
+11-01 02:37:42.293   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#9) android.os.BinderProxy@5edebd1@0
+11-01 02:37:42.298   765   804 V WindowManagerShell: Track 0 became idle
+11-01 02:37:42.298   765   804 V WindowManagerShell: All active transition animations finished
+11-01 02:37:42.319   765   765 D DisplayRepository: combining enabled=[0], connectedExternalDisplayIds=[], ignored=[]
+11-01 02:37:42.321   765   765 D DefaultDeviceEntrySection: isUdfpsSupported=false
+11-01 02:37:42.327   530  1295 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:42.336   530   559 V WindowManager: Finish Transition (#9): created at ११-०१ ०२:३७:४१.७७५ collect-started=0.082ms request-sent=0.146ms started=12.703ms ready=87.011ms sent=179.736ms finished=521.888ms
+11-01 02:37:42.505  2109  2129 D EGL_emulation: app_time_stats: avg=67.12ms min=45.13ms max=131.26ms count=14
+11-01 02:37:42.536  2109  2109 V SDL     : onWindowFocusChanged(): true
+11-01 02:37:42.536  2109  2109 V SDL     : nativeFocusChanged()
+11-01 02:37:42.538   530   645 I ImeTracker: org.globulation2.glob2:4dbfd4f5: onRequestHide at ORIGIN_SERVER reason HIDE_SAME_WINDOW_FOCUSED_WITHOUT_EDITOR fromUser false
+11-01 02:37:42.538   530   645 I ImeTracker: org.globulation2.glob2:4dbfd4f5: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 02:37:43.014   530  1229 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+11-01 02:37:43.517  2109  2129 D EGL_emulation: app_time_stats: avg=45.91ms min=34.75ms max=83.20ms count=22
+11-01 02:37:44.295  3189  3189 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:37:44.295  3189  3189 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:37:44.475     0     0 I servicemanager: Caller(pid=3189,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:37:44.308   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:37:44.311  3189  3190 I Gralloc4: mapper 4.x is not supported
+11-01 02:37:44.556  2109  2129 D EGL_emulation: app_time_stats: avg=44.88ms min=31.77ms max=64.58ms count=23
+11-01 02:37:45.038   765   804 V WindowManagerShell: Transition requested (#10): android.os.BinderProxy@256cd1d TransitionRequestInfo { type = CHANGE, triggerTask = null, pipTask = null, remoteTransition = null, displayChange = DisplayChange { displayId = 0, startAbsBounds = null, endAbsBounds = null, startRotation = 1, endRotation = 0, physicalDisplayChanged = false }, flags = 0, debugId = 10 }
+11-01 02:37:45.060   406   406 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+11-01 02:37:45.069   530   562 I ActivityTaskManager: Config changes=20000480 {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.46 fontWeightAdjustment=0}
+11-01 02:37:45.082   530   562 V ActivityTaskManager: Sending to IME proc com.android.inputmethod.latin new config {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h796dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 796) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.63 fontWeightAdjustment=0}
+11-01 02:37:45.088   530   562 I WindowManager: Override config changes=20000480 {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.46 fontWeightAdjustment=0} for displayId=0
+11-01 02:37:45.131   530   562 W ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+11-01 02:37:45.140   530   530 W WindowTokenClientController: Can't find attached WindowTokenClient for android.window.WindowTokenClient@17721a7
+11-01 02:37:45.145   765   804 V ShellDragAndDrop: Display changed: 0
+11-01 02:37:45.152  2109  2109 V SDL     : onConfigurationChanged()
+11-01 02:37:45.152  1130  1130 D b/254119092: TaskbarManager#mComponentCallbacks.onConfigurationChanged: {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.46 fontWeightAdjustment=0}
+11-01 02:37:45.152  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 02:37:45.152  1130  1130 D b/254119092: ComponentCallbacks#onConfigurationChanged() configDiff={}
+11-01 02:37:45.152  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 02:37:45.152  1130  1130 D b/254119092: destroyExistingTaskbar: com.android.launcher3.taskbar.TaskbarActivityContext@8024b9c
+11-01 02:37:45.152  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 02:37:45.157   765   804 D ShellSplitScreen: onTaskInfoChanged: taskId=4 taskAct=null
+11-01 02:37:45.158   530   562 I InputManager-JNI: Viewport [0] to add: local:4619827259835644672, isActive: true
+11-01 02:37:45.159  1130  1130 D View    : ---- ST:requestLayout 
+11-01 02:37:45.159  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- removeAllViews(ViewGroup.java:5740) <- onDestroy(NavbarButtonsViewController.java:949) <- onDestroy(TaskbarControllers.java:232) <- onDestroy(TaskbarActivityContext.java:804) <- destroyExistingTaskbar(TaskbarManager.java:327) <- recreateTaskbar(TaskbarManager.java:454) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- 
+11-01 02:37:45.160  1130  1130 D b/254119092: recreateTaskbar: isTaskbarEnabled=true [dp != null (i.e. mUserUnlocked)]=true FLAG_HIDE_NAVBAR_WINDOW=true dp.isTaskbarPresent=false
+11-01 02:37:45.160  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 02:37:45.162   530   562 W IPCThreadState: Sending oneway calls to frozen process.
+11-01 02:37:45.162   530   638 I InputReader: Reconfiguring input devices, changes=DISPLAY_INFO
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.162   530   638 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 02:37:45.165  2109  2109 V SDL     : surfaceChanged()
+11-01 02:37:45.165  2109  2109 V SDL     : Window size: 390x844
+11-01 02:37:45.165  2109  2109 V SDL     : Device size: 390x844
+11-01 02:37:45.191   530  1295 I WindowManager: finishDrawing of orientation change: Window{fa203bc u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} 41ms
+11-01 02:37:45.205   530   559 V WindowManager: Sent Transition (#10) createdAt=११-०१ ०२:३७:४५.०३५ via request=TransitionRequestInfo { type = CHANGE, triggerTask = null, pipTask = null, remoteTransition = null, displayChange = DisplayChange { displayId = 0, startAbsBounds = null, endAbsBounds = null, startRotation = 1, endRotation = 0, physicalDisplayChanged = false }, flags = 0, debugId = 10 }
+11-01 02:37:45.205   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 02:37:45.206   530   559 V WindowManager:     info={id=10 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-01 02:37:45.206   530   559 V WindowManager:         {WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} m=CHANGE f=NONE p=WCT{RemoteToken{6517921 DefaultTaskDisplayArea@224221117}} leash=Surface(name=Task=22)/@0x848beea sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:0 taskParent=-1},
+11-01 02:37:45.206   530   559 V WindowManager:         {WCT{RemoteToken{6517921 DefaultTaskDisplayArea@224221117}} m=CHANGE f=NONE p=WCT{RemoteToken{41ed146 Display{#0 state=ON size=390x844 ROTATION_0}}} leash=Surface(name=DefaultTaskDisplayArea)/@0x8ad7b2b sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1},
+11-01 02:37:45.206   530   559 V WindowManager:         {WCT{RemoteToken{41ed146 Display{#0 state=ON size=390x844 ROTATION_0}}} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xa90bfc6 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1}
+11-01 02:37:45.206   530   559 V WindowManager:     ]}
+11-01 02:37:45.208   765   774 V WindowManagerShell: onTransitionReady(transaction=2276332667386)
+11-01 02:37:45.211   765   804 V WindowManagerShell: onTransitionReady (#10) android.os.BinderProxy@256cd1d: {id=10 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@519caea} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@2cae1db} leash=Surface(name=Task=22)/@0x2981e19 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@b951478} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@7867751} leash=Surface(name=DefaultTaskDisplayArea)/@0x4469ede sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@641abb6} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0x42d78bf sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1 snapshot=Surface(name=RotationLayer)/@0x4e0cb8c}]}
+11-01 02:37:45.211   765   804 V WindowManagerShell: Playing animation for (#10) android.os.BinderProxy@256cd1d@0
+11-01 02:37:45.211   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 02:37:45.211   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 02:37:45.211   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 02:37:45.211   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 02:37:45.211   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 02:37:45.212   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 02:37:45.212   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 02:37:45.212   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:37:45.214   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:37:45.214   765   804 V WindowManagerShell: start default transition animation, info = {id=10 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@519caea} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@2cae1db} leash=Surface(name=Task=22)/@0x2981e19 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@b951478} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@7867751} leash=Surface(name=DefaultTaskDisplayArea)/@0x4469ede sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@641abb6} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0x42d78bf sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1 snapshot=Surface(name=RotationLayer)/@0x4e0cb8c}]}
+11-01 02:37:45.214   765   804 V WindowManagerShell: Display is changing, resolve the animation hint.
+11-01 02:37:45.214   765   804 V WindowManagerShell:   task 22 isn't requesting seamless, so not seamless.
+11-01 02:37:45.219   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:37:45.229   765   765 I NoBackGesture: Config changed: newConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.70 fontWeightAdjustment=0} lastReportedConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.42 fontWeightAdjustment=0}
+11-01 02:37:45.229   765   765 I NoBackGesture: NavbarController: newConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.70 fontWeightAdjustment=0} mTaskbarDelegate initialized=true willApplyConfigToNavbars=false navBarCount=0
+11-01 02:37:45.238  2109  2109 V SDL     : onWindowFocusChanged(): false
+11-01 02:37:45.238  2109  2109 V SDL     : nativeFocusChanged()
+11-01 02:37:45.262   765   765 D DisplayRepository: combining enabled=[0], connectedExternalDisplayIds=[], ignored=[]
+11-01 02:37:45.265   530   880 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: No service published for: ethernet
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: ethernet
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.os.ServiceManager.getServiceOrThrow(ServiceManager.java:203)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$145.createService(SystemServiceRegistry.java:2120)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$CachedServiceFetcher.getService(SystemServiceRegistry.java:2231)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry.getSystemService(SystemServiceRegistry.java:1812)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.app.ContextImpl.getSystemService(ContextImpl.java:2241)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.content.ContextWrapper.getSystemService(ContextWrapper.java:936)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.isEthernetSupported(Tethering.java:1579)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.makeSupportedDownstreams(Tethering.java:2562)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateSupportedDownstreams(Tethering.java:2536)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateConfiguration(Tethering.java:549)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.-$$Nest$mupdateConfiguration(Tethering.java:0)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering$StateReceiver.onReceive(Tethering.java:1186)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0(LoadedApk.java:1814)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.$r8$lambda$mcNAAl1SQ4MyJPyDg8TJ2x2h0Rk(Unknown Source:0)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.os.Looper.loop(Looper.java:317)
+11-01 02:37:45.266   818   937 E SystemServiceRegistry: 	at android.os.HandlerThread.run(HandlerThread.java:85)
+11-01 02:37:45.267   765   765 D DisplayRepository: combining enabled=[0], connectedExternalDisplayIds=[], ignored=[]
+11-01 02:37:45.275   360   382 I RanchuHwc: logCompositionFallbackIfChanged: layer 31 CompositionType fallback from 3 to 1
+11-01 02:37:45.297  1130  1130 E Overrides: Bad overriden class
+11-01 02:37:45.297  1130  1130 E Overrides: java.lang.NoSuchMethodException: com.android.launcher3.taskbar.TaskbarModelCallbacksFactory.<init> [class android.content.Context]
+11-01 02:37:45.297  1130  1130 E Overrides: 	at java.lang.Class.getConstructor0(Class.java:3395)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at java.lang.Class.getDeclaredConstructor(Class.java:3077)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.launcher3.util.ResourceBasedOverride$Overrides.getObject(ResourceBasedOverride.java:42)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarModelCallbacksFactory$Companion.newInstance(TaskbarModelCallbacksFactory.kt:35)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarModelCallbacksFactory.newInstance(Unknown Source:2)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewController.<init>(TaskbarViewController.java:163)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarActivityContext.<init>(TaskbarActivityContext.java:271)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager.recreateTaskbar(TaskbarManager.java:468)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager$4.onConfigurationChanged(TaskbarManager.java:284)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController$$ExternalSyntheticLambda2.accept(D8$$SyntheticClass:0)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.forAllComponentCallbacks(ComponentCallbacksController.java:124)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.dispatchConfigurationChanged(ComponentCallbacksController.java:91)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.window.WindowContext.dispatchConfigurationChanged(WindowContext.java:142)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChangedInner(WindowTokenClient.java:205)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:155)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:112)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.window.WindowTokenClientController.onWindowContextInfoChanged(WindowTokenClientController.java:207)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.app.ActivityThread.handleWindowContextInfoChanged(ActivityThread.java:6595)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.app.servertransaction.WindowContextInfoChangeItem.execute(WindowContextInfoChangeItem.java:45)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:174)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:109)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.os.Looper.loop(Looper.java:317)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at java.lang.reflect.Method.invoke(Native Method)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-01 02:37:45.297  1130  1130 E Overrides: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-01 02:37:45.305  1130  1130 E Overrides: Bad overriden class
+11-01 02:37:45.305  1130  1130 E Overrides: java.lang.NoSuchMethodException: com.android.launcher3.taskbar.TaskbarViewCallbacksFactory.<init> [class android.content.Context]
+11-01 02:37:45.305  1130  1130 E Overrides: 	at java.lang.Class.getConstructor0(Class.java:3395)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at java.lang.Class.getDeclaredConstructor(Class.java:3077)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.launcher3.util.ResourceBasedOverride$Overrides.getObject(ResourceBasedOverride.java:42)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewCallbacksFactory$Companion.newInstance(TaskbarViewCallbacksFactory.kt:36)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewCallbacksFactory.newInstance(Unknown Source:2)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewController.init(TaskbarViewController.java:177)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarControllers.init(TaskbarControllers.java:156)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarActivityContext.init(TaskbarActivityContext.java:367)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager.recreateTaskbar(TaskbarManager.java:477)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager$4.onConfigurationChanged(TaskbarManager.java:284)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController$$ExternalSyntheticLambda2.accept(D8$$SyntheticClass:0)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.forAllComponentCallbacks(ComponentCallbacksController.java:124)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.dispatchConfigurationChanged(ComponentCallbacksController.java:91)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.window.WindowContext.dispatchConfigurationChanged(WindowContext.java:142)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChangedInner(WindowTokenClient.java:205)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:155)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:112)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.window.WindowTokenClientController.onWindowContextInfoChanged(WindowTokenClientController.java:207)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.app.ActivityThread.handleWindowContextInfoChanged(ActivityThread.java:6595)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.app.servertransaction.WindowContextInfoChangeItem.execute(WindowContextInfoChangeItem.java:45)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:174)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:109)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.os.Looper.loop(Looper.java:317)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at java.lang.reflect.Method.invoke(Native Method)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-01 02:37:45.305  1130  1130 E Overrides: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-01 02:37:45.329  1130  1130 D View    : ---- ST:requestLayout 
+11-01 02:37:45.330  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- removeAllViews(ViewGroup.java:5740) <- recreateTaskbar(TaskbarManager.java:486) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- executeNonLifecycleItem(TransactionExecutor.java:174) <- executeTransactionItems(TransactionExecutor.java:109) <- execute(TransactionExecutor.java:81) <- 
+11-01 02:37:45.330  1130  1130 D View    : ---- ST:requestLayout 
+11-01 02:37:45.330  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- addView(ViewGroup.java:5083) <- addView(ViewGroup.java:5025) <- addView(ViewGroup.java:4997) <- recreateTaskbar(TaskbarManager.java:487) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- executeNonLifecycleItem(TransactionExecutor.java:174) <- 
+11-01 02:37:45.331  1130  1130 D View    : ---- ST:requestLayout 
+11-01 02:37:45.331  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- setLayoutParams(View.java:20530) <- updateViewLayout(WindowManagerGlobal.java:464) <- updateViewLayout(WindowManagerImpl.java:165) <- notifyUpdateLayoutParams(TaskbarActivityContext.java:1528) <- recreateTaskbar(TaskbarManager.java:488) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- 
+11-01 02:37:45.331  1130  1130 D b/254119092: DisplayController#onConfigurationChanged: {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.46 fontWeightAdjustment=0}
+11-01 02:37:45.348  2109  2109 V SDL     : onWindowFocusChanged(): true
+11-01 02:37:45.348  2109  2109 V SDL     : nativeFocusChanged()
+11-01 02:37:45.352   530   645 I ImeTracker: org.globulation2.glob2:93e9f71e: onRequestHide at ORIGIN_SERVER reason HIDE_SAME_WINDOW_FOCUSED_WITHOUT_EDITOR fromUser false
+11-01 02:37:45.352   530   645 I ImeTracker: org.globulation2.glob2:93e9f71e: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 02:37:45.370   530  1295 I WindowManager: finishDrawing of orientation change: Window{a54b9ca u0 Taskbar} 220ms
+11-01 02:37:45.451   765   765 D DefaultDeviceEntrySection: isUdfpsSupported=false
+11-01 02:37:45.452   530   798 I WindowManager: finishDrawing of orientation change: Window{8e26942 u0 StatusBar} 303ms
+11-01 02:37:45.510   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#10) android.os.BinderProxy@256cd1d@0
+11-01 02:37:45.513   530   559 V WindowManager: Finish Transition (#10): created at ११-०१ ०२:३७:४५.०३५ collect-started=0.111ms request-sent=0.189ms started=17.38ms ready=110.454ms sent=170.032ms finished=477.838ms
+11-01 02:37:45.514   765   804 V WindowManagerShell: Track 0 became idle
+11-01 02:37:45.514   765   804 V WindowManagerShell: All active transition animations finished
+11-01 02:37:45.600  2109  2129 D EGL_emulation: app_time_stats: avg=60.46ms min=30.98ms max=158.78ms count=17
+11-01 02:37:46.211   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:37:46.609  2109  2129 D EGL_emulation: app_time_stats: avg=50.42ms min=34.06ms max=71.39ms count=20
+11-01 02:37:47.447  3205  3205 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:37:47.449  3205  3205 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:37:47.474   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:37:47.474  3205  3206 I Gralloc4: mapper 4.x is not supported
+11-01 02:37:47.638     0     0 I servicemanager: Caller(pid=3205,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:37:47.619  2109  2129 D EGL_emulation: app_time_stats: avg=59.44ms min=44.44ms max=105.10ms count=17
+11-01 02:37:48.202     0     0 I logd    : logdr: UID=0 GID=0 PID=3207 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+
+--------- beginning of main
+11-01 02:37:48.320  1130  1130 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=20, baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.uioverrides.QuickstepLauncher }
+11-01 02:37:48.321  1130  1130 D StatsLog: LAUNCHER_ONRESUME
+--------- beginning of system
+11-01 02:37:48.362   765  1026 V WindowManagerShell: onTransitionReady(transaction=2276332667428)
+11-01 02:37:48.364   765   804 V WindowManagerShell: onTransitionReady (#11) android.os.BinderProxy@ee1fefe: {id=11 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@5e07398} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0xaae78ac sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@359b7f1} m=CLOSE f=NONE leash=Surface(name=Task=22)/@0x615f975 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{48c1876 token=android.os.Binder@3779f11})/@0xedb0d0a sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0}]}
+11-01 02:37:48.365   765   804 V WindowManagerShell: Playing animation for (#11) android.os.BinderProxy@ee1fefe@0
+11-01 02:37:48.365   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 02:37:48.365   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 02:37:48.365   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 02:37:48.365   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 02:37:48.365   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 02:37:48.365   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 02:37:48.365   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 02:37:48.365   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:37:48.365   765   804 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=11 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@5e07398} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0xaae78ac sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@359b7f1} m=CLOSE f=NONE leash=Surface(name=Task=22)/@0x615f975 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{48c1876 token=android.os.Binder@3779f11})/@0xedb0d0a sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0}]}
+11-01 02:37:48.365   765   804 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }}
+11-01 02:37:48.366   765   804 D RemoteTransitionHandler: Found filterPair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }}
+11-01 02:37:48.366   765   804 V WindowManagerShell:  Delegate animation for (#11) to RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }
+11-01 02:37:48.397   530   608 V ActivityManager: Got obituary of 2109:org.globulation2.glob2
+11-01 02:37:48.405   530   983 I ImeTracker: org.globulation2.glob2:dc5233d3: onRequestHide at ORIGIN_SERVER reason HIDE_REMOVE_CLIENT fromUser false
+11-01 02:37:48.405   530   983 I ImeTracker: org.globulation2.glob2:dc5233d3: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 02:37:48.406   530   573 I libprocessgroup: Removed cgroup /sys/fs/cgroup/uid_10148/pid_2109
+11-01 02:37:48.406   337   337 I Zygote  : Process 2109 exited due to signal 9 (Killed)
+11-01 02:37:48.442   530  2098 I WindowManager: WIN DEATH: Window{fa203bc u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity}
+11-01 02:37:48.442   530  2098 W InputManager-JNI: Input channel object 'fa203bc org.globulation2.glob2/org.globulation2.glob2.Glob2Activity (client)' was disposed without first being removed with the input manager!
+11-01 02:37:48.452   530   562 W ActivityManager: setHasOverlayUi called on unknown pid: 2109
+11-01 02:37:48.454   530   559 V WindowManager: Sent Transition (#11) createdAt=११-०१ ०२:३७:४८.१३८ via request=TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=22 displayId=0 isRunning=false baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=null topActivity=null origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=0 lastActiveTime=2301678 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=null launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 11 }
+11-01 02:37:48.454   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 02:37:48.455   530   559 V WindowManager:     info={id=11 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-01 02:37:48.455   530   559 V WindowManager:         {WCT{RemoteToken{45c5a60 Task{e1360ac #1 type=home}}} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x4908a48 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+11-01 02:37:48.455   530   559 V WindowManager:         {WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} m=CLOSE f=NONE leash=Surface(name=Task=22)/@0x848beea sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+11-01 02:37:48.455   530   559 V WindowManager:         {null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{48c1876 token=android.os.Binder@3779f11})/@0x6f829f5 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0}
+11-01 02:37:48.455   530   559 V WindowManager:     ]}
+11-01 02:37:48.455   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:37:48.456   765   804 W Looper  : Slow dispatch took 91ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda0@4d18257 m=0
+11-01 02:37:48.470  1130  1130 D StateManager: createAtomicAnimation - fromState: Background, toState: Normal, partial trace:
+11-01 02:37:48.470  1130  1130 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.prepareToAnimate(WorkspaceRevealAnim.java:130)
+11-01 02:37:48.470  1130  1130 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.<init>(WorkspaceRevealAnim.java:66)
+11-01 02:37:48.470  1130  1130 D StateManager: 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(QuickstepTransitionManager.java:1716)
+11-01 02:37:48.472   530   802 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:48.496   530   645 I ImeTracker: com.android.launcher3:836280ee: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-01 02:37:48.498   530   645 I ImeTracker: com.android.launcher3:836280ee: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 02:37:48.517   530   563 W ActivityTaskManager: Unable to send transaction to client proc org.globulation2.glob2: no app thread
+11-01 02:37:48.574   530   983 W ActivityTaskManager: callingPackage for (uid=0, pid=3221) has no WPC
+11-01 02:37:48.577   530   983 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+11-01 02:37:48.578   530   983 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@31ae056, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-01 02:37:48.578   530   983 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+11-01 02:37:48.578   530   983 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+11-01 02:37:48.594   530   983 I ActivityTaskManager: Add Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2} to hidden list because adding Task{dcb3b78 #23 type=standard A=10148:org.globulation2.glob2}
+11-01 02:37:48.603   530   983 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity} with LAUNCH_SINGLE_TASK from uid 0 (BAL_ALLOW_ALLOWLISTED_UID) result code=0
+11-01 02:37:48.607   765   920 D SplashScreenView: Build android.window.SplashScreenView{69764dc V.E...... ......ID 0,0-0,0}
+11-01 02:37:48.607   765   920 D SplashScreenView: Icon: view: android.widget.ImageView{d5929e5 V.ED..... ......I. 0,0-0,0 #1020504 android:id/splashscreen_icon_view} drawable: com.android.wm.shell.startingsurface.SplashscreenIconDrawableFactory$ImmobileIconDrawable@5d8ccba size: 192
+11-01 02:37:48.607   765   920 D SplashScreenView: Branding: view: android.view.View{d8c076b G.ED..... ......I. 0,0-0,0 #1020503 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+11-01 02:37:48.614   765   804 V WindowManagerShell: Transition requested (#12): android.os.BinderProxy@6a3f2c8 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=23 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} topActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=1 lastActiveTime=2310238 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@6777f61} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{fb6fa86 org.globulation2.glob2.Glob2Activity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 12 }
+11-01 02:37:48.638  1130  1130 W SplitSelectStateCtor: Missing session instanceIds
+11-01 02:37:48.638  1130  1130 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+11-01 02:37:48.658   765   804 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=112
+11-01 02:37:48.665   530   562 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@31ae056, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-01 02:37:48.677   530   802 D CoreBackPreview: Window{8349724 u0 Splash Screen org.globulation2.glob2}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@121bc42, mPriority=0, mIsAnimationCallback=false}
+11-01 02:37:48.687  1130  1130 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=23, baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity }
+11-01 02:37:48.708   530   562 W ActivityManager: Slow operation: 51ms so far, now at startProcess: done starting proc!
+11-01 02:37:48.718   530   710 I AppWidgetServiceImpl: Received broadcast: android.intent.action.PACKAGE_UNSTOPPED on user 0
+11-01 02:37:48.718   530   710 I AppWidgetServiceImpl: Updating package stopped masked state for uid 10148 package org.globulation2.glob2 isStopped false
+11-01 02:37:48.731   337   337 D Zygote  : Forked child process 3226
+11-01 02:37:48.738   530   572 I ActivityManager: Start proc 3226:org.globulation2.glob2/u0a148 for next-top-activity {org.globulation2.glob2/org.globulation2.glob2.Glob2Activity}
+11-01 02:37:48.749   530   559 V WindowManager: Sent Transition (#12) createdAt=११-०१ ०२:३७:४८.५७९ via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=23 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} topActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=1 lastActiveTime=2310238 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{86e919a Task{dcb3b78 #23 type=standard A=10148:org.globulation2.glob2}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{e8d1acb org.globulation2.glob2.Glob2Activity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 12 }
+11-01 02:37:48.749   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 02:37:48.749   530   559 V WindowManager:     info={id=12 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-01 02:37:48.749   530   559 V WindowManager:         {WCT{RemoteToken{86e919a Task{dcb3b78 #23 type=standard A=10148:org.globulation2.glob2}}} m=OPEN f=NONE leash=Surface(name=Task=23)/@0x1a1a6bc sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+11-01 02:37:48.749   530   559 V WindowManager:         {WCT{RemoteToken{45c5a60 Task{e1360ac #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x4908a48 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}
+11-01 02:37:48.749   530   559 V WindowManager:     ]}
+11-01 02:37:48.751   765   774 V WindowManagerShell: onTransitionReady(transaction=2276332667451)
+11-01 02:37:48.755   765   804 V WindowManagerShell: onTransitionReady (#12) android.os.BinderProxy@6a3f2c8: {id=12 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@2e1a15b} m=OPEN f=NONE leash=Surface(name=Task=23)/@0x52f403f sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@9d9df8} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xa6bbd0c sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:37:48.755   765   804 V WindowManagerShell: Transition (#12) android.os.BinderProxy@6a3f2c8@0 ready while (#11) android.os.BinderProxy@ee1fefe@0 is still animating. Notify the animating transition in case they can be merged
+11-01 02:37:48.756   765   804 V WindowManagerShell:    Merge into remote: RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }
+11-01 02:37:48.757   530  3218 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:48.761   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#11) android.os.BinderProxy@ee1fefe@0
+11-01 02:37:48.765   530   559 V WindowManager: Finish Transition (#11): created at ११-०१ ०२:३७:४८.१३८ collect-started=0.082ms request-sent=0.198ms started=34.811ms ready=34.785ms sent=221.725ms finished=627.188ms
+--------- beginning of kernel
+11-01 02:37:48.939     0     0 I binder  : 3218:530 cannot find target node
+11-01 02:37:48.941     0     0 I binder  : 530:3218 transaction async to 0:0 failed 254469/29189/-22, size 64-0 line 3265
+11-01 02:37:48.774  3226  3226 I bulation2.glob2: Using CollectorTypeCMC GC.
+11-01 02:37:48.777  3226  3226 W bulation2.glob2: Unexpected CPU variant for x86: x86_64.
+11-01 02:37:48.777  3226  3226 W bulation2.glob2: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, default
+11-01 02:37:48.777   530  3218 E IPCThreadState: Binder transaction failure. id: 254469, BR_*: 29189, error: -22 (Invalid argument)
+11-01 02:37:48.778   530  3218 W ActivityManager: pid 530 system sent binder code 7 with flags 1 to frozen apps and got error -32
+11-01 02:37:48.779   530  3218 W WindowManager: Exception thrown during dispatchAppVisibility Window{fa203bc u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity EXITING}
+11-01 02:37:48.779   530  3218 W WindowManager: android.os.DeadObjectException
+11-01 02:37:48.779   530  3218 W WindowManager: 	at android.os.BinderProxy.transactNative(Native Method)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at android.view.IWindow$Stub$Proxy.dispatchAppVisibility(IWindow.java:553)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.WindowState.sendAppVisibilityToClients(WindowState.java:3253)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.WindowContainer.sendAppVisibilityToClients(WindowContainer.java:1289)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.WindowToken.setClientVisible(WindowToken.java:403)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.ActivityRecord.setClientVisible(ActivityRecord.java:7166)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.ActivityRecord.postApplyAnimation(ActivityRecord.java:5881)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.ActivityRecord.commitVisibility(ActivityRecord.java:5823)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.Transition.finishTransition(Transition.java:1286)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.TransitionController.finishTransition(TransitionController.java:937)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.finishTransition(WindowOrganizerController.java:494)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at android.window.IWindowOrganizerController$Stub.onTransact(IWindowOrganizerController.java:289)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.onTransact(WindowOrganizerController.java:204)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at android.os.Binder.execTransactInternal(Binder.java:1500)
+11-01 02:37:48.779   530  3218 W WindowManager: 	at android.os.Binder.execTransact(Binder.java:1444)
+11-01 02:37:48.783   530  3218 W Process : Unable to open /proc/2109/status
+11-01 02:37:48.786  3226  3226 E bulation2.glob2: Not starting debugger since process cannot load the jdwp agent.
+11-01 02:37:48.800   765   804 V WindowManagerShell: Playing animation for (#12) android.os.BinderProxy@6a3f2c8@0
+11-01 02:37:48.800   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 02:37:48.800   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 02:37:48.800   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 02:37:48.800   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 02:37:48.800   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 02:37:48.800   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 02:37:48.800   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 02:37:48.800   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:37:48.801   765   804 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=12 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@2e1a15b} m=OPEN f=NONE leash=Surface(name=Task=23)/@0x52f403f sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@9d9df8} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xa6bbd0c sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:37:48.801   765   804 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }}
+11-01 02:37:48.801   765   804 V WindowManagerShell:  Delegate animation for (#12) to null
+11-01 02:37:48.801   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:37:48.801   765   804 V WindowManagerShell: start default transition animation, info = {id=12 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@2e1a15b} m=OPEN f=NONE leash=Surface(name=Task=23)/@0x52f403f sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@9d9df8} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xa6bbd0c sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:37:48.801   765   804 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@60aa1a4 animAttr=0x13 type=OPEN isEntrance=false
+11-01 02:37:48.808   765   804 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@5223410 animAttr=0x12 type=OPEN isEntrance=true
+11-01 02:37:48.812   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:37:48.812   765   804 W Looper  : Slow dispatch took 51ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.RemoteTransitionHandler$1$$ExternalSyntheticLambda0@455110e m=0
+11-01 02:37:48.818   530  3218 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:48.818   765   804 W Looper  : Slow delivery took 34ms wmshell.main h=android.os.Handler c=null m=1
+11-01 02:37:48.825   406   406 E BpTransactionCompletedListener: Failed to transact (-32)
+11-01 02:37:48.826   406   406 E BpTransactionCompletedListener: Failed to transact (-32)
+11-01 02:37:48.826  3226  3226 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-01 02:37:48.831   530  3218 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:48.833  1130  1130 I TopTaskTracker: onTaskRemoved: taskId=22
+11-01 02:37:48.833  1130  1130 I TopTaskTracker: onTaskRemoved: taskId=22
+11-01 02:37:48.859   765   804 W Looper  : Drained
+11-01 02:37:48.868  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 24, 63695, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.869  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 24, 63695, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.869  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 63695, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.869  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 63703, 30448564, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.869  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 63718, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.869  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 63718, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.869  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 63718, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.869  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 63733, 44152619, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 63756, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 63756, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 63756, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 63771, 51809357, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 63771, 51809357, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 63786, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 63786, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 63786, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 63825, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 63825, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 63825, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 63833, 46265456, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 63848, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 63848, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 63864, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 63864, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 63879, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 63879, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 63879, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 63894, 50183410, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 80, 63910, 24280629, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:37:48.870  1130  1188 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-78 - not enough time since last trigger
+11-01 02:37:48.882  3226  3226 D nativeloader: Configuring clns-7 for other apk /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/lib/x86_64:/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/org.globulation2.glob2
+11-01 02:37:48.902  3226  3226 V GraphicsEnvironment: Currently set values for:
+11-01 02:37:48.902  3226  3226 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+11-01 02:37:48.902  3226  3226 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+11-01 02:37:48.902  3226  3226 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+11-01 02:37:48.902  3226  3226 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+11-01 02:37:48.935  3226  3226 V SDL     : Manufacturer: unknown
+11-01 02:37:48.935  3226  3226 V SDL     : Device: emu64x
+11-01 02:37:48.935  3226  3226 V SDL     : Model: Android SDK built for x86_64
+11-01 02:37:48.935  3226  3226 V SDL     : onCreate()
+11-01 02:37:48.985  3226  3226 D nativeloader: Load /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk!/lib/x86_64/libc++_shared.so using ns clns-7 from class loader (caller=/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk): ok
+11-01 02:37:48.991  3226  3226 D nativeloader: Load /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk!/lib/x86_64/libSDL3.so using ns clns-7 from class loader (caller=/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk): ok
+11-01 02:37:49.039  3226  3226 D nativeloader: Load /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk!/lib/x86_64/libmain.so using ns clns-7 from class loader (caller=/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk): ok
+11-01 02:37:49.039  3226  3226 V SDL     : nativeSetupJNI()
+11-01 02:37:49.040  3226  3226 V SDL     : AUDIO nativeSetupJNI()
+11-01 02:37:49.040  3226  3226 V SDL     : CONTROLLER nativeSetupJNI()
+11-01 02:37:49.063  3226  3226 V SDL     : onStart()
+11-01 02:37:49.066  3226  3226 V SDL     : onResume()
+11-01 02:37:49.071  3226  3226 W HWUI    : Unknown dataspace 0
+11-01 02:37:49.074   530   802 W WindowManager: Failed looking up window session=Session{af8bc16 3226:u0a10148} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6311 com.android.server.wm.Session.updateRequestedVisibleTypes:755 android.view.IWindowSession$Stub.onTransact:1078 
+11-01 02:37:49.090   530  1295 D CoreBackPreview: Window{2bc83a2 u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@ae187f0, mPriority=0, mIsAnimationCallback=false}
+11-01 02:37:49.105  3226  3239 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+11-01 02:37:49.107  3226  3226 V SDL     : surfaceCreated()
+11-01 02:37:49.107  3226  3226 V SDL     : surfaceChanged()
+11-01 02:37:49.107  3226  3239 I EGL_emulation: Opening libGLESv2_emulation.so
+11-01 02:37:49.107  3226  3226 V SDL     : Window size: 390x844
+11-01 02:37:49.107  3226  3226 V SDL     : Device size: 390x844
+11-01 02:37:49.113  3226  3244 V SDL     : nativeInitSDLThread() 1 time
+11-01 02:37:49.115  3226  3244 V SDL     : Running main function SDL_main from library /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/lib/x86_64/libmain.so
+11-01 02:37:49.121   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#12) android.os.BinderProxy@6a3f2c8@0
+11-01 02:37:49.130   530   559 V WindowManager: Finish Transition (#12): created at ११-०१ ०२:३७:४८.५७९ collect-started=0.069ms request-sent=16.097ms started=57.627ms ready=166.518ms sent=168.855ms finished=545.102ms
+11-01 02:37:49.132  1130  1130 D VRI[QuickstepLauncher]: visibilityChanged oldVisibility=true newVisibility=false
+11-01 02:37:49.138   765   804 V WindowManagerShell: Track 0 became idle
+11-01 02:37:49.138   765   804 V WindowManagerShell: All active transition animations finished
+11-01 02:37:49.142   530  3218 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:49.149   530  3218 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:37:49.168  3226  3239 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-01 02:37:49.359     0     0 I servicemanager: Caller(pid=3226,uid=10148,sid=u:r:untrusted_app:s0:c148,c256,c512,c768) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:37:49.204   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:37:49.204  3226  3239 I Gralloc4: mapper 4.x is not supported
+11-01 02:37:49.768  3226  3226 I Choreographer: Skipped 40 frames!  The application may be doing too much work on its main thread.
+11-01 02:37:49.815  3226  3226 V SDL     : onWindowFocusChanged(): true
+11-01 02:37:49.829   530   645 I ImeTracker: org.globulation2.glob2:29e57c45: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-01 02:37:49.829   530   645 I ImeTracker: org.globulation2.glob2:29e57c45: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 02:37:49.834   336   336 I netd    : tetherGetStats() -> {[]} <0.81ms>
+11-01 02:37:49.838   530   559 I ActivityTaskManager: Displayed org.globulation2.glob2/.Glob2Activity for user 0: +1s199ms
+11-01 02:37:49.840  1130  1130 D BaseDepthController: setSurface:
+11-01 02:37:49.840  1130  1130 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+11-01 02:37:49.840  1130  1130 D BaseDepthController: 	mSurface: null
+11-01 02:37:49.841  1130  1130 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+11-01 02:37:49.842  1130  1130 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+11-01 02:37:49.842  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:453)
+11-01 02:37:49.842  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:444)
+11-01 02:37:49.842  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(StatefulActivity.java:119)
+11-01 02:37:49.854  1130  1130 D StatsLog: LAUNCHER_ONSTOP
+11-01 02:37:49.861   530  3218 I AppWidgetServiceImpl: setAppWidgetHidden() 0
+11-01 02:37:50.074     0     0 I logd    : logdr: UID=0 GID=0 PID=3248 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:50.168     0     0 I logd    : logdr: UID=0 GID=0 PID=3253 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:50.265     0     0 I logd    : logdr: UID=0 GID=0 PID=3256 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:50.333     0     0 I logd    : logdr: UID=0 GID=0 PID=3259 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:50.459   765   918 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@af83912
+11-01 02:37:50.462   530  3218 D CoreBackPreview: Window{8349724 u0 Splash Screen org.globulation2.glob2 EXITING}: Setting back callback null
+11-01 02:37:50.465   530   802 W InputManager-JNI: Input channel object '8349724 Splash Screen org.globulation2.glob2 (client)' was disposed without first being removed with the input manager!
+11-01 02:37:50.500  3226  3244 V SDL     : setOrientation() requestedOrientation=13 width=800 height=600 resizable=true hint=LandscapeLeft LandscapeRight Portrait PortraitUpsideDown
+11-01 02:37:50.511   765   918 W FrameTracker: Missed App frame:UNKNOWN: 24, 64569, 76897908, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.512   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 24, 64569, 76897908, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.512   765   918 W FrameTracker: Missing HWUI jank callback for vsyncId: 64576, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.512   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64590, 59626369, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.512   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64613, 23528280, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.512   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64642, 23468934, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.512   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64657, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missing HWUI jank callback for vsyncId: 64657, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64672, 30591738, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64687, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missing HWUI jank callback for vsyncId: 64687, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64702, 32548677, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64717, 23710815, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64732, 30453419, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64747, 22559049, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.513   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64762, 27712819, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.514   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64777, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.514   765   918 W FrameTracker: Missing HWUI jank callback for vsyncId: 64777, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.514   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64792, 23043515, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.514   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 64807, 33514605, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.514   765   918 W FrameTracker: Missed App frame:UNKNOWN: 74, 64822, 324267344, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.514   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 74, 64822, 324267344, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:37:50.516   765   839 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-39 - not enough time since last trigger
+11-01 02:37:51.011  3226  3244 V SDL     : setOrientation() requestedOrientation=13 width=800 height=600 resizable=true hint=LandscapeLeft LandscapeRight Portrait PortraitUpsideDown
+11-01 02:37:51.029  3226  3244 I SDL/APP : pixel format wanted SDL_PIXELFORMAT_RGBA8888 (1), got SDL_PIXELFORMAT_RGBA8888 (1)
+11-01 02:37:51.411     0     0 I logd    : logdr: UID=0 GID=0 PID=3263 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:51.474     0     0 I logd    : logdr: UID=0 GID=0 PID=3266 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:51.549     0     0 I logd    : logdr: UID=0 GID=0 PID=3269 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:51.597     0     0 I logd    : logdr: UID=0 GID=0 PID=3272 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:52.635     0     0 I logd    : logdr: UID=0 GID=0 PID=3277 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:52.693     0     0 I logd    : logdr: UID=0 GID=0 PID=3280 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:52.746     0     0 I logd    : logdr: UID=0 GID=0 PID=3283 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:52.599   530  1229 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+11-01 02:37:52.807     0     0 I logd    : logdr: UID=0 GID=0 PID=3286 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:53.872     0     0 I logd    : logdr: UID=0 GID=0 PID=3290 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:53.940     0     0 I logd    : logdr: UID=0 GID=0 PID=3293 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:54.004     0     0 I logd    : logdr: UID=0 GID=0 PID=3296 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:54.067     0     0 I logd    : logdr: UID=0 GID=0 PID=3299 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:54.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:37:55.136     0     0 I logd    : logdr: UID=0 GID=0 PID=3302 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:55.197     0     0 I logd    : logdr: UID=0 GID=0 PID=3305 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:55.251     0     0 I logd    : logdr: UID=0 GID=0 PID=3308 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:55.317     0     0 I logd    : logdr: UID=0 GID=0 PID=3311 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:56.375     0     0 I logd    : logdr: UID=0 GID=0 PID=3314 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:56.451     0     0 I logd    : logdr: UID=0 GID=0 PID=3317 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:56.514     0     0 I logd    : logdr: UID=0 GID=0 PID=3320 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:56.567     0     0 I logd    : logdr: UID=0 GID=0 PID=3323 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:57.659     0     0 I logd    : logdr: UID=0 GID=0 PID=3326 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:57.728     0     0 I logd    : logdr: UID=0 GID=0 PID=3329 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:57.786     0     0 I logd    : logdr: UID=0 GID=0 PID=3332 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:57.645  3226  3244 D EGL_emulation: app_time_stats: avg=1005.06ms min=37.40ms max=4763.31ms count=5
+11-01 02:37:57.848     0     0 I logd    : logdr: UID=0 GID=0 PID=3335 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:58.686  3226  3244 D EGL_emulation: app_time_stats: avg=52.05ms min=37.95ms max=65.67ms count=20
+11-01 02:37:58.971     0     0 I logd    : logdr: UID=0 GID=0 PID=3340 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:59.040     0     0 I logd    : logdr: UID=0 GID=0 PID=3343 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:59.101     0     0 I logd    : logdr: UID=0 GID=0 PID=3346 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:59.158     0     0 I logd    : logdr: UID=0 GID=0 PID=3349 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:59.690  3226  3244 D EGL_emulation: app_time_stats: avg=55.75ms min=34.89ms max=97.82ms count=18
+11-01 02:38:00.045   765   939 D EGL_emulation: app_time_stats: avg=7297.01ms min=34.06ms max=14559.96ms count=2
+11-01 02:38:00.256     0     0 I logd    : logdr: UID=0 GID=0 PID=3352 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:00.367     0     0 I logd    : logdr: UID=0 GID=0 PID=3355 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:00.472     0     0 I logd    : logdr: UID=0 GID=0 PID=3358 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:00.533     0     0 I logd    : logdr: UID=0 GID=0 PID=3361 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:00.712  3226  3244 D EGL_emulation: app_time_stats: avg=51.09ms min=42.48ms max=70.16ms count=20
+11-01 02:38:01.730     0     0 I logd    : logdr: UID=0 GID=0 PID=3364 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:01.911     0     0 I logd    : logdr: UID=0 GID=0 PID=3367 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:01.758  3226  3244 D EGL_emulation: app_time_stats: avg=47.48ms min=36.24ms max=63.39ms count=22
+11-01 02:38:02.003     0     0 I logd    : logdr: UID=0 GID=0 PID=3370 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:02.177     0     0 I logd    : logdr: UID=0 GID=0 PID=3373 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:02.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:38:02.818  3226  3244 D EGL_emulation: app_time_stats: avg=52.98ms min=43.26ms max=72.62ms count=20
+11-01 02:38:03.292     0     0 I logd    : logdr: UID=0 GID=0 PID=3376 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:03.350     0     0 I logd    : logdr: UID=0 GID=0 PID=3379 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:03.424     0     0 I logd    : logdr: UID=0 GID=0 PID=3382 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:03.472     0     0 I logd    : logdr: UID=0 GID=0 PID=3385 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:03.836  3226  3244 D EGL_emulation: app_time_stats: avg=48.48ms min=36.92ms max=56.98ms count=21
+11-01 02:38:04.205   765   939 D EGL_emulation: app_time_stats: avg=4159.29ms min=4159.29ms max=4159.29ms count=1
+11-01 02:38:04.520     0     0 I logd    : logdr: UID=0 GID=0 PID=3388 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:04.664     0     0 I logd    : logdr: UID=0 GID=0 PID=3391 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:04.740     0     0 I logd    : logdr: UID=0 GID=0 PID=3394 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:04.814     0     0 I logd    : logdr: UID=0 GID=0 PID=3397 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:04.866  3226  3244 D EGL_emulation: app_time_stats: avg=51.47ms min=40.24ms max=80.55ms count=20
+11-01 02:38:05.932     0     0 I logd    : logdr: UID=0 GID=0 PID=3400 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:05.996     0     0 I logd    : logdr: UID=0 GID=0 PID=3403 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:05.867  3226  3244 D EGL_emulation: app_time_stats: avg=52.66ms min=42.05ms max=75.17ms count=19
+11-01 02:38:06.077     0     0 I logd    : logdr: UID=0 GID=0 PID=3406 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:06.135     0     0 I logd    : logdr: UID=0 GID=0 PID=3409 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:06.871  3226  3244 D EGL_emulation: app_time_stats: avg=45.57ms min=33.48ms max=59.27ms count=22
+11-01 02:38:07.238     0     0 I logd    : logdr: UID=0 GID=0 PID=3412 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:07.376     0     0 I logd    : logdr: UID=0 GID=0 PID=3415 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:07.456     0     0 I logd    : logdr: UID=0 GID=0 PID=3418 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:07.625     0     0 I logd    : logdr: UID=0 GID=0 PID=3421 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:07.907  3226  3244 D EGL_emulation: app_time_stats: avg=47.07ms min=31.85ms max=60.55ms count=22
+11-01 02:38:08.691     0     0 I logd    : logdr: UID=0 GID=0 PID=3424 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:08.780     0     0 I logd    : logdr: UID=0 GID=0 PID=3427 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:08.874     0     0 I logd    : logdr: UID=0 GID=0 PID=3430 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:08.935     0     0 I logd    : logdr: UID=0 GID=0 PID=3433 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:08.911  3226  3244 D EGL_emulation: app_time_stats: avg=45.64ms min=32.92ms max=59.83ms count=22
+11-01 02:38:10.005     0     0 I logd    : logdr: UID=0 GID=0 PID=3436 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:09.923  3226  3244 D EGL_emulation: app_time_stats: avg=43.99ms min=33.75ms max=59.29ms count=23
+11-01 02:38:10.112     0     0 I logd    : logdr: UID=0 GID=0 PID=3439 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:10.196     0     0 I logd    : logdr: UID=0 GID=0 PID=3442 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:10.295     0     0 I logd    : logdr: UID=0 GID=0 PID=3445 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:10.279   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:38:10.958  3226  3244 D EGL_emulation: app_time_stats: avg=46.99ms min=31.26ms max=67.04ms count=22
+11-01 02:38:11.439     0     0 I logd    : logdr: UID=0 GID=0 PID=3448 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:11.523     0     0 I logd    : logdr: UID=0 GID=0 PID=3451 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:11.606     0     0 I logd    : logdr: UID=0 GID=0 PID=3454 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:11.749     0     0 I logd    : logdr: UID=0 GID=0 PID=3457 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:11.969  3226  3244 D EGL_emulation: app_time_stats: avg=50.52ms min=40.53ms max=63.35ms count=20
+11-01 02:38:12.117  3226  3230 I bulation2.glob2: Background concurrent mark compact GC freed 3969KB AllocSpace bytes, 0(0B) LOS objects, 49% free, 4639KB/9279KB, paused 73us,6.556ms total 67.522ms
+11-01 02:38:12.892     0     0 I logd    : logdr: UID=0 GID=0 PID=3460 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:12.970     0     0 I logd    : logdr: UID=0 GID=0 PID=3463 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:13.036     0     0 I logd    : logdr: UID=0 GID=0 PID=3466 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:13.119     0     0 I logd    : logdr: UID=0 GID=0 PID=3469 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:12.989  3226  3244 D EGL_emulation: app_time_stats: avg=46.35ms min=35.23ms max=60.61ms count=22
+11-01 02:38:14.185     0     0 I logd    : logdr: UID=0 GID=0 PID=3472 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:14.023  3226  3244 D EGL_emulation: app_time_stats: avg=44.95ms min=35.55ms max=64.49ms count=23
+11-01 02:38:14.267     0     0 I logd    : logdr: UID=0 GID=0 PID=3475 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:14.391     0     0 I logd    : logdr: UID=0 GID=0 PID=3478 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:14.463     0     0 I logd    : logdr: UID=0 GID=0 PID=3481 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:15.044  3226  3244 D EGL_emulation: app_time_stats: avg=46.38ms min=37.51ms max=60.70ms count=22
+11-01 02:38:15.589     0     0 I logd    : logdr: UID=0 GID=0 PID=3484 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:15.689     0     0 I logd    : logdr: UID=0 GID=0 PID=3487 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:15.803     0     0 I logd    : logdr: UID=0 GID=0 PID=3490 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:15.887     0     0 I logd    : logdr: UID=0 GID=0 PID=3493 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:16.077  3226  3244 D EGL_emulation: app_time_stats: avg=44.68ms min=35.19ms max=54.05ms count=23
+11-01 02:38:16.966     0     0 I logd    : logdr: UID=0 GID=0 PID=3496 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:17.040     0     0 I logd    : logdr: UID=0 GID=0 PID=3499 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:17.137     0     0 I logd    : logdr: UID=0 GID=0 PID=3502 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:17.235     0     0 I logd    : logdr: UID=0 GID=0 PID=3505 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:17.119  3226  3244 D EGL_emulation: app_time_stats: avg=41.66ms min=32.69ms max=53.74ms count=25
+11-01 02:38:18.149  3226  3244 D EGL_emulation: app_time_stats: avg=41.13ms min=30.39ms max=52.78ms count=25
+11-01 02:38:18.331     0     0 I logd    : logdr: UID=0 GID=0 PID=3508 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:18.216   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:38:18.388     0     0 I logd    : logdr: UID=0 GID=0 PID=3511 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:18.654     0     0 I logd    : logdr: UID=0 GID=0 PID=3514 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:19.187     0     0 I logd    : logdr: UID=0 GID=0 PID=3517 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:19.187  3226  3244 D EGL_emulation: app_time_stats: avg=79.82ms min=34.49ms max=466.05ms count=13
+11-01 02:38:20.333     0     0 I logd    : logdr: UID=0 GID=0 PID=3520 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:20.225  3226  3244 D EGL_emulation: app_time_stats: avg=45.09ms min=31.93ms max=69.23ms count=23
+11-01 02:38:20.438     0     0 I logd    : logdr: UID=0 GID=0 PID=3523 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:20.573     0     0 I logd    : logdr: UID=0 GID=0 PID=3526 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:20.676     0     0 I logd    : logdr: UID=0 GID=0 PID=3529 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:21.256  3226  3244 D EGL_emulation: app_time_stats: avg=42.93ms min=34.16ms max=54.68ms count=24
+11-01 02:38:21.782     0     0 I logd    : logdr: UID=0 GID=0 PID=3532 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:21.906     0     0 I logd    : logdr: UID=0 GID=0 PID=3535 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:21.985     0     0 I logd    : logdr: UID=0 GID=0 PID=3538 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:22.127     0     0 I logd    : logdr: UID=0 GID=0 PID=3541 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:22.260  3226  3244 D EGL_emulation: app_time_stats: avg=50.17ms min=35.69ms max=73.02ms count=20
+11-01 02:38:23.222     0     0 I logd    : logdr: UID=0 GID=0 PID=3544 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:23.303     0     0 I logd    : logdr: UID=0 GID=0 PID=3547 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:23.355     0     0 I logd    : logdr: UID=0 GID=0 PID=3550 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:23.411     0     0 I logd    : logdr: UID=0 GID=0 PID=3553 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:23.306  3226  3244 D EGL_emulation: app_time_stats: avg=49.77ms min=38.01ms max=69.04ms count=21
+11-01 02:38:24.476     0     0 I logd    : logdr: UID=0 GID=0 PID=3556 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:24.312  3226  3244 D EGL_emulation: app_time_stats: avg=59.13ms min=32.76ms max=155.25ms count=17
+11-01 02:38:24.541     0     0 I logd    : logdr: UID=0 GID=0 PID=3559 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:24.603     0     0 I logd    : logdr: UID=0 GID=0 PID=3562 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:24.674     0     0 I logd    : logdr: UID=0 GID=0 PID=3565 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:25.353  3226  3244 D EGL_emulation: app_time_stats: avg=47.28ms min=37.20ms max=67.83ms count=22
+11-01 02:38:25.794     0     0 I logd    : logdr: UID=0 GID=0 PID=3568 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:25.921     0     0 I logd    : logdr: UID=0 GID=0 PID=3571 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:26.003     0     0 I logd    : logdr: UID=0 GID=0 PID=3574 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:26.103     0     0 I logd    : logdr: UID=0 GID=0 PID=3577 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:26.363  3226  3244 D EGL_emulation: app_time_stats: avg=48.05ms min=35.37ms max=68.38ms count=21
+11-01 02:38:26.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:38:27.244     0     0 I logd    : logdr: UID=0 GID=0 PID=3580 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:27.410     0     0 I logd    : logdr: UID=0 GID=0 PID=3583 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:27.520     0     0 I logd    : logdr: UID=0 GID=0 PID=3586 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:27.394  3226  3244 D EGL_emulation: app_time_stats: avg=44.77ms min=31.12ms max=58.10ms count=23
+11-01 02:38:27.667     0     0 I logd    : logdr: UID=0 GID=0 PID=3589 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:28.718     0     0 I logd    : logdr: UID=0 GID=0 PID=3592 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:28.780     0     0 I logd    : logdr: UID=0 GID=0 PID=3595 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:28.826     0     0 I logd    : logdr: UID=0 GID=0 PID=3598 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:28.867     0     0 I logd    : logdr: UID=0 GID=0 PID=3601 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:29.909     0     0 I logd    : logdr: UID=0 GID=0 PID=3604 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:29.966     0     0 I logd    : logdr: UID=0 GID=0 PID=3607 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:30.016     0     0 I logd    : logdr: UID=0 GID=0 PID=3610 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:30.067     0     0 I logd    : logdr: UID=0 GID=0 PID=3613 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:30.060  3226  3244 I SDL/APP : Glob2 screen ready: 14MainMenuScreen
+11-01 02:38:30.519  3226  3244 D EGL_emulation: app_time_stats: avg=130.18ms min=30.46ms max=2177.75ms count=24
+11-01 02:38:31.117     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 02:38:31.126     0     0 I logd    : logdr: UID=0 GID=0 PID=3616 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:31.196     0     0 I logd    : logdr: UID=0 GID=0 PID=3619 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:31.298     0     0 I logd    : logdr: UID=0 GID=0 PID=3622 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:31.359     0     0 I logd    : logdr: UID=0 GID=0 PID=3625 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:31.463     0     0 I logd    : logdr: UID=0 GID=0 PID=3628 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:31.571     0     0 I logd    : logdr: UID=0 GID=0 PID=3631 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:31.676     0     0 I logd    : logdr: UID=0 GID=0 PID=3634 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:31.736     0     0 I logd    : logdr: UID=0 GID=0 PID=3637 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:38:31.648  3226  3244 D EGL_emulation: app_time_stats: avg=70.51ms min=41.91ms max=199.53ms count=16
+11-01 02:38:32.062  3646  3646 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:38:32.062  3646  3646 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:38:32.254     0     0 I servicemanager: Caller(pid=3646,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:38:32.090   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:38:32.091  3646  3647 I Gralloc4: mapper 4.x is not supported
+11-01 02:38:32.651  3226  3244 D EGL_emulation: app_time_stats: avg=58.96ms min=45.57ms max=86.28ms count=17
+11-01 02:38:33.391     0     0 I logd    : logdr: UID=0 GID=0 PID=3664 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns

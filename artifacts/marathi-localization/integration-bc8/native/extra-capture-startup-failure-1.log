@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/run_extra_captures.py", line 30, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/run_extra_captures.py", line 8, in main
+    binaries={'official':a.official.resolve(),'adapter':a.adapter.resolve()};identities={k:{'path':str(v),'sha256':sha(v)} for k,v in binaries.items()};source=json.loads((base/'previews/mr/metadata.json').read_text());assert source['source_revision']=='64aeda1300e3fcb81b074aef1a9a685498edcf63';assert source['original_catalog_sha256']['native']==sha(root/'data/texts.mr.txt')
+                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/previews/mr/metadata.json'

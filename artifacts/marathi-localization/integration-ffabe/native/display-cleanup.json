@@ -1,0 +1,7 @@
+{
+  "scope": "Only Xvfb/Openbox with exact current Marathi integration evidence fds or isolated profile/artifact prefix; no other chat/session processes touched. No environment dump recorded.",
+  "owned_remaining_before_cleanup": [],
+  "owned_remaining_after_cleanup": [],
+  "other_display_processes_left_untouched": 3,
+  "disposition": "All current native capture/test runners completed and their finally blocks reaped owned displays; no forced termination required."
+}

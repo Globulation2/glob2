@@ -1,0 +1,142 @@
+{
+  "scope": "Current64a Android-only local release/rendering/lifecycle recommendation; overall PR gate and other platforms belong to root.",
+  "result": "pass",
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "source_status": "clean",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "native_catalog_keys": 3411,
+  "unsigned_apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+    "sha256": "759e6601a50c58731455b76c07f878dc57c755421392127eec8be52b3548010d"
+  },
+  "developer_signed_release_apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk",
+    "sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+    "actually_installed_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617"
+  },
+  "native_elf": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/lib/libmain.so",
+    "sha256": "5df17ac60c1b8824ebca6981d1cf5ac2feb2ca3531e1788444d022858f4287c3",
+    "bytes": 777299888
+  },
+  "symbol_build_metadata": {
+    "build_id": "28c7625683ae26d5d27750c72c25e961187cab2e",
+    "architecture": "x86_64"
+  },
+  "packaged_native_libraries": {
+    "lib/x86_64/libSDL3.so": {
+      "sha256": "8374a967e8b3d1b70aa59d4a6df5f476f1d63bd9c2cb0a3a982237b75aed7c88",
+      "bytes": 2080712
+    },
+    "lib/x86_64/libc++_shared.so": {
+      "sha256": "2e855857f80819737d25a663109fedf816a5e996a85423166806014a06593256",
+      "bytes": 1229808
+    },
+    "lib/x86_64/libmain.so": {
+      "sha256": "fb81837c3a7c42c73bfcc73ccbb60a98d2999821ad66fefd3b3af91ef6e8d8d9",
+      "bytes": 58291064
+    }
+  },
+  "packaged_assets": {
+    "data/texts.mr.txt": {
+      "sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+      "bytes": 397418
+    },
+    "data/fonts/scripts/NotoSansDevanagari-Regular.ttf": {
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "bytes": 219212
+    }
+  },
+  "marathi_android_source_xml_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "effective_marathi_compiled_resource": "      (mr) \"खेळाची तयारी सुरू आहे…\"",
+  "recording_notices_exact_inventory_and_hashes": {
+    "configuration.json": "d4f702f1e41fd7f68a870ae04416cc1107bfe98505faaf0682b709a73635d1a7",
+    "ffmpeg-COPYING.GPLv2": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    "ffmpeg-COPYING.GPLv3": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+    "ffmpeg-COPYING.LGPLv2.1": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30",
+    "ffmpeg-COPYING.LGPLv3": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "nvEncodeAPI.h": "4fe4094541ef0f8a13249d97a8692dc5f835a6e9dd42eeadb3e2f7321d54dc7e",
+    "sources.json": "264d868e3eb117595546456250ccfefd99203355ac74d0dbd68eab53d5db5629",
+    "x264-COPYING": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670"
+  },
+  "recording_prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-449cc50b7df0e9760cae8e97/prefix",
+  "recording_receipt_sha256": "78dfe6a2b53f2d0b759a033e60c67ccbcd78d6243da8b55b70fad665433605b2",
+  "recording_configuration_sha256": "d4f702f1e41fd7f68a870ae04416cc1107bfe98505faaf0682b709a73635d1a7",
+  "evidence": {
+    "producer-provenance.json": {
+      "sha256": "6af06bf19b6ce93c768cd3dae7672f08ef8cc7ed8421d0888ef4f28e48b5abbe"
+    },
+    "rendering/apk-and-install.json": {
+      "sha256": "034df53559274ede47ae48d582fb2db0c9f602f32059cb30ffa6883d8da5916b"
+    },
+    "rendering/lifecycle/result.json": {
+      "sha256": "0811594ab7770163a9c198fbe2cf7f77c58e4cf5c43506c68927c9a009df746f"
+    },
+    "visual-review.json": {
+      "sha256": "8c77bf04d89fd2872cc1e69719b60451533e445903bd204cab54767b4c8db4e0"
+    },
+    "ui-qa/visual-review.json": {
+      "sha256": "d07bd09789cd212f290d1f7431f3ad5497196a0ac85e888b30f533d433c48b89"
+    },
+    "focused-preferences/provenance.json": {
+      "sha256": "131bf222a4a73ae95003a246daeb94db42189be4885f89b9fb7a62888acfeadf"
+    },
+    "rendering/root-menu-visual-review.json": {
+      "sha256": "5bd9834f260b8a4e9125d03fc3199243814879c26e336bb1b172fc0dbd938b01"
+    },
+    "rendering/root-overlay-visual-review.json": {
+      "sha256": "94a35ad4c033010a616518214c3204039a8a5d37bf48c0ce7deeb9880cc15a37"
+    },
+    "ui-qa/root-statistics-visual-review.json": {
+      "sha256": "42c0bb0c5c58e3ff9276fa40fb0b0bf9d3d55cc25f6958db87b431a455b61ba2"
+    },
+    "ui-qa/root-terrain-visual-review.json": {
+      "sha256": "2507921cf4e346802dccd0599686b0180194421e448c45872570736257d888bd"
+    },
+    "runtime-cleanup.json": {
+      "sha256": "db346fb50d28bfbcc022c0cb432829fac0f0908b5b894edcf481985350fde53a"
+    },
+    "focused-preferences/root-audio-visual-review.json": {
+      "sha256": "2ff1eefd154752b8125e96a35584fcc97f5177723bd792ccff2bd0a7c5a4d4c6"
+    }
+  },
+  "lifecycle_checks": [
+    "native startup and bundled assets",
+    "settings input and dismissal",
+    "mr-IN system locale selects and saves native mr catalog",
+    "retained-process background/resume",
+    "landscape/portrait rotation",
+    "force-stop and fresh-process relaunch",
+    "application profile persistence"
+  ],
+  "failure_evidence_retained": [
+    "integration-refresh/android/boot-system-ui-anr/",
+    "android-attempt1-system-ui-anr/",
+    "android-rendering/sign-first-missing-java-path.log",
+    "android-rendering/qa-first-missing-java-path.log"
+  ],
+  "old_producer_archives": [
+    "validated-android-ba890/archive-manifest.json",
+    "validated-android-ffbd/archive-manifest.json"
+  ],
+  "producer_history": "Old6e/671/ba890/ffbd evidence remains tied to its old producer. This official integrated64a release and its actual installed/runtime captures are separate.",
+  "limits": [
+    "API35 x86_64 emulator only; no physical Android hardware claim",
+    "No Apple runtime permission prompt verification",
+    "No complete match/determinism/performance claim from tutorial HUD exercise",
+    "Current statistics/terrain display claims limited to actual images independently reviewed; packaged key coverage is separate from observed runtime text"
+  ],
+  "capture_timing_and_driver_limits": [
+    "Original lifecycle Audiofilename captured wordmark beforefirstpaint; focusednativeAudioactualrecapture succeeded andoriginalmiss retained.",
+    "One customroute portrait-coordinate attempt encountered actualSDLcoldlaunchlandscape; inspectedframe andusedrealkeyboardfocus; no productfailure.",
+    "Fastterrainrail swipe reached Roadsgroup; rawframe retained, actualfour-new-label claims boundto correctlyobserved otherframes."
+  ],
+  "cleanup": {
+    "status": "owned runtime stopped; artifacts preserved",
+    "record": "integration-bc8/android/runtime-cleanup.json",
+    "sha256": "db346fb50d28bfbcc022c0cb432829fac0f0908b5b894edcf481985350fde53a",
+    "container_removed": true,
+    "isolated_adb_gone": true,
+    "avd_and_apks_preserved": true
+  }
+}

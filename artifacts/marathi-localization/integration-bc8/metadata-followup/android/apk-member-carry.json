@@ -1,0 +1,14 @@
+{
+  "old_producer": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "new_producer": "187ea34de87838911a42321fd52925d51da475b9",
+  "method": "Every uncompressed APKmember read andSHA256compared; zipcontainer/signaturebytes notcompared.",
+  "member_count_old": 24392,
+  "member_count_new": 24392,
+  "added": [],
+  "removed": [],
+  "changed": [
+    "assets/glob2-bundle/data/texts.incomplete.txt",
+    "assets/glob2-bundle/index.list"
+  ],
+  "conclusion": "Allnative libraries/resources/catalogs/fonts/licenses andotherassetbytes exactsame; onlycompletioninventory anditsderivedassetindex changed."
+}

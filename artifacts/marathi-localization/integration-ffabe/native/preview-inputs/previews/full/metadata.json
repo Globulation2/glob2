@@ -1,0 +1,20 @@
+{
+  "locale": "mr",
+  "source_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "source_files": {
+    "data/texts.keys.txt": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+    "data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+    "platform/packages/i18n/locales/en.json": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "canonical_catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "selected_native_keys": 3411,
+  "selected_online_keys": 2947,
+  "selection": "All3411native/all2947online canonical pairs",
+  "catalog_status": "All111 additions received actual semantic/editorial/adversarial final rereads; older values carried by separate exact-equality proof."
+}

@@ -1,0 +1,142 @@
+{
+  "reviewer": "/root/locale_integration",
+  "role": "current64 Marathi native/editorial visual QA",
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "signed_and_actually_installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/first-run-HandPreferenceScreen.png",
+      "sha256": "33933f28c6afa50fe70881be62f762036eb0a3afbe947c6562370c013924a3f3",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/introduction-offer.png",
+      "sha256": "a1c150acb36ba80085cd8c81788f6a950b4a15c4dccac391d6cad6680fe8e88c",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/startup.png",
+      "sha256": "19c969bfc7138a2d6d63cebd380e5c43292933197314bce3117e4f56a4d0594f",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/settings.png",
+      "sha256": "0d537972e10770f6962876fa9f50999f6fa2930a7bb1a76becc17ad54f6a65e5",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/resumed.png",
+      "sha256": "7f3b499dc9d3f8248228d5bb989d7cff3baf4946da111d2f82273d1e426fbead",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/rotation-1.png",
+      "sha256": "5841c8daf9233aee237c4474188d6eb5db2c391dd6b3ee0efbbcb368c1af294a",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/rotation-0.png",
+      "sha256": "5c758d3567ddec422514524c81d50e89249bbefe5b08f317e36bcd50715e1520",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/relaunched.png",
+      "sha256": "af01872e97d2aac52f7a995343c401df707c04a02c796edbccba88ef506a5932",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/focused-preferences/audio-after-ready-2.png",
+      "sha256": "d726f69a9b2f081def65cd3665f3c12e2fc987f3e90f7fe1cb813f08c2a87826",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/first-run-00.png",
+      "sha256": "ec27078790a81c7fee55b1c7da6d49c66599227a7e6603d82efda1aa0167d5c5",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/first-run-09.png",
+      "sha256": "7fcddf2c66442ad9de7f901c21fbed18a3e4867915b9d7306ddf44ce26314e6a",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    }
+  ],
+  "assessment": "Actual current Java preparing overlay, focused native Audio preference, Hand/Introduction, main menu/settings, resume/rotations/relaunch were viewed: Devanagari shaped, wrapped and fit, no tofu or accidental text clipping observed. Immediate first-run00 is launcher-only; no app-text claim there.",
+  "audio_capture_timing_disposition": {
+    "original_path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/first-run-AudioPreferenceScreen.png",
+    "sha256": "eea86029427fa0b2f720a7c1f010bd20b1c0ca3354a05338b54f6c78e82c4014",
+    "actual_seen": "Wordmark preceding Audio first paint, despite screen-ready log; excluded from Audio visual success.",
+    "recovery": "Focused second own-profile first run waited2seconds after native ready and captured3frames before input; actual audio-after-ready-2.png clearly shows correct persistent Audio dialog. No Java overlay was held or production timing changed.",
+    "provenance_sha256": "131bf222a4a73ae95003a246daeb94db42189be4885f89b9fb7a62888acfeadf"
+  },
+  "lifecycle_result": {
+    "serial": "emulator-5678",
+    "avd": "glob2-api35-x64",
+    "checks": [
+      "native startup and bundled assets",
+      "settings input and dismissal",
+      "mr-IN system locale selects and saves native mr catalog",
+      "retained-process background/resume",
+      "landscape/portrait rotation",
+      "force-stop and fresh-process relaunch",
+      "application profile persistence"
+    ],
+    "passed": true
+  },
+  "lifecycle_result_sha256": "0811594ab7770163a9c198fbe2cf7f77c58e4cf5c43506c68927c9a009df746f",
+  "current_ui_review": {
+    "path": "integration-bc8/android/ui-qa/visual-review.json",
+    "sha256": "d07bd09789cd212f290d1f7431f3ad5497196a0ac85e888b30f533d433c48b89"
+  },
+  "limits": [
+    "API35x86_64emulator only; no physical phone/iOS proof",
+    "First lifecycle phase passed before later focused-own-profile clear and UI play. These phases are not merged into a false unchanged-entire-lifetime-profile claim.",
+    "Runtime observation coverage is bounded; no all-3411-keys-rendered claim from these screenshots"
+  ],
+  "status": "accepted current native/Java startup+menus/lifecycle and actual statistics/terrain rendering"
+}

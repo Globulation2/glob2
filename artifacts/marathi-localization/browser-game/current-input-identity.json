@@ -1,0 +1,11 @@
+{
+  "producer": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "tracked_differences": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "only_allowed_test_fixture_difference": true,
+  "shipping_input_files_checked": 46605,
+  "all_frozen_input_hashes_equal": true,
+  "frozen_manifest_sha256": "6f653886df1828d2d04250850fd0ff6a11eea2589b13df4924a28aaa4423ce9d"
+}

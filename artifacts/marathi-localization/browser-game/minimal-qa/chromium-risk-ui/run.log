@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:31257) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/marathi-localization/browser-game/risk-ui.spec.js:84:49 › Marathi game desktop › serial native catalog, selector and statistics render in Marathi (1.5m)
+
+  1 passed (1.5m)

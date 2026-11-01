@@ -1,0 +1,95 @@
+{
+  "old_producer": "187ea34de87838911a42321fd52925d51da475b9",
+  "new_compiled_shipping_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "new_fixture_epoch": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "old_unsigned_apk_sha256": "3bbf8393c13b11de400b7c56fa444b34d24d40c8f852c884b66339896b7d7bfd",
+  "new_unsigned_apk_sha256": "4ce57514ad63545ac564ed376c9d1a1020341bcaa2c19532be31f113591d6cf8",
+  "method": "EveryuncompressedAPKmemberread/SHA256compared. ExactactualJavaDEX/resources/fonts/terrain/unchangedcatalogbyteschecked; no relabeling ofoldruntime.",
+  "old_member_count": 24392,
+  "new_member_count": 24393,
+  "changed": [
+    {
+      "path": "assets/glob2-bundle/data/texts.hi.txt",
+      "old_sha256": "6f8227b9c7b6442c58d9f544036368a076af1b0d747a220cd08260586b6a78ab",
+      "new_sha256": "81a4243f010075376661c22ac3a3fc6cdd25e2c1e9681adfffe8d7f6ee3018ce"
+    },
+    {
+      "path": "assets/glob2-bundle/data/texts.incomplete.txt",
+      "old_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+      "new_sha256": "a04c2c664e808aaac20faa7e0628561dd0802d65117fe3537659ea510792b8ba"
+    },
+    {
+      "path": "assets/glob2-bundle/data/texts.list.txt",
+      "old_sha256": "9dce0cae0d6c3857c7297a2304fee03ac6e9e2a99177ea93b9bcf434bc02af52",
+      "new_sha256": "035fc441748d3dec86846c84fef50aeda50cf94b900d0b693eefac5f5feb3998"
+    },
+    {
+      "path": "assets/glob2-bundle/data/texts.nb.txt",
+      "old_sha256": "b7c618054f985de9f932a5df8618cb7fa8089b53426fa3391be160b4fc04f545",
+      "new_sha256": "342fa3f82803806e166f1b06ca1d160b1a90d5fda1f1b9814cf6f0a01560bb17"
+    },
+    {
+      "path": "assets/glob2-bundle/data/texts.sw.txt",
+      "old_sha256": "a2815ec6d6ccc03ad598ef9ac3302f6cd3a95e5798ef50ef9d589c3acbe42c50",
+      "new_sha256": "11543b008318b91764e03d578f506f632f75c1da3b9661df80ce93af36e3e5c9"
+    },
+    {
+      "path": "assets/glob2-bundle/data/texts.ur.txt",
+      "old_sha256": "e9e54dc89a9155e477303b4c50280f2b48347cab25142b8030ebb360d47fe227",
+      "new_sha256": "302c80cd0e57cbca93c6a85120084fc9a7223dbc8c32f4d1ef4dfc5daf9dcf27"
+    },
+    {
+      "path": "assets/glob2-bundle/index.list",
+      "old_sha256": "ec53268a48242d15779fc86e335a843934f4de59747fb16609feaaa7f323d042",
+      "new_sha256": "9293b4ab863f93fc155e7ea93b8b7eda60379139b0913a11c60f8c47daf373a3"
+    },
+    {
+      "path": "lib/x86_64/libmain.so",
+      "old_sha256": "fb81837c3a7c42c73bfcc73ccbb60a98d2999821ad66fefd3b3af91ef6e8d8d9",
+      "new_sha256": "5356d52ff4d7cf17b3765c9820b9ab6c7aa3da7b265c5da34ae6edd16c331fb9"
+    }
+  ],
+  "added": [
+    "assets/glob2-bundle/data/texts.ms.txt"
+  ],
+  "removed": [],
+  "identical_member_count": 24384,
+  "allowed_changed_source_data": [
+    "data/texts.hi.txt",
+    "data/texts.incomplete.txt",
+    "data/texts.list.txt",
+    "data/texts.ms.txt",
+    "data/texts.nb.txt",
+    "data/texts.sw.txt",
+    "data/texts.ur.txt"
+  ],
+  "identical_critical_members": {
+    "AndroidManifest.xml": "18296d78dcf226b22ae0bf7f9de859acc900855e25327a1bc90eb64d1d895ac7",
+    "assets/glob2-bundle/data/fonts/LICENSE-DejaVu.txt": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c",
+    "assets/glob2-bundle/data/fonts/LICENSE-Droid.txt": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d",
+    "assets/glob2-bundle/data/fonts/LICENSE-HarfBuzz.txt": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+    "assets/glob2-bundle/data/fonts/LICENSE-Noto.txt": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+    "assets/glob2-bundle/data/fonts/README.md": "71477c58c354fe0c9a2a1ced12671a24c399f9922cde2170e8c46fefafcd3ac8",
+    "assets/glob2-bundle/data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansArabic-Regular.ttf": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansEthiopic-Regular.ttf": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansGujarati-Regular.ttf": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansKannada-Regular.ttf": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansMalayalam-Regular.ttf": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansMyanmar-Regular.ttf": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansOriya-Regular.ttf": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansTamil-Regular.ttf": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansTelugu-Regular.ttf": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansThai-Regular.ttf": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+    "assets/glob2-bundle/data/fonts/scripts/manifest.json": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "classes.dex": "39882173969f6b9a67d080800b39de9716c2dc31ad4b765b5f1f170beda8b961",
+    "resources.arsc": "05bfb459f5eb41d573385e135dd873431efdb3433c12b419883ca26332d4b96f"
+  },
+  "unchanged_mobile_git_tree": "e1e8cd07699489c56d4e27eb0939716088f482e5",
+  "unchanged_fonts_git_tree": "0b80cc8735dc0a9957a8ffc2e37a7d445da52c8c",
+  "carry_scope": "Old187actualJavaAudio/Hand/Intro/lifecycle/terrain/font evidence retainedactual187, explicitlycarriedonlyunchangedinputs. Newnativecode/Sim112/39language-registration/narrowstatslayout needcurrentfocusedruntimeandper-tickparity.",
+  "status": "PASS boundedactualunchanged-member/sourcecarry; not a freshfulloldruntime rerun"
+}

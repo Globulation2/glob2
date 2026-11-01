@@ -1,0 +1,143 @@
+{
+  "git_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "actual_binaries": {
+    "official": {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-capture-stripped",
+      "sha256": "69a192395ae37fb2a661d16ef584e80c1babd8dbae7c15eabf931423518434e4"
+    },
+    "variant": {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+      "sha256": "624a3d72b8381554492c1adaad2067fe01ee9c5c8c3117f7b5b03d467be20f9d"
+    }
+  },
+  "jobs": [
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "name": "gameplay",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "game",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/1280x900/gameplay",
+        "1280",
+        "900",
+        "gameplay"
+      ],
+      "output": "1280x900/gameplay",
+      "exit_code": 0,
+      "elapsed_seconds": 70.3371402319899,
+      "deadline_seconds": 600,
+      "failure": null,
+      "log_sha256": "5dd3a3738ba8dff466de0bccdd04f93294675e183b7b11aadf877699922ab187"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "main",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/main",
+        "390",
+        "844",
+        "main"
+      ],
+      "output": "390x844/main",
+      "exit_code": 0,
+      "elapsed_seconds": 30.21263573599572,
+      "deadline_seconds": 300,
+      "failure": null,
+      "log_sha256": "81e2b40be76c97a7ae2f08f8d8f4fd06c60b78b2b5d08c750418b8ffe3bda8be"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "settings-player",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/settings-player",
+        "390",
+        "844",
+        "settings-player"
+      ],
+      "output": "390x844/settings-player",
+      "exit_code": 0,
+      "elapsed_seconds": 56.73607048900158,
+      "deadline_seconds": 300,
+      "failure": null,
+      "log_sha256": "a3dc6294e3f8c115506cda8d75ee4e5f4eecd907841ac08ba26fb7fbfb43a78e"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "gameplay",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "game",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/gameplay",
+        "390",
+        "844",
+        "gameplay"
+      ],
+      "output": "390x844/gameplay",
+      "exit_code": 2,
+      "elapsed_seconds": 81.1310155629908,
+      "deadline_seconds": 600,
+      "failure": null,
+      "log_sha256": "57cfc3b102cbf0f0bc22825053de5c235f6ac662e03334d73cf45c053478b4b6"
+    }
+  ],
+  "cap_bytes": 1610612736,
+  "minimum_free_bytes": 2147483648,
+  "limits": [
+    "New111 selected online values only in font matrix; old75288 retained separately with exact code/target/font carry.",
+    "All menu/game jobs use normal registered resources, zero overlays.",
+    "Actual loaded-game history; no invented readings or completed-match/tutorial claim.",
+    "Compact desktop presentation is not an Android/iOS runtime claim."
+  ]
+}

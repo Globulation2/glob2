@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/focused-build",
+    "--binary",
+    "engine",
+    "--filter",
+    "GameGUITouch/live statistics hide post-game probability across topics*",
+    "--filter",
+    "GameGUITouch/tutorial wrapping preserves shaped clusters and refreshes font metrics*",
+    "--filter",
+    "GUIInteractionCoverage/statistics topics history and overlays preserve gameplay state*",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/test-results-display-retry",
+    "--junit",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/test-results-display-retry/junit.xml",
+    "--timeout",
+    "300",
+    "--display-jobs",
+    "1",
+    "-j1",
+    "--verbose"
+  ],
+  "selected_environment": {
+    "SDL_VIDEO_DRIVER": "x11",
+    "SDL_VIDEODRIVER": "x11",
+    "XDG_SESSION_TYPE": "x11",
+    "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib:"
+  },
+  "DISPLAY": "unset in runner; official per-case owned xvfb-run/Openbox session supplies it",
+  "WAYLAND_DISPLAY": "unset",
+  "binary_sha256": "1127687e9b84a9d1728995bf0bfafdadb1ec72b48688a05836f84ef2586f4e39",
+  "reason": "Retry only the 3 display cases which previously failed SDL_Init before any fixture assertion. Preserve 18 prior font/language passes and first complete 21-case failure JUnit/log.",
+  "exit_code": 0
+}

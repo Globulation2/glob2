@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/build_extra_v2.py", line 9, in <module>
+    a=b/'ExtraPreviewHarness-v2-original';z=b/'ExtraPreviewHarness-v2-stripped';shutil.copyfile(a,z);z.chmod(0o755);command=['strip','--strip-all',str(z)];subprocess.run(command,check=True);first=ns['elf'](a);second=ns['elf'](z);assert first['allocated_sections']==second['allocated_sections'] and first['program_headers_sha256']==second['program_headers_sha256'] and first['entry']==second['entry'];record.update(original=first,executed_copy=second,strip_command=command,strip_proof='All SHF_ALLOC contents/metadata, program headers and entry point identical; only non-runtime debug/symbol/section metadata removed.');(b/'extra-v2-build-and-strip.json').write_text(json.dumps(record,indent=2)+'\n');print('v2 capture fixture built/stripped with exact proof',flush=True)
+                                                                                                                                                                                                    ~~~~~~~~~^^^
+  File "<string>", line 5, in elf
+  File "<string>", line 7, in sha_bytes
+NameError: name 'hashlib' is not defined. Did you forget to import 'hashlib'?

@@ -1,0 +1,9 @@
+{
+  "pid": 4182097,
+  "state": "failed",
+  "expected_qa_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "scope": "6golden+3representativeUI",
+  "started_at_utc": "2026-11-01T11:05:36Z",
+  "exit_code": 1,
+  "finished_at_utc": "2026-11-01T11:30:29Z"
+}

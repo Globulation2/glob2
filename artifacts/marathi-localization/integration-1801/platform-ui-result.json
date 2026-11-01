@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/usr/lib/chatgpt/resources/cua_node/bin/node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "packages/i18n/test",
+    "apps/web/test/financesLocale.test.tsx",
+    "apps/web/test/musicUploadLocale.test.tsx",
+    "apps/web/test/skin-material-locale.test.tsx",
+    "apps/web/test/studioCreditLocale.test.tsx",
+    "apps/web/test/ais.test.tsx",
+    "--maxWorkers=2"
+  ],
+  "cwd": "platform",
+  "exit_code": 0,
+  "elapsed_seconds": 40.043555233001825,
+  "validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "log_sha256": "5b7dbe9047611eb8cdb325459bba04ddef93a16c32752e10c50084364b37c92f"
+}

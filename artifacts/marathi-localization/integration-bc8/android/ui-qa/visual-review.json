@@ -1,0 +1,407 @@
+{
+  "reviewer": "/root/locale_integration",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "scope": "Actual current64 development-signed release engine, ownedAPI35x86_64emulator at390x844portrait/844x390landscape. Real input and scrolling only; no product/source/catalog changes.",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/focused-hand.png",
+      "sha256": "bc77feaf0e6c336c8e0ae3a5e6533c9b4d3b837c4b27c4b3f094c5e74f4ce45d",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/focused-introduction.png",
+      "sha256": "2e98fbeaf99a75c5708726dcac6a2f28545dde9121d62705fa4240e06b73aac5",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/menu-current.png",
+      "sha256": "e5a58cba11ee3f2e6a639f45f284db91a795b49709cb5a700cde21eb822e1aba",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/gameplay-start.png",
+      "sha256": "b640ac248b2999126ff0188efc61a489d1e642f9c2586682bad2e49f66915543",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/tools-current.png",
+      "sha256": "9cf6ea88262b52834d4fd62288c06bfc10bd64724c9f4bb5b8c76dcb45e8c1f1",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-overview-portrait.png",
+      "sha256": "77f560da3e5872ba1be393576387b3d90db6460b8976bf1ac584b9101627e910",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-overview-collapsed-guidance.png",
+      "sha256": "ccbec974b1dfed667318243f42397fe9cd7d66ca09df95119377b92114c05a89",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-economy-portrait.png",
+      "sha256": "c51cd848f20d2cd3c7fb92cf8c187af76b4db715dacf164f9e50cc7ee53bbaf5",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-portrait.png",
+      "sha256": "f4954cfca88ee34425b42401acef9aaa88b37507b142afe8490f7a3d7b045741",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-inline-history.png",
+      "sha256": "db60c2bf69656c457699311b5491614d543a6339e2d44adbe5f78040a1d9ecaa",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/history-dialog-portrait.png",
+      "sha256": "23f9583a42470d76710278ada3bc0d8abcd56b9081f71f279526f44c125122c3",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/history-dialog-landscape.png",
+      "sha256": "9c6abc7feaaa5896b4b5ebe2935bace50eca71f363271d60b98e353ff97e43fd",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-landscape.png",
+      "sha256": "35e49f910b41608797407999045c041826d08c203df7c32773bf7c7befe2e078",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/custom-route-observed.png",
+      "sha256": "2ac9863972340aa6225a7a573399a89c2f87fb462f8bad0118ff2f9f2ccfb223",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/custom-setup.png",
+      "sha256": "10660a6aa2d2df76226c8b2e9d100bc74a03131cab4f42a0eb31541d10dd3ae6",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/custom-game-landscape.png",
+      "sha256": "04e81d7be8b9de584beb1915c3f07ebec52795981fd8c827c63b52fb1ffe141b",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/custom-tools-landscape.png",
+      "sha256": "4ba2e1c1425458b14c850a161ac7025eae0f03d3e6683f6b531a58bad396d8db",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/fertility-overlay-enabled-landscape.png",
+      "sha256": "f4710bf19fd5631272ef837207a3a22127a73eaf325a0a7985cbe3bc02eb1423",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-overview-clean-landscape.png",
+      "sha256": "4c3d56ab56532e08ad43165b97212db1695b2f6d05bd83f684d660edc1367b48",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-economy-clean-landscape.png",
+      "sha256": "eb2e63ad0b916ffb0828c9901c30cfea4349caedc42128ef74c78fc184750ddf",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-clean-landscape.png",
+      "sha256": "14eee58f4fce9c488d76525184bc2379682ba79f4b9ffc992f86a84d898b10f0",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-custom-portrait.png",
+      "sha256": "9e01d314483e43eb9c99fad0ed8183592f11539e3b5359785f8fa083da03a4c0",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-overview-clean-portrait.png",
+      "sha256": "3389d59a3e61a922e720b204e287044f1e3683d3f414773d54a8776f3db08fba",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-work-defence-portrait.png",
+      "sha256": "abda7ed669546a64e7859f05bb0156139e14eb86143dbf832c64d34c571b7e32",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-colony-details-bottom.png",
+      "sha256": "b5d370221b6f8053441b6e51f3f1bb544c0172ad2b08e9c427500f8f14d85d6a",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/unit-details-control-portrait.png",
+      "sha256": "8f81c524097ad29cc91dbaa9ab73240cd6441331221b7e6ae5ed31b0c16befd5",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/unit-details-expanded-portrait.png",
+      "sha256": "854d2ce1bc1bf8c808da231661dab0ddbd1b445cc879caa8b917f02b8fde030f",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/main-more-for-editor.png",
+      "sha256": "c807b8e0c06559db507de4966ab39f4ac914cd64dfe2522240531a6f3ecf30cf",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/editor-main.png",
+      "sha256": "80138f361691bf989102ad3191aae7cef0dff32078c36accce83c26ed36eee78",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/editor-new-map-setup.png",
+      "sha256": "87447c394ff07b6adea2136395fba7bc31abe3bb23f40b528c3d96e17370f6a3",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/editor-blank-setup.png",
+      "sha256": "e5f7f2566bdcb7f88b9b45191144cc777c93997b3b93d57645e82749ef6eaada",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/editor-blank-current.png",
+      "sha256": "59f93a9c5c01c74915f75920fb7608f9175c0d3d168860dbaf942981fcd0a0f3",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-palette-portrait.png",
+      "sha256": "3f5fa324fa490bff5a3232de08fc5fcced65b09aba13dcca819ad8f6e508fcf1",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-lush-dry-portrait.png",
+      "sha256": "69784b5c1c00af357b00989ef102a80e8ee368808a72130ff08a7de383eb10ae",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-dune-pale-portrait.png",
+      "sha256": "151bc8b0580679d3a812996afeb659ec9ba254d717127d7e4caf53629c057843",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-classic-restored.png",
+      "sha256": "59c5a2a5a3e85ef0bf13d039405e75f4b6e724969df0278934d2ac1ce8e21c6b",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-classic-landscape.png",
+      "sha256": "0950a0e2bfafa514a44b75e4d360ead9c311e5db56bc51a4e41621e3954dbc54",
+      "pixels": [
+        844,
+        390
+      ],
+      "review": "actual image visually read"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-classic-slow-scroll-portrait.png",
+      "sha256": "5315f496d242ab837184a73d92f7b75a10af1c762a9b0e45cfb51204dce8c8de",
+      "pixels": [
+        390,
+        844
+      ],
+      "review": "actual image visually read"
+    }
+  ],
+  "source_actions_record": {
+    "path": "integration-bc8/android/ui-qa/actions.json",
+    "sha256": "4838d6c0a19add859cb7c9f838c9f435864f7c79203782308ac58da3fa32c3cf"
+  },
+  "accepted_observations": [
+    "New Overview/Economy/World tabs and current metric-label/value rows viewed in portrait and unobscured landscape; Devanagari and wrap fit.",
+    "Real inline history and complete history dialog viewed in portrait+landscape; per-minute/total/window controls are legible within scrollable layout.",
+    "Actual fertility-overlay toggle exercised; active Marathi legend is visible in statistics-overview-clean-landscape.png, then toggle disabled. No per-cell numerical overlay/performance claim.",
+    "Work and construction/Defence headings and Unit details control observed; real details expansion and ability/count rows viewed.",
+    "All four new terrain names seen in actual editor palette, including full long dune-sand name, with no text clipping in fully visible cards.",
+    "Lush grass fully seen in portrait slow-scroll and landscape; dry/dune/pale fully seen across actual rail positions. Neighbor cards clipped at horizontal viewport edges are normal scrolling, not assertions of full visibility."
+  ],
+  "terrain_label_evidence": {
+    "[lush_grass]": [
+      "terrain-classic-landscape.png",
+      "terrain-classic-slow-scroll-portrait.png"
+    ],
+    "[dry_grass]": [
+      "terrain-lush-dry-portrait.png",
+      "terrain-classic-landscape.png"
+    ],
+    "[dune_sand]": [
+      "terrain-lush-dry-portrait.png",
+      "terrain-classic-landscape.png"
+    ],
+    "[pale_sand]": [
+      "terrain-lush-dry-portrait.png"
+    ]
+  },
+  "actual_content_dispositions": {
+    "statistics-overview-portrait.png": "Tutorial guidance expanded and obscures some tabs; not used as unobscured-tab proof.",
+    "statistics-world-landscape.png": "Tutorial header/legacy tooltip overlays part of stats. Ordinary custom game used for three clean landscape topic captures.",
+    "terrain-lush-dry-portrait.png": "Intended filename retained; actual content is dry/dune/pale, not lush. These actual names were read.",
+    "terrain-dune-pale-portrait.png": "Fast swipe crossed to Roads group. Retained diagnostic, not dune/pale proof.",
+    "terrain-lush-inspection.png": "Rightward scroll at zero did not move. SHA equals actual-viewed terrain-classic-restored.png; no lush claim from this file.",
+    "custom-route-observed.png": "After cold launch actual orientation was landscape; first portrait-coordinate attempt missed. Real keyboard focus opened Custom, logged as driver geometry adaptation.",
+    "lessons-current.png": "Captured but not included among this independent reviewers actual image-read list."
+  },
+  "ui_capture_cap_bytes": 16777216,
+  "actual_ui_capture_bytes": 9183610,
+  "normal_viewport_scope": "Scrollable rows/cards can be partially outside viewport. No accidental Marathi clipping/tofu was observed in the fully visible controls reviewed. Compact legacy tools/chart captions retain existing small style.",
+  "unobserved_new_keys": [
+    "[stats waiting]",
+    "[stats missing readings]",
+    "[stats topic]",
+    "[stats map overlays]"
+  ],
+  "unobserved_scope": "These keys are linguistically reviewed and packaged, not claimed visually observed in this specific live-phone exercise. Map overlays activity/legend is distinct from the new legacy-wide heading key.",
+  "limits": [
+    "No physical-device/Apple runtime certification",
+    "No complete match, deterministic checksum comparison, full lesson playthrough or performance claim",
+    "Initial lifecycle profile and later focused-preference/UI profile are separate own-profile phases; original lifecycle hashes/results retained unchanged"
+  ],
+  "result": "accepted actual current statistics/terrain/UI rendering",
+  "own_rotation_restored": true,
+  "own_app_force_stopped": true
+}

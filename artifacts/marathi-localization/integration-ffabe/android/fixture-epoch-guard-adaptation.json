@@ -1,0 +1,22 @@
+{
+  "purpose": "Allowactualshippinge481engineproducer +separateapprovedfinalgoldenfixtureepochONLY. NoQAauto-start orproducerrelabel. Validatorrequiresauthorizationfilecreatedonlyafterparentgoldencommitnotice.",
+  "changed_ignored_helpers": {
+    "validate_release.py": {
+      "before_sha256": "12b834ae8c316df424fe81f1d7bbb85e8317a9a0a10f8ead33ff7f16c12a7976",
+      "after_sha256": "53bfde7029a3a441a8c1fcef687bf3d168708ab0a2d3a78219f15399fd576076"
+    },
+    "build_parity.py": {
+      "before_sha256": "118238880fef3ad5c5ec63dfefd43b0671b3cdc040e421782c539a1c16c70c04",
+      "after_sha256": "108aa71567c7fcbafdb816ccb9f1c3425fb6d5561cc575ff74de7cfa2c9ad150"
+    },
+    "run_parity.py": {
+      "before_sha256": "7fa78963fca88cd4f629fbfeb9469be8c09d2598fd82a9956c9dac2b3084bd0b",
+      "after_sha256": "78e47741792dd2e58ae8aa32d822d0235f2da608065a97c906f7019afbf5d52f"
+    },
+    "drive_ui.py": {
+      "before_sha256": "f5ccd4c35fadbcdbfe625ea7d206f9f4f61739e7305458e537e2439d1e81dbb9",
+      "after_sha256": "d8b8f9e4ee945522befa8b779992e6e9aa99636d011a4928fb3e805bc2151780"
+    }
+  },
+  "runtime_executed": false
+}

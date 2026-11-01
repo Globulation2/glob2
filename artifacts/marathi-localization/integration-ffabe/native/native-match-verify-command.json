@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+    "match",
+    "verify",
+    "/home/bradley/.codex/worktrees/45cd/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+    "--map-file",
+    "/home/bradley/.codex/worktrees/45cd/glob2/maps/FourSquares1.map.gz",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/native-match-verify"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "deadline_seconds": 600,
+  "started_unix": 1793531537.9987404,
+  "explicit_video_driver": "dummy",
+  "exit_code": 0,
+  "elapsed_seconds": 24.31922459602356,
+  "log_sha256": "25a394989f21734344b1a9d9518935af975895c6cb4b6d5c63cc3a2599421cd4",
+  "capture_errors": []
+}

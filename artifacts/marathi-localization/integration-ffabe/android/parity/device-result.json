@@ -1,0 +1,86 @@
+{
+  "source_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "compiled_engine_shipping_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "mode": "Actual Androidx86_64CPU on owned emulator; ignored PIElinkedexactofficialengineobjects withNativeTestMainbridges. Not APK/JVM/physicalhardware.",
+  "serial": "emulator-5678",
+  "adb_port": 15187,
+  "owned_container_id": "2891807c3d733c32850ca3974ebc18e1d6d1fc69cb0c9918a3f620b548c8c170",
+  "remote_directory": "/data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917",
+  "binary_sha256": "bc42e32a42531fe52f18dd3d637a45f3a6260e0dadfde9e0540623e802302f62",
+  "build_provenance_sha256": "f46b46473166da763d36490b4adba42f6f82d376db0a025944636253c16edf1d",
+  "fixture_sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+  "map_sha256": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+  "committed_golden_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "payload_cap_bytes": 536870912,
+  "output_cap_bytes": 67108864,
+  "run_timeout_seconds": 600,
+  "remote_retained": false,
+  "status": "PASS Android completeper-ticktrace equalscommittedgoldenandindependentnative",
+  "independent_native_producer_proof": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/authoritative-native-trace.json",
+    "sha256": "ee87d635b10d5dffc9c9d07182e7a9a681ad32a0175e50a634c10a13c4b440b1",
+    "actual_native_binary_sha256": "7f8ccbe4fd12ab706c7fe6a86e72dc20794f273cf00fd01daf61c84f440246e8",
+    "actual_native_cli_build_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56"
+  },
+  "payload_bytes": 278220083,
+  "device_inputs_sha256": "453c4863f919f3e60887dab88bd756dc98aa0fbbbc6b0a3a820d27e7bbc8368c",
+  "input_hash_resume": {
+    "all_hashes_verified": 24345,
+    "method": "Actualbatchedfind-execsha256sum{}+, all files verified; originalpayloadreusedwithoutrepush.",
+    "prior_failed_attempts": [
+      "attempt1-input-hash-timeout.json",
+      "attempt2-locale-crash.json"
+    ],
+    "runner_sha256": "6c1d4774b0cec3ee8829eedd5f0b3fdb7d42cfbb6c5d92a68b003afc09286a38"
+  },
+  "invocation": "cd /data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917 && chmod 755 android-match-verify && ulimit -f 65536 && env LD_LIBRARY_PATH=/data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy SDL_RENDER_DRIVER=software SDL_PREFERRED_LOCALES=mr_IN GLOB2_ASSET_DIR=/data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917 GLOB2_USER_DIR=/data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917/profile GLOB2_USER_DATA_DIR=/data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917/profile timeout -k 5 600 ./android-match-verify match verify /data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917/match.g2mr --map-file /data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917/FourSquares1.map.gz --output-dir /data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917/output3",
+  "exit_code": 0,
+  "locale_bridge": {
+    "hint": "SDL_PREFERRED_LOCALES=mr_IN",
+    "reason": "OfficialSDL3hintavoidsAndroidOS/JVMlocalequeryinshellfixture; no production orsimulationcodechange.",
+    "previous_crash": "attempt2-locale-crash.json",
+    "prior_output_was_kept_separate_during_retry": "/data/local/tmp/glob2-marathi-parity-84f48ff47174491db2dcdb13a0b2b917/output",
+    "after_success": "The entire owned remote payload, including the earlier failed profile/output directory, was removed after successful trace retrieval. Failure command/exit/crash logs and input manifest remain local; no claim that failed temporary profile files were archived."
+  },
+  "tick_count": 842,
+  "first_tick": 0,
+  "last_tick": 841,
+  "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "verdict": {
+    "orderRejections": [],
+    "outcome": {
+      "finalTick": 841,
+      "replayHash": "855da1f3fa6a6c3ad12e41bb1ce5331f008dcca37a44e15339aec4ecdba62471",
+      "resultHash": "a8b1f7865fe559fb0b24c5d9cb88231b6b1e94204554f2136fdf11e6bc0a637f",
+      "teams": [
+        {
+          "outcome": "unresolved",
+          "prestige": 0,
+          "team": 0
+        },
+        {
+          "outcome": "unresolved",
+          "prestige": 0,
+          "team": 1
+        },
+        {
+          "outcome": "unresolved",
+          "prestige": 0,
+          "team": 2
+        },
+        {
+          "outcome": "unresolved",
+          "prestige": 0,
+          "team": 3
+        }
+      ]
+    },
+    "verdict": "verified"
+  },
+  "native_trace": "artifacts/marathi-localization/integration-ffabe/native/native-match-verify/checksums.txt",
+  "native_trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "full_trace_equal_native": true,
+  "full_trace_equal_committed_golden": true,
+  "WASM_comparison": "pending independentcurrentWASMtrace",
+  "owned_remote_cleanup_complete": true
+}

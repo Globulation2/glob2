@@ -1,0 +1,14 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T08:43:13.154425+00:00",
+  "actual_producer_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "final_test_only_followup": "f8d1065ff6ed135f549f42ebb58632cd0c402244",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/native-registration187/captures/1280x900/settings-player/settings-player.png",
+      "sha256": "0ff68e7c1abfe55f4a9f65535399a09e76801e84ba95cc07fccf7f4bd06c3f4f"
+    }
+  ],
+  "assessment": "Actually viewed registered-resource native desktop Player settings. Selected language exactly मराठी with no incomplete suffix. All labels/helptext/Done fit, shaped Marathi is clear. Actualplayername field is dynamic harnessvalue, not UI translation. Genericpreviewoverlay was not used for this registration proof.",
+  "findings": []
+}

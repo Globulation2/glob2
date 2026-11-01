@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+    "-j2"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "deadline_seconds": 1800,
+  "started_unix": 1793531318.388044,
+  "explicit_video_driver": null,
+  "exit_code": 0,
+  "elapsed_seconds": 218.28377437591553,
+  "log_sha256": "ea1011bab3024c63fd61f55f9577d03240d2dba1ef3c2decffe36898b3e619b6",
+  "capture_errors": []
+}

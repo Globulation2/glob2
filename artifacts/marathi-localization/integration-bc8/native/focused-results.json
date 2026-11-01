@@ -1,0 +1,126 @@
+{
+  "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+    "sourceStatus": [],
+    "sourceTreeSha256": "246fe09d063da655c92b4055021c1c5c536abf5b396ccdd527ff0bf04dd68a9d"
+  },
+  "binary_sha256": "1127687e9b84a9d1728995bf0bfafdadb1ec72b48688a05836f84ef2586f4e39",
+  "passed": 21,
+  "remaining_failures": 0,
+  "skipped": 0,
+  "cases": [
+    {
+      "suite": "FontKerning",
+      "case": "Arabic and Persian visual-order text is not reordered again by SDL_ttf"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "high-DPI Hindi wrapping width is preserved without cropping the raw raster"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "kerned words have no gap wider than the same words unkerned"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "language changes refresh default line height and Arabic shaping caches"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "pair advances equal the glyph advances plus kerning"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "script fonts shape clusters and preserve measured raster sizes after reload"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "script run composition preserves straight-alpha antialiasing"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "shaping clusters keep conjuncts and combining marks together"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "the bundled SDL3_ttf moves the pen for kerned pairs"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "ISO locales map to the historical catalog codes"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "Marathi startup follows preferences and preserves a saved language"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "Norwegian Bokmaal accepts generic Norwegian but never Nynorsk"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "Norwegian startup follows preferences and preserves a saved language"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "expanded locales distinguish scripts and the precise Pulaar variety"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "languages without a catalog are not confused with catalog codes"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "regional and script variants pick the matching catalog"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "startup follows the system only when the profile has no usable language"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "the first available preference wins, then English"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "case": "statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]"
+    },
+    {
+      "suite": "GameGUITouch",
+      "case": "live statistics hide post-game probability across topics [display][artifacts]"
+    },
+    {
+      "suite": "GameGUITouch",
+      "case": "tutorial wrapping preserves shaped clusters and refreshes font metrics [display]"
+    }
+  ],
+  "initial_attempt": {
+    "passed": 18,
+    "failed_setup": 3,
+    "junit": "test-results/junit.xml",
+    "junit_sha256": "d1c25318a46b13aeaf5176a58a0bbc1a076c9f1551e46e12efd25afc44633c1b",
+    "log": "focused-run.log",
+    "log_sha256": "496b5b8ec2554e835df7226b4f3542f4c9b01cacba7b105d8cb8d991262c57f6"
+  },
+  "display_retry": {
+    "passed": 3,
+    "failed": 0,
+    "junit": "test-results-display-retry/junit.xml",
+    "junit_sha256": "2849b87ad72e50f89853d14ede6eace085e6c46178b3844dc5fa16043991a2b1",
+    "log": "focused-display-retry.log",
+    "log_sha256": "6c835953b90f04e32d5259c325ea328b67cede83958536b47093dc58fa69b86a",
+    "command_and_environment": "display-retry-command.json",
+    "reason": "Original three display cases failed SDL_Init before fixture assertions. Retry used official per-case owned Xvfb/Openbox with canonical SDL3 X11 driver and X11 session selection; all three actual cases passed."
+  },
+  "scope": "9 FontKerning +9 SystemLanguage +2 GameGUITouch +1 GUIInteractionCoverage statistics case; passes combined from retained first18 and only3failed-case retries. No full aggregate/native cross-platform claim.",
+  "limits": "Registry UI cases use their existing controlled fixtures; separate rendering captures use actual local game history without injected values."
+}

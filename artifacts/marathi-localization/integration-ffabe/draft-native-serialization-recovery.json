@@ -1,0 +1,8 @@
+{
+  "before_draft_sha256": "5f884963755ef1f4a1a3017eb401506ea0e055574363a87d6a89c795c2e498ce",
+  "canonical_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "parsed_native_pairs_equal": true,
+  "keys": 3411,
+  "scope": "Genericdraftwriter serializedequivalentnativepairs differently than canonical bytes. Firstadjudication wroteonline111values then its physicalnative-byte assertion failed beforeprovenance. Recoveronlineparent fromcleanHEAD andcopyexactcanonicalnative tokit; offlineonly, no canonicalnativechange/noAPIreplay.",
+  "after_draft_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb"
+}

@@ -1,0 +1,1515 @@
+{
+  "utc": "2026-11-01T10:23:46.190835+00:00",
+  "reviewer": "semantic_review",
+  "role": "independent semantic final reread",
+  "decision": "accept",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "online_source_file_sha256": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "reviewed_new_keys": 111,
+  "reviewed_keys": [
+    "Rush",
+    "Defensive",
+    "Economy",
+    "Expansion",
+    "Experimental",
+    "Beginner-friendly",
+    "File and API profile",
+    "Syntax and profile restrictions",
+    "Startup and callback",
+    "Persistent state",
+    "Seeded gameplay",
+    "Repeatable simulation",
+    "Save and resume",
+    "Good",
+    "Fair",
+    "Poor",
+    "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+    "Delay",
+    "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+    "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+    "Classic glossy",
+    "Basics",
+    "Matte",
+    "Riveted metal",
+    "Metal",
+    "Hairy",
+    "Organic",
+    "Cartoon",
+    "Woven fabric",
+    "Craft",
+    "Oozy goo",
+    "Wet",
+    "Wood",
+    "Stone",
+    "Mineral",
+    "Scales",
+    "Leather",
+    "Crystal",
+    "Lava",
+    "Chrome",
+    "Carbon fibre",
+    "Velvet",
+    "Honeycomb",
+    "Ice",
+    "Cloud",
+    "Hammered metal",
+    "Candy",
+    "Slime",
+    "AI player",
+    "Finances",
+    "Accounts",
+    "Audit",
+    "1 hour",
+    "1 day",
+    "1 week",
+    "30 days",
+    "Most played",
+    "Listen for the musical structure and development.",
+    "Check that all three moods play correctly.",
+    "Listen for unexpected jumps in volume between moods.",
+    "Listen for a click, gap, or abrupt change when the loop repeats.",
+    "Listen for short phrases that repeat too mechanically.",
+    "Switch moods and listen for changes in timing or harmony.",
+    "Check that building and combat feel distinct from calm.",
+    "Listen for hiss or scratchiness in quiet passages.",
+    "Listen for muddy bass or harsh high frequencies.",
+    "Check that calm passages remain audible alongside game sound.",
+    "Listen for notes that cut off unexpectedly.",
+    "Worker",
+    "Warrior",
+    "Explorer",
+    "Swarm",
+    "Classic",
+    "Crown",
+    "Clutch",
+    "Toadstool",
+    "A broad-capped toadstool with young caps.",
+    "Coral",
+    "Skep",
+    "A coiled hive on a stand, its door facing you.",
+    "Bloom",
+    "Public: listed in the catalog",
+    "Unlisted: anyone with the link",
+    "Private: only you",
+    "The server replayed this match and every player’s game agreed with it.",
+    "The server is checking this match. Ratings change once it is verified.",
+    "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+    "The server could not reproduce this match, so it changes no rating.",
+    "This match is not checked.",
+    "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+    "Walk",
+    "Swim",
+    "Harvest",
+    "Fight",
+    "Fly",
+    "Live payments",
+    "Test payments",
+    "Unclassified payments",
+    "Current period",
+    "Previous period",
+    "Credit grant",
+    "Returned credits",
+    "Dispute",
+    "Dispute closed",
+    "Matches started",
+    "Matches completed",
+    "Matches cancelled",
+    "{value0} publications",
+    "{value0} recorded downloads",
+    "{value0} completion time (seconds)",
+    "{value0} completion samples"
+  ],
+  "scope": "All 111 actual final canonical English/Marathi pairs freshly read in full, including unchanged raw Google targets; context assessed against the code and other-language comparisons in semantic-new111.json. No fresh reread of the older 2836 entries or native catalog is claimed.",
+  "old_online_pair_carry": {
+    "baseline_path": "artifacts/marathi-localization/integration-bc8/kit/drafts/mr/mr.json",
+    "baseline_sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+    "compared_pairs": 2836,
+    "unchanged_pairs": 2836,
+    "comparison": "Actual per-key value equality; no reread claim."
+  },
+  "kit_draft_equals_canonical": true,
+  "adjudication_sha256": "9eb29f69d04644d852a8cd65041959a03c12aadd49f45d77f8cec1ec8a2442d1",
+  "initial_independent_review_sha256": "74984138b592b1e27e5a08b80ad3a31dec4fdbac6f9ee6938fd791d7ca06dac9",
+  "entries": [
+    {
+      "key": "Rush",
+      "source": "Rush",
+      "actual_final_target": "सुरुवातीचा हल्ला",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Defensive",
+      "source": "Defensive",
+      "actual_final_target": "बचावात्मक",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Economy",
+      "source": "Economy",
+      "actual_final_target": "अर्थव्यवस्था",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Expansion",
+      "source": "Expansion",
+      "actual_final_target": "विस्तार",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Experimental",
+      "source": "Experimental",
+      "actual_final_target": "प्रायोगिक",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "actual_final_target": "नवशिक्यांसाठी सोपे",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "Says easy for beginners; an appropriate concise strategy tag.",
+      "accepted_english": false
+    },
+    {
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "actual_final_target": "फाइल आणि API प्रोफाइल",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "actual_final_target": "वाक्यरचना आणि प्रोफाइलवरील निर्बंध",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Startup and callback",
+      "source": "Startup and callback",
+      "actual_final_target": "सुरुवात आणि कॉलबॅक",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "Startup is program initiation, not a business startup; Marathi सुरुवात is adequate with callback.",
+      "accepted_english": false
+    },
+    {
+      "key": "Persistent state",
+      "source": "Persistent state",
+      "actual_final_target": "जतन होणारी स्थिती",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "actual_final_target": "ठरावीक बीजासह खेळ",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Repeatable simulation",
+      "source": "Repeatable simulation",
+      "actual_final_target": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Save and resume",
+      "source": "Save and resume",
+      "actual_final_target": "जतन करा आणि पुढे चालू ठेवा",
+      "decision": "accept",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "rationale": "The final AI tag/check label preserves the intended strategy or validation operation.",
+      "accepted_english": false
+    },
+    {
+      "key": "Good",
+      "source": "Good",
+      "actual_final_target": "चांगले",
+      "decision": "accept",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final connection metric preserves quality, elapsed-time meaning and applicable numeric thresholds.",
+      "accepted_english": false
+    },
+    {
+      "key": "Fair",
+      "source": "Fair",
+      "actual_final_target": "साधारण",
+      "decision": "accept",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final connection metric preserves quality, elapsed-time meaning and applicable numeric thresholds.",
+      "accepted_english": false
+    },
+    {
+      "key": "Poor",
+      "source": "Poor",
+      "actual_final_target": "खराब",
+      "decision": "accept",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final connection metric preserves quality, elapsed-time meaning and applicable numeric thresholds.",
+      "accepted_english": false
+    },
+    {
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "actual_final_target": "खेळाडू आणि रिले यांच्यात संदेश जाऊन परत येण्यासाठी लागणारा वेळ. सामन्यापूर्वी (झटपट सामना, सुरुवातीची तपासणी यादी) हा त्या प्रदेशाशी जोडणी तपासून काढलेला अंदाज असतो.",
+      "decision": "accept",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final connection metric preserves quality, elapsed-time meaning and applicable numeric thresholds.",
+      "accepted_english": false
+    },
+    {
+      "key": "Delay",
+      "source": "Delay",
+      "actual_final_target": "विलंब",
+      "decision": "accept",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final connection metric preserves quality, elapsed-time meaning and applicable numeric thresholds.",
+      "accepted_english": false
+    },
+    {
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "actual_final_target": "तुमचा इनपुट विलंब: तुम्ही क्लिक केल्यापासून ती कृती सर्व खेळाडूंच्या खेळात होईपर्यंतचा वेळ. तुमच्या पिंगचा निम्मा वेळ आणि नेटवर्क विलंबातील चढउतार सांभाळण्यासाठी खेळाने ठेवलेला बफर यांची बेरीज.",
+      "decision": "accept",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final connection metric preserves quality, elapsed-time meaning and applicable numeric thresholds.",
+      "accepted_english": false
+    },
+    {
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "actual_final_target": "खेळाडूचा खेळ सामन्याच्या घड्याळापेक्षा किती मागे आहे. एका सेकंदापेक्षा कमी अंतर सामान्य असते (त्यात इनपुट विलंबही असतो); हे अंतर २ सेकंद झाल्यापासून रिले त्या खेळाडूला धीमा म्हणून नोंदवतो.",
+      "decision": "accept",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final connection metric preserves quality, elapsed-time meaning and applicable numeric thresholds.",
+      "accepted_english": false
+    },
+    {
+      "key": "Classic glossy",
+      "source": "Classic glossy",
+      "actual_final_target": "क्लासिक चकचकीत",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Basics",
+      "source": "Basics",
+      "actual_final_target": "मूलभूत",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Matte",
+      "source": "Matte",
+      "actual_final_target": "मॅट",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "actual_final_target": "रिव्हेट लावलेला धातू",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Metal",
+      "source": "Metal",
+      "actual_final_target": "धातू",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Hairy",
+      "source": "Hairy",
+      "actual_final_target": "केसाळ",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Organic",
+      "source": "Organic",
+      "actual_final_target": "सेंद्रिय",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "सेंद्रिय is a recognizable organic-material category label here; it does not assert a game rule or certification in the material palette.",
+      "accepted_english": false
+    },
+    {
+      "key": "Cartoon",
+      "source": "Cartoon",
+      "actual_final_target": "कार्टून",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Woven fabric",
+      "source": "Woven fabric",
+      "actual_final_target": "विणलेले कापड",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Craft",
+      "source": "Craft",
+      "actual_final_target": "कलाकुसर",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "actual_final_target": "ओघळणारा चिकट पदार्थ",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Wet",
+      "source": "Wet",
+      "actual_final_target": "ओले",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Wood",
+      "source": "Wood",
+      "actual_final_target": "लाकूड",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Stone",
+      "source": "Stone",
+      "actual_final_target": "दगड",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Mineral",
+      "source": "Mineral",
+      "actual_final_target": "खनिज",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Scales",
+      "source": "Scales",
+      "actual_final_target": "खवले",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Leather",
+      "source": "Leather",
+      "actual_final_target": "चामडे",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Crystal",
+      "source": "Crystal",
+      "actual_final_target": "स्फटिक",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "स्फटिक is an appropriate Marathi crystal material noun.",
+      "accepted_english": false
+    },
+    {
+      "key": "Lava",
+      "source": "Lava",
+      "actual_final_target": "लावा",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Chrome",
+      "source": "Chrome",
+      "actual_final_target": "क्रोम",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Carbon fibre",
+      "source": "Carbon fibre",
+      "actual_final_target": "कार्बन फायबर",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Velvet",
+      "source": "Velvet",
+      "actual_final_target": "मखमल",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "actual_final_target": "पोळ्याचे कप्पे",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Ice",
+      "source": "Ice",
+      "actual_final_target": "बर्फ",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Cloud",
+      "source": "Cloud",
+      "actual_final_target": "ढग",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Hammered metal",
+      "source": "Hammered metal",
+      "actual_final_target": "हातोड्याने ठोकलेला धातू",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Candy",
+      "source": "Candy",
+      "actual_final_target": "कँडी",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "The final name accurately labels a visual material/style without introducing gameplay behavior.",
+      "accepted_english": false
+    },
+    {
+      "key": "Slime",
+      "source": "Slime",
+      "actual_final_target": "चिकट जेल",
+      "decision": "accept",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "rationale": "चिकट जेल conveys the viscous visual material without inventing game mechanics.",
+      "accepted_english": false
+    },
+    {
+      "key": "AI player",
+      "source": "AI player",
+      "actual_final_target": "एआय खेळाडू",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "Finances",
+      "source": "Finances",
+      "actual_final_target": "वित्त",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "Accounts",
+      "source": "Accounts",
+      "actual_final_target": "खाती",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "Audit",
+      "source": "Audit",
+      "actual_final_target": "ऑडिट",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "1 hour",
+      "source": "1 hour",
+      "actual_final_target": "१ तास",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "1 day",
+      "source": "1 day",
+      "actual_final_target": "१ दिवस",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "1 week",
+      "source": "1 week",
+      "actual_final_target": "१ आठवडा",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "30 days",
+      "source": "30 days",
+      "actual_final_target": "३० दिवस",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "Most played",
+      "source": "Most played",
+      "actual_final_target": "सर्वाधिक खेळलेले",
+      "decision": "accept",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "rationale": "The final navigation/sorting/time-period label accurately expresses its administrative role.",
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "actual_final_target": "संगीताची रचना आणि तिचा विकास लक्ष देऊन ऐका.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "actual_final_target": "तिन्ही मूडमधील संगीत नीट वाजते याची खात्री करा.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "actual_final_target": "मूड बदलताना आवाजाची पातळी अचानक, अनपेक्षितपणे बदलते का ते ऐका.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "actual_final_target": "लूप पुन्हा सुरू होताना क्लिकचा आवाज, खंड किंवा अचानक बदल ऐकू येतो का ते तपासा.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "actual_final_target": "संगीतातील छोटे तुकडे अतिशय यांत्रिकपणे पुन्हा पुन्हा वाजतात का ते ऐका.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "Music snippets, not linguistic sentences; mechanical repetition check retained.",
+      "accepted_english": false
+    },
+    {
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "actual_final_target": "मूड बदलून लयीत किंवा स्वरमेळात होणारे बदल ऐका.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "Music-mood switch with audible timing/rhythmic and harmonic change is conveyed using लय and स्वरमेळ.",
+      "accepted_english": false
+    },
+    {
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "actual_final_target": "‘बांधकाम’ आणि ‘लढाई’ हे संगीताचे मूड ‘शांत’ मूडपेक्षा वेगळे वाटतात याची खात्री करा.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "actual_final_target": "कमी आवाजाच्या भागांत सळसळ किंवा खरखर ऐकू येते का ते तपासा.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "actual_final_target": "अस्पष्ट बास किंवा उच्च वारंवारतेचे कर्कश आवाज ऐकू येतात का ते तपासा.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "actual_final_target": "खेळाच्या आवाजासोबत संगीताचे शांत भागही ऐकू येत राहतात याची खात्री करा.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "actual_final_target": "अनपेक्षितपणे तुटणाऱ्या सुरांकडे लक्ष द्या.",
+      "decision": "accept",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "rationale": "The final listening instruction addresses the intended audible music property, not human mental states or unrelated actions.",
+      "accepted_english": false
+    },
+    {
+      "key": "Worker",
+      "source": "Worker",
+      "actual_final_target": "कामगार",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Warrior",
+      "source": "Warrior",
+      "actual_final_target": "योद्धा",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Explorer",
+      "source": "Explorer",
+      "actual_final_target": "शोधक",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Swarm",
+      "source": "Swarm",
+      "actual_final_target": "पोळे",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Classic",
+      "source": "Classic",
+      "actual_final_target": "क्लासिक",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Crown",
+      "source": "Crown",
+      "actual_final_target": "मुकुट",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Clutch",
+      "source": "Clutch",
+      "actual_final_target": "अंड्यांचा समूह",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "actual_final_target": "अळंबी",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "अळंबी identifies the mushroom-form design; no edible/poisonous gameplay property is asserted.",
+      "accepted_english": false
+    },
+    {
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "actual_final_target": "रुंद छत्रीच्या अळंबीभोवती छोट्या अळंब्या.",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "Large cap and associated small mushroom forms are conveyed; the frog mistranslation is gone.",
+      "accepted_english": false
+    },
+    {
+      "key": "Coral",
+      "source": "Coral",
+      "actual_final_target": "प्रवाळ",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Skep",
+      "source": "Skep",
+      "actual_final_target": "विणलेले पोळे",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The traditional woven hive design is named recognizably.",
+      "accepted_english": false
+    },
+    {
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "actual_final_target": "आधारावर ठेवलेले, वेटोळ्यांसारखे विणलेले पोळे; त्याचे दार तुमच्याकडे आहे.",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Bloom",
+      "source": "Bloom",
+      "actual_final_target": "उमललेले फूल",
+      "decision": "accept",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final unit/building/design label describes the actual model and follows the game glossary.",
+      "accepted_english": false
+    },
+    {
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "actual_final_target": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "decision": "accept",
+      "context_group": "visibility",
+      "context_paths": [
+        "platform/apps/web/src/pages/Maps.tsx"
+      ],
+      "rationale": "The final audience/access rule accurately distinguishes catalog listing, link access and private ownership.",
+      "accepted_english": false
+    },
+    {
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "actual_final_target": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही उपलब्ध",
+      "decision": "accept",
+      "context_group": "visibility",
+      "context_paths": [
+        "platform/apps/web/src/pages/Maps.tsx"
+      ],
+      "rationale": "The final audience/access rule accurately distinguishes catalog listing, link access and private ownership.",
+      "accepted_english": false
+    },
+    {
+      "key": "Private: only you",
+      "source": "Private: only you",
+      "actual_final_target": "खाजगी: फक्त तुम्ही",
+      "decision": "accept",
+      "context_group": "visibility",
+      "context_paths": [
+        "platform/apps/web/src/pages/Maps.tsx"
+      ],
+      "rationale": "The final audience/access rule accurately distinguishes catalog listing, link access and private ownership.",
+      "accepted_english": false
+    },
+    {
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "actual_final_target": "सर्व्हरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूच्या खेळाची स्थिती त्याच्याशी जुळली.",
+      "decision": "accept",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final verdict preserves actual server/game-state agreement, authority, rating consequences and retry scope.",
+      "accepted_english": false
+    },
+    {
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "actual_final_target": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "decision": "accept",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final verdict preserves actual server/game-state agreement, authority, rating consequences and retry scope.",
+      "accepted_english": false
+    },
+    {
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "actual_final_target": "एका खेळाडूच्या खेळाची स्थिती सर्व्हरने पुन्हा चालवलेल्या सामन्याशी जुळली नाही; सर्व्हरचा निकाल ग्राह्य धरला जातो.",
+      "decision": "accept",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final verdict preserves actual server/game-state agreement, authority, rating consequences and retry scope.",
+      "accepted_english": false
+    },
+    {
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "actual_final_target": "सर्व्हरला हा सामना तसाच पुन्हा चालवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+      "decision": "accept",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final verdict preserves actual server/game-state agreement, authority, rating consequences and retry scope.",
+      "accepted_english": false
+    },
+    {
+      "key": "This match is not checked.",
+      "source": "This match is not checked.",
+      "actual_final_target": "या सामन्याची तपासणी केलेली नाही.",
+      "decision": "accept",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final verdict preserves actual server/game-state agreement, authority, rating consequences and retry scope.",
+      "accepted_english": false
+    },
+    {
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "actual_final_target": "सर्व्हरला या सामन्याची तपासणी पूर्ण करता आली नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होत नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "decision": "accept",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "rationale": "The final verdict preserves actual server/game-state agreement, authority, rating consequences and retry scope.",
+      "accepted_english": false
+    },
+    {
+      "key": "Walk",
+      "source": "Walk",
+      "actual_final_target": "चालणे",
+      "decision": "accept",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final action names the correct unit animation as an action rather than an unrelated noun.",
+      "accepted_english": false
+    },
+    {
+      "key": "Swim",
+      "source": "Swim",
+      "actual_final_target": "पोहणे",
+      "decision": "accept",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final action names the correct unit animation as an action rather than an unrelated noun.",
+      "accepted_english": false
+    },
+    {
+      "key": "Harvest",
+      "source": "Harvest",
+      "actual_final_target": "गोळा करणे",
+      "decision": "accept",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final action names the correct unit animation as an action rather than an unrelated noun.",
+      "accepted_english": false
+    },
+    {
+      "key": "Fight",
+      "source": "Fight",
+      "actual_final_target": "लढणे",
+      "decision": "accept",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final action names the correct unit animation as an action rather than an unrelated noun.",
+      "accepted_english": false
+    },
+    {
+      "key": "Fly",
+      "source": "Fly",
+      "actual_final_target": "उडणे",
+      "decision": "accept",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "rationale": "The final action names the correct unit animation as an action rather than an unrelated noun.",
+      "accepted_english": false
+    },
+    {
+      "key": "Live payments",
+      "source": "Live payments",
+      "actual_final_target": "वास्तविक पेमेंट",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "The final ledger category or payment mode preserves the financial reporting distinction.",
+      "accepted_english": false
+    },
+    {
+      "key": "Test payments",
+      "source": "Test payments",
+      "actual_final_target": "चाचणी पेमेंट",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "The final ledger category or payment mode preserves the financial reporting distinction.",
+      "accepted_english": false
+    },
+    {
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "actual_final_target": "अवर्गीकृत पेमेंट",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "The final ledger category or payment mode preserves the financial reporting distinction.",
+      "accepted_english": false
+    },
+    {
+      "key": "Current period",
+      "source": "Current period",
+      "actual_final_target": "चालू कालावधी",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "The final ledger category or payment mode preserves the financial reporting distinction.",
+      "accepted_english": false
+    },
+    {
+      "key": "Previous period",
+      "source": "Previous period",
+      "actual_final_target": "मागील कालावधी",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "The final ledger category or payment mode preserves the financial reporting distinction.",
+      "accepted_english": false
+    },
+    {
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "actual_final_target": "क्रेडिट्सचे अनुदान",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "Game/service credits are granted, not lending credit or a creditworthiness subsidy.",
+      "accepted_english": false
+    },
+    {
+      "key": "Returned credits",
+      "source": "Returned credits",
+      "actual_final_target": "परत केलेले क्रेडिट्स",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "The final ledger category or payment mode preserves the financial reporting distinction.",
+      "accepted_english": false
+    },
+    {
+      "key": "Dispute",
+      "source": "Dispute",
+      "actual_final_target": "वाद",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "The final ledger category or payment mode preserves the financial reporting distinction.",
+      "accepted_english": false
+    },
+    {
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "actual_final_target": "वाद बंद झाला",
+      "decision": "accept",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "rationale": "Closure is stated without asserting that a payment dispute was amicably settled or won.",
+      "accepted_english": false
+    },
+    {
+      "key": "Matches started",
+      "source": "Matches started",
+      "actual_final_target": "सुरू झालेले सामने",
+      "decision": "accept",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "rationale": "The final metric label preserves count/duration meaning; placeholders remain library/product labels where applicable.",
+      "accepted_english": false
+    },
+    {
+      "key": "Matches completed",
+      "source": "Matches completed",
+      "actual_final_target": "पूर्ण झालेले सामने",
+      "decision": "accept",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "rationale": "The final metric label preserves count/duration meaning; placeholders remain library/product labels where applicable.",
+      "accepted_english": false
+    },
+    {
+      "key": "Matches cancelled",
+      "source": "Matches cancelled",
+      "actual_final_target": "रद्द झालेले सामने",
+      "decision": "accept",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "rationale": "The final metric label preserves count/duration meaning; placeholders remain library/product labels where applicable.",
+      "accepted_english": false
+    },
+    {
+      "key": "{value0} publications",
+      "source": "{value0} publications",
+      "actual_final_target": "{value0}: प्रकाशने",
+      "decision": "accept",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "rationale": "The final metric label preserves count/duration meaning; placeholders remain library/product labels where applicable.",
+      "accepted_english": false
+    },
+    {
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "actual_final_target": "{value0}: नोंदवलेले डाउनलोड्स",
+      "decision": "accept",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "rationale": "The final metric label preserves count/duration meaning; placeholders remain library/product labels where applicable.",
+      "accepted_english": false
+    },
+    {
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "actual_final_target": "{value0}: पूर्ण होण्यास लागलेला वेळ (सेकंद)",
+      "decision": "accept",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "rationale": "The final metric label preserves count/duration meaning; placeholders remain library/product labels where applicable.",
+      "accepted_english": false
+    },
+    {
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "actual_final_target": "{value0}: पूर्णतेच्या वेळेच्या नोंदी",
+      "decision": "accept",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "rationale": "Records of completion-duration measurements; product name placeholder and distinction from seconds-duration value retained.",
+      "accepted_english": false
+    }
+  ],
+  "blocking_findings": [],
+  "accepted_english": [],
+  "native_human_certification": false,
+  "limitations": [
+    "Semantic/context AI review, not native-human certification.",
+    "No runtime rendering or complete current-catalog reread performed in this step.",
+    "No canonical writes, builds or paid API requests."
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "old_validated_source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "new_source_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "exact_changed_paths": [
+    "data/texts.incomplete.txt"
+  ],
+  "exact_change": "Remove ONLYleading star from Marathi completion inventory entry.",
+  "old_inventory_sha256": "19b8439ee0ba99cde3ebc7a5b7f25c3a0eabf4b326c42f273155606af4a05437",
+  "new_inventory_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+  "unchanged_production_directories": {
+    "src": {
+      "old_git_tree": "710ced06546fa6e33a709a0ee46ae93aa987d2d7",
+      "new_git_tree": "710ced06546fa6e33a709a0ee46ae93aa987d2d7"
+    },
+    "libgag": {
+      "old_git_tree": "c4b6945ab842cfdafa4d39321b947981191c6927",
+      "new_git_tree": "c4b6945ab842cfdafa4d39321b947981191c6927"
+    },
+    "libusl": {
+      "old_git_tree": "2216123e02aa49910664a407b4c25a7f1ceb83f6",
+      "new_git_tree": "2216123e02aa49910664a407b4c25a7f1ceb83f6"
+    },
+    "scons": {
+      "old_git_tree": "2888d1465d85edcd38ba7fc7e2d85f8905ea755e",
+      "new_git_tree": "2888d1465d85edcd38ba7fc7e2d85f8905ea755e"
+    },
+    "mobile": {
+      "old_git_tree": "e1e8cd07699489c56d4e27eb0939716088f482e5",
+      "new_git_tree": "e1e8cd07699489c56d4e27eb0939716088f482e5"
+    },
+    "platform": {
+      "old_git_tree": "b343eec8fc16da48d79f00eca219b00c18b4c0fd",
+      "new_git_tree": "b343eec8fc16da48d79f00eca219b00c18b4c0fd"
+    }
+  },
+  "scope": "Existing64runtime/font/statistics/terrain proofs retain their original64producer. This explicit unchanged-code/canonical-font-catalog carry accompanies new official187package and affected selector/startup verification; no fullfreshstatsterrain claim.",
+  "exact_unchanged_asset_blobs": {
+    "data/texts.en.txt": "4ad601e423d3a1254ce108f7220668ccfd0d1467",
+    "data/texts.mr.txt": "c11a38643ad505b1c12c6554d552c2ac5e2bf34e",
+    "data/texts.list.txt": "b0abd7a892d0f958a158e169640fff76255f86f1",
+    "data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3"
+  }
+}

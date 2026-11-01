@@ -1,0 +1,96 @@
+{
+  "actual_compiled_producer": "187ea34de87838911a42321fd52925d51da475b9",
+  "current_test_only_head": "f8d1065ff6ed135f549f42ebb58632cd0c402244",
+  "test_only_changes_since_producer": [
+    "browser/tests/marathi.spec.js"
+  ],
+  "binary_sha256": "7d845a39d127c7002ef3d5ac356f59794db3732377bdd4042a4f5952ea145d18",
+  "registered_resource_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+  "variant_source": "../registered-variant-source.json",
+  "jobs": [
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "screen": "main",
+      "command": [
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/RegisteredPreviewHarness-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/captures/1280x900/main",
+        "1280",
+        "900",
+        "main"
+      ],
+      "returncode": 0,
+      "seconds": 15.04,
+      "output": "1280x900/main"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "screen": "settings-player",
+      "command": [
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/RegisteredPreviewHarness-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/captures/1280x900/settings-player",
+        "1280",
+        "900",
+        "settings-player"
+      ],
+      "returncode": 0,
+      "seconds": 13.06,
+      "output": "1280x900/settings-player"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "screen": "main",
+      "command": [
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/RegisteredPreviewHarness-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/captures/390x844/main",
+        "390",
+        "844",
+        "main"
+      ],
+      "returncode": 0,
+      "seconds": 14.12,
+      "output": "390x844/main"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "screen": "settings-player",
+      "command": [
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/RegisteredPreviewHarness-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/previews/mr",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-registration187/captures/390x844/settings-player",
+        "390",
+        "844",
+        "settings-player"
+      ],
+      "returncode": 0,
+      "seconds": 12.14,
+      "output": "390x844/settings-player"
+    }
+  ],
+  "byte_cap": 134217728,
+  "minimum_free_bytes": 2147483648,
+  "per_job_deadline_seconds": 300,
+  "scope": "Actual normal registered texts.list/incomplete/nativeMR resources; capture-only variant bypasses all draft overlays and asserts complete MR plus correct Player selector label. Generic inherited overlay disclaimers in raw harness limit prose are superseded by the explicit registered_resource_probe and overridden_keys=0; no full locale re-review/rerender claim after the metadata-only followup."
+}

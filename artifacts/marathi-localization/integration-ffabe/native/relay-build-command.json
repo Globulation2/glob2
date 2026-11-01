@@ -1,0 +1,17 @@
+{
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "role=relay",
+    "relay-tests",
+    "-j4"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "deadline_seconds": 3600,
+  "started_unix": 1793530705.1911922,
+  "explicit_video_driver": null,
+  "exit_code": 0,
+  "elapsed_seconds": 637.7339618206024,
+  "log_sha256": "117cff48b3f5d7d2ef1615c7e6cacc1ff6a8b530e033ab2f58de96158da18beb",
+  "capture_errors": []
+}

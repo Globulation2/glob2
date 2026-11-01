@@ -1,0 +1,431 @@
+{
+  "old_actual_producer": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "current_selection_source_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "actual_native_pairs_equal": 3411,
+  "actual_old_online_pairs_equal": 2836,
+  "actual_new_online_pairs": 111,
+  "unchanged_dependencies": {
+    "libgag/src/BidiText.cpp": true,
+    "libgag/src/ui/TextLayout.cpp": true,
+    "libgag/src/DrawableSurfaceCompound.cpp": true,
+    "libgag/include/TrueTypeFont.h": true,
+    "libgag/include/ui/TextLayout.h": true,
+    "data/fonts/sans.ttf": true,
+    "data/fonts/scripts/NotoSansArabic-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansDevanagari-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansEthiopic-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansGujarati-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansKannada-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansMalayalam-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansMyanmar-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansOriya-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansTamil-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansTelugu-Regular.ttf": true,
+    "data/fonts/scripts/NotoSansThai-Regular.ttf": true
+  },
+  "current_dependency_sha256": {
+    "libgag/src/BidiText.cpp": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+    "libgag/src/ui/TextLayout.cpp": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+    "libgag/src/DrawableSurfaceCompound.cpp": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810",
+    "libgag/include/TrueTypeFont.h": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+    "libgag/include/ui/TextLayout.h": "6cb805b24332bb38bde8525eeea77fa0917cea3b88ae4561bc44c00b08975969",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "data/fonts/scripts/NotoSansArabic-Regular.ttf": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+    "data/fonts/scripts/NotoSansEthiopic-Regular.ttf": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+    "data/fonts/scripts/NotoSansGujarati-Regular.ttf": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+    "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+    "data/fonts/scripts/NotoSansKannada-Regular.ttf": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+    "data/fonts/scripts/NotoSansMalayalam-Regular.ttf": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+    "data/fonts/scripts/NotoSansMyanmar-Regular.ttf": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+    "data/fonts/scripts/NotoSansOriya-Regular.ttf": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+    "data/fonts/scripts/NotoSansTamil-Regular.ttf": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+    "data/fonts/scripts/NotoSansTelugu-Regular.ttf": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+    "data/fonts/scripts/NotoSansThai-Regular.ttf": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+  },
+  "font_old_sha256": "b25e687482558acb010b2eeda4bf82f745a500cb9f806baaf342ab12f370f1ab",
+  "font_current_sha256": "2be0914833bb1fa6581f2c6945e45533ddaae747db2461e9d5e1ed8b2a261c06",
+  "font_entire_diff_matches_only_expected_Malay_comment_and_predicate": true,
+  "MR_branch_proof": "Added disjunct language == ms is false for mr, for both scripts=true and scripts=false; all other font code exact. This carries old observations behaviorally, not a claim of current execution.",
+  "old_actual_measurements": {
+    "samples": 75288,
+    "lines": 83542
+  },
+  "new_required_measurements": {
+    "sample_keys": 111,
+    "font_sizes": [
+      10,
+      13,
+      20
+    ],
+    "scales": [
+      1,
+      2
+    ],
+    "viewports": [
+      [
+        1280,
+        900
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "expected_samples": 1332
+  },
+  "combined_sample_total_is_projection_until_new_reports": 76620,
+  "limits": "No old statistics-layout image carried as current: upstream changed narrow Overview geometry. No dynamic formatted-placeholder or OS runtime coverage implied by the font matrix.",
+  "old_actual_summary": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native-final-summary.json",
+    "sha256": "10d38bd54e7a3a67f414115b3a7382fbfb3e2e8214bc5eb60f385b082ec742f6",
+    "matrix_reports": [
+      {
+        "path": "native-render-clean64/1280x900/matrix/font-matrix.json",
+        "sha256": "fd3d4f1b4b0141e18ff6e993cd169e2323a6a48fe6cdb13080ff948ac1e34a79",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "matrix",
+        "kind": null
+      },
+      {
+        "path": "native-render-clean64/1280x900/main/main.json",
+        "sha256": "6410f3ed5c2645551826584be7facc65d425b21a0bc37ad5cbdd4752a6221a71",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "screen",
+        "kind": "main"
+      },
+      {
+        "path": "native-render-clean64/1280x900/settings/settings.json",
+        "sha256": "a41a07a7dd1351cc675927f6f296fd8dc7852459d0a29569e593b414bba56c22",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "screen",
+        "kind": "settings"
+      },
+      {
+        "path": "native-render-clean64/1280x900/settings-audio/settings-audio.json",
+        "sha256": "174f8f39b5d3fb7b0b0bc85c3bed1fa140723b808af71d83b03a26e58e51051f",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "screen",
+        "kind": "settings-audio"
+      },
+      {
+        "path": "native-render-clean64/1280x900/lobby/lobby.json",
+        "sha256": "26a261ecf4ec542ad8d8a6ebe6389edd61eaac9553aabced0b18ff7db01e53ab",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "screen",
+        "kind": "lobby"
+      },
+      {
+        "path": "native-render-clean64/1280x900/lobby-players/lobby-players.json",
+        "sha256": "0f798610e066aa61a6a4e0d5d5b482827f4d7c928e1fc03e6e955f446256e076",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "screen",
+        "kind": "lobby-players"
+      },
+      {
+        "path": "native-render-clean64/1280x900/gameplay/gameplay.json",
+        "sha256": "83c192460b8868037a36526bba8a5724fae2a8f2270478b90b5cf99e2f7ba90c",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "gameplay"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-introduction/tutorial-introduction.json",
+        "sha256": "1d9a67bccca2b8af33bb3343315b0a661374dcb9ff124beab1314e8310f4335b",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:introduction"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-food-supply/tutorial-food-supply.json",
+        "sha256": "80589fc428769909f92c950c2b01f58627b30a8095685215a33b38c9fefc8cca",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:food-supply"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-healing/tutorial-healing.json",
+        "sha256": "9026fb8e0a764fa07c92b4a182ce9c981d550bed7338a0e3b64435ddc57a3436",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:healing"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-walking-training/tutorial-walking-training.json",
+        "sha256": "6e1fd2437a4f2b980cd4383b741b81b376e1271fde4ad3a64085711a5c0de453",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:walking-training"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-swimming/tutorial-swimming.json",
+        "sha256": "2384917fb9209afcf905bfa0182b3e331236597f2eed14ad887ffeb97acff47d",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:swimming"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-schools/tutorial-schools.json",
+        "sha256": "2e4799b15b3af48cffc05071d153f6fe9c3cf93a276dbdf9663a5c771fe01db7",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:schools"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-upgrades/tutorial-upgrades.json",
+        "sha256": "507ed2c86ee004794d00f7067bad48fafafe8561b187ec02b5d06444d0e794a0",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:upgrades"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-warrior-training/tutorial-warrior-training.json",
+        "sha256": "8e1ad8a16d8c83e09bf4d235a78e92597fb597c8612dfc07bf75755c9616d52b",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:warrior-training"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-fortifications/tutorial-fortifications.json",
+        "sha256": "7a18ceac002472d746d32fd39c3aed2a01209c0073464a78e5980734d815edb5",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:fortifications"
+      },
+      {
+        "path": "native-render-clean64/1280x900/tutorial-defensive-tactics/tutorial-defensive-tactics.json",
+        "sha256": "44f89fdef700d5411fde52f194989138318c36e569e780018d44e966e2f8f269",
+        "viewport": [
+          1280,
+          900
+        ],
+        "mode": "game",
+        "kind": "tutorial:defensive-tactics"
+      },
+      {
+        "path": "native-render-clean64/390x844/matrix/font-matrix.json",
+        "sha256": "d3262a012794007f1fe665a1ab6ddbbe5278c4163f084fd9717863e85572504f",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "matrix",
+        "kind": null
+      },
+      {
+        "path": "native-render-clean64/390x844/main/main.json",
+        "sha256": "6e89d36a3e3da9947079762c9625ca96152ab5e7d4e7428afa47c735e059f888",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "screen",
+        "kind": "main"
+      },
+      {
+        "path": "native-render-clean64/390x844/settings/settings.json",
+        "sha256": "6363e2bbb645c7839980ed9d7bfb8c00c2a46d2b02a767384a02a8dcf772c373",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "screen",
+        "kind": "settings"
+      },
+      {
+        "path": "native-render-clean64/390x844/settings-audio/settings-audio.json",
+        "sha256": "d88c553d897e677e19bca376abe9cab99640174f19cb8d0d552969e45ae2782a",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "screen",
+        "kind": "settings-audio"
+      },
+      {
+        "path": "native-render-clean64/390x844/lobby/lobby.json",
+        "sha256": "12d3d712f3e840421df7f12cbb709012f8f25ee83f4d1b09d8c82f8dd326aa3d",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "screen",
+        "kind": "lobby"
+      },
+      {
+        "path": "native-render-clean64/390x844/lobby-players/lobby-players.json",
+        "sha256": "6c29c4889c928f90588ee093e9e44928aba81fe669e1d9a482915fd4fc2ae48c",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "screen",
+        "kind": "lobby-players"
+      },
+      {
+        "path": "native-render-clean64/390x844/gameplay/gameplay.json",
+        "sha256": "ea672d763ac7bb58fa44c967ab6595444051fecd40abdcc0a4734b2bdb9f73f7",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "gameplay"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-introduction/tutorial-introduction.json",
+        "sha256": "e87802c10178569d803ba1cfaef3b25f76094c670cfca03ca3196e48d878e9b7",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:introduction"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-food-supply/tutorial-food-supply.json",
+        "sha256": "0736884aa35d7de12508e8b733100f1e5529a9fcfd8f28ab473d3a767c377ec8",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:food-supply"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-healing/tutorial-healing.json",
+        "sha256": "eb3ab02d9a0cc3e210d746d3736f068f7ce2d5ecc9ffb286678f12356b1f0493",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:healing"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-walking-training/tutorial-walking-training.json",
+        "sha256": "edde7d5a29c58f410e87f7e3211b40ec22a425eb653e4a83d58835c406d4a0ab",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:walking-training"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-swimming/tutorial-swimming.json",
+        "sha256": "c6b937d1a8bd3ad92c2218a83fc6a261fe41dbedd526ed456b33da1f0b1c1180",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:swimming"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-schools/tutorial-schools.json",
+        "sha256": "6dbc282f310a34f68a4e8f6b93db63b1053f92e78bf695134327cf1fce897246",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:schools"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-upgrades/tutorial-upgrades.json",
+        "sha256": "55e5b8d5f6ba3eaa1589ddd1019f325f7835caf11db7d5260233ea8d972b50ba",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:upgrades"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-warrior-training/tutorial-warrior-training.json",
+        "sha256": "eb7f2a6703ab624bbf1691b088283b55062de59b6b8809bc6bd2e652eba9425d",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:warrior-training"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-fortifications/tutorial-fortifications.json",
+        "sha256": "93d79198b99890b27ef3df7c669605b77ebbe68e9e9f9f883f2116703b565886",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:fortifications"
+      },
+      {
+        "path": "native-render-clean64/390x844/tutorial-defensive-tactics/tutorial-defensive-tactics.json",
+        "sha256": "626d27968933409fc408e45673286df5b1efed18e56af6fa668093fd2a5a390e",
+        "viewport": [
+          390,
+          844
+        ],
+        "mode": "game",
+        "kind": "tutorial:defensive-tactics"
+      }
+    ]
+  },
+  "official_matrix_function_unchanged": true,
+  "official_matrix_function_sha256": "f75d2f83f71aa5f9d451ff07b83b59334a1e03121a1d5485b5d4b920bfd31f36",
+  "sample_expansion_function_unchanged": true
+}

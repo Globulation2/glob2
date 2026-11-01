@@ -1,0 +1,8 @@
+{
+  "reviewer": "/root/locale_integration",
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "actual_image_read": "artifacts/marathi-localization/integration-bc8/android/boot-current.png",
+  "sha256": "f6d749ec29a50908f9a600cccc7cdad857a688b5dfe20255dfad1246fd04e063",
+  "observed": "Owned emulator reports boot_completed1 and mr-IN; actual screenshot shows normal launcher without OS ANR dialog. Current APK not installed/launched yet, so this is environment-only evidence.",
+  "scope_limit": "Only this actual observed frame; historical oldattempt OS failures remain separate."
+}

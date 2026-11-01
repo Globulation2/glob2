@@ -1,0 +1,13 @@
+{
+  "attempts": [
+    {
+      "status": 0,
+      "boot": "1",
+      "stderr": ""
+    }
+  ],
+  "properties": {
+    "ro.boot.qemu.avd_name": "glob2-api35-x64",
+    "persist.sys.locale": "mr-IN"
+  }
+}

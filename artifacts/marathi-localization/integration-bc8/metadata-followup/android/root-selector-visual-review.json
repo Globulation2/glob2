@@ -1,0 +1,15 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T08:38:22.946287+00:00",
+  "actual_package_producer": "187ea34de87838911a42321fd52925d51da475b9",
+  "compiled_runtime_producer": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "signed_and_installed_apk_sha256": "70cc07f944ecf3a24676af2db9a593b607682f55aa6b05f57ff62145d8565d91",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/android/ui-qa/player-language-complete.png",
+      "sha256": "4addbb20fe386eac9592403f6b0071485a0ead11d97065a5562530158cfd0e68"
+    }
+  ],
+  "assessment": "Actually viewed current refreshed Android release Player/language screen at390x844. Language row reads मराठी without incomplete suffix. Heading, labels, help and Donebutton are clear shaped Marathi and fit. player is dynamic actual name value, not an untranslated UI label. No tofu or observedclipping.",
+  "findings": []
+}

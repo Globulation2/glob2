@@ -1,0 +1,393 @@
+{
+  "utc": "2026-11-01T11:49:20.161057+00:00",
+  "state": "stable",
+  "recommendation": "Marathi language and selected layout scope verified; retain explicit unclassified current threaded GUI failures for maintainer assessment.",
+  "runtime_compile_and_package_producer_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "fixture_and_validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "source_identity_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "build": {
+    "official_both_release_package_exit": 0,
+    "sdk": "4.0.15",
+    "record_sha256": "0e0622b39137fc4c876f1dde9036f27e1a5590c9842f83d833cf272ae94dd79b",
+    "package_sha256": "2db51d9435d5676f92a6d2a3d634a902217844d56cb124b84f1b802b6b00e2b2",
+    "input_identity_sha256": "7c9ffc40496feb8599d2ad04e653a04b7c748ec4b08c104c9d896411676909da",
+    "both_WASM_and_JS_sha256": {
+      "index.js": {
+        "bytes": 1811340,
+        "sha256": "a9ab794d8c05acdafeaf7379c2236864c3c96aba56ccf3dcb8e78f08e23fcf8a"
+      },
+      "index.wasm": {
+        "bytes": 25095224,
+        "sha256": "7ebf4ae2773bc6ac049a9c2b222f414198c2b3f622a8276eeeedb5ce81c57aac"
+      },
+      "threaded/index.js": {
+        "bytes": 1863901,
+        "sha256": "606c47327bf46214c7f4a3d052d32f80ecdb9d34097c3a2fde7a3d4f5ffbacc5"
+      },
+      "threaded/index.wasm": {
+        "bytes": 25131028,
+        "sha256": "7eaae65f34f2d8d20f5ca7c45090756e413ea0857423fea6bc23831e5048089d"
+      }
+    },
+    "full_mr_translation_package_resource_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "expected_core_stub_note": "105-byte core locale metadata stub is intentional; full397418-byte Marathi catalog resides in translations package and actualVFS full catalog was asserted in successful UI cases."
+  },
+  "fresh_actual_execution_counts": {
+    "passed": 9,
+    "failed": 3,
+    "flaky": 0,
+    "skipped": 0,
+    "total": 12,
+    "note": "Aggregate actual executions across initial/continuation/fixed/serial followups; this is not a first-suite9/9 or a fresh full12GUI-matrix pass."
+  },
+  "selected_success_scope": {
+    "golden_match_cases": 6,
+    "representative_MR_UI_cases": 3,
+    "UI_variants": "serial",
+    "engines": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "sizes": [
+      "desktop1280x900",
+      "phone390x844"
+    ]
+  },
+  "reports": [
+    {
+      "path": "minimal-qa/chromium-golden",
+      "report_sha256": "be41f5c538f69814e75e40e56a74c0fd22a703694ec2bc222259ba6c69f871ff",
+      "run_sha256": "dd47088e31f96f81089f857f3ca840ac5ccb4d999f82e4423d8914d2bd3099e1",
+      "state": "passed",
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    {
+      "path": "minimal-qa/chromium-risk-ui",
+      "report_sha256": "0b8f16dddbcc64a7d0cafb95e4f6c036effac455a11f2cd48c9d71a99769cbe5",
+      "run_sha256": "7907cd867bd8217794464f0960e221a70e4e6bc914d43a10d998bfba7acc6a1f",
+      "state": "passed",
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    {
+      "path": "minimal-qa/firefox-golden",
+      "report_sha256": "85a1ad6769e60982ff7692749ac272a1b094196bf1238c1e03ba1082d0775b00",
+      "run_sha256": "65634ca848e53c2628e405770363a623a2f26647fa665f82585dab1f50bb1ffe",
+      "state": "passed",
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    {
+      "path": "minimal-qa/firefox-risk-ui",
+      "report_sha256": "ab27555e95a8cb2453323073fff435e8e92f794b46d4b1f07a3a7780785e181f",
+      "run_sha256": "22c5c13c4b1954774d57895fd2dbeaee9f216e9113644581b6e2c6bcb1dd6c51",
+      "state": "failed",
+      "expected": 0,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 0
+    },
+    {
+      "path": "webkit-continuation/minimal-qa/webkit-golden",
+      "report_sha256": "c62caf59c9c3fc03635484668819f7600ecf2b47325edb66bdc4d7c058669418",
+      "run_sha256": "306a6c463063cfbaaeebdea90d57c002cc660b4878bceaacfc65b5e174f8400b",
+      "state": "passed",
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    {
+      "path": "webkit-continuation/minimal-qa/webkit-risk-ui",
+      "report_sha256": "50de19ad7e24be9ccca42526a8ef7e5495139cd579af4095f09b270982500619",
+      "run_sha256": "8ea7516b34af54aa5e74e1c367f40322d3582cbbe1d132a4005a266b0723256b",
+      "state": "failed",
+      "expected": 0,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 0
+    },
+    {
+      "path": "firefox-fixed-tutorial",
+      "report_sha256": "629e6f1c07e743c3f0a76bd3a2741e8ec290b3c19a5e2d2da93b4a3f6a33c34c",
+      "run_sha256": "2e771786fadab6f106fbd43d03ef483cddc61b5a44d75472e71543310f6296f5",
+      "state": "failed",
+      "expected": 0,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 0
+    },
+    {
+      "path": "serial-ui-closure/firefox",
+      "report_sha256": "2f7767b835769198a1c73a5831deb4a0e01d1ca500bdbe21d77c6ded65cb367e",
+      "run_sha256": "a1b97671ec766d0f0615a7a77179066405b0e5eeaab83a525074ec54115bbda2",
+      "state": "passed",
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    {
+      "path": "serial-ui-closure/webkit",
+      "report_sha256": "ad625d315a0be0c25ca59b1e4546eb310b9852d5c331d9759d813b415aff1fdd",
+      "run_sha256": "e344576daa422d48abc42cbe4e488c8319e933a2958b5b941804d44712797eb1",
+      "state": "passed",
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0
+    }
+  ],
+  "golden": {
+    "record_sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+    "map_sha256": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+    "native_authority_path": "../integration-ffabe/native/authoritative-native-trace.json",
+    "native_authority_sha256": "ee87d635b10d5dffc9c9d07182e7a9a681ad32a0175e50a634c10a13c4b440b1",
+    "native_build_scope": "Official native development CLI and official releaseWASM flags differ; functional per-tick checksum equality only, no performance comparison.",
+    "traces": [
+      {
+        "engine": "chromium",
+        "variant": "serial",
+        "path": "minimal-qa/chromium-golden/serial-verify-match.checksums.txt",
+        "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+        "trace_lines": 843,
+        "tick_samples": 842,
+        "direct_native_and_golden_byte_equality": true,
+        "verdict": "verified",
+        "comparison_sha256": "3aa4139c269b9aad0f6d9769e7eb2c452ed32d7e39265fd03416a9928d7da1fa"
+      },
+      {
+        "engine": "chromium",
+        "variant": "threaded",
+        "path": "minimal-qa/chromium-golden/threaded-verify-match.checksums.txt",
+        "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+        "trace_lines": 843,
+        "tick_samples": 842,
+        "direct_native_and_golden_byte_equality": true,
+        "verdict": "verified",
+        "comparison_sha256": "d7c2944e02a2d72bdddb55e60a1858f8c415a7d8190c94516017e1694c459c8b"
+      },
+      {
+        "engine": "firefox",
+        "variant": "serial",
+        "path": "minimal-qa/firefox-golden/serial-verify-match.checksums.txt",
+        "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+        "trace_lines": 843,
+        "tick_samples": 842,
+        "direct_native_and_golden_byte_equality": true,
+        "verdict": "verified",
+        "comparison_sha256": "1ef455dac45e920fa1639816b209d368613a00605ad5530e2385087445dac5e5"
+      },
+      {
+        "engine": "firefox",
+        "variant": "threaded",
+        "path": "minimal-qa/firefox-golden/threaded-verify-match.checksums.txt",
+        "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+        "trace_lines": 843,
+        "tick_samples": 842,
+        "direct_native_and_golden_byte_equality": true,
+        "verdict": "verified",
+        "comparison_sha256": "951b9524338fee320e659ddccb95f4e9b254a16c2581846da01abe544bc5927f"
+      },
+      {
+        "engine": "webkit",
+        "variant": "serial",
+        "path": "webkit-continuation/minimal-qa/webkit-golden/serial-verify-match.checksums.txt",
+        "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+        "trace_lines": 843,
+        "tick_samples": 842,
+        "direct_native_and_golden_byte_equality": true,
+        "verdict": "verified",
+        "comparison_sha256": "8c2a939794e5ee253663f2c771d1455d1fcd18af2ce6caee208a4edff603e643"
+      },
+      {
+        "engine": "webkit",
+        "variant": "threaded",
+        "path": "webkit-continuation/minimal-qa/webkit-golden/threaded-verify-match.checksums.txt",
+        "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+        "trace_lines": 843,
+        "tick_samples": 842,
+        "direct_native_and_golden_byte_equality": true,
+        "verdict": "verified",
+        "comparison_sha256": "1594f6649505ca63af5096234811242481b541e705b215e2aaf6837cca151b76"
+      }
+    ]
+  },
+  "successful_UI_cases": [
+    {
+      "engine": "chromium",
+      "variant": "serial",
+      "device": "desktop",
+      "evidence_path": "risk-ui/chromium/serial/desktop/evidence.json",
+      "evidence_sha256": "b369bb9c360ac8392d4ad0f0bcac4d9f17420462bfaa5e2573509e0f391466d2",
+      "actual_tick": 60,
+      "registry_count": 39,
+      "errors": [],
+      "stats_topic_bounds": {
+        "0": {
+          "x": 1086,
+          "y": 212,
+          "width": 188,
+          "height": 34
+        },
+        "1": {
+          "x": 1086,
+          "y": 250,
+          "width": 92,
+          "height": 34
+        },
+        "2": {
+          "x": 1182,
+          "y": 250,
+          "width": 92,
+          "height": 34
+        },
+        "3": {
+          "x": 1086,
+          "y": 288,
+          "width": 92,
+          "height": 34
+        },
+        "4": {
+          "x": 1182,
+          "y": 288,
+          "width": 92,
+          "height": 34
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "variant": "serial",
+      "device": "phone",
+      "evidence_path": "risk-ui-serial-fixed-tutorial/firefox/serial/phone/evidence.json",
+      "evidence_sha256": "535ae43d40368e370976676ca1dee9d2c413f1bba7b3b890405b81e7e93d576c",
+      "actual_tick": 227,
+      "registry_count": 39,
+      "errors": [],
+      "stats_topic_bounds": {
+        "0": {
+          "x": 5.85,
+          "y": 371.8083140877598,
+          "width": 123.3375,
+          "height": 48.24249422632795
+        },
+        "1": {
+          "x": 133.0875,
+          "y": 371.8083140877598,
+          "width": 123.3375,
+          "height": 48.24249422632795
+        },
+        "2": {
+          "x": 260.325,
+          "y": 371.8083140877598,
+          "width": 123.82499999999999,
+          "height": 48.24249422632795
+        },
+        "3": {
+          "x": 5.85,
+          "y": 423.94919168591224,
+          "width": 187.2,
+          "height": 48.24249422632795
+        },
+        "4": {
+          "x": 196.95,
+          "y": 423.94919168591224,
+          "width": 187.2,
+          "height": 48.24249422632795
+        }
+      }
+    },
+    {
+      "engine": "webkit",
+      "variant": "serial",
+      "device": "desktop",
+      "evidence_path": "risk-ui-serial/webkit/serial/desktop/evidence.json",
+      "evidence_sha256": "743b3d8402b7deff48ce8b8a6d8b20f35799617b7959cc75113fe7fead877add",
+      "actual_tick": 102,
+      "registry_count": 39,
+      "errors": [],
+      "stats_topic_bounds": {
+        "0": {
+          "x": 1086,
+          "y": 212,
+          "width": 188,
+          "height": 34
+        },
+        "1": {
+          "x": 1086,
+          "y": 250,
+          "width": 92,
+          "height": 34
+        },
+        "2": {
+          "x": 1182,
+          "y": 250,
+          "width": 92,
+          "height": 34
+        },
+        "3": {
+          "x": 1086,
+          "y": 288,
+          "width": 92,
+          "height": 34
+        },
+        "4": {
+          "x": 1182,
+          "y": 288,
+          "width": 92,
+          "height": 34
+        }
+      }
+    }
+  ],
+  "visual_review_sha256": "e357ea85ea8247a5605d99358b90d44bcff3a7f5001aeb32568b5a9313742349",
+  "retained_failure_record_sha256": "d9daa57aedf04349941fc15be72444b602f4071d6861160cd3276f06b5f3b071",
+  "failure_count": 3,
+  "failures": [
+    {
+      "path": "minimal-qa/firefox-risk-ui",
+      "classification": "unclassified_random_custom_live_match_stall",
+      "actual": "Main/settings/currentMR39 passed; generated lava-shield r7 seed3701015830 match remained tick1/frames1. Required tick>25 failed.",
+      "causation": "Unclassified; no exact-seed English or upstream reproduction. No Marathi-causation or upstream-baseline claim."
+    },
+    {
+      "path": "webkit-continuation/minimal-qa/webkit-risk-ui",
+      "classification": "unclassified_threaded_GUI_startup_timeout",
+      "actual": "Threaded desktop GUI remained at initial loading/splash; MainMenu was not reached.",
+      "causation": "Unclassified; passing headless golden execution is not a successful GUI startup."
+    },
+    {
+      "path": "firefox-fixed-tutorial",
+      "classification": "unclassified_threaded_GUI_startup_timeout",
+      "actual": "Threaded phone GUI remained loading/tick0/frames0 before tutorial; core/game/translations and restore ready.",
+      "causation": "Unclassified; the planned fixed tutorial route was not reached in this failed attempt."
+    }
+  ],
+  "prior351_full12_UI_carry": {
+    "path": "../validated-browser-351/evidence/gate-recommendation.json",
+    "sha256": "1aaada13ea5c017cf20a45d7f3584d0b6f5dbf7a7d3bbe45777517c809f4e756",
+    "current_carry_proof_sha256": "c3976adf814815e256027e9ac82e38467e6169a75b56e7ecaee57750a5bbc8b9",
+    "scope": "Prior actual12PASS across3engines×2variants×2sizes for unchanged Marathi AI/tutorial/persistence/font flows; explicitly carried, not freshly rerun. Does not erase current threaded GUI failures."
+  },
+  "raw_failure_trace_policy": "All3 raw failureZIPs retained locally under build/browser-marathi-failure-traces and excluded from publication; published failure logs/JSON/PNGs remain. See2trace-retention records.",
+  "cleanup_sha256": "0d817ded444c8a14736cc65728b27986100b4843466deb577a3255065e3822e4",
+  "limits": [
+    "Current full threaded GUI matrix is not established;3unclassified current GUI failures remain.",
+    "No current WASM-specific MarathiSGSL unit run or expanded scripting/threadpool/1500tick corpus. NativeMRSGSL evidence is owned separately.",
+    "No exact English-seed or untouched-upstream runtime reproduction of current GUI stalls; static codeidentity is not runtime reproduction.",
+    "Marathi semantic AI review and actual visual review, not native-human certification."
+  ]
+}

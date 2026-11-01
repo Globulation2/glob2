@@ -1,0 +1,27 @@
+{
+  "locale": "mr",
+  "source_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "source_files": {
+    "data/texts.keys.txt": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+    "data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+    "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "original_catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "preview_catalog_sha256": {
+    "native": "ef10126800d525ad9963c42fe9bde2c975ddb7d03b067d255443017ef9cdb295",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "catalog_status": {
+    "native": "Complete independent semantic, editorial and adversarial reviews, with actual16-key final rereads and exact unchanged-old-value carry proofs",
+    "online": "Complete independent semantic, editorial and adversarial reviews, with actual16-key final rereads and exact unchanged-old-value carry proofs"
+  },
+  "limits": "Full canonical-value draft overlay in desktop production harness; registration/package startup is verified separately.",
+  "scope": "Exact unchanged canonical Marathi native/online values; registered resource capture, no overlay.",
+  "registration_metadata_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a"
+}

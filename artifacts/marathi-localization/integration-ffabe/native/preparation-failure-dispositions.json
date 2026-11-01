@@ -1,0 +1,23 @@
+{
+  "preparation_only_failures": [
+    {
+      "record": "official-link-recipe-command.json",
+      "result": "SCons rejected unsupported -B before action; no product/test failure. Exact successful executed official build recipe reused directly."
+    },
+    {
+      "record": "zero-case-attempt-disposition.json",
+      "result": "Early golden-only binary selected0cases, rejected; fixtures unchanged. Final normal registry enumerated122 and actual golden exactly1PASS before root commit. Low-level timing cause was a hypothesis, not proven."
+    },
+    {
+      "action": "verify_current.py initial missing production CLI path",
+      "result": "Bare glob2 argument was up to date without emitting program. Explicit full official target built actual app entry point+production CLI, then independent actual verification passed. No parity artifact from failed launch claimed."
+    },
+    {
+      "action": "finish_focused.py metadata write expected missing CLI",
+      "result": "Focused/relay builds had succeeded; metadata-only write failed before explicit CLI existed. Later actual native-cli-producer.json and registry-verification-complete.json are authoritative."
+    }
+  ],
+  "shipping_source_mutations_to_fix_scaffolding": false,
+  "failed_capture_attempts": "first-capture-attempt-disposition.json + render-refined/runner.json",
+  "inherited_test_failure": "replay-boundary-inherited.json"
+}

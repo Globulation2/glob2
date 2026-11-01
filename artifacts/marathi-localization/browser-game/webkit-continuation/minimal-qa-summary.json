@@ -1,0 +1,61 @@
+{
+  "validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "compile_producer_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "results": [
+    {
+      "validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+      "compile_producer_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+      "kind": "golden",
+      "engine": "webkit",
+      "expected_cases": 2,
+      "command": [
+        "node",
+        "/home/bradley/.codex/worktrees/45cd/glob2/platform/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "/home/bradley/.codex/worktrees/45cd/glob2/browser/playwright.config.js",
+        "determinism.spec.js",
+        "--grep",
+        "committed match record",
+        "--project=webkit",
+        "--workers=1",
+        "--reporter=list,json",
+        "--output",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-golden/cases"
+      ],
+      "origin": "http://127.0.0.1:34253",
+      "state": "passed",
+      "started_at_utc": "2026-11-01T11:32:55Z",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-01T11:33:58Z"
+    },
+    {
+      "validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+      "compile_producer_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+      "kind": "risk-ui",
+      "engine": "webkit",
+      "expected_cases": 1,
+      "command": [
+        "node",
+        "/home/bradley/.codex/worktrees/45cd/glob2/platform/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/risk-playwright.config.js",
+        "--grep",
+        "Marathi game desktop.*threaded native",
+        "--project=webkit",
+        "--workers=1",
+        "--reporter=list,json",
+        "--output",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-risk-ui/cases"
+      ],
+      "origin": "http://127.0.0.1:34253",
+      "state": "failed",
+      "started_at_utc": "2026-11-01T11:33:58Z",
+      "exit_code": 1,
+      "finished_at_utc": "2026-11-01T11:37:52Z"
+    }
+  ],
+  "server_closed": true,
+  "scope": "6 current full per-tick golden matches plus3 representative actual MR UI cases; prior351 full12 carry is separate. No current WASM MR-specific unit or expanded scripting-corpus claim."
+}

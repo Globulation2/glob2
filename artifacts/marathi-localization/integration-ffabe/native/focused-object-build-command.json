@@ -1,0 +1,28 @@
+{
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-support_TestMain.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-support_Glob2Test.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-support_GlobalContainerSlot.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-support_EngineFixtures.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-support_LegacyResourceTypes.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-libgag_src_FontKerningTest.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-src_app_SystemLanguageTest.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-src_scripting_sgsl_LegacyScriptCoverageTest.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-src_scripting_javascript_ScriptCompatibilityTest.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-src_online_MatchSetupTest.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-src_net_turn_TurnEngineHarness.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-src_hud_GUIInteractionCoverageTest.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/engine-src_hud_touch_GameGUITouchHarness.o",
+    "-j4"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "deadline_seconds": 3600,
+  "started_unix": 1793530223.6105256,
+  "explicit_video_driver": null,
+  "exit_code": 0,
+  "elapsed_seconds": 250.51746702194214,
+  "log_sha256": "1df011e507476f7fa75b588f89a5d816b7b5c801784f59c2642a6f14e63ea789",
+  "capture_errors": []
+}

@@ -1,0 +1,30 @@
+{
+  "role": "independent adversarial final linguistic reread",
+  "source_sha256": "83c8ad6f00500ade4ac1aa67f340bfb0647f9d559356231d88d81ce6f0235f7e",
+  "source_files": {
+    "data/texts.keys.txt": "eab1a10b4428429b9bf76568b03edfc99b8b28353b1b5fc2e0f4307f1494d744",
+    "data/texts.en.txt": "e165c5672decb42ec6091e24a0c9a2d93a6e74c66f9461f40ed3b31d5d503932",
+    "platform/packages/i18n/locales/en.json": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "source_key": "[AI for all computer colonies]",
+  "source": "AI for all computer colonies",
+  "raw_google": "सर्व संगणक वसाहतींसाठी एआय",
+  "actual_canonical_target": "सर्व संगणकनियंत्रित वसाहतींसाठी एआय",
+  "native_catalog_sha256": "00905d1fe5c79a168ff1b425ae73f73648d3a1ad623ad7bc26a8196ba6d2c44b",
+  "source_english_sha256": "e165c5672decb42ec6091e24a0c9a2d93a6e74c66f9461f40ed3b31d5d503932",
+  "source_keys_sha256": "eab1a10b4428429b9bf76568b03edfc99b8b28353b1b5fc2e0f4307f1494d744",
+  "context_path": "src/game/screens/CustomGameScreen.cpp",
+  "context_line": 1499,
+  "context_sha256": "ed4cd5cc37e12525b18071f6a8d25f1653a6283c02d01ee99aa661f777820786",
+  "direct_context_observation": "Common players/ai dropdown invokes selectAIForComputers. Subjects include both Computer and Shared controller colonies; individual choices remain editable. The field is maxWidth720/textpoint and uses a wrapping field label.",
+  "judgment": "accept",
+  "rationale": "संगणकनियंत्रित explicitly conveys computer-controlled colonies, correcting the raw draft’s ambiguous संगणक वसाहती. सर्व retains applicability to all such colonies. एआय is an established Marathi technical acronym and a precise compact alternative to the existing full संगणकीय खेळाडू label; it names the strategy/controller choice rather than merging colony owners. No implicit promise that human-controlled colonies are changed.",
+  "reviewed_keys": [
+    "[AI for all computer colonies]"
+  ],
+  "reviewed_count": 1,
+  "source_equal_english_exceptions": [],
+  "limits": "Actual canonical1-key reread only. No fresh full native catalog reread or rendering assertion. Prior3411 translations unchanged and carry requires its separate proof."
+}

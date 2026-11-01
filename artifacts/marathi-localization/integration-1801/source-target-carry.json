@@ -1,0 +1,22 @@
+{
+  "source_revision": "cfd397b3ff15d7a92fdd398efa9c6a0f5762fc5f",
+  "integrated_master": "1801e6a832",
+  "source_sha256": "83c8ad6f00500ade4ac1aa67f340bfb0647f9d559356231d88d81ce6f0235f7e",
+  "catalog_sha256": {
+    "native": "00905d1fe5c79a168ff1b425ae73f73648d3a1ad623ad7bc26a8196ba6d2c44b",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "native_old_pairs_equal": 3411,
+  "online_catalog_byte_equal": true,
+  "online_keys": 2947,
+  "one_new_native_key": "[AI for all computer colonies]",
+  "current_native_languages": 40,
+  "current_MR_index": 39,
+  "old_actual_runtime_shipping_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "old_actual_runtime_validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "scope": "Latest master adds Bengali and broad UI inspection/tooling. No latest native/Android/WASM full rebuild or full GUI rerun claimed. Prior measurements remain actual producers. One new target independently reviewed and raster-probed; font/matrix functions unchanged. Latest catalog contracts/focused tests run on integrated files.",
+  "unchanged_font_inputs": {
+    "libgag/src/TrueTypeFont.cpp": "2be0914833bb1fa6581f2c6945e45533ddaae747db2461e9d5e1ed8b2a261c06",
+    "tools/TranslationPreviewHarness.cpp": "171b36c1115043602bb8b6b9fcf442a1d8bd39bf3a65b2b372a5abc63382797c"
+  }
+}

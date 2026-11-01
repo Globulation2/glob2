@@ -1,0 +1,12 @@
+........../usr/lib/python3.14/pathlib/__init__.py:636: ResourceWarning: unclosed file <_io.BufferedReader name='/home/bradley/.codex/worktrees/45cd/glob2/data/fonts/sans.ttf'>
+  return object.__new__(cls)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib/python3.14/pathlib/__init__.py:636: ResourceWarning: unclosed file <_io.BufferedReader name='/home/bradley/.codex/worktrees/45cd/glob2/browser/assets/sans-core.ttf'>
+  return object.__new__(cls)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+..................
+----------------------------------------------------------------------
+Ran 28 tests in 2705.740s
+
+OK
+web client: /tmp/tmpgd76zmwi/served (0 asset files)

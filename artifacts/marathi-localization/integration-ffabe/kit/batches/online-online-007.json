@@ -1,0 +1,812 @@
+{
+  "id": "online-online-007",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Invalid pagination.",
+      "key": "Invalid pagination.",
+      "source": "Invalid pagination."
+    },
+    {
+      "id": "online:Invalid payment signature.",
+      "key": "Invalid payment signature.",
+      "source": "Invalid payment signature."
+    },
+    {
+      "id": "online:Invalid provider.",
+      "key": "Invalid provider.",
+      "source": "Invalid provider."
+    },
+    {
+      "id": "online:Invalid range or payment mode.",
+      "key": "Invalid range or payment mode.",
+      "source": "Invalid range or payment mode."
+    },
+    {
+      "id": "online:Invalid recovery reason.",
+      "key": "Invalid recovery reason.",
+      "source": "Invalid recovery reason."
+    },
+    {
+      "id": "online:Invalid report cursor.",
+      "key": "Invalid report cursor.",
+      "source": "Invalid report cursor."
+    },
+    {
+      "id": "online:Invalid report identifier.",
+      "key": "Invalid report identifier.",
+      "source": "Invalid report identifier."
+    },
+    {
+      "id": "online:Invalid report status.",
+      "key": "Invalid report status.",
+      "source": "Invalid report status."
+    },
+    {
+      "id": "online:Invalid request body.",
+      "key": "Invalid request body.",
+      "source": "Invalid request body."
+    },
+    {
+      "id": "online:Invalid request identifier.",
+      "key": "Invalid request identifier.",
+      "source": "Invalid request identifier."
+    },
+    {
+      "id": "online:Invalid rig UV",
+      "key": "Invalid rig UV",
+      "source": "Invalid rig UV"
+    },
+    {
+      "id": "online:Invalid rig clip",
+      "key": "Invalid rig clip",
+      "source": "Invalid rig clip"
+    },
+    {
+      "id": "online:Invalid rig dimensions",
+      "key": "Invalid rig dimensions",
+      "source": "Invalid rig dimensions"
+    },
+    {
+      "id": "online:Invalid rig frame mapping",
+      "key": "Invalid rig frame mapping",
+      "source": "Invalid rig frame mapping"
+    },
+    {
+      "id": "online:Invalid rig hierarchy",
+      "key": "Invalid rig hierarchy",
+      "source": "Invalid rig hierarchy"
+    },
+    {
+      "id": "online:Invalid rig index",
+      "key": "Invalid rig index",
+      "source": "Invalid rig index"
+    },
+    {
+      "id": "online:Invalid rig influence bone",
+      "key": "Invalid rig influence bone",
+      "source": "Invalid rig influence bone"
+    },
+    {
+      "id": "online:Invalid rig inverse bind",
+      "key": "Invalid rig inverse bind",
+      "source": "Invalid rig inverse bind"
+    },
+    {
+      "id": "online:Invalid rig normal",
+      "key": "Invalid rig normal",
+      "source": "Invalid rig normal"
+    },
+    {
+      "id": "online:Invalid rig pose",
+      "key": "Invalid rig pose",
+      "source": "Invalid rig pose"
+    },
+    {
+      "id": "online:Invalid rig radius",
+      "key": "Invalid rig radius",
+      "source": "Invalid rig radius"
+    },
+    {
+      "id": "online:Invalid rig sample",
+      "key": "Invalid rig sample",
+      "source": "Invalid rig sample"
+    },
+    {
+      "id": "online:Invalid rig size",
+      "key": "Invalid rig size",
+      "source": "Invalid rig size"
+    },
+    {
+      "id": "online:Invalid rig track dimensions",
+      "key": "Invalid rig track dimensions",
+      "source": "Invalid rig track dimensions"
+    },
+    {
+      "id": "online:Invalid rig transform",
+      "key": "Invalid rig transform",
+      "source": "Invalid rig transform"
+    },
+    {
+      "id": "online:Invalid rig weights",
+      "key": "Invalid rig weights",
+      "source": "Invalid rig weights"
+    },
+    {
+      "id": "online:Invalid shape UV",
+      "key": "Invalid shape UV",
+      "source": "Invalid shape UV"
+    },
+    {
+      "id": "online:Invalid shape clip",
+      "key": "Invalid shape clip",
+      "source": "Invalid shape clip"
+    },
+    {
+      "id": "online:Invalid shape dimensions",
+      "key": "Invalid shape dimensions",
+      "source": "Invalid shape dimensions"
+    },
+    {
+      "id": "online:Invalid shape frame",
+      "key": "Invalid shape frame",
+      "source": "Invalid shape frame"
+    },
+    {
+      "id": "online:Invalid shape heading",
+      "key": "Invalid shape heading",
+      "source": "Invalid shape heading"
+    },
+    {
+      "id": "online:Invalid shape index",
+      "key": "Invalid shape index",
+      "source": "Invalid shape index"
+    },
+    {
+      "id": "online:Invalid shape scale",
+      "key": "Invalid shape scale",
+      "source": "Invalid shape scale"
+    },
+    {
+      "id": "online:Invalid shape size",
+      "key": "Invalid shape size",
+      "source": "Invalid shape size"
+    },
+    {
+      "id": "online:Invalid skin dimensions.",
+      "key": "Invalid skin dimensions.",
+      "source": "Invalid skin dimensions."
+    },
+    {
+      "id": "online:Invalid studio event cursor.",
+      "key": "Invalid studio event cursor.",
+      "source": "Invalid studio event cursor."
+    },
+    {
+      "id": "online:Invalid visibility.",
+      "key": "Invalid visibility.",
+      "source": "Invalid visibility."
+    },
+    {
+      "id": "online:Invalid webhook signature.",
+      "key": "Invalid webhook signature.",
+      "source": "Invalid webhook signature."
+    },
+    {
+      "id": "online:Invalid webhook.",
+      "key": "Invalid webhook.",
+      "source": "Invalid webhook."
+    },
+    {
+      "id": "online:Invalid {value0} camera",
+      "key": "Invalid {value0} camera",
+      "source": "Invalid {value0} camera"
+    },
+    {
+      "id": "online:Invalid {value0} dimensions",
+      "key": "Invalid {value0} dimensions",
+      "source": "Invalid {value0} dimensions"
+    },
+    {
+      "id": "online:Invalid {value0} normal camera",
+      "key": "Invalid {value0} normal camera",
+      "source": "Invalid {value0} normal camera"
+    },
+    {
+      "id": "online:Invalid {value0} scalar",
+      "key": "Invalid {value0} scalar",
+      "source": "Invalid {value0} scalar"
+    },
+    {
+      "id": "online:Invite not found",
+      "key": "Invite not found",
+      "source": "Invite not found"
+    },
+    {
+      "id": "online:It copies someone else’s work",
+      "key": "It copies someone else’s work",
+      "source": "It copies someone else’s work"
+    },
+    {
+      "id": "online:It is broken or unplayable",
+      "key": "It is broken or unplayable",
+      "source": "It is broken or unplayable"
+    },
+    {
+      "id": "online:It is offensive",
+      "key": "It is offensive",
+      "source": "It is offensive"
+    },
+    {
+      "id": "online:It may not be installed on this device. You can",
+      "key": "It may not be installed on this device. You can",
+      "source": "It may not be installed on this device. You can"
+    },
+    {
+      "id": "online:JSON",
+      "key": "JSON",
+      "source": "JSON"
+    },
+    {
+      "id": "online:JSON controls require the set workspace.",
+      "key": "JSON controls require the set workspace.",
+      "source": "JSON controls require the set workspace."
+    },
+    {
+      "id": "online:JSON value",
+      "key": "JSON value",
+      "source": "JSON value"
+    },
+    {
+      "id": "online:JavaScript API reference ↗",
+      "key": "JavaScript API reference ↗",
+      "source": "JavaScript API reference ↗"
+    },
+    {
+      "id": "online:JavaScript · {slot0}",
+      "key": "JavaScript · {slot0}",
+      "source": "JavaScript · {slot0}"
+    },
+    {
+      "id": "online:Join",
+      "key": "Join",
+      "source": "Join"
+    },
+    {
+      "id": "online:Join by code",
+      "key": "Join by code",
+      "source": "Join by code"
+    },
+    {
+      "id": "online:Join {p0}",
+      "key": "Join {p0}",
+      "source": "Join {p0}"
+    },
+    {
+      "id": "online:Keep available and resolve",
+      "key": "Keep available and resolve",
+      "source": "Keep available and resolve"
+    },
+    {
+      "id": "online:Keep history",
+      "key": "Keep history",
+      "source": "Keep history"
+    },
+    {
+      "id": "online:Keep lengths (must already match)",
+      "key": "Keep lengths (must already match)",
+      "source": "Keep lengths (must already match)"
+    },
+    {
+      "id": "online:Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+      "key": "Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+      "source": "Keep listening and comparison controls in Preview. Select a delivered version to change through chat."
+    },
+    {
+      "id": "online:Keep mine as a new skin",
+      "key": "Keep mine as a new skin",
+      "source": "Keep mine as a new skin"
+    },
+    {
+      "id": "online:Keep my current account",
+      "key": "Keep my current account",
+      "source": "Keep my current account"
+    },
+    {
+      "id": "online:Keep the melody, but make calm more spacious…",
+      "key": "Keep the melody, but make calm more spacious…",
+      "source": "Keep the melody, but make calm more spacious…"
+    },
+    {
+      "id": "online:Keep this family namespace. Import a fork to create a different family.",
+      "key": "Keep this family namespace. Import a fork to create a different family.",
+      "source": "Keep this family namespace. Import a fork to create a different family."
+    },
+    {
+      "id": "online:Known-cost subtotal",
+      "key": "Known-cost subtotal",
+      "source": "Known-cost subtotal"
+    },
+    {
+      "id": "online:Ladders",
+      "key": "Ladders",
+      "source": "Ladders"
+    },
+    {
+      "id": "online:Language",
+      "key": "Language",
+      "source": "Language"
+    },
+    {
+      "id": "online:Large",
+      "key": "Large",
+      "source": "Large"
+    },
+    {
+      "id": "online:Last {slot0} day",
+      "key": "Last {slot0} day",
+      "source": {
+        "one": "Last {slot0} day",
+        "other": "Last {slot0} days"
+      }
+    },
+    {
+      "id": "online:Last {slot0} days",
+      "key": "Last {slot0} days",
+      "source": "Last {slot0} days"
+    },
+    {
+      "id": "online:Late",
+      "key": "Late",
+      "source": "Late"
+    },
+    {
+      "id": "online:Layer",
+      "key": "Layer",
+      "source": "Layer"
+    },
+    {
+      "id": "online:Leaderboard",
+      "key": "Leaderboard",
+      "source": "Leaderboard"
+    },
+    {
+      "id": "online:Leaderboard participants",
+      "key": "Leaderboard participants",
+      "source": "Leaderboard participants"
+    },
+    {
+      "id": "online:Leaderboards",
+      "key": "Leaderboards",
+      "source": "Leaderboards"
+    },
+    {
+      "id": "online:Leave the room instead.",
+      "key": "Leave the room instead.",
+      "source": "Leave the room instead."
+    },
+    {
+      "id": "online:Leave this set and discard unsaved changes?",
+      "key": "Leave this set and discard unsaved changes?",
+      "source": "Leave this set and discard unsaved changes?"
+    },
+    {
+      "id": "online:Leave with unsaved changes? A recovery copy stays on this device.",
+      "key": "Leave with unsaved changes? A recovery copy stays on this device.",
+      "source": "Leave with unsaved changes? A recovery copy stays on this device."
+    },
+    {
+      "id": "online:Leave with unsaved edits? A recovery copy stays on this device.",
+      "key": "Leave with unsaved edits? A recovery copy stays on this device.",
+      "source": "Leave with unsaved edits? A recovery copy stays on this device."
+    },
+    {
+      "id": "online:Length repair",
+      "key": "Length repair",
+      "source": "Length repair"
+    },
+    {
+      "id": "online:Library",
+      "key": "Library",
+      "source": "Library"
+    },
+    {
+      "id": "online:Licence",
+      "key": "Licence",
+      "source": "Licence"
+    },
+    {
+      "id": "online:License",
+      "key": "License",
+      "source": "License"
+    },
+    {
+      "id": "online:License for this version",
+      "key": "License for this version",
+      "source": "License for this version"
+    },
+    {
+      "id": "online:License: {slot0}",
+      "key": "License: {slot0}",
+      "source": "License: {slot0}"
+    },
+    {
+      "id": "online:License: {slot0} · AI composition is disclosed.",
+      "key": "License: {slot0} · AI composition is disclosed.",
+      "source": "License: {slot0} · AI composition is disclosed."
+    },
+    {
+      "id": "online:Lift ban",
+      "key": "Lift ban",
+      "source": "Lift ban"
+    },
+    {
+      "id": "online:Light",
+      "key": "Light",
+      "source": "Light"
+    },
+    {
+      "id": "online:Like",
+      "key": "Like",
+      "source": "Like"
+    },
+    {
+      "id": "online:Likes",
+      "key": "Likes",
+      "source": "Likes"
+    },
+    {
+      "id": "online:Limit must be between 1 and 100.",
+      "key": "Limit must be between 1 and 100.",
+      "source": "Limit must be between 1 and 100."
+    },
+    {
+      "id": "online:Link a recoverable account first.",
+      "key": "Link a recoverable account first.",
+      "source": "Link a recoverable account first."
+    },
+    {
+      "id": "online:Link an active recoverable account before purchasing.",
+      "key": "Link an active recoverable account before purchasing.",
+      "source": "Link an active recoverable account before purchasing."
+    },
+    {
+      "id": "online:Link an active recoverable account to sync drafts.",
+      "key": "Link an active recoverable account to sync drafts.",
+      "source": "Link an active recoverable account to sync drafts."
+    },
+    {
+      "id": "online:Listening note",
+      "key": "Listening note",
+      "source": "Listening note"
+    },
+    {
+      "id": "online:Live AI playtest revision {value0}",
+      "key": "Live AI playtest revision {value0}",
+      "source": "Live AI playtest revision {value0}"
+    },
+    {
+      "id": "online:Live updates are unavailable. Refreshing saved work…",
+      "key": "Live updates are unavailable. Refreshing saved work…",
+      "source": "Live updates are unavailable. Refreshing saved work…"
+    },
+    {
+      "id": "online:Load account changes",
+      "key": "Load account changes",
+      "source": "Load account changes"
+    },
+    {
+      "id": "online:Load earlier conversation and versions",
+      "key": "Load earlier conversation and versions",
+      "source": "Load earlier conversation and versions"
+    },
+    {
+      "id": "online:Load more",
+      "key": "Load more",
+      "source": "Load more"
+    },
+    {
+      "id": "online:Load more drafts",
+      "key": "Load more drafts",
+      "source": "Load more drafts"
+    },
+    {
+      "id": "online:Loading ",
+      "key": "Loading ",
+      "source": "Loading "
+    },
+    {
+      "id": "online:Loading code editor…",
+      "key": "Loading code editor…",
+      "source": "Loading code editor…"
+    },
+    {
+      "id": "online:Loading comparison…",
+      "key": "Loading comparison…",
+      "source": "Loading comparison…"
+    },
+    {
+      "id": "online:Loading drafts…",
+      "key": "Loading drafts…",
+      "source": "Loading drafts…"
+    },
+    {
+      "id": "online:Loading editor…",
+      "key": "Loading editor…",
+      "source": "Loading editor…"
+    },
+    {
+      "id": "online:Loading engine…",
+      "key": "Loading engine…",
+      "source": "Loading engine…"
+    },
+    {
+      "id": "online:Loading game…",
+      "key": "Loading game…",
+      "source": "Loading game…"
+    },
+    {
+      "id": "online:Loading map preview…",
+      "key": "Loading map preview…",
+      "source": "Loading map preview…"
+    },
+    {
+      "id": "online:Loading matches…",
+      "key": "Loading matches…",
+      "source": "Loading matches…"
+    },
+    {
+      "id": "online:Loading music…",
+      "key": "Loading music…",
+      "source": "Loading music…"
+    },
+    {
+      "id": "online:Loading preview…",
+      "key": "Loading preview…",
+      "source": "Loading preview…"
+    },
+    {
+      "id": "online:Loading reports…",
+      "key": "Loading reports…",
+      "source": "Loading reports…"
+    },
+    {
+      "id": "online:Loading revision comparison…",
+      "key": "Loading revision comparison…",
+      "source": "Loading revision comparison…"
+    },
+    {
+      "id": "online:Loading sets…",
+      "key": "Loading sets…",
+      "source": "Loading sets…"
+    },
+    {
+      "id": "online:Loading set…",
+      "key": "Loading set…",
+      "source": "Loading set…"
+    },
+    {
+      "id": "online:Loading the inspected version…",
+      "key": "Loading the inspected version…",
+      "source": "Loading the inspected version…"
+    },
+    {
+      "id": "online:Loading this version…",
+      "key": "Loading this version…",
+      "source": "Loading this version…"
+    },
+    {
+      "id": "online:Loading your building workspace…",
+      "key": "Loading your building workspace…",
+      "source": "Loading your building workspace…"
+    },
+    {
+      "id": "online:Loading your skins…",
+      "key": "Loading your skins…",
+      "source": "Loading your skins…"
+    },
+    {
+      "id": "online:Loading…",
+      "key": "Loading…",
+      "source": "Loading…"
+    },
+    {
+      "id": "online:Local accounts are not enabled on this instance.",
+      "key": "Local accounts are not enabled on this instance.",
+      "source": "Local accounts are not enabled on this instance."
+    },
+    {
+      "id": "online:Local accounts are not enabled.",
+      "key": "Local accounts are not enabled.",
+      "source": "Local accounts are not enabled."
+    },
+    {
+      "id": "online:Loop continuity",
+      "key": "Loop continuity",
+      "source": "Loop continuity"
+    },
+    {
+      "id": "online:Lost",
+      "key": "Lost",
+      "source": "Lost"
+    },
+    {
+      "id": "online:Made",
+      "key": "Made",
+      "source": "Made"
+    },
+    {
+      "id": "online:Made for your next match.",
+      "key": "Made for your next match.",
+      "source": "Made for your next match."
+    },
+    {
+      "id": "online:Made with",
+      "key": "Made with",
+      "source": "Made with"
+    },
+    {
+      "id": "online:Main",
+      "key": "Main",
+      "source": "Main"
+    },
+    {
+      "id": "online:Main material",
+      "key": "Main material",
+      "source": "Main material"
+    },
+    {
+      "id": "online:Make public",
+      "key": "Make public",
+      "source": "Make public"
+    },
+    {
+      "id": "online:Malformed Authorization header.",
+      "key": "Malformed Authorization header.",
+      "source": "Malformed Authorization header."
+    },
+    {
+      "id": "online:Manage",
+      "key": "Manage",
+      "source": "Manage"
+    },
+    {
+      "id": "online:Manage credits",
+      "key": "Manage credits",
+      "source": "Manage credits"
+    },
+    {
+      "id": "online:Manage published family",
+      "key": "Manage published family",
+      "source": "Manage published family"
+    },
+    {
+      "id": "online:Manage the credits for your in-game AI commander.",
+      "key": "Manage the credits for your in-game AI commander.",
+      "source": "Manage the credits for your in-game AI commander."
+    },
+    {
+      "id": "online:Manifest",
+      "key": "Manifest",
+      "source": "Manifest"
+    },
+    {
+      "id": "online:Manifest JSON: {slot0}",
+      "key": "Manifest JSON: {slot0}",
+      "source": "Manifest JSON: {slot0}"
+    },
+    {
+      "id": "online:Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "key": "Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "source": "Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision."
+    },
+    {
+      "id": "online:Manual blend · Calm → Building → Combat",
+      "key": "Manual blend · Calm → Building → Combat",
+      "source": "Manual blend · Calm → Building → Combat"
+    },
+    {
+      "id": "online:Map",
+      "key": "Map",
+      "source": "Map"
+    },
+    {
+      "id": "online:Map Studio",
+      "key": "Map Studio",
+      "source": "Map Studio"
+    },
+    {
+      "id": "online:Map build",
+      "key": "Map build",
+      "source": "Map build"
+    },
+    {
+      "id": "online:Map build: {value0}",
+      "key": "Map build: {value0}",
+      "source": "Map build: {value0}"
+    },
+    {
+      "id": "online:Map canvas",
+      "key": "Map canvas",
+      "source": "Map canvas"
+    },
+    {
+      "id": "online:Map comparison",
+      "key": "Map comparison",
+      "source": "Map comparison"
+    },
+    {
+      "id": "online:Map credits",
+      "key": "Map credits",
+      "source": "Map credits"
+    },
+    {
+      "id": "online:Map design conversation",
+      "key": "Map design conversation",
+      "source": "Map design conversation"
+    },
+    {
+      "id": "online:Map designer",
+      "key": "Map designer",
+      "source": "Map designer"
+    },
+    {
+      "id": "online:Map details",
+      "key": "Map details",
+      "source": "Map details"
+    },
+    {
+      "id": "online:Map file (.map or .map.gz)",
+      "key": "Map file (.map or .map.gz)",
+      "source": "Map file (.map or .map.gz)"
+    },
+    {
+      "id": "online:Map file (.map or .map.gz, from the game or its map editor)",
+      "key": "Map file (.map or .map.gz, from the game or its map editor)",
+      "source": "Map file (.map or .map.gz, from the game or its map editor)"
+    },
+    {
+      "id": "online:Map generator",
+      "key": "Map generator",
+      "source": "Map generator"
+    },
+    {
+      "id": "online:Map generators",
+      "key": "Map generators",
+      "source": "Map generators"
+    },
+    {
+      "id": "online:Map library",
+      "key": "Map library",
+      "source": "Map library"
+    },
+    {
+      "id": "online:Map lists",
+      "key": "Map lists",
+      "source": "Map lists"
+    },
+    {
+      "id": "online:Map location {value0}, {value1}",
+      "key": "Map location {value0}, {value1}",
+      "source": "Map location {value0}, {value1}"
+    },
+    {
+      "id": "online:Map page",
+      "key": "Map page",
+      "source": "Map page"
+    },
+    {
+      "id": "online:Map preview · validation did not pass",
+      "key": "Map preview · validation did not pass",
+      "source": "Map preview · validation did not pass"
+    },
+    {
+      "id": "online:Map projects",
+      "key": "Map projects",
+      "source": "Map projects"
+    }
+  ]
+}

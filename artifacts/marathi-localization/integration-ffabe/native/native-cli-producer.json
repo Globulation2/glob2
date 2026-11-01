@@ -1,0 +1,7 @@
+{
+  "actual_official_build_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "binary": "/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+  "binary_sha256": "7f8ccbe4fd12ab706c7fe6a86e72dc20794f273cf00fd01daf61c84f440246e8",
+  "source_carry": "Current cdd is fixture-only follow-up to clean e481; official builder reuses exact unchanged production objects and compiles the actual entry point.",
+  "command_record": "explicit-native-cli-build-command.json"
+}

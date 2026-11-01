@@ -1,0 +1,80 @@
+{
+  "source_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "recommendation": "PASS Android metadata-only official package followup; previous64fullUIevidence remains scoped64 and carried only by exact unchanged-input proof.",
+  "unsigned_apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+    "sha256": "3bbf8393c13b11de400b7c56fa444b34d24d40c8f852c884b66339896b7d7bfd"
+  },
+  "developer_signed_release_apk": {
+    "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk",
+    "sha256": "70cc07f944ecf3a24676af2db9a593b607682f55aa6b05f57ff62145d8565d91"
+  },
+  "installed_apk_sha256": "70cc07f944ecf3a24676af2db9a593b607682f55aa6b05f57ff62145d8565d91",
+  "native_elf_sha256": "5df17ac60c1b8824ebca6981d1cf5ac2feb2ca3531e1788444d022858f4287c3",
+  "native_elf_exact_same_as_validated64": true,
+  "packaged_completion_line": "data/texts.mr.txt",
+  "objects_unchanged": 776,
+  "objects_total": 776,
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/android/ui-qa/main-after-verified-launch.png",
+      "sha256": "9a1d9d2b4c699bf9ca1101ae90d8e66ebe13b5b7c60cb61c3a55de35576b6293",
+      "assessment": "Actualmain clear shapedMarathi."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/android/ui-qa/category-picker.png",
+      "sha256": "d9f4476e42f46966859b54f20170c22a4da3cec9f515f92be94045601a55c377",
+      "assessment": "Actualcategorydropdown Languageandplayeroptionclear."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/android/ui-qa/player-language-complete.png",
+      "sha256": "4addbb20fe386eac9592403f6b0071485a0ead11d97065a5562530158cfd0e68",
+      "assessment": "Actualselectedlanguage Marathi मराठी with no incomplete suffix; full rowclear andunclipped."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/lifecycle/startup.png",
+      "sha256": "a68c2a99e81fd17eb52174f726356f501787880c78c742b80d9e9a0318e83e5d",
+      "assessment": "Actualstartup clearMarathimenulabels."
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/lifecycle/relaunched.png",
+      "sha256": "e3d90582270c44d94b250738bf4b0cd0a03fc0a275e125a942caf791c85bd019",
+      "assessment": "Actualfreshprocess main clearMarathilabels after persistedprofile."
+    }
+  ],
+  "checks": [
+    "Official clean187dependencies+releasebuildsuccess",
+    "PackagedMR3411/catalog/font/XML/recordingnotice bytes verified againstsources",
+    "Packagedcompletioninventoryexactcanonicaldata/texts.mr.txt withoutleadingstar",
+    "SignedreleaseAPKbytesexactinstalledbase.apk",
+    "Native startup/lifecycle7of7pass inclsystemmr-IN selectionandprofilepersistence",
+    "ActualPlayer selectedlanguage row reads Marathi मराठी and fits at390x844"
+  ],
+  "limits": [
+    "No fullfresh statistics/terrain rerun; exactsame nativeELF/code/catalog/font/XML as64 proven separately.",
+    "No physicalphone,iOS,performance,recordingorcomplete-match verification claimed.",
+    "Initial manuallyrequested settings-before-player.png capturedlauncherGoogle search because smokecleansupownapp; retaineddiagnostic, notappsuccess. Relaunchedactualapp andusedactualsettingsgear/categorytouchroute.",
+    "A stale exactMainMenuScreen logwait was interrupted; actualnativeMain screenshot was thenviewed andused forUIroute."
+  ],
+  "cleanup": "completed: exactownedcontainer removed, exactisolatedADBserver stopped, taskAVD/APKs/evidence preserved; Dockerauto-remove immediateinspectionrace retained honestly in cleanup adaptation.",
+  "evidence": {
+    "artifacts/marathi-localization/integration-bc8/metadata-followup/android/producer-provenance.json": "56fff22335933c90e5c9c973786525c16b59e90c6212898bbcc01ef412998562",
+    "artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/apk-and-install.json": "fe6d718e3fd22c2b4213aadb5e5780809c01f74cdad010a29c4c8e349c1d8f2e",
+    "artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/lifecycle/result.json": "0811594ab7770163a9c198fbe2cf7f77c58e4cf5c43506c68927c9a009df746f",
+    "artifacts/marathi-localization/integration-bc8/metadata-followup/android/ui-qa/actions.json": "62cfdc11c571e994fe65ca8b9bab6bca341952b783e8913c92e22bebcc775c24",
+    "artifacts/marathi-localization/integration-bc8/metadata-followup/android/runtime-cleanup.json": "9b09f7d65afd879433a5e61307dfdc2d0f90fb8d1ef462977283ad805d4e8163",
+    "artifacts/marathi-localization/integration-bc8/metadata-followup/android/apk-member-carry.json": "163cba9ec55d21e901c414a6bf773f1822ff441266df79e3ada09a2da9b090ac"
+  },
+  "source_carry": {
+    "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/source-carry.json",
+    "sha256": "132cd4c2164b180607af697c332dfca66af8888749f006bea69731091ef090c6"
+  },
+  "prior_full_android_evidence": {
+    "path": "artifacts/marathi-localization/integration-bc8/android/gate-recommendation.json",
+    "sha256": "adbf1a4bee00ad649ef11e6f6a04ae5e0bb903bf32f1eb569a6edb095526c2b7",
+    "producer": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+    "not_relabeled": true
+  },
+  "working_tree_status_at_final_report": "M browser/tests/marathi.spec.js",
+  "final_report_status_note": "Parent browser test-only edit began after official Android build/install clean assertions passed; no Android production inputchanged. Not represented as cleanfinalworkingtree."
+}

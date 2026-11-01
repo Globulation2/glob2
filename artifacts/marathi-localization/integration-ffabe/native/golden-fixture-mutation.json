@@ -1,0 +1,60 @@
+{
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+    "sourceStatus": [],
+    "sourceTreeSha256": "93ef8b0c4f01938a6d6a9cc634089adf8954552b03c1dff9253ab144d1afcbdd"
+  },
+  "actual_binary": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-engine-tests",
+  "actual_binary_sha256": "95c7ec6683fb834e0e152819ef18c2926eb2b87b842b0b24f93c2e2006c8f23a",
+  "official_object_build_completion": "focused-object-build-command.json",
+  "official_link_completion": "focused-link-command.json",
+  "before": {
+    "test/fixtures/multiplayer/FourSquares1.g2mr": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+    "test/fixtures/multiplayer/FourSquares1.verify-trace.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+  },
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-build",
+    "--binary",
+    "engine",
+    "--filter",
+    "TurnEngineHarness/the committed*",
+    "--update-fixtures",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/golden-update",
+    "--junit",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/golden-update/junit.xml",
+    "--timeout",
+    "600",
+    "-j1",
+    "--verbose"
+  ],
+  "scope": "Actual unchanged official committed-match registry case, no substitute generator/checksum implementation.",
+  "exit_code": 0,
+  "passed_cases": [
+    {
+      "classname": "TurnEngineHarness",
+      "name": "the committed match record verifies to the committed checksum trace [network-sim][golden]",
+      "time": "60.872",
+      "status": "run"
+    }
+  ],
+  "after": {
+    "test/fixtures/multiplayer/FourSquares1.g2mr": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+    "test/fixtures/multiplayer/FourSquares1.verify-trace.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+  },
+  "root_fixture_commit_required": true,
+  "actual_changed_paths": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ]
+}

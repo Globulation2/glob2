@@ -1,0 +1,19 @@
+{
+  "current_validation_head": "0e6e243e098cf32afbf303937ba4f55384685f37",
+  "actual_64_producer": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "actual_registration_producer": "187ea34de87838911a42321fd52925d51da475b9",
+  "diff64_to_current": [
+    "browser/tests/marathi.spec.js",
+    "data/texts.incomplete.txt"
+  ],
+  "diff187_to_current": [
+    "browser/tests/marathi.spec.js"
+  ],
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "canonical_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "carry": "No font/render/C++/English/source-text/catalog/runtime dependency changes between64 and current. Only MR completeness flag is a shipping data change, verified by the fresh official187 build + actual registered-resource captures. Browser fixture-only f8 source is not a native shipping-input change. No producer is relabeled.",
+  "runtime_registration_transition": "registration-metadata-transition.json"
+}

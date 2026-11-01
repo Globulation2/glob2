@@ -1,0 +1,19 @@
+{
+  "revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "argv": [
+    "/usr/lib/chatgpt/resources/cua_node/bin/node",
+    "/home/bradley/.codex/worktrees/45cd/glob2/platform/node_modules/@playwright/test/cli.js",
+    "test",
+    "--config",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/online/config.cjs",
+    "--grep",
+    "home loads and renders mr$",
+    "--project=chromium-desktop",
+    "--project=firefox-phone",
+    "--project=webkit-phone"
+  ],
+  "exit_code": 0,
+  "scope": "Actual current production website:3currentMRhomecases=Chromiumdesktop+Firefoxphone+WebKitphone; old12unchangedhome/switchflowshaveexactsource/valuecarry; no browser-game runtime claim.",
+  "config_sha256": "60fd491ad44e4e40c9ceb5d6cf4890ddb8ce7376eacad0c38357fbdb1d3d843a",
+  "log_sha256": "0dc256b1650289fcc0d70d98dcb027cb474c8de533b8018102a24cc5fecd1671"
+}

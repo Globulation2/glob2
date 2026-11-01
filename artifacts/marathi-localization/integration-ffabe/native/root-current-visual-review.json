@@ -1,0 +1,17 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T11:57:27.602090+00:00",
+  "shipping_code_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "validation_fixture_epoch": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/settings-player/settings-player.png",
+      "sha256": "7432283e3db79b33e957daddc66911d60f31108095bcbb56e09940c465bfc9e5"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/native/render-refined/1280x900/gameplay/stats-overview-large.png",
+      "sha256": "6fb536bcec2f9c48223ee088984ddb2665fb753c7d9d8db82888ecdb756b2266"
+    }
+  ],
+  "assessment": "Actually viewed correctedcompactregisteredPlayer anddesktop enlargedstats images. Nativeमराठीselectedcomplete, labels/buttons shapedclearly andfit. Desktopआढावा standalonefullrowabove2+2topics verifiedvisually; longbuildingaccesslabel wrapsinscrollingpanel. Thisfreshloadedgamestate sayswaitingforstatistics, nofabricatedhistoryclaim. Priorblackcompactreadbackandwrongpanelimages areREJECTED, notincludedasvisualpasses. Compactenlargedwrapperfailure remainsa fixturecoverage limit; actualAndroid150%branch separatelyviewedclear. No newsourcechanges."
+}

@@ -1,0 +1,59 @@
+{
+  "results": [
+    {
+      "revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+      "compile_producer": "e4811dcde89d6393918c36a99d34242ef3be8178",
+      "engine": "firefox",
+      "variant": "serial",
+      "command": [
+        "node",
+        "/home/bradley/.codex/worktrees/45cd/glob2/platform/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-fixed-tutorial-playwright.config.js",
+        "--project=firefox",
+        "--grep",
+        "Marathi game phone.*serial native",
+        "--workers=1",
+        "--reporter=list,json",
+        "--output",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-ui-closure/firefox/cases"
+      ],
+      "origin": "http://127.0.0.1:35629",
+      "state": "passed",
+      "expected_cases": 1,
+      "scope": "Representative current MR serial UI/layout closure; prior actual threaded GUI failures retained as explicit limits.",
+      "started_at_utc": "2026-11-01T11:41:10Z",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-01T11:44:19Z"
+    },
+    {
+      "revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+      "compile_producer": "e4811dcde89d6393918c36a99d34242ef3be8178",
+      "engine": "webkit",
+      "variant": "serial",
+      "command": [
+        "node",
+        "/home/bradley/.codex/worktrees/45cd/glob2/platform/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-risk-playwright.config.js",
+        "--project=webkit",
+        "--grep",
+        "Marathi game desktop.*serial native",
+        "--workers=1",
+        "--reporter=list,json",
+        "--output",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-ui-closure/webkit/cases"
+      ],
+      "origin": "http://127.0.0.1:35629",
+      "state": "passed",
+      "expected_cases": 1,
+      "scope": "Representative current MR serial UI/layout closure; prior actual threaded GUI failures retained as explicit limits.",
+      "started_at_utc": "2026-11-01T11:44:19Z",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-01T11:46:56Z"
+    }
+  ],
+  "server_closed": true
+}

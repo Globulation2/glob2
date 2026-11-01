@@ -1,0 +1,4 @@
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (61.0s)
+
+1 passed, 0 failed, 0 skipped (61.0s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/golden-update/junit.xml (1 cases)

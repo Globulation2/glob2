@@ -1,0 +1,19 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T07:40:22.143828+00:00",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "signed_and_installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/startup.png",
+      "sha256": "19c969bfc7138a2d6d63cebd380e5c43292933197314bce3117e4f56a4d0594f"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/rendering/lifecycle/settings.png",
+      "sha256": "0d537972e10770f6962876fa9f50999f6fa2930a7bb1a76becc17ad54f6a65e5"
+    }
+  ],
+  "assessment": "Actually viewed these current64 main-menu anddisplay/settings frames at390x844. Devanagari conjuncts/matras clear, labels fit, descriptionlines wrap insidepanels; no tofu or textclipping observed. Normalverticalscrolling isvisible. This root review covers only these2namedframes, not all lifecycle/audio/newstats/terrain views.",
+  "findings": []
+}

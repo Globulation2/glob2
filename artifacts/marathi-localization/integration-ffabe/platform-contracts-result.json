@@ -1,0 +1,12 @@
+{
+  "revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "command": [
+    "npm",
+    "run",
+    "i18n:check"
+  ],
+  "cwd": "platform",
+  "exit_code": 0,
+  "node": "/usr/lib/chatgpt/resources/cua_node/bin/node",
+  "log_sha256": "012394bc07e5ff534d2f84ffa77656dcf3710efc0387a017fdbabf88d5123424"
+}

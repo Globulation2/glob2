@@ -1,0 +1,132 @@
+{
+  "inspections": [
+    {
+      "path": "1280x900/matrix/font-10-scale-1-page-111.png",
+      "sha256": "6cbf1e02fc54da2dc48344431733d9f8f24c0aa210117a3a7b409a71f454a1fe",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact page. The newly added statistics/terrain labels and neighbouring Marathi text show intact Devanagari conjuncts, vowel marks and punctuation with no visible tofu, overlapping lines or cropped endings. These six listed pages collectively cover all16 new values at10px/scale1,13px/scale2 and20px/scale2; other combinations have exhaustive structured measurements."
+    },
+    {
+      "path": "1280x900/matrix/font-10-scale-1-page-112.png",
+      "sha256": "abdcf8a2d0eeb2b6d804590bc5ce0e16533d84c5580ea234593fe7e65e5274fb",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact page. The newly added statistics/terrain labels and neighbouring Marathi text show intact Devanagari conjuncts, vowel marks and punctuation with no visible tofu, overlapping lines or cropped endings. These six listed pages collectively cover all16 new values at10px/scale1,13px/scale2 and20px/scale2; other combinations have exhaustive structured measurements."
+    },
+    {
+      "path": "1280x900/matrix/font-13-scale-2-page-119.png",
+      "sha256": "ae000247145790e204a2f6567923d495edce959125fe2f1f8551cd41a4f3a65d",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact page. The newly added statistics/terrain labels and neighbouring Marathi text show intact Devanagari conjuncts, vowel marks and punctuation with no visible tofu, overlapping lines or cropped endings. These six listed pages collectively cover all16 new values at10px/scale1,13px/scale2 and20px/scale2; other combinations have exhaustive structured measurements."
+    },
+    {
+      "path": "1280x900/matrix/font-13-scale-2-page-120.png",
+      "sha256": "578d169fee52b9c60955e4719047174d8f0fdeaec9353936ca21a00cf659b9a1",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact page. The newly added statistics/terrain labels and neighbouring Marathi text show intact Devanagari conjuncts, vowel marks and punctuation with no visible tofu, overlapping lines or cropped endings. These six listed pages collectively cover all16 new values at10px/scale1,13px/scale2 and20px/scale2; other combinations have exhaustive structured measurements."
+    },
+    {
+      "path": "1280x900/matrix/font-20-scale-2-page-161.png",
+      "sha256": "2607d22584b5425b650b86d52e8faaa4f27b21c33d671eb20073666727b5e9bb",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact page. The newly added statistics/terrain labels and neighbouring Marathi text show intact Devanagari conjuncts, vowel marks and punctuation with no visible tofu, overlapping lines or cropped endings. These six listed pages collectively cover all16 new values at10px/scale1,13px/scale2 and20px/scale2; other combinations have exhaustive structured measurements."
+    },
+    {
+      "path": "1280x900/matrix/font-20-scale-2-page-162.png",
+      "sha256": "457bd4b058ee4988082389d932ffbe17e8d2f35ad1f5e370c1b8ac65070cffef",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact page. The newly added statistics/terrain labels and neighbouring Marathi text show intact Devanagari conjuncts, vowel marks and punctuation with no visible tofu, overlapping lines or cropped endings. These six listed pages collectively cover all16 new values at10px/scale1,13px/scale2 and20px/scale2; other combinations have exhaustive structured measurements."
+    },
+    {
+      "path": "390x844/matrix/font-20-scale-2-page-222.png",
+      "sha256": "8da1df1134f8c69d040111a49e3552b2976f28adf4ec5793a5c7d82aa5d3487a",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact20px/scale2 matrix page. Together these two pages show all16 new values with intact conjuncts/vowel marks and full wrapped missing-reading/dune-sand text; no visible tofu, overlapping lines or cropped endings."
+    },
+    {
+      "path": "390x844/matrix/font-20-scale-2-page-223.png",
+      "sha256": "4771526a7a44f4d55214abada6a9061f7b7cc4acc0ea11c114fb1e058ab39d00",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact20px/scale2 matrix page. Together these two pages show all16 new values with intact conjuncts/vowel marks and full wrapped missing-reading/dune-sand text; no visible tofu, overlapping lines or cropped endings."
+    },
+    {
+      "path": "390x844/tutorial-introduction/tutorial-introduction.png",
+      "sha256": "60fff396149e30dbfffca3f5ca02ac01cde972bc971971676a0081fb9bec8d6e",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    },
+    {
+      "path": "390x844/tutorial-food-supply/tutorial-food-supply.png",
+      "sha256": "1fc97f0c0311a3dd10d9b030b488a88506c88cbaf820a07eaa9b7ff9c231d9d3",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    },
+    {
+      "path": "390x844/tutorial-healing/tutorial-healing.png",
+      "sha256": "f69a0ee72221ab2a8392a72ba8e3c553b669c19565f5b2617c81d4e4d71a82d1",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    },
+    {
+      "path": "390x844/tutorial-walking-training/tutorial-walking-training.png",
+      "sha256": "94df4cf9a41fe6b4647aa32585ce0c8e42df8409a0b276532b457c605db34509",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    },
+    {
+      "path": "390x844/tutorial-swimming/tutorial-swimming.png",
+      "sha256": "883186baf49b7612de2eb639b12eb2dc95cd5bff630d70886dd047bd0c76cc3c",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    },
+    {
+      "path": "390x844/tutorial-schools/tutorial-schools.png",
+      "sha256": "3a96d8f8e8ce1763e850bfb77e635d0803edeb99bddc63f7cf58af3987c627a8",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    },
+    {
+      "path": "390x844/tutorial-upgrades/tutorial-upgrades.png",
+      "sha256": "7c9f5603600283db1202899d2d27d1753e6d0866c330017e610c7164abf5f342",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim. In upgrades the secondary map label retains a right margin (source clamps it; focused pixel inspection found no bright text at the final columns)."
+    },
+    {
+      "path": "390x844/tutorial-warrior-training/tutorial-warrior-training.png",
+      "sha256": "4bc5ec854600f53b57be4bcc13a00163f9c4ee8fe61579518811febbc8428053",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    },
+    {
+      "path": "390x844/tutorial-fortifications/tutorial-fortifications.png",
+      "sha256": "6f489aa16dab6b28edfc621e9f049ff2cbc16da5a327c9f591374e83e5076dc7",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    },
+    {
+      "path": "390x844/tutorial-defensive-tactics/tutorial-defensive-tactics.png",
+      "sha256": "db73173e478664923cc49baaa2e95fed1b655e93a3bdea0d4fea9edfe5758ca2",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact compact initial tutorial guidance image. Marathi heading/instruction and visible controls fit with intact shaping. This is the real first lesson state after any actual automatic briefing; no completion or later objective-flow claim."
+    }
+  ],
+  "scope": "Only listed exact images actually inspected; no claim that every matrix image was human-read. Structured matrix diagnostics cover every sample/line separately.",
+  "count": 18
+}

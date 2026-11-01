@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:94714) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [webkit] › browser/tests/determinism.spec.js:65:1 › WebAssembly verifies the committed match record (serial) (23.4s)
+  ✓  2 [webkit] › browser/tests/determinism.spec.js:65:1 › WebAssembly verifies the committed match record (threaded) (26.6s)
+
+  2 passed (57.9s)

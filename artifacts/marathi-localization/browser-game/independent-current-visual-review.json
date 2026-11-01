@@ -1,0 +1,71 @@
+{
+  "utc": "2026-11-01T11:49:20.161057+00:00",
+  "reviewer": "semantic_review",
+  "inspected_current_images": [
+    {
+      "path": "risk-ui/chromium/serial/desktop/main.png",
+      "sha256": "ae4967bc141af32af5a5aabdc1a141525e6c1bc49f535471feb16f2d9a0744c3",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Clear Marathi shaped text; complete मराठी selector and visible labels fit."
+    },
+    {
+      "path": "risk-ui/chromium/serial/desktop/settings.png",
+      "sha256": "00feac123a059217a05f18e245da45e30e198a55cbaa8baeb1fc3c29cf93ef82",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Clear Marathi shaped text; complete मराठी selector and visible labels fit."
+    },
+    {
+      "path": "risk-ui/chromium/serial/desktop/statistics-overview.png",
+      "sha256": "6ab14ac99de03981e74d56f3bb2aedb2719b2d54ee6cb6316cfd25026a6e766d",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Narrow sidebar Overview occupies its own full row; all5topic labels and long metric labels fit, with natural wrapping."
+    },
+    {
+      "path": "risk-ui-serial-fixed-tutorial/firefox/serial/phone/main.png",
+      "sha256": "1d3bff99acf0f0b1b49a01df980b007642af4e7ba37666d28c9c50c79b8f357a",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Clear Marathi shaped text; complete मराठी selector and visible labels fit."
+    },
+    {
+      "path": "risk-ui-serial-fixed-tutorial/firefox/serial/phone/settings.png",
+      "sha256": "486210819de0649c3955ea51631563165743718b882f10abb8d6acf78a367833",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Clear Marathi shaped text; complete मराठी selector and visible labels fit."
+    },
+    {
+      "path": "risk-ui-serial-fixed-tutorial/firefox/serial/phone/statistics-overview.png",
+      "sha256": "f4706479a1c39cd6ee455c58e16fdabe7ef6a06bc3d2614e84f6b071057d7ebf",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Actual phone3+2topic arrangement fits; no narrow-branch claim. Marathi labels/instruction remain clear. Thin map stripes visible outside opaque stats sheet."
+    },
+    {
+      "path": "risk-ui-serial/webkit/serial/desktop/main.png",
+      "sha256": "ab2a8a6f0fc7c933af20931f3f702e4817ba532eafbf8b60fd99fa42abd27e73",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Clear Marathi shaped text; complete मराठी selector and visible labels fit."
+    },
+    {
+      "path": "risk-ui-serial/webkit/serial/desktop/settings.png",
+      "sha256": "653a31158210aa89bf8dbf87841f7449c2ddf4b7b8edf5a52a47f9c45763aeef",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Clear Marathi shaped text; complete मराठी selector and visible labels fit."
+    },
+    {
+      "path": "risk-ui-serial/webkit/serial/desktop/statistics-overview.png",
+      "sha256": "1baae8610e95e456ac97713d9b052e837d528606d548f05ff79b87c3926b9328",
+      "reviewer": "semantic_review",
+      "actual_visual_inspection": true,
+      "assessment": "Narrow sidebar Overview occupies its own full row; all5topic labels and long metric labels fit, with natural wrapping."
+    }
+  ],
+  "scope": "All9 images were actually opened and visually read. No native-human certification.",
+  "known_map_lines": "Current Firefox serial tutorial phone shows thin map stripes outside opaque cards. Prior351 same-runtime English/MR captures also show stripes, but no current exact English reproduction or causal attribution was performed. This does not classify the separate random-match stall."
+}

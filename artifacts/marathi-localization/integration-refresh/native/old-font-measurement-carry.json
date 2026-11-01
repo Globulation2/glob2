@@ -1,0 +1,116 @@
+{
+  "old_producer_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "new_source_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "unchanged_critical_sources": [
+    {
+      "path": "libgag/src/TrueTypeFont.cpp",
+      "old_and_current_sha256": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b"
+    },
+    {
+      "path": "libgag/include/TrueTypeFont.h",
+      "old_and_current_sha256": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c"
+    },
+    {
+      "path": "libgag/src/BidiText.cpp",
+      "old_and_current_sha256": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7"
+    },
+    {
+      "path": "libgag/include/BidiText.h",
+      "old_and_current_sha256": "699d6e008787248c8978c36402a3d7b316e65028232496aa5cae188cac27f3df"
+    },
+    {
+      "path": "libgag/src/ui/TextLayout.cpp",
+      "old_and_current_sha256": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd"
+    },
+    {
+      "path": "libgag/include/ui/TextLayout.h",
+      "old_and_current_sha256": "6cb805b24332bb38bde8525eeea77fa0917cea3b88ae4561bc44c00b08975969"
+    },
+    {
+      "path": "libgag/src/DrawableSurface.cpp",
+      "old_and_current_sha256": "4ee12e882a6105db2931fef58c969f07601b8a30f08a8ea29266333622eddbb9"
+    },
+    {
+      "path": "libgag/src/DrawableSurfaceCompound.cpp",
+      "old_and_current_sha256": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810"
+    },
+    {
+      "path": "libgag/src/Toolkit.cpp",
+      "old_and_current_sha256": "710e9919b28ce48dec6fbf4fff5bd5abb37ec99d76d7b8b76ae5d7b168c0c5e9"
+    },
+    {
+      "path": "libgag/include/Toolkit.h",
+      "old_and_current_sha256": "6c4954e77b5189d017c851030ee772e0dda10c174a302c815c20c2ee71dda48f"
+    },
+    {
+      "path": "libgag/src/StringTable.cpp",
+      "old_and_current_sha256": "4fe9de5674a8f91437dbd494531f0329a6d6c7a809248c91f9144b8c353640b2"
+    },
+    {
+      "path": "libgag/include/StringTable.h",
+      "old_and_current_sha256": "773f84c33f991169121ef0fca7c93a5ffed2675a5e8ae055b6df7be108e98ca4"
+    },
+    {
+      "path": "libgag/src/GraphicContext.cpp",
+      "old_and_current_sha256": "186b8d3649a0159d130dff97ea888b7ab76cb0f94635cf2f05e398e0f5891e12"
+    },
+    {
+      "path": "libgag/include/GraphicContext.h",
+      "old_and_current_sha256": "063c55267242ffc9e9adc3c694f296518dda67933685e4dccde29e22156df177"
+    },
+    {
+      "path": "tools/TranslationPreviewHarness.cpp",
+      "old_and_current_sha256": "65bc3a8f564fc18cf80efe7b640bcfde736f7a2dd3f4dad6bef76b06315236db"
+    }
+  ],
+  "font_assets_git_tree": "0b80cc8735dc0a9957a8ffc2e37a7d445da52c8c",
+  "recorded_native_SDL_image_TTF_static_HarfBuzz_library_hashes_verified_unchanged": [
+    {
+      "path": "lib/libsharpyuv.a",
+      "sha256": "46375bd7e40bfb5bde9372c63dbce53365a1cd89e50d7e1454b465057b6ea6be"
+    },
+    {
+      "path": "lib/libwebpdecoder.a",
+      "sha256": "156396e3c52e0a6a8b7b2fc75d490a390329a2d660384111d9579a759795d698"
+    },
+    {
+      "path": "lib/libwebp.a",
+      "sha256": "94d0df2f64d0ec0ab37d487a4fe411f57e83337aeb46554eb83937396055ad30"
+    },
+    {
+      "path": "lib/libwebpdemux.a",
+      "sha256": "003db4736c9bfa37e554ba6c150ff224f1c69920377029a720f20116fcb3813b"
+    },
+    {
+      "path": "lib/libwebpmux.a",
+      "sha256": "1643c8f226006b35fcc4ed2273d2c148d702e9250cbc96e365799eee0608d24c"
+    },
+    {
+      "path": "lib/libSDL3.so.0.4.16",
+      "sha256": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09"
+    },
+    {
+      "path": "lib/libSDL3_image.so.0.4.6",
+      "sha256": "7200867f9417db8720fda9ae1bba4fcd75478cc7fe128b5c63d23150ca1cc6ea"
+    },
+    {
+      "path": "lib/libSDL3_net.so.0.2.0",
+      "sha256": "d89360cadb82454dbe2eed6f0362ebffdc2e60e6cb7d8666502267bee112767d"
+    },
+    {
+      "path": "lib/libharfbuzz.a",
+      "sha256": "f1aff20bd93aaf273c218d3fe11111d47c0206d2f523ba25ff271e2f1e3ce9e8"
+    },
+    {
+      "path": "lib/libSDL3_ttf.so.0.2.2",
+      "sha256": "04fd566a9fe3ac4b93ec9bd444f0f33e88b0d94d54802ce446c97ec817cbee01"
+    }
+  ],
+  "old_full_matrix_samples": 75072,
+  "old_full_matrix_lines": 83292,
+  "old_measurement_source": "native-render-clean671/summary.json",
+  "old_measurement_source_sha256": "32d3fb41bc3bcb149e4fe830ac7268a7cefc5f334bf17c4db0b1b4d55dc57cbd",
+  "source_target_carry_path": "integration-refresh/source-target-carry.json",
+  "source_target_carry_sha256": "8b43091c797b531a9df698bbeb10e3d7378fe120fb8b7be49cb1ffa1322f1151",
+  "scope": "Carry of old3393 native+2836 online translated-value/font/wrap measurements only. New two strings require fresh samples. Updated HUD/results/engine source is not covered by this old rendering measurement carry; actual new producer captures follow."
+}

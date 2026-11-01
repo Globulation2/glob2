@@ -1,0 +1,85 @@
+{
+  "inspections": [
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/matrix/font-10-scale-1-page-001.png",
+      "sha256": "4f30a427c2b653a2b7cbca0c67360395310793dbb52a6ac524ee2c333246b2cc",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "finding": "Marathi conjuncts and vowel marks visibly joined, no tofu, overlap or cropped glyphs in inspected page. Long network help wraps cleanly at20px. Matrix may continue a wrapped paragraph on the next page; not a product-screen pagination claim.",
+      "accepted_as_visual_evidence": true
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/matrix/font-20-scale-1-page-001.png",
+      "sha256": "1f805c049ff50baded8aca5fb3da250204d07fee8b92c94d369a4a9bb9bbb78d",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "finding": "Marathi conjuncts and vowel marks visibly joined, no tofu, overlap or cropped glyphs in inspected page. Long network help wraps cleanly at20px. Matrix may continue a wrapped paragraph on the next page; not a product-screen pagination claim.",
+      "accepted_as_visual_evidence": true
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/390x844/matrix/font-10-scale-1-page-001.png",
+      "sha256": "2f8fdb5c028d1476fcdd84bcd3330036139dff93b4be8d2787f8df7492633334",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "finding": "Clear small Marathi, connected conjuncts and marks, network explanations wrap within narrow page. Only listed page actually viewed.",
+      "accepted_as_visual_evidence": true
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/1280x900/gameplay/stats-overview-large.png",
+      "sha256": "6fb536bcec2f9c48223ee088984ddb2665fb753c7d9d8db82888ecdb756b2266",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "finding": "Actual statistics panel visible: आढावा alone in full-width first row above paired topics, larger Marathi clear with expected scrolling. Fresh game has insufficient history, displayed honestly.",
+      "accepted_as_visual_evidence": true
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/main/main.png",
+      "sha256": "d50c077e58887a007af149b0679e4d3ebfc36956b219491c3aa14f9653cffbb8",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "finding": "Actual nonblack compact main menu, joined Marathi labels readable and within buttons; scrolling list continues below visible items.",
+      "accepted_as_visual_evidence": true
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/settings-player/settings-player.png",
+      "sha256": "7432283e3db79b33e957daddc66911d60f31108095bcbb56e09940c465bfc9e5",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "finding": "Actual compact language/player screen: मराठी selected without incomplete suffix; explanatory labels and Done button fit.",
+      "accepted_as_visual_evidence": true
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/settings-player/settings-player.png",
+      "sha256": "0ff68e7c1abfe55f4a9f65535399a09e76801e84ba95cc07fccf7f4bd06c3f4f",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "finding": "Actual desktop settings screen: मराठी selected, readable sidebar/player fields and button with no cropping.",
+      "accepted_as_visual_evidence": true
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/gameplay/stats-overview-large.png",
+      "sha256": "f93d86e0c611710f0edd324d0df11b10d693bd76bd967b6b67cf23f946dedf87",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "finding": "REJECTED as statistics evidence: shows overlays because the first ignored capture navigation did not reopen statistics. Retained first-attempt image, no shipping defect inferred.",
+      "accepted_as_visual_evidence": false
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/main/main.png",
+      "sha256": "97c26ac4614d9c9612461e1d8c248d02c223b5b0ff71de471a13d83ad7dd53ae",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "accepted_as_visual_evidence": true,
+      "finding": "Actual wide main menu: clear joined Marathi, centered labels and no observed clipping."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refined/390x844/gameplay/stats-overview.png",
+      "sha256": "1b8b1b5b54941469a560a113f1f2e9973366ee162fce3cabc2133ffc912a254c",
+      "inspected_by": "/root/draft_tool",
+      "method": "Actual image opened with view_image",
+      "accepted_as_visual_evidence": false,
+      "finding": "Partial normal-layout stats screenshot: visibly clear Marathi topic/metric labels. Later ignored enlarged-row assertion fails and no final game report exists, so this is retained partial evidence, not a completed current compact-stat validation."
+    }
+  ],
+  "scope": "Only actual listed images manually inspected; no all-images review claim."
+}

@@ -1,0 +1,29 @@
+{
+  "initial_invocation": "python-tools-result.json used stdlib test package due Python3.14 namespace collision; no tests ran. Direct script commands below are authoritative.",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "test/test_google_draft.py"
+      ],
+      "exit_code": 0,
+      "log_sha256": "489ea947c863d4a093e5ca67b29e4733b314e486718e84cc06f603183d61d5ee"
+    },
+    {
+      "command": [
+        "python3",
+        "test/test_cloud_draft.py"
+      ],
+      "exit_code": 0,
+      "log_sha256": "130b368f536e84e59d5757420e4112951ddef71ceedf399eef469b1406132429"
+    },
+    {
+      "command": [
+        "python3",
+        "test/test_translation_program.py"
+      ],
+      "exit_code": 0,
+      "log_sha256": "ed3d549c5e9e64f2634152919be038591fcbb987f7566efddac6a665a70a9d1e"
+    }
+  ]
+}

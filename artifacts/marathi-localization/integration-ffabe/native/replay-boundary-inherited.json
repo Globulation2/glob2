@@ -1,0 +1,924 @@
+{
+  "case_result": "failed solely on3 inherited stale constants; never called a passed whole case",
+  "exit_code": 1,
+  "command": [
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-engine-tests",
+    "--test-suite=JavaScriptCompatibility",
+    "--test-case=Current simulation rejects earlier replays and enforces acceptance boundaries",
+    "--reporters=xml",
+    "--success=true",
+    "--out=/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/replay-boundary-actual/assertions.xml"
+  ],
+  "upstream_commit": "ffabe1b9ef4e2a9986b1d6321c356124480b8a2d",
+  "upstream_git_blob": "0380c5e70fd9bf09c494544fd7bf68f07ca63336",
+  "current_git_blob": "0380c5e70fd9bf09c494544fd7bf68f07ca63336",
+  "source_bytes_identical": true,
+  "source_sha256": "472049d13153b1e4c95ba90c440051d26fc04f35739fb271c3a12cadf3f20448",
+  "stale_assertion_lines": {
+    "139": "CHECK(REPLAY_MINIMUM_VERSION_MINOR == 186)",
+    "140": "CHECK(VERSION_MINOR == 186)",
+    "142": "CHECK(NET_PROTOCOL_VERSION == 72)"
+  },
+  "actual_headers": {
+    "replay_minimum_minor": 187,
+    "save_current_minor": 191,
+    "net_protocol": 73
+  },
+  "failed_expressions": [
+    {
+      "attributes": {
+        "success": "false",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "139"
+      },
+      "original": "\n          REPLAY_MINIMUM_VERSION_MINOR == 186\n        ",
+      "expanded": "\n          187 == 186\n        ",
+      "context": []
+    },
+    {
+      "attributes": {
+        "success": "false",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "140"
+      },
+      "original": "\n          191 == 186\n        ",
+      "expanded": "\n          191 == 186\n        ",
+      "context": []
+    },
+    {
+      "attributes": {
+        "success": "false",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "142"
+      },
+      "original": "\n          73 == 72\n        ",
+      "expanded": "\n          73 == 72\n        ",
+      "context": []
+    }
+  ],
+  "total_expressions": 47,
+  "passed_expressions": 44,
+  "dynamic_version_load_assertions_passed": 37,
+  "actual_assertions": [
+    {
+      "attributes": {
+        "success": "true",
+        "type": "REQUIRE",
+        "filename": "test/support/EngineFixtures.cpp",
+        "line": "81"
+      },
+      "original": "globalContainer == nullptr",
+      "expanded": "nullptr == nullptr",
+      "context": [
+        "a HeadlessGlobals is already live in this process"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "false",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "139"
+      },
+      "original": "REPLAY_MINIMUM_VERSION_MINOR == 186",
+      "expanded": "187 == 186",
+      "context": []
+    },
+    {
+      "attributes": {
+        "success": "false",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "140"
+      },
+      "original": "191 == 186",
+      "expanded": "191 == 186",
+      "context": []
+    },
+    {
+      "attributes": {
+        "success": "false",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "142"
+      },
+      "original": "73 == 72",
+      "expanded": "73 == 72",
+      "context": []
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "143"
+      },
+      "original": "FILE_FORMAT_VERSION_JAVASCRIPT == 125",
+      "expanded": "125 == 125",
+      "context": []
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "144"
+      },
+      "original": "FILE_FORMAT_VERSION_EXPERIMENTS == 124",
+      "expanded": "124 == 124",
+      "context": []
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "REQUIRE",
+        "filename": "test/support/Glob2Test.cpp",
+        "line": "219"
+      },
+      "original": "std::filesystem::exists(source)",
+      "expanded": "true",
+      "context": [
+        "missing compressed fixture /home/bradley/.codex/worktrees/45cd/glob2/test/fixtures/javascript/released-v123.replay.gz"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "REQUIRE",
+        "filename": "test/support/Glob2Test.cpp",
+        "line": "102"
+      },
+      "original": "static_cast<bool>(dir && *dir)",
+      "expanded": "true",
+      "context": [
+        "GLOB2_USER_DATA_DIR must name the disposable profile (TestMain sets it)"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "REQUIRE",
+        "filename": "test/support/Glob2Test.cpp",
+        "line": "224"
+      },
+      "original": "in != nullptr",
+      "expanded": "0x584f330c38b0 != nullptr",
+      "context": [
+        "cannot read /home/bradley/.codex/worktrees/45cd/glob2/test/fixtures/javascript/released-v123.replay.gz"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK_FALSE",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "146"
+      },
+      "original": "released.loadReplay(glob2test::inflated(\"javascript/released-v123.replay.gz\").string())",
+      "expanded": "false",
+      "context": []
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 122"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 123"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 124"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 125"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 126"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 127"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 128"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 129"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 130"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 133"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 134"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 135"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 136"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 137"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 138"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 139"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 140"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 141"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 142"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 143"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 144"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 145"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 146"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 147"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 151"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 152"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 153"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 164"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 165"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 166"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 167"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 168"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 169"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 170"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 186"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "true == true",
+      "context": [
+        "version := 191"
+      ]
+    },
+    {
+      "attributes": {
+        "success": "true",
+        "type": "CHECK",
+        "filename": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+        "line": "165"
+      },
+      "original": "reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= 191)",
+      "expanded": "false == false",
+      "context": [
+        "version := 192"
+      ]
+    }
+  ],
+  "xml_overall_results": [
+    {
+      "successes": "44",
+      "failures": "3",
+      "test_case_success": "false"
+    },
+    {
+      "successes": "44",
+      "failures": "3"
+    }
+  ],
+  "assertions_xml_sha256": "f0155b525ff9c0d7988fe99bfecca86a8b43b44b16b40f26d7056509c5615ded",
+  "scope": "Actual unchanged upstream test continues after nonfatal CHECK failures; full per-version success evidence retained. No save/replay/protocol floors altered by Marathi work.",
+  "actual_version_acceptance_table": [
+    {
+      "header_minor": 122,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 123,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 124,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 125,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 126,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 127,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 128,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 129,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 130,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 133,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 134,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 135,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 136,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 137,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 138,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 139,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 140,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 141,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 142,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 143,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 144,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 145,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 146,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 147,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 151,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 152,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 153,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 164,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 165,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 166,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 167,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 168,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 169,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 170,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 186,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 191,
+      "actually_loaded": true,
+      "expected_supported": true,
+      "assertion_passed": true
+    },
+    {
+      "header_minor": 192,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    }
+  ],
+  "boundary_observations": {
+    "below_floor_186": {
+      "header_minor": 186,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    "current_191": {
+      "header_minor": 191,
+      "actually_loaded": true,
+      "expected_supported": true,
+      "assertion_passed": true
+    },
+    "above_current_192": {
+      "header_minor": 192,
+      "actually_loaded": false,
+      "expected_supported": false,
+      "assertion_passed": true
+    },
+    "limitation": "This unchanged upstream case probes historical versions,187 floor-minus-one186,current191 and above-current192. It does not separately handwrite a positive187 replay body."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "inspections": [
+    {
+      "path": "1280x900/main/main.png",
+      "sha256": "97c26ac4614d9c9612461e1d8c248d02c223b5b0ff71de471a13d83ad7dd53ae",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact normal-resource image. Marathi menu labels fit and shape clearly; viewport scrolling is intentional."
+    },
+    {
+      "path": "1280x900/settings-player/settings-player.png",
+      "sha256": "0ff68e7c1abfe55f4a9f65535399a09e76801e84ba95cc07fccf7f4bd06c3f4f",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact actual registered-language Player settings image: selected label is मराठी with no incomplete suffix. Caption/help/controls fit with intact Marathi shaping."
+    },
+    {
+      "path": "390x844/main/main.png",
+      "sha256": "09d8559939769504d312c99bf705eddf814b33ed35a3c90734938d63c30f43b9",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact normal-resource image. Marathi menu labels fit and shape clearly; viewport scrolling is intentional."
+    },
+    {
+      "path": "390x844/settings-player/settings-player.png",
+      "sha256": "e10700acbdc76ae65ab0509cb47ee6aba9c6f9217882cb829209131b9d0d6de6",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact actual registered-language Player settings image: selected label is मराठी with no incomplete suffix. Caption/help/controls fit with intact Marathi shaping."
+    }
+  ],
+  "count": 4,
+  "scope": "Actual normal registered resources; no draft overlays. Compiled187 producer, current f8 test-only change carried explicitly."
+}

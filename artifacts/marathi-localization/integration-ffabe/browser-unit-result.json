@@ -1,0 +1,33 @@
+{
+  "revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "command": [
+    "/usr/lib/chatgpt/resources/cua_node/bin/node",
+    "--test",
+    "--test-concurrency=2",
+    "browser/unit/asset-loader.test.js",
+    "browser/unit/audio.test.js",
+    "browser/unit/file-selection.test.js",
+    "browser/unit/generator-studio.test.js",
+    "browser/unit/gradient-compute.test.js",
+    "browser/unit/instance-config.test.js",
+    "browser/unit/language.test.js",
+    "browser/unit/map-launch.test.js",
+    "browser/unit/music-output.test.js",
+    "browser/unit/music-worker.test.js",
+    "browser/unit/presentation-surface.test.js",
+    "browser/unit/quit-navigation.test.js",
+    "browser/unit/replay-appearance.test.js",
+    "browser/unit/replay-fixture.test.js",
+    "browser/unit/runtime-variants.test.js",
+    "browser/unit/set-preview.test.js",
+    "browser/unit/startup-renderer.test.js",
+    "browser/unit/storage.test.js",
+    "browser/unit/studio.test.js",
+    "browser/unit/threaded-canvas.test.js",
+    "browser/unit/threading.test.js",
+    "browser/unit/tutorial-lessons.test.js",
+    "browser/unit/webgpu-device.test.js"
+  ],
+  "exit_code": 1,
+  "log_sha256": "2c10c876e6b4fb9b547307a6bb6f5b514230be69e127c096424e4f04fa567503"
+}

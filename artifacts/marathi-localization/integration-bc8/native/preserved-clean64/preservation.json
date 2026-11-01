@@ -1,0 +1,18 @@
+{
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "files": [
+    {
+      "source": "build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+      "preserved": "artifacts/marathi-localization/integration-bc8/native/preserved-clean64/TranslationPreviewHarness",
+      "sha256": "5fcf5b5efa77a5572d5351cf566fd2917bc7d15163d13bba2349e22f503ebb50",
+      "bytes": 329618568
+    },
+    {
+      "source": "build/linux/client/debug/dev-dev_fast-true-linker-auto/include/glob2/TestBuildProvenance.h",
+      "preserved": "artifacts/marathi-localization/integration-bc8/native/preserved-clean64/TestBuildProvenance.h",
+      "sha256": "64e106a05f4b396c5abb477c25eec8df64808c5bae3ac4b7a2011ff839a4b35f",
+      "bytes": 1034
+    }
+  ],
+  "reason": "Preserve successful official64 producer/header before metadata-only187 incremental rebuild. Executed64 stripped copy remains immutable in native/."
+}

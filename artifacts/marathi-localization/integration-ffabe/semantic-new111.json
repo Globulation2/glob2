@@ -1,0 +1,2292 @@
+{
+  "reviewer": "semantic_review",
+  "role": "independent semantic/context reviewer",
+  "native_human_certification": false,
+  "source_sha256": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+  "draft_sha256": "098932c899a5e310f1662aa5c5d385f2820597e9606048f9bdc59c02236ea964",
+  "google_provenance_sha256": "645f2d13848edce4b03161a3fac3858a7db88fae7d1c21343f3db7db8db7ed7a",
+  "reviewed_count": 111,
+  "reviewed_keys": [
+    "Rush",
+    "Defensive",
+    "Economy",
+    "Expansion",
+    "Experimental",
+    "Beginner-friendly",
+    "File and API profile",
+    "Syntax and profile restrictions",
+    "Startup and callback",
+    "Persistent state",
+    "Seeded gameplay",
+    "Repeatable simulation",
+    "Save and resume",
+    "Good",
+    "Fair",
+    "Poor",
+    "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+    "Delay",
+    "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+    "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+    "Classic glossy",
+    "Basics",
+    "Matte",
+    "Riveted metal",
+    "Metal",
+    "Hairy",
+    "Organic",
+    "Cartoon",
+    "Woven fabric",
+    "Craft",
+    "Oozy goo",
+    "Wet",
+    "Wood",
+    "Stone",
+    "Mineral",
+    "Scales",
+    "Leather",
+    "Crystal",
+    "Lava",
+    "Chrome",
+    "Carbon fibre",
+    "Velvet",
+    "Honeycomb",
+    "Ice",
+    "Cloud",
+    "Hammered metal",
+    "Candy",
+    "Slime",
+    "AI player",
+    "Finances",
+    "Accounts",
+    "Audit",
+    "1 hour",
+    "1 day",
+    "1 week",
+    "30 days",
+    "Most played",
+    "Listen for the musical structure and development.",
+    "Check that all three moods play correctly.",
+    "Listen for unexpected jumps in volume between moods.",
+    "Listen for a click, gap, or abrupt change when the loop repeats.",
+    "Listen for short phrases that repeat too mechanically.",
+    "Switch moods and listen for changes in timing or harmony.",
+    "Check that building and combat feel distinct from calm.",
+    "Listen for hiss or scratchiness in quiet passages.",
+    "Listen for muddy bass or harsh high frequencies.",
+    "Check that calm passages remain audible alongside game sound.",
+    "Listen for notes that cut off unexpectedly.",
+    "Worker",
+    "Warrior",
+    "Explorer",
+    "Swarm",
+    "Classic",
+    "Crown",
+    "Clutch",
+    "Toadstool",
+    "A broad-capped toadstool with young caps.",
+    "Coral",
+    "Skep",
+    "A coiled hive on a stand, its door facing you.",
+    "Bloom",
+    "Public: listed in the catalog",
+    "Unlisted: anyone with the link",
+    "Private: only you",
+    "The server replayed this match and every player’s game agreed with it.",
+    "The server is checking this match. Ratings change once it is verified.",
+    "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+    "The server could not reproduce this match, so it changes no rating.",
+    "This match is not checked.",
+    "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+    "Walk",
+    "Swim",
+    "Harvest",
+    "Fight",
+    "Fly",
+    "Live payments",
+    "Test payments",
+    "Unclassified payments",
+    "Current period",
+    "Previous period",
+    "Credit grant",
+    "Returned credits",
+    "Dispute",
+    "Dispute closed",
+    "Matches started",
+    "Matches completed",
+    "Matches cancelled",
+    "{value0} publications",
+    "{value0} recorded downloads",
+    "{value0} completion time (seconds)",
+    "{value0} completion samples"
+  ],
+  "coverage": "Every one of the 111 newly added English/raw Marathi pairs was read, with all 111 Hindi and French counterparts; existing 2836 strings were not freshly reread.",
+  "reference_equality_note": "French Expansion, Chrome, Finances and Audit exactly match English but are explicitly approved shared-values entries, not evidence of missing translations. Do not count these as independently translated wording.",
+  "glossary": {
+    "worker": "कामगार",
+    "warrior": "योद्धा",
+    "explorer": "शोधक",
+    "swarm_building": "पोळे",
+    "colony": "वसाहत",
+    "unit": "युनिट",
+    "skin": "रूप",
+    "credits": "क्रेडिट्स",
+    "fair_connection_quality": "साधारण"
+  },
+  "counts": {
+    "revise": 52,
+    "accept": 59,
+    "accepted_english": 0
+  },
+  "findings": [
+    {
+      "index": 1,
+      "surface": "online",
+      "key": "Rush",
+      "source": "Rush",
+      "raw_google_target": "घाई",
+      "recommended_target": "सुरुवातीचा हल्ला",
+      "disposition": "revise",
+      "rationale": "Rush is an early-attack AI strategy tag, not personal hurry; corroborated by Hindi शुरुआती हमला and French Attaque précoce.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "शुरुआती हमला",
+        "fr": "Attaque précoce"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 2,
+      "surface": "online",
+      "key": "Defensive",
+      "source": "Defensive",
+      "raw_google_target": "बचावात्मक",
+      "recommended_target": "बचावात्मक",
+      "disposition": "accept",
+      "rationale": "Meaning and concise AI validation/tag register are appropriate; no changed execution promise is introduced.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "रक्षात्मक",
+        "fr": "Défensif"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 3,
+      "surface": "online",
+      "key": "Economy",
+      "source": "Economy",
+      "raw_google_target": "अर्थव्यवस्था",
+      "recommended_target": "अर्थव्यवस्था",
+      "disposition": "accept",
+      "rationale": "Meaning and concise AI validation/tag register are appropriate; no changed execution promise is introduced.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "अर्थव्यवस्था",
+        "fr": "Économie"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 4,
+      "surface": "online",
+      "key": "Expansion",
+      "source": "Expansion",
+      "raw_google_target": "विस्तार",
+      "recommended_target": "विस्तार",
+      "disposition": "accept",
+      "rationale": "Meaning and concise AI validation/tag register are appropriate; no changed execution promise is introduced.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "विस्तार",
+        "fr": "Expansion"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 5,
+      "surface": "online",
+      "key": "Experimental",
+      "source": "Experimental",
+      "raw_google_target": "प्रायोगिक",
+      "recommended_target": "प्रायोगिक",
+      "disposition": "accept",
+      "rationale": "Meaning and concise AI validation/tag register are appropriate; no changed execution promise is introduced.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "प्रयोगात्मक",
+        "fr": "Expérimental"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 6,
+      "surface": "online",
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "raw_google_target": "नवशिक्यांसाठी अनुकूल",
+      "recommended_target": "नवशिक्यांसाठी अनुकूल",
+      "disposition": "accept",
+      "rationale": "Meaning and concise AI validation/tag register are appropriate; no changed execution promise is introduced.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "शुरुआती खिलाड़ियों के लिए",
+        "fr": "Adapté aux débutants"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 7,
+      "surface": "online",
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "raw_google_target": "फाइल आणि एपीआय प्रोफाइल",
+      "recommended_target": "फाइल आणि API प्रोफाइल",
+      "disposition": "revise",
+      "rationale": "Keep the established technical acronym API recognizable in a validation label.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "फ़ाइल और एपीआई प्रोफ़ाइल",
+        "fr": "Fichier et profil d’API"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 8,
+      "surface": "online",
+      "key": "Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "raw_google_target": "वाक्यरचना आणि प्रोफाइल निर्बंध",
+      "recommended_target": "वाक्यरचना आणि प्रोफाइलवरील निर्बंध",
+      "disposition": "revise",
+      "rationale": "The restrictions apply to the API profile, rather than describing an unexplained profile restriction compound.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "सिंटैक्स और प्रोफ़ाइल प्रतिबंध",
+        "fr": "Restrictions de syntaxe et de profil"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 9,
+      "surface": "online",
+      "key": "Startup and callback",
+      "source": "Startup and callback",
+      "raw_google_target": "स्टार्टअप आणि कॉलबॅक",
+      "recommended_target": "स्टार्टअप आणि कॉलबॅक",
+      "disposition": "accept",
+      "rationale": "Meaning and concise AI validation/tag register are appropriate; no changed execution promise is introduced.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "स्टार्टअप और कॉलबैक",
+        "fr": "Démarrage et fonction de rappel"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 10,
+      "surface": "online",
+      "key": "Persistent state",
+      "source": "Persistent state",
+      "raw_google_target": "कायमस्वरूपी स्थिती",
+      "recommended_target": "जतन होणारी स्थिती",
+      "disposition": "revise",
+      "rationale": "Persistent state survives callbacks/save snapshots; permanently unchanging state is not intended.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "सहेजी गई अवस्था",
+        "fr": "État persistant"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 11,
+      "surface": "online",
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "raw_google_target": "सीडेड गेमप्ले",
+      "recommended_target": "ठरावीक बीजासह खेळ",
+      "disposition": "revise",
+      "rationale": "Gameplay validation uses a controlled random seed; Hindi/French explicitly convey fixed seed, not a planted game.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "तय यादृच्छिक बीज के साथ गेमप्ले",
+        "fr": "Partie à graine aléatoire fixe"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 12,
+      "surface": "online",
+      "key": "Repeatable simulation",
+      "source": "Repeatable simulation",
+      "raw_google_target": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "recommended_target": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "disposition": "accept",
+      "rationale": "Meaning and concise AI validation/tag register are appropriate; no changed execution promise is introduced.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "दोहराया जा सकने वाला सिमुलेशन",
+        "fr": "Simulation reproductible"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 13,
+      "surface": "online",
+      "key": "Save and resume",
+      "source": "Save and resume",
+      "raw_google_target": "जतन करा आणि पुन्हा सुरू करा",
+      "recommended_target": "जतन करा आणि पुढे चालू ठेवा",
+      "disposition": "revise",
+      "rationale": "Resume continues saved play; पुन्हा सुरू करा can imply restarting from the beginning.",
+      "context_group": "ai",
+      "context_paths": [
+        "platform/packages/protocol/src/ais.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "सहेजें और जारी रखें",
+        "fr": "Enregistrer et reprendre"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 14,
+      "surface": "online",
+      "key": "Good",
+      "source": "Good",
+      "raw_google_target": "चांगले",
+      "recommended_target": "चांगले",
+      "disposition": "accept",
+      "rationale": "Accurate connection-quality/time label with natural Marathi; retain existing UI terminology.",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "अच्छा",
+        "fr": "Bon"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 15,
+      "surface": "online",
+      "key": "Fair",
+      "source": "Fair",
+      "raw_google_target": "योग्य",
+      "recommended_target": "साधारण",
+      "disposition": "revise",
+      "rationale": "Intermediate connection quality; match the existing good/fair/poor threshold sentence.",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "ठीक",
+        "fr": "Moyen"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 16,
+      "surface": "online",
+      "key": "Poor",
+      "source": "Poor",
+      "raw_google_target": "गरीब",
+      "recommended_target": "खराब",
+      "disposition": "revise",
+      "rationale": "Poor describes connection quality, not poverty.",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "खराब",
+        "fr": "Mauvais"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 17,
+      "surface": "online",
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "raw_google_target": "खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) ही त्या प्रदेशाची एक चाचणी, एक अंदाज असतो.",
+      "recommended_target": "खेळाडू आणि रिले यांच्यात संदेश जाऊन परत येण्यासाठी लागणारा वेळ. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) हे त्या प्रदेशाच्या जोडणीच्या चाचणीवर आधारित अंदाजे मोजमाप असते.",
+      "disposition": "revise",
+      "rationale": "Ping is elapsed message round-trip time, not a physical journey; preserve pre-match regional estimate.",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "खिलाड़ी और रिले सर्वर के बीच आने-जाने का समय। मैच से पहले (क्विक मैच, शुरुआती जाँच सूची), यह क्षेत्र से कनेक्शन जाँच पर आधारित एक अनुमान होता है।",
+        "fr": "Temps aller-retour entre un joueur et le serveur relais. Avant un match (match rapide, liste de vérification de démarrage), il s’agit d’une estimation fondée sur un test de connexion à la région."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 18,
+      "surface": "online",
+      "key": "Delay",
+      "source": "Delay",
+      "raw_google_target": "विलंब",
+      "recommended_target": "विलंब",
+      "disposition": "accept",
+      "rationale": "Accurate connection-quality/time label with natural Marathi; retain existing UI terminology.",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "देरी",
+        "fr": "Retard"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 19,
+      "surface": "online",
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "raw_google_target": "तुमचा इनपुट विलंब: तुमच्या क्लिकपासून ते कृती घटेपर्यंत, प्रत्येकासाठी. तुमच्या पिंगच्या निम्मा अधिक तुमचा गेम जिटरला रोखण्यासाठी वापरत असलेला बफर.",
+      "recommended_target": "तुमचा इनपुट विलंब: तुम्ही क्लिक केल्यापासून ती कृती सर्व खेळाडूंच्या खेळात घडेपर्यंतचा वेळ. तुमच्या पिंगचा अर्धा वेळ आणि नेटवर्कमधील विलंबाचे चढउतार सामावून घेण्यासाठी खेळाने राखलेला बफर.",
+      "disposition": "revise",
+      "rationale": "All clients see the input after the delay; preserve half-ping plus jitter buffer, explaining jitter rather than suggesting it is blocked.",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "आपका इनपुट विलंब: क्लिक से लेकर सभी खिलाड़ियों के खेल में कार्रवाई होने तक का समय। आपके पिंग का आधा, और नेटवर्क विलंब के उतार-चढ़ाव को सँभालने के लिए खेल में रखा बफ़र।",
+        "fr": "Votre délai d’entrée : du clic à l’exécution de l’action pour tous les joueurs. La moitié de votre ping, plus la marge que le jeu conserve pour absorber les variations de latence."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 20,
+      "surface": "online",
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "raw_google_target": "एखाद्या खेळाडूचा खेळ मॅच क्लॉकच्या किती मागे चालतो. एका सेकंदापेक्षा कमी वेळ सामान्य असतो (यात त्यांचा विलंब समाविष्ट असतो); रिलेनुसार खेळाडू २ सेकंदांपासून धीमा मानला जातो.",
+      "recommended_target": "एखाद्या खेळाडूचा खेळ सामन्याच्या घड्याळाच्या किती मागे चालतो. एका सेकंदापेक्षा कमी अंतर सामान्य आहे (त्यात त्या खेळाडूचा विलंब समाविष्ट असतो); २ सेकंदांपासून रिले त्या खेळाडूला संथ म्हणून दर्शवते.",
+      "disposition": "revise",
+      "rationale": "Preserve behind-clock duration, strict under-one-second normal range and inclusive from-two-second slow threshold.",
+      "context_group": "network",
+      "context_paths": [
+        "platform/packages/protocol/src/connectionQuality.ts",
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "खिलाड़ी का खेल मैच की घड़ी से कितना पीछे है। एक सेकंड से कम सामान्य है (इनपुट विलंब सहित); रिले सर्वर 2 सेकंड से खिलाड़ी को धीमा चिह्नित करता है।",
+        "fr": "Retard du jeu d’un joueur par rapport à l’horloge du match. Moins d’une seconde est normal (cela inclut son délai d’entrée) ; le serveur relais signale le joueur comme lent à partir de 2 s."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 21,
+      "surface": "online",
+      "key": "Classic glossy",
+      "source": "Classic glossy",
+      "raw_google_target": "क्लासिक चकचकीत",
+      "recommended_target": "क्लासिक चकचकीत",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "क्लासिक चमकदार",
+        "fr": "Brillant classique"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 22,
+      "surface": "online",
+      "key": "Basics",
+      "source": "Basics",
+      "raw_google_target": "मूलभूत गोष्टी",
+      "recommended_target": "मूलभूत गोष्टी",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "बुनियादी बातें",
+        "fr": "Bases"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 23,
+      "surface": "online",
+      "key": "Matte",
+      "source": "Matte",
+      "raw_google_target": "मॅट",
+      "recommended_target": "मॅट",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "मैट",
+        "fr": "Mat"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 24,
+      "surface": "online",
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "raw_google_target": "रिव्हेट केलेले धातू",
+      "recommended_target": "रिव्हेट लावलेला धातू",
+      "disposition": "revise",
+      "rationale": "Material label: grammatical masculine agreement with धातू, using the fastening method.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "रिवेटेड धातु",
+        "fr": "Métal riveté"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 25,
+      "surface": "online",
+      "key": "Metal",
+      "source": "Metal",
+      "raw_google_target": "धातू",
+      "recommended_target": "धातू",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "धातु",
+        "fr": "Métal"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 26,
+      "surface": "online",
+      "key": "Hairy",
+      "source": "Hairy",
+      "raw_google_target": "केसाळ",
+      "recommended_target": "केसाळ",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "बालदार",
+        "fr": "Poilu"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 27,
+      "surface": "online",
+      "key": "Organic",
+      "source": "Organic",
+      "raw_google_target": "सेंद्रिय",
+      "recommended_target": "जैविक",
+      "disposition": "revise",
+      "rationale": "Organic is the biological-looking material family, including hairy/scales/leather/cloud styles; not an organic-farming certification.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "जैविक",
+        "fr": "Organique"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 28,
+      "surface": "online",
+      "key": "Cartoon",
+      "source": "Cartoon",
+      "raw_google_target": "कार्टून",
+      "recommended_target": "कार्टून",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "कार्टून",
+        "fr": "Dessin animé"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 29,
+      "surface": "online",
+      "key": "Woven fabric",
+      "source": "Woven fabric",
+      "raw_google_target": "विणलेले कापड",
+      "recommended_target": "विणलेले कापड",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "बुना हुआ कपड़ा",
+        "fr": "Tissu tissé"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 30,
+      "surface": "online",
+      "key": "Craft",
+      "source": "Craft",
+      "raw_google_target": "कलाकुसर",
+      "recommended_target": "कलाकुसर",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "शिल्प",
+        "fr": "Artisanat"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 31,
+      "surface": "online",
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "raw_google_target": "चिकट गोंद",
+      "recommended_target": "ओघळणारा चिकट पदार्थ",
+      "disposition": "revise",
+      "rationale": "Oozy goo is a wet material appearance, not specifically glue.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "चिपचिपा पदार्थ",
+        "fr": "Substance gluante"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 32,
+      "surface": "online",
+      "key": "Wet",
+      "source": "Wet",
+      "raw_google_target": "ओले",
+      "recommended_target": "ओले",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "गीला",
+        "fr": "Mouillé"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 33,
+      "surface": "online",
+      "key": "Wood",
+      "source": "Wood",
+      "raw_google_target": "लाकूड",
+      "recommended_target": "लाकूड",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "लकड़ी",
+        "fr": "Bois"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 34,
+      "surface": "online",
+      "key": "Stone",
+      "source": "Stone",
+      "raw_google_target": "दगड",
+      "recommended_target": "दगड",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "पत्थर",
+        "fr": "Pierre"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 35,
+      "surface": "online",
+      "key": "Mineral",
+      "source": "Mineral",
+      "raw_google_target": "खनिज",
+      "recommended_target": "खनिज",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "खनिज",
+        "fr": "Minéral"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 36,
+      "surface": "online",
+      "key": "Scales",
+      "source": "Scales",
+      "raw_google_target": "स्केल",
+      "recommended_target": "खवले",
+      "disposition": "revise",
+      "rationale": "Scales are an animal-like surface pattern; neither measurement scales nor English loan स्केल.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "शल्क",
+        "fr": "Écailles"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 37,
+      "surface": "online",
+      "key": "Leather",
+      "source": "Leather",
+      "raw_google_target": "चामडे",
+      "recommended_target": "चामडे",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "चमड़ा",
+        "fr": "Cuir"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 38,
+      "surface": "online",
+      "key": "Crystal",
+      "source": "Crystal",
+      "raw_google_target": "क्रिस्टल",
+      "recommended_target": "क्रिस्टल",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "क्रिस्टल",
+        "fr": "Cristal"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 39,
+      "surface": "online",
+      "key": "Lava",
+      "source": "Lava",
+      "raw_google_target": "लावा",
+      "recommended_target": "लावा",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "लावा",
+        "fr": "Lave"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 40,
+      "surface": "online",
+      "key": "Chrome",
+      "source": "Chrome",
+      "raw_google_target": "क्रोम",
+      "recommended_target": "क्रोम",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "क्रोम",
+        "fr": "Chrome"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 41,
+      "surface": "online",
+      "key": "Carbon fibre",
+      "source": "Carbon fibre",
+      "raw_google_target": "कार्बन फायबर",
+      "recommended_target": "कार्बन फायबर",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "कार्बन फाइबर",
+        "fr": "Fibre de carbone"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 42,
+      "surface": "online",
+      "key": "Velvet",
+      "source": "Velvet",
+      "raw_google_target": "मखमली",
+      "recommended_target": "मखमल",
+      "disposition": "revise",
+      "rationale": "Use the material noun velvet in this material-name list, rather than the adjective velvety.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "मख़मल",
+        "fr": "Velours"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 43,
+      "surface": "online",
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "raw_google_target": "मधमाशांचे पोळे",
+      "recommended_target": "पोळ्याचे कप्पे",
+      "disposition": "revise",
+      "rationale": "Honeycomb names the cellular surface pattern, distinguishable from the whole hive building Swarm; French explicitly alvéoles.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "मधुकोश",
+        "fr": "Alvéoles de ruche"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 44,
+      "surface": "online",
+      "key": "Ice",
+      "source": "Ice",
+      "raw_google_target": "बर्फ",
+      "recommended_target": "बर्फ",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "बर्फ़",
+        "fr": "Glace"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 45,
+      "surface": "online",
+      "key": "Cloud",
+      "source": "Cloud",
+      "raw_google_target": "ढग",
+      "recommended_target": "ढग",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "बादल",
+        "fr": "Nuage"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 46,
+      "surface": "online",
+      "key": "Hammered metal",
+      "source": "Hammered metal",
+      "raw_google_target": "हातोड्याने ठोकलेला धातू",
+      "recommended_target": "हातोड्याने ठोकलेला धातू",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "हथौड़े से पीटी हुई धातु",
+        "fr": "Métal martelé"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 47,
+      "surface": "online",
+      "key": "Candy",
+      "source": "Candy",
+      "raw_google_target": "कँडी",
+      "recommended_target": "कँडी",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "कैंडी",
+        "fr": "Bonbons"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 48,
+      "surface": "online",
+      "key": "Slime",
+      "source": "Slime",
+      "raw_google_target": "स्लाइम",
+      "recommended_target": "स्लाइम",
+      "disposition": "accept",
+      "rationale": "Accurate visible material/design label; interpreted as appearance rather than gameplay mechanics.",
+      "context_group": "material",
+      "context_paths": [
+        "platform/packages/protocol/src/skins.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "लिसलिसा जेल",
+        "fr": "Gel visqueux"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 49,
+      "surface": "online",
+      "key": "AI player",
+      "source": "AI player",
+      "raw_google_target": "एआय खेळाडू",
+      "recommended_target": "एआय खेळाडू",
+      "disposition": "accept",
+      "rationale": "Appropriate administrative navigation or duration label; count and time unit preserved.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "एआई खिलाड़ी",
+        "fr": "Joueur IA"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 50,
+      "surface": "online",
+      "key": "Finances",
+      "source": "Finances",
+      "raw_google_target": "वित्त",
+      "recommended_target": "वित्त",
+      "disposition": "accept",
+      "rationale": "Appropriate administrative navigation or duration label; count and time unit preserved.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "वित्त",
+        "fr": "Finances"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 51,
+      "surface": "online",
+      "key": "Accounts",
+      "source": "Accounts",
+      "raw_google_target": "खाती",
+      "recommended_target": "खाती",
+      "disposition": "accept",
+      "rationale": "Appropriate administrative navigation or duration label; count and time unit preserved.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "खाते",
+        "fr": "Comptes"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 52,
+      "surface": "online",
+      "key": "Audit",
+      "source": "Audit",
+      "raw_google_target": "लेखापरीक्षण",
+      "recommended_target": "ऑडिट",
+      "disposition": "revise",
+      "rationale": "Admin Audit is the general audit/event log, not restricted to financial accounting; matches existing Audit history terminology.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "अंकेक्षण",
+        "fr": "Audit"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 53,
+      "surface": "online",
+      "key": "1 hour",
+      "source": "1 hour",
+      "raw_google_target": "१ तास",
+      "recommended_target": "१ तास",
+      "disposition": "accept",
+      "rationale": "Appropriate administrative navigation or duration label; count and time unit preserved.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "1 घंटा",
+        "fr": "1 heure"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 54,
+      "surface": "online",
+      "key": "1 day",
+      "source": "1 day",
+      "raw_google_target": "१ दिवस",
+      "recommended_target": "१ दिवस",
+      "disposition": "accept",
+      "rationale": "Appropriate administrative navigation or duration label; count and time unit preserved.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "1 दिन",
+        "fr": "1 jour"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 55,
+      "surface": "online",
+      "key": "1 week",
+      "source": "1 week",
+      "raw_google_target": "१ आठवडा",
+      "recommended_target": "१ आठवडा",
+      "disposition": "accept",
+      "rationale": "Appropriate administrative navigation or duration label; count and time unit preserved.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "1 सप्ताह",
+        "fr": "1 semaine"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 56,
+      "surface": "online",
+      "key": "30 days",
+      "source": "30 days",
+      "raw_google_target": "३० दिवस",
+      "recommended_target": "३० दिवस",
+      "disposition": "accept",
+      "rationale": "Appropriate administrative navigation or duration label; count and time unit preserved.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "30 दिन",
+        "fr": "30 jours"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 57,
+      "surface": "online",
+      "key": "Most played",
+      "source": "Most played",
+      "raw_google_target": "सर्वाधिक खेळले",
+      "recommended_target": "सर्वाधिक खेळलेले",
+      "disposition": "revise",
+      "rationale": "Catalog sorting describes most-played items; a participial label is needed rather than an incomplete finite verb.",
+      "context_group": "admin",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "सबसे अधिक खेला गया",
+        "fr": "Plus jouées"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 58,
+      "surface": "online",
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "raw_google_target": "संगीताची रचना आणि विकास याकडे लक्ष द्या.",
+      "recommended_target": "संगीताची रचना आणि विकास याकडे लक्ष द्या.",
+      "disposition": "accept",
+      "rationale": "Accurately expresses the specific audible music-validation check without changing its criterion.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "संगीत की संरचना और विकास को ध्यान से सुनें।",
+        "fr": "Soyez attentif à la structure et au développement musical."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 59,
+      "surface": "online",
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "raw_google_target": "तिन्ही मूड योग्यरित्या कार्यरत आहेत याची खात्री करा.",
+      "recommended_target": "संगीताचे तिन्ही मूड योग्यरीत्या वाजतात याची खात्री करा.",
+      "disposition": "revise",
+      "rationale": "These are playable music variants; कार्यरत does not specifically test audible playback.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "यह सुनिश्चित करें कि तीनों मूड सही ढंग से काम कर रहे हों।",
+        "fr": "Vérifiez que les trois ambiances fonctionnent correctement."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 60,
+      "surface": "online",
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "raw_google_target": "वेगवेगळ्या मनस्थितींमध्ये आवाजाच्या पातळीत होणाऱ्या अनपेक्षित बदलांकडे लक्ष द्या.",
+      "recommended_target": "संगीताच्या मूडदरम्यान आवाजाची पातळी अनपेक्षितपणे बदलते का ते ऐका.",
+      "disposition": "revise",
+      "rationale": "Mood means music variant, not a human mental state.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "विभिन्न मनोदशाओं के बीच ध्वनि की तीव्रता में अप्रत्याशित उतार-चढ़ाव पर ध्यान दें।",
+        "fr": "Soyez attentif aux variations de volume sonore inattendues entre les différentes ambiances."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 61,
+      "surface": "online",
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "raw_google_target": "जेव्हा लूप पुन्हा सुरू होतो, तेव्हा क्लिक, खंड किंवा अचानक होणारा बदल ऐका.",
+      "recommended_target": "लूप पुन्हा वाजताना क्लिकसारखा आवाज, मधला खंड किंवा अचानक बदल होतो का ते ऐका.",
+      "disposition": "revise",
+      "rationale": "The click is an audible seam artifact, not a mouse action; make the loop playback context explicit.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "लूप दोहराते समय क्लिक की आवाज़, मौन अंतराल या अचानक बदलाव पर ध्यान दें।",
+        "fr": "Soyez attentif à un clic, un silence ou un changement brusque lorsque la boucle se répète."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 62,
+      "surface": "online",
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "raw_google_target": "अतिशय यांत्रिकपणे पुनरावृत्ती होणाऱ्या लहान वाक्यांशांकडे लक्ष द्या.",
+      "recommended_target": "अतिशय यांत्रिकपणे पुन्हा पुन्हा येणारे लहान सुरांचे तुकडे ऐका.",
+      "disposition": "revise",
+      "rationale": "Musical phrases are sequences of notes, not linguistic sentences.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "उन छोटे वाक्यांशों पर ध्यान दें जो बहुत ही यंत्रवत रूप से दोहराए जाते हैं।",
+        "fr": "Soyez attentif aux phrases courtes qui se répètent de façon trop mécanique."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 63,
+      "surface": "online",
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "raw_google_target": "मूड बदला आणि तालात किंवा सुसंवादात होणारे बदल ऐका.",
+      "recommended_target": "मूड बदला आणि वेळेतील किंवा स्वरमेळातील बदल ऐका.",
+      "disposition": "revise",
+      "rationale": "Timing includes alignment, not merely rhythm; harmony is स्वरमेळ rather than social संवाद.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "संगीत के मूड बदलें और समय-निर्धारण या सुर-संगति के बदलावों को सुनें।",
+        "fr": "Changez d'ambiance et soyez attentif aux changements de rythme ou d'harmonie."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 64,
+      "surface": "online",
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "raw_google_target": "बांधकाम आणि लढाई या शांततेपेक्षा वेगळ्या जाणवतात याची खात्री करा.",
+      "recommended_target": "‘बांधकाम’ आणि ‘लढाई’ हे संगीताचे मूड ‘शांत’ मूडपेक्षा वेगळे वाटतात याची खात्री करा.",
+      "disposition": "revise",
+      "rationale": "The instruction compares three music moods, not how actual construction and combat feel.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "यह सुनिश्चित करें कि निर्माण और युद्ध की अनुभूति शांत वातावरण से अलग हो।",
+        "fr": "Vérifiez que les ambiances « Construction » et « Combat » se distinguent de « Calme »."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 65,
+      "surface": "online",
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "raw_google_target": "शांत भागांमध्ये येणाऱ्या फुसफुसण्यासारख्या किंवा खरखराटासारख्या आवाजाकडे लक्ष द्या.",
+      "recommended_target": "शांत संगीताच्या भागांत सळसळ किंवा खरखर ऐकू येते का ते तपासा.",
+      "disposition": "revise",
+      "rationale": "Hiss/scratchiness are unwanted audible noise in quiet music, not whispered speech.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "शांत संगीत के अंशों में सरसराहट या खरोंच जैसी आवाज़ पर ध्यान दें।",
+        "fr": "Soyez attentif aux sifflements ou aux grattements dans les passages calmes."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 66,
+      "surface": "online",
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "raw_google_target": "अस्पष्ट बास किंवा कर्कश उच्च फ्रिक्वेन्सीकडे लक्ष द्या.",
+      "recommended_target": "अस्पष्ट बास किंवा कर्कश उच्च वारंवारतेचे स्वर ऐकू येतात का ते तपासा.",
+      "disposition": "revise",
+      "rationale": "Preserve muddy low-frequency bass versus harsh high frequencies in a mix-quality instruction.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "अस्पष्ट बास या कर्कश उच्च आवृत्तियों पर ध्यान दें।",
+        "fr": "Soyez attentif aux basses brouillées ou aux hautes fréquences agressives."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 67,
+      "surface": "online",
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "raw_google_target": "खेळाच्या आवाजासोबत शांत भागही ऐकू येत राहतील याची खात्री करा.",
+      "recommended_target": "खेळाच्या आवाजासोबत शांत संगीताचे भागही ऐकू येतात याची खात्री करा.",
+      "disposition": "revise",
+      "rationale": "Quiet passages are music passages remaining audible alongside game sounds.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "यह सुनिश्चित करें कि खेल की ध्वनि के साथ-साथ शांत अंश भी स्पष्ट रूप से सुनाई दें।",
+        "fr": "Vérifiez que les passages calmes restent audibles en même temps que le son du jeu."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 68,
+      "surface": "online",
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "raw_google_target": "अचानक बंद होणाऱ्या सुरांकडे लक्ष द्या.",
+      "recommended_target": "अचानक बंद होणाऱ्या सुरांकडे लक्ष द्या.",
+      "disposition": "accept",
+      "rationale": "Accurately expresses the specific audible music-validation check without changing its criterion.",
+      "context_group": "music",
+      "context_paths": [
+        "platform/apps/web/src/music/Validation.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "उन सुरों पर ध्यान दें जो अचानक बंद हो जाते हैं।",
+        "fr": "Soyez attentif aux notes qui s'interrompent brusquement."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 69,
+      "surface": "online",
+      "key": "Worker",
+      "source": "Worker",
+      "raw_google_target": "कामगार",
+      "recommended_target": "कामगार",
+      "disposition": "accept",
+      "rationale": "Accurate established unit term or recognizable model-design label, supported by shape metadata.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "श्रमिक",
+        "fr": "Ouvrière"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 70,
+      "surface": "online",
+      "key": "Warrior",
+      "source": "Warrior",
+      "raw_google_target": "योद्धा",
+      "recommended_target": "योद्धा",
+      "disposition": "accept",
+      "rationale": "Accurate established unit term or recognizable model-design label, supported by shape metadata.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "योद्धा",
+        "fr": "Guerrière"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 71,
+      "surface": "online",
+      "key": "Explorer",
+      "source": "Explorer",
+      "raw_google_target": "शोधक",
+      "recommended_target": "शोधक",
+      "disposition": "accept",
+      "rationale": "Accurate established unit term or recognizable model-design label, supported by shape metadata.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "खोजी",
+        "fr": "Exploratrice"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 72,
+      "surface": "online",
+      "key": "Swarm",
+      "source": "Swarm",
+      "raw_google_target": "थवा",
+      "recommended_target": "पोळे",
+      "disposition": "revise",
+      "rationale": "Swarm identifies the hive building in geometry ACTIONS and swarmShapes, not a moving flock; established Marathi game glossary.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "छत्ता",
+        "fr": "Ruche"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 73,
+      "surface": "online",
+      "key": "Classic",
+      "source": "Classic",
+      "raw_google_target": "क्लासिक",
+      "recommended_target": "क्लासिक",
+      "disposition": "accept",
+      "rationale": "Accurate established unit term or recognizable model-design label, supported by shape metadata.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "पारंपरिक",
+        "fr": "Classique"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 74,
+      "surface": "online",
+      "key": "Crown",
+      "source": "Crown",
+      "raw_google_target": "मुकुट",
+      "recommended_target": "मुकुट",
+      "disposition": "accept",
+      "rationale": "Accurate established unit term or recognizable model-design label, supported by shape metadata.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "ताज",
+        "fr": "Couronne"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 75,
+      "surface": "online",
+      "key": "Clutch",
+      "source": "Clutch",
+      "raw_google_target": "क्लच",
+      "recommended_target": "अंड्यांचा समूह",
+      "disposition": "revise",
+      "rationale": "Clutch is the six brood eggs design, not the mechanical clutch or a retained opaque English word.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "अंडों का समूह",
+        "fr": "Grappe d’œufs"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 76,
+      "surface": "online",
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "raw_google_target": "बेडूक",
+      "recommended_target": "छत्रीची बुरशी",
+      "disposition": "revise",
+      "rationale": "Toadstool is a cap-shaped fungus design, not a frog; retain a concise visible-shape label.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "कुकुरमुत्ता",
+        "fr": "Champignon vénéneux"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 77,
+      "surface": "online",
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "raw_google_target": "कोवळ्या टोपी असलेले रुंद टोपीधारी विषारी बुरशी.",
+      "recommended_target": "रुंद छत्रीची बुरशी आणि तिच्यासोबत लहान नव्या छत्र्या.",
+      "disposition": "revise",
+      "rationale": "The shape has a broad mushroom cap with young caps; avoid frogs, clothing hats, and adding unasserted poison mechanics.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "चौड़ी टोपी वाला कुकुरमुत्ता, जिसके साथ छोटी नई टोपियाँ हैं।",
+        "fr": "Un champignon à large chapeau avec de jeunes chapeaux."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 78,
+      "surface": "online",
+      "key": "Coral",
+      "source": "Coral",
+      "raw_google_target": "प्रवाळ",
+      "recommended_target": "प्रवाळ",
+      "disposition": "accept",
+      "rationale": "Accurate established unit term or recognizable model-design label, supported by shape metadata.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "मूँगा",
+        "fr": "Corail"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 79,
+      "surface": "online",
+      "key": "Skep",
+      "source": "Skep",
+      "raw_google_target": "स्केप",
+      "recommended_target": "विणलेले पोळे",
+      "disposition": "revise",
+      "rationale": "Skep is a traditional coiled/woven hive shape, not an opaque phonetic proper name; corroborated by Hindi/French design names.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "बुना हुआ मधुमक्खी छत्ता",
+        "fr": "Ruche en paille tressée"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 80,
+      "surface": "online",
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "raw_google_target": "स्टँडवर वेटोळे घालून ठेवलेले मधमाशांचे पोळे, ज्याचे दार तुमच्या समोर आहे.",
+      "recommended_target": "एका आधारावर ठेवलेले गुंडाळीच्या आकाराचे पोळे; त्याचे दार तुमच्याकडे आहे.",
+      "disposition": "revise",
+      "rationale": "The hive consists of coils and stands on a support, with its entrance facing the viewer; not an animal curled up on a stand.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "एक स्टैंड पर कुंडली मारकर रखा हुआ मधुमक्खी का छत्ता, जिसका दरवाजा आपकी ओर है।",
+        "fr": "Une ruche enroulée sur un support, sa porte face à vous."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 81,
+      "surface": "online",
+      "key": "Bloom",
+      "source": "Bloom",
+      "raw_google_target": "फुलणे",
+      "recommended_target": "उमललेले फूल",
+      "disposition": "revise",
+      "rationale": "Bloom is the flower-shaped hive design name, a noun rather than the process verb फुलणे.",
+      "context_group": "shape",
+      "context_paths": [
+        "platform/apps/web/src/skins/swarmShapes.ts",
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "खिला फूल",
+        "fr": "Floraison"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 82,
+      "surface": "online",
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "raw_google_target": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "recommended_target": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "disposition": "accept",
+      "rationale": "Visibility audience and public/private access distinction preserved.",
+      "context_group": "visibility",
+      "context_paths": [
+        "platform/apps/web/src/pages/Maps.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "सार्वजनिक: कैटलॉग में सूचीबद्ध",
+        "fr": "Publique : répertoriée dans le catalogue"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 83,
+      "surface": "online",
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "raw_google_target": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही",
+      "recommended_target": "सूचीबद्ध नसलेले: लिंक असलेले कोणीही",
+      "disposition": "revise",
+      "rationale": "Anyone with the link names the permitted audience parallel to only you, rather than an incomplete dative fragment.",
+      "context_group": "visibility",
+      "context_paths": [
+        "platform/apps/web/src/pages/Maps.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "सूची से बाहर: लिंक रखने वाला कोई भी व्यक्ति",
+        "fr": "Non répertoriée : toute personne ayant le lien"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 84,
+      "surface": "online",
+      "key": "Private: only you",
+      "source": "Private: only you",
+      "raw_google_target": "खाजगी: फक्त तुम्ही",
+      "recommended_target": "खाजगी: फक्त तुम्ही",
+      "disposition": "accept",
+      "rationale": "Visibility audience and public/private access distinction preserved.",
+      "context_group": "visibility",
+      "context_paths": [
+        "platform/apps/web/src/pages/Maps.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "निजी: केवल आप",
+        "fr": "Privée : vous seul"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 85,
+      "surface": "online",
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "raw_google_target": "सर्वरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूचा खेळ त्याच्याशी सहमत होता.",
+      "recommended_target": "सर्व्हरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूच्या खेळातील स्थिती त्याच्याशी जुळली.",
+      "disposition": "revise",
+      "rationale": "Verification means deterministic agreement of game states, not players or game programs expressing an opinion.",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "सर्वर ने इस मैच का रीप्ले चलाया और सभी खिलाड़ियों के खेल की अवस्थाएँ रीप्ले से मेल खाती थीं।",
+        "fr": "Le serveur a rejoué cette partie et les états de jeu de tous les joueurs correspondaient au replay."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 86,
+      "surface": "online",
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "raw_google_target": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "recommended_target": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "disposition": "accept",
+      "rationale": "Actual server verification status, rating consequence and administrator retry scope preserved.",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "सर्वर इस मैच की जाँच कर रहा है। सत्यापन होने पर रेटिंग बदल जाएगी।",
+        "fr": "Le serveur vérifie cette partie. Les évaluations changent une fois la partie vérifiée."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 87,
+      "surface": "online",
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "raw_google_target": "एखाद्या खेळाडूचा गेम सर्वरच्या मॅचच्या रिप्लेशी जुळत नसला तरी, सर्वरचा निकालच ग्राह्य धरला जाईल.",
+      "recommended_target": "एका खेळाडूच्या खेळातील स्थिती सर्व्हरच्या सामन्याच्या रीप्लेशी जुळली नाही; सर्व्हरचा निकाल ग्राह्य धरला जातो.",
+      "disposition": "revise",
+      "rationale": "The disagreement already occurred; raw conditional जुळत नसला तरी loses the actual verdict.",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "एक खिलाड़ी के खेल की अवस्था सर्वर के मैच रीप्ले से मेल नहीं खाई; सर्वर का परिणाम मान्य है।",
+        "fr": "L’état de jeu d’un joueur divergeait du replay de la partie sur le serveur ; le résultat du serveur fait foi."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 88,
+      "surface": "online",
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "raw_google_target": "सर्वरला हा सामना पुन्हा खेळवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+      "recommended_target": "सर्व्हरला हा सामना पुन्हा तसाच चालवता आला नाही, त्यामुळे कोणत्याही रेटिंगमध्ये बदल होत नाही.",
+      "disposition": "revise",
+      "rationale": "Reproduce means obtain the same simulated match, not merely play again; preserve no-rating consequence.",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "सर्वर इस मैच को दोबारा नहीं चला सका, इसलिए रेटिंग में कोई बदलाव नहीं हुआ है।",
+        "fr": "Le serveur n’a pas pu reproduire cette partie, donc aucune évaluation ne change."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 89,
+      "surface": "online",
+      "key": "This match is not checked.",
+      "source": "This match is not checked.",
+      "raw_google_target": "या सामन्याची तपासणी केलेली नाही.",
+      "recommended_target": "या सामन्याची तपासणी केलेली नाही.",
+      "disposition": "accept",
+      "rationale": "Actual server verification status, rating consequence and administrator retry scope preserved.",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "इस मैच की जाँच नहीं की गई है।",
+        "fr": "Cette partie n’est pas vérifiée."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 90,
+      "surface": "online",
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "raw_google_target": "सर्व्हर या सामन्याची तपासणी पूर्ण करू शकला नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होणार नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "recommended_target": "सर्व्हर या सामन्याची तपासणी पूर्ण करू शकला नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होणार नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "disposition": "accept",
+      "rationale": "Actual server verification status, rating consequence and administrator retry scope preserved.",
+      "context_group": "verdict",
+      "context_paths": [
+        "platform/apps/web/src/pages/Match.tsx"
+      ],
+      "consulted_other_locales": {
+        "hi": "सर्वर इस मैच की जाँच पूरी नहीं कर सका, इसलिए फिलहाल रेटिंग में कोई बदलाव नहीं होगा। प्रशासक दोबारा जाँच कर सकते हैं।",
+        "fr": "Le serveur n’a pas pu terminer la vérification de cette partie, donc aucune évaluation ne change pour le moment. Un administrateur peut relancer la vérification."
+      },
+      "english_exception": null
+    },
+    {
+      "index": 91,
+      "surface": "online",
+      "key": "Walk",
+      "source": "Walk",
+      "raw_google_target": "चालणे",
+      "recommended_target": "चालणे",
+      "disposition": "accept",
+      "rationale": "Correct movement/action infinitive for the corresponding unit animation.",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "चलना",
+        "fr": "Marcher"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 92,
+      "surface": "online",
+      "key": "Swim",
+      "source": "Swim",
+      "raw_google_target": "पोहणे",
+      "recommended_target": "पोहणे",
+      "disposition": "accept",
+      "rationale": "Correct movement/action infinitive for the corresponding unit animation.",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "तैरना",
+        "fr": "Nager"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 93,
+      "surface": "online",
+      "key": "Harvest",
+      "source": "Harvest",
+      "raw_google_target": "कापणी",
+      "recommended_target": "गोळा करणे",
+      "disposition": "revise",
+      "rationale": "Worker harvest is a resource-gathering animation, not restricted to cutting crops.",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "संग्रह करना",
+        "fr": "Récolter"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 94,
+      "surface": "online",
+      "key": "Fight",
+      "source": "Fight",
+      "raw_google_target": "लढा",
+      "recommended_target": "लढणे",
+      "disposition": "revise",
+      "rationale": "Verb form aligns with Walk/Swim/Fly animation actions rather than an imperative command.",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "लड़ना",
+        "fr": "Combattre"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 95,
+      "surface": "online",
+      "key": "Fly",
+      "source": "Fly",
+      "raw_google_target": "माशी",
+      "recommended_target": "उडणे",
+      "disposition": "revise",
+      "rationale": "Fly is explorer flight, not the insect माशी.",
+      "context_group": "action",
+      "context_paths": [
+        "platform/apps/web/src/skins/geometry.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "उड़ना",
+        "fr": "Voler"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 96,
+      "surface": "online",
+      "key": "Live payments",
+      "source": "Live payments",
+      "raw_google_target": "थेट पेमेंट",
+      "recommended_target": "वास्तविक पेमेंट",
+      "disposition": "revise",
+      "rationale": "Live versus test payment mode denotes real money, not direct or live-broadcast payment.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "वास्तविक भुगतान",
+        "fr": "Paiements réels"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 97,
+      "surface": "online",
+      "key": "Test payments",
+      "source": "Test payments",
+      "raw_google_target": "चाचणी पेमेंट",
+      "recommended_target": "चाचणी पेमेंट",
+      "disposition": "accept",
+      "rationale": "Payment mode, reporting period or ledger category is accurate without asserting a transaction outcome.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "परीक्षण भुगतान",
+        "fr": "Paiements tests"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 98,
+      "surface": "online",
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "raw_google_target": "अवर्गीकृत पेमेंट",
+      "recommended_target": "अवर्गीकृत पेमेंट",
+      "disposition": "accept",
+      "rationale": "Payment mode, reporting period or ledger category is accurate without asserting a transaction outcome.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "अवर्गीकृत भुगतान",
+        "fr": "Paiements non classifiés"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 99,
+      "surface": "online",
+      "key": "Current period",
+      "source": "Current period",
+      "raw_google_target": "चालू कालावधी",
+      "recommended_target": "चालू कालावधी",
+      "disposition": "accept",
+      "rationale": "Payment mode, reporting period or ledger category is accurate without asserting a transaction outcome.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "वर्तमान अवधि",
+        "fr": "Période actuelle"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 100,
+      "surface": "online",
+      "key": "Previous period",
+      "source": "Previous period",
+      "raw_google_target": "मागील कालावधी",
+      "recommended_target": "मागील कालावधी",
+      "disposition": "accept",
+      "rationale": "Payment mode, reporting period or ledger category is accurate without asserting a transaction outcome.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "पिछली अवधि",
+        "fr": "Période précédente"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 101,
+      "surface": "online",
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "raw_google_target": "पत अनुदान",
+      "recommended_target": "क्रेडिट्सचे वाटप",
+      "disposition": "revise",
+      "rationale": "Credit grant is allocation of game/service credits, not a financial loan/creditworthiness grant.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "क्रेडिट आवंटन",
+        "fr": "Attribution de crédits"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 102,
+      "surface": "online",
+      "key": "Returned credits",
+      "source": "Returned credits",
+      "raw_google_target": "परत केलेले क्रेडिट्स",
+      "recommended_target": "परत केलेले क्रेडिट्स",
+      "disposition": "accept",
+      "rationale": "Payment mode, reporting period or ledger category is accurate without asserting a transaction outcome.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "लौटाए गए क्रेडिट",
+        "fr": "Crédits restitués"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 103,
+      "surface": "online",
+      "key": "Dispute",
+      "source": "Dispute",
+      "raw_google_target": "वाद",
+      "recommended_target": "वाद",
+      "disposition": "accept",
+      "rationale": "Payment mode, reporting period or ledger category is accurate without asserting a transaction outcome.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "विवाद",
+        "fr": "Litige"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 104,
+      "surface": "online",
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "raw_google_target": "वाद मिटला",
+      "recommended_target": "वादाची प्रक्रिया बंद",
+      "disposition": "revise",
+      "rationale": "A closed payment dispute can be won or lost; closure must not assert that the dispute was amicably settled.",
+      "context_group": "billing",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/billing/src/reporting.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "विवाद समाप्त",
+        "fr": "Litige clos"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 105,
+      "surface": "online",
+      "key": "Matches started",
+      "source": "Matches started",
+      "raw_google_target": "सामने सुरू झाले",
+      "recommended_target": "सुरू झालेले सामने",
+      "disposition": "revise",
+      "rationale": "Metric label is a count/category of started matches, not an event notification.",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "शुरू हुए मैच",
+        "fr": "Parties commencées"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 106,
+      "surface": "online",
+      "key": "Matches completed",
+      "source": "Matches completed",
+      "raw_google_target": "सामने पूर्ण झाले",
+      "recommended_target": "पूर्ण झालेले सामने",
+      "disposition": "revise",
+      "rationale": "Metric label is completed-match category/count, not a sentence announcing completion.",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "पूरे हुए मैच",
+        "fr": "Parties terminées"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 107,
+      "surface": "online",
+      "key": "Matches cancelled",
+      "source": "Matches cancelled",
+      "raw_google_target": "सामने रद्द झाले",
+      "recommended_target": "रद्द झालेले सामने",
+      "disposition": "revise",
+      "rationale": "Metric label is cancelled-match category/count, not an event notification.",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "रद्द हुए मैच",
+        "fr": "Parties annulées"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 108,
+      "surface": "online",
+      "key": "{value0} publications",
+      "source": "{value0} publications",
+      "raw_google_target": "{value0} प्रकाशने",
+      "recommended_target": "{value0}: प्रकाशने",
+      "disposition": "revise",
+      "rationale": "measureName supplies a library name, not a numeric count; colon works for every inserted translated library label.",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "प्रकाशन: {value0}",
+        "fr": "Publications : {value0}"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 109,
+      "surface": "online",
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "raw_google_target": "{value0} रेकॉर्ड केलेले डाउनलोड",
+      "recommended_target": "{value0}: नोंदवलेले डाउनलोड",
+      "disposition": "revise",
+      "rationale": "Recorded means analytics-recorded downloads, not recorded-media downloads; placeholder is a library label.",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "दर्ज डाउनलोड: {value0}",
+        "fr": "Téléchargements enregistrés : {value0}"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 110,
+      "surface": "online",
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "raw_google_target": "{value0} पूर्ण होण्याची वेळ (सेकंद)",
+      "recommended_target": "{value0}: पूर्ण होण्यासाठी लागलेला वेळ (सेकंद)",
+      "disposition": "revise",
+      "rationale": "Seconds measure elapsed successful-job completion duration, not a clock time; placeholder is a product label.",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "पूरा होने में लगा समय: {value0} (सेकंड)",
+        "fr": "Durée des opérations réussies : {value0} (secondes)"
+      },
+      "english_exception": null
+    },
+    {
+      "index": 111,
+      "surface": "online",
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "raw_google_target": "{value0} पूर्णता नमुने",
+      "recommended_target": "{value0}: पूर्ण झालेल्या कामांच्या मोजमापांचे नमुने",
+      "disposition": "revise",
+      "rationale": "Samples are completion measurements for a product/job, not example finished artifacts; placeholder is a product label.",
+      "context_group": "metrics",
+      "context_paths": [
+        "platform/apps/web/src/admin/presentation.ts",
+        "platform/packages/core/test/analytics.test.ts"
+      ],
+      "consulted_other_locales": {
+        "hi": "पूर्णता के मापन नमूने: {value0}",
+        "fr": "Échantillons d’opérations réussies : {value0}"
+      },
+      "english_exception": null
+    }
+  ],
+  "limitations": [
+    "Contextual software/game translation review by an independent AI reviewer, not a native-human certification.",
+    "No canonical catalog edits, paid API requests, runtime builds or fresh full-catalog review were performed."
+  ],
+  "kit_source_identity_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc"
+}

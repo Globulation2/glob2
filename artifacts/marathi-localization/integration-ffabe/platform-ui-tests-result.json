@@ -1,0 +1,19 @@
+{
+  "revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "command": [
+    "/usr/lib/chatgpt/resources/cua_node/bin/node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "packages/i18n/test",
+    "apps/web/test/financesLocale.test.tsx",
+    "apps/web/test/musicUploadLocale.test.tsx",
+    "apps/web/test/skin-material-locale.test.tsx",
+    "apps/web/test/studioCreditLocale.test.tsx",
+    "apps/web/test/ais.test.tsx",
+    "--maxWorkers=2"
+  ],
+  "cwd": "platform",
+  "exit_code": 0,
+  "node": "/usr/lib/chatgpt/resources/cua_node/bin/node",
+  "log_sha256": "90b4596483665aa7e78d7f22cc00c27cfeece2416db5218f83d39a6c5f84d43d"
+}

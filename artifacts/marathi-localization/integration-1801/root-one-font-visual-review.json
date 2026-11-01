@@ -1,0 +1,6 @@
+{
+  "reviewer": "/root",
+  "path": "artifacts/marathi-localization/integration-1801/native-one-font/304x844/font-20-scale-2-page-001.png",
+  "sha256": "18d3976319a7351201b07e11826bc89c108463076c09bca490efe57b70855de3",
+  "finding": "Actual viewed 280px nominal wrap at font20/scale2: joined Devanagari, full label wraps onto second line, no visible missing glyph or clipping. Font probe only; no new common-AI widget execution claim."
+}

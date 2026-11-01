@@ -1,0 +1,31 @@
+{
+  "revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "compile_producer_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "packaging_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "state": "complete",
+  "command": [
+    "/usr/bin/scons",
+    "target=web",
+    "release=1",
+    "web_variant=both",
+    "web-package",
+    "-j4",
+    "emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "environment": {
+    "GLOB2_DEV_HOME": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/private-web-store",
+    "GLOB2_RECORDING_PREFIX": "/home/bradley/.local/share/glob2/development/dependencies/build-a67f9f075109cd87f6160634/prefix",
+    "EMSDK": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39"
+  },
+  "log": "artifacts/marathi-localization/browser-game/release-build.log.gz",
+  "started_at_utc": "2026-11-01T10:48:25Z",
+  "storage_controls": {
+    "minimum_initial_free_bytes": 10737418240,
+    "maximum_uncompressed_log_bytes": 134217728
+  },
+  "pid": 4133076,
+  "exit_code": 0,
+  "uncompressed_log_bytes": 2679685,
+  "finished_at_utc": "2026-11-01T11:19:22Z"
+}

@@ -1,0 +1,51 @@
+{
+  "reviewer": "/root/locale_integration",
+  "mode": "Read-onlyAndroidsim-parity routeassessment. No sources edited, executable compiled, emulator launched orsimulationrun.",
+  "head_at_assessment": "351a89e9f3cad5ba4473478e96a7dfa1b3658b78",
+  "reference_sha256": {
+    "mobile/android/app/src/main/java/org/globulation2/glob2/Glob2Activity.java": "1cfd5062e0ecae5bd75d9cd3120633b42550648078666ef60f37c1502c44e6fc",
+    "mobile/MobilePaths.cpp": "d48b1b36f5a548393c81f05ecd67ef014cf349bef2344417acc96cfaa8d81538",
+    "mobile/NativeTestMain.cpp": "6182e2c368676de40347f5e95cb7fb3a6fcb2daf2ca3c007cfe17bf2a394c342",
+    "mobile/android_device_tests.py": "6f620e1cd6e775ef871fb96231075e51234048592ec1299f24af193b50ff6cc1",
+    "scons/mobile_build.py": "36a862986034a8a1200cd4b87f3d9599a18a5eaf6e604926540709183eed07cf",
+    "src/app/Glob2.cpp": "dafff48077863d5779c096aa054e6d5ab72c716bef2b38de6cec814be09ee224",
+    "src/app/cli/VerifyMatch.cpp": "3217fac8f461468be4384c3d910c194972308b58e6ab79d0b2fd7da06d4c6890",
+    "src/app/cli/VerifyMatch.h": "06c19c8e4489915d7910ed43b210786dde80acd9fd2a9298fb870c738faffa08",
+    "src/app/cli/CommandLine.cpp": "2c87cc50bb12ac8c42da92624545714806fad34239c0b09df6ebc07e0ea83644",
+    "test/support/GlobalContainerSlot.cpp": "4e3de677d1f0b01d081fae04c9c47f46de68cd9b2163650937a555be38f7dd1a",
+    "browser/tests/determinism.spec.js": "39f1e5bf536d4a7d6d7cb27006ae4bd3ce8f81d698a2c140e6aae7fc13b06db6"
+  },
+  "existing_APK_CLI_route": {
+    "available": false,
+    "evidence": [
+      "Glob2Activitydoesnot overridegetArguments; actualpinnedgeneratedSDLActivitygetArgumentsreturnsemptyString[].",
+      "PinnedSDLActivitySDL_ENV.* onlyreadAndroidmanifestmetadata, notIntentextras; noadbshell--esarg/envroute.",
+      "NativeentryGlob2.cppparsesCLIbutthenGLOB2_MOBILEinitializeMobilePaths beforeGlob2::run dispatch. AndroidAssetManager/JVMstartupmakesdirectdlopenSDL_mainfromadbshellinvalidroute.",
+      "LaunchlinksarejoinlinksACTION_VIEWonly, notCLIandmustnotbemisused."
+    ]
+  },
+  "recommended_minimal_development_fixture": {
+    "kind": "IgnoredAndroidPIE executable, linkedfromexactofficialcleanfinalAndroidreleaseengineobjects; separatefrominstalledAPK.",
+    "entry": "TinySDL_MAIN_HANDLEDmain validatesCli::parse request.command==match verify then invokesproductionrunVerifyMatch(request); noGame/Engine/transport/checksumalgorithm reimplementation.",
+    "production_objects": "Reuseofficialcurrentclientobjects+scriptobjects exceptsrc/app/Glob2.cpp.o, justlikeexistingandroid-testsclient_objects. Retainsstrictnumericobjectflags andallruntimefeatures/dependencies. Hashactualusedobjectsandrecordcompile/linkargv/toolchain/flags/sourcehead.",
+    "bridge": "Compileexistingmobile/NativeTestMain.cpp plus test/support/GlobalContainerSlot.cpp underexactAndroidtoolchain; NativeTestMainprovidesfilesystemIOwithoutAPKmanager, nullJNI/nohardware andSDL_PollEventwithoutuninitializedAndroidlifecyclequeue. Theseinterpositionsmustbeexplicit, notdescribedasstockAPK.",
+    "official_precedent": "scons/mobile_build.pyandroid-testsalreadydoesproductionclientobjectreuse+samebridge, mobile/android_device_tests.pystagesactualAndroidPIEandlibsandinvokesviaadbshellisolatedtmpwithdummySDLdrivers.",
+    "initialization": "UseexistingNativeTestMainconstructorSDL_SetMainReady/appmetadata; noinitializeMobilePaths/JVM. productionrunVerifyMatchsetsfreshprofiledirectoriesandGlobalContainerloadsactualassetcatalogs beforeMatchVerifier::verifyusesEngine::initTurnMatch/RecordTransport. Exactinitializationmustberuntimeverified, notassumedworking."
+  },
+  "minimum_validation_protocol": [
+    "Waitfinalcleanmergedsource/SIM112andregeneratedcommittedgoldenrecord/trace; oldSim110/111fixturemustnotbeheader-relabeled. Verifyfinalbuildactualinputprovenancebeforeobjectreuse.",
+    "Useofficialdependencyreceipt/compilerNDK28.2/API24/x86_64+productionreleaseflags andlibraryhashes; adaptactualofficiallinkrecipeintoPIEwithoutchangingenginesources/strictnumericsettings. No SDKidentityrewrite/dependencyupgrade.",
+    "Createonlyownedemulator5678/isolatedADB15187withfullownershipguards; freshuuid/data/local/tmp/glob2-mr-verify-* directory. PreserveAPKprofile separate.",
+    "StageexactsamecommittedFourSquares1.g2mr+FourSquares1.map.gz usednative/WASM, plusfinalofficialexportedruntimeassetsandexactlinkedsharedSDLlibs/libc++_shared. Prehashinputmanifests andvalidateactualondevicecopies; <=512MiBpayload, >=2GiBfreefloor, <=64MiBoutput/logallowance, timeout600s.",
+    "InvokeenvLD_LIBRARY_PATH/SDL_VIDEODRIVER=dummy/SDL_AUDIODRIVER=dummy/GLOB2_ASSET_DIR=stagedroot andproductionmatch verify args--map-file--output-dir. Usefreshoutputnoexistingresult; captureexit/log/result/verdict/checksums.",
+    "Requireexit0+verdictverifiedandexactcompleteper-tickchecksums.txt equalitywithcommittedSim112goldenANDindependentnative/WASMoutputs; matchingorders/verdictaloneinsufficient. Countallticksandreportfirstdifferenceifany.",
+    "Keepallfailureattempts,neveracceptabsent/oldreports; removeonlyownedremotedirectoryafterartifactsretrieved/verified, thenownedVM/ADBcleanup."
+  ],
+  "claim_if_pass": "Androidx86_64CPUengineheadless/emulatorper-tickequivalence ononeexactrecord/map, withdocumentedfilesystem/JVM/eventbridges andsameofficialengineobjects. ComplementsseparateactualinstalledAPKrender/lifecyclechecks.",
+  "explicit_limits": [
+    "NotinstalledAPK/JVMexecutionpath orphysicalAndroidhardware.",
+    "Notallseeds/maps/orders orSGSLsourceacceptanceproof; focusedSGSLregistration/saveprogramcountertests separatelyrequired.",
+    "Notarm64/iOSexecution,recording/audio/video/performanceproof.",
+    "Read-onlyassessmentdoesnotestablishexecutablelink/runtimeroutealreadyworks. Ifthinfixturefailsandnocorrectroutecompletes, reportAndroidper-tickcoverageunavailableexplicitly; package/installPASSneverusedassimulationevidence."
+  ]
+}

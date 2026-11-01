@@ -1,0 +1,23 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T08:17:06.049931+00:00",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "signed_and_installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-classic-landscape.png",
+      "sha256": "0950a0e2bfafa514a44b75e4d360ead9c311e5db56bc51a4e41621e3954dbc54"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-lush-dry-portrait.png",
+      "sha256": "69784b5c1c00af357b00989ef102a80e8ee368808a72130ff08a7de383eb10ae"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-classic-slow-scroll-portrait.png",
+      "sha256": "5315f496d242ab837184a73d92f7b75a10af1c762a9b0e45cfb51204dce8c8de"
+    }
+  ],
+  "assessment": "Actually viewed all three current-release Android images. Lush grass, dry grass, dune sand and pale sand Marathi labels are shaped clearly and fit within their fully visible terrain cards; the long dune-sand name is fully displayed in both landscape and portrait. The horizontal rail deliberately crops adjacent offscreen cards at viewport edges. No tofu, broken conjuncts or clipping of fully visible label cards observed. These are editor UI rendering observations, not terrain gameplay tests.",
+  "findings": []
+}

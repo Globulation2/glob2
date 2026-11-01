@@ -1,0 +1,155 @@
+{
+  "reviewer": "/root/locale_integration",
+  "status": "PASS actual eight-platform/variant trace files compared byte-for-byte.",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "compiled_shipping_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "golden_fixture_commit": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "fixture_only_delta": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "SIM_REVISION": 112,
+  "record": {
+    "path": "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7"
+  },
+  "map": {
+    "path": "maps/FourSquares1.map.gz",
+    "sha256": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869"
+  },
+  "committed_trace": {
+    "path": "test/fixtures/multiplayer/FourSquares1.verify-trace.txt",
+    "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "text_lines": 843,
+    "tick_samples": 842,
+    "first_tick": 0,
+    "last_tick": 841
+  },
+  "actual_traces_compared": [
+    {
+      "platform": "native",
+      "variant": "linux",
+      "path": "artifacts/marathi-localization/integration-ffabe/native/native-match-verify/checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "bytes": 10914,
+      "text_lines": 843,
+      "tick_samples": 842,
+      "first_tick": 0,
+      "last_tick": 841,
+      "actual_raw_byte_equality_to_committed_and_every_other_trace": true
+    },
+    {
+      "platform": "android",
+      "variant": "x86_64-headless",
+      "path": "artifacts/marathi-localization/integration-ffabe/android/parity/device-output/checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "bytes": 10914,
+      "text_lines": 843,
+      "tick_samples": 842,
+      "first_tick": 0,
+      "last_tick": 841,
+      "actual_raw_byte_equality_to_committed_and_every_other_trace": true
+    },
+    {
+      "platform": "chromium",
+      "variant": "serial",
+      "path": "artifacts/marathi-localization/browser-game/minimal-qa/chromium-golden/serial-verify-match.checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "bytes": 10914,
+      "text_lines": 843,
+      "tick_samples": 842,
+      "first_tick": 0,
+      "last_tick": 841,
+      "actual_raw_byte_equality_to_committed_and_every_other_trace": true
+    },
+    {
+      "platform": "chromium",
+      "variant": "threaded",
+      "path": "artifacts/marathi-localization/browser-game/minimal-qa/chromium-golden/threaded-verify-match.checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "bytes": 10914,
+      "text_lines": 843,
+      "tick_samples": 842,
+      "first_tick": 0,
+      "last_tick": 841,
+      "actual_raw_byte_equality_to_committed_and_every_other_trace": true
+    },
+    {
+      "platform": "firefox",
+      "variant": "serial",
+      "path": "artifacts/marathi-localization/browser-game/minimal-qa/firefox-golden/serial-verify-match.checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "bytes": 10914,
+      "text_lines": 843,
+      "tick_samples": 842,
+      "first_tick": 0,
+      "last_tick": 841,
+      "actual_raw_byte_equality_to_committed_and_every_other_trace": true
+    },
+    {
+      "platform": "firefox",
+      "variant": "threaded",
+      "path": "artifacts/marathi-localization/browser-game/minimal-qa/firefox-golden/threaded-verify-match.checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "bytes": 10914,
+      "text_lines": 843,
+      "tick_samples": 842,
+      "first_tick": 0,
+      "last_tick": 841,
+      "actual_raw_byte_equality_to_committed_and_every_other_trace": true
+    },
+    {
+      "platform": "webkit",
+      "variant": "serial",
+      "path": "artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-golden/serial-verify-match.checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "bytes": 10914,
+      "text_lines": 843,
+      "tick_samples": 842,
+      "first_tick": 0,
+      "last_tick": 841,
+      "actual_raw_byte_equality_to_committed_and_every_other_trace": true
+    },
+    {
+      "platform": "webkit",
+      "variant": "threaded",
+      "path": "artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-golden/threaded-verify-match.checksums.txt",
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "bytes": 10914,
+      "text_lines": 843,
+      "tick_samples": 842,
+      "first_tick": 0,
+      "last_tick": 841,
+      "actual_raw_byte_equality_to_committed_and_every_other_trace": true
+    }
+  ],
+  "comparisons": {
+    "all_actual_files_raw_byte_identical": true,
+    "all_tick_sequences_complete_0_through841": true,
+    "all_842_tick_checksums_equal": true,
+    "browser_engines": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "browser_variants": [
+      "serial",
+      "threaded"
+    ],
+    "not_inferred_from_matching_orders_or_verdicts": true
+  },
+  "bound_owner_evidence": {
+    "artifacts/marathi-localization/browser-game/gate-recommendation.json": "cb2ab4ea148d39cfbb3388818b80892ac4f021eeaa5eb3ae0e2417db4ba08472",
+    "artifacts/marathi-localization/integration-ffabe/native/authoritative-native-trace.json": "ee87d635b10d5dffc9c9d07182e7a9a681ad32a0175e50a634c10a13c4b440b1",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/device-result.json": "2e406d141c10b8dba362b6ee1cb38cf71576eb5bd173edfeac8a30503344b616",
+    "artifacts/marathi-localization/integration-ffabe/android/gate-recommendation.json": "05b7963e77da008723e00e5fe676127773f4e413e3a8bf92fc539a4445619368",
+    "artifacts/marathi-localization/integration-ffabe/android/parity/build-provenance.json": "f46b46473166da763d36490b4adba42f6f82d376db0a025944636253c16edf1d"
+  },
+  "supersession": "This aggregate completes the direct WASM comparison that was pending in the immutable Android owner gate. Original owner gate remains unchanged and keeps its actual completion-time scope.",
+  "limits": [
+    "One exact committed setup/seed/map/order record, all842ticks; not all maps/seeds/orders or the optional1500tick corpus.",
+    "Native development CLI, Android release engine-object headless PIE and browser releaseWASM compiler/flags differ; functional equality only, no performance comparison.",
+    "Android x86_64 emulator shell uses documented native-test filesystem/JNI/event bridges and official mr_IN SDL locale hint; installedAPK/JVM rendering is separately evidenced.",
+    "PlaywrightWebKit, not physicalSafari/iOS; no ARM/physicalphone/macOS/Windows simulation execution claim."
+  ],
+  "runtime_reexecuted_for_this_aggregate": false
+}

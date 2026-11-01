@@ -1,0 +1,110 @@
+{
+  "unsigned_apk": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+  "unsigned_apk_sha256": "3bbf8393c13b11de400b7c56fa444b34d24d40c8f852c884b66339896b7d7bfd",
+  "final_official_producer_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "initial_native_producer_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+  "producer_provenance": "integration-bc8/metadata-followup/android/producer-provenance.json",
+  "native_object_reuse": {
+    "before_count": 776,
+    "after_count": 776,
+    "unchanged_object_bytes": 776,
+    "changed_or_new": [],
+    "removed": [],
+    "before_manifest_sha256": "5eb8d8a3155a54ae8d4184036775a8ccf167e11a2a519eb75e12c72ccb6fc6d5",
+    "after_manifest_sha256": "5eb8d8a3155a54ae8d4184036775a8ccf167e11a2a519eb75e12c72ccb6fc6d5"
+  },
+  "head_at_validation": "187ea34de87838911a42321fd52925d51da475b9",
+  "adb_server": 15187,
+  "serial": "emulator-5678",
+  "avd": "glob2-api35-x64",
+  "locale": "mr-IN",
+  "java_home": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1",
+  "java_path_prefix": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1/bin",
+  "packaged_assets": {
+    "assets/glob2-bundle/data/texts.incomplete.txt": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+    "assets/glob2-bundle/data/texts.mr.txt": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "assets/glob2-bundle/data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+  },
+  "packaged_marathi_completion_line": "data/texts.mr.txt",
+  "compiled_marathi_resource_configuration_line": "      (mr) \"खेळाची तयारी सुरू आहे…\"",
+  "android_resource_verified": "Effective compiled APKresources include Marathi preparing_game with exact reviewed target खेळाची तयारी सुरू आहे…",
+  "android_source_xml_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "signed_apk_sha256": "70cc07f944ecf3a24676af2db9a593b607682f55aa6b05f57ff62145d8565d91",
+  "installed_apk_sha256": "70cc07f944ecf3a24676af2db9a593b607682f55aa6b05f57ff62145d8565d91",
+  "installed_apk_path": "/data/app/~~W_iqnkTBpikgPWW8xvGdtg==/org.globulation2.glob2-VCrwi15hIVd0joU3srxwnA==/base.apk",
+  "first_run_captures": [
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-00.png",
+      "sha256": "1c2ab67b050d604486d58cd634c713a5bb688b44aa3630ef7c0bed789361bb2b",
+      "bytes": 303562,
+      "elapsed_seconds": 0.6607348120014649
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-01.png",
+      "sha256": "c584ac94812e3b892132c007abe419da106175657d3b769b7d670837566b00d8",
+      "bytes": 25829,
+      "elapsed_seconds": 1.0021598099992843
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-02.png",
+      "sha256": "c02eeab3fd36823332d0511e1d6b0fc9d4e11c70266e31951dfa4c61d7bd9c90",
+      "bytes": 25827,
+      "elapsed_seconds": 1.2440923020039918
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-03.png",
+      "sha256": "9256953647b9b216805cd75682995f401f77918a301eb1939897420a5437afb1",
+      "bytes": 11522,
+      "elapsed_seconds": 1.7118604999996023
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-04.png",
+      "sha256": "76dd9f7714271c878bd144556565c706d88cc08795fd5c1216166328fdda471c",
+      "bytes": 9867,
+      "elapsed_seconds": 2.2357939630019246
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-05.png",
+      "sha256": "358ea8ae6d4638d8a2f2a01036582b264b041326959b5d631cf84d35177541cf",
+      "bytes": 10948,
+      "elapsed_seconds": 2.6591873970028246
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-06.png",
+      "sha256": "083baea37dc7f9a19203deaa32b1cd7d03e90585f48ffe8fd8e0c592515733a7",
+      "bytes": 10650,
+      "elapsed_seconds": 3.216694696006016
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-07.png",
+      "sha256": "2c2e74a21945e7a7d247482b51d9ab6c64ba3a4d73d05042a2320f051b91f9f9",
+      "bytes": 9867,
+      "elapsed_seconds": 3.678367918008007
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-08.png",
+      "sha256": "ed63555ffd75c0200f652094a699e79c469dded7e74981e2fc5e8da2be6feaf2",
+      "bytes": 11146,
+      "elapsed_seconds": 4.185101820999989
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/metadata-followup/android/rendering/first-run-09.png",
+      "sha256": "338a2aa7221198ae27dd067cf888a023aebfbb1589340b9d32bfd93267250a1b",
+      "bytes": 10077,
+      "elapsed_seconds": 4.701840626003104
+    }
+  ],
+  "first_run_capture_budget": {
+    "maximum_frames": 10,
+    "target_interval_seconds": 0.5,
+    "byte_cap": 12582912,
+    "maximum_capture_span_seconds": 6.0,
+    "actual_capture_bytes": 429295,
+    "not_stored_due_to_cap": [],
+    "capture_errors": [],
+    "not_attempted_due_to_deadline": 0,
+    "actual_span_seconds": 4.702182034001453
+  },
+  "overlay_visual_confirmation": "Pending actualimage review; compiledresource verified separately.",
+  "lifecycle_exit_code": 0
+}

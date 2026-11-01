@@ -1,0 +1,26 @@
+{
+  "revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "compile_producer": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "command": [
+    "node",
+    "/home/bradley/.codex/worktrees/45cd/glob2/platform/node_modules/@playwright/test/cli.js",
+    "test",
+    "--config",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/fixed-tutorial-playwright.config.js",
+    "--project=firefox",
+    "--grep",
+    "Marathi game phone.*threaded native",
+    "--workers=1",
+    "--reporter=list,json",
+    "--output",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/firefox-fixed-tutorial/cases"
+  ],
+  "origin": "http://127.0.0.1:43429",
+  "state": "failed",
+  "expected_cases": 1,
+  "scope": "Fresh fixed authored tutorial-map actualUI statistics capture; previous random custom-game stall remains preserved, not rerun/relabelled.",
+  "started_at_utc": "2026-11-01T11:35:01Z",
+  "exit_code": 1,
+  "server_closed": true,
+  "finished_at_utc": "2026-11-01T11:39:11Z"
+}

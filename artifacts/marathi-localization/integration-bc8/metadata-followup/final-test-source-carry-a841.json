@@ -1,0 +1,10 @@
+{
+  "final_validation_revision": "a8413bb0f4a718dbb1714237c127fcf36868d2e3",
+  "shipping_package_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "compiled_runtime_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "changes_after_packaging": [
+    "browser/tests/marathi.spec.js"
+  ],
+  "scope": "Only browser test scroll/popup/touchnavigation/paragraph-observation fixtures changed after187; all tracked shipping code/resource/build input bytes equal187. Actualpackages/compiledruntime keep trueproducer revisions. Focusedphone and full12 must execute finaltestcode; manualexactinstruction imagecoverage is distinguished from pixelinkassertion.",
+  "final_browser_test_sha256": "0116fd35576a4d0463c8acb39c4efe4dea4ecf19f93c48e846c42fcf0b5544dc"
+}

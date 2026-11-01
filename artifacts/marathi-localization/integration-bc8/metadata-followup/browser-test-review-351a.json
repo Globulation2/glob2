@@ -1,0 +1,36 @@
+{
+  "reviewer": "/root/locale_integration",
+  "head": "351a89e9f3cad5ba4473478e96a7dfa1b3658b78",
+  "delta_base": "ec243508d834183e84021eed5d5309e15d4b96aa",
+  "mode": "Read-onlyindependentfixturedelta review; no sourceedit/browserrun/newmanualimageclaim.",
+  "verdict": "No blockingstaticfixtureissue found. Actualfocusedandfullruntimecasecompletionmustbeverifiedseparately.",
+  "changed_paths": [
+    "browser/tests/marathi.spec.js"
+  ],
+  "file_sha256": {
+    "browser/tests/marathi.spec.js": "f1c95c83c177caa039555aa516205d11227a8e1ba653a1b4e1dc3b48ce5e253f",
+    "browser/tests/pixels.js": "ac0502922779fc9672e5542a896ea442daa8f6f7e7d3d7112de7352721ad0f56",
+    "browser/tests/main-menu.js": "15bda955d941567db8d6a7d7a2aface1233d6e62d9c3ba030f18e2e1d8b4518f",
+    "src/game/screens/CustomGameScreen.cpp": "b843e385ba6c1cd206870b173ef43120052118bc70ea1dbfa4824fa22489c77a"
+  },
+  "prior_ec24_review_preserved": {
+    "path": "artifacts/marathi-localization/integration-bc8/metadata-followup/browser-test-review-final.json",
+    "sha256": "4fd978a88cb49b07ea63dd7e28bdd7e1cd20f5b3cc70c1e0c2a7da072b5bca88"
+  },
+  "actual_delta": "ReplacevariableBackloop/keysetdifferencepoll with realtab/0click, waitforactualmap/mode/0control, singleBack, mandatoryMainMenuScreenwait. Nootherassertion/helper/sourcechange.",
+  "source_semantics_verified": [
+    "All3actualtab/i buttonsarebuiltforbothlayouts; tab/0 callbackselectTab(0) setsclampedcurrentTab0, closesPopupandinvalidates.",
+    "OnlycurrentTab0buildsmapTab; actualmap/modepills publishmap/mode/0, so waitingforenabledcontrolchecksspecificfirststep ratherthanarbitrarydiagnostickeysetchange.",
+    "PhoneflowBackcapturescurrenttab: at0endExecute(CANCEL), otherwise selectTab(tab-1). DesktopBackalwaysendExecute(CANCEL). Therefore singleBackfromexplicitMapworks forbothlayouts.",
+    "main-menu.clickControl waitsforcurrentviewport+visiblebounds, clicksactualcanvascontrol andwaitsforhostframeconsumption. map/mode/0waitprovidesspecificpost-tabstatecheck; finalMainMenuScreenassertionstillrequired.",
+    "Removingkeysetpollavoidsacceptingdiagnosticchangefromprofileownerdisposal aswizardnavigation. No syntheticstate orproductcheckremoved."
+  ],
+  "unchanged_assertions": "Actualpopupkeyboardchoices, profileprosecrop+scroll, installednativecatalog/fontbytes, selectedMarathilanguagefit/ink, conflictingcookiepersistence, tutorialtick/Help150creamink/pageerrors unchangedfromec24.",
+  "runtime_history_scope": "Parentrecordsec24fullattempt1failed1interrupted10notrun; preservedasfailureevidence. ThisstaticreviewneitherconvertsittoPASSnorclaimsfocusedFirefox/currentfullmatrixresult.",
+  "prior_actual_image_reference_only": {
+    "path": "artifacts/marathi-localization/browser-game/smoke-a841-phone-cream-threshold/test-failed-1.png",
+    "sha256": "2394515cb8def4a3f97cf12dc2ac02156d848ff4c6557f212f0f9fc469053e4c",
+    "scope": "Actuallyreadinpriorec24review; no newimageviewinthe351deltaaudit."
+  },
+  "blocking_findings": []
+}

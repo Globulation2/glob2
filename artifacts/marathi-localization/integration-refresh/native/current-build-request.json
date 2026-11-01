@@ -1,0 +1,13 @@
+{
+  "revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "source_status": "",
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "translation-preview-harness",
+    "-j4"
+  ],
+  "dependency_proof": "recording-prefix-validation.json",
+  "selected_prefix_mode": "explicit, official current raw builder identity accepted; original shared fingerprint retained",
+  "exit_code": 0
+}

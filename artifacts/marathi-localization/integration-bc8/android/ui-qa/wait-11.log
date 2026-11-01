@@ -1,0 +1,5 @@
+--------- beginning of main
+11-01 02:43:13.331  3730  3751 D EGL_emulation: app_time_stats: avg=45.34ms min=35.12ms max=57.40ms count=23
+11-01 02:43:13.537  3730  3751 I SDL/APP : Glob2 screen ready: N8Tutorial19LessonCatalogScreenE
+--------- beginning of kernel
+11-01 02:43:14.193     0     0 I logd    : logdr: UID=0 GID=0 PID=4083 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns

@@ -1,0 +1,1156 @@
+{
+  "reviewer": "/root/locale_integration",
+  "role": "independent editorial final actual reread",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "source_files_verified_sha256": {
+    "data/texts.keys.txt": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+    "data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+    "platform/packages/i18n/locales/en.json": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "actual_canonical_file": "platform/packages/i18n/locales/mr.json",
+  "draft_bytes_exact_canonical": true,
+  "all111_actual_final_values_read": true,
+  "coverage_count": 111,
+  "reviewed_keys": [
+    "Rush",
+    "Defensive",
+    "Economy",
+    "Expansion",
+    "Experimental",
+    "Beginner-friendly",
+    "File and API profile",
+    "Syntax and profile restrictions",
+    "Startup and callback",
+    "Persistent state",
+    "Seeded gameplay",
+    "Repeatable simulation",
+    "Save and resume",
+    "Good",
+    "Fair",
+    "Poor",
+    "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+    "Delay",
+    "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+    "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+    "Classic glossy",
+    "Basics",
+    "Matte",
+    "Riveted metal",
+    "Metal",
+    "Hairy",
+    "Organic",
+    "Cartoon",
+    "Woven fabric",
+    "Craft",
+    "Oozy goo",
+    "Wet",
+    "Wood",
+    "Stone",
+    "Mineral",
+    "Scales",
+    "Leather",
+    "Crystal",
+    "Lava",
+    "Chrome",
+    "Carbon fibre",
+    "Velvet",
+    "Honeycomb",
+    "Ice",
+    "Cloud",
+    "Hammered metal",
+    "Candy",
+    "Slime",
+    "AI player",
+    "Finances",
+    "Accounts",
+    "Audit",
+    "1 hour",
+    "1 day",
+    "1 week",
+    "30 days",
+    "Most played",
+    "Listen for the musical structure and development.",
+    "Check that all three moods play correctly.",
+    "Listen for unexpected jumps in volume between moods.",
+    "Listen for a click, gap, or abrupt change when the loop repeats.",
+    "Listen for short phrases that repeat too mechanically.",
+    "Switch moods and listen for changes in timing or harmony.",
+    "Check that building and combat feel distinct from calm.",
+    "Listen for hiss or scratchiness in quiet passages.",
+    "Listen for muddy bass or harsh high frequencies.",
+    "Check that calm passages remain audible alongside game sound.",
+    "Listen for notes that cut off unexpectedly.",
+    "Worker",
+    "Warrior",
+    "Explorer",
+    "Swarm",
+    "Classic",
+    "Crown",
+    "Clutch",
+    "Toadstool",
+    "A broad-capped toadstool with young caps.",
+    "Coral",
+    "Skep",
+    "A coiled hive on a stand, its door facing you.",
+    "Bloom",
+    "Public: listed in the catalog",
+    "Unlisted: anyone with the link",
+    "Private: only you",
+    "The server replayed this match and every player’s game agreed with it.",
+    "The server is checking this match. Ratings change once it is verified.",
+    "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+    "The server could not reproduce this match, so it changes no rating.",
+    "This match is not checked.",
+    "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+    "Walk",
+    "Swim",
+    "Harvest",
+    "Fight",
+    "Fly",
+    "Live payments",
+    "Test payments",
+    "Unclassified payments",
+    "Current period",
+    "Previous period",
+    "Credit grant",
+    "Returned credits",
+    "Dispute",
+    "Dispute closed",
+    "Matches started",
+    "Matches completed",
+    "Matches cancelled",
+    "{value0} publications",
+    "{value0} recorded downloads",
+    "{value0} completion time (seconds)",
+    "{value0} completion samples"
+  ],
+  "final_values": [
+    {
+      "key": "Rush",
+      "source": "Rush",
+      "actual_final_target": "सुरुवातीचा हल्ला",
+      "status": "accept",
+      "final_context_rationale": "Accepted final early-attack sense, more exact than editorial quick attack and confirmed HI/FR strategy references.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "Defensive",
+      "source": "Defensive",
+      "actual_final_target": "बचावात्मक",
+      "status": "accept",
+      "final_context_rationale": "Correct defensive AI style adjective; compact and natural.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Economy",
+      "source": "Economy",
+      "actual_final_target": "अर्थव्यवस्था",
+      "status": "accept",
+      "final_context_rationale": "Correct economy tag and established Marathi gameplay term.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Expansion",
+      "source": "Expansion",
+      "actual_final_target": "विस्तार",
+      "status": "accept",
+      "final_context_rationale": "Correct expansion strategy noun.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Experimental",
+      "source": "Experimental",
+      "actual_final_target": "प्रायोगिक",
+      "status": "accept",
+      "final_context_rationale": "Correct experimental tag.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "actual_final_target": "नवशिक्यांसाठी सोपे",
+      "status": "accept",
+      "final_context_rationale": "Natural concise beginner suitability label rather than bureaucratic अनुकूल.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "actual_final_target": "फाइल आणि API प्रोफाइल",
+      "status": "accept",
+      "final_context_rationale": "Technical API identifier remains recognizable as in existing Marathi JavaScript API reference.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "actual_final_target": "वाक्यरचना आणि प्रोफाइलवरील निर्बंध",
+      "status": "accept",
+      "final_context_rationale": "Case ending makes restrictions apply naturally to the API profile.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Startup and callback",
+      "source": "Startup and callback",
+      "actual_final_target": "सुरुवात आणि कॉलबॅक",
+      "status": "accept",
+      "final_context_rationale": "Startup check is initialization; retain established programming callback loanword.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Persistent state",
+      "source": "Persistent state",
+      "actual_final_target": "जतन होणारी स्थिती",
+      "status": "accept",
+      "final_context_rationale": "Accepted retained-state noun phrase; avoids permanence and still communicates persistence naturally.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "actual_final_target": "ठरावीक बीजासह खेळ",
+      "status": "accept",
+      "final_context_rationale": "Seeded gameplay is a fixed random-seed execution check; replace untranslated adjective सीडेड.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Repeatable simulation",
+      "source": "Repeatable simulation",
+      "actual_final_target": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "status": "accept",
+      "final_context_rationale": "Accurate repeatability check heading; technical simulation loanword is natural here.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Save and resume",
+      "source": "Save and resume",
+      "actual_final_target": "जतन करा आणि पुढे चालू ठेवा",
+      "status": "accept",
+      "final_context_rationale": "Accepted चालू ठेवा as clearer continuation of saved play, not restart.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "Good",
+      "source": "Good",
+      "actual_final_target": "चांगले",
+      "status": "accept",
+      "final_context_rationale": "Connection quality rating good; appropriate compact generic quality label.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Fair",
+      "source": "Fair",
+      "actual_final_target": "साधारण",
+      "status": "accept",
+      "final_context_rationale": "Accepted साधारण as ordinary middle-quality rating and consistent with existing quality prose, not fairness/legal sense.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "Poor",
+      "source": "Poor",
+      "actual_final_target": "खराब",
+      "status": "accept",
+      "final_context_rationale": "Poor network quality, not a person being impoverished.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "actual_final_target": "खेळाडू आणि रिले यांच्यात संदेश जाऊन परत येण्यासाठी लागणारा वेळ. सामन्यापूर्वी (झटपट सामना, सुरुवातीची तपासणी यादी) हा त्या प्रदेशाशी जोडणी तपासून काढलेला अंदाज असतो.",
+      "status": "accept",
+      "final_context_rationale": "Metric is round-trip time, not a journey; pre-match probe is an estimate of connection to a region.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Delay",
+      "source": "Delay",
+      "actual_final_target": "विलंब",
+      "status": "accept",
+      "final_context_rationale": "Correct input-delay metric label.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "actual_final_target": "तुमचा इनपुट विलंब: तुम्ही क्लिक केल्यापासून ती कृती सर्व खेळाडूंच्या खेळात होईपर्यंतचा वेळ. तुमच्या पिंगचा निम्मा वेळ आणि नेटवर्क विलंबातील चढउतार सांभाळण्यासाठी खेळाने ठेवलेला बफर यांची बेरीज.",
+      "status": "accept",
+      "final_context_rationale": "Accepted shorter explanatory fragment. Explicit everyone, half-ping time and added jitter buffer remain intact with grammatical बेरीज.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "actual_final_target": "खेळाडूचा खेळ सामन्याच्या घड्याळापेक्षा किती मागे आहे. एका सेकंदापेक्षा कमी अंतर सामान्य असते (त्यात इनपुट विलंबही असतो); हे अंतर २ सेकंद झाल्यापासून रिले त्या खेळाडूला धीमा म्हणून नोंदवतो.",
+      "status": "accept",
+      "final_context_rationale": "Behind is temporal lag; preserve under-one-second normal and at-least-two-second slow threshold.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Classic glossy",
+      "source": "Classic glossy",
+      "actual_final_target": "क्लासिक चकचकीत",
+      "status": "accept",
+      "final_context_rationale": "Classic glossy material preset; familiar style loanword and adjective fit compact picker.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Basics",
+      "source": "Basics",
+      "actual_final_target": "मूलभूत",
+      "status": "accept",
+      "final_context_rationale": "Skin material group heading, so extra गोष्टी is unnecessary.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Matte",
+      "source": "Matte",
+      "actual_final_target": "मॅट",
+      "status": "accept",
+      "final_context_rationale": "Established material finish loanword, not English exception; matte means non-glossy.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "actual_final_target": "रिव्हेट लावलेला धातू",
+      "status": "accept",
+      "final_context_rationale": "Actual riveted finish; fixes raw metal number/agreement while preserving rivet detail.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Metal",
+      "source": "Metal",
+      "actual_final_target": "धातू",
+      "status": "accept",
+      "final_context_rationale": "Correct material group noun.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Hairy",
+      "source": "Hairy",
+      "actual_final_target": "केसाळ",
+      "status": "accept",
+      "final_context_rationale": "Correct fur/hair surface finish adjective.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Organic",
+      "source": "Organic",
+      "actual_final_target": "सेंद्रिय",
+      "status": "accept",
+      "final_context_rationale": "Correct organic-inspired material category.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Cartoon",
+      "source": "Cartoon",
+      "actual_final_target": "कार्टून",
+      "status": "accept",
+      "final_context_rationale": "Familiar Marathi loanword for the visual style, no unchanged-English exemption.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Woven fabric",
+      "source": "Woven fabric",
+      "actual_final_target": "विणलेले कापड",
+      "status": "accept",
+      "final_context_rationale": "Correct woven fabric material.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Craft",
+      "source": "Craft",
+      "actual_final_target": "कलाकुसर",
+      "status": "accept",
+      "final_context_rationale": "Correct craft-inspired material group.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "actual_final_target": "ओघळणारा चिकट पदार्थ",
+      "status": "accept",
+      "final_context_rationale": "Oozy goo is a flowing viscous material, not adhesive glue.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Wet",
+      "source": "Wet",
+      "actual_final_target": "ओले",
+      "status": "accept",
+      "final_context_rationale": "Correct wet material group label, covering goo/lava/slime finishes.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Wood",
+      "source": "Wood",
+      "actual_final_target": "लाकूड",
+      "status": "accept",
+      "final_context_rationale": "Correct wood material.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Stone",
+      "source": "Stone",
+      "actual_final_target": "दगड",
+      "status": "accept",
+      "final_context_rationale": "Correct stone material.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Mineral",
+      "source": "Mineral",
+      "actual_final_target": "खनिज",
+      "status": "accept",
+      "final_context_rationale": "Correct mineral category.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Scales",
+      "source": "Scales",
+      "actual_final_target": "खवले",
+      "status": "accept",
+      "final_context_rationale": "Animal-scale surface texture, not numerical scales or a measuring scale.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Leather",
+      "source": "Leather",
+      "actual_final_target": "चामडे",
+      "status": "accept",
+      "final_context_rationale": "Correct leather material.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Crystal",
+      "source": "Crystal",
+      "actual_final_target": "स्फटिक",
+      "status": "accept",
+      "final_context_rationale": "Natural Marathi crystal material noun; compact and clear.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Lava",
+      "source": "Lava",
+      "actual_final_target": "लावा",
+      "status": "accept",
+      "final_context_rationale": "Established Marathi name for molten-rock material.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Chrome",
+      "source": "Chrome",
+      "actual_final_target": "क्रोम",
+      "status": "accept",
+      "final_context_rationale": "Metallic chrome finish, not the browser brand; accepted Devanagari technical loanword.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Carbon fibre",
+      "source": "Carbon fibre",
+      "actual_final_target": "कार्बन फायबर",
+      "status": "accept",
+      "final_context_rationale": "Recognizable material name in standard Marathi transliteration.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Velvet",
+      "source": "Velvet",
+      "actual_final_target": "मखमल",
+      "status": "accept",
+      "final_context_rationale": "Material noun velvet rather than adjective मखमली standing alone.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "actual_final_target": "पोळ्याचे कप्पे",
+      "status": "accept",
+      "final_context_rationale": "Accepted पोळ्याचे कप्पे as actual hexagonal honeycomb material pattern; avoids conflation with whole Swarm building.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "Ice",
+      "source": "Ice",
+      "actual_final_target": "बर्फ",
+      "status": "accept",
+      "final_context_rationale": "Correct ice material.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Cloud",
+      "source": "Cloud",
+      "actual_final_target": "ढग",
+      "status": "accept",
+      "final_context_rationale": "Correct cloud-like material.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Hammered metal",
+      "source": "Hammered metal",
+      "actual_final_target": "हातोड्याने ठोकलेला धातू",
+      "status": "accept",
+      "final_context_rationale": "Correct hammered-metal surface finish, raw already has natural agreement.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Candy",
+      "source": "Candy",
+      "actual_final_target": "कँडी",
+      "status": "accept",
+      "final_context_rationale": "Familiar candy visual-style loanword, no English exception.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Slime",
+      "source": "Slime",
+      "actual_final_target": "चिकट जेल",
+      "status": "accept",
+      "final_context_rationale": "Viscous slime material; descriptive Marathi is clearer than opaque स्लाइम.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "AI player",
+      "source": "AI player",
+      "actual_final_target": "एआय खेळाडू",
+      "status": "accept",
+      "final_context_rationale": "Correct AI player route heading with established एआय term.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Finances",
+      "source": "Finances",
+      "actual_final_target": "वित्त",
+      "status": "accept",
+      "final_context_rationale": "Correct compact finances administration section heading.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Accounts",
+      "source": "Accounts",
+      "actual_final_target": "खाती",
+      "status": "accept",
+      "final_context_rationale": "Correct accounts administration section heading.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Audit",
+      "source": "Audit",
+      "actual_final_target": "ऑडिट",
+      "status": "accept",
+      "final_context_rationale": "Administration event audit, not financial-account auditing only; matches existing ऑडिट इतिहास.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "1 hour",
+      "source": "1 hour",
+      "actual_final_target": "१ तास",
+      "status": "accept",
+      "final_context_rationale": "Correct mute-duration option; numeric meaning retained.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "1 day",
+      "source": "1 day",
+      "actual_final_target": "१ दिवस",
+      "status": "accept",
+      "final_context_rationale": "Correct mute-duration option.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "1 week",
+      "source": "1 week",
+      "actual_final_target": "१ आठवडा",
+      "status": "accept",
+      "final_context_rationale": "Correct mute-duration option.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "30 days",
+      "source": "30 days",
+      "actual_final_target": "३० दिवस",
+      "status": "accept",
+      "final_context_rationale": "Correct thirty-day mute-duration option.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Most played",
+      "source": "Most played",
+      "actual_final_target": "सर्वाधिक खेळलेले",
+      "status": "accept",
+      "final_context_rationale": "Map sorting caption describes maps played most; use adjectival form.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "actual_final_target": "संगीताची रचना आणि तिचा विकास लक्ष देऊन ऐका.",
+      "status": "accept",
+      "final_context_rationale": "Explicit listening task for musical form/development, not general visual inspection.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "actual_final_target": "तिन्ही मूडमधील संगीत नीट वाजते याची खात्री करा.",
+      "status": "accept",
+      "final_context_rationale": "Playback of all three musical mood tracks; no human mental-state reading.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "actual_final_target": "मूड बदलताना आवाजाची पातळी अचानक, अनपेक्षितपणे बदलते का ते ऐका.",
+      "status": "accept",
+      "final_context_rationale": "Accepted literal sudden/unexpected volume change in mood transition; naturally describes audible jumps without metaphorical उड्या.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "actual_final_target": "लूप पुन्हा सुरू होताना क्लिकचा आवाज, खंड किंवा अचानक बदल ऐकू येतो का ते तपासा.",
+      "status": "accept",
+      "final_context_rationale": "Loop seam is an audible click/gap/change, not a mouse click.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "actual_final_target": "संगीतातील छोटे तुकडे अतिशय यांत्रिकपणे पुन्हा पुन्हा वाजतात का ते ऐका.",
+      "status": "accept",
+      "final_context_rationale": "Phrases are musical motifs, not linguistic sentences.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "actual_final_target": "मूड बदलून लयीत किंवा स्वरमेळात होणारे बदल ऐका.",
+      "status": "accept",
+      "final_context_rationale": "Timing/harmony in music; सुसंवाद would imply social conversation.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "actual_final_target": "‘बांधकाम’ आणि ‘लढाई’ हे संगीताचे मूड ‘शांत’ मूडपेक्षा वेगळे वाटतात याची खात्री करा.",
+      "status": "accept",
+      "final_context_rationale": "Accepted actual named music mood contrast; quoted labels and explicit संगीताचे preserve the musical context.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "actual_final_target": "कमी आवाजाच्या भागांत सळसळ किंवा खरखर ऐकू येते का ते तपासा.",
+      "status": "accept",
+      "final_context_rationale": "Quiet musical passages and audible hiss/scratch defects, not literal whispering.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "actual_final_target": "अस्पष्ट बास किंवा उच्च वारंवारतेचे कर्कश आवाज ऐकू येतात का ते तपासा.",
+      "status": "accept",
+      "final_context_rationale": "Audio mix balance; preserve muddy bass and harsh high-frequency meaning.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "actual_final_target": "खेळाच्या आवाजासोबत संगीताचे शांत भागही ऐकू येत राहतात याची खात्री करा.",
+      "status": "accept",
+      "final_context_rationale": "Quiet passages are music and must remain audible beside game sound.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "actual_final_target": "अनपेक्षितपणे तुटणाऱ्या सुरांकडे लक्ष द्या.",
+      "status": "accept",
+      "final_context_rationale": "Unexpected note dropout, not an intentional musical ending.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Worker",
+      "source": "Worker",
+      "actual_final_target": "कामगार",
+      "status": "accept",
+      "final_context_rationale": "Exact established native worker anchor.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Warrior",
+      "source": "Warrior",
+      "actual_final_target": "योद्धा",
+      "status": "accept",
+      "final_context_rationale": "Exact established native warrior anchor.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Explorer",
+      "source": "Explorer",
+      "actual_final_target": "शोधक",
+      "status": "accept",
+      "final_context_rationale": "Exact established native explorer anchor.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Swarm",
+      "source": "Swarm",
+      "actual_final_target": "पोळे",
+      "status": "accept",
+      "final_context_rationale": "Actual Swarm building mesh/model, French Ruche and native glossary; not a flock थवा.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Classic",
+      "source": "Classic",
+      "actual_final_target": "क्लासिक",
+      "status": "accept",
+      "final_context_rationale": "Original classic Swarm shape; keep consistent with Classic glossy style label.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Crown",
+      "source": "Crown",
+      "actual_final_target": "मुकुट",
+      "status": "accept",
+      "final_context_rationale": "Correct crown-shaped Swarm variant.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Clutch",
+      "source": "Clutch",
+      "actual_final_target": "अंड्यांचा समूह",
+      "status": "accept",
+      "final_context_rationale": "Clutch shape is six brood eggs, not a mechanical clutch.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "actual_final_target": "अळंबी",
+      "status": "accept",
+      "final_context_rationale": "Toadstool is a mushroom-shaped Swarm, not a frog; concise Marathi mushroom noun.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "actual_final_target": "रुंद छत्रीच्या अळंबीभोवती छोट्या अळंब्या.",
+      "status": "accept",
+      "final_context_rationale": "Visible broad mushroom cap with young caps; fixes raw gender and avoids inventing toxicity mechanics.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Coral",
+      "source": "Coral",
+      "actual_final_target": "प्रवाळ",
+      "status": "accept",
+      "final_context_rationale": "Correct coral-inspired branching shape.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Skep",
+      "source": "Skep",
+      "actual_final_target": "विणलेले पोळे",
+      "status": "accept",
+      "final_context_rationale": "Skep is a coiled/woven beehive shape; descriptive Marathi rather than opaque स्केप.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "actual_final_target": "आधारावर ठेवलेले, वेटोळ्यांसारखे विणलेले पोळे; त्याचे दार तुमच्याकडे आहे.",
+      "status": "accept",
+      "final_context_rationale": "Coiled hive on stand with door facing viewer, not a live hive curling itself.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Bloom",
+      "source": "Bloom",
+      "actual_final_target": "उमललेले फूल",
+      "status": "accept",
+      "final_context_rationale": "Bloom is a flower-shaped object/variant, not the verb फुलणे.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "actual_final_target": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "status": "accept",
+      "final_context_rationale": "Correct public-map visibility option; existing catalog terminology preserved.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "actual_final_target": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही उपलब्ध",
+      "status": "accept",
+      "final_context_rationale": "Unlisted option is accessible to link holders, with complete natural Marathi predicate.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Private: only you",
+      "source": "Private: only you",
+      "actual_final_target": "खाजगी: फक्त तुम्ही",
+      "status": "accept",
+      "final_context_rationale": "Correct private visibility option.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "actual_final_target": "सर्व्हरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूच्या खेळाची स्थिती त्याच्याशी जुळली.",
+      "status": "accept",
+      "final_context_rationale": "Verification compares game state, not players expressing agreement.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "actual_final_target": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "status": "accept",
+      "final_context_rationale": "Accurate pending-check status and rating update condition.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "actual_final_target": "एका खेळाडूच्या खेळाची स्थिती सर्व्हरने पुन्हा चालवलेल्या सामन्याशी जुळली नाही; सर्व्हरचा निकाल ग्राह्य धरला जातो.",
+      "status": "accept",
+      "final_context_rationale": "Accepted actual state mismatch and authoritative server result. No conditional uncertainty, no human consent meaning.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "actual_final_target": "सर्व्हरला हा सामना तसाच पुन्हा चालवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+      "status": "accept",
+      "final_context_rationale": "Could not reproduce the same simulation; avoids implying merely scheduling a new game.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "This match is not checked.",
+      "source": "This match is not checked.",
+      "actual_final_target": "या सामन्याची तपासणी केलेली नाही.",
+      "status": "accept",
+      "final_context_rationale": "Accurate unchecked status, no pending/success inference.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "actual_final_target": "सर्व्हरला या सामन्याची तपासणी पूर्ण करता आली नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होत नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "status": "accept",
+      "final_context_rationale": "Failed/incomplete check with temporary no-rating effect and admin retry, no permanent failure claim.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Walk",
+      "source": "Walk",
+      "actual_final_target": "चालणे",
+      "status": "accept",
+      "final_context_rationale": "Animation action label, noun/infinitive consistent with other actions.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Swim",
+      "source": "Swim",
+      "actual_final_target": "पोहणे",
+      "status": "accept",
+      "final_context_rationale": "Correct swimming animation action.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Harvest",
+      "source": "Harvest",
+      "actual_final_target": "गोळा करणे",
+      "status": "accept",
+      "final_context_rationale": "Worker harvest gathers resources including non-crops, not agricultural harvesting only.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Fight",
+      "source": "Fight",
+      "actual_final_target": "लढणे",
+      "status": "accept",
+      "final_context_rationale": "Animation action infinitive consistent with चालणे and पोहणे, not imperative लढा.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Fly",
+      "source": "Fly",
+      "actual_final_target": "उडणे",
+      "status": "accept",
+      "final_context_rationale": "Explorer flight animation action, not the insect माशी.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Live payments",
+      "source": "Live payments",
+      "actual_final_target": "वास्तविक पेमेंट",
+      "status": "accept",
+      "final_context_rationale": "Accepted वास्तविक as explicit real-payment environment contrasted with test, without direct-transfer ambiguity.",
+      "differs_from_initial_editorial": true,
+      "accepted_english": false
+    },
+    {
+      "key": "Test payments",
+      "source": "Test payments",
+      "actual_final_target": "चाचणी पेमेंट",
+      "status": "accept",
+      "final_context_rationale": "Correct test-payment environment label; existing पेमेंट anchor retained.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "actual_final_target": "अवर्गीकृत पेमेंट",
+      "status": "accept",
+      "final_context_rationale": "Correct unclassified payment-environment label.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Current period",
+      "source": "Current period",
+      "actual_final_target": "चालू कालावधी",
+      "status": "accept",
+      "final_context_rationale": "Correct current reporting window.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Previous period",
+      "source": "Previous period",
+      "actual_final_target": "मागील कालावधी",
+      "status": "accept",
+      "final_context_rationale": "Correct previous reporting window.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "actual_final_target": "क्रेडिट्सचे अनुदान",
+      "status": "accept",
+      "final_context_rationale": "Credit grant is platform usage credits, not a bank loan/pat creditworthiness.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Returned credits",
+      "source": "Returned credits",
+      "actual_final_target": "परत केलेले क्रेडिट्स",
+      "status": "accept",
+      "final_context_rationale": "Correct returned unused-credit ledger category; consistent क्रेडिट्स anchor.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Dispute",
+      "source": "Dispute",
+      "actual_final_target": "वाद",
+      "status": "accept",
+      "final_context_rationale": "Payment dispute category; concise and neutral, not an adjudicated outcome.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "actual_final_target": "वाद बंद झाला",
+      "status": "accept",
+      "final_context_rationale": "Closed dispute status, not necessarily resolved/settled in anyone's favor.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Matches started",
+      "source": "Matches started",
+      "actual_final_target": "सुरू झालेले सामने",
+      "status": "accept",
+      "final_context_rationale": "Count/statistic caption for started matches, not a new event announcement.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Matches completed",
+      "source": "Matches completed",
+      "actual_final_target": "पूर्ण झालेले सामने",
+      "status": "accept",
+      "final_context_rationale": "Count/statistic caption for completed matches.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "Matches cancelled",
+      "source": "Matches cancelled",
+      "actual_final_target": "रद्द झालेले सामने",
+      "status": "accept",
+      "final_context_rationale": "Count/statistic caption for cancelled matches.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "{value0} publications",
+      "source": "{value0} publications",
+      "actual_final_target": "{value0}: प्रकाशने",
+      "status": "accept",
+      "final_context_rationale": "value0 is translated library label, not a numeric publication count; colon avoids unsafe Marathi inflection.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "actual_final_target": "{value0}: नोंदवलेले डाउनलोड्स",
+      "status": "accept",
+      "final_context_rationale": "value0 is library label; recorded means tracked downloads, not video recordings.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "actual_final_target": "{value0}: पूर्ण होण्यास लागलेला वेळ (सेकंद)",
+      "status": "accept",
+      "final_context_rationale": "value0 is product label, not duration; retain seconds as unit and unambiguous caption structure.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    },
+    {
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "actual_final_target": "{value0}: पूर्णतेच्या वेळेच्या नोंदी",
+      "status": "accept",
+      "final_context_rationale": "Completion samples are recorded duration observations for product value0, not sample products or a percent-complete marker.",
+      "differs_from_initial_editorial": false,
+      "accepted_english": false
+    }
+  ],
+  "accept_count": 111,
+  "blocking_edits": [],
+  "new_english_exceptions": [],
+  "status": "PASS editorial final111; no blocking linguistic issue found.",
+  "reread_method": "Actuallyprinted/read canonical111 source/final values in three batches1–40/41–80/81–111, then considered all10 differences from independent editorial targets and root context/adjudication. Accepted unchanged-raw entries were reread too. Not merely a hash update.",
+  "prior_editorial_sha256": "47adf4e17ac4df8409e60e46bd655efe6b3ee23f111472202856ebcb21e10c23",
+  "context_packet_sha256": "8df76ccf0870fdc46056697977287d24081d9271af7f06dca695ac91eac7369f",
+  "root_adjudication_sha256": "9eb29f69d04644d852a8cd65041959a03c12aadd49f45d77f8cec1ec8a2442d1",
+  "root_final_targets_sha256": "679089442da4418d6f8935ef15a2e8b0d31bb86dc6c14d98dc578bd8d7d5a0f7",
+  "fungus_note": "Finalअळंबी andmatchingdescription accepted as mushroom-shaped asset. Root primary-source attestation records bothअळंबी/अळिंबी; no claim alternate is wrong, nor asset edibility/toxicity. This editor did not newly open those remote pages in final reread.",
+  "carry_proof": {
+    "old_online_revision": "351a89e9f3cad5ba4473478e96a7dfa1b3658b78",
+    "old_online_byte_sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+    "old_English_Marathi_pairs_verified_unchanged": 2836,
+    "method": "ActualoldGitEnglish/MR parsedvalues compared tocurrentfrozenEnglish/canonicalMR; everypair equal. Exactly111newkeys remain.",
+    "native_bytes_unchanged": true,
+    "no_fresh_full_old_native_or_online_linguistic_reread_claim": true
+  },
+  "limits": [
+    "Editorialtextreview is not renderer/platform/build/packaging verification.",
+    "No canonical/draft writes, API calls or builds performed by this final reviewer."
+  ]
+}

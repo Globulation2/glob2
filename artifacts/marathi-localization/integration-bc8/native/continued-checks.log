@@ -1,0 +1,6 @@
+All21 scoped cases now passed with failure/retry provenance
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/continue_after_display_retry.py", line 22, in <module>
+    assert r.returncode==0,'Capture failed; preserve logs and partial evidence'
+           ^^^^^^^^^^^^^^^
+AssertionError: Capture failed; preserve logs and partial evidence

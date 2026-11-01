@@ -1,0 +1,19 @@
+{
+  "producer_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "native_ELF_producer_bytes_same_as64": true,
+  "purpose": "Preserve validated187unsigned+signedAPK beforeSim112/ffabeofficialAndroidrefresh. Oldproofs remainactualoldscope.",
+  "byte_cap": 1073741824,
+  "minimum_free_bytes": 10737418240,
+  "free_bytes_after": 614729646080,
+  "files": {
+    "app-release-unsigned.apk": {
+      "sha256": "3bbf8393c13b11de400b7c56fa444b34d24d40c8f852c884b66339896b7d7bfd",
+      "bytes": 238493827
+    },
+    "app-release-development.apk": {
+      "sha256": "70cc07f944ecf3a24676af2db9a593b607682f55aa6b05f57ff62145d8565d91",
+      "bytes": 240482096
+    }
+  },
+  "published_scope": "Archive-manifestONLY; APKbinarieslocalexcluded."
+}

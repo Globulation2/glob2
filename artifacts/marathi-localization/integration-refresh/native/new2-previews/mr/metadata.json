@@ -1,0 +1,17 @@
+{
+  "locale": "mr",
+  "name": "मराठी",
+  "direction": "ltr",
+  "source_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "original_catalog_sha256": {
+    "native": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "catalog_status": "3393 old native and all online values carried exactly; two new native values actually source/final reviewed by three independent agents.",
+  "preview_catalog_sha256": {
+    "native": "8bdd03f2ac03b10eb985b56f282b83c8509c25ca23e194d8ee027ae2725fd12b",
+    "online": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+  },
+  "scope": "Only two new native strings supplied for a literal-catalog font matrix; other native keys use English fallback in this subset overlay."
+}

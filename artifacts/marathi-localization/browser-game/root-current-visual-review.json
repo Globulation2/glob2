@@ -1,0 +1,16 @@
+{
+  "reviewer": "/root",
+  "producer": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "validation": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "actual_viewed": [
+    {
+      "path": "risk-ui-serial-fixed-tutorial/firefox/serial/phone/statistics-overview.png",
+      "sha256": "f4706479a1c39cd6ee455c58e16fdabe7ef6a06bc3d2614e84f6b071057d7ebf"
+    },
+    {
+      "path": "risk-ui/chromium/serial/desktop/statistics-overview.png",
+      "sha256": "6ab14ac99de03981e74d56f3bb2aedb2719b2d54ee6cb6316cfd25026a6e766d"
+    }
+  ],
+  "findings": "Actual serial Firefox phone 3+2 topics and Chromium desktop whole-row Overview show legible joined Devanagari, wrapping statistics labels and no visible missing-glyph boxes. These are e481 images, not the subsequent master integration; threaded GUI failures remain unclassified. Phone terrain striping is visible and separately scoped."
+}

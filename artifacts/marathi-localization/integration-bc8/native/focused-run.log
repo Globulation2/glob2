@@ -1,0 +1,42 @@
+PASS FontKerning/shaping clusters keep conjuncts and combining marks together (0.2s)
+PASS FontKerning/script run composition preserves straight-alpha antialiasing (0.2s)
+PASS FontKerning/high-DPI Hindi wrapping width is preserved without cropping the raw raster (0.2s)
+PASS FontKerning/language changes refresh default line height and Arabic shaping caches (1.2s)
+PASS FontKerning/Arabic and Persian visual-order text is not reordered again by SDL_ttf (0.3s)
+PASS FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs (0.1s)
+PASS FontKerning/script fonts shape clusters and preserve measured raster sizes after reload (1.5s)
+PASS FontKerning/pair advances equal the glyph advances plus kerning (0.2s)
+PASS SystemLanguage/ISO locales map to the historical catalog codes (0.1s)
+PASS SystemLanguage/regional and script variants pick the matching catalog (0.1s)
+PASS FontKerning/kerned words have no gap wider than the same words unkerned (0.3s)
+PASS SystemLanguage/languages without a catalog are not confused with catalog codes (0.1s)
+PASS SystemLanguage/Norwegian Bokmaal accepts generic Norwegian but never Nynorsk (0.1s)
+PASS SystemLanguage/expanded locales distinguish scripts and the precise Pulaar variety (0.1s)
+PASS SystemLanguage/the first available preference wins, then English (0.1s)
+PASS SystemLanguage/Norwegian startup follows preferences and preserves a saved language (17.2s)
+PASS SystemLanguage/Marathi startup follows preferences and preserves a saved language (28.5s)
+PASS SystemLanguage/startup follows the system only when the profile has no usable language (18.4s)
+FAIL GUIInteractionCoverage/statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts] (11.3s)
+FAIL GameGUITouch/tutorial wrapping preserves shaped clusters and refreshes font metrics [display] (10.7s)
+FAIL GameGUITouch/live statistics hide post-game probability across topics [display][artifacts] (9.6s)
+
+===== FAIL GUIInteractionCoverage/statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"}, "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63", "sourceStatus": [], "sourceTreeSha256": "246fe09d063da655c92b4055021c1c5c536abf5b396ccdd527ff0bf04dd68a9d"}
+Toolkit : Initialisation Error : The video driver did not add any displays
+
+
+===== FAIL GameGUITouch/live statistics hide post-game probability across topics [display][artifacts] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"}, "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63", "sourceStatus": [], "sourceTreeSha256": "246fe09d063da655c92b4055021c1c5c536abf5b396ccdd527ff0bf04dd68a9d"}
+Toolkit : Initialisation Error : The video driver did not add any displays
+
+
+===== FAIL GameGUITouch/tutorial wrapping preserves shaped clusters and refreshes font metrics [display] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"}, "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63", "sourceStatus": [], "sourceTreeSha256": "246fe09d063da655c92b4055021c1c5c536abf5b396ccdd527ff0bf04dd68a9d"}
+Toolkit : Initialisation Error : The video driver did not add any displays
+
+
+18 passed, 3 failed, 0 skipped (100.5s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/test-results/junit.xml (21 cases)

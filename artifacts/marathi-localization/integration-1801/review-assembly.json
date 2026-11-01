@@ -1,0 +1,14 @@
+{
+  "source_sha256": "83c8ad6f00500ade4ac1aa67f340bfb0647f9d559356231d88d81ce6f0235f7e",
+  "catalog_sha256": {
+    "native": "00905d1fe5c79a168ff1b425ae73f73648d3a1ad623ad7bc26a8196ba6d2c44b",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "review_keys": 6359,
+  "text_variants": 6386,
+  "batches": 44,
+  "carried_native_pairs": 3411,
+  "carried_online_keys": 2947,
+  "new_native_key": 1,
+  "scope": "Scoped evidence acceptance with explicit current unclassified threaded GUI failures and latest-runtime coverage limits; not all tests passed."
+}

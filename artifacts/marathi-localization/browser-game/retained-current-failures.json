@@ -1,0 +1,26 @@
+{
+  "utc": "2026-11-01T11:49:20.161057+00:00",
+  "failed_attempt_count": 3,
+  "failures": [
+    {
+      "path": "minimal-qa/firefox-risk-ui",
+      "classification": "unclassified_random_custom_live_match_stall",
+      "actual": "Main/settings/currentMR39 passed; generated lava-shield r7 seed3701015830 match remained tick1/frames1. Required tick>25 failed.",
+      "causation": "Unclassified; no exact-seed English or upstream reproduction. No Marathi-causation or upstream-baseline claim."
+    },
+    {
+      "path": "webkit-continuation/minimal-qa/webkit-risk-ui",
+      "classification": "unclassified_threaded_GUI_startup_timeout",
+      "actual": "Threaded desktop GUI remained at initial loading/splash; MainMenu was not reached.",
+      "causation": "Unclassified; passing headless golden execution is not a successful GUI startup."
+    },
+    {
+      "path": "firefox-fixed-tutorial",
+      "classification": "unclassified_threaded_GUI_startup_timeout",
+      "actual": "Threaded phone GUI remained loading/tick0/frames0 before tutorial; core/game/translations and restore ready.",
+      "causation": "Unclassified; the planned fixed tutorial route was not reached in this failed attempt."
+    }
+  ],
+  "runtime_code_edits": false,
+  "test_weakening": false
+}

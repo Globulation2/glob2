@@ -1,0 +1,10 @@
+{
+  "final_validation_revision": "fb6e9ad7c4bda62a41c1792a281cdd4bf9b055b8",
+  "shipping_package_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "compiled_runtime_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "changes_after_packaging": [
+    "browser/tests/marathi.spec.js"
+  ],
+  "scope": "Only browser test scroll/popup/touchBack fixtures changed after187; every tracked shipping code/resource/build input byte equals187. Actualpackages/compiledruntime keep true producer revisions. Focusedphone and full12 must execute finaltestcode.",
+  "final_browser_test_sha256": "d398d752c88b478d318403906dc84d898d5da3f13e7961bf5fa53310799c4f7f"
+}

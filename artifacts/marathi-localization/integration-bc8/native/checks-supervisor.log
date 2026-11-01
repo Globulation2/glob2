@@ -1,0 +1,6 @@
+Running current focused font/language/HUD registry cases
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/native/run_ready_checks.py", line 11, in <module>
+    assert r.returncode==0,'Focused cases failed; inspect retained logs/JUnit'
+           ^^^^^^^^^^^^^^^
+AssertionError: Focused cases failed; inspect retained logs/JUnit

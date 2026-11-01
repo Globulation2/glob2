@@ -1,0 +1,24 @@
+{
+  "utc": "2026-11-01T11:49:20.161057+00:00",
+  "owned_servers_closed": [
+    {
+      "origin": "http://127.0.0.1:43429",
+      "connection_refused_after_cleanup": true
+    },
+    {
+      "origin": "http://127.0.0.1:34253",
+      "connection_refused_after_cleanup": true
+    },
+    {
+      "origin": "http://127.0.0.1:35629",
+      "connection_refused_after_cleanup": true
+    },
+    {
+      "origin": "http://127.0.0.1:45603",
+      "connection_refused_after_cleanup": true
+    }
+  ],
+  "build_exit_code": 0,
+  "all_runners_finished": true,
+  "scope": "Only task-owned servers/runners; no foreign processes stopped."
+}

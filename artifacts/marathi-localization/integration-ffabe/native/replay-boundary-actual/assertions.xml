@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctest binary="/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/focused-engine-tests" version="2.4.11">
+  <Options order_by="file" rand_seed="0" first="0" last="4294967295" abort_after="0" subcase_filter_levels="2147483647" case_sensitive="false" no_throw="false" no_skip="false"/>
+  <TestSuite name="FontKerning">
+    <TestCase name="script run composition preserves straight-alpha antialiasing" filename="libgag/src/FontKerningTest.cpp" line="98" skipped="true"/>
+    <TestCase name="shaping clusters keep conjuncts and combining marks together" filename="libgag/src/FontKerningTest.cpp" line="123" skipped="true"/>
+    <TestCase name="language changes refresh default line height and Arabic shaping caches" filename="libgag/src/FontKerningTest.cpp" line="143" skipped="true"/>
+    <TestCase name="high-DPI Hindi wrapping width is preserved without cropping the raw raster" filename="libgag/src/FontKerningTest.cpp" line="220" skipped="true"/>
+    <TestCase name="script fonts shape clusters and preserve measured raster sizes after reload" filename="libgag/src/FontKerningTest.cpp" line="247" skipped="true"/>
+    <TestCase name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" filename="libgag/src/FontKerningTest.cpp" line="278" skipped="true"/>
+    <TestCase name="the bundled SDL3_ttf moves the pen for kerned pairs" filename="libgag/src/FontKerningTest.cpp" line="335" skipped="true"/>
+    <TestCase name="pair advances equal the glyph advances plus kerning" filename="libgag/src/FontKerningTest.cpp" line="352" skipped="true"/>
+    <TestCase name="kerned words have no gap wider than the same words unkerned" filename="libgag/src/FontKerningTest.cpp" line="380" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="SystemLanguage">
+    <TestCase name="ISO locales map to the historical catalog codes" filename="src/app/SystemLanguageTest.cpp" line="42" skipped="true"/>
+    <TestCase name="regional and script variants pick the matching catalog" filename="src/app/SystemLanguageTest.cpp" line="53" skipped="true"/>
+    <TestCase name="languages without a catalog are not confused with catalog codes" filename="src/app/SystemLanguageTest.cpp" line="67" skipped="true"/>
+    <TestCase name="Norwegian Bokmaal accepts generic Norwegian but never Nynorsk" filename="src/app/SystemLanguageTest.cpp" line="75" skipped="true"/>
+    <TestCase name="expanded locales distinguish scripts and the precise Pulaar variety" filename="src/app/SystemLanguageTest.cpp" line="95" skipped="true"/>
+    <TestCase name="the first available preference wins, then English" filename="src/app/SystemLanguageTest.cpp" line="131" skipped="true"/>
+    <TestCase name="Malay selects Rumi without advertising Jawi coverage" filename="src/app/SystemLanguageTest.cpp" line="141" skipped="true"/>
+    <TestCase name="Malay startup preserves an explicit saved choice" filename="src/app/SystemLanguageTest.cpp" line="156" skipped="true"/>
+    <TestCase name="Norwegian startup follows preferences and preserves a saved language" filename="src/app/SystemLanguageTest.cpp" line="164" skipped="true"/>
+    <TestCase name="Marathi startup follows preferences and preserves a saved language" filename="src/app/SystemLanguageTest.cpp" line="172" skipped="true"/>
+    <TestCase name="startup follows the system only when the profile has no usable language" filename="src/app/SystemLanguageTest.cpp" line="181" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="GUIInteractionCoverage">
+    <TestCase name="in-game music selection uses readable phone popup rows [display][artifacts][writes-preferences]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="100" skipped="true"/>
+    <TestCase name="service progress horizon covers mixed visits and preserves stock horizons" filename="src/hud/GUIInteractionCoverageTest.cpp" line="145" skipped="true"/>
+    <TestCase name="mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="164" skipped="true"/>
+    <TestCase name="construction choice displays recipe costs independently of storage [display][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="250" skipped="true"/>
+    <TestCase name="mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="294" skipped="true"/>
+    <TestCase name="custom mixed building panels render without mutating simulation [display][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="433" skipped="true"/>
+    <TestCase name="unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="465" skipped="true"/>
+    <TestCase name="desktop building menu clicks queue authoritative worker and priority orders [display]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="499" skipped="true"/>
+    <TestCase name="configured keyboard actions toggle presentation and queue pause without changing simulation [display]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="533" skipped="true"/>
+    <TestCase name="initial camera survives waiting for the first presentation [display]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="563" skipped="true"/>
+    <TestCase name="home keyboard action wraps the camera and script messages preserve history [display]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="587" skipped="true"/>
+    <TestCase name="local victory popup and results show the same deciding condition [display][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="608" skipped="true"/>
+    <TestCase name="match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="641" skipped="true"/>
+    <TestCase name="match dialogs accept return and distinguish continuing from ending a game [display]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="676" skipped="true"/>
+    <TestCase name="resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="698" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="ScenarioMessages">
+    <TestCase name="Scenario messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="745" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="GUIInteractionCoverage">
+    <TestCase name="statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="776" skipped="true"/>
+    <TestCase name="statistics sheet scroll stays open and fits phone rotations [display][artifacts]" filename="src/hud/GUIInteractionCoverageTest.cpp" line="910" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="GameGUITouch">
+    <TestCase name="live statistics hide post-game probability across topics [display][artifacts]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5448" skipped="true"/>
+    <TestCase name="attack marks follow mobile minimaps without extra lifetime ticks [display][artifacts]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5453" skipped="true"/>
+    <TestCase name="tutorial wrapping preserves shaped clusters and refreshes font metrics [display]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5464" skipped="true"/>
+    <TestCase name="phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5474" skipped="true"/>
+    <TestCase name="notifications clear system gutters and HUD at mobile text sizes [display][artifacts]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5484" skipped="true"/>
+    <TestCase name="curved labels retain physical glyph detail and reuse their cache [display][artifacts]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5495" skipped="true"/>
+    <TestCase name="spectators inspect building controls without editing their configuration [display][artifacts]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5541" skipped="true"/>
+    <TestCase name="building inventory shows material stocks below the mobile title [display][artifacts]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5553" skipped="true"/>
+    <TestCase name="scaled gameplay dialog input is translated once [display]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5565" skipped="true"/>
+    <TestCase name="unit taps have a zoom independent halo and show unit stats [display][artifacts]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5570" skipped="true"/>
+    <TestCase name="a touch on or near a flag drags the flag; not the map [display]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5581" skipped="true"/>
+    <TestCase name="touch scroll momentum on the map; the HUD palette and the editor [display]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5592" skipped="true"/>
+    <TestCase name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" filename="src/hud/touch/GameGUITouchHarness.cpp" line="5605" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="TurnEngineHarness">
+    <TestCase name="map checksum coverage survives the last human quitting [network-sim]" filename="src/net/turn/TurnEngineHarness.cpp" line="899" skipped="true"/>
+    <TestCase name="AI-only turn recordings replay through their terminal checksum [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="919" skipped="true"/>
+    <TestCase name="embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="955" skipped="true"/>
+    <TestCase name="shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1013" skipped="true"/>
+    <TestCase name="input delay and stalls of real engines per link profile [network-sim][benchmark][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1076" skipped="true"/>
+    <TestCase name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1126" skipped="true"/>
+    <TestCase name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1188" skipped="true"/>
+    <TestCase name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1250" skipped="true"/>
+    <TestCase name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" filename="src/net/turn/TurnEngineHarness.cpp" line="1300" skipped="true"/>
+    <TestCase name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" filename="src/net/turn/TurnEngineHarness.cpp" line="1340" skipped="true"/>
+    <TestCase name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" filename="src/net/turn/TurnEngineHarness.cpp" line="1381" skipped="true"/>
+    <TestCase name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" filename="src/net/turn/TurnEngineHarness.cpp" line="1472" skipped="true"/>
+    <TestCase name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1565" skipped="true"/>
+    <TestCase name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" filename="src/net/turn/TurnEngineHarness.cpp" line="1643" skipped="true"/>
+    <TestCase name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1707" skipped="true"/>
+    <TestCase name="voice packets do not hold up a player's orders [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1752" skipped="true"/>
+    <TestCase name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1802" skipped="true"/>
+    <TestCase name="without a pause limit a pause lasts until someone resumes it [network-sim]" filename="src/net/turn/TurnEngineHarness.cpp" line="1896" skipped="true"/>
+    <TestCase name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" filename="src/net/turn/TurnEngineHarness.cpp" line="1920" skipped="true"/>
+    <TestCase name="the committed match record verifies to the committed checksum trace [network-sim][golden]" filename="src/net/turn/TurnEngineHarness.cpp" line="1954" skipped="true"/>
+    <TestCase name="Marathi registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="1980" skipped="true"/>
+    <TestCase name="rejoin fast-forward time grows with game length and AI count [network-sim][benchmark][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="2027" skipped="true"/>
+    <TestCase name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" filename="src/net/turn/TurnEngineHarness.cpp" line="2054" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="MatchSetup">
+    <TestCase name="New match rules default to eight tick AI decisions" filename="src/online/MatchSetupTest.cpp" line="96" skipped="true"/>
+    <TestCase name="AI order delay is optional bounded integer data and round trips through headers" filename="src/online/MatchSetupTest.cpp" line="101" skipped="true"/>
+    <TestCase name="Building gradient delay is optional bounded integer data and round trips through headers" filename="src/online/MatchSetupTest.cpp" line="129" skipped="true"/>
+    <TestCase name="embedded catalogs carry dynamic experiments independently of installed definitions" filename="src/online/MatchSetupTest.cpp" line="160" skipped="true"/>
+    <TestCase name="legacy resolved setup catalogs retain zero health privately and reject authoring escapes" filename="src/online/MatchSetupTest.cpp" line="197" skipped="true"/>
+    <TestCase name="legacy turn setup validates recovered body catalogs before accepting the session [save-format]" filename="src/online/MatchSetupTest.cpp" line="220" skipped="true"/>
+    <TestCase name="current files bind embedded migration catalogs as explicit authority [save-format]" filename="src/online/MatchSetupTest.cpp" line="290" skipped="true"/>
+    <TestCase name="unit catalogs survive setup conversion and reject tampered identity" filename="src/online/MatchSetupTest.cpp" line="336" skipped="true"/>
+    <TestCase name="catalog rules identity partitions ratings without changing the executable identity" filename="src/online/MatchSetupTest.cpp" line="359" skipped="true"/>
+    <TestCase name="SHA-256 matches the FIPS 180-4 test vectors" filename="src/online/MatchSetupTest.cpp" line="374" skipped="true"/>
+    <TestCase name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" filename="src/online/MatchSetupTest.cpp" line="391" skipped="true"/>
+    <TestCase name="the vendored fixtures match the protocol package when it is present" filename="src/online/MatchSetupTest.cpp" line="464" skipped="true"/>
+    <TestCase name="valid setups become the GameHeader every client and the verifier run" filename="src/online/MatchSetupTest.cpp" line="492" skipped="true"/>
+    <TestCase name="closed seats close their team and follow every player seat" filename="src/online/MatchSetupTest.cpp" line="581" skipped="true"/>
+    <TestCase name="unknown experiments, JavaScript AIs and unexpressible headers are refused" filename="src/online/MatchSetupTest.cpp" line="633" skipped="true"/>
+    <TestCase name="a map file is found and checked by the hash of its decompressed bytes" filename="src/online/MatchSetupTest.cpp" line="675" skipped="true"/>
+    <TestCase name="the simulation data hash covers every data file the simulation loads" filename="src/online/MatchSetupTest.cpp" line="697" skipped="true"/>
+    <TestCase name="Scripted map sources preserve exact provenance and enforce team count" filename="src/online/MatchSetupTest.cpp" line="761" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="JavaScriptCompatibility">
+    <TestCase name="JavaScript test environment scopes restore SDL and CRT readers" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="19" skipped="true"/>
+    <TestCase name="JavaScript current text saves validate unused generation counters" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="94" skipped="true"/>
+    <TestCase name="Current simulation rejects earlier replays and enforces acceptance boundaries" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="131">
+      <Expression success="true" type="REQUIRE" filename="test/support/EngineFixtures.cpp" line="81">
+        <Original>
+          globalContainer == nullptr
+        </Original>
+        <Expanded>
+          nullptr == nullptr
+        </Expanded>
+        <Info>
+          a HeadlessGlobals is already live in this process
+        </Info>
+      </Expression>
+      <Expression success="false" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="139">
+        <Original>
+          REPLAY_MINIMUM_VERSION_MINOR == 186
+        </Original>
+        <Expanded>
+          187 == 186
+        </Expanded>
+      </Expression>
+      <Expression success="false" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="140">
+        <Original>
+          191 == 186
+        </Original>
+        <Expanded>
+          191 == 186
+        </Expanded>
+      </Expression>
+      <Expression success="false" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="142">
+        <Original>
+          73 == 72
+        </Original>
+        <Expanded>
+          73 == 72
+        </Expanded>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="143">
+        <Original>
+          FILE_FORMAT_VERSION_JAVASCRIPT == 125
+        </Original>
+        <Expanded>
+          125 == 125
+        </Expanded>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="144">
+        <Original>
+          FILE_FORMAT_VERSION_EXPERIMENTS == 124
+        </Original>
+        <Expanded>
+          124 == 124
+        </Expanded>
+      </Expression>
+      <Expression success="true" type="REQUIRE" filename="test/support/Glob2Test.cpp" line="219">
+        <Original>
+          std::filesystem::exists(source)
+        </Original>
+        <Expanded>
+          true
+        </Expanded>
+        <Info>
+          missing compressed fixture /home/bradley/.codex/worktrees/45cd/glob2/test/fixtures/javascript/released-v123.replay.gz
+        </Info>
+      </Expression>
+      <Expression success="true" type="REQUIRE" filename="test/support/Glob2Test.cpp" line="102">
+        <Original>
+          static_cast&lt;bool>(dir &amp;&amp; *dir)
+        </Original>
+        <Expanded>
+          true
+        </Expanded>
+        <Info>
+          GLOB2_USER_DATA_DIR must name the disposable profile (TestMain sets it)
+        </Info>
+      </Expression>
+      <Expression success="true" type="REQUIRE" filename="test/support/Glob2Test.cpp" line="224">
+        <Original>
+          in != nullptr
+        </Original>
+        <Expanded>
+          0x584f330c38b0 != nullptr
+        </Expanded>
+        <Info>
+          cannot read /home/bradley/.codex/worktrees/45cd/glob2/test/fixtures/javascript/released-v123.replay.gz
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK_FALSE" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="146">
+        <Original>
+          released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string())
+        </Original>
+        <Expanded>
+          false
+        </Expanded>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 122
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 123
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 124
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 125
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 126
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 127
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 128
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 129
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 130
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 133
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 134
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 135
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 136
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 137
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 138
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 139
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 140
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 141
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 142
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 143
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 144
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 145
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 146
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 147
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 151
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 152
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 153
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 164
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 165
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 166
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 167
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 168
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 169
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 170
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 186
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          true == true
+        </Expanded>
+        <Info>
+          version := 191
+        </Info>
+      </Expression>
+      <Expression success="true" type="CHECK" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="165">
+        <Original>
+          reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR &amp;&amp; version &lt;= 191)
+        </Original>
+        <Expanded>
+          false == false
+        </Expanded>
+        <Info>
+          version := 192
+        </Info>
+      </Expression>
+      <OverallResultsAsserts successes="44" failures="3" test_case_success="false"/>
+    </TestCase>
+    <TestCase name="JavaScript pass assigns valid identities to released saves" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="169" skipped="true"/>
+    <TestCase name="JavaScript upgrade retains genuine master124 experiments and continuation" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="208" skipped="true"/>
+    <TestCase name="JavaScript current saves reject truncated generation tables" filename="src/scripting/javascript/ScriptCompatibilityTest.cpp" line="297" skipped="true"/>
+  </TestSuite>
+  <TestSuite name="LegacyScriptCoverage">
+    <TestCase name="Malay SGSL language tokens require the installed catalog" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="113" skipped="true"/>
+    <TestCase name="Malay SGSL selects its message and retains an authored default for other locales" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="138" skipped="true"/>
+    <TestCase name="adding Malay preserves legacy SGSL source bytes and saved program counters" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="156" skipped="true"/>
+    <TestCase name="Marathi SGSL language tokens require the installed catalog" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="218" skipped="true"/>
+    <TestCase name="Marathi SGSL selects its message and retains an authored default for other locales" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="254" skipped="true"/>
+    <TestCase name="adding Marathi preserves legacy SGSL source bytes and saved program counters" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="272" skipped="true"/>
+    <TestCase name="catalog languages and quoted locale names preserve suspended story continuation" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="335" skipped="true"/>
+    <TestCase name="random legacy summons preserve story progress through full continuation" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="427" skipped="true"/>
+    <TestCase name="supported statements and wait forms compile" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="459" skipped="true"/>
+    <TestCase name="invalid references and value boundaries report typed errors" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="483" skipped="true"/>
+    <TestCase name="truncated arguments fail without accepting incomplete statements" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="514" skipped="true"/>
+    <TestCase name="summons respect painted area capacity and unit attributes" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="532" skipped="true"/>
+    <TestCase name="alliance levels preserve unrelated teams and apply vision masks" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="550" skipped="true"/>
+    <TestCase name="area waits observe team alliance and negation instead of unrelated units" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="568" skipped="true"/>
+    <TestCase name="count waits evaluate all building classes exact levels and unit comparisons" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="590" skipped="true"/>
+    <TestCase name="flag lifecycle and GUI commands change their real game objects" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="627" skipped="true"/>
+    <TestCase name="authored flag aliases resolve game catalog IDs and respect missing definitions" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="651" skipped="true"/>
+    <TestCase name="independent stories timers space and saved suspension resume exactly" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="683" skipped="true"/>
+    <TestCase name="resetAI changes only the chosen player and rejects unsafe indices" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="710" skipped="true"/>
+    <TestCase name="resetAI authoring accepts valid slots before an editor map has a player header" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="727" skipped="true"/>
+    <TestCase name="legacy resetAI tokens with invalid player or implementation leave players intact" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="740" skipped="true"/>
+    <TestCase name="objectives and hints resolve script numbers and persist in game snapshots" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="759" skipped="true"/>
+    <TestCase name="named highlights target distinct GUI elements and unhighlight restores state" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="793" skipped="true"/>
+    <TestCase name="unit and building highlights use map and panel channels independently" filename="src/scripting/sgsl/LegacyScriptCoverageTest.cpp" line="821" skipped="true"/>
+  </TestSuite>
+  <OverallResultsAsserts successes="44" failures="3"/>
+  <OverallResultsTestCases successes="0" failures="1" skipped="121"/>
+</doctest>

@@ -1,0 +1,73 @@
+{
+  "owned_resolved_paths": [
+    "browser/assets/sources.json",
+    "browser/i18n.js",
+    "browser/unit/language.test.js",
+    "test/deployment/test_browser_font_types.py"
+  ],
+  "sha256": {
+    "browser/assets/sources.json": "1b39e63afff4d5b6bbaea6925005a39e66915822d1f66b9923eb7180b486eba8",
+    "browser/i18n.js": "c0b09e570119e409bec78560a1c7a44e624832b56e5fbfaded80b47b047fe5b4",
+    "browser/unit/language.test.js": "8b6c1140ba80cacca532dfad86d250cc0576ad0ad6ccf47847ae113e2b0ec11a",
+    "test/deployment/test_browser_font_types.py": "6a7404e638ba5f4a91e4fc4267eba90f8016180c143b793631aab779b61db065"
+  },
+  "runtime_locale_count": 40,
+  "preserved_startup_cases": [
+    "mr",
+    "bn",
+    "ms",
+    "nb",
+    "ChineseCJK",
+    "RTL URL isolation",
+    "storage fallback",
+    "saved-language precedence"
+  ],
+  "checks": {
+    "node_language_unit": {
+      "passed": 9,
+      "failed": 0
+    },
+    "official_build_browser_generator_and_check": {
+      "passed": true,
+      "node": "24.19.0"
+    },
+    "actual_generated_runtime_VM": {
+      "passed": true,
+      "locale_count": 40,
+      "checked": "MR/BN/MS/NB registration and script-aware resolution"
+    },
+    "production_caddy_font_css_json_gzip": {
+      "passed": 1,
+      "skipped": 0,
+      "local_caddy": "artifacts/marathi-localization/integration-bc8/caddy-qa/caddy",
+      "command": "PATH=<cached-caddy>:$PATH python3 test/deployment/test_browser_font_types.py"
+    },
+    "focused_asset_plan_core_derivative_and_all_language_metadata": {
+      "passed": 2,
+      "failed": 0,
+      "command": "font-tools4661/bin/python test/build_system/test_web_assets.py WebAssetPlanTests.test_core_ships_the_browser_copies_and_font_cjk_the_full_font WebAssetPlanTests.test_core_has_english_and_every_language_name"
+    }
+  },
+  "font_change_assessment": {
+    "changed_paths_vs_tested_e481": [
+      "browser/assets/sources.json"
+    ],
+    "all_font_sources_and_binary_derivatives_unchanged": true,
+    "fonttools_development_pin_before": "4.64.0",
+    "fonttools_development_pin_after": "4.66.1",
+    "exact_new_pinned_subset_reproduction": {
+      "fontTools": "4.66.1",
+      "regenerated_font_bytes": 597784,
+      "regenerated_font_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+      "exact_existing_binary_equality": true,
+      "merged_language_names_sha256": "a5ec32b7188bb9d97e027c9fd274053b900e9d6b1be54f490d19b0e59b1d9e91",
+      "no_font_binary_writes": true
+    },
+    "runtime_font_dependency_upgrade": false
+  },
+  "limits": [
+    "No full browser rebuild or currentWASM execution for this new merge.",
+    "Broad upstream UI/tooling changes invalidate blanket carry of prior GUI behavior; only unchanged font asset bytes and this focused static/packaging coverage are claimed."
+  ],
+  "source_edits": "Only the4owned conflict paths edited/staged; no commit."
+}

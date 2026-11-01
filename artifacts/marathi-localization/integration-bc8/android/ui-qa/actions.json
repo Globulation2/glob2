@@ -1,0 +1,1162 @@
+{
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "actions": [
+    {
+      "action": "key",
+      "args": [
+        "KEYCODE_TAB",
+        "KEYCODE_ENTER"
+      ],
+      "monotonic": 70697.803257391
+    },
+    {
+      "action": "wait",
+      "args": [
+        "HandPreferenceScreen"
+      ],
+      "monotonic": 70698.311731712
+    },
+    {
+      "action": "capture",
+      "args": [
+        "focused-hand"
+      ],
+      "monotonic": 70698.828486935,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/focused-hand.png",
+      "sha256": "bc77feaf0e6c336c8e0ae3a5e6533c9b4d3b837c4b27c4b3f094c5e74f4ce45d",
+      "bytes": 251854,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "key",
+      "args": [
+        "KEYCODE_TAB",
+        "KEYCODE_ENTER"
+      ],
+      "monotonic": 70701.325412591
+    },
+    {
+      "action": "wait",
+      "args": [
+        "IntroductionOfferScreen"
+      ],
+      "monotonic": 70701.938995447
+    },
+    {
+      "action": "capture",
+      "args": [
+        "focused-introduction"
+      ],
+      "monotonic": 70702.746392115,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/focused-introduction.png",
+      "sha256": "2e98fbeaf99a75c5708726dcac6a2f28545dde9121d62705fa4240e06b73aac5",
+      "bytes": 334998,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "key",
+      "args": [
+        "KEYCODE_ESCAPE"
+      ],
+      "monotonic": 70705.088626763
+    },
+    {
+      "action": "wait",
+      "args": [
+        "MainMenuScreen"
+      ],
+      "monotonic": 70705.515444104
+    },
+    {
+      "action": "capture",
+      "args": [
+        "menu-current"
+      ],
+      "monotonic": 70706.098571315,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/menu-current.png",
+      "sha256": "e5a58cba11ee3f2e6a639f45f284db91a795b49709cb5a700cde21eb822e1aba",
+      "bytes": 345381,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "clear-log",
+      "args": [],
+      "monotonic": 70790.663248613
+    },
+    {
+      "action": "key",
+      "args": [
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_ENTER"
+      ],
+      "monotonic": 70791.614446444
+    },
+    {
+      "action": "wait",
+      "args": [
+        "LessonCatalogScreen"
+      ],
+      "monotonic": 70792.25566036
+    },
+    {
+      "action": "capture",
+      "args": [
+        "lessons-current"
+      ],
+      "monotonic": 70793.192529253,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/lessons-current.png",
+      "sha256": "1631c52ed908d72c55d79edff1f30fbf01bbbb293a1f756c2e43cdadbe5674c2",
+      "bytes": 108773,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "key",
+      "args": [
+        "KEYCODE_TAB",
+        "KEYCODE_ENTER"
+      ],
+      "monotonic": 70795.533460867
+    },
+    {
+      "action": "capture",
+      "args": [
+        "gameplay-start"
+      ],
+      "monotonic": 70817.588482449,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/gameplay-start.png",
+      "sha256": "b640ac248b2999126ff0188efc61a489d1e642f9c2586682bad2e49f66915543",
+      "bytes": 382573,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "wait",
+      "args": [
+        "GameSessionScreen"
+      ],
+      "monotonic": 70829.825702845
+    },
+    {
+      "action": "tap",
+      "args": [
+        "160",
+        "765"
+      ],
+      "monotonic": 70855.313607101
+    },
+    {
+      "action": "capture",
+      "args": [
+        "tools-current"
+      ],
+      "monotonic": 70855.993503495,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/tools-current.png",
+      "sha256": "9cf6ea88262b52834d4fd62288c06bfc10bd64724c9f4bb5b8c76dcb45e8c1f1",
+      "bytes": 321554,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "311",
+        "399"
+      ],
+      "monotonic": 70886.721694682
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-overview-portrait"
+      ],
+      "monotonic": 70887.390967625,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-overview-portrait.png",
+      "sha256": "77f560da3e5872ba1be393576387b3d90db6460b8976bf1ac584b9101627e910",
+      "bytes": 97139,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "345",
+        "220"
+      ],
+      "monotonic": 70923.345485676
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-overview-collapsed-guidance"
+      ],
+      "monotonic": 70923.90705783,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-overview-collapsed-guidance.png",
+      "sha256": "ccbec974b1dfed667318243f42397fe9cd7d66ca09df95119377b92114c05a89",
+      "bytes": 98269,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "315",
+        "347"
+      ],
+      "monotonic": 70971.239525369
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-economy-portrait"
+      ],
+      "monotonic": 70971.981523825,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-economy-portrait.png",
+      "sha256": "c51cd848f20d2cd3c7fb92cf8c187af76b4db715dacf164f9e50cc7ee53bbaf5",
+      "bytes": 109139,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "284",
+        "400"
+      ],
+      "monotonic": 70973.789571399
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-world-portrait"
+      ],
+      "monotonic": 70974.32757179,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-portrait.png",
+      "sha256": "f4954cfca88ee34425b42401acef9aaa88b37507b142afe8490f7a3d7b045741",
+      "bytes": 110557,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "340",
+        "695",
+        "340",
+        "450",
+        "400"
+      ],
+      "monotonic": 71023.172636425
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-world-inline-history"
+      ],
+      "monotonic": 71024.009501145,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-inline-history.png",
+      "sha256": "db60c2bf69656c457699311b5491614d543a6339e2d44adbe5f78040a1d9ecaa",
+      "bytes": 105427,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "196",
+        "638"
+      ],
+      "monotonic": 71077.932482438
+    },
+    {
+      "action": "capture",
+      "args": [
+        "history-dialog-portrait"
+      ],
+      "monotonic": 71078.516089656,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/history-dialog-portrait.png",
+      "sha256": "23f9583a42470d76710278ada3bc0d8abcd56b9081f71f279526f44c125122c3",
+      "bytes": 78748,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "rotate",
+      "args": [
+        "1"
+      ],
+      "monotonic": 71080.446733464
+    },
+    {
+      "action": "capture",
+      "args": [
+        "history-dialog-landscape"
+      ],
+      "monotonic": 71083.259183863,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/history-dialog-landscape.png",
+      "sha256": "9c6abc7feaaa5896b4b5ebe2935bace50eca71f363271d60b98e353ff97e43fd",
+      "bytes": 69691,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "key",
+      "args": [
+        "KEYCODE_ESCAPE"
+      ],
+      "monotonic": 71128.888050584
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-world-landscape"
+      ],
+      "monotonic": 71129.599987423,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-landscape.png",
+      "sha256": "35e49f910b41608797407999045c041826d08c203df7c32773bf7c7befe2e078",
+      "bytes": 109859,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "stop",
+      "args": [],
+      "monotonic": 71253.763039432
+    },
+    {
+      "action": "rotate",
+      "args": [
+        "0"
+      ],
+      "monotonic": 71254.49603928
+    },
+    {
+      "action": "clear-log",
+      "args": [],
+      "monotonic": 71257.583689983
+    },
+    {
+      "action": "launch",
+      "args": [],
+      "monotonic": 71258.16058431,
+      "output": "Starting: Intent { cmp=org.globulation2.glob2/.Glob2Activity }\nStatus: ok\nLaunchState: COLD\nActivity: org.globulation2.glob2/.Glob2Activity\nTotalTime: 1220\nWaitTime: 1223\nComplete\n"
+    },
+    {
+      "action": "wait",
+      "args": [
+        "MainMenuScreen"
+      ],
+      "monotonic": 71259.963825962
+    },
+    {
+      "action": "tap",
+      "args": [
+        "180",
+        "296"
+      ],
+      "monotonic": 71297.665843866
+    },
+    {
+      "action": "wait",
+      "args": [
+        "CustomGameScreen"
+      ],
+      "monotonic": 71298.396511747
+    },
+    {
+      "action": "capture",
+      "args": [
+        "custom-setup"
+      ],
+      "monotonic": 71427.273459771,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/custom-setup.png",
+      "sha256": "10660a6aa2d2df76226c8b2e9d100bc74a03131cab4f42a0eb31541d10dd3ae6",
+      "bytes": 94591,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "629",
+        "118"
+      ],
+      "monotonic": 71479.868187155
+    },
+    {
+      "action": "wait",
+      "args": [
+        "GameSessionScreen"
+      ],
+      "monotonic": 71496.504410581
+    },
+    {
+      "action": "capture",
+      "args": [
+        "custom-game-landscape"
+      ],
+      "monotonic": 71497.269532824,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/custom-game-landscape.png",
+      "sha256": "04e81d7be8b9de584beb1915c3f07ebec52795981fd8c827c63b52fb1ffe141b",
+      "bytes": 206802,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "329",
+        "365"
+      ],
+      "monotonic": 71541.943787413
+    },
+    {
+      "action": "capture",
+      "args": [
+        "custom-tools-landscape"
+      ],
+      "monotonic": 71542.603787613,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/custom-tools-landscape.png",
+      "sha256": "4ba2e1c1425458b14c850a161ac7025eae0f03d3e6683f6b531a58bad396d8db",
+      "bytes": 198869,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "586",
+        "301"
+      ],
+      "monotonic": 71587.111434846
+    },
+    {
+      "action": "capture",
+      "args": [
+        "fertility-overlay-enabled-landscape"
+      ],
+      "monotonic": 71587.669793363,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/fertility-overlay-enabled-landscape.png",
+      "sha256": "f4710bf19fd5631272ef837207a3a22127a73eaf325a0a7985cbe3bc02eb1423",
+      "bytes": 215914,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "587",
+        "197"
+      ],
+      "monotonic": 71590.14055022
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-overview-clean-landscape"
+      ],
+      "monotonic": 71590.688040629,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-overview-clean-landscape.png",
+      "sha256": "4c3d56ab56532e08ad43165b97212db1695b2f6d05bd83f684d660edc1367b48",
+      "bytes": 48244,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "671",
+        "58"
+      ],
+      "monotonic": 71674.348402945
+    },
+    {
+      "action": "tap",
+      "args": [
+        "587",
+        "302"
+      ],
+      "monotonic": 71675.132519009
+    },
+    {
+      "action": "tap",
+      "args": [
+        "586",
+        "196"
+      ],
+      "monotonic": 71675.817616914
+    },
+    {
+      "action": "tap",
+      "args": [
+        "580",
+        "117"
+      ],
+      "monotonic": 71676.219352054
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-economy-clean-landscape"
+      ],
+      "monotonic": 71676.810601001,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-economy-clean-landscape.png",
+      "sha256": "eb2e63ad0b916ffb0828c9901c30cfea4349caedc42128ef74c78fc184750ddf",
+      "bytes": 56786,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "519",
+        "169"
+      ],
+      "monotonic": 71678.641538452
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-world-clean-landscape"
+      ],
+      "monotonic": 71679.297786433,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-clean-landscape.png",
+      "sha256": "14eee58f4fce9c488d76525184bc2379682ba79f4b9ffc992f86a84d898b10f0",
+      "bytes": 55794,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "rotate",
+      "args": [
+        "0"
+      ],
+      "monotonic": 71681.299636747
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-world-custom-portrait"
+      ],
+      "monotonic": 71684.012615785,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-custom-portrait.png",
+      "sha256": "9e01d314483e43eb9c99fad0ed8183592f11539e3b5359785f8fa083da03a4c0",
+      "bytes": 158549,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "65",
+        "349"
+      ],
+      "monotonic": 71745.368639428
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-overview-clean-portrait"
+      ],
+      "monotonic": 71746.012151103,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-overview-clean-portrait.png",
+      "sha256": "3389d59a3e61a922e720b204e287044f1e3683d3f414773d54a8776f3db08fba",
+      "bytes": 152316,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "328",
+        "700",
+        "328",
+        "445",
+        "450"
+      ],
+      "monotonic": 71748.120661981
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "328",
+        "700",
+        "328",
+        "445",
+        "450"
+      ],
+      "monotonic": 71749.062645853
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-work-defence-portrait"
+      ],
+      "monotonic": 71750.143803592,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-work-defence-portrait.png",
+      "sha256": "abda7ed669546a64e7859f05bb0156139e14eb86143dbf832c64d34c571b7e32",
+      "bytes": 159279,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "195",
+        "347"
+      ],
+      "monotonic": 71751.951629936
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "330",
+        "700",
+        "330",
+        "440",
+        "450"
+      ],
+      "monotonic": 71752.556565514
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "330",
+        "700",
+        "330",
+        "440",
+        "450"
+      ],
+      "monotonic": 71753.522277639
+    },
+    {
+      "action": "capture",
+      "args": [
+        "statistics-colony-details-bottom"
+      ],
+      "monotonic": 71754.535245251,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-colony-details-bottom.png",
+      "sha256": "b5d370221b6f8053441b6e51f3f1bb544c0172ad2b08e9c427500f8f14d85d6a",
+      "bytes": 163536,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "331",
+        "700",
+        "331",
+        "441",
+        "450"
+      ],
+      "monotonic": 71794.785360755
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "331",
+        "700",
+        "331",
+        "441",
+        "450"
+      ],
+      "monotonic": 71795.713645376
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "331",
+        "700",
+        "331",
+        "441",
+        "450"
+      ],
+      "monotonic": 71796.732483215
+    },
+    {
+      "action": "capture",
+      "args": [
+        "unit-details-control-portrait"
+      ],
+      "monotonic": 71797.770624322,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/unit-details-control-portrait.png",
+      "sha256": "8f81c524097ad29cc91dbaa9ab73240cd6441331221b7e6ae5ed31b0c16befd5",
+      "bytes": 168097,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "173",
+        "708"
+      ],
+      "monotonic": 71838.297729155
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "327",
+        "700",
+        "327",
+        "446",
+        "400"
+      ],
+      "monotonic": 71838.759756818
+    },
+    {
+      "action": "capture",
+      "args": [
+        "unit-details-expanded-portrait"
+      ],
+      "monotonic": 71839.665712198,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/unit-details-expanded-portrait.png",
+      "sha256": "854d2ce1bc1bf8c808da231661dab0ddbd1b445cc879caa8b917f02b8fde030f",
+      "bytes": 166268,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "stop",
+      "args": [],
+      "monotonic": 71929.591322943
+    },
+    {
+      "action": "clear-log",
+      "args": [],
+      "monotonic": 71930.372079606
+    },
+    {
+      "action": "launch",
+      "args": [],
+      "monotonic": 71931.051676883,
+      "output": "Starting: Intent { cmp=org.globulation2.glob2/.Glob2Activity }\nStatus: ok\nLaunchState: COLD\nActivity: org.globulation2.glob2/.Glob2Activity\nTotalTime: 1069\nWaitTime: 1071\nComplete\n"
+    },
+    {
+      "action": "wait",
+      "args": [
+        "MainMenuScreen"
+      ],
+      "monotonic": 71932.645677981
+    },
+    {
+      "action": "key",
+      "args": [
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_TAB",
+        "KEYCODE_ENTER"
+      ],
+      "monotonic": 71965.490597751
+    },
+    {
+      "action": "capture",
+      "args": [
+        "main-more-for-editor"
+      ],
+      "monotonic": 71965.949107604,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/main-more-for-editor.png",
+      "sha256": "c807b8e0c06559db507de4966ab39f4ac914cd64dfe2522240531a6f3ecf30cf",
+      "bytes": 249524,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "182",
+        "330"
+      ],
+      "monotonic": 72020.573303879
+    },
+    {
+      "action": "wait",
+      "args": [
+        "EditorMainMenu"
+      ],
+      "monotonic": 72021.161766152
+    },
+    {
+      "action": "capture",
+      "args": [
+        "editor-main"
+      ],
+      "monotonic": 72021.599579984,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/editor-main.png",
+      "sha256": "80138f361691bf989102ad3191aae7cef0dff32078c36accce83c26ed36eee78",
+      "bytes": 352357,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "key",
+      "args": [
+        "KEYCODE_ENTER"
+      ],
+      "monotonic": 72023.685345884
+    },
+    {
+      "action": "wait",
+      "args": [
+        "NewMapScreen"
+      ],
+      "monotonic": 72024.086794236
+    },
+    {
+      "action": "capture",
+      "args": [
+        "editor-new-map-setup"
+      ],
+      "monotonic": 72024.478882163,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/editor-new-map-setup.png",
+      "sha256": "87447c394ff07b6adea2136395fba7bc31abe3bb23f40b528c3d96e17370f6a3",
+      "bytes": 113164,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "105",
+        "474"
+      ],
+      "monotonic": 72088.911379354
+    },
+    {
+      "action": "capture",
+      "args": [
+        "editor-blank-setup"
+      ],
+      "monotonic": 72089.370114235,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/editor-blank-setup.png",
+      "sha256": "e5f7f2566bdcb7f88b9b45191144cc777c93997b3b93d57645e82749ef6eaada",
+      "bytes": 98713,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "104",
+        "733"
+      ],
+      "monotonic": 72138.935591644
+    },
+    {
+      "action": "wait",
+      "args": [
+        "MapEditorScreen"
+      ],
+      "monotonic": 72139.2497615
+    },
+    {
+      "action": "capture",
+      "args": [
+        "editor-blank-current"
+      ],
+      "monotonic": 72148.071727743,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/editor-blank-current.png",
+      "sha256": "59f93a9c5c01c74915f75920fb7608f9175c0d3d168860dbaf942981fcd0a0f3",
+      "bytes": 491696,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "39",
+        "709"
+      ],
+      "monotonic": 72201.685779519
+    },
+    {
+      "action": "capture",
+      "args": [
+        "terrain-palette-portrait"
+      ],
+      "monotonic": 72202.161017135,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-palette-portrait.png",
+      "sha256": "3f5fa324fa490bff5a3232de08fc5fcced65b09aba13dcca819ad8f6e508fcf1",
+      "bytes": 473668,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "344",
+        "759",
+        "55",
+        "759",
+        "450"
+      ],
+      "monotonic": 72266.154728581
+    },
+    {
+      "action": "capture",
+      "args": [
+        "terrain-lush-dry-portrait"
+      ],
+      "monotonic": 72266.999633674,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-lush-dry-portrait.png",
+      "sha256": "69784b5c1c00af357b00989ef102a80e8ee368808a72130ff08a7de383eb10ae",
+      "bytes": 474485,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "344",
+        "759",
+        "55",
+        "759",
+        "450"
+      ],
+      "monotonic": 72269.256027618
+    },
+    {
+      "action": "capture",
+      "args": [
+        "terrain-dune-pale-portrait"
+      ],
+      "monotonic": 72270.084757094,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-dune-pale-portrait.png",
+      "sha256": "151bc8b0580679d3a812996afeb659ec9ba254d717127d7e4caf53629c057843",
+      "bytes": 473600,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "49",
+        "710"
+      ],
+      "monotonic": 72361.283372108
+    },
+    {
+      "action": "capture",
+      "args": [
+        "terrain-classic-restored"
+      ],
+      "monotonic": 72361.783403642,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-classic-restored.png",
+      "sha256": "59c5a2a5a3e85ef0bf13d039405e75f4b6e724969df0278934d2ac1ce8e21c6b",
+      "bytes": 473615,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "99",
+        "760",
+        "248",
+        "760",
+        "1000"
+      ],
+      "monotonic": 72363.85209427
+    },
+    {
+      "action": "capture",
+      "args": [
+        "terrain-lush-inspection"
+      ],
+      "monotonic": 72365.331798848,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-lush-inspection.png",
+      "sha256": "59c5a2a5a3e85ef0bf13d039405e75f4b6e724969df0278934d2ac1ce8e21c6b",
+      "bytes": 473615,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "rotate",
+      "args": [
+        "1"
+      ],
+      "monotonic": 72448.904450999
+    },
+    {
+      "action": "capture",
+      "args": [
+        "terrain-classic-landscape"
+      ],
+      "monotonic": 72451.646713808,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-classic-landscape.png",
+      "sha256": "0950a0e2bfafa514a44b75e4d360ead9c311e5db56bc51a4e41621e3954dbc54",
+      "bytes": 329842,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "rotate",
+      "args": [
+        "0"
+      ],
+      "monotonic": 72503.348617303
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "310",
+        "759",
+        "230",
+        "759",
+        "1000"
+      ],
+      "monotonic": 72506.266465698
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "310",
+        "759",
+        "230",
+        "759",
+        "1000"
+      ],
+      "monotonic": 72507.983872825
+    },
+    {
+      "action": "capture",
+      "args": [
+        "terrain-classic-slow-scroll-portrait"
+      ],
+      "monotonic": 72509.407698475,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/android/ui-qa/terrain-classic-slow-scroll-portrait.png",
+      "sha256": "5315f496d242ab837184a73d92f7b75a10af1c762a9b0e45cfb51204dce8c8de",
+      "bytes": 470867,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "logs",
+      "args": [],
+      "monotonic": 72676.898041274
+    },
+    {
+      "action": "restore",
+      "args": [],
+      "monotonic": 72677.384650915
+    },
+    {
+      "action": "stop",
+      "args": [],
+      "monotonic": 72677.921662073
+    }
+  ],
+  "capture_cap_bytes": 16777216,
+  "rotation_before": {
+    "accelerometer_rotation": "0",
+    "user_rotation": "0"
+  },
+  "own_app_force_stopped": true,
+  "driver_geometry_adaptation": {
+    "observed_frame": "custom-route-observed.png",
+    "sha256": "2ac9863972340aa6225a7a573399a89c2f87fb462f8bad0118ff2f9f2ccfb223",
+    "observation": "After force-stop/coldlaunch SDL selected844x390landscape despite earlierrotation0 while app stopped. First portrait-coordinate Customtap hit panelbackground, not a productfailure. Actualframe inspected; recovered bytwo realTabfocusmoves(Settings\u2192Custom)+Enter, confirmedCustomGameScreen andactualcurrentsetupimage.",
+    "recovery_command": [
+      "shell",
+      "input",
+      "keyevent",
+      "KEYCODE_TAB",
+      "KEYCODE_TAB",
+      "KEYCODE_ENTER"
+    ],
+    "future_policy": "Useactualcapturedgeometry and realfocus; displaydimensions are checked from eachPNG. No source/profilelocale changes."
+  },
+  "rotation_restored": true
+}

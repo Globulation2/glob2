@@ -1,0 +1,16 @@
+[
+  {
+    "original_attachment": "artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-risk-ui/cases/risk-ui-Marathi-game-deskt-983ba-tatistics-render-in-Marathi-webkit/trace.zip",
+    "local_retained_path": "build/browser-marathi-failure-traces/current-cdd-webkit-threaded-startup/trace.zip",
+    "bytes": 39703278,
+    "sha256": "23fc90a75629596ee6b3a6eb0a123f9e226da53b63210e330a8123a246752e36",
+    "publication": "Local rawtrace only; published failure JSON/log/PNG retained separately."
+  },
+  {
+    "original_attachment": "artifacts/marathi-localization/browser-game/firefox-fixed-tutorial/cases/fixed-tutorial-risk-ui-Mar-bf1c4-tatistics-render-in-Marathi-firefox/trace.zip",
+    "local_retained_path": "build/browser-marathi-failure-traces/current-cdd-firefox-threaded-fixed-startup/trace.zip",
+    "bytes": 38013350,
+    "sha256": "ae70d4469f767f8306e88a0e10c60d1f7aa39abb6ad06f0fa184a060e35160ed",
+    "publication": "Local rawtrace only; published failure JSON/log/PNG retained separately."
+  }
+]

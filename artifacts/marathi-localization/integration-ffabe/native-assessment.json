@@ -1,0 +1,56 @@
+{
+  "assessment_only": true,
+  "executed_builds_or_tests": false,
+  "tracked_mutations": false,
+  "current_head": "351a89e9f3cad5ba4473478e96a7dfa1b3658b78",
+  "compared_base": "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+  "compared_upstream": "ffabe1b9ef4e2a9986b1d6321c356124480b8a2d",
+  "read_source_hashes": {
+    "libgag/src/TrueTypeFont.cpp": "2be0914833bb1fa6581f2c6945e45533ddaae747db2461e9d5e1ed8b2a261c06",
+    "src/app/SystemLanguage.cpp": "7b7f6429decb14b47607265d6196921aafe443de893d8b41be38f00f694c94bd",
+    "src/hud/InGameStatistics.cpp": "c24ee31fd1047de6e1339830e6ab71f0b069e4cbbebf2989d4355e555076a276",
+    "src/game/SimRevision.h": "837b07e30e94df9e4b7b71a400333d822970ab246c6e15fd7f5e704535197e44",
+    "src/scripting/sgsl/LegacyScriptCoverageTest.cpp": "eb5f287d388b50c5def32af468fbdd14d5492e32f076fad73c415cba7ec81ff8",
+    "tools/TranslationPreviewHarness.cpp": "171b36c1115043602bb8b6b9fcf442a1d8bd39bf3a65b2b372a5abc63382797c",
+    "docs/development/ui-framework.md": "f8f77f011adfecb713a0e53ce1ab356e35c1d084df16c2ea077c9f457b31dba6",
+    "src/app/cli/VerifyMatch.cpp": "3217fac8f461468be4384c3d910c194972308b58e6ab79d0b2fd7da06d4c6890",
+    "src/replay/ReplayReader.cpp": "b76c85c983378e60280af37e46678aceca51484aff023f45ad6a844d432051c2",
+    "src/online/SimVersion.cpp": "d255829ca2b8b16defd8e77a5351992997e7b241bd0644deaff72db90db220f4"
+  },
+  "simulation": {
+    "required_revision": 112,
+    "upstream_revision": 111,
+    "reason": "Lexer.cpp dynamically recognizes each installed catalog language code as a LANG token with its inventory index. Installing MR adds script acceptance; source-code equality does not imply equivalent execution.",
+    "registration_order": "Preserve the exact upstream catalog order including ms, then append mr. Check every pre-existing code retains the same numeric index.",
+    "save_policy": "Do not change VERSION_MINOR or MINIMUM_VERSION_MINOR solely for registration. Test both the historical pre-private-RNG SGSL writer and current format, exact source bytes, token type/value/msg, program counters/timers, full stream consumption, re-encoded bytes, resumed tick checksums and victory outcome.",
+    "replay_policy": "Do not change replay file floor or NET_PROTOCOL_VERSION solely for catalog registration. Raw ReplayReader accepts file-format boundaries independently of SIM_REVISION. Current-version raw replay load remains supported; old online match records must be unverifiable against the new sim key. Never claim old standalone replays are rejected by SIM_REVISION.",
+    "network_policy": "SIM_REVISION is hashed into Online SimVersion dataHash. Verify old 111 versus new 112 tickets cannot join one match, while identical current keys can. Verify current verifier labels old recorded/setup sim key unverifiable, not verified.",
+    "new_MR_cases": [
+      "Absent mr inventory yields NIL and ET_NOT_VALID_LANG_ID; installed mr yields LANG with actual correct index and compiles show(...,mr).",
+      "MR and English messages select correctly and an unrelated locale receives the authored unqualified fallback.",
+      "Load a script suspended before MR registration under the newly installed inventory, using minimum and current save formats; preserve exact source bytes, old language indices/tokens, counters, timers, RNG state and continuation checksums. Include an explicit ms message to protect upstream stable index.",
+      "Actual current and prior simVersion admission/verifier boundary tests, including setup and record metadata independently."
+    ],
+    "golden": "Regenerate BOTH FourSquares1.g2mr and FourSquares1.verify-trace.txt using the freshly compiled 112 producer; re-run verification without update-fixtures. Preserve old 351/111 traces separately; no inherited checksum-equivalence claim."
+  },
+  "native_rendering": {
+    "font_proof": "Only TrueTypeFont production change adds language == ms to authoredDrawWidth. For MR the additional predicate is false. Script shaping, wrapping, fonts, renderer sources and native English strings are otherwise unchanged across compared upstream range.",
+    "carry": "After mechanical exact native source/target, font assets, wrapper/shaping source, compiler/dependency and width-policy checks, retain old measured 75288 samples/83542 lines as old producer observations with explicit behavioral carry. Do not relabel them newly executed at merged HEAD. All 111 new online strings require fresh actual glyph/wrap probes.",
+    "fresh": [
+      "Official current native harness build and registered FontKerning/SystemLanguage tests.",
+      "New narrow statistics layout needs fresh desktop 200px sidebar and compact/enlarged-text captures: Overview, Economy, World, units, overlays and inline/full history. Check Overview occupies its own row below the 270 text-point boundary.",
+      "Current actual normal-resource main/settings player selector capture confirms MR complete and both ms/mr registration; use the official new settings-player mode where no generic overlay index mismatch is involved.",
+      "Current gameplay/HUD integration and relevant GUIInteractionCoverage cases with draw-time checksums; old stats screenshots are historical, not current layout proof."
+    ],
+    "tutorials": "No tutorial/menu rendering implementation or native catalog changed in the compared upstream range. Unchanged old initial-tutorial screenshots can be explicitly carried after exact dependency/resource checks; they never prove lesson completion or new simulation execution."
+  },
+  "recommended_commands_after_clean_merge": [
+    "python3 tools/dev_build.py translation-preview-harness engine-tests unit-tests -j4",
+    "python3 test/run_tests.py --build-dir <current-official-build-dir> --filter 'LegacyScriptCoverage/*' --filter 'FontKerning/*' --filter 'SystemLanguage/*' --filter 'GUIInteractionCoverage/statistics*' --filter 'ReplayStepCounter/*' --filter 'RelayAdmission/*' --filter 'MatchSetup/*' --filter 'JavaScriptCompatibility/Current simulation rejects earlier replays and enforces acceptance boundaries*' --artifacts artifacts/marathi-localization/integration-ffabe/focused --junit artifacts/marathi-localization/integration-ffabe/focused/junit.xml",
+    "python3 test/run_tests.py --build-dir <current-official-build-dir> --update-fixtures --filter 'TurnEngineHarness/the committed*' --artifacts artifacts/marathi-localization/integration-ffabe/golden-update",
+    "python3 test/run_tests.py --build-dir <current-official-build-dir> --filter 'TurnEngineHarness/the committed*' --filter 'TurnEngineHarness/two engines with AI seats*' --artifacts artifacts/marathi-localization/integration-ffabe/golden-verify",
+    "python3 test/check_sim_revision.py --base ffabe1b9ef4e2a9986b1d6321c356124480b8a2d"
+  ],
+  "command_limits": "Commands are recommendations, not executed results. Use the exact resolved registry suite names and current build path. Existing RelayAdmission generic different-hash coverage and Malay tests do not replace new actual MR/111-vs112 cases. Canonical SDL_VIDEO_DRIVER=x11 with an owned ready Xvfb for display fixtures; do not inherit dummy/offscreen video. Reuse only exact validated SDL/recording dependency inputs.",
+  "platform_limits": "Linux native evidence alone does not establish Windows/macOS/iOS execution or cross-platform simulation equivalence. Fresh same-seed/order per-tick trace comparison on affected available platforms is required; report any omitted platforms explicitly."
+}

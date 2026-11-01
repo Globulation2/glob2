@@ -1,0 +1,53 @@
+{
+  "attempts": [
+    {
+      "boot": "",
+      "status": 0,
+      "error": ""
+    },
+    {
+      "boot": "",
+      "status": 0,
+      "error": ""
+    },
+    {
+      "boot": "",
+      "status": 0,
+      "error": ""
+    },
+    {
+      "boot": "",
+      "status": 0,
+      "error": ""
+    },
+    {
+      "boot": "",
+      "status": 0,
+      "error": ""
+    },
+    {
+      "boot": "",
+      "status": 0,
+      "error": ""
+    },
+    {
+      "boot": "",
+      "status": 0,
+      "error": ""
+    },
+    {
+      "boot": "",
+      "status": 0,
+      "error": ""
+    },
+    {
+      "boot": "1",
+      "status": 0,
+      "error": ""
+    }
+  ],
+  "properties": {
+    "ro.boot.qemu.avd_name": "glob2-api35-x64",
+    "persist.sys.locale": "mr-IN"
+  }
+}

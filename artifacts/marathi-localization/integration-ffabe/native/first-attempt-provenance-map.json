@@ -1,0 +1,8 @@
+{
+  "original_ignored_source_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/ExtraPreviewHarness-current.cpp",
+  "retained_first_source": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/ExtraPreviewHarness-first-attempt.cpp",
+  "first_source_sha256": "c367fedb37ed480c43c1045383eaafaa3bd39eac8c67d5146226f10d5f147fab",
+  "retained_first_executed_copy": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-first-stripped",
+  "first_binary_sha256": "65d70ad1f51ba806179103739e9ebd8a257d91806d0f0b56134879ca1a6ff629",
+  "first_provenance": "capture-variant-first-provenance.json"
+}

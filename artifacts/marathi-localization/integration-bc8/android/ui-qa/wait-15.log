@@ -1,0 +1,51 @@
+--------- beginning of main
+11-01 02:43:13.331  3730  3751 D EGL_emulation: app_time_stats: avg=45.34ms min=35.12ms max=57.40ms count=23
+11-01 02:43:13.537  3730  3751 I SDL/APP : Glob2 screen ready: N8Tutorial19LessonCatalogScreenE
+--------- beginning of kernel
+11-01 02:43:14.193     0     0 I logd    : logdr: UID=0 GID=0 PID=4083 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:43:14.369  3730  3751 D EGL_emulation: app_time_stats: avg=54.55ms min=38.69ms max=147.26ms count=19
+11-01 02:43:14.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:43:15.397  3730  3751 D EGL_emulation: app_time_stats: avg=46.72ms min=35.62ms max=56.97ms count=22
+11-01 02:43:16.273  4092  4092 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:43:16.274  4092  4092 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:43:16.456     0     0 I servicemanager: Caller(pid=4092,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:43:16.291   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:43:16.291  4092  4093 I Gralloc4: mapper 4.x is not supported
+11-01 02:43:16.401  3730  3751 D EGL_emulation: app_time_stats: avg=52.82ms min=36.91ms max=65.29ms count=19
+11-01 02:43:17.419  3730  3751 D EGL_emulation: app_time_stats: avg=50.83ms min=37.38ms max=71.16ms count=20
+11-01 02:43:17.521  3730  3751 I SDL/APP : Glob2 screen ready: 14GameLoadScreen
+11-01 02:43:18.510  3730  3751 D EGL_emulation: app_time_stats: avg=363.77ms min=97.67ms max=698.32ms count=3
+11-01 02:43:18.880  3730  3751 I SDL/APP : Glob2 screen ready: 17GameSessionScreen
+11-01 02:43:22.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:43:27.821  3730  3751 D EGL_emulation: app_time_stats: avg=1862.04ms min=54.56ms max=9069.32ms count=5
+11-01 02:43:28.840  3730  3751 D EGL_emulation: app_time_stats: avg=145.55ms min=81.73ms max=412.43ms count=7
+11-01 02:43:29.849  3730  3751 D EGL_emulation: app_time_stats: avg=100.86ms min=79.66ms max=173.18ms count=10
+11-01 02:43:30.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:43:30.904  3730  3751 D EGL_emulation: app_time_stats: avg=95.86ms min=80.42ms max=123.81ms count=11
+11-01 02:43:31.119     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 02:43:31.907  3730  3751 D EGL_emulation: app_time_stats: avg=100.33ms min=72.45ms max=137.95ms count=10
+11-01 02:43:32.982  3730  3751 D EGL_emulation: app_time_stats: avg=89.52ms min=77.72ms max=106.82ms count=12
+11-01 02:43:34.002  3730  3751 D EGL_emulation: app_time_stats: avg=92.63ms min=75.31ms max=115.73ms count=11
+11-01 02:43:35.047  3730  3751 D EGL_emulation: app_time_stats: avg=94.99ms min=65.04ms max=145.39ms count=11
+11-01 02:43:36.079  3730  3751 D EGL_emulation: app_time_stats: avg=85.95ms min=67.81ms max=104.67ms count=12
+11-01 02:43:37.088  3730  3751 D EGL_emulation: app_time_stats: avg=91.70ms min=76.67ms max=121.08ms count=11
+11-01 02:43:38.160  3730  3751 D EGL_emulation: app_time_stats: avg=97.43ms min=82.25ms max=116.81ms count=11
+11-01 02:43:38.465   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:43:39.219  3730  3751 D EGL_emulation: app_time_stats: avg=88.19ms min=72.14ms max=111.73ms count=12
+11-01 02:43:40.258  3730  3751 D EGL_emulation: app_time_stats: avg=86.50ms min=73.31ms max=115.01ms count=12
+11-01 02:43:40.512  4114  4114 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:43:40.512  4114  4114 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:43:40.524   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:43:40.524  4114  4115 I Gralloc4: mapper 4.x is not supported
+11-01 02:43:40.691     0     0 I servicemanager: Caller(pid=4114,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:43:41.282  3730  3751 D EGL_emulation: app_time_stats: avg=113.80ms min=102.90ms max=131.67ms count=9
+11-01 02:43:42.284  3730  3751 D EGL_emulation: app_time_stats: avg=143.06ms min=85.34ms max=227.76ms count=7
+11-01 02:43:43.293  3730  3751 D EGL_emulation: app_time_stats: avg=100.80ms min=87.47ms max=111.95ms count=10
+11-01 02:43:44.294  3730  3751 D EGL_emulation: app_time_stats: avg=90.96ms min=73.60ms max=103.05ms count=11
+11-01 02:43:45.350  3730  3751 D EGL_emulation: app_time_stats: avg=95.97ms min=79.74ms max=113.44ms count=11
+11-01 02:43:46.401   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:43:46.423  3730  3751 D EGL_emulation: app_time_stats: avg=107.25ms min=89.88ms max=141.40ms count=10
+11-01 02:43:47.517  3730  3751 D EGL_emulation: app_time_stats: avg=99.49ms min=76.32ms max=137.19ms count=11
+11-01 02:43:48.568  3730  3751 D EGL_emulation: app_time_stats: avg=95.49ms min=74.69ms max=109.92ms count=11
+11-01 02:43:49.656  3730  3751 D EGL_emulation: app_time_stats: avg=98.82ms min=83.99ms max=128.30ms count=11
+11-01 02:43:50.663  3730  3751 D EGL_emulation: app_time_stats: avg=100.73ms min=82.32ms max=122.24ms count=10

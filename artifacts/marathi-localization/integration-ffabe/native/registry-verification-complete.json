@@ -1,0 +1,362 @@
+{
+  "compiled_registry_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "fixture_commit": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "registry_cases_passed": 69,
+  "passed_cases": [
+    {
+      "suite": "FontKerning",
+      "case": "Arabic and Persian visual-order text is not reordered again by SDL_ttf"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "high-DPI Hindi wrapping width is preserved without cropping the raw raster"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "kerned words have no gap wider than the same words unkerned"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "language changes refresh default line height and Arabic shaping caches"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "pair advances equal the glyph advances plus kerning"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "script fonts shape clusters and preserve measured raster sizes after reload"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "script run composition preserves straight-alpha antialiasing"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "shaping clusters keep conjuncts and combining marks together"
+    },
+    {
+      "suite": "FontKerning",
+      "case": "the bundled SDL3_ttf moves the pen for kerned pairs"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "Malay SGSL language tokens require the installed catalog"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "Malay SGSL selects its message and retains an authored default for other locales"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "Marathi SGSL language tokens require the installed catalog"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "Marathi SGSL selects its message and retains an authored default for other locales"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "adding Malay preserves legacy SGSL source bytes and saved program counters"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "adding Marathi preserves legacy SGSL source bytes and saved program counters"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "alliance levels preserve unrelated teams and apply vision masks"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "area waits observe team alliance and negation instead of unrelated units"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "authored flag aliases resolve game catalog IDs and respect missing definitions"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "catalog languages and quoted locale names preserve suspended story continuation"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "count waits evaluate all building classes exact levels and unit comparisons"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "flag lifecycle and GUI commands change their real game objects"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "independent stories timers space and saved suspension resume exactly"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "invalid references and value boundaries report typed errors"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "legacy resetAI tokens with invalid player or implementation leave players intact"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "named highlights target distinct GUI elements and unhighlight restores state"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "objectives and hints resolve script numbers and persist in game snapshots"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "random legacy summons preserve story progress through full continuation"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "resetAI authoring accepts valid slots before an editor map has a player header"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "resetAI changes only the chosen player and rejects unsafe indices"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "summons respect painted area capacity and unit attributes"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "supported statements and wait forms compile"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "truncated arguments fail without accepting incomplete statements"
+    },
+    {
+      "suite": "LegacyScriptCoverage",
+      "case": "unit and building highlights use map and panel channels independently"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "AI order delay is optional bounded integer data and round trips through headers"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "Building gradient delay is optional bounded integer data and round trips through headers"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "New match rules default to eight tick AI decisions"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "SHA-256 matches the FIPS 180-4 test vectors"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "Scripted map sources preserve exact provenance and enforce team count"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "a map file is found and checked by the hash of its decompressed bytes"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "catalog rules identity partitions ratings without changing the executable identity"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "closed seats close their team and follow every player seat"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "current files bind embedded migration catalogs as explicit authority [save-format]"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "embedded catalogs carry dynamic experiments independently of installed definitions"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "legacy resolved setup catalogs retain zero health privately and reject authoring escapes"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "legacy turn setup validates recovered body catalogs before accepting the session [save-format]"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "the simulation data hash covers every data file the simulation loads"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "the vendored fixtures match the protocol package when it is present"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "unit catalogs survive setup conversion and reject tampered identity"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "unknown experiments, JavaScript AIs and unexpressible headers are refused"
+    },
+    {
+      "suite": "MatchSetup",
+      "case": "valid setups become the GameHeader every client and the verifier run"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "ISO locales map to the historical catalog codes"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "Malay selects Rumi without advertising Jawi coverage"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "Malay startup preserves an explicit saved choice"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "Marathi startup follows preferences and preserves a saved language"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "Norwegian Bokmaal accepts generic Norwegian but never Nynorsk"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "Norwegian startup follows preferences and preserves a saved language"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "expanded locales distinguish scripts and the precise Pulaar variety"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "languages without a catalog are not confused with catalog codes"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "regional and script variants pick the matching catalog"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "startup follows the system only when the profile has no usable language"
+    },
+    {
+      "suite": "SystemLanguage",
+      "case": "the first available preference wins, then English"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "case": "Marathi registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "case": "the committed match record verifies to the committed checksum trace [network-sim][golden]"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "case": "two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "case": "statistics sheet scroll stays open and fits phone rotations [display][artifacts]"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "case": "statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]"
+    },
+    {
+      "suite": "GameGUITouch",
+      "case": "live statistics hide post-game probability across topics [display][artifacts]"
+    },
+    {
+      "suite": "GameGUITouch",
+      "case": "tutorial wrapping preserves shaped clusters and refreshes font metrics [display]"
+    }
+  ],
+  "headless_passed": 65,
+  "display_passed": 4,
+  "failed_inherited_cases": [
+    {
+      "suite": "JavaScriptCompatibility",
+      "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+      "failed_assertions": [
+        "187 == 186",
+        "191 == 186",
+        "73 == 72"
+      ],
+      "proof": "replay-boundary-inherited.json"
+    }
+  ],
+  "relay_admission_cases_passed": 10,
+  "relay_cases": [
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "the first valid ticket creates a match; agreeing tickets join it",
+      "time": "0",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "tickets of one match must agree on simVersion and humanSeats",
+      "time": "0",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "Marathi catalog registration separates revision 111 and 112 match admission",
+      "time": "0",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "an ended match cannot be restarted by a late ticket until every ticket has expired",
+      "time": "0",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "draining admits reconnects to running matches only; capacity limits new matches",
+      "time": "0",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "RelayMatchEnded summarises seats, desync and the record",
+      "time": "0.001882",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "RelayMatchEnded carries the relay's network summary, and /metrics its totals",
+      "time": "0.00164",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "registration and heartbeat bodies carry the protocol's fields",
+      "time": "0.000208",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "the map hash comes from MatchSetup.map.hash",
+      "time": "0",
+      "status": "run"
+    },
+    {
+      "classname": "src/relay/RelayAdmissionTest.cpp",
+      "name": "configuration validates its environment",
+      "time": "0.000372",
+      "status": "run"
+    }
+  ],
+  "new_product_failures": 0,
+  "scope": "69 focused official registry cases passed;1 inherited case retains3 stale version-constant failures, no other errors/skips. No full aggregate claim. Actual dynamic replay acceptance separately retained with success assertions."
+}

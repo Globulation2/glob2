@@ -1,0 +1,348 @@
+{
+  "revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "packaging_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "compile_producer_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "runtime_source_carry_proof": null,
+  "validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "golden_fixture_followup_paths": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "production_carry_proof": "Exact git diff packaging_revision..validation_revision changes only permitted golden test fixtures; all tracked production/compiler-input, catalog, font and registration files remain identical.",
+  "clean_source": true,
+  "identity": {
+    "client_features": {
+      "authoring_links": false,
+      "commander": false,
+      "community_ai": true,
+      "community_generators": true
+    },
+    "client_profile": "free",
+    "distribution": "browser",
+    "mode": "release",
+    "native_wss": false,
+    "role": "client",
+    "target": "web",
+    "toolchain": "emscripten"
+  },
+  "options": {
+    "emsdk": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39",
+    "release": "1",
+    "target": "web",
+    "web_variant": "both"
+  },
+  "files": {
+    "index.html": {
+      "bytes": 58127,
+      "sha256": "4f8b6ee0601e190eaadcf88b4ec6ff6ee77651b431de8bce1ef5eafef96a6f4a"
+    },
+    "index.js": {
+      "bytes": 1811340,
+      "sha256": "a9ab794d8c05acdafeaf7379c2236864c3c96aba56ccf3dcb8e78f08e23fcf8a"
+    },
+    "index.wasm": {
+      "bytes": 25095224,
+      "sha256": "7ebf4ae2773bc6ac049a9c2b222f414198c2b3f622a8276eeeedb5ce81c57aac"
+    },
+    "threaded/index.js": {
+      "bytes": 1863901,
+      "sha256": "606c47327bf46214c7f4a3d052d32f80ecdb9d34097c3a2fde7a3d4f5ffbacc5"
+    },
+    "threaded/index.wasm": {
+      "bytes": 25131028,
+      "sha256": "7eaae65f34f2d8d20f5ca7c45090756e413ea0857423fea6bc23831e5048089d"
+    },
+    "loader.js": {
+      "bytes": 5767,
+      "sha256": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1"
+    },
+    "i18n.js": {
+      "bytes": 195907,
+      "sha256": "1cfea4434021b3a6d0e8b85f778246d2f7581de3015499ff14b282e111e41180"
+    },
+    "locales/mr.json": {
+      "bytes": 359382,
+      "sha256": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+    },
+    "fonts/NotoSansDevanagari-Regular.ttf": {
+      "bytes": 219212,
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+    },
+    "asset-manifest.js": {
+      "bytes": 1339125,
+      "sha256": "4abd86821c662cba37212f54ffd7945464889b87b23d2ac342d1881c25db4034"
+    },
+    "recording-runtime.js": {
+      "bytes": 19797,
+      "sha256": "50806bbd4a36e1cdcc0e2de560d66bfec5d27119018e80c6ba8fa813b4b367a8"
+    },
+    "recording-runtime.wasm": {
+      "bytes": 3048709,
+      "sha256": "c4c6bc9c46c4a35e0a8bed4ca7943bcd79cf53aa80991d1d8a127ee531bdb17b"
+    }
+  },
+  "parts": [
+    {
+      "package": "core",
+      "url": "assets/core.8ded9b553f605c02.data",
+      "bytes": 7639599,
+      "sha256": "8ded9b553f605c0286380cb48b875f48b84fffd3f5e4dc4a3ea52a3db1432de8"
+    },
+    {
+      "package": "game",
+      "url": "assets/game-1.3469574f02166bac.data",
+      "bytes": 4194068,
+      "sha256": "3469574f02166bac2bd5439397ecc8a4e315a7812f7e8d9bd25335ad4a1af61e"
+    },
+    {
+      "package": "game",
+      "url": "assets/game-2.c528d2d4d914d336.data",
+      "bytes": 2204873,
+      "sha256": "c528d2d4d914d3364c5ad4e877d7fc371e6d1f39ff3ef3973959b64b14a28b2d"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-1.1b46c97e0303b531.data",
+      "bytes": 8207092,
+      "sha256": "1b46c97e0303b5317083d218414fa5c3c86654037f5a502c84b57a55ac3a5a49"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-2.52a73a5d6dfa72ca.data",
+      "bytes": 1631773,
+      "sha256": "52a73a5d6dfa72ca044dac302a3fba3db5f0d4ceff82734204d04a5fc7cd90d3"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-3.7e34666a64a82144.data",
+      "bytes": 15524900,
+      "sha256": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-4.9db418c630f9487a.data",
+      "bytes": 1104152,
+      "sha256": "9db418c630f9487a45a31949ace181bd31d0878cf59a9ace19c1292893922e17"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-5.989e22f6965c83f1.data",
+      "bytes": 15524900,
+      "sha256": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-6.5fe8cfde0df15bdc.data",
+      "bytes": 1063939,
+      "sha256": "5fe8cfde0df15bdc1f9d04116d9a8566d3d60b8bad9b4ae332103b5a9c28d031"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-7.a284a1de5163b617.data",
+      "bytes": 15524900,
+      "sha256": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-8.d6cf242d3126756c.data",
+      "bytes": 1214472,
+      "sha256": "d6cf242d3126756cbd63d97fb2049689c8953cd31e7afaaabc4a6add349b7249"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-9.ce14b8e276b5356a.data",
+      "bytes": 17896484,
+      "sha256": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-10.a1749111f4898205.data",
+      "bytes": 1264282,
+      "sha256": "a1749111f489820585106f792891838fc96908a9907b0e31f7bc3478fb510d42"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-11.8cfcdf0ae4f64626.data",
+      "bytes": 17896484,
+      "sha256": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-12.b19606116df83b1d.data",
+      "bytes": 1217544,
+      "sha256": "b19606116df83b1dab7745486ffd855a00de4d5b8979512c2b166786203eddc5"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-13.0e34bee54d15567b.data",
+      "bytes": 17896484,
+      "sha256": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17"
+    },
+    {
+      "package": "skins",
+      "url": "assets/skins-14.a8c6fda2e24c3301.data",
+      "bytes": 24377,
+      "sha256": "a8c6fda2e24c33015f3ff572a408091d247201b4c9c7828feed2724fc9777ebe"
+    },
+    {
+      "package": "font-cjk",
+      "url": "assets/font-cjk.5701af4422583342.data",
+      "bytes": 8137448,
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+    },
+    {
+      "package": "menu-music",
+      "url": "assets/menu-music.5294ed91abf32cfe.data",
+      "bytes": 264097,
+      "sha256": "5294ed91abf32cfea540641622fb6b0f21b5a5446f35b165e94ae75f9dddb70c"
+    },
+    {
+      "package": "translations",
+      "url": "assets/translations-1.2c4139b0372062f2.data",
+      "bytes": 3996576,
+      "sha256": "2c4139b0372062f26b0c316ee075ae8f08efdacd242beb3f1743372c4668788f"
+    },
+    {
+      "package": "translations",
+      "url": "assets/translations-2.860e86a6f8cb02ab.data",
+      "bytes": 4035021,
+      "sha256": "860e86a6f8cb02aba3d1ec3b50ef799c6c366e6da2fce343c63c236ca55b7182"
+    },
+    {
+      "package": "translations",
+      "url": "assets/translations-3.a6884779cd99012b.data",
+      "bytes": 891853,
+      "sha256": "a6884779cd99012b5c7fe29a9c404e9b35428bbd8dcf2a18ae62814b6266c5df"
+    },
+    {
+      "package": "music",
+      "url": "assets/music.67f422aa69c5356d.data",
+      "bytes": 1252275,
+      "sha256": "67f422aa69c5356d139763a490f1f6547030247951ef074034309f9f05e600b0"
+    },
+    {
+      "package": "music-sets",
+      "url": "assets/music-sets-1.602de095eeed505a.data",
+      "bytes": 4001177,
+      "sha256": "602de095eeed505ac5065746be6b80f44ad30ccbbb471169eeb3877a06d91eb6"
+    },
+    {
+      "package": "music-sets",
+      "url": "assets/music-sets-2.be883b1c072a2166.data",
+      "bytes": 4168611,
+      "sha256": "be883b1c072a2166e46a024fb8d306a0f07b7fddb186e287f2c3d8ca383218c1"
+    },
+    {
+      "package": "music-sets",
+      "url": "assets/music-sets-3.163578e1e9d60971.data",
+      "bytes": 450081,
+      "sha256": "163578e1e9d60971b90813251c94502854b2ca4a42a658f2093c023a810363c2"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-1.5eafe7114bef71c8.data",
+      "bytes": 4182577,
+      "sha256": "5eafe7114bef71c86cf577da5437b1f82db3608f97317f2e7eaf1b9cb491b66b"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-2.1363303a1c10ab1a.data",
+      "bytes": 4193044,
+      "sha256": "1363303a1c10ab1a93151ee9c54fabf4b2d91c6ddd2821c8119070d93e27aed4"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-3.5ad942a4935c4095.data",
+      "bytes": 4193650,
+      "sha256": "5ad942a4935c40958b8f80300d3aaa4f3ac7c231ad07e9663eaacd135c675f7f"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-4.e0c5941a906c7a3a.data",
+      "bytes": 4192924,
+      "sha256": "e0c5941a906c7a3aa55cf2c54e555d05caafa7ffe7ebbcd376e4f71c127b123c"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-5.69cce3981ddf986d.data",
+      "bytes": 4193582,
+      "sha256": "69cce3981ddf986dd8e71f3f89a9685f7fc08be42d1d9d3339d9a0fed38bdc46"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-6.c5bc152f6c03e50f.data",
+      "bytes": 4191616,
+      "sha256": "c5bc152f6c03e50f2107effc13c9311697030b60d0d6d13c70b648f6d99fd1f5"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-7.8fd73b17c5221886.data",
+      "bytes": 4191194,
+      "sha256": "8fd73b17c52218866748aeb4decaff1075f9ee796cb50f05210d3eda2cdc90ae"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-8.eda55ec46d51331a.data",
+      "bytes": 4193790,
+      "sha256": "eda55ec46d51331ad78d9ecff50727f3f571ed7246f4eb7a83f7b1cabf301719"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-9.8e94b1eaf4d9fa34.data",
+      "bytes": 4193508,
+      "sha256": "8e94b1eaf4d9fa34d3207acd01cdea76d0776d85bfac4a950baf1e65f6b7e04c"
+    },
+    {
+      "package": "hd",
+      "url": "assets/hd-10.11bf41247ab53589.data",
+      "bytes": 3166512,
+      "sha256": "11bf41247ab535896148a27b4015f4d392095518a3fcbf66a7d1f580251fed83"
+    }
+  ],
+  "resources": [
+    {
+      "path": "/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "package": "core",
+      "part": "assets/core.8ded9b553f605c02.data",
+      "offset": 1843259,
+      "bytes": 219212,
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "matches_source": true
+    },
+    {
+      "path": "/data/texts.incomplete.txt",
+      "package": "core",
+      "part": "assets/core.8ded9b553f605c02.data",
+      "offset": 6001395,
+      "bytes": 743,
+      "sha256": "a04c2c664e808aaac20faa7e0628561dd0802d65117fe3537659ea510792b8ba",
+      "matches_source": true
+    },
+    {
+      "path": "/data/texts.list.txt",
+      "package": "core",
+      "part": "assets/core.8ded9b553f605c02.data",
+      "offset": 6084549,
+      "bytes": 728,
+      "sha256": "035fc441748d3dec86846c84fef50aeda50cf94b900d0b693eefac5f5feb3998",
+      "matches_source": true
+    },
+    {
+      "path": "/data/texts.mr.txt",
+      "package": "core",
+      "part": "assets/core.8ded9b553f605c02.data",
+      "offset": 6085277,
+      "bytes": 105,
+      "sha256": "48f9ac192872d9254e8d2c31ad679582083146c014950ceb381a7cc45bcc52b1",
+      "matches_source": false
+    },
+    {
+      "path": "/data/texts.mr.txt",
+      "package": "translations",
+      "part": "assets/translations-2.860e86a6f8cb02ab.data",
+      "offset": 454831,
+      "bytes": 397418,
+      "sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+      "matches_source": true
+    }
+  ]
+}

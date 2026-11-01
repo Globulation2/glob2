@@ -1,0 +1,170 @@
+{
+  "inspections": [
+    {
+      "path": "1280x900/gameplay-extra/stats-overview.png",
+      "sha256": "cd5c452efc0794fbcc148d05cc707158bb71ccac881df5b4983de590f88e8b98",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Overview topic tabs and wrapped summary labels render clearly; the real short session honestly reports insufficient recorded history. Content below the scroll viewport is not claimed visible."
+    },
+    {
+      "path": "1280x900/gameplay-extra/stats-economy.png",
+      "sha256": "a3c9e2794d265b80540bbb181853467d2a1fe50df4c39ec7debb16e2b4e72535",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Economy topic and multi-line worker-time labels retain joined Marathi marks within their rows. Lower content is intentionally scrollable."
+    },
+    {
+      "path": "1280x900/gameplay-extra/stats-world.png",
+      "sha256": "13ff483d084668b0817fe4b43bc1812231cac0381ad823ea2c7771c214093d86",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. World topic/category and actual metric labels render legibly; no fabricated sample curve is shown. Missing-reading hint is legible where visible."
+    },
+    {
+      "path": "1280x900/gameplay-extra/stats-overview-defence.png",
+      "sha256": "8f2d78f505880432c315bd477d8d36a5b129ded35115ff27ab4b347507d618a1",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Scrolled Overview exposes complete Work/construction and Defence headings and metric rows. A partial row at the scroll boundary is intentional viewport clipping."
+    },
+    {
+      "path": "1280x900/gameplay-extra/stats-inline-history.png",
+      "sha256": "549add1bebd8e2741b5d837c23c590858220f610b5fed64a3059bc018fa9cbb7",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Selected idle-worker metric, inline history area and full-history action render clearly. The actual insufficient-history status is preserved instead of invented readings."
+    },
+    {
+      "path": "1280x900/gameplay-extra/stats-full-history.png",
+      "sha256": "80df03c619a2ebb13007510eb2291ad7b1ae4f4181cc23980bb5ecaa244a85c9",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Production history modal title, minute-window controls, missing-history status, Details and Close controls fit with intact Marathi shaping."
+    },
+    {
+      "path": "1280x900/gameplay-extra/stats-unit-details.png",
+      "sha256": "b80d28eb2c2a2dbb79a01e97fe95d7442eaec52d6ca3cfe4e5c2f6046ed58634",
+      "reviewer": "/root/draft_tool",
+      "finding": {
+        "kind": "fixture_coverage_gap",
+        "details": "Expanded rows remain below fold in v1; refined fixture scrolls heading to top."
+      },
+      "inspection": "Actually inspected this exact image. The actual unit-details heading/button is clear. This first capture leaves expanded detail rows below the scroll viewport; a refined fixture will align the heading to the top."
+    },
+    {
+      "path": "1280x900/gameplay-extra/stats-map-overlays.png",
+      "sha256": "bbfc1994dd1e363d9620727e194ce6209a1cdd4048e5ebab01fa64e18485d08f",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Desktop map-overlay header and all four checkbox labels are fully visible and shaped clearly."
+    },
+    {
+      "path": "1280x900/gameplay-extra/editor-dune_sand.png",
+      "sha256": "2e32f7b2190a95b9f810bf1c01032c643aa470b354759a2f21a6c8485510f8e2",
+      "reviewer": "/root/draft_tool",
+      "finding": {
+        "kind": "intentional_card_ellipsis",
+        "translation_issue": false,
+        "details": "Caption is abbreviated by the existing fixed card UI; full accessible name/tooltip retained. Do not shorten the translation merely to conceal the widget policy."
+      },
+      "inspection": "Actually inspected this exact image. Actual dune-sand brush is selected. The fixed card intentionally ellipsizes the long caption; its accessible label/tooltip retain the full canonical translation. Search shows the full text in the wide viewport. No broken glyph cluster is visible."
+    },
+    {
+      "path": "1280x900/gameplay-extra/editor-lush_grass.png",
+      "sha256": "bcf1890b33c018b1eb54f816eaea7a9e05562aaba60ba46cfc9e704c67089b8c",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Actual lush-grass brush/search/card caption show हिरवेगार गवत fully, with clear glyphs."
+    },
+    {
+      "path": "1280x900/gameplay-extra/editor-dry_grass.png",
+      "sha256": "513608262248ffa3828cdcfa3fdff2f7e8bf15e9debb4da4e7fde787938a00f4",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Actual dry-grass brush/search/card caption show कोरडे गवत fully, with clear glyphs."
+    },
+    {
+      "path": "1280x900/gameplay-extra/editor-pale_sand.png",
+      "sha256": "231c09ce9232b57af92cfcf292200a22e322307691f08eceb7d6e4396fe66cc7",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Actual pale-sand brush/search/card caption show फिकट वाळू fully, with clear glyphs."
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-overview.png",
+      "sha256": "085b74159604df65e4a07ff03db7f88b041324149f71b93e4b73b17abab0cafc",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Overview topic tabs and wrapped summary labels render clearly; the real short session honestly reports insufficient recorded history. Content below the scroll viewport is not claimed visible."
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-economy.png",
+      "sha256": "ec9ccba3042958367f2ae1634ff4029740858b609b1511483f0efc6de71bc479",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Economy topic and multi-line worker-time labels retain joined Marathi marks within their rows. Lower content is intentionally scrollable."
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-world.png",
+      "sha256": "ad55739cfc9fede7cef54978e4c7c63c3fc8de84fe3a108235463e89c0b362ee",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. World topic/category and actual metric labels render legibly; no fabricated sample curve is shown. Missing-reading hint is legible where visible."
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-overview-defence.png",
+      "sha256": "b66c6fab3d6e9d7e2ee0610d7d53e31df7d9b03d3a639e69b94f323eef389a07",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Scrolled Overview exposes complete Work/construction and Defence headings and metric rows. A partial row at the scroll boundary is intentional viewport clipping."
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-inline-history.png",
+      "sha256": "dd40541e91b9892042cf118218944dc074c533ba91c5642d712cb8a07335ccec",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Selected idle-worker metric, inline history area and full-history action render clearly. The actual insufficient-history status is preserved instead of invented readings."
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-full-history.png",
+      "sha256": "db59ea0c984cb4d13abddec9d21018d6165647c900be8819c8e4419122d3e8a9",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this exact image. Production history modal title, minute-window controls, missing-history status, Details and Close controls fit with intact Marathi shaping."
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-unit-details.png",
+      "sha256": "67e188a0ea4cc37f4b18d272eca311c135e182c057598ddf1fc708a1ee3505f6",
+      "reviewer": "/root/draft_tool",
+      "finding": {
+        "kind": "fixture_coverage_gap",
+        "details": "Expanded rows remain below fold in v1; refined fixture scrolls heading to top."
+      },
+      "inspection": "Actually inspected this exact image. The actual unit-details heading/button is clear. This first capture leaves expanded detail rows below the scroll viewport; a refined fixture will align the heading to the top."
+    },
+    {
+      "path": "390x844/gameplay-extra/stats-map-overlays.png",
+      "sha256": "e3fa4843348b3bcc6629e58031a4147a7caf0e93a79ff34c0315a853511e6d3e",
+      "reviewer": "/root/draft_tool",
+      "finding": {
+        "kind": "fixture_coverage_gap",
+        "details": "Compact lens requires STAT_TEXT_VIEW as well as lensOpen; no shipping-source or translation defect."
+      },
+      "inspection": "Actually inspected this exact image. Actually inspected the image: the intended compact lens labels are absent. Fixture opened lensOpen without required STAT_TEXT_VIEW, so this image is only a normal compact game view. No overlay-coverage pass is claimed; v2 corrects UI navigation."
+    },
+    {
+      "path": "390x844/gameplay-extra/editor-dune_sand.png",
+      "sha256": "0d6ec0f25de078c680d1bd95daa64b52da6e4d64f8cf89eec0ebdf0bc39c1a03",
+      "reviewer": "/root/draft_tool",
+      "finding": {
+        "kind": "dock_fallback_and_intentional_card_ellipsis",
+        "details": "Actual report phone_editor=false. Do not describe this v1 image as a phone tray. Full label is retained in semantics; card elides it."
+      },
+      "inspection": "Actually inspected this exact image. Actual dune-sand brush is selected. The fixed card intentionally ellipsizes the long caption; its accessible label/tooltip retain the full canonical translation. Search shows the full text in the wide viewport. No broken glyph cluster is visible. This v1 compact capture correctly uses the production dock fallback because the software harness renderer is not portable; it is not a phone-tray capture. The refined fixture selects the real portable renderer."
+    }
+  ],
+  "count": 21,
+  "scope": "Actual selected v1 images only; no assertion that unlisted images were human-inspected. Fixture coverage limitations are retained and will be resolved in separate refined captures.",
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63"
+}

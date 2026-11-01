@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "test/check_sim_revision.py",
+    "--base",
+    "ffabe1b9ef4e2a9986b1d6321c356124480b8a2d"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "deadline_seconds": 300,
+  "started_unix": 1793531984.6645386,
+  "explicit_video_driver": null,
+  "exit_code": 0,
+  "elapsed_seconds": 2.0637705326080322,
+  "log_sha256": "80c51d79715fb9a262ef0b4a36b0163fd7459ff696eb0532acd1e398da2d0bf7",
+  "capture_errors": []
+}

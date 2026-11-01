@@ -1,0 +1,13 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/45cd/glob2/platform
+
+Not implemented: Window's scrollTo() method
+
+ Test Files  8 passed (8)
+      Tests  85 passed (85)
+   Start at  07:06:41
+   Duration  36.95s (tests 47%, environment 29%, import 15%, transform 9%)
+
+    Isolate  8 workers spawned · ~2.51s startup each (spawn + environment, per file)
+             at least ~7.53s faster with isolate: false — reuses workers across files instead of one per file
+

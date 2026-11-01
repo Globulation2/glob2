@@ -1,0 +1,9 @@
+{
+  "engine": "chromium",
+  "variant": "serial",
+  "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "trace_lines": 843,
+  "tick_samples": 842,
+  "native_path": "artifacts/marathi-localization/integration-ffabe/native/native-match-verify/checksums.txt",
+  "native_and_committed_golden_byte_equal": true
+}

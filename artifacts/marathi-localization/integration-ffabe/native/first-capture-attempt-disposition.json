@@ -1,0 +1,14 @@
+{
+  "actual_jobs_successful": 7,
+  "actual_jobs_failed": 1,
+  "rejected_visual_claims": [
+    "Both compact menu/settings PNGs are all black despite successful exit: not visual evidence.",
+    "Desktop stats-overview-large actually shows map overlays because ignored navigation failed to reopen statistics.",
+    "Compact enlarged stats assertion fails before report completion; partial PNGs retained as partial only."
+  ],
+  "correction": "Ignored capture wrapper keeps screen alive through production printScreen readback and reopens actual stats/clears touch lens before enlarged layout. No shipping source change.",
+  "old_actual_executed_binary": "variant-capture-first-stripped",
+  "old_source_snapshot": "ExtraPreviewHarness-first-attempt.cpp",
+  "old_provenance": "capture-variant-first-provenance.json",
+  "passed_matrix_jobs_retained": "Both complete selected111 font matrices remain valid,0 missing/0drawn/6raw diagnostics; no rerender needed."
+}

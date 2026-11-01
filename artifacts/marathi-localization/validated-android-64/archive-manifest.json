@@ -1,0 +1,15 @@
+{
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "purpose": "Preserve validated pre-metadata-fix unsigned and signed APK before official rebuild. Old source64 runtime evidence remains immutable; not final187 selector proof.",
+  "byte_cap": 1073741824,
+  "files": {
+    "app-release-unsigned.apk": {
+      "sha256": "759e6601a50c58731455b76c07f878dc57c755421392127eec8be52b3548010d",
+      "bytes": 238493823
+    },
+    "app-release-development.apk": {
+      "sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+      "bytes": 240482096
+    }
+  }
+}

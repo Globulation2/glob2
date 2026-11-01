@@ -1,0 +1,17 @@
+{
+  "current_source_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "official_harness_and_registry_compiled_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "actual_cli_build_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "e481_to_cdd_only_changed_path": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "map_gzip_sha256": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+  "map_decompressed_sha256": "5b470a3432a21d483be12f3fc63116f4a86c25e89a549a0fe71d753257e89c98",
+  "record_sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+  "committed_trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+}

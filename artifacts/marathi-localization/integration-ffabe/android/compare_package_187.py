@@ -1,0 +1,16 @@
+"""Afterbuild actualAPKmember/source carry; no claims from filename/package existence."""
+from pathlib import Path
+import json,hashlib,zipfile,subprocess
+root=Path.cwd();base=root/'artifacts/marathi-localization/integration-ffabe/android';proof=json.loads((base/'producer-provenance.json').read_text());assert proof['state']=='verified frozen shipping official build';old=root/'artifacts/marathi-localization/validated-android-187/app-release-unsigned.apk';new=Path(proof['apk']['path']);sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();assert sha(new)==proof['apk']['sha256'];g=lambda *a:subprocess.check_output(['git',*a],text=True).strip();oldrev='187ea34de87838911a42321fd52925d51da475b9';shipping=proof['compiled_shipping_revision']
+assert not g('diff','--name-only',oldrev,shipping,'--','mobile');assert not g('diff','--name-only',oldrev,shipping,'--','data/fonts');assert not g('diff','--name-only',oldrev,shipping,'--','data/texts.mr.txt');changes=g('diff','--name-only',oldrev,shipping,'--','data').splitlines();assert set(changes)=={'data/texts.hi.txt','data/texts.ur.txt','data/texts.sw.txt','data/texts.nb.txt','data/texts.ms.txt','data/texts.list.txt','data/texts.incomplete.txt'}
+allowed={'assets/glob2-bundle/'+s for s in changes}|{'assets/glob2-bundle/'+s+'.gz' for s in changes}|{'assets/glob2-bundle/index.list','lib/x86_64/libmain.so'}
+with zipfile.ZipFile(old) as a,zipfile.ZipFile(new) as z:
+ oldnames=set(a.namelist());newnames=set(z.namelist());altered=[];equal={}
+ for name in sorted(oldnames&newnames):
+  x=hashlib.sha256(a.read(name)).hexdigest();y=hashlib.sha256(z.read(name)).hexdigest()
+  if x!=y:altered.append({'path':name,'old_sha256':x,'new_sha256':y})
+  else:equal[name]=x
+ added=sorted(newnames-oldnames);removed=sorted(oldnames-newnames);assert not removed and set(added)<=allowed and {x['path'] for x in altered}<=allowed
+ assert any(n.startswith('classes') and n.endswith('.dex') for n in equal);assert 'resources.arsc' in equal
+ result={'old_producer':oldrev,'new_compiled_shipping_revision':shipping,'new_fixture_epoch':proof.get('head_epoch_after_build'),'old_unsigned_apk_sha256':sha(old),'new_unsigned_apk_sha256':sha(new),'method':'EveryuncompressedAPKmemberread/SHA256compared. ExactactualJavaDEX/resources/fonts/terrain/unchangedcatalogbyteschecked; no relabeling ofoldruntime.','old_member_count':len(oldnames),'new_member_count':len(newnames),'changed':altered,'added':added,'removed':removed,'identical_member_count':len(equal),'allowed_changed_source_data':changes,'identical_critical_members':{k:v for k,v in equal.items() if k.startswith('classes') or k in ['AndroidManifest.xml','resources.arsc'] or 'fonts/' in k},'unchanged_mobile_git_tree':g('rev-parse',shipping+':mobile'),'unchanged_fonts_git_tree':g('rev-parse',shipping+':data/fonts'),'carry_scope':'Old187actualJavaAudio/Hand/Intro/lifecycle/terrain/font evidence retainedactual187, explicitlycarriedonlyunchangedinputs. Newnativecode/Sim112/39language-registration/narrowstatslayout needcurrentfocusedruntimeandper-tickparity.','status':'PASS boundedactualunchanged-member/sourcecarry; not a freshfulloldruntime rerun'}
+(base/'apk-member-carry-187.json').write_text(json.dumps(result,indent=2)+'\n');print('PASS actualAPKmembercarry',len(equal),'identical',len(altered),'changed',len(added),'added')

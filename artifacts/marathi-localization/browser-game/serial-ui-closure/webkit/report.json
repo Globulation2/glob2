@@ -1,0 +1,165 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bradley/.codex/worktrees/45cd/glob2/platform/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-risk-playwright.config.js",
+      "--project=webkit",
+      "--grep",
+      "Marathi game desktop.*serial native",
+      "--workers=1",
+      "--reporter=list,json",
+      "--output",
+      "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-ui-closure/webkit/cases"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-risk-playwright.config.js",
+    "rootDir": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-ui-closure/webkit/cases",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game",
+        "testIgnore": [],
+        "testMatch": [
+          "serial-risk-ui.spec.js"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-ui-closure/webkit/cases",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game",
+        "testIgnore": [],
+        "testMatch": [
+          "serial-risk-ui.spec.js"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/serial-ui-closure/webkit/cases",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game",
+        "testIgnore": [],
+        "testMatch": [
+          "serial-risk-ui.spec.js"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "serial-risk-ui.spec.js",
+      "file": "serial-risk-ui.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Marathi game desktop",
+          "file": "serial-risk-ui.spec.js",
+          "line": 82,
+          "column": 9,
+          "specs": [
+            {
+              "title": "serial native catalog, selector and statistics render in Marathi",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 360000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 145757,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-01T11:44:28.197Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3171382f4fcdc834b6d9-cdbff7c8ca5a744ddcdd",
+              "file": "serial-risk-ui.spec.js",
+              "line": 84,
+              "column": 49
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T11:44:24.573Z",
+    "duration": 151315.341,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

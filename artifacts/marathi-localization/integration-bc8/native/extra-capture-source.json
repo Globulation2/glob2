@@ -1,0 +1,17 @@
+{
+  "original": "tools/TranslationPreviewHarness.cpp",
+  "original_sha256": "396317680344cc1a53aaa02ea7afd6bdf2992b5ff67f21eb6d85f2d1ddbf4982",
+  "adapter": "artifacts/marathi-localization/integration-bc8/native/ExtraPreviewHarness.cpp",
+  "adapter_sha256": "c7e0e305251e5a05a6bf652006c2023e3dd2c22e96f703029ea36c85aac8acac",
+  "changes": [
+    "Add capture-only navigation through existing fixture friendship, using real statistics public topic/metric/history controls and actual GameGUITouch menu action.",
+    "Admit real history through ordinary engine stepping; no injection of metrics, world state, orders or probability values.",
+    "Capture Overview/Economy/World/inline/full/unit/overlays and actual four terrain brush cards via real editor search/scroll/selection. No map painting/saving.",
+    "Preserve production screenshots/checksum assertions and append exact adapter identity to evidence."
+  ],
+  "limits": [
+    "Desktop compact presentation is not a physical/native mobile-platform run.",
+    "No completed-match or calibrated probability claim. Actual available readings remain unchanged; missing readings are not invented.",
+    "Fixture directly navigates UI state and scroll positions for coverage; it does not claim physical user input verification."
+  ]
+}

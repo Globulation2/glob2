@@ -1,0 +1,15 @@
+{
+  "revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "translation-preview-harness",
+    "-j4"
+  ],
+  "started_epoch": 1793521990.9942982,
+  "scope": "Official incremental rebuild after ONLY data/texts.incomplete.txt MR star removal; old64 producer preserved separately.",
+  "dependency_proof": "../native/recording-prefix-validation.json unchanged current-recipe prefix; metadata-only Git diff does not change builders/compiler/flags/dependencies.",
+  "exit_code": 0,
+  "finished_epoch": 1793522068.1081252,
+  "log_sha256": "2ec4f8365e1d1d0258edb447f2a9de223dc7b9ce371676b9263c10372beb8502"
+}

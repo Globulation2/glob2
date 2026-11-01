@@ -1,0 +1,618 @@
+{
+  "current_validation_head": "0e6e243e098cf32afbf303937ba4f55384685f37",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "official_jobs": 34,
+  "official_failed_jobs": 0,
+  "matrix_samples": 75288,
+  "matrix_lines": 83542,
+  "unique_variants_per_viewport": 6274,
+  "matrix_png_pages": 3212,
+  "missing_glyphs": 0,
+  "drawn_bounds_failures": 0,
+  "raw_raster_width_diagnostics": 592,
+  "raw_diagnostic_details": "All are scale2 width-only raster rectangles. Whole bitmaps are scaled into fitting recorded draw destinations; zero drawn overflow. No raw diagnostic is suppressed.",
+  "viewports": [
+    {
+      "viewport": "1280x900",
+      "samples": 37644,
+      "lines": 38314,
+      "pages": 1437,
+      "raw_width_diagnostics": 88
+    },
+    {
+      "viewport": "390x844",
+      "samples": 37644,
+      "lines": 45228,
+      "pages": 1775,
+      "raw_width_diagnostics": 504
+    }
+  ],
+  "official_menu_screens": 10,
+  "official_game_sessions": 22,
+  "official_initial_tutorial_sessions": 20,
+  "tutorial_ids": [
+    "introduction",
+    "food-supply",
+    "healing",
+    "walking-training",
+    "swimming",
+    "schools",
+    "upgrades",
+    "warrior-training",
+    "fortifications",
+    "defensive-tactics"
+  ],
+  "actual_automatic_briefings": 15,
+  "briefings_by_viewport": {
+    "1280x900": 7,
+    "390x844": 8
+  },
+  "official_game_capture_pngs": 64,
+  "official_ui_pngs": 74,
+  "extra_jobs_preserved_v1": 2,
+  "extra_jobs_refined": 2,
+  "extra_pngs": 66,
+  "registered_followup_jobs": 4,
+  "registered_followup_pngs": 4,
+  "total_nonmatrix_ui_pngs": 144,
+  "all_recorded_game_draw_checksums_unchanged": true,
+  "focused_registered_cases_passed": 21,
+  "focused_initial_setup_failures_retained": 3,
+  "focused_targeted_retry_passed": 3,
+  "runtime_versions": {
+    "sdl_version": 3004016,
+    "sdl_ttf_version": 3002002,
+    "harfbuzz_version": [
+      10,
+      1,
+      0
+    ]
+  },
+  "fonts": {
+    "Devanagari": {
+      "virtual_path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+    },
+    "sans": {
+      "virtual_path": "data/fonts/sans.ttf",
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/sans.ttf",
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+    },
+    "all_resolved_font_count": 14
+  },
+  "actual_producer_64": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+    "sourceStatus": [],
+    "sourceTreeSha256": "246fe09d063da655c92b4055021c1c5c536abf5b396ccdd527ff0bf04dd68a9d"
+  },
+  "actual_official_executable_64_sha256": "24eb9f5fdb3be8e294ce8caad53da68590b823865b6d301f4a0a5ef84a94d549",
+  "actual_registration_producer_187": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "187ea34de87838911a42321fd52925d51da475b9",
+    "sourceStatus": [],
+    "sourceTreeSha256": "d3148b8ddcf198e41b93892d0d1dcd0a514f3529c6b76169fb1e0caca7fe5990"
+  },
+  "actual_registration_variant_sha256": "7d845a39d127c7002ef3d5ac356f59794db3732377bdd4042a4f5952ea145d18",
+  "reports": [
+    {
+      "path": "native-render-clean64/1280x900/matrix/font-matrix.json",
+      "sha256": "fd3d4f1b4b0141e18ff6e993cd169e2323a6a48fe6cdb13080ff948ac1e34a79",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "matrix",
+      "kind": null
+    },
+    {
+      "path": "native-render-clean64/1280x900/main/main.json",
+      "sha256": "6410f3ed5c2645551826584be7facc65d425b21a0bc37ad5cbdd4752a6221a71",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "main"
+    },
+    {
+      "path": "native-render-clean64/1280x900/settings/settings.json",
+      "sha256": "a41a07a7dd1351cc675927f6f296fd8dc7852459d0a29569e593b414bba56c22",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "settings"
+    },
+    {
+      "path": "native-render-clean64/1280x900/settings-audio/settings-audio.json",
+      "sha256": "174f8f39b5d3fb7b0b0bc85c3bed1fa140723b808af71d83b03a26e58e51051f",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "settings-audio"
+    },
+    {
+      "path": "native-render-clean64/1280x900/lobby/lobby.json",
+      "sha256": "26a261ecf4ec542ad8d8a6ebe6389edd61eaac9553aabced0b18ff7db01e53ab",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "lobby"
+    },
+    {
+      "path": "native-render-clean64/1280x900/lobby-players/lobby-players.json",
+      "sha256": "0f798610e066aa61a6a4e0d5d5b482827f4d7c928e1fc03e6e955f446256e076",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "lobby-players"
+    },
+    {
+      "path": "native-render-clean64/1280x900/gameplay/gameplay.json",
+      "sha256": "83c192460b8868037a36526bba8a5724fae2a8f2270478b90b5cf99e2f7ba90c",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "gameplay"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-introduction/tutorial-introduction.json",
+      "sha256": "1d9a67bccca2b8af33bb3343315b0a661374dcb9ff124beab1314e8310f4335b",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:introduction"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-food-supply/tutorial-food-supply.json",
+      "sha256": "80589fc428769909f92c950c2b01f58627b30a8095685215a33b38c9fefc8cca",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:food-supply"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-healing/tutorial-healing.json",
+      "sha256": "9026fb8e0a764fa07c92b4a182ce9c981d550bed7338a0e3b64435ddc57a3436",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:healing"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-walking-training/tutorial-walking-training.json",
+      "sha256": "6e1fd2437a4f2b980cd4383b741b81b376e1271fde4ad3a64085711a5c0de453",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:walking-training"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-swimming/tutorial-swimming.json",
+      "sha256": "2384917fb9209afcf905bfa0182b3e331236597f2eed14ad887ffeb97acff47d",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:swimming"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-schools/tutorial-schools.json",
+      "sha256": "2e4799b15b3af48cffc05071d153f6fe9c3cf93a276dbdf9663a5c771fe01db7",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:schools"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-upgrades/tutorial-upgrades.json",
+      "sha256": "507ed2c86ee004794d00f7067bad48fafafe8561b187ec02b5d06444d0e794a0",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:upgrades"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-warrior-training/tutorial-warrior-training.json",
+      "sha256": "8e1ad8a16d8c83e09bf4d235a78e92597fb597c8612dfc07bf75755c9616d52b",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:warrior-training"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-fortifications/tutorial-fortifications.json",
+      "sha256": "7a18ceac002472d746d32fd39c3aed2a01209c0073464a78e5980734d815edb5",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:fortifications"
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-defensive-tactics/tutorial-defensive-tactics.json",
+      "sha256": "44f89fdef700d5411fde52f194989138318c36e569e780018d44e966e2f8f269",
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:defensive-tactics"
+    },
+    {
+      "path": "native-render-clean64/390x844/matrix/font-matrix.json",
+      "sha256": "d3262a012794007f1fe665a1ab6ddbbe5278c4163f084fd9717863e85572504f",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "matrix",
+      "kind": null
+    },
+    {
+      "path": "native-render-clean64/390x844/main/main.json",
+      "sha256": "6e89d36a3e3da9947079762c9625ca96152ab5e7d4e7428afa47c735e059f888",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "main"
+    },
+    {
+      "path": "native-render-clean64/390x844/settings/settings.json",
+      "sha256": "6363e2bbb645c7839980ed9d7bfb8c00c2a46d2b02a767384a02a8dcf772c373",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "settings"
+    },
+    {
+      "path": "native-render-clean64/390x844/settings-audio/settings-audio.json",
+      "sha256": "d88c553d897e677e19bca376abe9cab99640174f19cb8d0d552969e45ae2782a",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "settings-audio"
+    },
+    {
+      "path": "native-render-clean64/390x844/lobby/lobby.json",
+      "sha256": "12d3d712f3e840421df7f12cbb709012f8f25ee83f4d1b09d8c82f8dd326aa3d",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "lobby"
+    },
+    {
+      "path": "native-render-clean64/390x844/lobby-players/lobby-players.json",
+      "sha256": "6c29c4889c928f90588ee093e9e44928aba81fe669e1d9a482915fd4fc2ae48c",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "lobby-players"
+    },
+    {
+      "path": "native-render-clean64/390x844/gameplay/gameplay.json",
+      "sha256": "ea672d763ac7bb58fa44c967ab6595444051fecd40abdcc0a4734b2bdb9f73f7",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "gameplay"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-introduction/tutorial-introduction.json",
+      "sha256": "e87802c10178569d803ba1cfaef3b25f76094c670cfca03ca3196e48d878e9b7",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:introduction"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-food-supply/tutorial-food-supply.json",
+      "sha256": "0736884aa35d7de12508e8b733100f1e5529a9fcfd8f28ab473d3a767c377ec8",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:food-supply"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-healing/tutorial-healing.json",
+      "sha256": "eb3ab02d9a0cc3e210d746d3736f068f7ce2d5ecc9ffb286678f12356b1f0493",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:healing"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-walking-training/tutorial-walking-training.json",
+      "sha256": "edde7d5a29c58f410e87f7e3211b40ec22a425eb653e4a83d58835c406d4a0ab",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:walking-training"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-swimming/tutorial-swimming.json",
+      "sha256": "c6b937d1a8bd3ad92c2218a83fc6a261fe41dbedd526ed456b33da1f0b1c1180",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:swimming"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-schools/tutorial-schools.json",
+      "sha256": "6dbc282f310a34f68a4e8f6b93db63b1053f92e78bf695134327cf1fce897246",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:schools"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-upgrades/tutorial-upgrades.json",
+      "sha256": "55e5b8d5f6ba3eaa1589ddd1019f325f7835caf11db7d5260233ea8d972b50ba",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:upgrades"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-warrior-training/tutorial-warrior-training.json",
+      "sha256": "eb7f2a6703ab624bbf1691b088283b55062de59b6b8809bc6bd2e652eba9425d",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:warrior-training"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-fortifications/tutorial-fortifications.json",
+      "sha256": "93d79198b99890b27ef3df7c669605b77ebbe68e9e9f9f883f2116703b565886",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:fortifications"
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-defensive-tactics/tutorial-defensive-tactics.json",
+      "sha256": "626d27968933409fc408e45673286df5b1efed18e56af6fa668093fd2a5a390e",
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:defensive-tactics"
+    }
+  ],
+  "extra_reports": [
+    {
+      "path": "native-extra-clean64/1280x900/gameplay-extra/gameplay.json",
+      "sha256": "2406b7d4259aaad01a55009cf35eb831f0c621bbd4da0c959a5fdbc27a7b8169",
+      "captures": 17,
+      "phone_editor": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "kind": "first preserved fixture with explicit coverage limitations"
+    },
+    {
+      "path": "native-extra-clean64/390x844/gameplay-extra/gameplay.json",
+      "sha256": "91604835a80db5a7f65d4c27278361c87f829ea3d3c1a02446d99f76c923bb36",
+      "captures": 16,
+      "phone_editor": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "kind": "first preserved fixture with explicit coverage limitations"
+    },
+    {
+      "path": "native-extra-clean64/refined/1280x900/gameplay-extra/gameplay.json",
+      "sha256": "5810c83bdc715d1827695b38669cf55c3f805a0a91ef663e1dc04859215e35c0",
+      "captures": 17,
+      "phone_editor": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "kind": "refined portable phone coverage"
+    },
+    {
+      "path": "native-extra-clean64/refined/390x844/gameplay-extra/gameplay.json",
+      "sha256": "d7b1c489ecae397ae042f88e4bb933ec700d3aa04ef50742936b4f4c5c0f2905",
+      "captures": 16,
+      "phone_editor": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "kind": "refined portable phone coverage"
+    }
+  ],
+  "registered_reports": [
+    {
+      "path": "native-registration187/captures/1280x900/main/main.json",
+      "sha256": "0b92f912a8befd715eec6406b181c9f9e9b1bedeb51c4cae596536734af7c25b",
+      "probe": {
+        "locale": "mr",
+        "index": 37,
+        "complete": true,
+        "native_name": "मराठी",
+        "incomplete_metadata_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+        "registered_language_inventory_sha256": "9dce0cae0d6c3857c7297a2304fee03ac6e9e2a99177ea93b9bcf434bc02af52",
+        "actual_native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "overlay_keys_overridden": 0,
+        "scope": "Actual registered language resources; no draft overlay/reordering."
+      }
+    },
+    {
+      "path": "native-registration187/captures/1280x900/settings-player/settings-player.json",
+      "sha256": "7937df6f554cb0a531913bca98f75af2313af7b548a7a18222715eeb3284bc51",
+      "probe": {
+        "locale": "mr",
+        "index": 37,
+        "complete": true,
+        "native_name": "मराठी",
+        "incomplete_metadata_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+        "registered_language_inventory_sha256": "9dce0cae0d6c3857c7297a2304fee03ac6e9e2a99177ea93b9bcf434bc02af52",
+        "actual_native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "overlay_keys_overridden": 0,
+        "scope": "Actual registered language resources; no draft overlay/reordering."
+      }
+    },
+    {
+      "path": "native-registration187/captures/390x844/main/main.json",
+      "sha256": "88e1955653f37403eab2994a2fef094cf233d95b80678b1ea98423dcbf8f1b7c",
+      "probe": {
+        "locale": "mr",
+        "index": 37,
+        "complete": true,
+        "native_name": "मराठी",
+        "incomplete_metadata_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+        "registered_language_inventory_sha256": "9dce0cae0d6c3857c7297a2304fee03ac6e9e2a99177ea93b9bcf434bc02af52",
+        "actual_native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "overlay_keys_overridden": 0,
+        "scope": "Actual registered language resources; no draft overlay/reordering."
+      }
+    },
+    {
+      "path": "native-registration187/captures/390x844/settings-player/settings-player.json",
+      "sha256": "f6ceb4c01b1eaf1c272ca557ce9f722c94dd85101e8126ce326ed3fe2adffbd5",
+      "probe": {
+        "locale": "mr",
+        "index": 37,
+        "complete": true,
+        "native_name": "मराठी",
+        "incomplete_metadata_sha256": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a",
+        "registered_language_inventory_sha256": "9dce0cae0d6c3857c7297a2304fee03ac6e9e2a99177ea93b9bcf434bc02af52",
+        "actual_native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+        "overlay_keys_overridden": 0,
+        "scope": "Actual registered language resources; no draft overlay/reordering."
+      }
+    }
+  ],
+  "limits": [
+    "Full matrices use complete canonical-value draft overlays; registration/package status is separately verified by true normal-resource187 captures and other platform owners.",
+    "Desktop compact presentation is not an Android/iOS physical-device run. No macOS/Windows/iOS native execution was performed.",
+    "Tutorial coverage is all10 initial lesson states, actual automatic briefings when triggered, and dialogs; no all-objective/lesson completion claim.",
+    "Partial local match history is real and may be insufficient. Results-screen captures are fixtures from loaded games; no completed match, fabricated probability values or calibrated prediction claim.",
+    "Only exact visual-inspections records identify manually inspected images; quantitative diagnostics cover all samples/lines. Scroll boundaries and deliberate card/top-toolbar abbreviation are explicit, not translation defects hidden by shortening."
+  ],
+  "source_carry": "native-final-input-carry.json",
+  "registration_transition": "registration-metadata-transition.json",
+  "overlay_equivalence": "native-overlay-equivalence.json",
+  "visual_inspection_records": {
+    "native-render-clean64/visual-inspections.json": {
+      "sha256": "b9efb36236490665b95634ba4c984cb38dad03ace0721330bd2c6910efa20320",
+      "record_count": 18,
+      "scope": "Only recorded exact images actually inspected; records overlap across reviewers, so counts must not be summed as unique images."
+    },
+    "native-extra-clean64/visual-inspections.json": {
+      "sha256": "c81421529449d0adcf323393fdee68cee5f779c1fcece3cd0d393e513517c640",
+      "record_count": 21,
+      "scope": "Only recorded exact images actually inspected; records overlap across reviewers, so counts must not be summed as unique images."
+    },
+    "native-extra-clean64/refined/visual-inspections.json": {
+      "sha256": "3dda3b6b86a38cc18bf224ae77a7fe89c18e65d7a1cc6a8e09ec3153e47c0bef",
+      "record_count": 15,
+      "scope": "Only recorded exact images actually inspected; records overlap across reviewers, so counts must not be summed as unique images."
+    },
+    "native-registration187/captures/visual-inspections.json": {
+      "sha256": "cee53f1ff19b4d0b84fab2d7bde160f2360ea5160f2ea471da9faa458970b8ba",
+      "record_count": 4,
+      "scope": "Only recorded exact images actually inspected; records overlap across reviewers, so counts must not be summed as unique images."
+    },
+    "native/root-independent/visual-inspections.json": {
+      "sha256": "ad8c15f95d2c9e01bd1fd2369dcfc71468f2ca9dbcda7e22b589e0a7a3884697",
+      "record_count": 10,
+      "scope": "Only recorded exact images actually inspected; records overlap across reviewers, so counts must not be summed as unique images."
+    }
+  },
+  "registered_independent_review": {
+    "path": "native-registration187/root-visual-review.json",
+    "sha256": "c37d58380d7ce7ab26bccdbfd09484da59528b5b49eac1cfc96d99b7d8881961"
+  },
+  "display_cleanup": {
+    "path": "native/display-cleanup.json",
+    "sha256": "65a789e94b7dda4c77f0f3dee4efde9495ae4c988b8cabf3b419fd4e25b5b976",
+    "owned_displays_remaining": 0,
+    "foreign_displays_untouched": 2
+  },
+  "stable": true
+}

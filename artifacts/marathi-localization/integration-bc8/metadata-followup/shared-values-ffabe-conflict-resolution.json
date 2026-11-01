@@ -1,0 +1,13 @@
+{
+  "file": "platform/packages/i18n/shared-values.json",
+  "resolution": "Exactupstreamstage3alllocalemappingsplusonlyourstage2MR83exceptions unchanged. Everycommonourstage2mappingexactstage1; nootherourlocalechanges lost.",
+  "upstream_locale_count": 37,
+  "merged_locale_count": 38,
+  "marathi_exception_count": 83,
+  "malay_exception_count": 96,
+  "sha256": "7534b6db7d60022b5c9f6c8e3895e391cdac38dd8bf8fa66cbb1f54b0e756048",
+  "all_upstream_values_exact_preserved": true,
+  "MR_values_exact_stage2_preserved": true,
+  "all_values_string_arrays_unique": true,
+  "schema_note": "No schemachange. Newfixedmetadatalabelkeycoverage isEnglish/sourcecontract; its111newMRdrafts/reviewsexceptions remainpending, no exceptionaddedforsilencingmissingtranslation."
+}

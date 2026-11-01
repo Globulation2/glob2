@@ -1,0 +1,14 @@
+{
+  "attempt": "early_golden.py before requiring complete focused-object producer exit0",
+  "observed": "Golden-only binary enumerated0 cases; test runner exit0 selected0, JUnit0; all fixture hashes unchanged. Rejected as validation failure.",
+  "cause_limit": "The early watcher trusted file mtime while the producer could still be active. Object incompleteness is a timing hypothesis, not independently proven at the exact linker read. No product assertion ran in this attempt.",
+  "correction": "Wait for official focused object and link subprocess exit0; enumerate normal focused registry (122 cases including golden), run exactly1 required case and require1 actual JUnit pass.",
+  "preserved": [
+    "early_golden.py",
+    "early-golden-provenance.json",
+    "early-golden-update.log",
+    "golden-fixture-mutation.json-zero-case-attempt",
+    "golden-update-zero-case-attempt",
+    "golden-only-tests"
+  ]
+}

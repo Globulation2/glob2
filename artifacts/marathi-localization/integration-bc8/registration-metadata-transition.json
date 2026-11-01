@@ -1,0 +1,25 @@
+{
+  "old_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "new_revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "git_diff": "diff --git a/data/texts.incomplete.txt b/data/texts.incomplete.txt\nindex 369298d282..3c1c685316 100644\n--- a/data/texts.incomplete.txt\n+++ b/data/texts.incomplete.txt\n@@ -35,4 +35,4 @@ data/texts.en.txt\n *data/texts.ur.txt\n *data/texts.sw.txt\n data/texts.nb.txt\n-*data/texts.mr.txt\n+data/texts.mr.txt\n",
+  "resource_sha256": {
+    "before64": "19b8439ee0ba99cde3ebc7a5b7f25c3a0eabf4b326c42f273155606af4a05437",
+    "after187": "6cce20e5254acfafb5d43ff29994b7c510265e031510da777a95d98e7a97599a"
+  },
+  "resource_edit_epoch": 1793521716.4460402,
+  "observed_active_phone_matrix": {
+    "pid": 3672883,
+    "process_start_local": "2026-11-01 03:28:05 EST",
+    "resource_edit_local": "2026-11-01 03:28:36 EST",
+    "scope": "Font matrix never invokes GlobalContainer::load/loadIncompleteList; marker cannot affect sampled text/fonts."
+  },
+  "job_bindings": {
+    "native-render-clean64/1280x900/*": "Actual executable/code producer64; all17jobs completed before metadata edit. Its16UIjobs read old64 registration metadata; matrix does not read it.",
+    "native-render-clean64/390x844/matrix": "Actual executable/code producer64; font/text/input hashes unchanged; no registration metadata consumed.",
+    "native-render-clean64/390x844/UI jobs": "All16 compact UI jobs completed using actual64 code/executable plus the new187 runtime completeness metadata. They began after the phone matrix and after the recorded metadata edit. No producer relabeling.",
+    "native-extra-clean64/* and refined/*": "Both complete pairs finished before the marker edit; actual64code/registration metadata, generic overlay limits retained."
+  },
+  "unchanged_inputs": "Catalog540819/online0a, English/source contract b7ed54, all font/render/UI C++ sources, compiler flags and dependencies unchanged; Git diff contains only one metadata file.",
+  "registration_followup": "Separate official187 incremental build and capture-only registered-resource variant; no draft overlay/reordering for registration proof.",
+  "completed_official_jobs": 34
+}

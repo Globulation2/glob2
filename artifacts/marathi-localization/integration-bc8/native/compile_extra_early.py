@@ -1,0 +1,7 @@
+from pathlib import Path
+import json,shlex,subprocess,os,hashlib
+root=Path.cwd();base=root/'artifacts/marathi-localization/integration-bc8/native';log=(base/'official-build.log').read_text();line=next(l for l in log.splitlines() if 'program-tools_TranslationPreviewHarness.o -c ' in l);args=shlex.split(line);args[args.index('-o')+1]=str(base/'ExtraPreviewHarness.o');args[args.index('tools/TranslationPreviewHarness.cpp')]=str(base/'ExtraPreviewHarness.cpp');env=dict(os.environ);env.update(json.loads((base/'build-env.json').read_text()));record={'revision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'command':args,'source_sha256':hashlib.sha256((base/'ExtraPreviewHarness.cpp').read_bytes()).hexdigest(),'producer_header_sha256':hashlib.sha256((root/'build/linux/client/debug/dev-dev_fast-true-linker-auto/include/glob2/TestBuildProvenance.h').read_bytes()).hexdigest(),'scope':'Actual ignored capture adapter compilation; isolated object output, no SCons writer or production source changes.'}
+with (base/'extra-compile-early.log').open('w') as f:r=subprocess.run(args,env=env,stdout=f,stderr=subprocess.STDOUT)
+record['exit_code']=r.returncode
+if r.returncode==0:record['object_sha256']=hashlib.sha256((base/'ExtraPreviewHarness.o').read_bytes()).hexdigest()
+(base/'extra-compile-early.json').write_text(json.dumps(record,indent=2)+'\n');raise SystemExit(r.returncode)

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/home/bradley/.codex/worktrees/45cd/glob2/build/linux/relay/debug/dev-dev_fast-true-linker-auto/src/glob2-relay-tests",
+    "--test-suite=RelayAdmission",
+    "--reporters=junit",
+    "--out=/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/relay-admission.xml"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2",
+  "deadline_seconds": 300,
+  "started_unix": 1793531982.611328,
+  "explicit_video_driver": null,
+  "exit_code": 0,
+  "elapsed_seconds": 2.0294125080108643,
+  "log_sha256": "a9aa3e81341028aaeae292c0b7e5f7a3be87486fd7e5d34cb961e70bac16a73a",
+  "capture_errors": []
+}

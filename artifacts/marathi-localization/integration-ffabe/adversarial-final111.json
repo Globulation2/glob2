@@ -1,0 +1,1023 @@
+{
+  "role": "independent adversarial final linguistic reread",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "kit_draft_sha256": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5",
+  "actual_canonical_read": "platform/packages/i18n/locales/mr.json",
+  "reviewed_key_count": 111,
+  "reviewed_keys": [
+    "Rush",
+    "Defensive",
+    "Economy",
+    "Expansion",
+    "Experimental",
+    "Beginner-friendly",
+    "File and API profile",
+    "Syntax and profile restrictions",
+    "Startup and callback",
+    "Persistent state",
+    "Seeded gameplay",
+    "Repeatable simulation",
+    "Save and resume",
+    "Good",
+    "Fair",
+    "Poor",
+    "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+    "Delay",
+    "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+    "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+    "Classic glossy",
+    "Basics",
+    "Matte",
+    "Riveted metal",
+    "Metal",
+    "Hairy",
+    "Organic",
+    "Cartoon",
+    "Woven fabric",
+    "Craft",
+    "Oozy goo",
+    "Wet",
+    "Wood",
+    "Stone",
+    "Mineral",
+    "Scales",
+    "Leather",
+    "Crystal",
+    "Lava",
+    "Chrome",
+    "Carbon fibre",
+    "Velvet",
+    "Honeycomb",
+    "Ice",
+    "Cloud",
+    "Hammered metal",
+    "Candy",
+    "Slime",
+    "AI player",
+    "Finances",
+    "Accounts",
+    "Audit",
+    "1 hour",
+    "1 day",
+    "1 week",
+    "30 days",
+    "Most played",
+    "Listen for the musical structure and development.",
+    "Check that all three moods play correctly.",
+    "Listen for unexpected jumps in volume between moods.",
+    "Listen for a click, gap, or abrupt change when the loop repeats.",
+    "Listen for short phrases that repeat too mechanically.",
+    "Switch moods and listen for changes in timing or harmony.",
+    "Check that building and combat feel distinct from calm.",
+    "Listen for hiss or scratchiness in quiet passages.",
+    "Listen for muddy bass or harsh high frequencies.",
+    "Check that calm passages remain audible alongside game sound.",
+    "Listen for notes that cut off unexpectedly.",
+    "Worker",
+    "Warrior",
+    "Explorer",
+    "Swarm",
+    "Classic",
+    "Crown",
+    "Clutch",
+    "Toadstool",
+    "A broad-capped toadstool with young caps.",
+    "Coral",
+    "Skep",
+    "A coiled hive on a stand, its door facing you.",
+    "Bloom",
+    "Public: listed in the catalog",
+    "Unlisted: anyone with the link",
+    "Private: only you",
+    "The server replayed this match and every player’s game agreed with it.",
+    "The server is checking this match. Ratings change once it is verified.",
+    "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+    "The server could not reproduce this match, so it changes no rating.",
+    "This match is not checked.",
+    "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+    "Walk",
+    "Swim",
+    "Harvest",
+    "Fight",
+    "Fly",
+    "Live payments",
+    "Test payments",
+    "Unclassified payments",
+    "Current period",
+    "Previous period",
+    "Credit grant",
+    "Returned credits",
+    "Dispute",
+    "Dispute closed",
+    "Matches started",
+    "Matches completed",
+    "Matches cancelled",
+    "{value0} publications",
+    "{value0} recorded downloads",
+    "{value0} completion time (seconds)",
+    "{value0} completion samples"
+  ],
+  "accepted_count": 111,
+  "blocking_edits": [],
+  "accepted_english": [],
+  "intentional_technical_acronyms": {
+    "File and API profile": [
+      "API"
+    ]
+  },
+  "rows": [
+    {
+      "index": 1,
+      "key": "Rush",
+      "source": "Rush",
+      "actual_final_target": "सुरुवातीचा हल्ला",
+      "disposition": "accept",
+      "rationale": "Early attack strategy is now explicit; false-friend hurry removed."
+    },
+    {
+      "index": 2,
+      "key": "Defensive",
+      "source": "Defensive",
+      "actual_final_target": "बचावात्मक",
+      "disposition": "accept",
+      "rationale": "AI defensive strategy tag is accurately adjectival."
+    },
+    {
+      "index": 3,
+      "key": "Economy",
+      "source": "Economy",
+      "actual_final_target": "अर्थव्यवस्था",
+      "disposition": "accept",
+      "rationale": "Economy strategy tag matches existing अर्थव्यवस्था."
+    },
+    {
+      "index": 4,
+      "key": "Expansion",
+      "source": "Expansion",
+      "actual_final_target": "विस्तार",
+      "disposition": "accept",
+      "rationale": "Expansion strategy describes territorial growth accurately."
+    },
+    {
+      "index": 5,
+      "key": "Experimental",
+      "source": "Experimental",
+      "actual_final_target": "प्रायोगिक",
+      "disposition": "accept",
+      "rationale": "Experimental tag correctly marks an experimental controller."
+    },
+    {
+      "index": 6,
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "actual_final_target": "नवशिक्यांसाठी सोपे",
+      "disposition": "accept",
+      "rationale": "Novice-friendly tag is naturally rendered as easy for novices, acceptable in AI browse context."
+    },
+    {
+      "index": 7,
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "actual_final_target": "फाइल आणि API प्रोफाइल",
+      "disposition": "accept",
+      "rationale": "API standard acronym retained; surrounding heading Marathi."
+    },
+    {
+      "index": 8,
+      "key": "Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "actual_final_target": "वाक्यरचना आणि प्रोफाइलवरील निर्बंध",
+      "disposition": "accept",
+      "rationale": "Profile restrictions now use natural Marathi locative relation."
+    },
+    {
+      "index": 9,
+      "key": "Startup and callback",
+      "source": "Startup and callback",
+      "actual_final_target": "सुरुवात आणि कॉलबॅक",
+      "disposition": "accept",
+      "rationale": "Startup simplified to सुरुवात; callback remains recognized technical loan."
+    },
+    {
+      "index": 10,
+      "key": "Persistent state",
+      "source": "Persistent state",
+      "actual_final_target": "जतन होणारी स्थिती",
+      "disposition": "accept",
+      "rationale": "State is retained/saved, with no implication that values can never change."
+    },
+    {
+      "index": 11,
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "actual_final_target": "ठरावीक बीजासह खेळ",
+      "disposition": "accept",
+      "rationale": "Fixed random seed context is explicit; short validation label is understandable."
+    },
+    {
+      "index": 12,
+      "key": "Repeatable simulation",
+      "source": "Repeatable simulation",
+      "actual_final_target": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "disposition": "accept",
+      "rationale": "Repeatable simulation correctly denotes repeatable execution, not replay file format."
+    },
+    {
+      "index": 13,
+      "key": "Save and resume",
+      "source": "Save and resume",
+      "actual_final_target": "जतन करा आणि पुढे चालू ठेवा",
+      "disposition": "accept",
+      "rationale": "Continue after saving avoids implying an entirely fresh restart."
+    },
+    {
+      "index": 14,
+      "key": "Good",
+      "source": "Good",
+      "actual_final_target": "चांगले",
+      "disposition": "accept",
+      "rationale": "Good is the positive connection-quality band and चांगले fits a neutral quality label."
+    },
+    {
+      "index": 15,
+      "key": "Fair",
+      "source": "Fair",
+      "actual_final_target": "साधारण",
+      "disposition": "accept",
+      "rationale": "साधारण accurately denotes the middling connection-quality band."
+    },
+    {
+      "index": 16,
+      "key": "Poor",
+      "source": "Poor",
+      "actual_final_target": "खराब",
+      "disposition": "accept",
+      "rationale": "Poor-quality band now खराब; no poverty meaning."
+    },
+    {
+      "index": 17,
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "actual_final_target": "खेळाडू आणि रिले यांच्यात संदेश जाऊन परत येण्यासाठी लागणारा वेळ. सामन्यापूर्वी (झटपट सामना, सुरुवातीची तपासणी यादी) हा त्या प्रदेशाशी जोडणी तपासून काढलेला अंदाज असतो.",
+      "disposition": "accept",
+      "rationale": "Messages traveling there and back are explicitly measured in time; pre-match regional estimate retained."
+    },
+    {
+      "index": 18,
+      "key": "Delay",
+      "source": "Delay",
+      "actual_final_target": "विलंब",
+      "disposition": "accept",
+      "rationale": "Delay correctly denotes elapsed latency, with explanation supplied separately."
+    },
+    {
+      "index": 19,
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "actual_final_target": "तुमचा इनपुट विलंब: तुम्ही क्लिक केल्यापासून ती कृती सर्व खेळाडूंच्या खेळात होईपर्यंतचा वेळ. तुमच्या पिंगचा निम्मा वेळ आणि नेटवर्क विलंबातील चढउतार सांभाळण्यासाठी खेळाने ठेवलेला बफर यांची बेरीज.",
+      "disposition": "accept",
+      "rationale": "Actual final preserves click-to-all-clients execution delay and additive half-ping plus jitter buffer."
+    },
+    {
+      "index": 20,
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "actual_final_target": "खेळाडूचा खेळ सामन्याच्या घड्याळापेक्षा किती मागे आहे. एका सेकंदापेक्षा कमी अंतर सामान्य असते (त्यात इनपुट विलंबही असतो); हे अंतर २ सेकंद झाल्यापासून रिले त्या खेळाडूला धीमा म्हणून नोंदवतो.",
+      "disposition": "accept",
+      "rationale": "Game-clock lag includes input delay and relay slow marking starts at exactly two seconds."
+    },
+    {
+      "index": 21,
+      "key": "Classic glossy",
+      "source": "Classic glossy",
+      "actual_final_target": "क्लासिक चकचकीत",
+      "disposition": "accept",
+      "rationale": "Glossy material label clearly names classic reflective appearance."
+    },
+    {
+      "index": 22,
+      "key": "Basics",
+      "source": "Basics",
+      "actual_final_target": "मूलभूत",
+      "disposition": "accept",
+      "rationale": "मूलभूत works as a compact category heading."
+    },
+    {
+      "index": 23,
+      "key": "Matte",
+      "source": "Matte",
+      "actual_final_target": "मॅट",
+      "disposition": "accept",
+      "rationale": "Matte is a recognized rendering/material loan; मॅट distinguishes non-gloss surface."
+    },
+    {
+      "index": 24,
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "actual_final_target": "रिव्हेट लावलेला धातू",
+      "disposition": "accept",
+      "rationale": "Singular धातू agreement fixed and riveted surface distinguished."
+    },
+    {
+      "index": 25,
+      "key": "Metal",
+      "source": "Metal",
+      "actual_final_target": "धातू",
+      "disposition": "accept",
+      "rationale": "Metal category is the substance धातू."
+    },
+    {
+      "index": 26,
+      "key": "Hairy",
+      "source": "Hairy",
+      "actual_final_target": "केसाळ",
+      "disposition": "accept",
+      "rationale": "Hairy labels fur-shell material and केसाळ is direct."
+    },
+    {
+      "index": 27,
+      "key": "Organic",
+      "source": "Organic",
+      "actual_final_target": "सेंद्रिय",
+      "disposition": "accept",
+      "rationale": "Retained सेंद्रिय is acceptable as the general organic/natural material family covering hair/leather/scales. My जैविक alternative is stylistic, not a blocking meaning issue."
+    },
+    {
+      "index": 28,
+      "key": "Cartoon",
+      "source": "Cartoon",
+      "actual_final_target": "कार्टून",
+      "disposition": "accept",
+      "rationale": "Cartoon is an established visual-style loan."
+    },
+    {
+      "index": 29,
+      "key": "Woven fabric",
+      "source": "Woven fabric",
+      "actual_final_target": "विणलेले कापड",
+      "disposition": "accept",
+      "rationale": "Woven fabric accurately names the woven texture."
+    },
+    {
+      "index": 30,
+      "key": "Craft",
+      "source": "Craft",
+      "actual_final_target": "कलाकुसर",
+      "disposition": "accept",
+      "rationale": "Craft category names handmade material grouping."
+    },
+    {
+      "index": 31,
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "actual_final_target": "ओघळणारा चिकट पदार्थ",
+      "disposition": "accept",
+      "rationale": "Flowing viscous substance is now clear; glue false friend removed."
+    },
+    {
+      "index": 32,
+      "key": "Wet",
+      "source": "Wet",
+      "actual_final_target": "ओले",
+      "disposition": "accept",
+      "rationale": "Wet group is a valid neutral material-family adjective."
+    },
+    {
+      "index": 33,
+      "key": "Wood",
+      "source": "Wood",
+      "actual_final_target": "लाकूड",
+      "disposition": "accept",
+      "rationale": "Wood names the material, not a tree."
+    },
+    {
+      "index": 34,
+      "key": "Stone",
+      "source": "Stone",
+      "actual_final_target": "दगड",
+      "disposition": "accept",
+      "rationale": "Stone names the material."
+    },
+    {
+      "index": 35,
+      "key": "Mineral",
+      "source": "Mineral",
+      "actual_final_target": "खनिज",
+      "disposition": "accept",
+      "rationale": "Mineral names the material group."
+    },
+    {
+      "index": 36,
+      "key": "Scales",
+      "source": "Scales",
+      "actual_final_target": "खवले",
+      "disposition": "accept",
+      "rationale": "Animal-scale texture now खवले, with no measurement-scale ambiguity."
+    },
+    {
+      "index": 37,
+      "key": "Leather",
+      "source": "Leather",
+      "actual_final_target": "चामडे",
+      "disposition": "accept",
+      "rationale": "Leather names the surface material."
+    },
+    {
+      "index": 38,
+      "key": "Crystal",
+      "source": "Crystal",
+      "actual_final_target": "स्फटिक",
+      "disposition": "accept",
+      "rationale": "स्फटिक naturally names crystal material."
+    },
+    {
+      "index": 39,
+      "key": "Lava",
+      "source": "Lava",
+      "actual_final_target": "लावा",
+      "disposition": "accept",
+      "rationale": "Lava is an established material loan."
+    },
+    {
+      "index": 40,
+      "key": "Chrome",
+      "source": "Chrome",
+      "actual_final_target": "क्रोम",
+      "disposition": "accept",
+      "rationale": "Chrome is the recognized metallic finish, not the browser brand in this context."
+    },
+    {
+      "index": 41,
+      "key": "Carbon fibre",
+      "source": "Carbon fibre",
+      "actual_final_target": "कार्बन फायबर",
+      "disposition": "accept",
+      "rationale": "Carbon fibre is a recognized material loan and retains fibre identity."
+    },
+    {
+      "index": 42,
+      "key": "Velvet",
+      "source": "Velvet",
+      "actual_final_target": "मखमल",
+      "disposition": "accept",
+      "rationale": "मखमल is an accurate material noun."
+    },
+    {
+      "index": 43,
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "actual_final_target": "पोळ्याचे कप्पे",
+      "disposition": "accept",
+      "rationale": "पोळ्याचे कप्पे identifies honeycomb cells and distinguishes the whole colony building."
+    },
+    {
+      "index": 44,
+      "key": "Ice",
+      "source": "Ice",
+      "actual_final_target": "बर्फ",
+      "disposition": "accept",
+      "rationale": "Ice correctly names frozen water material."
+    },
+    {
+      "index": 45,
+      "key": "Cloud",
+      "source": "Cloud",
+      "actual_final_target": "ढग",
+      "disposition": "accept",
+      "rationale": "Cloud correctly names cloud-like material."
+    },
+    {
+      "index": 46,
+      "key": "Hammered metal",
+      "source": "Hammered metal",
+      "actual_final_target": "हातोड्याने ठोकलेला धातू",
+      "disposition": "accept",
+      "rationale": "Hammered metal preserves textured manufacture and correct masculine agreement."
+    },
+    {
+      "index": 47,
+      "key": "Candy",
+      "source": "Candy",
+      "actual_final_target": "कँडी",
+      "disposition": "accept",
+      "rationale": "Candy is an established visual-material loan."
+    },
+    {
+      "index": 48,
+      "key": "Slime",
+      "source": "Slime",
+      "actual_final_target": "चिकट जेल",
+      "disposition": "accept",
+      "rationale": "Viscous gel material is clear and distinct from flowing goo."
+    },
+    {
+      "index": 49,
+      "key": "AI player",
+      "source": "AI player",
+      "actual_final_target": "एआय खेळाडू",
+      "disposition": "accept",
+      "rationale": "AI player correctly denotes a player controlled by AI; एआय is acceptable Marathi acronym transliteration."
+    },
+    {
+      "index": 50,
+      "key": "Finances",
+      "source": "Finances",
+      "actual_final_target": "वित्त",
+      "disposition": "accept",
+      "rationale": "Finances is an administration financial section, and वित्त is suitable."
+    },
+    {
+      "index": 51,
+      "key": "Accounts",
+      "source": "Accounts",
+      "actual_final_target": "खाती",
+      "disposition": "accept",
+      "rationale": "Accounts correctly denotes user accounts, not arithmetic."
+    },
+    {
+      "index": 52,
+      "key": "Audit",
+      "source": "Audit",
+      "actual_final_target": "ऑडिट",
+      "disposition": "accept",
+      "rationale": "ऑडिट is a familiar administrative loan here and remains consistent with the audit section."
+    },
+    {
+      "index": 53,
+      "key": "1 hour",
+      "source": "1 hour",
+      "actual_final_target": "१ तास",
+      "disposition": "accept",
+      "rationale": "One-hour reporting window preserves value and hour unit using Devanagari digit."
+    },
+    {
+      "index": 54,
+      "key": "1 day",
+      "source": "1 day",
+      "actual_final_target": "१ दिवस",
+      "disposition": "accept",
+      "rationale": "One-day reporting window preserves value and day unit."
+    },
+    {
+      "index": 55,
+      "key": "1 week",
+      "source": "1 week",
+      "actual_final_target": "१ आठवडा",
+      "disposition": "accept",
+      "rationale": "One-week reporting window preserves value and week unit."
+    },
+    {
+      "index": 56,
+      "key": "30 days",
+      "source": "30 days",
+      "actual_final_target": "३० दिवस",
+      "disposition": "accept",
+      "rationale": "Thirty-day reporting window preserves exact duration."
+    },
+    {
+      "index": 57,
+      "key": "Most played",
+      "source": "Most played",
+      "actual_final_target": "सर्वाधिक खेळलेले",
+      "disposition": "accept",
+      "rationale": "Past participle correctly labels maps sorted by play count."
+    },
+    {
+      "index": 58,
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "actual_final_target": "संगीताची रचना आणि तिचा विकास लक्ष देऊन ऐका.",
+      "disposition": "accept",
+      "rationale": "Musical structure and development are explicitly listened to, with proper feminine agreement."
+    },
+    {
+      "index": 59,
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "actual_final_target": "तिन्ही मूडमधील संगीत नीट वाजते याची खात्री करा.",
+      "disposition": "accept",
+      "rationale": "All three musical mood tracks must play correctly; not merely UI state changes."
+    },
+    {
+      "index": 60,
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "actual_final_target": "मूड बदलताना आवाजाची पातळी अचानक, अनपेक्षितपणे बदलते का ते ऐका.",
+      "disposition": "accept",
+      "rationale": "Audible unexpected volume jumps when switching music moods retained."
+    },
+    {
+      "index": 61,
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "actual_final_target": "लूप पुन्हा सुरू होताना क्लिकचा आवाज, खंड किंवा अचानक बदल ऐकू येतो का ते तपासा.",
+      "disposition": "accept",
+      "rationale": "Listen for click/gap/abrupt change at loop restart; repeated-boundary context retained."
+    },
+    {
+      "index": 62,
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "actual_final_target": "संगीतातील छोटे तुकडे अतिशय यांत्रिकपणे पुन्हा पुन्हा वाजतात का ते ऐका.",
+      "disposition": "accept",
+      "rationale": "Musical chunks replace linguistic phrases; mechanical repetition retained."
+    },
+    {
+      "index": 63,
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "actual_final_target": "मूड बदलून लयीत किंवा स्वरमेळात होणारे बदल ऐका.",
+      "disposition": "accept",
+      "rationale": "लयीत and स्वरमेळात are understandable musical timing/harmony terms in the switching instruction; acceptable final editorial choice."
+    },
+    {
+      "index": 64,
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "actual_final_target": "‘बांधकाम’ आणि ‘लढाई’ हे संगीताचे मूड ‘शांत’ मूडपेक्षा वेगळे वाटतात याची खात्री करा.",
+      "disposition": "accept",
+      "rationale": "Calm/Building/Combat explicitly identified as music moods; no physical-construction ambiguity."
+    },
+    {
+      "index": 65,
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "actual_final_target": "कमी आवाजाच्या भागांत सळसळ किंवा खरखर ऐकू येते का ते तपासा.",
+      "disposition": "accept",
+      "rationale": "Low-volume passages and unwanted hiss/scratch noise are now clear."
+    },
+    {
+      "index": 66,
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "actual_final_target": "अस्पष्ट बास किंवा उच्च वारंवारतेचे कर्कश आवाज ऐकू येतात का ते तपासा.",
+      "disposition": "accept",
+      "rationale": "Muddy bass and harsh high-frequency noise remain distinguished; familiar बास is acceptable."
+    },
+    {
+      "index": 67,
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "actual_final_target": "खेळाच्या आवाजासोबत संगीताचे शांत भागही ऐकू येत राहतात याची खात्री करा.",
+      "disposition": "accept",
+      "rationale": "Music remains audible alongside game sound, not required to mask it."
+    },
+    {
+      "index": 68,
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "actual_final_target": "अनपेक्षितपणे तुटणाऱ्या सुरांकडे लक्ष द्या.",
+      "disposition": "accept",
+      "rationale": "Unexpectedly cut-off sustained notes accurately conveyed."
+    },
+    {
+      "index": 69,
+      "key": "Worker",
+      "source": "Worker",
+      "actual_final_target": "कामगार",
+      "disposition": "accept",
+      "rationale": "Worker matches the established कामगार unit name."
+    },
+    {
+      "index": 70,
+      "key": "Warrior",
+      "source": "Warrior",
+      "actual_final_target": "योद्धा",
+      "disposition": "accept",
+      "rationale": "Warrior matches native योद्धा unit name."
+    },
+    {
+      "index": 71,
+      "key": "Explorer",
+      "source": "Explorer",
+      "actual_final_target": "शोधक",
+      "disposition": "accept",
+      "rationale": "Explorer matches established शोधक glossary."
+    },
+    {
+      "index": 72,
+      "key": "Swarm",
+      "source": "Swarm",
+      "actual_final_target": "पोळे",
+      "disposition": "accept",
+      "rationale": "पोळे matches the native swarm building, not a flock."
+    },
+    {
+      "index": 73,
+      "key": "Classic",
+      "source": "Classic",
+      "actual_final_target": "क्लासिक",
+      "disposition": "accept",
+      "rationale": "Classic identifies the original/default shape and the familiar loan is suitable."
+    },
+    {
+      "index": 74,
+      "key": "Crown",
+      "source": "Crown",
+      "actual_final_target": "मुकुट",
+      "disposition": "accept",
+      "rationale": "Crown shape correctly refers to मुकुट."
+    },
+    {
+      "index": 75,
+      "key": "Clutch",
+      "source": "Clutch",
+      "actual_final_target": "अंड्यांचा समूह",
+      "disposition": "accept",
+      "rationale": "Egg clutch now an egg group; mechanical loan removed."
+    },
+    {
+      "index": 76,
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "actual_final_target": "अळंबी",
+      "disposition": "accept",
+      "rationale": "अळंबी is an attested Marathi mushroom spelling and matches the mesh; no frog or edibility claim. Both variants in author attestation accepted."
+    },
+    {
+      "index": 77,
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "actual_final_target": "रुंद छत्रीच्या अळंबीभोवती छोट्या अळंब्या.",
+      "disposition": "accept",
+      "rationale": "Broad central cap and small surrounding mushroom caps now naturally described; matches actual mesh description."
+    },
+    {
+      "index": 78,
+      "key": "Coral",
+      "source": "Coral",
+      "actual_final_target": "प्रवाळ",
+      "disposition": "accept",
+      "rationale": "Coral mesh correctly refers to प्रवाळ."
+    },
+    {
+      "index": 79,
+      "key": "Skep",
+      "source": "Skep",
+      "actual_final_target": "विणलेले पोळे",
+      "disposition": "accept",
+      "rationale": "Woven skep/hive construction explicit."
+    },
+    {
+      "index": 80,
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "actual_final_target": "आधारावर ठेवलेले, वेटोळ्यांसारखे विणलेले पोळे; त्याचे दार तुमच्याकडे आहे.",
+      "disposition": "accept",
+      "rationale": "Coiled/woven hive on support and entrance facing viewer preserved."
+    },
+    {
+      "index": 81,
+      "key": "Bloom",
+      "source": "Bloom",
+      "actual_final_target": "उमललेले फूल",
+      "disposition": "accept",
+      "rationale": "Open flower shape label is a noun phrase, not infinitive."
+    },
+    {
+      "index": 82,
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "actual_final_target": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "disposition": "accept",
+      "rationale": "Public visibility explicitly retains listing in the catalog."
+    },
+    {
+      "index": 83,
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "actual_final_target": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही उपलब्ध",
+      "disposition": "accept",
+      "rationale": "Anyone with the link explicitly has access, while catalog listing is absent."
+    },
+    {
+      "index": 84,
+      "key": "Private: only you",
+      "source": "Private: only you",
+      "actual_final_target": "खाजगी: फक्त तुम्ही",
+      "disposition": "accept",
+      "rationale": "Private visibility accurately restricts visibility to the owner."
+    },
+    {
+      "index": 85,
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "actual_final_target": "सर्व्हरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूच्या खेळाची स्थिती त्याच्याशी जुळली.",
+      "disposition": "accept",
+      "rationale": "Server replay and each player state match; no human-agreement anthropomorphism."
+    },
+    {
+      "index": 86,
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "actual_final_target": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "disposition": "accept",
+      "rationale": "Pending server verification and later ratings update are accurately distinguished."
+    },
+    {
+      "index": 87,
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "actual_final_target": "एका खेळाडूच्या खेळाची स्थिती सर्व्हरने पुन्हा चालवलेल्या सामन्याशी जुळली नाही; सर्व्हरचा निकाल ग्राह्य धरला जातो.",
+      "disposition": "accept",
+      "rationale": "Actual player-state divergence stated and authoritative server result preserved."
+    },
+    {
+      "index": 88,
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "actual_final_target": "सर्व्हरला हा सामना तसाच पुन्हा चालवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+      "disposition": "accept",
+      "rationale": "Unable to reproduce same execution, no rating changes; server spelling consistent."
+    },
+    {
+      "index": 89,
+      "key": "This match is not checked.",
+      "source": "This match is not checked.",
+      "actual_final_target": "या सामन्याची तपासणी केलेली नाही.",
+      "disposition": "accept",
+      "rationale": "Unchecked match status is correctly stated without implying failed verification."
+    },
+    {
+      "index": 90,
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "actual_final_target": "सर्व्हरला या सामन्याची तपासणी पूर्ण करता आली नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होत नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "disposition": "accept",
+      "rationale": "Incomplete check causes temporary no-rating-change and preserves administrator retry."
+    },
+    {
+      "index": 91,
+      "key": "Walk",
+      "source": "Walk",
+      "actual_final_target": "चालणे",
+      "disposition": "accept",
+      "rationale": "Walk is correctly a nominal animation verb."
+    },
+    {
+      "index": 92,
+      "key": "Swim",
+      "source": "Swim",
+      "actual_final_target": "पोहणे",
+      "disposition": "accept",
+      "rationale": "Swim is correctly a nominal animation verb."
+    },
+    {
+      "index": 93,
+      "key": "Harvest",
+      "source": "Harvest",
+      "actual_final_target": "गोळा करणे",
+      "disposition": "accept",
+      "rationale": "गोळा करणे fits resource-harvesting animation broadly, including non-crop resources."
+    },
+    {
+      "index": 94,
+      "key": "Fight",
+      "source": "Fight",
+      "actual_final_target": "लढणे",
+      "disposition": "accept",
+      "rationale": "Nominal animation verb aligns with walk/swim/fly."
+    },
+    {
+      "index": 95,
+      "key": "Fly",
+      "source": "Fly",
+      "actual_final_target": "उडणे",
+      "disposition": "accept",
+      "rationale": "उडणे correctly means flying, not the insect."
+    },
+    {
+      "index": 96,
+      "key": "Live payments",
+      "source": "Live payments",
+      "actual_final_target": "वास्तविक पेमेंट",
+      "disposition": "accept",
+      "rationale": "Real payments explicitly distinguished from test transactions."
+    },
+    {
+      "index": 97,
+      "key": "Test payments",
+      "source": "Test payments",
+      "actual_final_target": "चाचणी पेमेंट",
+      "disposition": "accept",
+      "rationale": "Test payment category correct; familiar पेमेंट consistent with surrounding financial UI."
+    },
+    {
+      "index": 98,
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "actual_final_target": "अवर्गीकृत पेमेंट",
+      "disposition": "accept",
+      "rationale": "Unclassified does not imply either live or test environment."
+    },
+    {
+      "index": 99,
+      "key": "Current period",
+      "source": "Current period",
+      "actual_final_target": "चालू कालावधी",
+      "disposition": "accept",
+      "rationale": "Current reporting period is accurate."
+    },
+    {
+      "index": 100,
+      "key": "Previous period",
+      "source": "Previous period",
+      "actual_final_target": "मागील कालावधी",
+      "disposition": "accept",
+      "rationale": "Previous reporting period is accurate."
+    },
+    {
+      "index": 101,
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "actual_final_target": "क्रेडिट्सचे अनुदान",
+      "disposition": "accept",
+      "rationale": "Virtual-credit grant clearly grants credits rather than bank lending; अनुदान is acceptable for account credit provision."
+    },
+    {
+      "index": 102,
+      "key": "Returned credits",
+      "source": "Returned credits",
+      "actual_final_target": "परत केलेले क्रेडिट्स",
+      "disposition": "accept",
+      "rationale": "Returned credits is accurate and keeps virtual-credit terminology."
+    },
+    {
+      "index": 103,
+      "key": "Dispute",
+      "source": "Dispute",
+      "actual_final_target": "वाद",
+      "disposition": "accept",
+      "rationale": "Dispute accurately names a payment dispute without asserting its outcome."
+    },
+    {
+      "index": 104,
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "actual_final_target": "वाद बंद झाला",
+      "disposition": "accept",
+      "rationale": "Closed dispute status does not promise resolution or either party winning."
+    },
+    {
+      "index": 105,
+      "key": "Matches started",
+      "source": "Matches started",
+      "actual_final_target": "सुरू झालेले सामने",
+      "disposition": "accept",
+      "rationale": "Started-match count label is natural and preserves event."
+    },
+    {
+      "index": 106,
+      "key": "Matches completed",
+      "source": "Matches completed",
+      "actual_final_target": "पूर्ण झालेले सामने",
+      "disposition": "accept",
+      "rationale": "Completed-match count label is natural and distinct from started."
+    },
+    {
+      "index": 107,
+      "key": "Matches cancelled",
+      "source": "Matches cancelled",
+      "actual_final_target": "रद्द झालेले सामने",
+      "disposition": "accept",
+      "rationale": "Cancelled-match count label preserves cancellation."
+    },
+    {
+      "index": 108,
+      "key": "{value0} publications",
+      "source": "{value0} publications",
+      "actual_final_target": "{value0}: प्रकाशने",
+      "disposition": "accept",
+      "rationale": "Placeholder is a library name, colon separates it from publication metric."
+    },
+    {
+      "index": 109,
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "actual_final_target": "{value0}: नोंदवलेले डाउनलोड्स",
+      "disposition": "accept",
+      "rationale": "Placeholder is library name; recorded means logged counts, not media recordings."
+    },
+    {
+      "index": 110,
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "actual_final_target": "{value0}: पूर्ण होण्यास लागलेला वेळ (सेकंद)",
+      "disposition": "accept",
+      "rationale": "Product-name placeholder plus completion duration in seconds, not timestamp."
+    },
+    {
+      "index": 111,
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "actual_final_target": "{value0}: पूर्णतेच्या वेळेच्या नोंदी",
+      "disposition": "accept",
+      "rationale": "Completion-time observations are explicit, not sample deliverables; product placeholder retained."
+    }
+  ],
+  "scope": "Actually reread all111 final source/target pairs after author adjudication, including unchanged raw Google values. No full fresh read claimed for previous2836 online/native3411; their carry is separate. No source/catalog edits, paid calls, builds or visual rendering claims."
+}

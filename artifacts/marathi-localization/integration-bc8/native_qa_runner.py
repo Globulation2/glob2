@@ -40,7 +40,7 @@ def main():
  if not args.binary:ap.error('--binary required for captures')
  binary=args.binary.resolve();assert binary.is_file();out=args.output.resolve();out.mkdir(parents=True,exist_ok=True)
  assert args.resume or not (out/'runner.json').exists(),'Use a new output directory or explicit --resume'
- env=os.environ.copy();env.update(SDL_AUDIODRIVER='dummy',SDL_VIDEODRIVER='x11',XDG_DATA_HOME=str(out/'profiles/data'),XDG_CONFIG_HOME=str(out/'profiles/config'),XDG_CACHE_HOME=str(out/'profiles/cache'))
+ env=os.environ.copy();env.update(SDL_AUDIODRIVER='dummy',SDL_VIDEODRIVER='x11',SDL_VIDEO_DRIVER='x11',XDG_SESSION_TYPE='x11',XDG_DATA_HOME=str(out/'profiles/data'),XDG_CONFIG_HOME=str(out/'profiles/config'),XDG_CACHE_HOME=str(out/'profiles/cache'))
  env['GLOB2_USER_DATA_DIR']=str(out/'profiles/user')
  env['LD_LIBRARY_PATH']=str(ROOT/'artifacts/marathi-localization/native-deps/lib')+':'+env.get('LD_LIBRARY_PATH','')
  readfd,writefd=os.pipe()
@@ -52,7 +52,7 @@ def main():
   plan=[]
   for w,h in [(1280,900),(390,844)]:
    for mode,kind in [('matrix',None)]+[('screen',s) for s in ('main','settings','settings-audio','lobby','lobby-players')]+[('game','gameplay')]+[('game','tutorial:'+s) for s in lessons]:plan.append((w,h,mode,kind))
-  record={'binary':str(binary),'binary_sha256':sha(binary),'git_revision':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'git_status':subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True),'preview_metadata':json.loads((preview/'metadata.json').read_text()),'jobs':[],'validation_deadlines_seconds':{'matrix':3600,'screen_and_game':300},'deadline_interpretation':'Bounded validation duration; not a performance guarantee or measurement.','maximum_evidence_bytes':2*1024**3,'minimum_free_bytes':2*1024**3};write(out/'runner.json',record) if not args.resume else None
+  record={'display_environment':{'SDL_VIDEO_DRIVER':'x11','SDL_VIDEODRIVER':'x11','XDG_SESSION_TYPE':'x11','ownership':'Runner-owned Xvfb, replacing inherited desktop DISPLAY'},'binary':str(binary),'binary_sha256':sha(binary),'git_revision':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'git_status':subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True),'preview_metadata':json.loads((preview/'metadata.json').read_text()),'jobs':[],'validation_deadlines_seconds':{'matrix':3600,'screen_and_game':300},'deadline_interpretation':'Bounded validation duration; not a performance guarantee or measurement.','maximum_evidence_bytes':2*1024**3,'minimum_free_bytes':2*1024**3};write(out/'runner.json',record) if not args.resume else None
   if args.resume:
    previous=json.loads((out/'runner.json').read_text())
    for field in ('binary_sha256','git_revision','git_status','preview_metadata'):assert previous[field]==record[field],('Resume input changed',field)

@@ -1,0 +1,14 @@
+{
+  "source_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "record_format": "BinaryMatchRecord, inspected bytes not assumedJSON",
+  "record_sha256": "4727542adcd04b76c741881ec614ad08a00c6e97ee3618e4e0b78fb704bf65e7",
+  "old_key_occurrences": 1,
+  "new_key_occurrences": 1,
+  "only_key_replacement_changes": false,
+  "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "trace_lines": 843,
+  "trace_bytes_unchanged": true,
+  "other_tracked_changes": false,
+  "official_one_case_result": "native/golden-update/junit.xml + native/golden-fixture-mutation.json",
+  "scope": "Actualofficialregeneration inspected; no manualrewriterecord/trace. A firstreadattempttreatedbinaryasUTF8andfailed beforeanywrites; properbyteinspectionused."
+}

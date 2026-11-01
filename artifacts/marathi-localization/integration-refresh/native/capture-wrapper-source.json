@@ -1,0 +1,16 @@
+{
+  "production_source": "tools/TranslationPreviewHarness.cpp",
+  "production_source_sha256": "65bc3a8f564fc18cf80efe7b640bcfde736f7a2dd3f4dad6bef76b06315236db",
+  "capture_wrapper": "artifacts/marathi-localization/integration-refresh/native/IntegrationPreviewHarness.cpp",
+  "capture_wrapper_sha256": "e5c7296cfa54c57f5a7979374c113ea8403e109b7782ab90be1c7ea15c9e1f04",
+  "differences": [
+    "Include actual EndGameScreen/Team definitions and add a redraw helper.",
+    "Record this ignored adapter source/hash in executed evidence identities.",
+    "After real gameplay/menu captures, create a production EndGameScreen on the loaded GameGUI, select the actual per-game metric via its public semantic entry point, and tap the real compact metric dropdown.",
+    "Step the unmodified engine without injected orders until at least two real automatic probability samples exist; never write/fabricate simulation state, match outcomes or chart values. Before/after rendering checksums must remain unchanged."
+  ],
+  "limits": [
+    "A results-screen rendering fixture from a loaded game, not proof of playing or completing an actual match.",
+    "Compact live statistics filtering is preserved; only post-game result controls display the new metric."
+  ]
+}

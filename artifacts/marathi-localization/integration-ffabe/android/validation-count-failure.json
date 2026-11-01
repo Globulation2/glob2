@@ -1,0 +1,15 @@
+{
+  "status": "Failed QA-driver attempt retained; no product failure.",
+  "error": "Assertion len(inventory)==39 failed because texts.list first entry is data/texts.keys.txt, a key reference, not a selectable language.",
+  "actual_lines": 40,
+  "actual_languages": 39,
+  "source_equals_APK": true,
+  "actual_registry_tail": [
+    "data/texts.ms.txt",
+    "data/texts.mr.txt"
+  ],
+  "stage": "Before sign/install or startup; no installed-currentAPKsuccess claimed from this attempt.",
+  "adaptation": "Exclude exact data/texts.keys.txt from selectable-language count/index; retain39 assertion and MS-before-MR/bytes assertions.",
+  "old_helper_sha256": "62a40fb19081d22bcc55fc21408a54df3ba581aa258e64a2124d4c89341eaaa6",
+  "new_helper_sha256": "eda2565466fad75614aeae5d999d407fb94a0592d497e538476d14f1b0a6ffde"
+}

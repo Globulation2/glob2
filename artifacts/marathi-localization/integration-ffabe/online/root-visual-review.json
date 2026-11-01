@@ -1,0 +1,22 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T11:11:37.708056+00:00",
+  "production_build_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "validation_fixture_epoch": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/online/screenshots/chromium-desktop/mr-home.png",
+      "sha256": "68524ff5ffbb376eba0c73a90adc6163c4242204376dab88614c8360cdbfc0f3"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/online/screenshots/firefox-phone/mr-home.png",
+      "sha256": "001cff491bcd58f573d9e069ac3cc0981a0bd0d558495cb2ead6e98d15bad629"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-ffabe/online/screenshots/webkit-phone/mr-home.png",
+      "sha256": "2bff7e95464d7f5958c25f0559c864cfa46a2a6fd662553802c45f60d8ecb5aa"
+    }
+  ],
+  "assessment": "Actually viewed all3freshproductionwebsiteMRhomeframes. Devanagari shapes/ligatures andbutton/navlabelsfit, desktopfullमराठी andcompactMR legible. Mainheadings/bodywrapclearly; no tofuorobservedlanguageclipping. Englishplayer/map/queue namesareactualfixturevalues; gamebuild/protocolfooter valuesalso syntheticwebsiteE2Efixturedata, not nativeSim112identity. Lowerfullpageimageplaceholdersarelazy/offscreen; onlyfirstWebKitmapthumbnailhasloaded, no allimage-proofclaim.",
+  "scope": "3actualfreshMRhomecases acrossall3engines andbothsizes. Prior12home/switch flows preservedunderactual64producer; unchangedMRoldvalues andfrontendflowcodecarryseparate. No browserWASMgameclaim."
+}

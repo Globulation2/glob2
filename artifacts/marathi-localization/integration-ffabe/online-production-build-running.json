@@ -1,0 +1,12 @@
+{
+  "pid": 4146515,
+  "start_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "command": [
+    "npm",
+    "run",
+    "--workspace",
+    "@glob2/web",
+    "build"
+  ],
+  "scope": "Frozenplatformcode/assets; onlynativegoldentestfixtures maychangeindependently."
+}

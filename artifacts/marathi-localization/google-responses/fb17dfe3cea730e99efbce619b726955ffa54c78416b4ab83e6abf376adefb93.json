@@ -1,0 +1,573 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Rush",
+        "Defensive",
+        "Economy",
+        "Expansion",
+        "Experimental",
+        "Beginner-friendly",
+        "File and API profile",
+        "Syntax and profile restrictions",
+        "Startup and callback",
+        "Persistent state",
+        "Seeded gameplay",
+        "Repeatable simulation",
+        "Save and resume",
+        "Good",
+        "Fair",
+        "Poor",
+        "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+        "Delay",
+        "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+        "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+        "Classic glossy",
+        "Basics",
+        "Matte",
+        "Riveted metal",
+        "Metal",
+        "Hairy",
+        "Organic",
+        "Cartoon",
+        "Woven fabric",
+        "Craft",
+        "Oozy goo",
+        "Wet",
+        "Wood",
+        "Stone",
+        "Mineral",
+        "Scales",
+        "Leather",
+        "Crystal",
+        "Lava",
+        "Chrome",
+        "Carbon fibre",
+        "Velvet",
+        "Honeycomb",
+        "Ice",
+        "Cloud",
+        "Hammered metal",
+        "Candy",
+        "Slime",
+        "AI player",
+        "Finances",
+        "Accounts",
+        "Audit",
+        "1 hour",
+        "1 day",
+        "1 week",
+        "30 days",
+        "Most played",
+        "Listen for the musical structure and development.",
+        "Check that all three moods play correctly.",
+        "Listen for unexpected jumps in volume between moods.",
+        "Listen for a click, gap, or abrupt change when the loop repeats.",
+        "Listen for short phrases that repeat too mechanically.",
+        "Switch moods and listen for changes in timing or harmony.",
+        "Check that building and combat feel distinct from calm.",
+        "Listen for hiss or scratchiness in quiet passages.",
+        "Listen for muddy bass or harsh high frequencies.",
+        "Check that calm passages remain audible alongside game sound.",
+        "Listen for notes that cut off unexpectedly.",
+        "Worker",
+        "Warrior",
+        "Explorer",
+        "Swarm",
+        "Classic",
+        "Crown",
+        "Clutch",
+        "Toadstool",
+        "A broad-capped toadstool with young caps.",
+        "Coral",
+        "Skep",
+        "A coiled hive on a stand, its door facing you.",
+        "Bloom",
+        "Public: listed in the catalog",
+        "Unlisted: anyone with the link",
+        "Private: only you",
+        "The server replayed this match and every player’s game agreed with it.",
+        "The server is checking this match. Ratings change once it is verified.",
+        "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+        "The server could not reproduce this match, so it changes no rating.",
+        "This match is not checked.",
+        "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+        "Walk",
+        "Swim",
+        "Harvest",
+        "Fight",
+        "Fly",
+        "Live payments",
+        "Test payments",
+        "Unclassified payments",
+        "Current period",
+        "Previous period",
+        "Credit grant",
+        "Returned credits",
+        "Dispute",
+        "Dispute closed",
+        "Matches started",
+        "Matches completed",
+        "Matches cancelled",
+        "ZXQPH0QXZ publications",
+        "ZXQPH0QXZ recorded downloads",
+        "ZXQPH0QXZ completion time (seconds)",
+        "ZXQPH0QXZ completion samples"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "घाई",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बचावात्मक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विस्तार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रायोगिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवशिक्यांसाठी अनुकूल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाइल आणि एपीआय प्रोफाइल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाक्यरचना आणि प्रोफाइल निर्बंध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टार्टअप आणि कॉलबॅक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कायमस्वरूपी स्थिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीडेड गेमप्ले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करा आणि पुन्हा सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चांगले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गरीब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) ही त्या प्रदेशाची एक चाचणी, एक अंदाज असतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विलंब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा इनपुट विलंब: तुमच्या क्लिकपासून ते कृती घटेपर्यंत, प्रत्येकासाठी. तुमच्या पिंगच्या निम्मा अधिक तुमचा गेम जिटरला रोखण्यासाठी वापरत असलेला बफर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एखाद्या खेळाडूचा खेळ मॅच क्लॉकच्या किती मागे चालतो. एका सेकंदापेक्षा कमी वेळ सामान्य असतो (यात त्यांचा विलंब समाविष्ट असतो); रिलेनुसार खेळाडू २ सेकंदांपासून धीमा मानला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लासिक चकचकीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूलभूत गोष्टी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिव्हेट केलेले धातू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धातू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केसाळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेंद्रिय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्टून",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विणलेले कापड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कलाकुसर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिकट गोंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ओले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाकूड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दगड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खनिज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्केल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चामडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रिस्टल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रोम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्बन फायबर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मखमली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मधमाशांचे पोळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बर्फ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ढग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हातोड्याने ठोकलेला धातू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कँडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्लाइम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वित्त",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लेखापरीक्षण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१ तास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१ दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१ आठवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "३० दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक खेळले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीताची रचना आणि विकास याकडे लक्ष द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तिन्ही मूड योग्यरित्या कार्यरत आहेत याची खात्री करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेगवेगळ्या मनस्थितींमध्ये आवाजाच्या पातळीत होणाऱ्या अनपेक्षित बदलांकडे लक्ष द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जेव्हा लूप पुन्हा सुरू होतो, तेव्हा क्लिक, खंड किंवा अचानक होणारा बदल ऐका.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अतिशय यांत्रिकपणे पुनरावृत्ती होणाऱ्या लहान वाक्यांशांकडे लक्ष द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूड बदला आणि तालात किंवा सुसंवादात होणारे बदल ऐका.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम आणि लढाई या शांततेपेक्षा वेगळ्या जाणवतात याची खात्री करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शांत भागांमध्ये येणाऱ्या फुसफुसण्यासारख्या किंवा खरखराटासारख्या आवाजाकडे लक्ष द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अस्पष्ट बास किंवा कर्कश उच्च फ्रिक्वेन्सीकडे लक्ष द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाच्या आवाजासोबत शांत भागही ऐकू येत राहतील याची खात्री करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अचानक बंद होणाऱ्या सुरांकडे लक्ष द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लासिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुकुट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेडूक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोवळ्या टोपी असलेले रुंद टोपीधारी विषारी बुरशी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रवाळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्केप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टँडवर वेटोळे घालून ठेवलेले मधमाशांचे पोळे, ज्याचे दार तुमच्या समोर आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फुलणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाजगी: फक्त तुम्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूचा खेळ त्याच्याशी सहमत होता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एखाद्या खेळाडूचा गेम सर्वरच्या मॅचच्या रिप्लेशी जुळत नसला तरी, सर्वरचा निकालच ग्राह्य धरला जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वरला हा सामना पुन्हा खेळवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सामन्याची तपासणी केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर या सामन्याची तपासणी पूर्ण करू शकला नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होणार नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोहणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कापणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माशी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थेट पेमेंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चाचणी पेमेंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवर्गीकृत पेमेंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालू कालावधी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील कालावधी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पत अनुदान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परत केलेले क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाद मिटला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामने सुरू झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामने पूर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामने रद्द झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रकाशने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ रेकॉर्ड केलेले डाउनलोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पूर्ण होण्याची वेळ (सेकंद)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पूर्णता नमुने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "6685ba677f800c8ba8f9c3ed6dbcc75eaf58b7875926550b5c0bccd643a493a5"
+}

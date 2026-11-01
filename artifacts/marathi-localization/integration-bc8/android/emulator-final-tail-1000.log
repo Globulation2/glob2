@@ -1,0 +1,93 @@
+INFO         | Android emulator version 37.1.11.0 (build_id 15917651) (CL:N/A)
+INFO         | Graphics backend: gfxstream
+INFO         | Found systemPath /home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/system-images/android-35/default/x86_64/
+INFO         | Crashreporting disabled, not reporting crashes.
+INFO         | Changing default hw.initialOrientation to portrait
+
+INFO         | Increasing RAM size to 2560MB
+INFO         | Guest GLES Driver: Auto (ext controls)
+INFO         | emuglConfig_init: vulkan_mode_selected:swiftshader gles_mode_selected:swiftshader
+INFO         | Checking system compatibility:
+INFO         |   Checking: hasSufficientDiskSpace
+INFO         |      Ok: Disk space requirements to run avd: `glob2-api35-x64` are met
+INFO         |   Checking: hasSufficientHwGpu
+INFO         |      Ok: Hardware GPU compatibility checks are not required
+INFO         |   Checking: hasSufficientSystem
+INFO         |      Ok: System requirements to run avd: `glob2-api35-x64` are met
+WARNING      | File System is not ext4, disable QuickbootFileBacked feature
+INFO         | Initializing gfxstream backend
+INFO         | startOpenglesRendererImpl: gpu info
+INFO         | 
+INFO         | initIcdPaths: ICD set to 'swiftshader', using Swiftshader ICD
+INFO         | Setting ICD filenames for the loader = /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-ed2ca40fb96f830a06032aa9/lib64/vulkan/vk_swiftshader_icd.json
+INFO         | SharedLibrary::open for [/home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-ed2ca40fb96f830a06032aa9/qemu/linux-x86_64/lib64/vulkan/libvulkan.so]
+INFO         | SharedLibrary::open for [/home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-ed2ca40fb96f830a06032aa9/qemu/linux-x86_64/lib64/vulkan/libvulkan.so.1]
+INFO         | SharedLibrary::open for [/home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-ed2ca40fb96f830a06032aa9/lib64/vulkan/libvulkan.so]
+INFO         | Added library: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-ed2ca40fb96f830a06032aa9/lib64/vulkan/libvulkan.so
+INFO         | Selecting Vulkan device: SwiftShader Device (Subzero), Version: 1.3.0
+INFO         | Using Vulkan externalMemoryMode: OpaqueFd for VkEmulation
+INFO         | SharedLibrary::open for [libX11]
+INFO         | SharedLibrary::open for [libX11-xcb]
+INFO         | Initializing VkEmulation features:
+INFO         |     glInteropSupported: false
+INFO         |     useDeferredCommands: true
+INFO         |     createResourceWithRequirements: true
+INFO         |     useVulkanComposition: false
+INFO         |     useVulkanNativeSwapchain: false
+INFO         |     enable guestRenderDoc: false
+INFO         |     ASTC LDR emulation mode: Gpu
+INFO         |     enable ETC2 emulation: true
+INFO         |     enable Ycbcr emulation: false
+INFO         |     guestVulkanOnly: false
+INFO         |     useDedicatedAllocations: false
+INFO         |     guestVulkanMaxApiVersion: 1.3.0
+INFO         |     enableProtectedMemoryEmulation: false
+INFO         | Graphics Adapter Vendor Google (Google Inc.)
+INFO         | Graphics Adapter Android Emulator OpenGL ES Translator (Google SwiftShader)
+INFO         | Graphics API Version OpenGL ES 3.0 (OpenGL ES 3.0 SwiftShader 4.0.0.1)
+INFO         | Graphics API Extensions GL_OES_EGL_sync GL_OES_EGL_image GL_OES_EGL_image_external GL_OES_depth24 GL_OES_depth32 GL_OES_element_index_uint GL_OES_texture_float GL_OES_texture_float_linear GL_OES_compressed_paletted_texture GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth_texture GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_packed_depth_stencil GL_OES_vertex_half_float GL_OES_standard_derivatives GL_OES_texture_npot GL_OES_rgb8_rgba8 GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_texture_format_BGRA8888 GL_APPLE_texture_format_BGRA8888 
+INFO         | Graphics Device Extensions N/A
+INFO         | Disabling sparse binding feature support
+INFO         | Sending adb public key [QAAAAJkXb+dXsxcVbKj4sTI3MHeGXwkkE86D+5k4TQMpXv04xRJiKFljaEzIuVdSdVQ1w40ok22exQSOtlVf64mRRp1x9WU8nemiqCsW/zCgiA9Fq/N7H0vSfU88baLXjVyOt9kno59GMrETJJd58p1zXzq7xLSa05YSuN+qIDKiLaqXpyqq+F86mF7yY2rNu8L1j1EnPv0HeBmce/SlqPT5jvpRBJkyCzyQXVRQ7+vdsIKNh/VU/0EVNtxmGZehC6tq3c/3oRYQiP9gINOzkeOmEbNfRZCxGwEyNG1jH277i8LeY5vKMFB9N1M4Sk8Sgr27P76qWopLDl2759mViMN5kw9whqqnrpHU/jzrk1dmAMC2zERuziGRhkolcbLOhorXKUrVmYDD8phUthVLAyrxVeuzMt6bYZIMAE2PpLHc4Wcec9I1eNMsVdGBsxhM87+K2h1jBKuPqlvZflmpm5c63OL0b0gFHLC4tpWPldrvbBQHefMWW34dSu+yTx7lbJdUiiPu2S/A1LXNdnsjkDOkKscz2xcA7Hn0McK1hbJqZNapw3y2TGI3qAofuZxF+XpLv9JuWSv8ZodCqaatNIcjNGEYE7+nKOAhtfV4CEEQnEpT3E/Cjgqho+FhTxY2AQorLusYZYa2JBbQ5AP0LSS9O7LJnEukv0VRjYDojxh9bQyjagDCjAEAAQA= @unknown]
+INFO         | Userspace boot properties:
+INFO         |   androidboot.boot_devices=pci0000:00/0000:00:03.0 pci0000:00/0000:00:06.0
+INFO         |   androidboot.dalvik.vm.heapsize=576m
+INFO         |   androidboot.debug.hwui.renderer=skiagl
+INFO         |   androidboot.debug.sf.nobootanimation=1
+INFO         |   androidboot.hardware=ranchu
+INFO         |   androidboot.hardware.gltransport=pipe
+INFO         |   androidboot.hardware.vulkan=ranchu
+INFO         |   androidboot.logcat=*:V
+INFO         |   androidboot.opengles.version=196608
+INFO         |   androidboot.qemu=1
+INFO         |   androidboot.qemu.adb.pubkey=QAAAAJkXb+dXsxcVbKj4sTI3MHeGXwkkE86D+5k4TQMpXv04xRJiKFljaEzIuVdSdVQ1w40ok22exQSOtlVf64mRRp1x9WU8nemiqCsW/zCgiA9Fq/N7H0vSfU88baLXjVyOt9kno59GMrETJJd58p1zXzq7xLSa05YSuN+qIDKiLaqXpyqq+F86mF7yY2rNu8L1j1EnPv0HeBmce/SlqPT5jvpRBJkyCzyQXVRQ7+vdsIKNh/VU/0EVNtxmGZehC6tq3c/3oRYQiP9gINOzkeOmEbNfRZCxGwEyNG1jH277i8LeY5vKMFB9N1M4Sk8Sgr27P76qWopLDl2759mViMN5kw9whqqnrpHU/jzrk1dmAMC2zERuziGRhkolcbLOhorXKUrVmYDD8phUthVLAyrxVeuzMt6bYZIMAE2PpLHc4Wcec9I1eNMsVdGBsxhM87+K2h1jBKuPqlvZflmpm5c63OL0b0gFHLC4tpWPldrvbBQHefMWW34dSu+yTx7lbJdUiiPu2S/A1LXNdnsjkDOkKscz2xcA7Hn0McK1hbJqZNapw3y2TGI3qAofuZxF+XpLv9JuWSv8ZodCqaatNIcjNGEYE7+nKOAhtfV4CEEQnEpT3E/Cjgqho+FhTxY2AQorLusYZYa2JBbQ5AP0LSS9O7LJnEukv0VRjYDojxh9bQyjagDCjAEAAQA= @unknown
+INFO         |   androidboot.qemu.avd_name=glob2-api35-x64
+INFO         |   androidboot.qemu.camera_hq_edge_processing=0
+INFO         |   androidboot.qemu.camera_protocol_ver=1
+INFO         |   androidboot.qemu.cpuvulkan.version=4206592
+INFO         |   androidboot.qemu.gltransport.drawFlushInterval=800
+INFO         |   androidboot.qemu.gltransport.name=pipe
+INFO         |   androidboot.qemu.hwcodec.avcdec=2
+INFO         |   androidboot.qemu.hwcodec.hevcdec=2
+INFO         |   androidboot.qemu.hwcodec.vpxdec=2
+INFO         |   androidboot.qemu.settings.system.screen_off_timeout=2147483647
+INFO         |   androidboot.qemu.skin=390x844
+INFO         |   androidboot.qemu.virtiowifi=1
+INFO         |   androidboot.qemu.vsync=60
+INFO         |   androidboot.serialno=EMULATOR37X1X11X0
+INFO         |   androidboot.vbmeta.digest=602b0c809848f3be570a96601071931225108ec3b3739d99a1dc41db38efe83c
+INFO         |   androidboot.vbmeta.hash_alg=sha256
+INFO         |   androidboot.vbmeta.size=6720
+INFO         |   androidboot.veritymode=enforcing
+ERROR        | Unable to access '/root/.emulator_console_auth_token': emulator console will not work
+WARNING: cannnot unmap ptr 0x7a95f6401000 as it is in the protected range from 0x7a9556400000 to 0x7a95f6600000
+INFO         | Monitoring duration of emulator setup.
+WARNING      | Requested adb port (5679) is outside the recommended range [5555,5586]. ADB may not function properly for the emulator. See -help-port for details.
+INFO         | Successfully initialized netsim WiFi
+INFO         | Activated packet streamer for bluetooth emulation
+INFO         | Setting display: 0 configuration to: 390x844, dpi: 160x160 
+INFO         | setDisplayActiveConfig: id:0, 390x844
+INFO         | emulatorSetupEnvironment: Environment scene is not required
+INFO         | Boot completed in 48630 ms
+INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+ERROR        | Failed to find ColorBuffer: 22

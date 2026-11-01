@@ -1,0 +1,60 @@
+{
+  "status": "OFFLINEPREPARATIONONLY; notexecutedbuild/runtime; waitparentfinalgoldencommitnotice",
+  "source_catalogs": {
+    "source": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "archive187": {
+    "manifest": "validated-android-187/archive-manifest.json",
+    "sha256": "5efc2795a51222322e94a281e1b4ba0c829cc7c17c7610043969854e513f3d37",
+    "payload_bytes": 478975923,
+    "byte_cap": 1073741824,
+    "free_floor_bytes": 10737418240,
+    "published_scope": "manifestONLY, noAPKbinaries"
+  },
+  "prepared_helper_sha256": {
+    "artifacts/marathi-localization/integration-ffabe/android/build_refresh.py": "7f44e4d83d2584b4308fec9c9fc75be9814d3c8608b61589428419e48e766d0a",
+    "artifacts/marathi-localization/integration-ffabe/android/start_owned_runtime.py": "8c3adc1490e1e95ecb3f94cbb4c968838a6f240b59a5471f96803186a23feffb",
+    "artifacts/marathi-localization/integration-ffabe/android/cleanup_owned_runtime.py": "b057879f040120239deb4325c7f89b3957141e01c3f01224946efca0689e406e",
+    "artifacts/marathi-localization/integration-ffabe/android/validate_release.py": "12b834ae8c316df424fe81f1d7bbb85e8317a9a0a10f8ead33ff7f16c12a7976",
+    "artifacts/marathi-localization/integration-ffabe/android/ParityMain.cpp": "816740508073285cf2a78b5c8c38429b8d7c9cdc1433944b491048288eed0942",
+    "artifacts/marathi-localization/integration-ffabe/android/build_parity.py": "118238880fef3ad5c5ec63dfefd43b0671b3cdc040e421782c539a1c16c70c04",
+    "artifacts/marathi-localization/integration-ffabe/android/run_parity.py": "7fa78963fca88cd4f629fbfeb9469be8c09d2598fd82a9956c9dac2b3084bd0b",
+    "artifacts/marathi-localization/integration-ffabe/android/drive_ui.py": "f5ccd4c35fadbcdbfe625ea7d206f9f4f61739e7305458e537e2439d1e81dbb9"
+  },
+  "commands_after_parent_final_golden_commit": [
+    "python3 artifacts/marathi-localization/integration-ffabe/android/build_refresh.py FINAL_CLEAN_40_CHARACTER_SHA",
+    "python3 artifacts/marathi-localization/integration-ffabe/android/start_owned_runtime.py",
+    "python3 artifacts/marathi-localization/integration-ffabe/android/validate_release.py #cold-process upgrade startup, retainrealMRprofile",
+    "python3 artifacts/marathi-localization/integration-ffabe/android/build_parity.py FINAL_CLEAN_40_CHARACTER_SHA",
+    "python3 artifacts/marathi-localization/integration-ffabe/android/run_parity.py --expected-revision FINAL_CLEAN_40_CHARACTER_SHA --native-trace ACTUAL_SEPARATE_NATIVE_CHECKSUMS --wasm-trace ACTUAL_SEPARATE_WASM_CHECKSUMS"
+  ],
+  "command_notes": [
+    "OnlyoneAndroidwriter atatime; officialdependencyvalidationthenreleaseappbuild, thenignored3sourcePIEfixturelink againstexactvalidatedproductionobjects. Noalternatereceipt/SDKidentity.",
+    "VMmaybootafterauthorizedfinalnoticewhileofficialpackagingruns; isolatedownershipguardsrefuseforeigncontainer/ADBport. Do notinvokevalidatorbeforeactualbootpropertiesverified.",
+    "IfcurrentWASMtracepending, omitoptionalwasmarg; reportsayspendinganddoesnotclaimallplatformparity. BindWASMcomparisonlateragainstexactcurrenttrace.",
+    "BeforecleanupwriteAndroid-onlygatewithactualunsigned/signedAPKs; cleanupscriptrequiresgatepaths/hashes andownershipproof. Newignoredcleanupwaitsbounded10sforDocker--rmasynchronousremoval; noforcedterminationorforeignprocessaction."
+  ],
+  "affected_actual_UI_checks": [
+    "InstalledAPKnativecatalog3411 bytehash540; actualMRXMLconfiguration/fontSHA/recordinglicensehashes; 39languageinventoryunionMSthenMR andMRentryunstarred. ExactsignedAPK==installedbytes.",
+    "Cold-process installednativeMRstartup +actualcompleteMRPlayerselector+changednarrowStatisticsOverviewalone row. CarryunchangedJavaDEX/resources/AudioHandIntro/terrain/lifecyclefrom187 byactualsource/APKmemberproof; noautomaticfull7rerun.",
+    "ActualPlayerlabel\u092e\u0930\u093e\u0920\u0940 complete without\u0905\u092a\u0942\u0930\u094d\u0923, compactfit andshaping, screenshot+reviewboundcurrentproducer.",
+    "ActualnewnarrowStatisticsOverviewtopicbuttonalone row followedother2columnrows; captureOverview/Economy/Worldportraitandlandscape, realinlinehistory/overlays asfeasible. ThisisfreshlayoutQA notonlyold64carry.",
+    "Representativecurrentterrain/Devalabelviewplusactualnewstats; alloldnative3411/font/AndroidXMLunchangedbytecarry explicitlyscoped, nofreshallterrainallkeysmanualrereadclaim."
+  ],
+  "caps": {
+    "official_build_output": "existingofficialbuildcontrols; ignoredPIEcompilerlog8MiB/command600s",
+    "runtime_UI_images": 16777216,
+    "first_run_images": 12582912,
+    "parity_payload": 536870912,
+    "parity_output": 67108864,
+    "parity_log": 8388608,
+    "parity_timeout_seconds": 600
+  },
+  "limits": [
+    "No codecompiled/VMstartedhere; sourceSim112goldenrecordstillparentpending.",
+    "IgnoredPIEusesexistingNativeTestMainfilesystem/nullJNI/SDLpollbridges; CPUparitynotAPK/JVM/physicalhardware.",
+    "Actualchecksumtracecomparisonallticksagainstnewcommittedgolden+native/WASM mandatoryforparity, package/lifecyclePASSaloneinsufficient."
+  ]
+}

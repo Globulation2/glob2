@@ -1,0 +1,14 @@
+{
+  "utc": "2026-11-01T10:12:40.825360+00:00",
+  "project": "bradley-personal-20261027",
+  "reserved_requests": 90,
+  "reserved_codepoints": 196525,
+  "conservative_usd_before_credits": "3.9305",
+  "software_ceiling_usd": "9",
+  "billing_invoice": false,
+  "new_epoch_initial_google_values": 111,
+  "new_epoch_reserved_codepoints": 2438,
+  "ledger_path": "../google-budget.json",
+  "ledger_sha256": "ba1c7efcaef9a1557865166e054916291e7d9e1dae37f2e38d7da2245852d588",
+  "scope": "Actualdurablesharedcampaignledger afterthe111newonlinecomparison drafts, not mocktestcounteroutput. Existing89-request snapshotremains historical. Allpaidcalls usedbudgetedgoogle_draft.py, notnewunbudgetedcloud_draft.py."
+}

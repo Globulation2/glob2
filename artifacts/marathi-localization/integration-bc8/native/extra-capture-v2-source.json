@@ -1,0 +1,13 @@
+{
+  "base_adapter": "ExtraPreviewHarness.cpp",
+  "base_sha256": "c7e0e305251e5a05a6bf652006c2023e3dd2c22e96f703029ea36c85aac8acac",
+  "adapter": "artifacts/marathi-localization/integration-bc8/native/ExtraPreviewHarness-v2.cpp",
+  "adapter_sha256": "40a344505ef97ce47e06be46dbb6850c3e66e93b6679aabd0ff0cdcfc4b9e58d",
+  "purpose": "Refine actual UI fixture coverage, preserving first completed captures as distinct valid dock/hidden-lens states.",
+  "refinements": [
+    "Select the actual portable renderer for phone fixture; production editor deliberately requires it for the phone tray. Match MapEditorScreen responsive viewport policy.",
+    "Set the real statistics display mode before opening compact overlay lenses, matching lensVisible predicate.",
+    "After expanding actual unit-details control, align it to scroll top so real unit breakdown rows are visible."
+  ],
+  "unchanged": "No shipping/test source, catalog, simulation values, map paint/save or completed-match claims changed."
+}

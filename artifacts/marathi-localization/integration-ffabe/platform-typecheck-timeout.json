@@ -1,0 +1,15 @@
+{
+  "utc": "2026-11-01T10:52:19.449310+00:00",
+  "revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "command": [
+    "npm",
+    "run",
+    "typecheck"
+  ],
+  "deadline_seconds": 600,
+  "result": "timeout_without_TypeScript_diagnostics",
+  "passed": false,
+  "log": "platform-typecheck-attempt1-600s.log",
+  "owned_tsc_cleanup": "alreadyexited",
+  "scope": "Fullplatformtypecheckdidnotcompleteunderheavilycontendedsharedhost(load~124on32CPU). Current39\u00d72947runtimecontracts and43focusedmetadataUItests pass; prior351fulltypecheck passedunderitsactualsource. No currentfulltypechecksuccessclaimed. Do notinterpretmockedorpartialoutputaspass."
+}

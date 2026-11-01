@@ -1,0 +1,263 @@
+{
+  "git_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "actual_binaries": {
+    "official": {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-capture-stripped",
+      "sha256": "69a192395ae37fb2a661d16ef584e80c1babd8dbae7c15eabf931423518434e4"
+    },
+    "variant": {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+      "sha256": "65d70ad1f51ba806179103739e9ebd8a257d91806d0f0b56134879ca1a6ff629"
+    }
+  },
+  "jobs": [
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "name": "matrix",
+      "producer": "official",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-capture-stripped",
+        "matrix",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/new111",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/matrix",
+        "1280",
+        "900"
+      ],
+      "output": "1280x900/matrix",
+      "exit_code": 0,
+      "elapsed_seconds": 42.231614027987234,
+      "deadline_seconds": 900,
+      "failure": null,
+      "log_sha256": "997eda2df64d4409772b4e920986c25e330cdee3eeaedaa6b3e3f71343545deb"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "name": "main",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/main",
+        "1280",
+        "900",
+        "main"
+      ],
+      "output": "1280x900/main",
+      "exit_code": 0,
+      "elapsed_seconds": 205.41443823500595,
+      "deadline_seconds": 300,
+      "failure": null,
+      "log_sha256": "0268080f9927be30b5dbf196ea2790a88d9026ad252ab7b455cc81bf14660ae4"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "name": "settings-player",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/settings-player",
+        "1280",
+        "900",
+        "settings-player"
+      ],
+      "output": "1280x900/settings-player",
+      "exit_code": 0,
+      "elapsed_seconds": 56.825076253997395,
+      "deadline_seconds": 300,
+      "failure": null,
+      "log_sha256": "6e89a75bb17068717bf85d267b813e6ff4413b6d281800fbbd94f5037856c583"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "name": "gameplay",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "game",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/1280x900/gameplay",
+        "1280",
+        "900",
+        "gameplay"
+      ],
+      "output": "1280x900/gameplay",
+      "exit_code": 0,
+      "elapsed_seconds": 62.83528678299626,
+      "deadline_seconds": 600,
+      "failure": null,
+      "log_sha256": "fb798df5cc0adc92d4007dd8508f3b65472b54bdc48f381b3c7c2d4fa69777c3"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "matrix",
+      "producer": "official",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/official-capture-stripped",
+        "matrix",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/new111",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/390x844/matrix",
+        "390",
+        "844"
+      ],
+      "output": "390x844/matrix",
+      "exit_code": 0,
+      "elapsed_seconds": 18.272176522994414,
+      "deadline_seconds": 900,
+      "failure": null,
+      "log_sha256": "e8ea2d62b5273115d9faca188dd19dea5a14ea36bb52270c43717430b1d44ae9"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "main",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/390x844/main",
+        "390",
+        "844",
+        "main"
+      ],
+      "output": "390x844/main",
+      "exit_code": 0,
+      "elapsed_seconds": 46.92078183600097,
+      "deadline_seconds": 300,
+      "failure": null,
+      "log_sha256": "9ad01efccb8a572a72c2ed583b00b287b9df64e8575265c4a465ce4b6ff168c3"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "settings-player",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "screen",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/390x844/settings-player",
+        "390",
+        "844",
+        "settings-player"
+      ],
+      "output": "390x844/settings-player",
+      "exit_code": 0,
+      "elapsed_seconds": 22.381101388004026,
+      "deadline_seconds": 300,
+      "failure": null,
+      "log_sha256": "4c6474d2d5995c8edf61fb1a4ee9cb5c8a26fdfb737e3157474552f0d590b7b6"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "gameplay",
+      "producer": "variant",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1200x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/variant-capture-stripped",
+        "game",
+        "/home/bradley/.codex/worktrees/45cd/glob2",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/preview-inputs/previews/full",
+        "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/native/render-refresh/390x844/gameplay",
+        "390",
+        "844",
+        "gameplay"
+      ],
+      "output": "390x844/gameplay",
+      "exit_code": 2,
+      "elapsed_seconds": 28.551464834992657,
+      "deadline_seconds": 600,
+      "failure": null,
+      "log_sha256": "e2c94a67c71b7fae9622cca76ca8c4b225224e91457d4b8d482a95c50f076773"
+    }
+  ],
+  "cap_bytes": 1610612736,
+  "minimum_free_bytes": 2147483648,
+  "limits": [
+    "New111 selected online values only in font matrix; old75288 retained separately with exact code/target/font carry.",
+    "All menu/game jobs use normal registered resources, zero overlays.",
+    "Actual loaded-game history; no invented readings or completed-match/tutorial claim.",
+    "Compact desktop presentation is not an Android/iOS runtime claim."
+  ],
+  "completion_status": "7 success +1 failed; first compact screen readbacks rejected as black",
+  "disposition": "../first-capture-attempt-disposition.json"
+}

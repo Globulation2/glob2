@@ -1,0 +1,55 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"}, "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63", "sourceStatus": [], "sourceTreeSha256": "246fe09d063da655c92b4055021c1c5c536abf5b396ccdd527ff0bf04dd68a9d"}
+[doctest] listing all test case names
+===============================================================================
+script run composition preserves straight-alpha antialiasing
+shaping clusters keep conjuncts and combining marks together
+language changes refresh default line height and Arabic shaping caches
+high-DPI Hindi wrapping width is preserved without cropping the raw raster
+script fonts shape clusters and preserve measured raster sizes after reload
+Arabic and Persian visual-order text is not reordered again by SDL_ttf
+the bundled SDL3_ttf moves the pen for kerned pairs
+pair advances equal the glyph advances plus kerning
+kerned words have no gap wider than the same words unkerned
+ISO locales map to the historical catalog codes
+regional and script variants pick the matching catalog
+languages without a catalog are not confused with catalog codes
+Norwegian Bokmaal accepts generic Norwegian but never Nynorsk
+expanded locales distinguish scripts and the precise Pulaar variety
+the first available preference wins, then English
+Norwegian startup follows preferences and preserves a saved language
+Marathi startup follows preferences and preserves a saved language
+startup follows the system only when the profile has no usable language
+in-game music selection uses readable phone popup rows [display][artifacts][writes-preferences]
+service progress horizon covers mixed visits and preserves stock horizons
+mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]
+construction choice displays recipe costs independently of storage [display][artifacts]
+mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]
+custom mixed building panels render without mutating simulation [display][artifacts]
+unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]
+desktop building menu clicks queue authoritative worker and priority orders [display]
+configured keyboard actions toggle presentation and queue pause without changing simulation [display]
+initial camera survives waiting for the first presentation [display]
+home keyboard action wraps the camera and script messages preserve history [display]
+local victory popup and results show the same deciding condition [display][artifacts]
+match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]
+match dialogs accept return and distinguish continuing from ending a game [display]
+resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]
+Scenario messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]
+statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]
+statistics sheet scroll stays open and fits phone rotations [display][artifacts]
+live statistics hide post-game probability across topics [display][artifacts]
+attack marks follow mobile minimaps without extra lifetime ticks [display][artifacts]
+tutorial wrapping preserves shaped clusters and refreshes font metrics [display]
+phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]
+notifications clear system gutters and HUD at mobile text sizes [display][artifacts]
+curved labels retain physical glyph detail and reuse their cache [display][artifacts]
+spectators inspect building controls without editing their configuration [display][artifacts]
+building inventory shows material stocks below the mobile title [display][artifacts]
+scaled gameplay dialog input is translated once [display]
+unit taps have a zoom independent halo and show unit stats [display][artifacts]
+a touch on or near a flag drags the flag; not the map [display]
+touch scroll momentum on the map; the HUD palette and the editor [display]
+actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]
+===============================================================================
+[doctest] unskipped test cases passing the current filters: 49

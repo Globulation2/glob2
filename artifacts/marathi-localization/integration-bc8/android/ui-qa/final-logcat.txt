@@ -1,0 +1,1191 @@
+--------- beginning of main
+11-01 03:03:46.840  5245  5264 D EGL_emulation: app_time_stats: avg=354.78ms min=38.33ms max=1289.46ms count=4
+11-01 03:03:47.459  5438  5438 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:03:47.460  5438  5438 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:03:47.479   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:03:47.479  5438  5439 I Gralloc4: mapper 4.x is not supported
+--------- beginning of kernel
+11-01 03:03:47.644     0     0 I servicemanager: Caller(pid=5438,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:03:47.852  5245  5264 D EGL_emulation: app_time_stats: avg=50.59ms min=38.99ms max=75.24ms count=20
+11-01 03:03:48.900  5245  5264 D EGL_emulation: app_time_stats: avg=52.29ms min=41.60ms max=69.50ms count=20
+11-01 03:03:49.921  5245  5264 D EGL_emulation: app_time_stats: avg=48.59ms min=41.45ms max=59.86ms count=21
+11-01 03:03:50.964  5245  5264 D EGL_emulation: app_time_stats: avg=52.12ms min=38.63ms max=74.93ms count=20
+11-01 03:03:51.974  5245  5264 D EGL_emulation: app_time_stats: avg=48.03ms min=38.12ms max=62.89ms count=21
+11-01 03:03:52.992  5245  5264 D EGL_emulation: app_time_stats: avg=44.26ms min=36.22ms max=59.11ms count=23
+11-01 03:03:54.022  5245  5264 D EGL_emulation: app_time_stats: avg=46.78ms min=36.73ms max=62.04ms count=22
+11-01 03:03:54.215   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:03:55.072  5245  5264 D EGL_emulation: app_time_stats: avg=52.43ms min=37.92ms max=87.47ms count=20
+11-01 03:03:56.117  5245  5264 D EGL_emulation: app_time_stats: avg=52.24ms min=38.01ms max=64.61ms count=20
+11-01 03:03:57.142  5245  5264 D EGL_emulation: app_time_stats: avg=44.50ms min=36.57ms max=54.31ms count=23
+11-01 03:03:58.165  5245  5264 D EGL_emulation: app_time_stats: avg=51.13ms min=38.89ms max=99.54ms count=20
+11-01 03:03:59.179  5245  5264 D EGL_emulation: app_time_stats: avg=53.34ms min=43.88ms max=68.02ms count=19
+11-01 03:04:00.059   765   939 D EGL_emulation: app_time_stats: avg=25718.41ms min=25718.41ms max=25718.41ms count=1
+11-01 03:04:00.200  5245  5264 D EGL_emulation: app_time_stats: avg=51.00ms min=45.38ms max=75.19ms count=20
+11-01 03:04:01.233  5245  5264 D EGL_emulation: app_time_stats: avg=54.34ms min=38.35ms max=84.21ms count=19
+11-01 03:04:02.243  5245  5264 D EGL_emulation: app_time_stats: avg=45.86ms min=35.52ms max=59.69ms count=22
+11-01 03:04:02.357   530  3697 D WifiNl80211Manager: Scan result ready event
+11-01 03:04:02.357   530  3697 D WifiNative: Scan result ready event
+11-01 03:04:02.365   530   673 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+11-01 03:04:03.256  5245  5264 D EGL_emulation: app_time_stats: avg=48.20ms min=32.66ms max=69.04ms count=21
+11-01 03:04:04.270  5245  5264 D EGL_emulation: app_time_stats: avg=53.33ms min=37.61ms max=75.64ms count=19
+11-01 03:04:04.440   765   939 D EGL_emulation: app_time_stats: avg=4380.76ms min=4380.76ms max=4380.76ms count=1
+11-01 03:04:05.343  5245  5264 D EGL_emulation: app_time_stats: avg=59.59ms min=38.25ms max=90.35ms count=18
+11-01 03:04:06.354  5245  5264 D EGL_emulation: app_time_stats: avg=63.15ms min=48.10ms max=86.06ms count=16
+11-01 03:04:07.370  5245  5264 D EGL_emulation: app_time_stats: avg=56.38ms min=40.00ms max=91.05ms count=18
+11-01 03:04:08.403  5245  5264 D EGL_emulation: app_time_stats: avg=46.94ms min=31.18ms max=56.23ms count=22
+11-01 03:04:09.431  5245  5264 D EGL_emulation: app_time_stats: avg=44.63ms min=34.80ms max=56.43ms count=23
+11-01 03:04:10.340   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:04:10.471  5245  5264 D EGL_emulation: app_time_stats: avg=57.77ms min=44.88ms max=72.46ms count=18
+11-01 03:04:11.503  5245  5264 D EGL_emulation: app_time_stats: avg=60.67ms min=41.67ms max=93.34ms count=17
+11-01 03:04:12.538  5245  5264 D EGL_emulation: app_time_stats: avg=57.45ms min=45.06ms max=84.22ms count=18
+11-01 03:04:13.547  5245  5264 D EGL_emulation: app_time_stats: avg=59.34ms min=40.07ms max=86.22ms count=17
+11-01 03:04:14.589  5245  5264 D EGL_emulation: app_time_stats: avg=54.81ms min=42.45ms max=79.08ms count=19
+11-01 03:04:15.602  5245  5264 D EGL_emulation: app_time_stats: avg=53.27ms min=45.73ms max=76.58ms count=19
+11-01 03:04:16.632  5245  5264 D EGL_emulation: app_time_stats: avg=46.79ms min=35.46ms max=64.17ms count=22
+11-01 03:04:17.645  5245  5264 D EGL_emulation: app_time_stats: avg=50.57ms min=37.23ms max=64.05ms count=20
+11-01 03:04:18.187   818  1369 D ApfFilter: (wlan0): Adding RA fe80::2 -> ff02::1 १८००s fec0::/६४ ८६४००s/१४४००s 
+11-01 03:04:18.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:04:18.656  5245  5264 D EGL_emulation: app_time_stats: avg=43.93ms min=31.87ms max=66.70ms count=23
+11-01 03:04:19.696  5245  5264 D EGL_emulation: app_time_stats: avg=52.01ms min=34.24ms max=65.72ms count=20
+11-01 03:04:20.712  5245  5264 D EGL_emulation: app_time_stats: avg=48.35ms min=34.85ms max=75.99ms count=21
+11-01 03:04:21.733  5245  5264 D EGL_emulation: app_time_stats: avg=50.88ms min=37.75ms max=69.61ms count=20
+11-01 03:04:22.773  5245  5264 D EGL_emulation: app_time_stats: avg=43.32ms min=33.13ms max=54.63ms count=24
+11-01 03:04:23.788  5245  5264 D EGL_emulation: app_time_stats: avg=48.29ms min=38.60ms max=67.40ms count=21
+11-01 03:04:24.826  5245  5264 D EGL_emulation: app_time_stats: avg=51.89ms min=40.40ms max=74.17ms count=20
+11-01 03:04:25.836  5245  5264 D EGL_emulation: app_time_stats: avg=50.46ms min=38.00ms max=64.79ms count=20
+11-01 03:04:26.464   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:04:26.851  5245  5264 D EGL_emulation: app_time_stats: avg=50.72ms min=33.34ms max=127.95ms count=20
+11-01 03:04:27.896  5245  5264 D EGL_emulation: app_time_stats: avg=47.43ms min=39.21ms max=57.91ms count=22
+11-01 03:04:28.913  5245  5264 D EGL_emulation: app_time_stats: avg=48.42ms min=33.21ms max=64.07ms count=21
+11-01 03:04:29.929  5245  5264 D EGL_emulation: app_time_stats: avg=46.12ms min=34.81ms max=67.64ms count=22
+11-01 03:04:30.941  5245  5264 D EGL_emulation: app_time_stats: avg=48.15ms min=39.18ms max=78.85ms count=21
+11-01 03:04:31.119     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:04:31.972  5245  5264 D EGL_emulation: app_time_stats: avg=49.10ms min=36.59ms max=65.55ms count=21
+11-01 03:04:33.036  5245  5264 D EGL_emulation: app_time_stats: avg=48.34ms min=33.98ms max=70.17ms count=22
+11-01 03:04:34.073  5245  5264 D EGL_emulation: app_time_stats: avg=54.49ms min=43.48ms max=70.15ms count=19
+11-01 03:04:34.401   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:04:35.116  5245  5264 D EGL_emulation: app_time_stats: avg=57.89ms min=45.67ms max=70.35ms count=18
+11-01 03:04:36.146  5245  5264 D EGL_emulation: app_time_stats: avg=48.99ms min=37.14ms max=65.45ms count=21
+11-01 03:04:37.185  5245  5264 D EGL_emulation: app_time_stats: avg=49.47ms min=40.42ms max=70.57ms count=21
+11-01 03:04:38.219  5245  5264 D EGL_emulation: app_time_stats: avg=49.18ms min=34.28ms max=80.38ms count=21
+11-01 03:04:39.231  5245  5264 D EGL_emulation: app_time_stats: avg=50.58ms min=37.87ms max=73.55ms count=20
+11-01 03:04:40.259  5245  5264 D EGL_emulation: app_time_stats: avg=42.79ms min=34.06ms max=57.34ms count=24
+11-01 03:04:41.316  5245  5264 D EGL_emulation: app_time_stats: avg=52.83ms min=39.49ms max=79.06ms count=20
+11-01 03:04:42.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:04:42.357  5245  5264 D EGL_emulation: app_time_stats: avg=49.55ms min=39.44ms max=62.53ms count=21
+11-01 03:04:43.366  5245  5264 D EGL_emulation: app_time_stats: avg=50.43ms min=39.60ms max=61.58ms count=20
+11-01 03:04:44.379  5245  5264 D EGL_emulation: app_time_stats: avg=50.63ms min=38.27ms max=69.22ms count=20
+11-01 03:04:45.434  5245  5264 D EGL_emulation: app_time_stats: avg=50.20ms min=36.52ms max=64.61ms count=21
+11-01 03:04:46.444  5245  5264 D EGL_emulation: app_time_stats: avg=48.03ms min=36.37ms max=79.80ms count=21
+11-01 03:04:47.518  5245  5264 D EGL_emulation: app_time_stats: avg=53.55ms min=42.14ms max=79.61ms count=20
+11-01 03:04:48.565  5245  5264 D EGL_emulation: app_time_stats: avg=58.13ms min=48.08ms max=78.31ms count=18
+11-01 03:04:48.888   765   765 D ZenModeController: Added callback class com.android.systemui.qs.tiles.DndTile$3
+11-01 03:04:48.898   765   765 D ZenModeController: Removed callback class com.android.systemui.qs.tiles.DndTile$3
+11-01 03:04:48.911   765   929 D ControlsListingControllerImpl: Subscribing callback, service count: 0
+11-01 03:04:48.916   765   929 D ControlsListingControllerImpl: Unsubscribing callback
+11-01 03:04:48.934   765   929 I QuickAccessWalletTile: QAW service is unavailable, recreating the wallet client.
+11-01 03:04:49.571  5245  5264 D EGL_emulation: app_time_stats: avg=52.94ms min=40.69ms max=71.68ms count=19
+11-01 03:04:50.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:04:50.592  5245  5264 D EGL_emulation: app_time_stats: avg=60.02ms min=42.31ms max=78.02ms count=17
+11-01 03:04:51.607  5245  5264 D EGL_emulation: app_time_stats: avg=56.29ms min=35.55ms max=187.15ms count=18
+11-01 03:04:52.404  5455  5455 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:04:52.405  5455  5455 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:04:52.584     0     0 I servicemanager: Caller(pid=5455,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:04:52.423   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:04:52.423  5455  5456 I Gralloc4: mapper 4.x is not supported
+11-01 03:04:52.625  5245  5264 D EGL_emulation: app_time_stats: avg=48.12ms min=37.25ms max=74.21ms count=21
+11-01 03:04:53.672  5245  5264 D EGL_emulation: app_time_stats: avg=58.12ms min=43.12ms max=118.67ms count=18
+11-01 03:04:54.701  5245  5264 D EGL_emulation: app_time_stats: avg=46.74ms min=36.75ms max=63.47ms count=22
+11-01 03:04:55.744  5245  5264 D EGL_emulation: app_time_stats: avg=49.57ms min=38.41ms max=84.88ms count=21
+11-01 03:04:56.772  5245  5264 D EGL_emulation: app_time_stats: avg=51.39ms min=38.59ms max=71.27ms count=20
+11-01 03:04:57.807  5245  5264 D EGL_emulation: app_time_stats: avg=54.40ms min=37.55ms max=110.27ms count=19
+11-01 03:04:58.212   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:04:58.841  5245  5264 D EGL_emulation: app_time_stats: avg=46.93ms min=31.51ms max=64.45ms count=22
+11-01 03:04:59.865  5245  5264 D EGL_emulation: app_time_stats: avg=48.74ms min=36.28ms max=68.02ms count=21
+11-01 03:05:00.080   765   939 D EGL_emulation: app_time_stats: avg=55636.84ms min=55636.84ms max=55636.84ms count=1
+11-01 03:05:00.882  5245  5264 D EGL_emulation: app_time_stats: avg=46.18ms min=37.19ms max=58.10ms count=22
+11-01 03:05:01.904  5245  5264 D EGL_emulation: app_time_stats: avg=44.43ms min=38.88ms max=54.12ms count=23
+11-01 03:05:02.946  5245  5264 D EGL_emulation: app_time_stats: avg=45.23ms min=33.02ms max=59.16ms count=23
+11-01 03:05:03.966  5245  5264 D EGL_emulation: app_time_stats: avg=42.50ms min=35.60ms max=58.13ms count=24
+11-01 03:05:04.991  5245  5264 D EGL_emulation: app_time_stats: avg=46.56ms min=32.89ms max=65.53ms count=22
+11-01 03:05:06.001  5245  5264 D EGL_emulation: app_time_stats: avg=48.06ms min=35.36ms max=64.65ms count=21
+11-01 03:05:06.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:05:07.011  5245  5264 D EGL_emulation: app_time_stats: avg=42.04ms min=31.77ms max=58.17ms count=24
+11-01 03:05:08.038  5245  5264 D EGL_emulation: app_time_stats: avg=46.66ms min=34.74ms max=62.61ms count=22
+11-01 03:05:09.059  5245  5264 D EGL_emulation: app_time_stats: avg=42.37ms min=34.60ms max=54.90ms count=24
+11-01 03:05:10.064  5245  5264 D EGL_emulation: app_time_stats: avg=41.85ms min=31.85ms max=52.44ms count=24
+11-01 03:05:11.086  5245  5264 D EGL_emulation: app_time_stats: avg=42.53ms min=35.00ms max=52.00ms count=24
+11-01 03:05:12.119  5245  5264 D EGL_emulation: app_time_stats: avg=44.91ms min=37.50ms max=58.93ms count=23
+11-01 03:05:13.155  5245  5264 D EGL_emulation: app_time_stats: avg=43.11ms min=33.67ms max=56.92ms count=24
+11-01 03:05:14.175  5245  5264 D EGL_emulation: app_time_stats: avg=44.29ms min=38.40ms max=54.32ms count=23
+11-01 03:05:14.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:05:15.186  5245  5264 D EGL_emulation: app_time_stats: avg=43.94ms min=34.51ms max=61.46ms count=23
+11-01 03:05:16.224  5245  5264 D EGL_emulation: app_time_stats: avg=45.11ms min=33.50ms max=62.90ms count=23
+11-01 03:05:17.262  5245  5264 D EGL_emulation: app_time_stats: avg=47.14ms min=36.62ms max=75.44ms count=22
+11-01 03:05:18.293  5245  5264 D EGL_emulation: app_time_stats: avg=46.81ms min=38.57ms max=63.29ms count=22
+11-01 03:05:19.329  5245  5264 D EGL_emulation: app_time_stats: avg=47.07ms min=35.32ms max=64.72ms count=22
+11-01 03:05:20.366  5245  5264 D EGL_emulation: app_time_stats: avg=47.07ms min=34.79ms max=64.29ms count=22
+11-01 03:05:21.410  5245  5264 D EGL_emulation: app_time_stats: avg=49.71ms min=37.82ms max=66.91ms count=21
+11-01 03:05:22.276   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:05:22.467  5245  5264 D EGL_emulation: app_time_stats: avg=52.77ms min=37.94ms max=76.49ms count=20
+11-01 03:05:23.523  5245  5264 D EGL_emulation: app_time_stats: avg=55.52ms min=34.96ms max=97.26ms count=19
+11-01 03:05:24.569  5245  5264 D EGL_emulation: app_time_stats: avg=54.97ms min=43.71ms max=79.53ms count=19
+11-01 03:05:25.582  5245  5264 D EGL_emulation: app_time_stats: avg=48.22ms min=38.67ms max=69.71ms count=21
+11-01 03:05:26.619  5245  5264 D EGL_emulation: app_time_stats: avg=47.08ms min=38.87ms max=62.70ms count=22
+11-01 03:05:27.634  5245  5264 D EGL_emulation: app_time_stats: avg=44.10ms min=31.39ms max=68.41ms count=23
+11-01 03:05:28.665  5245  5264 D EGL_emulation: app_time_stats: avg=42.91ms min=37.59ms max=58.65ms count=24
+11-01 03:05:29.713  5245  5264 D EGL_emulation: app_time_stats: avg=43.66ms min=33.60ms max=55.82ms count=24
+11-01 03:05:30.209   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:05:30.734  5245  5264 D EGL_emulation: app_time_stats: avg=42.52ms min=32.49ms max=61.23ms count=24
+11-01 03:05:31.118     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:05:31.740  5245  5264 D EGL_emulation: app_time_stats: avg=41.88ms min=31.32ms max=63.32ms count=24
+11-01 03:05:32.764  5245  5264 D EGL_emulation: app_time_stats: avg=46.51ms min=38.30ms max=63.62ms count=22
+11-01 03:05:33.804  5245  5264 D EGL_emulation: app_time_stats: avg=43.28ms min=29.16ms max=57.32ms count=24
+11-01 03:05:34.819  5245  5264 D EGL_emulation: app_time_stats: avg=42.26ms min=34.46ms max=56.58ms count=24
+11-01 03:05:35.855  5245  5264 D EGL_emulation: app_time_stats: avg=41.42ms min=30.00ms max=53.61ms count=25
+11-01 03:05:36.891  5245  5264 D EGL_emulation: app_time_stats: avg=43.13ms min=36.42ms max=56.38ms count=24
+11-01 03:05:37.912  5245  5264 D EGL_emulation: app_time_stats: avg=44.32ms min=37.12ms max=74.97ms count=23
+11-01 03:05:38.401   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:05:38.913  5245  5264 D EGL_emulation: app_time_stats: avg=52.65ms min=37.73ms max=72.30ms count=19
+11-01 03:05:39.914  5245  5264 D EGL_emulation: app_time_stats: avg=52.64ms min=36.81ms max=97.61ms count=19
+11-01 03:05:40.864  5245  5264 I SDL/APP : Glob2 screen ready: 14EditorMainMenu
+11-01 03:05:40.865  5245  5264 I SDL/APP : Glob2 screen ready: 20EditorGenerateScreen
+11-01 03:05:41.239     0     0 I logd    : logdr: UID=0 GID=0 PID=5471 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:42.327     0     0 I logd    : logdr: UID=0 GID=0 PID=5474 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:43.377     0     0 I logd    : logdr: UID=0 GID=0 PID=5477 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:44.427     0     0 I logd    : logdr: UID=0 GID=0 PID=5480 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:44.332   765   939 D EGL_emulation: app_time_stats: avg=44251.19ms min=44251.19ms max=44251.19ms count=1
+11-01 03:05:45.492     0     0 I logd    : logdr: UID=0 GID=0 PID=5483 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:46.340   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:05:46.570     0     0 I logd    : logdr: UID=0 GID=0 PID=5486 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:47.637     0     0 I logd    : logdr: UID=0 GID=0 PID=5489 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:48.423  5245  5264 D EGL_emulation: app_time_stats: avg=386.77ms min=36.74ms max=7520.10ms count=22
+11-01 03:05:48.691     0     0 I logd    : logdr: UID=0 GID=0 PID=5492 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:48.864  5245  5264 I SDL/APP : Glob2 screen ready: 14EditorMainMenu
+11-01 03:05:48.874  5245  5264 I SDL/APP : Glob2 screen ready: 15MapEditorScreen
+11-01 03:05:49.741     0     0 I logd    : logdr: UID=0 GID=0 PID=5495 n tail=1000 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 03:05:49.715  5245  5264 D EGL_emulation: app_time_stats: avg=1290.79ms min=1290.79ms max=1290.79ms count=1
+11-01 03:05:50.718  5245  5264 D EGL_emulation: app_time_stats: avg=18.20ms min=10.47ms max=31.53ms count=55
+11-01 03:05:51.065  5504  5504 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:05:51.065  5504  5504 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:05:51.090   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:05:51.090  5504  5505 I Gralloc4: mapper 4.x is not supported
+11-01 03:05:51.245     0     0 I servicemanager: Caller(pid=5504,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:05:51.728  5245  5264 D EGL_emulation: app_time_stats: avg=23.46ms min=12.41ms max=72.46ms count=43
+11-01 03:05:52.740  5245  5264 D EGL_emulation: app_time_stats: avg=20.64ms min=11.53ms max=39.76ms count=49
+11-01 03:05:53.742  5245  5264 D EGL_emulation: app_time_stats: avg=19.62ms min=12.28ms max=40.76ms count=51
+11-01 03:05:54.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:05:54.746  5245  5264 D EGL_emulation: app_time_stats: avg=18.21ms min=11.74ms max=42.39ms count=55
+11-01 03:05:55.751  5245  5264 D EGL_emulation: app_time_stats: avg=21.37ms min=11.90ms max=47.33ms count=47
+11-01 03:05:56.759  5245  5264 D EGL_emulation: app_time_stats: avg=20.12ms min=11.87ms max=34.18ms count=50
+11-01 03:05:57.762  5245  5264 D EGL_emulation: app_time_stats: avg=18.91ms min=12.28ms max=37.15ms count=53
+11-01 03:05:58.770  5245  5264 D EGL_emulation: app_time_stats: avg=23.42ms min=10.07ms max=49.40ms count=43
+11-01 03:05:59.798  5245  5264 D EGL_emulation: app_time_stats: avg=24.45ms min=13.72ms max=38.08ms count=42
+11-01 03:06:00.053   765   939 D EGL_emulation: app_time_stats: avg=15720.93ms min=15720.93ms max=15720.93ms count=1
+11-01 03:06:00.809  5245  5264 D EGL_emulation: app_time_stats: avg=24.03ms min=10.11ms max=39.48ms count=42
+11-01 03:06:01.812  5245  5264 D EGL_emulation: app_time_stats: avg=27.08ms min=14.51ms max=44.12ms count=37
+11-01 03:06:02.472   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:06:02.813  5245  5264 D EGL_emulation: app_time_stats: avg=22.24ms min=12.15ms max=41.65ms count=45
+11-01 03:06:03.828  5245  5264 D EGL_emulation: app_time_stats: avg=23.03ms min=13.73ms max=43.29ms count=44
+11-01 03:06:04.835  5245  5264 D EGL_emulation: app_time_stats: avg=17.65ms min=11.54ms max=31.52ms count=57
+11-01 03:06:05.837  5245  5264 D EGL_emulation: app_time_stats: avg=20.84ms min=13.15ms max=32.43ms count=48
+11-01 03:06:06.865  5245  5264 D EGL_emulation: app_time_stats: avg=22.82ms min=10.46ms max=36.28ms count=45
+11-01 03:06:07.881  5245  5264 D EGL_emulation: app_time_stats: avg=19.84ms min=11.27ms max=42.32ms count=51
+11-01 03:06:08.892  5245  5264 D EGL_emulation: app_time_stats: avg=22.45ms min=12.10ms max=37.43ms count=45
+11-01 03:06:09.899  5245  5264 D EGL_emulation: app_time_stats: avg=19.72ms min=11.74ms max=37.25ms count=51
+11-01 03:06:10.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:06:10.908  5245  5264 D EGL_emulation: app_time_stats: avg=19.31ms min=11.21ms max=34.54ms count=52
+11-01 03:06:11.908  5245  5264 D EGL_emulation: app_time_stats: avg=19.22ms min=11.49ms max=43.40ms count=52
+11-01 03:06:12.935  5245  5264 D EGL_emulation: app_time_stats: avg=21.37ms min=12.26ms max=39.63ms count=48
+11-01 03:06:13.950  5245  5264 D EGL_emulation: app_time_stats: avg=25.36ms min=14.63ms max=39.92ms count=40
+11-01 03:06:14.353   765   939 D EGL_emulation: app_time_stats: avg=14299.86ms min=14299.86ms max=14299.86ms count=1
+11-01 03:06:14.965  5245  5264 D EGL_emulation: app_time_stats: avg=23.04ms min=11.35ms max=39.42ms count=44
+11-01 03:06:15.985  5245  5264 D EGL_emulation: app_time_stats: avg=20.38ms min=11.25ms max=44.68ms count=50
+11-01 03:06:17.003  5245  5264 D EGL_emulation: app_time_stats: avg=21.61ms min=13.55ms max=37.60ms count=47
+11-01 03:06:18.012  5245  5264 D EGL_emulation: app_time_stats: avg=24.60ms min=13.61ms max=38.56ms count=41
+11-01 03:06:18.344   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:06:19.029  5245  5264 D EGL_emulation: app_time_stats: avg=24.77ms min=14.91ms max=44.56ms count=41
+11-01 03:06:20.062  5245  5264 D EGL_emulation: app_time_stats: avg=23.44ms min=13.82ms max=41.34ms count=44
+11-01 03:06:21.067  5245  5264 D EGL_emulation: app_time_stats: avg=18.94ms min=10.04ms max=32.71ms count=53
+11-01 03:06:22.070  5245  5264 D EGL_emulation: app_time_stats: avg=19.97ms min=11.76ms max=43.76ms count=50
+11-01 03:06:23.096  5245  5264 D EGL_emulation: app_time_stats: avg=19.33ms min=11.31ms max=36.36ms count=53
+11-01 03:06:24.104  5245  5264 D EGL_emulation: app_time_stats: avg=27.98ms min=15.09ms max=39.37ms count=36
+11-01 03:06:25.112  5245  5264 D EGL_emulation: app_time_stats: avg=23.42ms min=13.69ms max=42.20ms count=43
+11-01 03:06:26.116  5245  5264 D EGL_emulation: app_time_stats: avg=23.88ms min=13.89ms max=41.91ms count=42
+11-01 03:06:26.276   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:06:27.128  5245  5264 D EGL_emulation: app_time_stats: avg=24.07ms min=10.07ms max=61.73ms count=42
+11-01 03:06:28.135  5245  5264 D EGL_emulation: app_time_stats: avg=24.52ms min=12.44ms max=42.66ms count=41
+11-01 03:06:29.161  5245  5264 D EGL_emulation: app_time_stats: avg=21.34ms min=12.53ms max=34.36ms count=48
+11-01 03:06:30.168  5245  5264 D EGL_emulation: app_time_stats: avg=21.40ms min=13.29ms max=36.51ms count=47
+11-01 03:06:31.119     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:06:31.198  5245  5264 D EGL_emulation: app_time_stats: avg=27.73ms min=13.33ms max=42.76ms count=37
+11-01 03:06:32.199  5245  5264 D EGL_emulation: app_time_stats: avg=23.80ms min=11.04ms max=40.84ms count=42
+11-01 03:06:33.211  5245  5264 D EGL_emulation: app_time_stats: avg=21.06ms min=10.64ms max=37.78ms count=48
+11-01 03:06:34.214  5245  5264 D EGL_emulation: app_time_stats: avg=20.04ms min=11.14ms max=34.30ms count=50
+11-01 03:06:34.464   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:06:35.215  5245  5264 D EGL_emulation: app_time_stats: avg=23.25ms min=12.53ms max=40.39ms count=43
+11-01 03:06:36.220  5245  5264 D EGL_emulation: app_time_stats: avg=20.91ms min=13.16ms max=40.47ms count=48
+11-01 03:06:37.244  5245  5264 D EGL_emulation: app_time_stats: avg=22.24ms min=11.53ms max=47.02ms count=46
+11-01 03:06:38.249  5245  5264 D EGL_emulation: app_time_stats: avg=24.48ms min=13.04ms max=35.65ms count=41
+11-01 03:06:39.276  5245  5264 D EGL_emulation: app_time_stats: avg=27.73ms min=14.67ms max=43.01ms count=37
+11-01 03:06:40.288  5245  5264 D EGL_emulation: app_time_stats: avg=22.43ms min=12.15ms max=49.44ms count=45
+11-01 03:06:41.292  5245  5264 D EGL_emulation: app_time_stats: avg=27.07ms min=15.22ms max=40.37ms count=37
+11-01 03:06:42.308  5245  5264 D EGL_emulation: app_time_stats: avg=23.58ms min=11.96ms max=39.11ms count=43
+11-01 03:06:42.370   530  5232 D WifiNl80211Manager: Scan result ready event
+11-01 03:06:42.370   530  5232 D WifiNative: Scan result ready event
+11-01 03:06:42.379   530   673 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+11-01 03:06:43.333  5245  5264 D EGL_emulation: app_time_stats: avg=20.05ms min=12.55ms max=37.82ms count=51
+11-01 03:06:44.361  5245  5264 D EGL_emulation: app_time_stats: avg=41.09ms min=11.83ms max=142.68ms count=25
+11-01 03:06:45.170  5523  5523 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:06:45.170  5523  5523 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:06:45.186   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:06:45.186  5523  5524 I Gralloc4: mapper 4.x is not supported
+11-01 03:06:45.352     0     0 I servicemanager: Caller(pid=5523,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:06:45.380  5245  5264 D EGL_emulation: app_time_stats: avg=25.43ms min=10.60ms max=67.66ms count=40
+11-01 03:06:46.385  5245  5264 D EGL_emulation: app_time_stats: avg=23.33ms min=12.66ms max=38.29ms count=43
+11-01 03:06:47.391  5245  5264 D EGL_emulation: app_time_stats: avg=21.84ms min=12.25ms max=40.71ms count=46
+11-01 03:06:48.458  5245  5264 D EGL_emulation: app_time_stats: avg=42.63ms min=13.52ms max=368.52ms count=25
+11-01 03:06:49.478  5245  5264 D EGL_emulation: app_time_stats: avg=25.45ms min=12.92ms max=44.76ms count=40
+11-01 03:06:50.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:06:50.491  5245  5264 D EGL_emulation: app_time_stats: avg=22.00ms min=13.26ms max=37.54ms count=46
+11-01 03:06:51.499  5245  5264 D EGL_emulation: app_time_stats: avg=25.16ms min=14.83ms max=36.10ms count=40
+11-01 03:06:52.517  5245  5264 D EGL_emulation: app_time_stats: avg=22.11ms min=12.28ms max=39.38ms count=46
+11-01 03:06:53.529  5245  5264 D EGL_emulation: app_time_stats: avg=21.01ms min=14.40ms max=36.14ms count=48
+11-01 03:06:54.546  5245  5264 D EGL_emulation: app_time_stats: avg=19.52ms min=13.32ms max=34.07ms count=52
+11-01 03:06:55.560  5245  5264 D EGL_emulation: app_time_stats: avg=21.09ms min=14.32ms max=41.08ms count=48
+11-01 03:06:56.574  5245  5264 D EGL_emulation: app_time_stats: avg=20.25ms min=12.41ms max=39.01ms count=50
+11-01 03:06:57.578  5245  5264 D EGL_emulation: app_time_stats: avg=21.78ms min=13.15ms max=40.29ms count=46
+11-01 03:06:58.280   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:06:58.587  5245  5264 D EGL_emulation: app_time_stats: avg=19.00ms min=11.53ms max=33.14ms count=53
+11-01 03:06:59.599  5245  5264 D EGL_emulation: app_time_stats: avg=19.44ms min=10.20ms max=37.35ms count=52
+11-01 03:07:00.044   765   939 D EGL_emulation: app_time_stats: avg=45690.60ms min=45690.60ms max=45690.60ms count=1
+11-01 03:07:00.616  5245  5264 D EGL_emulation: app_time_stats: avg=19.17ms min=13.18ms max=33.93ms count=53
+11-01 03:07:01.626  5245  5264 D EGL_emulation: app_time_stats: avg=21.44ms min=12.10ms max=91.97ms count=47
+11-01 03:07:02.635  5245  5264 D EGL_emulation: app_time_stats: avg=19.76ms min=11.76ms max=34.25ms count=51
+11-01 03:07:03.668  5245  5264 D EGL_emulation: app_time_stats: avg=24.57ms min=14.87ms max=45.39ms count=42
+11-01 03:07:04.696  5245  5264 D EGL_emulation: app_time_stats: avg=22.82ms min=11.94ms max=37.62ms count=45
+11-01 03:07:05.708  5245  5264 D EGL_emulation: app_time_stats: avg=20.64ms min=13.29ms max=36.81ms count=49
+11-01 03:07:06.464   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:07:06.717  5245  5264 D EGL_emulation: app_time_stats: avg=21.42ms min=12.79ms max=36.75ms count=47
+11-01 03:07:07.718  5245  5264 D EGL_emulation: app_time_stats: avg=20.01ms min=13.08ms max=33.53ms count=50
+11-01 03:07:08.756  5245  5264 D EGL_emulation: app_time_stats: avg=21.59ms min=14.05ms max=39.71ms count=48
+11-01 03:07:09.762  5245  5264 D EGL_emulation: app_time_stats: avg=23.37ms min=12.80ms max=38.07ms count=43
+11-01 03:07:10.775  5245  5264 D EGL_emulation: app_time_stats: avg=19.46ms min=11.58ms max=29.80ms count=52
+11-01 03:07:11.778  5245  5264 D EGL_emulation: app_time_stats: avg=22.76ms min=10.87ms max=40.13ms count=44
+11-01 03:07:12.786  5245  5264 D EGL_emulation: app_time_stats: avg=18.99ms min=11.26ms max=32.19ms count=53
+11-01 03:07:13.800  5245  5264 D EGL_emulation: app_time_stats: avg=21.07ms min=10.56ms max=46.42ms count=48
+11-01 03:07:14.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:07:14.801  5245  5264 D EGL_emulation: app_time_stats: avg=22.64ms min=13.74ms max=40.73ms count=44
+11-01 03:07:15.809  5245  5264 D EGL_emulation: app_time_stats: avg=18.99ms min=11.11ms max=35.13ms count=53
+11-01 03:07:16.820  5245  5264 D EGL_emulation: app_time_stats: avg=17.72ms min=10.71ms max=32.39ms count=57
+11-01 03:07:17.826  5245  5264 D EGL_emulation: app_time_stats: avg=22.34ms min=11.04ms max=39.39ms count=45
+11-01 03:07:18.849  5245  5264 D EGL_emulation: app_time_stats: avg=22.21ms min=11.80ms max=36.51ms count=46
+11-01 03:07:19.857  5245  5264 D EGL_emulation: app_time_stats: avg=20.98ms min=11.97ms max=41.92ms count=48
+11-01 03:07:20.861  5245  5264 D EGL_emulation: app_time_stats: avg=20.46ms min=11.34ms max=35.21ms count=49
+11-01 03:07:21.875  5245  5264 D EGL_emulation: app_time_stats: avg=19.13ms min=10.59ms max=31.38ms count=53
+11-01 03:07:22.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:07:22.883  5245  5264 D EGL_emulation: app_time_stats: avg=19.35ms min=10.43ms max=34.48ms count=52
+11-01 03:07:23.901  5245  5264 D EGL_emulation: app_time_stats: avg=20.34ms min=13.00ms max=35.64ms count=50
+11-01 03:07:24.925  5245  5264 D EGL_emulation: app_time_stats: avg=25.58ms min=13.83ms max=41.26ms count=40
+11-01 03:07:25.942  5245  5264 D EGL_emulation: app_time_stats: avg=22.09ms min=13.26ms max=35.92ms count=46
+11-01 03:07:26.954  5245  5264 D EGL_emulation: app_time_stats: avg=19.41ms min=12.92ms max=31.60ms count=52
+11-01 03:07:27.965  5245  5264 D EGL_emulation: app_time_stats: avg=22.88ms min=13.29ms max=39.80ms count=44
+11-01 03:07:28.978  5245  5264 D EGL_emulation: app_time_stats: avg=18.73ms min=12.71ms max=38.29ms count=54
+11-01 03:07:29.982  5245  5264 D EGL_emulation: app_time_stats: avg=20.08ms min=11.35ms max=32.39ms count=50
+11-01 03:07:30.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:07:31.118     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:07:30.999  5245  5264 D EGL_emulation: app_time_stats: avg=21.14ms min=12.09ms max=44.77ms count=48
+11-01 03:07:32.014  5245  5264 D EGL_emulation: app_time_stats: avg=25.97ms min=13.24ms max=42.68ms count=39
+11-01 03:07:33.035  5245  5264 D EGL_emulation: app_time_stats: avg=21.25ms min=12.84ms max=40.15ms count=48
+11-01 03:07:34.045  5245  5264 D EGL_emulation: app_time_stats: avg=22.92ms min=10.15ms max=41.17ms count=44
+11-01 03:07:35.059  5245  5264 D EGL_emulation: app_time_stats: avg=24.70ms min=11.23ms max=38.70ms count=41
+11-01 03:07:36.069  5245  5264 D EGL_emulation: app_time_stats: avg=23.43ms min=10.96ms max=43.56ms count=43
+11-01 03:07:37.085  5245  5264 D EGL_emulation: app_time_stats: avg=24.17ms min=15.18ms max=47.08ms count=42
+11-01 03:07:38.099  5245  5264 D EGL_emulation: app_time_stats: avg=20.65ms min=11.09ms max=37.53ms count=49
+11-01 03:07:38.464   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:07:39.110  5245  5264 D EGL_emulation: app_time_stats: avg=21.03ms min=13.85ms max=40.53ms count=48
+11-01 03:07:40.137  5245  5264 D EGL_emulation: app_time_stats: avg=23.32ms min=12.65ms max=38.42ms count=44
+11-01 03:07:41.158  5245  5264 D EGL_emulation: app_time_stats: avg=21.20ms min=12.77ms max=39.27ms count=48
+11-01 03:07:42.185  5245  5264 D EGL_emulation: app_time_stats: avg=22.80ms min=11.03ms max=43.84ms count=45
+11-01 03:07:43.198  5245  5264 D EGL_emulation: app_time_stats: avg=26.64ms min=14.63ms max=41.71ms count=38
+11-01 03:07:44.202  5245  5264 D EGL_emulation: app_time_stats: avg=21.35ms min=11.98ms max=43.39ms count=47
+11-01 03:07:45.216  5245  5264 D EGL_emulation: app_time_stats: avg=20.66ms min=11.75ms max=36.08ms count=49
+11-01 03:07:46.219  5245  5264 D EGL_emulation: app_time_stats: avg=20.44ms min=11.94ms max=35.89ms count=49
+11-01 03:07:46.406   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:07:47.236  5245  5264 D EGL_emulation: app_time_stats: avg=23.08ms min=9.26ms max=76.94ms count=44
+11-01 03:07:48.250  5245  5264 D EGL_emulation: app_time_stats: avg=27.36ms min=15.29ms max=60.68ms count=37
+11-01 03:07:49.278  5245  5264 D EGL_emulation: app_time_stats: avg=68.48ms min=20.49ms max=114.29ms count=15
+11-01 03:07:49.991  5540  5540 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:07:49.991  5540  5540 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:07:50.015   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:07:50.182     0     0 I servicemanager: Caller(pid=5540,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:07:50.016  5540  5541 I Gralloc4: mapper 4.x is not supported
+11-01 03:07:50.287  5245  5264 D EGL_emulation: app_time_stats: avg=25.19ms min=9.62ms max=191.51ms count=40
+11-01 03:07:51.316  5245  5264 D EGL_emulation: app_time_stats: avg=20.53ms min=9.52ms max=64.00ms count=50
+11-01 03:07:52.341  5245  5264 D EGL_emulation: app_time_stats: avg=60.24ms min=15.30ms max=93.78ms count=17
+11-01 03:07:53.051  5557  5557 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:07:53.051  5557  5557 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:07:53.069   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:07:53.070  5557  5558 I Gralloc4: mapper 4.x is not supported
+11-01 03:07:53.233     0     0 I servicemanager: Caller(pid=5557,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:07:53.369  5245  5264 D EGL_emulation: app_time_stats: avg=17.33ms min=10.31ms max=43.09ms count=59
+11-01 03:07:54.337   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:07:54.380  5245  5264 D EGL_emulation: app_time_stats: avg=17.42ms min=9.88ms max=29.15ms count=58
+11-01 03:07:54.388   765   939 D EGL_emulation: app_time_stats: avg=54343.81ms min=54343.81ms max=54343.81ms count=1
+11-01 03:07:55.384  5245  5264 D EGL_emulation: app_time_stats: avg=18.22ms min=9.70ms max=31.45ms count=55
+11-01 03:07:56.400  5245  5264 D EGL_emulation: app_time_stats: avg=20.69ms min=11.66ms max=37.61ms count=49
+11-01 03:07:57.422  5245  5264 D EGL_emulation: app_time_stats: avg=21.71ms min=11.22ms max=41.54ms count=47
+11-01 03:07:58.433  5245  5264 D EGL_emulation: app_time_stats: avg=19.81ms min=12.53ms max=35.72ms count=51
+11-01 03:07:59.447  5245  5264 D EGL_emulation: app_time_stats: avg=23.54ms min=14.94ms max=40.56ms count=43
+11-01 03:08:00.084   765   939 D EGL_emulation: app_time_stats: avg=5696.14ms min=5696.14ms max=5696.14ms count=1
+11-01 03:08:00.471  5245  5264 D EGL_emulation: app_time_stats: avg=22.74ms min=11.81ms max=51.41ms count=45
+11-01 03:08:01.497  5245  5264 D EGL_emulation: app_time_stats: avg=23.83ms min=10.55ms max=43.82ms count=43
+11-01 03:08:02.276   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:08:02.515  5245  5264 D EGL_emulation: app_time_stats: avg=21.19ms min=12.10ms max=37.35ms count=48
+11-01 03:08:03.526  5245  5264 D EGL_emulation: app_time_stats: avg=20.60ms min=10.18ms max=31.37ms count=49
+11-01 03:08:04.532  5245  5264 D EGL_emulation: app_time_stats: avg=22.83ms min=14.27ms max=40.64ms count=44
+11-01 03:08:05.534  5245  5264 D EGL_emulation: app_time_stats: avg=22.24ms min=12.11ms max=42.95ms count=45
+11-01 03:08:06.553  5245  5264 D EGL_emulation: app_time_stats: avg=22.11ms min=11.25ms max=38.57ms count=46
+11-01 03:08:07.560  5245  5264 D EGL_emulation: app_time_stats: avg=22.36ms min=11.34ms max=39.83ms count=45
+11-01 03:08:08.574  5245  5264 D EGL_emulation: app_time_stats: avg=23.56ms min=12.92ms max=37.03ms count=43
+11-01 03:08:09.582  5245  5264 D EGL_emulation: app_time_stats: avg=26.48ms min=10.89ms max=45.34ms count=38
+11-01 03:08:10.465   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:08:10.614  5245  5264 D EGL_emulation: app_time_stats: avg=27.14ms min=12.35ms max=43.56ms count=38
+11-01 03:08:11.641  5245  5264 D EGL_emulation: app_time_stats: avg=26.98ms min=15.07ms max=38.91ms count=38
+11-01 03:08:12.644  5245  5264 D EGL_emulation: app_time_stats: avg=25.69ms min=15.00ms max=40.80ms count=39
+11-01 03:08:13.651  5245  5264 D EGL_emulation: app_time_stats: avg=22.85ms min=13.31ms max=38.42ms count=44
+11-01 03:08:14.657  5245  5264 D EGL_emulation: app_time_stats: avg=24.50ms min=10.89ms max=45.66ms count=41
+11-01 03:08:15.664  5245  5264 D EGL_emulation: app_time_stats: avg=25.01ms min=15.81ms max=40.72ms count=40
+11-01 03:08:16.666  5245  5264 D EGL_emulation: app_time_stats: avg=23.79ms min=13.12ms max=41.03ms count=42
+11-01 03:08:17.686  5245  5264 D EGL_emulation: app_time_stats: avg=22.15ms min=14.28ms max=36.56ms count=46
+11-01 03:08:18.401   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:08:18.687  5245  5264 D EGL_emulation: app_time_stats: avg=20.81ms min=11.78ms max=47.02ms count=48
+11-01 03:08:19.695  5245  5264 D EGL_emulation: app_time_stats: avg=19.73ms min=11.89ms max=41.08ms count=51
+11-01 03:08:20.704  5245  5264 D EGL_emulation: app_time_stats: avg=25.16ms min=14.80ms max=42.15ms count=40
+11-01 03:08:21.734  5245  5264 D EGL_emulation: app_time_stats: avg=25.10ms min=12.07ms max=41.46ms count=41
+11-01 03:08:22.760  5245  5264 D EGL_emulation: app_time_stats: avg=21.79ms min=12.22ms max=39.75ms count=47
+11-01 03:08:23.762  5245  5264 D EGL_emulation: app_time_stats: avg=23.85ms min=11.42ms max=38.78ms count=42
+11-01 03:08:24.347   765   939 D EGL_emulation: app_time_stats: avg=24262.78ms min=24262.78ms max=24262.78ms count=1
+11-01 03:08:24.769  5245  5264 D EGL_emulation: app_time_stats: avg=24.48ms min=11.77ms max=42.81ms count=41
+11-01 03:08:25.783  5245  5264 D EGL_emulation: app_time_stats: avg=27.37ms min=13.05ms max=42.79ms count=37
+11-01 03:08:26.337   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:08:26.784  5245  5264 D EGL_emulation: app_time_stats: avg=24.40ms min=13.17ms max=43.08ms count=41
+11-01 03:08:27.795  5245  5264 D EGL_emulation: app_time_stats: avg=29.69ms min=16.61ms max=46.48ms count=34
+11-01 03:08:28.803  5245  5264 D EGL_emulation: app_time_stats: avg=27.19ms min=14.10ms max=41.22ms count=37
+11-01 03:08:29.811  5245  5264 D EGL_emulation: app_time_stats: avg=27.10ms min=15.02ms max=41.95ms count=37
+11-01 03:08:30.829  5245  5264 D EGL_emulation: app_time_stats: avg=28.21ms min=15.79ms max=41.52ms count=36
+11-01 03:08:31.127     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:08:31.829  5245  5264 D EGL_emulation: app_time_stats: avg=28.55ms min=15.76ms max=42.86ms count=35
+11-01 03:08:32.851  5245  5264 D EGL_emulation: app_time_stats: avg=25.51ms min=11.20ms max=40.11ms count=40
+11-01 03:08:33.860  5245  5264 D EGL_emulation: app_time_stats: avg=25.80ms min=15.11ms max=38.35ms count=39
+11-01 03:08:34.276   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:08:34.866  5245  5264 D EGL_emulation: app_time_stats: avg=24.48ms min=14.30ms max=41.45ms count=41
+11-01 03:08:35.866  5245  5264 D EGL_emulation: app_time_stats: avg=26.99ms min=13.10ms max=39.69ms count=37
+11-01 03:08:36.874  5245  5264 D EGL_emulation: app_time_stats: avg=28.77ms min=14.01ms max=46.13ms count=35
+11-01 03:08:37.875  5245  5264 D EGL_emulation: app_time_stats: avg=22.23ms min=12.39ms max=49.33ms count=45
+11-01 03:08:38.880  5245  5264 D EGL_emulation: app_time_stats: avg=26.38ms min=13.33ms max=41.56ms count=38
+11-01 03:08:39.908  5245  5264 D EGL_emulation: app_time_stats: avg=31.07ms min=16.56ms max=57.80ms count=33
+11-01 03:08:40.927  5245  5264 D EGL_emulation: app_time_stats: avg=26.80ms min=13.59ms max=58.56ms count=38
+11-01 03:08:42.782   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:08:42.799  5245  5264 D EGL_emulation: app_time_stats: avg=77.94ms min=12.31ms max=1219.53ms count=24
+11-01 03:08:43.830  5245  5264 D EGL_emulation: app_time_stats: avg=26.41ms min=10.74ms max=40.94ms count=39
+11-01 03:08:44.866  5245  5264 D EGL_emulation: app_time_stats: avg=24.61ms min=12.98ms max=48.21ms count=42
+11-01 03:08:45.897  5245  5264 D EGL_emulation: app_time_stats: avg=25.75ms min=9.82ms max=40.68ms count=40
+11-01 03:08:46.910  5245  5264 D EGL_emulation: app_time_stats: avg=25.93ms min=15.11ms max=54.79ms count=39
+11-01 03:08:47.928  5245  5264 D EGL_emulation: app_time_stats: avg=21.19ms min=12.51ms max=43.96ms count=48
+11-01 03:08:48.935  5245  5264 D EGL_emulation: app_time_stats: avg=25.75ms min=14.52ms max=44.44ms count=39
+11-01 03:08:49.951  5245  5264 D EGL_emulation: app_time_stats: avg=25.99ms min=15.00ms max=37.85ms count=39
+11-01 03:08:50.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:08:50.952  5245  5264 D EGL_emulation: app_time_stats: avg=22.73ms min=13.11ms max=41.13ms count=44
+11-01 03:08:51.962  5245  5264 D EGL_emulation: app_time_stats: avg=25.86ms min=11.67ms max=42.39ms count=39
+11-01 03:08:52.967  5245  5264 D EGL_emulation: app_time_stats: avg=20.08ms min=13.18ms max=37.40ms count=50
+11-01 03:08:53.971  5245  5264 D EGL_emulation: app_time_stats: avg=22.75ms min=12.72ms max=38.25ms count=44
+11-01 03:08:54.998  5245  5264 D EGL_emulation: app_time_stats: avg=20.11ms min=11.15ms max=43.66ms count=51
+11-01 03:08:56.007  5245  5264 D EGL_emulation: app_time_stats: avg=23.43ms min=13.11ms max=35.33ms count=43
+11-01 03:08:57.021  5245  5264 D EGL_emulation: app_time_stats: avg=20.26ms min=9.30ms max=35.56ms count=50
+11-01 03:08:58.028  5245  5264 D EGL_emulation: app_time_stats: avg=19.72ms min=11.09ms max=37.52ms count=51
+11-01 03:08:58.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:08:59.031  5245  5264 D EGL_emulation: app_time_stats: avg=23.28ms min=13.48ms max=39.72ms count=43
+11-01 03:09:00.052   765   939 D EGL_emulation: app_time_stats: avg=35705.27ms min=35705.27ms max=35705.27ms count=1
+11-01 03:09:00.069  5245  5264 D EGL_emulation: app_time_stats: avg=18.51ms min=12.43ms max=46.32ms count=56
+11-01 03:09:01.086  5245  5264 D EGL_emulation: app_time_stats: avg=18.81ms min=11.76ms max=32.39ms count=54
+11-01 03:09:02.090  5245  5264 D EGL_emulation: app_time_stats: avg=21.34ms min=11.68ms max=42.33ms count=47
+11-01 03:09:03.106  5245  5264 D EGL_emulation: app_time_stats: avg=23.07ms min=13.13ms max=39.37ms count=44
+11-01 03:09:04.111  5245  5264 D EGL_emulation: app_time_stats: avg=21.36ms min=11.48ms max=39.37ms count=47
+11-01 03:09:05.146  5245  5264 D EGL_emulation: app_time_stats: avg=21.98ms min=12.61ms max=38.59ms count=47
+11-01 03:09:06.153  5245  5264 D EGL_emulation: app_time_stats: avg=18.97ms min=11.88ms max=30.19ms count=53
+11-01 03:09:06.280   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:09:07.157  5245  5264 D EGL_emulation: app_time_stats: avg=20.05ms min=11.07ms max=39.03ms count=50
+11-01 03:09:08.163  5245  5264 D EGL_emulation: app_time_stats: avg=18.26ms min=11.61ms max=30.36ms count=55
+11-01 03:09:09.175  5245  5264 D EGL_emulation: app_time_stats: avg=19.81ms min=10.92ms max=37.98ms count=51
+11-01 03:09:10.199  5245  5264 D EGL_emulation: app_time_stats: avg=23.20ms min=11.42ms max=38.16ms count=44
+11-01 03:09:11.223  5245  5264 D EGL_emulation: app_time_stats: avg=20.88ms min=11.63ms max=34.58ms count=49
+11-01 03:09:12.248  5245  5264 D EGL_emulation: app_time_stats: avg=22.74ms min=10.92ms max=37.22ms count=45
+11-01 03:09:13.261  5245  5264 D EGL_emulation: app_time_stats: avg=24.10ms min=13.97ms max=40.07ms count=42
+11-01 03:09:14.264  5245  5264 D EGL_emulation: app_time_stats: avg=22.76ms min=14.72ms max=40.67ms count=44
+11-01 03:09:14.464   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:09:15.291  5245  5264 D EGL_emulation: app_time_stats: avg=22.79ms min=12.85ms max=40.58ms count=45
+11-01 03:09:16.305  5245  5264 D EGL_emulation: app_time_stats: avg=20.26ms min=12.05ms max=36.55ms count=50
+11-01 03:09:17.323  5245  5264 D EGL_emulation: app_time_stats: avg=19.94ms min=10.83ms max=34.17ms count=51
+11-01 03:09:18.329  5245  5264 D EGL_emulation: app_time_stats: avg=20.95ms min=11.21ms max=42.58ms count=48
+11-01 03:09:19.351  5245  5264 D EGL_emulation: app_time_stats: avg=23.19ms min=11.18ms max=38.98ms count=44
+11-01 03:09:20.364  5245  5264 D EGL_emulation: app_time_stats: avg=25.30ms min=12.67ms max=115.60ms count=40
+11-01 03:09:21.378  5245  5264 D EGL_emulation: app_time_stats: avg=19.47ms min=11.93ms max=32.17ms count=52
+11-01 03:09:22.358   530  5232 D WifiNl80211Manager: Scan result ready event
+11-01 03:09:22.358   530  5232 D WifiNative: Scan result ready event
+11-01 03:09:22.372   530   673 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+11-01 03:09:22.392  5245  5264 D EGL_emulation: app_time_stats: avg=20.26ms min=12.98ms max=33.80ms count=50
+11-01 03:09:23.397  5245  5264 D EGL_emulation: app_time_stats: avg=20.48ms min=13.01ms max=35.61ms count=49
+11-01 03:09:24.405  5245  5264 D EGL_emulation: app_time_stats: avg=22.37ms min=12.14ms max=41.78ms count=45
+11-01 03:09:24.739  5574  5574 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:09:24.741  5574  5574 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:09:24.928     0     0 I servicemanager: Caller(pid=5574,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:09:24.768   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:09:24.769  5574  5575 I Gralloc4: mapper 4.x is not supported
+11-01 03:09:25.412  5245  5264 D EGL_emulation: app_time_stats: avg=23.36ms min=12.48ms max=72.79ms count=43
+11-01 03:09:26.425  5245  5264 D EGL_emulation: app_time_stats: avg=20.24ms min=10.05ms max=41.57ms count=50
+11-01 03:09:27.426  5245  5264 D EGL_emulation: app_time_stats: avg=18.19ms min=12.03ms max=35.11ms count=55
+11-01 03:09:28.411  5591  5591 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:09:28.411  5591  5591 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:09:28.435   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:09:28.435  5591  5592 I Gralloc4: mapper 4.x is not supported
+11-01 03:09:28.598     0     0 I servicemanager: Caller(pid=5591,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:09:28.438   530   542 I system_server: Background concurrent mark compact GC freed 15MB AllocSpace bytes, 149(3164KB) LOS objects, 49% free, 18MB/37MB, paused 1.344ms,4.154ms total 220.565ms
+11-01 03:09:28.496  5245  5264 D EGL_emulation: app_time_stats: avg=26.03ms min=10.34ms max=76.23ms count=41
+11-01 03:09:28.499   530   544 W system_server: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/LatinIME/LatinIME.apk' with 1 weak references
+11-01 03:09:29.515  5245  5264 D EGL_emulation: app_time_stats: avg=21.19ms min=12.64ms max=43.26ms count=48
+11-01 03:09:30.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:09:30.516  5245  5264 D EGL_emulation: app_time_stats: avg=24.38ms min=12.77ms max=51.35ms count=41
+11-01 03:09:31.119     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:09:31.534  5245  5264 D EGL_emulation: app_time_stats: avg=22.61ms min=12.40ms max=50.33ms count=45
+11-01 03:09:32.543  5245  5264 D EGL_emulation: app_time_stats: avg=19.36ms min=11.61ms max=37.99ms count=52
+11-01 03:09:33.557  5245  5264 D EGL_emulation: app_time_stats: avg=22.02ms min=12.12ms max=34.05ms count=46
+11-01 03:09:34.577  5245  5264 D EGL_emulation: app_time_stats: avg=20.38ms min=11.70ms max=35.07ms count=50
+11-01 03:09:35.581  5245  5264 D EGL_emulation: app_time_stats: avg=19.66ms min=13.01ms max=35.20ms count=51
+11-01 03:09:36.582  5245  5264 D EGL_emulation: app_time_stats: avg=18.52ms min=11.37ms max=39.31ms count=54
+11-01 03:09:37.604  5245  5264 D EGL_emulation: app_time_stats: avg=21.22ms min=10.36ms max=42.97ms count=48
+11-01 03:09:38.277   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:09:38.611  5245  5264 D EGL_emulation: app_time_stats: avg=20.52ms min=13.30ms max=36.05ms count=49
+11-01 03:09:39.634  5245  5264 D EGL_emulation: app_time_stats: avg=18.87ms min=10.76ms max=38.55ms count=54
+11-01 03:09:40.656  5245  5264 D EGL_emulation: app_time_stats: avg=19.61ms min=13.51ms max=34.53ms count=52
+11-01 03:09:41.656  5245  5264 D EGL_emulation: app_time_stats: avg=22.20ms min=10.96ms max=42.36ms count=45
+11-01 03:09:42.665  5245  5264 D EGL_emulation: app_time_stats: avg=26.52ms min=13.62ms max=40.62ms count=38
+11-01 03:09:43.667  5245  5264 D EGL_emulation: app_time_stats: avg=22.23ms min=13.32ms max=43.92ms count=45
+11-01 03:09:44.685  5245  5264 D EGL_emulation: app_time_stats: avg=21.18ms min=11.55ms max=39.13ms count=48
+11-01 03:09:45.691  5245  5264 D EGL_emulation: app_time_stats: avg=23.35ms min=12.50ms max=39.16ms count=43
+11-01 03:09:46.208   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:09:46.711  5245  5264 D EGL_emulation: app_time_stats: avg=24.26ms min=12.63ms max=44.54ms count=42
+11-01 03:09:47.714  5245  5264 D EGL_emulation: app_time_stats: avg=23.31ms min=10.18ms max=47.82ms count=43
+11-01 03:09:48.734  5245  5264 D EGL_emulation: app_time_stats: avg=25.45ms min=15.82ms max=47.73ms count=40
+11-01 03:09:49.746  5245  5264 D EGL_emulation: app_time_stats: avg=24.66ms min=13.48ms max=42.20ms count=41
+11-01 03:09:50.756  5245  5264 D EGL_emulation: app_time_stats: avg=26.55ms min=12.85ms max=42.09ms count=38
+11-01 03:09:51.787  5245  5264 D EGL_emulation: app_time_stats: avg=20.17ms min=11.23ms max=43.26ms count=51
+11-01 03:09:52.814  5245  5264 D EGL_emulation: app_time_stats: avg=22.76ms min=12.11ms max=37.79ms count=45
+11-01 03:09:53.818  5245  5264 D EGL_emulation: app_time_stats: avg=27.86ms min=15.58ms max=42.72ms count=36
+11-01 03:09:54.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:09:54.821  5245  5264 D EGL_emulation: app_time_stats: avg=22.25ms min=12.51ms max=37.49ms count=45
+11-01 03:09:55.821  5245  5264 D EGL_emulation: app_time_stats: avg=19.57ms min=11.97ms max=39.58ms count=51
+11-01 03:09:56.830  5245  5264 D EGL_emulation: app_time_stats: avg=18.65ms min=11.61ms max=33.24ms count=54
+11-01 03:09:57.857  5245  5264 D EGL_emulation: app_time_stats: avg=21.38ms min=13.57ms max=35.31ms count=48
+11-01 03:09:58.870  5245  5264 D EGL_emulation: app_time_stats: avg=18.38ms min=11.93ms max=32.88ms count=55
+11-01 03:09:59.877  5245  5264 D EGL_emulation: app_time_stats: avg=24.53ms min=13.91ms max=39.96ms count=41
+11-01 03:10:00.066   765   939 D EGL_emulation: app_time_stats: avg=60013.14ms min=60013.14ms max=60013.14ms count=1
+11-01 03:10:00.888  5245  5264 D EGL_emulation: app_time_stats: avg=25.89ms min=14.96ms max=36.79ms count=39
+11-01 03:10:01.910  5245  5264 D EGL_emulation: app_time_stats: avg=27.60ms min=12.23ms max=45.90ms count=37
+11-01 03:10:02.337   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:10:02.922  5245  5264 D EGL_emulation: app_time_stats: avg=22.42ms min=12.87ms max=34.79ms count=45
+11-01 03:10:03.930  5245  5264 D EGL_emulation: app_time_stats: avg=22.39ms min=12.44ms max=41.53ms count=45
+11-01 03:10:04.367   765   939 D EGL_emulation: app_time_stats: avg=4300.77ms min=4300.77ms max=4300.77ms count=1
+11-01 03:10:04.943  5245  5264 D EGL_emulation: app_time_stats: avg=25.94ms min=14.68ms max=50.60ms count=39
+11-01 03:10:05.949  5245  5264 D EGL_emulation: app_time_stats: avg=19.70ms min=10.86ms max=35.57ms count=51
+11-01 03:10:06.969  5245  5264 D EGL_emulation: app_time_stats: avg=21.21ms min=10.77ms max=42.37ms count=48
+11-01 03:10:07.977  5245  5264 D EGL_emulation: app_time_stats: avg=19.35ms min=12.61ms max=36.50ms count=52
+11-01 03:10:08.977  5245  5264 D EGL_emulation: app_time_stats: avg=20.38ms min=12.04ms max=36.58ms count=49
+11-01 03:10:09.978  5245  5264 D EGL_emulation: app_time_stats: avg=20.82ms min=10.87ms max=36.22ms count=48
+11-01 03:10:10.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:10:10.978  5245  5264 D EGL_emulation: app_time_stats: avg=26.29ms min=13.95ms max=45.02ms count=38
+11-01 03:10:11.989  5245  5264 D EGL_emulation: app_time_stats: avg=25.23ms min=13.24ms max=40.96ms count=40
+11-01 03:10:13.014  5245  5264 D EGL_emulation: app_time_stats: avg=20.46ms min=10.84ms max=34.16ms count=50
+11-01 03:10:14.044  5245  5264 D EGL_emulation: app_time_stats: avg=20.55ms min=13.17ms max=35.10ms count=50
+11-01 03:10:14.138   818   826 I rkstack.process: Background concurrent mark compact GC freed 2584KB AllocSpace bytes, 0(0B) LOS objects, 49% free, 2683KB/5367KB, paused 263us,6.825ms total 31.819ms
+11-01 03:10:15.057  5245  5264 D EGL_emulation: app_time_stats: avg=21.47ms min=12.33ms max=44.18ms count=47
+11-01 03:10:16.063  5245  5264 D EGL_emulation: app_time_stats: avg=20.92ms min=11.51ms max=35.80ms count=48
+11-01 03:10:17.081  5245  5264 D EGL_emulation: app_time_stats: avg=29.02ms min=13.96ms max=42.46ms count=35
+11-01 03:10:18.101  5245  5264 D EGL_emulation: app_time_stats: avg=26.12ms min=15.10ms max=42.81ms count=39
+11-01 03:10:18.464   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:10:19.104  5245  5264 D EGL_emulation: app_time_stats: avg=25.05ms min=12.71ms max=40.42ms count=40
+11-01 03:10:20.107  5245  5264 D EGL_emulation: app_time_stats: avg=24.42ms min=14.73ms max=43.27ms count=41
+11-01 03:10:21.125  5245  5264 D EGL_emulation: app_time_stats: avg=26.78ms min=13.05ms max=45.63ms count=38
+11-01 03:10:22.136  5245  5264 D EGL_emulation: app_time_stats: avg=25.21ms min=14.66ms max=35.59ms count=40
+11-01 03:10:23.162  5245  5264 D EGL_emulation: app_time_stats: avg=23.83ms min=11.19ms max=38.36ms count=43
+11-01 03:10:24.192  5245  5264 D EGL_emulation: app_time_stats: avg=27.08ms min=13.83ms max=40.64ms count=38
+11-01 03:10:25.209  5245  5264 D EGL_emulation: app_time_stats: avg=29.88ms min=17.18ms max=40.76ms count=34
+11-01 03:10:26.233  5245  5264 D EGL_emulation: app_time_stats: avg=29.22ms min=14.68ms max=47.42ms count=35
+11-01 03:10:26.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:10:27.245  5245  5264 D EGL_emulation: app_time_stats: avg=24.64ms min=10.99ms max=42.70ms count=41
+11-01 03:10:28.254  5245  5264 D EGL_emulation: app_time_stats: avg=21.42ms min=13.76ms max=37.36ms count=47
+11-01 03:10:29.285  5245  5264 D EGL_emulation: app_time_stats: avg=33.21ms min=22.65ms max=48.82ms count=31
+11-01 03:10:30.309  5245  5264 D EGL_emulation: app_time_stats: avg=31.02ms min=13.91ms max=53.40ms count=33
+11-01 03:10:31.124     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:10:31.346  5245  5264 D EGL_emulation: app_time_stats: avg=26.56ms min=13.77ms max=42.41ms count=39
+11-01 03:10:32.359  5245  5264 D EGL_emulation: app_time_stats: avg=25.30ms min=12.42ms max=41.88ms count=40
+11-01 03:10:33.371  5245  5264 D EGL_emulation: app_time_stats: avg=24.06ms min=12.41ms max=43.53ms count=42
+11-01 03:10:34.337   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:10:34.370   765   939 D EGL_emulation: app_time_stats: avg=30002.63ms min=30002.63ms max=30002.63ms count=1
+11-01 03:10:34.372  5245  5264 D EGL_emulation: app_time_stats: avg=24.35ms min=13.37ms max=47.76ms count=41
+11-01 03:10:35.383  5245  5264 D EGL_emulation: app_time_stats: avg=25.22ms min=12.99ms max=38.46ms count=40
+11-01 03:10:36.387  5245  5264 D EGL_emulation: app_time_stats: avg=25.08ms min=12.90ms max=43.74ms count=40
+11-01 03:10:37.399  5245  5264 D EGL_emulation: app_time_stats: avg=25.89ms min=12.32ms max=39.22ms count=39
+11-01 03:10:38.404  5245  5264 D EGL_emulation: app_time_stats: avg=19.69ms min=13.04ms max=39.21ms count=51
+11-01 03:10:39.413  5245  5264 D EGL_emulation: app_time_stats: avg=24.55ms min=10.78ms max=78.41ms count=41
+11-01 03:10:40.434  5245  5264 D EGL_emulation: app_time_stats: avg=26.14ms min=14.32ms max=44.94ms count=39
+11-01 03:10:41.451  5245  5264 D EGL_emulation: app_time_stats: avg=29.01ms min=12.79ms max=40.56ms count=35
+11-01 03:10:42.277   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:10:42.452  5245  5264 D EGL_emulation: app_time_stats: avg=23.80ms min=12.27ms max=42.51ms count=42
+11-01 03:10:43.461  5245  5264 D EGL_emulation: app_time_stats: avg=23.45ms min=12.84ms max=37.66ms count=43
+11-01 03:10:44.465  5245  5264 D EGL_emulation: app_time_stats: avg=21.79ms min=12.58ms max=34.07ms count=46
+11-01 03:10:45.466  5245  5264 D EGL_emulation: app_time_stats: avg=27.77ms min=13.48ms max=49.20ms count=36
+11-01 03:10:46.498  5245  5264 D EGL_emulation: app_time_stats: avg=26.44ms min=16.22ms max=44.20ms count=39
+11-01 03:10:47.498  5245  5264 D EGL_emulation: app_time_stats: avg=22.12ms min=13.70ms max=34.93ms count=45
+11-01 03:10:48.507  5245  5264 D EGL_emulation: app_time_stats: avg=23.95ms min=12.61ms max=41.95ms count=42
+11-01 03:10:49.516  5245  5264 D EGL_emulation: app_time_stats: avg=24.59ms min=11.48ms max=38.74ms count=41
+11-01 03:10:50.465   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:10:50.517  5245  5264 D EGL_emulation: app_time_stats: avg=24.38ms min=15.44ms max=41.29ms count=41
+--------- beginning of system
+11-01 03:10:51.005   765   804 V WindowManagerShell: Transition requested (#23): android.os.BinderProxy@9191e20 TransitionRequestInfo { type = CHANGE, triggerTask = null, pipTask = null, remoteTransition = null, displayChange = DisplayChange { displayId = 0, startAbsBounds = null, endAbsBounds = null, startRotation = 0, endRotation = 1, physicalDisplayChanged = false }, flags = 0, debugId = 23 }
+11-01 03:10:51.022   530   562 I ActivityTaskManager: Config changes=20000480 {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.185 fontWeightAdjustment=0}
+11-01 03:10:51.025   406   406 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+11-01 03:10:51.039   530   562 V ActivityTaskManager: Sending to IME proc com.android.inputmethod.latin new config {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w796dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 796, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.202 fontWeightAdjustment=0}
+11-01 03:10:51.041   530   562 I WindowManager: Override config changes=20000480 {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.185 fontWeightAdjustment=0} for displayId=0
+11-01 03:10:51.068   530   562 W ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+11-01 03:10:51.111   530   530 W WindowTokenClientController: Can't find attached WindowTokenClient for android.window.WindowTokenClient@17721a7
+11-01 03:10:51.113   530   562 I InputManager-JNI: Viewport [0] to add: local:4619827259835644672, isActive: true
+11-01 03:10:51.114   530   638 I InputReader: Reconfiguring input devices, changes=DISPLAY_INFO
+11-01 03:10:51.114   530   638 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.115   530   562 W IPCThreadState: Sending oneway calls to frozen process.
+11-01 03:10:51.119   765   765 I NoBackGesture: Config changed: newConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.209 fontWeightAdjustment=0} lastReportedConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.181 fontWeightAdjustment=0}
+11-01 03:10:51.130   530   638 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.131   530   638 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.131   530   638 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.131   530   638 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.131   530   638 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.131   530   638 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.131   530   638 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.131   530   638 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.131   530   638 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:10:51.140  5245  5245 V SDL     : onConfigurationChanged()
+11-01 03:10:51.153   765   765 I NoBackGesture: NavbarController: newConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.209 fontWeightAdjustment=0} mTaskbarDelegate initialized=true willApplyConfigToNavbars=false navBarCount=0
+11-01 03:10:51.161   765   804 V ShellDragAndDrop: Display changed: 0
+11-01 03:10:51.163   765   804 W Looper  : Slow dispatch took 61ms wmshell.main h=android.os.Handler c=com.android.wm.shell.common.DisplayController$DisplayWindowListenerImpl$$ExternalSyntheticLambda5@b88b19e m=0
+11-01 03:10:51.165   765   804 W Looper  : Slow delivery took 60ms wmshell.main h=android.os.Handler c=com.android.wm.shell.common.DisplayInsetsController$PerDisplay$DisplayWindowInsetsControllerImpl$$ExternalSyntheticLambda3@d85f47f m=0
+11-01 03:10:51.165   765   804 D ShellSplitScreen: onTaskInfoChanged: taskId=4 taskAct=null
+11-01 03:10:51.172  5245  5245 V SDL     : surfaceChanged()
+11-01 03:10:51.172  5245  5245 V SDL     : Window size: 844x390
+11-01 03:10:51.172  5245  5245 V SDL     : Device size: 844x390
+11-01 03:10:51.187   765   804 W Looper  : Drained
+11-01 03:10:51.214   530  2099 I WindowManager: finishDrawing of orientation change: Window{d775a70 u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} 110ms
+11-01 03:10:51.221  1130  1130 D b/254119092: TaskbarManager#mComponentCallbacks.onConfigurationChanged: {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.185 fontWeightAdjustment=0}
+11-01 03:10:51.221  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: No service published for: ethernet
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: ethernet
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.os.ServiceManager.getServiceOrThrow(ServiceManager.java:203)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$145.createService(SystemServiceRegistry.java:2120)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$CachedServiceFetcher.getService(SystemServiceRegistry.java:2231)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry.getSystemService(SystemServiceRegistry.java:1812)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.app.ContextImpl.getSystemService(ContextImpl.java:2241)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.content.ContextWrapper.getSystemService(ContextWrapper.java:936)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.isEthernetSupported(Tethering.java:1579)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.makeSupportedDownstreams(Tethering.java:2562)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateSupportedDownstreams(Tethering.java:2536)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateConfiguration(Tethering.java:549)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.-$$Nest$mupdateConfiguration(Tethering.java:0)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering$StateReceiver.onReceive(Tethering.java:1186)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0(LoadedApk.java:1814)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.$r8$lambda$mcNAAl1SQ4MyJPyDg8TJ2x2h0Rk(Unknown Source:0)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.os.Looper.loop(Looper.java:317)
+11-01 03:10:51.236   818   937 E SystemServiceRegistry: 	at android.os.HandlerThread.run(HandlerThread.java:85)
+11-01 03:10:51.240  1130  1130 D b/254119092: ComponentCallbacks#onConfigurationChanged() configDiff={}
+11-01 03:10:51.240  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 03:10:51.240  1130  1130 D b/254119092: destroyExistingTaskbar: com.android.launcher3.taskbar.TaskbarActivityContext@d7a6bd5
+11-01 03:10:51.240  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 03:10:51.249  1130  1130 D View    : ---- ST:requestLayout 
+11-01 03:10:51.250  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- removeAllViews(ViewGroup.java:5740) <- onDestroy(NavbarButtonsViewController.java:949) <- onDestroy(TaskbarControllers.java:232) <- onDestroy(TaskbarActivityContext.java:804) <- destroyExistingTaskbar(TaskbarManager.java:327) <- recreateTaskbar(TaskbarManager.java:454) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- 
+11-01 03:10:51.258   530   559 V WindowManager: Sent Transition (#23) createdAt=११-०१ ०३:१०:५१.००४ via request=TransitionRequestInfo { type = CHANGE, triggerTask = null, pipTask = null, remoteTransition = null, displayChange = DisplayChange { displayId = 0, startAbsBounds = null, endAbsBounds = null, startRotation = 0, endRotation = 1, physicalDisplayChanged = false }, flags = 0, debugId = 23 }
+11-01 03:10:51.259   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 03:10:51.259   530   559 V WindowManager:     info={id=23 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-01 03:10:51.259   530   559 V WindowManager:         {WCT{RemoteToken{cdaa17d Task{efcc0d3 #26 type=standard A=10148:org.globulation2.glob2}}} m=CHANGE f=NONE p=WCT{RemoteToken{6517921 DefaultTaskDisplayArea@224221117}} leash=Surface(name=Task=26)/@0xe3e3d27 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:0 taskParent=-1},
+11-01 03:10:51.259   530   559 V WindowManager:         {WCT{RemoteToken{6517921 DefaultTaskDisplayArea@224221117}} m=CHANGE f=NONE p=WCT{RemoteToken{41ed146 Display{#0 state=ON size=844x390 ROTATION_90}}} leash=Surface(name=DefaultTaskDisplayArea)/@0x8ad7b2b sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1},
+11-01 03:10:51.259   530   559 V WindowManager:         {WCT{RemoteToken{41ed146 Display{#0 state=ON size=844x390 ROTATION_90}}} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xa90bfc6 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1}
+11-01 03:10:51.259   530   559 V WindowManager:     ]}
+11-01 03:10:51.263   765   775 V WindowManagerShell: onTransitionReady(transaction=2276332667981)
+11-01 03:10:51.268   765   804 V WindowManagerShell: onTransitionReady (#23) android.os.BinderProxy@9191e20: {id=23 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@4280b62} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@850e4f3} leash=Surface(name=Task=26)/@0xa0e6ff1 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@725b5b0} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@e8a2c29} leash=Surface(name=DefaultTaskDisplayArea)/@0x3a747d6 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@aff7bae} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xba0fa57 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1 snapshot=Surface(name=RotationLayer)/@0x61b4944}]}
+11-01 03:10:51.268   765   804 V WindowManagerShell: Playing animation for (#23) android.os.BinderProxy@9191e20@0
+11-01 03:10:51.269   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 03:10:51.269   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 03:10:51.269   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 03:10:51.269   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 03:10:51.269   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 03:10:51.269   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 03:10:51.269   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 03:10:51.269   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 03:10:51.270   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 03:10:51.270   765   804 V WindowManagerShell: start default transition animation, info = {id=23 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@4280b62} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@850e4f3} leash=Surface(name=Task=26)/@0xa0e6ff1 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@725b5b0} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@e8a2c29} leash=Surface(name=DefaultTaskDisplayArea)/@0x3a747d6 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@aff7bae} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xba0fa57 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 844, 390) d=0 r=0->1:-1 snapshot=Surface(name=RotationLayer)/@0x61b4944}]}
+11-01 03:10:51.270   765   804 V WindowManagerShell: Display is changing, resolve the animation hint.
+11-01 03:10:51.270   765   804 V WindowManagerShell:   task 26 isn't requesting seamless, so not seamless.
+11-01 03:10:51.285  1130  1130 D b/254119092: recreateTaskbar: isTaskbarEnabled=true [dp != null (i.e. mUserUnlocked)]=true FLAG_HIDE_NAVBAR_WINDOW=true dp.isTaskbarPresent=false
+11-01 03:10:51.285  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 03:10:51.290   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 03:10:51.316  5245  5245 V SDL     : onWindowFocusChanged(): false
+11-01 03:10:51.316  5245  5245 V SDL     : nativeFocusChanged()
+11-01 03:10:51.333  1130  1130 E Overrides: Bad overriden class
+11-01 03:10:51.333  1130  1130 E Overrides: java.lang.NoSuchMethodException: com.android.launcher3.taskbar.TaskbarModelCallbacksFactory.<init> [class android.content.Context]
+11-01 03:10:51.333  1130  1130 E Overrides: 	at java.lang.Class.getConstructor0(Class.java:3395)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at java.lang.Class.getDeclaredConstructor(Class.java:3077)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.launcher3.util.ResourceBasedOverride$Overrides.getObject(ResourceBasedOverride.java:42)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarModelCallbacksFactory$Companion.newInstance(TaskbarModelCallbacksFactory.kt:35)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarModelCallbacksFactory.newInstance(Unknown Source:2)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewController.<init>(TaskbarViewController.java:163)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarActivityContext.<init>(TaskbarActivityContext.java:271)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager.recreateTaskbar(TaskbarManager.java:468)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager$4.onConfigurationChanged(TaskbarManager.java:284)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController$$ExternalSyntheticLambda2.accept(D8$$SyntheticClass:0)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.forAllComponentCallbacks(ComponentCallbacksController.java:124)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.dispatchConfigurationChanged(ComponentCallbacksController.java:91)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.window.WindowContext.dispatchConfigurationChanged(WindowContext.java:142)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChangedInner(WindowTokenClient.java:205)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:155)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:112)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.window.WindowTokenClientController.onWindowContextInfoChanged(WindowTokenClientController.java:207)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.app.ActivityThread.handleWindowContextInfoChanged(ActivityThread.java:6595)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.app.servertransaction.WindowContextInfoChangeItem.execute(WindowContextInfoChangeItem.java:45)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:174)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:109)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.os.Looper.loop(Looper.java:317)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at java.lang.reflect.Method.invoke(Native Method)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-01 03:10:51.333  1130  1130 E Overrides: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-01 03:10:51.342   360  4881 I RanchuHwc: logCompositionFallbackIfChanged: layer 82 CompositionType fallback from 3 to 1
+11-01 03:10:51.371  1130  1130 E Overrides: Bad overriden class
+11-01 03:10:51.371  1130  1130 E Overrides: java.lang.NoSuchMethodException: com.android.launcher3.taskbar.TaskbarViewCallbacksFactory.<init> [class android.content.Context]
+11-01 03:10:51.371  1130  1130 E Overrides: 	at java.lang.Class.getConstructor0(Class.java:3395)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at java.lang.Class.getDeclaredConstructor(Class.java:3077)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.launcher3.util.ResourceBasedOverride$Overrides.getObject(ResourceBasedOverride.java:42)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewCallbacksFactory$Companion.newInstance(TaskbarViewCallbacksFactory.kt:36)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewCallbacksFactory.newInstance(Unknown Source:2)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewController.init(TaskbarViewController.java:177)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarControllers.init(TaskbarControllers.java:156)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarActivityContext.init(TaskbarActivityContext.java:367)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager.recreateTaskbar(TaskbarManager.java:477)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager$4.onConfigurationChanged(TaskbarManager.java:284)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController$$ExternalSyntheticLambda2.accept(D8$$SyntheticClass:0)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.forAllComponentCallbacks(ComponentCallbacksController.java:124)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.dispatchConfigurationChanged(ComponentCallbacksController.java:91)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.window.WindowContext.dispatchConfigurationChanged(WindowContext.java:142)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChangedInner(WindowTokenClient.java:205)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:155)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:112)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.window.WindowTokenClientController.onWindowContextInfoChanged(WindowTokenClientController.java:207)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.app.ActivityThread.handleWindowContextInfoChanged(ActivityThread.java:6595)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.app.servertransaction.WindowContextInfoChangeItem.execute(WindowContextInfoChangeItem.java:45)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:174)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:109)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.os.Looper.loop(Looper.java:317)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at java.lang.reflect.Method.invoke(Native Method)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-01 03:10:51.371  1130  1130 E Overrides: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-01 03:10:51.443  5245  5245 V SDL     : onWindowFocusChanged(): true
+11-01 03:10:51.443  5245  5245 V SDL     : nativeFocusChanged()
+11-01 03:10:51.449   530   645 I ImeTracker: org.globulation2.glob2:8e9fe73c: onRequestHide at ORIGIN_SERVER reason HIDE_SAME_WINDOW_FOCUSED_WITHOUT_EDITOR fromUser false
+11-01 03:10:51.450   530   645 I ImeTracker: org.globulation2.glob2:8e9fe73c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 03:10:51.489  1130  1130 D View    : ---- ST:requestLayout 
+11-01 03:10:51.489  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- removeAllViews(ViewGroup.java:5740) <- recreateTaskbar(TaskbarManager.java:486) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- executeNonLifecycleItem(TransactionExecutor.java:174) <- executeTransactionItems(TransactionExecutor.java:109) <- execute(TransactionExecutor.java:81) <- 
+11-01 03:10:51.489  1130  1130 D View    : ---- ST:requestLayout 
+11-01 03:10:51.489  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- addView(ViewGroup.java:5083) <- addView(ViewGroup.java:5025) <- addView(ViewGroup.java:4997) <- recreateTaskbar(TaskbarManager.java:487) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- executeNonLifecycleItem(TransactionExecutor.java:174) <- 
+11-01 03:10:51.498  1130  1130 D View    : ---- ST:requestLayout 
+11-01 03:10:51.499  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- setLayoutParams(View.java:20530) <- updateViewLayout(WindowManagerGlobal.java:464) <- updateViewLayout(WindowManagerImpl.java:165) <- notifyUpdateLayoutParams(TaskbarActivityContext.java:1528) <- recreateTaskbar(TaskbarManager.java:488) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- 
+11-01 03:10:51.523  1130  1130 D b/254119092: DisplayController#onConfigurationChanged: {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.185 fontWeightAdjustment=0}
+11-01 03:10:51.587   530  5232 I WindowManager: finishDrawing of orientation change: Window{8e26942 u0 StatusBar} 483ms
+11-01 03:10:51.590   765   765 D DisplayRepository: combining enabled=[0], connectedExternalDisplayIds=[], ignored=[]
+11-01 03:10:51.598   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#23) android.os.BinderProxy@9191e20@0
+11-01 03:10:51.599  5245  5264 D EGL_emulation: app_time_stats: avg=41.32ms min=14.93ms max=295.26ms count=26
+11-01 03:10:51.614   530   559 V WindowManager: Finish Transition (#23): created at ११-०१ ०३:१०:५१.००४ collect-started=0.145ms request-sent=0.253ms started=11.418ms ready=96.193ms sent=244.944ms finished=601.326ms
+11-01 03:10:51.621   765   804 V WindowManagerShell: Track 0 became idle
+11-01 03:10:51.624   765   804 V WindowManagerShell: All active transition animations finished
+11-01 03:10:51.627   530  5232 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 03:10:51.633   765   765 D DisplayRepository: combining enabled=[0], connectedExternalDisplayIds=[], ignored=[]
+11-01 03:10:51.634   765   765 D DefaultDeviceEntrySection: isUdfpsSupported=false
+11-01 03:10:51.683   530  5232 I WindowManager: finishDrawing of orientation change: Window{a54b9ca u0 Taskbar} 579ms
+11-01 03:10:52.621  5245  5264 D EGL_emulation: app_time_stats: avg=62.79ms min=13.00ms max=214.08ms count=16
+11-01 03:10:53.645  5245  5264 D EGL_emulation: app_time_stats: avg=30.10ms min=16.97ms max=42.78ms count=34
+11-01 03:10:54.653  5245  5264 D EGL_emulation: app_time_stats: avg=27.18ms min=14.64ms max=45.19ms count=37
+11-01 03:10:54.668  5627  5627 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:10:54.670  5627  5627 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:10:54.690   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:10:54.691  5627  5628 I Gralloc4: mapper 4.x is not supported
+11-01 03:10:54.854     0     0 I servicemanager: Caller(pid=5627,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:10:55.683  5245  5264 D EGL_emulation: app_time_stats: avg=28.49ms min=15.10ms max=74.11ms count=36
+11-01 03:10:56.916  5245  5264 D EGL_emulation: app_time_stats: avg=45.55ms min=17.75ms max=468.01ms count=27
+11-01 03:10:57.920  5245  5264 D EGL_emulation: app_time_stats: avg=25.07ms min=13.24ms max=40.99ms count=40
+11-01 03:10:58.402   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:10:58.945  5245  5264 D EGL_emulation: app_time_stats: avg=32.99ms min=14.93ms max=153.19ms count=31
+11-01 03:10:59.965  5245  5264 D EGL_emulation: app_time_stats: avg=24.25ms min=13.13ms max=98.76ms count=42
+11-01 03:11:00.110   765   939 D EGL_emulation: app_time_stats: avg=4260.24ms min=126.75ms max=8393.74ms count=2
+11-01 03:11:00.983  5245  5264 D EGL_emulation: app_time_stats: avg=29.92ms min=11.94ms max=45.69ms count=34
+11-01 03:11:01.995  5245  5264 D EGL_emulation: app_time_stats: avg=27.32ms min=11.81ms max=48.62ms count=37
+11-01 03:11:03.000  5245  5264 D EGL_emulation: app_time_stats: avg=27.88ms min=10.78ms max=38.55ms count=36
+11-01 03:11:04.019  5245  5264 D EGL_emulation: app_time_stats: avg=28.27ms min=15.68ms max=52.14ms count=36
+11-01 03:11:05.020  5245  5264 D EGL_emulation: app_time_stats: avg=26.31ms min=14.76ms max=39.90ms count=38
+11-01 03:11:06.027  5245  5264 D EGL_emulation: app_time_stats: avg=25.79ms min=14.26ms max=42.94ms count=39
+11-01 03:11:06.337   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:11:07.059  5245  5264 D EGL_emulation: app_time_stats: avg=24.00ms min=12.22ms max=39.03ms count=43
+11-01 03:11:08.076  5245  5264 D EGL_emulation: app_time_stats: avg=30.79ms min=15.05ms max=150.56ms count=33
+11-01 03:11:09.084  5245  5264 D EGL_emulation: app_time_stats: avg=27.96ms min=13.29ms max=40.76ms count=36
+11-01 03:11:10.088  5245  5264 D EGL_emulation: app_time_stats: avg=25.06ms min=13.84ms max=35.96ms count=40
+11-01 03:11:11.097  5245  5264 D EGL_emulation: app_time_stats: avg=26.51ms min=13.71ms max=50.56ms count=38
+11-01 03:11:12.100  5245  5264 D EGL_emulation: app_time_stats: avg=27.09ms min=12.43ms max=132.94ms count=37
+11-01 03:11:13.121  5245  5264 D EGL_emulation: app_time_stats: avg=26.15ms min=13.50ms max=38.65ms count=39
+11-01 03:11:14.131  5245  5264 D EGL_emulation: app_time_stats: avg=27.94ms min=15.47ms max=49.92ms count=36
+11-01 03:11:14.280   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:11:15.145  5245  5264 D EGL_emulation: app_time_stats: avg=28.05ms min=14.41ms max=49.22ms count=36
+11-01 03:11:16.154  5245  5264 D EGL_emulation: app_time_stats: avg=24.58ms min=11.41ms max=43.20ms count=41
+11-01 03:11:17.184  5245  5264 D EGL_emulation: app_time_stats: avg=25.09ms min=14.50ms max=41.01ms count=41
+11-01 03:11:18.218  5245  5264 D EGL_emulation: app_time_stats: avg=24.04ms min=11.95ms max=45.24ms count=43
+11-01 03:11:19.246  5245  5264 D EGL_emulation: app_time_stats: avg=25.00ms min=12.93ms max=38.18ms count=41
+11-01 03:11:20.265  5245  5264 D EGL_emulation: app_time_stats: avg=24.84ms min=12.54ms max=41.03ms count=41
+11-01 03:11:21.271  5245  5264 D EGL_emulation: app_time_stats: avg=20.09ms min=10.65ms max=39.10ms count=50
+11-01 03:11:22.222   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:11:22.278  5245  5264 D EGL_emulation: app_time_stats: avg=22.83ms min=10.66ms max=43.86ms count=44
+11-01 03:11:23.317  5245  5264 D EGL_emulation: app_time_stats: avg=24.13ms min=14.86ms max=42.91ms count=43
+11-01 03:11:24.342  5245  5264 D EGL_emulation: app_time_stats: avg=27.66ms min=13.39ms max=78.65ms count=37
+11-01 03:11:25.344  5245  5264 D EGL_emulation: app_time_stats: avg=26.36ms min=13.92ms max=43.12ms count=38
+11-01 03:11:26.346  5245  5264 D EGL_emulation: app_time_stats: avg=21.76ms min=12.46ms max=42.16ms count=46
+11-01 03:11:27.357  5245  5264 D EGL_emulation: app_time_stats: avg=27.23ms min=14.36ms max=38.71ms count=37
+11-01 03:11:28.840  5245  5264 D EGL_emulation: app_time_stats: avg=49.40ms min=10.73ms max=654.10ms count=30
+11-01 03:11:29.851  5245  5264 D EGL_emulation: app_time_stats: avg=23.48ms min=11.46ms max=34.50ms count=43
+11-01 03:11:30.407   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:11:30.875  5245  5264 D EGL_emulation: app_time_stats: avg=26.89ms min=13.09ms max=47.80ms count=38
+11-01 03:11:31.120     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:11:31.880  5245  5264 D EGL_emulation: app_time_stats: avg=27.12ms min=16.25ms max=46.12ms count=37
+11-01 03:11:32.900  5245  5264 D EGL_emulation: app_time_stats: avg=28.32ms min=12.90ms max=49.84ms count=36
+11-01 03:11:33.924  5245  5264 D EGL_emulation: app_time_stats: avg=30.07ms min=16.58ms max=42.41ms count=34
+11-01 03:11:34.949  5245  5264 D EGL_emulation: app_time_stats: avg=27.65ms min=14.03ms max=49.00ms count=37
+11-01 03:11:35.952  5245  5264 D EGL_emulation: app_time_stats: avg=30.37ms min=17.60ms max=49.55ms count=33
+11-01 03:11:36.952  5245  5264 D EGL_emulation: app_time_stats: avg=30.28ms min=15.40ms max=41.52ms count=33
+11-01 03:11:37.969  5245  5264 D EGL_emulation: app_time_stats: avg=33.86ms min=19.33ms max=56.72ms count=30
+11-01 03:11:38.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:11:38.971  5245  5264 D EGL_emulation: app_time_stats: avg=31.23ms min=17.05ms max=50.52ms count=32
+11-01 03:11:39.987  5245  5264 D EGL_emulation: app_time_stats: avg=34.99ms min=13.11ms max=83.59ms count=29
+11-01 03:11:41.008  5245  5264 D EGL_emulation: app_time_stats: avg=29.15ms min=14.28ms max=97.18ms count=35
+11-01 03:11:42.013  5245  5264 D EGL_emulation: app_time_stats: avg=32.37ms min=19.92ms max=44.45ms count=31
+11-01 03:11:43.018  5245  5264 D EGL_emulation: app_time_stats: avg=27.90ms min=12.51ms max=49.54ms count=36
+11-01 03:11:44.029  5245  5264 D EGL_emulation: app_time_stats: avg=27.30ms min=12.82ms max=39.52ms count=37
+11-01 03:11:45.040  5245  5264 D EGL_emulation: app_time_stats: avg=26.57ms min=14.58ms max=45.77ms count=38
+11-01 03:11:45.549   765   804 V WindowManagerShell: Transition requested (#24): android.os.BinderProxy@7b6abf7 TransitionRequestInfo { type = CHANGE, triggerTask = null, pipTask = null, remoteTransition = null, displayChange = DisplayChange { displayId = 0, startAbsBounds = null, endAbsBounds = null, startRotation = 1, endRotation = 0, physicalDisplayChanged = false }, flags = 0, debugId = 24 }
+11-01 03:11:45.586   530   562 I ActivityTaskManager: Config changes=20000480 {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.213 fontWeightAdjustment=0}
+11-01 03:11:45.592   406   406 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+11-01 03:11:45.598   530   562 V ActivityTaskManager: Sending to IME proc com.android.inputmethod.latin new config {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h796dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 796) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.230 fontWeightAdjustment=0}
+11-01 03:11:45.616   530   562 I WindowManager: Override config changes=20000480 {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.213 fontWeightAdjustment=0} for displayId=0
+11-01 03:11:45.635   530   562 W ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+11-01 03:11:45.647   530   530 W WindowTokenClientController: Can't find attached WindowTokenClient for android.window.WindowTokenClient@17721a7
+11-01 03:11:45.651   765   804 V ShellDragAndDrop: Display changed: 0
+11-01 03:11:45.657  5245  5245 V SDL     : onConfigurationChanged()
+11-01 03:11:45.668   530   562 I InputManager-JNI: Viewport [0] to add: local:4619827259835644672, isActive: true
+11-01 03:11:45.671  1130  1130 D b/254119092: TaskbarManager#mComponentCallbacks.onConfigurationChanged: {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.213 fontWeightAdjustment=0}
+11-01 03:11:45.671  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 03:11:45.673   765   765 I NoBackGesture: Config changed: newConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.237 fontWeightAdjustment=0} lastReportedConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w844dp h390dp 160dpi nrml long land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 844, 390) mAppBounds=Rect(0, 0 - 844, 390) mMaxBounds=Rect(0, 0 - 844, 390) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} s.209 fontWeightAdjustment=0}
+11-01 03:11:45.673   765   765 I NoBackGesture: NavbarController: newConfig={1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.237 fontWeightAdjustment=0} mTaskbarDelegate initialized=true willApplyConfigToNavbars=false navBarCount=0
+11-01 03:11:45.674   530   562 W IPCThreadState: Sending oneway calls to frozen process.
+11-01 03:11:45.675   765   804 D ShellSplitScreen: onTaskInfoChanged: taskId=4 taskAct=null
+11-01 03:11:45.676   530   638 I InputReader: Reconfiguring input devices, changes=DISPLAY_INFO
+11-01 03:11:45.676   530   638 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.683  1130  1130 D b/254119092: ComponentCallbacks#onConfigurationChanged() configDiff={}
+11-01 03:11:45.683  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 03:11:45.683  1130  1130 D b/254119092: destroyExistingTaskbar: com.android.launcher3.taskbar.TaskbarActivityContext@7a7b0f1
+11-01 03:11:45.683  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.684   530   638 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+11-01 03:11:45.702  5245  5245 V SDL     : surfaceChanged()
+11-01 03:11:45.704  5245  5245 V SDL     : Window size: 390x844
+11-01 03:11:45.704  5245  5245 V SDL     : Device size: 390x844
+11-01 03:11:45.727  1130  1130 D View    : ---- ST:requestLayout 
+11-01 03:11:45.734   530  2098 I WindowManager: finishDrawing of orientation change: Window{d775a70 u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} 81ms
+11-01 03:11:45.735  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- removeAllViews(ViewGroup.java:5740) <- onDestroy(NavbarButtonsViewController.java:949) <- onDestroy(TaskbarControllers.java:232) <- onDestroy(TaskbarActivityContext.java:804) <- destroyExistingTaskbar(TaskbarManager.java:327) <- recreateTaskbar(TaskbarManager.java:454) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- 
+11-01 03:11:45.738   765   804 W Looper  : Slow dispatch took 34ms wmshell.main h=android.os.Handler c=com.android.wm.shell.sysui.ShellController$ShellInterfaceImpl$$ExternalSyntheticLambda2@d48512e m=0
+11-01 03:11:45.755  1130  1130 D b/254119092: recreateTaskbar: isTaskbarEnabled=true [dp != null (i.e. mUserUnlocked)]=true FLAG_HIDE_NAVBAR_WINDOW=true dp.isTaskbarPresent=false
+11-01 03:11:45.755  1130  1130 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+11-01 03:11:45.755   765  5244 V WindowManagerShell: onTransitionReady(transaction=2276332668022)
+11-01 03:11:45.756   765   804 V WindowManagerShell: onTransitionReady (#24) android.os.BinderProxy@7b6abf7: {id=24 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@24f9cfd} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@6691df2} leash=Surface(name=Task=26)/@0x81ff6a8 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d0dac43} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@820f2c0} leash=Surface(name=DefaultTaskDisplayArea)/@0xb365c1 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@7e0bf9} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0x9a95166 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1 snapshot=Surface(name=RotationLayer)/@0xec8eca7}]}
+11-01 03:11:45.757   765   804 V WindowManagerShell: Playing animation for (#24) android.os.BinderProxy@7b6abf7@0
+11-01 03:11:45.764   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 03:11:45.764   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 03:11:45.765   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 03:11:45.765   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 03:11:45.765   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 03:11:45.765   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 03:11:45.765   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 03:11:45.765   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 03:11:45.765   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 03:11:45.766   765   804 V WindowManagerShell: start default transition animation, info = {id=24 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@24f9cfd} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@6691df2} leash=Surface(name=Task=26)/@0x81ff6a8 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d0dac43} m=CHANGE f=NONE p=WCT{android.window.IWindowContainerToken$Stub$Proxy@820f2c0} leash=Surface(name=DefaultTaskDisplayArea)/@0xb365c1 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@7e0bf9} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0x9a95166 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1 snapshot=Surface(name=RotationLayer)/@0xec8eca7}]}
+11-01 03:11:45.766   765   804 V WindowManagerShell: Display is changing, resolve the animation hint.
+11-01 03:11:45.766   765   804 V WindowManagerShell:   task 26 isn't requesting seamless, so not seamless.
+11-01 03:11:45.766   530   559 V WindowManager: Sent Transition (#24) createdAt=११-०१ ०३:११:४५.५४६ via request=TransitionRequestInfo { type = CHANGE, triggerTask = null, pipTask = null, remoteTransition = null, displayChange = DisplayChange { displayId = 0, startAbsBounds = null, endAbsBounds = null, startRotation = 1, endRotation = 0, physicalDisplayChanged = false }, flags = 0, debugId = 24 }
+11-01 03:11:45.766   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 03:11:45.767   530   559 V WindowManager:     info={id=24 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-01 03:11:45.767   530   559 V WindowManager:         {WCT{RemoteToken{cdaa17d Task{efcc0d3 #26 type=standard A=10148:org.globulation2.glob2}}} m=CHANGE f=NONE p=WCT{RemoteToken{6517921 DefaultTaskDisplayArea@224221117}} leash=Surface(name=Task=26)/@0xe3e3d27 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:0 taskParent=-1},
+11-01 03:11:45.767   530   559 V WindowManager:         {WCT{RemoteToken{6517921 DefaultTaskDisplayArea@224221117}} m=CHANGE f=NONE p=WCT{RemoteToken{41ed146 Display{#0 state=ON size=390x844 ROTATION_0}}} leash=Surface(name=DefaultTaskDisplayArea)/@0x8ad7b2b sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1},
+11-01 03:11:45.767   530   559 V WindowManager:         {WCT{RemoteToken{41ed146 Display{#0 state=ON size=390x844 ROTATION_0}}} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xa90bfc6 sb=Rect(0, 0 - 844, 390) eb=Rect(0, 0 - 390, 844) d=0 r=1->0:-1}
+11-01 03:11:45.767   530   559 V WindowManager:     ]}
+11-01 03:11:45.788   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 03:11:45.789   765   804 W Looper  : Slow dispatch took 33ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda0@9ee016 m=0
+11-01 03:11:45.798  5245  5245 V SDL     : onWindowFocusChanged(): false
+11-01 03:11:45.799  5245  5245 V SDL     : nativeFocusChanged()
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: No service published for: ethernet
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: ethernet
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.os.ServiceManager.getServiceOrThrow(ServiceManager.java:203)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$145.createService(SystemServiceRegistry.java:2120)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$CachedServiceFetcher.getService(SystemServiceRegistry.java:2231)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry.getSystemService(SystemServiceRegistry.java:1812)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.app.ContextImpl.getSystemService(ContextImpl.java:2241)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.content.ContextWrapper.getSystemService(ContextWrapper.java:936)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.isEthernetSupported(Tethering.java:1579)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.makeSupportedDownstreams(Tethering.java:2562)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateSupportedDownstreams(Tethering.java:2536)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateConfiguration(Tethering.java:549)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.-$$Nest$mupdateConfiguration(Tethering.java:0)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering$StateReceiver.onReceive(Tethering.java:1186)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0(LoadedApk.java:1814)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.$r8$lambda$mcNAAl1SQ4MyJPyDg8TJ2x2h0Rk(Unknown Source:0)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.os.Looper.loop(Looper.java:317)
+11-01 03:11:45.807   818   937 E SystemServiceRegistry: 	at android.os.HandlerThread.run(HandlerThread.java:85)
+11-01 03:11:45.825   360  4881 I RanchuHwc: logCompositionFallbackIfChanged: layer 89 CompositionType fallback from 3 to 1
+11-01 03:11:45.838  1130  1130 E Overrides: Bad overriden class
+11-01 03:11:45.838  1130  1130 E Overrides: java.lang.NoSuchMethodException: com.android.launcher3.taskbar.TaskbarModelCallbacksFactory.<init> [class android.content.Context]
+11-01 03:11:45.838  1130  1130 E Overrides: 	at java.lang.Class.getConstructor0(Class.java:3395)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at java.lang.Class.getDeclaredConstructor(Class.java:3077)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.launcher3.util.ResourceBasedOverride$Overrides.getObject(ResourceBasedOverride.java:42)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarModelCallbacksFactory$Companion.newInstance(TaskbarModelCallbacksFactory.kt:35)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarModelCallbacksFactory.newInstance(Unknown Source:2)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewController.<init>(TaskbarViewController.java:163)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarActivityContext.<init>(TaskbarActivityContext.java:271)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager.recreateTaskbar(TaskbarManager.java:468)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager$4.onConfigurationChanged(TaskbarManager.java:284)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController$$ExternalSyntheticLambda2.accept(D8$$SyntheticClass:0)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.forAllComponentCallbacks(ComponentCallbacksController.java:124)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.dispatchConfigurationChanged(ComponentCallbacksController.java:91)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.window.WindowContext.dispatchConfigurationChanged(WindowContext.java:142)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChangedInner(WindowTokenClient.java:205)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:155)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:112)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.window.WindowTokenClientController.onWindowContextInfoChanged(WindowTokenClientController.java:207)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.app.ActivityThread.handleWindowContextInfoChanged(ActivityThread.java:6595)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.app.servertransaction.WindowContextInfoChangeItem.execute(WindowContextInfoChangeItem.java:45)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:174)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:109)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.os.Looper.loop(Looper.java:317)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at java.lang.reflect.Method.invoke(Native Method)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-01 03:11:45.838  1130  1130 E Overrides: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-01 03:11:45.852  1130  1130 E Overrides: Bad overriden class
+11-01 03:11:45.852  1130  1130 E Overrides: java.lang.NoSuchMethodException: com.android.launcher3.taskbar.TaskbarViewCallbacksFactory.<init> [class android.content.Context]
+11-01 03:11:45.852  1130  1130 E Overrides: 	at java.lang.Class.getConstructor0(Class.java:3395)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at java.lang.Class.getDeclaredConstructor(Class.java:3077)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.launcher3.util.ResourceBasedOverride$Overrides.getObject(ResourceBasedOverride.java:42)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewCallbacksFactory$Companion.newInstance(TaskbarViewCallbacksFactory.kt:36)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewCallbacksFactory.newInstance(Unknown Source:2)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarViewController.init(TaskbarViewController.java:177)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarControllers.init(TaskbarControllers.java:156)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarActivityContext.init(TaskbarActivityContext.java:367)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager.recreateTaskbar(TaskbarManager.java:477)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.launcher3.taskbar.TaskbarManager$4.onConfigurationChanged(TaskbarManager.java:284)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController$$ExternalSyntheticLambda2.accept(D8$$SyntheticClass:0)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.forAllComponentCallbacks(ComponentCallbacksController.java:124)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.content.ComponentCallbacksController.dispatchConfigurationChanged(ComponentCallbacksController.java:91)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.window.WindowContext.dispatchConfigurationChanged(WindowContext.java:142)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChangedInner(WindowTokenClient.java:205)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:155)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.window.WindowTokenClient.onConfigurationChanged(WindowTokenClient.java:112)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.window.WindowTokenClientController.onWindowContextInfoChanged(WindowTokenClientController.java:207)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.app.ActivityThread.handleWindowContextInfoChanged(ActivityThread.java:6595)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.app.servertransaction.WindowContextInfoChangeItem.execute(WindowContextInfoChangeItem.java:45)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:174)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:109)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.os.Looper.loop(Looper.java:317)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at java.lang.reflect.Method.invoke(Native Method)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-01 03:11:45.852  1130  1130 E Overrides: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-01 03:11:45.876  1130  1130 D View    : ---- ST:requestLayout 
+11-01 03:11:45.878  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- removeAllViews(ViewGroup.java:5740) <- recreateTaskbar(TaskbarManager.java:486) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- executeNonLifecycleItem(TransactionExecutor.java:174) <- executeTransactionItems(TransactionExecutor.java:109) <- execute(TransactionExecutor.java:81) <- 
+11-01 03:11:45.878  1130  1130 D View    : ---- ST:requestLayout 
+11-01 03:11:45.878  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- addView(ViewGroup.java:5083) <- addView(ViewGroup.java:5025) <- addView(ViewGroup.java:4997) <- recreateTaskbar(TaskbarManager.java:487) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- executeNonLifecycleItem(TransactionExecutor.java:174) <- 
+11-01 03:11:45.879  1130  1130 D View    : ---- ST:requestLayout 
+11-01 03:11:45.879  1130  1130 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- setLayoutParams(View.java:20530) <- updateViewLayout(WindowManagerGlobal.java:464) <- updateViewLayout(WindowManagerImpl.java:165) <- notifyUpdateLayoutParams(TaskbarActivityContext.java:1528) <- recreateTaskbar(TaskbarManager.java:488) <- onConfigurationChanged(TaskbarManager.java:284) <- lambda$dispatchConfigurationChanged$0(ComponentCallbacksController.java:91) <- accept(D8$$SyntheticClass:0) <- forAllComponentCallbacks(ComponentCallbacksController.java:124) <- dispatchConfigurationChanged(ComponentCallbacksController.java:91) <- dispatchConfigurationChanged(WindowContext.java:142) <- onConfigurationChangedInner(WindowTokenClient.java:205) <- onConfigurationChanged(WindowTokenClient.java:155) <- onConfigurationChanged(WindowTokenClient.java:112) <- onWindowContextInfoChanged(WindowTokenClientController.java:207) <- handleWindowContextInfoChanged(ActivityThread.java:6595) <- execute(WindowContextInfoChangeItem.java:45) <- 
+11-01 03:11:45.880  1130  1130 D b/254119092: DisplayController#onConfigurationChanged: {1.0 310mcc260mnc [mr_IN] ldltr sw390dp w390dp h844dp 160dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 390, 844) mAppBounds=Rect(0, 0 - 390, 844) mMaxBounds=Rect(0, 0 - 390, 844) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.213 fontWeightAdjustment=0}
+11-01 03:11:45.912  5245  5245 V SDL     : onWindowFocusChanged(): true
+11-01 03:11:45.913  5245  5245 V SDL     : nativeFocusChanged()
+11-01 03:11:45.922   530   645 I ImeTracker: org.globulation2.glob2:f1e8fca2: onRequestHide at ORIGIN_SERVER reason HIDE_SAME_WINDOW_FOCUSED_WITHOUT_EDITOR fromUser false
+11-01 03:11:45.922   530   645 I ImeTracker: org.globulation2.glob2:f1e8fca2: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 03:11:45.989   530  5232 I WindowManager: finishDrawing of orientation change: Window{8e26942 u0 StatusBar} 336ms
+11-01 03:11:46.025   765   887 W Looper  : Slow dispatch took 57ms wmshell.anim h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver@9c95869 m=0
+11-01 03:11:46.027   765   765 D DisplayRepository: combining enabled=[0], connectedExternalDisplayIds=[], ignored=[]
+11-01 03:11:46.068  5245  5264 D EGL_emulation: app_time_stats: avg=32.02ms min=12.50ms max=298.21ms count=32
+11-01 03:11:46.069   530  2098 I WindowManager: finishDrawing of orientation change: Window{a54b9ca u0 Taskbar} 416ms
+11-01 03:11:46.070   765   765 D DisplayRepository: combining enabled=[0], connectedExternalDisplayIds=[], ignored=[]
+11-01 03:11:46.071   765   765 D DefaultDeviceEntrySection: isUdfpsSupported=false
+11-01 03:11:46.102   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#24) android.os.BinderProxy@7b6abf7@0
+11-01 03:11:46.106   530   559 V WindowManager: Finish Transition (#24): created at ११-०१ ०३:११:४५.५४६ collect-started=1.279ms request-sent=1.422ms started=32.645ms ready=104.092ms sent=207.57ms finished=560.076ms
+11-01 03:11:46.107   765   804 V WindowManagerShell: Track 0 became idle
+11-01 03:11:46.107   765   804 V WindowManagerShell: All active transition animations finished
+11-01 03:11:46.129   530  4311 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 03:11:46.274   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:11:47.070  5245  5264 D EGL_emulation: app_time_stats: avg=26.71ms min=15.81ms max=50.73ms count=37
+11-01 03:11:48.072  5245  5264 D EGL_emulation: app_time_stats: avg=24.42ms min=12.29ms max=51.32ms count=41
+11-01 03:11:49.083  5245  5264 D EGL_emulation: app_time_stats: avg=25.89ms min=15.16ms max=42.32ms count=39
+11-01 03:11:50.087  5245  5264 D EGL_emulation: app_time_stats: avg=23.89ms min=11.16ms max=136.34ms count=42
+11-01 03:11:51.092  5245  5264 D EGL_emulation: app_time_stats: avg=22.80ms min=13.34ms max=43.15ms count=44
+11-01 03:11:52.105  5245  5264 D EGL_emulation: app_time_stats: avg=17.43ms min=10.51ms max=30.91ms count=58
+11-01 03:11:52.499  5680  5680 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 03:11:52.499  5680  5680 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 03:11:52.524   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 03:11:52.689     0     0 I servicemanager: Caller(pid=5680,uid=0,sid=u:r:su:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 03:11:52.524  5680  5681 I Gralloc4: mapper 4.x is not supported
+11-01 03:11:53.139  5245  5264 D EGL_emulation: app_time_stats: avg=24.59ms min=11.84ms max=106.89ms count=42
+11-01 03:11:54.149  5245  5264 D EGL_emulation: app_time_stats: avg=26.52ms min=15.48ms max=42.05ms count=38
+11-01 03:11:54.212   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:11:55.171  5245  5264 D EGL_emulation: app_time_stats: avg=26.87ms min=13.35ms max=49.43ms count=38
+11-01 03:11:56.205  5245  5264 D EGL_emulation: app_time_stats: avg=30.39ms min=15.45ms max=44.66ms count=34
+11-01 03:11:57.212  5245  5264 D EGL_emulation: app_time_stats: avg=28.58ms min=13.96ms max=47.11ms count=35
+11-01 03:11:58.094   530  4311 D TelephonyManager: requestModemActivityInfo: Sending result to app: ModemActivityInfo{ mTimestamp=4359736 mSleepTimeMs=0 mIdleTimeMs=4359722 mActivityStatsTechSpecificInfo=[{mRat=UNKNOWN,mFrequencyRange=UNKNOWN,mTxTimeMs[]=[0, 0, 0, 0, 0],mRxTimeMs=0}]}
+11-01 03:11:58.133   336   336 I netd    : tetherGetStats() -> {[]} <6.48ms>
+11-01 03:11:58.242  5245  5264 D EGL_emulation: app_time_stats: avg=27.03ms min=14.81ms max=41.02ms count=38
+11-01 03:11:59.254  5245  5264 D EGL_emulation: app_time_stats: avg=25.28ms min=12.79ms max=41.43ms count=40
+11-01 03:12:00.037   765   939 D EGL_emulation: app_time_stats: avg=7030.88ms min=122.65ms max=13939.10ms count=2
+11-01 03:12:00.270  5245  5264 D EGL_emulation: app_time_stats: avg=26.01ms min=14.27ms max=44.09ms count=39
+11-01 03:12:01.281  5245  5264 D EGL_emulation: app_time_stats: avg=24.05ms min=12.86ms max=37.12ms count=42
+11-01 03:12:02.306  5245  5264 D EGL_emulation: app_time_stats: avg=26.21ms min=15.38ms max=39.44ms count=39
+11-01 03:12:02.370   530  4311 D WifiNl80211Manager: Scan result ready event
+11-01 03:12:02.370   530  4311 D WifiNative: Scan result ready event
+11-01 03:12:02.383   530   673 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+11-01 03:12:03.314  5245  5264 D EGL_emulation: app_time_stats: avg=23.41ms min=14.52ms max=35.80ms count=43
+11-01 03:12:04.316  5245  5264 D EGL_emulation: app_time_stats: avg=24.98ms min=12.63ms max=43.23ms count=40
+11-01 03:12:05.337  5245  5264 D EGL_emulation: app_time_stats: avg=31.86ms min=18.27ms max=45.48ms count=32
+11-01 03:12:06.367  5245  5264 D EGL_emulation: app_time_stats: avg=32.16ms min=20.24ms max=44.72ms count=32
+11-01 03:12:07.388  5245  5264 D EGL_emulation: app_time_stats: avg=30.89ms min=18.26ms max=46.56ms count=33
+11-01 03:12:08.398  5245  5264 D EGL_emulation: app_time_stats: avg=33.60ms min=18.60ms max=46.25ms count=30
+11-01 03:12:09.405  5245  5264 D EGL_emulation: app_time_stats: avg=28.73ms min=14.75ms max=45.04ms count=35
+11-01 03:12:10.341   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:12:10.405  5245  5264 D EGL_emulation: app_time_stats: avg=31.23ms min=18.34ms max=45.78ms count=32
+11-01 03:12:11.426  5245  5264 D EGL_emulation: app_time_stats: avg=33.95ms min=17.13ms max=51.60ms count=30
+11-01 03:12:12.436  5245  5264 D EGL_emulation: app_time_stats: avg=26.44ms min=14.83ms max=36.43ms count=38
+11-01 03:12:13.451  5245  5264 D EGL_emulation: app_time_stats: avg=25.98ms min=12.55ms max=43.97ms count=39
+11-01 03:12:14.389   765   939 D EGL_emulation: app_time_stats: avg=14351.84ms min=14351.84ms max=14351.84ms count=1
+11-01 03:12:14.451  5245  5264 D EGL_emulation: app_time_stats: avg=29.35ms min=13.02ms max=86.01ms count=34
+11-01 03:12:15.456  5245  5264 D EGL_emulation: app_time_stats: avg=30.42ms min=12.83ms max=70.81ms count=33
+11-01 03:12:16.461  5245  5264 D EGL_emulation: app_time_stats: avg=24.46ms min=11.64ms max=47.69ms count=41
+11-01 03:12:17.472  5245  5264 D EGL_emulation: app_time_stats: avg=22.95ms min=15.12ms max=37.36ms count=44
+11-01 03:12:18.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:12:18.472  5245  5264 D EGL_emulation: app_time_stats: avg=26.29ms min=10.40ms max=90.22ms count=38
+11-01 03:12:19.474  5245  5264 D EGL_emulation: app_time_stats: avg=20.41ms min=12.94ms max=43.25ms count=49
+11-01 03:12:20.497  5245  5264 D EGL_emulation: app_time_stats: avg=25.56ms min=13.45ms max=39.62ms count=40
+11-01 03:12:21.499  5245  5264 D EGL_emulation: app_time_stats: avg=27.78ms min=12.50ms max=46.49ms count=36
+11-01 03:12:22.513  5245  5264 D EGL_emulation: app_time_stats: avg=26.59ms min=12.38ms max=41.25ms count=38
+11-01 03:12:23.518  5245  5264 D EGL_emulation: app_time_stats: avg=29.51ms min=16.18ms max=44.37ms count=34
+11-01 03:12:24.524  5245  5264 D EGL_emulation: app_time_stats: avg=26.43ms min=15.26ms max=37.92ms count=38
+11-01 03:12:25.544  5245  5264 D EGL_emulation: app_time_stats: avg=29.96ms min=16.24ms max=49.55ms count=34
+11-01 03:12:26.209   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:12:26.561  5245  5264 D EGL_emulation: app_time_stats: avg=26.72ms min=14.96ms max=43.17ms count=38
+11-01 03:12:27.579  5245  5264 D EGL_emulation: app_time_stats: avg=30.78ms min=17.89ms max=42.59ms count=33
+11-01 03:12:28.595  5245  5264 D EGL_emulation: app_time_stats: avg=28.19ms min=16.14ms max=47.61ms count=36
+11-01 03:12:29.601  5245  5264 D EGL_emulation: app_time_stats: avg=27.16ms min=13.92ms max=38.54ms count=37
+11-01 03:12:30.601  5245  5264 D EGL_emulation: app_time_stats: avg=29.36ms min=14.53ms max=39.87ms count=34
+11-01 03:12:31.120     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:12:31.604  5245  5264 D EGL_emulation: app_time_stats: avg=31.31ms min=15.34ms max=87.54ms count=32
+11-01 03:12:32.625  5245  5264 D EGL_emulation: app_time_stats: avg=29.11ms min=16.13ms max=43.89ms count=35
+11-01 03:12:33.641  5245  5264 D EGL_emulation: app_time_stats: avg=29.86ms min=13.55ms max=111.19ms count=34
+11-01 03:12:34.411   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:12:34.658  5245  5264 D EGL_emulation: app_time_stats: avg=26.04ms min=14.29ms max=42.60ms count=39
+11-01 03:12:35.665  5245  5264 D EGL_emulation: app_time_stats: avg=23.41ms min=13.61ms max=36.10ms count=43
+11-01 03:12:36.669  5245  5264 D EGL_emulation: app_time_stats: avg=26.40ms min=14.36ms max=36.98ms count=38
+11-01 03:12:37.696  5245  5264 D EGL_emulation: app_time_stats: avg=26.99ms min=14.54ms max=102.44ms count=38
+11-01 03:12:38.708  5245  5264 D EGL_emulation: app_time_stats: avg=24.05ms min=14.51ms max=40.95ms count=42
+11-01 03:12:39.729  5245  5264 D EGL_emulation: app_time_stats: avg=27.53ms min=13.05ms max=44.63ms count=37
+11-01 03:12:40.733  5245  5264 D EGL_emulation: app_time_stats: avg=26.38ms min=13.71ms max=47.60ms count=38
+11-01 03:12:41.764  5245  5264 D EGL_emulation: app_time_stats: avg=46.72ms min=17.82ms max=415.45ms count=22
+11-01 03:12:42.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:12:42.795  5245  5264 D EGL_emulation: app_time_stats: avg=25.12ms min=14.71ms max=42.75ms count=41
+11-01 03:12:43.796  5245  5264 D EGL_emulation: app_time_stats: avg=24.39ms min=12.47ms max=43.33ms count=41
+11-01 03:12:44.406   765   939 D EGL_emulation: app_time_stats: avg=30016.77ms min=30016.77ms max=30016.77ms count=1
+11-01 03:12:44.812  5245  5264 D EGL_emulation: app_time_stats: avg=23.05ms min=12.34ms max=38.65ms count=44
+11-01 03:12:45.828  5245  5264 D EGL_emulation: app_time_stats: avg=30.76ms min=15.58ms max=50.68ms count=33
+11-01 03:12:46.844  5245  5264 D EGL_emulation: app_time_stats: avg=26.69ms min=14.12ms max=39.06ms count=38
+11-01 03:12:47.877  5245  5264 D EGL_emulation: app_time_stats: avg=23.99ms min=14.24ms max=39.88ms count=43
+11-01 03:12:48.885  5245  5264 D EGL_emulation: app_time_stats: avg=31.43ms min=16.65ms max=46.59ms count=32
+11-01 03:12:49.886  5245  5264 D EGL_emulation: app_time_stats: avg=33.35ms min=12.02ms max=175.87ms count=30
+11-01 03:12:50.284   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:12:50.907  5245  5264 D EGL_emulation: app_time_stats: avg=28.30ms min=17.01ms max=39.76ms count=36
+11-01 03:12:51.912  5245  5264 D EGL_emulation: app_time_stats: avg=29.23ms min=17.38ms max=46.84ms count=29
+11-01 03:12:52.926  5245  5264 D EGL_emulation: app_time_stats: avg=32.65ms min=21.14ms max=48.22ms count=31
+11-01 03:12:53.946  5245  5264 D EGL_emulation: app_time_stats: avg=28.30ms min=12.42ms max=40.43ms count=36
+11-01 03:12:54.963  5245  5264 D EGL_emulation: app_time_stats: avg=29.02ms min=16.88ms max=39.84ms count=35
+11-01 03:12:55.986  5245  5264 D EGL_emulation: app_time_stats: avg=24.89ms min=13.27ms max=40.17ms count=41
+11-01 03:12:56.809   818  1369 D ApfFilter: (wlan0): Adding RA fe80::2 -> ff02::1 १८००s fec0::/६४ ८६४००s/१४४००s 
+11-01 03:12:57.004  5245  5264 D EGL_emulation: app_time_stats: avg=27.49ms min=14.56ms max=41.02ms count=37
+11-01 03:12:58.012  5245  5264 D EGL_emulation: app_time_stats: avg=22.88ms min=12.97ms max=39.88ms count=44
+11-01 03:12:58.469   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:12:59.014  5245  5264 D EGL_emulation: app_time_stats: avg=21.75ms min=13.11ms max=35.74ms count=46
+11-01 03:13:00.019  5245  5264 D EGL_emulation: app_time_stats: avg=22.83ms min=11.85ms max=40.81ms count=44
+11-01 03:13:00.073   765   939 D EGL_emulation: app_time_stats: avg=15666.82ms min=15666.82ms max=15666.82ms count=1
+11-01 03:13:01.032  5245  5264 D EGL_emulation: app_time_stats: avg=25.24ms min=14.17ms max=43.78ms count=40
+11-01 03:13:02.162  5245  5264 D EGL_emulation: app_time_stats: avg=31.36ms min=14.14ms max=311.28ms count=36
+11-01 03:13:03.174  5245  5264 D EGL_emulation: app_time_stats: avg=28.10ms min=11.99ms max=41.65ms count=36
+11-01 03:13:04.201  5245  5264 D EGL_emulation: app_time_stats: avg=26.98ms min=14.28ms max=45.58ms count=38
+11-01 03:13:05.214  5245  5264 D EGL_emulation: app_time_stats: avg=30.69ms min=14.10ms max=98.24ms count=33
+11-01 03:13:06.243  5245  5264 D EGL_emulation: app_time_stats: avg=28.53ms min=13.04ms max=44.95ms count=36
+11-01 03:13:06.451   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:13:07.268  5245  5264 D EGL_emulation: app_time_stats: avg=26.96ms min=13.75ms max=108.78ms count=38
+11-01 03:13:08.282  5245  5264 D EGL_emulation: app_time_stats: avg=28.10ms min=16.01ms max=49.51ms count=36
+11-01 03:13:09.302  5245  5264 D EGL_emulation: app_time_stats: avg=24.20ms min=10.96ms max=35.73ms count=42
+11-01 03:13:10.302  5245  5264 D EGL_emulation: app_time_stats: avg=26.23ms min=13.52ms max=41.91ms count=38
+11-01 03:13:11.335  5245  5264 D EGL_emulation: app_time_stats: avg=25.77ms min=13.30ms max=46.51ms count=40
+11-01 03:13:12.345  5245  5264 D EGL_emulation: app_time_stats: avg=27.25ms min=13.63ms max=48.49ms count=37
+11-01 03:13:13.353  5245  5264 D EGL_emulation: app_time_stats: avg=23.41ms min=13.28ms max=40.62ms count=43
+11-01 03:13:14.340   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:13:14.377  5245  5264 D EGL_emulation: app_time_stats: avg=30.07ms min=17.88ms max=44.64ms count=34
+11-01 03:13:15.395  5245  5264 D EGL_emulation: app_time_stats: avg=24.81ms min=11.85ms max=40.51ms count=41
+11-01 03:13:16.396  5245  5264 D EGL_emulation: app_time_stats: avg=31.23ms min=17.17ms max=44.97ms count=32
+11-01 03:13:17.406  5245  5264 D EGL_emulation: app_time_stats: avg=26.55ms min=13.07ms max=44.24ms count=38
+11-01 03:13:18.441  5245  5264 D EGL_emulation: app_time_stats: avg=27.17ms min=14.86ms max=40.63ms count=38
+11-01 03:13:19.461  5245  5264 D EGL_emulation: app_time_stats: avg=22.16ms min=13.05ms max=38.11ms count=46
+11-01 03:13:20.465  5245  5264 D EGL_emulation: app_time_stats: avg=20.89ms min=12.36ms max=33.43ms count=48
+11-01 03:13:21.484  5245  5264 D EGL_emulation: app_time_stats: avg=24.24ms min=13.63ms max=41.94ms count=42
+11-01 03:13:22.274   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:13:22.510  5245  5264 D EGL_emulation: app_time_stats: avg=24.40ms min=10.37ms max=36.14ms count=42
+11-01 03:13:23.531  5245  5264 D EGL_emulation: app_time_stats: avg=26.14ms min=10.22ms max=73.45ms count=39
+11-01 03:13:24.547  5245  5264 D EGL_emulation: app_time_stats: avg=24.73ms min=15.07ms max=43.93ms count=41
+11-01 03:13:25.575  5245  5264 D EGL_emulation: app_time_stats: avg=22.30ms min=12.39ms max=39.54ms count=46
+11-01 03:13:26.588  5245  5264 D EGL_emulation: app_time_stats: avg=23.51ms min=14.27ms max=43.47ms count=43
+11-01 03:13:27.595  5245  5264 D EGL_emulation: app_time_stats: avg=25.08ms min=12.38ms max=46.04ms count=40
+11-01 03:13:28.601  5245  5264 D EGL_emulation: app_time_stats: avg=21.84ms min=12.70ms max=38.57ms count=46
+11-01 03:13:29.607  5245  5264 D EGL_emulation: app_time_stats: avg=21.38ms min=12.30ms max=34.59ms count=47
+11-01 03:13:30.225   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:13:30.621  5245  5264 D EGL_emulation: app_time_stats: avg=25.27ms min=12.35ms max=44.07ms count=40
+11-01 03:13:31.119     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:13:31.622  5245  5264 D EGL_emulation: app_time_stats: avg=21.26ms min=12.38ms max=40.11ms count=47
+11-01 03:13:32.639  5245  5264 D EGL_emulation: app_time_stats: avg=20.32ms min=12.80ms max=33.90ms count=50
+11-01 03:13:33.657  5245  5264 D EGL_emulation: app_time_stats: avg=21.18ms min=12.39ms max=35.85ms count=48
+11-01 03:13:34.680  5245  5264 D EGL_emulation: app_time_stats: avg=24.30ms min=13.24ms max=46.16ms count=42
+11-01 03:13:35.701  5245  5264 D EGL_emulation: app_time_stats: avg=22.67ms min=11.57ms max=37.67ms count=45
+11-01 03:13:36.717  5245  5264 D EGL_emulation: app_time_stats: avg=25.34ms min=13.24ms max=45.75ms count=40
+11-01 03:13:37.723  5245  5264 D EGL_emulation: app_time_stats: avg=21.85ms min=13.04ms max=41.60ms count=46
+11-01 03:13:38.404   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:13:38.744  5245  5264 D EGL_emulation: app_time_stats: avg=26.15ms min=11.55ms max=38.29ms count=39
+11-01 03:13:39.745  5245  5264 D EGL_emulation: app_time_stats: avg=25.00ms min=12.75ms max=45.79ms count=40
+11-01 03:13:40.761  5245  5264 D EGL_emulation: app_time_stats: avg=30.74ms min=17.61ms max=45.09ms count=33
+11-01 03:13:41.768  5245  5264 D EGL_emulation: app_time_stats: avg=26.46ms min=15.80ms max=38.02ms count=38
+11-01 03:13:42.775  5245  5264 D EGL_emulation: app_time_stats: avg=26.46ms min=13.56ms max=36.65ms count=38
+11-01 03:13:43.792  5245  5264 D EGL_emulation: app_time_stats: avg=28.24ms min=16.87ms max=51.67ms count=36
+11-01 03:13:44.810  5245  5264 D EGL_emulation: app_time_stats: avg=24.18ms min=11.35ms max=41.24ms count=42
+11-01 03:13:45.845  5245  5264 D EGL_emulation: app_time_stats: avg=27.91ms min=15.00ms max=46.08ms count=37
+11-01 03:13:46.337   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:13:46.864  5245  5264 D EGL_emulation: app_time_stats: avg=24.80ms min=13.76ms max=42.02ms count=41
+11-01 03:13:47.883  5245  5264 D EGL_emulation: app_time_stats: avg=27.50ms min=12.25ms max=44.11ms count=37
+11-01 03:13:48.885  5245  5264 D EGL_emulation: app_time_stats: avg=28.58ms min=17.34ms max=40.89ms count=35
+11-01 03:13:49.890  5245  5264 D EGL_emulation: app_time_stats: avg=28.68ms min=16.02ms max=44.60ms count=35
+11-01 03:13:50.899  5245  5264 D EGL_emulation: app_time_stats: avg=26.51ms min=11.48ms max=42.84ms count=38
+11-01 03:13:51.910  5245  5264 D EGL_emulation: app_time_stats: avg=25.25ms min=13.41ms max=39.69ms count=40
+11-01 03:13:52.914  5245  5264 D EGL_emulation: app_time_stats: avg=30.37ms min=16.22ms max=44.32ms count=33
+11-01 03:13:53.915  5245  5264 D EGL_emulation: app_time_stats: avg=31.22ms min=14.12ms max=139.36ms count=32
+11-01 03:13:54.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:13:54.916  5245  5264 D EGL_emulation: app_time_stats: avg=26.29ms min=13.88ms max=41.43ms count=38
+11-01 03:13:55.921  5245  5264 D EGL_emulation: app_time_stats: avg=26.42ms min=13.04ms max=45.33ms count=38
+11-01 03:13:56.932  5245  5264 D EGL_emulation: app_time_stats: avg=27.30ms min=14.93ms max=49.17ms count=37
+11-01 03:13:57.934  5245  5264 D EGL_emulation: app_time_stats: avg=27.80ms min=14.59ms max=41.59ms count=36
+11-01 03:13:58.952  5245  5264 D EGL_emulation: app_time_stats: avg=24.19ms min=11.47ms max=41.17ms count=42
+11-01 03:13:59.983  5245  5264 D EGL_emulation: app_time_stats: avg=30.31ms min=15.01ms max=42.90ms count=34
+11-01 03:14:00.052   765   939 D EGL_emulation: app_time_stats: avg=59979.36ms min=59979.36ms max=59979.36ms count=1
+11-01 03:14:00.992  5245  5264 D EGL_emulation: app_time_stats: avg=25.19ms min=14.41ms max=41.39ms count=40
+11-01 03:14:02.023  5245  5264 D EGL_emulation: app_time_stats: avg=29.38ms min=15.31ms max=41.79ms count=35
+11-01 03:14:02.214   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:14:03.025  5245  5264 D EGL_emulation: app_time_stats: avg=26.34ms min=14.78ms max=46.27ms count=38
+11-01 03:14:04.031  5245  5264 D EGL_emulation: app_time_stats: avg=24.49ms min=15.24ms max=45.00ms count=41
+11-01 03:14:05.012   530   530 W Looper  : Slow delivery took 613ms main h=android.app.ActivityThread$H c=com.android.server.powerstats.TimerTrigger$PeriodicTimer@4b199ab m=0
+11-01 03:14:05.033  5245  5264 D EGL_emulation: app_time_stats: avg=22.75ms min=13.58ms max=36.49ms count=44
+11-01 03:14:06.039  5245  5264 D EGL_emulation: app_time_stats: avg=30.47ms min=13.73ms max=45.93ms count=33
+11-01 03:14:07.068  5245  5264 D EGL_emulation: app_time_stats: avg=29.30ms min=12.75ms max=91.91ms count=35
+11-01 03:14:08.074  5245  5264 D EGL_emulation: app_time_stats: avg=25.76ms min=14.02ms max=38.43ms count=39
+11-01 03:14:09.118  5245  5264 D EGL_emulation: app_time_stats: avg=29.80ms min=13.40ms max=47.84ms count=35
+11-01 03:14:10.135  5245  5264 D EGL_emulation: app_time_stats: avg=24.77ms min=14.53ms max=53.06ms count=41
+11-01 03:14:10.401   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:14:11.140  5245  5264 D EGL_emulation: app_time_stats: avg=25.09ms min=13.63ms max=40.28ms count=40
+11-01 03:14:12.161  5245  5264 D EGL_emulation: app_time_stats: avg=28.30ms min=15.54ms max=64.97ms count=36
+11-01 03:14:13.183  5245  5264 D EGL_emulation: app_time_stats: avg=21.70ms min=11.09ms max=36.14ms count=47
+11-01 03:14:14.186  5245  5264 D EGL_emulation: app_time_stats: avg=27.84ms min=14.43ms max=57.09ms count=36
+11-01 03:14:14.873   530   880 W IPCThreadState: Sending oneway calls to frozen process.
+11-01 03:14:14.873   530   880 W IPCThreadState: Sending oneway calls to frozen process.
+11-01 03:14:15.194  5245  5264 D EGL_emulation: app_time_stats: avg=25.81ms min=11.12ms max=44.92ms count=39
+11-01 03:14:16.206  5245  5264 D EGL_emulation: app_time_stats: avg=24.03ms min=12.94ms max=41.76ms count=42
+11-01 03:14:17.212  5245  5264 D EGL_emulation: app_time_stats: avg=29.50ms min=14.15ms max=50.93ms count=34
+11-01 03:14:18.230  5245  5264 D EGL_emulation: app_time_stats: avg=27.47ms min=16.36ms max=39.91ms count=37
+11-01 03:14:18.338   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:14:19.256  5245  5264 D EGL_emulation: app_time_stats: avg=25.00ms min=13.25ms max=38.99ms count=41
+11-01 03:14:20.271  5245  5264 D EGL_emulation: app_time_stats: avg=28.94ms min=16.61ms max=44.19ms count=35
+11-01 03:14:21.283  5245  5264 D EGL_emulation: app_time_stats: avg=22.97ms min=11.89ms max=44.81ms count=44
+11-01 03:14:22.297  5245  5264 D EGL_emulation: app_time_stats: avg=23.01ms min=13.31ms max=41.42ms count=44
+11-01 03:14:23.314  5245  5264 D EGL_emulation: app_time_stats: avg=27.44ms min=11.36ms max=39.91ms count=37
+11-01 03:14:24.325  5245  5264 D EGL_emulation: app_time_stats: avg=30.59ms min=16.46ms max=45.08ms count=33
+11-01 03:14:24.389   765   939 D EGL_emulation: app_time_stats: avg=24337.18ms min=24337.18ms max=24337.18ms count=1
+11-01 03:14:25.343  5245  5264 D EGL_emulation: app_time_stats: avg=28.27ms min=11.82ms max=45.95ms count=36
+11-01 03:14:26.281   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:14:26.354  5245  5264 D EGL_emulation: app_time_stats: avg=31.56ms min=11.46ms max=47.18ms count=32
+11-01 03:14:27.380  5245  5264 D EGL_emulation: app_time_stats: avg=28.44ms min=15.09ms max=44.51ms count=36
+11-01 03:14:28.402  5245  5264 D EGL_emulation: app_time_stats: avg=25.52ms min=12.12ms max=40.67ms count=40
+11-01 03:14:29.406  5245  5264 D EGL_emulation: app_time_stats: avg=26.34ms min=13.60ms max=47.80ms count=38
+11-01 03:14:30.413  5245  5264 D EGL_emulation: app_time_stats: avg=25.14ms min=13.79ms max=40.11ms count=40
+11-01 03:14:31.125     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 03:14:31.435  5245  5264 D EGL_emulation: app_time_stats: avg=30.02ms min=13.75ms max=68.36ms count=34
+11-01 03:14:32.453  5245  5264 D EGL_emulation: app_time_stats: avg=29.06ms min=13.36ms max=56.40ms count=35
+11-01 03:14:33.472  5245  5264 D EGL_emulation: app_time_stats: avg=24.81ms min=13.23ms max=82.87ms count=41
+11-01 03:14:34.223   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 03:14:34.490  5245  5264 D EGL_emulation: app_time_stats: avg=24.21ms min=13.03ms max=39.97ms count=42
+11-01 03:14:35.501  5245  5264 D EGL_emulation: app_time_stats: avg=27.29ms min=14.49ms max=44.20ms count=37
+11-01 03:14:36.505  5245  5264 D EGL_emulation: app_time_stats: avg=25.08ms min=12.83ms max=38.08ms count=40
+11-01 03:14:37.513  5245  5264 D EGL_emulation: app_time_stats: avg=26.46ms min=13.87ms max=36.85ms count=38
+11-01 03:14:38.541  5245  5264 D EGL_emulation: app_time_stats: avg=27.76ms min=13.20ms max=37.82ms count=37

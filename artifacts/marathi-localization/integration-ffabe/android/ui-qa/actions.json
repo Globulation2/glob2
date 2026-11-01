@@ -1,0 +1,517 @@
+{
+  "source_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "installed_apk_sha256": "5d261ae3fe66713ecadbd495be2d10cd306b0b8cf92c31ef502851d4c4d8e39e",
+  "actions": [
+    {
+      "action": "wait",
+      "args": [
+        "MainMenuScreen"
+      ],
+      "monotonic": 84075.577577559
+    },
+    {
+      "action": "capture",
+      "args": [
+        "native-main-after-environment-recovery"
+      ],
+      "monotonic": 84137.166233868,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/native-main-after-environment-recovery.png",
+      "sha256": "cb5e734b5163a58c034bc63de4af8ef4007d888f174f64a93454eadcd49de3ba",
+      "bytes": 348744,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "341",
+        "235"
+      ],
+      "monotonic": 84159.637349876
+    },
+    {
+      "action": "tap",
+      "args": [
+        "185",
+        "60"
+      ],
+      "monotonic": 84160.176513865
+    },
+    {
+      "action": "tap",
+      "args": [
+        "150",
+        "315"
+      ],
+      "monotonic": 84160.636454755
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-player-marathi-complete"
+      ],
+      "monotonic": 84161.222211827,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-player-marathi-complete.png",
+      "sha256": "1d7593e66598f9b304fcfe7f9710e354f727cd38a549b371171895a6fd15af06",
+      "bytes": 69345,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "320",
+        "758"
+      ],
+      "monotonic": 84230.284529181
+    },
+    {
+      "action": "tap",
+      "args": [
+        "177",
+        "297"
+      ],
+      "monotonic": 84230.990147029
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-custom-setup"
+      ],
+      "monotonic": 84232.460217864,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-custom-setup.png",
+      "sha256": "fe3b0e37b960b1140ea5bb1703dd6b0d74d8f761e8588043aeb3c9564ceadabb",
+      "bytes": 78684,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "94",
+        "114"
+      ],
+      "monotonic": 84262.482549862
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-premade-options"
+      ],
+      "monotonic": 84262.874552348,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-premade-options.png",
+      "sha256": "c3813358611aee21983599acecae26f2e389394481cf96bc8219d42a46fb3ba4",
+      "bytes": 83031,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "316",
+        "60"
+      ],
+      "monotonic": 84288.526660723
+    },
+    {
+      "action": "tap",
+      "args": [
+        "285",
+        "760"
+      ],
+      "monotonic": 84289.271477227
+    },
+    {
+      "action": "wait",
+      "args": [
+        "GameSessionScreen"
+      ],
+      "monotonic": 84289.808097791
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-gameplay-portrait"
+      ],
+      "monotonic": 84313.851810904,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-gameplay-portrait.png",
+      "sha256": "5004eb6c6d2fe7d7de8d6ccba5f46a93cbb53dbde24b2697aebaff393d1bfd85",
+      "bytes": 190008,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "160",
+        "764"
+      ],
+      "monotonic": 84329.0556842
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-tools"
+      ],
+      "monotonic": 84330.636586576,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-tools.png",
+      "sha256": "31b09ac00cb681639a7157dd5b55315aba550b586191447f7a0ca9c67244a27a",
+      "bytes": 204575,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "309",
+        "398"
+      ],
+      "monotonic": 84349.596763721
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-stats-overview-portrait"
+      ],
+      "monotonic": 84350.364808007,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-overview-portrait.png",
+      "sha256": "b86929ae8a79df8482e7dd93f1d4bcea7321666c2ae96c6a1ca16b12202c0c73",
+      "bytes": 68076,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "rotate",
+      "args": [
+        "1"
+      ],
+      "monotonic": 84379.547275707
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-stats-overview-landscape"
+      ],
+      "monotonic": 84383.543875986,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-overview-landscape.png",
+      "sha256": "9c9571de58786e466888cb484052aed5c70575ac2f8f37346a35c849150d3d37",
+      "bytes": 48905,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "671",
+        "58"
+      ],
+      "monotonic": 84458.682283356
+    },
+    {
+      "action": "tap",
+      "args": [
+        "728",
+        "360"
+      ],
+      "monotonic": 84459.51275906
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-game-menu"
+      ],
+      "monotonic": 84460.042748074,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-game-menu.png",
+      "sha256": "ff2766759eb4bf43df45344493e42076e460183cfe1507cefdcc0ac1ad8a68f7",
+      "bytes": 74011,
+      "pixels": [
+        844,
+        390
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "387",
+        "277"
+      ],
+      "monotonic": 84478.710472214
+    },
+    {
+      "action": "rotate",
+      "args": [
+        "0"
+      ],
+      "monotonic": 84479.609834609
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-display-settings"
+      ],
+      "monotonic": 84482.696736315,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-display-settings.png",
+      "sha256": "2c33f1ad11a30d9a167e70d4d46fea55a71a11746f0d2e2dd42c03c76f387119",
+      "bytes": 106504,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "307",
+        "711"
+      ],
+      "monotonic": 84510.090632418
+    },
+    {
+      "action": "tap",
+      "args": [
+        "192",
+        "755"
+      ],
+      "monotonic": 84510.805246772
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-150pct-return"
+      ],
+      "monotonic": 84511.446385264,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-150pct-return.png",
+      "sha256": "e68e83f124fead85914690d5b06fe8d997a328fafdaf71123ae6dbe52846b79d",
+      "bytes": 331871,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "310",
+        "390"
+      ],
+      "monotonic": 84531.453584066
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-stats-narrow-150-overview"
+      ],
+      "monotonic": 84532.22364577,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-narrow-150-overview.png",
+      "sha256": "56f5f750462bbf54cdff06bf828a31f9fe705fef5d9f2b0a7886e428c19f09ca",
+      "bytes": 96103,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "293",
+        "391"
+      ],
+      "monotonic": 84564.94621065
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-stats-narrow-150-economy"
+      ],
+      "monotonic": 84565.757611497,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-narrow-150-economy.png",
+      "sha256": "051e644966a5f31470322b3f139c46ebcb3f8d4b63dcc532295f67bdbe2db759",
+      "bytes": 95937,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "293",
+        "442"
+      ],
+      "monotonic": 84568.190563909
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-stats-narrow-150-world"
+      ],
+      "monotonic": 84568.95099938,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-stats-narrow-150-world.png",
+      "sha256": "421f39939835b5ef6cf37132195e08f20e27e4f018291c05e32175fec16ef49a",
+      "bytes": 99995,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "360",
+        "280"
+      ],
+      "monotonic": 84612.270547279
+    },
+    {
+      "action": "tap",
+      "args": [
+        "355",
+        "762"
+      ],
+      "monotonic": 84613.663932311
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-menu-150"
+      ],
+      "monotonic": 84614.380683564,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-menu-150.png",
+      "sha256": "761317c9aa62bb9932dac451d24b6b73bb03fbd2ac260b7874d45c0bc315ad30",
+      "bytes": 67590,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "190",
+        "358"
+      ],
+      "monotonic": 84643.521601389
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "325",
+        "680",
+        "325",
+        "360",
+        "450"
+      ],
+      "monotonic": 84644.29224654
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-textsize-restore-options"
+      ],
+      "monotonic": 84645.876741554,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-textsize-restore-options.png",
+      "sha256": "6250421ee9b7b7ee73750faaae87acadd2f1f3b18803799eece4b1f2a4306e81",
+      "bytes": 118547,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "187",
+        "696"
+      ],
+      "monotonic": 84688.429702841
+    },
+    {
+      "action": "swipe",
+      "args": [
+        "368",
+        "300",
+        "368",
+        "620",
+        "450"
+      ],
+      "monotonic": 84689.063961483
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-textsize-restore-scrolled"
+      ],
+      "monotonic": 84690.119475976,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-textsize-restore-scrolled.png",
+      "sha256": "833ab89b1fabc0a84de8a9167f07d2bda952d07b1a744aa154b20daa95752b6f",
+      "bytes": 130571,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "tap",
+      "args": [
+        "69",
+        "657"
+      ],
+      "monotonic": 84721.643420131
+    },
+    {
+      "action": "tap",
+      "args": [
+        "190",
+        "755"
+      ],
+      "monotonic": 84722.786608523
+    },
+    {
+      "action": "capture",
+      "args": [
+        "current-textsize-restored-100"
+      ],
+      "monotonic": 84723.635719136,
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-ffabe/android/ui-qa/current-textsize-restored-100.png",
+      "sha256": "e5a93c09d9704cea75c1bd60136b4d49263086d58a192df31ec7f7924909b761",
+      "bytes": 339336,
+      "pixels": [
+        390,
+        844
+      ]
+    },
+    {
+      "action": "restore",
+      "args": [],
+      "monotonic": 84725.923507262
+    },
+    {
+      "action": "stop",
+      "args": [],
+      "monotonic": 84727.017566666
+    }
+  ],
+  "capture_cap_bytes": 16777216,
+  "rotation_before": {
+    "accelerometer_rotation": "0",
+    "user_rotation": "0"
+  },
+  "rotation_restored": true,
+  "own_app_force_stopped": true
+}

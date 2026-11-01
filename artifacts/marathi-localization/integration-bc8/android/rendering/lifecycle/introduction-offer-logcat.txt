@@ -1,0 +1,620 @@
+--------- beginning of main
+11-01 02:35:44.583  1130  1130 D StateManager: createAtomicAnimation - fromState: Background, toState: Normal, partial trace:
+11-01 02:35:44.583  1130  1130 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.prepareToAnimate(WorkspaceRevealAnim.java:130)
+11-01 02:35:44.583  1130  1130 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.<init>(WorkspaceRevealAnim.java:66)
+11-01 02:35:44.583  1130  1130 D StateManager: 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(QuickstepTransitionManager.java:1716)
+11-01 02:35:44.601   530   645 I ImeTracker: com.android.launcher3:580c93a0: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-01 02:35:44.602   530   645 I ImeTracker: com.android.launcher3:580c93a0: onCancelled at PHASE_SERVER_SHOULD_HIDE
+--------- beginning of system
+11-01 02:35:44.613   530   563 W ActivityTaskManager: Unable to send transaction to client proc org.globulation2.glob2: no app thread
+11-01 02:35:44.721   530   609 W ActivityTaskManager: callingPackage for (uid=2000, pid=2105) has no WPC
+11-01 02:35:44.723   530   609 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+11-01 02:35:44.723   530   609 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@31ae056, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-01 02:35:44.724   530   609 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+11-01 02:35:44.725   530   609 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+11-01 02:35:44.736   530   609 I ActivityTaskManager: Add Task{fc257fc #21 type=standard A=10148:org.globulation2.glob2} to hidden list because adding Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}
+11-01 02:35:44.740   530   609 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity} with LAUNCH_SINGLE_TASK from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+11-01 02:35:44.741   765   804 V WindowManagerShell: Transition requested (#6): android.os.BinderProxy@a4aafea TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=22 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} topActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=1 lastActiveTime=2186381 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@c6262db} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{650178 org.globulation2.glob2.Glob2Activity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 6 }
+11-01 02:35:44.743   765   920 D SplashScreenView: Build android.window.SplashScreenView{e1be0b6 V.E...... ......ID 0,0-0,0}
+11-01 02:35:44.743   765   920 D SplashScreenView: Icon: view: android.widget.ImageView{31a51b7 V.ED..... ......I. 0,0-0,0 #1020504 android:id/splashscreen_icon_view} drawable: com.android.wm.shell.startingsurface.SplashscreenIconDrawableFactory$ImmobileIconDrawable@1a4bd24 size: 192
+11-01 02:35:44.743   765   920 D SplashScreenView: Branding: view: android.view.View{29db08d G.ED..... ......I. 0,0-0,0 #1020503 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+11-01 02:35:44.760   530   802 D CoreBackPreview: Window{807a75c u0 Splash Screen org.globulation2.glob2}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@9e5133a, mPriority=0, mIsAnimationCallback=false}
+11-01 02:35:44.763   530   562 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@31ae056, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-01 02:35:44.814   337   337 D Zygote  : Forked child process 2109
+11-01 02:35:44.815   530   572 I ActivityManager: Start proc 2109:org.globulation2.glob2/u0a148 for next-top-activity {org.globulation2.glob2/org.globulation2.glob2.Glob2Activity}
+11-01 02:35:44.847  2109  2109 I bulation2.glob2: Using CollectorTypeCMC GC.
+11-01 02:35:44.850  2109  2109 W bulation2.glob2: Unexpected CPU variant for x86: x86_64.
+11-01 02:35:44.850  2109  2109 W bulation2.glob2: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, default
+11-01 02:35:44.855  2109  2109 E bulation2.glob2: Not starting debugger since process cannot load the jdwp agent.
+11-01 02:35:44.866  2109  2109 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-01 02:35:44.910  2109  2109 D nativeloader: Configuring clns-7 for other apk /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/lib/x86_64:/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/org.globulation2.glob2
+11-01 02:35:44.922  2109  2109 V GraphicsEnvironment: Currently set values for:
+11-01 02:35:44.922  2109  2109 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+11-01 02:35:44.922  2109  2109 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+11-01 02:35:44.922  2109  2109 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+11-01 02:35:44.922  2109  2109 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+11-01 02:35:44.929   530   802 I ActivityManager: Killing 1625:com.android.healthconnect.controller/u0a146 (adj 975): empty #17
+11-01 02:35:44.949   337   337 I Zygote  : Process 1625 exited due to signal 9 (Killed)
+--------- beginning of kernel
+11-01 02:35:45.119     0     0 I binder  : undelivered transaction 187890, process died.
+11-01 02:35:45.120     0     0 I binder  : undelivered transaction 187717, process died.
+11-01 02:35:44.956   530   560 D DisplayManagerService: Drop pending events for gone uid 10146
+11-01 02:35:44.960   530   573 I libprocessgroup: Removed cgroup /sys/fs/cgroup/uid_10146/pid_1625
+11-01 02:35:45.105   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#5) android.os.BinderProxy@b18c43a@0
+11-01 02:35:45.107  1130  1276 D EGL_emulation: app_time_stats: avg=985.28ms min=1.48ms max=27255.31ms count=28
+11-01 02:35:45.113   530   559 V WindowManager: Finish Transition (#5): created at ११-०१ ०२:३५:४४.४६२ collect-started=0.053ms request-sent=0.148ms started=24.269ms ready=24.217ms sent=90.24ms finished=649.664ms
+11-01 02:35:45.120   530   880 E IPCThreadState: Binder transaction failure. id: 206556, BR_*: 29189, error: -22 (Invalid argument)
+11-01 02:35:45.120   530   880 W ActivityManager: pid 530 system sent binder code 7 with flags 1 to frozen apps and got error -32
+11-01 02:35:45.121   530   880 W WindowManager: Exception thrown during dispatchAppVisibility Window{8cd8502 u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity EXITING}
+11-01 02:35:45.121   530   880 W WindowManager: android.os.DeadObjectException
+11-01 02:35:45.121   530   880 W WindowManager: 	at android.os.BinderProxy.transactNative(Native Method)
+11-01 02:35:45.121   530   880 W WindowManager: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-01 02:35:45.121   530   880 W WindowManager: 	at android.view.IWindow$Stub$Proxy.dispatchAppVisibility(IWindow.java:553)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.WindowState.sendAppVisibilityToClients(WindowState.java:3253)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.WindowContainer.sendAppVisibilityToClients(WindowContainer.java:1289)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.WindowToken.setClientVisible(WindowToken.java:403)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.ActivityRecord.setClientVisible(ActivityRecord.java:7166)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.ActivityRecord.postApplyAnimation(ActivityRecord.java:5881)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.ActivityRecord.commitVisibility(ActivityRecord.java:5823)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.Transition.finishTransition(Transition.java:1286)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.TransitionController.finishTransition(TransitionController.java:937)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.finishTransition(WindowOrganizerController.java:494)
+11-01 02:35:45.121   530   880 W WindowManager: 	at android.window.IWindowOrganizerController$Stub.onTransact(IWindowOrganizerController.java:289)
+11-01 02:35:45.121   530   880 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.onTransact(WindowOrganizerController.java:204)
+11-01 02:35:45.121   530   880 W WindowManager: 	at android.os.Binder.execTransactInternal(Binder.java:1500)
+11-01 02:35:45.121   530   880 W WindowManager: 	at android.os.Binder.execTransact(Binder.java:1444)
+11-01 02:35:45.126   530   880 W Process : Unable to open /proc/1874/status
+11-01 02:35:45.141   765   804 V WindowManagerShell: Track 0 became idle
+11-01 02:35:45.141   765   804 W Looper  : Slow dispatch took 36ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.RemoteTransitionHandler$1$$ExternalSyntheticLambda0@b66e79a m=0
+11-01 02:35:45.283     0     0 I binder  : 880:530 cannot find target node
+11-01 02:35:45.289     0     0 I binder  : 530:880 transaction async to 0:0 failed 206556/29189/-22, size 64-0 line 3265
+11-01 02:35:45.157  1130  1130 W SplitSelectStateCtor: Missing session instanceIds
+11-01 02:35:45.157  1130  1130 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+11-01 02:35:45.177   765   804 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=112
+11-01 02:35:45.181   530   710 I AppWidgetServiceImpl: Received broadcast: android.intent.action.PACKAGE_UNSTOPPED on user 0
+11-01 02:35:45.184   530   710 I AppWidgetServiceImpl: Updating package stopped masked state for uid 10148 package org.globulation2.glob2 isStopped false
+11-01 02:35:45.247   765   774 V WindowManagerShell: onTransitionReady(transaction=2276332667221)
+11-01 02:35:45.248  1130  1130 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=22, baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity }
+11-01 02:35:45.250   530   559 V WindowManager: Sent Transition (#6) createdAt=११-०१ ०२:३५:४४.७२६ via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=22 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.globulation2.glob2/.Glob2Activity } baseActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} topActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} origActivity=null realActivity=ComponentInfo{org.globulation2.glob2/org.globulation2.glob2.Glob2Activity} numActivities=1 lastActiveTime=2186381 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{6e8fb51 org.globulation2.glob2.Glob2Activity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=390 topActivityLetterboxHeight=844 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 6 }
+11-01 02:35:45.250   530   559 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-01 02:35:45.250   530   559 V WindowManager:     info={id=6 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[
+11-01 02:35:45.250   530   559 V WindowManager:         {WCT{RemoteToken{9f2878 Task{8af3830 #22 type=standard A=10148:org.globulation2.glob2}}} m=OPEN f=NONE leash=Surface(name=Task=22)/@0x848beea sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},
+11-01 02:35:45.250   530   559 V WindowManager:         {WCT{RemoteToken{45c5a60 Task{e1360ac #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x4908a48 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}
+11-01 02:35:45.250   530   559 V WindowManager:     ]}
+11-01 02:35:45.258  1130  1130 I TopTaskTracker: onTaskRemoved: taskId=21
+11-01 02:35:45.258  1130  1130 I TopTaskTracker: onTaskRemoved: taskId=21
+11-01 02:35:45.259   765   804 V WindowManagerShell: onTransitionReady (#6) android.os.BinderProxy@a4aafea: {id=6 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@ebbe366} m=OPEN f=NONE leash=Surface(name=Task=22)/@0x7db8cb sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@c2d16a7} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xbd7b8a8 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:35:45.259   765   804 V WindowManagerShell: Playing animation for (#6) android.os.BinderProxy@a4aafea@1
+11-01 02:35:45.259   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@faee4f2
+11-01 02:35:45.259   765   804 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@c656743
+11-01 02:35:45.259   765   804 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d7591c0
+11-01 02:35:45.259   765   804 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@7f7bef9
+11-01 02:35:45.259   765   804 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@e425e3e
+11-01 02:35:45.259   765   804 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-01 02:35:45.259   765   804 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@ced349f
+11-01 02:35:45.259   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@90209ec
+11-01 02:35:45.267   530  1295 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:35:45.268   765   804 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=6 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@ebbe366} m=OPEN f=NONE leash=Surface(name=Task=22)/@0x7db8cb sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@c2d16a7} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xbd7b8a8 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:35:45.269   765   804 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@3610e83, appThread = android.app.IApplicationThread$Stub$Proxy@f114800, debugName = QuickstepLaunchHome }}
+11-01 02:35:45.269   765   804 V WindowManagerShell:  Delegate animation for (#6) to null
+11-01 02:35:45.269   765   804 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:35:45.269   765   804 V WindowManagerShell: start default transition animation, info = {id=6 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@ebbe366} m=OPEN f=NONE leash=Surface(name=Task=22)/@0x7db8cb sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@c2d16a7} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xbd7b8a8 sb=Rect(0, 0 - 390, 844) eb=Rect(0, 0 - 390, 844) d=0 taskParent=-1}]}
+11-01 02:35:45.269   765   804 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@843b754 animAttr=0x13 type=OPEN isEntrance=false
+11-01 02:35:45.269   765   804 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@5a8d6fd animAttr=0x12 type=OPEN isEntrance=true
+11-01 02:35:45.271   530  1295 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:35:45.282   765   804 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d6c51b5
+11-01 02:35:45.282   765   804 W Looper  : Slow dispatch took 31ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda0@ecef4c0 m=0
+11-01 02:35:45.286   530   880 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:35:45.287  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 74, 22824, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:35:45.287  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 74, 22824, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:35:45.287  1130  1130 W FrameTracker: Missing HWUI jank callback for vsyncId: 22824, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:35:45.287  1130  1130 W FrameTracker: Missed App frame:UNKNOWN: 88, 22839, 537708541, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:35:45.287  1130  1130 W FrameTracker: Missed SF frame:UNKNOWN: 88, 22839, 537708541, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+11-01 02:35:45.290  1130  1188 V PerfettoTrigger: Triggering /system/bin/trigger_perfetto com.android.telemetry.interaction-jank-monitor-78
+11-01 02:35:45.299  2109  2109 V SDL     : Manufacturer: unknown
+11-01 02:35:45.299  2109  2109 V SDL     : Device: emu64x
+11-01 02:35:45.299  2109  2109 V SDL     : Model: Android SDK built for x86_64
+11-01 02:35:45.299  2109  2109 V SDL     : onCreate()
+11-01 02:35:45.347  2109  2109 D nativeloader: Load /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk!/lib/x86_64/libc++_shared.so using ns clns-7 from class loader (caller=/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk): ok
+11-01 02:35:45.355  2109  2109 D nativeloader: Load /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk!/lib/x86_64/libSDL3.so using ns clns-7 from class loader (caller=/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk): ok
+11-01 02:35:45.409  2109  2109 D nativeloader: Load /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk!/lib/x86_64/libmain.so using ns clns-7 from class loader (caller=/data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/base.apk): ok
+11-01 02:35:45.409  2109  2109 V SDL     : nativeSetupJNI()
+11-01 02:35:45.409  2109  2109 V SDL     : AUDIO nativeSetupJNI()
+11-01 02:35:45.409  2109  2109 V SDL     : CONTROLLER nativeSetupJNI()
+11-01 02:35:45.443  2109  2109 V SDL     : onStart()
+11-01 02:35:45.445  2109  2109 V SDL     : onResume()
+11-01 02:35:45.448  2109  2109 W HWUI    : Unknown dataspace 0
+11-01 02:35:45.451   530   880 W WindowManager: Failed looking up window session=Session{7fec389 2109:u0a10148} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6311 com.android.server.wm.Session.updateRequestedVisibleTypes:755 android.view.IWindowSession$Stub.onTransact:1078 
+11-01 02:35:45.463   530   546 D CoreBackPreview: Window{fa203bc u0 org.globulation2.glob2/org.globulation2.glob2.Glob2Activity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@886b69a, mPriority=0, mIsAnimationCallback=false}
+11-01 02:35:45.479  2109  2122 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+11-01 02:35:45.479  2109  2122 I EGL_emulation: Opening libGLESv2_emulation.so
+11-01 02:35:45.489  2109  2109 V SDL     : surfaceCreated()
+11-01 02:35:45.489  2109  2109 V SDL     : surfaceChanged()
+11-01 02:35:45.489  2109  2109 V SDL     : Window size: 390x844
+11-01 02:35:45.489  2109  2109 V SDL     : Device size: 390x844
+11-01 02:35:45.512  2109  2122 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-01 02:35:45.528  2109  2129 V SDL     : nativeInitSDLThread() 1 time
+11-01 02:35:45.532  2109  2129 V SDL     : Running main function SDL_main from library /data/app/~~j4AbRFiPSTnAhxqudOZR6A==/org.globulation2.glob2-lcEtAqzE7hg2uDmXJuDAfA==/lib/x86_64/libmain.so
+11-01 02:35:45.584   765   804 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#6) android.os.BinderProxy@a4aafea@1
+11-01 02:35:45.755     0     0 I servicemanager: Caller(pid=2109,uid=10148,sid=u:r:untrusted_app:s0:c148,c256,c512,c768) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:35:45.588   530   559 V WindowManager: Finish Transition (#6): created at ११-०१ ०२:३५:४४.७२६ collect-started=0.053ms request-sent=11.224ms started=15.982ms ready=476.995ms sent=517.449ms finished=862.428ms
+11-01 02:35:45.590   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:35:45.590  2109  2122 I Gralloc4: mapper 4.x is not supported
+11-01 02:35:45.592   406   406 E BpTransactionCompletedListener: Failed to transact (-32)
+11-01 02:35:45.595   765   804 V WindowManagerShell: Track 1 became idle
+11-01 02:35:45.596   765   804 V WindowManagerShell: All active transition animations finished
+11-01 02:35:45.597  1130  1130 D VRI[QuickstepLauncher]: visibilityChanged oldVisibility=true newVisibility=false
+11-01 02:35:45.623   530  2131 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+11-01 02:35:45.631   530  2131 I EGL_emulation: Opening libGLESv2_emulation.so
+11-01 02:35:45.631   530  2098 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:35:45.650   530  2098 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:35:45.650   530  2098 W UserManagerService: Requested status bar icon for non-badged user 0
+11-01 02:35:45.654   530  2131 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-01 02:35:46.285  2109  2109 I Choreographer: Skipped 48 frames!  The application may be doing too much work on its main thread.
+11-01 02:35:46.300  2109  2128 I HWUI    : Davey! duration=832ms; Flags=1, FrameTimelineVsyncId=23146, IntendedVsync=2187101721396, Vsync=2187101721396, InputEventId=0, HandleInputStart=2187105792561, AnimationStart=2187105792901, PerformTraversalsStart=2187105793091, DrawStart=2187266487135, FrameDeadline=2187118388062, FrameInterval=2187105788661, FrameStartTime=16666666, SyncQueued=2187266918969, SyncStart=2187267506069, IssueDrawCommandsStart=2187276659388, SwapBuffers=2187486624164, FrameCompleted=2187935250276, DequeueBufferDuration=1530651, QueueBufferDuration=309121, GpuCompleted=2187935250276, SwapBuffersCompleted=2187928186227, DisplayPresentTime=16960825855817, CommandSubmissionCompleted=2187486624164, 
+11-01 02:35:46.323   530   559 I ActivityTaskManager: Displayed org.globulation2.glob2/.Glob2Activity for user 0: +1s570ms
+11-01 02:35:46.557     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2134 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:46.404   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:35:46.729     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2137 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:46.790     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2140 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:46.914     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2143 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:46.841   765   918 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@6c1c889
+11-01 02:35:46.845   530  2098 W InputManager-JNI: Input channel object '807a75c Splash Screen org.globulation2.glob2 (client)' was disposed without first being removed with the input manager!
+11-01 02:35:46.851   336   336 I netd    : tetherGetStats() -> {[]} <11.11ms>
+11-01 02:35:46.853   530   609 D CoreBackPreview: Window{807a75c u0 Splash Screen org.globulation2.glob2 EXITING}: Setting back callback null
+11-01 02:35:46.855  1130  1130 D BaseDepthController: setSurface:
+11-01 02:35:46.855  1130  1130 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+11-01 02:35:46.855  1130  1130 D BaseDepthController: 	mSurface: null
+11-01 02:35:46.856  1130  1130 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+11-01 02:35:46.856  1130  1130 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+11-01 02:35:46.856  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:453)
+11-01 02:35:46.856  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:444)
+11-01 02:35:46.856  1130  1130 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(StatefulActivity.java:119)
+11-01 02:35:46.860  1130  1130 D StatsLog: LAUNCHER_ONSTOP
+11-01 02:35:46.863   530   880 I AppWidgetServiceImpl: setAppWidgetHidden() 0
+11-01 02:35:46.890   765   918 W FrameTracker: Missed App frame:UNKNOWN: 24, 23623, 30800069, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 24, 23623, 30800069, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 23638, 33523977, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 23667, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missing HWUI jank callback for vsyncId: 23667, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missed App frame:UNKNOWN: 88, 23689, 36311094, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 88, 23689, 36311094, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 23704, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missing HWUI jank callback for vsyncId: 23704, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missed App frame:UNKNOWN: 88, 23719, 413619732, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.890   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 88, 23719, 413619732, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.891   765   918 W FrameTracker: Missed SF frame:UNKNOWN: 80, 23734, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.891   765   918 W FrameTracker: Missing HWUI jank callback for vsyncId: 23734, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-01 02:35:46.891   765   839 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-39 - not enough time since last trigger
+11-01 02:35:47.015  2109  2109 V SDL     : onWindowFocusChanged(): true
+11-01 02:35:47.023   530   645 I ImeTracker: org.globulation2.glob2:43152045: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-01 02:35:47.024   530   645 I ImeTracker: org.globulation2.glob2:43152045: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-01 02:35:47.102  2109  2128 I HWUI    : Davey! duration=718ms; Flags=0, FrameTimelineVsyncId=23615, IntendedVsync=2187935054696, Vsync=2187935054696, InputEventId=0, HandleInputStart=2187944272610, AnimationStart=2187944273500, PerformTraversalsStart=2187944273960, DrawStart=2187965709404, FrameDeadline=2187968388028, FrameInterval=2187944268660, FrameStartTime=16666666, SyncQueued=2187973327111, SyncStart=2187976447676, IssueDrawCommandsStart=2187976539149, SwapBuffers=2188388162831, FrameCompleted=2188656914592, DequeueBufferDuration=979053, QueueBufferDuration=1220841, GpuCompleted=2188655854466, SwapBuffersCompleted=2188656914592, DisplayPresentTime=20611548058296, CommandSubmissionCompleted=2188388162831, 
+11-01 02:35:48.000     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2148 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:48.110     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2151 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:48.014  2109  2122 D EGL_emulation: app_time_stats: avg=27.24ms min=3.36ms max=727.74ms count=57
+11-01 02:35:48.224     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2154 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:48.304     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2157 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:48.750   530  1229 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+11-01 02:35:49.019  2109  2122 D EGL_emulation: app_time_stats: avg=13.61ms min=2.55ms max=31.70ms count=55
+11-01 02:35:49.512     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2160 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:49.588     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2163 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:49.770     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2166 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:49.845     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2169 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:50.034  2109  2122 D EGL_emulation: app_time_stats: avg=5.17ms min=2.29ms max=24.62ms count=59
+11-01 02:35:50.941     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2172 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:50.993     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2175 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:51.084     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2178 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:51.128     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2181 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:51.034  2109  2122 D EGL_emulation: app_time_stats: avg=12.50ms min=1.85ms max=23.59ms count=58
+11-01 02:35:52.039  2109  2122 D EGL_emulation: app_time_stats: avg=6.16ms min=2.29ms max=27.41ms count=59
+11-01 02:35:52.212     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2184 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:52.322     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2187 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:52.390     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2190 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:52.481     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2193 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:53.052  2109  2122 D EGL_emulation: app_time_stats: avg=7.75ms min=2.17ms max=28.61ms count=56
+11-01 02:35:53.555     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2196 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:53.612     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2199 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:53.709     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2203 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:53.764     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2206 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:54.066  2109  2122 D EGL_emulation: app_time_stats: avg=10.97ms min=2.20ms max=23.89ms count=61
+11-01 02:35:54.226   765   939 D EGL_emulation: app_time_stats: avg=29974.13ms min=29974.13ms max=29974.13ms count=1
+11-01 02:35:54.340   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:35:54.836     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2209 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:54.902     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2212 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:54.974     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2215 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:55.029     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2218 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:55.071  2109  2122 D EGL_emulation: app_time_stats: avg=5.18ms min=2.22ms max=16.02ms count=60
+11-01 02:35:56.137     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2221 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:56.233     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2224 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:56.084  2109  2122 D EGL_emulation: app_time_stats: avg=3.73ms min=2.22ms max=7.00ms count=61
+11-01 02:35:56.290     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2227 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:56.352     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2230 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:57.086  2109  2122 D EGL_emulation: app_time_stats: avg=4.20ms min=2.55ms max=16.27ms count=60
+11-01 02:35:57.396     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2233 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:57.449     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2236 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:57.506     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2239 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:57.576     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2242 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:58.087  2109  2122 D EGL_emulation: app_time_stats: avg=4.67ms min=2.50ms max=12.26ms count=60
+11-01 02:35:58.655     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2245 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:58.719     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2248 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:58.785     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2251 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:58.858     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2254 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:35:59.089  2109  2122 D EGL_emulation: app_time_stats: avg=5.98ms min=2.53ms max=19.33ms count=59
+11-01 02:36:00.002     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2257 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:00.107     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2260 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:00.206     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2263 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:00.063   765   939 D EGL_emulation: app_time_stats: avg=5836.58ms min=5836.58ms max=5836.58ms count=1
+11-01 02:36:00.272     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2266 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:00.114  2109  2122 D EGL_emulation: app_time_stats: avg=5.82ms min=2.89ms max=16.80ms count=62
+11-01 02:36:01.119  2109  2122 D EGL_emulation: app_time_stats: avg=4.72ms min=2.30ms max=13.21ms count=61
+11-01 02:36:01.360     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2269 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:01.444     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2272 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:01.529     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2275 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:01.603     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2278 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:02.133  2109  2122 D EGL_emulation: app_time_stats: avg=8.81ms min=2.39ms max=207.07ms count=49
+11-01 02:36:02.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:36:02.678     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2281 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:02.746     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2284 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:02.807     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2287 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:02.897     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2290 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:03.148  2109  2122 D EGL_emulation: app_time_stats: avg=6.34ms min=2.58ms max=46.35ms count=59
+11-01 02:36:04.014     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2293 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:04.123     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2296 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:04.295     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2299 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:04.150  2109  2122 D EGL_emulation: app_time_stats: avg=5.59ms min=2.24ms max=16.54ms count=59
+11-01 02:36:04.373     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2302 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:05.153  2109  2122 D EGL_emulation: app_time_stats: avg=10.04ms min=2.71ms max=22.26ms count=58
+11-01 02:36:05.474     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2305 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:05.579     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2308 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:05.693     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2311 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:05.760     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2314 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:06.154  2109  2122 D EGL_emulation: app_time_stats: avg=8.25ms min=2.36ms max=22.54ms count=59
+11-01 02:36:06.855     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2317 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:06.959     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2320 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:07.004     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2323 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:07.054     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2326 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:07.154  2109  2122 D EGL_emulation: app_time_stats: avg=4.99ms min=2.18ms max=30.93ms count=60
+11-01 02:36:08.126     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2329 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:08.183     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2332 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:08.254     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2335 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:08.348     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2338 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:08.191  2109  2122 D EGL_emulation: app_time_stats: avg=8.17ms min=2.14ms max=35.87ms count=55
+11-01 02:36:09.205  2109  2122 D EGL_emulation: app_time_stats: avg=6.60ms min=2.40ms max=36.99ms count=57
+11-01 02:36:09.466     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2341 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:09.543     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2344 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:09.602     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2347 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:09.687     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2350 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:10.212   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:36:10.216  2109  2122 D EGL_emulation: app_time_stats: avg=9.88ms min=2.46ms max=33.56ms count=54
+11-01 02:36:10.773     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2353 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:10.840     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2356 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:10.906     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2359 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:10.975     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2362 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:11.216  2109  2122 D EGL_emulation: app_time_stats: avg=12.41ms min=2.20ms max=23.80ms count=58
+11-01 02:36:12.059     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2365 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:12.170     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2368 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:12.284     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2371 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:12.381     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2374 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:12.221  2109  2122 D EGL_emulation: app_time_stats: avg=15.65ms min=2.91ms max=23.94ms count=56
+11-01 02:36:13.232  2109  2122 D EGL_emulation: app_time_stats: avg=15.67ms min=4.31ms max=25.87ms count=57
+11-01 02:36:13.472     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2377 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:13.557     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2380 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:13.625     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2383 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:13.723     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2386 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:14.232  2109  2122 D EGL_emulation: app_time_stats: avg=7.66ms min=2.15ms max=26.36ms count=60
+11-01 02:36:14.828     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2389 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:14.928     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2392 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:15.008     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2395 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:15.064     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2398 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:15.234  2109  2122 D EGL_emulation: app_time_stats: avg=4.25ms min=2.44ms max=13.69ms count=60
+11-01 02:36:16.120     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2401 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:16.166     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2404 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:16.220     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2407 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:16.333     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2410 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:16.249  2109  2122 D EGL_emulation: app_time_stats: avg=3.75ms min=2.30ms max=6.99ms count=61
+11-01 02:36:17.417     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2413 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:17.262  2109  2122 D EGL_emulation: app_time_stats: avg=3.33ms min=2.01ms max=13.77ms count=60
+11-01 02:36:17.473     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2416 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:17.539     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2419 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:17.603     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2422 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:18.267  2109  2122 D EGL_emulation: app_time_stats: avg=10.33ms min=2.27ms max=51.89ms count=53
+11-01 02:36:18.407   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:36:18.766     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2425 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:18.853     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2428 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:18.908     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2431 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:19.046     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2434 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:19.283  2109  2122 D EGL_emulation: app_time_stats: avg=7.94ms min=2.39ms max=24.77ms count=60
+11-01 02:36:20.108     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2437 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:20.176     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2440 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:20.230     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2443 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:20.345     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2446 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:20.285  2109  2122 D EGL_emulation: app_time_stats: avg=3.60ms min=2.25ms max=6.12ms count=60
+11-01 02:36:21.439     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2449 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:21.285  2109  2122 D EGL_emulation: app_time_stats: avg=13.01ms min=2.42ms max=26.60ms count=58
+11-01 02:36:21.525     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2452 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:21.621     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2455 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:21.710     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2458 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:22.287  2109  2122 D EGL_emulation: app_time_stats: avg=3.56ms min=2.20ms max=7.52ms count=60
+11-01 02:36:22.793     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2461 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:22.855     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2464 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:22.949     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2467 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:23.072     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2470 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:23.287  2109  2122 D EGL_emulation: app_time_stats: avg=4.53ms min=2.25ms max=10.90ms count=60
+11-01 02:36:24.290  2109  2122 D EGL_emulation: app_time_stats: avg=5.97ms min=2.37ms max=24.59ms count=59
+11-01 02:36:24.773     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2473 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:24.835     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2476 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:24.923     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2479 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:24.994     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2482 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:25.302  2109  2122 D EGL_emulation: app_time_stats: avg=14.12ms min=3.49ms max=81.89ms count=51
+11-01 02:36:26.192     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2485 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:26.443     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2488 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:26.305  2109  2122 D EGL_emulation: app_time_stats: avg=8.57ms min=2.89ms max=32.55ms count=56
+11-01 02:36:26.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:36:26.501     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2491 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:26.597     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2494 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:27.328  2109  2122 D EGL_emulation: app_time_stats: avg=6.31ms min=2.37ms max=56.65ms count=55
+11-01 02:36:27.701     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2497 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:27.790     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2500 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:27.872     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2503 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:27.943     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2506 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:28.372  2109  2122 D EGL_emulation: app_time_stats: avg=14.69ms min=3.60ms max=28.64ms count=37
+11-01 02:36:29.293     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2509 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:29.377     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2512 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:29.441     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2515 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:29.381  2109  2122 D EGL_emulation: app_time_stats: avg=8.92ms min=2.73ms max=44.06ms count=33
+11-01 02:36:29.560     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2518 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:30.381  2109  2122 D EGL_emulation: app_time_stats: avg=5.12ms min=2.59ms max=47.51ms count=58
+11-01 02:36:30.715     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2521 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:30.843     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2524 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:30.935     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2527 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:31.008     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2530 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:31.124     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+11-01 02:36:31.403  2109  2122 D EGL_emulation: app_time_stats: avg=13.83ms min=2.97ms max=38.77ms count=51
+11-01 02:36:32.144     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2533 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:32.252     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2536 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:32.394     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2539 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:32.475     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2542 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:32.449  2109  2122 D EGL_emulation: app_time_stats: avg=11.79ms min=2.57ms max=37.52ms count=56
+11-01 02:36:33.566     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2545 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:33.455  2109  2122 D EGL_emulation: app_time_stats: avg=8.61ms min=2.79ms max=29.17ms count=54
+11-01 02:36:33.659     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2548 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:33.749     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2551 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:33.847     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2554 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:34.272   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:36:34.471  2109  2122 D EGL_emulation: app_time_stats: avg=4.25ms min=2.59ms max=9.77ms count=61
+11-01 02:36:34.976     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2557 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:35.032     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2560 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:35.095     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2563 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:35.187     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2566 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:35.483  2109  2122 D EGL_emulation: app_time_stats: avg=13.95ms min=2.66ms max=24.03ms count=58
+11-01 02:36:36.332     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2569 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:36.409     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2572 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:36.479     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2575 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:36.558     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2578 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:36.504  2109  2122 D EGL_emulation: app_time_stats: avg=11.34ms min=2.27ms max=103.59ms count=55
+11-01 02:36:37.641     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2581 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:37.504  2109  2122 D EGL_emulation: app_time_stats: avg=11.08ms min=2.53ms max=27.09ms count=58
+11-01 02:36:37.736     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2584 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:37.793     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2587 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:37.867     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2590 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:38.516  2109  2122 D EGL_emulation: app_time_stats: avg=5.26ms min=2.54ms max=35.43ms count=60
+11-01 02:36:38.969     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2593 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:39.071     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2596 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:39.158     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2599 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:39.246     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2602 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:39.520  2109  2122 D EGL_emulation: app_time_stats: avg=5.42ms min=2.70ms max=21.61ms count=60
+11-01 02:36:40.333     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2605 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:40.416     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2608 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:40.470     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2611 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:40.570     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2614 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:40.551  2109  2122 D EGL_emulation: app_time_stats: avg=8.79ms min=2.65ms max=61.30ms count=56
+11-01 02:36:41.687     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2617 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:41.561  2109  2122 D EGL_emulation: app_time_stats: avg=8.26ms min=2.49ms max=101.37ms count=52
+11-01 02:36:41.760     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2620 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:41.912     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2623 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:41.995     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2626 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:42.464   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:36:42.568  2109  2122 D EGL_emulation: app_time_stats: avg=8.26ms min=2.27ms max=60.30ms count=57
+11-01 02:36:43.118     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2629 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:43.234     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2632 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:43.359     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2635 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:43.508     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2638 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:43.569  2109  2122 D EGL_emulation: app_time_stats: avg=14.29ms min=2.79ms max=78.28ms count=50
+11-01 02:36:44.598     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2641 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:44.728     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2644 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:44.585  2109  2122 D EGL_emulation: app_time_stats: avg=18.03ms min=3.00ms max=177.13ms count=40
+11-01 02:36:44.822     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2647 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:44.897     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2650 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:45.602  2109  2122 D EGL_emulation: app_time_stats: avg=11.23ms min=2.74ms max=86.96ms count=57
+11-01 02:36:46.002     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2653 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:46.077     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2656 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:46.178     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2659 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:46.291     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2662 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:46.608  2109  2122 D EGL_emulation: app_time_stats: avg=4.84ms min=2.29ms max=30.90ms count=59
+11-01 02:36:47.395     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2665 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:47.457     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2668 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:47.545     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2671 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:47.678     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2674 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:47.620  2109  2122 D EGL_emulation: app_time_stats: avg=12.94ms min=2.52ms max=200.23ms count=42
+11-01 02:36:48.745     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2677 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:48.795     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2680 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:48.633  2109  2122 D EGL_emulation: app_time_stats: avg=12.17ms min=2.79ms max=132.27ms count=50
+11-01 02:36:48.852     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2683 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:48.925     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2686 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:50.048     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2689 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:50.167     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2692 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:50.099  2109  2129 V SDL     : setOrientation() requestedOrientation=13 width=800 height=600 resizable=true hint=LandscapeLeft LandscapeRight Portrait PortraitUpsideDown
+11-01 02:36:50.332     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2695 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:50.388     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2698 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:50.400   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:36:50.603  2109  2129 V SDL     : setOrientation() requestedOrientation=13 width=800 height=600 resizable=true hint=LandscapeLeft LandscapeRight Portrait PortraitUpsideDown
+11-01 02:36:50.614  2109  2129 I SDL/APP : pixel format wanted SDL_PIXELFORMAT_RGBA8888 (1), got SDL_PIXELFORMAT_RGBA8888 (1)
+11-01 02:36:51.575     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2701 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:51.674     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2704 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:51.730     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2709 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:51.799     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2712 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:52.861     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2716 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:52.913     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2719 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:52.964     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2722 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:53.032     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2725 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:54.099     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2728 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:54.153     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2731 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:54.203     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2734 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:54.252     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2737 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:54.150  2109  2129 D EGL_emulation: app_time_stats: avg=349.76ms min=34.76ms max=1508.69ms count=5
+11-01 02:36:54.371  2109  2113 I bulation2.glob2: NativeAlloc concurrent mark compact GC freed 320KB AllocSpace bytes, 0(0B) LOS objects, 49% free, 4674KB/9348KB, paused 63us,6.523ms total 46.976ms
+11-01 02:36:55.352     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2742 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:55.194  2109  2129 D EGL_emulation: app_time_stats: avg=47.43ms min=37.53ms max=66.20ms count=22
+11-01 02:36:55.458     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2745 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:55.545     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2748 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:55.643     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2751 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:56.197  2109  2129 D EGL_emulation: app_time_stats: avg=52.69ms min=42.63ms max=69.44ms count=19
+11-01 02:36:56.739     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2754 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:56.861     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2757 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:56.953     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2760 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:57.054     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2763 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:57.238  2109  2129 D EGL_emulation: app_time_stats: avg=52.02ms min=40.47ms max=67.18ms count=20
+11-01 02:36:58.159     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2766 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:58.237     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2769 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:58.318     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2772 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:58.405     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2775 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:58.259  2109  2129 D EGL_emulation: app_time_stats: avg=46.37ms min=38.01ms max=58.09ms count=22
+11-01 02:36:58.336   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:36:59.300  2109  2129 D EGL_emulation: app_time_stats: avg=47.29ms min=36.46ms max=57.18ms count=22
+11-01 02:36:59.478     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2778 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:59.607     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2781 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:59.714     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2784 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:36:59.779     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2787 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:00.069   765   939 D EGL_emulation: app_time_stats: avg=60005.87ms min=60005.87ms max=60005.87ms count=1
+11-01 02:37:00.321  2109  2129 D EGL_emulation: app_time_stats: avg=46.42ms min=33.32ms max=71.62ms count=22
+11-01 02:37:00.867     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2790 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:00.959     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2793 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:01.026     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2796 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:01.087     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2799 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:01.357  2109  2129 D EGL_emulation: app_time_stats: avg=47.03ms min=39.29ms max=61.90ms count=22
+11-01 02:37:02.203     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2802 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:02.310     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2805 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:02.406     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2808 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:02.493     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2811 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:02.376  2109  2129 D EGL_emulation: app_time_stats: avg=46.30ms min=40.69ms max=60.98ms count=22
+11-01 02:37:03.396  2109  2129 D EGL_emulation: app_time_stats: avg=46.26ms min=35.98ms max=58.70ms count=22
+11-01 02:37:03.592     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2814 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:03.652     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2817 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:03.721     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2820 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:03.776     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2823 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:04.429  2109  2129 D EGL_emulation: app_time_stats: avg=44.87ms min=35.19ms max=52.74ms count=23
+11-01 02:37:04.881     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2826 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:04.983     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2829 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:05.037     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2832 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:05.102     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2835 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:05.443  2109  2129 D EGL_emulation: app_time_stats: avg=44.06ms min=35.88ms max=59.55ms count=23
+11-01 02:37:06.193     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2838 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:06.305     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2841 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:06.439     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2844 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:06.274   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:37:06.548     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2847 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:06.470  2109  2129 D EGL_emulation: app_time_stats: avg=48.67ms min=38.18ms max=63.49ms count=21
+11-01 02:37:07.501  2109  2129 D EGL_emulation: app_time_stats: avg=44.81ms min=34.78ms max=52.49ms count=23
+11-01 02:37:07.686     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2850 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:07.803     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2853 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:07.903     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2856 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:07.989     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2859 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:08.502  2109  2129 D EGL_emulation: app_time_stats: avg=47.59ms min=39.69ms max=55.44ms count=21
+11-01 02:37:09.083     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2862 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:09.209     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2865 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:09.287     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2868 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:09.374     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2871 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:09.509  2109  2129 D EGL_emulation: app_time_stats: avg=43.73ms min=31.31ms max=55.96ms count=23
+11-01 02:37:10.537     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2874 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:10.613     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2877 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:10.705     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2880 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:10.545  2109  2129 D EGL_emulation: app_time_stats: avg=51.80ms min=39.09ms max=61.54ms count=20
+11-01 02:37:10.796     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2883 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:11.552  2109  2129 D EGL_emulation: app_time_stats: avg=47.89ms min=38.28ms max=66.48ms count=21
+11-01 02:37:11.872     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2886 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:11.938     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2889 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:12.047     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2892 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:12.185     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2895 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:12.582  2109  2129 D EGL_emulation: app_time_stats: avg=51.47ms min=38.31ms max=65.08ms count=20
+11-01 02:37:13.307     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2898 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:13.415     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2901 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:13.489     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2904 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:13.547     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2907 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:13.626  2109  2129 D EGL_emulation: app_time_stats: avg=69.59ms min=41.08ms max=384.28ms count=15
+11-01 02:37:14.464   755   755 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+11-01 02:37:14.644     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2910 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:14.722     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2913 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:14.633  2109  2129 D EGL_emulation: app_time_stats: avg=45.77ms min=30.70ms max=69.74ms count=22
+11-01 02:37:14.805     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2916 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:14.895     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2919 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:15.645  2109  2129 D EGL_emulation: app_time_stats: avg=50.53ms min=39.08ms max=62.14ms count=20
+11-01 02:37:15.956     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2922 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:16.068     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2925 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:16.156     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2928 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:16.213     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2931 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:16.674  2109  2129 D EGL_emulation: app_time_stats: avg=44.72ms min=34.29ms max=61.09ms count=23
+11-01 02:37:17.521     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2934 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:17.670     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2937 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:17.802     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2940 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:17.684  2109  2129 D EGL_emulation: app_time_stats: avg=67.29ms min=40.99ms max=317.32ms count=15
+11-01 02:37:17.920     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2943 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:18.718  2109  2129 D EGL_emulation: app_time_stats: avg=54.38ms min=33.16ms max=150.56ms count=19
+11-01 02:37:18.977     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2946 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:19.034     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2949 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:19.105     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2952 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:19.171     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2955 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:19.725  2109  2129 D EGL_emulation: app_time_stats: avg=55.91ms min=33.05ms max=174.39ms count=18
+11-01 02:37:20.252     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2958 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:20.334     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2961 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:20.410     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2964 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:20.473     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2967 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:20.741  2109  2129 D EGL_emulation: app_time_stats: avg=48.32ms min=38.60ms max=70.02ms count=21
+11-01 02:37:21.651     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2970 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:21.769     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2973 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:21.868     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2976 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:21.769  2109  2129 D EGL_emulation: app_time_stats: avg=48.92ms min=39.74ms max=59.24ms count=21
+11-01 02:37:22.076     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2979 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:22.323   530  2098 D WifiNl80211Manager: Scan result ready event
+11-01 02:37:22.324   530  2098 D WifiNative: Scan result ready event
+11-01 02:37:22.346   530   673 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+11-01 02:37:22.795  2109  2129 D EGL_emulation: app_time_stats: avg=48.84ms min=36.50ms max=102.80ms count=21
+11-01 02:37:23.332     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2982 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:23.406     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2985 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:23.484     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2988 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:23.556     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2991 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:23.809  2109  2129 D EGL_emulation: app_time_stats: avg=48.24ms min=36.88ms max=62.89ms count=21
+11-01 02:37:24.628     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2994 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:24.776     0     0 I logd    : logdr: UID=2000 GID=2000 PID=2997 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:24.826     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3000 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:24.882     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3003 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:25.769  2109  2129 I SDL/APP : Glob2 screen ready: 21AudioPreferenceScreen
+11-01 02:37:25.948     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3006 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:26.025     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3009 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:26.065  3014  3014 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:37:26.066  3014  3014 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:37:26.082   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:37:26.082  3014  3015 I Gralloc4: mapper 4.x is not supported
+11-01 02:37:26.249     0     0 I servicemanager: Caller(pid=3014,uid=2000,sid=u:r:shell:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:37:26.265  2109  2129 D EGL_emulation: app_time_stats: avg=163.69ms min=32.90ms max=1777.85ms count=15
+11-01 02:37:26.783  2109  2129 I SDL/APP : Glob2 screen ready: 20HandPreferenceScreen
+11-01 02:37:26.957     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3026 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:27.033     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3029 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:27.078  3034  3034 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:37:27.078  3034  3034 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:37:27.258     0     0 I servicemanager: Caller(pid=3034,uid=2000,sid=u:r:shell:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:37:27.094   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:37:27.096  3034  3035 I Gralloc4: mapper 4.x is not supported
+11-01 02:37:27.285  2109  2129 D EGL_emulation: app_time_stats: avg=72.80ms min=58.84ms max=115.90ms count=14
+11-01 02:37:27.913     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3046 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:27.749  2109  2129 I SDL/APP : Glob2 screen ready: 23IntroductionOfferScreen
+11-01 02:37:28.339  2109  2129 D EGL_emulation: app_time_stats: avg=65.80ms min=45.19ms max=137.06ms count=16
+11-01 02:37:29.059     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3049 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:29.181     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3052 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+11-01 02:37:29.228  3057  3057 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-01 02:37:29.228  3057  3057 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-01 02:37:29.405     0     0 I servicemanager: Caller(pid=3057,uid=2000,sid=u:r:shell:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+11-01 02:37:29.240   143   143 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-01 02:37:29.240  3057  3058 I Gralloc4: mapper 4.x is not supported
+11-01 02:37:29.402  2109  2129 D EGL_emulation: app_time_stats: avg=62.54ms min=47.73ms max=112.04ms count=17
+11-01 02:37:29.845     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3059 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns

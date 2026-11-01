@@ -1,0 +1,44 @@
+
+Running 1 test using 1 worker
+
+(node:98138) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [webkit] › artifacts/marathi-localization/browser-game/risk-ui.spec.js:84:49 › Marathi game desktop › threaded native catalog, selector and statistics render in Marathi (3.5m)
+
+
+  1) [webkit] › artifacts/marathi-localization/browser-game/risk-ui.spec.js:84:49 › Marathi game desktop › threaded native catalog, selector and statistics render in Marathi 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 180000ms exceeded while waiting on the predicate
+
+      32 |       await clickControl(page, 'intro/continue');
+      33 |     return name.includes('MainMenuScreen');
+    > 34 |   }, {timeout: 180000}).toBe(true);
+         |                         ^
+      35 | }
+      36 |
+      37 | async function choosePublishedPopupOption(page, text) {
+        at initialMenu (/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/risk-ui.spec.js:34:25)
+        at /home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/browser-game/risk-ui.spec.js:99:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-risk-ui/cases/risk-ui-Marathi-game-deskt-983ba-tatistics-render-in-Marathi-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-risk-ui/cases/risk-ui-Marathi-game-deskt-983ba-tatistics-render-in-Marathi-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-risk-ui/cases/risk-ui-Marathi-game-deskt-983ba-tatistics-render-in-Marathi-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/marathi-localization/browser-game/webkit-continuation/minimal-qa/webkit-risk-ui/cases/risk-ui-Marathi-game-deskt-983ba-tatistics-render-in-Marathi-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [webkit] › artifacts/marathi-localization/browser-game/risk-ui.spec.js:84:49 › Marathi game desktop › threaded native catalog, selector and statistics render in Marathi 

@@ -1,0 +1,14 @@
+{
+  "exit_code": 0,
+  "start_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "finish_revision": "e4811dcde89d6393918c36a99d34242ef3be8178",
+  "command": [
+    "npm",
+    "run",
+    "--workspace",
+    "@glob2/web",
+    "build"
+  ],
+  "node": "/usr/lib/chatgpt/resources/cua_node/bin/node",
+  "log_sha256": "82655ba6645889a8eadd34f46f48f1dbe81593e5cec21ac1543c1d47cc7e40e4"
+}

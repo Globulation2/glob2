@@ -1,0 +1,37 @@
+{
+  "source_revision": "e564cf26cb156a5474dcb9102a65d64aab18fb85",
+  "source_status": "",
+  "tests": [
+    {
+      "command": [
+        "python3",
+        "test/test_google_draft.py"
+      ],
+      "exit_code": 0,
+      "tests_passed": 28,
+      "log": "google-tests.log",
+      "sha256": "8cbc0a85e9c16d41c5b2cc28e4c32e41de418c164bce90affcd9cfa92c5fb31b"
+    },
+    {
+      "command": [
+        "python3",
+        "test/test_cloud_draft.py"
+      ],
+      "exit_code": 0,
+      "tests_passed": 10,
+      "log": "cloud-tests.log",
+      "sha256": "4cb0ac942c492c7e2eefdb21685fe6b728310abd55ae82e3225a5f7e3760eae2"
+    },
+    {
+      "command": [
+        "python3",
+        "test/test_translation_program.py"
+      ],
+      "exit_code": 0,
+      "tests_passed": 13,
+      "log": "program-tests.log",
+      "sha256": "b3fce6bafb02d8b905c27634afe05d95fabe525f441aa7980edea28d593997e7"
+    }
+  ],
+  "scope": "IndependentPythonprocesses; provider calls mockedbytheseunit tests. cloudtest printed counters are fixture data, not actualGoogleusage. Actualcampaignledger remains90attempts196525codepoints3.9305USD."
+}

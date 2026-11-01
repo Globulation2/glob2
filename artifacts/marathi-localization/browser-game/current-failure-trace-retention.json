@@ -1,0 +1,9 @@
+{
+  "kind": "actual failed current random-custom-game Firefox threaded phone trace",
+  "original_report_attachment_path": "artifacts/marathi-localization/browser-game/minimal-qa/firefox-risk-ui/cases/risk-ui-Marathi-game-phone-d7bf2-tatistics-render-in-Marathi-firefox/trace.zip",
+  "local_retained_path": "build/browser-marathi-failure-traces/current-cdd-random-firefox-phone/trace.zip",
+  "bytes": 223434042,
+  "sha256": "3f9996201196a56ade37b2aecb9e3741eab4a3a9472c5bd9e8abf32eed6facbc",
+  "publication": "Raw trace ZIP retained locally only; deliberately excluded from evidence publication because it embeds runtime/network bodies. Failure report/log/screenshot remain publishable.",
+  "scope": "Initial minimal attempt5PASS/1FAIL/3notrun; no success reinterpretation."
+}

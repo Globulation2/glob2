@@ -1,0 +1,68 @@
+{
+  "recommendation_only_do_not_mutate_reviews": true,
+  "current_validation_head": "0e6e243e098cf32afbf303937ba4f55384685f37",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "actual_producer_revisions": [
+    "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+    "187ea34de87838911a42321fd52925d51da475b9"
+  ],
+  "gates": {
+    "desktop_rendering": {
+      "recommend_pass": true,
+      "scope": "Linux desktop full-catalog matrix +real menus/game/all10initial tutorials and current stats/editor controls; actual normal-resource187 MR selector verified."
+    },
+    "phone_rendering": {
+      "recommend_pass": true,
+      "scope": "Desktop-hosted390x844 full-catalog matrix, real compact game/tutorial UI, refined portable-renderer phone stats/lenses/editor cards, actual187registered selector. Physical device/platform runtime is a separate gate."
+    },
+    "native_platforms": {
+      "recommend_pass": true,
+      "scope": "Linux scoped21 registered font/system-language/touch/statistics cases plus current shared production renderer. Initial3 display setup failures retained; only3 targeted X11 retries, all pass. No full native aggregate or macOS/Windows/iOS execution claim."
+    }
+  },
+  "evidence_sha256": {
+    "native-final-summary.json": "10d38bd54e7a3a67f414115b3a7382fbfb3e2e8214bc5eb60f385b082ec742f6",
+    "native-overlay-equivalence.json": "9d23004de50d4ed457efb2664ec8cd08215b7a3848df63f4a97717284625ac57",
+    "native-final-input-carry.json": "5006c1936b5d4425ed0d93d4956a4c506ba63f39098fb85dde26a5a28bd7a1f9",
+    "registration-metadata-transition.json": "22cde85f104be1ac0d1a54c53ca0f08c45ca53fa860f48d7d6794994529aa8ab",
+    "native/focused-results.json": "5a96049a032800d2aadaf3bae5bb6560dbed6efba3cc091d5eb8851d110836a7",
+    "native/test-results/junit.xml": "d1c25318a46b13aeaf5176a58a0bbc1a076c9f1551e46e12efd25afc44633c1b",
+    "native/test-results-display-retry/junit.xml": "2849b87ad72e50f89853d14ede6eace085e6c46178b3844dc5fa16043991a2b1",
+    "native/strip-provenance.json": "62507c26860d1cd30166692b57b6040c3de1863ab9e9e090176015b811e3e0b9",
+    "native/extra-v2-build-and-strip.json": "371b15eed28143bae17ac66c34b09717626a8a02874b0618da8bb5d57b5450b5",
+    "native-render-clean64/runner.json": "42e3971f6a2c0af34d7f9ed7a31633e636d78a5ff94579bc7c9f7c39abb2ae5b",
+    "native-render-clean64/1280x900/matrix/font-matrix.json": "fd3d4f1b4b0141e18ff6e993cd169e2323a6a48fe6cdb13080ff948ac1e34a79",
+    "native-render-clean64/1280x900/matrix/matrix-diagnostics.json": "d16ace7966b663ccd5a599fc323d70b86fdd8ab2bf7ac5bedc514e4e1ed87a5d",
+    "native-render-clean64/390x844/matrix/font-matrix.json": "d3262a012794007f1fe665a1ab6ddbbe5278c4163f084fd9717863e85572504f",
+    "native-render-clean64/390x844/matrix/matrix-diagnostics.json": "96156cdb919e1129fa1f0adf1b9619cfd6d7bec6bcb168c5d2b1b46b1642bfb6",
+    "native-render-clean64/visual-inspections.json": "b9efb36236490665b95634ba4c984cb38dad03ace0721330bd2c6910efa20320",
+    "native-extra-clean64/runner.json": "4add9c81e7270b94e6d6227e91950765e5917b493972a27992dd6509dbfbc81c",
+    "native-extra-clean64/visual-inspections.json": "c81421529449d0adcf323393fdee68cee5f779c1fcece3cd0d393e513517c640",
+    "native-extra-clean64/refined/runner.json": "f6e84f62f97a776ab040e8731f90fdc01a17013e6741c831ce1a90345bf9dc05",
+    "native-extra-clean64/refined/visual-inspections.json": "3dda3b6b86a38cc18bf224ae77a7fe89c18e65d7a1cc6a8e09ec3153e47c0bef",
+    "native-registration187/build-request.json": "f11a377743ae515c3c5166b2fddcf1251c9c6c25651c772e419b5c3a92c601c9",
+    "native-registration187/variant-build-and-strip.json": "5a54cc7ce6e099528891e3d3bcee930392068e07861fbb83003b946ebf19beb7",
+    "native-registration187/captures/runner.json": "2c6a90441d893d0d36fc81cd38a8339cb52cbafcc3e9e98c7800b79e3d06d2ad",
+    "native-registration187/captures/visual-inspections.json": "cee53f1ff19b4d0b84fab2d7bde160f2360ea5160f2ea471da9faa458970b8ba",
+    "native/root-independent/visual-inspections.json": "ad8c15f95d2c9e01bd1fd2369dcfc71468f2ca9dbcda7e22b589e0a7a3884697",
+    "native-registration187/root-visual-review.json": "c37d58380d7ce7ab26bccdbfd09484da59528b5b49eac1cfc96d99b7d8881961",
+    "native/display-cleanup.json": "65a789e94b7dda4c77f0f3dee4efde9495ae4c988b8cabf3b419fd4e25b5b976"
+  },
+  "explicit_omissions": [
+    "macOS native runtime",
+    "Windows native runtime",
+    "iOS runtime",
+    "Physical phone hardware",
+    "Full native engine/unit aggregate",
+    "Tutorial later-objective/complete-lesson flows",
+    "Every formatted placeholder substitution/layout combination",
+    "Every matrix PNG manually read"
+  ],
+  "pending_other_owners": "No browser_startup/browser_platforms/mobile_platforms gate pass is asserted by this recommendation. Browser final12 remain owned elsewhere; Android current evidence is owned elsewhere.",
+  "stable_inputs_note": "Bind final native-summary/evidence hashes to recorded metadata transition and source-input carry. Preserve old64/671/ffbd producers honestly; never relabel them.",
+  "stable": true
+}

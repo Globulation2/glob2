@@ -1,0 +1,572 @@
+{
+  "utc": "2026-11-01T09:55:52.545084+00:00",
+  "project": "bradley-personal-20261027",
+  "model": "general/nmt",
+  "auth": "gcloud auth print-access-token; token memory-only",
+  "helper_sha256": "14c2131fe2f3a6a6298c420ac4a755a4a64dc7de620eb4d81a77baeb17b71b16",
+  "reviewed_helper": "../integration-bc8/helper-independent-review.json",
+  "ledger": "../google-budget.json",
+  "lock": "exclusive campaign-root kit lock plus Budget ledger locks",
+  "reserved_codepoints_before": 194087,
+  "reserved_codepoints_after": 196525,
+  "reserved_usd_after": "3.9305",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "entries": [
+    {
+      "key": "Rush",
+      "source": "Rush",
+      "raw_google_target": "घाई"
+    },
+    {
+      "key": "Defensive",
+      "source": "Defensive",
+      "raw_google_target": "बचावात्मक"
+    },
+    {
+      "key": "Economy",
+      "source": "Economy",
+      "raw_google_target": "अर्थव्यवस्था"
+    },
+    {
+      "key": "Expansion",
+      "source": "Expansion",
+      "raw_google_target": "विस्तार"
+    },
+    {
+      "key": "Experimental",
+      "source": "Experimental",
+      "raw_google_target": "प्रायोगिक"
+    },
+    {
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "raw_google_target": "नवशिक्यांसाठी अनुकूल"
+    },
+    {
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "raw_google_target": "फाइल आणि एपीआय प्रोफाइल"
+    },
+    {
+      "key": "Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "raw_google_target": "वाक्यरचना आणि प्रोफाइल निर्बंध"
+    },
+    {
+      "key": "Startup and callback",
+      "source": "Startup and callback",
+      "raw_google_target": "स्टार्टअप आणि कॉलबॅक"
+    },
+    {
+      "key": "Persistent state",
+      "source": "Persistent state",
+      "raw_google_target": "कायमस्वरूपी स्थिती"
+    },
+    {
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "raw_google_target": "सीडेड गेमप्ले"
+    },
+    {
+      "key": "Repeatable simulation",
+      "source": "Repeatable simulation",
+      "raw_google_target": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन"
+    },
+    {
+      "key": "Save and resume",
+      "source": "Save and resume",
+      "raw_google_target": "जतन करा आणि पुन्हा सुरू करा"
+    },
+    {
+      "key": "Good",
+      "source": "Good",
+      "raw_google_target": "चांगले"
+    },
+    {
+      "key": "Fair",
+      "source": "Fair",
+      "raw_google_target": "योग्य"
+    },
+    {
+      "key": "Poor",
+      "source": "Poor",
+      "raw_google_target": "गरीब"
+    },
+    {
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "raw_google_target": "खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) ही त्या प्रदेशाची एक चाचणी, एक अंदाज असतो."
+    },
+    {
+      "key": "Delay",
+      "source": "Delay",
+      "raw_google_target": "विलंब"
+    },
+    {
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "raw_google_target": "तुमचा इनपुट विलंब: तुमच्या क्लिकपासून ते कृती घटेपर्यंत, प्रत्येकासाठी. तुमच्या पिंगच्या निम्मा अधिक तुमचा गेम जिटरला रोखण्यासाठी वापरत असलेला बफर."
+    },
+    {
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "raw_google_target": "एखाद्या खेळाडूचा खेळ मॅच क्लॉकच्या किती मागे चालतो. एका सेकंदापेक्षा कमी वेळ सामान्य असतो (यात त्यांचा विलंब समाविष्ट असतो); रिलेनुसार खेळाडू २ सेकंदांपासून धीमा मानला जातो."
+    },
+    {
+      "key": "Classic glossy",
+      "source": "Classic glossy",
+      "raw_google_target": "क्लासिक चकचकीत"
+    },
+    {
+      "key": "Basics",
+      "source": "Basics",
+      "raw_google_target": "मूलभूत गोष्टी"
+    },
+    {
+      "key": "Matte",
+      "source": "Matte",
+      "raw_google_target": "मॅट"
+    },
+    {
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "raw_google_target": "रिव्हेट केलेले धातू"
+    },
+    {
+      "key": "Metal",
+      "source": "Metal",
+      "raw_google_target": "धातू"
+    },
+    {
+      "key": "Hairy",
+      "source": "Hairy",
+      "raw_google_target": "केसाळ"
+    },
+    {
+      "key": "Organic",
+      "source": "Organic",
+      "raw_google_target": "सेंद्रिय"
+    },
+    {
+      "key": "Cartoon",
+      "source": "Cartoon",
+      "raw_google_target": "कार्टून"
+    },
+    {
+      "key": "Woven fabric",
+      "source": "Woven fabric",
+      "raw_google_target": "विणलेले कापड"
+    },
+    {
+      "key": "Craft",
+      "source": "Craft",
+      "raw_google_target": "कलाकुसर"
+    },
+    {
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "raw_google_target": "चिकट गोंद"
+    },
+    {
+      "key": "Wet",
+      "source": "Wet",
+      "raw_google_target": "ओले"
+    },
+    {
+      "key": "Wood",
+      "source": "Wood",
+      "raw_google_target": "लाकूड"
+    },
+    {
+      "key": "Stone",
+      "source": "Stone",
+      "raw_google_target": "दगड"
+    },
+    {
+      "key": "Mineral",
+      "source": "Mineral",
+      "raw_google_target": "खनिज"
+    },
+    {
+      "key": "Scales",
+      "source": "Scales",
+      "raw_google_target": "स्केल"
+    },
+    {
+      "key": "Leather",
+      "source": "Leather",
+      "raw_google_target": "चामडे"
+    },
+    {
+      "key": "Crystal",
+      "source": "Crystal",
+      "raw_google_target": "क्रिस्टल"
+    },
+    {
+      "key": "Lava",
+      "source": "Lava",
+      "raw_google_target": "लावा"
+    },
+    {
+      "key": "Chrome",
+      "source": "Chrome",
+      "raw_google_target": "क्रोम"
+    },
+    {
+      "key": "Carbon fibre",
+      "source": "Carbon fibre",
+      "raw_google_target": "कार्बन फायबर"
+    },
+    {
+      "key": "Velvet",
+      "source": "Velvet",
+      "raw_google_target": "मखमली"
+    },
+    {
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "raw_google_target": "मधमाशांचे पोळे"
+    },
+    {
+      "key": "Ice",
+      "source": "Ice",
+      "raw_google_target": "बर्फ"
+    },
+    {
+      "key": "Cloud",
+      "source": "Cloud",
+      "raw_google_target": "ढग"
+    },
+    {
+      "key": "Hammered metal",
+      "source": "Hammered metal",
+      "raw_google_target": "हातोड्याने ठोकलेला धातू"
+    },
+    {
+      "key": "Candy",
+      "source": "Candy",
+      "raw_google_target": "कँडी"
+    },
+    {
+      "key": "Slime",
+      "source": "Slime",
+      "raw_google_target": "स्लाइम"
+    },
+    {
+      "key": "AI player",
+      "source": "AI player",
+      "raw_google_target": "एआय खेळाडू"
+    },
+    {
+      "key": "Finances",
+      "source": "Finances",
+      "raw_google_target": "वित्त"
+    },
+    {
+      "key": "Accounts",
+      "source": "Accounts",
+      "raw_google_target": "खाती"
+    },
+    {
+      "key": "Audit",
+      "source": "Audit",
+      "raw_google_target": "लेखापरीक्षण"
+    },
+    {
+      "key": "1 hour",
+      "source": "1 hour",
+      "raw_google_target": "१ तास"
+    },
+    {
+      "key": "1 day",
+      "source": "1 day",
+      "raw_google_target": "१ दिवस"
+    },
+    {
+      "key": "1 week",
+      "source": "1 week",
+      "raw_google_target": "१ आठवडा"
+    },
+    {
+      "key": "30 days",
+      "source": "30 days",
+      "raw_google_target": "३० दिवस"
+    },
+    {
+      "key": "Most played",
+      "source": "Most played",
+      "raw_google_target": "सर्वाधिक खेळले"
+    },
+    {
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "raw_google_target": "संगीताची रचना आणि विकास याकडे लक्ष द्या."
+    },
+    {
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "raw_google_target": "तिन्ही मूड योग्यरित्या कार्यरत आहेत याची खात्री करा."
+    },
+    {
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "raw_google_target": "वेगवेगळ्या मनस्थितींमध्ये आवाजाच्या पातळीत होणाऱ्या अनपेक्षित बदलांकडे लक्ष द्या."
+    },
+    {
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "raw_google_target": "जेव्हा लूप पुन्हा सुरू होतो, तेव्हा क्लिक, खंड किंवा अचानक होणारा बदल ऐका."
+    },
+    {
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "raw_google_target": "अतिशय यांत्रिकपणे पुनरावृत्ती होणाऱ्या लहान वाक्यांशांकडे लक्ष द्या."
+    },
+    {
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "raw_google_target": "मूड बदला आणि तालात किंवा सुसंवादात होणारे बदल ऐका."
+    },
+    {
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "raw_google_target": "बांधकाम आणि लढाई या शांततेपेक्षा वेगळ्या जाणवतात याची खात्री करा."
+    },
+    {
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "raw_google_target": "शांत भागांमध्ये येणाऱ्या फुसफुसण्यासारख्या किंवा खरखराटासारख्या आवाजाकडे लक्ष द्या."
+    },
+    {
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "raw_google_target": "अस्पष्ट बास किंवा कर्कश उच्च फ्रिक्वेन्सीकडे लक्ष द्या."
+    },
+    {
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "raw_google_target": "खेळाच्या आवाजासोबत शांत भागही ऐकू येत राहतील याची खात्री करा."
+    },
+    {
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "raw_google_target": "अचानक बंद होणाऱ्या सुरांकडे लक्ष द्या."
+    },
+    {
+      "key": "Worker",
+      "source": "Worker",
+      "raw_google_target": "कामगार"
+    },
+    {
+      "key": "Warrior",
+      "source": "Warrior",
+      "raw_google_target": "योद्धा"
+    },
+    {
+      "key": "Explorer",
+      "source": "Explorer",
+      "raw_google_target": "शोधक"
+    },
+    {
+      "key": "Swarm",
+      "source": "Swarm",
+      "raw_google_target": "थवा"
+    },
+    {
+      "key": "Classic",
+      "source": "Classic",
+      "raw_google_target": "क्लासिक"
+    },
+    {
+      "key": "Crown",
+      "source": "Crown",
+      "raw_google_target": "मुकुट"
+    },
+    {
+      "key": "Clutch",
+      "source": "Clutch",
+      "raw_google_target": "क्लच"
+    },
+    {
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "raw_google_target": "बेडूक"
+    },
+    {
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "raw_google_target": "कोवळ्या टोपी असलेले रुंद टोपीधारी विषारी बुरशी."
+    },
+    {
+      "key": "Coral",
+      "source": "Coral",
+      "raw_google_target": "प्रवाळ"
+    },
+    {
+      "key": "Skep",
+      "source": "Skep",
+      "raw_google_target": "स्केप"
+    },
+    {
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "raw_google_target": "स्टँडवर वेटोळे घालून ठेवलेले मधमाशांचे पोळे, ज्याचे दार तुमच्या समोर आहे."
+    },
+    {
+      "key": "Bloom",
+      "source": "Bloom",
+      "raw_google_target": "फुलणे"
+    },
+    {
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "raw_google_target": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध"
+    },
+    {
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "raw_google_target": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही"
+    },
+    {
+      "key": "Private: only you",
+      "source": "Private: only you",
+      "raw_google_target": "खाजगी: फक्त तुम्ही"
+    },
+    {
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "raw_google_target": "सर्वरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूचा खेळ त्याच्याशी सहमत होता."
+    },
+    {
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "raw_google_target": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील."
+    },
+    {
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "raw_google_target": "एखाद्या खेळाडूचा गेम सर्वरच्या मॅचच्या रिप्लेशी जुळत नसला तरी, सर्वरचा निकालच ग्राह्य धरला जाईल."
+    },
+    {
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "raw_google_target": "सर्वरला हा सामना पुन्हा खेळवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही."
+    },
+    {
+      "key": "This match is not checked.",
+      "source": "This match is not checked.",
+      "raw_google_target": "या सामन्याची तपासणी केलेली नाही."
+    },
+    {
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "raw_google_target": "सर्व्हर या सामन्याची तपासणी पूर्ण करू शकला नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होणार नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात."
+    },
+    {
+      "key": "Walk",
+      "source": "Walk",
+      "raw_google_target": "चालणे"
+    },
+    {
+      "key": "Swim",
+      "source": "Swim",
+      "raw_google_target": "पोहणे"
+    },
+    {
+      "key": "Harvest",
+      "source": "Harvest",
+      "raw_google_target": "कापणी"
+    },
+    {
+      "key": "Fight",
+      "source": "Fight",
+      "raw_google_target": "लढा"
+    },
+    {
+      "key": "Fly",
+      "source": "Fly",
+      "raw_google_target": "माशी"
+    },
+    {
+      "key": "Live payments",
+      "source": "Live payments",
+      "raw_google_target": "थेट पेमेंट"
+    },
+    {
+      "key": "Test payments",
+      "source": "Test payments",
+      "raw_google_target": "चाचणी पेमेंट"
+    },
+    {
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "raw_google_target": "अवर्गीकृत पेमेंट"
+    },
+    {
+      "key": "Current period",
+      "source": "Current period",
+      "raw_google_target": "चालू कालावधी"
+    },
+    {
+      "key": "Previous period",
+      "source": "Previous period",
+      "raw_google_target": "मागील कालावधी"
+    },
+    {
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "raw_google_target": "पत अनुदान"
+    },
+    {
+      "key": "Returned credits",
+      "source": "Returned credits",
+      "raw_google_target": "परत केलेले क्रेडिट्स"
+    },
+    {
+      "key": "Dispute",
+      "source": "Dispute",
+      "raw_google_target": "वाद"
+    },
+    {
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "raw_google_target": "वाद मिटला"
+    },
+    {
+      "key": "Matches started",
+      "source": "Matches started",
+      "raw_google_target": "सामने सुरू झाले"
+    },
+    {
+      "key": "Matches completed",
+      "source": "Matches completed",
+      "raw_google_target": "सामने पूर्ण झाले"
+    },
+    {
+      "key": "Matches cancelled",
+      "source": "Matches cancelled",
+      "raw_google_target": "सामने रद्द झाले"
+    },
+    {
+      "key": "{value0} publications",
+      "source": "{value0} publications",
+      "raw_google_target": "{value0} प्रकाशने"
+    },
+    {
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "raw_google_target": "{value0} रेकॉर्ड केलेले डाउनलोड"
+    },
+    {
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "raw_google_target": "{value0} पूर्ण होण्याची वेळ (सेकंद)"
+    },
+    {
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "raw_google_target": "{value0} पूर्णता नमुने"
+    }
+  ],
+  "scope": "Initial comparison draft only; independent linguistic reviews still required. No canonical catalog changed."
+}

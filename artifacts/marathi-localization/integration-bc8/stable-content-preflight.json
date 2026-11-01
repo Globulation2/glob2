@@ -1,0 +1,57 @@
+{
+  "reviewer": "/root/locale_integration",
+  "scope": "Readonly content/magic/credential preflight of stable currentnative/Android/metadatafollowup, stablekits/reviews/website/caddyproof and retainedbrowserfailureattempts. No publish/sourceedit/browserrun.",
+  "source_head_at_scan": "351a89e9f3cad5ba4473478e96a7dfa1b3658b78",
+  "policy_sha256": "89b283741d6037a218bd3428aee1d3cc5f6006a6257a95c46f35685a94e5ea5e",
+  "included_roots": [
+    "artifacts/marathi-localization/integration-bc8",
+    "artifacts/marathi-localization/integration-refresh",
+    "artifacts/marathi-localization/browser-game/first-qa-64-registration-failure",
+    "artifacts/marathi-localization/browser-game/first-qa-187-test-fixture-failure",
+    "artifacts/marathi-localization/browser-game/first-qa-f8-test-popup-failure",
+    "artifacts/marathi-localization/browser-game/first-qa-0e6-phone-back-fixture",
+    "artifacts/marathi-localization/browser-game/smoke-fb6-phone-navigation-race",
+    "artifacts/marathi-localization/browser-game/smoke-a841-phone-cream-threshold",
+    "artifacts/marathi-localization/browser-game/full-ec24-back-navigation-race"
+  ],
+  "exclusions": {
+    "preparation_nonmanifest": 74,
+    "nonallowlisted_extension": 19,
+    "forbidden_directory": 408,
+    "snapshot_or_config": 59
+  },
+  "explicit_active_browser_exclusion": "browser-game/chromium/firefox/webkit currentengine/variant/device frames, reports/logs/qa-run/top-levelbrowserlogs andenglish-map-comparisonexcluded entirely; activebrowseroutsidechosenrootsneverread/hashed.",
+  "matrix_policy": {
+    "local_png_candidates": 3212,
+    "selected_png_payloads_scanned": 44,
+    "unselected_png_payloads_not_read": 3168
+  },
+  "files_scanned": 1160,
+  "payload_bytes_scanned": 285114259,
+  "types": {
+    "PNG_verified": 359,
+    "UTF8_text_verified": 381,
+    "JSON_parsed": 420
+  },
+  "credential_patterns": [
+    "private_key",
+    "oauth",
+    "github",
+    "google",
+    "literal_bearer",
+    "literal_access_token"
+  ],
+  "credential_findings": [],
+  "content_findings": [],
+  "stability": "Every selectedfile stat(size,mtime_ns) exactsameaftercontentscan. Newfilescreatedelsewhere notpartofscope.",
+  "cache_path": "artifacts/marathi-localization/integration-bc8/stable-content-preflight-hashes.json",
+  "cache_sha256": "e2194f65b245a0e849757c98ec118bb99f8426e7347978fc1329659ae096a141",
+  "result": "pass",
+  "limits": [
+    "Notexactfinalpreparedcommit/inventory/gatesaudit; mustrepeatmatchingcandidatehashes andinspectnewfinalbrowseroutputs.",
+    "No exhaustive secret-detectionclaim; boundedknowncredentialpatterns only.",
+    "Oldremote2968alreadyindependentlyaudited; thisscopedscan doesnotrepeatallunchangedoldremote/historicaltraceZIPpayloads.",
+    "SuffixallowlistselectedonlyPNG/UTF8text/gzippedtext; localAPK/ELF/SDK/profile/rawtracefilesexcluded.",
+    "PNGsyntaxverificationdoesnotconstitutenewmanualvisualreview."
+  ]
+}

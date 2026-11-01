@@ -1,0 +1,19 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T07:52:28.113730+00:00",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "signed_and_installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/statistics-world-portrait.png",
+      "sha256": "f4954cfca88ee34425b42401acef9aaa88b37507b142afe8490f7a3d7b045741"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/android/ui-qa/history-dialog-landscape.png",
+      "sha256": "9c6abc7feaaa5896b4b5ebe2935bace50eca71f363271d60b98e353ff97e43fd"
+    }
+  ],
+  "assessment": "Actually viewed current64 Worldstatistics portrait and fullhistory landscape. New जग/आढावा/अर्थव्यवस्था tabs are shaped and fit; long resourcegrowth metriclabels fit besidevalues, Devanagari matras/conjuncts clear. History title/value/chartaxis+buttons fit landscape. Portraittutorialheader remains visiblyabove statistics; the fullhistorymodal isunobscured. No tofu/textclipping observed in these2frames. No claim everynewtopic/terrain field or completedmatch inspected here.",
+  "findings": []
+}

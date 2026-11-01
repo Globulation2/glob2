@@ -1,0 +1,12 @@
+{
+  "production_source": "tools/TranslationPreviewHarness.cpp",
+  "production_source_sha256": "396317680344cc1a53aaa02ea7afd6bdf2992b5ff67f21eb6d85f2d1ddbf4982",
+  "variant": "artifacts/marathi-localization/integration-bc8/native-registration187/RegisteredPreviewHarness.cpp",
+  "variant_sha256": "afb118448a5bfb713143715073c63062406330d52781d3032106d7d3fbcadd9d",
+  "changes": [
+    "Early registered mode selects the actual already-loaded normal locale without writing/loading any overlay/list.",
+    "Assert actual MR completion/name and actual Player category selector accessibility label, then capture normal main/settings controls.",
+    "Record actual registration resource/catalog hashes and separate capture-variant source/hash."
+  ],
+  "scope": "Only capture code/input copies; no shipping/test/catalog changes."
+}

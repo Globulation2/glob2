@@ -1,0 +1,11 @@
+11-01 02:37:35.456 3351115 3351296 I adb     : transport.cpp:1222 emulator-5678: connection terminated: read failed
+11-01 02:37:36.449 3351115 3351115 W adb     : sockets.cpp:315 timeout expired while flushing socket, closing
+11-01 03:18:57.648 3351115 3478195 I adb     : transport.cpp:1222 emulator-5678: connection terminated: read failed
+11-01 03:18:58.433 3351115 3351115 I adb     : adb.cpp:1288 adb server killed by remote request
+11-01 03:18:58.615 3351115 3351115 I adb     : blame_kill.cpp:283 kill-server process callchain
+11-01 03:18:58.615 3351115 3351115 I adb     : blame_kill.cpp:297 pid:3638425 cmdline:/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/platform-tools/adb -P 15187 kill-server
+11-01 03:18:58.615 3351115 3351115 I adb     : blame_kill.cpp:297 pid:3638167 cmdline:python3 artifacts/marathi-localization/integration-bc8/android/cleanup_owned_runtime.py
+11-01 03:18:58.615 3351115 3351115 I adb     : blame_kill.cpp:297 pid:  23517 cmdline:/usr/lib/chatgpt/resources/codex -c features.code_mode_host=true app-server --analytics-default-enabled -c plugins.codex-app-tools@openai-bundled.mcp_servers.codex_app.enabled=true
+11-01 03:18:58.615 3351115 3351115 I adb     : blame_kill.cpp:297 pid:  23158 cmdline:/usr/lib/chatgpt/ChatGPT
+11-01 03:18:58.615 3351115 3351115 I adb     : blame_kill.cpp:297 pid:  21029 cmdline:/usr/bin/gnome-shell --mode=ubuntu
+11-01 03:18:58.615 3351115 3351115 I adb     : blame_kill.cpp:297 pid:   2921 cmdline:/usr/lib/systemd/systemd --user

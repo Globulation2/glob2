@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "test.test_google_draft",
+    "test.test_cloud_draft",
+    "test.test_translation_program"
+  ],
+  "cwd": ".",
+  "exit_code": 1,
+  "elapsed_seconds": 0.3834861379873473,
+  "validation_revision": "cdd634cebcde401f1266b6739f8ea21094eb4e56",
+  "log_sha256": "d8f0a47281c5f49bfda8c27e0c5f64dc9d76ad69ea296db9a5e5c54fc9b69eb1"
+}

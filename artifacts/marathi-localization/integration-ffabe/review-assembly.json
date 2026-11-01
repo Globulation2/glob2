@@ -1,0 +1,21 @@
+{
+  "source_preparation_revision": "e564cf26cb156a5474dcb9102a65d64aab18fb85",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "341b1d718230af75bc6593a44b2d4ae6bc783ed3430e280d4f1899cb976780d5"
+  },
+  "batches": 44,
+  "reviewed_keys": 6358,
+  "text_variants": 6385,
+  "accepted_english": 108,
+  "pending": [
+    "desktop_rendering is pending or lacks evidence",
+    "phone_rendering is pending or lacks evidence",
+    "browser_startup is pending or lacks evidence",
+    "native_platforms is pending or lacks evidence",
+    "browser_platforms is pending or lacks evidence",
+    "mobile_platforms is pending or lacks evidence"
+  ],
+  "scope": "CurrentfrozenEnglishsourcekit waspreparedcleanate564beforetargetedits; targetcanonicalfilelatercommittede481. Sourcefiles unchanged, runtimeproducer revisions separatelybound."
+}

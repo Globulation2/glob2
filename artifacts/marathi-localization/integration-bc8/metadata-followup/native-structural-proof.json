@@ -1,0 +1,50 @@
+{
+  "revision": "187ea34de87838911a42321fd52925d51da475b9",
+  "command": [
+    "python3",
+    "data/check_translations.py",
+    "--strict",
+    "--json"
+  ],
+  "exit_code": 1,
+  "marathi": {
+    "missing": [],
+    "untranslated": [],
+    "pending": [],
+    "extra": [],
+    "same_as_english": [
+      "[%0 %1]",
+      "[%0 / %1 HP · %2]",
+      "[%0 · %1]",
+      "[AICabino]",
+      "[AICastor]",
+      "[AICortex]",
+      "[AIEcono]",
+      "[AIJavaScript]",
+      "[AIMaxima]",
+      "[AINicowar]",
+      "[AINumbi]",
+      "[AIWarrush]",
+      "[CPU load %0]",
+      "[OpenGL]",
+      "[P %0/%1/%2]",
+      "[Stats low HP ranges]",
+      "[alt %0]",
+      "[control %0]",
+      "[hp]",
+      "[maps %0 kb]",
+      "[meta %0]",
+      "[profile draw letter]",
+      "[settings Hive Mind]",
+      "[shift %0]",
+      "[zoom factor %0]"
+    ],
+    "placeholder_text": []
+  },
+  "known_baseline_error_count": 29,
+  "ordered_errors_identical_to_exact_master": true,
+  "introduced_errors": 0,
+  "master_report_sha256": "00eef8b34f19981797c49e5c56c552c966de27da063a94cb4fc8794f8c90c5c9",
+  "current_report_sha256": "7b99fa90a1d688492f3f31ef24fecc8c554471a9d240ca06369b8e89446f98e0",
+  "scope": "Final187 actual complete-flag metadata; same29knownotherlanguage baseline errors, globalchecker not claimedpassing."
+}

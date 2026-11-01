@@ -1,0 +1,4295 @@
+{
+  "reviewer": "/root/locale_integration",
+  "role": "independent editorial",
+  "scope": "Actual all111 English/rawGoogle/context/HI-FR-MS reference read. No other reviewers proposals opened before these decisions. No canonical/draft mutation, API call or build.",
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "google_draft_sha256": "645f2d13848edce4b03161a3fac3858a7db88fae7d1c21343f3db7db8db7ed7a",
+  "raw_mr_draft_sha256": "098932c899a5e310f1662aa5c5d385f2820597e9606048f9bdc59c02236ea964",
+  "source_snapshot_sha256": "0df194de909e00c6f1230ecdbcd4b9e956f8c3f52b58e664dc1d364d79a288c7",
+  "canonical_old_mr_sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+  "frozen_source_revision": null,
+  "references_sha256": {
+    "hi": "29521206e06994bcc491fe4bc1c4a9e7c245265fdf62fa1cc9e3e2eba2b15f50",
+    "fr": "bf6e88eb354a853eeca8c981bdf2b0bf7f025c014deb63e25f28dbd321e605bf",
+    "ms": "eb18efdc85988b0379ad0c33affd880e4be83651d9955be9b0f3d772a5d03064"
+  },
+  "context_files_sha256": {
+    "platform/apps/web/src/skins/MeshPreview.tsx": "299b59e4a0f7a7dabedeaf89326ca1f7e43655dacd02f920014d6204e3b3163f",
+    "platform/apps/web/src/skins/atlas.ts": "5c50f363ac19055192ddec593b122a384bfe273cd4223ff9ccd95f2213d75751",
+    "platform/apps/web/src/admin/Admin.tsx": "22f29a600bd29e5c945650aa9594b2d8018da86cac42454ddac67204155cc844",
+    "platform/apps/web/src/skins/swarmShapes.ts": "572b3e8caec0e0b1448ac758a42a2c2eed93de1b5426483d1a58c8009185796a",
+    "platform/apps/web/src/App.tsx": "53e82c02bd342b86754b3078ba6c91e090b85f4e3453beffbea3e71fb09ceebd",
+    "platform/apps/web/src/pages/Ais.tsx": "960bf3168908cc2d691de0753bceca711b0da2af3d5b59325ef166f662666c99",
+    "platform/apps/web/src/music/Player.tsx": "a78f0f9f54c64119676f761be82ff68f8e5515a9fadf6adf3d8a0cf7d39bd754",
+    "platform/apps/web/src/skins/geometry.ts": "41dc05269007bf2d8aaebcc6184d8d4b944c133fbff3b3825b08e569f43fd08e",
+    "platform/packages/protocol/src/connectionQuality.ts": "2fd67ad4985a3ddcea1fb904f997aa2cae9c1619167bcdfb4d193cadec546fb4",
+    "platform/apps/web/src/admin/Accounts.tsx": "6b22bccd38c01928e1989fba182964f1460eaa8952b6decb91099eab1f2e0c25",
+    "platform/packages/protocol/src/ais.ts": "120f6770dd2c674f1b2fc28c176387ae913e9bde00100fd26b3cfa560f6d3a79",
+    "platform/apps/web/src/pages/Match.tsx": "b598e3d5877ec9ad7e5616ba672ba3195ee0278c14d34d3e4a235ca827ec362a",
+    "platform/apps/web/src/skins/PatternDialog.tsx": "ee01befde74a4a4ff18b1d27f3f45699306b736762637d5e3ca0191d72280be1",
+    "platform/apps/web/src/skins/StudioControls.tsx": "0b724f4932f282b0f38ae80991db44cc9a52234aa03cab538883afeb9422e922",
+    "platform/apps/web/src/admin/Moderation.tsx": "894b6ea83f6c2e742382c0f9750c51b3ee4737cd5ea08ff32a7830e32f189dab",
+    "platform/apps/web/src/pages/Maps.tsx": "381a68e8c1cd01207426e932e53ff8fc016a597fa4a8eeb2f92e673a09e054d1",
+    "platform/apps/web/src/admin/Finances.tsx": "44c8b61a3e43dc774ac50321fdfdd874b88861b0f48ab9ece13185128745705f",
+    "platform/apps/web/src/music/Validation.tsx": "6d850d73787b388f8e1145fd75f3a28ea785a31bb769775877d9ec1eeac082a7",
+    "platform/packages/protocol/src/skins.ts": "2386cc2256d611204b25d575e22170c0cfb923d234c6fa53694f1b02ef983376",
+    "platform/apps/web/src/admin/presentation.ts": "203418b2a70fc6e4b716ceedc2fa8b9eb37b681ee6fabe60644a827639f73924"
+  },
+  "all111_reviewed": true,
+  "coverage_count": 111,
+  "accepted_raw_count": 52,
+  "edit_count": 59,
+  "reviewed_keys": [
+    "Rush",
+    "Defensive",
+    "Economy",
+    "Expansion",
+    "Experimental",
+    "Beginner-friendly",
+    "File and API profile",
+    "Syntax and profile restrictions",
+    "Startup and callback",
+    "Persistent state",
+    "Seeded gameplay",
+    "Repeatable simulation",
+    "Save and resume",
+    "Good",
+    "Fair",
+    "Poor",
+    "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+    "Delay",
+    "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+    "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+    "Classic glossy",
+    "Basics",
+    "Matte",
+    "Riveted metal",
+    "Metal",
+    "Hairy",
+    "Organic",
+    "Cartoon",
+    "Woven fabric",
+    "Craft",
+    "Oozy goo",
+    "Wet",
+    "Wood",
+    "Stone",
+    "Mineral",
+    "Scales",
+    "Leather",
+    "Crystal",
+    "Lava",
+    "Chrome",
+    "Carbon fibre",
+    "Velvet",
+    "Honeycomb",
+    "Ice",
+    "Cloud",
+    "Hammered metal",
+    "Candy",
+    "Slime",
+    "AI player",
+    "Finances",
+    "Accounts",
+    "Audit",
+    "1 hour",
+    "1 day",
+    "1 week",
+    "30 days",
+    "Most played",
+    "Listen for the musical structure and development.",
+    "Check that all three moods play correctly.",
+    "Listen for unexpected jumps in volume between moods.",
+    "Listen for a click, gap, or abrupt change when the loop repeats.",
+    "Listen for short phrases that repeat too mechanically.",
+    "Switch moods and listen for changes in timing or harmony.",
+    "Check that building and combat feel distinct from calm.",
+    "Listen for hiss or scratchiness in quiet passages.",
+    "Listen for muddy bass or harsh high frequencies.",
+    "Check that calm passages remain audible alongside game sound.",
+    "Listen for notes that cut off unexpectedly.",
+    "Worker",
+    "Warrior",
+    "Explorer",
+    "Swarm",
+    "Classic",
+    "Crown",
+    "Clutch",
+    "Toadstool",
+    "A broad-capped toadstool with young caps.",
+    "Coral",
+    "Skep",
+    "A coiled hive on a stand, its door facing you.",
+    "Bloom",
+    "Public: listed in the catalog",
+    "Unlisted: anyone with the link",
+    "Private: only you",
+    "The server replayed this match and every player’s game agreed with it.",
+    "The server is checking this match. Ratings change once it is verified.",
+    "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+    "The server could not reproduce this match, so it changes no rating.",
+    "This match is not checked.",
+    "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+    "Walk",
+    "Swim",
+    "Harvest",
+    "Fight",
+    "Fly",
+    "Live payments",
+    "Test payments",
+    "Unclassified payments",
+    "Current period",
+    "Previous period",
+    "Credit grant",
+    "Returned credits",
+    "Dispute",
+    "Dispute closed",
+    "Matches started",
+    "Matches completed",
+    "Matches cancelled",
+    "{value0} publications",
+    "{value0} recorded downloads",
+    "{value0} completion time (seconds)",
+    "{value0} completion samples"
+  ],
+  "new_english_exceptions": [],
+  "decisions": [
+    {
+      "number": 1,
+      "key": "Rush",
+      "source": "Rush",
+      "raw_google_target": "घाई",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          6,
+          35
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "शुरुआती हमला",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Attaque précoce",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Serangan pantas",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "झटपट हल्ला",
+      "disposition": "edit",
+      "rationale": "AI strategy tag means an early attack, not generic haste; FR/HI confirm attack.",
+      "accepted_english": false
+    },
+    {
+      "number": 2,
+      "key": "Defensive",
+      "source": "Defensive",
+      "raw_google_target": "बचावात्मक",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          7,
+          36
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "रक्षात्मक",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Défensif",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Bertahan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "बचावात्मक",
+      "disposition": "accept_raw",
+      "rationale": "Correct defensive AI style adjective; compact and natural.",
+      "accepted_english": false
+    },
+    {
+      "number": 3,
+      "key": "Economy",
+      "source": "Economy",
+      "raw_google_target": "अर्थव्यवस्था",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          8,
+          37
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "अर्थव्यवस्था",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Économie",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Ekonomi",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "अर्थव्यवस्था",
+      "disposition": "accept_raw",
+      "rationale": "Correct economy tag and established Marathi gameplay term.",
+      "accepted_english": false
+    },
+    {
+      "number": 4,
+      "key": "Expansion",
+      "source": "Expansion",
+      "raw_google_target": "विस्तार",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          9,
+          38
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "विस्तार",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Expansion",
+          "equals_English_source": true,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pengembangan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "विस्तार",
+      "disposition": "accept_raw",
+      "rationale": "Correct expansion strategy noun.",
+      "accepted_english": false
+    },
+    {
+      "number": 5,
+      "key": "Experimental",
+      "source": "Experimental",
+      "raw_google_target": "प्रायोगिक",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          10,
+          39
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "प्रयोगात्मक",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Expérimental",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Eksperimen",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "प्रायोगिक",
+      "disposition": "accept_raw",
+      "rationale": "Correct experimental tag.",
+      "accepted_english": false
+    },
+    {
+      "number": 6,
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "raw_google_target": "नवशिक्यांसाठी अनुकूल",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          11,
+          40
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "शुरुआती खिलाड़ियों के लिए",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Adapté aux débutants",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Mesra pemula",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "नवशिक्यांसाठी सोपे",
+      "disposition": "edit",
+      "rationale": "Natural concise beginner suitability label rather than bureaucratic अनुकूल.",
+      "accepted_english": false
+    },
+    {
+      "number": 7,
+      "key": "File and API profile",
+      "source": "File and API profile",
+      "raw_google_target": "फाइल आणि एपीआय प्रोफाइल",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          23
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "फ़ाइल और एपीआई प्रोफ़ाइल",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Fichier et profil d’API",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Fail dan profil API",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "फाइल आणि API प्रोफाइल",
+      "disposition": "edit",
+      "rationale": "Technical API identifier remains recognizable as in existing Marathi JavaScript API reference.",
+      "accepted_english": false
+    },
+    {
+      "number": 8,
+      "key": "Syntax and profile restrictions",
+      "source": "Syntax and profile restrictions",
+      "raw_google_target": "वाक्यरचना आणि प्रोफाइल निर्बंध",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          24
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सिंटैक्स और प्रोफ़ाइल प्रतिबंध",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Restrictions de syntaxe et de profil",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sintaks dan sekatan profil",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "वाक्यरचना आणि प्रोफाइलवरील निर्बंध",
+      "disposition": "edit",
+      "rationale": "Case ending makes restrictions apply naturally to the API profile.",
+      "accepted_english": false
+    },
+    {
+      "number": 9,
+      "key": "Startup and callback",
+      "source": "Startup and callback",
+      "raw_google_target": "स्टार्टअप आणि कॉलबॅक",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          25
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "स्टार्टअप और कॉलबैक",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Démarrage et fonction de rappel",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Permulaan dan panggilan balik",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सुरुवात आणि कॉलबॅक",
+      "disposition": "edit",
+      "rationale": "Startup check is initialization; retain established programming callback loanword.",
+      "accepted_english": false
+    },
+    {
+      "number": 10,
+      "key": "Persistent state",
+      "source": "Persistent state",
+      "raw_google_target": "कायमस्वरूपी स्थिती",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          26
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सहेजी गई अवस्था",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "État persistant",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pengekalan keadaan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "स्थितीचे जतन",
+      "disposition": "edit",
+      "rationale": "Persistent AI state check concerns retained/saved state, not a promise of permanence.",
+      "accepted_english": false
+    },
+    {
+      "number": 11,
+      "key": "Seeded gameplay",
+      "source": "Seeded gameplay",
+      "raw_google_target": "सीडेड गेमप्ले",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          27
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "तय यादृच्छिक बीज के साथ गेमप्ले",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Partie à graine aléatoire fixe",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Permainan dengan benih tetap",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "ठरावीक बीजासह खेळ",
+      "disposition": "edit",
+      "rationale": "Seeded gameplay is a fixed random-seed execution check; replace untranslated adjective सीडेड.",
+      "accepted_english": false
+    },
+    {
+      "number": 12,
+      "key": "Repeatable simulation",
+      "source": "Repeatable simulation",
+      "raw_google_target": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          28
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "दोहराया जा सकने वाला सिमुलेशन",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Simulation reproductible",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Simulasi yang boleh diulang",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "पुनरावृत्ती करण्यायोग्य सिम्युलेशन",
+      "disposition": "accept_raw",
+      "rationale": "Accurate repeatability check heading; technical simulation loanword is natural here.",
+      "accepted_english": false
+    },
+    {
+      "number": 13,
+      "key": "Save and resume",
+      "source": "Save and resume",
+      "raw_google_target": "जतन करा आणि पुन्हा सुरू करा",
+      "context": {
+        "description": "AI tag/filter and compatibility-check heading",
+        "registry": "platform/packages/protocol/src/ais.ts",
+        "literal_lines": [
+          29
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सहेजें और जारी रखें",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Enregistrer et reprendre",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Simpan dan sambung semula",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "जतन करा आणि पुढे सुरू ठेवा",
+      "disposition": "edit",
+      "rationale": "Resume continues saved execution rather than starting it anew.",
+      "accepted_english": false
+    },
+    {
+      "number": 14,
+      "key": "Good",
+      "source": "Good",
+      "raw_google_target": "चांगले",
+      "context": {
+        "description": "Connection rating or measured latency help, not simulated rules",
+        "registry": "platform/packages/protocol/src/connectionQuality.ts",
+        "literal_lines": [
+          55
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Match.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "अच्छा",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Bon",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Bagus",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "चांगले",
+      "disposition": "accept_raw",
+      "rationale": "Connection quality rating good; appropriate compact generic quality label.",
+      "accepted_english": false
+    },
+    {
+      "number": 15,
+      "key": "Fair",
+      "source": "Fair",
+      "raw_google_target": "योग्य",
+      "context": {
+        "description": "Connection rating or measured latency help, not simulated rules",
+        "registry": "platform/packages/protocol/src/connectionQuality.ts",
+        "literal_lines": [
+          56
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Match.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "ठीक",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Moyen",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sederhana",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मध्यम",
+      "disposition": "edit",
+      "rationale": "Middle connection quality category, not fairness or suitability.",
+      "accepted_english": false
+    },
+    {
+      "number": 16,
+      "key": "Poor",
+      "source": "Poor",
+      "raw_google_target": "गरीब",
+      "context": {
+        "description": "Connection rating or measured latency help, not simulated rules",
+        "registry": "platform/packages/protocol/src/connectionQuality.ts",
+        "literal_lines": [
+          57
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Match.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "खराब",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Mauvais",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Lemah",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "खराब",
+      "disposition": "edit",
+      "rationale": "Poor network quality, not a person being impoverished.",
+      "accepted_english": false
+    },
+    {
+      "number": 17,
+      "key": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "source": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate.",
+      "raw_google_target": "खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. सामन्यापूर्वी (जलद सामना, सुरुवातीची तपासणी सूची) ही त्या प्रदेशाची एक चाचणी, एक अंदाज असतो.",
+      "context": {
+        "description": "Connection rating or measured latency help, not simulated rules",
+        "registry": "platform/packages/protocol/src/connectionQuality.ts",
+        "literal_lines": [
+          34
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Match.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "खिलाड़ी और रिले सर्वर के बीच आने-जाने का समय। मैच से पहले (क्विक मैच, शुरुआती जाँच सूची), यह क्षेत्र से कनेक्शन जाँच पर आधारित एक अनुमान होता है।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Temps aller-retour entre un joueur et le serveur relais. Avant un match (match rapide, liste de vérification de démarrage), il s’agit d’une estimation fondée sur un test de connexion à la région.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Masa pergi balik antara pemain dan geganti. Sebelum perlawanan (perlawanan pantas, senarai semak permulaan), ini ialah anggaran berdasarkan ujian sambungan ke rantau tersebut.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "खेळाडू आणि रिले यांच्यात संदेश जाऊन परत येण्यासाठी लागणारा वेळ. सामन्यापूर्वी (झटपट सामना, सुरुवातीची तपासणी यादी) हा त्या प्रदेशाशी जोडणी तपासून काढलेला अंदाज असतो.",
+      "disposition": "edit",
+      "rationale": "Metric is round-trip time, not a journey; pre-match probe is an estimate of connection to a region.",
+      "accepted_english": false
+    },
+    {
+      "number": 18,
+      "key": "Delay",
+      "source": "Delay",
+      "raw_google_target": "विलंब",
+      "context": {
+        "description": "Connection rating or measured latency help, not simulated rules",
+        "registry": "platform/packages/protocol/src/connectionQuality.ts",
+        "literal_lines": [
+          37
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Match.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "देरी",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Retard",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kelewatan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "विलंब",
+      "disposition": "accept_raw",
+      "rationale": "Correct input-delay metric label.",
+      "accepted_english": false
+    },
+    {
+      "number": 19,
+      "key": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "source": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter.",
+      "raw_google_target": "तुमचा इनपुट विलंब: तुमच्या क्लिकपासून ते कृती घटेपर्यंत, प्रत्येकासाठी. तुमच्या पिंगच्या निम्मा अधिक तुमचा गेम जिटरला रोखण्यासाठी वापरत असलेला बफर.",
+      "context": {
+        "description": "Connection rating or measured latency help, not simulated rules",
+        "registry": "platform/packages/protocol/src/connectionQuality.ts",
+        "literal_lines": [
+          42
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Match.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "आपका इनपुट विलंब: क्लिक से लेकर सभी खिलाड़ियों के खेल में कार्रवाई होने तक का समय। आपके पिंग का आधा, और नेटवर्क विलंब के उतार-चढ़ाव को सँभालने के लिए खेल में रखा बफ़र।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Votre délai d’entrée : du clic à l’exécution de l’action pour tous les joueurs. La moitié de votre ping, plus la marge que le jeu conserve pour absorber les variations de latence.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kelewatan input anda: masa dari klik sehingga tindakan berlaku untuk semua pemain. Separuh ping anda ditambah penimbal permainan untuk menyerap turun naik kelewatan.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "तुमचा इनपुट विलंब: क्लिक केल्यापासून ती कृती सर्व खेळाडूंच्या खेळात होईपर्यंतचा वेळ. हा तुमच्या पिंगच्या निम्मा वेळ आणि नेटवर्कमधील विलंबाचे चढउतार सांभाळण्यासाठी खेळात ठेवलेला बफर यांच्या बेरजेइतका असतो.",
+      "disposition": "edit",
+      "rationale": "Retains everyone, half-ping and added jitter buffer; replaces broken raw अधिक construction.",
+      "accepted_english": false
+    },
+    {
+      "number": 20,
+      "key": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "source": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s.",
+      "raw_google_target": "एखाद्या खेळाडूचा खेळ मॅच क्लॉकच्या किती मागे चालतो. एका सेकंदापेक्षा कमी वेळ सामान्य असतो (यात त्यांचा विलंब समाविष्ट असतो); रिलेनुसार खेळाडू २ सेकंदांपासून धीमा मानला जातो.",
+      "context": {
+        "description": "Connection rating or measured latency help, not simulated rules",
+        "registry": "platform/packages/protocol/src/connectionQuality.ts",
+        "literal_lines": [
+          50
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Match.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "खिलाड़ी का खेल मैच की घड़ी से कितना पीछे है। एक सेकंड से कम सामान्य है (इनपुट विलंब सहित); रिले सर्वर 2 सेकंड से खिलाड़ी को धीमा चिह्नित करता है।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Retard du jeu d’un joueur par rapport à l’horloge du match. Moins d’une seconde est normal (cela inclut son délai d’entrée) ; le serveur relais signale le joueur comme lent à partir de 2 s.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sejauh mana permainan pemain ketinggalan daripada jam perlawanan. Kurang daripada satu saat adalah biasa (termasuk kelewatannya); geganti menandakan pemain sebagai perlahan mulai 2 s.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "खेळाडूचा खेळ सामन्याच्या घड्याळापेक्षा किती मागे आहे. एका सेकंदापेक्षा कमी अंतर सामान्य असते (त्यात इनपुट विलंबही असतो); हे अंतर २ सेकंद झाल्यापासून रिले त्या खेळाडूला धीमा म्हणून नोंदवतो.",
+      "disposition": "edit",
+      "rationale": "Behind is temporal lag; preserve under-one-second normal and at-least-two-second slow threshold.",
+      "accepted_english": false
+    },
+    {
+      "number": 21,
+      "key": "Classic glossy",
+      "source": "Classic glossy",
+      "raw_google_target": "क्लासिक चकचकीत",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          27
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "क्लासिक चमकदार",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Brillant classique",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Klasik berkilat",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "क्लासिक चकचकीत",
+      "disposition": "accept_raw",
+      "rationale": "Classic glossy material preset; familiar style loanword and adjective fit compact picker.",
+      "accepted_english": false
+    },
+    {
+      "number": 22,
+      "key": "Basics",
+      "source": "Basics",
+      "raw_google_target": "मूलभूत गोष्टी",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          27,
+          28,
+          31,
+          47
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "बुनियादी बातें",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Bases",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Asas",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मूलभूत",
+      "disposition": "edit",
+      "rationale": "Skin material group heading, so extra गोष्टी is unnecessary.",
+      "accepted_english": false
+    },
+    {
+      "number": 23,
+      "key": "Matte",
+      "source": "Matte",
+      "raw_google_target": "मॅट",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          28
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "मैट",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Mat",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Tanpa kilau",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मॅट",
+      "disposition": "accept_raw",
+      "rationale": "Established material finish loanword, not English exception; matte means non-glossy.",
+      "accepted_english": false
+    },
+    {
+      "number": 24,
+      "key": "Riveted metal",
+      "source": "Riveted metal",
+      "raw_google_target": "रिव्हेट केलेले धातू",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          29
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "रिवेटेड धातु",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Métal riveté",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Logam berivet",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "रिव्हेट लावलेला धातू",
+      "disposition": "edit",
+      "rationale": "Actual riveted finish; fixes raw metal number/agreement while preserving rivet detail.",
+      "accepted_english": false
+    },
+    {
+      "number": 25,
+      "key": "Metal",
+      "source": "Metal",
+      "raw_google_target": "धातू",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          29,
+          40,
+          41,
+          46
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "धातु",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Métal",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Logam",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "धातू",
+      "disposition": "accept_raw",
+      "rationale": "Correct material group noun.",
+      "accepted_english": false
+    },
+    {
+      "number": 26,
+      "key": "Hairy",
+      "source": "Hairy",
+      "raw_google_target": "केसाळ",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          30
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "बालदार",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Poilu",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Berbulu",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "केसाळ",
+      "disposition": "accept_raw",
+      "rationale": "Correct fur/hair surface finish adjective.",
+      "accepted_english": false
+    },
+    {
+      "number": 27,
+      "key": "Organic",
+      "source": "Organic",
+      "raw_google_target": "सेंद्रिय",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          30,
+          36,
+          37,
+          42,
+          45
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "जैविक",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Organique",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Organik",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सेंद्रिय",
+      "disposition": "accept_raw",
+      "rationale": "Correct organic-inspired material category.",
+      "accepted_english": false
+    },
+    {
+      "number": 28,
+      "key": "Cartoon",
+      "source": "Cartoon",
+      "raw_google_target": "कार्टून",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          31
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "कार्टून",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Dessin animé",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kartun",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "कार्टून",
+      "disposition": "accept_raw",
+      "rationale": "Familiar Marathi loanword for the visual style, no unchanged-English exemption.",
+      "accepted_english": false
+    },
+    {
+      "number": 29,
+      "key": "Woven fabric",
+      "source": "Woven fabric",
+      "raw_google_target": "विणलेले कापड",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          32
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "बुना हुआ कपड़ा",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Tissu tissé",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kain tenun",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "विणलेले कापड",
+      "disposition": "accept_raw",
+      "rationale": "Correct woven fabric material.",
+      "accepted_english": false
+    },
+    {
+      "number": 30,
+      "key": "Craft",
+      "source": "Craft",
+      "raw_google_target": "कलाकुसर",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          32,
+          34,
+          43
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "शिल्प",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Artisanat",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kraf",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "कलाकुसर",
+      "disposition": "accept_raw",
+      "rationale": "Correct craft-inspired material group.",
+      "accepted_english": false
+    },
+    {
+      "number": 31,
+      "key": "Oozy goo",
+      "source": "Oozy goo",
+      "raw_google_target": "चिकट गोंद",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          33
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "चिपचिपा पदार्थ",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Substance gluante",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Lendir meleleh",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "ओघळणारा चिकट पदार्थ",
+      "disposition": "edit",
+      "rationale": "Oozy goo is a flowing viscous material, not adhesive glue.",
+      "accepted_english": false
+    },
+    {
+      "number": 32,
+      "key": "Wet",
+      "source": "Wet",
+      "raw_google_target": "ओले",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          33,
+          39,
+          48
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "गीला",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Mouillé",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Basah",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "ओले",
+      "disposition": "accept_raw",
+      "rationale": "Correct wet material group label, covering goo/lava/slime finishes.",
+      "accepted_english": false
+    },
+    {
+      "number": 33,
+      "key": "Wood",
+      "source": "Wood",
+      "raw_google_target": "लाकूड",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          34
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "लकड़ी",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Bois",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kayu",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "लाकूड",
+      "disposition": "accept_raw",
+      "rationale": "Correct wood material.",
+      "accepted_english": false
+    },
+    {
+      "number": 34,
+      "key": "Stone",
+      "source": "Stone",
+      "raw_google_target": "दगड",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          35
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "पत्थर",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Pierre",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Batu",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "दगड",
+      "disposition": "accept_raw",
+      "rationale": "Correct stone material.",
+      "accepted_english": false
+    },
+    {
+      "number": 35,
+      "key": "Mineral",
+      "source": "Mineral",
+      "raw_google_target": "खनिज",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          35,
+          38,
+          44
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "खनिज",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Minéral",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Mineral",
+          "equals_English_source": true,
+          "missing": false
+        }
+      },
+      "recommended_target": "खनिज",
+      "disposition": "accept_raw",
+      "rationale": "Correct mineral category.",
+      "accepted_english": false
+    },
+    {
+      "number": 36,
+      "key": "Scales",
+      "source": "Scales",
+      "raw_google_target": "स्केल",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          36
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "शल्क",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Écailles",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sisik",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "खवले",
+      "disposition": "edit",
+      "rationale": "Animal-scale surface texture, not numerical scales or a measuring scale.",
+      "accepted_english": false
+    },
+    {
+      "number": 37,
+      "key": "Leather",
+      "source": "Leather",
+      "raw_google_target": "चामडे",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          37
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "चमड़ा",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Cuir",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kulit",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "चामडे",
+      "disposition": "accept_raw",
+      "rationale": "Correct leather material.",
+      "accepted_english": false
+    },
+    {
+      "number": 38,
+      "key": "Crystal",
+      "source": "Crystal",
+      "raw_google_target": "क्रिस्टल",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          38
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "क्रिस्टल",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Cristal",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kristal",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "स्फटिक",
+      "disposition": "edit",
+      "rationale": "Natural Marathi crystal material noun; compact and clear.",
+      "accepted_english": false
+    },
+    {
+      "number": 39,
+      "key": "Lava",
+      "source": "Lava",
+      "raw_google_target": "लावा",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          39
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "लावा",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Lave",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Lava",
+          "equals_English_source": true,
+          "missing": false
+        }
+      },
+      "recommended_target": "लावा",
+      "disposition": "accept_raw",
+      "rationale": "Established Marathi name for molten-rock material.",
+      "accepted_english": false
+    },
+    {
+      "number": 40,
+      "key": "Chrome",
+      "source": "Chrome",
+      "raw_google_target": "क्रोम",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          40
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "क्रोम",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Chrome",
+          "equals_English_source": true,
+          "missing": false
+        },
+        "ms": {
+          "value": "Krom",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "क्रोम",
+      "disposition": "accept_raw",
+      "rationale": "Metallic chrome finish, not the browser brand; accepted Devanagari technical loanword.",
+      "accepted_english": false
+    },
+    {
+      "number": 41,
+      "key": "Carbon fibre",
+      "source": "Carbon fibre",
+      "raw_google_target": "कार्बन फायबर",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          41
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "कार्बन फाइबर",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Fibre de carbone",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Gentian karbon",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "कार्बन फायबर",
+      "disposition": "accept_raw",
+      "rationale": "Recognizable material name in standard Marathi transliteration.",
+      "accepted_english": false
+    },
+    {
+      "number": 42,
+      "key": "Velvet",
+      "source": "Velvet",
+      "raw_google_target": "मखमली",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          42
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "मख़मल",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Velours",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Baldu",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मखमल",
+      "disposition": "edit",
+      "rationale": "Material noun velvet rather than adjective मखमली standing alone.",
+      "accepted_english": false
+    },
+    {
+      "number": 43,
+      "key": "Honeycomb",
+      "source": "Honeycomb",
+      "raw_google_target": "मधमाशांचे पोळे",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          43
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "मधुकोश",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Alvéoles de ruche",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sarang lebah",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मधाचे पोळे",
+      "disposition": "edit",
+      "rationale": "Honeycomb pattern/material; distinguish context from the Swarm building while retaining honeycomb sense.",
+      "accepted_english": false
+    },
+    {
+      "number": 44,
+      "key": "Ice",
+      "source": "Ice",
+      "raw_google_target": "बर्फ",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          44
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "बर्फ़",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Glace",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Ais",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "बर्फ",
+      "disposition": "accept_raw",
+      "rationale": "Correct ice material.",
+      "accepted_english": false
+    },
+    {
+      "number": 45,
+      "key": "Cloud",
+      "source": "Cloud",
+      "raw_google_target": "ढग",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          45
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "बादल",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Nuage",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Awan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "ढग",
+      "disposition": "accept_raw",
+      "rationale": "Correct cloud-like material.",
+      "accepted_english": false
+    },
+    {
+      "number": 46,
+      "key": "Hammered metal",
+      "source": "Hammered metal",
+      "raw_google_target": "हातोड्याने ठोकलेला धातू",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          46
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "हथौड़े से पीटी हुई धातु",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Métal martelé",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Logam diketuk",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "हातोड्याने ठोकलेला धातू",
+      "disposition": "accept_raw",
+      "rationale": "Correct hammered-metal surface finish, raw already has natural agreement.",
+      "accepted_english": false
+    },
+    {
+      "number": 47,
+      "key": "Candy",
+      "source": "Candy",
+      "raw_google_target": "कँडी",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          47
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "कैंडी",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Bonbons",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Gula-gula",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "कँडी",
+      "disposition": "accept_raw",
+      "rationale": "Familiar candy visual-style loanword, no English exception.",
+      "accepted_english": false
+    },
+    {
+      "number": 48,
+      "key": "Slime",
+      "source": "Slime",
+      "raw_google_target": "स्लाइम",
+      "context": {
+        "description": "Skin material finish name or grouped picker heading; protocol material IDs remain unchanged",
+        "registry": "platform/packages/protocol/src/skins.ts",
+        "literal_lines": [
+          48
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx",
+          "platform/apps/web/src/skins/PatternDialog.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "लिसलिसा जेल",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Gel visqueux",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Lendir",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "चिकट जेल",
+      "disposition": "edit",
+      "rationale": "Viscous slime material; descriptive Marathi is clearer than opaque स्लाइम.",
+      "accepted_english": false
+    },
+    {
+      "number": 49,
+      "key": "AI player",
+      "source": "AI player",
+      "raw_google_target": "एआय खेळाडू",
+      "context": {
+        "description": "AI player page title",
+        "registry": "platform/apps/web/src/App.tsx",
+        "literal_lines": [
+          248
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/pages/Ais.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "एआई खिलाड़ी",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Joueur IA",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pemain AI",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "एआय खेळाडू",
+      "disposition": "accept_raw",
+      "rationale": "Correct AI player route heading with established एआय term.",
+      "accepted_english": false
+    },
+    {
+      "number": 50,
+      "key": "Finances",
+      "source": "Finances",
+      "raw_google_target": "वित्त",
+      "context": {
+        "description": "Administration tab label; Audit is administrative event history, not only financial accounts",
+        "registry": "platform/apps/web/src/admin/Admin.tsx",
+        "literal_lines": [
+          7,
+          18,
+          89
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Moderation.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "वित्त",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Finances",
+          "equals_English_source": true,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kewangan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "वित्त",
+      "disposition": "accept_raw",
+      "rationale": "Correct compact finances administration section heading.",
+      "accepted_english": false
+    },
+    {
+      "number": 51,
+      "key": "Accounts",
+      "source": "Accounts",
+      "raw_google_target": "खाती",
+      "context": {
+        "description": "Administration tab label; Audit is administrative event history, not only financial accounts",
+        "registry": "platform/apps/web/src/admin/Admin.tsx",
+        "literal_lines": [
+          9,
+          19,
+          79
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Moderation.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "खाते",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Comptes",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Akaun",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "खाती",
+      "disposition": "accept_raw",
+      "rationale": "Correct accounts administration section heading.",
+      "accepted_english": false
+    },
+    {
+      "number": 52,
+      "key": "Audit",
+      "source": "Audit",
+      "raw_google_target": "लेखापरीक्षण",
+      "context": {
+        "description": "Administration tab label; Audit is administrative event history, not only financial accounts",
+        "registry": "platform/apps/web/src/admin/Admin.tsx",
+        "literal_lines": [
+          8,
+          23,
+          85
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Moderation.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "अंकेक्षण",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Audit",
+          "equals_English_source": true,
+          "missing": false
+        },
+        "ms": {
+          "value": "Audit",
+          "equals_English_source": true,
+          "missing": false
+        }
+      },
+      "recommended_target": "ऑडिट",
+      "disposition": "edit",
+      "rationale": "Administration event audit, not financial-account auditing only; matches existing ऑडिट इतिहास.",
+      "accepted_english": false
+    },
+    {
+      "number": 53,
+      "key": "1 hour",
+      "source": "1 hour",
+      "raw_google_target": "१ तास",
+      "context": {
+        "description": "Account mute duration option",
+        "registry": "platform/apps/web/src/admin/Accounts.tsx",
+        "literal_lines": [
+          12
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "1 घंटा",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "1 heure",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "1 jam",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "१ तास",
+      "disposition": "accept_raw",
+      "rationale": "Correct mute-duration option; numeric meaning retained.",
+      "accepted_english": false
+    },
+    {
+      "number": 54,
+      "key": "1 day",
+      "source": "1 day",
+      "raw_google_target": "१ दिवस",
+      "context": {
+        "description": "Account mute duration option",
+        "registry": "platform/apps/web/src/admin/Accounts.tsx",
+        "literal_lines": [
+          13
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "1 दिन",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "1 jour",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "1 hari",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "१ दिवस",
+      "disposition": "accept_raw",
+      "rationale": "Correct mute-duration option.",
+      "accepted_english": false
+    },
+    {
+      "number": 55,
+      "key": "1 week",
+      "source": "1 week",
+      "raw_google_target": "१ आठवडा",
+      "context": {
+        "description": "Account mute duration option",
+        "registry": "platform/apps/web/src/admin/Accounts.tsx",
+        "literal_lines": [
+          14
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "1 सप्ताह",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "1 semaine",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "1 minggu",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "१ आठवडा",
+      "disposition": "accept_raw",
+      "rationale": "Correct mute-duration option.",
+      "accepted_english": false
+    },
+    {
+      "number": 56,
+      "key": "30 days",
+      "source": "30 days",
+      "raw_google_target": "३० दिवस",
+      "context": {
+        "description": "Account mute duration option",
+        "registry": "platform/apps/web/src/admin/Accounts.tsx",
+        "literal_lines": [
+          15
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "30 दिन",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "30 jours",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "30 hari",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "३० दिवस",
+      "disposition": "accept_raw",
+      "rationale": "Correct thirty-day mute-duration option.",
+      "accepted_english": false
+    },
+    {
+      "number": 57,
+      "key": "Most played",
+      "source": "Most played",
+      "raw_google_target": "सर्वाधिक खेळले",
+      "context": {
+        "description": "Map list sorting option",
+        "registry": "platform/apps/web/src/pages/Maps.tsx",
+        "literal_lines": [
+          180
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सबसे अधिक खेला गया",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Plus jouées",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Paling kerap dimainkan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सर्वाधिक खेळलेले",
+      "disposition": "edit",
+      "rationale": "Map sorting caption describes maps played most; use adjectival form.",
+      "accepted_english": false
+    },
+    {
+      "number": 58,
+      "key": "Listen for the musical structure and development.",
+      "source": "Listen for the musical structure and development.",
+      "raw_google_target": "संगीताची रचना आणि विकास याकडे लक्ष द्या.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          5
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "संगीत की संरचना और विकास को ध्यान से सुनें।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Soyez attentif à la structure et au développement musical.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Dengar struktur dan perkembangan muzik.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "संगीताची रचना आणि तिचा विकास लक्ष देऊन ऐका.",
+      "disposition": "edit",
+      "rationale": "Explicit listening task for musical form/development, not general visual inspection.",
+      "accepted_english": false
+    },
+    {
+      "number": 59,
+      "key": "Check that all three moods play correctly.",
+      "source": "Check that all three moods play correctly.",
+      "raw_google_target": "तिन्ही मूड योग्यरित्या कार्यरत आहेत याची खात्री करा.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          6
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "यह सुनिश्चित करें कि तीनों मूड सही ढंग से काम कर रहे हों।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Vérifiez que les trois ambiances fonctionnent correctement.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pastikan ketiga-tiga suasana muzik dimainkan dengan betul.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "तिन्ही मूडमधील संगीत नीट वाजते याची खात्री करा.",
+      "disposition": "edit",
+      "rationale": "Playback of all three musical mood tracks; no human mental-state reading.",
+      "accepted_english": false
+    },
+    {
+      "number": 60,
+      "key": "Listen for unexpected jumps in volume between moods.",
+      "source": "Listen for unexpected jumps in volume between moods.",
+      "raw_google_target": "वेगवेगळ्या मनस्थितींमध्ये आवाजाच्या पातळीत होणाऱ्या अनपेक्षित बदलांकडे लक्ष द्या.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          9
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "विभिन्न मनोदशाओं के बीच ध्वनि की तीव्रता में अप्रत्याशित उतार-चढ़ाव पर ध्यान दें।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Soyez attentif aux variations de volume sonore inattendues entre les différentes ambiances.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Dengar perubahan kelantangan mendadak yang tidak dijangka antara suasana muzik.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मूड बदलताना आवाजाच्या पातळीत अनपेक्षित उड्या येतात का ते ऐका.",
+      "disposition": "edit",
+      "rationale": "Unexpected loudness jumps during music mood changes, not emotional states.",
+      "accepted_english": false
+    },
+    {
+      "number": 61,
+      "key": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "source": "Listen for a click, gap, or abrupt change when the loop repeats.",
+      "raw_google_target": "जेव्हा लूप पुन्हा सुरू होतो, तेव्हा क्लिक, खंड किंवा अचानक होणारा बदल ऐका.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          13
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "लूप दोहराते समय क्लिक की आवाज़, मौन अंतराल या अचानक बदलाव पर ध्यान दें।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Soyez attentif à un clic, un silence ou un changement brusque lorsque la boucle se répète.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Dengar bunyi klik, jeda atau perubahan mendadak apabila gelung berulang.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "लूप पुन्हा सुरू होताना क्लिकचा आवाज, खंड किंवा अचानक बदल ऐकू येतो का ते तपासा.",
+      "disposition": "edit",
+      "rationale": "Loop seam is an audible click/gap/change, not a mouse click.",
+      "accepted_english": false
+    },
+    {
+      "number": 62,
+      "key": "Listen for short phrases that repeat too mechanically.",
+      "source": "Listen for short phrases that repeat too mechanically.",
+      "raw_google_target": "अतिशय यांत्रिकपणे पुनरावृत्ती होणाऱ्या लहान वाक्यांशांकडे लक्ष द्या.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          17
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "उन छोटे वाक्यांशों पर ध्यान दें जो बहुत ही यंत्रवत रूप से दोहराए जाते हैं।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Soyez attentif aux phrases courtes qui se répètent de façon trop mécanique.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Dengar frasa muzik pendek yang berulang secara terlalu kaku.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "संगीतातील छोटे तुकडे अतिशय यांत्रिकपणे पुन्हा पुन्हा वाजतात का ते ऐका.",
+      "disposition": "edit",
+      "rationale": "Phrases are musical motifs, not linguistic sentences.",
+      "accepted_english": false
+    },
+    {
+      "number": 63,
+      "key": "Switch moods and listen for changes in timing or harmony.",
+      "source": "Switch moods and listen for changes in timing or harmony.",
+      "raw_google_target": "मूड बदला आणि तालात किंवा सुसंवादात होणारे बदल ऐका.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          21
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "संगीत के मूड बदलें और समय-निर्धारण या सुर-संगति के बदलावों को सुनें।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Changez d'ambiance et soyez attentif aux changements de rythme ou d'harmonie.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Tukar suasana muzik dan dengar perubahan pada pemasaan atau harmoni.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मूड बदलून लयीत किंवा स्वरमेळात होणारे बदल ऐका.",
+      "disposition": "edit",
+      "rationale": "Timing/harmony in music; सुसंवाद would imply social conversation.",
+      "accepted_english": false
+    },
+    {
+      "number": 64,
+      "key": "Check that building and combat feel distinct from calm.",
+      "source": "Check that building and combat feel distinct from calm.",
+      "raw_google_target": "बांधकाम आणि लढाई या शांततेपेक्षा वेगळ्या जाणवतात याची खात्री करा.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          25
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "यह सुनिश्चित करें कि निर्माण और युद्ध की अनुभूति शांत वातावरण से अलग हो।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Vérifiez que les ambiances « Construction » et « Combat » se distinguent de « Calme ».",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pastikan suasana Pembinaan dan Pertempuran terasa berbeza daripada Tenang.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "«बांधकाम» आणि «लढाई» या मूडमधील संगीत «शांत» मूडपेक्षा वेगळे जाणवते याची खात्री करा.",
+      "disposition": "edit",
+      "rationale": "Names the actual three translated music moods; not a test of construction gameplay.",
+      "accepted_english": false
+    },
+    {
+      "number": 65,
+      "key": "Listen for hiss or scratchiness in quiet passages.",
+      "source": "Listen for hiss or scratchiness in quiet passages.",
+      "raw_google_target": "शांत भागांमध्ये येणाऱ्या फुसफुसण्यासारख्या किंवा खरखराटासारख्या आवाजाकडे लक्ष द्या.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          29
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "शांत संगीत के अंशों में सरसराहट या खरोंच जैसी आवाज़ पर ध्यान दें।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Soyez attentif aux sifflements ou aux grattements dans les passages calmes.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Dengar desisan atau bunyi kasar dalam bahagian yang berkelantangan rendah.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "कमी आवाजाच्या भागांत सळसळ किंवा खरखर ऐकू येते का ते तपासा.",
+      "disposition": "edit",
+      "rationale": "Quiet musical passages and audible hiss/scratch defects, not literal whispering.",
+      "accepted_english": false
+    },
+    {
+      "number": 66,
+      "key": "Listen for muddy bass or harsh high frequencies.",
+      "source": "Listen for muddy bass or harsh high frequencies.",
+      "raw_google_target": "अस्पष्ट बास किंवा कर्कश उच्च फ्रिक्वेन्सीकडे लक्ष द्या.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          31
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "अस्पष्ट बास या कर्कश उच्च आवृत्तियों पर ध्यान दें।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Soyez attentif aux basses brouillées ou aux hautes fréquences agressives.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Dengar bunyi bes yang kurang jelas atau frekuensi tinggi yang terlalu tajam.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "अस्पष्ट बास किंवा उच्च वारंवारतेचे कर्कश आवाज ऐकू येतात का ते तपासा.",
+      "disposition": "edit",
+      "rationale": "Audio mix balance; preserve muddy bass and harsh high-frequency meaning.",
+      "accepted_english": false
+    },
+    {
+      "number": 67,
+      "key": "Check that calm passages remain audible alongside game sound.",
+      "source": "Check that calm passages remain audible alongside game sound.",
+      "raw_google_target": "खेळाच्या आवाजासोबत शांत भागही ऐकू येत राहतील याची खात्री करा.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          34
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "यह सुनिश्चित करें कि खेल की ध्वनि के साथ-साथ शांत अंश भी स्पष्ट रूप से सुनाई दें।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Vérifiez que les passages calmes restent audibles en même temps que le son du jeu.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pastikan bahagian Tenang masih dapat didengar bersama bunyi permainan.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "खेळाच्या आवाजासोबत संगीताचे शांत भागही ऐकू येत राहतात याची खात्री करा.",
+      "disposition": "edit",
+      "rationale": "Quiet passages are music and must remain audible beside game sound.",
+      "accepted_english": false
+    },
+    {
+      "number": 68,
+      "key": "Listen for notes that cut off unexpectedly.",
+      "source": "Listen for notes that cut off unexpectedly.",
+      "raw_google_target": "अचानक बंद होणाऱ्या सुरांकडे लक्ष द्या.",
+      "context": {
+        "description": "Human listening guidance in music validation; three translated tracks/moods Calm Building Combat",
+        "registry": "platform/apps/web/src/music/Validation.tsx",
+        "literal_lines": [
+          36
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/music/Player.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "उन सुरों पर ध्यान दें जो अचानक बंद हो जाते हैं।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Soyez attentif aux notes qui s'interrompent brusquement.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Dengar not muzik yang terputus tanpa dijangka.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "अनपेक्षितपणे तुटणाऱ्या सुरांकडे लक्ष द्या.",
+      "disposition": "edit",
+      "rationale": "Unexpected note dropout, not an intentional musical ending.",
+      "accepted_english": false
+    },
+    {
+      "number": 69,
+      "key": "Worker",
+      "source": "Worker",
+      "raw_google_target": "कामगार",
+      "context": {
+        "description": "Skin model picker names; Swarm is the unit-producing building",
+        "registry": "platform/apps/web/src/skins/atlas.ts",
+        "literal_lines": [
+          10
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "श्रमिक",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Ouvrière",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pekerja",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "कामगार",
+      "disposition": "accept_raw",
+      "rationale": "Exact established native worker anchor.",
+      "accepted_english": false
+    },
+    {
+      "number": 70,
+      "key": "Warrior",
+      "source": "Warrior",
+      "raw_google_target": "योद्धा",
+      "context": {
+        "description": "Skin model picker names; Swarm is the unit-producing building",
+        "registry": "platform/apps/web/src/skins/atlas.ts",
+        "literal_lines": [
+          11
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "योद्धा",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Guerrière",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pahlawan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "योद्धा",
+      "disposition": "accept_raw",
+      "rationale": "Exact established native warrior anchor.",
+      "accepted_english": false
+    },
+    {
+      "number": 71,
+      "key": "Explorer",
+      "source": "Explorer",
+      "raw_google_target": "शोधक",
+      "context": {
+        "description": "Skin model picker names; Swarm is the unit-producing building",
+        "registry": "platform/apps/web/src/skins/atlas.ts",
+        "literal_lines": [
+          12
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "खोजी",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Exploratrice",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Penjelajah",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "शोधक",
+      "disposition": "accept_raw",
+      "rationale": "Exact established native explorer anchor.",
+      "accepted_english": false
+    },
+    {
+      "number": 72,
+      "key": "Swarm",
+      "source": "Swarm",
+      "raw_google_target": "थवा",
+      "context": {
+        "description": "Skin model picker names; Swarm is the unit-producing building",
+        "registry": "platform/apps/web/src/skins/atlas.ts",
+        "literal_lines": [
+          13
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/StudioControls.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "छत्ता",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Ruche",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sarang",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "पोळे",
+      "disposition": "edit",
+      "rationale": "Actual Swarm building mesh/model, French Ruche and native glossary; not a flock थवा.",
+      "accepted_english": false
+    },
+    {
+      "number": 73,
+      "key": "Classic",
+      "source": "Classic",
+      "raw_google_target": "क्लासिक",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          5
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "पारंपरिक",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Classique",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Klasik",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "क्लासिक",
+      "disposition": "accept_raw",
+      "rationale": "Original classic Swarm shape; keep consistent with Classic glossy style label.",
+      "accepted_english": false
+    },
+    {
+      "number": 74,
+      "key": "Crown",
+      "source": "Crown",
+      "raw_google_target": "मुकुट",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          6
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "ताज",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Couronne",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Mahkota",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मुकुट",
+      "disposition": "accept_raw",
+      "rationale": "Correct crown-shaped Swarm variant.",
+      "accepted_english": false
+    },
+    {
+      "number": 75,
+      "key": "Clutch",
+      "source": "Clutch",
+      "raw_google_target": "क्लच",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          7
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "अंडों का समूह",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Grappe d’œufs",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kelompok telur",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "अंड्यांचा समूह",
+      "disposition": "edit",
+      "rationale": "Clutch shape is six brood eggs, not a mechanical clutch.",
+      "accepted_english": false
+    },
+    {
+      "number": 76,
+      "key": "Toadstool",
+      "source": "Toadstool",
+      "raw_google_target": "बेडूक",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          8
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "कुकुरमुत्ता",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Champignon vénéneux",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Cendawan payung",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "अळंबी",
+      "disposition": "edit",
+      "rationale": "Toadstool is a mushroom-shaped Swarm, not a frog; concise Marathi mushroom noun.",
+      "accepted_english": false
+    },
+    {
+      "number": 77,
+      "key": "A broad-capped toadstool with young caps.",
+      "source": "A broad-capped toadstool with young caps.",
+      "raw_google_target": "कोवळ्या टोपी असलेले रुंद टोपीधारी विषारी बुरशी.",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          8
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "चौड़ी टोपी वाला कुकुरमुत्ता, जिसके साथ छोटी नई टोपियाँ हैं।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Un champignon à large chapeau avec de jeunes chapeaux.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Cendawan bertudung lebar bersama cendawan-cendawan muda.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "रुंद छत्रीच्या अळंबीभोवती छोट्या अळंब्या.",
+      "disposition": "edit",
+      "rationale": "Visible broad mushroom cap with young caps; fixes raw gender and avoids inventing toxicity mechanics.",
+      "accepted_english": false
+    },
+    {
+      "number": 78,
+      "key": "Coral",
+      "source": "Coral",
+      "raw_google_target": "प्रवाळ",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          9
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "मूँगा",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Corail",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Karang",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "प्रवाळ",
+      "disposition": "accept_raw",
+      "rationale": "Correct coral-inspired branching shape.",
+      "accepted_english": false
+    },
+    {
+      "number": 79,
+      "key": "Skep",
+      "source": "Skep",
+      "raw_google_target": "स्केप",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          10
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "बुना हुआ मधुमक्खी छत्ता",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Ruche en paille tressée",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sarang lebah anyaman",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "विणलेले पोळे",
+      "disposition": "edit",
+      "rationale": "Skep is a coiled/woven beehive shape; descriptive Marathi rather than opaque स्केप.",
+      "accepted_english": false
+    },
+    {
+      "number": 80,
+      "key": "A coiled hive on a stand, its door facing you.",
+      "source": "A coiled hive on a stand, its door facing you.",
+      "raw_google_target": "स्टँडवर वेटोळे घालून ठेवलेले मधमाशांचे पोळे, ज्याचे दार तुमच्या समोर आहे.",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          10
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "एक स्टैंड पर कुंडली मारकर रखा हुआ मधुमक्खी का छत्ता, जिसका दरवाजा आपकी ओर है।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Une ruche enroulée sur un support, sa porte face à vous.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sarang lebah berlingkar di atas tapak, dengan pintunya menghadap anda.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "आधारावर ठेवलेले, वेटोळ्यांसारखे विणलेले पोळे; त्याचे दार तुमच्याकडे आहे.",
+      "disposition": "edit",
+      "rationale": "Coiled hive on stand with door facing viewer, not a live hive curling itself.",
+      "accepted_english": false
+    },
+    {
+      "number": 81,
+      "key": "Bloom",
+      "source": "Bloom",
+      "raw_google_target": "फुलणे",
+      "context": {
+        "description": "Swarm mesh shape labels/descriptions; preserve canonical mesh IDs",
+        "registry": "platform/apps/web/src/skins/swarmShapes.ts",
+        "literal_lines": [
+          11
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/geometry.ts"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "खिला फूल",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Floraison",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Bunga mekar",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "उमललेले फूल",
+      "disposition": "edit",
+      "rationale": "Bloom is a flower-shaped object/variant, not the verb फुलणे.",
+      "accepted_english": false
+    },
+    {
+      "number": 82,
+      "key": "Public: listed in the catalog",
+      "source": "Public: listed in the catalog",
+      "raw_google_target": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "context": {
+        "description": "Map publishing visibility choices; access semantics, not canonical visibility IDs",
+        "registry": "platform/apps/web/src/pages/Maps.tsx",
+        "literal_lines": [
+          29
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सार्वजनिक: कैटलॉग में सूचीबद्ध",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Publique : répertoriée dans le catalogue",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Awam: disenaraikan dalam katalog",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सार्वजनिक: कॅटलॉगमध्ये सूचीबद्ध",
+      "disposition": "accept_raw",
+      "rationale": "Correct public-map visibility option; existing catalog terminology preserved.",
+      "accepted_english": false
+    },
+    {
+      "number": 83,
+      "key": "Unlisted: anyone with the link",
+      "source": "Unlisted: anyone with the link",
+      "raw_google_target": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही",
+      "context": {
+        "description": "Map publishing visibility choices; access semantics, not canonical visibility IDs",
+        "registry": "platform/apps/web/src/pages/Maps.tsx",
+        "literal_lines": [
+          30
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सूची से बाहर: लिंक रखने वाला कोई भी व्यक्ति",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Non répertoriée : toute personne ayant le lien",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Tidak tersenarai: sesiapa sahaja yang mempunyai pautan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सूचीबद्ध नसलेले: लिंक असलेल्या कोणालाही उपलब्ध",
+      "disposition": "edit",
+      "rationale": "Unlisted option is accessible to link holders, with complete natural Marathi predicate.",
+      "accepted_english": false
+    },
+    {
+      "number": 84,
+      "key": "Private: only you",
+      "source": "Private: only you",
+      "raw_google_target": "खाजगी: फक्त तुम्ही",
+      "context": {
+        "description": "Map publishing visibility choices; access semantics, not canonical visibility IDs",
+        "registry": "platform/apps/web/src/pages/Maps.tsx",
+        "literal_lines": [
+          31
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "निजी: केवल आप",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Privée : vous seul",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Persendirian: hanya anda",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "खाजगी: फक्त तुम्ही",
+      "disposition": "accept_raw",
+      "rationale": "Correct private visibility option.",
+      "accepted_english": false
+    },
+    {
+      "number": 85,
+      "key": "The server replayed this match and every player’s game agreed with it.",
+      "source": "The server replayed this match and every player’s game agreed with it.",
+      "raw_google_target": "सर्वरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूचा खेळ त्याच्याशी सहमत होता.",
+      "context": {
+        "description": "Match verdict explanatory prose; distinguish verified/pending/diverged/unverifiable/unchecked/error",
+        "registry": "platform/apps/web/src/pages/Match.tsx",
+        "literal_lines": [
+          45
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सर्वर ने इस मैच का रीप्ले चलाया और सभी खिलाड़ियों के खेल की अवस्थाएँ रीप्ले से मेल खाती थीं।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Le serveur a rejoué cette partie et les états de jeu de tous les joueurs correspondaient au replay.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pelayan telah memainkan semula perlawanan ini dan keadaan permainan setiap pemain sepadan dengan hasilnya.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सर्व्हरने हा सामना पुन्हा चालवला आणि प्रत्येक खेळाडूच्या खेळाची स्थिती त्याच्याशी जुळली.",
+      "disposition": "edit",
+      "rationale": "Verification compares game state, not players expressing agreement.",
+      "accepted_english": false
+    },
+    {
+      "number": 86,
+      "key": "The server is checking this match. Ratings change once it is verified.",
+      "source": "The server is checking this match. Ratings change once it is verified.",
+      "raw_google_target": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "context": {
+        "description": "Match verdict explanatory prose; distinguish verified/pending/diverged/unverifiable/unchecked/error",
+        "registry": "platform/apps/web/src/pages/Match.tsx",
+        "literal_lines": [
+          46
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सर्वर इस मैच की जाँच कर रहा है। सत्यापन होने पर रेटिंग बदल जाएगी।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Le serveur vérifie cette partie. Les évaluations changent une fois la partie vérifiée.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pelayan sedang menyemak perlawanan ini. Penarafan berubah setelah perlawanan disahkan.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सर्व्हर या सामन्याची तपासणी करत आहे. पडताळणी झाल्यावर रेटिंग बदलतील.",
+      "disposition": "accept_raw",
+      "rationale": "Accurate pending-check status and rating update condition.",
+      "accepted_english": false
+    },
+    {
+      "number": 87,
+      "key": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "source": "A player’s game disagreed with the server’s replay of the match; the server’s result counts.",
+      "raw_google_target": "एखाद्या खेळाडूचा गेम सर्वरच्या मॅचच्या रिप्लेशी जुळत नसला तरी, सर्वरचा निकालच ग्राह्य धरला जाईल.",
+      "context": {
+        "description": "Match verdict explanatory prose; distinguish verified/pending/diverged/unverifiable/unchecked/error",
+        "registry": "platform/apps/web/src/pages/Match.tsx",
+        "literal_lines": [
+          48
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "एक खिलाड़ी के खेल की अवस्था सर्वर के मैच रीप्ले से मेल नहीं खाई; सर्वर का परिणाम मान्य है।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "L’état de jeu d’un joueur divergeait du replay de la partie sur le serveur ; le résultat du serveur fait foi.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Keadaan permainan seorang pemain tidak sepadan dengan ulang tayang perlawanan oleh pelayan; keputusan pelayan yang diambil kira.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "एका खेळाडूच्या खेळाची स्थिती सर्व्हरच्या रीप्लेशी जुळली नाही; सर्व्हरचा निकालच ग्राह्य धरला जातो.",
+      "disposition": "edit",
+      "rationale": "Actual disagreement happened; remove raw conditional नसला तरी and retain authoritative server result.",
+      "accepted_english": false
+    },
+    {
+      "number": 88,
+      "key": "The server could not reproduce this match, so it changes no rating.",
+      "source": "The server could not reproduce this match, so it changes no rating.",
+      "raw_google_target": "सर्वरला हा सामना पुन्हा खेळवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+      "context": {
+        "description": "Match verdict explanatory prose; distinguish verified/pending/diverged/unverifiable/unchecked/error",
+        "registry": "platform/apps/web/src/pages/Match.tsx",
+        "literal_lines": [
+          49
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सर्वर इस मैच को दोबारा नहीं चला सका, इसलिए रेटिंग में कोई बदलाव नहीं हुआ है।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Le serveur n’a pas pu reproduire cette partie, donc aucune évaluation ne change.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pelayan tidak dapat menghasilkan semula perlawanan ini, jadi tiada penarafan berubah.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सर्व्हरला हा सामना तसाच पुन्हा चालवता आला नाही, त्यामुळे रेटिंगमध्ये कोणताही बदल होत नाही.",
+      "disposition": "edit",
+      "rationale": "Could not reproduce the same simulation; avoids implying merely scheduling a new game.",
+      "accepted_english": false
+    },
+    {
+      "number": 89,
+      "key": "This match is not checked.",
+      "source": "This match is not checked.",
+      "raw_google_target": "या सामन्याची तपासणी केलेली नाही.",
+      "context": {
+        "description": "Match verdict explanatory prose; distinguish verified/pending/diverged/unverifiable/unchecked/error",
+        "registry": "platform/apps/web/src/pages/Match.tsx",
+        "literal_lines": [
+          50
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "इस मैच की जाँच नहीं की गई है।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Cette partie n’est pas vérifiée.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Perlawanan ini tidak disemak.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "या सामन्याची तपासणी केलेली नाही.",
+      "disposition": "accept_raw",
+      "rationale": "Accurate unchecked status, no pending/success inference.",
+      "accepted_english": false
+    },
+    {
+      "number": 90,
+      "key": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "source": "The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.",
+      "raw_google_target": "सर्व्हर या सामन्याची तपासणी पूर्ण करू शकला नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होणार नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "context": {
+        "description": "Match verdict explanatory prose; distinguish verified/pending/diverged/unverifiable/unchecked/error",
+        "registry": "platform/apps/web/src/pages/Match.tsx",
+        "literal_lines": [
+          52
+        ],
+        "UI_callers": []
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "सर्वर इस मैच की जाँच पूरी नहीं कर सका, इसलिए फिलहाल रेटिंग में कोई बदलाव नहीं होगा। प्रशासक दोबारा जाँच कर सकते हैं।",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Le serveur n’a pas pu terminer la vérification de cette partie, donc aucune évaluation ne change pour le moment. Un administrateur peut relancer la vérification.",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pelayan tidak dapat menyelesaikan semakan perlawanan ini, jadi tiada penarafan berubah buat masa ini. Pentadbir boleh menjalankan semakan sekali lagi.",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सर्व्हरला या सामन्याची तपासणी पूर्ण करता आली नाही, त्यामुळे सध्या रेटिंगमध्ये कोणताही बदल होत नाही. प्रशासक ही तपासणी पुन्हा चालवू शकतात.",
+      "disposition": "edit",
+      "rationale": "Failed/incomplete check with temporary no-rating effect and admin retry, no permanent failure claim.",
+      "accepted_english": false
+    },
+    {
+      "number": 91,
+      "key": "Walk",
+      "source": "Walk",
+      "raw_google_target": "चालणे",
+      "context": {
+        "description": "Unit preview animation selector action labels, not animation asset IDs",
+        "registry": "platform/apps/web/src/skins/geometry.ts",
+        "literal_lines": [
+          61
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/MeshPreview.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "चलना",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Marcher",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Berjalan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "चालणे",
+      "disposition": "accept_raw",
+      "rationale": "Animation action label, noun/infinitive consistent with other actions.",
+      "accepted_english": false
+    },
+    {
+      "number": 92,
+      "key": "Swim",
+      "source": "Swim",
+      "raw_google_target": "पोहणे",
+      "context": {
+        "description": "Unit preview animation selector action labels, not animation asset IDs",
+        "registry": "platform/apps/web/src/skins/geometry.ts",
+        "literal_lines": [
+          62
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/MeshPreview.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "तैरना",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Nager",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Berenang",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "पोहणे",
+      "disposition": "accept_raw",
+      "rationale": "Correct swimming animation action.",
+      "accepted_english": false
+    },
+    {
+      "number": 93,
+      "key": "Harvest",
+      "source": "Harvest",
+      "raw_google_target": "कापणी",
+      "context": {
+        "description": "Unit preview animation selector action labels, not animation asset IDs",
+        "registry": "platform/apps/web/src/skins/geometry.ts",
+        "literal_lines": [
+          63
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/MeshPreview.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "संग्रह करना",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Récolter",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Menuai",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "गोळा करणे",
+      "disposition": "edit",
+      "rationale": "Worker harvest gathers resources including non-crops, not agricultural harvesting only.",
+      "accepted_english": false
+    },
+    {
+      "number": 94,
+      "key": "Fight",
+      "source": "Fight",
+      "raw_google_target": "लढा",
+      "context": {
+        "description": "Unit preview animation selector action labels, not animation asset IDs",
+        "registry": "platform/apps/web/src/skins/geometry.ts",
+        "literal_lines": [
+          64
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/MeshPreview.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "लड़ना",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Combattre",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Bertempur",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "लढणे",
+      "disposition": "edit",
+      "rationale": "Animation action infinitive consistent with चालणे and पोहणे, not imperative लढा.",
+      "accepted_english": false
+    },
+    {
+      "number": 95,
+      "key": "Fly",
+      "source": "Fly",
+      "raw_google_target": "माशी",
+      "context": {
+        "description": "Unit preview animation selector action labels, not animation asset IDs",
+        "registry": "platform/apps/web/src/skins/geometry.ts",
+        "literal_lines": [
+          65
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/skins/MeshPreview.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "उड़ना",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Voler",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Terbang",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "उडणे",
+      "disposition": "edit",
+      "rationale": "Explorer flight animation action, not the insect माशी.",
+      "accepted_english": false
+    },
+    {
+      "number": 96,
+      "key": "Live payments",
+      "source": "Live payments",
+      "raw_google_target": "थेट पेमेंट",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          20
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "वास्तविक भुगतान",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Paiements réels",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pembayaran sebenar",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "प्रत्यक्ष पेमेंट",
+      "disposition": "edit",
+      "rationale": "Live payment environment means real transactions, not a live broadcast or direct method.",
+      "accepted_english": false
+    },
+    {
+      "number": 97,
+      "key": "Test payments",
+      "source": "Test payments",
+      "raw_google_target": "चाचणी पेमेंट",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          21
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "परीक्षण भुगतान",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Paiements tests",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pembayaran ujian",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "चाचणी पेमेंट",
+      "disposition": "accept_raw",
+      "rationale": "Correct test-payment environment label; existing पेमेंट anchor retained.",
+      "accepted_english": false
+    },
+    {
+      "number": 98,
+      "key": "Unclassified payments",
+      "source": "Unclassified payments",
+      "raw_google_target": "अवर्गीकृत पेमेंट",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          22
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "अवर्गीकृत भुगतान",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Paiements non classifiés",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pembayaran tidak dikelaskan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "अवर्गीकृत पेमेंट",
+      "disposition": "accept_raw",
+      "rationale": "Correct unclassified payment-environment label.",
+      "accepted_english": false
+    },
+    {
+      "number": 99,
+      "key": "Current period",
+      "source": "Current period",
+      "raw_google_target": "चालू कालावधी",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          25
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "वर्तमान अवधि",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Période actuelle",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Tempoh semasa",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "चालू कालावधी",
+      "disposition": "accept_raw",
+      "rationale": "Correct current reporting window.",
+      "accepted_english": false
+    },
+    {
+      "number": 100,
+      "key": "Previous period",
+      "source": "Previous period",
+      "raw_google_target": "मागील कालावधी",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          26
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "पिछली अवधि",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Période précédente",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Tempoh sebelumnya",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "मागील कालावधी",
+      "disposition": "accept_raw",
+      "rationale": "Correct previous reporting window.",
+      "accepted_english": false
+    },
+    {
+      "number": 101,
+      "key": "Credit grant",
+      "source": "Credit grant",
+      "raw_google_target": "पत अनुदान",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          35
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "क्रेडिट आवंटन",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Attribution de crédits",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pemberian kredit",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "क्रेडिट्सचे अनुदान",
+      "disposition": "edit",
+      "rationale": "Credit grant is platform usage credits, not a bank loan/pat creditworthiness.",
+      "accepted_english": false
+    },
+    {
+      "number": 102,
+      "key": "Returned credits",
+      "source": "Returned credits",
+      "raw_google_target": "परत केलेले क्रेडिट्स",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          36
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "लौटाए गए क्रेडिट",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Crédits restitués",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Kredit dikembalikan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "परत केलेले क्रेडिट्स",
+      "disposition": "accept_raw",
+      "rationale": "Correct returned unused-credit ledger category; consistent क्रेडिट्स anchor.",
+      "accepted_english": false
+    },
+    {
+      "number": 103,
+      "key": "Dispute",
+      "source": "Dispute",
+      "raw_google_target": "वाद",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          37,
+          38
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "विवाद",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Litige",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pertikaian",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "वाद",
+      "disposition": "accept_raw",
+      "rationale": "Payment dispute category; concise and neutral, not an adjudicated outcome.",
+      "accepted_english": false
+    },
+    {
+      "number": 104,
+      "key": "Dispute closed",
+      "source": "Dispute closed",
+      "raw_google_target": "वाद मिटला",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          38
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "विवाद समाप्त",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Litige clos",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Pertikaian ditutup",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "वाद बंद झाला",
+      "disposition": "edit",
+      "rationale": "Closed dispute status, not necessarily resolved/settled in anyone's favor.",
+      "accepted_english": false
+    },
+    {
+      "number": 105,
+      "key": "Matches started",
+      "source": "Matches started",
+      "raw_google_target": "सामने सुरू झाले",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          41
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "शुरू हुए मैच",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Parties commencées",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Perlawanan dimulakan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "सुरू झालेले सामने",
+      "disposition": "edit",
+      "rationale": "Count/statistic caption for started matches, not a new event announcement.",
+      "accepted_english": false
+    },
+    {
+      "number": 106,
+      "key": "Matches completed",
+      "source": "Matches completed",
+      "raw_google_target": "सामने पूर्ण झाले",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          42
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "पूरे हुए मैच",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Parties terminées",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Perlawanan selesai",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "पूर्ण झालेले सामने",
+      "disposition": "edit",
+      "rationale": "Count/statistic caption for completed matches.",
+      "accepted_english": false
+    },
+    {
+      "number": 107,
+      "key": "Matches cancelled",
+      "source": "Matches cancelled",
+      "raw_google_target": "सामने रद्द झाले",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          43
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "रद्द हुए मैच",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Parties annulées",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Perlawanan dibatalkan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "रद्द झालेले सामने",
+      "disposition": "edit",
+      "rationale": "Count/statistic caption for cancelled matches.",
+      "accepted_english": false
+    },
+    {
+      "number": 108,
+      "key": "{value0} publications",
+      "source": "{value0} publications",
+      "raw_google_target": "{value0} प्रकाशने",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          82
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "प्रकाशन: {value0}",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Publications : {value0}",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Penerbitan {value0}",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "{value0}: प्रकाशने",
+      "disposition": "edit",
+      "rationale": "value0 is translated library label, not a numeric publication count; colon avoids unsafe Marathi inflection.",
+      "accepted_english": false
+    },
+    {
+      "number": 109,
+      "key": "{value0} recorded downloads",
+      "source": "{value0} recorded downloads",
+      "raw_google_target": "{value0} रेकॉर्ड केलेले डाउनलोड",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          84
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "दर्ज डाउनलोड: {value0}",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Téléchargements enregistrés : {value0}",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Muat turun {value0} yang direkodkan",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "{value0}: नोंदवलेले डाउनलोड्स",
+      "disposition": "edit",
+      "rationale": "value0 is library label; recorded means tracked downloads, not video recordings.",
+      "accepted_english": false
+    },
+    {
+      "number": 110,
+      "key": "{value0} completion time (seconds)",
+      "source": "{value0} completion time (seconds)",
+      "raw_google_target": "{value0} पूर्ण होण्याची वेळ (सेकंद)",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          46
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "पूरा होने में लगा समय: {value0} (सेकंड)",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Durée des opérations réussies : {value0} (secondes)",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Masa penyiapan {value0} (saat)",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "{value0}: पूर्ण होण्यास लागलेला वेळ (सेकंद)",
+      "disposition": "edit",
+      "rationale": "value0 is product label, not duration; retain seconds as unit and unambiguous caption structure.",
+      "accepted_english": false
+    },
+    {
+      "number": 111,
+      "key": "{value0} completion samples",
+      "source": "{value0} completion samples",
+      "raw_google_target": "{value0} पूर्णता नमुने",
+      "context": {
+        "description": "Administration finance/analytics display label; final4 placeholders are product/library names, not numbers",
+        "registry": "platform/apps/web/src/admin/presentation.ts",
+        "literal_lines": [
+          47
+        ],
+        "UI_callers": [
+          "platform/apps/web/src/admin/Finances.tsx"
+        ]
+      },
+      "reference_translations": {
+        "hi": {
+          "value": "पूर्णता के मापन नमूने: {value0}",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "fr": {
+          "value": "Échantillons d’opérations réussies : {value0}",
+          "equals_English_source": false,
+          "missing": false
+        },
+        "ms": {
+          "value": "Sampel penyiapan {value0}",
+          "equals_English_source": false,
+          "missing": false
+        }
+      },
+      "recommended_target": "{value0}: पूर्णतेच्या वेळेच्या नोंदी",
+      "disposition": "edit",
+      "rationale": "Completion samples are recorded duration observations for product value0, not sample products or a percent-complete marker.",
+      "accepted_english": false
+    }
+  ],
+  "status": "Independent first editorial proposals; root resolves union and final actual canonical reread still required."
+}

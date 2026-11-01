@@ -1,0 +1,12 @@
+{
+  "stage": "After all24345inputsverified, GlobalContainerload before simulationtrace.",
+  "exit_code": 139,
+  "diagnosis": "Symbolicated actualcrash SDL_GetPreferredLocales\u2192SystemLanguage::preferred(SystemLanguage.cpp122)\u2192GlobalContainer::load476\u2192MatchVerifier::run401\u2192runVerifyMatch424. No JVM in native shell.",
+  "logcat": "attempt2-crash-logcat.txt",
+  "stderr": "attempt2-device.log",
+  "adaptation": "Set officialSDL_PREFERRED_LOCALES=mr_IN hint in shellenvironment only; samePIE/engine/inputbytes andfreshoutput3.",
+  "documentation": "PinnedSDKSDL_hints.h3174\u20133188 explicitlyfavorshintoverOSquery anddocumentslanguage_country format.",
+  "simulation_source_edits": false,
+  "prior_output_directory_preserved": "output",
+  "new_output_directory": "output3"
+}

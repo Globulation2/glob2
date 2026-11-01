@@ -1,0 +1,11 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T07:42:21.950998+00:00",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "native_catalog_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "signed_and_installed_apk_sha256": "2d6465a7c364ddd02fa31621d16b95c0ba30bbcdd44b27be3e4ed1012f355617",
+  "actual_image": "artifacts/marathi-localization/integration-bc8/android/focused-preferences/audio-after-ready-2.png",
+  "image_sha256": "d726f69a9b2f081def65cd3665f3c12e2fc987f3e90f7fe1cb813f08c2a87826",
+  "assessment": "Actually viewed current64 focused fresh-profile audio dialog. Marathi heading, two-line explanation, settings guidance and both choices are shaped, readable and fit without tofu or clipping. Bounded settled recapture closes the first-attempt ready-log-before-first-paint gap; original splash frame remains separately labeled and is not Audio visual-success proof.",
+  "findings": []
+}

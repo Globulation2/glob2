@@ -1,0 +1,238 @@
+{
+  "canonical": "data/texts.mr.txt",
+  "canonical_sha256": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+  "keys": 3411,
+  "overlay_count": 38,
+  "overlays": [
+    {
+      "path": "native-render-clean64/1280x900/gameplay/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/lobby/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/lobby-players/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/main/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/matrix/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/settings/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/settings-audio/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-defensive-tactics/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-food-supply/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-fortifications/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-healing/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-introduction/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-schools/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-swimming/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-upgrades/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-walking-training/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/1280x900/tutorial-warrior-training/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/gameplay/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/lobby/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/lobby-players/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/main/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/matrix/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/settings/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/settings-audio/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-defensive-tactics/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-food-supply/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-fortifications/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-healing/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-introduction/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-schools/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-swimming/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-upgrades/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-walking-training/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-render-clean64/390x844/tutorial-warrior-training/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-extra-clean64/1280x900/gameplay-extra/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-extra-clean64/390x844/gameplay-extra/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-extra-clean64/refined/1280x900/gameplay-extra/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    },
+    {
+      "path": "native-extra-clean64/refined/390x844/gameplay-extra/draft-overlay.txt",
+      "sha256": "6dd716f36cb63c030a24241783e9ad27e9269909bc6f4478bb709dd50b258afb",
+      "keys": 3411,
+      "all_values_equal": true
+    }
+  ],
+  "raw_byte_note": "Overlay order follows English insertion order, while canonical Marathi retains its own order. Every raw parsed key/value, including authored spaces, is equal.",
+  "registered_followup": "4 normal-resource captures have no overlay and assert overridden_keys=0."
+}
