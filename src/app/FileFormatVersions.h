@@ -343,3 +343,7 @@ static constexpr int FILE_FORMAT_VERSION_MAXIMA_FLAG_PROXIMITY = 189;
 
 // Automatic timestamped alliance win-probability history.
 static constexpr int FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY = 190;
+
+//! Built-in looks of grass and sand: TERRAIN_COUNT grew from 29 to 33, so earlier
+//! files carry custom terrain IDs starting at 29 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_GROUND_LOOKS = 191;

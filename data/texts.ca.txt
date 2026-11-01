@@ -5696,6 +5696,14 @@ Aigua fosca
 Forat
 [chasm]
 Avenc
+[lush_grass]
+Herba frondosa
+[dry_grass]
+Herba seca
+[dune_sand]
+Sorra de duna
+[pale_sand]
+Sorra clara
 [terrain group water]
 Aigua
 [terrain group sand]
