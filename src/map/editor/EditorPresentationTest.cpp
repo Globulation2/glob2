@@ -121,6 +121,15 @@ TEST_SUITE("EditorPresentation")
 		auto &phone = *editor.phone;
 		phone.chooseMode(0);
 		phone.prepare();
+		// Resources needs three whole-word lines: Mga / likas na / yaman.
+		// Reserve their text height rather than clipping a caption prefix.
+		const double lineHeight = globalContainer->standardFont->getStringHeight("Ag") * gfx->textUnitsPerPoint();
+		CHECK(phone.modeBar.h >= 3 * lineHeight);
+		const double captionWidth = phone.modeBar.w / 5 - 9 * gfx->logicalUnitsPerPoint();
+		for (const char *word : {"Mga", "likas", "na", "yaman", "Gusali", "Bandila", "Koponan"})
+			CHECK(globalContainer->standardFont->getStringWidth(word) * gfx->textUnitsPerPoint() <= captionWidth);
+		CHECK(phone.cardBar.y >= phone.modeBar.y + phone.modeBar.h);
+		CHECK(phone.content.y + phone.content.h <= phone.modeBar.y);
 		const int grass = phone.rowOf("terrain/grass");
 		REQUIRE(grass >= 0);
 		const auto card = phone.rows[grass].rect;

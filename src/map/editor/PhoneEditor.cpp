@@ -24,6 +24,23 @@ constexpr double headerHeight = 48;
 constexpr double modeHeight = 44;
 constexpr double dragThreshold = 8;
 constexpr double previewLift = 40;
+const char *modeCaptionKeys[] = {"[Terrain]", "[Resources]", "[Buildings]", "[Flags]", "[Teams]"};
+
+std::vector<std::string> modeCaptionLines(int index, double width)
+{
+	auto *gfx = globalContainer->gfx;
+	return wrapTouchText(globalContainer->standardFont,
+		Toolkit::getStringTable()->getString(modeCaptionKeys[index]),
+		std::max(1., (width - 8 * gfx->logicalUnitsPerPoint()) / gfx->textUnitsPerPoint()));
+}
+double modeCaptionLineHeight(const std::vector<std::string> &lines)
+{
+	auto *font = globalContainer->standardFont;
+	double height = font->getStringHeight("Ag");
+	for (const auto &line : lines)
+		height = std::max(height, double(font->getStringHeight(line)));
+	return height * globalContainer->gfx->textUnitsPerPoint();
+}
 } // namespace
 
 PhoneEditor::PhoneEditor(MapEdit &editor) : editor(editor) {}
@@ -81,7 +98,14 @@ void PhoneEditor::prepare()
 	}
 	// Short landscape phones keep more of the map: the strips tighten.
 	const bool tight = safe.h < 480 * unit;
-	const double modes = tight ? 38 : modeHeight, cardsHeight = tight ? cardHeight - 6 : cardHeight;
+	double modes = tight ? 38 : modeHeight;
+	if (tools && !inspecting())
+		for (int i = 0; i < modeCount; ++i)
+		{
+			const auto lines = modeCaptionLines(i, safe.w / modeCount - unit);
+			modes = std::max(modes, modeCaptionLineHeight(lines) * lines.size() / unit + 8);
+		}
+	const double cardsHeight = tight ? cardHeight - 6 : cardHeight;
 	const double chipsHeight = cards && chips.size() > 1 ? (tight ? chipHeight - 4 : chipHeight) : 0;
 	const double dock = (modes + (tools ? cardsHeight + chipsHeight : 0)) * unit;
 	content = {safe.x, safe.y + headerHeight * unit, safe.w,
@@ -1084,17 +1108,19 @@ void PhoneEditor::draw()
 	Color backdrop = InGameTouchTheme::paper();
 	backdrop.a = 255;
 	gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h + tray.h), backdrop);
-	const std::string modes[modeCount] = {Toolkit::getStringTable()->getString("[Terrain]"),
-										  Toolkit::getStringTable()->getString("[Resources]"),
-										  Toolkit::getStringTable()->getString("[Buildings]"),
-										  Toolkit::getStringTable()->getString("[Flags]"),
-										  Toolkit::getStringTable()->getString("[Teams]")};
 	for (int i = 0; i < modeCount; ++i)
 	{
 		ViewRect r{modeBar.x + i * modeBar.w / modeCount, modeBar.y, modeBar.w / modeCount - unit, modeBar.h};
 		if (i == paletteMode)
 			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::selected());
-		centredLabel(r, modes[i]);
+		const auto lines = modeCaptionLines(i, r.w);
+		const double lineHeight = modeCaptionLineHeight(lines);
+		double y = r.y + (r.h - lineHeight * lines.size()) / 2;
+		for (const auto &line : lines)
+		{
+			centredLabel({r.x, y, r.w, lineHeight}, line);
+			y += lineHeight;
+		}
 	}
 	if (editor.panelMode == MapEdit::Teams)
 	{
