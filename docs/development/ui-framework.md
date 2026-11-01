@@ -236,23 +236,23 @@ to be translated. Remote reports and user-authored order text are never classifi
 by matching their contents. Keep `PresentedError` out of models,
 protocols, storage and CLI code, and retain cleanup and rollback handling.
 
-Bulgarian initially uses the already reviewed English/Bulgarian online catalogs.
+Bulgarian and Thai use their reviewed online catalogs with the English source catalog.
 `tools/localization/build_online_error_catalog.py` generates the embedded resource
 with exact input SHA-256 identities. The shared `scons/online_error_catalog.py`
 rule is called independently by native, serial/threaded browser, Android and iOS
 builders, including test and unit-production consumers. It generates under each
 builder’s existing `include/generated` directory, with explicit consumer
 prerequisites and no global include-path/compile-signature change. Its
-ASCII-escaped JSON is split into portable string chunks. On the first Bulgarian error it joins and parses
-the resource once into a process-static lookup; other locales return before that
-work. Startup/first-error cost on target devices must be profiled separately.
+ASCII-escaped JSON is split into portable string chunks. Each locale's lookup is
+initialized lazily on its first error. Other locales return before this work.
+Startup/first-error cost on target devices must be profiled separately.
 Plural objects are excluded because ErrorBody has no plural selector. Add other
 locales only with reviewed catalog and size coverage.
 
 The pure `Online::presentApiError` handles known source keys and substitutes
 scalar parameters once as literal text. Legacy raw messages match only an exact
 English source literal. Unknown or malformed messages use the existing reviewed
-“Something went wrong. Please try again.” summary in Bulgarian; other locales
+"Something went wrong. Please try again." summary in Bulgarian or Thai; other locales
 retain their original message. `onlineProblemText` applies that safe boundary to
 plain transport diagnostics while keeping raw model/log details intact. Existing
 specialized cooldown, version and conflict branches remain authoritative.
@@ -478,8 +478,8 @@ without restarting the engine.
 
 The native API error bridge embeds the reviewed Bulgarian and Thai online catalogs
 as separate generated resources; keep the generator, SCons input dependencies and
-source hashes aligned when either catalog changes. This adds about 600 KiB of
-ASCII catalog resource data for Thai and no runtime dependency. Structured message
+source hashes aligned when either catalog changes. Use the generator's byte count
+to review resource growth; catalog data adds no runtime dependency. Structured message
 keys and parameters select the current locale. An exact legacy English literal
 is accepted only when unambiguous: context-qualified keys with the same visible
 English text remain distinct, and an ambiguous unqualified literal receives the
@@ -818,6 +818,11 @@ actual Translation v3 requests/responses, protected tokens, resumable locks and
 conservative reservations. Keep the original campaign ledger when adding
 sources, and bind independent reviews to the final per-key text and source
 context. Report agent review accurately; it is not native-human certification.
+The review audit requires complete, independent adversarial coverage for Thai,
+in addition to meaning, editing and the final meaning recheck. When the inventory
+changes, keep original receipts immutable. Carry an unchanged approval only with
+explicit per-key source/target equality and original proof references; changed
+text or usage needs fresh review. Record retired keys separately.
 
 Installing a catalog also makes its code a legacy SGSL language token. Append
 new codes after the existing language inventory, bump `SIM_REVISION`, regenerate
