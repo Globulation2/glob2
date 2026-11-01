@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="landscape alphabetical layout and navigation [display][artifacts]" time="11.9797" status="run" />
+  <testcase classname="CustomGameSetup" name="landscape alphabetical order and retired sorting preferences" time="5.34279" status="run" />
+  </testsuite></testsuites>

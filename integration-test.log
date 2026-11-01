@@ -1,0 +1,5 @@
+PASS CustomGameSetup/landscape alphabetical order and retired sorting preferences (5.5s)
+PASS CustomGameSetup/landscape alphabetical layout and navigation [display][artifacts] (13.0s)
+
+2 passed, 0 failed, 0 skipped (18.5s of test time)
+[run_tests] JUnit report: artifacts/landscape-picker/integration-junit.xml (2 cases)

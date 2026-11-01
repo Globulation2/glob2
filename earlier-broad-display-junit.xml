@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="1" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="382.972" status="run">
+      <failure message="29 &lt;  0" type="REQUIRE">
+src/game/screens/CustomGameSetupHarness.cpp:1864:
+REQUIRE( Sint32(SDL_GetTicks() - deadline) &lt; 0 ) is NOT correct!
+  values: REQUIRE( 29 &lt;  0 )
+
+      </failure>
+    </testcase>
+  <testcase classname="CustomGameSetup" name="landscape alphabetical order and retired sorting preferences" time="4.16885" status="run" />
+  </testsuite></testsuites>

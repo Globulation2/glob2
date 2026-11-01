@@ -1,0 +1,15 @@
+Local / VM verification for PR #1337
+
+Tested commit SHA: 8600f3c4e03f5b5cbf936594419992887915e100
+Base revision and integration state: 0b6a9fe67bcf94b4b4bb7105b7e4727d9e7b081e; PR head includes a merge of this master revision.
+Environment: Linux 7.0.0-38-generic x86_64, Ubuntu GCC 13.3.0; SDL3 pinned by scons/sdl3-versions.json; Xvfb display isolation.
+Build configuration: tools/dev_build.py, dev_fast=1, linker=auto, -O0 -g1; repository feature defaults; SDL3 prefix built with scons/sdl3_dependencies.py.
+Coverage rationale: settings formats and retired Random preference, alphabetical display ordering, stable ties, tag filtering, original selection identity, keyboard navigation, removal of sort toggle, and screenshot existence.
+Commands:
+  GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix" python3 tools/dev_build.py engine-tests
+  DISPLAY= LD_LIBRARY_PATH="$PWD/build/sdl3/prefix/lib" python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'CustomGameSetup/landscape alphabetical*' --artifacts artifacts/landscape-picker --junit artifacts/landscape-picker/integration-junit.xml
+Results: integration build exit 0; focused tests exit 0, 2 passed, 0 failed, 0 skipped. Screenshot visually inspected.
+Omitted checks and limitations: Windows, macOS, browser, release/performance and full suite not run. UI-only change; no simulation, map-generation, game save/replay/network format or runtime dependency changes. Existing lobby preferences remain readable.
+Earlier broad display test: FAILED at the 120-second all-preview-generation deadline on the pre-integration worktree based on f36de73aea50901a93d0c931bdd0fdb64c9d864c. It passed ordering and toggle-removal checks before the deadline. Its report is retained as a failure; this change does not claim complete catalog-generation coverage. No baseline comparison establishes the timeout's cause.
+Evidence: integration build log, test log/JUnit, current fixture screenshot, earlier broad test report/log, and earlier real-picker screenshot are stored alongside this file. Real-picker screenshot is from the pre-integration test, with the same picker implementation.
+Maintainer acceptance: user requested 'merge it' after disclosure of the broad display-test timeout; proceeding with focused evidence for this UI-only change. Hosted PR checks are queued and are not claimed as passed.
