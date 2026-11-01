@@ -244,7 +244,7 @@
 }
 .music-moods {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   gap: 8px;
 }
 .music-moods button {
@@ -309,7 +309,7 @@
 }
 .music-waveform-labels {
   display: grid;
-  width: 58px;
+  width: max-content;
   flex: none;
   grid-template-rows: repeat(3, 32px);
   gap: 5px;
@@ -319,7 +319,7 @@
 }
 .music-waveforms {
   position: relative;
-  min-width: 0;
+  min-width: 44px;
   flex: 1;
   display: grid;
   gap: 5px;

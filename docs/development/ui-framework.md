@@ -148,6 +148,12 @@ Online music controls use `musicMoodLabel` for visible names and accessibility l
 The Bulgarian construction phase reuses `Build` (Изграждане), while `Building`
 continues to name a structure elsewhere. Keep mood identities and upload path
 segments canonical; translate the displayed label after selecting the wire value.
+Music notices retain original error objects and mark generated success explicitly.
+Bulgarian error captions translate explicit API message keys or show the reviewed
+generic failure, preserving raw download messages for other locales.
+Set property controls reuse reviewed captions for known properties. Other schema
+fields and material names appear as their exact identifiers in code styling;
+JSON keys and enum values remain canonical.
 
 ### Native API error presentation
 

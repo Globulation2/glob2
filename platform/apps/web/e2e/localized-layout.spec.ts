@@ -110,3 +110,126 @@ test('long localized controls fit phone columns and preserve desktop layout', as
     }
   }
 });
+
+test('Bulgarian music mood labels fit each hit area in phone and embedded players', async ({
+  page,
+  baseURL,
+}, info) => {
+  if (!baseURL) throw new Error('A built web app is required.');
+  await page.context().addCookies([{ name: 'glob2_locale', value: 'bg', url: baseURL }]);
+  const id = '11111111-1111-4111-8111-111111111111';
+  const release = {
+    id,
+    ownerId: id,
+    metadata: {
+      title: 'Authored soundtrack',
+      artist: 'Fixture composer',
+      description: '',
+      license: 'CC0-1.0',
+      credits: '',
+      sources: [],
+      tags: [],
+      aiGenerated: false,
+    },
+    status: 'published',
+    createdAt: '2026-10-01T12:00:00Z',
+    frames: 480000,
+    tracks: ['calm', 'building', 'combat'].map((mood) => ({
+      mood,
+      url: `/fixture-${mood}.opus`,
+      sha256: 'a'.repeat(64),
+      waveform: [0.2, 0.6, 0.4],
+    })),
+    warnings: [],
+    inspection: null,
+    uploaded: [],
+    coverUrl: null,
+    likes: 0,
+    downloads: 0,
+    liked: false,
+    hidden: false,
+    error: null,
+  };
+  await page.route(`**/api/v1/music/${id}`, (route) => route.fulfill({ json: release }));
+  await page.goto(`/music/${id}`);
+  await expect(
+    page.getByRole('button', {
+      name: messages['Crossfade to {value0}']?.replace('{value0}', messages.Build ?? ''),
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  for (const embedded of [false, true]) {
+    if (embedded)
+      await page.locator('.music-player').evaluate((element) => {
+        element.style.width = '260px';
+        element.style.maxWidth = '100%';
+        element.style.boxSizing = 'border-box';
+      });
+    const bounds = await page.locator('.music-moods button').evaluateAll((buttons) =>
+      buttons.map((button) => {
+        const hit = button.getBoundingClientRect();
+        const label = button.querySelector('strong');
+        if (!label) throw new Error('Missing mood label');
+        const range = document.createRange();
+        range.selectNodeContents(label);
+        return {
+          text: label.textContent,
+          hit: { left: hit.left, right: hit.right, height: hit.height },
+          fits: [...range.getClientRects()].every(
+            (rect) => rect.left >= hit.left - 1 && rect.right <= hit.right + 1,
+          ),
+        };
+      }),
+    );
+    expect(bounds.map((bound) => bound.text)).toEqual([
+      messages.Calm,
+      messages.Build,
+      messages.Combat,
+    ]);
+    expect(bounds.every((bound) => bound.fits && bound.hit.height >= 44)).toBe(true);
+    const legend = await page.locator('.music-timeline').evaluate((element) => {
+      const plot = element.querySelector('.music-waveforms')?.getBoundingClientRect();
+      const seek = element.querySelector('.music-waveform-seek')?.getBoundingClientRect();
+      if (!plot || !seek) throw new Error('Missing waveform or seek control');
+      const labels = [...element.querySelectorAll('.music-waveform-labels span')].map((label) => {
+        const range = document.createRange();
+        range.selectNodeContents(label);
+        return {
+          text: label.textContent,
+          right: Math.max(...[...range.getClientRects()].map((rect) => rect.right)),
+        };
+      });
+      return {
+        labels,
+        plot: { left: plot.left, right: plot.right },
+        seek: { width: seek.width, height: seek.height },
+        panelRight: element.getBoundingClientRect().right,
+      };
+    });
+    expect(legend.labels.every((label) => label.right <= legend.plot.left)).toBe(true);
+    expect(legend.plot.right).toBeLessThanOrEqual(legend.panelRight + 1);
+    expect(legend.seek.width).toBeGreaterThanOrEqual(44);
+    expect(legend.seek.height).toBeGreaterThanOrEqual(44);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
+    ).toBeLessThanOrEqual(1);
+    await info.attach(`music-legend-bounds-${embedded ? 'embedded' : 'normal'}`, {
+      body: Buffer.from(JSON.stringify(legend, null, 2)),
+      contentType: 'application/json',
+    });
+    await info.attach(`music-legend-${embedded ? 'embedded' : 'normal'}`, {
+      body: await page.locator('.music-timeline').screenshot(),
+      contentType: 'image/png',
+    });
+
+    await info.attach(`music-mood-bounds-${embedded ? 'embedded' : 'normal'}`, {
+      body: Buffer.from(JSON.stringify(bounds, null, 2)),
+      contentType: 'application/json',
+    });
+    await info.attach(`music-moods-${embedded ? 'embedded' : 'normal'}`, {
+      body: await page.locator('.music-moods').screenshot(),
+      contentType: 'image/png',
+    });
+  }
+});

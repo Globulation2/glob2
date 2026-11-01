@@ -212,7 +212,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
   const selectedRevision = thread?.revisions.find((r) => r.requestId === selected);
   const compared =
     compare !== selected ? thread?.revisions.find((r) => r.requestId === compare) : undefined;
-  const currentLabel = selectedRevision?.title ?? 'Current saved draft';
+  const currentLabel = selectedRevision?.title ?? t('Current saved draft');
   if (!account)
     return (
       <section>
@@ -621,7 +621,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
                   <h2>{t('Your building')}</h2>
                   <RevisionControls
                     viewed={currentLabel}
-                    target="current saved draft"
+                    target={t('Current saved draft')}
                     follow={selected ? () => setSelected('') : undefined}
                   />
                   {selectedRevision && (

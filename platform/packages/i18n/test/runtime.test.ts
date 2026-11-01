@@ -174,10 +174,11 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 37 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(37);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(37);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(37);
+  it('contains 38 unique game catalog mappings including Bulgarian and Bokmål', () => {
+    expect(locales).toHaveLength(38);
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(38);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(38);
+    expect(locales.map((l) => l.code)).toEqual(expect.arrayContaining(['bg', 'nb']));
   });
 });
 

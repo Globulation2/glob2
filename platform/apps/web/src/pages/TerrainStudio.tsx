@@ -643,8 +643,8 @@ function TerrainWorkspace({ id }: { id?: string }) {
                 <div className="ts-preview">
                   <h2>{t('Your set')}</h2>
                   <RevisionControls
-                    viewed={viewedRevision?.title ?? 'current saved draft'}
-                    target="current saved draft"
+                    viewed={viewedRevision?.title ?? t('Current saved draft')}
+                    target={t('Current saved draft')}
                     follow={inspected ? () => setInspected('') : undefined}
                   />
                   {inspected && !shownDraft && (
@@ -777,7 +777,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                                           '{slot0}: starts at {slot1}, holds {slot2}; {slot3}'
                                         }
                                         slots={{
-                                          slot0: propertyLabel(material),
+                                          slot0: <code>{material}</code>,
                                           slot1: yielding.initial,
                                           slot2: yielding.capacity,
                                           slot3:
@@ -971,11 +971,5 @@ function propertyLabel(key: string) {
     passable: t('Units can cross'),
     buildable: t('Buildings allowed'),
   };
-  return (
-    labels[key] ??
-    key
-      .replace(/Q8$/, '')
-      .replace(/([a-z])([A-Z])/g, '$1 $2')
-      .replace(/^./, (c) => c.toUpperCase())
-  );
+  return Object.hasOwn(labels, key) ? labels[key] : <code>{key}</code>;
 }
