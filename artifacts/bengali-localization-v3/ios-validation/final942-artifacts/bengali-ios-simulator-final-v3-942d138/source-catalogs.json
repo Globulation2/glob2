@@ -1,0 +1,10 @@
+{
+  "data/texts.bn.txt": {
+    "sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "keys": 3395
+  },
+  "platform/packages/i18n/locales/bn.json": {
+    "sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+    "keys": 2842
+  }
+}

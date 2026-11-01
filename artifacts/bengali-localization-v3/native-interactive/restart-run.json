@@ -1,0 +1,45 @@
+{
+  "revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+  "producer_build_evidence": "artifacts/bengali-localization-v3/native-app-build.json",
+  "producer_build_sha256": "4738f09361d73ad14ce8f464f135e2d2c66fe20d1a0ea738e138f944c5961090",
+  "command": [
+    "xvfb-run",
+    "-a",
+    "-s",
+    "-screen 0 1280x900x24",
+    "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+    "play",
+    "--mute",
+    "--renderer",
+    "software",
+    "--no-fullscreen",
+    "--resizable",
+    "--window-size",
+    "1280x860",
+    "--compute-threads",
+    "2"
+  ],
+  "port": 43699,
+  "profile": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-interactive/profile",
+  "executable_sha256": "c91d274602048190795f6d7ab1f19a1e3c2b5e9c29aa167650f358b46626d240",
+  "restart": true,
+  "scope": "Actual desktop graphical game under Xvfb, local loopback MCP input/capture only; new seeded Bengali profile. No external players/messages, mobile or IME claim.",
+  "input_sha256": {
+    "data/texts.bn.txt": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "platform/packages/i18n/locales/bn.json": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+    "data/fonts/scripts/manifest.json": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  "code_identity": {
+    "revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "2831b34f4837239704de2c61421acba46e7ea0a647035d810b97f5daa19a093b"
+  },
+  "runtime_checkout_revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+  "runtime_worktree_status": " M browser/ApplicationHost.cpp\n M browser/shell.html\n M browser/unit/text-bridge.test.js\n M libgag/include/BrowserTextInput.h\n M libgag/src/ApplicationHost.cpp\n M libgag/src/ui/Controls.cpp\n M libgag/src/ui/UILayoutHarness.cpp\n",
+  "producer_note": "Producer identity is the immutable clean build marker and matching executable hash; runtime checkout context is recorded separately.",
+  "wrapper_pid": 2880684,
+  "exit_code": 0
+}

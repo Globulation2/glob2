@@ -1,0 +1,12 @@
+{
+  "args": [
+    "map",
+    "generate",
+    "river",
+    "--width",
+    "not-a-number"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: --width expects an integer in 1..512\n"
+}

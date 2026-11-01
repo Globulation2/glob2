@@ -1,0 +1,51 @@
+{
+  "bundle_root": "/data/user/0/org.globulation2.glob2/files/assets/3e4e9b3b3b62df825d7364c7c630b1f80b7a2f5e83b4aa5692169e9e1f1c79d0/",
+  "complete_marker": "-rw------- 1 u0_a148 u0_a148 64 2026-11-01 00:36 /data/user/0/org.globulation2.glob2/files/assets/3e4e9b3b3b62df825d7364c7c630b1f80b7a2f5e83b4aa5692169e9e1f1c79d0/.complete\n",
+  "profile_path": "/data/user/0/org.globulation2.glob2/files/preferences.txt",
+  "package_uid": "package:org.globulation2.glob2 uid:10148",
+  "selected_assets": [
+    {
+      "path": "data/fonts/LICENSE-DejaVu.txt",
+      "actual_extracted_sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c",
+      "apk_sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c",
+      "matches": true
+    },
+    {
+      "path": "data/fonts/LICENSE-Droid.txt",
+      "actual_extracted_sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d",
+      "apk_sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d",
+      "matches": true
+    },
+    {
+      "path": "data/fonts/LICENSE-HarfBuzz.txt",
+      "actual_extracted_sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+      "apk_sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+      "matches": true
+    },
+    {
+      "path": "data/fonts/LICENSE-Noto.txt",
+      "actual_extracted_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "apk_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "matches": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "actual_extracted_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "apk_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "matches": true
+    },
+    {
+      "path": "data/fonts/scripts/manifest.json",
+      "actual_extracted_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "apk_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "matches": true
+    },
+    {
+      "path": "data/texts.bn.txt",
+      "actual_extracted_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+      "apk_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+      "matches": true
+    }
+  ],
+  "all_match": true
+}

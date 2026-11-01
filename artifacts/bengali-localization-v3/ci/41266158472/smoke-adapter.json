@@ -1,0 +1,9 @@
+{
+  "source": "mobile/smoke.py",
+  "source_sha256": "f8f6d9240a0bd1bffbfe7c74dc460e3bd8c9a8cb21baff534d942ba968e545bd",
+  "adapter_changes": [
+    "ROOT fixed to currentworktree because ignored adapter relocated",
+    "Verify actual ro.boot.qemu.avd_name instead of Android37 console command which returned empty; same exactownedAVD/port/qemuboot guards remain"
+  ],
+  "first_visit_setup": "Actualbn-BD OSautomaticlanguage+audio/handandIntroductionOfferScreen completed via observedrealinput before unchanged lifecycle helper"
+}

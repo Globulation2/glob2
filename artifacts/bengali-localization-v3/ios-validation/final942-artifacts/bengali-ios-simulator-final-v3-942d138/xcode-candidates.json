@@ -1,0 +1,56 @@
+[
+  {
+    "path": "/Applications/Xcode.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.1\nBuild version 27A9275\n",
+    "stderr": ""
+  },
+  {
+    "path": "/Applications/Xcode_27.0.0.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.0\nBuild version 27A266a\n",
+    "stderr": ""
+  },
+  {
+    "path": "/Applications/Xcode_27.0.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.0\nBuild version 27A266a\n",
+    "stderr": ""
+  },
+  {
+    "path": "/Applications/Xcode_27.1.0.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.1\nBuild version 27A9275\n",
+    "stderr": ""
+  },
+  {
+    "path": "/Applications/Xcode_27.1.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.1\nBuild version 27A9275\n",
+    "stderr": ""
+  },
+  {
+    "path": "/Applications/Xcode_27.2.0.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.2\nBuild version 27B48\n",
+    "stderr": ""
+  },
+  {
+    "path": "/Applications/Xcode_27.2.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.2\nBuild version 27B48\n",
+    "stderr": ""
+  },
+  {
+    "path": "/Applications/Xcode_27.2_Release_Candidate.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.2\nBuild version 27B48\n",
+    "stderr": ""
+  },
+  {
+    "path": "/Applications/Xcode_27.app/Contents/Developer",
+    "exit": 0,
+    "version": "Xcode 27.0\nBuild version 27A266a\n",
+    "stderr": ""
+  }
+]

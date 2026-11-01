@@ -1,0 +1,6 @@
+{
+  "device": "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+  "checks": [],
+  "passed": false,
+  "error": "Native main menu did not become ready"
+}

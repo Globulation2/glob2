@@ -1,0 +1,13 @@
+{
+  "args": [
+    "game",
+    "run",
+    "--output-dir",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/invalid-0",
+    "--ticks",
+    "0"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: --ticks expects an integer in 1..2147483647\n"
+}

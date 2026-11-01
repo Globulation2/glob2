@@ -1,0 +1,11 @@
+{
+  "api": "35",
+  "release": "15",
+  "abi": "x86_64",
+  "fingerprint": "Android/sdk_phone64_x86_64/emu64x:15/AE3A.240806.019/12368160:userdebug/test-keys",
+  "locale": "bn-BD",
+  "config": "config: mcc310-mnc260-bn-rBD-ldltr-sw320dp-w320dp-h640dp-normal-long-notround-nowidecg-lowdr-port-notnight-mdpi-finger-keysexposed-qwerty-navexposed-dpad-640x320-v35\nabi: x86_64\n",
+  "avd": "glob2-api35-x64",
+  "kernel_qemu": "1",
+  "package_uid": "package:org.globulation2.glob2 uid:10148"
+}

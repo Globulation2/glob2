@@ -1,0 +1,32 @@
+[
+  {
+    "path": "data/texts.bn.txt",
+    "source_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "app_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054"
+  },
+  {
+    "path": "data/texts.list.txt",
+    "source_sha256": "216f0718b08294b3f1074f129cbb138584466b95c2af844c8cb488c24b702677",
+    "app_sha256": "216f0718b08294b3f1074f129cbb138584466b95c2af844c8cb488c24b702677"
+  },
+  {
+    "path": "data/fonts/sans.ttf",
+    "source_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "app_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+    "source_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "app_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+  },
+  {
+    "path": "data/fonts/scripts/manifest.json",
+    "source_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "app_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc"
+  },
+  {
+    "path": "data/fonts/LICENSE-Noto.txt",
+    "source_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+    "app_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb"
+  }
+]

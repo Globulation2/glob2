@@ -1,0 +1,253 @@
+[
+  {
+    "arguments": [
+      "list",
+      "devices",
+      "--json"
+    ],
+    "seconds": 0.569,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "launchctl",
+      "list"
+    ],
+    "seconds": 0.746,
+    "success": true
+  },
+  {
+    "arguments": [
+      "launch",
+      "--stdout=/Users/runner/work/glob2/glob2/build/ios-bengali-proof/lifecycle/startup-stdout.txt",
+      "--stderr=/Users/runner/work/glob2/glob2/build/ios-bengali-proof/lifecycle/startup-stderr.txt",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "org.globulation2.glob2"
+    ],
+    "seconds": 2.893,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 8.078,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 2.779,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 1.556,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 2.346,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 1.764,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 4.799,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 2.243,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 1.621,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 2.124,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 1.844,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 04:02:03",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 24732 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 1.669,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "launchctl",
+      "list"
+    ],
+    "seconds": 1.04,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "log",
+      "show",
+      "--last",
+      "3m",
+      "--style",
+      "compact",
+      "--predicate",
+      "process == \"Glob2\" OR eventMessage CONTAINS \"org.globulation2.glob2\""
+    ],
+    "seconds": 13.927,
+    "success": true
+  },
+  {
+    "arguments": [
+      "io",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "screenshot",
+      "/Users/runner/work/glob2/glob2/build/ios-bengali-proof/lifecycle/failure.png"
+    ],
+    "seconds": 1.99,
+    "success": true
+  },
+  {
+    "arguments": [
+      "terminate",
+      "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "org.globulation2.glob2"
+    ],
+    "seconds": 1.447,
+    "success": true
+  }
+]

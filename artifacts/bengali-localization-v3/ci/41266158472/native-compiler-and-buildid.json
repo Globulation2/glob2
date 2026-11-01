@@ -1,0 +1,9 @@
+{
+  "elf_sha256": "0d58e580c8733eb448c894f2b35a60307bc9b695e24585031eb31e0c3ad7502f",
+  "build_id": "76e900bba93ae0d7e2604e7e07057d26bc50b366",
+  "compiler_comments": "\nString dump of section '.comment':\n  [     1]  Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\n  [    b9]  Linker: LLD 19.0.1\n\n",
+  "ndk_version": "28.2.13676358",
+  "architecture": "x86_64",
+  "android_api": 24,
+  "release_flags": "Actual build log -O2 -fPIC; packaged release unsigned APK, developer signature only added locally"
+}

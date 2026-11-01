@@ -1,0 +1,79 @@
+{
+  "41273431150": {
+    "pages": [
+      {
+        "total_count": 1,
+        "jobs": [
+          {
+            "id": 124750701114,
+            "run_id": 41273431150,
+            "workflow_name": "Temporary Bengali iOS runtime recovery",
+            "head_branch": "codex/bengali-ios-validation-31efbe8",
+            "run_url": "https://api.github.com/repos/Globulation2/glob2/actions/runs/41273431150",
+            "run_attempt": 1,
+            "node_id": "CR_kwDODbo27s8AAAAdC7iiOg",
+            "head_sha": "0445397603447ff3ca0922784ee17beb86ece528",
+            "url": "https://api.github.com/repos/Globulation2/glob2/actions/jobs/124750701114",
+            "html_url": "https://github.com/Globulation2/glob2/actions/runs/41273431150/job/124750701114",
+            "status": "queued",
+            "conclusion": null,
+            "created_at": "2026-11-01T04:31:36Z",
+            "started_at": "2026-11-01T04:31:36Z",
+            "completed_at": null,
+            "name": "simulator",
+            "steps": [],
+            "check_run_url": "https://api.github.com/repos/Globulation2/glob2/check-runs/124750701114",
+            "labels": [
+              "xcode-27"
+            ],
+            "runner_id": 0,
+            "runner_name": "",
+            "runner_group_id": 0,
+            "runner_group_name": ""
+          }
+        ]
+      }
+    ],
+    "job_count": 1,
+    "windows_jobs": []
+  },
+  "41272876585": {
+    "pages": [
+      {
+        "total_count": 1,
+        "jobs": [
+          {
+            "id": 124750977720,
+            "run_id": 41272876585,
+            "workflow_name": "build",
+            "head_branch": "codex/bengali-localization",
+            "run_url": "https://api.github.com/repos/Globulation2/glob2/actions/runs/41272876585",
+            "run_attempt": 1,
+            "node_id": "CR_kwDODbo27s8AAAAdC7zauA",
+            "head_sha": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+            "url": "https://api.github.com/repos/Globulation2/glob2/actions/jobs/124750977720",
+            "html_url": "https://github.com/Globulation2/glob2/actions/runs/41272876585/job/124750977720",
+            "status": "queued",
+            "conclusion": null,
+            "created_at": "2026-11-01T04:33:05Z",
+            "started_at": "2026-11-01T04:33:05Z",
+            "completed_at": null,
+            "name": "Select relevant checks",
+            "steps": [],
+            "check_run_url": "https://api.github.com/repos/Globulation2/glob2/check-runs/124750977720",
+            "labels": [
+              "ubuntu-24.04"
+            ],
+            "runner_id": 0,
+            "runner_name": "",
+            "runner_group_id": 0,
+            "runner_group_name": ""
+          }
+        ]
+      }
+    ],
+    "job_count": 1,
+    "windows_jobs": []
+  },
+  "observed_at": "2026-11-01T05:01:18.108161+00:00"
+}

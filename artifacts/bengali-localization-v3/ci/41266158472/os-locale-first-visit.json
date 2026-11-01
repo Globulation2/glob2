@@ -1,0 +1,8 @@
+{
+  "avd": "glob2-api35-x64",
+  "qemu": "1",
+  "before_config": "config: mcc310-mnc260-en-rUS-ldltr-sw320dp-w320dp-h640dp-normal-long-notround-nowidecg-lowdr-port-notnight-mdpi-finger-keysexposed-qwerty-navexposed-dpad-640x320-v35\nabi: x86_64\n",
+  "package_installed": "",
+  "after_locale": "bn-BD\n",
+  "after_config": "config: bn-rBD-ldltr-sw320dp-w320dp-h640dp-normal-long-notround-nowidecg-lowdr-port-notnight-mdpi-finger-keysexposed-qwerty-navexposed-dpad-640x320-v35\nabi: x86_64\n"
+}

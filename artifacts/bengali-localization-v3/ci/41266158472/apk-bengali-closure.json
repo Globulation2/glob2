@@ -1,0 +1,64 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "actual_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "workflow_revision": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+  "run_id": 41266158472,
+  "artifact_id": 13070336399,
+  "artifact_api_digest": "sha256:5e63843b33845b4cfb14be4f799de15fcf9243d684d017d46ccfab69312cf917",
+  "download_zip_sha256": "5e63843b33845b4cfb14be4f799de15fcf9243d684d017d46ccfab69312cf917",
+  "artifact_digest_matches": true,
+  "apk_sha256": "27a8d8317b6bcc8b44eb261cace408f6814c78f9c6d35bae5774f21df78744e0",
+  "index_declared": "3e4e9b3b3b62df825d7364c7c630b1f80b7a2f5e83b4aa5692169e9e1f1c79d0",
+  "index_computed": "3e4e9b3b3b62df825d7364c7c630b1f80b7a2f5e83b4aa5692169e9e1f1c79d0",
+  "bundle_index_matches": true,
+  "asset_count": 7928,
+  "selected_asset_closure": [
+    {
+      "path": "data/fonts/LICENSE-DejaVu.txt",
+      "sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c",
+      "bytes": 4920,
+      "current_source_sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c"
+    },
+    {
+      "path": "data/fonts/LICENSE-Droid.txt",
+      "sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d",
+      "bytes": 10769,
+      "current_source_sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d"
+    },
+    {
+      "path": "data/fonts/LICENSE-HarfBuzz.txt",
+      "sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+      "bytes": 1971,
+      "current_source_sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64"
+    },
+    {
+      "path": "data/fonts/LICENSE-Noto.txt",
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "bytes": 4377,
+      "current_source_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb"
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "bytes": 200048,
+      "current_source_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+    },
+    {
+      "path": "data/fonts/scripts/manifest.json",
+      "sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "bytes": 4543,
+      "current_source_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc"
+    },
+    {
+      "path": "data/texts.bn.txt",
+      "sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+      "bytes": 399576,
+      "current_source_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054"
+    }
+  ],
+  "native_abis": [
+    "lib/x86_64/libmain.so"
+  ],
+  "index_algorithm": "SHA256(sorted relativepath UTF8 + NUL + raw32byte SHA256(asset)), mobile/android.py206",
+  "review_correction": "Initial local verifier mistakenly hashed ASCII hex; corrected to production rawdigest algorithm before any pass claim."
+}

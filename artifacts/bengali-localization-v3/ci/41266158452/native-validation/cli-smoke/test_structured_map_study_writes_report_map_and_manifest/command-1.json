@@ -1,0 +1,23 @@
+{
+  "args": [
+    "map",
+    "study",
+    "2",
+    "--output-dir",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_structured_map_study_writes_report_map_and_manifest/study",
+    "--seed",
+    "713",
+    "--set",
+    "width=7",
+    "--set",
+    "height=7",
+    "--set",
+    "teams=2",
+    "--write-map",
+    "--report",
+    "terrain"
+  ],
+  "status": 0,
+  "stdout": "STUDY,2,713,1,16384,9174,824,5270,1116,6360,4525,9545,1375,5464,0.016619,17359320031060303790\nTUNE,715,2,2,2,976,998,783,963,1,1\nQUALITY,1,0.986897,0.986897,0.984240,1.010448,0.997344,2,0.001171\nCOLONY,0,2,1,1357,715,303,43,0,1350.4,1.010448,0.506552\nCOLONY,1,1,2,1736,1270,313,43,0,1840.5,0.984240,0.493448\nREQUEST,river,5,713,7,7,2,4\nOPTION,algae-amount,100\nOPTION,desert,0\nOPTION,fruit,4\nOPTION,grass,75\nOPTION,hilltop-stone,0\nOPTION,repeat,0\nOPTION,river-width,35\nOPTION,sand,3\nOPTION,smoothing,4\nOPTION,stone-amount,100\nOPTION,water,45\nOPTION,wheat-amount,100\nOPTION,winding-river,1\nOPTION,wood-amount,100\nSTART,0,6,37\nSTART,1,88,45\nMAPFILE,0,/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_structured_map_study_writes_report_map_and_manifest/study/map-r0.map.gz,653597,1203343427159779307\nROTATIONS,2,1,0,1,1,1,1\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

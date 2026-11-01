@@ -1,0 +1,224 @@
+{
+  "reviewer": "/root/bengali_author",
+  "role": "Actual native UI boundary/rendering QA",
+  "producer_revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+  "producer_executable_sha256": "c91d274602048190795f6d7ab1f19a1e3c2b5e9c29aa167650f358b46626d240",
+  "producer_build_receipt": {
+    "path": "native-interactive/producer-build.json",
+    "sha256": "4738f09361d73ad14ce8f464f135e2d2c66fe20d1a0ea738e138f944c5961090"
+  },
+  "code_identity": {
+    "revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "2831b34f4837239704de2c61421acba46e7ea0a647035d810b97f5daa19a093b"
+  },
+  "input_sha256": {
+    "data/texts.bn.txt": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "platform/packages/i18n/locales/bn.json": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+    "data/fonts/scripts/manifest.json": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  "runs": [
+    {
+      "path": "native-interactive/initial-run.json",
+      "sha256": "4af304b24ab5c8abfdf85dbeb4f8307f125d6e2bb3dde619d575f26619898275",
+      "exit_code": 0
+    },
+    {
+      "path": "native-interactive/restart-run.json",
+      "sha256": "cb242669e897af128956fbb13acdb858630417cc872f255bda4fbda25dc86bf6",
+      "exit_code": 0
+    },
+    {
+      "path": "native-interactive-phone/run.json",
+      "sha256": "11a2a7982e80ac8bf22612fd7a266a2b52419b4ba668518ff27427dddb548ac0",
+      "exit_code": 0
+    }
+  ],
+  "checks": [
+    {
+      "case": "valid Bengali username accepted and saved",
+      "result": "passed",
+      "bytes": 18,
+      "profile_evidence": "native-interactive/username-valid-profile.json",
+      "screens": [
+        {
+          "path": "native-interactive/username-valid-saved.png",
+          "sha256": "837b6c9fd3a215b250c41f4039aec97dd8186b8c17b11c4a45649b4e573455c0"
+        }
+      ]
+    },
+    {
+      "case": "33-byte whole username edit rejected while replacing selected prior valid Bengali",
+      "result": "passed",
+      "submitted": "ককককককককক্ষ",
+      "bytes": 33,
+      "observation": "Prior বাংলা১ remained selected in the field, persisted name remained exact, and complete preferences hash matched its pre-rejection state.",
+      "profile_evidence": "native-interactive/username-after-reject-profile.json",
+      "screens": [
+        {
+          "path": "native-interactive/username-33byte-rejected.png",
+          "sha256": "cb1b1b234d130fb3727f2801575a2d0ef1497cc85b521be5a16de505d9e56c89"
+        },
+        {
+          "path": "native-interactive/username-33byte-after-submit.png",
+          "sha256": "c5829dd485589fdd3429e40baa0aa51c179451b6736f36e58aac2b627f6ee78b"
+        }
+      ]
+    },
+    {
+      "case": "ASCII32 accepted and saved at the byte limit",
+      "result": "passed",
+      "submitted": "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
+      "bytes": 32,
+      "profile_evidence": "native-interactive/username-ascii32-profile.json",
+      "screens": [
+        {
+          "path": "native-interactive/username-ascii32-saved.png",
+          "sha256": "cb1ec0692b8d05d01402137e344422b4ba8f064281c54cff4bd6ad57807e301d"
+        }
+      ]
+    },
+    {
+      "case": "Final Bengali name and language persist through same-profile restart",
+      "result": "passed",
+      "profile_evidence": "native-interactive/after-restart-profile.json",
+      "screens": [
+        {
+          "path": "native-interactive/username-final-saved.png",
+          "sha256": "16e0e7599d883dd78289ba95bc47989ff124f52d728d9afde28b7671bf36abf2"
+        },
+        {
+          "path": "native-interactive/restart-language-name-persisted.png",
+          "sha256": "4c0fe097bf7f9845671e998310354d89d08d113482768b63a5c3c037d4102cdb"
+        }
+      ]
+    },
+    {
+      "case": "255-byte whole chat edit rejected before send",
+      "result": "passed",
+      "submitted_bytes": 255,
+      "prior_draft": "বাংলা খসড়া",
+      "observation": "Screenshot shows selected prior বাংলা খসড়া retained; the 255-byte candidate was never submitted as a message.",
+      "screens": [
+        {
+          "path": "native-interactive/chat-prior-draft.png",
+          "sha256": "e262aae594a499f6769a2fca6756001d5ebf6a9d4b00d3ebec6e804bc94da9b1"
+        },
+        {
+          "path": "native-interactive/chat-255byte-rejected.png",
+          "sha256": "2f345de16608c78301edac87a1e73e57c1333d45d1833b9ec73a2959e427cec5"
+        }
+      ]
+    },
+    {
+      "case": "254-byte Bengali/Latin chat accepted and displayed in local-only history",
+      "result": "passed",
+      "submitted_bytes": 254,
+      "submitted": "ককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককab",
+      "scope": "One SDL text commit; sent only inside single-player introduction, with no external peers.",
+      "observation": "Accepted draft then local message send and history captured. History shows wrapped Bengali message with terminal ab, no replacement glyphs or visible truncation. This is input-payload plus visual-history evidence, not a programmatic extraction of the runtime history bytes.",
+      "screens": [
+        {
+          "path": "native-interactive/chat-254byte-accepted.png",
+          "sha256": "45b542933d5fc1dd28c20aa52fea7f2fd01bdf65d6b6ff3de32cf144376f7cae"
+        },
+        {
+          "path": "native-interactive/chat-254byte-local-self-send.png",
+          "sha256": "9e09684a869deb2e594453171abb890ef54ce13c429bb8caa69251c783443d35"
+        },
+        {
+          "path": "native-interactive/chat-254byte-history.png",
+          "sha256": "730d3d3621ff5e99788f4169642c6fff7d6ca35d31f7d2f3d179dd06abddc79e"
+        }
+      ]
+    },
+    {
+      "case": "New Win probability title and explanatory Bengali text in actual current results chart",
+      "result": "passed",
+      "screens": [
+        {
+          "path": "native-interactive/win-probability-current-labels.png",
+          "sha256": "20e7fa235d46812ae2f788454a074469d58f9002342dcf93f1f2cddbc6770010"
+        }
+      ]
+    },
+    {
+      "case": "Actual current desktop main/settings/introduction HUD",
+      "result": "passed",
+      "screens": [
+        {
+          "path": "native-interactive/initial-main.png",
+          "sha256": "89385b477708f26a0759911dee1c2ad446d0c8e780d324879855f0da9b798c08"
+        },
+        {
+          "path": "native-interactive/language-player-settings.png",
+          "sha256": "1e8314153c3f5a44990c623159094642997fd31426b0cf978ea034e636046c53"
+        },
+        {
+          "path": "native-interactive/intro-ready.png",
+          "sha256": "0d543ddcb085892ebc6ea0fc6dcb247dc59d60712e2785f1ee881ed73685ff3c"
+        },
+        {
+          "path": "native-interactive/commander-open.png",
+          "sha256": "7f8a63386697dca8d164ab131fb61275cabec11b8e03127ada172553ef9643ee"
+        }
+      ]
+    },
+    {
+      "case": "Commander prompt open/cancel without submission",
+      "result": "unavailable in unsigned local session",
+      "observation": "Ctrl+Return was dispatched, but no composer opened because Hive service availability is false for this unauthenticated profile. No command or sign-in was submitted. Do not label this screenshot a successful composer capture.",
+      "screens": [
+        {
+          "path": "native-interactive/commander-open.png",
+          "sha256": "7f8a63386697dca8d164ab131fb61275cabec11b8e03127ada172553ef9643ee"
+        }
+      ]
+    },
+    {
+      "case": "Fresh compact native process at 412×839 loads Bengali name/language and renders gameplay/results",
+      "result": "passed within stated scope",
+      "scope": "Linux native touch-style compact presentation; not Android/iOS, a mobile OS IME, or a real phone keyboard certification.",
+      "profile_evidence": "native-interactive-phone/loaded-profile.json",
+      "screens": [
+        {
+          "path": "native-interactive-phone/initial-main.png",
+          "sha256": "3e2115fd48efaf4d9be143ecab6388c09cc2f002abbb986ecaa8127e7e566820"
+        },
+        {
+          "path": "native-interactive-phone/language-name-persisted.png",
+          "sha256": "34fd7f46935b391c0edffd3cb75fb3a1850b11972765ab03c020ed6fd069cf61"
+        },
+        {
+          "path": "native-interactive-phone/intro-gameplay.png",
+          "sha256": "010707225917ed65dcc32313dc0f3903a48fda5b7eaf5b87190e8cdc1860226e"
+        },
+        {
+          "path": "native-interactive-phone/game-menu.png",
+          "sha256": "01e2c7f7a42555443f6f9c83b505933a827120f4ce0e96444229b390444a1491"
+        },
+        {
+          "path": "native-interactive-phone/quit-local-game.png",
+          "sha256": "638f7a355285924d19b86a85081ba6cef922c54615e7c1984ede42299298006b"
+        },
+        {
+          "path": "native-interactive-phone/more-menu.png",
+          "sha256": "3ef3c1cc18fd58aacf64d8810553ad974c6827c68245e603d3b7f41e59e97305"
+        }
+      ]
+    }
+  ],
+  "all_processes_exited": true,
+  "input_protocol": "Purpose-built native loopback MCP. Every input call recorded separately; no automatic input retry. Checked ownership and acquired fresh leases per process. Initial read-only readiness requests saw connection refused before TCP startup; no input was dispatched in that stage.",
+  "privacy": "Private controller tokens remain only in task-private private-session.json files; do not publish those files or profile auth/session state.",
+  "runtime_context_note": "Actual app producer remains clean3ba even while browser-only source edits were present in the runtime checkout. Run metadata records this context separately; never relabel these screenshots with later revisions.",
+  "limitations": [
+    "Agent visual QA, not native-human certification.",
+    "No real Android/iOS or OS IME composition run.",
+    "Commander service unavailable for unsigned private profile; no prompt proof claimed.",
+    "Runtime history body is visually inspected alongside exact submitted payload; no unsupported programmatic history-byte extraction claim."
+  ]
+}

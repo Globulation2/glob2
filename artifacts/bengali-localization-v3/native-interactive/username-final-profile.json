@@ -1,0 +1,11 @@
+{
+  "stage": "username-final",
+  "username": "বাংলা১",
+  "username_utf8_hex": "e0a6ace0a6bee0a682e0a6b2e0a6bee0a7a7",
+  "username_utf8_bytes": 18,
+  "language": "bn",
+  "preferences_sha256": "19b51272ab575cc8be649495da6499899c1010a09c2727a074d14ef13ccfb52c",
+  "expected_username": "বাংলা১",
+  "name_matches": true,
+  "bengali_selected": true
+}

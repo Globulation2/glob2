@@ -1,0 +1,7 @@
+{
+  "serial": "emulator-5580",
+  "avd": "glob2-api35-x64",
+  "checks": [],
+  "passed": false,
+  "error": "Timed out waiting for native main menu"
+}

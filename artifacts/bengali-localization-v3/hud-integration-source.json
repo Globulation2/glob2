@@ -1,0 +1,11 @@
+{
+  "previous_head": "1d36a7031bbd14204648b48048f0e01983f7ccc1",
+  "head": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+  "base_integrated": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "reason": "New master changed the same in-game statistics HUD component; refresh actual Bengali HUD integration locally instead of relying on older spacing. No English/catalog/font/recording/toolchain/CI change.",
+  "tree": "45e3a602bc5abafbf7119817bdf51fea82c9d96c",
+  "expected_prior_PR_merge": "95713c8722c2e7d8796a4c8938c8d267249043b8",
+  "prior_PR_merge_tree": null,
+  "whole_source_tree_equal_to_already_selected_prior_PR_merge": null,
+  "all_data_source_catalog_hashes_unchanged": true
+}

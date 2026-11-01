@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-01T04:41:54.753034+00:00",
+  "own_vm_session_exit": 0,
+  "owned_container_absent": true,
+  "own_ports_after_shutdown": "State Recv-Q Send-Q Local Address:Port Peer Address:Port\n",
+  "owned_ports_closed": true,
+  "own_adb_server_kill_returncode": 0,
+  "other_owned_worktree_emulator_still_present": true,
+  "host_settings_changed": false,
+  "host_group_permissions_changed": false
+}

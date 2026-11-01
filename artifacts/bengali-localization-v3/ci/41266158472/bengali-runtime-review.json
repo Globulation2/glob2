@@ -1,0 +1,129 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "role": "Independent Bengali semantic reviewer and platform runtime auditor",
+  "reviewed_at": "2026-11-01T04:42:51.582632+00:00",
+  "verdict": "PASS for actual942 Android Bengali font/startup/onboarding/settings/lifecycle/package scope; not a global/current-code platform-suite pass",
+  "actual_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "workflow_revision": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+  "run_id": 41266158472,
+  "hosted_run_conclusion": "failure",
+  "hosted_failure": "Existing mobile/smoke.py timed out awaiting MainMenu because fresh onboarding now reaches IntroductionOfferScreen. Hosted screenshot shows healthy Introduction screen; not a crash.",
+  "apk_sha256": "27a8d8317b6bcc8b44eb261cace408f6814c78f9c6d35bae5774f21df78744e0",
+  "compiler_and_native_binary": "native-compiler-and-buildid.json",
+  "package": "org.globulation2.glob2",
+  "package_uid": 10148,
+  "actual_profile": "/data/user/0/org.globulation2.glob2/files/preferences.txt",
+  "actual_profile_language": "bn",
+  "first_visit": {
+    "passed": true,
+    "mechanism": "Actual owned Android API35 preferredlocale bn-BD, package absent beforeinstall, no savedlanguage and no manually seeded gameprofile. AutomaticBengali audio/hand/intro/main observed.",
+    "evidence": "os-locale-first-visit.json",
+    "actual_audio_choice": "silence",
+    "actual_hand_choice": "left",
+    "intro_navigation": "Real touch on translated return-to-main-menu button"
+  },
+  "lifecycle": {
+    "serial": "emulator-5668",
+    "avd": "glob2-api35-x64",
+    "checks": [
+      "native startup and bundled assets",
+      "settings input and dismissal",
+      "retained-process background/resume",
+      "landscape/portrait rotation",
+      "force-stop and fresh-process relaunch",
+      "application profile persistence"
+    ],
+    "passed": true
+  },
+  "visual_review": {
+    "passed": true,
+    "observed": "Bengali conjuncts and marks render cleanly; labels/buttons fit, bodytext wraps and longer introduction content scrolls at320x640. Actual mainmenu remains Bengali after resume, rotation and processrelaunch. Settledsettings dropdown/body/help/donebutton fit.",
+    "actually_inspected_screens": [
+      {
+        "path": "bn-audio-first-visit.png",
+        "sha256": "ad1be7a71c493ff92040b3cb8c855807e68be9624f20d69cd73076c380275a4d"
+      },
+      {
+        "path": "bn-hand-first-visit.png",
+        "sha256": "37b3aa5ac1a494edd1376d30088d9a80f4b6944ac6c87cc7e19dde24f708ac37"
+      },
+      {
+        "path": "bn-introduction-first-visit.png",
+        "sha256": "0f097f1435b214bca10b3dbb4f46aff3aee04b1f53fbaacbec2b859ed6210e49"
+      },
+      {
+        "path": "bn-main-menu.png",
+        "sha256": "20099f273a342a2536d522df8a7bfac79fad045ac94a8c27d7962a0898fd5668"
+      },
+      {
+        "path": "bn-settings-settled.png",
+        "sha256": "892810a08e020c7d7269f80c23fcaf13b43fbc73778cb64ba3f79779a8fd7ca5"
+      },
+      {
+        "path": "runtime-lifecycle/resumed.png",
+        "sha256": "bb61a02c51e0229614f458b4c6854a42afac2d4e79aad9ec9dacf983cda4c760"
+      },
+      {
+        "path": "runtime-lifecycle/rotation-1.png",
+        "sha256": "7de3065db70b433063d8dcb6fb00b103bb9052e2d3ff3d68f567f19eb1535b76"
+      },
+      {
+        "path": "runtime-lifecycle/rotation-0.png",
+        "sha256": "840c32a83406b68ea6e0fe464f0564891f9418afc48099e2c0610b930f081795"
+      },
+      {
+        "path": "runtime-lifecycle/relaunched.png",
+        "sha256": "1c065fc4c08b4bdb0953ce965ba76a916e730ba3a67ddd8fdebc7db5f09c5d94"
+      }
+    ],
+    "helper_screenshot_timing": "Repositoryhelper settings.png captured preceding mainmenu frame despite logged SettingsScreen; manually opened actualgear and waited3s for separate bn-settings-settled.png before visual acceptance."
+  },
+  "package_closure": {
+    "all7928asset_index_recomputed": true,
+    "apk_and_current_V3_selected_assets_match": true,
+    "actual_app_extracted_selected_assets_match": true,
+    "evidence": [
+      "apk-bengali-closure.json",
+      "actual-extracted-bengali-closure.json",
+      "signing-component-closure.json"
+    ]
+  },
+  "environment": {
+    "owned_avd": "glob2-api35-x64",
+    "owned_AVD_directory": "build/mobile-tools/avd/glob2-api35-x64.avd",
+    "emulator_port": 5668,
+    "adb_port": 15237,
+    "emulator": "37.1.11",
+    "image": "API35/default/x86_64 revision2",
+    "gpu": "swiftshader",
+    "container_image": "sha256:f9b1dbf221bdca418f9986b714681c89ca60e70af10e3d15aea5811c0b036e7f",
+    "host_UID_GID": "1000:1000",
+    "KVM_extra_gid": 992,
+    "capabilities": [
+      "SYS_CHROOT",
+      "SETUID",
+      "SETGID"
+    ],
+    "privileged": false,
+    "other_devices_touched": false,
+    "quirk": "Android SystemUI displayed a temporary not-responding dialog after ownedOSlocale/frameworkrestart; Wait was tapped. Glob2 itself continued and application-specific crash/ANR checks passed. Initial diagnostic screenshot retained."
+  },
+  "limits": [
+    "No interactive game-language-picker selection was performed; actual OSautomaticselection and persistedBengali were tested.",
+    "No Android physicaldevice or arm64/armv7 runtime execution.",
+    "Actual942 excludes later254chatcap and7f browsercharacter-limit changes; no claim those changed paths execute here.",
+    "Newmaster0d54 desktopHUD spacing is outside captured Android main/settings/onboarding scope.",
+    "Full hosted Android workflow remains FAILURE; this independent owned-emulator recovery has PASS evidence."
+  ],
+  "shutdown": {
+    "at": "2026-11-01T04:41:54.753034+00:00",
+    "own_vm_session_exit": 0,
+    "owned_container_absent": true,
+    "own_ports_after_shutdown": "State Recv-Q Send-Q Local Address:Port Peer Address:Port\n",
+    "owned_ports_closed": true,
+    "own_adb_server_kill_returncode": 0,
+    "other_owned_worktree_emulator_still_present": true,
+    "host_settings_changed": false,
+    "host_group_permissions_changed": false
+  }
+}

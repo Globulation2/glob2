@@ -1,0 +1,494 @@
+{
+  "scope": "Actual extracted browser textBridge factory and DOM events; not full game startup or OS mobile coverage",
+  "revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+  "workingTreeShellSha256": "5ba84bdbb1571c436792b3608a772c72bad7d85fea49fd4a59bbf50c9ffc64dc",
+  "factorySha256": "9d5f9bcadda48a0f66d8b52ff1d10aa27ecb20911b37ec25565562229937f9ff",
+  "results": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Bengali 33-byte conjunct",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "cluster র্ক",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster র্কি",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster কো",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster é",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster 👩‍🔬",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "composition input unchanged",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition take null",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "native update deferred",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition end whole prefix",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition one delivery",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition consumed",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "ASCII exclusive",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "username32ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "username33ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "zero maximum unlimited",
+          "actual": "ককককককককক্ষককককককককক্ষককককককককক্ষ",
+          "expected": "ককককককককক্ষককককককককক্ষককককককককক্ষ"
+        },
+        {
+          "name": "character32Bengali",
+          "actual": "কককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "character33Bengali",
+          "actual": "কককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title43Bengali129bytes",
+          "actual": "ককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "ককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title128Bengali",
+          "actual": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title129Bengali",
+          "actual": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "nonBMP32codepoints",
+          "actual": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "expected": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        },
+        {
+          "name": "characterConjunctWholePrefix",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "combinedCharacterBound",
+          "actual": "কক",
+          "expected": "কক"
+        },
+        {
+          "name": "combinedByteBound",
+          "actual": "কক",
+          "expected": "কক"
+        },
+        {
+          "name": "fallback native cache",
+          "actual": "নতুন",
+          "expected": "নতুন"
+        },
+        {
+          "name": "fallback accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback retains accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback ASCII truncate",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "fallbackCharacterNativeUpdate",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallbackCharacterASCII",
+          "actual": "abc",
+          "expected": "abc"
+        }
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "155.0",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Bengali 33-byte conjunct",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "cluster র্ক",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster র্কি",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster কো",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster é",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster 👩‍🔬",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "composition input unchanged",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition take null",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "native update deferred",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition end whole prefix",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition one delivery",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition consumed",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "ASCII exclusive",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "username32ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "username33ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "zero maximum unlimited",
+          "actual": "ককককককককক্ষককককককককক্ষককককককককক্ষ",
+          "expected": "ককককককককক্ষককককককককক্ষককককককককক্ষ"
+        },
+        {
+          "name": "character32Bengali",
+          "actual": "কককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "character33Bengali",
+          "actual": "কককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title43Bengali129bytes",
+          "actual": "ককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "ককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title128Bengali",
+          "actual": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title129Bengali",
+          "actual": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "nonBMP32codepoints",
+          "actual": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "expected": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        },
+        {
+          "name": "characterConjunctWholePrefix",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "combinedCharacterBound",
+          "actual": "কক",
+          "expected": "কক"
+        },
+        {
+          "name": "combinedByteBound",
+          "actual": "কক",
+          "expected": "কক"
+        },
+        {
+          "name": "fallback native cache",
+          "actual": "নতুন",
+          "expected": "নতুন"
+        },
+        {
+          "name": "fallback accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback retains accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback ASCII truncate",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "fallbackCharacterNativeUpdate",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallbackCharacterASCII",
+          "actual": "abc",
+          "expected": "abc"
+        }
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Bengali 33-byte conjunct",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "cluster র্ক",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster র্কি",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster কো",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster é",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster 👩‍🔬",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "composition input unchanged",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition take null",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "native update deferred",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition end whole prefix",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition one delivery",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition consumed",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "ASCII exclusive",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "username32ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "username33ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "zero maximum unlimited",
+          "actual": "ককককককককক্ষককককককককক্ষককককককককক্ষ",
+          "expected": "ককককককককক্ষককককককককক্ষককককককককক্ষ"
+        },
+        {
+          "name": "character32Bengali",
+          "actual": "কককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "character33Bengali",
+          "actual": "কককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title43Bengali129bytes",
+          "actual": "ককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "ককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title128Bengali",
+          "actual": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "title129Bengali",
+          "actual": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক",
+          "expected": "কককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক"
+        },
+        {
+          "name": "nonBMP32codepoints",
+          "actual": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "expected": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        },
+        {
+          "name": "characterConjunctWholePrefix",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "combinedCharacterBound",
+          "actual": "কক",
+          "expected": "কক"
+        },
+        {
+          "name": "combinedByteBound",
+          "actual": "কক",
+          "expected": "কক"
+        },
+        {
+          "name": "fallback native cache",
+          "actual": "নতুন",
+          "expected": "নতুন"
+        },
+        {
+          "name": "fallback accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback retains accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback ASCII truncate",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "fallbackCharacterNativeUpdate",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallbackCharacterASCII",
+          "actual": "abc",
+          "expected": "abc"
+        }
+      ]
+    }
+  ]
+}

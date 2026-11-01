@@ -1,0 +1,28 @@
+{
+  "method": "ui_status",
+  "arguments": {},
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": false, \"controller\": \"None\", \"dispatched\": false, \"frame_id\": 92, \"height\": 839, \"input_started\": false, \"viewport_id\": 1, \"width\": 412}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "available": true,
+        "controlled": false,
+        "controller": "None",
+        "dispatched": false,
+        "frame_id": 92,
+        "height": 839,
+        "input_started": false,
+        "viewport_id": 1,
+        "width": 412
+      }
+    }
+  }
+}

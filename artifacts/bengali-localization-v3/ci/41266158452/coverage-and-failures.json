@@ -1,0 +1,75 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "run_id": 41266158452,
+  "job_id": 124729284298,
+  "actual_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "workflow_head": "2afe891014845d0c44447e09db08a2a67754323d",
+  "coverage_profile": "full",
+  "overall_conclusion": "failure",
+  "artifact_id": 13068634863,
+  "artifact_api_digest": "sha256:407a9cd77151baedab5e6fa14a71c8018cccf344af8b4861ea6f662f451f2df7",
+  "download_sha256": "407a9cd77151baedab5e6fa14a71c8018cccf344af8b4861ea6f662f451f2df7",
+  "digest_matches": true,
+  "suites": [
+    {
+      "file": "engine-junit.xml",
+      "raw_suite_counts": {
+        "tests": "1950",
+        "failures": "5",
+        "errors": "7",
+        "skipped": "230"
+      },
+      "actual_testcase_outcomes": {
+        "passed": 1710,
+        "skipped": 230,
+        "failed": 10
+      },
+      "focused_suites": {
+        "FontKerning": {
+          "passed": 9
+        },
+        "SystemLanguage": {
+          "passed": 8
+        },
+        "Settings": {
+          "passed": 1,
+          "skipped": 9
+        }
+      }
+    },
+    {
+      "file": "unit-junit.xml",
+      "raw_suite_counts": {
+        "tests": "1272",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "89"
+      },
+      "actual_testcase_outcomes": {
+        "passed": 1183,
+        "skipped": 89
+      },
+      "focused_suites": {
+        "UILayout": {
+          "passed": 34
+        },
+        "TextMetrics": {
+          "passed": 2
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Actual942 build excludes current1d36 chat254 correction and master0d54 desktop HUD spacing; only unchanged component scope may carry.",
+    "Display-tagged screenshot cases were skipped; this is shaping/metrics/layout/unit runtime coverage, not macOS visual inspection."
+  ],
+  "full_failures_file": "junit-analysis.json",
+  "compiler": "Apple LLVM21.0.0 (clang-2100.1.1.101)",
+  "platform": "macos-26-arm64",
+  "release_build": true,
+  "golden_map_rows": {
+    "compared": 564,
+    "failures": 0
+  },
+  "runner_image_version": null
+}

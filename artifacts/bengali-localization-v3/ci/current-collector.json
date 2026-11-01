@@ -1,0 +1,124 @@
+{
+  "observed_at": "2026-11-01T05:08:03.768686+00:00",
+  "expected_head": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "actual_pr_head": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "head_matches": true,
+  "dispatch_hold": "Current1d36 differs2afe only GameGUIDialog bytecap255-to254. Retain literal942 platform font/startup/packaging scope, never claim changed chat behavior from942.",
+  "historical_evidence_runs": [
+    41251891306,
+    41252835211,
+    41253888583,
+    41258418491,
+    41254569038,
+    41263022026,
+    41258317846,
+    41263370500
+  ],
+  "historical_scope": "Preserved actual failed/cancelled/excluded snapshots. Adversary owns later iOS execution and artifact collection.",
+  "runs": [
+    {
+      "run_id": 41272876585,
+      "sha": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+      "expected_workflow_head": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+      "workflow_head_matches": true,
+      "requested_game_revision": "79ed6f98d34e0d9ac89970c89ec44278a3c703fa",
+      "game_source_note": "Current browser character-limit fix; previous compiled artifacts do not cover changed input behavior.",
+      "event": "pull_request",
+      "status": "queued",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41272876585",
+      "jobs": [
+        {
+          "id": 124750977720,
+          "name": "Select relevant checks",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41272876585/job/124750977720",
+          "started_at": "2026-11-01T04:33:05Z",
+          "completed_at": null
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 41266158452,
+      "sha": "2afe891014845d0c44447e09db08a2a67754323d",
+      "expected_workflow_head": "2afe891014845d0c44447e09db08a2a67754323d",
+      "workflow_head_matches": true,
+      "requested_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "game_source_note": "Full macOS literal942; unchanged font/startup/package scope only versus current1d36/master0d54.",
+      "event": "workflow_dispatch",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41266158452",
+      "jobs": [
+        {
+          "id": 124729284298,
+          "name": "native",
+          "status": "completed",
+          "conclusion": "failure",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41266158452/job/124729284298",
+          "started_at": "2026-11-01T02:45:27Z",
+          "completed_at": "2026-11-01T03:53:56Z"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13069322220,
+          "name": "browser-determinism-macos",
+          "size_in_bytes": 419450,
+          "expired": false
+        },
+        {
+          "id": 13068634863,
+          "name": "native-macos-validation",
+          "size_in_bytes": 70733920,
+          "expired": false
+        },
+        {
+          "id": 13068594959,
+          "name": "generator-observations-macos",
+          "size_in_bytes": 28447,
+          "expired": false
+        }
+      ]
+    },
+    {
+      "run_id": 41266158472,
+      "sha": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+      "expected_workflow_head": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+      "workflow_head_matches": true,
+      "requested_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "game_source_note": "Focused x86_64 Android literal942; workflow commit distinct. Unchanged main startup/fonts/package only.",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41266158472",
+      "jobs": [
+        {
+          "id": 124729280372,
+          "name": "android / Android release APK (x86_64)",
+          "status": "completed",
+          "conclusion": "failure",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41266158472/job/124729280372",
+          "started_at": "2026-11-01T03:29:56Z",
+          "completed_at": "2026-11-01T04:25:44Z"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13070336399,
+          "name": "android-x86_64-release-apk",
+          "size_in_bytes": 168421473,
+          "expired": false
+        },
+        {
+          "id": 13070222186,
+          "name": "android-x86_64-diagnostics",
+          "size_in_bytes": 30366,
+          "expired": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "revision": "2afe891014845d0c44447e09db08a2a67754323d",
+  "revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
   "valid_bengali": "বাংলা১",
   "over_limit_bengali": "ককককককককক্ষ",
   "valid_ascii_32": "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
@@ -8,6 +8,13 @@
   "utf8_bytes": {
     "valid_bengali": 18,
     "over_limit_bengali": 33,
-    "valid_ascii_32": 32
-  }
+    "valid_ascii_32": 32,
+    "valid_chat_254": 254,
+    "over_limit_chat_255": 255,
+    "chat_prior_draft": 31
+  },
+  "valid_chat_254": "ককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককab",
+  "over_limit_chat_255": "ককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককককক",
+  "chat_prior_draft": "বাংলা খসড়া",
+  "expected_chat_byte_limit": 254
 }

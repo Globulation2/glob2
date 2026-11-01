@@ -1,0 +1,26 @@
+{
+  "scope": "Read-only actual extracted browser factory reproduction of Controls.draw maxLength→byte-bound mismatch; not full native app execution",
+  "revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+  "shellSha256": "c9c7793235407b698584d11b2ed695645934df2ca5778fcb273fffb926e79216",
+  "browser": "153.0.8010.12",
+  "rows": [
+    {
+      "label": "account-name",
+      "nativeMaxCharacters": 32,
+      "sourceCodepoints": 32,
+      "sourceBytes": 96,
+      "actualCodepoints": 10,
+      "actualBytes": 30,
+      "validNativeInputChanged": true
+    },
+    {
+      "label": "map-title",
+      "nativeMaxCharacters": 128,
+      "sourceCodepoints": 43,
+      "sourceBytes": 129,
+      "actualCodepoints": 42,
+      "actualBytes": 126,
+      "validNativeInputChanged": true
+    }
+  ]
+}

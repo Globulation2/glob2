@@ -1,0 +1,27 @@
+{
+  "method": "ui_acquire_control",
+  "arguments": {},
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": true, \"controller\": \"Local MCP client\", \"frame_id\": 245, \"height\": 860, \"lease_seconds\": 60, \"viewport_id\": 1, \"width\": 1280}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "available": true,
+        "controlled": true,
+        "controller": "Local MCP client",
+        "frame_id": 245,
+        "height": 860,
+        "lease_seconds": 60,
+        "viewport_id": 1,
+        "width": 1280
+      }
+    }
+  }
+}

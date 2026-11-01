@@ -235,6 +235,76 @@
     "bytes": 19163
   },
   {
+    "path": "artifacts/bengali-localization/browser-component-check/character-byte-before.json",
+    "sha256": "89f75ae174a98b37da4145273dd6baf713836c2b3519c0a86dc9c1fc640fab81",
+    "bytes": 792
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/hosted-fee-artifacts.json",
+    "sha256": "244563f989470892c537c9a4622920af0d228ee4528f7d00c64a06d6cd95856c",
+    "bytes": 32
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/hosted-fee-run.json",
+    "sha256": "3885ac10e30ca41104b39b45fcfb3f86739124b86fa09f84f73b0bf3cf794343",
+    "bytes": 483
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/text-boundary.json",
+    "sha256": "be5d3fa7c7c4a26fa1d53631ae45812ab27d003beaff9c44a087ebf3ac342445",
+    "bytes": 586
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/three-engine-after-fix.json",
+    "sha256": "0a453c2d3c556944fa6bd34cdfb6b5f3a20e48a180e9596fee0011d78a14b9ed",
+    "bytes": 8755
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/three-engine-after-fix.log",
+    "sha256": "aefe04d5e4fc9b0974abe8dc73a23d2af0db303163c1e1cd4e5925c5f7aafa59",
+    "bytes": 78
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/three-engine-character-limit.json",
+    "sha256": "36518342c400802e72fb5c06ad26d3b6a201cc3361e4121b4c8e746a0bb632bc",
+    "bytes": 20953
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/three-engine-character-limit.log",
+    "sha256": "49f2d9295e61ceef94af08dc2df391164f1d66b49efb39486e0ac220f89757e8",
+    "bytes": 78
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/three-engine-final-fee.json",
+    "sha256": "2c1e72cb57ba47878a0a99bf168636d94a34901bd976c60c113eb79f1cc485a7",
+    "bytes": 9781
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/three-engine-final-fee.log",
+    "sha256": "69ffa7763f3e90ae20f8d580755a632d10b4589d59f45197c087659a90ccdf21",
+    "bytes": 78
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/unit-after-fix.log",
+    "sha256": "77dbd2c2497f6a2c0686ebc12cbf8c8c2a6c3390af6423e9707824cf89f7bfaa",
+    "bytes": 35396
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/unit-all-character-limit.log",
+    "sha256": "feb4ac85b5ffeb9e85d0326eecd17a65c2724a2629d9e49c1c0bdeb4117ce2f8",
+    "bytes": 37317
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/unit-character-limit.log",
+    "sha256": "20057f748b56b643b4d2ac7d201a6df7262e605317dfc5588946dfb2130757bd",
+    "bytes": 3637
+  },
+  {
+    "path": "artifacts/bengali-localization/browser-component-check/unit-final-fee.log",
+    "sha256": "0ecbad550e5ff3f903ec87009cb01e2c765aae7536e3a0079b4b319d4d5ba95e",
+    "bytes": 1929
+  },
+  {
     "path": "artifacts/bengali-localization/editorial-pilot-review.json",
     "sha256": "068ab30a23b62e7b73db243371c0096ecadcf75ade4551a51ff0553cee87e1c3",
     "bytes": 6034
@@ -576,13 +646,33 @@
   },
   {
     "path": "artifacts/bengali-localization-v3/EVIDENCE.md",
-    "sha256": "d2715183038ad843e88c20c04d00c447b34a8c6993525ba1f010ce756ca8b934",
-    "bytes": 3092
+    "sha256": "957731924b7c01f34f59fa3d446b6471fdbd9c2b4abca914117fe86e68457fd0",
+    "bytes": 3699
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/adversarial-browser-input-review-7f.json",
+    "sha256": "f3866efc87625aebd717135b0526bf1d472f3a2bd777b745cf307f88afd8840b",
+    "bytes": 6121
   },
   {
     "path": "artifacts/bengali-localization-v3/adversarial-delta.json",
     "sha256": "97eb5e22b023c26f3d07cfd28cb5ef9d4df8fd6cf8658bef117cdca875b9d5f7",
     "bytes": 3634
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/adversarial-native-interactive-review.json",
+    "sha256": "f470aa1cf56e0b2325887cc0a98814fd9825587caabb651e3e5ba542652d45ec",
+    "bytes": 8404
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/adversarial-native-screens-review-7f.json",
+    "sha256": "faf908668366dc71c65505d2eb8bb3e6b19aac46d096a2e507c54aec5986400e",
+    "bytes": 32886
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/adversarial-new-font-matrix-review.json",
+    "sha256": "638bf29f061eccefa0209722df05aeb97d9916b7b16b84762055b6e530b68188",
+    "bytes": 9205
   },
   {
     "path": "artifacts/bengali-localization-v3/api-enabled.txt",
@@ -825,6 +915,16 @@
     "bytes": 19769
   },
   {
+    "path": "artifacts/bengali-localization-v3/bind_native_evidence.py",
+    "sha256": "8de9382e83b030d225e3a85ae8649f19e3fcd677c4419e5c3c90155fec7acd35",
+    "bytes": 4271
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/capture_native.py",
+    "sha256": "9b6d7b2e0900e541bd945cf64a348eaac9d955fabe258a064119aedcf5e02891",
+    "bytes": 3323
+  },
+  {
     "path": "artifacts/bengali-localization-v3/chat-cap-correction-scope.json",
     "sha256": "2515a925d074a4f44588dcf724e8fb8dc68c861d3c6712de244d92a5a6a130af",
     "bytes": 1194
@@ -875,9 +975,1559 @@
     "bytes": 41535
   },
   {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/artifact-metadata.json",
+    "sha256": "b8b79eeb217c1a64a99c06faa77f5b6c7d0a3611da61a3acf8cae4bf9059ca34",
+    "bytes": 709
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/coverage-and-failures.json",
+    "sha256": "7632a363e8aa3cbb88e64679937e39de853f1c375dda0a50624cef66c85986c5",
+    "bytes": 2055
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/junit-analysis.json",
+    "sha256": "3552a8ed14f48bc4102d479992a9a49804cebf8cbc61052062177361cb168e34",
+    "bytes": 18664
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-job.log.gz",
+    "sha256": "e9d9f7c77d6daa54f7a444f05d462d5cfe02880e7474af390dabb102acb2406d",
+    "bytes": 2263608
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/baseline/artifacts.json",
+    "sha256": "28985f02cf41b3d4719a4016be360eb95c37ef8fc0490bc0727421cc4daf241d",
+    "bytes": 280
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/baseline/result.json",
+    "sha256": "16040bbfb1bcfe0e2c39036e7c4cb48e214afd7720036ba5ed390d79eeda41a7",
+    "bytes": 12447
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/command-1.json",
+    "sha256": "3679a24e296c6238194c6904193c8f9dd2616c532bed1af546eb4b6b8390e111",
+    "bytes": 827
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/command-2.json",
+    "sha256": "d0b50e0a7a0709b3f4a845c6f70cbae33d43f2ff42f9662bd1b03849b25d2ada",
+    "bytes": 1059
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/command-3.json",
+    "sha256": "408baab0cbe3093cfa2ac62d682a76434dce76abc1e3afa8fdee13f58c07588f",
+    "bytes": 1161
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/map.json",
+    "sha256": "9176161e1ec4ff75cc4e3883f3775c0d5dc8a03caeee0d175295493498bf5536",
+    "bytes": 404181
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/profiled/ai-profile-done.json",
+    "sha256": "348a0f308f6a3858a9ede81b1c3fb6bb7ff59bf98d18e30bd4a64bb92449d10d",
+    "bytes": 32
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/profiled/ai-profile-ready.json",
+    "sha256": "348a0f308f6a3858a9ede81b1c3fb6bb7ff59bf98d18e30bd4a64bb92449d10d",
+    "bytes": 32
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/profiled/artifacts.json",
+    "sha256": "944bc61a4c4ea4d3f0614758b2365d7b8a809263ae89f3e02324083594cf99ea",
+    "bytes": 490
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_ai_decision_profile_gate_preserves_execution/profiled/result.json",
+    "sha256": "e9c28315b53a57cf25d89bbb1a2b20709e756f805c461e4b839d7430094dd31b",
+    "bytes": 12448
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_bash_completion_commands_enums_equals_and_paths/command-1.json",
+    "sha256": "1aa523a81274d6a2e33f04156403c49192001dce0159483f5c7e47f03dc80698",
+    "bytes": 33618
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/artifacts.json",
+    "sha256": "28985f02cf41b3d4719a4016be360eb95c37ef8fc0490bc0727421cc4daf241d",
+    "bytes": 280
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/result.json",
+    "sha256": "d7a26babc8f90d7f0cacbca5229c25cf4d750a35f6c52b1480f366051efcfdb8",
+    "bytes": 12447
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/command-1.json",
+    "sha256": "a114ea6e55634ed5f81c18457baa0e1fa32d191ba6e1125ebacca8b371188ea5",
+    "bytes": 891
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/command-2.json",
+    "sha256": "5492c37bc8acc3febc2d5df3ae85bde47c9712307a31cf8e70be7e117ffcd2a8",
+    "bytes": 1107
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/command-3.json",
+    "sha256": "d1dfb6ea78a68ad5cb6befd01b6f42d3f68c5ac91254929a89902c65b167386d",
+    "bytes": 1214
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/map.json",
+    "sha256": "9176161e1ec4ff75cc4e3883f3775c0d5dc8a03caeee0d175295493498bf5536",
+    "bytes": 404181
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/artifacts.json",
+    "sha256": "036f6abc5063ce9d363b38a26982b9ec713292c43fe74dcc365245df69e5552b",
+    "bytes": 362
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/result.json",
+    "sha256": "1c873789b3614b47d14420d08ff72c540a8d0a0f1d79068caccfa7462d8a3990",
+    "bytes": 795544
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/slow-ticks.json",
+    "sha256": "f29de7100f8668e5fb8a4eed645b317736f7a80bda008bb47c0a85f6b20a6784",
+    "bytes": 61326
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_corrupt_saved_game_fails_with_structured_diagnostic/corrupt-run/artifacts.json",
+    "sha256": "b0aad6160a2b82e762803bb673432ea0d37d523ea53360aa1d00e59a71ff3052",
+    "bytes": 69
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_corrupt_saved_game_fails_with_structured_diagnostic/corrupt-run/result.json",
+    "sha256": "1e66f854c94cd4c57a870cfe497728be36f3f774432257a7448d3772691023d9",
+    "bytes": 86
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/command-1.json",
+    "sha256": "7a999ef6b6cce5f4dc0cec32a86f7197c0e6e342a9a3f80e234f38df8bab9ab1",
+    "bytes": 2671
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/command-2.json",
+    "sha256": "d8bd9e5de7576a8cd53ba5d5e6f93b7ad7db3676305643c2866904c2bf3eba39",
+    "bytes": 1171
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/command-3.json",
+    "sha256": "2678bf8b37d784e97d5475402f0745a823ba6858ab950aeb9154a67976db3263",
+    "bytes": 1040
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/artifacts.json",
+    "sha256": "e9d92c08e86e654a9c016e8f7063733a1619cca3a349fa9c0d76809fc8f89201",
+    "bytes": 281
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/result.json",
+    "sha256": "24f42afaf32ab3faa1d496c2cbafecd3a40b7a406034cc10472c25c6fe97694c",
+    "bytes": 12474
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/artifacts.json",
+    "sha256": "8552e97d5ed5f778fa748c2bc3eecfb2d3b220ae4216b4477d060ac72c66d08f",
+    "bytes": 279
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/result.json",
+    "sha256": "4a259c8ed86229047afbaa0a28468391e23017397bfe685c1258438a78e917cd",
+    "bytes": 12473
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/artifacts.json",
+    "sha256": "18299b0e4ed52ee8671d19547806dde05117a15116782187af8b142f0fdfef60",
+    "bytes": 568
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/generated/artifacts.json",
+    "sha256": "181e4763d21e0f12a4a23c65001531b8fb35b8e0538f12910f3a106555634d64",
+    "bytes": 148
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/generated/progress.json",
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1",
+    "bytes": 42
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/generated/result.json",
+    "sha256": "fc9a45724cb3f67c5699ec6f2af5c0ba314484b3b9643f86fa243c03a0024751",
+    "bytes": 398195
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/result.json",
+    "sha256": "fbc50c88e90c5a037efcc46ba33c4da8b25936a6ba8d2bea4a28a42f335860fc",
+    "bytes": 410685
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/command-1.json",
+    "sha256": "c29b3ce1f5330d4a35880d912a344f70333f77accbe5a650bf787d3a13d91244",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/command-2.json",
+    "sha256": "d7904f9036791c96a95db9c67ce5ae8ae79ac97278c007f00641c6a02b69ea19",
+    "bytes": 576
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/command-3.json",
+    "sha256": "eb6707ce63daa7a6a2cf0b2eec705c108a589d37ff634a462029970249e25e8d",
+    "bytes": 1211
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/map.json",
+    "sha256": "9176161e1ec4ff75cc4e3883f3775c0d5dc8a03caeee0d175295493498bf5536",
+    "bytes": 404181
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/command-1.json",
+    "sha256": "09acec639db3ee0eaf1bd5c7f6027f4c402e59af32c1aa0f0c3232dd29bd7909",
+    "bytes": 314
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/command-2.json",
+    "sha256": "96956f5f5b01097a2caa5db0bbad48c12413f527f10e34fbf7a05827a0c636ef",
+    "bytes": 376
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/command-3.json",
+    "sha256": "0aaf56afdeb5fd273312c895b221c47fe79b19a60cdbc9843a1ae1fb896b1fb8",
+    "bytes": 343
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/command-4.json",
+    "sha256": "f1be09093bf424dba85f2785b2b94d63d15006558675ee012586cc51498ba94b",
+    "bytes": 538
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/invalid-3/artifacts.json",
+    "sha256": "d1623aa9149d02e9b6097376100cf7e2474181dbc994f60525e0db875290f601",
+    "bytes": 69
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/invalid-3/result.json",
+    "sha256": "6f8992f2896f49b0e3f239a324d61dc62fc5dc561dbdf2d2b2d88cd3d95cd32f",
+    "bytes": 89
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/command-1.json",
+    "sha256": "68422ef7a1584c38e3bf6bf861e652d26169c5cf46a091e7a3790e78885d284a",
+    "bytes": 919
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/command-2.json",
+    "sha256": "acb19248a247d6cf4fd26c27c1d1657ec2490547409d463ed853ccab75fcbd90",
+    "bytes": 1477
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/command-3.json",
+    "sha256": "04b9f69a12120ebddb68f0aee532535c9a7225b90cc03e8064ef68f7b2dbb68c",
+    "bytes": 1485
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/command-4.json",
+    "sha256": "c377ea68ccfb705b4dcae3f0e6f04e7bfa6c65e59ab8c01fd5fcaa77ff2eb6e9",
+    "bytes": 1019
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/artifacts.json",
+    "sha256": "13b3d2d0e02a4f1633cc53b466daf7d6c5fd13b84e375d5c1a2a0e78aaa43602",
+    "bytes": 374
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/result.json",
+    "sha256": "9049d863a190fce5cb0a706f9f51a369e08e4d18b7133cd23c60578bde8b937b",
+    "bytes": 12447
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/map.json",
+    "sha256": "9176161e1ec4ff75cc4e3883f3775c0d5dc8a03caeee0d175295493498bf5536",
+    "bytes": 404181
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/artifacts.json",
+    "sha256": "0112f6ed22d04b0d3b5c7cfa4975a55579f466e7d2ce9990dc6145cc5e3e31ba",
+    "bytes": 374
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/result.json",
+    "sha256": "9b4bc04d8e96c433c3ecc4f9f21ec164b66a961a5a0cfa3a37a076ddb25bb24c",
+    "bytes": 12445
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/parity.json",
+    "sha256": "d380ab191ea2dfe3c3d6ae239b671643b1aecf945aebcd6260228e9b35600bf0",
+    "bytes": 158
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/artifacts.json",
+    "sha256": "a51f54a14475f3a925d455e7774c0f5a350ddba59d75df58d1524bbeb07a81d8",
+    "bytes": 278
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/result.json",
+    "sha256": "60c0df1b437f53bb3cc0d05ee87a4b4b81ff8d88b71aabaa3a8002d0a67e595d",
+    "bytes": 12447
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_help_and_catalog_describe_real_commands/command-1.json",
+    "sha256": "3a8e20f6e10542730619b78140c6aee1fa9cbb5bf94cd26d7789d687adcbb3f9",
+    "bytes": 2667
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_help_and_catalog_describe_real_commands/command-2.json",
+    "sha256": "d1a09a0b379c2c50f23e57e60e398a445b44c858df6ad1ae5d421d75082b70b4",
+    "bytes": 434820
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_help_and_catalog_describe_real_commands/command-3.json",
+    "sha256": "11f3bad71d788707ee36a586b9066974e02949249b8023912e474f850670319d",
+    "bytes": 2332
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_invalid_map_arguments_fail_before_writing_outputs/command-1.json",
+    "sha256": "a157c4a0ca05f02c5f49e0275a60cb90ff1407edc7269353ebff459698c912d6",
+    "bytes": 194
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_invalid_map_arguments_fail_before_writing_outputs/command-2.json",
+    "sha256": "db3406938a901c8f4fe7d282a709fcfd3ebd54becec6d2922d84283169eddec6",
+    "bytes": 203
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_invalid_map_arguments_fail_before_writing_outputs/command-3.json",
+    "sha256": "4acabab1b57ad82ba18350138752e1a11d65e26ac7b587d2a26d2cf859a754f2",
+    "bytes": 185
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/command-1.json",
+    "sha256": "dbb3dbed58dd8427093c7d7d6d8d25b40b281810b4524ca5e4bdadc67bcc88f5",
+    "bytes": 549
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/command-2.json",
+    "sha256": "39ea8ea54ce70df5cf2d493d93ca63feeec1d5435deffa872ea3a0f046045b9f",
+    "bytes": 549
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/command-3.json",
+    "sha256": "393360ebf3e49ecbcd6f17cebd7fc1f5cccc22ac7be6d46abf74e70bde87f956",
+    "bytes": 549
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/command-4.json",
+    "sha256": "d890095345efa34bc6a4daaa252f2498b6d12e7ba49bfec936f5fbabcf71d3ab",
+    "bytes": 549
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/command-5.json",
+    "sha256": "cf146eaece1a46dab5100cc066b0b4b7af49eb3dbe59188f0b0c824d0a0cbcaf",
+    "bytes": 555
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-1/artifacts.json",
+    "sha256": "abb1d99abc49538ecab6cc9cce38b1b7863616c02bc774efc037af883db62050",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-1/compute.json",
+    "sha256": "1b59c024bd4f78e8aa60c31c09ebd5b01443b6b87d8ee106d6fca05e462cdd2f",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-1/result.json",
+    "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c",
+    "bytes": 11178
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-1/verdict.json",
+    "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-2/artifacts.json",
+    "sha256": "abb1d99abc49538ecab6cc9cce38b1b7863616c02bc774efc037af883db62050",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-2/compute.json",
+    "sha256": "288aee04f56d77e54223ad13328969138cec04000c3612bff38f860921a29250",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-2/result.json",
+    "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c",
+    "bytes": 11178
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-2/verdict.json",
+    "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-4/artifacts.json",
+    "sha256": "abb1d99abc49538ecab6cc9cce38b1b7863616c02bc774efc037af883db62050",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-4/compute.json",
+    "sha256": "cee004a4dab2e05706b0aff0b78f8035992a7fc83344ce45e145e8ba1056ee68",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-4/result.json",
+    "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c",
+    "bytes": 11178
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-4/verdict.json",
+    "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-8/artifacts.json",
+    "sha256": "abb1d99abc49538ecab6cc9cce38b1b7863616c02bc774efc037af883db62050",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-8/compute.json",
+    "sha256": "fab62843c53ca95728990d8615a8f7ba0f8da652f91cc197982c736e43f76d1a",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-8/result.json",
+    "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c",
+    "bytes": 11178
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-8/verdict.json",
+    "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/artifacts.json",
+    "sha256": "abb1d99abc49538ecab6cc9cce38b1b7863616c02bc774efc037af883db62050",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/result.json",
+    "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c",
+    "bytes": 11178
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/verdict.json",
+    "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/baseline/artifacts.json",
+    "sha256": "9d1926dccd928d7963cd961e24f9198afdb3205e8467acb6e45d478cc7d26a63",
+    "bytes": 280
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/baseline/result.json",
+    "sha256": "28f2c15f570fb3cf24891a2a826e3a2831002a91fafbc1d974748a3dc73b43f8",
+    "bytes": 12486
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/command-1.json",
+    "sha256": "78a3fc641d9bfb761e78847ffb6d8953dfe0809d57ef550b5c2bb0c8e69ef3e7",
+    "bytes": 803
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/command-2.json",
+    "sha256": "233bdabb715867ca3f0c08901757cc2d19aaec6ab83c950aefab5d54d342d967",
+    "bytes": 1076
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/command-3.json",
+    "sha256": "635d0f4e2f2e16c97cbbc0e3a2a91e96b12c971705df252f82f11019fe0570e9",
+    "bytes": 1186
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/map.json",
+    "sha256": "9176161e1ec4ff75cc4e3883f3775c0d5dc8a03caeee0d175295493498bf5536",
+    "bytes": 404181
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/profiled/artifacts.json",
+    "sha256": "a9757ece7443bb8ee53cd1c9bbc3298927984022eb076cf2e551765fec03ff2b",
+    "bytes": 362
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/profiled/owner-clock.json",
+    "sha256": "2ff2e3de9892a66259a6883204d7ab274eb2c6e078df21b476c6138696f56b27",
+    "bytes": 60
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_owner_tick_profile_preserves_execution/profiled/result.json",
+    "sha256": "1ba355a011f985c0e134353ffbf662689616a9f493abea1bd99109b3cdc41e94",
+    "bytes": 12486
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-1.json",
+    "sha256": "abdd2b483656745b5bec606eee1134e223c9ce3fc843e1b52726c02ecad4f713",
+    "bytes": 959
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-2.json",
+    "sha256": "5d244a734f4a8c16fdd8eb0edc853d33ce054bcdcbdf94542bd7a507e316a8f4",
+    "bytes": 1567
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-3.json",
+    "sha256": "bbe7081d2a18005d0a38912590b7447bb1e160d0cd9d62e8ebc1b051707546b3",
+    "bytes": 1080
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-4.json",
+    "sha256": "4dcf058dac028929805425bdf4375f31ad9d1cf3bcd6330d97df8a9272440740",
+    "bytes": 801
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-5.json",
+    "sha256": "a3b06d7817a7bb21729886c036913cbfc2a72f61331125fb2a71f5502d492e46",
+    "bytes": 1179
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-6.json",
+    "sha256": "442624cf426c469491414d3465653d77a94f2d95d35af9736d464cf6b93307a8",
+    "bytes": 618
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-7.json",
+    "sha256": "e4fc53bd341a4f2d7afeaeb6cb95b68656a319e935c5fb178247a270ba992c94",
+    "bytes": 620
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-8.json",
+    "sha256": "ff30fdefdbe261edbcf315b21c8b37cbe7e028186ae3fe0e7eef0997324bf16b",
+    "bytes": 622
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/map.json",
+    "sha256": "9176161e1ec4ff75cc4e3883f3775c0d5dc8a03caeee0d175295493498bf5536",
+    "bytes": 404181
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/artifacts.json",
+    "sha256": "7fffb31aefbf1078477ac107ddf98e82644b1a94a20271b9a9ed06a80e3ed864",
+    "bytes": 374
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/result.json",
+    "sha256": "3386ed351cce0184a5cc8c6b32a2c79fe4cb79a6f944a8530cc0150031602c69",
+    "bytes": 12445
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/artifacts.json",
+    "sha256": "20ecb8a47f430370d0b3118f2461951c4a071966826981a5d96dce8a39ddc446",
+    "bytes": 278
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/result.json",
+    "sha256": "2750186d02a0bfa1435f84afd8f8c069d788eca23b4ebf2e2f512e59558ce3a2",
+    "bytes": 12447
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/artifacts.json",
+    "sha256": "0a07bd2037885f8c693bfffa32a5d322b5993b621739b0b7a347362066d5f9dc",
+    "bytes": 280
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/result.json",
+    "sha256": "97aaf8a88926fecf8fd3f37ba5c3e00c6b1f7205671fe28033d2657d75625bb1",
+    "bytes": 12439
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/artifacts.json",
+    "sha256": "76964d2636f36c7696d78fe30ac19a62590de16b9540ff035b3d189c9169920d",
+    "bytes": 200
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/result.json",
+    "sha256": "b38244e1f8e3e0d5f4d4cb408afafd324e27ecdda1f50407b9587a4c11c37bbe",
+    "bytes": 12447
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-1.json",
+    "sha256": "5706e66aad9db61be1d7a046d59184771cf9b400f3b5d9337b2e5fd8a5d4c893",
+    "bytes": 199
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-10.json",
+    "sha256": "16cc8887930f0bd2947b1d77313509fdef5ca52de06ef865b5bb67615bbc57b2",
+    "bytes": 241
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-11.json",
+    "sha256": "67d7e28825c36597f03fbd6f01d93076734e3c79ac60c9d887773663576ca790",
+    "bytes": 267
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-12.json",
+    "sha256": "b015ebf9d7d0e61874e90dd1c5af7d730fd257c33d5d66076da197960811a501",
+    "bytes": 271
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-2.json",
+    "sha256": "f635f7ed68019f85ee730c0f74af8729b332f778a7c23f0e088fbff9ce989cd5",
+    "bytes": 222
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-3.json",
+    "sha256": "ad3fe1d06e0e287b6aafffbf9298b25518e8cb63598dd309a49e39a880a54855",
+    "bytes": 248
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-4.json",
+    "sha256": "684638190b858f8ab81dca01b234364d4f010f7907b1657a083530e76c6c85d2",
+    "bytes": 252
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-5.json",
+    "sha256": "ffe5d12c4ed57b940317e1e600e95c23c31503cef67b7d0e37fd1edcff061a23",
+    "bytes": 211
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-6.json",
+    "sha256": "c6bb7e16190c90ae68bc9b1a22dfcec91c4960d6efcda54df69a202d8740801a",
+    "bytes": 234
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-7.json",
+    "sha256": "3410822a569b46970cecf224db9faa33aaa691114f5d8c9a7d22120b89d14cd8",
+    "bytes": 260
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-8.json",
+    "sha256": "03328ba10be05394688984ad87a0d95fcc0bdb42c71594a7d03d6e00eddcf0df",
+    "bytes": 264
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_removed_compute_options_point_to_unified_setting/command-9.json",
+    "sha256": "ac267418cd803992778a463b8abac2ffd6a6c8888a2fc45dec46be3b66093509",
+    "bytes": 218
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_structured_map_study_writes_report_map_and_manifest/command-1.json",
+    "sha256": "ae15012590f4cc253f8dbe71dae8115f66b192295d836e5f9fd552ca3d94f9c0",
+    "bytes": 1313
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_structured_map_study_writes_report_map_and_manifest/study/artifacts.json",
+    "sha256": "1dc52f5f457d39878a12b1490025182f4d91212fd46f2eb985620772e011ec60",
+    "bytes": 185
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_structured_map_study_writes_report_map_and_manifest/study/progress.json",
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1",
+    "bytes": 42
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_structured_map_study_writes_report_map_and_manifest/study/result.json",
+    "sha256": "e5ebc4d4c5d2c88e968756b83b3b5c79b7b6e1ace2201806720ca64bdc9421ef",
+    "bytes": 405969
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/artifacts.json",
+    "sha256": "28985f02cf41b3d4719a4016be360eb95c37ef8fc0490bc0727421cc4daf241d",
+    "bytes": 280
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/result.json",
+    "sha256": "cbbbeb894867b5860f8fd11c93b295210b980d25ada1e0827a5b2adbb4d72b62",
+    "bytes": 12447
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/command-1.json",
+    "sha256": "3a3c340f0bb4578d5d24f919a1d983f5f1a20080277511c3d979f7a3ccc0e6e5",
+    "bytes": 863
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/command-2.json",
+    "sha256": "f49822a2aecd95189b1ad9deba283b4c85efbfcc1e73e5abb58ca7362fb8acb1",
+    "bytes": 1045
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/command-3.json",
+    "sha256": "f4d6ad6e337c717ec60e42e023fa73f53c807106e70c6368ee938bbc6bcbd0ec",
+    "bytes": 1044
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/command-4.json",
+    "sha256": "495af0fd76e60ce6d5cd1d08df5ba83cb15bf611a090f66fb82236d0e5a75c85",
+    "bytes": 1045
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/map.json",
+    "sha256": "9176161e1ec4ff75cc4e3883f3775c0d5dc8a03caeee0d175295493498bf5536",
+    "bytes": 404181
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/artifacts.json",
+    "sha256": "2ba0fee1d1a0a2d464141219d597f07bb6b7bb22e9b4bcf741f0a6373a03cb0e",
+    "bytes": 280
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/result.json",
+    "sha256": "81d23692c4b94fd4ab469431f88b9b19d3695d1732d3f23bf9c33c1cdf750b68",
+    "bytes": 12443
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/artifacts.json",
+    "sha256": "c7a331b2330aba3346bab09e9121139e6892e0b23acf43bf79947eec5e30a35d",
+    "bytes": 280
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/result.json",
+    "sha256": "205a56d95a6cc9b30d1c1e1e91ef595a6c3e2c227ef45b5e5de67da92e9c56f1",
+    "bytes": 12444
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/Delayed_diagnostic_offers_cover_planner_ticks_without_duplicate_captures/delayed-offers/tick-0000003.player0.team0/capture.json",
+    "sha256": "79777f2f7fb139958f76c3540b2b4a3b4d08bf20ab995243394c55ac7d8a9b1f",
+    "bytes": 813
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/controllers_sharing_a_team_publish_distinct_complete_captures_and_recover_after_failures_artifacts/captures/diagnostics/summary.json",
+    "sha256": "4543de35f761cea4fd2a6ba168862560d51accde016d475ba5e4db8cb8ee1438",
+    "bytes": 740
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/controllers_sharing_a_team_publish_distinct_complete_captures_and_recover_after_failures_artifacts/captures/diagnostics/tick-0000010.player0.team0/capture.json",
+    "sha256": "ed2a876c9d001360658f641f5835559c0bd967c97c748125f703a5c9e6b51472",
+    "bytes": 814
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/controllers_sharing_a_team_publish_distinct_complete_captures_and_recover_after_failures_artifacts/captures/diagnostics/tick-0000010.player1.team0/capture.json",
+    "sha256": "35ab6ba4a9f19eb88d86a6d028cf789e9b27e3bfcb722433e165b8a86ed759de",
+    "bytes": 814
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/controllers_sharing_a_team_publish_distinct_complete_captures_and_recover_after_failures_artifacts/captures/limited/summary.json",
+    "sha256": "13eef073c9ccafc5deec8928d973845b61addaaac587cedb86fd96954b57ea1b",
+    "bytes": 306
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/pending_diagnostic_output_does_not_block_world_advancement_or_alias_later_worker_output_artifacts/pending-publication/summary.json",
+    "sha256": "71f9b7342a3e051a0838d93f72a22d73a74ac5a5090fb9ea16a4c9ed9ea1287d",
+    "bytes": 98
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/pending_diagnostic_output_does_not_block_world_advancement_or_alias_later_worker_output_artifacts/pending-publication/tick-0000000.player0.team0/capture.json",
+    "sha256": "7c4f5c3a12c94bee1218097d2d81f17cdaae45ba3d5c1ea49da927b1b77fd96b",
+    "bytes": 813
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/pending_diagnostic_output_does_not_block_world_advancement_or_alias_later_worker_output_artifacts/pending-publication/tick-0000001.player0.team0/capture.json",
+    "sha256": "02dc9ba8778bdf264440143a30c3b5f0b424d64cb20741d3bc95736624229c9b",
+    "bytes": 813
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameDiagnostics/private_diagnostic_reservation_survives_owner_ticks_and_serialization_artifacts/private-captures/tick-0000000.player0.team0/capture.json",
+    "sha256": "92c4dfe7f12b36d78765e90b6913bcbbc80e66a0750345b503e4e601737da820",
+    "bytes": 814
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/asynchronous_admission_freezes_context_rejects_stale_generations_and_counts_cancellation__recording/capture-admission-85456815304.mp4.recording/manifest.1.json",
+    "sha256": "a25f23a9ea1d1ba0d0db9488ab7e0da3492105e7a94b67ab6008851c5f3ccb14",
+    "bytes": 425
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/asynchronous_admission_freezes_context_rejects_stale_generations_and_counts_cancellation__recording/capture-admission-85456815304.mp4.recording/manifest.json",
+    "sha256": "a25f23a9ea1d1ba0d0db9488ab7e0da3492105e7a94b67ab6008851c5f3ccb14",
+    "bytes": 425
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/asynchronous_admission_freezes_context_rejects_stale_generations_and_counts_cancellation__recording/capture-next-session-85456822318.mp4.recording/manifest.1.json",
+    "sha256": "a9fc1ac4e2f65fe567751bd154733e2fbdf775a5c0bc7611483238575aefe6ba",
+    "bytes": 431
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/asynchronous_admission_freezes_context_rejects_stale_generations_and_counts_cancellation__recording/capture-next-session-85456822318.mp4.recording/manifest.json",
+    "sha256": "a9fc1ac4e2f65fe567751bd154733e2fbdf775a5c0bc7611483238575aefe6ba",
+    "bytes": 431
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/capture_context_restores_active_match_identity_after_settings__recording/capture-match-context-85456780770.mp4.recording/manifest.1.json",
+    "sha256": "1138248aa059f6324059dfc3c4a60f90cbab6e82a57013f16927aa7cd081c1b9",
+    "bytes": 433
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/capture_context_restores_active_match_identity_after_settings__recording/capture-match-context-85456780770.mp4.recording/manifest.json",
+    "sha256": "1138248aa059f6324059dfc3c4a60f90cbab6e82a57013f16927aa7cd081c1b9",
+    "bytes": 433
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/capture-failure-85456832689.mp4.recording/manifest.1.json",
+    "sha256": "42d634a86688acd0c7906f662ecff412821b584f3d2938499ad99cfc9e1cd7c5",
+    "bytes": 562
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/capture-failure-85456832689.mp4.recording/manifest.2.json",
+    "sha256": "9bb5ca75af1a6d4b2fb291a8f82c6a94dd425a83fc4fdbdbbd991b7527dfc00c",
+    "bytes": 538
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/capture-failure-85456832689.mp4.recording/manifest.json",
+    "sha256": "42d634a86688acd0c7906f662ecff412821b584f3d2938499ad99cfc9e1cd7c5",
+    "bytes": 562
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-85469993748.mp4.recording/manifest.1.json",
+    "sha256": "f3ef41ff6c2723f96c1804a4e8c375e41c8cdbfa11d8e661c3e5e11db859d604",
+    "bytes": 1012
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-85469993748.mp4.recording/manifest.2.json",
+    "sha256": "457ba9b21d2570846f91c1ca202a16d3324d95a5419a53d5af40ee9967a6a5ba",
+    "bytes": 541
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-85469993748.mp4.recording/manifest.json",
+    "sha256": "f3ef41ff6c2723f96c1804a4e8c375e41c8cdbfa11d8e661c3e5e11db859d604",
+    "bytes": 1012
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-85472894800.mp4.json",
+    "sha256": "e7701b8e0266785967968ca2c84b83272c57eb431e42f6101d9143c83fa09090",
+    "bytes": 1528
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-85472894800.mp4.session.json",
+    "sha256": "f4527bf187000b67d987352d9bc0acee2ffc9de995cfe83be72a08952e608e20",
+    "bytes": 178
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-85472894800.part0002.mp4.json",
+    "sha256": "06691b781abfce5adf880407f4d659d1f4e9fe7a363fe7cea5032df986e0c7a4",
+    "bytes": 911
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/stopping_a_recording_before_its_first_frame_completes_without_hanging/no-frame-85513530691.mp4.recording/manifest.1.json",
+    "sha256": "0806dbae9356ef686ebddf6a42fdbff4b2e5e8bad7b01270fb9f4a49fbb017a3",
+    "bytes": 407
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/GameplayRecording/stopping_a_recording_before_its_first_frame_completes_without_hanging/no-frame-85513530691.mp4.recording/manifest.json",
+    "sha256": "0806dbae9356ef686ebddf6a42fdbff4b2e5e8bad7b01270fb9f4a49fbb017a3",
+    "bytes": 407
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/LAN_WSS_drop_restart_and_host_departure_network_slow_artifacts/lan-match/cache-a/online/maps/index.json",
+    "sha256": "652b9bfcfaac9665b88735fee6382b5f46f4dbc93faf7958195e247115124472",
+    "bytes": 116
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/LAN_WSS_drop_restart_and_host_departure_network_slow_artifacts/lan-match/cache-b/online/maps/index.json",
+    "sha256": "b420b6641faf40e366b910189ff64b9355b94cae9da4a144a5413fc5180982ac",
+    "bytes": 116
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/LAN_WSS_drop_restart_and_host_departure_network_slow_artifacts/lan-match/match.network.json",
+    "sha256": "5874356b2a5e6d4b8c5b881c49171aa989ec07507241a983769094b42a2d51ca",
+    "bytes": 2549
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/LAN_WSS_drop_restart_and_host_departure_network_slow_artifacts/lan-match/verify/artifacts.json",
+    "sha256": "507877251187a29a257f16cc12cebd372b8b10cadccb602635c26e30126a01e6",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/LAN_WSS_drop_restart_and_host_departure_network_slow_artifacts/lan-match/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/LAN_WSS_drop_restart_and_host_departure_network_slow_artifacts/lan-match/verify/result.json",
+    "sha256": "24c62e405ee108459fdbe84aa85df2ed2f3c0306d90e381c92abf08e726828f5",
+    "bytes": 11571
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/LAN_WSS_drop_restart_and_host_departure_network_slow_artifacts/lan-match/verify/verdict.json",
+    "sha256": "c1eebc8347c17d34b5d7bf35a243e74d54865e1f765f04b80fe921b6db874b85",
+    "bytes": 713
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/an_idle_LAN_host_sleeps_and_wakes_at_once_for_guests_and_the_host_network_artifacts/wait/cache/online/maps/index.json",
+    "sha256": "b420b6641faf40e366b910189ff64b9355b94cae9da4a144a5413fc5180982ac",
+    "bytes": 116
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/custom_catalog_transfer_and_execution_enforce_catalog_identity_network_artifacts/catalog-lan/cache/online/maps/index.json",
+    "sha256": "9605ba0bfc073fd7b64074458fd2680adcd1b025ca659d7ca3dcca8ec6fc8ff0",
+    "bytes": 116
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/custom_catalog_transfer_and_execution_enforce_catalog_identity_network_artifacts/catalog-lan/match.network.json",
+    "sha256": "75044fd39036c2201da42ff299798287ed3787d5f91c049a2c551f737cde697c",
+    "bytes": 1761
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/custom_catalog_transfer_and_execution_enforce_catalog_identity_network_artifacts/catalog-lan/verify/artifacts.json",
+    "sha256": "b785ffa4d86e3876f2fb8536c36fd0ca3b3e71a05b52d404ff73661b94098408",
+    "bytes": 219
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/custom_catalog_transfer_and_execution_enforce_catalog_identity_network_artifacts/catalog-lan/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/custom_catalog_transfer_and_execution_enforce_catalog_identity_network_artifacts/catalog-lan/verify/result.json",
+    "sha256": "49d9a07084a055c14a8216c838e089cc81a4a9b0023b242f8009183d8f3ccdf9",
+    "bytes": 6648
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/custom_catalog_transfer_and_execution_enforce_catalog_identity_network_artifacts/catalog-lan/verify/verdict.json",
+    "sha256": "6632f81e87412da1d2663c66337a32d97bc958166cb26bc753ab932accd7e203",
+    "bytes": 355
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/custom_terrain_survives_LAN_map_transfer_network_artifacts/custom/cache/online/maps/index.json",
+    "sha256": "9576b121d9267062777f270a1493482f6695978f2c2dc36c0d9a77901caea597",
+    "bytes": 116
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/custom_terrain_survives_LAN_map_transfer_network_artifacts/custom/match.network.json",
+    "sha256": "ec27d8598bc52295ae99dfe6b68c976dba8fe85811a256df160321951ad8a543",
+    "bytes": 1800
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/LanMatchHarness/timeout_diagnostics_tolerate_a_destroyed_guest_room_network/timeout-diagnostics/timeout.json",
+    "sha256": "b98c3a04ccb159d91ec11e8911e7ceb4d99920d11fa1a1febeca2f5d130981ea",
+    "bytes": 204
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapGeneratorDefaults/Explicit_designs_preserve_topology_across_the_runtime-resource_RNG_epoch/resource-design-observations.json",
+    "sha256": "6c8f2ac7fd96162e2c130234cf4ffd85a25bb82d585186d0ab68a34316f5bf33",
+    "bytes": 1135
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/generator_Studio_freezes_playable_worlds_and_preserves_save_continuation/generator-studio/frozen-package.json",
+    "sha256": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+    "bytes": 2441
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/generator_Studio_freezes_playable_worlds_and_preserves_save_continuation/generator-studio/frozen-settings.json",
+    "sha256": "b44385e7664ae38de86efd704faf7c36ffb7312156e7b884683888f78d256af4",
+    "bytes": 102
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/generator_Studio_freezes_playable_worlds_and_preserves_save_continuation/generator-studio/native-report.json",
+    "sha256": "90bb2c8c2c457eac2d4e26fae23c2d6cbc2f8c75a5290336b7f04a35ff5b26a2",
+    "bytes": 5880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/generator_Studio_freezes_playable_worlds_and_preserves_save_continuation/generator-studio/package.json",
+    "sha256": "c862cba86f5760834309681a106435f2422ed4e9a7e482ace9f2546049e680c7",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/generator_Studio_freezes_playable_worlds_and_preserves_save_continuation/generator-studio/settings.json",
+    "sha256": "2c7f654f5e6fd84d4c22b27a5cb54ffa2a94a7dc946897fd38624b955285ac17",
+    "bytes": 102
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/threaded_generator_Studio_finalizes_its_frozen_report_on_the_asset_owner_artifacts/generator-studio/frozen-package.json",
+    "sha256": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+    "bytes": 2441
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/threaded_generator_Studio_finalizes_its_frozen_report_on_the_asset_owner_artifacts/generator-studio/frozen-settings.json",
+    "sha256": "b44385e7664ae38de86efd704faf7c36ffb7312156e7b884683888f78d256af4",
+    "bytes": 102
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/threaded_generator_Studio_finalizes_its_frozen_report_on_the_asset_owner_artifacts/generator-studio/native-report.json",
+    "sha256": "fe68f022cb012d3e1220788fd8a5c5117702bb990c919c162075600fc8bfb092",
+    "bytes": 5879
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/threaded_generator_Studio_finalizes_its_frozen_report_on_the_asset_owner_artifacts/generator-studio/package.json",
+    "sha256": "c862cba86f5760834309681a106435f2422ed4e9a7e482ace9f2546049e680c7",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/MapPreview/threaded_generator_Studio_finalizes_its_frozen_report_on_the_asset_owner_artifacts/generator-studio/settings.json",
+    "sha256": "2c7f654f5e6fd84d4c22b27a5cb54ffa2a94a7dc946897fd38624b955285ac17",
+    "bytes": 102
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/asynchronous_encoder_flush_is_polled_before_publishing_the_output/deferred-85537241030.mp4.json",
+    "sha256": "2bcaab5965f11ae289cfd6b3d61131bbe746ae47374273df3f2b3ef5e439c8b7",
+    "bytes": 517
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/asynchronous_encoder_flush_is_polled_before_publishing_the_output/deferred-85537241030.mp4.session.json",
+    "sha256": "0be6289dfba6b8d9550e60e55d2945d9c331a0b86db664469edbac7cb305741b",
+    "bytes": 85
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/capture_pressure_rejects_input_within_the_three-frame_budget/pressure-85537937449.mp4.json",
+    "sha256": "bfe8d843def45fa86fdd4f731c064037470b7d9d4524ad1f6c942c4d5316230b",
+    "bytes": 520
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/capture_pressure_rejects_input_within_the_three-frame_budget/pressure-85537937449.mp4.session.json",
+    "sha256": "f7cd0f3c9e59137e101d7305938a6ca37a5b333d93c70453fc893a202944beb4",
+    "bytes": 85
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/control_events_wait_for_delayed_video_chapters_without_changing_their_timestamps/event-order-85536299796.mp4.json",
+    "sha256": "dc11c87d05be02c62c57eef25d6f76e13689c0bdb7d854f3882209c8f4717222",
+    "bytes": 830
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/control_events_wait_for_delayed_video_chapters_without_changing_their_timestamps/event-order-85536299796.mp4.session.json",
+    "sha256": "5f40ae5a4bdd61e8466cc01b6822d36ed99c348ae735718aa0f0473ecccb1017",
+    "bytes": 88
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-85537464976.mp4.json",
+    "sha256": "43bd44279f5bc366c8d1bc3d735a630ca820f6dadacfe630e834a11abea526ae",
+    "bytes": 562
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-85537464976.mp4.session.json",
+    "sha256": "98466237b005a3d9a73e952bc8b9193bdb9535aefa30dc93ffdfb67891088dc2",
+    "bytes": 163
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-85537464976.part0002.mp4.json",
+    "sha256": "62cac72d13a4f8b3db57f2c4f94b4a41be70381716eae331dca4339da8776a4e",
+    "bytes": 570
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-85537700304.mp4.json",
+    "sha256": "f2d453903183c98a8d58705ab966b94beac9548f980abe105939c2529cfd0316",
+    "bytes": 562
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-85537700304.mp4.session.json",
+    "sha256": "9986e9fe7dc76dfeff06e8ba0e0e85781f0019f08c03ea06a34fe7c5d26797e4",
+    "bytes": 161
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-85537700304.part0002.mp4.json",
+    "sha256": "5b8b15330f1e8e5723a9282d7b7ac3e714f52112ca39cdff7637e4c120f1eea1",
+    "bytes": 570
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/interrupted_fragmented_media_recovers_without_a_finalized_trailer/interrupted-85538038104.mp4.json",
+    "sha256": "1c21209d52ce3347d965e0dd2a88971bcd6fa949cfefe02475e4755b6fc0e41e",
+    "bytes": 544
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/interrupted_fragmented_media_recovers_without_a_finalized_trailer/interrupted-85539023219.mp4.json",
+    "sha256": "64bedbfcce1f3fa9ecc20a274d16e6961605789fd0124a514f924a0051327fe9",
+    "bytes": 544
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/journal_backlog_is_bounded_and_failure_retains_queued_diagnostic_events/event-budget-85536790288.mp4.recording/manifest.1.json",
+    "sha256": "9284e81e50b7d46f120b71820fca18c497f22ac8198c37e6e43427d94deb90e1",
+    "bytes": 555
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/journal_backlog_is_bounded_and_failure_retains_queued_diagnostic_events/event-budget-85536790288.mp4.recording/manifest.2.json",
+    "sha256": "cf9d3cf03f3af2b82b6dbc7672020e5adcf7b2e444aa1d2bcbc64626d48922d9",
+    "bytes": 526
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/journal_backlog_is_bounded_and_failure_retains_queued_diagnostic_events/event-budget-85536790288.mp4.recording/manifest.json",
+    "sha256": "9284e81e50b7d46f120b71820fca18c497f22ac8198c37e6e43427d94deb90e1",
+    "bytes": 555
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/long_scheduling_gaps_preserve_time_without_an_encoding_catch-up_burst/gap-85537340410.mp4.json",
+    "sha256": "7b717d60e2d4ddb123ea6382af2260e840636629cb0963cd9ca1271479725d17",
+    "bytes": 517
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/long_scheduling_gaps_preserve_time_without_an_encoding_catch-up_burst/gap-85537340410.mp4.session.json",
+    "sha256": "a3450b4e0e5910dc1e53fe1ebaa165f258a4e41b17cfac28e2735af7dd164acc",
+    "bytes": 80
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/publication_failure_retains_media_that_can_be_recovered_without_overwriting/recover-85539366507.mp4.json",
+    "sha256": "c6a29f5c794aded6d39f3f57cb309373b0e428929b03be8ad17b6d6929e31000",
+    "bytes": 532
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/resize_carries_future_controls_to_the_new_segment_and_journals_one_transition/resize-events-85536471278.mp4.json",
+    "sha256": "90b3e895e0f0245eb68aa2218f3e02f4f3886c6e2bbeed675c2def1c592d3f61",
+    "bytes": 529
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/resize_carries_future_controls_to_the_new_segment_and_journals_one_transition/resize-events-85536471278.mp4.session.json",
+    "sha256": "50da7b3e804ef978775b178f98d629b514fb88d012fa401ef4298296647c4e60",
+    "bytes": 167
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/resize_carries_future_controls_to_the_new_segment_and_journals_one_transition/resize-events-85536471278.part0002.mp4.json",
+    "sha256": "b4b42dc0400b8079c4ce8f62ebac99d245a1204c9d48bafb8689db8ed87e8427",
+    "bytes": 541
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-85536889028.mp4.json",
+    "sha256": "e251b947ea67dded2f7ceec7183efce61450cc5076fb8510013a8c0140cfc189",
+    "bytes": 515
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-85536889028.mp4.session.json",
+    "sha256": "f1c4a5a81e43b11d4e54d5273fdf1ddb0427a900211830b213d9c39636afac0f",
+    "bytes": 153
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-85536889028.part0002.mp4.json",
+    "sha256": "4db0cc6632e3e8508db73a41ef5e9ec48bcb82576e35eb6656d87673ebc0dff0",
+    "bytes": 529
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/session_index_creation_preserves_an_existing_recording/exclusive-85536292030.mp4.session.json",
+    "sha256": "cf84482b9efdd9291a36643471c6e09c79a69623f87a7b61265b660e54e69eaf",
+    "bytes": 15
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/stop_rejects_events_beyond_the_final_video_interval_and_retains_diagnostics/event-after-stop-85536730069.mp4.recording/manifest.1.json",
+    "sha256": "9fa4359725991a9c81ff276129e454cd2a523fe8995195d9c1485e443189d9a3",
+    "bytes": 587
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/stop_rejects_events_beyond_the_final_video_interval_and_retains_diagnostics/event-after-stop-85536730069.mp4.recording/manifest.2.json",
+    "sha256": "e45912c0adb076af498979827a71fb037873bfa48b7913dfa1d6d9a3a615c2a0",
+    "bytes": 534
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/stop_rejects_events_beyond_the_final_video_interval_and_retains_diagnostics/event-after-stop-85536730069.mp4.recording/manifest.json",
+    "sha256": "9fa4359725991a9c81ff276129e454cd2a523fe8995195d9c1485e443189d9a3",
+    "bytes": 587
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/worker_normalizes_capture_color_layout_and_bottom-up_orientation/orientation-85537140029.mp4.json",
+    "sha256": "f5b29810e406709fe5734aebc21059653857f10b7ab1ca5ee80b2c9c8d5205da",
+    "bytes": 521
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/RecordingSession/worker_normalizes_capture_color_layout_and_bottom-up_orientation/orientation-85537140029.mp4.session.json",
+    "sha256": "1d01fb10fffa20793f292403e56361e4a7555c4df3f1c45ad47a5b6ab0ffdb74",
+    "bytes": 88
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/AI-only_turn_recordings_replay_through_their_terminal_checksum_network-sim_artifacts/artifacts.json",
+    "sha256": "014075a77e635233088c59e8789e60e9ba467a3915befe74cbed5b478fd79016",
+    "bytes": 222
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/AI-only_turn_recordings_replay_through_their_terminal_checksum_network-sim_artifacts/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/AI-only_turn_recordings_replay_through_their_terminal_checksum_network-sim_artifacts/result.json",
+    "sha256": "7e5a7e8586b4f0cf1fe496e2d8607113ae0cfaae1aaa3915bfea2a0316e1146e",
+    "bytes": 10670
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/AI-only_turn_recordings_replay_through_their_terminal_checksum_network-sim_artifacts/verdict.json",
+    "sha256": "712e81c2a434f4d289c724c1766b9f6ae8cd67069232ba3aca3cd26eafedb2ee",
+    "bytes": 107
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/artifacts.json",
+    "sha256": "b39b94714dfb27dc9870492bd0d07b75e221107f72d15f4a18dc566440e8c07e",
+    "bytes": 222
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/result.json",
+    "sha256": "ec9729576d35d98c43fb972604cf784f493fc2f008611258f12158c282572da0",
+    "bytes": 11071
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/verdict.json",
+    "sha256": "a393005ee8589f75227ea2b0733842a48ac04b025be6a5ce058310c35bc938c2",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/artifacts.json",
+    "sha256": "87d1595c02a9063d03a8f28515860c7c13360e8c0b2fa9e1db2c8f743ba969c0",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/result.json",
+    "sha256": "46d6180db72fc76ffb7b6ea88c7f4640a5cedc9602d67648f1ccb45341962205",
+    "bytes": 12062
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/verdict.json",
+    "sha256": "ee2ff0b7956f5ffdf15bc93cdfb5c88ad20baa7ea5a153f88bbf1dee52264ad4",
+    "bytes": 632
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/artifacts.json",
+    "sha256": "aaedea8c23d3ed1b74a129419574131637e7701ce2fbc87cf6e55b83defe254a",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/result.json",
+    "sha256": "f82c65b9a63c42c8511730678f041aadd117f0eadd4c360c7b6854698be0d0d1",
+    "bytes": 12070
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/verdict.json",
+    "sha256": "320a15559bf866642ff639d58ce9fffddc11803caa66db039c5b5efdff3f9f36",
+    "bytes": 632
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/artifacts.json",
+    "sha256": "fe73bf93c27d3a8697ab6e89da657493f3779c77c120f65ab8e0bc4ed1bdc0d5",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/result.json",
+    "sha256": "5606662b1cd8a1a5b0b5ea598581f99ec33d24e7797c512d22a0325f1de6b5fb",
+    "bytes": 12070
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/verdict.json",
+    "sha256": "e9b7fe8982dee6b46a5622ba9db8122bcf4c104df434dd918d92b87e51c14d57",
+    "bytes": 632
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/artifacts.json",
+    "sha256": "e1c960351bd838a6cc82a528801ba476a1b358129356fa72b48a2b6b3fce6722",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/compute.json",
+    "sha256": "1b59c024bd4f78e8aa60c31c09ebd5b01443b6b87d8ee106d6fca05e462cdd2f",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/result.json",
+    "sha256": "6a8083286607fa52f84c849b6f934a7c2bd413c9fe1b343ee64ec98763839973",
+    "bytes": 11543
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/verdict.json",
+    "sha256": "ce9b0babd65c33d94bd7247f20775ac30cbbc501832afc5ed97bcf7998a951f8",
+    "bytes": 457
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/artifacts.json",
+    "sha256": "ef74a9d6b105556e7f24e6a2067d651e35fb7f8acc48f8a5a92d01df29ac5618",
+    "bytes": 222
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/result.json",
+    "sha256": "d32cc63c682cad92263669d22da7e442ab69bac6e94f3a858e28f741b5fcd962",
+    "bytes": 10989
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/verdict.json",
+    "sha256": "b2c6fbc119b896d12280359820c8ea9401dec46aa90b50f76a64458128a32268",
+    "bytes": 504
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/artifacts.json",
+    "sha256": "154b825bf785ca1ca3ecc1bc3f2950ed73b04bf25040c4d829569e87793593b9",
+    "bytes": 222
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/result.json",
+    "sha256": "f127a85d9286bd73242638419e4480861bae647dfaa53c20b9ee1a4564abdd6a",
+    "bytes": 11401
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/verdict.json",
+    "sha256": "8bec6ce3b9d581ec0d0ac6eb12b47b77631f78ff2229941c96c372bea5924f45",
+    "bytes": 445
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/artifacts.json",
+    "sha256": "432f8a6db6718e83af89ee61121cddf7b9ef725f6926c435478136850ed30afa",
+    "bytes": 222
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/result.json",
+    "sha256": "a6b71ed2d484b59b297083c1f567f9e912d35f1aea7758fbc84cf97c5cc3aed9",
+    "bytes": 11023
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/verdict.json",
+    "sha256": "031e3e8b8adaf4e56343cfdad3264fbc8f4d5a962d217e1ee9aa8edddf871ed1",
+    "bytes": 460
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/artifacts.json",
+    "sha256": "48138661fd812745ab76a923eaec2e66c4b3f5ae4f7dca85c0ca2fb725777219",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/result.json",
+    "sha256": "43b1e93782abfcd9c3b36450d8169597a059c0e41d02bb732fe5c6f53e316691",
+    "bytes": 12068
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/verdict.json",
+    "sha256": "6d2da6514e19121ef97dca059b31acac0064ce4abbaac08133f0d2fe70087353",
+    "bytes": 466
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/artifacts.json",
+    "sha256": "55e34e69565b16c109f9d7f43f8af6f04d29e8ea8d584fe4137eede178f8314c",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/result.json",
+    "sha256": "a5d90ddb833d93a7808452c3eedb8bb47d62086ec7a7c428c260f3efd1118485",
+    "bytes": 11172
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/verdict.json",
+    "sha256": "eb55d2676e207ecd4a5cbec49967246ef13c32501de968304dde7159ded53826",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/engines_report_network_telemetry_and_its_output_changes_nothing_they_execute_network-sim_artifacts/network-telemetry/client0.network.json",
+    "sha256": "143ba4ad469ad65235d32bcde47019a43d69ed7389f5fdcaafb0c675f5fd71fa",
+    "bytes": 11405
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/engines_report_network_telemetry_and_its_output_changes_nothing_they_execute_network-sim_artifacts/network-telemetry/client1.network.json",
+    "sha256": "4ace549c1598abc1f7f301b0dd6b96db24a9cea1f718fd7e238180ec44ecf487",
+    "bytes": 11662
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/engines_report_network_telemetry_and_its_output_changes_nothing_they_execute_network-sim_artifacts/network-telemetry/relay.network.json",
+    "sha256": "0d430a800c8d5989eecbbcb8e9b3947977bea896ce8ad434f6bc4d0a91c0543b",
+    "bytes": 2561
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/artifacts.json",
+    "sha256": "428335b26772aecd046e00277ad1b367e4163a0ab02549d24734a1fd7955fd14",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/result.json",
+    "sha256": "129f0982ea41b27e111a0f9ccfb19b70f3a88088da1d456cb4d63f618c28e54e",
+    "bytes": 11756
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/verdict.json",
+    "sha256": "4b61ccd2ef1a7f222a7cd25f25c69e4cf07a3ca9ab003b0a5fd73622de13cea8",
+    "bytes": 431
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/artifacts.json",
+    "sha256": "ebb2e10177ad202b0e7cd8908a73e21b261c78d00093ec3d25b1163cc9e6a434",
+    "bytes": 222
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/result.json",
+    "sha256": "80e70acb4017745e9a247ea16e959dc15f2f115b272380cab0b51adb7038cd98",
+    "bytes": 11099
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/verdict.json",
+    "sha256": "2567b16aef44bee3ac9dd845a24928dd0f4776c4cea496bfd61699decde1785d",
+    "bytes": 458
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/artifacts.json",
+    "sha256": "cce0f4241acbcb3223d326ab981bf95cca8ae10f6928583f0970fb4f2ddb88a3",
+    "bytes": 222
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/result.json",
+    "sha256": "be044e4323fccf10b19e2689f9e286af53d4c0f4f6b441626d5d042d68d21624",
+    "bytes": 11063
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/verdict.json",
+    "sha256": "52ee781719cfddbf966a0683f924345d3db509d07f6e0b5f29aa40d13d93d332",
+    "bytes": 578
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/shared_scripted_maps_play_and_produce_verified_ordinary_replays_without_installation_network-sim_artifacts/verify/artifacts.json",
+    "sha256": "06bdafa82ddf3a194179f3bb739c5e618a323343ca9ee87f0ad142d1de6b928c",
+    "bytes": 220
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/shared_scripted_maps_play_and_produce_verified_ordinary_replays_without_installation_network-sim_artifacts/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/shared_scripted_maps_play_and_produce_verified_ordinary_replays_without_installation_network-sim_artifacts/verify/result.json",
+    "sha256": "8ec9983c57d8e1c56641b5a2ab3b192570f8f3d4fabaae468c62f250877a573c",
+    "bytes": 6305
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/shared_scripted_maps_play_and_produce_verified_ordinary_replays_without_installation_network-sim_artifacts/verify/verdict.json",
+    "sha256": "3ee605d7c9e0065fab5ccdc2857cef13e1a3dd2790f28349014af33c82811b20",
+    "bytes": 336
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/artifacts.json",
+    "sha256": "30b0410655b16fef64cab7ad5568b85a9a37f017f6c4bfe2883428f95e1315cd",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/result.json",
+    "sha256": "a5bfd33342b5d549d967c6125a84054f30409842849485130e38117ca3c9303f",
+    "bytes": 11440
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/verdict.json",
+    "sha256": "2165f6408b917a092484d823003acf519a01d73252089d33ae8a24413777b833",
+    "bytes": 169
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/artifacts.json",
+    "sha256": "f0436449231b6ef3d9264d1425619f8eb415ce781d79103683888a3b0b74e37d",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/result.json",
+    "sha256": "27ed3608ee7eade0f111aebb192476cb522b4f58140119ae5b600a9edd7b7a8e",
+    "bytes": 11323
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/verdict.json",
+    "sha256": "1d516c62914cc80fc17e6ce4c85f3e7a68ac3ad883061cfd365ec56e13a010bb",
+    "bytes": 457
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/artifacts.json",
+    "sha256": "6d23fbeb210c1e84a1660f2085a3ae054302b2ccf032959baa0dc36f3ea4ffde",
+    "bytes": 223
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/compute.json",
+    "sha256": "236704fa35dabb1a2b4046ee721f44ebfa66c4669e0ea513ea896f3509160fe3",
+    "bytes": 499
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/result.json",
+    "sha256": "8deb9f6d06c086a555faf39c5d319becf26b9ee778406c6220550685dc00a418",
+    "bytes": 11304
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/verdict.json",
+    "sha256": "92fa2dd9586ca99935cfd47e6ab569dfc30853866f2fb5ebe5adc734bf1f1af7",
+    "bytes": 431
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnHarness/network_telemetry_follows_injected_latency__jitter__loss__an_outage_and_a_rejoin__network-sim__artifacts/network-telemetry-client1.json",
+    "sha256": "f1bc86c68d7220078a0bb8e1d2689a22c559bc999156420bc9f2023384415175",
+    "bytes": 18251
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/TurnHarness/network_telemetry_follows_injected_latency__jitter__loss__an_outage_and_a_rejoin__network-sim__artifacts/network-telemetry-relay.json",
+    "sha256": "240a5241226e8897f5fdbe87783b489303b2d6207ec796ff3f9e929ef32f9c88",
+    "bytes": 3661
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/build-provenance.json",
+    "sha256": "7578ae482578984295b4f5fcaa9fa547e8eb3ff0ec2ecd706ea6e3e595433bc8",
+    "bytes": 768
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/engine.inventory.json",
+    "sha256": "b5345f8d4ee6c6b6713fd695e486de4ebd292d2c11f70d3c0acf73433ef2c6f8",
+    "bytes": 518362
+  },
+  {
     "path": "artifacts/bengali-localization-v3/ci/41266158452/snapshot.json",
     "sha256": "63979d9efacd2bdf92938d9658c61765d84bcf30226033e78b09e5b26c6a6c89",
     "bytes": 19866
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158452/zip-index.json",
+    "sha256": "8206e7cac7f95eefdcae47670d1133a9d8c96ccd4383bebdd1d9e7a547d6a462",
+    "bytes": 154040
   },
   {
     "path": "artifacts/bengali-localization-v3/ci/41266158452-priority-check.json",
@@ -885,9 +2535,199 @@
     "bytes": 14269
   },
   {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/actual-extracted-bengali-closure.json",
+    "sha256": "df5cac7ce4f257c7005b866847d71068a2f0e39f3f2187b525c647e4b7913597",
+    "bytes": 2428
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/android-job.log.gz",
+    "sha256": "9cac54e9a39baacd218846fa6677eac48fc567176b4be72d289b543928d8f2cb",
+    "bytes": 1336505
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/apk-artifact/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json",
+    "sha256": "8b3a8e32e90e3debd814ad7d1873c356509204b944cb3d6ee0bfffc0411f63f5",
+    "bytes": 89
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/apk-artifact/mobile-smoke/failure.png",
+    "sha256": "9174a3475dcb876e318ca2c6c44ff9442dd89dd095edbbe6d0306f9c962103e5",
+    "bytes": 82215
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/apk-artifact/mobile-smoke/result.json",
+    "sha256": "c541fbb2805b80166abd48dc42b23fa1a9104bd9b7d8708c6ccd19755ce85a75",
+    "bytes": 148
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/apk-artifact-metadata.json",
+    "sha256": "328690d1b15f6e0a550ec639e426ca74485306325feced5127a292ad81055472",
+    "bytes": 727
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/apk-bengali-closure.json",
+    "sha256": "2da763fa2fe8ca14f7e5b1b27958dcbeb8632c7c84622dfe2a052a8f335d8790",
+    "bytes": 2971
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bengali-runtime-review.json",
+    "sha256": "630cd20971b41cb40924001fe27c19b75aa78d7af6e3bd1c452cd70e15881ac5",
+    "bytes": 5954
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bn-audio-first-visit.png",
+    "sha256": "ad1be7a71c493ff92040b3cb8c855807e68be9624f20d69cd73076c380275a4d",
+    "bytes": 149701
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bn-first-visit-progress.png",
+    "sha256": "bf0f88cec535ea72e510ecdb7700045c29f6e0a136417772049cbf4366128888",
+    "bytes": 116292
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bn-first-visit.png",
+    "sha256": "ed83cdb0404a90179f3a081a76c362a07cbb9fbff38dd23b83056810227f9688",
+    "bytes": 118159
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bn-hand-first-visit.png",
+    "sha256": "37b3aa5ac1a494edd1376d30088d9a80f4b6944ac6c87cc7e19dde24f708ac37",
+    "bytes": 122408
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bn-introduction-first-visit.png",
+    "sha256": "0f097f1435b214bca10b3dbb4f46aff3aee04b1f53fbaacbec2b859ed6210e49",
+    "bytes": 93975
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bn-main-menu.png",
+    "sha256": "20099f273a342a2536d522df8a7bfac79fad045ac94a8c27d7962a0898fd5668",
+    "bytes": 152031
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/bn-settings-settled.png",
+    "sha256": "892810a08e020c7d7269f80c23fcaf13b43fbc73778cb64ba3f79779a8fd7ca5",
+    "bytes": 81125
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/development-signing.json",
+    "sha256": "adfa6bb21f2c21f737c12cb1f5298f0283d0ed989d7a2cc1ed4529edc02ca308",
+    "bytes": 179
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/emulator-command-v2.json",
+    "sha256": "d5a3466d2d989b0053bf6b8501876cff3c029b8e63ae95b16ca69f1e995060a2",
+    "bytes": 2102
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/emulator-command.json",
+    "sha256": "bdd1a9b37ddbcd3dceac6335737485767cac5a7bf6bbdf0835e906d5629f785f",
+    "bytes": 1981
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/native-compiler-and-buildid.json",
+    "sha256": "2f56db2f7b22316086e06a31574a0a054c463c342642100000e3e1bee7046779",
+    "bytes": 643
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/os-locale-first-visit.json",
+    "sha256": "f44411edae557422bea17cf8e6196374fd12329faeb239c00bcde64fd51937b3",
+    "bytes": 492
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-device.json",
+    "sha256": "20b92df40cff04e784748772961303760336e427314ba239dd9b37b25a547260",
+    "bytes": 485
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-final-logcat.txt.gz",
+    "sha256": "57cc0ba4807f3b1d2be9ef7cae1af78fa28a37dda3dc73fb43209d74ad6fc68d",
+    "bytes": 8137
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-lifecycle/logcat.txt.gz",
+    "sha256": "904c836693b8507a6e602937d516a0867ec8906149b435a4c19385ca27357a96",
+    "bytes": 22876
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-lifecycle/relaunched.png",
+    "sha256": "1c065fc4c08b4bdb0953ce965ba76a916e730ba3a67ddd8fdebc7db5f09c5d94",
+    "bytes": 163917
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-lifecycle/result.json",
+    "sha256": "7aa7293349cc1ac44d6b27251cb5bc30665aacf6b1728b4a843cd4e8ec2cb719",
+    "bytes": 334
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-lifecycle/resumed.png",
+    "sha256": "bb61a02c51e0229614f458b4c6854a42afac2d4e79aad9ec9dacf983cda4c760",
+    "bytes": 166395
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-lifecycle/rotation-0.png",
+    "sha256": "840c32a83406b68ea6e0fe464f0564891f9418afc48099e2c0610b930f081795",
+    "bytes": 155049
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-lifecycle/rotation-1.png",
+    "sha256": "7de3065db70b433063d8dcb6fb00b103bb9052e2d3ff3d68f567f19eb1535b76",
+    "bytes": 161289
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-lifecycle/settings.png",
+    "sha256": "ef606236e88850bcb44e5d6b61a52504b5dea67b49362c5c03b0fe63dea65f32",
+    "bytes": 164680
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/runtime-lifecycle/startup.png",
+    "sha256": "fb8ffd4eaa36354bae95e827fc1255ca2c9d27fd83a51d2191a783e93dae06bb",
+    "bytes": 164640
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/shutdown.json",
+    "sha256": "048e1ac4def195927ce6e2d89e0d91cb7e45f6854657fe41941766693e70d9e0",
+    "bytes": 401
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/signing-component-closure.json",
+    "sha256": "01ca7d357fd49685dd710945a6038dd9bce73fe829669823c585af96335732b4",
+    "bytes": 738
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41266158472/smoke-adapter.json",
+    "sha256": "ada7651de4c383502d5eb0425637bf1178c37252d75c109876266b4a1657105e",
+    "bytes": 528
+  },
+  {
     "path": "artifacts/bengali-localization-v3/ci/41266158472/snapshot.json",
     "sha256": "ba5e1d9d44a942e6afbf625c6b23e646de59291895b8276331cf3e756d905dff",
     "bytes": 15523
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41268380133/selection/ci-selection.json",
+    "sha256": "3cfa50884e2a29e7e690a205bd44d1a18c5e9d27a17c00cc7731cf0f79915b5d",
+    "bytes": 57435
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41268380133/selection-confirmation.json",
+    "sha256": "82840859b0e33a1d8e872131276a8949dc4fab0fbdb85044d9a9eb893afe9cfe",
+    "bytes": 27641
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41268380133/selector.log.gz",
+    "sha256": "d0f0f7c950368352fc94e34838bb274c08e7bbdb3ab02f95d548b89058017224",
+    "bytes": 65841
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/41268380133/windows-job.log.gz",
+    "sha256": "295ddd52959f65d29ce6ae4d78946c26e83e52393850381ba6b125bf910087e4",
+    "bytes": 91216
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/adversarial-runner-status.json",
+    "sha256": "c4f3e03219cd1c31017a0103ecd61080ddade36307a6235b76fbd25d77c37392",
+    "bytes": 2816
   },
   {
     "path": "artifacts/bengali-localization-v3/ci/android-dispatch.json",
@@ -900,6 +2740,11 @@
     "bytes": 919
   },
   {
+    "path": "artifacts/bengali-localization-v3/ci/current-collector.json",
+    "sha256": "ffa88bd5f2cf85e183341dbca42c88466d7ac74b290cb1ab751016f9ce8e8861",
+    "bytes": 4492
+  },
+  {
     "path": "artifacts/bengali-localization-v3/ci/current-merge.json",
     "sha256": "c9331bf9cb21362cd66b9d70640c0c83b9b9096416b329cb598b10e42e443db5",
     "bytes": 519
@@ -910,14 +2755,44 @@
     "bytes": 303
   },
   {
+    "path": "artifacts/bengali-localization-v3/ci/focused-windows-preparation.json",
+    "sha256": "71ddd5c74f106f8adeab59ff990479a54e933766f115f917f5d03406b6ade8c6",
+    "bytes": 955
+  },
+  {
     "path": "artifacts/bengali-localization-v3/ci/initial-collector.json",
     "sha256": "0e5a14d2f991d1350886968f73778c8fa1942758e35f9fe2033b7777c98fecc0",
     "bytes": 34311
   },
   {
+    "path": "artifacts/bengali-localization-v3/ci/integrated-tree-proof.json",
+    "sha256": "1789de2589138bf1f57bcfea9b4cc367df16ca918e2c286b310c6061ae928c96",
+    "bytes": 718
+  },
+  {
     "path": "artifacts/bengali-localization-v3/ci/macos-dispatch.json",
     "sha256": "5131c2d159d49efbb151cbd623dac122b6fbcf1e51283a271231bd9603a21171",
     "bytes": 670
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/new-master-localization-impact.json",
+    "sha256": "eeef88d97b420828ae28b972a5c568368e5995d46fe59c795853ab5a7f857a5c",
+    "bytes": 5896
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/platform-coverage-summary.json",
+    "sha256": "d969a0d815db5b887bdfba3553fa6bf1c0e2fd36955754c7d0295c2bf5dacd4e",
+    "bytes": 4398
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/superseded-1d36-cleanup.json",
+    "sha256": "fdc8895fe622e349d94b45f6167c90934e4a495dd562f7a7aa2aa24f54b4dd9b",
+    "bytes": 83095
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ci/superseded-3ba-cleanup.json",
+    "sha256": "ca5f2721efac48d38e1881e79d7ade67d27f07b7ab9bb8a6a343d927b140b6bf",
+    "bytes": 168081
   },
   {
     "path": "artifacts/bengali-localization-v3/ci/superseded-fee-cleanup.json",
@@ -990,6 +2865,81 @@
     "bytes": 603
   },
   {
+    "path": "artifacts/bengali-localization-v3/font-matrix/desktop/font-10-scale-1-page-001.png",
+    "sha256": "d386ae1f1da6c31f41160c3e5aab25e14a562c0daa27aa0e861df6e30c46dc2c",
+    "bytes": 18437
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/desktop/font-10-scale-2-page-001.png",
+    "sha256": "a4247d217e3af41f855e881a20749b04d7a8fd00e1a8f390573bec21797ce1d6",
+    "bytes": 78929
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/desktop/font-13-scale-1-page-001.png",
+    "sha256": "249459c45832b290a31fac19f50056f6726efdc19959ce780a37274cb5d99c84",
+    "bytes": 21322
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/desktop/font-13-scale-2-page-001.png",
+    "sha256": "225fad3351e27d6b1cb7fc1a0aae0a4ede7993206e44a7e208c3e4027a7b3a30",
+    "bytes": 99015
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/desktop/font-20-scale-1-page-001.png",
+    "sha256": "9a7ea9dc83450215881ae246eabb0dae918d756ee171c033ff296fe85b8a8ca4",
+    "bytes": 39043
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/desktop/font-20-scale-2-page-001.png",
+    "sha256": "333dedbfdd0e1949bbea066a6c5f27684d7f57ae6f4a48ff30e98416f00ab2c8",
+    "bytes": 157390
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/desktop/font-matrix.json",
+    "sha256": "ac165702e71281f8423d9a933f940b7b9cd4d779fdd402f713cd930f88d9aced",
+    "bytes": 26721
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/phone/font-10-scale-1-page-001.png",
+    "sha256": "244803bb48139a9f1e8940ff552dbab71ba7e60c24df58d22b5195c8b1808492",
+    "bytes": 15212
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/phone/font-10-scale-2-page-001.png",
+    "sha256": "2f623aab179af41b7d634385b911d712ba8d81ffa22adf73011a5515e312ead3",
+    "bytes": 71618
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/phone/font-13-scale-1-page-001.png",
+    "sha256": "07a0448e250f0b78a21de0a7299d6875674fffcc4fd89635c471a4b1d05fba74",
+    "bytes": 23431
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/phone/font-13-scale-2-page-001.png",
+    "sha256": "2197a3097b88bdd6d84ccfc11e6b032c0b83b15b0676c4e12a3f8824dbab49d9",
+    "bytes": 92528
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/phone/font-20-scale-1-page-001.png",
+    "sha256": "cebaaa3f142698d9cf89a28dee30918b3a29cacd422461195d11fd675da52926",
+    "bytes": 45650
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/phone/font-20-scale-2-page-001.png",
+    "sha256": "facab38647c16bb433d86e0a34731f8a871ed94eece0d7261d3262b8a35b36d0",
+    "bytes": 150280
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/font-matrix/phone/font-matrix.json",
+    "sha256": "49fc07ee65b00f81a5e88e643d86a0ce6f5082f881ad3efd7f09246375fd5b17",
+    "bytes": 32238
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/hud-integration-source.json",
+    "sha256": "aa8e0889160d051a683fe93e87c8da08c0cbdac49e6f922cabfd19a4f87eb478",
+    "bytes": 681
+  },
+  {
     "path": "artifacts/bengali-localization-v3/installed-source-binding.json",
     "sha256": "39cfafaf7b3353bba61e84529bb3bc41f9eddb9e13be438517e649d3871c5a38",
     "bytes": 1321
@@ -1000,14 +2950,209 @@
     "bytes": 916
   },
   {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/app-data.log.gz",
+    "sha256": "fd83e94a5fba0cbcaa07d9dba4cd1dd43cd72fa3fe9b493fe64782b90828d58c",
+    "bytes": 172
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/app-inventory.json",
+    "sha256": "4e737e2f5ff7e0a86fba9321fc91f5b7aa56d723ac624f0516b0cff612bf9d6a",
+    "bytes": 1231029
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/architecture.log.gz",
+    "sha256": "16fab40581596e159029b755fe8ee146aa064ed78d1f6fc04342b7b43d727b09",
+    "bytes": 43
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/boot-wait.log.gz",
+    "sha256": "122f9ecd72fe2447a427894387d90edf86af2fc5c0a8d01a3d441b4d15c99304",
+    "bytes": 145
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/boot.log.gz",
+    "sha256": "73134d5969bf571ed2967dda9e5df8d591758eccf652bf492a43ee5aeca44420",
+    "bytes": 29
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/build-checkpoint.json",
+    "sha256": "bb61efff03c49a19ca3df990ed1515f26f53af3c06af0d0edfe3e0904a27977c",
+    "bytes": 3027
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/build.log.gz",
+    "sha256": "33452858e0a10075d730bfc84c2017c87e6b88940ccea4eb8d578430b3470e07",
+    "bytes": 552396
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/codesign-detail.log.gz",
+    "sha256": "66393a46c9a0ded390666f532e4d798b65723b35ef5d347b2959cbfda466a734",
+    "bytes": 368
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/codesign.log.gz",
+    "sha256": "5fc2a6a3e69c68ca551bb5f49819aa3399e3d63f2d8a661acf5650199dc00cdd",
+    "bytes": 33
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/commands.json",
+    "sha256": "5769172c283544bc0bdf07ac8b04d2064478d0b416fec1e53dafa3f2a4faa802",
+    "bytes": 6120
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/create.log.gz",
+    "sha256": "147c6127ba0906f03f5e1bd06581bbbc490aa8392a166ba72580fb0b90f2bff4",
+    "bytes": 68
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/critical-bundle-identities.json",
+    "sha256": "becf726ae20c7c95051fbf9b394410d22bd9997a5eafe62ee59df1f38d00fd08",
+    "bytes": 1356
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/dependencies.log.gz",
+    "sha256": "42e9f72ca42ef391717d87ac93ce25ecdd2406d78da145dc1fc4b0b1fe45126d",
+    "bytes": 18202
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/dependency-manifests.json",
+    "sha256": "11ccfc1c2ee37ac0263542e798eb289f9c137313d1d0f1c60a06bee86c8317a7",
+    "bytes": 925248
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/device-types.log.gz",
+    "sha256": "8de0c2ed4fbf4a10c8e607430e27e454eb27ba7f159fecec31ec877a9a6ebf8c",
+    "bytes": 3017
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/doctor.log.gz",
+    "sha256": "20271404678b83bbb51107c2621102cf71377941eeb6fca3ae877244609eaf1c",
+    "bytes": 588
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/executable-identity.log.gz",
+    "sha256": "1bdc3b51c9bdfc1c89ff7358c02bf66fd2bcd6331e4db1d02b2e85689226d6e8",
+    "bytes": 172
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/font-bundle-closure.json",
+    "sha256": "a6cab9caf190b4d4f9ce19b6d6d3458813562dc8f7ab5d0ebc9c0725768531ba",
+    "bytes": 5171
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/install.log.gz",
+    "sha256": "e92de2a91b86735eb2a7b9fd579aaf1af44d9abc2044b830bfa8ecff1d8462ec",
+    "bytes": 32
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/launch-help.log.gz",
+    "sha256": "3670e70d7729a711bacf13c4fb46ccbb3a169c8cd4fd4444c49ce10a85d06b91",
+    "bytes": 625
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/lifecycle/commands.json",
+    "sha256": "29fdf023099d7ba783006023d991d2192e1adf57c7104ba8fc47d1ff9a021111",
+    "bytes": 5442
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/lifecycle/devices.json",
+    "sha256": "151ff4d9a18600bf8ee527a0256752a93a113b71d590d32e7914a0bb74b005e8",
+    "bytes": 842
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/lifecycle/failure.png",
+    "sha256": "afcbc0c88ee0a1d35587f0f3024661c6260b32e95088f27f69af106cdce06a1f",
+    "bytes": 755997
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/lifecycle/result.json",
+    "sha256": "385fb5bed7ea2112a7ef287f0cddfa5ba0bfcd8040263b82552827da83fa5d33",
+    "bytes": 142
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/lifecycle.log.gz",
+    "sha256": "afecab4ab2d9bf9dc0e97cc2ed2e3c39566105c9e4a9ebd26818060244c7c5cf",
+    "bytes": 620
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/result.json",
+    "sha256": "49c343a0bdbffcd8cdd38b4d2131143e01d662d010f4482ea561264c3c6d82fe",
+    "bytes": 21082
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/runtimes.log.gz",
+    "sha256": "361920bfac68798f6260a8dfd4e7964f6aa69538d5161977e9fbc169b30db7a0",
+    "bytes": 1798
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/sdks.log.gz",
+    "sha256": "774a8097dddb456efccd9620f260753af86004d3d1c5cfb7feef5bd65bf2af8c",
+    "bytes": 219
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/shutdown.log.gz",
+    "sha256": "74221205f90b7736cd899af0c41101ad1e74cb22f60f1df48afd9e59a6c3a49d",
+    "bytes": 33
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/source-catalogs.json",
+    "sha256": "844d70ad77873be59b6e6c023b4e95655120e4bbf4c7a4ec6f4637e27bf4bcce",
+    "bytes": 281
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/source.log.gz",
+    "sha256": "8f17d2d0a12b61167d0d1a824742c6112b56dd8514f54b29726014767c389a9d",
+    "bytes": 70
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/toolchain.json",
+    "sha256": "35aa08fdbf10f0638dfcbf5e0210345a68a9483107e034f2eb1a677d6a0cbc0d",
+    "bytes": 1597
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/xcode-candidates.json",
+    "sha256": "c82c0d2fcba0adaaddfe01de2a3ef6fe513de730767a2b312e8debe9a8f186d1",
+    "bytes": 1435
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-artifacts/bengali-ios-simulator-final-v3-942d138/xcode.log.gz",
+    "sha256": "04a615dd4e0afaad6d82c07ae14f4b0754f779e5de6ac6b57364015f230650c5",
+    "bytes": 62
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/final942-independent-result.json",
+    "sha256": "af579ad6b12e4abb7b39023b561006d720f736d7ba17ab509e14e5fb26933f42",
+    "bytes": 2629
+  },
+  {
     "path": "artifacts/bengali-localization-v3/ios-validation/pre-dispatch-review.json",
     "sha256": "b85d4299584ec4af4ed63b8ea80437c87989cc9131f6c7f10401538ff476c049",
     "bytes": 563
   },
   {
     "path": "artifacts/bengali-localization-v3/ios-validation/run-status.json",
-    "sha256": "c92a4fa075862985776501aada5db6b28a278663d6cfbd97a4a69c723afd21fc",
-    "bytes": 889
+    "sha256": "cf640263f04f2687f6bcc3e9fe165d7ba0e9e0f24ad023ac82297b609da1aa9f",
+    "bytes": 1049
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/runtime-recovery/dispatch-provenance.json",
+    "sha256": "01f2059de5fc32ce2afae968a7bee3eab4bda72d83f779fea8c056f5c35b1c79",
+    "bytes": 896
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/runtime-recovery/preference-path-source.json",
+    "sha256": "7d7e24acfa635358e7a445c6aed0ff585109c3fa6db8e7371e758b7fbb94b798",
+    "bytes": 685
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/runtime-recovery/preflight-review.json",
+    "sha256": "575ce0f38b96b5f5a1eb4e1731db332d7290e116e924eb2bee62348adf8ec00c",
+    "bytes": 840
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/ios-validation/runtime-recovery/run-status.json",
+    "sha256": "dacaf27c0b95d36e66acb2480bea922c2e4f8c5cdd19bd60e4d0d83719b945e7",
+    "bytes": 670
   },
   {
     "path": "artifacts/bengali-localization-v3/ios-validation/superseded31/artifacts/bengali-ios-simulator-31efbe8/architecture.log.gz",
@@ -1115,9 +3260,864 @@
     "bytes": 284782
   },
   {
+    "path": "artifacts/bengali-localization-v3/native-3ba-binary-retention.json",
+    "sha256": "f70aede0d1ab3612fdb96b8089a9a0ab558b6497cd0a8876b4d7a3cb428975c5",
+    "bytes": 740
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-app-build-3ba.json",
+    "sha256": "4738f09361d73ad14ce8f464f135e2d2c66fe20d1a0ea738e138f944c5961090",
+    "bytes": 1394
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-app-build.json",
+    "sha256": "0b6fa82b59528d07a520d861dfb5b099eac385dfc6d3e0b8c676dd3225d5bcb5",
+    "bytes": 1394
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-captures-complete.json",
+    "sha256": "297687c4c6860d9f63c3739e4df814cee3408a7bf726e1bac5e7952fd0de0b02",
+    "bytes": 459
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-tests.json",
+    "sha256": "27776b160ad9b187b15dd6a42de0c5e4b5c89dc257a9fc395919800e7efbaec2",
+    "bytes": 1505
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-tests.log",
+    "sha256": "93a1f00668c004e28c774f7c3d5fe0f885bccb0df6c74f29f4f4925fc720c20a",
+    "bytes": 5107
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-tests.xml",
+    "sha256": "6e60f10ac72854c1f924bc007c2b543744ebee2e5df9d197381f67c483d58313",
+    "bytes": 4980
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11-0.log",
+    "sha256": "40429de159c43e6293a52450a2e3a00255df82db06eb034136d3c66518af0c94",
+    "bytes": 1009
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11-0.xml",
+    "sha256": "b4f3684d9f5e83563ec3f877286d46ccdd51ef15b77e89834291297f80e4e71f",
+    "bytes": 498
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11-1.log",
+    "sha256": "31935ad8f47007d0cbacd0abb14d12ed0efa2e1fd13f9d775b9aaac18f1b2dd5",
+    "bytes": 1339
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11-1.xml",
+    "sha256": "dc7dc394aa9314f9dc96a79f886798168c51582094afb29c46d4205e2c5a7e67",
+    "bytes": 501
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11-2.log",
+    "sha256": "8f9c03590adfcb50868e1789ebd56d870cb5a60787a6221cb03c2dacf1e16966",
+    "bytes": 1405
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11-2.xml",
+    "sha256": "bd36b199418b0c1833115b8fc6c94137f8ccdf794efe64a983b233fe8f41c7b8",
+    "bytes": 487
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11-3.log",
+    "sha256": "40429de159c43e6293a52450a2e3a00255df82db06eb034136d3c66518af0c94",
+    "bytes": 1009
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11-3.xml",
+    "sha256": "4f19b6d8fa0f3a85b92acd06e18c8a4132998bed85d196a7379f4937dd151556",
+    "bytes": 495
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-display-x11.json",
+    "sha256": "cff24fbc41399390e213550a1764a006dadd908be071f5b66cd73d7050261690",
+    "bytes": 5628
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-final-object-refresh-3ba.json",
+    "sha256": "63437873d438a8c7494f66d7b36d68116af9c2d161f27dd18a46fc7cf48eebe0",
+    "bytes": 229
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-focused.json",
+    "sha256": "7501e16cdbb4611af339a7b7dfdbbbf3fb4ce32883f7ebf1eeae1c04edf8234d",
+    "bytes": 1462
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-focused.log",
+    "sha256": "05428d9dfffcbb7341bf6e172566ed1c5b9780e9814751e8d7cfdf0a49050eae",
+    "bytes": 7848
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/acquire-settings.json",
+    "sha256": "fb2185e1045ad878c2719892b1a5342ba2fe230762bcd2f47e030882a7fd2a21",
+    "bytes": 689
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/after-restart-profile.json",
+    "sha256": "09f26518c7d1118ff3e602bdeec78e0fbb5146e735d679eb3f10300f0c57170d",
+    "bytes": 368
+  },
+  {
     "path": "artifacts/bengali-localization-v3/native-interactive/cases.json",
-    "sha256": "48af18e906ea122aed0aa81ec9e2a1f5cf3bf7ac1b322aa743c79d8434f1e1a7",
-    "bytes": 486
+    "sha256": "3d788af9f6a46bb555386cd6470fc94e49689ba26e713a9a6df06f780cfc033c",
+    "bytes": 1227
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-254byte-accepted.json",
+    "sha256": "be05c1fe37a42d7c855a6e5cc4955f8bb4d178da4476cf891497e27bb6bbe31c",
+    "bytes": 1104
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-254byte-accepted.png",
+    "sha256": "45b542933d5fc1dd28c20aa52fea7f2fd01bdf65d6b6ff3de32cf144376f7cae",
+    "bytes": 1022614
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-254byte-history.json",
+    "sha256": "ea7a7ec34c409f94391a693892152a5716d3558dea6dc86f38474d0665b71179",
+    "bytes": 844
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-254byte-history.png",
+    "sha256": "730d3d3621ff5e99788f4169642c6fff7d6ca35d31f7d2f3d179dd06abddc79e",
+    "bytes": 931564
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-254byte-local-self-send.json",
+    "sha256": "5f01f655063a349437bb25f274c9500b0a6102f52075fe170cadd6138d8be9ce",
+    "bytes": 849
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-254byte-local-self-send.png",
+    "sha256": "9e09684a869deb2e594453171abb890ef54ce13c429bb8caa69251c783443d35",
+    "bytes": 1014723
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-255byte-rejected.json",
+    "sha256": "88255389acb45b27262be35c47d79d106e1a6463ee91daac4a9bc6792c50c075",
+    "bytes": 1105
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-255byte-rejected.png",
+    "sha256": "2f345de16608c78301edac87a1e73e57c1333d45d1833b9ec73a2959e427cec5",
+    "bytes": 980919
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-open.json",
+    "sha256": "6bd70d7ee8e90b23749730019145d8db27afe1f5f3014a24de82cc251670484a",
+    "bytes": 849
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-open.png",
+    "sha256": "b6f0e7cdd1face2dbf79e372154be943dd2f6d888b8b56379fe05f8a3c1859c0",
+    "bytes": 959080
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-prior-draft.json",
+    "sha256": "15ec3955a9fc75c64278357ffc7578971ffe4abc90fd4782b15e1accda28b737",
+    "bytes": 881
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-prior-draft.png",
+    "sha256": "e262aae594a499f6769a2fca6756001d5ebf6a9d4b00d3ebec6e804bc94da9b1",
+    "bytes": 954004
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-select-reject.json",
+    "sha256": "f336732f1dc80d5be3f431b9e9f32c18e7d869db668e56796620d194f2d5c470",
+    "bytes": 793
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/chat-select-valid254.json",
+    "sha256": "e47e17499462d8ae811b8a3ad37a9689e55b8e78e9f5f7f43efe1604e0d2516b",
+    "bytes": 793
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/commander-open.json",
+    "sha256": "00c89153e26e2422d08da0cc0d98fdf53648795133594af5136c6c933977c570",
+    "bytes": 893
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/commander-open.png",
+    "sha256": "7f8a63386697dca8d164ab131fb61275cabec11b8e03127ada172553ef9643ee",
+    "bytes": 1004917
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/current-after-quit-attempt.json",
+    "sha256": "d6209a6ff4071dcc0cb7e365e1a0a4bf6f4eb407eb666bdfcf1c682908589810",
+    "bytes": 810
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/current-after-quit-attempt.png",
+    "sha256": "54e886600d075b98b18aea66cb82e765764e5e5fc45e6ae1c29c0227243345e3",
+    "bytes": 1116818
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/game-menu.json",
+    "sha256": "230134d58bfaf04020a8f761e44338785473cb69287ddcaecdf21c4291839d90",
+    "bytes": 851
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/game-menu.png",
+    "sha256": "8e9e72dd65617ec10d026dbf3261ea50485568497fb8ec550e2b70bba62dba2a",
+    "bytes": 599868
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/history-closed.json",
+    "sha256": "0fd28529fe98e126f769e3ead5cb3e313bef11853393fcb1e1d12721517ff10d",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/history-closed.png",
+    "sha256": "a10b06dd26bd2cc265f711c76db5be1116cfc26c087671a583fd95c593723639",
+    "bytes": 1007493
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/initial-main.json",
+    "sha256": "891d8e255e3559c5cbfe0c9073c4b6efd7f08131101ea50e2c33b9350fdc9399",
+    "bytes": 786
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/initial-main.png",
+    "sha256": "89385b477708f26a0759911dee1c2ad446d0c8e780d324879855f0da9b798c08",
+    "bytes": 1236812
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/initial-run.json",
+    "sha256": "4af304b24ab5c8abfdf85dbeb4f8307f125d6e2bb3dde619d575f26619898275",
+    "bytes": 2354
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/initialize-ready.json",
+    "sha256": "07d6ddd222b6bcfb9625645fb96f86e82dfed0926a0c1f06a93da6153539f8fb",
+    "bytes": 308
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/intro-ready.json",
+    "sha256": "f268adbb66dc78d65764d911ebabe11efaaf2358d36bda781bc384022c2f11f9",
+    "bytes": 808
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/intro-ready.png",
+    "sha256": "0d543ddcb085892ebc6ea0fc6dcb247dc59d60712e2785f1ee881ed73685ff3c",
+    "bytes": 686625
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/intro-start.json",
+    "sha256": "68a3c852f2147ae8d2dba0e09ced0f7085480761ee3f49c8083dc8933088aca7",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/intro-start.png",
+    "sha256": "b6b7063c4dd07f5bf5136b4526dd192ce70e01b4729436f3939d7b32db560897",
+    "bytes": 1062979
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/language-player-settings.json",
+    "sha256": "180965602be4327d645412aa52e88b7c92b88ed17e90fe360d86bf32df425195",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/language-player-settings.png",
+    "sha256": "1e8314153c3f5a44990c623159094642997fd31426b0cf978ea034e636046c53",
+    "bytes": 629783
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/producer-build.json",
+    "sha256": "4738f09361d73ad14ce8f464f135e2d2c66fe20d1a0ea738e138f944c5961090",
+    "bytes": 1394
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/quit-application-confirmed-main.json",
+    "sha256": "4f97660470bec83b435eabbea85276e93d8bfd7bbe4f14190d5597dabf1ec8c6",
+    "bytes": 787
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/quit-application-first.json",
+    "sha256": "727425150b1d3d238b69929633dcd18b1a0b2a2c947c6adbfcd3986d08fc1a8d",
+    "bytes": 787
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/quit-local-game.json",
+    "sha256": "f1e880f5330fc60c6ffa9492692efe2668b76d8f4df51aa62700e72e7d52fa9a",
+    "bytes": 882
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/quit-local-game.png",
+    "sha256": "fd6e336f3879c1cd330b9933ecc3fe306bb1ba1a183196d6412ba10790c30035",
+    "bytes": 91431
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/ready-status.json",
+    "sha256": "e253b3107328f32f9869908a757082aaaf159aaafdff9de71294c220a5159e0e",
+    "bytes": 716
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-acquire.json",
+    "sha256": "fd18d91b4dda665781d1ce7d36afc8cdfed35704c8bce3ac24941ef3a8a8752f",
+    "bytes": 689
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-initialize.json",
+    "sha256": "07d6ddd222b6bcfb9625645fb96f86e82dfed0926a0c1f06a93da6153539f8fb",
+    "bytes": 308
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-language-name-persisted.json",
+    "sha256": "a3817def4f28254f00b1366101fa06dae854937535016e6f71286991057c5ed9",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-language-name-persisted.png",
+    "sha256": "4c0fe097bf7f9845671e998310354d89d08d113482768b63a5c3c037d4102cdb",
+    "bytes": 628434
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-main.json",
+    "sha256": "96cd33e1bf0ab42c80f95e7424123cf51bfd8cf6533ffb2d873c3d5a8ca323ee",
+    "bytes": 786
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-main.png",
+    "sha256": "b377fa079ad06613cacfe231fd58c749108d193a7b0e815804ff24d8d555f456",
+    "bytes": 1255844
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-quit-application.json",
+    "sha256": "6a4f734307adfdea9ff51f262755d8a41c595186080baec16ff97fbab68e4a45",
+    "bytes": 785
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-ready-status.json",
+    "sha256": "83a10ddaf9e284a859f97ca3d73389e0d4833e4e003316467c3b31131ea85745",
+    "bytes": 716
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-run.json",
+    "sha256": "cb242669e897af128956fbb13acdb858630417cc872f255bda4fbda25dc86bf6",
+    "bytes": 2353
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-settings-done.json",
+    "sha256": "9711d1355b01ab31b078897b5e708768e9d66dbe8ab462e6ceda95ae2412a3de",
+    "bytes": 881
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-settings-done.png",
+    "sha256": "f2d45ef86eda94c799eff42610d924946f1b7298bcffcd3f99de9a0a10235aaf",
+    "bytes": 1243764
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/restart-settings-open.json",
+    "sha256": "1702d1d822e6646a91a09e33095e6516d2dfaf9b8a4e098fd9453dddf221e94f",
+    "bytes": 785
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/results-leave.json",
+    "sha256": "5d5be9824a4590cd908e95dba95b29ea8cdcec831b51236939a2ab84bb1cc10d",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/results-leave.png",
+    "sha256": "ca18afa3fea27c1169afba2bf2808b7c692d8fc461432954a91660cd5e76aa0d",
+    "bytes": 1110294
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/results-scroll-bottom.json",
+    "sha256": "89cd11179f05a14d81f2813158964b9f7098afefecf8138271420c1b870ff2b3",
+    "bytes": 911
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/results-scroll-bottom.png",
+    "sha256": "d246aa69c32fd503cbe0488978e8776eafdb0b674f071426f6332e4550988bcf",
+    "bytes": 102979
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/results-scroll-score.json",
+    "sha256": "dc6987bbf6b366060b526afbed9c04fd82e99d8c2cf449f998110835b6711734",
+    "bytes": 911
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/results-scroll-score.png",
+    "sha256": "383ffddf78ceeadff320f450d06c76b5acabb9d363af9b47db66e49a8333358e",
+    "bytes": 97832
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/run.json",
+    "sha256": "cb242669e897af128956fbb13acdb858630417cc872f255bda4fbda25dc86bf6",
+    "bytes": 2353
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/settings-done.json",
+    "sha256": "cc79a701a7913643b4e42383fb034bb37d4853359d16f2e1ef348acd4a993d8a",
+    "bytes": 881
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/settings-done.png",
+    "sha256": "0bd0eb400051be9d4d0207b9d8dc33bb5dbd332df74167a562850f8797296481",
+    "bytes": 1225322
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/settings-open.json",
+    "sha256": "23d6a7ad87237d5a017c0c126449a8dc51bf3c46d21bd14453294ae1320512bb",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/settings-open.png",
+    "sha256": "a38efd0e8d009d0534f0ebeb2df6c097e0d828b64a8a1698ee296042127e7ae4",
+    "bytes": 667641
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-open.json",
+    "sha256": "73dbf691e0a72af0aef8b54048a9cfe9760af1abb6eb931e732c45c367b8842b",
+    "bytes": 881
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-open.png",
+    "sha256": "8b45630fd99741c44a3bde7c2d8f67d1802333adc9aac1edd0191d7966f2b7c6",
+    "bytes": 1014021
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-2.json",
+    "sha256": "7a01bcda65c06a39a903c185a2f5f12d3b2d3052969b0a3e1e11164ecde7fa9b",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-2.png",
+    "sha256": "0af7c5d125c61b5becbcafbf45a3d2b28fcb7e1ba6029fdc21f912bfa232eca0",
+    "bytes": 1048004
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-3.json",
+    "sha256": "0f15d9f2f1fb076f0c524b548b482a4334b303a804047ba6f491c1f5a191b057",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-3.png",
+    "sha256": "c94ce9fd9ff45fccde3957192523425282a4a9989c7952a9913cba7b8dcd8319",
+    "bytes": 1010672
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-4.json",
+    "sha256": "83343aad1fd017e0a5b7a71317d012a52189a08ef8b32d5f188cbf77adaf7683",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-4.png",
+    "sha256": "26273b97f8ce31b65440862656c15248df5059089c373a7d4e31b1fabc6512bd",
+    "bytes": 980926
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-5.json",
+    "sha256": "6e5106f9ef2dd414e830db72d2eacdaf91e04f7da4cf3f2f164e3431ff2262c9",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-5.png",
+    "sha256": "32a8205915c66e49e01942e042f7556ac9165c66c62a290bdf72cce084e0905b",
+    "bytes": 986821
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-6.json",
+    "sha256": "5015a04c7115f78d95fa38ee4319869c22dbe82e8a4cc5d426f37c2bbd356aef",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-6.png",
+    "sha256": "73ce45b8e18bde3b20f3157bb84ffcf3c50ca289fc8abc3826915b207f4b27a5",
+    "bytes": 983848
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-7.json",
+    "sha256": "70f2523a4bd2c6ea475e3b348c83e55cbf6e8404f71ce441eb7f9eb4d6a36ead",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-7.png",
+    "sha256": "6babf82ecac338588061f591f92531a906d24ca503978a2c7efabfa8bea26772",
+    "bytes": 976442
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-8.json",
+    "sha256": "26c7321d8448a54f317acc16b10646106c7871ef1a144a7bc6a1420df06531fe",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-page-8.png",
+    "sha256": "d1f634579701f97b70f43ab33bdf22cffc9c775531ec6224e30740b6dfd49e02",
+    "bytes": 1002995
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-text-open.json",
+    "sha256": "671d0685c1963b799ef47b4d1453b9e11c53c7a0219a74c690912fbac378f3cf",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/statistics-text-open.png",
+    "sha256": "6ab2f6da887893067fc657d03a39892ac848cbc53ed0b139390407209279f83d",
+    "bytes": 1038283
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/status-before-leaving-game.json",
+    "sha256": "7fce1831acb854bce082a8812f2adbb4ab1dcd5595df6ac40bd264f0843a95b1",
+    "bytes": 740
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/status-before-statistics.json",
+    "sha256": "564e08f8532d3e8777aa3ffa1c1eb73ffa9337988267eedab8f96f0e5ec54d10",
+    "bytes": 738
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/status-before-username-reject.json",
+    "sha256": "946ab6042a817259bb8ce5194c68a3b080666f5a432a8978b7bd96bf6d3f29fe",
+    "bytes": 738
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/training-menu.json",
+    "sha256": "b1f662b50072a367c0e92324bac6c10529f784a83a8ca92daf1bc9075d1fca14",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/training-menu.png",
+    "sha256": "9e1b1ebca9e171d6261582ec154cdf3a14e30445330493d5208a47e42a3a31c8",
+    "bytes": 1112090
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/training-return-main.json",
+    "sha256": "a30ef589b9fdc16e4ae26742844e78e65180bd3d0b5701b30558f2ec998f4de4",
+    "bytes": 882
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/training-return-main.png",
+    "sha256": "2e3522393b77954d395fbeefed0f5b96090c8999f209af46ba36841c73ce5477",
+    "bytes": 1228047
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-33byte-after-submit.json",
+    "sha256": "878846aedd409a4535e16d6df1b1c049d2b5a24b51e763d1b5ac8b08795372cc",
+    "bytes": 849
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-33byte-after-submit.png",
+    "sha256": "c5829dd485589fdd3429e40baa0aa51c179451b6736f36e58aac2b627f6ee78b",
+    "bytes": 628554
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-33byte-rejected.json",
+    "sha256": "438370578c0c4f5e26864b80d8af1904e2b9861f7260843ff5e9494df07aefc8",
+    "bytes": 883
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-33byte-rejected.png",
+    "sha256": "cb1b1b234d130fb3727f2801575a2d0ef1497cc85b521be5a16de505d9e56c89",
+    "bytes": 627023
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-after-reject-profile.json",
+    "sha256": "5343fd10694f3e59a1b4be164203189bd015fd78c226a7160b99da300cd35088",
+    "bytes": 376
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-ascii32-accepted.json",
+    "sha256": "0f0be2d5e83b7b3189b3802aea5b34e063ab97fba02889f2a808980b3bb08ff9",
+    "bytes": 882
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-ascii32-accepted.png",
+    "sha256": "8ff2653ee21fadd3bb6374851aa5ae7c2a355c7dda4491b423d5eb117e385d2d",
+    "bytes": 627675
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-ascii32-profile.json",
+    "sha256": "bee97d8517c24a84d093523e23d81f1c37f13440d0d04de250f68d01bed6000c",
+    "bytes": 427
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-ascii32-saved.json",
+    "sha256": "b81f3218d954b14dc93ab09fb6c0b0fd2ab0bb688a0428e730cb96cecb6a7a7a",
+    "bytes": 849
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-ascii32-saved.png",
+    "sha256": "cb1ec0692b8d05d01402137e344422b4ba8f064281c54cff4bd6ad57807e301d",
+    "bytes": 629132
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-final-bengali.json",
+    "sha256": "0a6eb99aa8b7441e3aeffcef2715c77617f9f03dc6697dc6ca4db709aa2b1d3d",
+    "bytes": 868
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-final-bengali.png",
+    "sha256": "4aa2ae62ac789fb731b33772f53f700f71439d766dc134c9d13634d242c5c166",
+    "bytes": 628509
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-final-profile.json",
+    "sha256": "b63eaf99abaf644729e507beb385fb554512c61ab7dad421c7b611db35bf8c47",
+    "bytes": 369
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-final-saved.json",
+    "sha256": "4eccd8cc7e938f9ecb9b2adf425a76525737db26b5a52c46542f0af45337a435",
+    "bytes": 849
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-final-saved.png",
+    "sha256": "16e0e7599d883dd78289ba95bc47989ff124f52d728d9afde28b7671bf36abf2",
+    "bytes": 630845
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-focus-ascii.json",
+    "sha256": "088454f2ca94fa3c8f0510a227efc78859677d318252be018fba4300dfe14d93",
+    "bytes": 786
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-focus-final.json",
+    "sha256": "28256b4a70b536c3581e6f79eb009945f0eacd6be151b265560629b4e7b7e89b",
+    "bytes": 786
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-focus-reject.json",
+    "sha256": "fa5978bea40c1cd3aaa8b9b57fb6b5e9344faa916b9145e95e302ec51e4b8d66",
+    "bytes": 786
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-focus-valid.json",
+    "sha256": "68253c26798d0e6891185e1f99c5c1024df8d0f7ddffdbd1e885b98a6e942adf",
+    "bytes": 786
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-select-ascii.json",
+    "sha256": "0fcd3b0ad90c72a395a3dde3d2c4cb92059a777c1c1a619882a33554609e64c3",
+    "bytes": 793
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-select-final.json",
+    "sha256": "603a8f898312bdb635597d73fa88952e57fb373a758608e621d8eecb16f8a63e",
+    "bytes": 793
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-select-reject.json",
+    "sha256": "21ed64f769ca2483aec4504588637a6b804aa15e6416c601b627e7ee04dbea66",
+    "bytes": 793
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-select-valid.json",
+    "sha256": "a7a8e6e98c8d5f01d8e7ba411cb735964dbff78b0a15ae02ea896063318aee55",
+    "bytes": 793
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-valid-bengali.json",
+    "sha256": "f65cb916c9c09f0fb8b15e712089dd91058ca7a16a93ed09c30668139d441e5f",
+    "bytes": 868
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-valid-bengali.png",
+    "sha256": "4204f29b6ee7f8a1a1ff7ea8e268c1c5d907897244e99bfaf72c496bd3854881",
+    "bytes": 629811
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-valid-profile.json",
+    "sha256": "51fd8303db3bc3c49ee7d9d5cdfc97d40591a3837aa5c03b6eb68cf155573e7b",
+    "bytes": 369
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-valid-saved.json",
+    "sha256": "f3252bad3ec5cc657e2c8285910d786978b222b12495e5e03c8d6ad876d582e0",
+    "bytes": 849
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/username-valid-saved.png",
+    "sha256": "837b6c9fd3a215b250c41f4039aec97dd8186b8c17b11c4a45649b4e573455c0",
+    "bytes": 631847
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/win-probability-current-labels.json",
+    "sha256": "499bcbcb7828379148bba4e176b1b89118e92192cf7d2ee8fff40e937f946e80",
+    "bytes": 882
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive/win-probability-current-labels.png",
+    "sha256": "20e7fa235d46812ae2f788454a074469d58f9002342dcf93f1f2cddbc6770010",
+    "bytes": 114395
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/acquire-settings.json",
+    "sha256": "e7686a677c93070b9b88768105cd9bbdc8841b3cb75a0c15c4a05cb0e2e5425e",
+    "bytes": 687
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/game-menu.json",
+    "sha256": "8d18320c6ec052f81944b9ab7f13590ac0fda034b9b9d53bc27b3c3b17a3b6d9",
+    "bytes": 878
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/game-menu.png",
+    "sha256": "01e2c7f7a42555443f6f9c83b505933a827120f4ce0e96444229b390444a1491",
+    "bytes": 97474
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/initial-main.json",
+    "sha256": "3147fb31620e6a5e0b14e74820cbb1503299713b955d972683443e5afebdda9a",
+    "bytes": 784
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/initial-main.png",
+    "sha256": "3e2115fd48efaf4d9be143ecab6388c09cc2f002abbb986ecaa8127e7e566820",
+    "bytes": 363161
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/initialize.json",
+    "sha256": "07d6ddd222b6bcfb9625645fb96f86e82dfed0926a0c1f06a93da6153539f8fb",
+    "bytes": 308
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/intro-gameplay.json",
+    "sha256": "6b08224ecaaf26dbe387f806f50190ff70cc8e98f67d2af8314e9fbd71a5ba7d",
+    "bytes": 806
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/intro-gameplay.png",
+    "sha256": "010707225917ed65dcc32313dc0f3903a48fda5b7eaf5b87190e8cdc1860226e",
+    "bytes": 329218
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/intro-start.json",
+    "sha256": "f94ec15d796a5045da88d8c7b03ef06dc0c02ea93820542c22f31b0bd75b0350",
+    "bytes": 877
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/intro-start.png",
+    "sha256": "91b350e350bacd0e632e1bfa193194e23c848f429b83293b5811afc3c3d7fc16",
+    "bytes": 459698
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/language-name-persisted.json",
+    "sha256": "8c98962dc1c81e0040ed4964aa081a87f8309d5220044ec393d3666b958f9c2a",
+    "bytes": 878
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/language-name-persisted.png",
+    "sha256": "34fd7f46935b391c0edffd3cb75fb3a1850b11972765ab03c020ed6fd069cf61",
+    "bytes": 32424
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/loaded-profile.json",
+    "sha256": "69d8c7163ee20d953b018e51aeb12ef679def4784b38cd2c907369f3d5558af6",
+    "bytes": 362
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/main-scroll-bottom.json",
+    "sha256": "a27f155a104915cc9b5a15f6e5122fd51e673a836d0a0be348ec34f7b38f295a",
+    "bytes": 909
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/main-scroll-bottom.png",
+    "sha256": "54b4c05d3fc96721a8b1bf8ef758c227074a69e75efa34467c53c5a7188a58de",
+    "bytes": 344825
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/more-menu.json",
+    "sha256": "742db3496b3191b48781db9f4ed5cca8ee2b697b182af57970381b9ea5636393",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/more-menu.png",
+    "sha256": "3ef3c1cc18fd58aacf64d8810553ad974c6827c68245e603d3b7f41e59e97305",
+    "bytes": 273235
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/quit-application.json",
+    "sha256": "c6f36e63d3313b70a4535e739683c7d9e927be24bb53defbb3a14ff78d025364",
+    "bytes": 785
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/quit-local-game.json",
+    "sha256": "f162d9a41a96bb4697e3d06d15bf2ba15dc9414115bc75a3db0372592ff082c1",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/quit-local-game.png",
+    "sha256": "638f7a355285924d19b86a85081ba6cef922c54615e7c1984ede42299298006b",
+    "bytes": 55216
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/ready-status.json",
+    "sha256": "b0af0c17e9b85d8fb974e88165a8ac93f68a548eeb1e34e8755fe2fe71f9c490",
+    "bytes": 712
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/results-leave.json",
+    "sha256": "971a10d773ecb1b926dbf67441ca00d9c3d2f2a7feed263605e4aef2b5b6f322",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/results-leave.png",
+    "sha256": "791963721bedfcff78f34f89f27edad62c06fb4397b2402050a2089ff605177a",
+    "bytes": 88679
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/run.json",
+    "sha256": "11a2a7982e80ac8bf22612fd7a266a2b52419b4ba668518ff27427dddb548ac0",
+    "bytes": 2082
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/settings-category-picker.json",
+    "sha256": "7ac763ebc5ed731136b4c608ab2f231af0707b779742b45adca2ca28fdac62a6",
+    "bytes": 877
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/settings-category-picker.png",
+    "sha256": "48524387931d410fa8aacd1837d353687a615197f68a7ca3fc2d044c155884cf",
+    "bytes": 56291
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/settings-done.json",
+    "sha256": "bec7c8673263d6c19a1573d0e6106d01e7dce8629dc68307311e67919d9c07ee",
+    "bytes": 783
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/settings-open.json",
+    "sha256": "c47e9e5fdd1524e3f0a5af64c6205e79c8d8bc7796c79834ceed28b733627048",
+    "bytes": 878
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/settings-open.png",
+    "sha256": "8a8cddc3dcc1a94b6034a28685a68c933c7386b368906fabeb7f39e42ed6990d",
+    "bytes": 81028
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/training-menu.json",
+    "sha256": "592df6988ff33a8631ea91ee8370a5161f891afea1827560115ff8673186ce27",
+    "bytes": 878
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/training-menu.png",
+    "sha256": "943abde6786bf0ab11b8917b2d40e9938a26d3a7268d7b93f6e1a704b08e63b3",
+    "bytes": 88678
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/training-return-main.json",
+    "sha256": "6bc80e88a4b8101231b77986d14ab9e1de1860eadffe9b37270ad46a1a79b2c0",
+    "bytes": 880
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-phone/training-return-main.png",
+    "sha256": "6d1cb3e39683fa65bdea0c742ba35174874e6f93f56de0235b31c30236b85450",
+    "bytes": 344089
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-interactive-summary.json",
+    "sha256": "361e2fb4bf436598b1385edea25728a429a496a8bf35f90ad346574c48785f13",
+    "bytes": 10427
   },
   {
     "path": "artifacts/bengali-localization-v3/native-recording-prefix-reuse.json",
@@ -1125,14 +4125,309 @@
     "bytes": 599
   },
   {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/gameplay-dialog.png",
+    "sha256": "5b5f5108df6ce7fd1bddf41eebf75a420ed8686e264b53ce7fbe74ff2119dc7a",
+    "bytes": 462093
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/gameplay-zoom-fit.png",
+    "sha256": "67fd26c1a56894b1fb13635ec7914f8c82928463ab640fff6c527764252fa9f4",
+    "bytes": 64899
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/gameplay-zoom-plus.png",
+    "sha256": "259b62e54c7f0ec70e8e5a76b9985e3ceb7cc92f903fab97571ab311a5a0b933",
+    "bytes": 646800
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/gameplay.json",
+    "sha256": "66527b0ff2b422ac839a0d14f4ac75216e34b09e97088bbf0f3af81b656232ce",
+    "bytes": 12781
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/gameplay.png",
+    "sha256": "568700d878ffced06378c71427b2df23683728f5df29f353f5716d2a72878005",
+    "bytes": 603933
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/lobby-players.json",
+    "sha256": "f9b31b58591953360fcb0be5d0250c1753a2f50ab9ac1b590c31833b63297707",
+    "bytes": 13098
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/lobby-players.png",
+    "sha256": "02f39f11796b5229ec020b4beaf52311c84dff92bf54105d453aba1ba1a21a1d",
+    "bytes": 247924
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/lobby.json",
+    "sha256": "417be378edf0a82c1601d13af69950fe03d0e6c13c2c4fcf3d28693fa296b014",
+    "bytes": 12812
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/lobby.png",
+    "sha256": "4ee6836d0c026f779d9bce74076aa64dfb86d39f54caf238bfe693b874f80ce6",
+    "bytes": 235673
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/main.json",
+    "sha256": "73994bb6f5b26920afbf733d55f81b84fa3e3612a088f3735242368db51b4706",
+    "bytes": 11735
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/main.png",
+    "sha256": "f4d64b60d454d243f8199aec0baff656c8f26291aeb82084e3b429a896c5dbaf",
+    "bytes": 1253529
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/settings-audio.json",
+    "sha256": "9dcf8ce39af8a0ff81c330cd8ace6619a2e479ce142aa418cf87d65d50ee7311",
+    "bytes": 12719
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/settings-audio.png",
+    "sha256": "46626df78a6a7c12e9a8a4d2e4b79e6a52b07aabb2f612b0d780f5b12d59ad6b",
+    "bytes": 643005
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/settings.json",
+    "sha256": "26bed4286cef7ac3c2517d7538fbf8e6023cb66e422a944c6238c276c3bc270f",
+    "bytes": 15429
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/settings.png",
+    "sha256": "895ebf30e39aa4652d1c1e10ff8d457cc2946786113f5422c9e7344fb01ae699",
+    "bytes": 673058
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/tutorial-food-supply-briefing.png",
+    "sha256": "8976aace8d24fe7b30572f981eadce55dfd550ff8710bf7ea376c544b0417aa1",
+    "bytes": 781017
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/tutorial-food-supply-dialog.png",
+    "sha256": "5fc8efcaf2dd5e12cca53d15ff683a3c4a077bec890ef80108dd44d97df3ee19",
+    "bytes": 478544
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/tutorial-food-supply.json",
+    "sha256": "d565ebbe51ed162c14efae4460a1ff6398859dbfe1591a4e48ca2c1f2b6359be",
+    "bytes": 12457
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/tutorial-food-supply.png",
+    "sha256": "adf5bc020fd4b67a18fa52de2146d0f962a30122a413829f648d862fddbbc75e",
+    "bytes": 841006
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/tutorial-introduction-briefing.png",
+    "sha256": "592715f0dd08a290b9d1c652ee8433d63e3c93533bca4e9223d2514d2f1e0baf",
+    "bytes": 782579
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/tutorial-introduction-dialog.png",
+    "sha256": "3580300dc3b6c2bee5a49c629a5801bb70555e8235b2691bd0398cc7adf43235",
+    "bytes": 477703
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/tutorial-introduction.json",
+    "sha256": "1229d6fa0fc234e980cfee5b7726f5c0f01cb9f2285469a0f1337009a0344ff5",
+    "bytes": 12466
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/desktop/tutorial-introduction.png",
+    "sha256": "6083164df641f373975bcb2f96b20b41d51ed846c3bf9917dd29ce5d9feb2c34",
+    "bytes": 844404
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/gameplay-dialog.png",
+    "sha256": "e42a654eaad41d9c9142c57b750927d80ce30a06f01743a301516a0d987bdb34",
+    "bytes": 53106
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/gameplay.json",
+    "sha256": "e96f453df8227ae90e0a4a5cf8294f608780030298f4eddc8a88e1f07e0d600f",
+    "bytes": 11999
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/gameplay.png",
+    "sha256": "e630229f885d8bc753c6455423092d27c8dd160faef235f13cf6c7923a61661e",
+    "bytes": 217730
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/lobby-players.json",
+    "sha256": "04db21c240dd38b185b99738bbcd3e59ddef00b574c0f9c93c746afeeebdd8c5",
+    "bytes": 13086
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/lobby-players.png",
+    "sha256": "8645d6ed1f5e7d2ffbd15d457e489bb78eedd3259d448aec40fcef3d0a649631",
+    "bytes": 55035
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/lobby.json",
+    "sha256": "2dc369f3a52319b0a89111d2f07f72dbed5d580da024064a04db36a6feb48ada",
+    "bytes": 12813
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/lobby.png",
+    "sha256": "61aef22dfebc42dcec760b118d95007680cd1efffaf2f3d2767d421bfe0eb138",
+    "bytes": 47581
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/main.json",
+    "sha256": "df13e91ee920714bb4b7e394c9c02f266a0141fa21b8cfcaa49420ee844eecd9",
+    "bytes": 11186
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/main.png",
+    "sha256": "d21d1a1c2ec9abf754e474b71d6ec86ee5cdd722801bf8834c1cc137a6c6fd52",
+    "bytes": 359261
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/settings-audio.json",
+    "sha256": "45eef82f8debbf683e732f49756aa6913a1e5ae9af7edd905a25bca49ce12ff5",
+    "bytes": 11068
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/settings-audio.png",
+    "sha256": "e11d173348282e6b7d558c9d94039fa84d4b5b87c1a3870f7800d94237f298f2",
+    "bytes": 46599
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/settings.json",
+    "sha256": "473fed3e3be323a7cf226c8200d622d6961d1e9c1740f7c0a981596d62073fb3",
+    "bytes": 14063
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/settings.png",
+    "sha256": "a014d00bd995a1f9e72b15d66f2efa6da49d73d4c63b10bc9931919befa3410a",
+    "bytes": 81029
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/tutorial-food-supply-dialog.png",
+    "sha256": "9d3154ba6e88eb3cc0445cc5cc316e6f21ecba53c651ee4e14dfdfc63bb8a02a",
+    "bytes": 86888
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/tutorial-food-supply.json",
+    "sha256": "1e8efcbe498b2c628809f927bd68e80b61f93716785bd0760c47e4ea5752d97d",
+    "bytes": 12256
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/tutorial-food-supply.png",
+    "sha256": "d6d27222dccd57a2c34fb33dfe465e589a228ed6cce8d4df000392bb1ea13fa3",
+    "bytes": 306123
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/tutorial-introduction-briefing.png",
+    "sha256": "d8f3a81602870a5249f350b9972241615b8330576d1662979eb9598e9af13919",
+    "bytes": 277167
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/tutorial-introduction-dialog.png",
+    "sha256": "b55caee25a0c167c7d8cf973ec7cb6f833fabac2a6fbb283488d790e09d4e65a",
+    "bytes": 86832
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/tutorial-introduction.json",
+    "sha256": "7209ea2e15a06ffeafd91a3e73dd2b390abc6aa52a1681747cf1000074403da6",
+    "bytes": 12459
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone/tutorial-introduction.png",
+    "sha256": "b85a2fcb63eacc7b88fc6f4d59d2db64221d12d3b746905f6769475ed9a2e155",
+    "bytes": 308398
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone150/main.json",
+    "sha256": "7ab909ee85c756d62634e3bc72f9558ff46e73c8c195596dd45c53bdf7b92508",
+    "bytes": 11189
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone150/main.png",
+    "sha256": "70861288e00e9b74340c736fbbcf6ba5a22231ed158e548de70c7ce328099d87",
+    "bytes": 366457
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone150/settings.json",
+    "sha256": "362a4b571b2d84fb898c6c016a2ae0f7809e48b606b31a7e39b72c1a52bc6462",
+    "bytes": 14082
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone150/settings.png",
+    "sha256": "430f0c9bc299983b33450ae6d26ca835d9c38d8cfd121141c5609502e78be47d",
+    "bytes": 88799
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone150/tutorial-introduction-dialog.png",
+    "sha256": "eb19c1eeb2330413ef6c2f92e45c49291fda251e4d93d3b17925acd99ce60c44",
+    "bytes": 85805
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone150/tutorial-introduction.json",
+    "sha256": "fed9fc75fb45c8657e0f7e6f05078d1336c508ace3e0071f9e46e61fc6ee7bda",
+    "bytes": 12267
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-screens/phone150/tutorial-introduction.png",
+    "sha256": "af9b970f5b28bb496e8fd5b414c73430fdf2492a61447cbbc5a3159dcee71193",
+    "bytes": 275109
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-tests-build.json",
+    "sha256": "641c522629380fa7aac4e3ab73ffc76f812bbaf2192b649f53edbf11febe586a",
+    "bytes": 841
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-tests-summary.json",
+    "sha256": "4f807ade0525c1961149246042a8df12ae078d7a1e60161c86e624fd984ca85d",
+    "bytes": 2072
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native-tests.xml",
+    "sha256": "69bc8505569d64beb9d2899274583a316f54ebbf338b22dbc0b27bf15f69feaf",
+    "bytes": 15308
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/native_final_api_verify.py",
+    "sha256": "ecf689d801a91a97f05656cde3b58f9efec0f7be662ce2023e2c17c52bac8652",
+    "bytes": 2327
+  },
+  {
     "path": "artifacts/bengali-localization-v3/native_final_verify.py",
     "sha256": "789634399cff815db954274d0feaa0fc1d54fcc9a7152eef76ab3c20355773ae",
     "bytes": 3119
   },
   {
+    "path": "artifacts/bengali-localization-v3/native_integrated_verify.py",
+    "sha256": "65ac82e848395cf88db9c815be7e68380dd8705d42def25155b1ab176418ef28",
+    "bytes": 2327
+  },
+  {
     "path": "artifacts/bengali-localization-v3/native_verify.py",
     "sha256": "c75cc17c725a2b963130b2e872e37faba6faf47c8787008430eb30b9f8fa03be",
     "bytes": 2327
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/prepare_preview.py",
+    "sha256": "c659e6364c0a6353db9cd13866e54cf045f24cf4fe38869ebb281eb8fe34af4c",
+    "bytes": 2318
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/preview-binding.json",
+    "sha256": "5f963b1d27d2c6aa27b9c7cc228eb1ad73edaf6f293901981cd43bde6132ec58",
+    "bytes": 16469
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/recheck_native_display.py",
+    "sha256": "3293319e9350938963db54828648b974435e72fba3615894186e68250c7e13fe",
+    "bytes": 1154
+  },
+  {
+    "path": "artifacts/bengali-localization-v3/recheck_native_display_x11.py",
+    "sha256": "8c72dccc36d0a37beda433d7f28f8692aa7936f8d171bb71e880980dbe80c4e4",
+    "bytes": 2145
   },
   {
     "path": "artifacts/bengali-localization-v3/recording-h264-candidate-validation.json",
@@ -1180,6 +4475,11 @@
     "bytes": 1051
   },
   {
+    "path": "artifacts/bengali-localization-v3/summarize_native_tests.py",
+    "sha256": "26402041031c3370996b72a8fa205698df2fe7c5236cbe1e8bc4cf558f1a52da",
+    "bytes": 1738
+  },
+  {
     "path": "artifacts/bengali-localization-v3/translation-tooling-tests-import-error.log",
     "sha256": "c56a960edad368a01f21b80efe5954060a864714d831c6a7c8a85c6acbb449af",
     "bytes": 1616
@@ -1196,7 +4496,7 @@
   },
   {
     "path": "artifacts/bengali-localization-v3/website-component-binding.json",
-    "sha256": "861d93e219111be96c97bb9f316e8155d8935e9b094369fe85ac1f0072393cf5",
+    "sha256": "b57582242e6a748455e3d1625a8b14df8718f2f52684754ee27863937b47d323",
     "bytes": 607
   }
 ]

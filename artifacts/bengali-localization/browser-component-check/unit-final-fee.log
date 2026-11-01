@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: Bengali byte limit preserves the complete final conjunct
+ok 1 - Bengali byte limit preserves the complete final conjunct
+  ---
+  duration_ms: 184.063849
+  type: 'test'
+  ...
+# Subtest: byte limits do not split reph, vowels, decomposed marks or emoji ZWJ
+ok 2 - byte limits do not split reph, vowels, decomposed marks or emoji ZWJ
+  ---
+  duration_ms: 72.459528
+  type: 'test'
+  ...
+# Subtest: exclusive ASCII byte maximum is preserved, including a one-byte buffer
+ok 3 - exclusive ASCII byte maximum is preserved, including a one-byte buffer
+  ---
+  duration_ms: 27.40756
+  type: 'test'
+  ...
+# Subtest: maximum zero leaves Unicode edits unrestricted
+ok 4 - maximum zero leaves Unicode edits unrestricted
+  ---
+  duration_ms: 24.680907
+  type: 'test'
+  ...
+# Subtest: a 32-byte username accepts all ASCII bytes and keeps overflowing Bengali clusters whole
+ok 5 - a 32-byte username accepts all ASCII bytes and keeps overflowing Bengali clusters whole
+  ---
+  duration_ms: 2.951203
+  type: 'test'
+  ...
+# Subtest: composition is neither truncated nor delivered until compositionend
+ok 6 - composition is neither truncated nor delivered until compositionend
+  ---
+  duration_ms: 10.25789
+  type: 'test'
+  ...
+# Subtest: without Segmenter, overflowing Unicode retains the last accepted edit
+ok 7 - without Segmenter, overflowing Unicode retains the last accepted edit
+  ---
+  duration_ms: 14.205337
+  type: 'test'
+  ...
+# Subtest: fallback accepted value follows programmatic native updates
+ok 8 - fallback accepted value follows programmatic native updates
+  ---
+  duration_ms: 17.727537
+  type: 'test'
+  ...
+# Subtest: fallback preserves composition and unlimited input contracts
+ok 9 - fallback preserves composition and unlimited input contracts
+  ---
+  duration_ms: 20.142113
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2816.98528

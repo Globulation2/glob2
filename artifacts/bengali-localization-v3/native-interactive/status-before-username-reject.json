@@ -1,0 +1,28 @@
+{
+  "method": "ui_status",
+  "arguments": {},
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": true, \"controller\": \"Local MCP client\", \"dispatched\": false, \"frame_id\": 379, \"height\": 860, \"input_started\": false, \"viewport_id\": 1, \"width\": 1280}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "available": true,
+        "controlled": true,
+        "controller": "Local MCP client",
+        "dispatched": false,
+        "frame_id": 379,
+        "height": 860,
+        "input_started": false,
+        "viewport_id": 1,
+        "width": 1280
+      }
+    }
+  }
+}

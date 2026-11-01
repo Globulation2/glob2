@@ -1,0 +1,14 @@
+{
+  "scope": "Actual browser textBridge component extracted from shell.html; not full game startup evidence",
+  "revision": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
+  "shell_sha256": "556ba59567d5f685797d1ecb840313ce5500d818fb38606c004fec5b46e2c4af",
+  "browser": "153.0.8010.12",
+  "maximum_bytes_exclusive": 32,
+  "input": "ককককককককক্ষ",
+  "input_bytes": 33,
+  "actual": "ককককককককক্",
+  "actual_bytes": 30,
+  "expected_whole_grapheme_prefix": "কককককককক",
+  "ends_with_dangling_virama": true,
+  "cluster_preserved": false
+}

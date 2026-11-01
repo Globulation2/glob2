@@ -1,0 +1,2823 @@
+{
+  "collection_ns": 694038,
+  "measured_ticks": 64,
+  "phases_available": true,
+  "phases_inclusive": true,
+  "retained_limit": 1024,
+  "schema_version": 1,
+  "tick_convention": "tick_before_step",
+  "ticks": [
+    {
+      "elapsed_ns": 1247875,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 1181833,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 1246833,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 1246708,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 1171875,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3250,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 917,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5334,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 459,
+          "stride": 1
+        }
+      },
+      "tick": 52,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 929209,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 736500,
+          "stride": 1
+        },
+        "gradient.building_resume": {
+          "observed_ns": 1917,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 928000,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 927792,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 732042,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 6208,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1625,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 15167,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 7376,
+          "stride": 1
+        }
+      },
+      "tick": 63,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 873125,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 683375,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 872209,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 872083,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 679292,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2750,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.scripts": {
+          "observed_ns": 23542,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1417,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 135375,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 333,
+          "stride": 1
+        }
+      },
+      "tick": 32,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 843834,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 645917,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 842791,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 842584,
+          "stride": 1
+        },
+        "path.building": {
+          "observed_ns": 83,
+          "stride": 64
+        },
+        "replay.checksum": {
+          "observed_ns": 642458,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3209,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 833,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5250,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 251,
+          "stride": 1
+        }
+      },
+      "tick": 50,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 838125,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 581833,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 837417,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 837291,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 580625,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 4666,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 291,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 4000,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 18416,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 12292,
+          "stride": 1
+        }
+      },
+      "tick": 7,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 836000,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 765667,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 835125,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 835042,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 761541,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1874,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 208,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3584,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 26,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 833666,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 708334,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 832584,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 832417,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 704167,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3000,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.projects": {
+          "observed_ns": 84,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1000,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5083,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 33,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 830625,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 715834,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 829792,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 829666,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 711375,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 4416,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1500,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 6542,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 375,
+          "stride": 1
+        }
+      },
+      "tick": 35,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 813125,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 720333,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 812208,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 812042,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 716542,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1958,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 166,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3667,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 250,
+          "stride": 1
+        }
+      },
+      "tick": 21,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 801750,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 715584,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 800791,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 800667,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 707542,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2499,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 249,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4833,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 541,
+          "stride": 1
+        }
+      },
+      "tick": 18,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 797208,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 725917,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 795708,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 795584,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 721542,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 4292,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 417,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1375,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 6458,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 375,
+          "stride": 1
+        }
+      },
+      "tick": 43,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 786083,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 668333,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 785292,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 785125,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 664792,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2541,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 791,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3875,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 250,
+          "stride": 1
+        }
+      },
+      "tick": 45,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 785084,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 715250,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 784292,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 784208,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 710542,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3042,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 334,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 833,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4750,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 250,
+          "stride": 1
+        }
+      },
+      "tick": 53,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 779375,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 685083,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 778541,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 778417,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 681792,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1707,
+          "stride": 1
+        },
+        "simulation.fog": {
+          "observed_ns": 10958,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 209,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 167,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 33375,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 16,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 778000,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 702250,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 777166,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 777042,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 698458,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3501,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1250,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5625,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 334,
+          "stride": 1
+        }
+      },
+      "tick": 38,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 774709,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 700541,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 773667,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 773541,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 695125,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 6958,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 4874,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 8667,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 34,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 771958,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 690833,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 771208,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 771042,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 687291,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3125,
+          "stride": 1
+        },
+        "simulation.fog": {
+          "observed_ns": 10625,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 958,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 17541,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 333,
+          "stride": 1
+        }
+      },
+      "tick": 48,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 770709,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 676166,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 769708,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 769584,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 670875,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2375,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 207,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4125,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 19,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 763708,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 690792,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 762750,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 762625,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 686584,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3917,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 334,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1083,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 13000,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 7500,
+          "stride": 1
+        }
+      },
+      "tick": 39,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 763291,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 695750,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 762167,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 762042,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 691375,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3875,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 334,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1292,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5542,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 333,
+          "stride": 1
+        }
+      },
+      "tick": 36,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 761708,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 668792,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 760833,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 760666,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 665666,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2708,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 291,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1001,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3958,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 42,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 760334,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 672625,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 759417,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 759291,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 668667,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2166,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.projects": {
+          "observed_ns": 42,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4125,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 333,
+          "stride": 1
+        }
+      },
+      "tick": 17,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 754459,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 696083,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 753292,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 753166,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 682167,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1958,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3500,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 28,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 753625,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 685042,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 752625,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 752500,
+          "stride": 1
+        },
+        "path.building": {
+          "observed_ns": 83,
+          "stride": 64
+        },
+        "replay.checksum": {
+          "observed_ns": 673834,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2457,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 291,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4291,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 13,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 752583,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 704833,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 751542,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 751416,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 700875,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3334,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 459,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1166,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5000,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 250,
+          "stride": 1
+        }
+      },
+      "tick": 46,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 749666,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 650209,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 748125,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 748042,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 645000,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3584,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.projects": {
+          "observed_ns": 125,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1083,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5375,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 375,
+          "stride": 1
+        }
+      },
+      "tick": 49,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 749084,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 686792,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 748334,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 748208,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 678000,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1542,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 167,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 10500,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 7542,
+          "stride": 1
+        }
+      },
+      "tick": 31,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 748625,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 686125,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 747833,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 747708,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 682750,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2624,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 458,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 958,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4500,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 61,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 748042,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 682708,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 747167,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 747042,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 678541,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2334,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 791,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4042,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 251,
+          "stride": 1
+        }
+      },
+      "tick": 57,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 738833,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 686750,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 737875,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 737750,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 683500,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1708,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 334,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 83,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3416,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 292,
+          "stride": 1
+        }
+      },
+      "tick": 24,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 737458,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 675125,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 736541,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 736375,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 671458,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2541,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 875,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 10167,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 6126,
+          "stride": 1
+        }
+      },
+      "tick": 54,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 735791,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 677542,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 734750,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 734625,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 673042,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2167,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 167,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3708,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 167,
+          "stride": 1
+        }
+      },
+      "tick": 25,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 734208,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 655792,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 732792,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 732666,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 641417,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1708,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 124,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3209,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 250,
+          "stride": 1
+        }
+      },
+      "tick": 22,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 734083,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 677167,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 733083,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 732958,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 672541,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2750,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 792,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4333,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 251,
+          "stride": 1
+        }
+      },
+      "tick": 40,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 732875,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 646583,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 731417,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 731250,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 639875,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2292,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 207,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3750,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 250,
+          "stride": 1
+        }
+      },
+      "tick": 14,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 731541,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 651916,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 730709,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 730583,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 648500,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2291,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 208,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3833,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 250,
+          "stride": 1
+        }
+      },
+      "tick": 27,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 731292,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 649625,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 730375,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 730250,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 645417,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1875,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 166,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3417,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 29,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 728958,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 655416,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 728125,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 727958,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 647333,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 9500,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 7459,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 11041,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 59,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 727833,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 649667,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 726833,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 726709,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 642750,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3083,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 291,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 917,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4625,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 292,
+          "stride": 1
+        }
+      },
+      "tick": 58,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 726041,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 666834,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 725375,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 725291,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 663208,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2417,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 667,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3583,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 251,
+          "stride": 1
+        }
+      },
+      "tick": 56,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 717458,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 656000,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 716709,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 716625,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 652958,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1958,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 583,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 10125,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 7333,
+          "stride": 1
+        }
+      },
+      "tick": 47,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 713958,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 655166,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 712750,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 712625,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 647542,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1708,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 291,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 208,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3041,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 20,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 712708,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 649292,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 711791,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 711667,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 645666,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2416,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 708,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3834,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 44,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 712625,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 623375,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 711917,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 711833,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 617667,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 4292,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 3499,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5792,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 375,
+          "stride": 1
+        }
+      },
+      "tick": 9,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 711291,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 638041,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 710584,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 710416,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 633709,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2375,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 291,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1041,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3500,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 249,
+          "stride": 1
+        }
+      },
+      "tick": 60,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 709792,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 657250,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 708875,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 708750,
+          "stride": 1
+        },
+        "path.building": {
+          "observed_ns": 84,
+          "stride": 64
+        },
+        "replay.checksum": {
+          "observed_ns": 652584,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3292,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 334,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1209,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4792,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 249,
+          "stride": 1
+        }
+      },
+      "tick": 37,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 706000,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 627917,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 704792,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 704666,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 618125,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3167,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 333,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1125,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 7458,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 292,
+          "stride": 1
+        }
+      },
+      "tick": 51,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 697750,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 642292,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 696667,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 696541,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 634500,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1792,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 334,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 167,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3167,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 292,
+          "stride": 1
+        }
+      },
+      "tick": 15,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 693083,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 640250,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 692250,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 692125,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 636625,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2125,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 542,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3208,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 41,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 688125,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 457709,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 684167,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 684083,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 449500,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 6792,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 834,
+          "stride": 1
+        },
+        "simulation.scripts": {
+          "observed_ns": 37458,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 3709,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 63167,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 1042,
+          "stride": 1
+        }
+      },
+      "tick": 0,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 684916,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 614625,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 684166,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 684084,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 597625,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3041,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 916,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 10625,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 6124,
+          "stride": 1
+        }
+      },
+      "tick": 55,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 684416,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 618125,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 683584,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 683458,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 606958,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2959,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1208,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4334,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 62,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 681583,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 622709,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 680208,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 680083,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 617625,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1499,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 124,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 2875,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 30,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 679375,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 617667,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 678584,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 678500,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 609875,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3375,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 1833,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4750,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 292,
+          "stride": 1
+        }
+      },
+      "tick": 11,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 668417,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 601958,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 666875,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 666791,
+          "stride": 1
+        },
+        "path.direction": {
+          "observed_ns": 416,
+          "stride": 64
+        },
+        "path.resource": {
+          "observed_ns": 1292,
+          "stride": 64
+        },
+        "replay.checksum": {
+          "observed_ns": 593416,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1626,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 125,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 9917,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 7001,
+          "stride": 1
+        }
+      },
+      "tick": 23,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 659583,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 600292,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 658667,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 658541,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 592833,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 4500,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 3875,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 5834,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 250,
+          "stride": 1
+        }
+      },
+      "tick": 10,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 658375,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 586750,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 657542,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 657417,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 579084,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2833,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 2334,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4042,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 8,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 652458,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 601333,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 651833,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 651750,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 570959,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 1292,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 167,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 126,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 2250,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 209,
+          "stride": 1
+        }
+      },
+      "tick": 12,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 582000,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 502125,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 581167,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 581083,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 500791,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 4542,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 250,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 3751,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 6000,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 291,
+          "stride": 1
+        }
+      },
+      "tick": 5,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 560833,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 507625,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 559958,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 559875,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 506000,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 2375,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 209,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 2000,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 3375,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 6,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 503750,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 439125,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 501959,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 501875,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 436666,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3292,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 292,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 2667,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 4834,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 292,
+          "stride": 1
+        }
+      },
+      "tick": 4,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 498875,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 399541,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 497584,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 497500,
+          "stride": 1
+        },
+        "path.building": {
+          "observed_ns": 3959,
+          "stride": 64
+        },
+        "replay.checksum": {
+          "observed_ns": 396834,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 14166,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 6375,
+          "stride": 1
+        },
+        "simulation.projects": {
+          "observed_ns": 84,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 13126,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 22917,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 500,
+          "stride": 1
+        }
+      },
+      "tick": 1,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 490334,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 405625,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 488833,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 488625,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 404250,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 3500,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 6125,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 2917,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 10791,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 3,
+      "waits": {}
+    },
+    {
+      "elapsed_ns": 433458,
+      "phases": {
+        "engine.orders": {
+          "observed_ns": 355750,
+          "stride": 1
+        },
+        "loop": {
+          "observed_ns": 431208,
+          "stride": 1
+        },
+        "loop.work": {
+          "observed_ns": 431083,
+          "stride": 1
+        },
+        "replay.checksum": {
+          "observed_ns": 353541,
+          "stride": 1
+        },
+        "simulation.buildings": {
+          "observed_ns": 5709,
+          "stride": 1
+        },
+        "simulation.map": {
+          "observed_ns": 375,
+          "stride": 1
+        },
+        "simulation.tasks": {
+          "observed_ns": 4959,
+          "stride": 1
+        },
+        "simulation.tick": {
+          "observed_ns": 7542,
+          "stride": 1
+        },
+        "simulation.units": {
+          "observed_ns": 208,
+          "stride": 1
+        }
+      },
+      "tick": 2,
+      "waits": {}
+    }
+  ]
+}

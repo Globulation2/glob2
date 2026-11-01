@@ -1,0 +1,1066 @@
+TAP version 13
+# Subtest: installs a package into the file system with byte progress
+ok 1 - installs a package into the file system with byte progress
+  ---
+  duration_ms: 83.704252
+  type: 'test'
+  ...
+# Subtest: a later package replaces a core file and is reported once to the game
+ok 2 - a later package replaces a core file and is reported once to the game
+  ---
+  duration_ms: 1.76608
+  type: 'test'
+  ...
+# Subtest: a later visit installs cached parts without the network
+ok 3 - a later visit installs cached parts without the network
+  ---
+  duration_ms: 5.674768
+  type: 'test'
+  ...
+# Subtest: optional parts wait for the page between downloads and appear only when complete
+ok 4 - optional parts wait for the page between downloads and appear only when complete
+  ---
+  duration_ms: 62.948516
+  type: 'test'
+  ...
+# Subtest: failed downloads are reported and leave nothing behind
+ok 5 - failed downloads are reported and leave nothing behind
+  ---
+  duration_ms: 6.901662
+  type: 'test'
+  ...
+# Subtest: a response of the wrong size is rejected
+ok 6 - a response of the wrong size is rejected
+  ---
+  duration_ms: 10.611792
+  type: 'test'
+  ...
+# Subtest: works without Cache Storage and prunes parts of older builds
+ok 7 - works without Cache Storage and prunes parts of older builds
+  ---
+  duration_ms: 10.891591
+  type: 'test'
+  ...
+# Subtest: progress follows transfer bytes when a part arrives compressed
+ok 8 - progress follows transfer bytes when a part arrives compressed
+  ---
+  duration_ms: 5.505611
+  type: 'test'
+  ...
+# Subtest: the loading page estimates remaining time from the rate so far
+ok 9 - the loading page estimates remaining time from the rate so far
+  ---
+  duration_ms: 133.384971
+  type: 'test'
+  ...
+# Subtest: on-demand requests share a load and throttle failed retries
+ok 10 - on-demand requests share a load and throttle failed retries
+  ---
+  duration_ms: 38.658939
+  type: 'test'
+  ...
+# Subtest: startup downloads core and game together and waits for both installations
+ok 11 - startup downloads core and game together and waits for both installations
+  ---
+  duration_ms: 29.37324
+  type: 'test'
+  ...
+# Subtest: part concurrency is bounded globally across packages and duplicate loads share work
+ok 12 - part concurrency is bounded globally across packages and duplicate loads share work
+  ---
+  duration_ms: 25.078963
+  type: 'test'
+  ...
+# Subtest: out-of-order downloads preserve package replacement order
+ok 13 - out-of-order downloads preserve package replacement order
+  ---
+  duration_ms: 9.699837
+  type: 'test'
+  ...
+# Subtest: audio activation ignores missing, running and closed contexts
+ok 14 - audio activation ignores missing, running and closed contexts
+  ---
+  duration_ms: 22.481828
+  type: 'test'
+  ...
+# Subtest: closing audio during a pending resume does not reject the gesture handler
+ok 15 - closing audio during a pending resume does not reject the gesture handler
+  ---
+  duration_ms: 1.101674
+  type: 'test'
+  ...
+# Subtest: activation failures are reported and the next gesture can retry
+ok 16 - activation failures are reported and the next gesture can retry
+  ---
+  duration_ms: 23.376133
+  type: 'test'
+  ...
+# Subtest: only Firefox closed-resume rejection is suppressed after game exit
+ok 17 - only Firefox closed-resume rejection is suppressed after game exit
+  ---
+  duration_ms: 1.360433
+  type: 'test'
+  ...
+# Subtest: music controls coalesce behind one in-flight worker command
+ok 18 - music controls coalesce behind one in-flight worker command
+  ---
+  duration_ms: 33.742765
+  type: 'test'
+  ...
+# Subtest: replacing a preview discards controls for its previous session
+ok 19 - replacing a preview discards controls for its previous session
+  ---
+  duration_ms: 11.582767
+  type: 'test'
+  ...
+# Subtest: capture bridge frees memory and returns credits even when capture fails
+ok 20 - capture bridge frees memory and returns credits even when capture fails
+  ---
+  duration_ms: 43.313044
+  type: 'test'
+  ...
+# Subtest: accepts selected bytes without treating the extension as format validation
+ok 21 - accepts selected bytes without treating the extension as format validation
+  ---
+  duration_ms: 11.314638
+  type: 'test'
+  ...
+# Subtest: rejects paths, control characters, unsupported extensions and oversized inputs before reading
+ok 22 - rejects paths, control characters, unsupported extensions and oversized inputs before reading
+  ---
+  duration_ms: 8.229045
+  type: 'test'
+  ...
+# Subtest: rejects changed sizes and read failures
+ok 23 - rejects changed sizes and read failures
+  ---
+  duration_ms: 1.447462
+  type: 'test'
+  ...
+# Subtest: cancellation and disposal cannot publish late file contents
+ok 24 - cancellation and disposal cannot publish late file contents
+  ---
+  duration_ms: 6.987592
+  type: 'test'
+  ...
+# Subtest: a second selection cannot replace an in-flight read
+ok 25 - a second selection cannot replace an in-flight read
+  ---
+  duration_ms: 0.823126
+  type: 'test'
+  ...
+# Subtest: picker uses accepted extensions and releases its input on cancellation
+ok 26 - picker uses accepted extensions and releases its input on cancellation
+  ---
+  duration_ms: 1.084224
+  type: 'test'
+  ...
+# Subtest: disposing an open picker ignores its late change event
+ok 27 - disposing an open picker ignores its late change event
+  ---
+  duration_ms: 7.112621
+  type: 'test'
+  ...
+# Subtest: accepts gzip containers only for supported map and save types
+ok 28 - accepts gzip containers only for supported map and save types
+  ---
+  duration_ms: 0.771396
+  type: 'test'
+  ...
+# Subtest: validates bounded generator launch payloads
+ok 29 - validates bounded generator launch payloads
+  ---
+  duration_ms: 68.428276
+  type: 'test'
+  ...
+# Subtest: fences origins and revisions, freezes one launch, and accepts watch only after launch
+ok 30 - fences origins and revisions, freezes one launch, and accepts watch only after launch
+  ---
+  duration_ms: 51.0809
+  type: 'test'
+  ...
+# Subtest: missing WebGPU resolves initialization failure without retaining a device
+ok 31 - missing WebGPU resolves initialization failure without retaining a device
+  ---
+  duration_ms: 131.082073
+  type: 'test'
+  ...
+# Subtest: completion is atomically published after owned async execution
+ok 32 - completion is atomically published after owned async execution
+  ---
+  duration_ms: 18.734018
+  type: 'test'
+  ...
+# Subtest: rejection and cancellation resolve exactly one failure completion
+ok 33 - rejection and cancellation resolve exactly one failure completion
+  ---
+  duration_ms: 25.457221
+  type: 'test'
+  ...
+# Subtest: shutdown destroys only the compute device
+ok 34 - shutdown destroys only the compute device
+  ---
+  duration_ms: 17.690003
+  type: 'test'
+  ...
+# Subtest: initialization pipeline rejection destroys unpublished device
+ok 35 - initialization pipeline rejection destroys unpublished device
+  ---
+  duration_ms: 37.257867
+  type: 'test'
+  ...
+# Subtest: initialization second shader failure leaves no partially usable generation
+ok 36 - initialization second shader failure leaves no partially usable generation
+  ---
+  duration_ms: 15.580105
+  type: 'test'
+  ...
+# Subtest: device loss during asynchronous initialization retires unpublished device
+ok 37 - device loss during asynchronous initialization retires unpublished device
+  ---
+  duration_ms: 34.374822
+  type: 'test'
+  ...
+# Subtest: successful initialization is published atomically and reused
+ok 38 - successful initialization is published atomically and reused
+  ---
+  duration_ms: 18.905276
+  type: 'test'
+  ...
+# Subtest: canceled execution destroys all buffers even when error-scope read rejects
+ok 39 - canceled execution destroys all buffers even when error-scope read rejects
+  ---
+  duration_ms: 36.68717
+  type: 'test'
+  ...
+# Subtest: canceled completion retains signal and buffers until queue retirement
+ok 40 - canceled completion retains signal and buffers until queue retirement
+  ---
+  duration_ms: 115.297949
+  type: 'test'
+  ...
+# Subtest: fresh browser profiles use the game hosting origin
+ok 41 - fresh browser profiles use the game hosting origin
+  ---
+  duration_ms: 25.245902
+  type: 'test'
+  ...
+# Subtest: official cutover preserves credentials under their original origin
+ok 42 - official cutover preserves credentials under their original origin
+  ---
+  duration_ms: 9.2354
+  type: 'test'
+  ...
+# Subtest: custom selections and corrupt or future-version storage are left intact
+ok 43 - custom selections and corrupt or future-version storage are left intact
+  ---
+  duration_ms: 1.268303
+  type: 'test'
+  ...
+# Subtest: the online choice supplies a first-visit SDL hint and startup language
+ok 44 - the online choice supplies a first-visit SDL hint and startup language
+  ---
+  duration_ms: 71.037942
+  type: 'test'
+  ...
+# Subtest: a saved game language takes priority and receives no online override
+ok 45 - a saved game language takes priority and receives no online override
+  ---
+  duration_ms: 19.763452
+  type: 'test'
+  ...
+# Subtest: Bengali is handed to the game and a saved Bengali choice persists
+ok 46 - Bengali is handed to the game and a saved Bengali choice persists
+  ---
+  duration_ms: 35.133308
+  type: 'test'
+  ...
+# Subtest: both Chinese scripts and Japanese/Korean require the full startup font
+ok 47 - both Chinese scripts and Japanese/Korean require the full startup font
+  ---
+  duration_ms: 57.877873
+  type: 'test'
+  ...
+# Subtest: unavailable preference storage still permits the online startup language
+ok 48 - unavailable preference storage still permits the online startup language
+  ---
+  duration_ms: 18.035231
+  type: 'test'
+  ...
+# Subtest: translated blocked-link labels isolate the technical URL from RTL text
+ok 49 - translated blocked-link labels isolate the technical URL from RTL text
+  ---
+  duration_ms: 19.239225
+  type: 'test'
+  ...
+# Subtest: browser launches the selected mode with exact map and serving origin
+ok 50 - browser launches the selected mode with exact map and serving origin
+  ---
+  duration_ms: 78.417341
+  type: 'test'
+  ...
+# Subtest: invalid launches cannot select a different destination or malformed map
+ok 51 - invalid launches cannot select a different destination or malformed map
+  ---
+  duration_ms: 26.045188
+  type: 'test'
+  ...
+# Subtest: 400ms producer stall at the refill threshold preserves audio at both device rates
+ok 52 - 400ms producer stall at the refill threshold preserves audio at both device rates
+  ---
+  duration_ms: 515.159224
+  type: 'test'
+  ...
+# Subtest: undersupply waits for target and starvation recovers once
+ok 53 - undersupply waits for target and starvation recovers once
+  ---
+  duration_ms: 384.345459
+  type: 'test'
+  ...
+# Subtest: generation resets recycle credits and reject stale packets
+ok 54 - generation resets recycle credits and reject stale packets
+  ---
+  duration_ms: 65.002455
+  type: 'test'
+  ...
+# Subtest: mute is immediate and visibility freezes consumption
+ok 55 - mute is immediate and visibility freezes consumption
+  ---
+  duration_ms: 11.800706
+  type: 'test'
+  ...
+# Subtest: queue is bounded and resampling does not drift over block boundaries
+ok 56 - queue is bounded and resampling does not drift over block boundaries
+  ---
+  duration_ms: 1377.61659
+  type: 'test'
+  ...
+# Subtest: shared transport needs no message delivery to keep supplying audio
+ok 57 - shared transport needs no message delivery to keep supplying audio
+  ---
+  duration_ms: 1340.497583
+  type: 'test'
+  ...
+# Subtest: capture is bounded and uses the consumed clock after gain
+ok 58 - capture is bounded and uses the consumed clock after gain
+  ---
+  duration_ms: 51.31075
+  type: 'test'
+  ...
+# Subtest: preview pause retains the exact next sample and cursor at both rates and transports
+ok 59 - preview pause retains the exact next sample and cursor at both rates and transports
+  ---
+  duration_ms: 572.211502
+  type: 'test'
+  ...
+# Subtest: visibility rebuffering is intentional silence, not producer starvation
+ok 60 - visibility rebuffering is intentional silence, not producer starvation
+  ---
+  duration_ms: 37.246716
+  type: 'test'
+  ...
+# Subtest: paused generation changes never replay the old audible tail
+ok 61 - paused generation changes never replay the old audible tail
+  ---
+  duration_ms: 95.18295
+  type: 'test'
+  ...
+# Subtest: preview Play only pauses consumption and preserves prepared decoder state
+ok 62 - preview Play only pauses consumption and preserves prepared decoder state
+  ---
+  duration_ms: 129.359273
+  type: 'test'
+  ...
+# Subtest: preview Reset uses consumed position and preserves paused state
+ok 63 - preview Reset uses consumed position and preserves paused state
+  ---
+  duration_ms: 35.260577
+  type: 'test'
+  ...
+# Subtest: Reset cannot rewind a newer Seek to stale consumer metadata
+ok 64 - Reset cannot rewind a newer Seek to stale consumer metadata
+  ---
+  duration_ms: 21.358773
+  type: 'test'
+  ...
+# Subtest: a suspended worklet cannot retain the command credit or leave preview paused
+ok 65 - a suspended worklet cannot retain the command credit or leave preview paused
+  ---
+  duration_ms: 154.646975
+  type: 'test'
+  ...
+# Subtest: serial replacement restores dimensions, DOM metadata, focus and runtime references
+ok 66 - serial replacement restores dimensions, DOM metadata, focus and runtime references
+  ---
+  duration_ms: 44.622636
+  type: 'test'
+  ...
+# Subtest: repeated switches and rollback remove listeners from every retired canvas
+ok 67 - repeated switches and rollback remove listeners from every retired canvas
+  ---
+  duration_ms: 14.218102
+  type: 'test'
+  ...
+# Subtest: threaded GPU owns fresh offscreen context; threaded software remains DOM
+ok 68 - threaded GPU owns fresh offscreen context; threaded software remains DOM
+  ---
+  duration_ms: 0.970874
+  type: 'test'
+  ...
+# Subtest: fullscreen, invalid dimensions, transfer failures and overlapping requests retain previous canvas
+ok 69 - fullscreen, invalid dimensions, transfer failures and overlapping requests retain previous canvas
+  ---
+  duration_ms: 17.354715
+  type: 'test'
+  ...
+# Subtest: stable fullscreen ancestor survives replacement and restores current canvas dimensions
+ok 70 - stable fullscreen ancestor survives replacement and restores current canvas dimensions
+  ---
+  duration_ms: 37.859513
+  type: 'test'
+  ...
+# Subtest: WebGPU availability follows the serial presentation realm
+ok 71 - WebGPU availability follows the serial presentation realm
+  ---
+  duration_ms: 41.760292
+  type: 'test'
+  ...
+# Subtest: WebGPU availability follows the worker presentation realm
+ok 72 - WebGPU availability follows the worker presentation realm
+  ---
+  duration_ms: 2.685705
+  type: 'test'
+  ...
+# Subtest: GL bridge restores legacy texture tuning and copies readback without a shared view
+ok 73 - GL bridge restores legacy texture tuning and copies readback without a shared view
+  ---
+  duration_ms: 21.384543
+  type: 'test'
+  ...
+# Subtest: pthread reply installs SDK offscreen map and rollback restores previous ownership
+ok 74 - pthread reply installs SDK offscreen map and rollback restores previous ownership
+  ---
+  duration_ms: 23.374002
+  type: 'test'
+  ...
+# Subtest: pthread software release removes map and commit frees old shared dimensions
+ok 75 - pthread software release removes map and commit frees old shared dimensions
+  ---
+  duration_ms: 36.984598
+  type: 'test'
+  ...
+# Subtest: stale pthread replies are ignored; failed transfer releases new shared allocation
+ok 76 - stale pthread replies are ignored; failed transfer releases new shared allocation
+  ---
+  duration_ms: 18.029332
+  type: 'test'
+  ...
+# Subtest: successful hosted quit returns the current tab to the online home page
+ok 77 - successful hosted quit returns the current tab to the online home page
+  ---
+  duration_ms: 96.991859
+  type: 'test'
+  ...
+# Subtest: abnormal exits and standalone hosts retain their exit message
+ok 78 - abnormal exits and standalone hosts retain their exit message
+  ---
+  duration_ms: 45.87711
+  type: 'test'
+  ...
+# Subtest: same-origin match replay receives hash-bound companion metadata
+ok 79 - same-origin match replay receives hash-bound companion metadata
+  ---
+  duration_ms: 147.218625
+  type: 'test'
+  ...
+# Subtest: external files, redirects and malformed match routes carry no instance authority
+ok 80 - external files, redirects and malformed match routes carry no instance authority
+  ---
+  duration_ms: 61.442584
+  type: 'test'
+  ...
+# Subtest: unavailable digest support never prevents replay download
+ok 81 - unavailable digest support never prevents replay download
+  ---
+  duration_ms: 9.20325
+  type: 'test'
+  ...
+# Subtest: browser replay fixture stays within the engine replay acceptance boundary
+not ok 82 - browser replay fixture stays within the engine replay acceptance boundary
+  ---
+  duration_ms: 41.165715
+  type: 'test'
+  location: '/home/bradley/.codex/worktrees/83ab/glob2/browser/unit/replay-fixture.test.js:7:1'
+  failureType: 'testCodeFailure'
+  error: 'Replay fixture 186 is outside 187..190; re-record it using fixtures/README.md'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/bradley/.codex/worktrees/83ab/glob2/browser/unit/replay-fixture.test.js:15:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: generator-studio-trace.json tracks the engine and simulation revisions
+not ok 83 - generator-studio-trace.json tracks the engine and simulation revisions
+  ---
+  duration_ms: 10.708662
+  type: 'test'
+  location: '/home/bradley/.codex/worktrees/83ab/glob2/browser/unit/replay-fixture.test.js:20:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Refresh the native Studio reference after reviewing the version change
+    
+    186 !== 190
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 190
+  actual: 186
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/bradley/.codex/worktrees/83ab/glob2/browser/unit/replay-fixture.test.js:24:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: studio-trace.json tracks the engine and simulation revisions
+not ok 84 - studio-trace.json tracks the engine and simulation revisions
+  ---
+  duration_ms: 10.515253
+  type: 'test'
+  location: '/home/bradley/.codex/worktrees/83ab/glob2/browser/unit/replay-fixture.test.js:20:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Refresh the native Studio reference after reviewing the version change
+    
+    186 !== 190
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 190
+  actual: 186
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/bradley/.codex/worktrees/83ab/glob2/browser/unit/replay-fixture.test.js:24:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: serial-only development package loads serial runtime without probing threads
+ok 85 - serial-only development package loads serial runtime without probing threads
+  ---
+  duration_ms: 11.285858
+  type: 'test'
+  ...
+# Subtest: threaded-only package rejects unsupported host without fetching serial
+ok 86 - threaded-only package rejects unsupported host without fetching serial
+  ---
+  duration_ms: 3.80448
+  type: 'test'
+  ...
+# Subtest: threaded-only package rejects a forced serial runtime
+ok 87 - threaded-only package rejects a forced serial runtime
+  ---
+  duration_ms: 3.317422
+  type: 'test'
+  ...
+# Subtest: normal package still falls back to serial on unsupported host
+ok 88 - normal package still falls back to serial on unsupported host
+  ---
+  duration_ms: 2.324957
+  type: 'test'
+  ...
+# Subtest: set previews accept only the bound revision and bounded UTF-8 source
+ok 89 - set previews accept only the bound revision and bounded UTF-8 source
+  ---
+  duration_ms: 191.097246
+  type: 'test'
+  ...
+# Subtest: rejected asset sets retain validation diagnostics without reading a preview
+ok 90 - rejected asset sets retain validation diagnostics without reading a preview
+  ---
+  duration_ms: 79.711614
+  type: 'test'
+  ...
+# Subtest: operational failures and malformed validation reports are errors
+ok 91 - operational failures and malformed validation reports are errors
+  ---
+  duration_ms: 17.490614
+  type: 'test'
+  ...
+# Subtest: saved Software retains DOM ownership on an accelerated browser
+ok 92 - saved Software retains DOM ownership on an accelerated browser
+  ---
+  duration_ms: 5.282711
+  type: 'test'
+  ...
+# Subtest: saved GPU backends transfer ownership even when automatic policy chose software
+ok 93 - saved GPU backends transfer ownership even when automatic policy chose software
+  ---
+  duration_ms: 1.037124
+  type: 'test'
+  ...
+# Subtest: URL overrides take precedence, including Automatic
+ok 94 - URL overrides take precedence, including Automatic
+  ---
+  duration_ms: 0.575406
+  type: 'test'
+  ...
+# Subtest: WebGPU retains the launcher policy for its asynchronous startup
+ok 95 - WebGPU retains the launcher policy for its asynchronous startup
+  ---
+  duration_ms: 0.797746
+  type: 'test'
+  ...
+# Subtest: legacy preferences match Settings screenFlags migration
+ok 96 - legacy preferences match Settings screenFlags migration
+  ---
+  duration_ms: 1.548942
+  type: 'test'
+  ...
+# Subtest: fresh, Automatic and unrecognized preferences retain the automatic policy
+ok 97 - fresh, Automatic and unrecognized preferences retain the automatic policy
+  ---
+  duration_ms: 0.764525
+  type: 'test'
+  ...
+# Subtest: coalesces writes and acknowledges only the completed generation
+ok 98 - coalesces writes and acknowledges only the completed generation
+  ---
+  duration_ms: 54.329183
+  type: 'test'
+  ...
+# Subtest: quota failure is retained, rejects completion, and allows an explicit retry
+ok 99 - quota failure is retained, rejects completion, and allows an explicit retry
+  ---
+  duration_ms: 12.426442
+  type: 'test'
+  ...
+# Subtest: restore failure cannot overwrite existing storage
+ok 100 - restore failure cannot overwrite existing storage
+  ---
+  duration_ms: 1.789891
+  type: 'test'
+  ...
+# Subtest: synchronous adapter errors reject the operation
+ok 101 - synchronous adapter errors reject the operation
+  ---
+  duration_ms: 10.050635
+  type: 'test'
+  ...
+# Subtest: validates the pinned source, map, setup and revision envelope
+ok 102 - validates the pinned source, map, setup and revision envelope
+  ---
+  duration_ms: 91.883468
+  type: 'test'
+  ...
+# Subtest: ignores wrong origins, windows and stale runs; launches only once
+ok 103 - ignores wrong origins, windows and stale runs; launches only once
+  ---
+  duration_ms: 194.823255
+  type: 'test'
+  ...
+# Subtest: rejects a map that does not match the pinned fixture
+ok 104 - rejects a map that does not match the pinned fixture
+  ---
+  duration_ms: 65.278654
+  type: 'test'
+  ...
+# Subtest: Bengali byte limit preserves the complete final conjunct
+ok 105 - Bengali byte limit preserves the complete final conjunct
+  ---
+  duration_ms: 106.961685
+  type: 'test'
+  ...
+# Subtest: byte limits do not split reph, vowels, decomposed marks or emoji ZWJ
+ok 106 - byte limits do not split reph, vowels, decomposed marks or emoji ZWJ
+  ---
+  duration_ms: 28.602044
+  type: 'test'
+  ...
+# Subtest: exclusive ASCII byte maximum is preserved, including a one-byte buffer
+ok 107 - exclusive ASCII byte maximum is preserved, including a one-byte buffer
+  ---
+  duration_ms: 17.179896
+  type: 'test'
+  ...
+# Subtest: maximum zero leaves Unicode edits unrestricted
+ok 108 - maximum zero leaves Unicode edits unrestricted
+  ---
+  duration_ms: 9.502918
+  type: 'test'
+  ...
+# Subtest: a 32-byte username accepts all ASCII bytes and keeps overflowing Bengali clusters whole
+ok 109 - a 32-byte username accepts all ASCII bytes and keeps overflowing Bengali clusters whole
+  ---
+  duration_ms: 16.075353
+  type: 'test'
+  ...
+# Subtest: composition is neither truncated nor delivered until compositionend
+ok 110 - composition is neither truncated nor delivered until compositionend
+  ---
+  duration_ms: 12.191973
+  type: 'test'
+  ...
+# Subtest: without Segmenter, overflowing Unicode retains the last accepted edit
+ok 111 - without Segmenter, overflowing Unicode retains the last accepted edit
+  ---
+  duration_ms: 7.064981
+  type: 'test'
+  ...
+# Subtest: fallback accepted value follows programmatic native updates
+ok 112 - fallback accepted value follows programmatic native updates
+  ---
+  duration_ms: 5.762269
+  type: 'test'
+  ...
+# Subtest: fallback preserves composition and unlimited input contracts
+ok 113 - fallback preserves composition and unlimited input contracts
+  ---
+  duration_ms: 8.274445
+  type: 'test'
+  ...
+# Subtest: a character-limited account name accepts all 32 Bengali codepoints
+ok 114 - a character-limited account name accepts all 32 Bengali codepoints
+  ---
+  duration_ms: 4.572616
+  type: 'test'
+  ...
+# Subtest: a 128-character map title accepts 43 Bengali characters and all 128
+ok 115 - a 128-character map title accepts 43 Bengali characters and all 128
+  ---
+  duration_ms: 9.10856
+  type: 'test'
+  ...
+# Subtest: character bounds count Unicode codepoints rather than UTF-16 code units
+ok 116 - character bounds count Unicode codepoints rather than UTF-16 code units
+  ---
+  duration_ms: 3.051963
+  type: 'test'
+  ...
+# Subtest: character overflow preserves complete conjuncts, reph, marks and emoji ZWJ
+ok 117 - character overflow preserves complete conjuncts, reph, marks and emoji ZWJ
+  ---
+  duration_ms: 8.113655
+  type: 'test'
+  ...
+# Subtest: character and byte bounds are both enforced independently
+ok 118 - character and byte bounds are both enforced independently
+  ---
+  duration_ms: 15.954773
+  type: 'test'
+  ...
+# Subtest: explicit chat and LAN byte limits retain their inclusive payload capacities
+ok 119 - explicit chat and LAN byte limits retain their inclusive payload capacities
+  ---
+  duration_ms: 16.700219
+  type: 'test'
+  ...
+# Subtest: character limits wait for compositionend before delivering a whole prefix
+ok 120 - character limits wait for compositionend before delivering a whole prefix
+  ---
+  duration_ms: 2.622696
+  type: 'test'
+  ...
+# Subtest: without Segmenter character limits retain accepted Unicode and native updates
+ok 121 - without Segmenter character limits retain accepted Unicode and native updates
+  ---
+  duration_ms: 7.685368
+  type: 'test'
+  ...
+# Subtest: serial: redundant software canvas resizing preserves the presented pixels
+ok 122 - serial: redundant software canvas resizing preserves the presented pixels
+  ---
+  duration_ms: 50.682973
+  type: 'test'
+  ...
+# Subtest: serial: shared dimensions must already match before skipping the resize
+ok 123 - serial: shared dimensions must already match before skipping the resize
+  ---
+  duration_ms: 21.335993
+  type: 'test'
+  ...
+# Subtest: serial: GPU, transferred and unknown canvas requests retain SDK handling
+ok 124 - serial: GPU, transferred and unknown canvas requests retain SDK handling
+  ---
+  duration_ms: 56.138114
+  type: 'test'
+  ...
+# Subtest: serial: lost-context resize preserves context ownership after success or failure
+ok 125 - serial: lost-context resize preserves context ownership after success or failure
+  ---
+  duration_ms: 52.475833
+  type: 'test'
+  ...
+# Subtest: threaded: redundant software canvas resizing preserves the presented pixels
+ok 126 - threaded: redundant software canvas resizing preserves the presented pixels
+  ---
+  duration_ms: 16.652219
+  type: 'test'
+  ...
+# Subtest: threaded: shared dimensions must already match before skipping the resize
+ok 127 - threaded: shared dimensions must already match before skipping the resize
+  ---
+  duration_ms: 8.688722
+  type: 'test'
+  ...
+# Subtest: threaded: GPU, transferred and unknown canvas requests retain SDK handling
+ok 128 - threaded: GPU, transferred and unknown canvas requests retain SDK handling
+  ---
+  duration_ms: 30.200944
+  type: 'test'
+  ...
+# Subtest: threaded: lost-context resize preserves context ownership after success or failure
+ok 129 - threaded: lost-context resize preserves context ownership after success or failure
+  ---
+  duration_ms: 24.025649
+  type: 'test'
+  ...
+# Subtest: threaded software mode requires a successful shared-memory worker
+ok 130 - threaded software mode requires a successful shared-memory worker
+  ---
+  duration_ms: 48.310895
+  type: 'test'
+  ...
+# Subtest: serial fallback explains missing isolation, memory and worker support
+ok 131 - serial fallback explains missing isolation, memory and worker support
+  ---
+  duration_ms: 14.386672
+  type: 'test'
+  ...
+# Subtest: worker WebGL has an additional canvas-transfer requirement
+ok 132 - worker WebGL has an additional canvas-transfer requirement
+  ---
+  duration_ms: 13.607935
+  type: 'test'
+  ...
+# Subtest: actual pthread errors and silent startup stalls are observed, then detached
+ok 133 - actual pthread errors and silent startup stalls are observed, then detached
+  ---
+  duration_ms: 14.073533
+  type: 'test'
+  ...
+# Subtest: synchronous pthread creation errors reach fallback and retain their exception
+ok 134 - synchronous pthread creation errors reach fallback and retain their exception
+  ---
+  duration_ms: 2.054439
+  type: 'test'
+  ...
+# Subtest: persistence snapshots survive worker rename and byte changes during the database scan
+ok 135 - persistence snapshots survive worker rename and byte changes during the database scan
+  ---
+  duration_ms: 42.581667
+  type: 'test'
+  ...
+# Subtest: loader keeps SDK shader preloads beside each runtime and artwork shared
+ok 136 - loader keeps SDK shader preloads beside each runtime and artwork shared
+  ---
+  duration_ms: 124.32905
+  type: 'test'
+  ...
+# Subtest: moving a named landmark updates both completion and its screen destination
+ok 137 - moving a named landmark updates both completion and its screen destination
+  ---
+  duration_ms: 122.311591
+  type: 'test'
+  ...
+# Subtest: reused entity IDs with a new generation count as new buildings
+ok 138 - reused entity IDs with a new generation count as new buildings
+  ---
+  duration_ms: 32.588522
+  type: 'test'
+  ...
+# Subtest: stable step IDs survive saved runner state without positional UI assumptions
+ok 139 - stable step IDs survive saved runner state without positional UI assumptions
+  ---
+  duration_ms: 112.981212
+  type: 'test'
+  ...
+# Subtest: custom conditions extend the runner without a native callback
+ok 140 - custom conditions extend the runner without a native callback
+  ---
+  duration_ms: 41.142405
+  type: 'test'
+  ...
+# Subtest: bound patient identity persists as health changes and rejects ID reuse
+ok 141 - bound patient identity persists as health changes and rejects ID reuse
+  ---
+  duration_ms: 40.784167
+  type: 'test'
+  ...
+# Subtest: already trained units and idle ticks cannot satisfy improvement goals
+ok 142 - already trained units and idle ticks cannot satisfy improvement goals
+  ---
+  duration_ms: 48.551005
+  type: 'test'
+  ...
+# Subtest: guard encounters issue one ordinary enemy order and stay issued after resume
+ok 143 - guard encounters issue one ordinary enemy order and stay issued after resume
+  ---
+  duration_ms: 87.179633
+  type: 'test'
+  ...
+# Subtest: warrior training accepts learning ahead and replacement warriors
+ok 144 - warrior training accepts learning ahead and replacement warriors
+  ---
+  duration_ms: 68.929314
+  type: 'test'
+  ...
+# Subtest: lost bound patient gives restart guidance after save/load despite ID reuse
+ok 145 - lost bound patient gives restart guidance after save/load despite ID reuse
+  ---
+  duration_ms: 37.419146
+  type: 'test'
+  ...
+# Subtest: losing bound trainees while replacement workers survive offers a restart
+ok 146 - losing bound trainees while replacement workers survive offers a restart
+  ---
+  duration_ms: 140.560551
+  type: 'test'
+  ...
+# Subtest: prepare validates shaders before presentation attachment and copies shared uploads
+ok 147 - prepare validates shaders before presentation attachment and copies shared uploads
+  ---
+  duration_ms: 24.466406
+  type: 'test'
+  ...
+# Subtest: submission admission and GPU buffer retirement are bounded by completion
+ok 148 - submission admission and GPU buffer retirement are bounded by completion
+  ---
+  duration_ms: 11.917355
+  type: 'test'
+  ...
+# Subtest: capture polls submission order despite reversed async mapping completion
+ok 149 - capture polls submission order despite reversed async mapping completion
+  ---
+  duration_ms: 8.461324
+  type: 'test'
+  ...
+# Subtest: resource reset preserves device-loss notification
+ok 150 - resource reset preserves device-loss notification
+  ---
+  duration_ms: 13.890884
+  type: 'test'
+  ...
+# Subtest: many flushed chunks reserve one presentation slot until the presentation fence
+ok 151 - many flushed chunks reserve one presentation slot until the presentation fence
+  ---
+  duration_ms: 7.38677
+  type: 'test'
+  ...
+# Subtest: exported capture preserves target and crop; aggregate memory has a hard bound
+ok 152 - exported capture preserves target and crop; aggregate memory has a hard bound
+  ---
+  duration_ms: 8.171325
+  type: 'test'
+  ...
+# Subtest: budget deferral preserves prior presentation and admitted captures
+ok 153 - budget deferral preserves prior presentation and admitted captures
+  ---
+  duration_ms: 12.571901
+  type: 'test'
+  ...
+# Subtest: owned shader text prepares without accessing the worker-local filesystem
+ok 154 - owned shader text prepares without accessing the worker-local filesystem
+  ---
+  duration_ms: 6.080427
+  type: 'test'
+  ...
+# Subtest: discard fences preparation uploads even before the first packet submission
+ok 155 - discard fences preparation uploads even before the first packet submission
+  ---
+  duration_ms: 13.963223
+  type: 'test'
+  ...
+# Subtest: device loss during asynchronous preparation cannot publish readiness
+ok 156 - device loss during asynchronous preparation cannot publish readiness
+  ---
+  duration_ms: 6.760583
+  type: 'test'
+  ...
+# Subtest: superseded preparation cannot poison or overwrite a new device
+ok 157 - superseded preparation cannot poison or overwrite a new device
+  ---
+  duration_ms: 10.137084
+  type: 'test'
+  ...
+# Subtest: device acquired by superseded preparation is destroyed without replacing the owner
+ok 158 - device acquired by superseded preparation is destroyed without replacing the owner
+  ---
+  duration_ms: 8.904172
+  type: 'test'
+  ...
+# Subtest: retired completion rejection cannot fail a replacement allocation epoch
+ok 159 - retired completion rejection cannot fail a replacement allocation epoch
+  ---
+  duration_ms: 8.400714
+  type: 'test'
+  ...
+# Subtest: repeated ordered primitives reuse bindings and uniforms within a bounded chunk
+ok 160 - repeated ordered primitives reuse bindings and uniforms within a bounded chunk
+  ---
+  duration_ms: 604.669645
+  type: 'test'
+  ...
+# Subtest: changed uniforms and physical image replacement cannot reuse stale bindings
+ok 161 - changed uniforms and physical image replacement cannot reuse stale bindings
+  ---
+  duration_ms: 6.788973
+  type: 'test'
+  ...
+# Subtest: presentation binding reuse ends at resize and allocation reset
+ok 162 - presentation binding reuse ends at resize and allocation reset
+  ---
+  duration_ms: 4.982143
+  type: 'test'
+  ...
+# Subtest: uniform cache limit falls back without growing retained comparison storage
+ok 163 - uniform cache limit falls back without growing retained comparison storage
+  ---
+  duration_ms: 32.667471
+  type: 'test'
+  ...
+# Subtest: barriers clears and attachment changes end adjacent pass reuse in painter order
+ok 164 - barriers clears and attachment changes end adjacent pass reuse in painter order
+  ---
+  duration_ms: 15.616054
+  type: 'test'
+  ...
+# Subtest: changed state rebinds within the pass while shaders invalidate binding state
+ok 165 - changed state rebinds within the pass while shaders invalidate binding state
+  ---
+  duration_ms: 12.348822
+  type: 'test'
+  ...
+# Subtest: terrain ends an active pass before composing and fresh chunks reset encoded state
+ok 166 - terrain ends an active pass before composing and fresh chunks reset encoded state
+  ---
+  duration_ms: 16.40605
+  type: 'test'
+  ...
+# Subtest: indexed mesh ranges reuse physical buffers but refresh changed bounds
+ok 167 - indexed mesh ranges reuse physical buffers but refresh changed bounds
+  ---
+  duration_ms: 25.846568
+  type: 'test'
+  ...
+1..167
+# tests 167
+# suites 0
+# pass 164
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7186.696389

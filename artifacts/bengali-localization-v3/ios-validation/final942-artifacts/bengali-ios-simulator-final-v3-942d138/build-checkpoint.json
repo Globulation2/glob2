@@ -1,0 +1,79 @@
+{
+  "source_identity": {
+    "revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "f901203694a93fe2783dee8a7d76584caca25ce710e2a9fdccd8373058351fde"
+  },
+  "build_command": {
+    "label": "build",
+    "argv": [
+      "python3",
+      "mobile/ios.py",
+      "build",
+      "--environment",
+      "simulator",
+      "--release",
+      "--jobs",
+      "2"
+    ],
+    "exit": 0,
+    "seconds": 2928.909,
+    "uncompressed_log_bytes": 22580426,
+    "log_limit_exceeded": false
+  },
+  "release": true,
+  "environment": "simulator",
+  "architecture": "arm64",
+  "toolchain": {
+    "identity": {
+      "target": "ios",
+      "role": "client",
+      "toolchain": "ios",
+      "mode": "release",
+      "arch": "arm64",
+      "environment": "simulator",
+      "api": "15.0",
+      "client_profile": "free",
+      "distribution": "app_store",
+      "client_features": {
+        "commander": false,
+        "authoring_links": false,
+        "community_ai": false,
+        "community_generators": false
+      }
+    },
+    "output": "build/ios/simulator/arm64/15.0/client/release",
+    "toolchain": {
+      "cc": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+      "cxx": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+      "ar": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar",
+      "cflags": [
+        "-target",
+        "arm64-apple-ios15.0-simulator",
+        "-isysroot",
+        "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk"
+      ],
+      "ldflags": [
+        "-target",
+        "arm64-apple-ios15.0-simulator",
+        "-isysroot",
+        "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk"
+      ],
+      "fingerprint": "7cb87de72584a53fe9f178cd0e288b6560a677574a15dcffeeec0d03e612e025",
+      "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+      "sdk": "27.0"
+    }
+  },
+  "archive": {
+    "path": "built-app.tar.gz",
+    "sha256": "c3e1143f9dbd0a89f94c2291fdac0cc827ae83690ae211ae9ee3aa0eed0415b3",
+    "bytes": 169216316,
+    "limit_bytes": 262144000
+  },
+  "app_inventory_sha256": "4e737e2f5ff7e0a86fba9321fc91f5b7aa56d723ac624f0516b0cff612bf9d6a",
+  "critical_identities_sha256": "becf726ae20c7c95051fbf9b394410d22bd9997a5eafe62ee59df1f38d00fd08",
+  "dependency_manifests_sha256": "11ccfc1c2ee37ac0263542e798eb289f9c137313d1d0f1c60a06bee86c8317a7",
+  "actual_compile_flags_evidence": "build.log.gz contains actual compiler and linker command lines; doctor toolchain records SDK/compiler/fingerprint; commands.json records release invocation",
+  "runtime_not_yet_executed": true
+}

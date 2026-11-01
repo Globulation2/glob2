@@ -1,0 +1,18 @@
+{
+  "completed": 2,
+  "failed": 2,
+  "issue_samples": [
+    {
+      "player": 0,
+      "reason": "filesystem error: in create_directories: File exists [\"/Users/runner/work/glob2/glob2/artifacts/tests/GameDiagnostics/controllers_sharing_a_team_publish_distinct_complete_captures_and_recover_after_failures_artifacts/captures/diagnostics\"]",
+      "simulation_tick": 0
+    },
+    {
+      "player": 1,
+      "reason": "filesystem error: in create_directories: File exists [\"/Users/runner/work/glob2/glob2/artifacts/tests/GameDiagnostics/controllers_sharing_a_team_publish_distinct_complete_captures_and_recover_after_failures_artifacts/captures/diagnostics\"]",
+      "simulation_tick": 0
+    }
+  ],
+  "schema_version": 1,
+  "skipped": 0
+}

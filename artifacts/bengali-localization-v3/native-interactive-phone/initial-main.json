@@ -1,0 +1,32 @@
+{
+  "method": "ui_screenshot",
+  "arguments": {},
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": false, \"controller\": \"None\", \"dispatched\": false, \"frame_id\": 101, \"height\": 839, \"viewport_id\": 1, \"width\": 412}",
+          "type": "text"
+        },
+        {
+          "data": "PNG saved separately",
+          "mimeType": "image/png",
+          "type": "image"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "available": true,
+        "controlled": false,
+        "controller": "None",
+        "dispatched": false,
+        "frame_id": 101,
+        "height": 839,
+        "viewport_id": 1,
+        "width": 412
+      }
+    }
+  }
+}

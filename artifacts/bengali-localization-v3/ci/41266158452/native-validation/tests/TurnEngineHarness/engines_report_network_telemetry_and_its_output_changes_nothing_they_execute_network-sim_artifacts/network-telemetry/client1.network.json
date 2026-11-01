@@ -1,0 +1,634 @@
+{
+ "catch_up": {
+  "episodes": 1,
+  "ticks": 105,
+  "wall_us": 0
+ },
+ "compute_telemetry": {
+  "available": false,
+  "mode": "off",
+  "schema_version": 1
+ },
+ "desync": {
+  "flagged": 0,
+  "rejoins": 0,
+  "resync_requests": 0
+ },
+ "elapsed_us": 38615000,
+ "input_delay_unmatched": 0,
+ "input_delay_us": {
+  "count": 36,
+  "max": 560000,
+  "mean": 467361.111,
+  "p50": 499712,
+  "p95": 560000
+ },
+ "jitter_buffer": {
+  "buffered_ticks": {
+   "count": 1036,
+   "max": 11,
+   "mean": 7.027,
+   "p50": 8,
+   "p95": 10
+  },
+  "target_ticks": {
+   "count": 1036,
+   "max": 9,
+   "mean": 7.845,
+   "p50": 8,
+   "p95": 9
+  }
+ },
+ "jitter_us": {
+  "count": 69,
+  "max": 229996,
+  "mean": 181304.58,
+  "p50": 200704,
+  "p95": 208896
+ },
+ "match": {
+  "final_tick": 1141,
+  "human_seat_mask": 3,
+  "platform": "macOS",
+  "players": 3,
+  "relay_id": null,
+  "relay_region": null,
+  "seat": 1,
+  "sim_version": "190-73-99f2c305979d7f46e844e9f5e02f2704d1cb159e86e50d7b82038560f60600a0",
+  "tick_rate_millihz": 30000,
+  "transport": "online"
+ },
+ "order_validation": {
+  "seats": [
+   {
+    "accepted": 45,
+    "rejected": 0,
+    "rejected_by_reason": {},
+    "seat": 0,
+    "stale": 0,
+    "voice_rejected": 0
+   },
+   {
+    "accepted": 36,
+    "rejected": 0,
+    "rejected_by_reason": {},
+    "seat": 1,
+    "stale": 0,
+    "voice_rejected": 0
+   }
+  ]
+ },
+ "orders": {
+  "coalesced": 0,
+  "dropped_local": 2248,
+  "frames_sent": 36,
+  "outstanding_max": 4,
+  "queue_dropped": 0,
+  "queued_max": 1,
+  "queued_offline": 0,
+  "resent": 0,
+  "submitted": 36
+ },
+ "presence": {
+  "seats": [
+   {
+    "final_state": "connected",
+    "seat": 0,
+    "time_us": {
+     "connected": 38305000,
+     "not_connected": 310000
+    },
+    "transitions": {
+     "connected": 1
+    }
+   },
+   {
+    "final_state": "connected",
+    "seat": 1,
+    "time_us": {
+     "connected": 37595000,
+     "lagging": 710000,
+     "not_connected": 310000
+    },
+    "transitions": {
+     "connected": 2,
+     "lagging": 1
+    }
+   }
+  ],
+  "transitions": 4
+ },
+ "reconnects": {
+  "count": 1,
+  "down_now": false,
+  "downtime_us": 2620000,
+  "longest_downtime_us": 2620000
+ },
+ "reloads": {
+  "count": 0,
+  "fast_forward_ticks": 0,
+  "fast_forward_us": 0,
+  "load_us": 0
+ },
+ "rtt_us": {
+  "count": 69,
+  "max": 420000,
+  "mean": 231376.812,
+  "p50": 208896,
+  "p95": 385024
+ },
+ "schema": "ClientNetworkSummary",
+ "schema_version": 1,
+ "series": {
+  "dropped_points": 0,
+  "interval_us": 5000000,
+  "points": [
+   {
+    "buffered_ticks": {
+     "count": 138,
+     "max": 10,
+     "mean": 4.79,
+     "p50": 5,
+     "p95": 9
+    },
+    "bytes_received": 2336,
+    "bytes_sent": 400,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 138,
+    "end_us": 5000000,
+    "frames_received": 160,
+    "frames_sent": 24,
+    "input_delay_us": {
+     "count": 6,
+     "max": 560000,
+     "mean": 438333.333,
+     "p50": 450560,
+     "p95": 560000
+    },
+    "jitter_us": {
+     "count": 9,
+     "max": 226668,
+     "mean": 207582.222,
+     "p50": 208896,
+     "p95": 226668
+    },
+    "live_ticks": 138,
+    "mean_nudge": -0.041,
+    "orders_submitted": 7,
+    "presence_transitions": 2,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 9,
+     "max": 360000,
+     "mean": 262222.222,
+     "p50": 303104,
+     "p95": 360000
+    },
+    "stall_us": {
+     "count": 6,
+     "max": 245000,
+     "mean": 113333.333,
+     "p50": 50176,
+     "p95": 245000
+    },
+    "start_tick": 0,
+    "start_us": 0,
+    "target_ticks": {
+     "count": 138,
+     "max": 9,
+     "mean": 8.297,
+     "p50": 9,
+     "p95": 9
+    },
+    "ticks_executed": 138,
+    "ticks_faster": 8,
+    "ticks_slower": 130,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 151,
+     "max": 11,
+     "mean": 8.596,
+     "p50": 9,
+     "p95": 10
+    },
+    "bytes_received": 2471,
+    "bytes_sent": 264,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 289,
+    "end_us": 10000000,
+    "frames_received": 176,
+    "frames_sent": 20,
+    "input_delay_us": {
+     "count": 5,
+     "max": 560000,
+     "mean": 540000.0,
+     "p50": 540672,
+     "p95": 560000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 208356,
+     "mean": 190493.0,
+     "p50": 192512,
+     "p95": 208356
+    },
+    "live_ticks": 151,
+    "mean_nudge": 0.007,
+    "orders_submitted": 4,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 315000,
+     "mean": 207500.0,
+     "p50": 192512,
+     "p95": 315000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 138,
+    "start_us": 5000000,
+    "target_ticks": {
+     "count": 151,
+     "max": 9,
+     "mean": 8.192,
+     "p50": 8,
+     "p95": 9
+    },
+    "ticks_executed": 151,
+    "ticks_faster": 85,
+    "ticks_slower": 33,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 149,
+     "max": 10,
+     "mean": 7.765,
+     "p50": 8,
+     "p95": 9
+    },
+    "bytes_received": 2329,
+    "bytes_sent": 335,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 438,
+    "end_us": 15000000,
+    "frames_received": 173,
+    "frames_sent": 23,
+    "input_delay_us": {
+     "count": 7,
+     "max": 530000,
+     "mean": 509285.714,
+     "p50": 516096,
+     "p95": 530000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 209979,
+     "mean": 185665.1,
+     "p50": 208896,
+     "p95": 209979
+    },
+    "live_ticks": 149,
+    "mean_nudge": -0.004,
+    "orders_submitted": 7,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 380000,
+     "mean": 225500.0,
+     "p50": 192512,
+     "p95": 380000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 289,
+    "start_us": 10000000,
+    "target_ticks": {
+     "count": 149,
+     "max": 8,
+     "mean": 7.987,
+     "p50": 8,
+     "p95": 8
+    },
+    "ticks_executed": 149,
+    "ticks_faster": 18,
+    "ticks_slower": 51,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 151,
+     "max": 10,
+     "mean": 8.066,
+     "p50": 8,
+     "p95": 9
+    },
+    "bytes_received": 2188,
+    "bytes_sent": 252,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 589,
+    "end_us": 20000000,
+    "frames_received": 172,
+    "frames_sent": 19,
+    "input_delay_us": {
+     "count": 3,
+     "max": 525000,
+     "mean": 500000.0,
+     "p50": 499712,
+     "p95": 525000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 201663,
+     "mean": 158679.6,
+     "p50": 151552,
+     "p95": 201663
+    },
+    "live_ticks": 151,
+    "mean_nudge": 0.002,
+    "orders_submitted": 3,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 390000,
+     "mean": 221500.0,
+     "p50": 200704,
+     "p95": 390000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 438,
+    "start_us": 15000000,
+    "target_ticks": {
+     "count": 151,
+     "max": 8,
+     "mean": 8.0,
+     "p50": 8,
+     "p95": 8
+    },
+    "ticks_executed": 151,
+    "ticks_faster": 52,
+    "ticks_slower": 22,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 49,
+     "max": 8,
+     "mean": 1.837,
+     "p50": 1,
+     "p95": 6
+    },
+    "bytes_received": 899,
+    "bytes_sent": 225,
+    "catch_up_ticks": 105,
+    "downtime_us": 2620000,
+    "end_tick": 743,
+    "end_us": 25000000,
+    "frames_received": 49,
+    "frames_sent": 15,
+    "input_delay_us": {
+     "count": 3,
+     "max": 280000,
+     "mean": 255000.0,
+     "p50": 258048,
+     "p95": 280000
+    },
+    "jitter_us": {
+     "count": 3,
+     "max": 229996,
+     "mean": 76665.333,
+     "p50": 0,
+     "p95": 229996
+    },
+    "live_ticks": 49,
+    "mean_nudge": -0.003,
+    "orders_submitted": 4,
+    "presence_transitions": 2,
+    "reconnects": 1,
+    "rtt_us": {
+     "count": 3,
+     "max": 235000,
+     "mean": 215000.0,
+     "p50": 208896,
+     "p95": 235000
+    },
+    "stall_us": {
+     "count": 2,
+     "max": 3280000,
+     "mean": 1735000.0,
+     "p50": 190000,
+     "p95": 3280000
+    },
+    "start_tick": 589,
+    "start_us": 20000000,
+    "target_ticks": {
+     "count": 49,
+     "max": 8,
+     "mean": 3.653,
+     "p50": 0,
+     "p95": 8
+    },
+    "ticks_executed": 154,
+    "ticks_faster": 26,
+    "ticks_slower": 23,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 146,
+     "max": 9,
+     "mean": 6.219,
+     "p50": 7,
+     "p95": 9
+    },
+    "bytes_received": 2432,
+    "bytes_sent": 396,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 889,
+    "end_us": 30000000,
+    "frames_received": 177,
+    "frames_sent": 23,
+    "input_delay_us": {
+     "count": 7,
+     "max": 500000,
+     "mean": 437142.857,
+     "p50": 417792,
+     "p95": 500000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 209983,
+     "mean": 186161.6,
+     "p50": 200704,
+     "p95": 209983
+    },
+    "live_ticks": 146,
+    "mean_nudge": -0.033,
+    "orders_submitted": 7,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 420000,
+     "mean": 224000.0,
+     "p50": 192512,
+     "p95": 420000
+    },
+    "stall_us": {
+     "count": 1,
+     "max": 105000,
+     "mean": 105000.0,
+     "p50": 105000,
+     "p95": 105000
+    },
+    "start_tick": 743,
+    "start_us": 25000000,
+    "target_ticks": {
+     "count": 146,
+     "max": 8,
+     "mean": 8.0,
+     "p50": 8,
+     "p95": 8
+    },
+    "ticks_executed": 146,
+    "ticks_faster": 0,
+    "ticks_slower": 115,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 149,
+     "max": 10,
+     "mean": 7.899,
+     "p50": 8,
+     "p95": 9
+    },
+    "bytes_received": 2271,
+    "bytes_sent": 251,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 1038,
+    "end_us": 35000000,
+    "frames_received": 172,
+    "frames_sent": 20,
+    "input_delay_us": {
+     "count": 5,
+     "max": 545000,
+     "mean": 521000.0,
+     "p50": 516096,
+     "p95": 545000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 205013,
+     "mean": 180509.5,
+     "p50": 200704,
+     "p95": 205013
+    },
+    "live_ticks": 149,
+    "mean_nudge": -0.003,
+    "orders_submitted": 4,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 390000,
+     "mean": 255000.0,
+     "p50": 208896,
+     "p95": 390000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 889,
+    "start_us": 30000000,
+    "target_ticks": {
+     "count": 149,
+     "max": 8,
+     "mean": 7.893,
+     "p50": 8,
+     "p95": 8
+    },
+    "ticks_executed": 149,
+    "ticks_faster": 29,
+    "ticks_slower": 53,
+    "voice_received": 0,
+    "voice_sent": 0
+   }
+  ]
+ },
+ "stalls": {
+  "count": 9,
+  "duration_us": {
+   "count": 9,
+   "max": 3280000,
+   "mean": 472777.778,
+   "p50": 151552,
+   "p95": 3280000
+  },
+  "longest_us": 3280000,
+  "total_us": 4255000
+ },
+ "tick_rate_nudge": {
+  "live_ticks": 1036,
+  "max_abs": 0.05,
+  "mean": -0.01,
+  "ticks_faster": 235,
+  "ticks_slower": 457
+ },
+ "ticks": {
+  "executed": 1141,
+  "live": 1036
+ },
+ "traffic": {
+  "bundle_bytes": 13721,
+  "bundle_entries": 81,
+  "bundles_received": 1028,
+  "bytes_received": 16210,
+  "bytes_sent": 2231,
+  "frames_received": 1189,
+  "frames_sent": 156
+ },
+ "voice": {
+  "received": 0,
+  "received_bytes": 0,
+  "sent": 0,
+  "sent_bytes": 0
+ }
+}

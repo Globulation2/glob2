@@ -1,0 +1,12 @@
+{
+  "original_runtime_path": "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+  "retained_path": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/retained-binaries/glob2-3ba",
+  "sha256": "c91d274602048190795f6d7ab1f19a1e3c2b5e9c29aa167650f358b46626d240",
+  "actual_producer": {
+    "revision": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "2831b34f4837239704de2c61421acba46e7ea0a647035d810b97f5daa19a093b"
+  },
+  "reason": "All three actual3ba UI processes exited0 before final API relink; retain exact previous executable for its immutable evidence. Not a new-revision producer."
+}

@@ -1,0 +1,52 @@
+{
+  "complete": true,
+  "fields": {
+    "farmCapacity": {
+      "colour": [
+        220,
+        200,
+        40
+      ],
+      "units": "micro-wheat per tick"
+    },
+    "foodOpportunity": {
+      "colour": [
+        40,
+        220,
+        120
+      ],
+      "units": "micro-wheat per tick"
+    },
+    "protectedYield": {
+      "colour": [
+        220,
+        120,
+        220
+      ],
+      "units": "micro-wheat per tick"
+    },
+    "protectedness": {
+      "colour": [
+        40,
+        120,
+        255
+      ],
+      "units": "placement score"
+    },
+    "threat": {
+      "colour": [
+        255,
+        40,
+        40
+      ],
+      "units": "placement score"
+    }
+  },
+  "height": 32,
+  "planner_tick": 0,
+  "player": 1,
+  "schema_version": 1,
+  "simulation_tick": 10,
+  "team": 0,
+  "width": 32
+}

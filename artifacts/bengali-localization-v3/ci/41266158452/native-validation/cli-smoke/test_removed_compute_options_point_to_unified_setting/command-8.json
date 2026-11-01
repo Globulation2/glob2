@@ -1,0 +1,12 @@
+{
+  "args": [
+    "online",
+    "turn-client",
+    "missing.json",
+    "--gradient-workers",
+    "2"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: --gradient-workers has been removed; use --compute-threads auto|N on the relevant command (glob2 help)\n"
+}

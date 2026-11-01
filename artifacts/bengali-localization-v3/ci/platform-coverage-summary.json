@@ -1,0 +1,112 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "observed_at": "2026-11-01T04:44:46.769394+00:00",
+  "actual_pr_head": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "current_hosted_pr": {
+    "run_id": 41272876585,
+    "requested_game_merge": "79ed6f98d34e0d9ac89970c89ec44278a3c703fa",
+    "status": "queued",
+    "selector_status": "queued",
+    "selected_inventory": "Not yet available for7f; do not reuse old3ba selection as executed current coverage."
+  },
+  "macOS": {
+    "actual_source": "942d138b609ad8e0c425d974042b6e3983a717a4",
+    "workflow_head": "2afe891014845d0c44447e09db08a2a67754323d",
+    "run_id": 41266158452,
+    "overall": "failure",
+    "actual_cases": [
+      {
+        "file": "engine-junit.xml",
+        "raw_suite_counts": {
+          "tests": "1950",
+          "failures": "5",
+          "errors": "7",
+          "skipped": "230"
+        },
+        "actual_testcase_outcomes": {
+          "passed": 1710,
+          "skipped": 230,
+          "failed": 10
+        },
+        "focused_suites": {
+          "FontKerning": {
+            "passed": 9
+          },
+          "SystemLanguage": {
+            "passed": 8
+          },
+          "Settings": {
+            "passed": 1,
+            "skipped": 9
+          }
+        }
+      },
+      {
+        "file": "unit-junit.xml",
+        "raw_suite_counts": {
+          "tests": "1272",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "89"
+        },
+        "actual_testcase_outcomes": {
+          "passed": 1183,
+          "skipped": 89
+        },
+        "focused_suites": {
+          "UILayout": {
+            "passed": 34
+          },
+          "TextMetrics": {
+            "passed": 2
+          }
+        }
+      }
+    ],
+    "compiler": "Apple LLVM21.0.0 (clang-2100.1.1.101)",
+    "source_scope": [
+      "Actual942 build excludes current1d36 chat254 correction and master0d54 desktop HUD spacing; only unchanged component scope may carry.",
+      "Display-tagged screenshot cases were skipped; this is shaping/metrics/layout/unit runtime coverage, not macOS visual inspection."
+    ],
+    "evidence": "41266158452/coverage-and-failures.json"
+  },
+  "Android": {
+    "actual_source": "942d138b609ad8e0c425d974042b6e3983a717a4",
+    "run_id": 41266158472,
+    "hosted_overall": "failure (onboarding helper assumption)",
+    "independent_runtime": "PASS scoped actualAPK automaticbn-BD firstvisit/render/startup/settings/lifecycle/persistence/assets",
+    "native_abi": "x86_64",
+    "other_runtime_abis": "arm64-v8a andarmeabi-v7a not executed by this reviewer",
+    "shutdown": "Own VM/container/ADB stopped andportsverifiedclosed",
+    "evidence": "41266158472/bengali-runtime-review.json",
+    "source_scope": [
+      "No interactive game-language-picker selection was performed; actual OSautomaticselection and persistedBengali were tested.",
+      "No Android physicaldevice or arm64/armv7 runtime execution.",
+      "Actual942 excludes later254chatcap and7f browsercharacter-limit changes; no claim those changed paths execute here.",
+      "Newmaster0d54 desktopHUD spacing is outside captured Android main/settings/onboarding scope.",
+      "Full hosted Android workflow remains FAILURE; this independent owned-emulator recovery has PASS evidence."
+    ]
+  },
+  "Windows": {
+    "most_recent_observed_producer": {
+      "run_id": 41268380133,
+      "game_merge": "2e33be5130c3826315c86cbea4e41203927951e1",
+      "job_id": 124741282113,
+      "state": "Auto-cancelled during compilation on new7f push",
+      "unit_engine_font_locale_execution": "skipped/unexecuted"
+    },
+    "current7f": "pending selector; no current Windows runtime pass",
+    "artifact_runtime_reuse": "Standard artifact list does not retain PEtests+DLLclosure; local Wine absent. No unexecuted gate passed."
+  },
+  "browser_and_Linux": {
+    "current_hosted_producers": "Waiting current7f selector; no final hosted client artifact available yet",
+    "local_visual_QA_owner": "/root/cloud_runner and/root/bengali_author; outside this collector report"
+  },
+  "iOS": {
+    "owner": "/root/bengali_adversary",
+    "final_literal_source": "942d138b609ad8e0c425d974042b6e3983a717a4",
+    "run_id": 41266250711,
+    "artifact_downloads": "Owned independently; see V3/ios-validation, no duplication or inferred pass here."
+  },
+  "global_gate_claim": "No global fullplatform/fullCI PASS; only actual scoped evidence above."
+}

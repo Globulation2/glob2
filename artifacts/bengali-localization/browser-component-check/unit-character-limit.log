@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: Bengali byte limit preserves the complete final conjunct
+ok 1 - Bengali byte limit preserves the complete final conjunct
+  ---
+  duration_ms: 172.241849
+  type: 'test'
+  ...
+# Subtest: byte limits do not split reph, vowels, decomposed marks or emoji ZWJ
+ok 2 - byte limits do not split reph, vowels, decomposed marks or emoji ZWJ
+  ---
+  duration_ms: 53.648557
+  type: 'test'
+  ...
+# Subtest: exclusive ASCII byte maximum is preserved, including a one-byte buffer
+ok 3 - exclusive ASCII byte maximum is preserved, including a one-byte buffer
+  ---
+  duration_ms: 17.989361
+  type: 'test'
+  ...
+# Subtest: maximum zero leaves Unicode edits unrestricted
+ok 4 - maximum zero leaves Unicode edits unrestricted
+  ---
+  duration_ms: 15.705184
+  type: 'test'
+  ...
+# Subtest: a 32-byte username accepts all ASCII bytes and keeps overflowing Bengali clusters whole
+ok 5 - a 32-byte username accepts all ASCII bytes and keeps overflowing Bengali clusters whole
+  ---
+  duration_ms: 11.968375
+  type: 'test'
+  ...
+# Subtest: composition is neither truncated nor delivered until compositionend
+ok 6 - composition is neither truncated nor delivered until compositionend
+  ---
+  duration_ms: 25.015493
+  type: 'test'
+  ...
+# Subtest: without Segmenter, overflowing Unicode retains the last accepted edit
+ok 7 - without Segmenter, overflowing Unicode retains the last accepted edit
+  ---
+  duration_ms: 12.057545
+  type: 'test'
+  ...
+# Subtest: fallback accepted value follows programmatic native updates
+ok 8 - fallback accepted value follows programmatic native updates
+  ---
+  duration_ms: 13.779055
+  type: 'test'
+  ...
+# Subtest: fallback preserves composition and unlimited input contracts
+ok 9 - fallback preserves composition and unlimited input contracts
+  ---
+  duration_ms: 14.068113
+  type: 'test'
+  ...
+# Subtest: a character-limited account name accepts all 32 Bengali codepoints
+ok 10 - a character-limited account name accepts all 32 Bengali codepoints
+  ---
+  duration_ms: 13.124338
+  type: 'test'
+  ...
+# Subtest: a 128-character map title accepts 43 Bengali characters and all 128
+ok 11 - a 128-character map title accepts 43 Bengali characters and all 128
+  ---
+  duration_ms: 34.588771
+  type: 'test'
+  ...
+# Subtest: character bounds count Unicode codepoints rather than UTF-16 code units
+ok 12 - character bounds count Unicode codepoints rather than UTF-16 code units
+  ---
+  duration_ms: 9.790926
+  type: 'test'
+  ...
+# Subtest: character overflow preserves complete conjuncts, reph, marks and emoji ZWJ
+ok 13 - character overflow preserves complete conjuncts, reph, marks and emoji ZWJ
+  ---
+  duration_ms: 36.998968
+  type: 'test'
+  ...
+# Subtest: character and byte bounds are both enforced independently
+ok 14 - character and byte bounds are both enforced independently
+  ---
+  duration_ms: 41.552413
+  type: 'test'
+  ...
+# Subtest: explicit chat and LAN byte limits retain their inclusive payload capacities
+ok 15 - explicit chat and LAN byte limits retain their inclusive payload capacities
+  ---
+  duration_ms: 34.82712
+  type: 'test'
+  ...
+# Subtest: character limits wait for compositionend before delivering a whole prefix
+ok 16 - character limits wait for compositionend before delivering a whole prefix
+  ---
+  duration_ms: 11.133929
+  type: 'test'
+  ...
+# Subtest: without Segmenter character limits retain accepted Unicode and native updates
+ok 17 - without Segmenter character limits retain accepted Unicode and native updates
+  ---
+  duration_ms: 14.159383
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2846.73115

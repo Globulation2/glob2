@@ -1,0 +1,11 @@
+{
+  "stage": "username-ascii32",
+  "username": "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
+  "username_utf8_hex": "4142434445464748494a4b4c4d4e4f505152535455565758595a313233343536",
+  "username_utf8_bytes": 32,
+  "language": "bn",
+  "preferences_sha256": "5455750b7861ddba36d511cee46b2aee4aa72fe49e17e522d63238ed7c0870d7",
+  "expected_username": "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
+  "name_matches": true,
+  "bengali_selected": true
+}

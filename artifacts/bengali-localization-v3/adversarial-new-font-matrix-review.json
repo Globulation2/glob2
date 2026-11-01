@@ -1,0 +1,182 @@
+{
+  "reviewer": "/root/bengali_adversary",
+  "certification": "Agent visual review, not native-human certification",
+  "verdict": "pass",
+  "findings": [],
+  "scope": "Only two selected new stat strings;24 sample records across desktop/compact Linux,10/13/20points and1x/2x; not6237rendered, fullcatalogreading, or mobileOS coverage.",
+  "selected_pairs": [
+    {
+      "key": "[stat win probability]",
+      "target": "জয়ের সম্ভাবনা"
+    },
+    {
+      "key": "[stat win probability about]",
+      "target": "ম্যাচ চলাকালীন বিভিন্ন সময়ে মাপা আপনার জোটের জয়ের আনুমানিক সম্ভাবনা। মিত্রদের জন্য এই সম্ভাবনা একই। এআইয়ের খেলার তথ্য দিয়ে মডেলটি প্রশিক্ষিত হয়েছে; এই অনুমানে অবস্থান বা পরিকল্পিত চাল ধরা হয় না। পুরোনো সংরক্ষিত খেলায় ইতিহাস অসম্পূর্ণ থাকতে পারে।"
+    }
+  ],
+  "subset_equals_installed_v3_pairs": true,
+  "images": [
+    {
+      "path": "font-matrix/desktop/font-10-scale-1-page-001.png",
+      "sha256": "d386ae1f1da6c31f41160c3e5aab25e14a562c0daa27aa0e861df6e30c46dc2c",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/desktop/font-10-scale-2-page-001.png",
+      "sha256": "a4247d217e3af41f855e881a20749b04d7a8fd00e1a8f390573bec21797ce1d6",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/desktop/font-13-scale-1-page-001.png",
+      "sha256": "249459c45832b290a31fac19f50056f6726efdc19959ce780a37274cb5d99c84",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/desktop/font-13-scale-2-page-001.png",
+      "sha256": "225fad3351e27d6b1cb7fc1a0aae0a4ede7993206e44a7e208c3e4027a7b3a30",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/desktop/font-20-scale-1-page-001.png",
+      "sha256": "9a7ea9dc83450215881ae246eabb0dae918d756ee171c033ff296fe85b8a8ca4",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/desktop/font-20-scale-2-page-001.png",
+      "sha256": "333dedbfdd0e1949bbea066a6c5f27684d7f57ae6f4a48ff30e98416f00ab2c8",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/phone/font-10-scale-1-page-001.png",
+      "sha256": "244803bb48139a9f1e8940ff552dbab71ba7e60c24df58d22b5195c8b1808492",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/phone/font-10-scale-2-page-001.png",
+      "sha256": "2f623aab179af41b7d634385b911d712ba8d81ffa22adf73011a5515e312ead3",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/phone/font-13-scale-1-page-001.png",
+      "sha256": "07a0448e250f0b78a21de0a7299d6875674fffcc4fd89635c471a4b1d05fba74",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/phone/font-13-scale-2-page-001.png",
+      "sha256": "2197a3097b88bdd6d84ccfc11e6b032c0b83b15b0676c4e12a3f8824dbab49d9",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/phone/font-20-scale-1-page-001.png",
+      "sha256": "cebaaa3f142698d9cf89a28dee30918b3a29cacd422461195d11fd675da52926",
+      "actually_viewed": true
+    },
+    {
+      "path": "font-matrix/phone/font-20-scale-2-page-001.png",
+      "sha256": "facab38647c16bb433d86e0a34731f8a871ed94eece0d7261d3262b8a35b36d0",
+      "actually_viewed": true
+    }
+  ],
+  "image_count": 12,
+  "modes": [
+    {
+      "mode": "desktop",
+      "metadata_sha256": "ac165702e71281f8423d9a933f940b7b9cd4d779fdd402f713cd930f88d9aced",
+      "command_receipt_sha256": "2ba36c9d58d70748c9f60ed14ad3b6921a5c33d346da4d41a6eadf7f11980036",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "harness_executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c",
+      "input_metadata": {
+        "locale": "bn",
+        "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+        "catalog_sha256": {
+          "native": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+          "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+        },
+        "sample_selection": [
+          "native:[stat win probability]",
+          "native:[stat win probability about]"
+        ],
+        "scope": "Only the two newly added stat messages; not a full catalog rendering claim."
+      },
+      "converted_subset_catalog_sha256": {
+        "native": "5ed5dde513d45bf21b4d268cf97652783798a0b135f10fed45c64271b051953c",
+        "online": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      "sample_records": 12
+    },
+    {
+      "mode": "phone",
+      "metadata_sha256": "49fc07ee65b00f81a5e88e643d86a0ce6f5082f881ad3efd7f09246375fd5b17",
+      "command_receipt_sha256": "dd3544357d3467739a36ef04d41e679990e002c9d37db75b3681ba0762817c00",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "harness_executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c",
+      "input_metadata": {
+        "locale": "bn",
+        "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+        "catalog_sha256": {
+          "native": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+          "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+        },
+        "sample_selection": [
+          "native:[stat win probability]",
+          "native:[stat win probability about]"
+        ],
+        "scope": "Only the two newly added stat messages; not a full catalog rendering claim."
+      },
+      "converted_subset_catalog_sha256": {
+        "native": "5ed5dde513d45bf21b4d268cf97652783798a0b135f10fed45c64271b051953c",
+        "online": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      "sample_records": 12
+    }
+  ],
+  "all_line_count": 52,
+  "all_glyph_checks": true,
+  "all_production_drawn_bounds_and_image_edges_fit": true,
+  "raw_raster_diagnostic_overruns": [
+    {
+      "mode": "desktop",
+      "key": "[stat win probability about]",
+      "size": 13,
+      "scale": 2,
+      "png": "font-13-scale-2-page-001.png",
+      "raster_width": 1790,
+      "drawn_width": 1750,
+      "destination_width": 875.0,
+      "drawn_fits": true
+    }
+  ],
+  "observations": [
+    "All12 actual PNGs viewed. Bengali conjuncts, reph, vowel signs and descenders remain visible; no replacement glyphs, clipped marks, lost text or unreadable breaks observed.",
+    "The desktop13point2x raw raster diagnostic exceeds its draw destination; production scales the complete bitmap into its measured destination. Actual image, drawn bounds and edge checks pass. This is retained diagnostic evidence, not silently counted as raw-raster pass.",
+    "Legacy source_revision62 field identifies frozen-kit preparation; actual embedded producer is clean7f with sourceTreeSha256ac11..., independently checked."
+  ],
+  "limits": [
+    "Synthetic production-font matrix, not actual game screen layout.",
+    "Snapshot subset equality verified; no fresh full6237pairreading claim."
+  ]
+}

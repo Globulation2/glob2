@@ -1,0 +1,55 @@
+{
+  "code_identity": {
+    "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+  },
+  "actual_total_cases": 86,
+  "initial_passed_cases": 82,
+  "initial_display_initialization_failures": 4,
+  "explicit_x11_display_rechecks_passed": 4,
+  "remaining_failures": 0,
+  "suites": {
+    "FontKerning": 9,
+    "OnlineWording": 7,
+    "PlatformRoom": 8,
+    "Settings": 1,
+    "SystemLanguage": 8,
+    "InviteLink": 10,
+    "MapCatalog": 6,
+    "TextMetrics": 2,
+    "UILayout": 35
+  },
+  "rechecked_cases": [
+    {
+      "name": "Bengali account avatar retains its complete first shaping cluster [display]",
+      "path": "native-display-x11-0.xml",
+      "sha256": "b4f3684d9f5e83563ec3f877286d46ccdd51ef15b77e89834291297f80e4e71f"
+    },
+    {
+      "name": "an unrated search shows no ratings; a ranked one explains its range [display]",
+      "path": "native-display-x11-1.xml",
+      "sha256": "dc7dc394aa9314f9dc96a79f886798168c51582094afb29c46d4205e2c5a7e67"
+    },
+    {
+      "name": "an unserved version blames the side that is out of date [display]",
+      "path": "native-display-x11-2.xml",
+      "sha256": "bd36b199418b0c1833115b8fc6c94137f8ccdf794efe64a983b233fe8f41c7b8"
+    },
+    {
+      "name": "the room reads positively and hides seeds and pairing strings [display]",
+      "path": "native-display-x11-3.xml",
+      "sha256": "4f19b6d8fa0f3a85b92acd06e18c8a4132998bed85d196a7379f4937dd151556"
+    }
+  ],
+  "initial_junit": {
+    "path": "native-tests.xml",
+    "sha256": "69bc8505569d64beb9d2899274583a316f54ebbf338b22dbc0b27bf15f69feaf"
+  },
+  "display_receipt": {
+    "path": "native-display-x11.json",
+    "sha256": "cff24fbc41399390e213550a1764a006dadd908be071f5b66cd73d7050261690"
+  },
+  "scope": "Actual 86 focused cases at clean7f. Initial four display initialization failures remain recorded; each exact case passed in owned Xvfb/Openbox with explicit X11. No failure hidden and no unexecuted suite inferred."
+}

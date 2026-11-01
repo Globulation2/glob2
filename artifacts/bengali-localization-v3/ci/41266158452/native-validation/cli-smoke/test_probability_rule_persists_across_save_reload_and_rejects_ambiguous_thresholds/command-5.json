@@ -1,0 +1,30 @@
+{
+  "args": [
+    "game",
+    "run",
+    "--output-dir",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled",
+    "--ticks",
+    "64",
+    "--compute-threads",
+    "1",
+    "--telemetry",
+    "checksums",
+    "--write-replay",
+    "--save",
+    "final",
+    "--map-file",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz",
+    "--game-seed",
+    "713",
+    "--player",
+    "castor",
+    "--player",
+    "cortex",
+    "--win-probability",
+    "0"
+  ],
+  "status": 0,
+  "stdout": "nox::game started\nnox::gui.game.checkSum() = 06ccb0ab\nautomaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds\nGLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map=\"source\" orders=8 players=team0:Castor,team1:Cortex\nfinal: wrote /Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/final.game.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

@@ -1,0 +1,84 @@
+{
+  "reviewer": "/root/bengali_adversary",
+  "role": "Independent code review of browser input fix authored by another agent",
+  "before": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+  "after": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "examined_files": {
+    "browser/ApplicationHost.cpp": {
+      "before": "a5250d135c5179450cfcb46bf29a39baeaa55ede",
+      "after": "9103b0daf1778c47aee3aa0d87bdd382018cae06"
+    },
+    "browser/shell.html": {
+      "before": "3a676d76cbc8e5485c88578329404f0447257766",
+      "after": "91de8dfcd234ab47da3aa1549d86bcbf49f5fab9"
+    },
+    "browser/unit/text-bridge.test.js": {
+      "before": "a5d2ac53452a7988e89a7003098d9daccf98d998",
+      "after": "cd3c6ebd8bf688033d7ee2111c47bcd3b20896f8"
+    },
+    "libgag/include/BrowserTextInput.h": {
+      "before": "613c438d02ecb5b95bf9bf2a88dc2205ff8ef2ba",
+      "after": "721d4e20d970fdbd3aeaf994dee0d9cdea8328b2"
+    },
+    "libgag/src/ApplicationHost.cpp": {
+      "before": "0fe9504be13b60ccb469f33fb30cab53e749cab5",
+      "after": "f835f3091ca98dcc7089e776df9838f7a57fc5b0"
+    },
+    "libgag/src/ui/Controls.cpp": {
+      "before": "53aef7f6fa3a7f8125c66b42db443a0e651e0b86",
+      "after": "770878cc301a83e5a15752b57a3c3162333c470f"
+    },
+    "libgag/src/ui/UILayoutHarness.cpp": {
+      "before": "37b59920fdc2e5320fb2279fec2a50fd524641e8",
+      "after": "856267a4f8c73f477065c7bce4bf89245a529098"
+    }
+  },
+  "findings": [],
+  "verdict": "pass",
+  "assessment": [
+    "Separate inclusive Unicode-codepoint maxCharacters and exclusive UTF8-byte maximum restore TextField maxLength semantics without silently imposing byte caps. Optional maxBytes remains independent; username32/chat254/LAN256 payload capacities keep exclusive bridge maxBytes+1.",
+    "Intl.Segmenter truncates only whole grapheme clusters while fitting both caps; Array.from counts non-BMP codepoints correctly; no-Segmenter fallback preserves accepted Unicode edit instead of splitting clusters. Composition remains deferred until compositionend.",
+    "C++ browser callback independently validates both bounds before mutating model/preview/draft state. Existing overload forwards maxCharacters0; no class member layout changes. Native overload is still no-op.",
+    "SDL commit and textInput method bodies independently compared byte-identical; all unchanged listed component blobs compared equal. Native input/header consumers still need root pending harness compilation; visual3ba evidence is not a7f binary execution."
+  ],
+  "native_evidence_carry": {
+    "actual_producer": "3ba62c1d47ded8ee428ec6658d8b870493d9ca9d",
+    "retained_scope": "Existing native SDL username32-byte whole-edit rejection, chat254-byte guard, persistence, Bengali font/layout/language/history/results remain applicable to unchanged components. No revision relabeling.",
+    "unchanged_blobs": {
+      "data/fonts/LICENSE-DejaVu.txt": "d0e2244feda5ed8d7d7c1fded1abde229964866d",
+      "data/fonts/LICENSE-Droid.txt": "d3292dd027a3c276384edec8c3affba91e6b85f2",
+      "data/fonts/LICENSE-HarfBuzz.txt": "1dd917e9f2e72167de69e3b5dadbc4e7db417da1",
+      "data/fonts/LICENSE-Noto.txt": "c82d72e422e2d08c5ab439b6bac7c2177ea0c565",
+      "data/fonts/README.md": "66e3e61933243e9a95f175737d176669a79f4fae",
+      "data/fonts/SConscript": "fe02fc01a3f85eef1eb91e096bf3973a937d5ba1",
+      "data/fonts/build_chinese_font.py": "9d8c145cda5092725cfb9a87bc36050cfa12e7ba",
+      "data/fonts/check_script_support.py": "94498067f273ee41d4bdd0374efed89b11f33c60",
+      "data/fonts/fetch_script_fonts.py": "a4c2fb5219e5922eb05eaa7e4475c8ec42773427",
+      "data/fonts/sans.ttf": "4657f6026195bc5642242ff94f3e616bb762ca4e",
+      "data/fonts/script-probes.json": "4c393f4934527ff02474fb5864beb71e1c62f0aa",
+      "data/fonts/scripts/NotoSansArabic-Regular.ttf": "ce21d4f5ac8765b51b9eedb1bb5c0069ee8115a4",
+      "data/fonts/scripts/NotoSansBengali-Regular.ttf": "3e66c1a9ea885b999ce9736aa3b509cc51935fff",
+      "data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "d9167f632b699b82eb81e0e0ad1ddb89bcdbd6c3",
+      "data/fonts/scripts/NotoSansEthiopic-Regular.ttf": "d7ed43e9f1fa0cf82a16db6866fdcac040e4338b",
+      "data/fonts/scripts/NotoSansGujarati-Regular.ttf": "6fd1b2fee38f43a1f5587a651b238f98703f5cf2",
+      "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf": "196ae9fc62eb64ee05e981498d0f361fa7f782f5",
+      "data/fonts/scripts/NotoSansKannada-Regular.ttf": "c24dd3a5f3b98e3016527dfb0b088193c992ab83",
+      "data/fonts/scripts/NotoSansMalayalam-Regular.ttf": "49312218c4b22396446706e76745c4027f6ae0ff",
+      "data/fonts/scripts/NotoSansMyanmar-Regular.ttf": "3d7178c35ba81b213270068d278fe70a530422ff",
+      "data/fonts/scripts/NotoSansOriya-Regular.ttf": "dab2fac1a343308e09dccf68b5d3cba4816376fe",
+      "data/fonts/scripts/NotoSansTamil-Regular.ttf": "e64d13fe042ce2705eba95658c481552044f3476",
+      "data/fonts/scripts/NotoSansTelugu-Regular.ttf": "9ee772d19118901a0ac93f3f7efe1d6b2c0b61f8",
+      "data/fonts/scripts/NotoSansThai-Regular.ttf": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+      "data/fonts/scripts/manifest.json": "cd594afcf8d8d4c0e0e5ee4eae11a256ad5c853b",
+      "data/texts.bn.txt": "ce19ce0b4e6bfdce6a21cade54a742c18eb77729",
+      "platform/packages/i18n/locales/bn.json": "4c5d9a2c8adca7181ae8ccb2bb600e1530b7ce00",
+      "src/app/Settings.cpp": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89",
+      "src/game/orders/OrderMisc.cpp": "071bba192c8c781bce26a10c360255c88427947f",
+      "src/hud/GameGUIDialog.cpp": "a941d5b2cab11e6dfce1862a3c3d57db2673354a",
+      "src/hud/GameGUIOrders.cpp": "44d52f52678cf02c6e2afc64bb44e65e95a67392"
+    },
+    "changed_native_compilation_scope": "BrowserTextInput function declarations/forwarding no-op and caller overload change require compilation despite behavior equivalence; new browser callback guard is browser path only."
+  },
+  "testing": "Read all added unit/native test cases and root-reported17JS and31×3 actualbrowser results. Did not rerun existing passing suites. Native API harness compile remains pending separately.",
+  "catalog_scope": "No fresh6237-key reading claim; no catalog/font deltas."
+}

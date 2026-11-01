@@ -1,0 +1,11 @@
+{
+  "stage": "after-restart",
+  "username": "বাংলা১",
+  "username_utf8_hex": "e0a6ace0a6bee0a682e0a6b2e0a6bee0a7a7",
+  "username_utf8_bytes": 18,
+  "language": "bn",
+  "preferences_sha256": "3cd7e35b156ffb2f5fe7f2b1fa9cc83b0777b9534cf8bcf2fc7077674a1e2d2c",
+  "expected_username": "বাংলা১",
+  "name_matches": true,
+  "bengali_selected": true
+}

@@ -1,0 +1,70 @@
+{
+  "run_id": 41266250711,
+  "workflow_commit": "21d6a238aa61f64cf46890faa88691686e29abba",
+  "actual_source": {
+    "revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "f901203694a93fe2783dee8a7d76584caca25ce710e2a9fdccd8373058351fde"
+  },
+  "build_release_exit0": {
+    "label": "build",
+    "argv": [
+      "python3",
+      "mobile/ios.py",
+      "build",
+      "--environment",
+      "simulator",
+      "--release",
+      "--jobs",
+      "2"
+    ],
+    "exit": 0,
+    "seconds": 2928.909,
+    "uncompressed_log_bytes": 22580426,
+    "log_limit_exceeded": false
+  },
+  "signature_verify_exit0": {
+    "label": "codesign",
+    "argv": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/runner/work/glob2/glob2/build/ios/simulator/arm64/15.0/client/release/xcode-project/build/Release-iphonesimulator/Glob2.app"
+    ],
+    "exit": 0,
+    "seconds": 0.682,
+    "uncompressed_log_bytes": 0,
+    "log_limit_exceeded": false
+  },
+  "archive_sha256": "c3e1143f9dbd0a89f94c2291fdac0cc827ae83690ae211ae9ee3aa0eed0415b3",
+  "archive_bytes": 169216316,
+  "archive_all_file_inventory_matches": true,
+  "examined_archive_file_count": 7938,
+  "font_closure_entries": 20,
+  "source_catalogs": {
+    "data/texts.bn.txt": {
+      "sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+      "keys": 3395
+    },
+    "platform/packages/i18n/locales/bn.json": {
+      "sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+      "keys": 2842
+    }
+  },
+  "runtime_result": {
+    "device": "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+    "checks": [],
+    "passed": false,
+    "error": "Native main menu did not become ready"
+  },
+  "failure_png_sha256": "afcbc0c88ee0a1d35587f0f3024661c6260b32e95088f27f69af106cdce06a1f",
+  "failure_png_actually_viewed": true,
+  "diagnosis": "App starts, but actual English AudioPreferenceScreen and settings file not found; wrapper seeded container/.glob2, while mobile/MobilePaths.cpp initializeMobilePaths always replaces GLOB2_USER_DATA_DIR with SDL_GetPrefPath. This is a validation profile-path error, not Bengali rendering pass or demonstrated crash.",
+  "next_step": "Runtime-only recovery may reuse verified retained exact942 app; seed actual SDL preference directory after tracing platform implementation. No recovery dispatched in this review.",
+  "scope_limits": [
+    "No successful Bengali iOS runtime screenshots or lifecycle pass.",
+    "Retained942 producer predates later chat254/browser fix; do not claim those later input paths tested."
+  ]
+}

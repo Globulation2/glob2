@@ -1,0 +1,11 @@
+{
+  "prepared_only": true,
+  "dispatched": false,
+  "branch": "codex/bengali-windows-validation-7fcb8a2",
+  "literal_game_revision": "79ed6f98d34e0d9ac89970c89ec44278a3c703fa",
+  "source_workflow_sha256": "4dd3944766ee374592d4201fbb6ec99e7aeb95703b8da5838d8aeefa18f6a9bb",
+  "prepared_workflow_sha256": "534355dfef390fbd82d1bf2e0d638350b99d50a00ade8c8a65b3d9506883c3fe",
+  "reuse": "Exact existing Windows MSYS2/setup-python/pinnedencoder/SDLaction/compiler-cache andrelease=1 mingw=1 server=0 flags; narrower unit+engine buildtargets only.",
+  "execution_guards": "Each focused group uses explicit !cancelled && buildsuccess, so prior unrelated stepfailure cannot skip it. Final requiresbothgroupssuccess; always uploads JUnit+actualinventory+compiler/PEclosurehashes.",
+  "scope": "Native Windows SDL_ttf/Bengali shaping, locale resolution, layout/metrics, native byte+character tests. Display-tagged tests are skipped on Windows by repositoryrunner."
+}

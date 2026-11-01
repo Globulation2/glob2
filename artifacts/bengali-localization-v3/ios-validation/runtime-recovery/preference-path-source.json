@@ -1,0 +1,8 @@
+{
+  "pinned_version": "3.4.16",
+  "official_source_url": "https://raw.githubusercontent.com/libsdl-org/SDL/release-3.4.16/src/filesystem/cocoa/SDL_sysfilesystem.m",
+  "source_sha256": "0f690c8536c07a8031e13c1a061cd04701a91aeb1541ae52ec15b538871e2652",
+  "app_source": "mobile/MobilePaths.cpp initializeMobilePaths calls SDL_GetPrefPath(\"Globulation2\",\"glob2\") and overwrites GLOB2_USER_DATA_DIR",
+  "SDL_source": "SDL_SYS_GetPrefPath uses NSApplicationSupportDirectory/organization/application; real iOS app container Library/Application Support/Globulation2/glob2",
+  "previous_failure": "Old wrapper seeded ignored container/.glob2; retained English audio onboarding failure."
+}

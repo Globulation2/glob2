@@ -1,0 +1,135 @@
+{
+  "code_identity": {
+    "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+  },
+  "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto",
+    "--binary",
+    "all",
+    "--filter",
+    "FontKerning/*",
+    "--filter",
+    "TextMetrics/*",
+    "--filter",
+    "UILayout/*",
+    "--filter",
+    "SystemLanguage/*",
+    "--filter",
+    "Settings/username byte limits*",
+    "--filter",
+    "OnlineWording/*",
+    "--filter",
+    "PlatformRoom/*",
+    "--filter",
+    "MapCatalog/*",
+    "--filter",
+    "InviteLink/*",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-tests",
+    "--junit",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-tests.xml"
+  ],
+  "exit_code": 0,
+  "profile": "Linux GCC13.4 full-feature fast development; current defaultH264 recording; no shipping-release claim.",
+  "dependencies": {
+    "sdl_prefix": "/home/bradley/.codex/worktrees/83ab/glob2/build/sdl3-ci/prefix",
+    "recording_prefix": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/recording-prefix",
+    "recording_reuse_proof": "native-recording-prefix-reuse.json"
+  },
+  "results": [
+    {
+      "case": "Bengali account avatar retains its complete first shaping cluster [display]",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-display-x11-0.xml",
+        "--no-breaks=true",
+        "--test-suite=OnlineWording",
+        "--test-case=Bengali account avatar retains its complete first shaping cluster [display]"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-display-x11-0.xml",
+      "junit_sha256": "b4f3684d9f5e83563ec3f877286d46ccdd51ef15b77e89834291297f80e4e71f"
+    },
+    {
+      "case": "an unrated search shows no ratings; a ranked one explains its range [display]",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-display-x11-1.xml",
+        "--no-breaks=true",
+        "--test-suite=OnlineWording",
+        "--test-case=an unrated search shows no ratings; a ranked one explains its range [display]"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-display-x11-1.xml",
+      "junit_sha256": "dc7dc394aa9314f9dc96a79f886798168c51582094afb29c46d4205e2c5a7e67"
+    },
+    {
+      "case": "an unserved version blames the side that is out of date [display]",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-display-x11-2.xml",
+        "--no-breaks=true",
+        "--test-suite=OnlineWording",
+        "--test-case=an unserved version blames the side that is out of date [display]"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-display-x11-2.xml",
+      "junit_sha256": "bd36b199418b0c1833115b8fc6c94137f8ccdf794efe64a983b233fe8f41c7b8"
+    },
+    {
+      "case": "the room reads positively and hides seeds and pairing strings [display]",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x800x24 -noreset",
+        "python3",
+        "test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-display-x11-3.xml",
+        "--no-breaks=true",
+        "--test-suite=OnlineWording",
+        "--test-case=the room reads positively and hides seeds and pairing strings [display]"
+      ],
+      "exit_code": 0,
+      "junit": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v3/native-display-x11-3.xml",
+      "junit_sha256": "4f19b6d8fa0f3a85b92acd06e18c8a4132998bed85d196a7379f4937dd151556"
+    }
+  ],
+  "environment": {
+    "SDL_VIDEODRIVER": "x11",
+    "GLOB2_TEST_DISPLAY": "1",
+    "SDL_AUDIODRIVER": "dummy"
+  },
+  "binary_sha256": "a64958cff05bf0d37f942eb3dfd42261002519774131389155c31e6d9922f0aa",
+  "reason": "Display-only recheck with explicit X11 because runner removes SDL_VIDEODRIVER, allowing unavailable video auto-selection. Owned Xvfb/Openbox and disposable profiles, no product edits; prior failures retained."
+}

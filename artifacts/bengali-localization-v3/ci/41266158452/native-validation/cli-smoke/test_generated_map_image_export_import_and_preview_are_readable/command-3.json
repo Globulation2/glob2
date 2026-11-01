@@ -1,0 +1,20 @@
+{
+  "args": [
+    "map",
+    "import-image",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/map.png",
+    "--output",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/imported.map",
+    "--teams",
+    "2",
+    "--width",
+    "128",
+    "--height",
+    "128",
+    "--preview",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/preview.png"
+  ],
+  "status": 0,
+  "stdout": "Image import: {\"seam_width\":4,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":2,\"resource_seam_fallback\":false,\"markers\":2,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nPreview: /Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/preview.png (128x128 tiles)\nMap: /Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/imported.map.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

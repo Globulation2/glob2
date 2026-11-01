@@ -1,0 +1,37 @@
+{
+  "method": "ui_click",
+  "arguments": {
+    "x": 638,
+    "y": 646,
+    "viewport_id": 1,
+    "capture_after": true
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": true, \"controller\": \"Local MCP client\", \"dispatched\": true, \"frame_id\": 1583, \"height\": 860, \"viewport_id\": 1, \"width\": 1280}",
+          "type": "text"
+        },
+        {
+          "data": "PNG saved separately",
+          "mimeType": "image/png",
+          "type": "image"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "available": true,
+        "controlled": true,
+        "controller": "Local MCP client",
+        "dispatched": true,
+        "frame_id": 1583,
+        "height": 860,
+        "viewport_id": 1,
+        "width": 1280
+      }
+    }
+  }
+}

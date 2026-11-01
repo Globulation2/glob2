@@ -1,0 +1,329 @@
+{
+  "scope": "Actual extracted browser textBridge factory and DOM events; not full game startup or OS mobile coverage",
+  "revision": "fee00ba65ede3aa261ab3d2af8ab7b43fbcd59e5",
+  "workingTreeShellSha256": "c9c7793235407b698584d11b2ed695645934df2ca5778fcb273fffb926e79216",
+  "factorySha256": "fd1b1819fac5f69b9d025439452ab9f8f05c5e3c3d0f03abab50a530b6e3b1c8",
+  "results": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Bengali 33-byte conjunct",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "cluster র্ক",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster র্কি",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster কো",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster é",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster 👩‍🔬",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "composition input unchanged",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition take null",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "native update deferred",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition end whole prefix",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition one delivery",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition consumed",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "ASCII exclusive",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "username32ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "username33ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "zero maximum unlimited",
+          "actual": "ককককককককক্ষককককককককক্ষককককককককক্ষ",
+          "expected": "ককককককককক্ষককককককককক্ষককককককককক্ষ"
+        },
+        {
+          "name": "fallback native cache",
+          "actual": "নতুন",
+          "expected": "নতুন"
+        },
+        {
+          "name": "fallback accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback retains accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback ASCII truncate",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "155.0",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Bengali 33-byte conjunct",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "cluster র্ক",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster র্কি",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster কো",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster é",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster 👩‍🔬",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "composition input unchanged",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition take null",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "native update deferred",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition end whole prefix",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition one delivery",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition consumed",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "ASCII exclusive",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "username32ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "username33ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "zero maximum unlimited",
+          "actual": "ককককককককক্ষককককককককক্ষককককককককক্ষ",
+          "expected": "ককককককককক্ষককককককককক্ষককককককককক্ষ"
+        },
+        {
+          "name": "fallback native cache",
+          "actual": "নতুন",
+          "expected": "নতুন"
+        },
+        {
+          "name": "fallback accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback retains accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback ASCII truncate",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Bengali 33-byte conjunct",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "cluster র্ক",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster র্কি",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster কো",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster é",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "cluster 👩‍🔬",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "composition input unchanged",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition take null",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "native update deferred",
+          "actual": "ককককককককক্ষ",
+          "expected": "ককককককককক্ষ"
+        },
+        {
+          "name": "composition end whole prefix",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition one delivery",
+          "actual": "কককককককক",
+          "expected": "কককককককক"
+        },
+        {
+          "name": "composition consumed",
+          "actual": null,
+          "expected": null
+        },
+        {
+          "name": "ASCII exclusive",
+          "actual": "abc",
+          "expected": "abc"
+        },
+        {
+          "name": "username32ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "username33ASCII",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "name": "zero maximum unlimited",
+          "actual": "ককককককককক্ষককককককককক্ষককককককককক্ষ",
+          "expected": "ককককককককক্ষককককককককক্ষককককককককক্ষ"
+        },
+        {
+          "name": "fallback native cache",
+          "actual": "নতুন",
+          "expected": "নতুন"
+        },
+        {
+          "name": "fallback accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback retains accepted edit",
+          "actual": "নাম",
+          "expected": "নাম"
+        },
+        {
+          "name": "fallback ASCII truncate",
+          "actual": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ]
+    }
+  ]
+}

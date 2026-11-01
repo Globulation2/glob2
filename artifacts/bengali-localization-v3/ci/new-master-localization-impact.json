@@ -1,0 +1,187 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "old_head": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "new_master": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "native_english_counts": [
+    3395,
+    3411
+  ],
+  "added_native_pairs": [
+    {
+      "key": "stats topic overview",
+      "english": "Overview"
+    },
+    {
+      "key": "stats topic economy",
+      "english": "Economy"
+    },
+    {
+      "key": "stats topic world",
+      "english": "World"
+    },
+    {
+      "key": "stats work construction",
+      "english": "Work & construction"
+    },
+    {
+      "key": "stats defence",
+      "english": "Defence"
+    },
+    {
+      "key": "stats history",
+      "english": "View history"
+    },
+    {
+      "key": "stats waiting",
+      "english": "Waiting for statistics\u2026"
+    },
+    {
+      "key": "stats unit details",
+      "english": "Unit details"
+    },
+    {
+      "key": "stats map overlays",
+      "english": "Map overlays"
+    },
+    {
+      "key": "stats topic",
+      "english": "Topic"
+    },
+    {
+      "key": "stats full history",
+      "english": "Open full history"
+    },
+    {
+      "key": "stats missing readings",
+      "english": "\u2014 No recorded reading yet. Select a statistic for details."
+    },
+    {
+      "key": "lush_grass",
+      "english": "Lush grass"
+    },
+    {
+      "key": "dry_grass",
+      "english": "Dry grass"
+    },
+    {
+      "key": "dune_sand",
+      "english": "Dune sand"
+    },
+    {
+      "key": "pale_sand",
+      "english": "Pale sand"
+    }
+  ],
+  "changed_existing_native_pairs": [],
+  "deleted_native_keys": [],
+  "online_english_exact_json_unchanged_against_old_head": false,
+  "online_english_current_count": 2842,
+  "online_english_master_count": 2836,
+  "online_master_vs_current_added": [],
+  "online_master_vs_current_removed": [
+    "Beginner-friendly",
+    "Defensive",
+    "Economy",
+    "Expansion",
+    "Experimental",
+    "Rush"
+  ],
+  "new_Norwegian_missing_current_six": [
+    {
+      "english": "Beginner-friendly",
+      "native_key": "Beginner-friendly",
+      "upstream_native_target": "Nybegynnervennlig"
+    },
+    {
+      "english": "Defensive",
+      "native_key": "Defensive",
+      "upstream_native_target": "Defensiv"
+    },
+    {
+      "english": "Economy",
+      "native_key": "Economy",
+      "upstream_native_target": "\u00d8konomi"
+    },
+    {
+      "english": "Expansion",
+      "native_key": "Expansion",
+      "upstream_native_target": "Ekspansjon"
+    },
+    {
+      "english": "Experimental",
+      "native_key": "Experimental",
+      "upstream_native_target": "Eksperimentell"
+    },
+    {
+      "english": "Rush",
+      "native_key": "Rush",
+      "upstream_native_target": "Tidlig angrep"
+    }
+  ],
+  "native_Bengali_catalog_modified_upstream": false,
+  "online_current_six_additions_preserved": "These six are additions from our V2 already reviewed native style tags; retain them on merge and populate newnb with exact matching upstream native AI style IDs. Economy English also occurs under newstatskey; do not reverse-map by value.",
+  "bounded_change_summary": {
+    "total_changed_paths": 26389,
+    "largest_path_groups": [
+      [
+        "datasrc/gfx",
+        8769
+      ],
+      [
+        "data/highres",
+        8734
+      ],
+      [
+        "data/gfx",
+        8732
+      ],
+      [
+        "src/hud",
+        16
+      ],
+      [
+        "src/map",
+        12
+      ],
+      [
+        "libgag/src",
+        8
+      ],
+      [
+        "src/render",
+        8
+      ],
+      [
+        "tools/artwork",
+        8
+      ],
+      [
+        "docs/assets",
+        6
+      ],
+      [
+        "platform/packages",
+        6
+      ]
+    ],
+    "font_assets_changed": [],
+    "build_and_CI_paths": [
+      "requirements-dev.txt",
+      "scons/sources.py"
+    ]
+  },
+  "rendering_overlap": {
+    "TrueTypeFont.cpp": "Adds authoredDrawWidth opt-in for nb. Bengali script path remains scripts=true and same branch expression; retain upstream nb change with our existing Bengali support. Refresh actual integrated font/layout execution because compiled source differs.",
+    "FontKerningTest.cpp": "Content conflict in language fixture/loop; retain BOTH bn and nb entries, samples and our Bengali assertions.",
+    "HUD": "Statistics redesign replaces prior spacing-only UI with topic selector/inline history, new12labels; needs actual final Bengali HUD review at desktop and phone sizes. Prior old HUD screenshot cannot establish new design fit.",
+    "terrain_renderer": "Upstream Sprite/SDL GPU/device/shader changes and thousands of terrain assets alter rendered background; old literal942 mobile startup/font/package evidence remains scoped to old producer, not a final whole-renderer pass.",
+    "native_locale_tests": "Resolve SystemLanguageTest fixture and nb coverage without losing saved/system Bengali tests or earlier unsupported-preference fixture correction."
+  },
+  "recommended_integration": [
+    "Finish active7f runtime producers and preserve exact identities before mutating source.",
+    "Perform real merge of b34, resolve actual11conflicts as unions of Bengali and Norwegian registration/tests; preserve our six online AI keys and add them to newnb from exact native IDs.",
+    "Use canonical generators for browser/i18n.js and derivative languageNames metadata with existing pinned encoder/fonttools, after source registries merge; never hand-edit generated minified output.",
+    "Translate/review only16newnative pairs with fresh author/semantic/editor/adversarial evidence; carry6237previoussource-target pairs only through exact equality proof, never relabel as reread.",
+    "Refresh native and both browser builds after integrated freeze; actual Bengali new statistics HUD/topic/history on desktop+phone, font/locale/layout/input focused checks and packaging closure. Keep old platform evidence scoped; do not cancel running master or platform jobs."
+  ]
+}

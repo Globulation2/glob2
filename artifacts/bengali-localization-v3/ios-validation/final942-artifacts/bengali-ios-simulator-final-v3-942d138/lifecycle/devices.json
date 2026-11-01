@@ -1,0 +1,20 @@
+{
+  "com.apple.CoreSimulator.SimRuntime.iOS-27-0": [
+    {
+      "dataPath": "/Users/runner/work/glob2/glob2/build/mobile-tools/ios-simulators/671FE946-A9B7-4B55-BAED-D01FF3B1CF52/data",
+      "dataPathSize": 2457010176,
+      "logPath": "/Users/runner/Library/Logs/CoreSimulator/671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "udid": "671FE946-A9B7-4B55-BAED-D01FF3B1CF52",
+      "lastUsedAt": "2026-11-01T02:55:37Z",
+      "isAvailable": true,
+      "logPathSize": 253952,
+      "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+      "state": "Booted",
+      "name": "Glob2-Mobile"
+    }
+  ],
+  "com.apple.CoreSimulator.SimRuntime.tvOS-27-0": [],
+  "com.apple.CoreSimulator.SimRuntime.watchOS-27-0": [],
+  "com.apple.CoreSimulator.SimRuntime.xrOS-27-0": [],
+  "com.apple.CoreSimulator.SimRuntime.iOS-27-1": []
+}

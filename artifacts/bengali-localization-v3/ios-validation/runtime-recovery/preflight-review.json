@@ -1,0 +1,11 @@
+{
+  "source": "942d138b609ad8e0c425d974042b6e3983a717a4",
+  "retained_app_sha256": "c3e1143f9dbd0a89f94c2291fdac0cc827ae83690ae211ae9ee3aa0eed0415b3",
+  "source_run": 41266250711,
+  "script_python_compile": "passed",
+  "runtime_only_no_app_or_dependency_build_commands": true,
+  "read_permission_addition": "actions:read required to download artifact from exact prior run; no secrets or write scopes",
+  "profile_source": "preference-path-source.json",
+  "workflow_sha256": "910f58fe997f8a75328d011e3af9f8ff22570664cf8e5e06c4c8b00eedf714ea",
+  "safeguards": "Exact Xcode27.0; sdk and full fingerprint match original; runtime27.0 preference/device-supported arm64 owned UUID; safe archive extraction/checksum/all7938 file hashes/codesign/fonts/catalog; profile inside owned app container;30min job and bounded logs; always retained proof"
+}

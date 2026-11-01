@@ -1,0 +1,558 @@
+{
+  "reviewer": "/root/bengali_adversary",
+  "role": "Independent native screenshot review",
+  "certification": "Agent visual review, not native-human certification",
+  "verdict": "pass within stated scope",
+  "findings": [],
+  "producer_revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "producer_source_tree_sha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0",
+  "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c",
+  "source_sha256": "d577c214d63e38e24fadba0e4d1dc88444df4efb5156945c6f884bac0a6ff791",
+  "catalog_sha256": {
+    "native": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "converted_catalog_sha256": {
+    "native": "690b0630056f9e2206fdc94b04f6b0a4639c71154db73196445f3fc45b991f83",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "full_converted_pair_equality": {
+    "native": 3395,
+    "online": 2842,
+    "passed": true
+  },
+  "capture_completion_sha256": "297687c4c6860d9f63c3739e4df814cee3408a7bf726e1bac5e7952fd0de0b02",
+  "preview_binding_sha256": "5f963b1d27d2c6aa27b9c7cc228eb1ad73edaf6f293901981cd43bde6132ec58",
+  "images": [
+    {
+      "path": "native-screens/desktop/gameplay-dialog.png",
+      "sha256": "5b5f5108df6ce7fd1bddf41eebf75a420ed8686e264b53ce7fbe74ff2119dc7a",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/gameplay-zoom-fit.png",
+      "sha256": "67fd26c1a56894b1fb13635ec7914f8c82928463ab640fff6c527764252fa9f4",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/gameplay-zoom-plus.png",
+      "sha256": "259b62e54c7f0ec70e8e5a76b9985e3ceb7cc92f903fab97571ab311a5a0b933",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/gameplay.png",
+      "sha256": "568700d878ffced06378c71427b2df23683728f5df29f353f5716d2a72878005",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/lobby-players.png",
+      "sha256": "02f39f11796b5229ec020b4beaf52311c84dff92bf54105d453aba1ba1a21a1d",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/lobby.png",
+      "sha256": "4ee6836d0c026f779d9bce74076aa64dfb86d39f54caf238bfe693b874f80ce6",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/main.png",
+      "sha256": "f4d64b60d454d243f8199aec0baff656c8f26291aeb82084e3b429a896c5dbaf",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/settings-audio.png",
+      "sha256": "46626df78a6a7c12e9a8a4d2e4b79e6a52b07aabb2f612b0d780f5b12d59ad6b",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/settings.png",
+      "sha256": "895ebf30e39aa4652d1c1e10ff8d457cc2946786113f5422c9e7344fb01ae699",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/tutorial-food-supply-briefing.png",
+      "sha256": "8976aace8d24fe7b30572f981eadce55dfd550ff8710bf7ea376c544b0417aa1",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/tutorial-food-supply-dialog.png",
+      "sha256": "5fc8efcaf2dd5e12cca53d15ff683a3c4a077bec890ef80108dd44d97df3ee19",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/tutorial-food-supply.png",
+      "sha256": "adf5bc020fd4b67a18fa52de2146d0f962a30122a413829f648d862fddbbc75e",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/tutorial-introduction-briefing.png",
+      "sha256": "592715f0dd08a290b9d1c652ee8433d63e3c93533bca4e9223d2514d2f1e0baf",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/tutorial-introduction-dialog.png",
+      "sha256": "3580300dc3b6c2bee5a49c629a5801bb70555e8235b2691bd0398cc7adf43235",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/desktop/tutorial-introduction.png",
+      "sha256": "6083164df641f373975bcb2f96b20b41d51ed846c3bf9917dd29ce5d9feb2c34",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/gameplay-dialog.png",
+      "sha256": "e42a654eaad41d9c9142c57b750927d80ce30a06f01743a301516a0d987bdb34",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/gameplay.png",
+      "sha256": "e630229f885d8bc753c6455423092d27c8dd160faef235f13cf6c7923a61661e",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/lobby-players.png",
+      "sha256": "8645d6ed1f5e7d2ffbd15d457e489bb78eedd3259d448aec40fcef3d0a649631",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/lobby.png",
+      "sha256": "61aef22dfebc42dcec760b118d95007680cd1efffaf2f3d2767d421bfe0eb138",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/main.png",
+      "sha256": "d21d1a1c2ec9abf754e474b71d6ec86ee5cdd722801bf8834c1cc137a6c6fd52",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/settings-audio.png",
+      "sha256": "e11d173348282e6b7d558c9d94039fa84d4b5b87c1a3870f7800d94237f298f2",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/settings.png",
+      "sha256": "a014d00bd995a1f9e72b15d66f2efa6da49d73d4c63b10bc9931919befa3410a",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/tutorial-food-supply-dialog.png",
+      "sha256": "9d3154ba6e88eb3cc0445cc5cc316e6f21ecba53c651ee4e14dfdfc63bb8a02a",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/tutorial-food-supply.png",
+      "sha256": "d6d27222dccd57a2c34fb33dfe465e589a228ed6cce8d4df000392bb1ea13fa3",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/tutorial-introduction-briefing.png",
+      "sha256": "d8f3a81602870a5249f350b9972241615b8330576d1662979eb9598e9af13919",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/tutorial-introduction-dialog.png",
+      "sha256": "b55caee25a0c167c7d8cf973ec7cb6f833fabac2a6fbb283488d790e09d4e65a",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone/tutorial-introduction.png",
+      "sha256": "b85a2fcb63eacc7b88fc6f4d59d2db64221d12d3b746905f6769475ed9a2e155",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone150/main.png",
+      "sha256": "70861288e00e9b74340c736fbbcf6ba5a22231ed158e548de70c7ce328099d87",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone150/settings.png",
+      "sha256": "430f0c9bc299983b33450ae6d26ca835d9c38d8cfd121141c5609502e78be47d",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone150/tutorial-introduction-dialog.png",
+      "sha256": "eb19c1eeb2330413ef6c2f92e45c49291fda251e4d93d3b17925acd99ce60c44",
+      "actually_viewed": true
+    },
+    {
+      "path": "native-screens/phone150/tutorial-introduction.png",
+      "sha256": "af9b970f5b28bb496e8fd5b414c73430fdf2492a61447cbbc5a3159dcee71193",
+      "actually_viewed": true
+    }
+  ],
+  "image_count": 31,
+  "capture_metadata": [
+    {
+      "path": "native-screens/desktop/gameplay.json",
+      "sha256": "66527b0ff2b422ac839a0d14f4ac75216e34b09e97088bbf0f3af81b656232ce",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/desktop/lobby-players.json",
+      "sha256": "f9b31b58591953360fcb0be5d0250c1753a2f50ab9ac1b590c31833b63297707",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/desktop/lobby.json",
+      "sha256": "417be378edf0a82c1601d13af69950fe03d0e6c13c2c4fcf3d28693fa296b014",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/desktop/main.json",
+      "sha256": "73994bb6f5b26920afbf733d55f81b84fa3e3612a088f3735242368db51b4706",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/desktop/settings-audio.json",
+      "sha256": "9dcf8ce39af8a0ff81c330cd8ace6619a2e479ce142aa418cf87d65d50ee7311",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/desktop/settings.json",
+      "sha256": "26bed4286cef7ac3c2517d7538fbf8e6023cb66e422a944c6238c276c3bc270f",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/desktop/tutorial-food-supply.json",
+      "sha256": "d565ebbe51ed162c14efae4460a1ff6398859dbfe1591a4e48ca2c1f2b6359be",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/desktop/tutorial-introduction.json",
+      "sha256": "1229d6fa0fc234e980cfee5b7726f5c0f01cb9f2285469a0f1337009a0344ff5",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone/gameplay.json",
+      "sha256": "e96f453df8227ae90e0a4a5cf8294f608780030298f4eddc8a88e1f07e0d600f",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone/lobby-players.json",
+      "sha256": "04db21c240dd38b185b99738bbcd3e59ddef00b574c0f9c93c746afeeebdd8c5",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone/lobby.json",
+      "sha256": "2dc369f3a52319b0a89111d2f07f72dbed5d580da024064a04db36a6feb48ada",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone/main.json",
+      "sha256": "df13e91ee920714bb4b7e394c9c02f266a0141fa21b8cfcaa49420ee844eecd9",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone/settings-audio.json",
+      "sha256": "45eef82f8debbf683e732f49756aa6913a1e5ae9af7edd905a25bca49ce12ff5",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone/settings.json",
+      "sha256": "473fed3e3be323a7cf226c8200d622d6961d1e9c1740f7c0a981596d62073fb3",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone/tutorial-food-supply.json",
+      "sha256": "1e8efcbe498b2c628809f927bd68e80b61f93716785bd0760c47e4ea5752d97d",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone/tutorial-introduction.json",
+      "sha256": "7209ea2e15a06ffeafd91a3e73dd2b390abc6aa52a1681747cf1000074403da6",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone150/main.json",
+      "sha256": "7ab909ee85c756d62634e3bc72f9558ff46e73c8c195596dd45c53bdf7b92508",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone150/settings.json",
+      "sha256": "362a4b571b2d84fb898c6c016a2ae0f7809e48b606b31a7e39b72c1a52bc6462",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    },
+    {
+      "path": "native-screens/phone150/tutorial-introduction.json",
+      "sha256": "fed9fc75fb45c8657e0f7e6f05078d1336c508ace3e0071f9e46e61fc6ee7bda",
+      "producer": {
+        "compiler": "g++-13",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/83ab/glob2=.",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization/sdl-prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+        "sourceStatus": [],
+        "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+      },
+      "executable_sha256": "b73ba3d3a989b93df0895b15124d42505d1a73b127f662c138386a40c3a4cc6c"
+    }
+  ],
+  "metadata_count": 19,
+  "runtime_font_paths_verified": [
+    "data/fonts/sans.ttf",
+    "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+    "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+    "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+    "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+    "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+    "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+    "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+    "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+    "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+    "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+    "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+    "data/fonts/scripts/NotoSansThai-Regular.ttf"
+  ],
+  "observations": [
+    "All31actual PNGs viewed:15desktop/12compact100/4compact150. Main/settings/audio/lobby/players/gameplay/tutorials, plus actual dialogs/briefings/zoom extras. No missing glyphs, clipped marks, overlapping unreadable Bengali, or contextual translation blocker observed.",
+    "Compact Players caption splits খেলোয়াড় / রা and150percent Teams splits দলগু / লো; whole graphemes remain visible and labels readable with icons, retained as nonblocking narrow-layout limitation.",
+    "150percent dropdown percentage wraps and settings content continues below scroll viewport; scroll clipping is intentional, not a lost-text conclusion.",
+    "Lobby map previews remain loading/blank in these captures, so no ready-preview or full workflow completion claim.",
+    "Technical identities such as Numbi/FFA/JavaScript/Hive Mind/Software remain as intended; user scenario identity names are not retranslated."
+  ],
+  "scope": [
+    "Full catalog overlay on selected production screens only, not every6237message rendered.",
+    "Actual clean7f producer retained despite laterV4/masterb34 catalog and HUD changes; later redesigned statistics requires separate source-bound captures.",
+    "Compact Linux touch presentation is not Android/iOS or OS keyboard/IME coverage.",
+    "12new-stat matrix PNGs independently reviewed separately in adversarial-new-font-matrix-review.json; not mixed into this31-image count."
+  ]
+}

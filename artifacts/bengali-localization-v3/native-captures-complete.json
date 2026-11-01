@@ -1,0 +1,11 @@
+{
+  "actual_build_record": "native-app-build.json",
+  "exit_code": 0,
+  "code_identity": {
+    "revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "ac11bfcbb4ba8c14366195c3f3e2986016f8511cb8e22249c9fbde3e0fa515c0"
+  },
+  "scope": "Desktop and compact100/150percent desktop-engine previews; two new stat strings at10/13/20points1x/2x. Not mobile-platform or physicalIME certification."
+}

@@ -1,0 +1,429 @@
+[
+  {
+    "file": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/engine-junit.xml",
+    "attributes": {
+      "tests": "1950",
+      "failures": "5",
+      "errors": "7",
+      "skipped": "230"
+    },
+    "cases": 1950,
+    "failures": [
+      {
+        "name": "BuildingStock/canceled entering explorers wait for a free exit before medical rebound [save-format]",
+        "details": "<testcase classname=\"BuildingStock\" name=\"canceled entering explorers wait for a free exit before medical rebound [save-format]\" time=\"0.134364\" status=\"run\">\n      <error message=\"exception\">\n        Race unit count does not match catalog\n      </error>\n    </testcase>\n  "
+      },
+      {
+        "name": "BuildingStock/canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]",
+        "details": "<testcase classname=\"BuildingStock\" name=\"canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]\" time=\"0.13959\" status=\"run\">\n      <error message=\"exception\">\n        Race unit count does not match catalog\n      </error>\n    </testcase>\n  "
+      },
+      {
+        "name": "BuildingStock/canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]",
+        "details": "<testcase classname=\"BuildingStock\" name=\"canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]\" time=\"0.13651\" status=\"run\">\n      <error message=\"exception\">\n        Race unit count does not match catalog\n      </error>\n    </testcase>\n  "
+      },
+      {
+        "name": "DelayedGradientPublication/private174 migration profile is explicit and does not replace published layouts",
+        "details": "<testcase classname=\"DelayedGradientPublication\" name=\"private174 migration profile is explicit and does not replace published layouts\" time=\"0.000284\" status=\"run\">\n      <error message=\"exception\">\n        Incomplete binary field: count: unspecified iostream_category error\n      </error>\n    </testcase>\n  "
+      },
+      {
+        "name": "EntityRandomLifecycle/format 150 text area saves retain funded services through current saves [save-format][artifacts]",
+        "details": "<testcase classname=\"EntityRandomLifecycle\" name=\"format 150 text area saves retain funded services through current saves [save-format][artifacts]\" time=\"6.6148\" status=\"run\">\n      <failure message=\"false\" type=\"REQUIRE\">\nsrc/unit/EntityRandomLifecycleTest.cpp:451:\nREQUIRE( load(migrated.game, bytes, true) ) is NOT correct!\n  values: REQUIRE( false )\n\n      </failure>\n    </testcase>\n  "
+      },
+      {
+        "name": "IntrusivePopulationSave/format166 pending jobs and append order survive an immediate upgrade before observation",
+        "details": "<testcase classname=\"IntrusivePopulationSave\" name=\"format166 pending jobs and append order survive an immediate upgrade before observation\" time=\"0.144832\" status=\"run\">\n      <error message=\"exception\">\n        Race unit count does not match catalog\n      </error>\n    </testcase>\n  "
+      },
+      {
+        "name": "IntrusivePopulationSave/formats164 through166 preserve population encoding and scheduler boundaries",
+        "details": "<testcase classname=\"IntrusivePopulationSave\" name=\"formats164 through166 preserve population encoding and scheduler boundaries\" time=\"0.123876\" status=\"run\">\n      <error message=\"exception\">\n        Race unit count does not match catalog\n      </error>\n    </testcase>\n  "
+      },
+      {
+        "name": "JavaScriptCompatibility/Current simulation rejects earlier replays and enforces acceptance boundaries",
+        "details": "<testcase classname=\"JavaScriptCompatibility\" name=\"Current simulation rejects earlier replays and enforces acceptance boundaries\" time=\"0.348719\" status=\"run\">\n      <failure message=\"187 == 186\" type=\"CHECK\">\nsrc/scripting/javascript/ScriptCompatibilityTest.cpp:139:\nCHECK( REPLAY_MINIMUM_VERSION_MINOR == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )\n\n      </failure>\n      <failure message=\"190 == 186\" type=\"CHECK\">\nsrc/scripting/javascript/ScriptCompatibilityTest.cpp:140:\nCHECK( 190 == 186 ) is NOT correct!\n  values: CHECK( 190 == 186 )\n\n      </failure>\n      <failure message=\"73 == 72\" type=\"CHECK\">\nsrc/scripting/javascript/ScriptCompatibilityTest.cpp:142:\nCHECK( 73 == 72 ) is NOT correct!\n  values: CHECK( 73 == 72 )\n\n      </failure>\n    </testcase>\n  "
+      },
+      {
+        "name": "RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]",
+        "details": "<testcase classname=\"RuntimeResources\" name=\"frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]\" time=\"0.679416\" status=\"run\">\n      <failure message=\"golden mismatch against resources/seeded-compositions-units.trace at line 1   expected: 410362371 0 3456291229 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1   actual:   410362371 0 3422736797 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1\" type=\"FAIL\">\ntest/support/Glob2Test.cpp:207:\ngolden mismatch against resources/seeded-compositions-units.trace at line 1\n  expected: 410362371 0 3456291229 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1\n  actual:   410362371 0 3422736797 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1\n\n      </failure>\n    </testcase>\n  "
+      },
+      {
+        "name": "UnitCustomization/shared air routing stress exports a reproducible benchmark setup [artifacts]",
+        "details": "<testcase classname=\"UnitCustomization\" name=\"shared air routing stress exports a reproducible benchmark setup [artifacts]\" time=\"0.144299\" status=\"run\">\n      <error message=\"exception\">\n        Race unit count does not match catalog\n      </error>\n    </testcase>\n  "
+      }
+    ],
+    "focused_cases": [
+      {
+        "name": "ClientCapabilities/Settings categories follow the resolved client capabilities",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/Arabic and Persian visual-order text is not reordered again by SDL_ttf",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/high-DPI Hindi wrapping width is preserved without cropping the raw raster",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/kerned words have no gap wider than the same words unkerned",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/language changes refresh default line height and Arabic shaping caches",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/pair advances equal the glyph advances plus kerning",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/script fonts shape clusters and preserve measured raster sizes after reload",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/script run composition preserves straight-alpha antialiasing",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/shaping clusters keep conjuncts and combining marks together",
+        "state": "passed"
+      },
+      {
+        "name": "FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs",
+        "state": "passed"
+      },
+      {
+        "name": "Settings/username byte limits reject whole Bengali edits without truncation",
+        "state": "passed"
+      },
+      {
+        "name": "Settings/all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "Settings/catalog building defaults in compact layout [display][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "Settings/render FPS dropdown in compact layout [display][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "Settings/layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "Settings/layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "Settings/layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "Settings/layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "SettingsBuildings/catalog preferences isolate reused stock keys and persist assignment and radius",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsBuildings/known frozen stock fingerprints migrate to inherited costs with current preferences taking precedence",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsBuildings/per game assignment loads reject duplicate stable and legacy identities",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsBuildings/per game assignment overrides use stable keys and import old numeric saves",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsBuildings/version one preferences import only into known stock catalogs",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsBuildings/version two pre-material stock fingerprints retain preferences without crossing catalog identities",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsExperiments/catalog experiments use translated text when available and English metadata otherwise",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsExperiments/every experiment's label and help are in the string tables",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsExperiments/preferences keep the enabled experiments and drop unknown keys",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/GPU local preference is opt-in for graphical and headless games",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/audio choice saves before enabling the mixer and fails silently [writes-preferences]",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/edge scrolling defaults migrate and independent modes round trip",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/first-launch hand choice persists and migrates existing side preferences",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/gradient settings preserve explicit variants and CLI precedence",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/hand-choice screen saves both sides and retains a choice after write failure [writes-preferences]",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/legacy preferences migrate and independent effects round trip",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/mobile audio startup requires an explicit saved choice",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/render ceiling defaults migrates validates and round trips",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/renderer preference migrates flags and round trips without startup overrides",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/retired gradient verification preference is ignored and CLI options are rejected",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/text size applies to desktop and touch independently of interface scale",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsGraphics/illustrated audio choices work on phones without implicit sound [display][writes-preferences][artifacts]",
+        "state": "skipped"
+      },
+      {
+        "name": "SettingsGraphics/illustrated hand choices activate through their phone overlay [display][writes-preferences]",
+        "state": "skipped"
+      },
+      {
+        "name": "SystemLanguage/Bengali regions share the Bengali script catalog",
+        "state": "passed"
+      },
+      {
+        "name": "SystemLanguage/Bengali startup respects the system and saved language",
+        "state": "passed"
+      },
+      {
+        "name": "SystemLanguage/ISO locales map to the historical catalog codes",
+        "state": "passed"
+      },
+      {
+        "name": "SystemLanguage/expanded locales distinguish scripts and the precise Pulaar variety",
+        "state": "passed"
+      },
+      {
+        "name": "SystemLanguage/languages without a catalog are not confused with catalog codes",
+        "state": "passed"
+      },
+      {
+        "name": "SystemLanguage/regional and script variants pick the matching catalog",
+        "state": "passed"
+      },
+      {
+        "name": "SystemLanguage/startup follows the system only when the profile has no usable language",
+        "state": "passed"
+      },
+      {
+        "name": "SystemLanguage/the first available preference wins, then English",
+        "state": "passed"
+      },
+      {
+        "name": "SettingsAILibrary/AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]",
+        "state": "skipped"
+      },
+      {
+        "name": "SettingsAILibrary/AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]",
+        "state": "skipped"
+      },
+      {
+        "name": "SettingsLocalization/Controls render translated labels and help in every supported language [display:1400x1000][artifacts]",
+        "state": "skipped"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/bengali-localization-v3/ci/41266158452/native-validation/tests/unit-junit.xml",
+    "attributes": {
+      "tests": "1272",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "89"
+    },
+    "cases": 1272,
+    "failures": [],
+    "focused_cases": [
+      {
+        "name": "TextMetrics/offscreen transformed text rasterizes at the requested resolution",
+        "state": "passed"
+      },
+      {
+        "name": "TextMetrics/font metrics do not rasterize or evict rendered text",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/icons and tooltips",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/settings toggles keep captions left and the full row actionable",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/geometry",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/text",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/wrap and ellipsis preserve shaping clusters",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/column and flex",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/row cross align",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/paragraph wraps with width",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/text fields retain the touch target with compact control metrics",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/wrap columns",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/footer folds",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/scroll clamp and wheel",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/tap versus pan",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/native gestures retain fractions ownership and survive rebuilds",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/native gesture bounds settle and external jumps cancel the tail",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/native nested capture does not transfer to parent and missing owners consume tails",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/native popup scrolling owns its tail after dismissal",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/fling continues after release",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/overscroll springs back",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/touch wheel and programmatic scroll stop a fling",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/scrollbar press stops a fling",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/mouse drag does not fling",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/list and text overscroll",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/press survives resize",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/focus and keyboard",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/choice popup",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/icon segments and choices",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/text field",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/text field UTF-8 byte limit preserves Bengali edits",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/list view",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/copy field",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/adaptive and field",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/invariants",
+        "state": "passed"
+      },
+      {
+        "name": "UILayout/text stays inside its control at every size",
+        "state": "passed"
+      }
+    ]
+  }
+]

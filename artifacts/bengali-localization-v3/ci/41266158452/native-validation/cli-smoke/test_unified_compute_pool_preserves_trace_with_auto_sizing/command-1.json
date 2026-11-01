@@ -1,0 +1,22 @@
+{
+  "args": [
+    "map",
+    "generate",
+    "river",
+    "--width",
+    "128",
+    "--height",
+    "128",
+    "--teams",
+    "2",
+    "--seed",
+    "713",
+    "--output",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/source.map",
+    "--report-file",
+    "/Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/map.json"
+  ],
+  "status": 0,
+  "stdout": "river revision 5 seed 713 [complete]: \nMap: /Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/source.map.gz\nMap report: /Users/runner/work/glob2/glob2/artifacts/cli-smoke/test_unified_compute_pool_preserves_trace_with_auto_sizing/map.json\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

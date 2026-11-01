@@ -1,0 +1,122 @@
+[
+  {
+    "path": "data/fonts/LICENSE-DejaVu.txt",
+    "bytes": 4920,
+    "source_sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c",
+    "app_sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c"
+  },
+  {
+    "path": "data/fonts/LICENSE-Droid.txt",
+    "bytes": 10769,
+    "source_sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d",
+    "app_sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d"
+  },
+  {
+    "path": "data/fonts/LICENSE-HarfBuzz.txt",
+    "bytes": 1971,
+    "source_sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+    "app_sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64"
+  },
+  {
+    "path": "data/fonts/LICENSE-Noto.txt",
+    "bytes": 4377,
+    "source_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+    "app_sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb"
+  },
+  {
+    "path": "data/fonts/README.md",
+    "bytes": 7378,
+    "source_sha256": "71477c58c354fe0c9a2a1ced12671a24c399f9922cde2170e8c46fefafcd3ac8",
+    "app_sha256": "71477c58c354fe0c9a2a1ced12671a24c399f9922cde2170e8c46fefafcd3ac8"
+  },
+  {
+    "path": "data/fonts/sans.ttf",
+    "bytes": 8137448,
+    "source_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "app_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+    "bytes": 240456,
+    "source_sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+    "app_sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+    "bytes": 200048,
+    "source_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "app_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+    "bytes": 219212,
+    "source_sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+    "app_sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+    "bytes": 344328,
+    "source_sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+    "app_sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+    "bytes": 208452,
+    "source_sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+    "app_sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+    "bytes": 53000,
+    "source_sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+    "app_sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+    "bytes": 151940,
+    "source_sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+    "app_sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+    "bytes": 111724,
+    "source_sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+    "app_sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+    "bytes": 195408,
+    "source_sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+    "app_sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+    "bytes": 95776,
+    "source_sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+    "app_sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+    "bytes": 74248,
+    "source_sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+    "app_sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+    "bytes": 197228,
+    "source_sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+    "app_sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+  },
+  {
+    "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+    "bytes": 37752,
+    "source_sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+    "app_sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+  },
+  {
+    "path": "data/fonts/scripts/manifest.json",
+    "bytes": 4543,
+    "source_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "app_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc"
+  }
+]

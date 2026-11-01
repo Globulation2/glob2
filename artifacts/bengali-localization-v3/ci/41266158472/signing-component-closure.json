@@ -1,0 +1,17 @@
+[
+  {
+    "path": "lib/x86_64/libmain.so",
+    "unsigned_sha256": "0d58e580c8733eb448c894f2b35a60307bc9b695e24585031eb31e0c3ad7502f",
+    "signed_sha256": "0d58e580c8733eb448c894f2b35a60307bc9b695e24585031eb31e0c3ad7502f"
+  },
+  {
+    "path": "assets/glob2-bundle/data/texts.bn.txt",
+    "unsigned_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "signed_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054"
+  },
+  {
+    "path": "assets/glob2-bundle/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+    "unsigned_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "signed_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+  }
+]
