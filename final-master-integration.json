@@ -1,0 +1,22 @@
+{
+  "identity": "/root",
+  "tested_source": "c35a7b2ebbdb83b264ecc6b0bcf29d89ef926fab",
+  "integrated_base": "0a5d4f68d9b8ad6faa6f4a67ab7167f3104101eb",
+  "fetched_master": "a0898428b05fdabcb6696d76306264a43671274e",
+  "changed_paths_after_integrated_base": [
+    ".github/workflows/build.yml",
+    "docs/development/verification.md",
+    "src/game/screens/CustomGameSetupHarness.cpp",
+    "src/map/gradient/DelayedGradientPublicationHarness.cpp",
+    "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+    "src/unit/EntityRandomLifecycleTest.cpp",
+    "test/fixtures/resources/seeded-compositions-units.trace",
+    "test/maxima/fixtures/save-continuation/expected-units-30000-30512.json",
+    "test/support/LegacyPopulationOutput.h"
+  ],
+  "shipping_code_or_catalog_changes": [],
+  "merge_tree_exit_code": 0,
+  "merge_result_tree": "5a45597b8bb93f834d284143b9e8609a5a4bbee9",
+  "scope": "Later master changes repair test fixtures/expectations and increase the browser CI timeout. The CustomGameSetupHarness statistics API correction is already identical in this branch. No shipping source, font, catalog, simulation rule or committed match record changes after the integrated base. Selected Filipino SGSL tests serialize only scripts and do not use LegacyPopulationOutput. Existing frozen-master unit/lint reproductions retain their actual0a5 revision. No unrelated merge/rebase performed.",
+  "limits": "Read-only integration assessment; does not claim execution of unselected repaired master fixtures or hosted CI. Normal GitHub merge protections remain applicable."
+}
