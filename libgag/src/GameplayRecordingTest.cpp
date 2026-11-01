@@ -23,7 +23,7 @@ std::string read(const std::filesystem::path &path)
 std::filesystem::path output(const char *label)
 {
 	return glob2test::artifactDir() /
-		   (std::string(label) + "-" + std::to_string(SDL_GetPerformanceCounter()) + ".mp4");
+		   (std::string(label) + "-" + std::to_string(SDL_GetPerformanceCounter()) + Extension);
 }
 std::optional<CaptureTicket> reserveWhenAvailable(Recorder& recorder)
 {
@@ -218,8 +218,12 @@ TEST_SUITE("GameplayRecording")
 			SDL_CreateSurface(64, 64, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 		REQUIRE(pixels);
 		REQUIRE(recorder.start(path.string()));
-		const auto epochHint = timestamp();
-		recorder.frame(*pixels);
+		const auto firstCapture = reserveWhenAvailable(recorder);
+		REQUIRE(firstCapture);
+		const auto dropsBeforeFrame = recorder.status().droppedFrames;
+		recorder.frame(*pixels,*firstCapture);
+		REQUIRE_MESSAGE(recorder.status().droppedFrames==dropsBeforeFrame,
+			"The first capture ticket was rejected before establishing the audio origin");
 		awaitRecording(recorder, *pixels);
 		const auto callbackStart = timestamp();
 		std::array<std::int16_t, 2048> samples;
@@ -241,17 +245,17 @@ TEST_SUITE("GameplayRecording")
 		REQUIRE(recorder.status().state == State::Complete);
 		const auto raw = path.string() + ".pcm";
 		Process decode;
-		// A slow encoder startup can leave a timestamp gap before the first AAC
+		// A slow encoder startup can leave a timestamp gap before the first audio
 		// packet. Decode against the video's zero origin, retaining that silence.
 		decode.launch({encoder, "-v", "error", "-nostdin", "-n", "-i", path.string(), "-map",
 					   "0:a:0", "-af", "aresample=first_pts=0", "-f", "s16le", "-ar", "48000", "-ac", "2", raw},
 					  path.string() + ".decode.log", false);
 		REQUIRE(decode.finish() == 0);
 		const auto pcm = read(raw);
-		const auto first = (callbackStart - epochHint) * AudioSampleRate / 1000000;
+		const auto first = (callbackStart - firstCapture->timestamp) * AudioSampleRate / 1000000;
 		REQUIRE(pcm.size() >= std::size_t(first + 4096) * 4);
-		// The MP4's first video timestamp is zero. Detect the first audible window
-		// after AAC decoding; priming/edit-list handling must retain clock alignment.
+		// The accepted capture ticket defines video time zero. Detect the first
+		// audible window after decoding; codec priming must retain clock alignment.
 		std::int64_t onset = -1;
 		for (std::size_t at=0; at+128 <= pcm.size()/4; at+=128)
 		{
@@ -287,6 +291,10 @@ TEST_SUITE("GameplayRecording")
 		CHECK_FALSE(recorder.start(output("invalid").string()));
 		CHECK(recorder.status().state == State::Failed);
 		recorder.options.fps = 30;
+		auto wrongExtension = output("wrong-extension");
+		wrongExtension.replace_extension(WebM ? ".mp4" : ".webm");
+		CHECK_FALSE(recorder.start(wrongExtension.string()));
+		CHECK_FALSE(std::filesystem::exists(wrongExtension.string()+".recording"));
 		recorder.options.encoder = EncoderPreference::Software;
 		auto path = output("existing");
 		std::ofstream(path) << "preserve";
@@ -316,7 +324,10 @@ TEST_SUITE("GameplayRecording")
 		recorder.screen("multiplayer_game");
 		SDL_FillSurfaceRect(pixels.get(), nullptr,
 							SDL_MapSurfaceRGBA(pixels.get(), 20, 200, 10, 255));
-		draw(recorder, pixels.get(), 200);
+		drawUntil(recorder, pixels.get(), [&] {
+			return read(path.string()+".recording/events.jsonl").find(
+				"\"screen\":\"multiplayer_game\"") != std::string::npos;
+		});
 		recorder.beginMatch("multiplayer", "chapter test", 2, 15000);
 		recorder.matchFrame(15000, false, 40);
 		const auto journal = path.string() + ".recording/events.jsonl";
@@ -361,7 +372,7 @@ TEST_SUITE("GameplayRecording")
 		CHECK(manifest.find("\"screen\":\"multiplayer_game\"") != std::string::npos);
 		CHECK(manifest.find("\"mode\":\"multiplayer\"") != std::string::npos);
 		CHECK(manifest.find("\"team\":2") != std::string::npos);
-		CHECK(read(path.string() + ".events.jsonl").find("\"kind\":\"resize\"") !=
+		CHECK(read(recorder.status().outputs.back() + ".events.jsonl").find("\"kind\":\"resize\"") !=
 			  std::string::npos);
 	}
 	TEST_CASE("stopping a recording before its first frame completes without hanging")

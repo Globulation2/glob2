@@ -4884,6 +4884,10 @@ Unidades cercadas, sem nenhuma casa livre para onde ir.
 Recursos limpos
 [stat cleared about]
 Recursos removidos pelos trabalhadores em áreas de limpeza para abrir espaço.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestígio
 [stat prestige about]
@@ -6355,421 +6359,421 @@ Não foi possível salvar sua escolha. O áudio continua desligado. Tente novame
 [audio choices description]
 Silêncio: um alto-falante silenciado. Som: um alto-falante com ondas sonoras.
 [intro menu]
-
+Introdução
 [intro briefing]
-
+Aprenda o controle indireto: explore com uma bandeira, abasteça sua colônia e comande um ataque.
 [intro try]
-
+Iniciar introdução
 [intro preflight]
-
+Seus glóbulos agem por conta própria. Você escolhe suas tarefas por meio de construções e bandeiras. Nesta breve introdução, explore um ponto de referência, amplie o abastecimento, aumente a força de trabalho e comande um pequeno ataque.
 [intro preflight save]
-
+Reserve cerca de 10 minutos. Você pode salvar pelo menu do jogo e retomar em Carregar jogo. Valem as regras normais de fome e combate. Escolha as lições do tutorial no menu principal para praticar outras habilidades.
 [intro preference failed]
-
+Não foi possível salvar sua escolha. Você pode continuar jogando; esta recomendação poderá aparecer novamente na próxima vez.
 [intro goal scout]
-
+Explorar o ponto de referência de pedra
 [intro goal build]
-
+Construir outra Taverna
 [intro goal supply]
-
+Abastecer sua nova Taverna
 [intro goal grow]
-
+Aumentar a força de trabalho
 [intro goal attack]
-
+Destruir a Colmeia inimiga
 [intro instruction scout]
-
+Abra Bandeiras e coloque uma Bandeira de exploração sobre as pedras a leste da colônia. Designe um explorador. Observe-o seguir até a bandeira.
 [intro instruction build]
-
+Abra Construir e coloque uma Taverna perto do trigo. Designe trabalhadores disponíveis para construí-la. Mantenha a Taverna existente abastecida.
 [intro instruction supply]
-
+Selecione a nova Taverna concluída e designe pelo menos um abastecedor. Espere um trabalhador entregar trigo.
 [intro instruction grow]
-
+Selecione a Colmeia. Defina a quantidade solicitada de trabalhadores como pelo menos 2 e as proporções de produção apenas para trabalhadores. Mantenha as duas Tavernas abastecidas enquanto nasce um novo trabalhador.
 [intro instruction attack]
-
+Encontre a Colmeia inimiga mais a leste. Use uma Bandeira de guerra para direcionar seus guerreiros contra ela. Consulte a ajuda se precisar de um lembrete.
 [intro help]
-
+Ajuda / por quê?
 [intro help scout]
-
+Use o minimapa para mover a visão para leste e encontrar as pedras. Em Bandeiras, escolha Bandeira de exploração, coloque-a sobre as pedras e saia do posicionamento com o botão secundário do mouse. Selecione a bandeira e solicite 1 explorador. Bandeiras solicitam unidades; não as movem instantaneamente. Exploradores podem parar para comer.
 [intro help build]
-
+A construção consome madeira entregue por trabalhadores. Escolha Taverna nos controles de construção, coloque-a em terreno livre perto do trigo e solicite 2 construtores. A quantidade solicitada não é a quantidade de trabalhadores já presentes. Mantenha abastecedores na Taverna existente e na Colmeia. Qualquer local válido serve.
 [intro help supply]
-
+Construção e abastecimento diário têm quantidades solicitadas separadas. Selecione a Taverna concluída e aumente sua quantidade de operação. Um abastecedor colhe trigo e o traz até aqui. Glóbulos famintos comem nas Tavernas; sem abastecedores, o estoque acaba. Mantenha o acesso ao trigo livre.
 [intro help grow]
-
+A Colmeia consome trigo para produzir unidades. Defina a produção de trabalhadores como 1 e a de exploradores e guerreiros como 0. Solicite 2 ou mais trabalhadores na Colmeia. Mais abastecedores entregam trigo mais rápido, mas disputam trabalhadores com outras tarefas. Mantenha as duas Tavernas abastecidas.
 [intro help attack]
-
+Abra Bandeiras, escolha Bandeira de guerra e coloque-a sobre a Colmeia inimiga a leste das pedras. Selecione a bandeira e solicite até 4 guerreiros. Um raio pequeno os mantém concentrados. Saia do posicionamento com o botão secundário antes de selecionar a bandeira. Se não houver guerreiros, produza mais na Colmeia. Eles podem parar para comer; mantenha as Tavernas abastecidas.
 [intro hint scout]
-
+Seu explorador precisa de uma Bandeira de exploração com unidades designadas nas pedras a leste. Confira o destino e a quantidade de exploradores solicitada.
 [intro hint build]
-
+Se removeu a nova Taverna, construa outra. Caso contrário, confira o canteiro e a quantidade de trabalhadores solicitada. O abastecimento existente pode ocupar os trabalhadores; mantenha a comida chegando enquanto libera construtores.
 [intro hint supply]
-
+Selecione a nova Taverna concluída. Confira a quantidade solicitada de trabalhadores e observe as entregas de trigo. Trabalhadores podem precisar de tempo para viajar ou comer.
 [intro hint grow]
-
+Confira o abastecimento da Colmeia e a produção exclusiva de trabalhadores. Mantenha as Tavernas abastecidas enquanto espera outro trabalhador.
 [intro hint attack]
-
+Confira a Bandeira de guerra, a quantidade de guerreiros solicitada e o abastecimento de comida. Seus guerreiros precisam de tempo para viajar e atacar.
 [intro hint no scout flag]
-
+Nenhuma Bandeira de exploração com unidades designadas foi encontrada. Coloque uma sobre as pedras a leste da base e solicite 1 explorador.
 [intro hint no suppliers]
-
+Sua nova Taverna ou seu canteiro está solicitando 0 trabalhadores. Selecione-o e solicite trabalhadores.
 [intro hint no war flag]
-
+Nenhuma Bandeira de guerra com unidades designadas foi encontrada na base inimiga. Coloque uma sobre a Colmeia inimiga a leste e solicite guerreiros.
 [intro hint retry]
-
+Uma unidade ou construção necessária para esta lição foi perdida. Carregue um jogo salvo anterior ou reinicie a lição pelo menu do jogo.
 [intro complete]
-
+Introdução concluída
 [intro complete body]
-
+Você dirigiu glóbulos autônomos, ampliou o abastecimento e a colônia e organizou um ataque. Continue nas lições do tutorial para praticar treinamento, melhorias e defesa, ou volte ao menu principal para iniciar uma partida.
 [intro play again]
-
+Jogar novamente
 [intro restart]
-
+Reiniciar introdução
 [intro restart body]
-
+Recomeçar da colônia preparada? O progresso não salvo desta introdução será perdido.
 [intro help touch scout]
-
+Arraste o terreno vazio para mover a visão antes de colocar uma bandeira. Encontre as pedras a leste da colônia. Abra Bandeiras, escolha Bandeira de exploração, coloque-a nas pedras e confirme. Selecione a bandeira e solicite 1 explorador pelo controle de unidades designadas. Glóbulos viajam sozinhos e podem parar para comer.
 [intro help touch build]
-
+Escolha Taverna em Construir. Coloque-a em terreno livre perto do trigo e confirme. Selecione o canteiro e solicite 2 construtores. A quantidade solicitada não é a quantidade de trabalhadores já presentes. Mantenha a Taverna existente e a Colmeia abastecidas. Qualquer local válido serve.
 [intro help touch supply]
-
+Selecione a nova Taverna concluída e aumente a quantidade solicitada de trabalhadores. Construção e abastecimento têm controles separados. Um abastecedor colhe trigo e o traz até aqui. Glóbulos famintos comem nas Tavernas; sem abastecedores, o estoque acaba. Mantenha o trigo acessível.
 [intro help touch grow]
-
+Selecione a Colmeia. Defina a produção de trabalhadores como 1 e a de exploradores e guerreiros como 0. Solicite 2 ou mais trabalhadores. Abastecedores trazem trigo para novas unidades, mas disputam trabalhadores com outras tarefas. Mantenha as duas Tavernas abastecidas.
 [intro help touch attack]
-
+Abra Bandeiras, escolha Bandeira de guerra, coloque-a sobre a Colmeia inimiga a leste das pedras e confirme. Selecione a bandeira e solicite até 4 guerreiros. Um raio pequeno os concentra. Se não houver mais guerreiros, produza-os na Colmeia. Eles podem parar para comer; mantenha as Tavernas abastecidas.
 [intro show destination]
-
+Mostrar destino
 [intro scout destination]
-
+Explorar aqui
 [intro attack destination]
-
+Atacar aqui
 [intro compact scout]
-
+Bandeiras → Bandeira de exploração. Coloque-a nas pedras; designe 1 explorador.
 [intro compact build]
-
+Construir → Taverna. Coloque perto do trigo; designe 2 construtores.
 [intro compact supply]
-
+Selecione a nova Taverna; designe pelo menos 1 abastecedor. Espere o trigo.
 [intro compact grow]
-
+Selecione a Colmeia; designe 2 abastecedores. Produza apenas trabalhadores.
 [intro compact attack]
-
+Bandeiras → Bandeira de guerra. Coloque sobre a Colmeia inimiga; designe guerreiros.
 [tutorial lessons]
-
+Lições do tutorial
 [tutorial restart]
-
+Reiniciar lição
 [tutorial restart body]
-
+Recomeçar esta lição da colônia preparada? O progresso não salvo será perdido.
 [tutorial complete]
-
+Lição concluída
 [tutorial food title]
-
+Prática de abastecimento de comida
 [tutorial food briefing]
-
+Pratique a expansão do abastecimento: construa outra Taverna, designe abastecedores e observe o trigo chegar.
 [tutorial food complete]
-
+Você construiu uma Taverna e a abasteceu com trigo. Experimente outra lição ou volte ao menu principal.
 [tutorial unavailable]
-
+Não foi possível carregar as lições do tutorial.
 [lesson healing title]
-
+Hospitais e cura
 [lesson healing briefing]
-
+Construa um Hospital e ajude um trabalhador ferido a se recuperar. A colônia começa alimentada, com um trabalhador ferido.
 [lesson healing complete]
-
+Seu Hospital curou um glóbulo ferido. Mantenha as Tavernas abastecidas: a fome pode ferir unidades novamente.
 [lesson healing build hint]
-
+Construa um Hospital em terreno livre; designe 2 construtores. Deixe espaço para os glóbulos entrarem e saírem. Hospitais curam ferimentos; Tavernas fornecem comida. Este paciente já está alimentado.
 [lesson healing build title]
-
+Construir um Hospital
 [lesson healing build instruction]
-
+Construa um Hospital em terreno livre; designe 2 construtores.
 [lesson healing build help]
-
+Deixe espaço para os glóbulos entrarem e saírem. Hospitais curam ferimentos; Tavernas fornecem comida. Este paciente já está alimentado.
 [lesson healing build marker]
-
+Construir um Hospital
 [lesson healing heal hint]
-
+Mantenha o Hospital acessível. Observe a recuperação do trabalhador ferido. Glóbulos procuram cura sozinhos. Acompanhe o trabalhador ferido, não uma unidade recém-nascida. Se ele morrer, reinicie ou carregue um jogo salvo.
 [lesson healing heal title]
-
+Deixar o paciente se recuperar
 [lesson healing heal instruction]
-
+Mantenha o Hospital acessível. Observe a recuperação do trabalhador ferido.
 [lesson healing heal help]
-
+Glóbulos procuram cura sozinhos. Acompanhe o trabalhador ferido, não uma unidade recém-nascida. Se ele morrer, reinicie ou carregue um jogo salvo.
 [lesson healing heal marker]
-
+Deixar o paciente se recuperar
 [lesson walking-training title]
-
+Treinamento de caminhada
 [lesson walking-training briefing]
-
+Construa uma Pista de corrida e observe um trabalhador existente aprender a andar mais rápido.
 [lesson walking-training complete]
-
+Seus trabalhadores aprenderam a andar mais rápido. O treinamento melhora os trabalhadores existentes; não substitui o abastecimento da colônia.
 [lesson walking-training build hint]
-
+Construa uma Pista de corrida na clareira marcada; designe construtores. Uma Pista de corrida exige madeira e pedra. Deixe espaço nas bordas para entrada, saída e expansão futura.
 [lesson walking-training build title]
-
+Construir uma Pista de corrida
 [lesson walking-training build instruction]
-
+Construa uma Pista de corrida na clareira marcada; designe construtores.
 [lesson walking-training build help]
-
+Uma Pista de corrida exige madeira e pedra. Deixe espaço nas bordas para entrada, saída e expansão futura.
 [lesson walking-training build marker]
-
+Construir uma Pista de corrida
 [lesson walking-training train hint]
-
+Mantenha a Pista de corrida acessível e deixe um trabalhador concluir o treinamento. Glóbulos aptos treinam automaticamente. Deixe alguns trabalhadores livres do abastecimento e mantenha as duas Tavernas abastecidas.
 [lesson walking-training train title]
-
+Treinar um trabalhador existente
 [lesson walking-training train instruction]
-
+Mantenha a Pista de corrida acessível e deixe um trabalhador concluir o treinamento.
 [lesson walking-training train help]
-
+Glóbulos aptos treinam automaticamente. Deixe alguns trabalhadores livres do abastecimento e mantenha as duas Tavernas abastecidas.
 [lesson swimming title]
-
+Natação e recursos aquáticos
 [lesson swimming briefing]
-
+Treine nadadores e use as algas do lago para construir uma Escola.
 [lesson swimming complete]
-
+Um nadador entregou recursos aquáticos para sua Escola. O acesso à água amplia as tarefas que a colônia pode realizar.
 [lesson swimming build hint]
-
+Construa uma Piscina a oeste do lago; designe construtores. Deixe espaço ao redor da Piscina. Um trabalhador só pode coletar algas em águas profundas depois de aprender a nadar.
 [lesson swimming build title]
-
+Construir uma Piscina
 [lesson swimming build instruction]
-
+Construa uma Piscina a oeste do lago; designe construtores.
 [lesson swimming build help]
-
+Deixe espaço ao redor da Piscina. Um trabalhador só pode coletar algas em águas profundas depois de aprender a nadar.
 [lesson swimming build marker]
-
+Construir uma Piscina
 [lesson swimming train hint]
-
+Deixe um trabalhador existente concluir o treinamento de natação. Unidades escolhem o treinamento automaticamente. Mantenha o abastecimento e permita que trabalhadores livres cheguem à Piscina.
 [lesson swimming train title]
-
+Treinar um nadador
 [lesson swimming train instruction]
-
+Deixe um trabalhador existente concluir o treinamento de natação.
 [lesson swimming train help]
-
+Unidades escolhem o treinamento automaticamente. Mantenha o abastecimento e permita que trabalhadores livres cheguem à Piscina.
 [lesson swimming water-job hint]
-
+Construa uma Escola perto da colônia; designe construtores para buscar madeira e algas. As algas crescem no lago. Um nadador treinado precisa entrar na água para coletá-las. Mantenha a Escola em terreno aberto, acessível aos abastecedores.
 [lesson swimming water-job title]
-
+Usar as algas do lago
 [lesson swimming water-job instruction]
-
+Construa uma Escola perto da colônia; designe construtores para buscar madeira e algas.
 [lesson swimming water-job help]
-
+As algas crescem no lago. Um nadador treinado precisa entrar na água para coletá-las. Mantenha a Escola em terreno aberto, acessível aos abastecedores.
 [lesson swimming water-job marker]
-
+Usar as algas do lago
 [lesson schools title]
-
+Escolas e habilidades dos trabalhadores
 [lesson schools briefing]
-
+Use os nadadores preparados para construir uma Escola e observe os trabalhadores aprenderem construção e colheita.
 [lesson schools complete]
-
+Sua Escola melhorou as habilidades dos trabalhadores. Construtores qualificados permitem melhorias; colher melhor ajuda a sustentar uma economia em expansão.
 [lesson schools build hint]
-
+Construa uma Escola na clareira; designe construtores. A colônia já tem nadadores para as algas. Deixe acesso à madeira e à água. Árvores frutíferas fornecem recursos de prestígio; a comida continua vindo do trigo.
 [lesson schools build title]
-
+Construir uma Escola
 [lesson schools build instruction]
-
+Construa uma Escola na clareira; designe construtores.
 [lesson schools build help]
-
+A colônia já tem nadadores para as algas. Deixe acesso à madeira e à água. Árvores frutíferas fornecem recursos de prestígio; a comida continua vindo do trigo.
 [lesson schools build marker]
-
+Construir uma Escola
 [lesson schools learn hint]
-
+Deixe um trabalhador existente concluir o treinamento na Escola. A Escola ensina construção e colheita juntas. Mantenha trabalhadores disponíveis; um canteiro sozinho não treina ninguém.
 [lesson schools learn title]
-
+Ensinar construção e colheita
 [lesson schools learn instruction]
-
+Deixe um trabalhador existente concluir o treinamento na Escola.
 [lesson schools learn help]
-
+A Escola ensina construção e colheita juntas. Mantenha trabalhadores disponíveis; um canteiro sozinho não treina ninguém.
 [lesson upgrades title]
-
+Melhoria de construções
 [lesson upgrades briefing]
-
+Use os trabalhadores qualificados preparados para melhorar uma Pista de corrida e treinar além do primeiro nível.
 [lesson upgrades complete]
-
+Você melhorou uma construção e usou seu treinamento aprimorado. Outras melhorias repetem o ciclo com Escolas, habilidades e materiais melhores e mais espaço, até o nível 3.
 [lesson upgrades upgrade hint]
-
+Selecione a Pista de corrida, escolha Melhorar e designe construtores qualificados. Esses trabalhadores já aprenderam as habilidades da Escola de primeiro nível. Melhorias exigem mais espaço e materiais e interrompem o serviço da construção. Melhorias canceladas não contam.
 [lesson upgrades upgrade title]
-
+Melhorar a Pista de corrida
 [lesson upgrades upgrade instruction]
-
+Selecione a Pista de corrida, escolha Melhorar e designe construtores qualificados.
 [lesson upgrades upgrade help]
-
+Esses trabalhadores já aprenderam as habilidades da Escola de primeiro nível. Melhorias exigem mais espaço e materiais e interrompem o serviço da construção. Melhorias canceladas não contam.
 [lesson upgrades upgrade marker]
-
+Melhorar a Pista de corrida
 [lesson upgrades train hint]
-
+Deixe um trabalhador existente aprender a andar mais rápido na Pista de corrida melhorada. Uma melhoria concluída aprimora o treinamento disponível. Níveis mais altos de construção exigem mais habilidade de construção; o nível exibido começa em 1.
 [lesson upgrades train title]
-
+Usar o treinamento aprimorado
 [lesson upgrades train instruction]
-
+Deixe um trabalhador existente aprender a andar mais rápido na Pista de corrida melhorada.
 [lesson upgrades train help]
-
+Uma melhoria concluída aprimora o treinamento disponível. Níveis mais altos de construção exigem mais habilidade de construção; o nível exibido começa em 1.
 [lesson warrior-training title]
-
+Produção e treinamento de guerreiros
 [lesson warrior-training briefing]
-
+Produza guerreiros na Colmeia e treine-os em um Quartel.
 [lesson warrior-training complete]
-
+Você controlou a produção militar e treinou guerreiros. Mantenha a comida chegando; unidades de combate também precisam comer.
 [lesson warrior-training produce hint]
-
+Configure a Colmeia para produzir apenas guerreiros; designe abastecedores e espere 2 guerreiros. Defina as proporções de trabalhadores e exploradores como 0 e a de guerreiros como 1. A Colmeia consome trigo para os nascimentos. As proporções escolhem o que produzir; os abastecedores permitem a produção funcionar.
 [lesson warrior-training produce title]
-
+Produzir dois guerreiros
 [lesson warrior-training produce instruction]
-
+Configure a Colmeia para produzir apenas guerreiros; designe abastecedores e espere 2 guerreiros.
 [lesson warrior-training produce help]
-
+Defina as proporções de trabalhadores e exploradores como 0 e a de guerreiros como 1. A Colmeia consome trigo para os nascimentos. As proporções escolhem o que produzir; os abastecedores permitem a produção funcionar.
 [lesson warrior-training produce marker]
-
+Produzir dois guerreiros
 [lesson warrior-training build hint]
-
+Construa um Quartel na clareira; designe construtores. Pare ou reduza a produção de guerreiros quando tiver o suficiente. Quartéis ensinam combate e precisam de espaço livre nas bordas.
 [lesson warrior-training build title]
-
+Construir um Quartel
 [lesson warrior-training build instruction]
-
+Construa um Quartel na clareira; designe construtores.
 [lesson warrior-training build help]
-
+Pare ou reduza a produção de guerreiros quando tiver o suficiente. Quartéis ensinam combate e precisam de espaço livre nas bordas.
 [lesson warrior-training build marker]
-
+Construir um Quartel
 [lesson warrior-training train hint]
-
+Deixe um guerreiro concluir a prática no Quartel. Guerreiros procuram treinamento automaticamente. Mantenha as Tavernas abastecidas e o Quartel acessível. Só construir um Quartel não conclui uma sessão de treinamento.
 [lesson warrior-training train title]
-
+Treinar seus guerreiros
 [lesson warrior-training train instruction]
-
+Deixe um guerreiro concluir a prática no Quartel.
 [lesson warrior-training train help]
-
+Guerreiros procuram treinamento automaticamente. Mantenha as Tavernas abastecidas e o Quartel acessível. Só construir um Quartel não conclui uma sessão de treinamento.
 [lesson fortifications title]
-
+Torres e muralhas de proteção
 [lesson fortifications briefing]
-
+Construa uma torre abastecida e muralhas de proteção e teste-as contra um pequeno ataque.
 [lesson fortifications complete]
-
+Suas defesas abastecidas detiveram o ataque de treino. Torres precisam de pedra e muralhas precisam de aberturas para os abastecedores passarem.
 [lesson fortifications tower hint]
-
+Construa uma torre na área marcada; designe construtores. Coloque-a perto das pedras e deixe acesso aos abastecedores. Nenhum ataque começa antes de concluir os preparativos.
 [lesson fortifications tower title]
-
+Construir uma Torre de defesa
 [lesson fortifications tower instruction]
-
+Construa uma torre na área marcada; designe construtores.
 [lesson fortifications tower help]
-
+Coloque-a perto das pedras e deixe acesso aos abastecedores. Nenhum ataque começa antes de concluir os preparativos.
 [lesson fortifications tower marker]
-
+Construir uma Torre de defesa
 [lesson fortifications walls hint]
-
+Construa pelo menos 2 trechos de muralha perto da torre; mantenha aberto seu acesso pelo oeste. Muralhas usam pedra e cada canteiro solicita trabalhadores. Não cerque totalmente a torre: abastecedores precisam de um caminho. A passagem oeste marcada deve ficar livre.
 [lesson fortifications walls title]
-
+Proteger a torre com muralhas
 [lesson fortifications walls instruction]
-
+Construa pelo menos 2 trechos de muralha perto da torre; mantenha aberto seu acesso pelo oeste.
 [lesson fortifications walls help]
-
+Muralhas usam pedra e cada canteiro solicita trabalhadores. Não cerque totalmente a torre: abastecedores precisam de um caminho. A passagem oeste marcada deve ficar livre.
 [lesson fortifications walls marker]
-
+Proteger a torre com muralhas
 [lesson fortifications supply hint]
-
+Selecione a torre e solicite abastecedores. Espere pelo menos 2 pedras. Uma torre concluída precisa de trabalhadores solicitados para operar e trazer munição. Esse controle é separado do de construção.
 [lesson fortifications supply title]
-
+Fornecer munição
 [lesson fortifications supply instruction]
-
+Selecione a torre e solicite abastecedores. Espere pelo menos 2 pedras.
 [lesson fortifications supply help]
-
+Uma torre concluída precisa de trabalhadores solicitados para operar e trazer munição. Esse controle é separado do de construção.
 [lesson fortifications supply marker]
-
+Fornecer munição
 [lesson fortifications hold hint]
-
+Um guerreiro de treino está se aproximando. Mantenha a torre abastecida e acessível. Resista até derrotar ou expulsar o atacante. Uma muralha que bloqueia abastecedores pode deixar a torre sem munição. Se a colônia fracassar, reinicie ou carregue um jogo salvo anterior.
 [lesson fortifications hold title]
-
+Testar as fortificações
 [lesson fortifications hold instruction]
-
+Um guerreiro de treino está se aproximando. Mantenha a torre abastecida e acessível.
 [lesson fortifications hold help]
-
+Resista até derrotar ou expulsar o atacante. Uma muralha que bloqueia abastecedores pode deixar a torre sem munição. Se a colônia fracassar, reinicie ou carregue um jogo salvo anterior.
 [lesson fortifications hold marker]
-
+Testar as fortificações
 [lesson defensive-tactics title]
-
+Áreas de guarda e táticas com bandeiras
 [lesson defensive-tactics briefing]
-
+Explore o inimigo de treino, prepare uma área de guarda, defenda e organize um contra-ataque.
 [lesson defensive-tactics complete]
-
+Você explorou, defendeu uma área de guarda e dirigiu um contra-ataque. As quantidades nas bandeiras solicitam unidades; o raio define onde elas trabalham.
 [lesson defensive-tactics scout hint]
-
+Coloque uma Bandeira de exploração na base inimiga; designe 1 explorador. Bandeiras solicitam unidades automaticamente. Um explorador revela a atividade atual através da névoa de guerra; ele pode parar para comer.
 [lesson defensive-tactics scout title]
-
+Explorar a base inimiga
 [lesson defensive-tactics scout instruction]
-
+Coloque uma Bandeira de exploração na base inimiga; designe 1 explorador.
 [lesson defensive-tactics scout help]
-
+Bandeiras solicitam unidades automaticamente. Um explorador revela a atividade atual através da névoa de guerra; ele pode parar para comer.
 [lesson defensive-tactics scout marker]
-
+Explorar a base inimiga
 [lesson defensive-tactics guard hint]
-
+Pinte uma área de guarda na região marcada e deixe 2 guerreiros chegarem até ela. Abra Bandeiras, escolha Guarda e pinte pelo menos 4 casas dentro da região. Áreas de guarda atraem guerreiros ociosos. Áreas proibidas bloqueiam a passagem; áreas de limpeza solicitam a remoção de recursos.
 [lesson defensive-tactics guard title]
-
+Preparar uma área de guarda
 [lesson defensive-tactics guard instruction]
-
+Pinte uma área de guarda na região marcada e deixe 2 guerreiros chegarem até ela.
 [lesson defensive-tactics guard help]
-
+Abra Bandeiras, escolha Guarda e pinte pelo menos 4 casas dentro da região. Áreas de guarda atraem guerreiros ociosos. Áreas proibidas bloqueiam a passagem; áreas de limpeza solicitam a remoção de recursos.
 [lesson defensive-tactics guard marker]
-
+Preparar uma área de guarda
 [lesson defensive-tactics repel hint]
-
+O inimigo está atacando. Mantenha guerreiros na área de guarda e as Tavernas abastecidas. O pequeno ataque começa depois dos preparativos. Derrote ou expulse os dois invasores; inimigos feridos podem recuar. Guerreiros podem sair temporariamente para comer. Se a defesa falhar, carregue um jogo salvo anterior ou reinicie.
 [lesson defensive-tactics repel title]
-
+Repelir o ataque de treino
 [lesson defensive-tactics repel instruction]
-
+O inimigo está atacando. Mantenha guerreiros na área de guarda e as Tavernas abastecidas.
 [lesson defensive-tactics repel help]
-
+O pequeno ataque começa depois dos preparativos. Derrote ou expulse os dois invasores; inimigos feridos podem recuar. Guerreiros podem sair temporariamente para comer. Se a defesa falhar, carregue um jogo salvo anterior ou reinicie.
 [lesson defensive-tactics repel marker]
-
+Repelir o ataque de treino
 [lesson defensive-tactics counterattack hint]
-
+Coloque uma Bandeira de guerra sobre a Colmeia inimiga; solicite 3 guerreiros e use raio de 4 ou menos. Áreas de guarda e Bandeiras de guerra disputam guerreiros. Remova casas de guarda se estiverem retendo seu exército. Mantenha a comida disponível enquanto os guerreiros viajam e atacam.
 [lesson defensive-tactics counterattack title]
-
+Dirigir um contra-ataque concentrado
 [lesson defensive-tactics counterattack instruction]
-
+Coloque uma Bandeira de guerra sobre a Colmeia inimiga; solicite 3 guerreiros e use raio de 4 ou menos.
 [lesson defensive-tactics counterattack help]
-
+Áreas de guarda e Bandeiras de guerra disputam guerreiros. Remova casas de guarda se estiverem retendo seu exército. Mantenha a comida disponível enquanto os guerreiros viajam e atacam.
 [lesson defensive-tactics counterattack marker]
-
+Dirigir um contra-ataque concentrado
 [lesson healing build compact]
-
+Construir → Hospital. Deixe acesso; designe construtores.
 [lesson healing heal compact]
-
+Deixe o trabalhador ferido se curar no Hospital.
 [lesson walking-training build compact]
-
+Construir → Pista de corrida. Deixe espaço nas bordas.
 [lesson walking-training train compact]
-
+Deixe um trabalhador concluir o treinamento na Pista de corrida.
 [lesson swimming build compact]
-
+Construir → Piscina, a oeste do lago.
 [lesson swimming train compact]
-
+Deixe um trabalhador aprender a nadar.
 [lesson swimming water-job compact]
-
+Construir → Escola. Designe construtores para madeira e algas.
 [lesson schools build compact]
-
+Construir → Escola. Designe construtores para madeira e algas.
 [lesson schools learn compact]
-
+Deixe um trabalhador concluir o treinamento na Escola.
 [lesson upgrades upgrade compact]
-
+Pista de corrida → Melhorar. Designe construtores qualificados.
 [lesson upgrades train compact]
-
+Deixe um trabalhador treinar na Pista de corrida melhorada.
 [lesson warrior-training produce compact]
-
+Colmeia → apenas guerreiros. Forneça trigo para 2 guerreiros.
 [lesson warrior-training build compact]
-
+Construir → Quartel. Deixe espaço nas bordas.
 [lesson warrior-training train compact]
-
+Deixe um guerreiro concluir a prática no Quartel.
 [lesson fortifications tower compact]
-
+Construir → Torre. Coloque na área marcada.
 [lesson fortifications walls compact]
-
+Construa 2 muralhas. Mantenha aberta a passagem oeste da torre.
 [lesson fortifications supply compact]
-
+Torre → abastecedores. Espere 2 pedras.
 [lesson fortifications hold compact]
-
+Mantenha a torre abastecida contra o atacante.
 [lesson defensive-tactics scout compact]
-
+Bandeiras → Exploração. Coloque no inimigo; designe 1 explorador.
 [lesson defensive-tactics guard compact]
-
+Bandeiras → Guarda. Pinte 4 casas; espere 2 guerreiros chegarem.
 [lesson defensive-tactics repel compact]
-
+Defenda a área de guarda. Mantenha as Tavernas abastecidas.
 [lesson defensive-tactics counterattack compact]
-
+Bandeira de guerra → Colmeia inimiga. Solicite 3 guerreiros; raio ≤4.
 [library GL only]
 Só GL
 [Grassland]
@@ -6781,6 +6785,6 @@ Trilhas de animais
 [Fish amount]
 Quantidade de peixes
 [scenario messages]
-
+Mensagens ▸
 [Camp-site amount]
 Quantidade de acampamentos

@@ -162,6 +162,26 @@ style, animation smoothness, economy pressure, difficulty. Call out such effects
 explicitly in the PR description. A maintainer actually playing the result is part
 of review, not a formality that automated checks replace.
 
+## Evaluating AI changes
+
+Use `tools.tournaments` for standard and custom AI assessments. New tournament
+CLI games and experiment planners default to 95% probability-based early victory;
+freeze the threshold in the cohort and use an explicit zero only when playing
+out complete end games is part of the assessment. Resolve tick-cap survivors by
+final win probability rather than the historical economic calculation.
+
+Use **integrated whole-match win probability**, normalized by observed game time,
+as the primary continuous effectiveness metric alongside wins, losses and draws.
+It captures improvements in the strength and duration of an AI's position that
+can leave discrete match outcomes unchanged, making small changes easier to
+measure. Standard reports collect and analyze it automatically; custom scripts
+should use the retained integer area/coverage summary rather than count samples
+or infer it from the final chance. Compare paired seeds and seat rotations, report
+confidence intervals and missing coverage, and keep model identities, stopping
+rules, opponents and map distributions comparable. Retain actual outcomes as a
+check against improving the model score without improving play. Old or partial
+history is unavailable, never zero. See [tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
+
 ## Review and merge ownership
 
 The author prepares and revises the PR and may merge their own changes, including

@@ -38,7 +38,7 @@ using std::shared_ptr;
 
 /// Engine is the backend of the game. It is responsible for loading and setting up games and players,
 /// and its run function is meant to run the game that has been loaded.
-namespace GameDiagnostics { class Session; }
+namespace GameDiagnostics { class Session; class WarriorTacticsTrace; }
 class Engine
 {
 	friend struct TranslationPreviewAccess;
@@ -48,6 +48,7 @@ class Engine
 	friend struct MatchVerifier;
 	friend struct TurnClient;
 	std::shared_ptr<GameDiagnostics::Session> diagnostics;
+    std::unique_ptr<GameDiagnostics::WarriorTacticsTrace> warriorTactics;
 	bool headlessDiagnosticsPending() const;
 	std::string headlessOutput;
 	std::string initializationDiagnostic;

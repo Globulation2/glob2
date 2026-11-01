@@ -4876,6 +4876,10 @@ AI کی قابلِ رسائی ٹیلی میٹری نہیں۔
 صاف کیے گئے وسائل
 [stat cleared about]
 جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 وقار
 [stat prestige about]

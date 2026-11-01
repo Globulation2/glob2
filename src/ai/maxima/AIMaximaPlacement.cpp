@@ -9,6 +9,7 @@
 /* Maxima deterministic development and placement planner. */
 
 #include "AIMaximaPlacement.h"
+#include "AIMaximaForwardSupport.h"
 #include "AIMaximaFeedingDemand.h"
 #include "Stream.h"
 
@@ -1885,7 +1886,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 	};
 	// Existing campuses are always considered before consuming more land, but
 	// only on the first slice of this intent.
-	if(originCursor==0)for(size_t c=0;c<campusList.size();++c)
+	if(originCursor==0 && intent.purpose!=ForwardSupport)for(size_t c=0;c<campusList.size();++c)
 	{
 		Campus& campus=campusList[c]; const DevelopmentTemplate* t=findTemplate(campus.templateId);
 		if(!t)continue;
@@ -1961,7 +1962,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 	{
 		const size_t ti=originCursor/mapArea;
 		const DevelopmentTemplate& t=templateList[ti];
-		if(t.buildingType!=intent.buildingType)
+		if(t.buildingType!=intent.buildingType || (intent.purpose==ForwardSupport && t.compact))
 		{
 			originCursor=(ti+1)*mapArea;
 			continue;
@@ -1982,6 +1983,9 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				candidate.action.workers=intent.workers;candidate.action.targetLevel=1;
 				candidate.action.initialFootprint=t.slots[0].initialFootprint;
 				candidate.action.terminalFootprint=t.slots[0].terminalFootprint;
+                if(intent.purpose==ForwardSupport && !AIMaxima::ForwardSupport::accepts(world,
+                    AIMaxima::ForwardSupport::front(intent),candidate.action.centerX,candidate.action.centerY))
+                {++lastDiagnostics.rejected[RejectedAuthorization];continue;}
 				std::vector<int> sharedEdge,neighborFootprint;
 				const int adjoining=adjoiningBarracks(world,candidate.action,
 					sharedEdge,neighborFootprint);
@@ -2001,6 +2005,8 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 						{reason=RejectedTerrain;parcelLegal=false;break;}
 						if(tile.occupied)
 						{reason=RejectedBuilding;parcelLegal=false;break;}
+                        if(intent.purpose==ForwardSupport && tile.threat>0)
+                        {reason=RejectedAuthorization;parcelLegal=false;break;}
 						if(tile.blocksConstruction())
 						{reason=tile.woodReserve?RejectedReservation:RejectedPermanentResource;parcelLegal=false;break;}
 						if(isFootprintReserved(index))
@@ -2533,6 +2539,9 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		// Training institutions stay inside the settlement while favoring the
 		// material that dominates their actual construction-site requirements.
 		u.roleLocationQuality=clamp100((materialQuality*3+protection*2)/5);
+    if(purpose==ForwardSupport && intent)
+        u.roleLocationQuality=AIMaxima::ForwardSupport::locationQuality(world,
+            AIMaxima::ForwardSupport::front(*intent),action.centerX,action.centerY);
 	if(purpose==ColonySeed)
 	{
 		u.friendlyDistance=colonyAnchorDistance(world,action.centerX,action.centerY);
@@ -2830,6 +2839,11 @@ uint32_t Planner::retrySignature(const DevelopmentIntent& intent,uint32_t spatia
 	hashValue(signature,intent.unmetCount);hashValue(signature,intent.priority);
 	hashValue(signature,intent.workers);hashValue(signature,intent.requiredMaterialType);
 	hashValue(signature,intent.emergency);
+    if(intent.purpose==ForwardSupport)
+    {
+        hashValue(signature,intent.supportX);hashValue(signature,intent.supportY);
+        hashValue(signature,intent.supportDistance);
+    }
 	return signature;
 }
 
@@ -2862,12 +2876,18 @@ bool Planner::selectAction(const WorldState& world,
 	{
 		prepareWaterDistanceCache(world);
 		for(size_t i=0;i<intents.size();++i)
-			if(intents[i].purpose!=Fortification)
+			if(intents[i].purpose!=Fortification && intents[i].purpose!=ForwardSupport)
 				addBuildCandidates(world,intents[i],signature,hasNetwork,candidates);
 	}
 	const size_t buildWinners=candidates.size();
 	addUpgradeAndRepairCandidates(world,limits,candidates);
 	lastDiagnostics.candidateCount+=candidates.size()-buildWinners;
+	if(limits.activeNewConstruction<limits.newConstruction
+	   && std::none_of(candidates.begin(),candidates.end(),
+		[](const Candidate& c){return c.action.utility.total>=0;}))
+		for(const DevelopmentIntent& intent:intents)
+			if(intent.purpose==ForwardSupport)
+				addBuildCandidates(world,intent,signature,hasNetwork,candidates);
 	if(limits.activeNewConstruction<limits.newConstruction
 	   && std::none_of(candidates.begin(),candidates.end(),
 		[](const Candidate& c){return c.action.utility.total>=0;}))
@@ -2908,8 +2928,10 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		// updates must not mix candidate scores from different world states.
 		incrementalWorld=world;
 		incrementalIntents=intents;
-		std::stable_partition(incrementalIntents.begin(),incrementalIntents.end(),
+		const auto fortifications=std::stable_partition(incrementalIntents.begin(),incrementalIntents.end(),
 			[](const DevelopmentIntent& intent){return intent.purpose!=Fortification;});
+		std::stable_partition(incrementalIntents.begin(),fortifications,
+			[](const DevelopmentIntent& intent){return intent.purpose!=ForwardSupport;});
 		incrementalLimits=limits;
 		incrementalOccupancySignature=occupancySignature;
 		incrementalSignature=stateSignature(occupancySignature);
@@ -2955,8 +2977,9 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		return SelectionPending;
 	}
 
-	// A fallback must not delay ordinary work even by a map scan. Check it
-	// only after every ordinary intent; maintenance uses the same frozen world.
+	// Optional forward bases must not delay ordinary development even when no
+	// feasible forward site exists. Probe them only after ordinary construction
+	// and maintenance; fortification remains the final fallback.
 	std::vector<Candidate> maintenance;
 	PlacementDiagnostics maintenanceDiagnostics;
 	bool reuseMaintenance=false;
@@ -2975,7 +2998,11 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 	size_t remaining=size_t(std::max(1,originBudget));
 	while(incrementalIntentIndex<incrementalIntents.size())
 	{
-		if(incrementalIntents[incrementalIntentIndex].purpose==Fortification
+		const auto purpose=incrementalIntents[incrementalIntentIndex].purpose;
+		const bool beginsForward=purpose==ForwardSupport
+			&& (incrementalIntentIndex==0
+				|| incrementalIntents[incrementalIntentIndex-1].purpose!=ForwardSupport);
+		if((purpose==Fortification || beginsForward)
 		   && incrementalBuildOriginCursor==0 && ordinaryAvailable())
 		{
 			incrementalIntentIndex=incrementalIntents.size();
@@ -3198,6 +3225,9 @@ bool Planner::revalidateSelection(const WorldState& world,
 	if(!authorized){if(rejected)*rejected=reason;return false;}
 	if(intent)
 	{
+        if(intent->purpose==ForwardSupport && !AIMaxima::ForwardSupport::accepts(world,
+            AIMaxima::ForwardSupport::front(*intent),action.centerX,action.centerY))
+        {if(rejected)*rejected=RejectedAuthorization;return false;}
 		if(!requiredSourcePresent(world,*intent))
 		{if(rejected)*rejected=RejectedRequiredSource;return false;}
 		if(intent->purpose==ColonySeed)
@@ -3374,6 +3404,8 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 	{
 		const WorldTile& t=world.tiles[initial[i]];
 		if(!t.discovered){reason=RejectedUndiscovered;valid=false;break;}
+        if(action.purpose==ForwardSupport && t.threat>0)
+        {reason=RejectedAuthorization;valid=false;break;}
 		if(!t.buildable){reason=RejectedTerrain;valid=false;break;}
 		if(t.occupied){reason=RejectedBuilding;valid=false;break;}
 		if(t.blocksConstruction()){reason=t.woodReserve?RejectedReservation:RejectedPermanentResource;valid=false;break;}
@@ -3744,6 +3776,10 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a.index("incrementalIntentIndex",incrementalIntentIndex);
 	a("incrementalWorld",incrementalWorld);
 	a("incrementalIntents",incrementalIntents);
+    for(const auto& intent:incrementalIntents)
+        if(intent.purpose==ForwardSupport && (intent.supportX>=incrementalWorld.width
+            || intent.supportY>=incrementalWorld.height))
+            throw std::runtime_error("Maxima forward-support anchor outside selection world");
 	a("incrementalLimits",incrementalLimits);
 	a("incrementalSignature",incrementalSignature);
 	a("incrementalOccupancySignature",incrementalOccupancySignature);
@@ -3940,7 +3976,7 @@ bool Planner::load(GAGCore::InputStream* stream,int versionMinor)
 	stream->readEnterSection("reference_masks");size=stream->readCount("size");footprintRefs.resize(size);circulationRefs.resize(size);for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);footprintRefs[i]=stream->readUint16("footprint");circulationRefs[i]=stream->readUint16("circulation");if(circulationRefs[i])++circulationReservedTileCount;stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("blocked");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int type=stream->readSint32("type");int purpose=stream->readSint32("purpose");blockedIntentSignatures[std::make_pair(type,purpose)]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("quarantines");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int coordinate=stream->readSint32("coordinate");coordinateQuarantines[coordinate]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("actions");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);DevelopmentAction a;a.id=stream->readSint32("id");a.type=static_cast<DevelopmentActionType>(readEnum("type", RepairBuilding));a.purpose=static_cast<DevelopmentPurpose>(readEnum("purpose", Fortification));a.state=static_cast<ActionLifecycleState>(readEnum("state", EngineRejected));a.templateId=static_cast<TemplateId>(readEnum("template_id", versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? 100000 : TowerDefended));a.campusId=stream->readSint32("campus_id");a.slotId=stream->readSint32("slot_id");a.buildingId=stream->readSint32("building_id");a.buildingType=stream->readSint32("building_type");a.fromLevel=stream->readSint32("from_level");a.targetLevel=stream->readSint32("target_level");a.centerX=stream->readSint32("x");a.centerY=stream->readSint32("y");a.workers=stream->readSint32("workers");a.fallbackWaterTier=stream->readUint8("fallback");a.requiresSwimmingBuilders=stream->readUint8("requires_swimming_builders");a.reservationId=stream->readSint32("reservation_id");a.issuedTick=stream->readSint32("issued_tick");a.worldSignature=stream->readUint32("signature");a.initialFootprint.left=stream->readSint32("initial_left");a.initialFootprint.top=stream->readSint32("initial_top");a.initialFootprint.width=stream->readSint32("initial_width");a.initialFootprint.height=stream->readSint32("initial_height");a.terminalFootprint.left=stream->readSint32("terminal_left");a.terminalFootprint.top=stream->readSint32("terminal_top");a.terminalFootprint.width=stream->readSint32("terminal_width");a.terminalFootprint.height=stream->readSint32("terminal_height");readIntVector(stream,"parcel",a.parcelTiles);readIntVector(stream,"access",a.accessTiles);readIntVector(stream,"artery",a.arteryTiles);stream->readEnterSection("utility");readUtility(stream,a.utility);stream->readLeaveSection();actionMap[a.id]=a;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();
+	stream->readEnterSection("actions");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);DevelopmentAction a;a.id=stream->readSint32("id");a.type=static_cast<DevelopmentActionType>(readEnum("type", RepairBuilding));a.purpose=static_cast<DevelopmentPurpose>(readEnum("purpose", versionMinor>=FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT ? ForwardSupport : Fortification));a.state=static_cast<ActionLifecycleState>(readEnum("state", EngineRejected));a.templateId=static_cast<TemplateId>(readEnum("template_id", versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? 100000 : TowerDefended));a.campusId=stream->readSint32("campus_id");a.slotId=stream->readSint32("slot_id");a.buildingId=stream->readSint32("building_id");a.buildingType=stream->readSint32("building_type");a.fromLevel=stream->readSint32("from_level");a.targetLevel=stream->readSint32("target_level");a.centerX=stream->readSint32("x");a.centerY=stream->readSint32("y");a.workers=stream->readSint32("workers");a.fallbackWaterTier=stream->readUint8("fallback");a.requiresSwimmingBuilders=stream->readUint8("requires_swimming_builders");a.reservationId=stream->readSint32("reservation_id");a.issuedTick=stream->readSint32("issued_tick");a.worldSignature=stream->readUint32("signature");a.initialFootprint.left=stream->readSint32("initial_left");a.initialFootprint.top=stream->readSint32("initial_top");a.initialFootprint.width=stream->readSint32("initial_width");a.initialFootprint.height=stream->readSint32("initial_height");a.terminalFootprint.left=stream->readSint32("terminal_left");a.terminalFootprint.top=stream->readSint32("terminal_top");a.terminalFootprint.width=stream->readSint32("terminal_width");a.terminalFootprint.height=stream->readSint32("terminal_height");readIntVector(stream,"parcel",a.parcelTiles);readIntVector(stream,"access",a.accessTiles);readIntVector(stream,"artery",a.arteryTiles);stream->readEnterSection("utility");readUtility(stream,a.utility);stream->readLeaveSection();actionMap[a.id]=a;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();
 	auto validTiles = [this](const std::vector<int>& tiles) {
 		for (int tile : tiles) if (tile<0 || size_t(tile)>=footprintRefs.size()) return false;
 		return true;

@@ -12,6 +12,23 @@ spec.loader.exec_module(checker)
 
 
 class TranslationAuditTest(unittest.TestCase):
+    def test_current_tutorial_text_is_translated_in_every_catalog(self):
+        root = Path(__file__).resolve().parents[1]
+        lesson_keys = set().union(*checker.lesson_translation_keys(root).values())
+        # Include the shared lesson controls and introduction recovery messages,
+        # which are rendered by the UI rather than stored in lesson definitions.
+        keys = lesson_keys | {
+            key for key in checker.read_lines(root / 'data/texts.keys.txt')
+            if key.startswith(('[intro ', '[tutorial ', '[lesson '))
+            or key == '[scenario messages]'
+        }
+        self.assertTrue(keys)
+        for name in checker.read_lines(root / 'data/texts.list.txt')[1:]:
+            table, errors = checker.read_table(root / name)
+            self.assertEqual(errors, [])
+            with self.subTest(catalog=name):
+                self.assertEqual(sorted(key for key in keys if not table.get(key, '').strip()), [])
+
     def test_catalogs_do_not_reintroduce_english_fallbacks(self):
         root = Path(__file__).resolve().parents[1]
         allowed = json.loads((root / 'test/translation_shared_values.json').read_text())

@@ -266,6 +266,8 @@ static int play(const Options& options, const fs::path& output)
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
 	Game& game = engine.gui.game;
+	// The owner is stopped; finish statistics before read-only serialization.
+	game.winProbabilitySyncStep(true);
 	std::ostringstream result;
 	result << "{\"schema_version\":1,\"job_type\":\"turn_client\",\"status\":\"completed\",\"match_id\":"
 	       << Headless::quote(matchId) << ",\"seat\":" << seat << ",\"sim_version\":" << Headless::quote(local.key())

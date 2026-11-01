@@ -8,6 +8,17 @@ namespace AIMaxima
 {
 namespace Tactics
 {
+int flagProximityPenalty(int weight,int distance)
+{
+    // A preference for continuing the nearby campaign, not an enemy lock.
+    return std::max(0,weight)*std::clamp(distance,0,32);
+}
+
+bool awaitingEffectiveArrival(int graceTicks,int elapsed,int arrived,int enrolled)
+{
+    const int required=std::max(1,std::max(std::min(4,enrolled),(enrolled+1)/2));
+    return graceTicks>0 && elapsed<graceTicks && arrived<required;
+}
 
 namespace
 {

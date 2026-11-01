@@ -12,6 +12,7 @@
 #include "Ressource.h"
 
 #include <vector>
+#include <string>
 #include "AITelemetry.h"
 
 class Map;
@@ -110,6 +111,15 @@ struct EndOfGameStat
 	
 	// units, buildings, prestige
 	int value[TYPE_NB_STATS];
+};
+
+// Probability is alliance-wide and sampled after outcome evaluation, separately
+// from the delayed per-team statistics pipeline. Explicit ticks preserve gaps
+// when continuing older saves; missing history must never become zero chance.
+struct WinProbabilitySample
+{
+    Uint32 tick = 0;
+    int permille = 0;
 };
 
 // Per-variant diagnostics use the catalog's concrete IDs; no family/tier limit.
@@ -476,11 +486,18 @@ private:
 	friend class Game;
 	
 	std::vector<EndOfGameStat> endOfGameStats;
+    std::vector<WinProbabilitySample> winProbabilityHistory;
+    std::string winProbabilityModel;
 	
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor,bool privateAdaptive174=false);
 	void save(GAGCore::OutputStream *stream);
 
 public:
+    void recordWinProbability(Uint32 tick, int permille, const std::string &model);
+    const std::vector<WinProbabilitySample> &getWinProbabilityHistory() const { return winProbabilityHistory; }
+    const std::string &getWinProbabilityModel() const { return winProbabilityModel; }
+    // Twice the trapezoidal area, in permille*ticks. Integer until reporting.
+    Uint64 winProbabilityAreaTwice() const;
 	TeamStat *getLatestStat(void) { displaySnapshot.reset(); return &(stats[statsIndex]); }
 	//! Read-only access for code that only measures, such as the win probability
 	//! model, so it does not need friendship to reach the sample ring.

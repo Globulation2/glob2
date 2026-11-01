@@ -4876,6 +4876,10 @@ Viumbe waliofungiwa bila mraba huru wa kukanyaga.
 Rasilimali zilizosafishwa
 [stat cleared about]
 Rasilimali zilizoondolewa na wafanyakazi katika maeneo ya kusafisha kutoa nafasi.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Heshima
 [stat prestige about]
