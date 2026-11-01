@@ -12,6 +12,8 @@
 #include "MapEdit.h"
 #include "EditorDock.h"
 #include "Race.h"
+#include "OnlineServices.h"
+#include "PlatformClient.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -151,7 +153,9 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
              "src/map/editor/screens/NewMapScreen.cpp", "src/map/editor/MapEditIO.cpp",
              "src/map/editor/MapEditDraw.cpp", "src/map/editor/EditorDock.cpp",
-             "src/map/editor/PhoneEditor.cpp",
+             "src/map/editor/PhoneEditor.cpp", "src/ui/settings/SettingsScreenGeneral.cpp",
+             "src/ui/settings/SettingsScreenCustomAIs.cpp", "src/ui/settings/SettingsScreenOnline.cpp",
+             "src/ui/settings/SettingsScreenKeyboard.cpp",
              "tools/TranslationPreviewHarness.cpp"})
         result["source_sha256"][name] = sha256(root / name);
     for (const auto *surface : {"native", "online"})
@@ -227,7 +231,8 @@ struct ProductionMeasurer : GAGGUI::ui::TextMeasurer
     std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &text) const override
     { return font.getStringClusterEnds(text); }
 };
-void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &output, int width, int height)
+void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &output, int width, int height,
+                unsigned selectedSize = 0, int selectedScale = 0)
 {
     GAGCore::Toolkit::init("glob2-translation-font-preview");
     GAGCore::Toolkit::getFileManager()->addDir(root.string());
@@ -243,12 +248,15 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
                     "Placeholder tokens are shown literally; no claim of formatted-message coverage."}}};
     manifest["evidence_identity"] = evidenceIdentity(root, pilot);
     manifest["native_keys_overridden"] = localized;
+    manifest["selected_size"] = selectedSize ? Json(selectedSize) : Json(nullptr);
+    manifest["selected_scale"] = selectedScale ? Json(selectedScale) : Json(nullptr);
     int hb = 0, hbMinor = 0, hbMicro = 0;
     TTF_GetHarfBuzzVersion(&hb, &hbMinor, &hbMicro);
     manifest["harfbuzz"] = {hb, hbMinor, hbMicro};
     {
         const auto rows = samples(pilot);
         for (unsigned size : {10u, 13u, 20u}) for (int scale : {1, 2}) {
+            if (selectedSize && (size != selectedSize || scale != selectedScale)) continue;
             GAGCore::TrueTypeFont font;
             require(font.load("data/fonts/sans.ttf", size), "Load production font");
             font.setStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, 245, 238, 214));
@@ -319,6 +327,12 @@ public:
     }
     void render() {
         this->beginExecution(globalContainer->gfx);
+        redraw();
+    }
+    bool hasControl(const std::string &key) {
+        return this->GAGGUI::ui::UIScreen::host().find(key) != nullptr;
+    }
+    void redraw() {
         this->paintFrame(SDL_GetTicks());
         this->paintFrame(SDL_GetTicks());
     }
@@ -387,7 +401,14 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
     globals.load();
     const auto localized = installDraftOverlay(root, pilot, output);
     globals.settings.language = pilotLocale(pilot);
-    Json controls;
+    const bool onlineSettings = screen == "settings-ais" || screen == "settings-online";
+    if (onlineSettings) require(NET_Init(), "Initialize SDL_net for offline Settings captures");
+    struct NetworkScope { bool active; ~NetworkScope() { if (active) NET_Quit(); } } network{onlineSettings};
+    // Real client and real library controls, with no external account/provider
+    // requests: loopback port 1 is deliberately unavailable in this capture.
+    Online::ServicesOwner services;
+    if (onlineSettings) services.get().client.start("http://127.0.0.1:1");
+    Json controls, actions = Json::array();
     {
         FrontendTheme theme;
         require(theme.colony->load(), "Load bundled menu colony");
@@ -395,10 +416,31 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
         GAGGUI::ScreenStack stack(*globals.gfx);
         if (screen == "main") {
             Preview<MainMenuScreen> preview; preview.render(); controls = preview.bounds();
-        } else if (screen == "settings" || screen == "settings-audio") {
+        } else if (screen == "settings" || screen == "settings-audio" || screen == "settings-ais" ||
+                   screen == "settings-online" || screen == "settings-player" || screen == "settings-controls") {
+            require(screen != "settings-controls" || !GAGCore::phonePresentationRequested(),
+                "Keyboard Controls category is unavailable in the phone presentation");
             Preview<SettingsScreen> preview;
             if (screen == "settings-audio") preview.selectCategory(SettingsScreen::Category::Audio);
-            preview.render(); controls = preview.bounds();
+            else if (screen == "settings-ais") preview.selectCategory(SettingsScreen::Category::CustomAIs);
+            else if (screen == "settings-online") preview.selectCategory(SettingsScreen::Category::Online);
+            else if (screen == "settings-player") preview.selectCategory(SettingsScreen::Category::Player);
+            else if (screen == "settings-controls") preview.selectCategory(SettingsScreen::Category::Controls);
+            preview.render();
+            if (screen == "settings-ais") {
+                require(preview.hasControl("ai.browse"), "Community AI Library is available in this build");
+                preview.activateSetting("ai.browse");
+                preview.redraw();
+                actions.push_back("Opened AI Library through its production button; client uses unavailable loopback origin.");
+                if (preview.hasControl("ais/gotit")) {
+                    preview.activateSetting("ais/gotit");
+                    preview.redraw();
+                    actions.push_back("Dismissed the local AI Library introduction through its production button.");
+                }
+                for (const auto *tag : {"Balanced", "Rush", "Defensive", "Economy", "Expansion", "Experimental", "Beginner-friendly"})
+                    require(preview.hasControl(std::string("ais/tag/") + tag), "Production AI tag control: " + std::string(tag));
+            }
+            controls = preview.bounds();
         } else if (screen == "lobby" || screen == "lobby-players") {
             Preview<CustomGameScreen> preview(stack);
             if (screen == "lobby-players") preview.selectTab(1);
@@ -413,7 +455,8 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
     }
     writeJson(output / (screen + ".json"), {{"kind", "production-screen-draft-overlay"}, {"screen", screen},
         {"pilot", pilot.string()}, {"evidence_identity", evidenceIdentity(root, pilot)}, {"native_keys_overridden", localized}, {"width", width}, {"height", height},
-        {"controls", controls}, {"limits", {"Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
+        {"controls", controls}, {"screen_actions", actions},
+        {"online_environment", onlineSettings ? "Unavailable loopback origin; no remote account/provider action or online-flow verification." : "Not exercised."}, {"limits", {"Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
             "Control bounds include scrollable content and do not independently prove text fitting.",
             "Does not verify gameplay HUD, tutorial, dialogs, browser, mobile platform, or full locale."}}});
     globalContainer = nullptr;
@@ -698,14 +741,26 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | editor ROOT DRAFT OUTPUT W H | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H [SIZE SCALE] | screen ROOT DRAFT OUTPUT W H SCREEN | editor ROOT DRAFT OUTPUT W H | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);
         const int width = std::stoi(argv[5]), height = std::stoi(argv[6]);
         require(width >= 240 && width <= 4096 && height >= 240 && height <= 4096, "Viewport out of supported range");
         fs::create_directories(output);
-        if (mode == "matrix") fontMatrix(root, pilot, output, width, height);
+        if (mode == "matrix") {
+            require(argc == 7 || argc == 9, "Matrix takes ROOT DRAFT OUTPUT W H and optional SIZE SCALE");
+            unsigned size = 0;
+            int scale = 0;
+            if (argc == 9) {
+                const std::string sizeArg = argv[7], scaleArg = argv[8];
+                require(sizeArg == "10" || sizeArg == "13" || sizeArg == "20", "Matrix SIZE must be 10, 13 or 20");
+                require(scaleArg == "1" || scaleArg == "2", "Matrix SCALE must be 1 or 2");
+                size = unsigned(std::stoi(sizeArg));
+                scale = std::stoi(scaleArg);
+            }
+            fontMatrix(root, pilot, output, width, height, size, scale);
+        }
         else if (mode == "editor") {
             require(argc == 7, "Editor mode takes ROOT DRAFT OUTPUT W H");
             editorPreview(root, pilot, output, width, height);

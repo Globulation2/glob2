@@ -158,6 +158,9 @@ TEST_SUITE("GUIInteractionCoverage")
         CHECK(gui.buildingInfoScrollMaximum>baselineScroll);
         if(baselineScroll>0)CHECK(gui.buildingInfoScrollMaximum==baselineScroll+failureHeight);
         else CHECK(gui.buildingInfoScrollMaximum<=failureHeight);
+        // Wheel dispatch is only handled while the pointer is over the info panel.
+        gui.mouseX=gfx->getW()-RIGHT_MENU_WIDTH+8;
+        gui.mouseY=YPOS_BASE_BUILDING+8;
         REQUIRE(gui.scrollBuildingChoices(-1));
         CHECK(gui.buildingInfoScroll>0);
         while(gui.buildingInfoScroll<gui.buildingInfoScrollMaximum)REQUIRE(gui.scrollBuildingChoices(-1));

@@ -252,8 +252,15 @@ describe it as agent-reviewed and keep unverified platforms explicit.
 
 Build `translation-preview-harness` for unregistered catalog captures. Its
 `matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
-wrapper at several authored sizes and raster scales. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `lobby`, `lobby-players` or `new-map`); `game` adds
+wrapper at authored sizes 10, 13 and 20 and raster scales 1 and 2. Optional
+`SIZE SCALE` arguments select exactly one of these combinations for independently
+resumable batches; omitting both runs all six. Each batch has its own complete
+manifest and uses the same wrapping and rasterization. `screen` adds a screen name
+(`main`, `settings`, `settings-audio`, `settings-ais`, `settings-online`,
+`settings-player`, desktop-only `settings-controls`, `lobby`, `lobby-players` or
+`new-map`). The AI library capture uses its real buttons and an unavailable
+loopback server, so it verifies local labels without remote account or provider
+actions. `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
