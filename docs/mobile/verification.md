@@ -48,7 +48,9 @@ revision.
 
 The fixture marks the initial hand and audio choices complete (silence selected)
 and the introduction as offered, then forces Thai through
-`SDL_PREFERRED_LOCALES` plus the simulator language defaults. It leaves the saved
+`SDL_PREFERRED_LOCALES` plus the simulator language defaults. The setup fixture
+is written to the actual pinned SDL application-support profile, because mobile
+startup replaces environment profile overrides. It leaves the saved
 game language unset, so startup exercises locale selection.
 Review the actual screenshots before accepting visual quality. This fixture
 establishes simulator startup, background/resume and fresh-process relaunch;

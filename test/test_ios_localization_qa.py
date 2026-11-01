@@ -121,7 +121,10 @@ class FailureEvidence(unittest.TestCase):
                 elif 'get_app_container' in parts:text=str(container)
                 elif 'mobile/ios_smoke.py' in parts:
                     self.assertEqual(kwargs['env']['SIMCTL_CHILD_SDL_PREFERRED_LOCALES'],'th_TH')
-                    profile=Path(kwargs['env']['SIMCTL_CHILD_GLOB2_USER_DATA_DIR'])
+                    # Actual run41262337554 ignored Documents/LocalizationQA:
+                    # initializeMobilePaths replaces the environment override.
+                    self.assertNotIn('SIMCTL_CHILD_GLOB2_USER_DATA_DIR',kwargs['env'])
+                    profile=container/'Library/Application Support/Globulation2/glob2'
                     self.assertNotIn('language=',(profile/'preferences.txt').read_text())
                     # Application::mainMenu requires this choice on every mobile
                     # platform; ios_smoke intentionally starts past setup.
