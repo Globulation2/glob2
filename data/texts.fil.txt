@@ -2879,7 +2879,7 @@ Grupong Alyansa
 [menu]
 Menu
 [Editor tools]
-Mga Kagamitan
+Mga tool
 [Pan map]
 Igalaw ang mapa
 [Edit map]
@@ -2909,7 +2909,7 @@ Bumubuo...
 [Players]
 Mga Manlalaro
 [Rules]
-Mga Panuntunan
+Mga tuntunin
 [settings Interface layout]
 Layout ng interface
 [settings Automatic]
