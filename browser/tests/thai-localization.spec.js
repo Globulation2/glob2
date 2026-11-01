@@ -1,5 +1,5 @@
 const {test, expect} = require('@playwright/test');
-const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone} = require('./main-menu');
+const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone, tapControl} = require('./main-menu');
 const thai = require('../../platform/packages/i18n/locales/th.json');
 
 test.use({locale: 'th-TH'});
@@ -28,7 +28,7 @@ for (const variant of ['serial', 'threaded']) {
     await page.screenshot({path: info.outputPath(`${variant}-thai-menu.png`)});
     await page.setViewportSize({width: 390, height: 844});
     await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().width)).toBe(390);
-    await page.screenshot({path: info.outputPath(`${variant}-thai-phone-menu.png`)});
+    await page.screenshot({path: info.outputPath(`${variant}-thai-narrow-desktop-menu.png`)});
     await page.setViewportSize({width: 1200, height: 900});
     await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().width)).toBe(1200);
     await clickMainMenu(page, 'settings');
@@ -56,3 +56,64 @@ for (const variant of ['serial', 'threaded']) {
     await expect(page.locator('html')).toHaveAttribute('lang', 'th');
   });
 }
+
+test.describe('Thai touch phones', () => {
+  test.use({viewport: {width: 390, height: 844}, hasTouch: true, deviceScaleFactor: 2});
+  for (const variant of ['serial', 'threaded']) {
+    test(`${variant} Thai touch setup, input and rotation retain the locale`, async ({page, context}, info) => {
+      test.setTimeout(180000);
+      const url = new URL(gameURL(), String(info.project.use.baseURL || 'http://127.0.0.1:8770'));
+      url.searchParams.set('threads', variant);
+      url.searchParams.set('renderer', 'software');
+      await context.addCookies([{name: 'glob2_locale', value: 'th', url: url.origin}]);
+      await page.goto(url.href);
+      await expect.poll(async () => {
+        const state = await page.evaluate(() => glob2Diagnostics.snapshot());
+        const name = state.screen + ' ' + state.screenClass;
+        if (name.includes('AudioPreferenceScreen') && state.controls['audio.silence']?.enabled)
+          await tapControl(page, 'audio.silence');
+        else if (name.includes('HandPreferenceScreen') && state.controls['hand.right']?.enabled)
+          await tapControl(page, 'hand.right');
+        else if (name.includes('IntroductionOfferScreen') && state.controls['intro/menu']?.enabled)
+          await tapControl(page, 'intro/menu');
+        return name.includes('MainMenuScreen');
+      }, {timeout: 120000}).toBe(true);
+      expect(await page.evaluate(() => Module.executionMode)).toBe(variant);
+      expect(await page.evaluate(() => Module.presentationMetrics.touch)).toBe(true);
+      await expect(page.locator('html')).toHaveAttribute('lang', 'th');
+      await expect.poll(() => page.evaluate(() => {
+        const state = glob2Diagnostics.snapshot();
+        return [state.width, state.height];
+      })).toEqual([390, 844]);
+      expect(await page.evaluate(() => Object.values(glob2Diagnostics.snapshot().controls)
+        .some(control => /[\u0e00-\u0e7f]/.test(control.label)))).toBe(true);
+      await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-menu.png`)});
+      await clickMainMenu(page, 'settings');
+      await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-settings.png`)});
+      await tapControl(page, 'nav.5');
+      await tapControl(page, 'player.name');
+      const field = page.locator('input[data-i18n-aria="Game text field"]');
+      await expect(field).toHaveAttribute('aria-label', thai['Game text field']);
+      await field.fill('ผู้เล่นไทย 123');
+      await expect(field).toHaveValue('ผู้เล่นไทย 123');
+      await expect.poll(() => page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
+        .toContain('username=ผู้เล่นไทย 123');
+      await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-input.png`)});
+      await page.setViewportSize({width: 844, height: 390});
+      await expect(field).toHaveValue('ผู้เล่นไทย 123');
+      await expect.poll(async () => {
+        const box = await field.boundingBox();
+        return Boolean(box && box.x >= 0 && box.y >= 0 && box.x + box.width <= 844.5 && box.y + box.height <= 390.5);
+      }).toBe(true);
+      await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-rotation.png`)});
+      await clickSettingsDone(page);
+      await waitForMainMenu(page);
+      await page.evaluate(() => Module.storage.flush());
+      await page.reload();
+      await waitForMainMenu(page);
+      await expect(page.locator('html')).toHaveAttribute('lang', 'th');
+      expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
+        .toContain('username=ผู้เล่นไทย 123');
+    });
+  }
+});
