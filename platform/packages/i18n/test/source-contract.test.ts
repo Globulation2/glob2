@@ -56,6 +56,24 @@ describe('localized source contract', () => {
     ).toHaveLength(1);
     expect(check('<span>{count && `${count} players`}</span>')).toHaveLength(1);
   });
+  it('checks visible and accessible chart axes while allowing authored series values', () => {
+    expect(
+      check('<LineChart xLabel="UTC day" yLabel="Accounts per day" series={authoredSeries} />'),
+    ).toHaveLength(2);
+    expect(
+      check(`<LineChart xLabel={t('Sign in')} yLabel={label} series={authoredSeries} />`),
+    ).toEqual([]);
+  });
+  it('checks native dialog messages without translating entered values or raw diagnostics', () => {
+    expect(
+      check(`window.confirm('Delete this project?'); prompt(\`Hide \${name}?\`, name);`),
+    ).toHaveLength(2);
+    expect(
+      check(
+        `window.confirm(t('Sign in')); window.prompt(t('Sign in'), authoredReason); alert(runtimeError);`,
+      ),
+    ).toEqual([]);
+  });
   it('requires catalog keys for deferred user-facing error messages', () => {
     expect(check("throw new MessageError('Recovery warning');")).toHaveLength(1);
     expect(check("throw new MessageError('Sign in');")).toEqual([]);

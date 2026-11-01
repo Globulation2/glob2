@@ -26,6 +26,14 @@ export function sourceErrors(
     );
   const calls = new Set(['t', 'translate', 'tp', 'sourceMessage', 'message', 'validationMessage']);
   const attributes = new Set(['alt', 'title', 'aria-label', 'placeholder']);
+  const nativeDialogs = new Set([
+    'confirm',
+    'window.confirm',
+    'prompt',
+    'window.prompt',
+    'alert',
+    'window.alert',
+  ]);
   const componentAttributes: Record<string, readonly string[]> = {
     ChatComposer: ['label', 'target', 'disabledReason', 'pricing'],
     NewStudio: ['disabledReason', 'pricing'],
@@ -33,6 +41,8 @@ export function sourceErrors(
     ConversationPane: ['label', 'completion'],
     StudioWorkspace: ['attention', 'result'],
     SharedWorkspace: ['attention', 'result'],
+    LineChart: ['xLabel', 'yLabel'],
+    MatchListView: ['empty'],
   };
   // This syntax example is entered literally into the technical terrain filter.
   const technicalText = new Set(['terrain:natural,feature:lakes', 'ai.js', 'CC-BY-4.0']);
@@ -99,6 +109,12 @@ export function sourceErrors(
             report(argument, text, 'technical URL translated');
         }
       }
+      if (
+        ts.isCallExpression(node) &&
+        nativeDialogs.has(node.expression.getText(tree)) &&
+        node.arguments[0]
+      )
+        renderedCopy(node.arguments[0]);
       if (ts.isJsxAttribute(node) && ['source', 'singular'].includes(node.name.getText(tree))) {
         const opening = node.parent.parent;
         if (

@@ -418,6 +418,34 @@ formatting-only templates bypass translation. Keep the accounting and response
 files with the kit when resuming. A leftover runner lock needs investigation
 before removal. Credentials are never written into the kit.
 
+### Thai conventions
+
+Thai (`th`, ไทย) uses concise contemporary Standard Thai, left-to-right.
+`th-TH` selects this catalog; an explicit non-Thai script tag must not do so.
+Keep the bundled Noto Sans Thai shaping tables, HarfBuzz route and font notices.
+Check stacked vowels and tone marks at 10, 13 and 20 pixels, including higher
+pixel densities, rather than treating glyph coverage as a rendering check.
+
+Reviewed U+200B boundaries belong only in native Thai catalog values. Shared
+wrapping consumes them without displaying or measuring a visible glyph and
+keeps shaping clusters intact. Online Thai uses browser word breaking and must
+not acquire native break hints. Shorter reviewed wording, spacing and wrapping
+resolve crowded controls without shrinking text below a readable size.
+
+Disambiguate English homonyms at the catalog key: `Building` is an object,
+`Building (music mood)` is construction, and `Building (generation progress)`
+is an ongoing operation. Their English values can remain `Building`; contextual
+keys are identifiers and are never display text. Preserve mood, upload and
+protocol IDs. Review `Broken` in software-report menus as nonworking software.
+The English-identical-value audit compares against the English value as well as
+using per-key exceptions, so contextual keys do not hide untranslated text.
+
+For Thai dollar-budget campaigns, `tools/localization/google_draft.py` retains
+actual Translation v3 requests/responses, protected tokens, resumable locks and
+conservative reservations. Keep the original campaign ledger when adding
+sources, and bind independent reviews to the final per-key text and source
+context. Report agent review accurately; it is not native-human certification.
+
 ### Bengali conventions
 
 Bengali (`bn`, বাংলা) uses contemporary standard written Bengali for readers in

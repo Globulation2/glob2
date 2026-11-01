@@ -59,6 +59,25 @@ export function displayMessage(value: unknown): string {
   return typeof value === 'string' ? t(value) : translateError(value);
 }
 
+/** Owned status copy is deferred; raw runtime diagnostics remain byte-for-byte strings. */
+export type StatusMessage =
+  | string
+  | {
+      source: string;
+      params?: Record<string, string | number> | (() => Record<string, string | number>);
+    };
+export function sourceMessage(
+  source: string,
+  params?: Exclude<StatusMessage, string>['params'],
+): Exclude<StatusMessage, string> {
+  return { source, params };
+}
+export function statusText(status: StatusMessage): string {
+  return typeof status === 'string'
+    ? status
+    : t(status.source, typeof status.params === 'function' ? status.params() : status.params);
+}
+
 /** Carry source and parameters until an error is presented in the current locale. */
 export class MessageError extends Error {
   readonly body: { messageKey: string; messageParams?: Record<string, string | number> };

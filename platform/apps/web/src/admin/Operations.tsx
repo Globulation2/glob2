@@ -138,7 +138,16 @@ function Recovery({ row, reload }: { row: AdminOperation; reload: () => void }) 
       !ready ||
       !window.confirm(
         metered
-          ? `Reconcile ${usage.input} input (${usage.cachedInput} cached; ${usage.cacheWrite} cache write) and ${usage.output} output tokens? Verified usage is charged up to the ${row.reserved}-credit reservation and the remainder is released.`
+          ? t(
+              'Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.',
+              {
+                value0: usage.input,
+                value1: usage.cachedInput,
+                value2: usage.cacheWrite,
+                value3: usage.output,
+                value4: row.reserved,
+              },
+            )
           : t(
               'Mark this generation failed and return {value0} reserved product credit(s)? Confirm that its delivery cannot be recovered.',
               { value0: row.reserved },

@@ -197,10 +197,10 @@ export function Overview() {
                 xDomain={xDomain}
                 maxGap={86400000}
                 dots
-                xLabel="UTC day"
-                yLabel="Accounts per day"
+                xLabel={t('UTC day')}
+                yLabel={t('Accounts per day')}
                 series={['guest', 'registered'].map((kind, i) => ({
-                  name: kind === 'guest' ? 'Guest accounts' : 'Registered accounts',
+                  name: kind === 'guest' ? t('Guest accounts') : t('Registered accounts'),
                   color: i ? 'var(--success)' : 'var(--gold-ink)',
                   dashed: kind === 'guest',
                   points: current
@@ -214,10 +214,10 @@ export function Overview() {
                 xDomain={xDomain}
                 maxGap={86400000}
                 dots
-                xLabel="UTC day"
-                yLabel="Matches per day"
+                xLabel={t('UTC day')}
+                yLabel={t('Matches per day')}
                 series={['started', 'completed', 'cancelled'].map((kind, i) => ({
-                  name: kind[0]?.toUpperCase() + kind.slice(1),
+                  name: measureName('matches.' + kind, ''),
                   dashed: kind === 'cancelled',
                   color: ['var(--success)', 'var(--ink)', 'var(--warn)'][i] ?? 'var(--ink)',
                   points: current

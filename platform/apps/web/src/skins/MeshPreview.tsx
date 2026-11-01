@@ -1,3 +1,4 @@
+import { displayMessage } from '../i18n.tsx';
 import { modelProseLabel } from './labels.ts';
 import { MessageError } from '../i18n.tsx';
 import { message as sourceMessage } from '../i18n.tsx';
@@ -487,7 +488,7 @@ export function MeshPreview(props: ViewportProps) {
       )}
       {error && (
         <div className="skin-canvas-message" role="alert">
-          <p>{props.interactive === false ? t('Preview unavailable') : error}</p>
+          <p>{props.interactive === false ? t('Preview unavailable') : displayMessage(error)}</p>
           {props.interactive !== false && (
             <button onClick={() => setAttempt((n) => n + 1)}>{t('Retry 3D canvas')}</button>
           )}

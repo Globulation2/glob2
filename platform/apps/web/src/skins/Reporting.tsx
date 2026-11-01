@@ -1,3 +1,4 @@
+import { displayMessage } from '../i18n.tsx';
 import { message as sourceMessage } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { skinAssetUrl } from './assetUrls.ts';
@@ -43,7 +44,7 @@ function ReportSkin({ versionId }: { versionId: string }) {
           </button>
         </fieldset>
       )}
-      <p role="status">{message}</p>
+      <p role="status">{displayMessage(message)}</p>
     </>
   );
 }

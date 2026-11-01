@@ -444,7 +444,7 @@ export function MusicWorkspace(p: Props) {
                 </p>
                 <div className="mu-mood-labels">
                   <span>{t('Calm')}</span>
-                  <span>{t('Building')}</span>
+                  <span>{t('Building (music mood)')}</span>
                   <span>{t('Combat')}</span>
                 </div>
               </div>

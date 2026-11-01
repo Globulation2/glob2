@@ -1,3 +1,4 @@
+import { displayMessage } from '../i18n.tsx';
 import { skinProductLabel } from './labels.ts';
 import { useFeatures } from '../features.tsx';
 import { statusLabel } from '../i18n.tsx';
@@ -150,7 +151,7 @@ function EnabledSkinStore({
           />
         </p>
       )}
-      <p role="status">{message}</p>
+      <p role="status">{displayMessage(message)}</p>
       {purchases.status === 'ready' && purchases.data.items.length > 0 && (
         <>
           <h3>{t('Your purchases')}</h3>

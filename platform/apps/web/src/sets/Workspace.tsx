@@ -1,4 +1,4 @@
-import { displayMessage } from '../i18n.tsx';
+import { displayMessage, message as sourceMessage } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { ReleaseDialog } from '../components/studio/Studio.tsx';
 import { Icon } from '../icons.tsx';
@@ -1090,7 +1090,9 @@ export function SetEditor({
                       ]).includes(path)
                     ) {
                       setError(
-                        'This sheet is used by an entry. Change its spritesheet or remove that entry before removing the sheet.',
+                        sourceMessage(
+                          'This sheet is used by an entry. Change its spritesheet or remove that entry before removing the sheet.',
+                        ),
                       );
                       return;
                     }

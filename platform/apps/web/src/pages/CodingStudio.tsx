@@ -1460,7 +1460,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                 disabled={locked}
                 onClick={() =>
                   void action(async () => {
-                    if (!window.confirm('Delete this private project and its history?')) return;
+                    if (!window.confirm(t('Delete this private project and its history?'))) return;
                     await request('DELETE', url);
                     navigate('/' + route);
                   })

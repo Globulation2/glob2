@@ -1,4 +1,4 @@
-import { message as sourceMessage } from '../../i18n.tsx';
+import { sourceMessage, statusText, type StatusMessage } from '../../messages.ts';
 import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { GeneratorSettings } from '@glob2/protocol';
@@ -19,7 +19,7 @@ export default function Preview({
   useLocale();
   const frame = useRef<HTMLIFrameElement>(null),
     callback = useRef(onResult);
-  const [status, setStatus] = useState(t('Loading engine…')),
+  const [status, setStatus] = useState<StatusMessage>(sourceMessage('Loading engine…')),
     [ready, setReady] = useState(false),
     [playable, setPlayable] = useState(false),
     [playing, setPlaying] = useState(false),
@@ -100,12 +100,14 @@ export default function Preview({
         setPlayable(m.playable === true);
         setStatus(
           m.success
-            ? t('Revision {value0} · seed {value1} · {value2} seconds', {
+            ? sourceMessage('Revision {value0} · seed {value1} · {value2} seconds', {
                 value0: run.revision,
                 value1: run.settings.seed,
                 value2: Number(m.seconds).toFixed(2),
               })
-            : String(m.diagnostic || 'Generation failed').slice(0, 2000),
+            : m.diagnostic
+              ? String(m.diagnostic).slice(0, 2000)
+              : sourceMessage('Generation failed'),
         );
         callback.current(
           JSON.stringify({
@@ -124,7 +126,7 @@ export default function Preview({
       ) {
         clearTimeout(timeout);
         setStatus(
-          t('Revision {value0} · tick {value1} · live', {
+          sourceMessage('Revision {value0} · tick {value1} · live', {
             value0: run.revision,
             value1: Number(m.tick) || 0,
           }),
@@ -136,7 +138,8 @@ export default function Preview({
       }
       if (m.type === 'error' || m.type === 'complete') {
         clearTimeout(timeout);
-        setStatus(String(m.text ?? m.result ?? 'Finished').slice(0, 2000));
+        const detail = m.text ?? m.result;
+        setStatus(detail == null ? sourceMessage('Finished') : String(detail).slice(0, 2000));
         callback.current(
           JSON.stringify({
             revision: run.revision,
@@ -171,7 +174,7 @@ export default function Preview({
   }, [run]);
   return (
     <div className="as-playtest">
-      <p role="status">{status}</p>
+      <p role="status">{statusText(status)}</p>
       <button
         disabled={!ready || !playable || playing}
         onClick={() => {

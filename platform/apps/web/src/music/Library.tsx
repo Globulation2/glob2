@@ -1,5 +1,5 @@
 import { statusLabel } from '../i18n.tsx';
-import { displayMessage } from '../i18n.tsx';
+import { displayMessage, message as sourceMessage } from '../i18n.tsx';
 import { translateError } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
@@ -8,7 +8,7 @@ import { request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 import { MusicValidation } from './Validation.tsx';
-import { MOODS, MusicPlayer } from './Player.tsx';
+import { MOODS, MusicPlayer, musicMoodLabel } from './Player.tsx';
 import { useMusicCatalogue } from './useMusicCatalogue.ts';
 
 import {
@@ -101,7 +101,7 @@ export function MusicLibrary() {
       });
       if (!response.ok) {
         const error = (await response.json()) as { message?: string };
-        throw new Error(error.message ?? 'Download failed.');
+        throw new Error(error.message ?? sourceMessage('Download failed.'));
       }
       const url = URL.createObjectURL(await response.blob());
       const a = document.createElement('a');
@@ -240,7 +240,7 @@ export function MusicLibrary() {
           {t('Reset filters')}
         </button>
       </LibraryFilters>
-      {notice && <p role="alert">{notice}</p>}
+      {notice && <p role="alert">{displayMessage(notice)}</p>}
       {busy && <p role="status">{t('Loading…')}</p>}
       <LibraryResults
         count={(data) => data.length}
@@ -480,7 +480,10 @@ export function MusicDetail({ id }: { id: string }) {
                 <div className="music-card-actions">
                   {release.tracks.map((track, i) => (
                     <a key={track.mood} href={track.url} download={`a${i + 1}.opus`}>
-                      <RichMessage source={'Download {slot0}'} slots={{ slot0: t(MOODS[i]) }} />
+                      <RichMessage
+                        source={'Download {slot0}'}
+                        slots={{ slot0: musicMoodLabel(MOODS[i]) }}
+                      />
                     </a>
                   ))}
                 </div>
@@ -511,7 +514,7 @@ export function MusicDetail({ id }: { id: string }) {
           <h2>{t('Prepare this release')}</h2>
           {UPLOADS.map(([kind, label]) => (
             <label key={kind}>
-              {t(label)} {release.uploaded.includes(kind) ? t('✓ uploaded') : ''}
+              {musicMoodLabel(label)} {release.uploaded.includes(kind) ? t('✓ uploaded') : ''}
               <input
                 type="file"
                 disabled={busy}
@@ -537,7 +540,7 @@ export function MusicDetail({ id }: { id: string }) {
             <>
               <p>
                 {release.inspection.seconds
-                  .map((seconds, i) => `${t(MOODS[i])}: ${seconds.toFixed(3)}s`)
+                  .map((seconds, i) => `${musicMoodLabel(MOODS[i])}: ${seconds.toFixed(3)}s`)
                   .join(' · ')}
               </p>
               <label>
@@ -553,7 +556,7 @@ export function MusicDetail({ id }: { id: string }) {
                   {release.inspection.seconds
                     .map(
                       (seconds, i, all) =>
-                        `${t(MOODS[i])}: ${Math.abs(seconds - (repair === 'trim' ? Math.min(...all) : Math.max(...all))).toFixed(3)}s ${repair === 'trim' ? t('removed from end') : t('silence added at end')}`,
+                        `${musicMoodLabel(MOODS[i])}: ${Math.abs(seconds - (repair === 'trim' ? Math.min(...all) : Math.max(...all))).toFixed(3)}s ${repair === 'trim' ? t('removed from end') : t('silence added at end')}`,
                     )
                     .join(' · ')}
                 </p>
