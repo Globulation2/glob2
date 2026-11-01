@@ -30,7 +30,7 @@ jobs:
     - name: Build and exercise Bengali iOS Simulator app
       run: |
         python3 - <<'IOSVALIDATION'
-        import subprocess, os, json, hashlib, gzip, time, threading
+        import subprocess, os, json, hashlib, gzip, time, threading, tarfile, sys
         from pathlib import Path
         root=Path.cwd(); proof=root/'build/ios-bengali-proof'; proof.mkdir(parents=True,exist_ok=True)
         records=[]; selected=None; device_set=root/'build/mobile-tools/ios-simulators'
@@ -112,11 +112,33 @@ jobs:
                     except (ValueError,OSError): pass
             assert manifests,'No dependency manifest retained'
             (proof/'dependency-manifests.json').write_text(json.dumps(manifests,indent=2))
+            # Retain one bounded immutable build checkpoint before app runtime tests.
+            cap=250*1024*1024
+            assert sum(x['bytes'] for x in inventory)<cap,'App exceeds checkpoint byte allowance'
+            archive=proof/'built-app.tar.gz'
+            class CappedWriter:
+                def __init__(self,stream):self.stream=stream
+                def write(self,data):
+                    if self.stream.tell()+len(data)>cap:raise RuntimeError('App checkpoint exceeded250MiB allowance')
+                    return self.stream.write(data)
+                def flush(self):return self.stream.flush()
+            with archive.open('wb') as raw:
+                with tarfile.open(fileobj=CappedWriter(raw),mode='w:gz',compresslevel=3) as package:package.add(app,arcname='Glob2.app')
+            sys.path.insert(0,str(root/'test'))
+            from build_provenance import source_identity
+            producer=source_identity(root);assert producer['revision']==summary['source'] and not producer['dirty']
+            checkpoint={'source_identity':producer,'build_command':next(x for x in records if x['label']=='build'),'release':True,'environment':'simulator','architecture':'arm64','toolchain':json.loads(doctor),'archive':{'path':archive.name,'sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),'bytes':archive.stat().st_size,'limit_bytes':cap},'app_inventory_sha256':hashlib.sha256((proof/'app-inventory.json').read_bytes()).hexdigest(),'critical_identities_sha256':hashlib.sha256((proof/'critical-bundle-identities.json').read_bytes()).hexdigest(),'dependency_manifests_sha256':hashlib.sha256((proof/'dependency-manifests.json').read_bytes()).hexdigest(),'actual_compile_flags_evidence':'build.log.gz contains actual compiler and linker command lines; doctor toolchain records SDK/compiler/fingerprint; commands.json records release invocation','runtime_not_yet_executed':True}
+            (proof/'build-checkpoint.json').write_text(json.dumps(checkpoint,indent=2))
+
             run('install',['python3','mobile/ios.py','install','--environment','simulator','--release','--device',selected],300)
             container=Path(sim('app-data','get_app_container',selected,'org.globulation2.glob2','data').strip())
             profile=container/'.glob2';profile.mkdir(parents=True,exist_ok=True)
             prefs='version=2\nlanguage=bn\naudioPreferenceChosen=1\nthumbSideChosen=1\nintroductionOffered=1\nmute=1\n'
             (profile/'preferences.txt').write_text(prefs);(proof/'seeded-preferences.txt').write_text(prefs)
+            help_text=run('launch-help',['xcrun','simctl','help','launch']);assert 'SIMCTL_CHILD_' in help_text
+            os.environ['SIMCTL_CHILD_GLOB2_USER_DATA_DIR']=str(profile)
+            summary['seeded_profile']={'path':str(profile),'forwarded_environment':'SIMCTL_CHILD_GLOB2_USER_DATA_DIR','reason':'Explicit production FileManager override; do not depend on Simulator HOME conventions','sha256':hashlib.sha256(prefs.encode()).hexdigest()}
+
             run('lifecycle',['python3','mobile/ios_smoke.py','--device',selected,'--output','build/ios-bengali-proof/lifecycle'],900)
             saved=profile/'preferences.txt'
             if saved.exists(): (proof/'persisted-preferences.txt').write_bytes(saved.read_bytes())
