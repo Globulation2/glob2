@@ -1,0 +1,2 @@
+format,competitor,opponent,games,wins,draws,caps,ticks,win_rate,draw_rate,cap_rate,mean_ticks
+1v1,cortex,cortex,2,0,2,2,2048,0.0,1.0,1.0,1024.0

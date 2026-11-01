@@ -1,0 +1,1 @@
+{"schema_version":1,"artifacts":[{"path":"game.replay.checksums","bytes":115854},{"path":"game.replay","bytes":1104596},{"path":"world.checksums","bytes":865},{"path":"snapshot.checksums","bytes":1069},{"path":"tick-timings.csv","bytes":779},{"path":"slow-ticks.json","bytes":62172},{"path":"final.game.gz","bytes":86342},{"path":"result.json","bytes":798250}]}

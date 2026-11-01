@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="probability history rejects samples beyond the saved game tick [save-format]" time="15.8042" status="run" />
+  </testsuite><testsuite name="WinProbability"><testcase classname="WinProbability" name="result serialization requires owner-finalized probability history" time="2.44772" status="run" />
+  </testsuite></testsuites>

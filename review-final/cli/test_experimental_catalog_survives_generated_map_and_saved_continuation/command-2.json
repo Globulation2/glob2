@@ -1,0 +1,30 @@
+{
+  "args": [
+    "game",
+    "run",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map",
+    "--ticks",
+    "64",
+    "--compute-threads",
+    "1",
+    "--telemetry",
+    "checksums",
+    "--write-replay",
+    "--save",
+    "final",
+    "--map-file",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/generated/map-r0.map.gz",
+    "--game-seed",
+    "713",
+    "--player",
+    "castor",
+    "--player",
+    "cortex",
+    "--experiment",
+    "field-kitchens"
+  ],
+  "status": 0,
+  "stdout": "nox::game started\nnox::gui.game.checkSum() = 21fd58e3\nautomaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds\nGLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map=\"study-15-42-r0\" orders=7 players=team0:Castor,team1:Cortex\nfinal: wrote /home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/final.game.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

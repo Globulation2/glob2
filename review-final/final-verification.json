@@ -1,0 +1,198 @@
+{
+  "source": {
+    "source": {
+      "revision": "8a398d3a08807f2179b9e08109aa6be0462cb9ce",
+      "dirty": false,
+      "sourceStatus": [],
+      "sourceTreeSha256": "659606d01fda98db0e2decf7c89dd5a65b04709a32c2d7dc4cdd622ceba35767"
+    },
+    "producer": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/61a2/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/61a2/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/61a2/glob2/artifacts/review-dependencies/sdl3/prefix/lib -Wl,--enable-new-dtags"
+      },
+      "revision": "8a398d3a08807f2179b9e08109aa6be0462cb9ce",
+      "sourceStatus": [],
+      "sourceTreeSha256": "659606d01fda98db0e2decf7c89dd5a65b04709a32c2d7dc4cdd622ceba35767"
+    },
+    "issues": []
+  },
+  "base": "80596f1477a1e3736d3b60287a62b6702e13c546",
+  "environment": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "junit": {
+    "native": {
+      "cases": 53,
+      "failures": 0,
+      "skipped": 0
+    },
+    "ui": {
+      "cases": 2,
+      "failures": 0,
+      "skipped": 0
+    },
+    "cli": {
+      "cases": 18,
+      "failures": 0,
+      "skipped": 0
+    }
+  },
+  "continuity": {
+    "status": "passed",
+    "ticks": 1024,
+    "resumed_ticks": 512,
+    "teams": 2,
+    "map_sha256": "8d43f82b9b92242986f107ccf9c9cebbd017c0c04f8aede3f52002851649fae7",
+    "binary_sha256": "0f714eae83d86506647a2206e82d57b3360de9451485ea343135f4b4d428b319",
+    "runs": [
+      {
+        "name": "map",
+        "command": [
+          "/home/bradley/.codex/worktrees/61a2/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+          "map",
+          "study",
+          "15",
+          "--seed",
+          "42",
+          "--set",
+          "teams=2",
+          "--write-map",
+          "--rotations",
+          "2",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/reviewed-continuity-v190/map"
+        ],
+        "exit_code": 0,
+        "seconds": 46.05130538999947,
+        "log": {
+          "encoding": "gzip",
+          "raw_bytes": 1042,
+          "raw_sha256": "9dfd33f5bd62b79dfdb9cb168d7a783fe06a9a4300f5e6c25114afd7f548bc49",
+          "received_bytes": 1042,
+          "mode": "full",
+          "complete": true,
+          "error": null
+        },
+        "bytes": 577444,
+        "failure": null
+      },
+      {
+        "name": "original",
+        "command": [
+          "/home/bradley/.codex/worktrees/61a2/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+          "game",
+          "run",
+          "--map-file",
+          "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/reviewed-continuity-v190/map/map-r0.map.gz",
+          "--player",
+          "cortex",
+          "--player",
+          "cortex",
+          "--game-seed",
+          "19",
+          "--ai-param",
+          "0:swarmWorkerCap=4",
+          "--ai-param",
+          "1:swarmWorkerCap=7",
+          "--ai-param",
+          "0:expandDebounceCycles=3",
+          "--ai-param",
+          "1:expandDebounceCycles=5",
+          "--save",
+          "initial",
+          "--save",
+          "every:512",
+          "--ticks",
+          "1024",
+          "--compute-threads",
+          "1",
+          "--telemetry",
+          "checksums",
+          "--save",
+          "final",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/reviewed-continuity-v190/original"
+        ],
+        "exit_code": 0,
+        "seconds": 63.000100963996374,
+        "log": {
+          "encoding": "gzip",
+          "raw_bytes": 837,
+          "raw_sha256": "71c4dfc054ecf857b18ed3599270f84daa1365abbfdeb4592a72cea2aa493862",
+          "received_bytes": 837,
+          "mode": "full",
+          "complete": true,
+          "error": null
+        },
+        "bytes": 2965694,
+        "failure": null
+      },
+      {
+        "name": "restored",
+        "command": [
+          "/home/bradley/.codex/worktrees/61a2/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+          "game",
+          "run",
+          "--load-game",
+          "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/reviewed-continuity-v190/original/checkpoint-512.game.gz",
+          "--ticks",
+          "1024",
+          "--compute-threads",
+          "1",
+          "--telemetry",
+          "checksums",
+          "--save",
+          "final",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/reviewed-continuity-v190/restored"
+        ],
+        "exit_code": 0,
+        "seconds": 33.311132288996305,
+        "log": {
+          "encoding": "gzip",
+          "raw_bytes": 417,
+          "raw_sha256": "c9c6109d2e663de51cd4e4c262222516cdc2d7d61550a8735b5df2f5923f937e",
+          "received_bytes": 417,
+          "mode": "full",
+          "complete": true,
+          "error": null
+        },
+        "bytes": 1406820,
+        "failure": null
+      }
+    ]
+  },
+  "framework_reviewed_python_blobs_unchanged": {
+    "tools/tournaments/jobs.py": true,
+    "tools/tournaments/experiments.py": true,
+    "tools/tournaments/probability.py": true,
+    "tools/tournaments/analysis.py": true,
+    "tools/tournaments_ai_leaderboard.py": true,
+    "tools/win_probability_model.py": true,
+    "test/test_tournaments.py": true,
+    "test/test_win_probability_model.py": true
+  },
+  "python": {
+    "tournaments": "54 passed",
+    "model": "26 passed; 2 optional fitting skips",
+    "broad_discovery": "112/114 passed; two deadline failures under shared-host load. Collection deadline reproduces on unchanged base; reconnect passes in isolation."
+  },
+  "documentation": "310 documents; check exit0",
+  "translations": "strict; 0 structural errors",
+  "real_result_reanalysis": "reviewed-result-reanalysis-v190/reports/win_probability/report.json",
+  "simulation_revision": 109,
+  "save_format": 190,
+  "superseded_attempts": {
+    "continuity": "Initial reuse of an unreleased draft-format188 development map was rejected; regenerated current-format190 input and both runs completed. See continuity.log and continuity-v190.log.",
+    "reanalyze": "Initial diagnostic accepted an empty report for the rejected game; diagnostic now requires completed input and nonempty scores. Reanalysis-v190 passed with two scored roles."
+  },
+  "limits": [
+    "Linux development build only; release performance and Windows/browser/mobile execution equivalence unverified locally. Hosted Windows/browser coverage requested, queued at evidence publication.",
+    "Optional NumPy/SciPy fitting tests skipped.",
+    "1024-tick bounded save/resume check used; full 2048-tick debug integration and broad touch-gameplay / 32-phase cases were not repeated at this revision."
+  ]
+}

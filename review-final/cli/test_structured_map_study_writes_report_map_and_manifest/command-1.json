@@ -1,0 +1,23 @@
+{
+  "args": [
+    "map",
+    "study",
+    "2",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_structured_map_study_writes_report_map_and_manifest/study",
+    "--seed",
+    "713",
+    "--set",
+    "width=7",
+    "--set",
+    "height=7",
+    "--set",
+    "teams=2",
+    "--write-map",
+    "--report",
+    "terrain"
+  ],
+  "status": 0,
+  "stdout": "STUDY,2,713,1,16384,9299,515,5616,954,7081,5531,9591,989,5804,1.734016,4074253347715173302\nTUNE,417,2,2,2,687,913,552,961,1,2\nQUALITY,1,0.839751,0.839751,1.005898,1.329182,1.167540,2,0.047066\nCOLONY,0,1,2,1230,857,139,54,0,1075.5,1.329182,0.580124\nCOLONY,1,2,2,1090,417,191,54,0,2081.3,1.005898,0.419876\nREQUEST,river,5,713,7,7,2,4\nOPTION,algae-amount,100\nOPTION,desert,0\nOPTION,fruit,4\nOPTION,grass,75\nOPTION,hilltop-stone,0\nOPTION,repeat,0\nOPTION,river-width,35\nOPTION,sand,3\nOPTION,smoothing,4\nOPTION,stone-amount,100\nOPTION,water,45\nOPTION,wheat-amount,100\nOPTION,winding-river,1\nOPTION,wood-amount,100\nSTART,0,72,45\nSTART,1,15,60\nMAPFILE,0,/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_structured_map_study_writes_report_map_and_manifest/study/map-r0.map.gz,652629,9687383826951699472\nROTATIONS,2,1,0,1,1,1,1\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

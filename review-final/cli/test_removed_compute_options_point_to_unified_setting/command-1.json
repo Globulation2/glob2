@@ -1,0 +1,9 @@
+{
+  "args": [
+    "--ai-threads",
+    "2"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: --ai-threads has been removed; use --compute-threads auto|N on the relevant command (glob2 help)\n"
+}

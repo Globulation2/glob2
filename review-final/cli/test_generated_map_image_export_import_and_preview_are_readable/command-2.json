@@ -1,0 +1,12 @@
+{
+  "args": [
+    "map",
+    "export-image",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/source.map.gz",
+    "--output",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/map.png"
+  ],
+  "status": 0,
+  "stdout": "Map image: /home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/map.png\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

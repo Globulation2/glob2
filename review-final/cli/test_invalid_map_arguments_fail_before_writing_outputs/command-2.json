@@ -1,0 +1,11 @@
+{
+  "args": [
+    "map",
+    "generate",
+    "river",
+    "--width"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: Missing value for --width; use --width=VALUE for a value starting with '-'\n"
+}

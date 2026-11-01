@@ -1,0 +1,30 @@
+{
+  "args": [
+    "game",
+    "run",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline",
+    "--ticks",
+    "64",
+    "--compute-threads",
+    "3",
+    "--telemetry",
+    "checksums",
+    "--write-replay",
+    "--save",
+    "final",
+    "--map-file",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/source.map.gz",
+    "--game-seed",
+    "713",
+    "--player",
+    "castor",
+    "--player",
+    "cortex",
+    "--gradient-backend",
+    "cpu"
+  ],
+  "status": 0,
+  "stdout": "nox::game started\nnox::gui.game.checkSum() = 754cced1\nautomaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds\nGLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map=\"source\" orders=8 players=team0:Castor,team1:Cortex\nfinal: wrote /home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/final.game.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

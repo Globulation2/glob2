@@ -1,0 +1,13 @@
+{
+  "args": [
+    "game",
+    "run",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/invalid-2",
+    "--compute-threads",
+    "4294967296"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: --compute-threads expects an integer in 1..4294967295\n"
+}

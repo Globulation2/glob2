@@ -1,0 +1,103 @@
+[
+  {
+    "name": "native",
+    "command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto",
+      "--binary",
+      "all",
+      "--filter",
+      "WinProbability/*",
+      "--filter",
+      "CommandLine/*",
+      "--filter",
+      "MetricCatalog/*",
+      "--filter",
+      "MetricSeries/*",
+      "--filter",
+      "TeamStatsSave/probability*",
+      "--filter",
+      "TeamStatsSave/diagnostic probability*",
+      "--filter",
+      "TeamStatsSave/legacy version*",
+      "--filter",
+      "TeamStatsSave/AI telemetry continues*",
+      "--filter",
+      "TurnEngineHarness/the committed match record*",
+      "--timeout",
+      "600",
+      "-j2",
+      "--junit",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/native.xml",
+      "--artifacts",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/native"
+    ],
+    "status": 0,
+    "seconds": 149.61478097099462
+  },
+  {
+    "name": "ui",
+    "command": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1280x960x24 -noreset",
+      "python3",
+      "test/xvfb_session.py",
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto",
+      "--binary",
+      "engine",
+      "--filter",
+      "TeamStatsSave/measurement screenshots*",
+      "--filter",
+      "GameGUITouch/live statistics hide*",
+      "--timeout",
+      "600",
+      "-j1",
+      "--junit",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/ui.xml",
+      "--artifacts",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/ui"
+    ],
+    "status": 0,
+    "seconds": 35.80543724299787
+  },
+  {
+    "name": "continuity",
+    "command": [
+      "python3",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/verify_reviewed_continuity.py"
+    ],
+    "status": 1,
+    "seconds": 13.16982187100075
+  },
+  {
+    "name": "reanalyze",
+    "command": [
+      "python3",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/reanalyze_reviewed_game.py"
+    ],
+    "status": 0,
+    "seconds": 1.6790586709976196
+  },
+  {
+    "name": "cli",
+    "command": [
+      "python3",
+      "test/test_cli_smoke.py",
+      "--binary",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "--artifacts",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli",
+      "--junit",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli.xml"
+    ],
+    "status": 0,
+    "seconds": 543.961889938997
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "-j48",
+    "tests",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2"
+  ],
+  "status": 0,
+  "seconds": 194.06634527700226
+}

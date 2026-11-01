@@ -1,0 +1,26 @@
+{
+  "base_revision": "93cd47c572dbf893cdd3dba5b314dee4333f2f8f",
+  "commands": {
+    "python3 test/test_tournaments.py": "54 passed",
+    "python3 test/test_win_probability_model.py": "26 passed, 2 optional fitting tests skipped",
+    "python3 tools/check_docs.py": "310 documents, 0 errors",
+    "python3 -m py_compile <changed Python modules>": "passed",
+    "git diff --check": "passed"
+  },
+  "files": {
+    "tools/tournaments/jobs.py": "8897037e00f937651cc41066c551230bb389a772d44ef51c877c86e4297ec9d2",
+    "tools/tournaments/experiments.py": "1150f822b66ca580905cdbe6811917c9337093ad1cf9d48d3da86e09feeed8d7",
+    "tools/tournaments/probability.py": "ac7563d4acbbc15e6cf53e665cd89e97b468a0ffd5c27e9414cc6d1bf4ac68f9",
+    "tools/tournaments/analysis.py": "aa91b83bbabc541d4418d9caff0471604baed1d87fc5604c16e44faf984019dd",
+    "tools/tournaments_ai_leaderboard.py": "ece5ae846c2d2657e7ea47c065e72d9ec50e2b4de88cb272b2a6e7f70cdd4f1c",
+    "tools/win_probability_model.py": "e12688105d5331a58846f057575b14b14403c4570cc5e6404c74b749b32f1c86",
+    "test/test_tournaments.py": "3ed6439a5b85004efcad1ff6eb989320c9651bffd9185e203f149408484ca008",
+    "test/test_win_probability_model.py": "06e7caf0181b9f013151400cc13894072d063106bc23be299b795f4fc8aa0760",
+    "docs/ai/architecture/win-probability-model.md": "53d117100f196ff359e23f6b1015268296f5f0ab8c9cbefa2ff93ee56a358006",
+    "docs/tools/tournaments.md": "8d23f8e87217960c9a3701f51e60b5ef69b23bf66b7ebefafa3f223932e99aaa"
+  },
+  "limits": [
+    "No native build run by this reviewer; parent owns final native/platform validation.",
+    "Optional fitting tests require NumPy/SciPy and were skipped in this Python environment."
+  ]
+}

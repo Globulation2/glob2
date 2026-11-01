@@ -1,0 +1,22 @@
+{
+  "args": [
+    "map",
+    "generate",
+    "river",
+    "--width",
+    "128",
+    "--height",
+    "128",
+    "--teams",
+    "2",
+    "--seed",
+    "713",
+    "--output",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_owner_tick_profile_preserves_execution/source.map",
+    "--report-file",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_owner_tick_profile_preserves_execution/map.json"
+  ],
+  "status": 0,
+  "stdout": "river revision 5 seed 713 [complete]: \nMap: /home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_owner_tick_profile_preserves_execution/source.map.gz\nMap report: /home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_owner_tick_profile_preserves_execution/map.json\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

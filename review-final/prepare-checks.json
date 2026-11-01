@@ -1,0 +1,95 @@
+[
+  {
+    "name": "regenerate-match",
+    "command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto",
+      "--binary",
+      "engine",
+      "--filter",
+      "TurnEngineHarness/the committed match record*",
+      "--update-fixtures",
+      "--timeout",
+      "600",
+      "-j1",
+      "--junit",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/regenerate-match.xml",
+      "--artifacts",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/regenerate-match"
+    ],
+    "status": 0,
+    "seconds": 18.990720890004013
+  },
+  {
+    "name": "reference-check",
+    "command": [
+      "python3",
+      "tools/cli_reference.py",
+      "--binary",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "--check"
+    ],
+    "status": 1,
+    "seconds": 1.581541286999709
+  },
+  {
+    "name": "reference-generate",
+    "command": [
+      "python3",
+      "tools/cli_reference.py",
+      "--binary",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2"
+    ],
+    "status": 0,
+    "seconds": 2.0494542550004553
+  },
+  {
+    "name": "reference-recheck",
+    "command": [
+      "python3",
+      "tools/cli_reference.py",
+      "--binary",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "--check"
+    ],
+    "status": 0,
+    "seconds": 0.7735551590012619
+  },
+  {
+    "name": "sim-revision",
+    "command": [
+      "python3",
+      "test/check_sim_revision.py",
+      "--base",
+      "80596f1477"
+    ],
+    "status": 0,
+    "seconds": 1.8971066509984666
+  },
+  {
+    "name": "review-regressions",
+    "command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/debug/dev-dev_fast-true-linker-auto",
+      "--binary",
+      "engine",
+      "--filter",
+      "WinProbability/result serialization*",
+      "--filter",
+      "TeamStatsSave/probability history rejects*",
+      "--timeout",
+      "600",
+      "-j1",
+      "--junit",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/review-regressions.xml",
+      "--artifacts",
+      "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/review-regressions"
+    ],
+    "status": 0,
+    "seconds": 19.555001289001666
+  }
+]

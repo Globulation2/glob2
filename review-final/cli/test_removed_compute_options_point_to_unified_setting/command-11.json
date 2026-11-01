@@ -1,0 +1,12 @@
+{
+  "args": [
+    "match",
+    "verify",
+    "missing.record",
+    "--compute-experiments",
+    "ai"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: --compute-experiments has been removed; use --compute-threads auto|N on the relevant command (glob2 help)\n"
+}

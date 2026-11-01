@@ -1,0 +1,10 @@
+{
+  "args": [
+    "map",
+    "generate",
+    "missing-generator"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: Supply an output: --output, --preview, --report-file, or --map-image\n"
+}

@@ -1,0 +1,3 @@
+format,build,variant,competitor,role,model,win_probability_permille,games,wins,losses,draws,probability_ended_games,capped_games,scored_games,unavailable,blocks,mean,mean_area_probability_ticks,interval
+1v1,0f714eae83d86506647a2206e82d57b3360de9451485ea343135f4b4d428b319,baseline,cortex,opponent,conditional-logit-v1-1991b39cc920b525c4110c5bed70e08a419a6eb263d2fffb0e57774cc0d22861,950,1,0,0,1,0,1,1,0,1,0.5,512.0,
+1v1,0f714eae83d86506647a2206e82d57b3360de9451485ea343135f4b4d428b319,baseline,cortex,subject,conditional-logit-v1-1991b39cc920b525c4110c5bed70e08a419a6eb263d2fffb0e57774cc0d22861,950,1,0,0,1,0,1,1,0,1,0.5,512.0,

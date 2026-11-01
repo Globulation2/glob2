@@ -1,0 +1,16 @@
+{
+  "args": [
+    "match",
+    "verify",
+    "/home/bradley/.codex/worktrees/61a2/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+    "--map-file",
+    "/home/bradley/.codex/worktrees/61a2/glob2/maps/FourSquares1.map.gz",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1",
+    "--compute-threads",
+    "1"
+  ],
+  "status": 0,
+  "stdout": "verify-match: verified; 842 checksums in 13092 ms\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

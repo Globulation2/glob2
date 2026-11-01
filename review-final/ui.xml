@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="live statistics hide post-game probability and wrap correctly [display][artifacts]" time="19.1366" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="13.2174" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,13 @@
+{
+  "args": [
+    "game",
+    "run",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/61a2/glob2/artifacts/win-probability/review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/invalid-1",
+    "--compute-threads",
+    "-1"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "glob2: Missing value for --compute-threads; use --compute-threads=VALUE for a value starting with '-'\n"
+}

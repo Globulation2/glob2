@@ -1,0 +1,2 @@
+id,build,config,seeds,labels
+f70868d2beeb33cd1bc720810b4094a0,0f714eae83d86506647a2206e82d57b3360de9451485ea343135f4b4d428b319,"{""players"": [""cortex"", ""cortex""], ""win_probability_permille"": 950}","{""game"": 19}","{""block"": ""real-seed-19"", ""format"": ""1v1"", ""pair"": ""real-seed-19"", ""subject_player"": 0}"

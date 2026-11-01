@@ -1,0 +1,2455 @@
+{
+  "tested_revision": "8a398d3a08807f2179b9e08109aa6be0462cb9ce",
+  "base_revision": "80596f1477a1e3736d3b60287a62b6702e13c546",
+  "gzip_originals": {
+    "review-final/model.log.gz": {
+      "path": "review-final/model.log",
+      "bytes": 3539,
+      "sha256": "182b7518c8ca5bc40dc5f71b60129c5c15d62f3755fb6d373acc969c099bfea3"
+    },
+    "review-final/docs.log.gz": {
+      "path": "review-final/docs.log",
+      "bytes": 61,
+      "sha256": "7b682a9db86b72a0e0d0521536a76e4d03a8f7ea727b3a28fa30eac804168f81"
+    },
+    "review-final/tournaments.log.gz": {
+      "path": "review-final/tournaments.log",
+      "bytes": 154,
+      "sha256": "6b3c62ef05be5544cb04cc5d6fb3e8b729709f29363ed6a0c2607e95bd877aea"
+    },
+    "review-final/translations.log.gz": {
+      "path": "review-final/translations.log",
+      "bytes": 2953,
+      "sha256": "fcaead81019cd7100b75959c0b4d3599fc4e947a59f395b2bf49ca2d35c39573"
+    },
+    "review-final/regenerate-match.log.gz": {
+      "path": "review-final/regenerate-match.log",
+      "bytes": 311,
+      "sha256": "e9e77f066922c7349ebf430e422d2c6dec35abcc25b284455aac1635358adac7"
+    },
+    "review-final/reference-check.log.gz": {
+      "path": "review-final/reference-check.log",
+      "bytes": 138,
+      "sha256": "c1d4e26398ee48b921b4ba0d593a7a0a4fc99a42c4a7f8ce7de2689c0319d2b3"
+    },
+    "review-final/reference-generate.log.gz": {
+      "path": "review-final/reference-generate.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "review-final/reference-recheck.log.gz": {
+      "path": "review-final/reference-recheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "review-final/sim-revision.log.gz": {
+      "path": "review-final/sim-revision.log",
+      "bytes": 100,
+      "sha256": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe"
+    },
+    "review-final/review-regressions.log.gz": {
+      "path": "review-final/review-regressions.log",
+      "bytes": 389,
+      "sha256": "641ce2621d938b7db2a0e9a9f6301f0c8a892ae4a82952b863b129121151c733"
+    },
+    "review-final/provenance-build.log.gz": {
+      "path": "review-final/provenance-build.log",
+      "bytes": 172044,
+      "sha256": "30c4cb47cca4ba93b707358fb52395f00648789af35f9b3ce85516be9d9e3d9b"
+    },
+    "review-final/native.log.gz": {
+      "path": "review-final/native.log",
+      "bytes": 3405,
+      "sha256": "f88bf1b750b9a42c4d93c75521cb98e831e0bf09d13f0b56149f42b33cfe2f59"
+    },
+    "review-final/ui.log.gz": {
+      "path": "review-final/ui.log",
+      "bytes": 357,
+      "sha256": "31aacc21d357dd2acbf48a6e65fb1c45fb63b017fa5a7a5e6c4a022fe3a27de3"
+    },
+    "review-final/continuity.log.gz": {
+      "path": "review-final/continuity.log",
+      "bytes": 2191,
+      "sha256": "b24ffedf5a1b3ac4c94504743f4ee24c6f514dee32164f9d8d997dc315a68b96"
+    },
+    "review-final/reanalyze.log.gz": {
+      "path": "review-final/reanalyze.log",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "review-final/cli.log.gz": {
+      "path": "review-final/cli.log",
+      "bytes": 2677,
+      "sha256": "07976499ae875bee3c2c9c37a2ada7ac13eea9e2c25916079eaf1db709298a36"
+    },
+    "review-final/continuity-v190.log.gz": {
+      "path": "review-final/continuity-v190.log",
+      "bytes": 237,
+      "sha256": "313ea3613f3eeffe1f0045f2c5c8ea3440c4eb8ab23fa217847ff51e603af56b"
+    },
+    "review-final/reanalyze-v190.log.gz": {
+      "path": "review-final/reanalyze-v190.log",
+      "bytes": 1186,
+      "sha256": "4951f972f21cd82fe6fd6636134479ac2fb191c4365ea5dd2679e6704e15e9e9"
+    },
+    "review-final/cli/test_bash_completion_commands_enums_equals_and_paths/file with spaces.replay.gz": {
+      "path": "review-final/cli/test_bash_completion_commands_enums_equals_and_paths/file with spaces.replay",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/game.replay.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/world.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/game.replay.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/world.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/game.replay.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/world.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/game.replay.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/game.replay",
+      "bytes": 1104596,
+      "sha256": "858b62b44dbde0eebfcc49578267200f90ec9a1a86557990649dd2140ac641d3"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/world.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/game.replay.checksums",
+      "bytes": 58126,
+      "sha256": "631e1f78abde73413ad95f4b6467fbf4f41ef5d8f16249e71f1d7bf1f9ea6f76"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/game.replay.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/game.replay",
+      "bytes": 1645653,
+      "sha256": "b1dfc882938f828acd85d3b9673a2b0b783c1f20a95a85381d3fa7d274b9fc7e"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/world.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/world.checksums",
+      "bytes": 442,
+      "sha256": "4778a13730001f2821f9ea2d89a5b2989dfe65c51b415b1a948c0392b6fe560b"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/snapshot.checksums",
+      "bytes": 546,
+      "sha256": "d72072642ad1806f30d40f76bc6dff551797f55c18a8ddfd41684bd9a23718f0"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/game.replay.checksums",
+      "bytes": 61780,
+      "sha256": "d504694300026bf924907e012a044591cd0aa18a4aafb0d41a9acc739f0fd1d8"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/world.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/world.checksums",
+      "bytes": 438,
+      "sha256": "4abe80d1a5a34b411f392fb7dfeb16b2b9ea3577d61cd57d8a2482a65d5ec562"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/snapshot.checksums",
+      "bytes": 558,
+      "sha256": "006933f6d912d0f4f3ab180a51910146b38b553b8422c941a991e867df9e1fca"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/game.replay.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/game.replay",
+      "bytes": 1104591,
+      "sha256": "9822e405c2bf0fb80e206e2565246e16fd8d7b6da1efec2999f09e727908d464"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/world.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/game.replay.gz": {
+      "path": "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/world.checksums.gz": {
+      "path": "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/game.replay.gz": {
+      "path": "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/world.checksums.gz": {
+      "path": "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/match.replay.gz": {
+      "path": "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/match.replay",
+      "bytes": 2589909,
+      "sha256": "467d7a6e1df358751143a1c24648f963c965ab3dad0a12d3d7a74a635d96239f"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/match.replay.gz": {
+      "path": "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/match.replay",
+      "bytes": 2589909,
+      "sha256": "467d7a6e1df358751143a1c24648f963c965ab3dad0a12d3d7a74a635d96239f"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/match.replay.gz": {
+      "path": "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/match.replay",
+      "bytes": 2589909,
+      "sha256": "467d7a6e1df358751143a1c24648f963c965ab3dad0a12d3d7a74a635d96239f"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/match.replay.gz": {
+      "path": "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/match.replay",
+      "bytes": 2589909,
+      "sha256": "467d7a6e1df358751143a1c24648f963c965ab3dad0a12d3d7a74a635d96239f"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/match.replay.gz": {
+      "path": "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/match.replay",
+      "bytes": 2589909,
+      "sha256": "467d7a6e1df358751143a1c24648f963c965ab3dad0a12d3d7a74a635d96239f"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/world.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/game.replay.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/world.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/game.replay.checksums",
+      "bytes": 58126,
+      "sha256": "631e1f78abde73413ad95f4b6467fbf4f41ef5d8f16249e71f1d7bf1f9ea6f76"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/game.replay.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/game.replay",
+      "bytes": 1645653,
+      "sha256": "ac7e2aa915c9f704f3596d806e97bafcd07b909363a05f2b7b8c88cbec591656"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/world.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/world.checksums",
+      "bytes": 442,
+      "sha256": "4778a13730001f2821f9ea2d89a5b2989dfe65c51b415b1a948c0392b6fe560b"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/snapshot.checksums",
+      "bytes": 546,
+      "sha256": "d72072642ad1806f30d40f76bc6dff551797f55c18a8ddfd41684bd9a23718f0"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "b912aca5a6b5b104e44e441b3dc0efda7546fa7e786ba7db185892e4efdee0dd"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/game.replay.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/game.replay",
+      "bytes": 1125254,
+      "sha256": "3b540a68cab4e6bbe688401661eb2b0fcae10124972e0a8a8e0d454a5ac1253d"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/world.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/world.checksums",
+      "bytes": 863,
+      "sha256": "60e56c6dc6f649a81d9e8aad9c0ec68251923f3df31b39b8ffefea0d512796c1"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "f4dbaeb295dc94bd6ae168b30200a42bca3243ef837beac8bf0fc7bf81d1fef4"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "b912aca5a6b5b104e44e441b3dc0efda7546fa7e786ba7db185892e4efdee0dd"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/game.replay.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/game.replay",
+      "bytes": 1125254,
+      "sha256": "3b540a68cab4e6bbe688401661eb2b0fcae10124972e0a8a8e0d454a5ac1253d"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/world.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/world.checksums",
+      "bytes": 863,
+      "sha256": "60e56c6dc6f649a81d9e8aad9c0ec68251923f3df31b39b8ffefea0d512796c1"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "f4dbaeb295dc94bd6ae168b30200a42bca3243ef837beac8bf0fc7bf81d1fef4"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/game.replay.checksums",
+      "bytes": 58126,
+      "sha256": "c21c3569acb62cf07fc55d67a27b8418606c893d7f6d4f9aca34e1197b6cd5f6"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/game.replay.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/game.replay",
+      "bytes": 1690023,
+      "sha256": "8a1e68c9e888d43ba21e500f39b1b532fdf185bcdb94b5079dec042897e04319"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/world.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/world.checksums",
+      "bytes": 438,
+      "sha256": "2a8c6b1bcba828ab871a72cb41da0b409d600daadc55d6671f3000ef32d50b51"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/snapshot.checksums",
+      "bytes": 546,
+      "sha256": "b556aa7b36337891d5fd6ca517fba0640f3085967b35a6cbb9b2b092886b4ffa"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/game.replay.gz": {
+      "path": "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/world.checksums.gz": {
+      "path": "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/game.replay.gz": {
+      "path": "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/world.checksums.gz": {
+      "path": "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/game.replay.gz": {
+      "path": "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/world.checksums.gz": {
+      "path": "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/game.replay.checksums.gz": {
+      "path": "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/game.replay.checksums",
+      "bytes": 115854,
+      "sha256": "f43c5843976c11f94d4bbce26d18218e41aecebb812e0a0a3f38f1833a006c69"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/game.replay.gz": {
+      "path": "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/game.replay",
+      "bytes": 1104596,
+      "sha256": "fe10b34c2a35a9a5fc72c1ad42e1c85f5c7f72e6f630d35ec8627d250a865285"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/world.checksums.gz": {
+      "path": "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/world.checksums",
+      "bytes": 865,
+      "sha256": "2f0ac1a0302b50d8276f6fd1a1b94374c554a2b45fad77d02edef6e6caa972ef"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/snapshot.checksums.gz": {
+      "path": "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/snapshot.checksums",
+      "bytes": 1069,
+      "sha256": "728f38820a5bef00ec4ab834be416d4a0417161fe7aa0444bf3c3a30e105ea71"
+    },
+    "reviewed-continuity-v190/original/game.replay.checksums.gz": {
+      "path": "reviewed-continuity-v190/original/game.replay.checksums",
+      "bytes": 2176502,
+      "sha256": "d1add808133f27191e944bfaff4970ed99149506180cb2c73262683565a010b5"
+    },
+    "reviewed-continuity-v190/original/world.checksums.gz": {
+      "path": "reviewed-continuity-v190/original/world.checksums",
+      "bytes": 15020,
+      "sha256": "27b07cfb0d372e55230c4067b46422388d3aa56b6007ca1003b75f7410e10842"
+    },
+    "reviewed-continuity-v190/original/snapshot.checksums.gz": {
+      "path": "reviewed-continuity-v190/original/snapshot.checksums",
+      "bytes": 18943,
+      "sha256": "165eded530824dcff2db8fafc6189d4183bb39f8e18f54f1621d5430061c3ebb"
+    },
+    "reviewed-continuity-v190/restored/game.replay.checksums.gz": {
+      "path": "reviewed-continuity-v190/restored/game.replay.checksums",
+      "bytes": 1150542,
+      "sha256": "00b2c00b43f6957070d829c9884d722284bf044032e875740e84ea652fc3e455"
+    },
+    "reviewed-continuity-v190/restored/world.checksums.gz": {
+      "path": "reviewed-continuity-v190/restored/world.checksums",
+      "bytes": 7579,
+      "sha256": "cbd7500c1e6a34a510742f0bdb53ffa77722107b490f4ca630150c5d8c8e36d7"
+    },
+    "reviewed-continuity-v190/restored/snapshot.checksums.gz": {
+      "path": "reviewed-continuity-v190/restored/snapshot.checksums",
+      "bytes": 9635,
+      "sha256": "c901ad436f61bc90aa6f83e97c571b7f227b749ca2c5f8d7b9d1fa33597e0829"
+    },
+    "pipeline-base-check.log.gz": {
+      "path": "pipeline-base-check.log",
+      "bytes": 769,
+      "sha256": "aadb71e78c2345df8d897f7760023de26beca225c658c3d64b6bbe09c6fe6f4a"
+    },
+    "logs/glob2-probability-reviewed-build-integrated.log.gz": {
+      "path": "logs/glob2-probability-reviewed-build-integrated.log",
+      "bytes": 2258462,
+      "sha256": "34e0e7da4ece415e032b86d3ce25c31a73890d8aba4409ee46128d6d396deade"
+    },
+    "logs/glob2-probability-reviewed-python-all.log.gz": {
+      "path": "logs/glob2-probability-reviewed-python-all.log",
+      "bytes": 3031,
+      "sha256": "22f828fa60fdd84ddd995d0b97c58a1064a297d3928e521fb84bd56104705d5a"
+    },
+    "logs/glob2-probability-reviewed-stream-recheck.log.gz": {
+      "path": "logs/glob2-probability-reviewed-stream-recheck.log",
+      "bytes": 98,
+      "sha256": "a446d4f2cfd2308be980c95d1d06a80e4dfcc64e1103834550a021851bcbefe6"
+    },
+    "logs/glob2-probability-reviewed-base-stream.log.gz": {
+      "path": "logs/glob2-probability-reviewed-base-stream.log",
+      "bytes": 98,
+      "sha256": "66ff6bd64af6778a23de52cb141aae3c0c0cc1f199825c46b0f14e68ef25f8ba"
+    },
+    "logs/glob2-probability-review-translations.log.gz": {
+      "path": "logs/glob2-probability-review-translations.log",
+      "bytes": 2953,
+      "sha256": "fcaead81019cd7100b75959c0b4d3599fc4e947a59f395b2bf49ca2d35c39573"
+    }
+  },
+  "files": {
+    "README.md": {
+      "bytes": 3751,
+      "sha256": "bc5d0353e9d1b7ffbff44e91edba223d0bce002778f7dcda5b943c578859a6e0"
+    },
+    "inputs/superseded-draft-format188-map-r0.map.gz": {
+      "bytes": 90936,
+      "sha256": "2282ba4a63efa277c129939b5257b7ea613a12d49e76c86b654dc2289af42e2d"
+    },
+    "logs/glob2-probability-review-translations.log.gz": {
+      "bytes": 280,
+      "sha256": "8e96b23d07e49ea9d528e82ec4ed7f2c10133e58daa833db609f6f434effeefe"
+    },
+    "logs/glob2-probability-reviewed-base-stream.log.gz": {
+      "bytes": 51,
+      "sha256": "75c42b4773c6ad0477eefffee0d9b4ae7027bfb89d158762e5058450bb8f6abb"
+    },
+    "logs/glob2-probability-reviewed-build-integrated.log.gz": {
+      "bytes": 92099,
+      "sha256": "30902cde3581c210ed938567162919d9030dbb6a614fc398fecde4c724bd709f"
+    },
+    "logs/glob2-probability-reviewed-python-all.log.gz": {
+      "bytes": 1102,
+      "sha256": "a59e7d90169ea27dcaa0d46269868e709e1df7b1be7d0b709ef7f0569eb2886d"
+    },
+    "logs/glob2-probability-reviewed-stream-recheck.log.gz": {
+      "bytes": 51,
+      "sha256": "2dd37049b27659d19d5a3a687e863f8dd23ef7d9fcd7268581a916381e267e42"
+    },
+    "pipeline-base-check.log.gz": {
+      "bytes": 327,
+      "sha256": "9d4405222392b36e81c29571e62999acd827ce8b04d41ef286db861482423463"
+    },
+    "reanalyze_reviewed_game.py": {
+      "bytes": 1612,
+      "sha256": "2772aa6ef7c4d4a93d8ad90ca3ec6285fc85acb57990f4ab4b0fa9400e04ec3f"
+    },
+    "recheck_reviewed_cli.py": {
+      "bytes": 711,
+      "sha256": "ccc36b39bd64e70ea9bbc67ba6e44e140669223906591b4c661ca9bff4ef9f14"
+    },
+    "review-final/checks.json": {
+      "bytes": 2758,
+      "sha256": "afac1044f85b53e95665c0f2aa008ccf6ebe23038a797aec8d45647f7c004de3"
+    },
+    "review-final/ci-current.json": {
+      "bytes": 3605,
+      "sha256": "008b2bac068f4b445ea37fbbb2e67fd348d633ae2657832d3ca70a4a7261142e"
+    },
+    "review-final/ci-initial.json": {
+      "bytes": 3605,
+      "sha256": "008b2bac068f4b445ea37fbbb2e67fd348d633ae2657832d3ca70a4a7261142e"
+    },
+    "review-final/cli.log.gz": {
+      "bytes": 664,
+      "sha256": "15d99071f5b1871daf51a445c593f2a90a831470a3ae09c65c49938d1479eb23"
+    },
+    "review-final/cli.xml": {
+      "bytes": 3273,
+      "sha256": "7abf14411cabb4812f6d991c823f34cdb567980b4782474565907e0f852cadfa"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/artifacts.json": {
+      "bytes": 280,
+      "sha256": "18fa3d6da2a0052a030948a3d9c78975d3632385a3fda697c206f88f6f8e4be4"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/result.json": {
+      "bytes": 12454,
+      "sha256": "bdedad1cc2f7bad48708a6202fffbb6142e4b41d5485efa3c809b0b48adb4494"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/baseline/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/command-1.json": {
+      "bytes": 963,
+      "sha256": "419ad97a5fd2193e1779a305b98dd6df3d42cd4c02c25eec4724a6d0f2fa36f5"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/command-2.json": {
+      "bytes": 1161,
+      "sha256": "282210016380beaa47c3a1d56677bd0708159aabd290e2f2c75da6f13bee756b"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/command-3.json": {
+      "bytes": 1263,
+      "sha256": "3e780d762044cad06784a9c00c6af0a5d8baddff5c4b0751d58512f28be5eb08"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/map.json": {
+      "bytes": 404198,
+      "sha256": "a3b7f38a22d16070966295b68768547cd7b507fd8aa19682f8d42610502b0eba"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/ai-decisions.jsonl": {
+      "bytes": 43422,
+      "sha256": "bed71efcb05e9f598d8a449aa8793c5d558a98ad0209a08b0f9443b4783667da"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/ai-profile-done.json": {
+      "bytes": 32,
+      "sha256": "348a0f308f6a3858a9ede81b1c3fb6bb7ff59bf98d18e30bd4a64bb92449d10d"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/ai-profile-finish": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/ai-profile-ready.json": {
+      "bytes": 32,
+      "sha256": "348a0f308f6a3858a9ede81b1c3fb6bb7ff59bf98d18e30bd4a64bb92449d10d"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/ai-profile-release": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/artifacts.json": {
+      "bytes": 490,
+      "sha256": "ceeff3b77161658568099ec8f6c9716cd92a4a517f83d1e673311a3b0f53ecdf"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/result.json": {
+      "bytes": 12454,
+      "sha256": "8d146dd5cd23440a85747a0ad4edcbfac3c5211e517ad29daf0d576d5b4d63b0"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/profiled/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_ai_decision_profile_gate_preserves_execution/source.map.gz": {
+      "bytes": 26047,
+      "sha256": "6cc76bb33c4fc35c15489ac2c6f38f5b8c8e6447aa9718a6a55a3c2c5df747a1"
+    },
+    "review-final/cli/test_bash_completion_commands_enums_equals_and_paths/command-1.json": {
+      "bytes": 33618,
+      "sha256": "1aa523a81274d6a2e33f04156403c49192001dce0159483f5c7e47f03dc80698"
+    },
+    "review-final/cli/test_bash_completion_commands_enums_equals_and_paths/completion.bash": {
+      "bytes": 33042,
+      "sha256": "6891241d7223d65105645de627b96ccfeb483ea769e9a17d4d6ea066cfd679b1"
+    },
+    "review-final/cli/test_bash_completion_commands_enums_equals_and_paths/file with spaces.replay.gz": {
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/artifacts.json": {
+      "bytes": 280,
+      "sha256": "15a71c3a36251d1d8fbfd57b8a89f7d769515faff0da80e34676caa30003eddb"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/result.json": {
+      "bytes": 12453,
+      "sha256": "7faf000e4f34c132791bdfbd3c882ccafd01e091ff47acbf2d80bf0da9bba1bd"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/baseline/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/command-1.json": {
+      "bytes": 1027,
+      "sha256": "a8a16881190d85c1bb149c2a35bc800b12438af4caac632102903b4a01d48aaa"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/command-2.json": {
+      "bytes": 1209,
+      "sha256": "3b9f19303bd62b2e616fa5a887aea329f6f2dd32189973e67ee660bec818de38"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/command-3.json": {
+      "bytes": 1316,
+      "sha256": "4520807940e01992b5f979cdd042f3e1139645a8362a5f4ce10ff36310db8cda"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/map.json": {
+      "bytes": 404198,
+      "sha256": "a3b7f38a22d16070966295b68768547cd7b507fd8aa19682f8d42610502b0eba"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/artifacts.json": {
+      "bytes": 362,
+      "sha256": "d4a53481921b5cce8780d47fd7970509319beb2b4aa1daaa62b92bf7256bb077"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/result.json": {
+      "bytes": 798250,
+      "sha256": "30f38addb9f294404dbeb66dda968f4ef5e950463b01f31a109293d5792b70f4"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/slow-ticks.json": {
+      "bytes": 62172,
+      "sha256": "57ad4c53035e31781f84b896f78a26fca0ee76fd2252d0df5a5f3fbfa661556f"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/tick-timings.csv": {
+      "bytes": 779,
+      "sha256": "48228266bc795d33311eea12480d8f873413a68af88ca52e953f89d334028bdc"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/profiled/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_benchmark_tick_profile_preserves_execution_and_tick_identity/source.map.gz": {
+      "bytes": 26047,
+      "sha256": "6cc76bb33c4fc35c15489ac2c6f38f5b8c8e6447aa9718a6a55a3c2c5df747a1"
+    },
+    "review-final/cli/test_corrupt_saved_game_fails_with_structured_diagnostic/corrupt-run/artifacts.json": {
+      "bytes": 69,
+      "sha256": "b0aad6160a2b82e762803bb673432ea0d37d523ea53360aa1d00e59a71ff3052"
+    },
+    "review-final/cli/test_corrupt_saved_game_fails_with_structured_diagnostic/corrupt-run/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_corrupt_saved_game_fails_with_structured_diagnostic/corrupt-run/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_corrupt_saved_game_fails_with_structured_diagnostic/corrupt-run/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_corrupt_saved_game_fails_with_structured_diagnostic/corrupt-run/result.json": {
+      "bytes": 86,
+      "sha256": "1e66f854c94cd4c57a870cfe497728be36f3f774432257a7448d3772691023d9"
+    },
+    "review-final/cli/test_corrupt_saved_game_fails_with_structured_diagnostic/corrupt.game": {
+      "bytes": 16,
+      "sha256": "5cc0237f213c5a20c8970ce4d4048ec2cc44a3a8fe7c9d971e88b363277a859a"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/command-1.json": {
+      "bytes": 2875,
+      "sha256": "2203f0383ff094b6ec01469724bda5a003e52ab46124001be4a369300def639a"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/command-2.json": {
+      "bytes": 1273,
+      "sha256": "a09093233489e5fdc09ef9c5ba0f950ba444a5ebea895a33f9018c50aa2a5425"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/command-3.json": {
+      "bytes": 1142,
+      "sha256": "9e88b9eb7cb3d8afca003f49d958c359808ff66c2da6a6e6b2caa1cca90f1841"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/artifacts.json": {
+      "bytes": 281,
+      "sha256": "19563eb217699e511d67f5b261a8548fe81dc73997f6d2d9afe1638535f63ab0"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/final.game.gz": {
+      "bytes": 130200,
+      "sha256": "fed6a482215771912077671f0514f82a1d440598cc2fa46c02ce631e89f7fad8"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/game.replay.checksums.gz": {
+      "bytes": 7826,
+      "sha256": "b91ac8a07719f4e693601e7f86786adeaff27302a757bfebd9e472744b6776ba"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/game.replay.gz": {
+      "bytes": 58123,
+      "sha256": "7669ad4d4c42c4a0f995de134acb75849f0d4d57bd20327d6eb5d5ba62f130df"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/result.json": {
+      "bytes": 12480,
+      "sha256": "ce8aebe7507ac46d2f6472f4fba0321e9d75d86b7e5e326aa3de4e416badca7f"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/snapshot.checksums.gz": {
+      "bytes": 544,
+      "sha256": "efbc8814249bed8da02b76eef87d5a958fcf35c85a57a9d49cdd3cdbb71d7fd2"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-map/world.checksums.gz": {
+      "bytes": 467,
+      "sha256": "3f9fa8b6b0553f17ad3e8409e6c0424613b1669d07446a30d746833ae8afc02e"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/artifacts.json": {
+      "bytes": 279,
+      "sha256": "07d501ac43f02e1e0f318a7f758ceb0f140aaa66df0dbbcabf84cf8a51280a6d"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/final.game.gz": {
+      "bytes": 130200,
+      "sha256": "b1251f466c6f6ce48de169dc674db8f134a4bee91d2b7c10cbcbc1e73c50de41"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/game.replay.checksums.gz": {
+      "bytes": 4212,
+      "sha256": "a61c7b5b0c58420900880d8d94722decdc7d2b61d3dc596919ff74bc70a36e87"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/game.replay.gz": {
+      "bytes": 89354,
+      "sha256": "87bce633d22a3cb60777f97e6f71d71254afe7c7ea1e672f72af2919608f9845"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/result.json": {
+      "bytes": 12477,
+      "sha256": "d52e9ba122403922f5f3a0571710fb9f22498ae01f91213ea2a31731e9de8fc4"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/snapshot.checksums.gz": {
+      "bytes": 287,
+      "sha256": "ab5b38c18ffb6c03a6950f88ac1e7e2496deca3f94913bac17a350d0984b83a2"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/embedded-save/world.checksums.gz": {
+      "bytes": 250,
+      "sha256": "1f4d4df6f94f406074c013160cd48645f234aad7f04853fea29af56b9fcd8e33"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/artifacts.json": {
+      "bytes": 568,
+      "sha256": "5817fae27d995fad11f03c1441c278c0f447217f61268f374742ad05b2993aa4"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/checkpoint-32.game.gz": {
+      "bytes": 84668,
+      "sha256": "66acb6c6d854e73f0d1630e7fa352103e6d78e56e63ebbf0d543e4e8c137c182"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/checkpoint-64.game.gz": {
+      "bytes": 130200,
+      "sha256": "c1c25f6ceafa3b4b96aa98f0bae04344c0011a04614b5115ada3f85bc48165a7"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/final.game.gz": {
+      "bytes": 130201,
+      "sha256": "79138338f6eb602317bf2499c831f29de45e9a7ee7dfd4e553555d6f964403e2"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/game.replay.checksums.gz": {
+      "bytes": 7826,
+      "sha256": "b91ac8a07719f4e693601e7f86786adeaff27302a757bfebd9e472744b6776ba"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/game.replay.gz": {
+      "bytes": 58123,
+      "sha256": "7669ad4d4c42c4a0f995de134acb75849f0d4d57bd20327d6eb5d5ba62f130df"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/generated/artifacts.json": {
+      "bytes": 148,
+      "sha256": "61167aa432bb630ab0f63046f690e860ac71e91eed938ecfcfb670b7cfd0975d"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/generated/map-r0.map.gz": {
+      "bytes": 38956,
+      "sha256": "857859a2098fcc36e25db81e59e2d87840b9efc29d8d49f463094cc2b2f78de5"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/generated/progress.json": {
+      "bytes": 42,
+      "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/generated/result.json": {
+      "bytes": 398193,
+      "sha256": "dfca89953096aea2fd0f75f2136d7f8f620fa4339f3696b39c4411ed5c929f20"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/result.json": {
+      "bytes": 410689,
+      "sha256": "1b6eb45d2f5efc7c087238abffa43d8d7640458022d6123d7f49ca6d2925ab8e"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/snapshot.checksums.gz": {
+      "bytes": 544,
+      "sha256": "efbc8814249bed8da02b76eef87d5a958fcf35c85a57a9d49cdd3cdbb71d7fd2"
+    },
+    "review-final/cli/test_experimental_catalog_survives_generated_map_and_saved_continuation/generated-game/world.checksums.gz": {
+      "bytes": 467,
+      "sha256": "3f9fa8b6b0553f17ad3e8409e6c0424613b1669d07446a30d746833ae8afc02e"
+    },
+    "review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/command-1.json": {
+      "bytes": 1019,
+      "sha256": "f5df4a1d4590216e95cf57cc334979a9b313245d2da7effff5cf991dcfa87e6c"
+    },
+    "review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/command-2.json": {
+      "bytes": 678,
+      "sha256": "60d827d8a53455779328390f75c4787c538a280f5bc69ffedfbe1a90cc7c788e"
+    },
+    "review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/command-3.json": {
+      "bytes": 1382,
+      "sha256": "179481b38c32d267555fafd9b96960ae81500ace3092a734764d75eb6e50644f"
+    },
+    "review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/imported.map.gz": {
+      "bytes": 26028,
+      "sha256": "046482666a98444388611e81c2d6334631932298f445ea63a8e6ec471d68a365"
+    },
+    "review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/map.json": {
+      "bytes": 404198,
+      "sha256": "a3b7f38a22d16070966295b68768547cd7b507fd8aa19682f8d42610502b0eba"
+    },
+    "review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/map.png": {
+      "bytes": 2552,
+      "sha256": "b9ec83084bd32ab7fa9d7d16dc720be82b50d4c1bd52f9d9d2aafafe6aa1909e"
+    },
+    "review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/preview.png": {
+      "bytes": 4368,
+      "sha256": "9e94927aef7cfa72475ced78a2d450b7264174ae5d6bf2e1eb155077e0bcd5f2"
+    },
+    "review-final/cli/test_generated_map_image_export_import_and_preview_are_readable/source.map.gz": {
+      "bytes": 26047,
+      "sha256": "6cc76bb33c4fc35c15489ac2c6f38f5b8c8e6447aa9718a6a55a3c2c5df747a1"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/command-1.json": {
+      "bytes": 348,
+      "sha256": "52b99e060f71feadfbfaa90732dd2ca4ffe1bcdf4b85940b4d5bff00cd58181d"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/command-2.json": {
+      "bytes": 410,
+      "sha256": "99c14c2299c36df24ea50941edb5c8a237ceff6f52d6fbad7551324f0ab2dea9"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/command-3.json": {
+      "bytes": 377,
+      "sha256": "7f6a3107f7c21258703be00b5e181cff33a86b2b1d91de7b52324fb20ec95600"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/command-4.json": {
+      "bytes": 606,
+      "sha256": "83aaeb488d87971f197f7b3d7bb31258da7120c798e891db297d1914813b0252"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/invalid-3/artifacts.json": {
+      "bytes": 69,
+      "sha256": "d1623aa9149d02e9b6097376100cf7e2474181dbc994f60525e0db875290f601"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/invalid-3/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/invalid-3/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/invalid-3/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_headless_numeric_and_missing_input_errors_are_structured/invalid-3/result.json": {
+      "bytes": 89,
+      "sha256": "6f8992f2896f49b0e3f239a324d61dc62fc5dc561dbdf2d2b2d88cd3d95cd32f"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/command-1.json": {
+      "bytes": 1055,
+      "sha256": "952ce66bac4ddf989c6c3e2fb76aaf5047dba79f5379fef0a0eb77cb7efb74b3"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/command-2.json": {
+      "bytes": 1647,
+      "sha256": "0b045819e18e367a2e48fd5415475feac713f753a6625987b75238da9755ba22"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/command-3.json": {
+      "bytes": 1655,
+      "sha256": "97cc08bc948479d004ac95da9e25e3ce327b476af771531294deedb4528f4e3d"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/command-4.json": {
+      "bytes": 1121,
+      "sha256": "e82a54efa327a04d47019bbceb4d6cfbdfef7c297d34397330f6041e2800428e"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/artifacts.json": {
+      "bytes": 374,
+      "sha256": "9b76edee188da07589e8c32dcd688b559630eada675412f883d3ad838572288e"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/checkpoint-32.game.gz": {
+      "bytes": 62332,
+      "sha256": "bc2438e3a9de943999d4a60080cfeccab051debb8cf4ba3c86b2b6412de1a61f"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/checkpoint-64.game.gz": {
+      "bytes": 86344,
+      "sha256": "d57a12fa98af4dc0bea4772382bb432779f9e6b9d8b30157bb76760bc282608e"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/final.game.gz": {
+      "bytes": 86343,
+      "sha256": "cddb87f794f6ccc8dfb446828b830d38a1fb3a6cba95fed5eb1184cfa16b2024"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/result.json": {
+      "bytes": 12454,
+      "sha256": "5496e2cea98d0d1115a25ddb61c20030ccf413d962db3c4a580b80c398e3b745"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/map.json": {
+      "bytes": 404198,
+      "sha256": "a3b7f38a22d16070966295b68768547cd7b507fd8aa19682f8d42610502b0eba"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/artifacts.json": {
+      "bytes": 374,
+      "sha256": "73c91cc6230298a6572c0e661eefe89226a200ce4ecc7b3419cadb13a98ee251"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/checkpoint-32.game.gz": {
+      "bytes": 62332,
+      "sha256": "bc2438e3a9de943999d4a60080cfeccab051debb8cf4ba3c86b2b6412de1a61f"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/checkpoint-64.game.gz": {
+      "bytes": 86344,
+      "sha256": "d57a12fa98af4dc0bea4772382bb432779f9e6b9d8b30157bb76760bc282608e"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/final.game.gz": {
+      "bytes": 86343,
+      "sha256": "cddb87f794f6ccc8dfb446828b830d38a1fb3a6cba95fed5eb1184cfa16b2024"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/result.json": {
+      "bytes": 12452,
+      "sha256": "adcb38b06efdbc701a8ffad83255d2cf6b2c84deff8861041f557e462df988e6"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/parity.json": {
+      "bytes": 158,
+      "sha256": "1faf71c5bb7fa2b40cc1f00d59daefeb9795164991a2e5e7e9ef31466344c485"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/artifacts.json": {
+      "bytes": 278,
+      "sha256": "12df530efd2cc4eddd0532cd9a407c55edbdc4ff7bfa60daac79738353f9459a"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/final.game.gz": {
+      "bytes": 86339,
+      "sha256": "fd2bc1fb089d7db4256a1cb0dc3ff369c9756d6be6492ac76da85801a28f9576"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/game.replay.checksums.gz": {
+      "bytes": 4250,
+      "sha256": "6115fa63b23ccf8a3f58dc74aea441c60eaf3a29ffeb00263450cb1910142ea0"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/game.replay.gz": {
+      "bytes": 67011,
+      "sha256": "d4836d06ed3c429ec6bb3425adc5a4072fbe414c257e68b2c8c92f109fd07973"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/result.json": {
+      "bytes": 12454,
+      "sha256": "ccc0ee8608527fdef1c251d22c497cbe008f50f172fe9efa00b23ed1fc33c761"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/snapshot.checksums.gz": {
+      "bytes": 278,
+      "sha256": "01a77df65eb9c3e695eb780d3fca36792cf249f636086ce7c8242d2ae129a558"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/world.checksums.gz": {
+      "bytes": 252,
+      "sha256": "1e2d49eac017c35eb7b3b3d1be09b4256e5522f0d883c098764be7ef1902178e"
+    },
+    "review-final/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/source.map.gz": {
+      "bytes": 26047,
+      "sha256": "6cc76bb33c4fc35c15489ac2c6f38f5b8c8e6447aa9718a6a55a3c2c5df747a1"
+    },
+    "review-final/cli/test_help_and_catalog_describe_real_commands/command-1.json": {
+      "bytes": 2667,
+      "sha256": "3a8e20f6e10542730619b78140c6aee1fa9cbb5bf94cd26d7789d687adcbb3f9"
+    },
+    "review-final/cli/test_help_and_catalog_describe_real_commands/command-2.json": {
+      "bytes": 434820,
+      "sha256": "d1a09a0b379c2c50f23e57e60e398a445b44c858df6ad1ae5d421d75082b70b4"
+    },
+    "review-final/cli/test_help_and_catalog_describe_real_commands/command-3.json": {
+      "bytes": 2332,
+      "sha256": "11f3bad71d788707ee36a586b9066974e02949249b8023912e474f850670319d"
+    },
+    "review-final/cli/test_invalid_map_arguments_fail_before_writing_outputs/command-1.json": {
+      "bytes": 194,
+      "sha256": "a157c4a0ca05f02c5f49e0275a60cb90ff1407edc7269353ebff459698c912d6"
+    },
+    "review-final/cli/test_invalid_map_arguments_fail_before_writing_outputs/command-2.json": {
+      "bytes": 203,
+      "sha256": "db3406938a901c8f4fe7d282a709fcfd3ebd54becec6d2922d84283169eddec6"
+    },
+    "review-final/cli/test_invalid_map_arguments_fail_before_writing_outputs/command-3.json": {
+      "bytes": 185,
+      "sha256": "4acabab1b57ad82ba18350138752e1a11d65e26ac7b587d2a26d2cf859a754f2"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/command-1.json": {
+      "bytes": 607,
+      "sha256": "74dad4b19ef44a90e226d5339a0ead44d276f3d6085f235e08bdd0a906bd23cc"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/command-2.json": {
+      "bytes": 606,
+      "sha256": "d190a5dca82cb8bebb38d972fb0dbbaa5492e593845cec0c79ffe0e4cc0aecd4"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/command-3.json": {
+      "bytes": 606,
+      "sha256": "e6bc79343e8a668111d1b5110e67868661f5b44f35ab6f038d9a585eb14f9d83"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/command-4.json": {
+      "bytes": 606,
+      "sha256": "455f5faee254e268a2089bde76425d708be3881e279205937802dc87e3b7956b"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/command-5.json": {
+      "bytes": 612,
+      "sha256": "c314286900edaa808a111e2117b781ca4b66f39602048468c8f550582d3cb3ab"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/artifacts.json": {
+      "bytes": 223,
+      "sha256": "77499363ebc2b20d200f3d4ddff489372561b6100fa6b4fc5f64346613d16c4c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/checksums.txt": {
+      "bytes": 10914,
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/compute.json": {
+      "bytes": 501,
+      "sha256": "7a16b9932ab65c4c5240ecb4c864be4ec8093cacc049ac870606e5c29cfe1a37"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/match.replay.gz": {
+      "bytes": 99881,
+      "sha256": "387044809edf95f809512f209018725a79122cc58c8c5a4e27bfe9aa67ffe991"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/result.json": {
+      "bytes": 11178,
+      "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-1/verdict.json": {
+      "bytes": 430,
+      "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/artifacts.json": {
+      "bytes": 223,
+      "sha256": "77499363ebc2b20d200f3d4ddff489372561b6100fa6b4fc5f64346613d16c4c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/checksums.txt": {
+      "bytes": 10914,
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/compute.json": {
+      "bytes": 501,
+      "sha256": "0a947686e6d213166a642009de45b2b44c346316e6c6e395c39edf1fb9b69ff0"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/match.replay.gz": {
+      "bytes": 99881,
+      "sha256": "387044809edf95f809512f209018725a79122cc58c8c5a4e27bfe9aa67ffe991"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/result.json": {
+      "bytes": 11178,
+      "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-2/verdict.json": {
+      "bytes": 430,
+      "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/artifacts.json": {
+      "bytes": 223,
+      "sha256": "77499363ebc2b20d200f3d4ddff489372561b6100fa6b4fc5f64346613d16c4c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/checksums.txt": {
+      "bytes": 10914,
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/compute.json": {
+      "bytes": 501,
+      "sha256": "662836b78ec8c1ea92c43453d9aa866e84296627350b988e0972328c2f86e0c0"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/match.replay.gz": {
+      "bytes": 99881,
+      "sha256": "387044809edf95f809512f209018725a79122cc58c8c5a4e27bfe9aa67ffe991"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/result.json": {
+      "bytes": 11178,
+      "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-4/verdict.json": {
+      "bytes": 430,
+      "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/artifacts.json": {
+      "bytes": 223,
+      "sha256": "77499363ebc2b20d200f3d4ddff489372561b6100fa6b4fc5f64346613d16c4c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/checksums.txt": {
+      "bytes": 10914,
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/compute.json": {
+      "bytes": 501,
+      "sha256": "a8f3da67b428da1db2495d38ff727275c810f6dce0d919dec509d265bd5bff90"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/match.replay.gz": {
+      "bytes": 99881,
+      "sha256": "387044809edf95f809512f209018725a79122cc58c8c5a4e27bfe9aa67ffe991"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/result.json": {
+      "bytes": 11178,
+      "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-8/verdict.json": {
+      "bytes": 430,
+      "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/artifacts.json": {
+      "bytes": 223,
+      "sha256": "3351fba1a05e3e7b14b442a919ecb14465ae66b4976c6458a6ecc002171708ba"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/checksums.txt": {
+      "bytes": 10914,
+      "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/compute.json": {
+      "bytes": 505,
+      "sha256": "3d03e38e55a001c35f9ac561325bdf0c815d43766bd19f6b9bbb8847a1bfacb8"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/match.replay.gz": {
+      "bytes": 99881,
+      "sha256": "387044809edf95f809512f209018725a79122cc58c8c5a4e27bfe9aa67ffe991"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/result.json": {
+      "bytes": 11178,
+      "sha256": "60848d59348100fd2facb81622d961f72f16ec9ee44d35aea69a3eca49f7537c"
+    },
+    "review-final/cli/test_match_verification_preserves_trace_across_compute_sizes/verify-auto/verdict.json": {
+      "bytes": 430,
+      "sha256": "a15b0e64d13be1bd2ccf75ddf7fb08e4b6e4bdd9899a7d02bdf6e5821942a9c5"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/artifacts.json": {
+      "bytes": 280,
+      "sha256": "f8b2f78d86de9be743193902a4a353e3ae2dd4db0a71b22e8dfbe44a4a9bb9f5"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/result.json": {
+      "bytes": 12500,
+      "sha256": "f97bf79b29b34b4875ddc2f8c418d01cba2cc7400720d519863000eeffaa4cea"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/baseline/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/command-1.json": {
+      "bytes": 939,
+      "sha256": "a7301abdadea2330a4b7358ddfcbc8a84b72a22cb6b88e06669c4c85bbdee431"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/command-2.json": {
+      "bytes": 1178,
+      "sha256": "96ff9d2bc5dd7cdbc172a8ae8bf7d6c84d1cbcdd60a63aff48210a520c3b6356"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/command-3.json": {
+      "bytes": 1288,
+      "sha256": "44cc16ee7f56bb142f26ebe61efae52a68be9d105b5e8894f60f359b2e21c44b"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/map.json": {
+      "bytes": 404198,
+      "sha256": "a3b7f38a22d16070966295b68768547cd7b507fd8aa19682f8d42610502b0eba"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/artifacts.json": {
+      "bytes": 362,
+      "sha256": "733f7c022c747d70cc9928d54d7814adcedff8b8c431f891933fb86dc60858bb"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/owner-clock.json": {
+      "bytes": 61,
+      "sha256": "5a254a923b3abdd455ebd61858779098a3094ecd6adfe3b2463bc6f93471c3e8"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/owner-ticks.jsonl": {
+      "bytes": 69461,
+      "sha256": "f139df541b2aa4da07048569f7d8aa6ab3a315461ef8c83ef4a60fc745abd662"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/result.json": {
+      "bytes": 12503,
+      "sha256": "366aab4e18ccfc2f998f0574cd15c68299464e687797db8086ab852789f40396"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/profiled/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_owner_tick_profile_preserves_execution/source.map.gz": {
+      "bytes": 26047,
+      "sha256": "6cc76bb33c4fc35c15489ac2c6f38f5b8c8e6447aa9718a6a55a3c2c5df747a1"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-1.json": {
+      "bytes": 1095,
+      "sha256": "643d75d682259c3823f9f9dc7039f9b6410f4df213211d41b1fbea7874ebfe22"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-2.json": {
+      "bytes": 1737,
+      "sha256": "be6ab64ef40b330fca884dacaed31d9485f3183506be4d2fd761191dacf1a624"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-3.json": {
+      "bytes": 1182,
+      "sha256": "70222ba7838b3f08fc40961f9b53cb2d28468c27c995249ab14ff16e04649578"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-4.json": {
+      "bytes": 869,
+      "sha256": "97cd59efb0f21a8693ad91ec45a584448234cb8c93a0b07c2ff253cd748bbcb6"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-5.json": {
+      "bytes": 1281,
+      "sha256": "024ed353724c0937913014323b637f1c4a458a4d193e60ed576fba874b77b903"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-6.json": {
+      "bytes": 686,
+      "sha256": "a41efce04ba813cc259cdded2f2cdf264c5a62965fd6b49ebeb2d40ee12e4b7c"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-7.json": {
+      "bytes": 688,
+      "sha256": "f5fcd5e908a77d2a2f416e7d94111f85e52ee581fe3d044d688e163ba82ab43d"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/command-8.json": {
+      "bytes": 690,
+      "sha256": "e9582a0fdb7ac3d74122b8dab6796c0027cfc5d90f64efc9e4c2cf9368d67df1"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/map.json": {
+      "bytes": 404198,
+      "sha256": "a3b7f38a22d16070966295b68768547cd7b507fd8aa19682f8d42610502b0eba"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/artifacts.json": {
+      "bytes": 278,
+      "sha256": "9e22db9e0ea6a0c41cc9e0284ea83ef7ed0c033672174cd1bd4b21dd996430d8"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/final.game.gz": {
+      "bytes": 86341,
+      "sha256": "15c5a8d36f9f88e57d1ffd41af62dfb18c59b8e10c0a7eed69450b5b0db04ffc"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/game.replay.checksums.gz": {
+      "bytes": 4250,
+      "sha256": "6115fa63b23ccf8a3f58dc74aea441c60eaf3a29ffeb00263450cb1910142ea0"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/game.replay.gz": {
+      "bytes": 67010,
+      "sha256": "f4efbf38196b1621bbe74f9854a6dcf48c5d59584f9f724bc5b6acd54d58ea5d"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/result.json": {
+      "bytes": 12455,
+      "sha256": "f1ba15e5b04fbb151375d04e6bca9306cc9c0c8139ad30577fe102b2aac8fe4b"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/snapshot.checksums.gz": {
+      "bytes": 278,
+      "sha256": "01a77df65eb9c3e695eb780d3fca36792cf249f636086ce7c8242d2ae129a558"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-checkpoint/world.checksums.gz": {
+      "bytes": 252,
+      "sha256": "1e2d49eac017c35eb7b3b3d1be09b4256e5522f0d883c098764be7ef1902178e"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/artifacts.json": {
+      "bytes": 280,
+      "sha256": "d5ee9e33be35487d84beffd82520fafd74289c7c4be8e9ebb8f70b6c5e296267"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/final.game.gz": {
+      "bytes": 86338,
+      "sha256": "731ebb6fa68c0e705ae85efc01b57816a7617073eace9bd3804d26422e5dd661"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/game.replay.gz": {
+      "bytes": 45482,
+      "sha256": "20c9a01f67ada29befd587b59b5f11cbc40eff6fb1271e3f15fa7e4234bbabf5"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/result.json": {
+      "bytes": 12446,
+      "sha256": "b853c38327e889fe535dd1144594a580c9550bccea99f3266d379cd29b280406"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-disabled/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/artifacts.json": {
+      "bytes": 200,
+      "sha256": "6055b46d94fe39e457f49f2ec44f540b8337d78277b0a5e6310ffff4c5731821"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/game.replay.checksums.gz": {
+      "bytes": 4176,
+      "sha256": "fc32cba9954950d5ccc6494c26b7781af47213bfafa1968a98871b92264f9b87"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/result.json": {
+      "bytes": 12460,
+      "sha256": "57db363c9f7896f8460100268488966ac14a109f3fb761a415ba5c4d0cb25e51"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/snapshot.checksums.gz": {
+      "bytes": 280,
+      "sha256": "048c1d54fef06d344b3197eced8afacdabaf5e7a8417e420d6fb7f9a373f0df0"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed/world.checksums.gz": {
+      "bytes": 253,
+      "sha256": "552e7a0fa0f4c4762bcad27afd5dad0802f274deaf530ad2359bbabb38f58138"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/artifacts.json": {
+      "bytes": 374,
+      "sha256": "c0e38fd5f65cd5adc4a72ab805576e787a8cf7fa31de975c4deff1f3da5d0fdc"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/checkpoint-32.game.gz": {
+      "bytes": 62332,
+      "sha256": "ccf926d2ecf85cf036e0f5cf4aad39ed5f6ac27e1838a3ef029dfd0579432a44"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/checkpoint-64.game.gz": {
+      "bytes": 86341,
+      "sha256": "fa2a51b8e421b6c164f2c1cf9ffcd6c571c944cc13ece3ef0a2896fd6da78777"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/final.game.gz": {
+      "bytes": 86343,
+      "sha256": "fca8cc3f1d76946ad01626b313deb2822ebc539b19bebce4d2e3948ec4331bbb"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/game.replay.gz": {
+      "bytes": 45486,
+      "sha256": "096bca9229ad119cb8d5ef0445a5bc20cb85da3ec54a65fa263e65ccb59f9467"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/result.json": {
+      "bytes": 12452,
+      "sha256": "a35843eb2e2bbb8478f27085d981282b1f5497b166b193c138d4ce789a805b8d"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz": {
+      "bytes": 26047,
+      "sha256": "6cc76bb33c4fc35c15489ac2c6f38f5b8c8e6447aa9718a6a55a3c2c5df747a1"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-1.json": {
+      "bytes": 199,
+      "sha256": "5706e66aad9db61be1d7a046d59184771cf9b400f3b5d9337b2e5fd8a5d4c893"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-10.json": {
+      "bytes": 241,
+      "sha256": "16cc8887930f0bd2947b1d77313509fdef5ca52de06ef865b5bb67615bbc57b2"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-11.json": {
+      "bytes": 267,
+      "sha256": "67d7e28825c36597f03fbd6f01d93076734e3c79ac60c9d887773663576ca790"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-12.json": {
+      "bytes": 271,
+      "sha256": "b015ebf9d7d0e61874e90dd1c5af7d730fd257c33d5d66076da197960811a501"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-2.json": {
+      "bytes": 222,
+      "sha256": "f635f7ed68019f85ee730c0f74af8729b332f778a7c23f0e088fbff9ce989cd5"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-3.json": {
+      "bytes": 248,
+      "sha256": "ad3fe1d06e0e287b6aafffbf9298b25518e8cb63598dd309a49e39a880a54855"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-4.json": {
+      "bytes": 252,
+      "sha256": "684638190b858f8ab81dca01b234364d4f010f7907b1657a083530e76c6c85d2"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-5.json": {
+      "bytes": 211,
+      "sha256": "ffe5d12c4ed57b940317e1e600e95c23c31503cef67b7d0e37fd1edcff061a23"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-6.json": {
+      "bytes": 234,
+      "sha256": "c6bb7e16190c90ae68bc9b1a22dfcec91c4960d6efcda54df69a202d8740801a"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-7.json": {
+      "bytes": 260,
+      "sha256": "3410822a569b46970cecf224db9faa33aaa691114f5d8c9a7d22120b89d14cd8"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-8.json": {
+      "bytes": 264,
+      "sha256": "03328ba10be05394688984ad87a0d95fcc0bdb42c71594a7d03d6e00eddcf0df"
+    },
+    "review-final/cli/test_removed_compute_options_point_to_unified_setting/command-9.json": {
+      "bytes": 218,
+      "sha256": "ac267418cd803992778a463b8abac2ffd6a6c8888a2fc45dec46be3b66093509"
+    },
+    "review-final/cli/test_structured_map_study_writes_report_map_and_manifest/command-1.json": {
+      "bytes": 1378,
+      "sha256": "06137ebaa2db9b62817290c0bc48e45cb6ee782ebdd88d69302bab01f603f912"
+    },
+    "review-final/cli/test_structured_map_study_writes_report_map_and_manifest/study/artifacts.json": {
+      "bytes": 185,
+      "sha256": "2794afad318270ad05f68d8f0213708effac1a78240c67641a6628881fcee1fe"
+    },
+    "review-final/cli/test_structured_map_study_writes_report_map_and_manifest/study/map-r0.map.gz": {
+      "bytes": 26055,
+      "sha256": "5f98ca22ec225262ada70566c63368e00250347797c59324617b87b310958c6a"
+    },
+    "review-final/cli/test_structured_map_study_writes_report_map_and_manifest/study/progress.json": {
+      "bytes": 42,
+      "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+    },
+    "review-final/cli/test_structured_map_study_writes_report_map_and_manifest/study/result.json": {
+      "bytes": 405978,
+      "sha256": "7a6e37a28dea6c82b09e9273e5fca83c7266e2f5f6caf80d05648c0b2291b430"
+    },
+    "review-final/cli/test_structured_map_study_writes_report_map_and_manifest/study/terrain.txt": {
+      "bytes": 32904,
+      "sha256": "69fed01b51e5e4ebd6f19b4a03213aa231d6a23f6ee53cfd08228563134b9e82"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/artifacts.json": {
+      "bytes": 280,
+      "sha256": "ecc743fbcb2ebe013da33300add9accc65441148ea5c3c647cb9a2829839978d"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/result.json": {
+      "bytes": 12459,
+      "sha256": "6830dc8ec3a4ec6fbac6913f4d2fb5834a2854d5ddf085de006a9fdf5bed17ce"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/auto/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/command-1.json": {
+      "bytes": 999,
+      "sha256": "355723a7945c34f5836e056b1a65d88ede46062ce748d0dd174aca649c9a147e"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/command-2.json": {
+      "bytes": 1147,
+      "sha256": "f4ed92f00ddaecf23ab05fbf78a5e069d9932fbd05c86aed8283198b69c2ca45"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/command-3.json": {
+      "bytes": 1146,
+      "sha256": "7deed72b8f31e85ac2be84387cc0f71e2eac633ccff92d28a54b2802fdf9a423"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/command-4.json": {
+      "bytes": 1147,
+      "sha256": "e0bd33b68d86e83435251eb4c23a3d5e70469e138a59473265efddbd81549fe2"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/map.json": {
+      "bytes": 404198,
+      "sha256": "a3b7f38a22d16070966295b68768547cd7b507fd8aa19682f8d42610502b0eba"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/artifacts.json": {
+      "bytes": 280,
+      "sha256": "2280b7889986b4a5044c0a7f4025d8bf0befdaa8b43e4519e72d77699d7a2c99"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/result.json": {
+      "bytes": 12449,
+      "sha256": "2b2238328f4d918dedee0cbbb24d0ad462f6ad0e2ef268f2aa73b1d232c4b549"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/serial/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/artifacts.json": {
+      "bytes": 280,
+      "sha256": "5f6016b29d4f0e1e052264e6683ff5b836a85b625be4f1585d32596e00963535"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/final.game.gz": {
+      "bytes": 86342,
+      "sha256": "70ef1847a428d7de0c21b2ed9c17e5aca2938c86a3a9f8cce1d73c2269f579a3"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/game.replay.checksums.gz": {
+      "bytes": 7739,
+      "sha256": "0edfd499573e2c4c1ce3d07a36578b3c0d9247dcbfe249f29b954d53457e0a12"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/game.replay.gz": {
+      "bytes": 45485,
+      "sha256": "c0b5fbb7d13324c4f78e78608caa735ed349d41a03cdac884b27bd573b0635f8"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/result.json": {
+      "bytes": 12451,
+      "sha256": "5f1ab56b571e54fefce4fe0f061441ddf76d791ff5231a6286956b9214e9863c"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/snapshot.checksums.gz": {
+      "bytes": 547,
+      "sha256": "a28f659e2860750efd71c51fab0bdb1b78e913d4dc4ee96bbebbee363e9e195d"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/shared/world.checksums.gz": {
+      "bytes": 466,
+      "sha256": "2230fc6638465bb896b82a1a1e2f1fc5057d5e08df8b7a27367bd21b2480de53"
+    },
+    "review-final/cli/test_unified_compute_pool_preserves_trace_with_auto_sizing/source.map.gz": {
+      "bytes": 26047,
+      "sha256": "6cc76bb33c4fc35c15489ac2c6f38f5b8c8e6447aa9718a6a55a3c2c5df747a1"
+    },
+    "review-final/continuity-v190.log.gz": {
+      "bytes": 187,
+      "sha256": "b71f17f8fbfea7476f42c0bf54f93f0bed8c47e93777c91a425de425e8034465"
+    },
+    "review-final/continuity.log.gz": {
+      "bytes": 795,
+      "sha256": "96cc4e59d3fab2394eacd09cfc4d89cc50c2caa177f4a51a8dbf033c4e67fe1b"
+    },
+    "review-final/docs.log.gz": {
+      "bytes": 79,
+      "sha256": "16348e6f85022e588b4ac76350ab5792ad33b2e5cb7b3400e54bff6569f9482f"
+    },
+    "review-final/engine-review.md": {
+      "bytes": 2670,
+      "sha256": "a4d22b7cd0fd46688a7745d7980deeed35807f0bedaf4f2b6fc6607e84accb28"
+    },
+    "review-final/evidence-readme.md": {
+      "bytes": 3751,
+      "sha256": "bc5d0353e9d1b7ffbff44e91edba223d0bce002778f7dcda5b943c578859a6e0"
+    },
+    "review-final/final-verification.json": {
+      "bytes": 7308,
+      "sha256": "b90dbd3253d9fb9bc7054d8a4cf28dbf90dcf5334a76de23441ce3a274bd8205"
+    },
+    "review-final/model.log.gz": {
+      "bytes": 898,
+      "sha256": "e8e40f6ee659018573b076f4069afdb19351442810c11352833c0964918c3321"
+    },
+    "review-final/native.log.gz": {
+      "bytes": 1380,
+      "sha256": "8a2e89b9392ad30b7731cecc15e60b1a57b9b21c3fa9c2a30d008cd553f4254d"
+    },
+    "review-final/native.xml": {
+      "bytes": 7919,
+      "sha256": "e90c73319791e3c9022e2dd69bc1db3c9fdccb624c1ae1db914e4f6188d80288"
+    },
+    "review-final/native/WinProbability/enabled_rule_preserves_the_per-tick_checksum_trace_across_its_decision_boundary_golden_artifacts/rule-checksums.txt": {
+      "bytes": 1283,
+      "sha256": "cb8d138efba7057b8810883a5bc8f94ae238355c2d33e4894657f4958f339b7d"
+    },
+    "review-final/native/build-provenance.json": {
+      "bytes": 860,
+      "sha256": "dd010f35133f09462558ccf132825a36ed5e40d6c4b235ee7ce9986efd1e350b"
+    },
+    "review-final/prepare-checks.json": {
+      "bytes": 2404,
+      "sha256": "f9d901bef6ad74752521ab1dcb56d89acc61ecbc1912d71df05d2aad6cd18f29"
+    },
+    "review-final/provenance-build.json": {
+      "bytes": 208,
+      "sha256": "5f76003bbfa5862c696b4486215d3b523ce0770dd988ab838946f18ff09100f2"
+    },
+    "review-final/provenance-build.log.gz": {
+      "bytes": 16165,
+      "sha256": "c7abf29e267d30ab73190f29d8b27085c953aa5473f002f3601e684e91a4f870"
+    },
+    "review-final/reanalyze-v190.log.gz": {
+      "bytes": 354,
+      "sha256": "954ec711f1e32ec8c808ef2993d6387fc32f3e810c099672a644258e912f415a"
+    },
+    "review-final/reanalyze.log.gz": {
+      "bytes": 23,
+      "sha256": "abc129be8d26e8d4afe9ce45f9d5a73c8ed9aa62810ca24ee789fe4581dc4a80"
+    },
+    "review-final/reference-check.log.gz": {
+      "bytes": 109,
+      "sha256": "033c0d413d77a5b502cdc895c839376af27cb86ca3a00c69e0b10965bb1f0575"
+    },
+    "review-final/reference-generate.log.gz": {
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    "review-final/reference-recheck.log.gz": {
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    "review-final/regenerate-match.log.gz": {
+      "bytes": 247,
+      "sha256": "952239036d4b970d15593aec3fb62399e0a00d08c66b1650e9923e4698c05ced"
+    },
+    "review-final/regenerate-match.xml": {
+      "bytes": 328,
+      "sha256": "7c8f12cfa6c3e02ccdf6a0a41a598563546d89da9a236719ed5e5e57284d6b76"
+    },
+    "review-final/review-regressions.log.gz": {
+      "bytes": 282,
+      "sha256": "47d267cc3b7ec047e685d9fe71aa16b3d5448577fdfae6add052f83cdfa097e3"
+    },
+    "review-final/review-regressions.xml": {
+      "bytes": 495,
+      "sha256": "3bb6da7896c331ae046cc1693b2bbe61afb74932d19c3d3513acce1fa3e43de1"
+    },
+    "review-final/sim-revision.log.gz": {
+      "bytes": 98,
+      "sha256": "96512ec3af588f78e2c9834a6b1ee7e20a746dcfb288e694bff055b962a42057"
+    },
+    "review-final/source-provenance.json": {
+      "bytes": 1166,
+      "sha256": "4cfc45c958a9ad2dd453c446619eadda75b46b7ff7997a352aaf840daf92b37e"
+    },
+    "review-final/tournaments.log.gz": {
+      "bytes": 57,
+      "sha256": "8b42e99e7b78b0291a231886345e1a8df7673ae61915b53fa1eeec18555a2ff2"
+    },
+    "review-final/translations.log.gz": {
+      "bytes": 280,
+      "sha256": "8e96b23d07e49ea9d528e82ec4ed7f2c10133e58daa833db609f6f434effeefe"
+    },
+    "review-final/ui.log.gz": {
+      "bytes": 271,
+      "sha256": "e780cadf768bf57bdca1bef48c1f388e5084ea003a8ff64327f91d6af36c0e33"
+    },
+    "review-final/ui.xml": {
+      "bytes": 476,
+      "sha256": "ef29b9fdcd57bc968870cd83e03cb87a8ca4ca55910ae7ab499b341f0c143d85"
+    },
+    "review-final/ui/GameGUITouch/live_statistics_hide_post-game_probability_and_wrap_correctly_display_artifacts/live-stats-360x720.png": {
+      "bytes": 18117,
+      "sha256": "e0a0f1185409c183009c967593c62c7f23cb2e7a9eb9ad1da31c3c46e0dcac0e"
+    },
+    "review-final/ui/GameGUITouch/live_statistics_hide_post-game_probability_and_wrap_correctly_display_artifacts/live-stats-720x360.png": {
+      "bytes": 15526,
+      "sha256": "fbd54d47f587b58d3ea0b3930b1890fc6963e02bb73cb936b3d458d337b59f43"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-0-1024x768.png": {
+      "bytes": 140761,
+      "sha256": "9b63e5d62a789a717da99286479ab0c810f3b6b1f219875cfe9d20aea34abb79"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-0-640x480.png": {
+      "bytes": 82038,
+      "sha256": "ed204ca085e6d5cd8bdcbe4ab9c5532e7288d64f6def285ed09d138cdc6d2f07"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-1-1024x768.png": {
+      "bytes": 91596,
+      "sha256": "9ebccced81a30b8b4e9b8ebfd3bd7b124bdf2cda39c8628ed2ad238699343fdb"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-1-640x480.png": {
+      "bytes": 45248,
+      "sha256": "758cf12c5e4d4046f008a194a24bc2068a6e14a1c901c16f2dd62325504914a0"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-2-1024x768.png": {
+      "bytes": 75665,
+      "sha256": "3a35209366457db6afc88ffad4a6e760c0862c3edf29acf870548e2679ab4d38"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-2-640x480.png": {
+      "bytes": 22102,
+      "sha256": "3b989f8c4304d73bf5352ad7dd6f2abd951c5c49a37c527d6df75c6c887c621e"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-3-1024x768.png": {
+      "bytes": 77732,
+      "sha256": "91911cdfa3820ef653a1e22dd981b8d48a40ce8333bc3deb7fb1b6a52dbaff17"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-3-640x480.png": {
+      "bytes": 24635,
+      "sha256": "4f129e306ebed371ac6c40062e062f38ea1dede4fa347322a5b4c671a3b25048"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-4-1024x768.png": {
+      "bytes": 90235,
+      "sha256": "7250ce645d4f47eeca8a8fac21e6d4eff5ba57fd72a918dcf975959d53fb317d"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-4-640x480.png": {
+      "bytes": 46279,
+      "sha256": "1c0cfb1b6fe1602676abadce7e4073c2ab40165c76ca293add442a703cb5fbf9"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-5-1024x768.png": {
+      "bytes": 48342,
+      "sha256": "f342febb918bd9c8c3629888203bda363e6df1e7b146793170d97d1a63b175cc"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-5-640x480.png": {
+      "bytes": 21629,
+      "sha256": "63c55cafaa4a56f340b0b1be72d8b6e6472f920497698790cc2bce89b5dc6ab9"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-6-1024x768.png": {
+      "bytes": 75246,
+      "sha256": "f24ffa1629bd0dc6feca282de00292a8f6003f0ee3fa4d378b593c7719c5b7fe"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-6-640x480.png": {
+      "bytes": 37307,
+      "sha256": "0048bbd2c0136ef325f02c78b280d82105c48fd0f2e0a04c2432e805ad59314c"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-7-1024x768.png": {
+      "bytes": 95440,
+      "sha256": "02948a284c2e8294ed975b7d779e463a96cefd7eea45bf8cd40fd9046704aac6"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/graphs-7-640x480.png": {
+      "bytes": 48312,
+      "sha256": "33eac67fee5c9f7a4cc42e836618e1e9602782cefc83c384e2b1794b976bcf45"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/live-1024x768.png": {
+      "bytes": 17523,
+      "sha256": "e33add6bcbe3d9087ea7c4defea8492469e2c6eb4a8e2a7b712c9f0b9c60a016"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/live-640x480.png": {
+      "bytes": 14709,
+      "sha256": "951f69e3ebf939b28ed81af42670d73b462576ee9f85d025910d369455bbf194"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/live-expanded-1024x768.png": {
+      "bytes": 11932,
+      "sha256": "8f6205aee8d1d3009a87cb004c26c79932e86c1c0429494e9cbbc888314048df"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/live-expanded-640x480.png": {
+      "bytes": 9192,
+      "sha256": "4effc4355c0a2b3f716afef2c880642d4161be26eac0c1c21715fc679333bf3d"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/overview-1024x768.png": {
+      "bytes": 91941,
+      "sha256": "80ba9eb5b04e2f77222c80cf8c31bdbc10ec8f5056999e4ec14a092f5b717932"
+    },
+    "review-final/ui/TeamStatsSave/measurement_screenshots_display_artifacts/overview-640x480.png": {
+      "bytes": 49043,
+      "sha256": "6d8419148142255063917c1de6076b36fc74b78d92e8616eb18012d32f8146d4"
+    },
+    "review-framework/docs.log.gz": {
+      "bytes": 88,
+      "sha256": "74f88ee81ad18ab4f4048168d3052d41aa871fba6bb3dcd35950f80aab34963a"
+    },
+    "review-framework/framework-tests.log.gz": {
+      "bytes": 75,
+      "sha256": "deb6e5b7d10e283b8a61ca925ee1879d6da5f6fe8d89d4a781564d8d7c14c301"
+    },
+    "review-framework/model-tests.log.gz": {
+      "bytes": 914,
+      "sha256": "9de1e471aade3d9466583679ce370ae5b3aea7a2e05fab66b750a4cbcbbd1e3c"
+    },
+    "review-framework/verification.json": {
+      "bytes": 1688,
+      "sha256": "1cad8f7f477bc5f78dd9ae6c2412e4992307f8b3ae62529d5b7076baaf9f62ee"
+    },
+    "reviewed-continuity-v190/map.log.gz": {
+      "bytes": 577,
+      "sha256": "70bf6e926c0b2bbc3037d5eba3270005eb4378134572dd2ad4cfd20c133bafa6"
+    },
+    "reviewed-continuity-v190/map/artifacts.json": {
+      "bytes": 187,
+      "sha256": "c51d6e4c56f05515d517e31e30b9e976860bf4774d85433595c8a2efbfdc31c6"
+    },
+    "reviewed-continuity-v190/map/map-r0.map.gz": {
+      "bytes": 90936,
+      "sha256": "8d43f82b9b92242986f107ccf9c9cebbd017c0c04f8aede3f52002851649fae7"
+    },
+    "reviewed-continuity-v190/map/map-r1.map.gz": {
+      "bytes": 90936,
+      "sha256": "cc3614dbb9486e05f0251b4904d45489c80ba3280e129ed8b7154abfa14e0eb6"
+    },
+    "reviewed-continuity-v190/map/progress.json": {
+      "bytes": 42,
+      "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+    },
+    "reviewed-continuity-v190/map/result.json": {
+      "bytes": 395343,
+      "sha256": "5efe42ac309c14e27f6a83fb3e01d2d09987691deb6d42ec1a328543948133d2"
+    },
+    "reviewed-continuity-v190/original.log.gz": {
+      "bytes": 365,
+      "sha256": "95d66d6a292d938aaa47fdc8cbf53293aafb84099522bed888fe7a503742da43"
+    },
+    "reviewed-continuity-v190/original/artifacts.json": {
+      "bytes": 425,
+      "sha256": "236a5ad95b9de15e39197ce40e2ef6a624626e721328c0b6ef09d940fc81f0c2"
+    },
+    "reviewed-continuity-v190/original/checkpoint-1024.game.gz": {
+      "bytes": 221983,
+      "sha256": "6e3b5d7095160505f0c14faa2bf9582e5c86045ca6fb0ee7374fe79b6fd5152a"
+    },
+    "reviewed-continuity-v190/original/checkpoint-512.game.gz": {
+      "bytes": 187080,
+      "sha256": "cec90eff81af47233c27ec4744f0b6d0ae518d711879bbda7a92907c1a982966"
+    },
+    "reviewed-continuity-v190/original/final.game.gz": {
+      "bytes": 221981,
+      "sha256": "cf5f9f38c12e8d324854d0888243cca87b049bdc3673eb699ac4db7731e1c0b5"
+    },
+    "reviewed-continuity-v190/original/game.replay.checksums.gz": {
+      "bytes": 128206,
+      "sha256": "0f829724ea75374960cddcfc2a1bc481e339c584532a77d818704a3a9c7c6efe"
+    },
+    "reviewed-continuity-v190/original/initial.game.gz": {
+      "bytes": 106896,
+      "sha256": "e75e3f2bdf2d6321288872c7ac6e30aa5dca7a2dd97eb3b827339ddcb13b70d1"
+    },
+    "reviewed-continuity-v190/original/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "reviewed-continuity-v190/original/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "reviewed-continuity-v190/original/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "reviewed-continuity-v190/original/progress.jsonl": {
+      "bytes": 129,
+      "sha256": "2c266bc933a9e16013b1e4be568a7b09da7e130492b385a5270465a1eb8ecf7d"
+    },
+    "reviewed-continuity-v190/original/result.json": {
+      "bytes": 13132,
+      "sha256": "18f21cbc5086f588b41c41e9d4ff74eddc8cdab6d641efcf480d54ece0213045"
+    },
+    "reviewed-continuity-v190/original/snapshot.checksums.gz": {
+      "bytes": 9400,
+      "sha256": "40fe24a367ef271379cc7b26d2317929877f8f74254a5cc7206285fe1adb334c"
+    },
+    "reviewed-continuity-v190/original/world.checksums.gz": {
+      "bytes": 7734,
+      "sha256": "f24d514f3c5abf3c1be1b099459ffad23b79bb61b59c05f5a8f10895ea1cc688"
+    },
+    "reviewed-continuity-v190/restored.log.gz": {
+      "bytes": 325,
+      "sha256": "bb5a8b78bd75f6f20c66c95e5f14e9991c40febf48eacaa574ea57be909fdd9c"
+    },
+    "reviewed-continuity-v190/restored/artifacts.json": {
+      "bytes": 281,
+      "sha256": "676f8c8e13568cb6ca49490c762c9452d7a4f3f081c470d2642ae540cec95513"
+    },
+    "reviewed-continuity-v190/restored/final.game.gz": {
+      "bytes": 221983,
+      "sha256": "6e3b5d7095160505f0c14faa2bf9582e5c86045ca6fb0ee7374fe79b6fd5152a"
+    },
+    "reviewed-continuity-v190/restored/game.replay.checksums.gz": {
+      "bytes": 68623,
+      "sha256": "7ec1ee2d59e35b4195bff706c4fd5c4a882847b2e3f8f0f5c1647f6e9ef6f55a"
+    },
+    "reviewed-continuity-v190/restored/profile/keyboard-gui.txt": {
+      "bytes": 1811,
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+    },
+    "reviewed-continuity-v190/restored/profile/keyboard-mapedit.txt": {
+      "bytes": 708,
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+    },
+    "reviewed-continuity-v190/restored/profile/preferences.txt": {
+      "bytes": 1084,
+      "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+    },
+    "reviewed-continuity-v190/restored/progress.jsonl": {
+      "bytes": 65,
+      "sha256": "95e859bab7bf9b7bb959530bfce5d98c1ad15a6558c9891093147650fcdc255a"
+    },
+    "reviewed-continuity-v190/restored/result.json": {
+      "bytes": 13132,
+      "sha256": "7e81572582f413e7b391eab9bbb70c387577a08da2fba0eca4a1dd53ffeff2a5"
+    },
+    "reviewed-continuity-v190/restored/snapshot.checksums.gz": {
+      "bytes": 4566,
+      "sha256": "cec598f8aa39995c70b050c62435c08045c232999ca67c6ed3c23a7d1f402e2b"
+    },
+    "reviewed-continuity-v190/restored/world.checksums.gz": {
+      "bytes": 3872,
+      "sha256": "8f668e7611d20d799081e2ce7b86f495997f6da5bd02e4a574e848336fb67cbd"
+    },
+    "reviewed-continuity-v190/runs.json": {
+      "bytes": 3113,
+      "sha256": "665c145f4efbac2d3e319762a0b1285769d550d683d25a3db138f54c188697d0"
+    },
+    "reviewed-continuity-v190/verification.json": {
+      "bytes": 3607,
+      "sha256": "7d4dfb0072f02411c71868df57338f4d482aef30caa16f39d884218c8b9c873a"
+    },
+    "reviewed-result-reanalysis-v190/experiment.json": {
+      "bytes": 471,
+      "sha256": "841e08407211894204ee7a18ee6bdab7242da9756c59b306d94073e6208cf6ca"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/configurations.csv": {
+      "bytes": 327,
+      "sha256": "5b038e0016e6b107e6a06e16c4608241fb1965065d84670babf3ca4fff8ecc29"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/game-telemetry-values.csv": {
+      "bytes": 186,
+      "sha256": "aabfc72d012d97e0f58d6646c67f7dd559bd25bd4a899456671ca3e372a5b020"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/game-telemetry.jsonl": {
+      "bytes": 221,
+      "sha256": "1306e031b696b5e239cdf11cccae836d6ddad9919862b68dac7e62532e00f4f5"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/generators.csv": {
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/map-metrics.csv": {
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/map-telemetry-groups.csv": {
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/map-telemetry-records.csv": {
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/map-telemetry.json": {
+      "bytes": 675,
+      "sha256": "89458f14b8d24b8cdecceca5f2b1a10fb07a24fdd1f8e6c8b4422ca022996e36"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/map_start_breakdown.csv": {
+      "bytes": 73,
+      "sha256": "8640b27877547e621d54a452e2d91b81dc2600befb675ed510a8a41cd000cd31"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/matchups.csv": {
+      "bytes": 146,
+      "sha256": "fe8c112cf6d73a71302098f3b02f129a6086d2548f5fc856513caa912cebb494"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/observations.csv": {
+      "bytes": 2109,
+      "sha256": "ae668a9683124733d48a0f26970fde5f205a730a657d33727444e6163eb5464a"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/paired_effects.csv": {
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/probability_scores.csv": {
+      "bytes": 631,
+      "sha256": "1cdc16a489913dd9173929b83a3262fbd9eb5f08ea54b6588f3fd20dde73c6e7"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/report.json": {
+      "bytes": 5670,
+      "sha256": "de0da0a32f8b04e7cd3af428de603b5adde64575c497bd87b8253a36b8b78cd6"
+    },
+    "reviewed-result-reanalysis-v190/reports/win_probability/report.md": {
+      "bytes": 1259,
+      "sha256": "ee6c5bfbb02e6414d4132144366b7e71bf8718b2766b025bd0a17f1a748362b0"
+    },
+    "reviewed-result-reanalysis-v190/results/f70868d2beeb33cd1bc720810b4094a0.json": {
+      "bytes": 2319,
+      "sha256": "7ea4cb966d392faadbca21de71051dd4989da0e6f798267570b9612145b17b83"
+    },
+    "verify_reviewed_continuity.py": {
+      "bytes": 3874,
+      "sha256": "4e1a3c7a2479df6f2ae7d6ec6d3aab10ffe2e79ea3eaeefc54e84a247a35d6e1"
+    }
+  }
+}
