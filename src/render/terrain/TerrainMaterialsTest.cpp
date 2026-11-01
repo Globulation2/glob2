@@ -934,8 +934,11 @@ TEST_SUITE("TerrainMaterials")
 		// Full calm at the shoreline, fading out within the reach and smoothly.
 		CHECK(shoreCalmAt(0) == 0);
 		CHECK(shoreCalmAt(1) > shoreCalmAt(2));
-		CHECK(shoreCalmAt(2) > 0);
-		CHECK(shoreCalmAt(4) == 0);
+		CHECK(shoreCalmAt(2) > shoreCalmAt(4));
+		const int beyond = (TerrainVisual::ShoreCalmReachQ8 + 128) / 256 + 1;
+		CHECK(shoreCalmAt((beyond - 1) * (beyond - 1)) > 0);
+		CHECK(shoreCalmAt(beyond * beyond) == 0);
+		CHECK(TerrainVisual::ShoreCalmSearch >= beyond - 1);
 		CHECK(TerrainVisual::shoreCalm({255, 255, 255, 255}, 37, 200) == 255);
 		CHECK(TerrainVisual::shoreCalm({}, 37, 200) == 0);
 		CHECK(TerrainVisual::shoreCalm({200, 0, 200, 0}, 0, 128) == 200);
