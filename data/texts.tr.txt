@@ -5697,13 +5697,13 @@ Karanlık su
 [chasm]
 Uçurum
 [lush_grass]
-
+Gür çimen
 [dry_grass]
-
+Kuru çimen
 [dune_sand]
-
+Kumul kumu
 [pale_sand]
-
+Açık renkli kum
 [terrain group water]
 Su
 [terrain group sand]

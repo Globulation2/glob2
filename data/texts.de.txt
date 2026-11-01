@@ -5697,13 +5697,13 @@ Loch
 [chasm]
 Abgrund
 [lush_grass]
-
+Sattes Gras
 [dry_grass]
-
+Trockenes Gras
 [dune_sand]
-
+Dünensand
 [pale_sand]
-
+Heller Sand
 [terrain group water]
 Wasser
 [terrain group sand]

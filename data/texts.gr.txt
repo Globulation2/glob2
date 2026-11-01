@@ -5697,13 +5697,13 @@ CPU %0%
 [chasm]
 Χάσμα
 [lush_grass]
-
+Πυκνό γρασίδι
 [dry_grass]
-
+Ξερό γρασίδι
 [dune_sand]
-
+Άμμος αμμόλοφου
 [pale_sand]
-
+Ανοιχτόχρωμη άμμος
 [terrain group water]
 Νερό
 [terrain group sand]

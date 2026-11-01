@@ -5697,13 +5697,13 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [chasm]
 شکاف ژرف
 [lush_grass]
-
+چمن انبوه
 [dry_grass]
-
+چمن خشک
 [dune_sand]
-
+ماسه تپه‌ای
 [pale_sand]
-
+ماسه روشن
 [terrain group water]
 آب
 [terrain group sand]

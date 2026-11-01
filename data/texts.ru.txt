@@ -5697,13 +5697,13 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [chasm]
 Пропасть
 [lush_grass]
-
+Сочная трава
 [dry_grass]
-
+Сухая трава
 [dune_sand]
-
+Барханный песок
 [pale_sand]
-
+Светлый песок
 [terrain group water]
 Вода
 [terrain group sand]

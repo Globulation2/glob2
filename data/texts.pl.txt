@@ -5697,13 +5697,13 @@ Dziura
 [chasm]
 Przepaść
 [lush_grass]
-
+Bujna trawa
 [dry_grass]
-
+Sucha trawa
 [dune_sand]
-
+Piasek wydmowy
 [pale_sand]
-
+Jasny piasek
 [terrain group water]
 Woda
 [terrain group sand]

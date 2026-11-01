@@ -5697,13 +5697,13 @@ Trou
 [chasm]
 Gouffre
 [lush_grass]
-
+Herbe luxuriante
 [dry_grass]
-
+Herbe sèche
 [dune_sand]
-
+Sable de dune
 [pale_sand]
-
+Sable clair
 [terrain group water]
 Eau
 [terrain group sand]

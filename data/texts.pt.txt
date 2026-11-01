@@ -5697,13 +5697,13 @@ Buraco
 [chasm]
 Abismo
 [lush_grass]
-
+Erva viçosa
 [dry_grass]
-
+Erva seca
 [dune_sand]
-
+Areia de duna
 [pale_sand]
-
+Areia clara
 [terrain group water]
 Água
 [terrain group sand]

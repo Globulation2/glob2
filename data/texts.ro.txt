@@ -5697,13 +5697,13 @@ Groapă
 [chasm]
 Prăpastie
 [lush_grass]
-
+Iarbă bogată
 [dry_grass]
-
+Iarbă uscată
 [dune_sand]
-
+Nisip de dună
 [pale_sand]
-
+Nisip deschis
 [terrain group water]
 Apă
 [terrain group sand]

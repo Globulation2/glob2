@@ -5697,13 +5697,13 @@ Buco
 [chasm]
 Abisso
 [lush_grass]
-
+Erba rigogliosa
 [dry_grass]
-
+Erba secca
 [dune_sand]
-
+Sabbia di duna
 [pale_sand]
-
+Sabbia chiara
 [terrain group water]
 Acqua
 [terrain group sand]

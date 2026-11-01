@@ -5697,13 +5697,13 @@ Hố
 [chasm]
 Vực sâu
 [lush_grass]
-
+Cỏ tươi tốt
 [dry_grass]
-
+Cỏ khô
 [dune_sand]
-
+Cát đụn
 [pale_sand]
-
+Cát trắng
 [terrain group water]
 Nước
 [terrain group sand]

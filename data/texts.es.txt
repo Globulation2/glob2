@@ -5697,13 +5697,13 @@ Agujero
 [chasm]
 Abismo
 [lush_grass]
-
+Hierba frondosa
 [dry_grass]
-
+Hierba seca
 [dune_sand]
-
+Arena de duna
 [pale_sand]
-
+Arena clara
 [terrain group water]
 Agua
 [terrain group sand]

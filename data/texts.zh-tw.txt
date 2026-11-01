@@ -5697,13 +5697,13 @@ AI 生成
 [chasm]
 深淵
 [lush_grass]
-
+茂盛草原
 [dry_grass]
-
+枯黃草原
 [dune_sand]
-
+沙丘沙礫
 [pale_sand]
-
+淺色沙礫
 [terrain group water]
 水
 [terrain group sand]
