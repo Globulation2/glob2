@@ -6812,3 +6812,15 @@ Fish amount
 Messages ▸
 [Camp-site amount]
 Camp-site amount
+[script compile success]
+Compilation success
+[script error at %0:%1: %2]
+Error at %0:%1: %2
+[script compile failure %0:%1:(%2):%3]
+Compilation failure : %0:%1:(%2):%3
+[script load failed %0]
+Loading script from %0 failed
+[script save failed %0]
+Saving script to %0 failed
+[script cursor %0 %1]
+Line: %0 Col: %1

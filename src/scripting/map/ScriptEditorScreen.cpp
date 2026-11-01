@@ -145,7 +145,7 @@ bool ScriptEditorScreen::testCompile()
 		{
 			Script::makeRuntime()->validate(script);
 			compiled = true;
-			compilation = "Compilation success";
+			compilation = fe::tr("[script compile success]");
 		}
 		else if (selectedLanguage == Language::USL)
 		{
@@ -155,13 +155,13 @@ bool ScriptEditorScreen::testCompile()
 			if (candidate.compileCode())
 			{
 				compiled = true;
-				compilation = "Compilation success";
+				compilation = fe::tr("[script compile success]");
 			}
 			else
 			{
 				MapScriptError error = candidate.getError();
 				compiled = false;
-				compilation = FormattableString("Error at %0:%1: %2")
+				compilation = FormattableString(fe::tr("[script error at %0:%1: %2]"))
 								  .arg(error.getLine())
 								  .arg(error.getColumn())
 								  .arg(error.getMessage());
@@ -174,12 +174,12 @@ bool ScriptEditorScreen::testCompile()
 			if (er.type == ErrorReport::ET_OK)
 			{
 				compiled = true;
-				compilation = "Compilation success";
+				compilation = fe::tr("[script compile success]");
 			}
 			else
 			{
 				compiled = false;
-				compilation = FormattableString("Compilation failure : %0:%1:(%2):%3")
+				compilation = FormattableString(fe::tr("[script compile failure %0:%1:(%2):%3]"))
 								  .arg(er.line + 1)
 								  .arg(er.col)
 								  .arg(er.pos)
@@ -387,7 +387,7 @@ void ScriptEditorScreen::finishFileDialog()
 			{
 				compiled = false;
 				compilation =
-					FormattableString("Loading script from %0 failed").arg(dialog->getName());
+					FormattableString(fe::tr("[script load failed %0]")).arg(dialog->getName());
 			}
 			else
 				testCompile();
@@ -395,7 +395,7 @@ void ScriptEditorScreen::finishFileDialog()
 		else if (!saveText(dialog->getFileName(), script))
 		{
 			compiled = false;
-			compilation = FormattableString("Saving script to %0 failed").arg(dialog->getName());
+			compilation = FormattableString(fe::tr("[script save failed %0]")).arg(dialog->getName());
 		}
 	}
 	invalidate();
@@ -429,7 +429,7 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 						   else
 							   ++column;
 					   c.text({r.x, r.y}, fe::FontRole::Caption,
-							  FormattableString("Line: %0 Col: %1").arg(line).arg(column),
+							  FormattableString(fe::tr("[script cursor %0 %1]")).arg(line).arg(column),
 							  frame.layout.theme.palette.muted);
 				   });
 	auto status = fe::row({fe::expanded(fe::label(compilation, resultStyle)), position},
