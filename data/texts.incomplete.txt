@@ -37,3 +37,4 @@ data/texts.en.txt
 data/texts.ta.txt
 data/texts.nb.txt
 data/texts.ms.txt
+data/texts.bn.txt

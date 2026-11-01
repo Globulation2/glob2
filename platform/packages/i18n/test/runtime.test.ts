@@ -73,6 +73,13 @@ describe('online locale resolution', () => {
     expect(resolveLocale('sw-Latn-KE')).toBe('sw');
     expect(resolveLocale(['sw-Arab', 'de'])).toBe('de');
   });
+  it('resolves Bengali regions and script without claiming Latin transliteration', () => {
+    for (const tag of ['bn', 'bn-BD', 'bn-IN', 'bn-Beng-BD', 'bn_Beng_IN', 'bn-u-nu-latn'])
+      expect(resolveLocale(tag)).toBe('bn');
+    expect(resolveLocale(['bn-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale(['bn-Deva-IN', 'de'])).toBe('de');
+    expect(resolveLocale('bn-x-latn')).toBe('bn');
+  });
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
@@ -82,6 +89,13 @@ describe('online locale resolution', () => {
       expect(resolveLocale(tag)).toBe('ta');
     expect(resolveLocale(['ta-Latn', 'fr'])).toBe('fr');
     expect(localeFromCookie('glob2_locale=ta')).toBe('ta');
+  });
+  it.each(locales)('loads selectable $code through the default browser loader', async (locale) => {
+    vi.resetModules();
+    const runtime = await import('../src/index.ts');
+    await runtime.setLocale(locale.code);
+    expect(runtime.getLocale()).toBe(locale.code);
+    expect(runtime.hasMessage('Welcome to the colony')).toBe(true);
   });
   it('selects Malay Rumi and skips explicit Jawi requests', () => {
     for (const tag of ['ms', 'ms-MY', 'ms-Latn-MY', 'ms_MY', 'ms-u-nu-arab', 'ms-x-arab'])
@@ -156,9 +170,10 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 39 unique game catalog mappings including Tamil and Malay', () => {
-    expect(locales).toHaveLength(39);
+  it('contains 40 unique game catalog mappings including Tamil, Bengali and Malay', () => {
+    expect(locales).toHaveLength(40);
     expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'bn', gameCode: 'bn', name: 'বাংলা', dir: 'ltr' });
     expect(locales).toContainEqual({
       code: 'nb',
       gameCode: 'nb',

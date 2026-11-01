@@ -1,9 +1,9 @@
 {
   "_comment": "Identical text is allowed only for standard names/key legends, punctuation-only templates and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review. For Savannah, Normal is the native control label in ca, de, dk, es, fr, pt, ro, sv, tr, and id; its other controls have local translations. Resource labels also share native spellings: Metal in Portuguese, Danish, Spanish, Polish, Romanian and Turkish; Paper and Prunes in Catalan; Gold in German; Oranges and Prunes in French. These cognates retain their normal local spelling. Reviewed localization additions retain native technical cognates (Port, Catalan/Spanish Error, Romanian Scalar), the Hungarian Globulation 2 Discord brand title, Danish/Swedish revision templates and the Slovak Seed template. These exceptions are scoped per language; no tutorial or explanatory sentence is exempted. French Silence is the native spelling of the audio silence label; it is reviewed shared vocabulary, not an untranslated sentence. French Introduction and Messages ▸ are also native French labels; these two short labels do not exempt tutorial prose.",
   "standard_names_and_key_legends": [
-    "%0×",
     "%0 %1",
     "%0 · %1",
+    "%0×",
     "2 vs 2",
     "AI",
     "Cabino",
@@ -391,7 +391,12 @@
       "Introduction",
       "Messages ▸"
     ],
-    "texts.gr.txt": ["%0 / %1 HP · %2", "%0 KB", "256 × 256", "CPU %0%"],
+    "texts.gr.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "256 × 256",
+      "CPU %0%"
+    ],
     "texts.hu.txt": [
       "CPU %0%",
       "Editor",
@@ -486,8 +491,16 @@
       "host",
       "host %0"
     ],
-    "texts.ja.txt": ["%0 / %1 HP · %2", "%0/%1  >", "CPU %0%", "Ping"],
-    "texts.ko.txt": ["256 × 256", "CPU %0%"],
+    "texts.ja.txt": [
+      "%0 / %1 HP · %2",
+      "%0/%1  >",
+      "CPU %0%",
+      "Ping"
+    ],
+    "texts.ko.txt": [
+      "256 × 256",
+      "CPU %0%"
+    ],
     "texts.nl.txt": [
       " teams",
       "%0 min",
@@ -633,7 +646,9 @@
       "Scalar",
       "Port"
     ],
-    "texts.ru.txt": ["256 × 256"],
+    "texts.ru.txt": [
+      "256 × 256"
+    ],
     "texts.si.txt": [
       "CPU %0%",
       "Cyan",
@@ -663,7 +678,9 @@
       "Port",
       "Seed: %0"
     ],
-    "texts.sr.txt": ["256 × 256"],
+    "texts.sr.txt": [
+      "256 × 256"
+    ],
     "texts.sv.txt": [
       "%0 / %1 HP · %2",
       "%0 min",
@@ -723,10 +740,27 @@
       "Set",
       "Spiral"
     ],
-    "texts.uk.txt": ["256 × 256"],
-    "texts.vi.txt": ["%0 KB", "256 × 256", "AI: %0", "CPU %0%", "Ping"],
-    "texts.zh-cn.txt": ["%0 KB", "256 × 256", "CPU %0%", "Ping"],
-    "texts.zh-tw.txt": ["%0 KB", "256 × 256", "CPU %0%"],
+    "texts.uk.txt": [
+      "256 × 256"
+    ],
+    "texts.vi.txt": [
+      "%0 KB",
+      "256 × 256",
+      "AI: %0",
+      "CPU %0%",
+      "Ping"
+    ],
+    "texts.zh-cn.txt": [
+      "%0 KB",
+      "256 × 256",
+      "CPU %0%",
+      "Ping"
+    ],
+    "texts.zh-tw.txt": [
+      "%0 KB",
+      "256 × 256",
+      "CPU %0%"
+    ],
     "texts.hi.txt": [
       "%0 KB",
       "%0/%1  >",
@@ -774,16 +808,30 @@
       "Sep",
       "–"
     ],
-    "texts.ta.txt": [
+    "texts.bn.txt": [
+      "%0 / %1 HP · %2",
       "%0 KB",
-      "1 vs 1",
+      "%0/%1  >",
       "256 × 256",
-      "AI: %0",
       "CPU %0%",
       "FFA",
       "Globulation 2 Discord",
+      "HP ≤25/50/75%",
       "Hive Mind",
+      "L",
       "P %0/%1/%2",
+      "W",
+      "down",
+      "equals",
+      "left",
+      "left meta",
+      "left windows key",
+      "right",
+      "right meta",
+      "right windows key",
+      "sim %0",
+      "space",
+      "up",
       "–"
     ],
     "texts.nb.txt": [

@@ -159,7 +159,13 @@ retain a 20-pixel minimum advance; touch instructions use the shared cluster-awa
 wrapper and a 24-point minimum advance. The touch cache includes language, font,
 width and text-size inputs. Drawing, scroll limits and hit areas share the same
 measured footer and collapsed-label bounds. Test both expanded instructions and
-the collapsed control when changing fonts or text-size behavior.
+the collapsed control when changing fonts or text-size behavior. The collapsed
+mobile tutorial uses cluster-safe title ellipsis; expanding it restores the full
+wrapped title. Mobile statistics, the Tools strip and map peek temporarily own
+foreground painting and input. They cancel tutorial pointer and keyboard focus
+without changing its lesson or collapsed state; statistics paint above the minimap.
+Collapsed browser account actions retain their complete translated accessible
+names and show an icon in a 44-pixel target.
 
 ### Preparing independently reviewed locales
 
@@ -216,36 +222,23 @@ cache to bypass a ceiling. If frozen sources change, preserve the old kit and
 carry its ledger/cache into the new kit before continuing; stop using the old
 kit for API calls so both kits cannot spend the same remaining allowance.
 
-For a gcloud-authenticated machine draft, use the same frozen kit:
+For the general gcloud-authenticated runner, use the same frozen kit and pass
+its locale explicitly. The default command estimates a source-based pilot without
+API calls; `--execute` makes paid requests. Review that pilot before bulk work:
 
 ```sh
 python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
-  --locale ms --project YOUR_PROJECT_ID --dry-run
+  --locale ms --project YOUR_PROJECT_ID
 python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
-  --locale ms --project YOUR_PROJECT_ID --keys-file artifacts/localization-release/pilot-keys.json
+  --locale ms --project YOUR_PROJECT_ID --execute
+python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
+  --locale ms --project YOUR_PROJECT_ID --phase bulk --pilot-reviewed --execute
 ```
 
-The project must already have billing and Cloud Translation API access. The
-runner obtains an access token through `gcloud auth print-access-token`, uses
-Advanced v3 `general/nmt` with explicit English source, and never changes the
-global gcloud project. The keys file is a JSON array of exact `native:[key]` and
-`online:key` source IDs; use it for a representative pilot, or `--limit N` for
-the first N pending values. After reviewing the pilot, omit the selection flags
-to draft the remaining blank values. Existing nonblank translations are retained.
-`--dry-run` reports pending values and source character counts without API calls.
-
-Requests contain at most 4,500 protected HTML code points and 1,000 entries.
-Oversized messages split at safe word boundaries. Nontranslated spans protect
-placeholders, line breaks, markup and online invariant literals; changed tokens
-or malformed response cardinality stop the run. Raw provider responses and
-request identities are cached under the kit's `cloud/LOCALE/` directory before
-drafts are checkpointed. A restart reuses cached identical requests. Temporary
-network/server errors retry with bounded backoff; ambiguous transport failures
-can still incur duplicate provider charges. Inspect any rejected cached response
-before explicitly removing it to retry. Machine output and a successful runner
-are not linguistic approval. Review every entry through the independent passes
-below; do not publish the kit's cache, credentials or review working files.
-Run `python3 test/test_cloud_draft.py` when changing this runner.
+`--pilot-size` controls entries per source domain. Existing nonblank translations
+are retained. See [Cloud Translation drafts](#cloud-translation-drafts) for current
+budget, cache, protected-token recovery and locking behavior. Run
+`python3 test/test_cloud_draft.py` when changing this runner.
 
 The runners use separate caches and accounting formats. The general `cloud_draft.py`
 runner does not share the Tamil helper’s hard budget ledger; do not use a separate
@@ -389,6 +382,54 @@ exchange fruits. Translate ambiguous terrain terms from their control's effect,
 not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
+
+### Cloud Translation drafts
+
+Prepare a Bengali kit with `prepare --locales bn --output
+artifacts/bengali-localization` and `draft --locale bn --output
+artifacts/bengali-localization` using the translation-program tool above. Then
+`python3 tools/localization/cloud_draft.py --project PROJECT_ID` estimates a
+Bengali pilot without sending a paid request. Add
+`--execute` to request the pilot through Translation API v3 using the active
+`gcloud` credentials. Review the pilot before running `--phase bulk
+--pilot-reviewed --execute`. `--output` selects the kit and `--locale` selects its
+language. Existing translations are never overwritten.
+
+The runner defaults to a US$10 ceiling and accounts conservatively at US$20 per
+million NMT input characters without assuming free credits. Every request attempt
+is reserved before transmission, including retries whose outcome may be unknown.
+Verify the current [NMT tariff](https://cloud.google.com/products/translate/pricing)
+before requesting paid drafts; update the accounting rate if it changes.
+Successful responses are cached and checkpointed. Protected-token failures retain
+the response and block retransmission until a reviewer supplies a correction;
+formatting-only templates bypass translation. Keep the accounting and response
+files with the kit when resuming. A leftover runner lock needs investigation
+before removal. Credentials are never written into the kit.
+
+### Bengali conventions
+
+Bengali (`bn`, বাংলা) uses contemporary standard written Bengali for readers in
+Bangladesh and West Bengal, in Bengali script and logical left-to-right order.
+Use respectful আপনি/করুন forms and concise familiar wording, with consistent
+terms across lessons, game controls and the online platform. Preserve product
+names, code, filenames, shortcuts and formatting tokens. Dynamic online numbers
+continue to use the existing locale formatting functions.
+
+The concept anchors are শ্রমিক (Worker), অনুসন্ধানকারী (Explorer), যোদ্ধা
+(Warrior), সরাইখানা (Inn), মৌচাক (the Swarm building), বাজার (Market), and পতাকা
+(Flag). A moving swarm may be a ঝাঁক; the unit-producing building is a মৌচাক.
+Describe assignment targets as requested workers rather than workers already
+present. Terrain passes mean গিরিপথ, while river banks mean নদীর পাড়.
+
+The pinned Noto Sans Bengali asset supplies shaping tables for HarfBuzz in the
+game and the shared browser font CSS. Retain those tables and the OFL licence in
+packages. Check conjuncts, reph, vowel signs, mixed Latin text and Bengali digits
+at small sizes; glyph coverage alone does not establish correct shaping or fit.
+Explicit non-Bengali script tags must not select the Bengali-script catalog.
+After adding or changing a language's displayed name, regenerate the checked-in
+browser assets with the pinned exporter command in `browser/derive_assets.py`.
+Its font fingerprint includes the language-name inventory even when the resulting
+subset font bytes stay identical.
 
 ### Malay terminology
 

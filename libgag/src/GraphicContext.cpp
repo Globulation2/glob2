@@ -182,7 +182,13 @@ int GraphicContext::maximumTextureSize() const
 		if ((sfactor == _sfactor) && (dfactor == _dfactor))
 			return;
 
+#ifdef GLOB2_WEBGL2
+        // Browser compositing reads framebuffer alpha. Keep an opaque panel
+        // opaque while preserving the existing RGB blend factors.
+        glBlendFuncSeparate(sfactor, dfactor, GL_ONE, dfactor);
+#else
 		glBlendFunc(sfactor, dfactor);
+#endif
 
 		_sfactor = sfactor;
 		_dfactor = dfactor;
