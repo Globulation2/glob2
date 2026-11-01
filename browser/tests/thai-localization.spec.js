@@ -1,10 +1,20 @@
 const {test, expect} = require('@playwright/test');
-const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone, tapControl, clickByLabel} = require('./main-menu');
+const {createHash} = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
+const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone, tapControl, clickByLabel, readBrowserFile} = require('./main-menu');
 const thai = require('../../platform/packages/i18n/locales/th.json');
 
 test.use({locale: 'th-TH'});
 
-// The Thai name fixture includes stacked marks and stays within Settings' existing 32-byte UTF-8 limit.
+const shippedThaiFiles = ['data/texts.th.txt', 'data/fonts/scripts/NotoSansThai-Regular.ttf'];
+const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+async function expectShippedThaiAssets(page) {
+  for (const relative of shippedThaiFiles) {
+    const actual = await readBrowserFile(page, '/' + relative);
+    expect(sha256(actual), relative).toBe(sha256(fs.readFileSync(path.resolve(__dirname, '../..', relative))));
+  }
+}
 
 for (const variant of ['serial', 'threaded']) {
   test(`${variant} Thai startup, composed input and refresh use the shipped catalog`, async ({page, context}, info) => {
@@ -20,14 +30,11 @@ for (const variant of ['serial', 'threaded']) {
     await expect(page.locator('#loading-language')).toHaveValue('th');
     const state = await page.evaluate(() => ({
       labels: Object.values(glob2Diagnostics.snapshot().controls).map(control => control.label),
-      catalog: FS.readFile('/data/texts.th.txt', {encoding: 'utf8'}),
-      fontSize: FS.stat('/data/fonts/scripts/NotoSansThai-Regular.ttf').size,
       translations: glob2Diagnostics.snapshot().assets.translations,
     }));
     expect(state.labels.some(label => /[\u0e00-\u0e7f]/.test(label))).toBe(true);
-    expect(state.catalog).toContain('[language]');
-    expect(state.fontSize).toBeGreaterThan(10000);
     expect(state.translations).toBe('ready');
+    await expectShippedThaiAssets(page);
     await page.screenshot({path: info.outputPath(`${variant}-thai-menu.png`)});
     await page.setViewportSize({width: 390, height: 844});
     await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().width)).toBe(390);
@@ -42,6 +49,7 @@ for (const variant of ['serial', 'threaded']) {
     await expect(field).toHaveAttribute('aria-label', thai['Game text field']);
     await field.evaluate(element => {
       element.dispatchEvent(new CompositionEvent('compositionstart', {bubbles: true}));
+      // Stacked Thai marks within Settings' existing 32-byte UTF-8 name limit.
       element.value = 'ผู้เล่น 123';
       element.dispatchEvent(new InputEvent('input', {bubbles: true, data: element.value, isComposing: true}));
       element.dispatchEvent(new CompositionEvent('compositionend', {bubbles: true, data: element.value}));
@@ -114,6 +122,7 @@ test.describe('Thai touch phones', () => {
         .toEqual([390, 844]);
       expect(await page.evaluate(() => Object.values(glob2Diagnostics.snapshot().controls)
         .some(control => /[\u0e00-\u0e7f]/.test(control.label)))).toBe(true);
+      await expectShippedThaiAssets(page);
       await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-menu.png`)});
       await clickMainMenu(page, 'settings');
       await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-settings.png`)});
