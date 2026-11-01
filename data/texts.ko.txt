@@ -6810,5 +6810,17 @@ GL 전용
 물고기 양
 [scenario messages]
 메시지 ▸
+[script compile success]
+
+[script error at %0:%1: %2]
+
+[script compile failure %0:%1:(%2):%3]
+
+[script load failed %0]
+
+[script save failed %0]
+
+[script cursor %0 %1]
+
 [Camp-site amount]
 야영지 수

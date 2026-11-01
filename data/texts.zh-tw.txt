@@ -6810,5 +6810,17 @@ MCP 伺服器
 魚類數量
 [scenario messages]
 訊息 ▸
+[script compile success]
+
+[script error at %0:%1: %2]
+
+[script compile failure %0:%1:(%2):%3]
+
+[script load failed %0]
+
+[script save failed %0]
+
+[script cursor %0 %1]
+
 [Camp-site amount]
 營地數量

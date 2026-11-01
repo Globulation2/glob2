@@ -6810,5 +6810,17 @@ Trilhas de animais
 Quantidade de peixes
 [scenario messages]
 Mensagens ▸
+[script compile success]
+
+[script error at %0:%1: %2]
+
+[script compile failure %0:%1:(%2):%3]
+
+[script load failed %0]
+
+[script save failed %0]
+
+[script cursor %0 %1]
+
 [Camp-site amount]
 Quantidade de acampamentos
