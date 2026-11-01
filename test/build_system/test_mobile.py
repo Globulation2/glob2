@@ -36,6 +36,26 @@ class EmulatorSmokeTests(unittest.TestCase):
                 self.assertEqual([command[-1] for command in commands],
                                  ['KEYCODE_TAB', 'KEYCODE_ENTER'] * len(initial))
 
+    def test_smoke_dismisses_recorded_android_first_run_introduction(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import smoke
+        # Actual run41252859958: native reached these screens in2seconds and
+        # then waited90seconds at the introduction; no crash or slow startup.
+        recorded = ['21AudioPreferenceScreen', '20HandPreferenceScreen',
+                    '23IntroductionOfferScreen', '14MainMenuScreen']
+        for initial in (recorded, recorded[2:]):
+            with self.subTest(initial=initial):
+                pending=list(initial);history=['Glob2 screen ready: '+pending[0]];commands=[]
+                def run(*command):
+                    commands.append(command[-1])
+                    if command[-1] in ('KEYCODE_ENTER','KEYCODE_ESCAPE'):
+                        pending.pop(0);history.append('Glob2 screen ready: '+pending[0])
+                def wait_for(predicate,description):
+                    self.assertTrue(predicate(),description)
+                smoke.wait_for_main_menu(run,lambda:'\n'.join(history),wait_for)
+                self.assertEqual(pending,['14MainMenuScreen'])
+                self.assertEqual(commands,(['KEYCODE_TAB','KEYCODE_ENTER']*2 if len(initial)==4 else [])+['KEYCODE_ESCAPE'])
+
     def test_pinned_java_home_is_host_specific_and_preserves_override(self):
         import json
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))

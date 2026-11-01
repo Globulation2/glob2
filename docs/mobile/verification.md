@@ -59,7 +59,9 @@ The existing `mobile.yml` workflow also accepts the optional manual input
 `android_localization=true` with `locale=th`. That mode builds and tests x86_64
 only, verifies the actual APK catalog/font/notices and Thai Android startup
 resource, and selects Thai with Android's per-app locale API before the existing
-startup/settings/rotation/lifecycle smoke. Ordinary runs and workflow calls keep
+startup/settings/rotation/lifecycle smoke. The startup smoke completes audio and
+hand choices and takes the introduction offer’s Return to main menu action
+through real keyboard input. Ordinary runs and workflow calls keep
 their original architecture selection. Review retained screenshots for actual
 Thai rendering; the transient unpack label is checked in compiled resources,
 not guaranteed to appear in the screenshots. Physical devices and Thai IME
