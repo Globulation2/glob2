@@ -80,9 +80,9 @@ TEST_SUITE("MovementConnectionCache")
 		view.movementConnections = &physical;
 		REQUIRE_FALSE(MapState::terrainAllowsMovement(view, view.index(5, 5), 0));
 		const auto outgoing = MapState::terrainConnectionMasks(view, 0);
-		CHECK((*outgoing)[view.index(5, 5)] & (1u << field::directionIndex(1, 0)));
+		CHECK(((*outgoing)[view.index(5, 5)] & (1u << field::directionIndex(1, 0))) != 0);
 		const auto incoming = physical.incoming(view, 0, 0, false);
-		CHECK_FALSE((*incoming)[view.index(6, 5)] & (1u << field::directionIndex(-1, 0)));
+		CHECK(((*incoming)[view.index(6, 5)] & (1u << field::directionIndex(-1, 0))) == 0);
 	}
 
 	TEST_CASE("profiles teams and interaction modes have stable distinct cache owners")
