@@ -1,0 +1,148 @@
+{
+  "reviewer": "/root/locale_integration",
+  "role": "independent Marathi editorial final recheck",
+  "utc": "2026-11-01T05:25:08.601221+00:00",
+  "result": "accepted",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "actual_canonical_path": "data/texts.mr.txt",
+  "actual_final_entries_read": [
+    {
+      "key": "[stats topic overview]",
+      "actual_source": "Overview",
+      "actual_final_target": "आढावा",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[stats topic economy]",
+      "actual_source": "Economy",
+      "actual_final_target": "अर्थव्यवस्था",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[stats topic world]",
+      "actual_source": "World",
+      "actual_final_target": "जग",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[stats work construction]",
+      "actual_source": "Work & construction",
+      "actual_final_target": "काम आणि बांधकाम",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[stats defence]",
+      "actual_source": "Defence",
+      "actual_final_target": "संरक्षण",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[stats history]",
+      "actual_source": "View history",
+      "actual_final_target": "इतिहास पहा",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[stats waiting]",
+      "actual_source": "Waiting for statistics…",
+      "actual_final_target": "आकडेवारीची प्रतीक्षा…",
+      "accepted": true,
+      "rationale": "Accepted shortened nominal status. आकडेवारीची प्रतीक्षा… is natural concise Marathi UI wording; ellipsis supplies ongoing status, so explicit आहे is optional. No ETA or failure claim added."
+    },
+    {
+      "key": "[stats unit details]",
+      "actual_source": "Unit details",
+      "actual_final_target": "युनिटचे तपशील",
+      "accepted": true,
+      "rationale": "Natural genitive with established युनिट and तपशील, appropriate to colony/unit-category details."
+    },
+    {
+      "key": "[stats map overlays]",
+      "actual_source": "Map overlays",
+      "actual_final_target": "नकाशावरील आच्छादने",
+      "accepted": true,
+      "rationale": "Natural locative and established plural आच्छादने for actual map overlays."
+    },
+    {
+      "key": "[stats topic]",
+      "actual_source": "Topic",
+      "actual_final_target": "विषय",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[stats full history]",
+      "actual_source": "Open full history",
+      "actual_final_target": "संपूर्ण इतिहास उघडा",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[stats missing readings]",
+      "actual_source": "— No recorded reading yet. Select a statistic for details.",
+      "actual_final_target": "— अद्याप मोजमापाची नोंद नाही. तपशील पाहण्यासाठी आकडेवारीतील एखादा घटक निवडा.",
+      "accepted": true,
+      "rationale": "Accepted exact editorial reading/metric-action wording. Clearly distinguishes recorded measurement from user-selectable statistics component; dash and imperative preserved."
+    },
+    {
+      "key": "[lush_grass]",
+      "actual_source": "Lush grass",
+      "actual_final_target": "हिरवेगार गवत",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    },
+    {
+      "key": "[dry_grass]",
+      "actual_source": "Dry grass",
+      "actual_final_target": "कोरडे गवत",
+      "accepted": true,
+      "rationale": "Accepted कोरडे गवत: ordinary neutral dry adjective, preserving cosmetic condition without requiring dead/withered grass. Both draftसुके and finalकोरडे are intelligible; selected form is sound."
+    },
+    {
+      "key": "[dune_sand]",
+      "actual_source": "Dune sand",
+      "actual_final_target": "वाळूच्या टेकड्यांतील वाळू",
+      "accepted": true,
+      "rationale": "Accepted plural generic dune qualifier वाळूच्या टेकड्यांतील वाळू. Correct mass-material head वाळू, unlike initial countable piles. No added desert restriction or terrain-mechanics promise."
+    },
+    {
+      "key": "[pale_sand]",
+      "actual_source": "Pale sand",
+      "actual_final_target": "फिकट वाळू",
+      "accepted": true,
+      "rationale": "Accepted concise, grammatical final wording; preserves actual source/UI meaning and established glossary as independently reviewed in editorial-new16.json."
+    }
+  ],
+  "coverage": {
+    "actual_new_final_keys_reread": 16,
+    "current_native_total": 3411,
+    "old_native_source_values_independently_equal": 3395,
+    "old_native_target_values_independently_equal": 3395,
+    "online_source_values_equal": 2836,
+    "online_target_bytes_equal": true,
+    "native_old_bytes_exact_prefix": true
+  },
+  "carry_forward": {
+    "previous_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+    "method": "Independently parsed old3395 English/Marathi Git blobs and actual current canonical files; every old source/target value exact and original target bytes remain an exact prefix. Entire online English mapping and Marathi bytes exact to ffbd.",
+    "old_scope": "Original3393 review plus separately reviewed prior2; no new full3395 or wholeonline reread claimed.",
+    "source_target_carry_record_sha256": "2ab915be7388255a75b9cebb08d09019bf5cc465dad4e198a3c9b9ce1caea833"
+  },
+  "findings": [],
+  "draft_proposal_differences_reviewed": {
+    "waiting": "Shorter nominal form accepted",
+    "dry_grass": "Neutral कोरडे adjective accepted",
+    "dune_sand": "Generic plural टेकड्यांतील accepted"
+  },
+  "scope_limits": "Linguistic final-value signoff only; no rendering/font/build/package/newmaster runtime completion claim. No canonical edits by editor."
+}

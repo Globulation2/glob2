@@ -1,0 +1,178 @@
+{
+  "reviewer": "semantic_review",
+  "role": "independent semantic reviewer",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "draft_sha256": "2fdc781fac72e42d04affe4d8c839354a4bf9b11dac64e98a5355d4946ce66dc",
+  "scope": "All16 actual English source/raw Google pairs individually read; no other reviewer proposals consulted. No canonical/draft changes.",
+  "entries": [
+    {
+      "key": "[stats topic overview]",
+      "source": "Overview",
+      "raw_google_target": "आढावा",
+      "recommended_target": "आढावा",
+      "disposition": "accept",
+      "rationale": "Accept standard concise overview topic; switches to a compact selection of colony, food, work/construction and defence metrics."
+    },
+    {
+      "key": "[stats topic economy]",
+      "source": "Economy",
+      "raw_google_target": "अर्थव्यवस्था",
+      "recommended_target": "अर्थव्यवस्था",
+      "disposition": "accept",
+      "rationale": "Accept established MR [Economy] term; topic groups labour/material/building measurements, not real-world market news."
+    },
+    {
+      "key": "[stats topic world]",
+      "source": "World",
+      "raw_google_target": "जग",
+      "recommended_target": "जग",
+      "disposition": "accept",
+      "rationale": "Accept broad world topic: map/world groups and spectator win chances, distinct from the Colony and Economy topics."
+    },
+    {
+      "key": "[stats work construction]",
+      "source": "Work & construction",
+      "raw_google_target": "काम आणि बांधकाम",
+      "recommended_target": "काम आणि बांधकाम",
+      "disposition": "accept",
+      "rationale": "Accept section heading covering idle workers and blocked building work; retains both labour and construction."
+    },
+    {
+      "key": "[stats defence]",
+      "source": "Defence",
+      "raw_google_target": "संरक्षण",
+      "recommended_target": "संरक्षण",
+      "disposition": "accept",
+      "rationale": "Accept concise section heading for warriors/intruders; do not copy quantified [stat defence] संरक्षण शक्ती because this is a broader heading."
+    },
+    {
+      "key": "[stats history]",
+      "source": "View history",
+      "raw_google_target": "इतिहास पहा",
+      "recommended_target": "इतिहास पहा",
+      "disposition": "accept",
+      "rationale": "Accept established [view history] wording. Actual use is inline chart accessible text for recorded match statistics, not browser navigation history."
+    },
+    {
+      "key": "[stats waiting]",
+      "source": "Waiting for statistics…",
+      "raw_google_target": "आकडेवारीची वाट पाहत आहे…",
+      "recommended_target": "आकडेवारीची वाट पाहत आहे…",
+      "disposition": "accept",
+      "rationale": "Accept ongoing waiting status when latest/history data is absent, consistent existing [waiting for %0] idiom; not a completed event."
+    },
+    {
+      "key": "[stats unit details]",
+      "source": "Unit details",
+      "raw_google_target": "युनिट तपशील",
+      "recommended_target": "युनिटचे तपशील",
+      "disposition": "revise",
+      "rationale": "Add Marathi possessive case to the raw noun pile; preserve established uninflected loan युनिट. Expands aggregate unit/type/ability/job/happiness details, not an order or individual unit editor."
+    },
+    {
+      "key": "[stats topic]",
+      "source": "Topic",
+      "raw_google_target": "विषय",
+      "recommended_target": "विषय",
+      "disposition": "accept",
+      "rationale": "Accept generic category noun. No current src call site for this exact key found; actual related topic buttons use specific [stats topic ...] labels. Do not invent a usage."
+    },
+    {
+      "key": "[stats full history]",
+      "source": "Open full history",
+      "raw_google_target": "संपूर्ण इतिहास उघडा",
+      "recommended_target": "संपूर्ण इतिहास उघडा",
+      "disposition": "accept",
+      "rationale": "Accept respectful action opening the selected metric full history dialog, distinct from the inline chart; retain full scope."
+    },
+    {
+      "key": "[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "raw_google_target": "— अद्याप कोणतीही नोंद झालेली नाही. तपशिलांसाठी आकडेवारी निवडा.",
+      "recommended_target": "— अद्याप कोणतेही मोजमाप नोंदवलेले नाही. तपशील पाहण्यासाठी एखादे मोजमाप निवडा.",
+      "disposition": "revise",
+      "rationale": "Clarify a recorded numerical reading/metric rather than the raw nonspecific nothing-has-been-recorded statement. Singular metric selection opens details/inline history from an actual statistics row; retain authored em dash and instructional action. मोजमाप is a contextual measured-statistic term choice, not external dictionary attestation."
+    },
+    {
+      "key": "[lush_grass]",
+      "source": "Lush grass",
+      "raw_google_target": "हिरवेगार गवत",
+      "recommended_target": "हिरवेगार गवत",
+      "disposition": "accept",
+      "rationale": "Accept lush green appearance; French Herbe luxuriante supports appearance meaning. Same grass rules per actual terrain table/docs, not extra fertility."
+    },
+    {
+      "key": "[dry_grass]",
+      "source": "Dry grass",
+      "raw_google_target": "सुके गवत",
+      "recommended_target": "कोरडे गवत",
+      "disposition": "revise",
+      "rationale": "Prefer direct neutral adjective dry over raw सुके; an artwork/colour variant of grass, not a claim of changed resource growth rules."
+    },
+    {
+      "key": "[dune_sand]",
+      "source": "Dune sand",
+      "raw_google_target": "वाळूचे ढिगारे",
+      "recommended_target": "वाळूच्या टेकड्यांतील वाळू",
+      "disposition": "revise",
+      "rationale": "Keep head noun sand. Raw वाळूचे ढिगारे means dunes/heaps themselves and can imply raised terrain. French Sable de dune confirms dune sand; table/docs define a sand appearance sharing every sand rule."
+    },
+    {
+      "key": "[pale_sand]",
+      "source": "Pale sand",
+      "raw_google_target": "फिकट वाळू",
+      "recommended_target": "फिकट वाळू",
+      "disposition": "accept",
+      "rationale": "Accept pale/light-coloured sand appearance, not low density or different movement rules."
+    },
+    {
+      "key": "[stats map overlays]",
+      "source": "Map overlays",
+      "raw_google_target": "नकाशा आच्छादने",
+      "recommended_target": "नकाशावरील आच्छादने",
+      "disposition": "revise",
+      "rationale": "Add natural locative relation: overlays on the map. Actual panel toggles starvation/damage/defence/fertility display overlays; retain existing आच्छादन terminology."
+    }
+  ],
+  "consulted_sources": {
+    "src/hud/InGameStatistics.cpp": "c94be3fdb5bf6c804020258c6ae795d0864f2006de81408bf3c2936cc8791a14",
+    "src/hud/draw/GameGUIDraw.cpp": "e03a6d7da3b4e48ed726c745a40e97473dd3196b4e3d8f43ef0d8c610b2c1d67",
+    "src/map/TerrainTypeTable.h": "bdfb5a1cd40feed4119ef89aebb889201626febe1c5e60c8adb6d5a0ec9ef6da",
+    "docs/map-generators/game-rules-for-map-design.md": "6e601433133511cc5f988dfe861c8b58128216eb1a02527a5c9f49021ac28960",
+    "docs/assets/terrain-materials.md": "2b32fa3bef149b6e518e53620395313c7121c6d1de35fdbbeaaed53579ebb2a9",
+    "data/texts.fr.txt": "a3e68814c86c46cefeaadd141f95036dbccc4033db4a16bce138ed9b3e71d775",
+    "data/texts.hi.txt": "6f8227b9c7b6442c58d9f544036368a076af1b0d747a220cd08260586b6a78ab",
+    "data/texts.nb.txt": "b7c618054f985de9f932a5df8618cb7fa8089b53426fa3391be160b4fc04f545",
+    "data/texts.mr.txt": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf"
+  },
+  "usage_passages": {
+    "src/hud/InGameStatistics.cpp": "topicKeys14; topicFor35-43; inlineHistory218-253; unitDetails255-289; overview sections325-329; missing-reading hint354; full history build380-405.",
+    "src/hud/draw/GameGUIDraw.cpp": "STAT_GRAPH_VIEW/STAT_OTHER_VIEW overlays225/249 and actual checkbox labels.",
+    "src/map/TerrainTypeTable.h": "75-78 bind lush/dry to Grass and dune/pale to Sand.",
+    "docs/map-generators/game-rules-for-map-design.md": "117-124: looks share every rule of grass/sand and differ only in artwork/colours.",
+    "docs/assets/terrain-materials.md": "Opening section: visual materials do not add gameplay rules.",
+    "data/texts.fr.txt": "Actual four consulted terrain translations: Herbe luxuriante, Herbe sèche, Sable de dune, Sable clair.",
+    "data/texts.hi.txt / data/texts.nb.txt": "No populated values for these16 new keys; no attestation claimed.",
+    "data/texts.mr.txt": "Existing युनिट, अर्थव्यवस्था, इतिहास पहा, आच्छादन/संरक्षण and waiting-status forms consulted."
+  },
+  "reviewed_keys": [
+    "[stats topic overview]",
+    "[stats topic economy]",
+    "[stats topic world]",
+    "[stats work construction]",
+    "[stats defence]",
+    "[stats history]",
+    "[stats waiting]",
+    "[stats unit details]",
+    "[stats topic]",
+    "[stats full history]",
+    "[stats missing readings]",
+    "[lush_grass]",
+    "[dry_grass]",
+    "[dune_sand]",
+    "[pale_sand]",
+    "[stats map overlays]"
+  ],
+  "outstanding_uncertainty": [],
+  "certification": "AI independent linguistic review, not native-human certification; final hash-bound reread required after author selection."
+}

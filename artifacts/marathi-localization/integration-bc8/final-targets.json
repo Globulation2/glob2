@@ -1,0 +1,107 @@
+{
+  "author": "/root",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "entries": [
+    {
+      "key": "[stats topic overview]",
+      "source": "Overview",
+      "final_target": "आढावा",
+      "raw_google_target": "आढावा"
+    },
+    {
+      "key": "[stats topic economy]",
+      "source": "Economy",
+      "final_target": "अर्थव्यवस्था",
+      "raw_google_target": "अर्थव्यवस्था"
+    },
+    {
+      "key": "[stats topic world]",
+      "source": "World",
+      "final_target": "जग",
+      "raw_google_target": "जग"
+    },
+    {
+      "key": "[stats work construction]",
+      "source": "Work & construction",
+      "final_target": "काम आणि बांधकाम",
+      "raw_google_target": "काम आणि बांधकाम"
+    },
+    {
+      "key": "[stats defence]",
+      "source": "Defence",
+      "final_target": "संरक्षण",
+      "raw_google_target": "संरक्षण"
+    },
+    {
+      "key": "[stats history]",
+      "source": "View history",
+      "final_target": "इतिहास पहा",
+      "raw_google_target": "इतिहास पहा"
+    },
+    {
+      "key": "[stats waiting]",
+      "source": "Waiting for statistics…",
+      "final_target": "आकडेवारीची प्रतीक्षा…",
+      "raw_google_target": "आकडेवारीची वाट पाहत आहे…"
+    },
+    {
+      "key": "[stats unit details]",
+      "source": "Unit details",
+      "final_target": "युनिटचे तपशील",
+      "raw_google_target": "युनिट तपशील"
+    },
+    {
+      "key": "[stats map overlays]",
+      "source": "Map overlays",
+      "final_target": "नकाशावरील आच्छादने",
+      "raw_google_target": "नकाशा आच्छादने"
+    },
+    {
+      "key": "[stats topic]",
+      "source": "Topic",
+      "final_target": "विषय",
+      "raw_google_target": "विषय"
+    },
+    {
+      "key": "[stats full history]",
+      "source": "Open full history",
+      "final_target": "संपूर्ण इतिहास उघडा",
+      "raw_google_target": "संपूर्ण इतिहास उघडा"
+    },
+    {
+      "key": "[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "final_target": "— अद्याप मोजमापाची नोंद नाही. तपशील पाहण्यासाठी आकडेवारीतील एखादा घटक निवडा.",
+      "raw_google_target": "— अद्याप कोणतीही नोंद झालेली नाही. तपशिलांसाठी आकडेवारी निवडा."
+    },
+    {
+      "key": "[lush_grass]",
+      "source": "Lush grass",
+      "final_target": "हिरवेगार गवत",
+      "raw_google_target": "हिरवेगार गवत"
+    },
+    {
+      "key": "[dry_grass]",
+      "source": "Dry grass",
+      "final_target": "कोरडे गवत",
+      "raw_google_target": "सुके गवत"
+    },
+    {
+      "key": "[dune_sand]",
+      "source": "Dune sand",
+      "final_target": "वाळूच्या टेकड्यांतील वाळू",
+      "raw_google_target": "वाळूचे ढिगारे"
+    },
+    {
+      "key": "[pale_sand]",
+      "source": "Pale sand",
+      "final_target": "फिकट वाळू",
+      "raw_google_target": "फिकट वाळू"
+    }
+  ],
+  "author_choices": "Impersonal waiting phrase; existing reviewed uninflected युनिट plus natural genitive; missing numeric reading/action identifies one statistics component; neutral dry adjective; dune-associated sand keeps material headnoun; locative map overlays. Root selected after three independent16-key reports. Finalthree-agent actual rereads still pending."
+}

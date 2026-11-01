@@ -1,0 +1,29 @@
+
+Running 12 tests using 1 worker
+
+(node:3141921) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium-desktop] › platform/apps/web/e2e/i18n.spec.ts:7:3 › home loads and renders mr (7.6s)
+  ✓   2 [chromium-desktop] › platform/apps/web/e2e/i18n.spec.ts:266:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (5.3s)
+(node:3142676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 [chromium-phone] › platform/apps/web/e2e/i18n.spec.ts:7:3 › home loads and renders mr (7.2s)
+  ✓   4 [chromium-phone] › platform/apps/web/e2e/i18n.spec.ts:266:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (4.8s)
+(node:3143471) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [firefox-desktop] › platform/apps/web/e2e/i18n.spec.ts:7:3 › home loads and renders mr (15.2s)
+  ✓   6 [firefox-desktop] › platform/apps/web/e2e/i18n.spec.ts:266:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (6.4s)
+(node:3145174) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [firefox-phone] › platform/apps/web/e2e/i18n.spec.ts:7:3 › home loads and renders mr (11.0s)
+  ✓   8 [firefox-phone] › platform/apps/web/e2e/i18n.spec.ts:266:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (8.8s)
+(node:3147288) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [webkit-desktop] › platform/apps/web/e2e/i18n.spec.ts:7:3 › home loads and renders mr (28.1s)
+  ✓  10 [webkit-desktop] › platform/apps/web/e2e/i18n.spec.ts:266:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (31.0s)
+(node:3150983) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [webkit-phone] › platform/apps/web/e2e/i18n.spec.ts:7:3 › home loads and renders mr (25.2s)
+  ✓  12 [webkit-phone] › platform/apps/web/e2e/i18n.spec.ts:266:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (28.6s)
+
+  12 passed (4.0m)

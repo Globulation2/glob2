@@ -1,0 +1,509 @@
+{
+  "id": "native-settings-002",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "settings",
+  "context": "Labels and help describe settings. Prefer short labels and explain their effect plainly.",
+  "entries": [
+    {
+      "id": "native:[settings Save shortcut]",
+      "key": "[settings Save shortcut]",
+      "source": "Save shortcut"
+    },
+    {
+      "id": "native:[settings Saved — restart required]",
+      "key": "[settings Saved — restart required]",
+      "source": "Saved — restart required"
+    },
+    {
+      "id": "native:[settings Saving…]",
+      "key": "[settings Saving…]",
+      "source": "Saving…"
+    },
+    {
+      "id": "native:[settings Scroll wheel enabled]",
+      "key": "[settings Scroll wheel enabled]",
+      "source": "Scroll wheel enabled"
+    },
+    {
+      "id": "native:[settings Set starting unit assignments by building type and level.]",
+      "key": "[settings Set starting unit assignments by building type and level.]",
+      "source": "Set starting unit assignments by building type and level."
+    },
+    {
+      "id": "native:[settings Set your language and player name.]",
+      "key": "[settings Set your language and player name.]",
+      "source": "Set your language and player name."
+    },
+    {
+      "id": "native:[settings Settings]",
+      "key": "[settings Settings]",
+      "source": "Settings"
+    },
+    {
+      "id": "native:[settings Single-player and replays only. Multiplayer runs at 1x.]",
+      "key": "[settings Single-player and replays only. Multiplayer runs at 1x.]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x."
+    },
+    {
+      "id": "native:[settings Software]",
+      "key": "[settings Software]",
+      "source": "Software"
+    },
+    {
+      "id": "native:[settings Starting unit counts and radius for newly placed flags.]",
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "source": "Starting unit counts and radius for newly placed flags."
+    },
+    {
+      "id": "native:[settings This shortcut conflicts with existing bindings:]",
+      "key": "[settings This shortcut conflicts with existing bindings:]",
+      "source": "This shortcut conflicts with existing bindings:"
+    },
+    {
+      "id": "native:[settings Trigger]",
+      "key": "[settings Trigger]",
+      "source": "Trigger"
+    },
+    {
+      "id": "native:[settings Unbound]",
+      "key": "[settings Unbound]",
+      "source": "Unbound"
+    },
+    {
+      "id": "native:[settings Unit counts assigned to new construction sites.]",
+      "key": "[settings Unit counts assigned to new construction sites.]",
+      "source": "Unit counts assigned to new construction sites."
+    },
+    {
+      "id": "native:[settings Unit counts for completed buildings.]",
+      "key": "[settings Unit counts for completed buildings.]",
+      "source": "Unit counts for completed buildings."
+    },
+    {
+      "id": "native:[settings Unit counts while a building is being upgraded.]",
+      "key": "[settings Unit counts while a building is being upgraded.]",
+      "source": "Unit counts while a building is being upgraded."
+    },
+    {
+      "id": "native:[settings Units]",
+      "key": "[settings Units]",
+      "source": "Units"
+    },
+    {
+      "id": "native:[settings Upgrades]",
+      "key": "[settings Upgrades]",
+      "source": "Upgrades"
+    },
+    {
+      "id": "native:[settings Use game cursor]",
+      "key": "[settings Use game cursor]",
+      "source": "Use game cursor"
+    },
+    {
+      "id": "native:[settings Voice volume]",
+      "key": "[settings Voice volume]",
+      "source": "Voice volume"
+    },
+    {
+      "id": "native:[settings Window mode]",
+      "key": "[settings Window mode]",
+      "source": "Window mode"
+    },
+    {
+      "id": "native:[settings Window-only sizes also switch the game to windowed mode.]",
+      "key": "[settings Window-only sizes also switch the game to windowed mode.]",
+      "source": "Window-only sizes also switch the game to windowed mode."
+    },
+    {
+      "id": "native:[settings Windowed]",
+      "key": "[settings Windowed]",
+      "source": "Windowed"
+    },
+    {
+      "id": "native:[settings Windowed only]",
+      "key": "[settings Windowed only]",
+      "source": "Windowed only"
+    },
+    {
+      "id": "native:[settings seconds]",
+      "key": "[settings seconds]",
+      "source": "seconds"
+    },
+    {
+      "id": "native:[settings Flag]",
+      "key": "[settings Flag]",
+      "source": "Flag"
+    },
+    {
+      "id": "native:[settings High-resolution artwork]",
+      "key": "[settings High-resolution artwork]",
+      "source": "High-resolution artwork"
+    },
+    {
+      "id": "native:[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "key": "[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "source": "Apply artwork on the next game or editor load (OpenGL)."
+    },
+    {
+      "id": "native:[settings Automatic torus view]",
+      "key": "[settings Automatic torus view]",
+      "source": "Automatic torus view"
+    },
+    {
+      "id": "native:[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "key": "[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "source": "Automatically show the torus overview while moving around the map (OpenGL)."
+    },
+    {
+      "id": "native:[settings Autosave]",
+      "key": "[settings Autosave]",
+      "source": "Autosave"
+    },
+    {
+      "id": "native:[settings Save the game automatically about every 10 seconds.]",
+      "key": "[settings Save the game automatically about every 10 seconds.]",
+      "source": "Save the game automatically about every 10 seconds."
+    },
+    {
+      "id": "native:[Optional major shortcuts]",
+      "key": "[Optional major shortcuts]",
+      "source": "Optional major shortcuts"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "key": "[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful dry woodland shortcut on this seed."
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "key": "[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful swimming shortcut on this seed."
+    },
+    {
+      "id": "native:[settings continue]",
+      "key": "[settings continue]",
+      "source": "Continue"
+    },
+    {
+      "id": "native:[settings save failed]",
+      "key": "[settings save failed]",
+      "source": "Settings save not confirmed. Retry, or continue."
+    },
+    {
+      "id": "native:[Hide keyboard]",
+      "key": "[Hide keyboard]",
+      "source": "Hide keyboard"
+    },
+    {
+      "id": "native:[settings Interface layout]",
+      "key": "[settings Interface layout]",
+      "source": "Interface layout"
+    },
+    {
+      "id": "native:[settings Automatic]",
+      "key": "[settings Automatic]",
+      "source": "Automatic"
+    },
+    {
+      "id": "native:[settings Compact]",
+      "key": "[settings Compact]",
+      "source": "Compact"
+    },
+    {
+      "id": "native:[settings Spacious]",
+      "key": "[settings Spacious]",
+      "source": "Spacious"
+    },
+    {
+      "id": "native:[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]",
+      "key": "[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]",
+      "source": "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers."
+    },
+    {
+      "id": "native:[settings Menu theme]",
+      "key": "[settings Menu theme]",
+      "source": "Menu theme"
+    },
+    {
+      "id": "native:[settings Colours and backdrop of menus, lobbies and results.]",
+      "key": "[settings Colours and backdrop of menus, lobbies and results.]",
+      "source": "Colours and backdrop of menus, lobbies and results."
+    },
+    {
+      "id": "native:[settings In-game theme]",
+      "key": "[settings In-game theme]",
+      "source": "In-game theme"
+    },
+    {
+      "id": "native:[settings Colours of dialogs and the touch interface during a game and in the editor.]",
+      "key": "[settings Colours of dialogs and the touch interface during a game and in the editor.]",
+      "source": "Colours of dialogs and the touch interface during a game and in the editor."
+    },
+    {
+      "id": "native:[theme light]",
+      "key": "[theme light]",
+      "source": "Light"
+    },
+    {
+      "id": "native:[theme dark]",
+      "key": "[theme dark]",
+      "source": "Dark"
+    },
+    {
+      "id": "native:[theme classic]",
+      "key": "[theme classic]",
+      "source": "Classic"
+    },
+    {
+      "id": "native:[theme ocean]",
+      "key": "[theme ocean]",
+      "source": "Ocean"
+    },
+    {
+      "id": "native:[theme dune]",
+      "key": "[theme dune]",
+      "source": "Dune"
+    },
+    {
+      "id": "native:[theme high-contrast]",
+      "key": "[theme high-contrast]",
+      "source": "High contrast"
+    },
+    {
+      "id": "native:[settings One-finger zoom]",
+      "key": "[settings One-finger zoom]",
+      "source": "One-finger zoom"
+    },
+    {
+      "id": "native:[settings Double-tap the map, hold, then drag to zoom.]",
+      "key": "[settings Double-tap the map, hold, then drag to zoom.]",
+      "source": "Double-tap the map, hold, then drag to zoom."
+    },
+    {
+      "id": "native:[settings Platform default]",
+      "key": "[settings Platform default]",
+      "source": "Platform default"
+    },
+    {
+      "id": "native:[settings Drag up zooms in]",
+      "key": "[settings Drag up zooms in]",
+      "source": "Drag up zooms in"
+    },
+    {
+      "id": "native:[settings Drag down zooms in]",
+      "key": "[settings Drag down zooms in]",
+      "source": "Drag down zooms in"
+    },
+    {
+      "id": "native:[settings Thumb side]",
+      "key": "[settings Thumb side]",
+      "source": "Thumb side"
+    },
+    {
+      "id": "native:[settings Phone controls gather in this bottom corner.]",
+      "key": "[settings Phone controls gather in this bottom corner.]",
+      "source": "Phone controls gather in this bottom corner."
+    },
+    {
+      "id": "native:[settings Right]",
+      "key": "[settings Right]",
+      "source": "Right"
+    },
+    {
+      "id": "native:[settings Left]",
+      "key": "[settings Left]",
+      "source": "Left"
+    },
+    {
+      "id": "native:[settings Back]",
+      "key": "[settings Back]",
+      "source": "Back"
+    },
+    {
+      "id": "native:[settings Save the game automatically about every minute.]",
+      "key": "[settings Save the game automatically about every minute.]",
+      "source": "Save the game automatically about every minute."
+    },
+    {
+      "id": "native:[No other players have editable diplomatic settings in this match.]",
+      "key": "[No other players have editable diplomatic settings in this match.]",
+      "source": "No other players have editable diplomatic settings in this match."
+    },
+    {
+      "id": "native:[settings %0 · %1 Units]",
+      "key": "[settings %0 · %1 Units]",
+      "source": "%0 · %1 Units"
+    },
+    {
+      "id": "native:[settings Level %0]",
+      "key": "[settings Level %0]",
+      "source": "Level %0"
+    },
+    {
+      "id": "native:[settings Match the desktop %0]",
+      "key": "[settings Match the desktop %0]",
+      "source": "Match the desktop (%0)"
+    },
+    {
+      "id": "native:[settings Current display %0 %1 %2 %3]",
+      "key": "[settings Current display %0 %1 %2 %3]",
+      "source": "Current display: %0 × %1 · %2 · %3"
+    },
+    {
+      "id": "native:[settings Experiments]",
+      "key": "[settings Experiments]",
+      "source": "Experiments"
+    },
+    {
+      "id": "native:[settings Custom AIs]",
+      "key": "[settings Custom AIs]",
+      "source": "Custom AIs"
+    },
+    {
+      "id": "native:[settings Try features we are still testing. They can change balance and pacing.]",
+      "key": "[settings Try features we are still testing. They can change balance and pacing.]",
+      "source": "Try features we are still testing. They can change balance and pacing."
+    },
+    {
+      "id": "native:[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "key": "[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "source": "Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with."
+    },
+    {
+      "id": "native:[settings No experiments in this build.]",
+      "key": "[settings No experiments in this build.]",
+      "source": "No experiments in this build."
+    },
+    {
+      "id": "native:[settings Touch scrolling]",
+      "key": "[settings Touch scrolling]",
+      "source": "Touch scrolling"
+    },
+    {
+      "id": "native:[settings List momentum]",
+      "key": "[settings List momentum]",
+      "source": "List momentum"
+    },
+    {
+      "id": "native:[settings How far lists and panels keep scrolling after a flick.]",
+      "key": "[settings How far lists and panels keep scrolling after a flick.]",
+      "source": "How far lists and panels keep scrolling after a flick."
+    },
+    {
+      "id": "native:[settings List bounce]",
+      "key": "[settings List bounce]",
+      "source": "List bounce"
+    },
+    {
+      "id": "native:[settings How much lists and panels stretch past their ends and spring back.]",
+      "key": "[settings How much lists and panels stretch past their ends and spring back.]",
+      "source": "How much lists and panels stretch past their ends and spring back."
+    },
+    {
+      "id": "native:[settings Map momentum]",
+      "key": "[settings Map momentum]",
+      "source": "Map momentum"
+    },
+    {
+      "id": "native:[settings How far the map keeps panning after a flick.]",
+      "key": "[settings How far the map keeps panning after a flick.]",
+      "source": "How far the map keeps panning after a flick."
+    },
+    {
+      "id": "native:[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "key": "[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "source": "Touch scrolling feel. 0 turns an effect off; 50 is the default."
+    },
+    {
+      "id": "native:[settings Artwork]",
+      "key": "[settings Artwork]",
+      "source": "Artwork"
+    },
+    {
+      "id": "native:[settings Original]",
+      "key": "[settings Original]",
+      "source": "Original"
+    },
+    {
+      "id": "native:[settings High resolution]",
+      "key": "[settings High resolution]",
+      "source": "High resolution"
+    },
+    {
+      "id": "native:[settings Clouds]",
+      "key": "[settings Clouds]",
+      "source": "Clouds"
+    },
+    {
+      "id": "native:[settings Show cloud cover above the map.]",
+      "key": "[settings Show cloud cover above the map.]",
+      "source": "Show cloud cover above the map."
+    },
+    {
+      "id": "native:[settings Cloud shadows]",
+      "key": "[settings Cloud shadows]",
+      "source": "Cloud shadows"
+    },
+    {
+      "id": "native:[settings Show cloud shadows on the ground independently of cloud cover.]",
+      "key": "[settings Show cloud shadows on the ground independently of cloud cover.]",
+      "source": "Show cloud shadows on the ground independently of cloud cover."
+    },
+    {
+      "id": "native:[settings Building particles]",
+      "key": "[settings Building particles]",
+      "source": "Building particles"
+    },
+    {
+      "id": "native:[settings Show smoke and other building particles.]",
+      "key": "[settings Show smoke and other building particles.]",
+      "source": "Show smoke and other building particles."
+    },
+    {
+      "id": "native:[settings Magic effects]",
+      "key": "[settings Magic effects]",
+      "source": "Magic effects"
+    },
+    {
+      "id": "native:[settings Choose animated magic effects or a simple visible effect.]",
+      "key": "[settings Choose animated magic effects or a simple visible effect.]",
+      "source": "Choose animated magic effects or a simple visible effect."
+    },
+    {
+      "id": "native:[settings Simple]",
+      "key": "[settings Simple]",
+      "source": "Simple"
+    },
+    {
+      "id": "native:[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "key": "[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "source": "Requires the OpenGL renderer. Your saved choice is retained."
+    },
+    {
+      "id": "native:[settings Interface appearance]",
+      "key": "[settings Interface appearance]",
+      "source": "Interface appearance"
+    },
+    {
+      "id": "native:[settings Panels]",
+      "key": "[settings Panels]",
+      "source": "Panels"
+    },
+    {
+      "id": "native:[settings Choose translucent or opaque interface panels.]",
+      "key": "[settings Choose translucent or opaque interface panels.]",
+      "source": "Choose translucent or opaque interface panels."
+    },
+    {
+      "id": "native:[settings Opaque]",
+      "key": "[settings Opaque]",
+      "source": "Opaque"
+    },
+    {
+      "id": "native:[settings Translucent]",
+      "key": "[settings Translucent]",
+      "source": "Translucent"
+    }
+  ]
+}

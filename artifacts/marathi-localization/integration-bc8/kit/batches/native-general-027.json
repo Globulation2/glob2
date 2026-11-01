@@ -1,0 +1,79 @@
+{
+  "id": "native-general-027",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[lesson fortifications walls compact]",
+      "key": "[lesson fortifications walls compact]",
+      "source": "Build 2 walls. Keep the tower’s west lane open."
+    },
+    {
+      "id": "native:[lesson fortifications supply compact]",
+      "key": "[lesson fortifications supply compact]",
+      "source": "Select tower → suppliers. Wait for 2 stone."
+    },
+    {
+      "id": "native:[lesson fortifications hold compact]",
+      "key": "[lesson fortifications hold compact]",
+      "source": "Keep the tower supplied against the attacker."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout compact]",
+      "key": "[lesson defensive-tactics scout compact]",
+      "source": "Flags → Exploration. Place at the enemy; assign 1 explorer."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard compact]",
+      "key": "[lesson defensive-tactics guard compact]",
+      "source": "Flags → Guard. Paint 4 tiles; let 2 warriors arrive."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel compact]",
+      "key": "[lesson defensive-tactics repel compact]",
+      "source": "Hold the guard zone. Keep Inns supplied."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack compact]",
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "source": "War Flag → enemy Swarm. Request 3 warriors; radius ≤4."
+    },
+    {
+      "id": "native:[intro attack destination]",
+      "key": "[intro attack destination]",
+      "source": "Attack here"
+    },
+    {
+      "id": "native:[Grassland]",
+      "key": "[Grassland]",
+      "source": "Grassland"
+    },
+    {
+      "id": "native:[Kopjes]",
+      "key": "[Kopjes]",
+      "source": "Kopjes"
+    },
+    {
+      "id": "native:[Game trails]",
+      "key": "[Game trails]",
+      "source": "Game trails"
+    },
+    {
+      "id": "native:[Fish amount]",
+      "key": "[Fish amount]",
+      "source": "Fish amount"
+    },
+    {
+      "id": "native:[scenario messages]",
+      "key": "[scenario messages]",
+      "source": "Messages ▸"
+    },
+    {
+      "id": "native:[Camp-site amount]",
+      "key": "[Camp-site amount]",
+      "source": "Camp-site amount"
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+✔ installs a package into the file system with byte progress (75.745786ms)
+✔ a later package replaces a core file and is reported once to the game (5.386039ms)
+✔ a later visit installs cached parts without the network (25.699923ms)
+✔ optional parts wait for the page between downloads and appear only when complete (108.38758ms)
+✔ failed downloads are reported and leave nothing behind (24.924837ms)
+✔ a response of the wrong size is rejected (0.847335ms)
+✔ works without Cache Storage and prunes parts of older builds (25.000697ms)
+✔ progress follows transfer bytes when a part arrives compressed (1.296772ms)
+✔ the loading page estimates remaining time from the rate so far (299.838663ms)
+✔ on-demand requests share a load and throttle failed retries (22.289283ms)
+✔ startup downloads core and game together and waits for both installations (98.252637ms)
+✔ part concurrency is bounded globally across packages and duplicate loads share work (43.451012ms)
+✔ out-of-order downloads preserve package replacement order (38.553869ms)
+✔ audio activation ignores missing, running and closed contexts (29.794809ms)
+✔ closing audio during a pending resume does not reject the gesture handler (0.589227ms)
+✔ activation failures are reported and the next gesture can retry (37.383766ms)
+✔ only Firefox closed-resume rejection is suppressed after game exit (16.209088ms)
+✔ music controls coalesce behind one in-flight worker command (35.660266ms)
+✔ replacing a preview discards controls for its previous session (26.791646ms)
+✔ capture bridge frees memory and returns credits even when capture fails (44.128698ms)
+✔ accepts selected bytes without treating the extension as format validation (30.209158ms)
+✔ rejects paths, control characters, unsupported extensions and oversized inputs before reading (19.33169ms)
+✔ rejects changed sizes and read failures (21.775585ms)
+✔ cancellation and disposal cannot publish late file contents (0.598346ms)
+✔ a second selection cannot replace an in-flight read (0.453867ms)
+✔ picker uses accepted extensions and releases its input on cancellation (19.844847ms)
+✔ disposing an open picker ignores its late change event (0.526717ms)
+✔ accepts gzip containers only for supported map and save types (0.561657ms)
+✔ validates bounded generator launch payloads (37.336356ms)
+✔ fences origins and revisions, freezes one launch, and accepts watch only after launch (23.466385ms)
+✔ missing WebGPU resolves initialization failure without retaining a device (97.883269ms)
+✔ completion is atomically published after owned async execution (22.092384ms)
+✔ rejection and cancellation resolve exactly one failure completion (21.01468ms)
+✔ shutdown destroys only the compute device (22.932569ms)
+✔ initialization pipeline rejection destroys unpublished device (24.585999ms)
+✔ initialization second shader failure leaves no partially usable generation (19.983365ms)
+✔ device loss during asynchronous initialization retires unpublished device (44.800344ms)
+✔ successful initialization is published atomically and reused (2.643755ms)
+✔ canceled execution destroys all buffers even when error-scope read rejects (23.150728ms)
+✔ canceled completion retains signal and buffers until queue retirement (49.863895ms)
+✔ fresh browser profiles use the game hosting origin (22.959519ms)
+✔ official cutover preserves credentials under their original origin (26.17924ms)
+✔ custom selections and corrupt or future-version storage are left intact (22.815829ms)
+✔ the online choice supplies a first-visit SDL hint and startup language (80.100641ms)
+✔ Norwegian online startup uses the core font and preserves the saved game choice (24.58625ms)
+✔ a saved game language takes priority and receives no online override (24.170801ms)
+✔ Marathi starts from the online choice while saved game preferences remain authoritative (21.247579ms)
+✔ both Chinese scripts and Japanese/Korean require the full startup font (75.321978ms)
+✔ unavailable preference storage still permits the online startup language (12.014681ms)
+✔ translated blocked-link labels isolate the technical URL from RTL text (21.601697ms)
+✔ browser launches the selected mode with exact map and serving origin (8.460401ms)
+✔ invalid launches cannot select a different destination or malformed map (8.052104ms)
+✔ 400ms producer stall at the refill threshold preserves audio at both device rates (334.899353ms)
+✔ undersupply waits for target and starvation recovers once (245.722613ms)
+✔ generation resets recycle credits and reject stale packets (42.394167ms)
+✔ mute is immediate and visibility freezes consumption (60.156156ms)
+✔ queue is bounded and resampling does not drift over block boundaries (1039.012332ms)
+✔ shared transport needs no message delivery to keep supplying audio (1580.126904ms)
+✔ capture is bounded and uses the consumed clock after gain (66.773858ms)
+✔ preview pause retains the exact next sample and cursor at both rates and transports (1188.725725ms)
+✔ visibility rebuffering is intentional silence, not producer starvation (65.359576ms)
+✔ paused generation changes never replay the old audible tail (170.079516ms)
+✔ preview Play only pauses consumption and preserves prepared decoder state (49.211209ms)
+✔ preview Reset uses consumed position and preserves paused state (24.285421ms)
+✔ Reset cannot rewind a newer Seek to stale consumer metadata (17.237411ms)
+✔ a suspended worklet cannot retain the command credit or leave preview paused (111.426002ms)
+✔ serial replacement restores dimensions, DOM metadata, focus and runtime references (18.092227ms)
+✔ repeated switches and rollback remove listeners from every retired canvas (39.131087ms)
+✔ threaded GPU owns fresh offscreen context; threaded software remains DOM (0.802046ms)
+✔ fullscreen, invalid dimensions, transfer failures and overlapping requests retain previous canvas (12.589738ms)
+✔ stable fullscreen ancestor survives replacement and restores current canvas dimensions (2.006579ms)
+✔ WebGPU availability follows the serial presentation realm (23.030758ms)
+✔ WebGPU availability follows the worker presentation realm (2.284817ms)
+✔ GL bridge restores legacy texture tuning and copies readback without a shared view (22.69461ms)
+✔ pthread reply installs SDK offscreen map and rollback restores previous ownership (40.09162ms)
+✔ pthread software release removes map and commit frees old shared dimensions (22.960429ms)
+✔ stale pthread replies are ignored; failed transfer releases new shared allocation (2.179387ms)
+✔ successful hosted quit returns the current tab to the online home page (79.857503ms)
+✔ abnormal exits and standalone hosts retain their exit message (42.511966ms)
+✔ same-origin match replay receives hash-bound companion metadata (134.640259ms)
+✔ external files, redirects and malformed match routes carry no instance authority (100.446225ms)
+✔ unavailable digest support never prevents replay download (24.731238ms)
+✖ browser replay fixture stays within the engine replay acceptance boundary (77.186718ms)
+✖ generator-studio-trace.json tracks the engine and simulation revisions (7.938935ms)
+✖ studio-trace.json tracks the engine and simulation revisions (8.136634ms)
+✔ serial-only development package loads serial runtime without probing threads (11.489095ms)
+✔ threaded-only package rejects unsupported host without fetching serial (7.727516ms)
+✔ threaded-only package rejects a forced serial runtime (10.868527ms)
+✔ normal package still falls back to serial on unsupported host (6.417364ms)
+✔ set previews accept only the bound revision and bounded UTF-8 source (88.352674ms)
+✔ rejected asset sets retain validation diagnostics without reading a preview (14.430097ms)
+✔ operational failures and malformed validation reports are errors (2.302837ms)
+✔ saved Software retains DOM ownership on an accelerated browser (13.823851ms)
+✔ saved GPU backends transfer ownership even when automatic policy chose software (0.527037ms)
+✔ URL overrides take precedence, including Automatic (0.230159ms)
+✔ WebGPU retains the launcher policy for its asynchronous startup (0.234898ms)
+✔ legacy preferences match Settings screenFlags migration (7.476297ms)
+✔ fresh, Automatic and unrecognized preferences retain the automatic policy (0.361238ms)
+✔ coalesces writes and acknowledges only the completed generation (24.666938ms)
+✔ quota failure is retained, rejects completion, and allows an explicit retry (26.638177ms)
+✔ restore failure cannot overwrite existing storage (0.743466ms)
+✔ synchronous adapter errors reject the operation (0.724586ms)
+✔ validates the pinned source, map, setup and revision envelope (51.135317ms)
+✔ ignores wrong origins, windows and stale runs; launches only once (231.653974ms)
+✔ rejects a map that does not match the pinned fixture (85.421861ms)
+✔ serial: redundant software canvas resizing preserves the presented pixels (59.076181ms)
+✔ serial: shared dimensions must already match before skipping the resize (24.777848ms)
+✔ serial: GPU, transferred and unknown canvas requests retain SDK handling (73.904728ms)
+✔ serial: lost-context resize preserves context ownership after success or failure (23.875613ms)
+✔ threaded: redundant software canvas resizing preserves the presented pixels (27.93668ms)
+✔ threaded: shared dimensions must already match before skipping the resize (20.182274ms)
+✔ threaded: GPU, transferred and unknown canvas requests retain SDK handling (117.524777ms)
+✔ threaded: lost-context resize preserves context ownership after success or failure (37.592834ms)
+✔ threaded software mode requires a successful shared-memory worker (19.616047ms)
+✔ serial fallback explains missing isolation, memory and worker support (1.415592ms)
+✔ worker WebGL has an additional canvas-transfer requirement (9.058528ms)
+✔ actual pthread errors and silent startup stalls are observed, then detached (30.722464ms)
+✔ synchronous pthread creation errors reach fallback and retain their exception (4.345385ms)
+✔ persistence snapshots survive worker rename and byte changes during the database scan (29.608661ms)
+✔ loader keeps SDK shader preloads beside each runtime and artwork shared (67.352474ms)
+✔ moving a named landmark updates both completion and its screen destination (98.220848ms)
+✔ reused entity IDs with a new generation count as new buildings (36.003254ms)
+✔ stable step IDs survive saved runner state without positional UI assumptions (67.044716ms)
+✔ custom conditions extend the runner without a native callback (57.737319ms)
+✔ bound patient identity persists as health changes and rejects ID reuse (103.580307ms)
+✔ already trained units and idle ticks cannot satisfy improvement goals (66.039932ms)
+✔ guard encounters issue one ordinary enemy order and stay issued after resume (152.246908ms)
+✔ warrior training accepts learning ahead and replacement warriors (83.319364ms)
+✔ lost bound patient gives restart guidance after save/load despite ID reuse (51.459485ms)
+✔ losing bound trainees while replacement workers survive offers a restart (150.703777ms)
+✔ prepare validates shaders before presentation attachment and copies shared uploads (96.979275ms)
+✔ submission admission and GPU buffer retirement are bounded by completion (74.369155ms)
+✔ capture polls submission order despite reversed async mapping completion (44.655164ms)
+✔ resource reset preserves device-loss notification (17.040792ms)
+✔ many flushed chunks reserve one presentation slot until the presentation fence (64.7955ms)
+✔ exported capture preserves target and crop; aggregate memory has a hard bound (36.963448ms)
+✔ budget deferral preserves prior presentation and admitted captures (47.843696ms)
+✔ owned shader text prepares without accessing the worker-local filesystem (25.571614ms)
+✔ discard fences preparation uploads even before the first packet submission (43.426202ms)
+✔ device loss during asynchronous preparation cannot publish readiness (19.689107ms)
+✔ superseded preparation cannot poison or overwrite a new device (54.15807ms)
+✔ device acquired by superseded preparation is destroyed without replacing the owner (22.141843ms)
+✔ retired completion rejection cannot fail a replacement allocation epoch (86.992882ms)
+✔ repeated ordered primitives reuse bindings and uniforms within a bounded chunk (1369.746899ms)
+✔ changed uniforms and physical image replacement cannot reuse stale bindings (51.719014ms)
+✔ presentation binding reuse ends at resize and allocation reset (35.999744ms)
+✔ uniform cache limit falls back without growing retained comparison storage (133.253627ms)
+✔ barriers clears and attachment changes end adjacent pass reuse in painter order (70.910974ms)
+✔ changed state rebinds within the pass while shaders invalidate binding state (50.68179ms)
+✔ terrain ends an active pass before composing and fresh chunks reset encoded state (50.946048ms)
+✔ indexed mesh ranges reuse physical buffers but refresh changed bounds (48.73622ms)
+ℹ tests 151
+ℹ suites 0
+ℹ pass 148
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5889.540023
+
+✖ failing tests:
+
+test at browser/unit/replay-fixture.test.js:7:1
+✖ browser replay fixture stays within the engine replay acceptance boundary (77.186718ms)
+  AssertionError [ERR_ASSERTION]: Replay fixture 186 is outside 187..191; re-record it using fixtures/README.md
+      at TestContext.<anonymous> (/home/bradley/.codex/worktrees/45cd/glob2/browser/unit/replay-fixture.test.js:15:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at browser/unit/replay-fixture.test.js:20:3
+✖ generator-studio-trace.json tracks the engine and simulation revisions (7.938935ms)
+  AssertionError [ERR_ASSERTION]: Refresh the native Studio reference after reviewing the version change
+  
+  186 !== 191
+  
+      at TestContext.<anonymous> (/home/bradley/.codex/worktrees/45cd/glob2/browser/unit/replay-fixture.test.js:24:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 186,
+    expected: 191,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at browser/unit/replay-fixture.test.js:20:3
+✖ studio-trace.json tracks the engine and simulation revisions (8.136634ms)
+  AssertionError [ERR_ASSERTION]: Refresh the native Studio reference after reviewing the version change
+  
+  186 !== 191
+  
+      at TestContext.<anonymous> (/home/bradley/.codex/worktrees/45cd/glob2/browser/unit/replay-fixture.test.js:24:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 186,
+    expected: 191,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

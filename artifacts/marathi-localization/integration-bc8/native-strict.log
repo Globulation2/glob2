@@ -1,0 +1,69 @@
+data/texts.ar.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.br.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ca.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.cz.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.de.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.dk.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.en.txt: 0 untranslated (0 pending), 0 missing keys, 0 obsolete keys
+data/texts.es.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.eo.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.eu.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.fa.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.fr.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.gr.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.hu.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.it.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.nl.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.pl.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.pt.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ro.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ru.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.si.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.sk.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.sr.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.fi.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.sv.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.tr.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.zh-tw.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.zh-cn.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.uk.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.id.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.vi.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ja.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.ko.txt: 14 untranslated (14 pending), 0 missing keys, 0 obsolete keys
+data/texts.hi.txt: 18 untranslated (14 pending), 4 missing keys, 0 obsolete keys
+data/texts.ur.txt: 18 untranslated (14 pending), 4 missing keys, 0 obsolete keys
+data/texts.sw.txt: 18 untranslated (14 pending), 4 missing keys, 0 obsolete keys
+data/texts.nb.txt: 16 untranslated (12 pending), 16 missing keys, 0 obsolete keys
+data/texts.mr.txt: 0 untranslated (0 pending), 0 missing keys, 0 obsolete keys
+ERROR: data/texts.hi.txt: missing key [dry_grass]
+ERROR: data/texts.hi.txt: missing key [dune_sand]
+ERROR: data/texts.hi.txt: missing key [lush_grass]
+ERROR: data/texts.hi.txt: missing key [pale_sand]
+ERROR: data/texts.ur.txt: missing key [dry_grass]
+ERROR: data/texts.ur.txt: missing key [dune_sand]
+ERROR: data/texts.ur.txt: missing key [lush_grass]
+ERROR: data/texts.ur.txt: missing key [pale_sand]
+ERROR: data/texts.sw.txt: missing key [dry_grass]
+ERROR: data/texts.sw.txt: missing key [dune_sand]
+ERROR: data/texts.sw.txt: missing key [lush_grass]
+ERROR: data/texts.sw.txt: missing key [pale_sand]
+ERROR: data/texts.nb.txt: missing key [dry_grass]
+ERROR: data/texts.nb.txt: missing key [dune_sand]
+ERROR: data/texts.nb.txt: missing key [lush_grass]
+ERROR: data/texts.nb.txt: missing key [pale_sand]
+ERROR: data/texts.nb.txt: missing key [stats defence]
+ERROR: data/texts.nb.txt: missing key [stats full history]
+ERROR: data/texts.nb.txt: missing key [stats history]
+ERROR: data/texts.nb.txt: missing key [stats map overlays]
+ERROR: data/texts.nb.txt: missing key [stats missing readings]
+ERROR: data/texts.nb.txt: missing key [stats topic economy]
+ERROR: data/texts.nb.txt: missing key [stats topic overview]
+ERROR: data/texts.nb.txt: missing key [stats topic world]
+ERROR: data/texts.nb.txt: missing key [stats topic]
+ERROR: data/texts.nb.txt: missing key [stats unit details]
+ERROR: data/texts.nb.txt: missing key [stats waiting]
+ERROR: data/texts.nb.txt: missing key [stats work construction]
+ERROR: data/texts.nb.txt: incomplete language is marked complete
+29 structural errors
+Coverage limits (including tutorial languages): use --json for the full inventory.

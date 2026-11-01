@@ -1,0 +1,398 @@
+{
+  "validated_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "scope": "Complete verified currentffbd Android outputs and immutable snapshot of own Android evidence/provenance before subsequent integration rebuild. No claim this producer matches newmaster.",
+  "producer_history": {
+    "initial": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+    "previous_verified": "ba890db53e67617fb3cb1033c157ca578781196e",
+    "official_integrated_final": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4"
+  },
+  "symbol_build_metadata": {
+    "build_id": "262d072c457ffbf93750d0a9e632383de969bac2",
+    "architecture": "x86_64"
+  },
+  "byte_cap": 2147483648,
+  "archive_bytes_before_manifest": 649277975,
+  "free_space_floor": 10737418240,
+  "outputs": [
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ffbd/app-release-unsigned.apk",
+      "sha256": "acfa7ddf22bef8e2fdf78e39c0a2268e4bb902011fa87aa2576987549081af0c",
+      "bytes": 208482724,
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ffbd/app-release-development.apk",
+      "sha256": "b0d77346e3223bbdae2ce6f85baa8c120e437d50c4caf8b35ebafafefdab7be2",
+      "bytes": 209140893,
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ffbd/app-release-unsigned.symbols.json",
+      "sha256": "465051d1f142bc3f325b9726ceea6efddef81c5884d0b211d857f3c51fad97ac",
+      "bytes": 89,
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.json",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ffbd/app-release-development.json",
+      "sha256": "be6181771af336b4819432c4ce8f5e8deac1904aec4b7e41adb9292cf4c4a76e",
+      "bytes": 179,
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/45cd/glob2/build/android/device/x86_64/24/client/release/lib/libmain.so",
+      "archive_path": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ffbd/libmain.so.gz",
+      "original_sha256": "02dd19ecff2d5dfcdab13191a1f7424d892b61e9df42ea7cea7a2807691cfd01",
+      "original_bytes": 774525400,
+      "archive_sha256": "4a207a3ef2e1c118dc078297e3c880c7b1076aff404098cfb53cbd7b3b384036",
+      "bytes": 209839069,
+      "encoding": "lossless gzip level1; mtime0"
+    }
+  ],
+  "evidence_snapshot_sha256": {
+    "adb-server.log": {
+      "sha256": "d26cb73a789a11c92fdc8fce08541ab743ea8e68d48507247ec186da5825898a",
+      "bytes": 1458
+    },
+    "before-current-install.png": {
+      "sha256": "2f74da1abbd92e2c3f7eff70730411b2106b9c9d202da677a48183fed4948c69",
+      "bytes": 303836
+    },
+    "boot-current.png": {
+      "sha256": "0027405565c7c14cc16ba26a2e7c99063e4e37611f970ed421a27b8179fbc6f3",
+      "bytes": 120616
+    },
+    "boot-system-ui-anr/activity-lastanr.txt": {
+      "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+      "bytes": 88
+    },
+    "boot-system-ui-anr/after-wait.png": {
+      "sha256": "7db1f65f97b4075d81069d3d273ecad98b782c008c09c1ca7fb16f06b80753bd",
+      "bytes": 303777
+    },
+    "boot-system-ui-anr/before-wait.png": {
+      "sha256": "0027405565c7c14cc16ba26a2e7c99063e4e37611f970ed421a27b8179fbc6f3",
+      "bytes": 120616
+    },
+    "boot-system-ui-anr/logcat-tail.txt": {
+      "sha256": "f8088961c7858e0ce854a764841e1d24ec6d5dfe85a5a8ff09243eeff07f0564",
+      "bytes": 73158
+    },
+    "boot-system-ui-anr/recovery.json": {
+      "sha256": "f916abf43a16cc2f3164be54bcb48a8ec75db4df58e61212b4a13ea7b75487fb",
+      "bytes": 391
+    },
+    "boot-system-ui-anr/window.txt": {
+      "sha256": "5a3e88b05bfb6eab0e47920204f2a464162cb24f91e86e33d1b5d2aff0e3dadf",
+      "bytes": 40686
+    },
+    "build.log": {
+      "sha256": "10a35f1c4766ffce1507a78e5bc271c3afbb7a50a64957518aa85fa7b462989d",
+      "bytes": 14034069
+    },
+    "build_refresh.py": {
+      "sha256": "0ad3e0d222002fcf63426491971a28ea7462b90528830e30d75385d4b63f4ba0",
+      "bytes": 5771
+    },
+    "capture_dependency_logs.py": {
+      "sha256": "1f4973709c3ce05a284b8333bdd062e47b1c480c3435f02e086dee448f25e13e",
+      "bytes": 1355
+    },
+    "cleanup_owned_runtime.py": {
+      "sha256": "850e384b425f8a221e4c21fe2548de550e4d31b7bd1febbe009cb3e15a9035a3",
+      "bytes": 4862
+    },
+    "dependencies.log": {
+      "sha256": "7a4ce3eeef2d36f41f0b1eabd830a8f606495565642c0a3572b54c6c2bbcb140",
+      "bytes": 115
+    },
+    "dependency-discovery-precommit.json": {
+      "sha256": "70817c42d5ae8a7315c05645245111dd9ac53eec950afefdab74bd13d8e8e730",
+      "bytes": 6881
+    },
+    "dependency-log-capture.json": {
+      "sha256": "2be1953bf2246ad0dee65abcdbb5d4f06a42f400b64968ec819a4be1f08c5019",
+      "bytes": 1365
+    },
+    "dependency-logs/sources/ffmpeg-build/build.log.gz": {
+      "sha256": "41e44ba1068672d760e7c763addf2bacd3d70a4966c6513531740906d34f1f32",
+      "bytes": 3940
+    },
+    "dependency-logs/sources/ffmpeg-build/ffbuild/config.log.gz": {
+      "sha256": "5b9fc778f76c11a5cb107dea03bb7f02511d1b3dbc84a60d7154f95a615235d9",
+      "bytes": 94009
+    },
+    "dependency-logs/sources/x264-build/build.log.gz": {
+      "sha256": "9b5cad5d61b8f23319a45aff6ea6e0cf25acd6a7916549939024b4c23e7832b2",
+      "bytes": 2409
+    },
+    "dependency-logs/sources/x264-build/config.log.gz": {
+      "sha256": "85a297392e70318ed781cd9beb25d0e4b196e465ffe1b83e2de551480937a1df",
+      "bytes": 1995
+    },
+    "emulator-final-tail-1000.log": {
+      "sha256": "780003ce8724da31db1a8d670f766a478286efc343b2b3b3a988b3d2f6a3511a",
+      "bytes": 8200
+    },
+    "emulator.log": {
+      "sha256": "fda9cb5b80b57ef149c5dd180fdb2a2c7d07ce5a64820815d8341d60de1cd53b",
+      "bytes": 8792
+    },
+    "finalize_evidence.py": {
+      "sha256": "e505bffaaea0368f9ee2282a15e7aae1d3480cca9c45512ea8487e84b8b3626a",
+      "bytes": 5415
+    },
+    "gate-recommendation.json": {
+      "sha256": "ddc053df9936c513132b7b145a5234fd225f4391f051a5a1ba3d2ada88b0c777",
+      "bytes": 5782
+    },
+    "hud/actions.json": {
+      "sha256": "f8ec04df95a055cba3b5c9c21230dc8d140f8ce21b12f63b7a47fb1d44a01e13",
+      "bytes": 2823
+    },
+    "hud/gameplay-landscape.png": {
+      "sha256": "474ca4015e0758df3b5a6737ee06dbde7a42a0251265c64091561ffced5be36a",
+      "bytes": 321051
+    },
+    "hud/gameplay-log.txt": {
+      "sha256": "eb69c19db1927ccee1468d5cb045a25446fa8c397abaf3f7409b8087b8f0a2b2",
+      "bytes": 42839
+    },
+    "hud/gameplay-portrait.png": {
+      "sha256": "1a61a1d4da7f37f456e62a4fa1ea3a8f91643eea89e070ebb2c49e20e4f7acd8",
+      "bytes": 407266
+    },
+    "hud/intro-launch.png": {
+      "sha256": "4d9ae711dd613ea755e999342c102a350e134a75d1f075ba32c92aba0b5a97d0",
+      "bytes": 427748
+    },
+    "hud/lesson-catalog.png": {
+      "sha256": "0ba10f92b50146a045b624fa841c9f249d6f7a19aa8767247e1d8bae2ca80dcc",
+      "bytes": 104460
+    },
+    "hud/logcat-final.txt": {
+      "sha256": "67036dbbf09068f1ab22e50bd95487ca6e8bd987cd9a2cce12d2793817b50e0a",
+      "bytes": 114549
+    },
+    "hud/menu-ready-log.txt": {
+      "sha256": "d86e4363f9adb9965e1429f8947d7f4f316e3be4568cca70480a272269a3324d",
+      "bytes": 32952
+    },
+    "hud/menu-ready.png": {
+      "sha256": "c31023603a6d666c215ecc68208b5cc304bf9392fb8dd88064e7dd022bc6c831",
+      "bytes": 431537
+    },
+    "hud/menu.png": {
+      "sha256": "883de7cd118c0cbbefcb4e4c0b907dc371b122b4afe6c4addcf88c62a5284926",
+      "bytes": 601831
+    },
+    "hud/root-visual-review.json": {
+      "sha256": "f0982342f2e37e2673f6cee695fd1ebf1d7413b7e201828f79a5f4ec0649cddf",
+      "bytes": 1236
+    },
+    "hud/statistics-landscape-collapsed-instructions.png": {
+      "sha256": "57191c6384ce3f30a0fe7de04e254014d8fa625b33322b7a612b300f6b9c0cfd",
+      "bytes": 178944
+    },
+    "hud/statistics-landscape.png": {
+      "sha256": "ae039d31e36c786937e0d45d99fdac75c664f8c59b1500410a5a1e4d06f77c18",
+      "bytes": 174236
+    },
+    "hud/statistics-portrait.png": {
+      "sha256": "d0a257bc99c45b8ce855cf4a6c090e104ecc7e97acc7c6434340684d5584e2f1",
+      "bytes": 194429
+    },
+    "hud/tools.png": {
+      "sha256": "e31676a53739a53719d68596a3dcf44f95d7409b6b3b2f0d3745b35a7f51a739",
+      "bytes": 358877
+    },
+    "hud/visual-review.json": {
+      "sha256": "604294ffbee28fcb04e967639c01a255d3092eb1567d41cbdd37947e3753aa84",
+      "bytes": 3859
+    },
+    "new-entry-glyph-inventory.json": {
+      "sha256": "0cac02b6f5b31c1f24909bea6c52cb9747222c3fea198b7540ad2309396913e3",
+      "bytes": 387
+    },
+    "object-inputs-after.json": {
+      "sha256": "7ec72fb4dc0b15133f51da29bd348efd1db3a918465e045728678386a2e27f07",
+      "bytes": 104224
+    },
+    "object-inputs-before.json": {
+      "sha256": "620eecf691a62b1647da4db68aefcecac34d926e8cc520ffb9cd64f134e2e96f",
+      "bytes": 104079
+    },
+    "owned-runtime.json": {
+      "sha256": "e1b03cc8ae1e7eff2e15f4c30482c3e32760f63ddf8bb451104a17bb62a86c5f",
+      "bytes": 13304
+    },
+    "producer-provenance.json": {
+      "sha256": "4bc36a3a94c73282b345134f9f038cd2459c9e99603335e7d536f3849bac4cbd",
+      "bytes": 23508
+    },
+    "rendering/apk-and-install.json": {
+      "sha256": "50073a7dc344f493df922dadb5ec4d43f0eabf587cfe190fc622e601172052f9",
+      "bytes": 13921
+    },
+    "rendering/apk-resources.txt": {
+      "sha256": "7d7273e60fc05ec77df6e16d83fb2a4c5ac592512c819fa309ec7ea9213bdd7b",
+      "bytes": 1079
+    },
+    "rendering/first-run-00.png": {
+      "sha256": "c8b733a1fe7f900ab172107551c3883f043f92094c22733b3afbe64e7fcb1f9e",
+      "bytes": 53216
+    },
+    "rendering/first-run-01.png": {
+      "sha256": "757eb23dc345dc0be7dffabdd960ef9198007c43790187dca8349e55b4396b8b",
+      "bytes": 26602
+    },
+    "rendering/first-run-02.png": {
+      "sha256": "757eb23dc345dc0be7dffabdd960ef9198007c43790187dca8349e55b4396b8b",
+      "bytes": 26602
+    },
+    "rendering/first-run-03.png": {
+      "sha256": "ee13fa713b441a0c4f7544cdcd63b3f1b1e3f3f134ca670234ad8a5a88fd1705",
+      "bytes": 26460
+    },
+    "rendering/first-run-04.png": {
+      "sha256": "34aa859d96b07ca67a90c56c1de89d11396f9a3f7e993933a6b76d45944bb3ab",
+      "bytes": 11635
+    },
+    "rendering/first-run-05.png": {
+      "sha256": "cd0963bf9d9f10a773be817bdd2abaa7d07fcc5be297536da97fea622d7f678f",
+      "bytes": 11910
+    },
+    "rendering/first-run-06.png": {
+      "sha256": "107d4facb01be32e98a4d05e25d7002b7976267b314814883e030d725624ff94",
+      "bytes": 10728
+    },
+    "rendering/first-run-07.png": {
+      "sha256": "58024d5b1fa14f0577ca629b6e2139cf0eabde9810be8676d3a8b1794b0405ac",
+      "bytes": 10905
+    },
+    "rendering/first-run-08.png": {
+      "sha256": "466489e6ccc90b47a3d86b10d6b57719bff6b9126b1ac6df6abb38e9bc52d089",
+      "bytes": 11910
+    },
+    "rendering/first-run-09.png": {
+      "sha256": "0dbbd091fadedc311363f8d803eb8f30a8dd5950f8fdd63e8c480380ef7c2b3b",
+      "bytes": 10827
+    },
+    "rendering/install.log": {
+      "sha256": "781a31c82430c97897af612ece5e0ca2205e301cb5ff121ce2660541ea5182c7",
+      "bytes": 36
+    },
+    "rendering/lifecycle/activity.txt": {
+      "sha256": "e131836942c6e790bd6bfde7837b9fe3e4e2b60a824bd4c13582be9c8da030f1",
+      "bytes": 31254
+    },
+    "rendering/lifecycle/first-run-AudioPreferenceScreen.png": {
+      "sha256": "ea966978e742ae8f495e41d613628a03c038be987256ed85f7bfeca3e723dac5",
+      "bytes": 314651
+    },
+    "rendering/lifecycle/first-run-HandPreferenceScreen.png": {
+      "sha256": "d34ad9ce19fbde3b71a7203051f172aaccee559629b25ef2f1c2b06bc18a1b91",
+      "bytes": 227527
+    },
+    "rendering/lifecycle/introduction-offer-logcat.txt": {
+      "sha256": "cb72e8d530e9d21876dccef345d45b23c374078a9f7d31916bf0478559003e0d",
+      "bytes": 53660
+    },
+    "rendering/lifecycle/introduction-offer.png": {
+      "sha256": "4b5d6d41ddd42083ad9782684b55cd40431836b06b1de43bb4cd9b6115e6d26b",
+      "bytes": 305153
+    },
+    "rendering/lifecycle/logcat.txt": {
+      "sha256": "2e6ab86dcfdebe68df0446a01b5294361ca698e074aaf94e40dd5572bdd14f4b",
+      "bytes": 167952
+    },
+    "rendering/lifecycle/marathi-preferences-before.txt": {
+      "sha256": "128d22a78cc16b7fa7109e7e38b9e6db57ddeee0df51e6ba4c189b4361ea31e8",
+      "bytes": 1083
+    },
+    "rendering/lifecycle/memory.txt": {
+      "sha256": "f2ad8894600842cd7a3822bd4ba05fa4f20d952bc14acaf58e0d2705c62e298f",
+      "bytes": 2829
+    },
+    "rendering/lifecycle/profile-after.txt": {
+      "sha256": "07410dc05cd3e809095ba31618db39853db10c12f020a2aed3599d59e9f7106f",
+      "bytes": 378
+    },
+    "rendering/lifecycle/profile-before.txt": {
+      "sha256": "07410dc05cd3e809095ba31618db39853db10c12f020a2aed3599d59e9f7106f",
+      "bytes": 378
+    },
+    "rendering/lifecycle/relaunched.png": {
+      "sha256": "c7bac22db2cf5c44a3d5178d50c8ad3ae4d1b24cf3fdcfea8a51fe271daf24a0",
+      "bytes": 321869
+    },
+    "rendering/lifecycle/result.json": {
+      "sha256": "0811594ab7770163a9c198fbe2cf7f77c58e4cf5c43506c68927c9a009df746f",
+      "bytes": 397
+    },
+    "rendering/lifecycle/resumed.png": {
+      "sha256": "36c0586e26232544b1c85e6d4f0b43f8c94c2a75e1a534cfcd8a8a99e7541591",
+      "bytes": 308953
+    },
+    "rendering/lifecycle/rotation-0.png": {
+      "sha256": "965d12af6b30ad75beab10005eec8ff7cc4f883fba27cda861b514f59752376e",
+      "bytes": 308859
+    },
+    "rendering/lifecycle/rotation-1.png": {
+      "sha256": "c5e8177555903250e25d8751960358b59ef08ded90cdb47956f0b3fca36cd266",
+      "bytes": 319456
+    },
+    "rendering/lifecycle/settings.png": {
+      "sha256": "ba114cee1f9811d65dfade5738c34bd84095b56d5301ae7529406de47d7a8c57",
+      "bytes": 96959
+    },
+    "rendering/lifecycle/startup.png": {
+      "sha256": "07d87058cbe315e711730e08c7ec93c3d56a138e7d374021448cff1a3b274013",
+      "bytes": 321748
+    },
+    "rendering/root-native-menu-visual-review.json": {
+      "sha256": "143268cc652853de0abacf291fcda26a8d37afb341a5d2a9486cf8be9d3218f4",
+      "bytes": 1183
+    },
+    "rendering/root-overlay-visual-review.json": {
+      "sha256": "73c616bdfb83075980c677b5ef86cf27c696815ac8eaf3ceadaf946fa26bd458",
+      "bytes": 1341
+    },
+    "rendering/sign.log": {
+      "sha256": "0bb466381357f87150eb966f95d5c6da92b924cc9fb3af098aca6ad17e3c3155",
+      "bytes": 184
+    },
+    "rendering/smoke.log": {
+      "sha256": "03dce9dec42ca5d6f8837b9355db13f0be6cd2c55592e88e2c6e3f6beb12292a",
+      "bytes": 263
+    },
+    "runtime-cleanup.json": {
+      "sha256": "e5949213b40eb0a496f6974b49d08265eb250461eae47993670c5a2313f68aad",
+      "bytes": 5010
+    },
+    "start_owned_runtime.py": {
+      "sha256": "7a88fd96d472b9816fbe29c0389b80eef92d77b033e937edc64b5a79d9666ef0",
+      "bytes": 1983
+    },
+    "validate_release.py": {
+      "sha256": "0afed7fd2db24156dff90d7579fd3aa675043eeaf4c67ceb45e45b4bd4858b79",
+      "bytes": 7923
+    },
+    "visual-review.json": {
+      "sha256": "1c39f9f7855129ba4e43ac268421d46145cd262633f21be5b7b7e410ae05a0c0",
+      "bytes": 4472
+    }
+  },
+  "evidence_original_directory": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-refresh/android",
+  "old_ba890_archive_preserved": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ba890",
+  "preservation_notes": [
+    "Earlier ba890 archive is retained separately and unchanged.",
+    "Original working build paths may be overwritten by future official builds; archived files preserve actual ffbd bytes.",
+    "Current mutable evidence directory may later gain audit-only data; archived evidence/ is this exact completed Android snapshot.",
+    "Task AVD is preserved in place and ownedruntime is alreadycleaned.",
+    "Binary archive stays local; only manifest belongs in published review evidence."
+  ]
+}

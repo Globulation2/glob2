@@ -1,0 +1,25 @@
+{
+  "old_native_keys": 3395,
+  "new_native_keys": 3411,
+  "master": "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+  "added": {
+    "[stats topic overview]": "Overview",
+    "[stats topic economy]": "Economy",
+    "[stats topic world]": "World",
+    "[stats work construction]": "Work & construction",
+    "[stats defence]": "Defence",
+    "[stats history]": "View history",
+    "[stats waiting]": "Waiting for statistics…",
+    "[stats unit details]": "Unit details",
+    "[stats map overlays]": "Map overlays",
+    "[stats topic]": "Topic",
+    "[stats full history]": "Open full history",
+    "[stats missing readings]": "— No recorded reading yet. Select a statistic for details.",
+    "[lush_grass]": "Lush grass",
+    "[dry_grass]": "Dry grass",
+    "[dune_sand]": "Dune sand",
+    "[pale_sand]": "Pale sand"
+  },
+  "changed": {},
+  "removed": []
+}

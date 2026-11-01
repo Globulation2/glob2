@@ -1,0 +1,509 @@
+{
+  "id": "native-colony-001",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "colony",
+  "context": "Workers autonomously gather/build; explorers scout; warriors fight. Flags assign work or military attention, not direct unit movement.",
+  "entries": [
+    {
+      "id": "native:[%0 units can't access building]",
+      "key": "[%0 units can't access building]",
+      "source": "%0 units can't access building"
+    },
+    {
+      "id": "native:[%0 units can't access flag]",
+      "key": "[%0 units can't access flag]",
+      "source": "%0 units can't access flag"
+    },
+    {
+      "id": "native:[%0 units can't access fruit]",
+      "key": "[%0 units can't access fruit]",
+      "source": "%0 units can't access fruit"
+    },
+    {
+      "id": "native:[%0 units too far from building]",
+      "key": "[%0 units too far from building]",
+      "source": "%0 units too far from building"
+    },
+    {
+      "id": "native:[%0 units too far from flag]",
+      "key": "[%0 units too far from flag]",
+      "source": "%0 units too far from flag"
+    },
+    {
+      "id": "native:[%0 units too far from fruit]",
+      "key": "[%0 units too far from fruit]",
+      "source": "%0 units too far from fruit"
+    },
+    {
+      "id": "native:[any explorer]",
+      "key": "[any explorer]",
+      "source": "any explorer"
+    },
+    {
+      "id": "native:[Building Defaults]",
+      "key": "[Building Defaults]",
+      "source": "Building Defaults"
+    },
+    {
+      "id": "native:[building settings]",
+      "key": "[building settings]",
+      "source": "Building Settings"
+    },
+    {
+      "id": "native:[building site]",
+      "key": "[building site]",
+      "source": "construction site"
+    },
+    {
+      "id": "native:[Building Tool Box Explanation]",
+      "key": "[Building Tool Box Explanation]",
+      "source": "Shift + Drag = Box"
+    },
+    {
+      "id": "native:[Building Tool Line Explanation]",
+      "key": "[Building Tool Line Explanation]",
+      "source": "Ctrl + Drag = Line"
+    },
+    {
+      "id": "native:[Buildings]",
+      "key": "[Buildings]",
+      "source": "Buildings"
+    },
+    {
+      "id": "native:[clearingflag explanation 2]",
+      "key": "[clearingflag explanation 2]",
+      "source": ""
+    },
+    {
+      "id": "native:[clearingflag explanation]",
+      "key": "[clearingflag explanation]",
+      "source": "Clears resources"
+    },
+    {
+      "id": "native:[clearingflag]",
+      "key": "[clearingflag]",
+      "source": "Clearing Flag"
+    },
+    {
+      "id": "native:[destroy building]",
+      "key": "[destroy building]",
+      "source": "Destroy Selected Building"
+    },
+    {
+      "id": "native:[explorationflag explanation 2]",
+      "key": "[explorationflag explanation 2]",
+      "source": ""
+    },
+    {
+      "id": "native:[explorationflag explanation]",
+      "key": "[explorationflag explanation]",
+      "source": "Attracts explorers"
+    },
+    {
+      "id": "native:[explorationflag]",
+      "key": "[explorationflag]",
+      "source": "Exploration Flag"
+    },
+    {
+      "id": "native:[Explorer Ratio]",
+      "key": "[Explorer Ratio]",
+      "source": "Explorer Ratio"
+    },
+    {
+      "id": "native:[Explorer]",
+      "key": "[Explorer]",
+      "source": "Explorer"
+    },
+    {
+      "id": "native:[explorers]",
+      "key": "[explorers]",
+      "source": "explorers"
+    },
+    {
+      "id": "native:[Flag Defaults]",
+      "key": "[Flag Defaults]",
+      "source": "Flag Defaults"
+    },
+    {
+      "id": "native:[fruit]",
+      "key": "[fruit]",
+      "source": "fruit"
+    },
+    {
+      "id": "native:[inn explanation 2]",
+      "key": "[inn explanation 2]",
+      "source": ""
+    },
+    {
+      "id": "native:[inn explanation]",
+      "key": "[inn explanation]",
+      "source": "Feeds your units"
+    },
+    {
+      "id": "native:[market explanation 2]",
+      "key": "[market explanation 2]",
+      "source": "fruits with others"
+    },
+    {
+      "id": "native:[market explanation]",
+      "key": "[market explanation]",
+      "source": "Allows the exchange of"
+    },
+    {
+      "id": "native:[market]",
+      "key": "[market]",
+      "source": "Market"
+    },
+    {
+      "id": "native:[Minimum Level To Flag]",
+      "key": "[Minimum Level To Flag]",
+      "source": "Min. unit level"
+    },
+    {
+      "id": "native:[Number Of Buildings]",
+      "key": "[Number Of Buildings]",
+      "source": "Number Of Buildings"
+    },
+    {
+      "id": "native:[repair building]",
+      "key": "[repair building]",
+      "source": "Start/Stop Repair"
+    },
+    {
+      "id": "native:[select barracks building]",
+      "key": "[select barracks building]",
+      "source": "Select Barracks"
+    },
+    {
+      "id": "native:[select clearingflag]",
+      "key": "[select clearingflag]",
+      "source": "Select Clearing Flag"
+    },
+    {
+      "id": "native:[select construct market]",
+      "key": "[select construct market]",
+      "source": "Select Construct Market"
+    },
+    {
+      "id": "native:[select construct swarm]",
+      "key": "[select construct swarm]",
+      "source": "Select Construct Swarm"
+    },
+    {
+      "id": "native:[select explorationflag]",
+      "key": "[select explorationflag]",
+      "source": "Select Exploration Flag"
+    },
+    {
+      "id": "native:[select hospital building]",
+      "key": "[select hospital building]",
+      "source": "Select Hospital"
+    },
+    {
+      "id": "native:[select inn building]",
+      "key": "[select inn building]",
+      "source": "Select Inn"
+    },
+    {
+      "id": "native:[select market building]",
+      "key": "[select market building]",
+      "source": "Select Market"
+    },
+    {
+      "id": "native:[select place clearingflag]",
+      "key": "[select place clearingflag]",
+      "source": "Select Place Clearing Flag"
+    },
+    {
+      "id": "native:[select place explorationflag]",
+      "key": "[select place explorationflag]",
+      "source": "Select Place Exploration Flag"
+    },
+    {
+      "id": "native:[select place warflag]",
+      "key": "[select place warflag]",
+      "source": "Select Place War Flag"
+    },
+    {
+      "id": "native:[select racetrack building]",
+      "key": "[select racetrack building]",
+      "source": "Select Racetrack"
+    },
+    {
+      "id": "native:[select school building]",
+      "key": "[select school building]",
+      "source": "Select School"
+    },
+    {
+      "id": "native:[select swarm building]",
+      "key": "[select swarm building]",
+      "source": "Select Swarm"
+    },
+    {
+      "id": "native:[select swimmingpool building]",
+      "key": "[select swimmingpool building]",
+      "source": "Select Swimming Pool"
+    },
+    {
+      "id": "native:[select tower building]",
+      "key": "[select tower building]",
+      "source": "Select Defense Tower"
+    },
+    {
+      "id": "native:[select wall building]",
+      "key": "[select wall building]",
+      "source": "Select Wall"
+    },
+    {
+      "id": "native:[select warflag]",
+      "key": "[select warflag]",
+      "source": "Select War Flag"
+    },
+    {
+      "id": "native:[show flags]",
+      "key": "[show flags]",
+      "source": "Show flags"
+    },
+    {
+      "id": "native:[swarm explanation 2]",
+      "key": "[swarm explanation 2]",
+      "source": ""
+    },
+    {
+      "id": "native:[swarm explanation]",
+      "key": "[swarm explanation]",
+      "source": "Creates new units"
+    },
+    {
+      "id": "native:[swarm]",
+      "key": "[swarm]",
+      "source": "Swarm"
+    },
+    {
+      "id": "native:[switch to building view]",
+      "key": "[switch to building view]",
+      "source": "Switch To Building view"
+    },
+    {
+      "id": "native:[switch to flag view]",
+      "key": "[switch to flag view]",
+      "source": "Switch to Flags view"
+    },
+    {
+      "id": "native:[the building is finished]",
+      "key": "[the building is finished]",
+      "source": "The building is finished."
+    },
+    {
+      "id": "native:[the building is under attack]",
+      "key": "[the building is under attack]",
+      "source": "The building is under attack."
+    },
+    {
+      "id": "native:[the clearingflag is finished]",
+      "key": "[the clearingflag is finished]",
+      "source": "Clearing flag placed."
+    },
+    {
+      "id": "native:[the clearingflag is under attack]",
+      "key": "[the clearingflag is under attack]",
+      "source": "Clearing flag is under attack."
+    },
+    {
+      "id": "native:[the explorationflag is finished]",
+      "key": "[the explorationflag is finished]",
+      "source": "Exploration flag placed."
+    },
+    {
+      "id": "native:[the explorationflag is under attack]",
+      "key": "[the explorationflag is under attack]",
+      "source": "Exploration flag is under attack."
+    },
+    {
+      "id": "native:[the inn is finished]",
+      "key": "[the inn is finished]",
+      "source": "The Inn is finished."
+    },
+    {
+      "id": "native:[the inn is under attack]",
+      "key": "[the inn is under attack]",
+      "source": "The Inn is under attack."
+    },
+    {
+      "id": "native:[the market is finished]",
+      "key": "[the market is finished]",
+      "source": "The market is finished."
+    },
+    {
+      "id": "native:[the market is under attack]",
+      "key": "[the market is under attack]",
+      "source": "The market is under attack."
+    },
+    {
+      "id": "native:[the swarm is finished]",
+      "key": "[the swarm is finished]",
+      "source": "The swarm is finished."
+    },
+    {
+      "id": "native:[the swarm is under attack]",
+      "key": "[the swarm is under attack]",
+      "source": "The swarm is under attack."
+    },
+    {
+      "id": "native:[the warflag is finished]",
+      "key": "[the warflag is finished]",
+      "source": "War flag placed."
+    },
+    {
+      "id": "native:[the warflag is under attack]",
+      "key": "[the warflag is under attack]",
+      "source": "War flag is under attack."
+    },
+    {
+      "id": "native:[upgrade building]",
+      "key": "[upgrade building]",
+      "source": "Start/Stop Upgrade"
+    },
+    {
+      "id": "native:[warflag explanation 2]",
+      "key": "[warflag explanation 2]",
+      "source": ""
+    },
+    {
+      "id": "native:[warflag explanation]",
+      "key": "[warflag explanation]",
+      "source": "Attracts warriors"
+    },
+    {
+      "id": "native:[warflag]",
+      "key": "[warflag]",
+      "source": "War Flag"
+    },
+    {
+      "id": "native:[Warrior Ratio]",
+      "key": "[Warrior Ratio]",
+      "source": "Warrior Ratio"
+    },
+    {
+      "id": "native:[Warrior]",
+      "key": "[Warrior]",
+      "source": "Warrior"
+    },
+    {
+      "id": "native:[warriors]",
+      "key": "[warriors]",
+      "source": "warriors"
+    },
+    {
+      "id": "native:[Worker Ratio]",
+      "key": "[Worker Ratio]",
+      "source": "Worker Ratio"
+    },
+    {
+      "id": "native:[Worker]",
+      "key": "[Worker]",
+      "source": "Worker"
+    },
+    {
+      "id": "native:[workers]",
+      "key": "[workers]",
+      "source": "workers"
+    },
+    {
+      "id": "native:[Fruit]",
+      "key": "[Fruit]",
+      "source": "Fruit"
+    },
+    {
+      "id": "native:[Starting workers]",
+      "key": "[Starting workers]",
+      "source": "Starting workers"
+    },
+    {
+      "id": "native:[Starting workers: Game Rules tab.]",
+      "key": "[Starting workers: Game Rules tab.]",
+      "source": "Starting workers: Game Rules tab."
+    },
+    {
+      "id": "native:[8 workers / 2x speed]",
+      "key": "[8 workers / 2x speed]",
+      "source": "8 workers / 2x speed"
+    },
+    {
+      "id": "native:[Classic colony building]",
+      "key": "[Classic colony building]",
+      "source": "Classic colony building"
+    },
+    {
+      "id": "native:[Quick clash: 2x speed; generated maps start with 8 workers.]",
+      "key": "[Quick clash: 2x speed; generated maps start with 8 workers.]",
+      "source": "Quick clash: 2x speed; generated maps start with 8 workers."
+    },
+    {
+      "id": "native:[Starting workers affects generated maps only.]",
+      "key": "[Starting workers affects generated maps only.]",
+      "source": "Starting workers affects generated maps only."
+    },
+    {
+      "id": "native:[More workers jump-start colony growth. Changes the generated map.]",
+      "key": "[More workers jump-start colony growth. Changes the generated map.]",
+      "source": "More workers jump-start colony growth. Changes the generated map."
+    },
+    {
+      "id": "native:[No warriors]",
+      "key": "[No warriors]",
+      "source": "No warriors"
+    },
+    {
+      "id": "native:[Farm building plots]",
+      "key": "[Farm building plots]",
+      "source": "Farm building plots"
+    },
+    {
+      "id": "native:[Fruit amount]",
+      "key": "[Fruit amount]",
+      "source": "Fruit amount"
+    },
+    {
+      "id": "native:[Fruit in home valleys]",
+      "key": "[Fruit in home valleys]",
+      "source": "Fruit in home valleys"
+    },
+    {
+      "id": "native:[Building sites complete immediately, skipping delivery.]",
+      "key": "[Building sites complete immediately, skipping delivery.]",
+      "source": "Building sites complete immediately, skipping delivery."
+    },
+    {
+      "id": "native:[Higher tiers give every building much more HP.]",
+      "key": "[Higher tiers give every building much more HP.]",
+      "source": "Higher tiers give every building much more HP."
+    },
+    {
+      "id": "native:[Stats new buildings]",
+      "key": "[Stats new buildings]",
+      "source": "New buildings"
+    },
+    {
+      "id": "native:[Stats blocked buildings]",
+      "key": "[Stats blocked buildings]",
+      "source": "Buildings blocked S/C"
+    },
+    {
+      "id": "native:[Stats blocked buildings swim]",
+      "key": "[Stats blocked buildings swim]",
+      "source": "Swim exits S/C"
+    },
+    {
+      "id": "native:[Stats current blocked buildings]",
+      "key": "[Stats current blocked buildings]",
+      "source": "Currently blocked buildings"
+    },
+    {
+      "id": "native:[Stats structural buildings]",
+      "key": "[Stats structural buildings]",
+      "source": "Structurally blocked buildings"
+    }
+  ]
+}

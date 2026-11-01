@@ -1,0 +1,31 @@
+{
+  "files": {
+    "tools/localization/google_draft.py": "14c2131fe2f3a6a6298c420ac4a755a4a64dc7de620eb4d81a77baeb17b71b16",
+    "test/test_google_draft.py": "97405deaac47a371b41f352d4c935fa36fde62f6c15afbb71ece2b379c6cb106"
+  },
+  "tests": {
+    "command": "python3 -m unittest discover -s test -p test_google_draft.py -v",
+    "passed": 28,
+    "original_tests_preserved": 20,
+    "integration_regressions": 8,
+    "log": "google-helper-tests.log",
+    "log_sha256": "467ff27dd4d19540b0e346a001419fc23c73da1e9dc403c66d0f15e1b3f11ab9"
+  },
+  "documentation_proposal": [
+    "The default HTML-plan workflow keeps upstream --execute/--max-characters, selected --batches, nb/no discovery, markup/link protection and separate google/<locale>/runs outputs. Its existing payloads and paid-cache fingerprints are unchanged.",
+    "For blank-fill dry runs, pass --mode blank-fill explicitly; --run, --pilot, --limit or --surface also select this workflow. --run makes paid text/plain requests and fills only blank variants, preserving reviewed values and source-format contracts.",
+    "Both paid workflows share the kit google-budget.json ledger, a US$9 maximum at US$20/million with no free-credit assumption, fsynced reservations before dispatch, an exclusive kit writer lock, and an additional ledger lock/reload for direct Budget/fetch callers. Uncertain/authentication retries each reserve their own attempt.",
+    "Historical upstream attempt files are adopted once into the campaign ledger without rewriting old caches or losing prior spend. HTML invalid-response retries remain explicit and preserve rejected output; text/plain rejects preserve raw evidence and valid siblings.",
+    "All disk text reads use UTF-8; the subprocess regression exercises both workflows under a real ASCII default locale. Tokens are obtained using gcloud subprocess argv, kept in memory briefly and omitted from evidence.",
+    "Low-level callers may use Budget(explicit_campaign_path, project, ceiling)+fetch(..., explicit_cache, budget) under the campaign root kit_lock when a refreshed source kit must continue an older campaign. Atomic replace means a symlink is not a substitute for an explicit ledger path.",
+    "HTML-plan mode explicitly rejects physical LF/CR/tab source characters before dispatch; use --mode blank-fill for exact segmented multiline/control preservation. Existing unaffected HTML payloads and paid cache keys remain unchanged."
+  ],
+  "commands": {
+    "blank_fill_dry_run": "python3 tools/localization/google_draft.py --output artifacts/my-kit --locale mr --project PROJECT --mode blank-fill --budget-usd 9",
+    "blank_fill_paid": "python3 tools/localization/google_draft.py --output artifacts/my-kit --locale mr --project PROJECT --mode blank-fill --budget-usd 9 --run",
+    "plan_dry_run": "python3 tools/localization/google_draft.py --output artifacts/my-kit --locale nb",
+    "plan_paid": "python3 tools/localization/google_draft.py --output artifacts/my-kit --locale nb --project PROJECT --execute --max-characters 450000 --budget-usd 9"
+  },
+  "no_paid_calls": true,
+  "scope": "Only the two assigned conflict files staged; no docs, catalogs, gates or native builds changed."
+}

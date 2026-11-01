@@ -1,0 +1,509 @@
+{
+  "id": "native-general-019",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[room picker more options]",
+      "key": "[room picker more options]",
+      "source": "More options…"
+    },
+    {
+      "id": "native:[room picker use]",
+      "key": "[room picker use]",
+      "source": "Use this map"
+    },
+    {
+      "id": "native:[game draw]",
+      "key": "[game draw]",
+      "source": "Draw"
+    },
+    {
+      "id": "native:[open commander]",
+      "key": "[open commander]",
+      "source": "Open commander"
+    },
+    {
+      "id": "native:[stop commander]",
+      "key": "[stop commander]",
+      "source": "Stop commander"
+    },
+    {
+      "id": "native:[toggle recording]",
+      "key": "[toggle recording]",
+      "source": "Start or stop recording"
+    },
+    {
+      "id": "native:[File selection is unavailable.]",
+      "key": "[File selection is unavailable.]",
+      "source": "File selection is unavailable."
+    },
+    {
+      "id": "native:[Saving custom AI…]",
+      "key": "[Saving custom AI…]",
+      "source": "Saving custom AI…"
+    },
+    {
+      "id": "native:[Could not read the selected JavaScript file.]",
+      "key": "[Could not read the selected JavaScript file.]",
+      "source": "Could not read the selected JavaScript file."
+    },
+    {
+      "id": "native:[Custom AI library saved.]",
+      "key": "[Custom AI library saved.]",
+      "source": "Custom AI library saved."
+    },
+    {
+      "id": "native:[Storage could not be saved. The previous library is retained.]",
+      "key": "[Storage could not be saved. The previous library is retained.]",
+      "source": "Storage could not be saved. The previous library is retained."
+    },
+    {
+      "id": "native:[Import a single JavaScript AI file, then select it when setting up a local game.]",
+      "key": "[Import a single JavaScript AI file, then select it when setting up a local game.]",
+      "source": "Import a single JavaScript AI file, then select it when setting up a local game."
+    },
+    {
+      "id": "native:[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]",
+      "key": "[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]",
+      "source": "Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI."
+    },
+    {
+      "id": "native:[Waiting for file selection or storage…]",
+      "key": "[Waiting for file selection or storage…]",
+      "source": "Waiting for file selection or storage…"
+    },
+    {
+      "id": "native:[Import JavaScript AI]",
+      "key": "[Import JavaScript AI]",
+      "source": "Import JavaScript AI"
+    },
+    {
+      "id": "native:[Link development file]",
+      "key": "[Link development file]",
+      "source": "Link development file"
+    },
+    {
+      "id": "native:[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]",
+      "key": "[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]",
+      "source": "Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file."
+    },
+    {
+      "id": "native:[Example AI and authoring guide]",
+      "key": "[Example AI and authoring guide]",
+      "source": "Example AI and authoring guide"
+    },
+    {
+      "id": "native:[No custom AIs yet. Import a bundled .js file to get started.]",
+      "key": "[No custom AIs yet. Import a bundled .js file to get started.]",
+      "source": "No custom AIs yet. Import a bundled .js file to get started."
+    },
+    {
+      "id": "native:[Relink]",
+      "key": "[Relink]",
+      "source": "Relink"
+    },
+    {
+      "id": "native:[Update]",
+      "key": "[Update]",
+      "source": "Update"
+    },
+    {
+      "id": "native:[Validate]",
+      "key": "[Validate]",
+      "source": "Validate"
+    },
+    {
+      "id": "native:[AI startup and persistent globals are valid.]",
+      "key": "[AI startup and persistent globals are valid.]",
+      "source": "AI startup and persistent globals are valid."
+    },
+    {
+      "id": "native:[Remove from library]",
+      "key": "[Remove from library]",
+      "source": "Remove from library"
+    },
+    {
+      "id": "native:[AI telemetry]",
+      "key": "[AI telemetry]",
+      "source": "AI telemetry"
+    },
+    {
+      "id": "native:[No accessible AI telemetry.]",
+      "key": "[No accessible AI telemetry.]",
+      "source": "No accessible AI telemetry."
+    },
+    {
+      "id": "native:[Search fields]",
+      "key": "[Search fields]",
+      "source": "Search fields"
+    },
+    {
+      "id": "native:[Telemetry unavailable for this recording or controller.]",
+      "key": "[Telemetry unavailable for this recording or controller.]",
+      "source": "Telemetry unavailable for this recording or controller."
+    },
+    {
+      "id": "native:[Linked]",
+      "key": "[Linked]",
+      "source": "Linked"
+    },
+    {
+      "id": "native:[Imported]",
+      "key": "[Imported]",
+      "source": "Imported"
+    },
+    {
+      "id": "native:[Player]",
+      "key": "[Player]",
+      "source": "Player"
+    },
+    {
+      "id": "native:[Updated at tick %0]",
+      "key": "[Updated at tick %0]",
+      "source": "Updated at tick %0"
+    },
+    {
+      "id": "native:[No values published yet.]",
+      "key": "[No values published yet.]",
+      "source": "No values published yet."
+    },
+    {
+      "id": "native:[No fields match your search.]",
+      "key": "[No fields match your search.]",
+      "source": "No fields match your search."
+    },
+    {
+      "id": "native:[Missing custom AI]",
+      "key": "[Missing custom AI]",
+      "source": "Missing custom AI"
+    },
+    {
+      "id": "native:[bases]",
+      "key": "[bases]",
+      "source": "bases"
+    },
+    {
+      "id": "native:[bases per colony]",
+      "key": "[bases per colony]",
+      "source": "Bases per colony; a base is one team of the map as drawn, its buildings and units"
+    },
+    {
+      "id": "native:[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]",
+      "key": "[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]",
+      "source": "Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics."
+    },
+    {
+      "id": "native:[stat group population]",
+      "key": "[stat group population]",
+      "source": "Population"
+    },
+    {
+      "id": "native:[stat group food]",
+      "key": "[stat group food]",
+      "source": "Food and wellbeing"
+    },
+    {
+      "id": "native:[stat group resources]",
+      "key": "[stat group resources]",
+      "source": "Materials"
+    },
+    {
+      "id": "native:[stat group military]",
+      "key": "[stat group military]",
+      "source": "Military"
+    },
+    {
+      "id": "native:[stat group map]",
+      "key": "[stat group map]",
+      "source": "Land"
+    },
+    {
+      "id": "native:[stat group score]",
+      "key": "[stat group score]",
+      "source": "Score"
+    },
+    {
+      "id": "native:[stat overview]",
+      "key": "[stat overview]",
+      "source": "Overview"
+    },
+    {
+      "id": "native:[stat overview about]",
+      "key": "[stat overview about]",
+      "source": "Each colony's figures for the whole match. The highest is highlighted where more is better; click a column heading to see how it changed over time."
+    },
+    {
+      "id": "native:[stat population]",
+      "key": "[stat population]",
+      "source": "Population"
+    },
+    {
+      "id": "native:[stat population about]",
+      "key": "[stat population about]",
+      "source": "How many units the colony had alive: workers, explorers and warriors together."
+    },
+    {
+      "id": "native:[stat births]",
+      "key": "[stat births]",
+      "source": "Units born"
+    },
+    {
+      "id": "native:[stat births about]",
+      "key": "[stat births about]",
+      "source": "How fast swarms were producing new units. Split it to see workers, explorers and warriors separately."
+    },
+    {
+      "id": "native:[stat deaths]",
+      "key": "[stat deaths]",
+      "source": "Units lost"
+    },
+    {
+      "id": "native:[stat deaths about]",
+      "key": "[stat deaths about]",
+      "source": "How fast the colony was losing units, whatever the cause: combat, starvation, injuries while clearing, or being trapped."
+    },
+    {
+      "id": "native:[stat net growth]",
+      "key": "[stat net growth]",
+      "source": "Population growth"
+    },
+    {
+      "id": "native:[stat net growth about]",
+      "key": "[stat net growth about]",
+      "source": "Units born minus units lost. Above zero the colony was growing; below zero it was shrinking."
+    },
+    {
+      "id": "native:[stat death causes]",
+      "key": "[stat death causes]",
+      "source": "Causes of death"
+    },
+    {
+      "id": "native:[stat death causes about]",
+      "key": "[stat death causes about]",
+      "source": "What the colony's units died of: fighting, starvation, injuries while clearing resources, being trapped with no way out, or other causes."
+    },
+    {
+      "id": "native:[stat conversions]",
+      "key": "[stat conversions]",
+      "source": "Net conversions"
+    },
+    {
+      "id": "native:[stat conversions about]",
+      "key": "[stat conversions about]",
+      "source": "Units won over from other colonies minus units lost to them. Units change sides when another colony feeds them better."
+    },
+    {
+      "id": "native:[stat hunger]",
+      "key": "[stat hunger]",
+      "source": "Food reserves"
+    },
+    {
+      "id": "native:[stat hunger about]",
+      "key": "[stat hunger about]",
+      "source": "How much food the colony's units were carrying inside them. Each unit is placed by how much of its food reserve is left: nearly empty (a quarter or less), low (up to half), half full (up to three quarters) or well fed. Units go looking for an inn as their reserve runs down, so a colony always has some that are low."
+    },
+    {
+      "id": "native:[stat health]",
+      "key": "[stat health]",
+      "source": "Health"
+    },
+    {
+      "id": "native:[stat health about]",
+      "key": "[stat health about]",
+      "source": "How healthy the colony's units were. Each unit is placed by how many of its hit points are left: critical (a quarter or less), wounded (up to half), hurt (up to three quarters) or healthy."
+    },
+    {
+      "id": "native:[stat seeking food]",
+      "key": "[stat seeking food]",
+      "source": "Units looking for food"
+    },
+    {
+      "id": "native:[stat seeking food about]",
+      "key": "[stat seeking food about]",
+      "source": "Units that had stopped work to find an inn. Those that are also below full health are counted as weakening."
+    },
+    {
+      "id": "native:[stat in care]",
+      "key": "[stat in care]",
+      "source": "Units eating or healing"
+    },
+    {
+      "id": "native:[stat in care about]",
+      "key": "[stat in care about]",
+      "source": "Units inside an inn eating or inside a hospital being healed, and so not working."
+    },
+    {
+      "id": "native:[stat wheat harvested]",
+      "key": "[stat wheat harvested]",
+      "source": "Food harvested"
+    },
+    {
+      "id": "native:[stat wheat harvested about]",
+      "key": "[stat wheat harvested about]",
+      "source": "Loads of food harvested by workers from food-producing resources. Inns turn food into meals."
+    },
+    {
+      "id": "native:[stat wheat stored]",
+      "key": "[stat wheat stored]",
+      "source": "Food in storage"
+    },
+    {
+      "id": "native:[stat wheat stored about]",
+      "key": "[stat wheat stored about]",
+      "source": "Food sitting in the colony's buildings, ready to be served or used."
+    },
+    {
+      "id": "native:[stat meals]",
+      "key": "[stat meals]",
+      "source": "Meals served"
+    },
+    {
+      "id": "native:[stat meals about]",
+      "key": "[stat meals about]",
+      "source": "Meals the colony's inns served, to its own units and to visitors from other colonies."
+    },
+    {
+      "id": "native:[stat starvation]",
+      "key": "[stat starvation]",
+      "source": "Starvation deaths"
+    },
+    {
+      "id": "native:[stat starvation about]",
+      "key": "[stat starvation about]",
+      "source": "Units that died because they could not find food in time."
+    },
+    {
+      "id": "native:[stat healing]",
+      "key": "[stat healing]",
+      "source": "Health restored"
+    },
+    {
+      "id": "native:[stat healing about]",
+      "key": "[stat healing about]",
+      "source": "Hit points the colony's hospitals gave back to wounded units."
+    },
+    {
+      "id": "native:[stat gathered]",
+      "key": "[stat gathered]",
+      "source": "Materials gathered"
+    },
+    {
+      "id": "native:[stat gathered about]",
+      "key": "[stat gathered about]",
+      "source": "Loads of every material harvested by workers. Split it to see each material."
+    },
+    {
+      "id": "native:[stat stored]",
+      "key": "[stat stored]",
+      "source": "Materials in storage"
+    },
+    {
+      "id": "native:[stat stored about]",
+      "key": "[stat stored about]",
+      "source": "Materials sitting in the colony's buildings. Split it to see each material."
+    },
+    {
+      "id": "native:[stat spending]",
+      "key": "[stat spending]",
+      "source": "Material spending"
+    },
+    {
+      "id": "native:[stat spending about]",
+      "key": "[stat spending about]",
+      "source": "Where delivered materials went: meals, new units, tower ammunition, new buildings or upgrades."
+    },
+    {
+      "id": "native:[stat delivered]",
+      "key": "[stat delivered]",
+      "source": "Materials delivered"
+    },
+    {
+      "id": "native:[stat delivered about]",
+      "key": "[stat delivered about]",
+      "source": "Loads workers carried into buildings."
+    },
+    {
+      "id": "native:[stat traded]",
+      "key": "[stat traded]",
+      "source": "Net trade"
+    },
+    {
+      "id": "native:[stat traded about]",
+      "key": "[stat traded about]",
+      "source": "Materials received through markets minus materials given away."
+    },
+    {
+      "id": "native:[stat construction]",
+      "key": "[stat construction]",
+      "source": "Building work completed"
+    },
+    {
+      "id": "native:[stat construction about]",
+      "key": "[stat construction about]",
+      "source": "Building work completed: new buildings, upgrades and repairs."
+    },
+    {
+      "id": "native:[stat attack]",
+      "key": "[stat attack]",
+      "source": "Attack strength"
+    },
+    {
+      "id": "native:[stat attack about]",
+      "key": "[stat attack about]",
+      "source": "A score for the combined fighting power of the colony's warriors: how hard and how fast they hit."
+    },
+    {
+      "id": "native:[stat defence]",
+      "key": "[stat defence]",
+      "source": "Defence strength"
+    },
+    {
+      "id": "native:[stat defence about]",
+      "key": "[stat defence about]",
+      "source": "A score for the combined firepower of the colony's defence towers."
+    },
+    {
+      "id": "native:[stat hit points]",
+      "key": "[stat hit points]",
+      "source": "Total hit points"
+    },
+    {
+      "id": "native:[stat hit points about]",
+      "key": "[stat hit points about]",
+      "source": "The hit points of all the colony's units and buildings added together."
+    },
+    {
+      "id": "native:[stat damage dealt]",
+      "key": "[stat damage dealt]",
+      "source": "Damage dealt"
+    },
+    {
+      "id": "native:[stat damage dealt about]",
+      "key": "[stat damage dealt about]",
+      "source": "Damage the colony did to enemy units and buildings. Split it to see warriors, magic and towers."
+    },
+    {
+      "id": "native:[stat damage taken]",
+      "key": "[stat damage taken]",
+      "source": "Damage taken"
+    },
+    {
+      "id": "native:[stat damage taken about]",
+      "key": "[stat damage taken about]",
+      "source": "Damage enemies did to the colony's units and buildings."
+    },
+    {
+      "id": "native:[stat damage traded]",
+      "key": "[stat damage traded]",
+      "source": "Damage balance"
+    },
+    {
+      "id": "native:[stat damage traded about]",
+      "key": "[stat damage traded about]",
+      "source": "Damage dealt minus damage taken. Above zero the colony was winning its fights."
+    }
+  ]
+}

@@ -1,0 +1,509 @@
+{
+  "id": "native-general-008",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Ridge thickness]",
+      "key": "[Ridge thickness]",
+      "source": "Ridge thickness"
+    },
+    {
+      "id": "native:[Pass spacing]",
+      "key": "[Pass spacing]",
+      "source": "Pass spacing"
+    },
+    {
+      "id": "native:[Lee width]",
+      "key": "[Lee width]",
+      "source": "Lee width"
+    },
+    {
+      "id": "native:[Old growth]",
+      "key": "[Old growth]",
+      "source": "Old growth"
+    },
+    {
+      "id": "native:[Canals]",
+      "key": "[Canals]",
+      "source": "Canals"
+    },
+    {
+      "id": "native:[Forest density]",
+      "key": "[Forest density]",
+      "source": "Forest density"
+    },
+    {
+      "id": "native:[Hidden groves]",
+      "key": "[Hidden groves]",
+      "source": "Hidden groves"
+    },
+    {
+      "id": "native:[Starting trails]",
+      "key": "[Starting trails]",
+      "source": "Starting trails"
+    },
+    {
+      "id": "native:[Block size]",
+      "key": "[Block size]",
+      "source": "Block size"
+    },
+    {
+      "id": "native:[Canal width]",
+      "key": "[Canal width]",
+      "source": "Canal width"
+    },
+    {
+      "id": "native:[Extra bridges]",
+      "key": "[Extra bridges]",
+      "source": "Extra bridges"
+    },
+    {
+      "id": "native:[Polder]",
+      "key": "[Polder]",
+      "source": "Polder"
+    },
+    {
+      "id": "native:[Old town]",
+      "key": "[Old town]",
+      "source": "Old town"
+    },
+    {
+      "id": "native:[Anthill]",
+      "key": "[Anthill]",
+      "source": "Anthill"
+    },
+    {
+      "id": "native:[Row angle]",
+      "key": "[Row angle]",
+      "source": "Row angle"
+    },
+    {
+      "id": "native:[Diagonal]",
+      "key": "[Diagonal]",
+      "source": "Diagonal"
+    },
+    {
+      "id": "native:[Dyke spacing]",
+      "key": "[Dyke spacing]",
+      "source": "Dyke spacing"
+    },
+    {
+      "id": "native:[Village size]",
+      "key": "[Village size]",
+      "source": "Village size"
+    },
+    {
+      "id": "native:[Hamlets]",
+      "key": "[Hamlets]",
+      "source": "Hamlets"
+    },
+    {
+      "id": "native:[City size]",
+      "key": "[City size]",
+      "source": "City size"
+    },
+    {
+      "id": "native:[Street width]",
+      "key": "[Street width]",
+      "source": "Street width"
+    },
+    {
+      "id": "native:[Plazas]",
+      "key": "[Plazas]",
+      "source": "Plazas"
+    },
+    {
+      "id": "native:[Chamber spacing]",
+      "key": "[Chamber spacing]",
+      "source": "Chamber spacing"
+    },
+    {
+      "id": "native:[Chamber size]",
+      "key": "[Chamber size]",
+      "source": "Chamber size"
+    },
+    {
+      "id": "native:[Queen room]",
+      "key": "[Queen room]",
+      "source": "Queen room"
+    },
+    {
+      "id": "native:[Tunnel width]",
+      "key": "[Tunnel width]",
+      "source": "Tunnel width"
+    },
+    {
+      "id": "native:[Loops]",
+      "key": "[Loops]",
+      "source": "Loops"
+    },
+    {
+      "id": "native:[Home pools]",
+      "key": "[Home pools]",
+      "source": "Home pools"
+    },
+    {
+      "id": "native:[Farm plots]",
+      "key": "[Farm plots]",
+      "source": "Farm plots"
+    },
+    {
+      "id": "native:[Tendril roads]",
+      "key": "[Tendril roads]",
+      "source": "Tendril roads"
+    },
+    {
+      "id": "native:[Random]",
+      "key": "[Random]",
+      "source": "Random"
+    },
+    {
+      "id": "native:[Vertical]",
+      "key": "[Vertical]",
+      "source": "Vertical"
+    },
+    {
+      "id": "native:[Horizontal]",
+      "key": "[Horizontal]",
+      "source": "Horizontal"
+    },
+    {
+      "id": "native:[Block shape]",
+      "key": "[Block shape]",
+      "source": "Block shape"
+    },
+    {
+      "id": "native:[Random parameters]",
+      "key": "[Random parameters]",
+      "source": "Random parameters"
+    },
+    {
+      "id": "native:[Randomize parameters]",
+      "key": "[Randomize parameters]",
+      "source": "Randomize parameters"
+    },
+    {
+      "id": "native:[Start quality]",
+      "key": "[Start quality]",
+      "source": "Start quality"
+    },
+    {
+      "id": "native:[Fairness]",
+      "key": "[Fairness]",
+      "source": "Fairness"
+    },
+    {
+      "id": "native:[Fitness]",
+      "key": "[Fitness]",
+      "source": "Fitness"
+    },
+    {
+      "id": "native:[Win chance]",
+      "key": "[Win chance]",
+      "source": "Win chance"
+    },
+    {
+      "id": "native:[Coefficient]",
+      "key": "[Coefficient]",
+      "source": "Coefficient"
+    },
+    {
+      "id": "native:[Average]",
+      "key": "[Average]",
+      "source": "Average"
+    },
+    {
+      "id": "native:[Fitted on games:]",
+      "key": "[Fitted on games:]",
+      "source": "Fitted on games:"
+    },
+    {
+      "id": "native:[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]",
+      "key": "[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]",
+      "source": "Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map."
+    },
+    {
+      "id": "native:[Worst]",
+      "key": "[Worst]",
+      "source": "Worst"
+    },
+    {
+      "id": "native:[Best]",
+      "key": "[Best]",
+      "source": "Best"
+    },
+    {
+      "id": "native:[No growth]",
+      "key": "[No growth]",
+      "source": "No growth"
+    },
+    {
+      "id": "native:[Units get hungry]",
+      "key": "[Units get hungry]",
+      "source": "Units get hungry"
+    },
+    {
+      "id": "native:[No hunger]",
+      "key": "[No hunger]",
+      "source": "No hunger"
+    },
+    {
+      "id": "native:[Scarce (2x slower)]",
+      "key": "[Scarce (2x slower)]",
+      "source": "Scarce (2x slower)"
+    },
+    {
+      "id": "native:[Very scarce (4x slower)]",
+      "key": "[Very scarce (4x slower)]",
+      "source": "Very scarce (4x slower)"
+    },
+    {
+      "id": "native:[Extremely scarce (8x slower)]",
+      "key": "[Extremely scarce (8x slower)]",
+      "source": "Extremely scarce (8x slower)"
+    },
+    {
+      "id": "native:[Small (+50 each)]",
+      "key": "[Small (+50 each)]",
+      "source": "Small (+50 each)"
+    },
+    {
+      "id": "native:[Medium (+150 each)]",
+      "key": "[Medium (+150 each)]",
+      "source": "Medium (+150 each)"
+    },
+    {
+      "id": "native:[Large (+300 each)]",
+      "key": "[Large (+300 each)]",
+      "source": "Large (+300 each)"
+    },
+    {
+      "id": "native:[No resource growth]",
+      "key": "[No resource growth]",
+      "source": "No resource growth"
+    },
+    {
+      "id": "native:[Economy]",
+      "key": "[Economy]",
+      "source": "Economy"
+    },
+    {
+      "id": "native:[Instant construction]",
+      "key": "[Instant construction]",
+      "source": "Instant construction"
+    },
+    {
+      "id": "native:[Starting units spawn already leveled up. Changes the generated map.]",
+      "key": "[Starting units spawn already leveled up. Changes the generated map.]",
+      "source": "Starting units spawn already leveled up. Changes the generated map."
+    },
+    {
+      "id": "native:[No upgrades]",
+      "key": "[No upgrades]",
+      "source": "No upgrades"
+    },
+    {
+      "id": "native:[No permadeath]",
+      "key": "[No permadeath]",
+      "source": "No permadeath"
+    },
+    {
+      "id": "native:[Glass cannon x2]",
+      "key": "[Glass cannon x2]",
+      "source": "Glass cannon x2"
+    },
+    {
+      "id": "native:[Glass cannon x3]",
+      "key": "[Glass cannon x3]",
+      "source": "Glass cannon x3"
+    },
+    {
+      "id": "native:[Fortress x5]",
+      "key": "[Fortress x5]",
+      "source": "Fortress x5"
+    },
+    {
+      "id": "native:[Fortress x10]",
+      "key": "[Fortress x10]",
+      "source": "Fortress x10"
+    },
+    {
+      "id": "native:[Veteran]",
+      "key": "[Veteran]",
+      "source": "Veteran"
+    },
+    {
+      "id": "native:[Elite]",
+      "key": "[Elite]",
+      "source": "Elite"
+    },
+    {
+      "id": "native:[Legendary]",
+      "key": "[Legendary]",
+      "source": "Legendary"
+    },
+    {
+      "id": "native:[Combat]",
+      "key": "[Combat]",
+      "source": "Combat"
+    },
+    {
+      "id": "native:[Glass cannon]",
+      "key": "[Glass cannon]",
+      "source": "Glass cannon"
+    },
+    {
+      "id": "native:[Match ends at the timer; highest prestige at that instant wins.]",
+      "key": "[Match ends at the timer; highest prestige at that instant wins.]",
+      "source": "Match ends at the timer; highest prestige at that instant wins."
+    },
+    {
+      "id": "native:[Off (no timer)]",
+      "key": "[Off (no timer)]",
+      "source": "Off (no timer)"
+    },
+    {
+      "id": "native:[90 minutes]",
+      "key": "[90 minutes]",
+      "source": "90 minutes"
+    },
+    {
+      "id": "native:[30 minutes]",
+      "key": "[30 minutes]",
+      "source": "30 minutes"
+    },
+    {
+      "id": "native:[45 minutes]",
+      "key": "[45 minutes]",
+      "source": "45 minutes"
+    },
+    {
+      "id": "native:[60 minutes]",
+      "key": "[60 minutes]",
+      "source": "60 minutes"
+    },
+    {
+      "id": "native:[Probability victory]",
+      "key": "[Probability victory]",
+      "source": "Probability victory"
+    },
+    {
+      "id": "native:[Off (play it out)]",
+      "key": "[Off (play it out)]",
+      "source": "Off (play it out)"
+    },
+    {
+      "id": "native:[95% sure]",
+      "key": "[95% sure]",
+      "source": "95% sure"
+    },
+    {
+      "id": "native:[97% sure]",
+      "key": "[97% sure]",
+      "source": "97% sure"
+    },
+    {
+      "id": "native:[99% sure]",
+      "key": "[99% sure]",
+      "source": "99% sure"
+    },
+    {
+      "id": "native:[Stats births]",
+      "key": "[Stats births]",
+      "source": "Births"
+    },
+    {
+      "id": "native:[Stats deaths]",
+      "key": "[Stats deaths]",
+      "source": "Deaths"
+    },
+    {
+      "id": "native:[Stats starvation]",
+      "key": "[Stats starvation]",
+      "source": "Starvation"
+    },
+    {
+      "id": "native:[Stats wheat stock]",
+      "key": "[Stats wheat stock]",
+      "source": "Food stock"
+    },
+    {
+      "id": "native:[Stats wheat loads]",
+      "key": "[Stats wheat loads]",
+      "source": "Food loads"
+    },
+    {
+      "id": "native:[Stats meals]",
+      "key": "[Stats meals]",
+      "source": "Meals served"
+    },
+    {
+      "id": "native:[Stats upgrades]",
+      "key": "[Stats upgrades]",
+      "source": "Upgrades"
+    },
+    {
+      "id": "native:[Stats training]",
+      "key": "[Stats training]",
+      "source": "Training visits"
+    },
+    {
+      "id": "native:[Stats damage dealt]",
+      "key": "[Stats damage dealt]",
+      "source": "Damage dealt"
+    },
+    {
+      "id": "native:[Stats damage received]",
+      "key": "[Stats damage received]",
+      "source": "Damage received"
+    },
+    {
+      "id": "native:[Stats HP restored]",
+      "key": "[Stats HP restored]",
+      "source": "HP restored"
+    },
+    {
+      "id": "native:[Stats since tick]",
+      "key": "[Stats since tick]",
+      "source": "Since tick"
+    },
+    {
+      "id": "native:[Stats combat deaths]",
+      "key": "[Stats combat deaths]",
+      "source": "Combat"
+    },
+    {
+      "id": "native:[Stats clearing deaths]",
+      "key": "[Stats clearing deaths]",
+      "source": "Clearing injury"
+    },
+    {
+      "id": "native:[Stats trapped deaths]",
+      "key": "[Stats trapped deaths]",
+      "source": "Trapped"
+    },
+    {
+      "id": "native:[Stats unknown deaths]",
+      "key": "[Stats unknown deaths]",
+      "source": "Other/unknown"
+    },
+    {
+      "id": "native:[Stats conversions]",
+      "key": "[Stats conversions]",
+      "source": "In / out"
+    },
+    {
+      "id": "native:[Stats unavailable]",
+      "key": "[Stats unavailable]",
+      "source": "Unavailable"
+    },
+    {
+      "id": "native:[Stats wheat per minute]",
+      "key": "[Stats wheat per minute]",
+      "source": "Loads/min"
+    }
+  ]
+}

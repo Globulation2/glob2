@@ -1,0 +1,509 @@
+{
+  "id": "online-online-002",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:AI map versions are immutable. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+      "key": "AI map versions are immutable. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+      "source": "AI map versions are immutable. Create a revision in AI Map Studio or upload an edited copy as a new map."
+    },
+    {
+      "id": "online:AI opponent · ratings and games belong to this game version",
+      "key": "AI opponent · ratings and games belong to this game version",
+      "source": "AI opponent · ratings and games belong to this game version"
+    },
+    {
+      "id": "online:AI ratings belong to a game version. {slot0} to see older versions.",
+      "key": "AI ratings belong to a game version. {slot0} to see older versions.",
+      "source": "AI ratings belong to a game version. {slot0} to see older versions."
+    },
+    {
+      "id": "online:AI tags",
+      "key": "AI tags",
+      "source": "AI tags"
+    },
+    {
+      "id": "online:AI-generated",
+      "key": "AI-generated",
+      "source": "AI-generated"
+    },
+    {
+      "id": "online:API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance.",
+      "key": "API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance.",
+      "source": "API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance."
+    },
+    {
+      "id": "online:Abandoned",
+      "key": "Abandoned",
+      "source": "Abandoned"
+    },
+    {
+      "id": "online:About",
+      "key": "About",
+      "source": "About"
+    },
+    {
+      "id": "online:About & help",
+      "key": "About & help",
+      "source": "About & help"
+    },
+    {
+      "id": "online:Accepted",
+      "key": "Accepted",
+      "source": "Accepted"
+    },
+    {
+      "id": "online:Account adjustment",
+      "key": "Account adjustment",
+      "source": "Account adjustment"
+    },
+    {
+      "id": "online:Account already in use",
+      "key": "Account already in use",
+      "source": "Account already in use"
+    },
+    {
+      "id": "online:Account changes",
+      "key": "Account changes",
+      "source": "Account changes"
+    },
+    {
+      "id": "online:Account changes need review",
+      "key": "Account changes need review",
+      "source": "Account changes need review"
+    },
+    {
+      "id": "online:Account draft saved",
+      "key": "Account draft saved",
+      "source": "Account draft saved"
+    },
+    {
+      "id": "online:Account inactive.",
+      "key": "Account inactive.",
+      "source": "Account inactive."
+    },
+    {
+      "id": "online:Account is unavailable.",
+      "key": "Account is unavailable.",
+      "source": "Account is unavailable."
+    },
+    {
+      "id": "online:Acoustic · woodwinds, strings & folk",
+      "key": "Acoustic · woodwinds, strings & folk",
+      "source": "Acoustic · woodwinds, strings & folk"
+    },
+    {
+      "id": "online:Across",
+      "key": "Across",
+      "source": "Across"
+    },
+    {
+      "id": "online:Action",
+      "key": "Action",
+      "source": "Action"
+    },
+    {
+      "id": "online:Active",
+      "key": "Active",
+      "source": "Active"
+    },
+    {
+      "id": "online:Active accounts",
+      "key": "Active accounts",
+      "source": "Active accounts"
+    },
+    {
+      "id": "online:Activity comparison table",
+      "key": "Activity comparison table",
+      "source": "Activity comparison table"
+    },
+    {
+      "id": "online:Activity trends",
+      "key": "Activity trends",
+      "source": "Activity trends"
+    },
+    {
+      "id": "online:Actor account ID",
+      "key": "Actor account ID",
+      "source": "Actor account ID"
+    },
+    {
+      "id": "online:Actual game size · 1×",
+      "key": "Actual game size · 1×",
+      "source": "Actual game size · 1×"
+    },
+    {
+      "id": "online:Add",
+      "key": "Add",
+      "source": "Add"
+    },
+    {
+      "id": "online:Add a property override",
+      "key": "Add a property override",
+      "source": "Add a property override"
+    },
+    {
+      "id": "online:Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set.",
+      "key": "Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set.",
+      "source": "Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set."
+    },
+    {
+      "id": "online:Add frames in order.",
+      "key": "Add frames in order.",
+      "source": "Add frames in order."
+    },
+    {
+      "id": "online:Add selected frame",
+      "key": "Add selected frame",
+      "source": "Add selected frame"
+    },
+    {
+      "id": "online:Add stage",
+      "key": "Add stage",
+      "source": "Add stage"
+    },
+    {
+      "id": "online:Add stock level",
+      "key": "Add stock level",
+      "source": "Add stock level"
+    },
+    {
+      "id": "online:Add the base frame first.",
+      "key": "Add the base frame first.",
+      "source": "Add the base frame first."
+    },
+    {
+      "id": "online:Add {slot0}",
+      "key": "Add {slot0}",
+      "source": "Add {slot0}"
+    },
+    {
+      "id": "online:Additional credits and source attribution",
+      "key": "Additional credits and source attribution",
+      "source": "Additional credits and source attribution"
+    },
+    {
+      "id": "online:Additional field",
+      "key": "Additional field",
+      "source": "Additional field"
+    },
+    {
+      "id": "online:Address",
+      "key": "Address",
+      "source": "Address"
+    },
+    {
+      "id": "online:Administration",
+      "key": "Administration",
+      "source": "Administration"
+    },
+    {
+      "id": "online:Administration sections",
+      "key": "Administration sections",
+      "source": "Administration sections"
+    },
+    {
+      "id": "online:Administrator",
+      "key": "Administrator",
+      "source": "Administrator"
+    },
+    {
+      "id": "online:Administrator access is required.",
+      "key": "Administrator access is required.",
+      "source": "Administrator access is required."
+    },
+    {
+      "id": "online:Administrator access required.",
+      "key": "Administrator access required.",
+      "source": "Administrator access required."
+    },
+    {
+      "id": "online:Advanced mixing",
+      "key": "Advanced mixing",
+      "source": "Advanced mixing"
+    },
+    {
+      "id": "online:Advanced properties JSON",
+      "key": "Advanced properties JSON",
+      "source": "Advanced properties JSON"
+    },
+    {
+      "id": "online:After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+      "key": "After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+      "source": "After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed."
+    },
+    {
+      "id": "online:Agreed so far",
+      "key": "Agreed so far",
+      "source": "Agreed so far"
+    },
+    {
+      "id": "online:Air health change",
+      "key": "Air health change",
+      "source": "Air health change"
+    },
+    {
+      "id": "online:All",
+      "key": "All",
+      "source": "All"
+    },
+    {
+      "id": "online:All candidate measurements",
+      "key": "All candidate measurements",
+      "source": "All candidate measurements"
+    },
+    {
+      "id": "online:All compatibility checks must pass before publishing.",
+      "key": "All compatibility checks must pass before publishing.",
+      "source": "All compatibility checks must pass before publishing."
+    },
+    {
+      "id": "online:All downloads",
+      "key": "All downloads",
+      "source": "All downloads"
+    },
+    {
+      "id": "online:All engine versions",
+      "key": "All engine versions",
+      "source": "All engine versions"
+    },
+    {
+      "id": "online:All generation attempts",
+      "key": "All generation attempts",
+      "source": "All generation attempts"
+    },
+    {
+      "id": "online:All generators",
+      "key": "All generators",
+      "source": "All generators"
+    },
+    {
+      "id": "online:All libraries",
+      "key": "All libraries",
+      "source": "All libraries"
+    },
+    {
+      "id": "online:All licenses",
+      "key": "All licenses",
+      "source": "All licenses"
+    },
+    {
+      "id": "online:All matches",
+      "key": "All matches",
+      "source": "All matches"
+    },
+    {
+      "id": "online:All music",
+      "key": "All music",
+      "source": "All music"
+    },
+    {
+      "id": "online:All open licences",
+      "key": "All open licences",
+      "source": "All open licences"
+    },
+    {
+      "id": "online:All properties and capabilities",
+      "key": "All properties and capabilities",
+      "source": "All properties and capabilities"
+    },
+    {
+      "id": "online:All rankings",
+      "key": "All rankings",
+      "source": "All rankings"
+    },
+    {
+      "id": "online:All sets",
+      "key": "All sets",
+      "source": "All sets"
+    },
+    {
+      "id": "online:All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+      "key": "All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+      "source": "All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people."
+    },
+    {
+      "id": "online:Allowed resource keys (null uses habitats)",
+      "key": "Allowed resource keys (null uses habitats)",
+      "source": "Allowed resource keys (null uses habitats)"
+    },
+    {
+      "id": "online:Already in the game? Choose",
+      "key": "Already in the game? Choose",
+      "source": "Already in the game? Choose"
+    },
+    {
+      "id": "online:Always available",
+      "key": "Always available",
+      "source": "Always available"
+    },
+    {
+      "id": "online:An account is required to publish publicly.",
+      "key": "An account is required to publish publicly.",
+      "source": "An account is required to publish publicly."
+    },
+    {
+      "id": "online:An available Building credit is needed to chat or build.",
+      "key": "An available Building credit is needed to chat or build.",
+      "source": "An available Building credit is needed to chat or build."
+    },
+    {
+      "id": "online:An available Terrain credit is needed to chat or build.",
+      "key": "An available Terrain credit is needed to chat or build.",
+      "source": "An available Terrain credit is needed to chat or build."
+    },
+    {
+      "id": "online:An available {value0} credit is needed.",
+      "key": "An available {value0} credit is needed.",
+      "source": "An available {value0} credit is needed."
+    },
+    {
+      "id": "online:Analytics display is disabled.",
+      "key": "Analytics display is disabled.",
+      "source": "Analytics display is disabled."
+    },
+    {
+      "id": "online:Animation phase",
+      "key": "Animation phase",
+      "source": "Animation phase"
+    },
+    {
+      "id": "online:Another session saved revision {slot0}. Your local edits are preserved.",
+      "key": "Another session saved revision {slot0}. Your local edits are preserved.",
+      "source": "Another session saved revision {slot0}. Your local edits are preserved."
+    },
+    {
+      "id": "online:Another upload is in progress. Please retry shortly.",
+      "key": "Another upload is in progress. Please retry shortly.",
+      "source": "Another upload is in progress. Please retry shortly."
+    },
+    {
+      "id": "online:Any",
+      "key": "Any",
+      "source": "Any"
+    },
+    {
+      "id": "online:Any size",
+      "key": "Any size",
+      "source": "Any size"
+    },
+    {
+      "id": "online:Any status",
+      "key": "Any status",
+      "source": "Any status"
+    },
+    {
+      "id": "online:Any teams",
+      "key": "Any teams",
+      "source": "Any teams"
+    },
+    {
+      "id": "online:Anyone with the link",
+      "key": "Anyone with the link",
+      "source": "Anyone with the link"
+    },
+    {
+      "id": "online:Appearance",
+      "key": "Appearance",
+      "source": "Appearance"
+    },
+    {
+      "id": "online:Applied",
+      "key": "Applied",
+      "source": "Applied"
+    },
+    {
+      "id": "online:Applies to",
+      "key": "Applies to",
+      "source": "Applies to"
+    },
+    {
+      "id": "online:Apply soundtrack loudness targets and peak limiting",
+      "key": "Apply soundtrack loudness targets and peak limiting",
+      "source": "Apply soundtrack loudness targets and peak limiting"
+    },
+    {
+      "id": "online:Apply to {slot0}",
+      "key": "Apply to {slot0}",
+      "source": "Apply to {slot0}"
+    },
+    {
+      "id": "online:Artifact view",
+      "key": "Artifact view",
+      "source": "Artifact view"
+    },
+    {
+      "id": "online:Artwork",
+      "key": "Artwork",
+      "source": "Artwork"
+    },
+    {
+      "id": "online:Artwork and font credits",
+      "key": "Artwork and font credits",
+      "source": "Artwork and font credits"
+    },
+    {
+      "id": "online:Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+      "key": "Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+      "source": "Artwork could not be prepared for some older devices. Those devices will use the default colony."
+    },
+    {
+      "id": "online:Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+      "key": "Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+      "source": "Artwork for some older devices is still preparing. Those devices may temporarily show the default colony."
+    },
+    {
+      "id": "online:Assemble the family",
+      "key": "Assemble the family",
+      "source": "Assemble the family"
+    },
+    {
+      "id": "online:Assemble the pack",
+      "key": "Assemble the pack",
+      "source": "Assemble the pack"
+    },
+    {
+      "id": "online:At least {p0} characters.",
+      "key": "At least {p0} characters.",
+      "source": "At least {p0} characters."
+    },
+    {
+      "id": "online:At least {p0} seats must be taken.",
+      "key": "At least {p0} seats must be taken.",
+      "source": "At least {p0} seats must be taken."
+    },
+    {
+      "id": "online:Attached diagnostics",
+      "key": "Attached diagnostics",
+      "source": "Attached diagnostics"
+    },
+    {
+      "id": "online:Attack power",
+      "key": "Attack power",
+      "source": "Attack power"
+    },
+    {
+      "id": "online:Attempts",
+      "key": "Attempts",
+      "source": "Attempts"
+    },
+    {
+      "id": "online:Audible comparison version",
+      "key": "Audible comparison version",
+      "source": "Audible comparison version"
+    },
+    {
+      "id": "online:Audio quality checks",
+      "key": "Audio quality checks",
+      "source": "Audio quality checks"
+    },
+    {
+      "id": "online:Audit history",
+      "key": "Audit history",
+      "source": "Audit history"
+    }
+  ]
+}

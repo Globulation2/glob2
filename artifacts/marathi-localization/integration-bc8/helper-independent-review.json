@@ -1,0 +1,38 @@
+{
+  "reviewer": "semantic_review",
+  "role": "independent read-only code reviewer",
+  "files": {
+    "tools/localization/google_draft.py": "14c2131fe2f3a6a6298c420ac4a755a4a64dc7de620eb4d81a77baeb17b71b16",
+    "test/test_google_draft.py": "97405deaac47a371b41f352d4c935fa36fde62f6c15afbb71ece2b379c6cb106"
+  },
+  "read_coverage": "Full combined helper implementation and focused tests; actual independent mocked suite run. No API calls or source edits by reviewer.",
+  "reviewed_contracts": [
+    "Shared USD9 maximum campaign ledger; every uncertain/HTTP/auth-retry POST attempt reserved and POSIX directory-fsynced before dispatch.",
+    "Old HTML attempt import is idempotent and conservative; filled MR blank-fill drafts retain pre-read and pre-write SHA guards.",
+    "HTML paid payload/cache paths preserved for existing single-line sources; new cache response hashes validated.",
+    "gcloud auth token cached and refreshed for HTML401; legacy text/plain route has no implicit paid retry.",
+    "Common nonblocking portable kit lock and separate ledger lock; explicit exclusive-writer assumption around external editors.",
+    "Explicit UTF8 catalog/cache reads and Unicode writes; placeholders/routes/markup preserved and actual/literal multiline text uses blank-fill mode."
+  ],
+  "findings": [
+    {
+      "id": "HTML-physical-controls",
+      "initial_repro": "restore('Hello\\nworld', 'Hei world') silently lost authored newline.",
+      "resolution": "Author added _require_html_single_line to protect and restore; LF/CR/tab sources fail before dispatch and direct user to blank-fill. Actual edited lines reread. Existing unaffected HTML payloads stay identical.",
+      "status": "resolved",
+      "regression": "test_html_physical_control_contract_fails_before_paid_dispatch"
+    }
+  ],
+  "outstanding_findings": [],
+  "verification": {
+    "command": "python3 test/test_google_draft.py -q",
+    "exit_code": 0,
+    "tests": 28,
+    "log": "browser-game/combined-google-review-tests.log",
+    "log_sha256": "7e5516205ae91686e6da717436fa615fe91bc6d413c8917bafcdf6c7083e3551"
+  },
+  "limits": [
+    "Mocked Linux execution; no live API calls, Windows execution or OS power-loss experiment. Windows directory rename durability boundary remains documented.",
+    "Legacy pre-hash HTML caches retain old format compatibility; new cache records bind response hashes."
+  ]
+}

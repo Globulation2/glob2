@@ -1,0 +1,23 @@
+{
+  "utc": "2026-11-01T05:46:52.316645+00:00",
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "owned_server_pid": 3139556,
+  "verified_argv": [
+    "/usr/lib/chatgpt/resources/cua_node/bin/node",
+    "e2e/server.ts"
+  ],
+  "verified_cwd": "/home/bradley/.codex/worktrees/45cd/glob2/platform/apps/web",
+  "own_process_group_stopped": true,
+  "website_listener_gone": true,
+  "owned_postgres_container": "b271ca6f7883015c62917c34d5b530698a18325814cd18d124c2db6e8f0229af",
+  "container_stopped": true,
+  "ports_before": {
+    "5432/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "32769"
+      }
+    ]
+  },
+  "scope": "Only task-owned fresh website QA server and isolated Postgres stopped. Source/build outputs/screenshots preserved; foreignservers/DB untouched."
+}

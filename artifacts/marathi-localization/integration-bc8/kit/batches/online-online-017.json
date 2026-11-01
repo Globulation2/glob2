@@ -1,0 +1,512 @@
+{
+  "id": "online-online-017",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Remove {value0}",
+      "key": "Remove {value0}",
+      "source": "Remove {value0}"
+    },
+    {
+      "id": "online:Rename",
+      "key": "Rename",
+      "source": "Rename"
+    },
+    {
+      "id": "online:Render the instruments",
+      "key": "Render the instruments",
+      "source": "Render the instruments"
+    },
+    {
+      "id": "online:Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+      "key": "Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+      "source": "Rendered by the browser game engine. Run publishing checks to validate the saved revision."
+    },
+    {
+      "id": "online:Replace or remove the team layer before changing frame dimensions.",
+      "key": "Replace or remove the team layer before changing frame dimensions.",
+      "source": "Replace or remove the team layer before changing frame dimensions."
+    },
+    {
+      "id": "online:Replace the gaps too",
+      "key": "Replace the gaps too",
+      "source": "Replace the gaps too"
+    },
+    {
+      "id": "online:Replay",
+      "key": "Replay",
+      "source": "Replay"
+    },
+    {
+      "id": "online:Report",
+      "key": "Report",
+      "source": "Report"
+    },
+    {
+      "id": "online:Report AI",
+      "key": "Report AI",
+      "source": "Report AI"
+    },
+    {
+      "id": "online:Report a problem",
+      "key": "Report a problem",
+      "source": "Report a problem"
+    },
+    {
+      "id": "online:Report already resolved.",
+      "key": "Report already resolved.",
+      "source": "Report already resolved."
+    },
+    {
+      "id": "online:Report for {value0}",
+      "key": "Report for {value0}",
+      "source": "Report for {value0}"
+    },
+    {
+      "id": "online:Report has already been resolved. Refresh to review its resolution.",
+      "key": "Report has already been resolved. Refresh to review its resolution.",
+      "source": "Report has already been resolved. Refresh to review its resolution."
+    },
+    {
+      "id": "online:Report not found.",
+      "key": "Report not found.",
+      "source": "Report not found."
+    },
+    {
+      "id": "online:Report reason",
+      "key": "Report reason",
+      "source": "Report reason"
+    },
+    {
+      "id": "online:Report received.",
+      "key": "Report received.",
+      "source": "Report received."
+    },
+    {
+      "id": "online:Report skin",
+      "key": "Report skin",
+      "source": "Report skin"
+    },
+    {
+      "id": "online:Report this generator",
+      "key": "Report this generator",
+      "source": "Report this generator"
+    },
+    {
+      "id": "online:Report this map",
+      "key": "Report this map",
+      "source": "Report this map"
+    },
+    {
+      "id": "online:Report this release",
+      "key": "Report this release",
+      "source": "Report this release"
+    },
+    {
+      "id": "online:Reported",
+      "key": "Reported",
+      "source": "Reported"
+    },
+    {
+      "id": "online:Reported skin texture",
+      "key": "Reported skin texture",
+      "source": "Reported skin texture"
+    },
+    {
+      "id": "online:Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "key": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "source": {
+        "one": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day is a complete calendar day. History may be incomplete; comparisons use recorded observations only.",
+        "other": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only."
+      }
+    },
+    {
+      "id": "online:Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "key": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "source": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only."
+    },
+    {
+      "id": "online:Reports",
+      "key": "Reports",
+      "source": "Reports"
+    },
+    {
+      "id": "online:Request cap",
+      "key": "Request cap",
+      "source": "Request cap"
+    },
+    {
+      "id": "online:Request cap exceeds the configured limit.",
+      "key": "Request cap exceeds the configured limit.",
+      "source": "Request cap exceeds the configured limit."
+    },
+    {
+      "id": "online:Request failed.",
+      "key": "Request failed.",
+      "source": "Request failed."
+    },
+    {
+      "id": "online:Request not found.",
+      "key": "Request not found.",
+      "source": "Request not found."
+    },
+    {
+      "id": "online:Requests needing attention",
+      "key": "Requests needing attention",
+      "source": "Requests needing attention"
+    },
+    {
+      "id": "online:Required experiment",
+      "key": "Required experiment",
+      "source": "Required experiment"
+    },
+    {
+      "id": "online:Requires the {p0} role.",
+      "key": "Requires the {p0} role.",
+      "source": "Requires the {p0} role."
+    },
+    {
+      "id": "online:Reroll seed",
+      "key": "Reroll seed",
+      "source": "Reroll seed"
+    },
+    {
+      "id": "online:Reservation",
+      "key": "Reservation",
+      "source": "Reservation"
+    },
+    {
+      "id": "online:Reserved",
+      "key": "Reserved",
+      "source": "Reserved"
+    },
+    {
+      "id": "online:Reserved product credits",
+      "key": "Reserved product credits",
+      "source": "Reserved product credits"
+    },
+    {
+      "id": "online:Reserved: {slot0} product credits",
+      "key": "Reserved: {slot0} product credits",
+      "source": "Reserved: {slot0} product credits"
+    },
+    {
+      "id": "online:Reserved: {slot0} product credits{slot1}",
+      "key": "Reserved: {slot0} product credits{slot1}",
+      "source": "Reserved: {slot0} product credits{slot1}"
+    },
+    {
+      "id": "online:Reset angle",
+      "key": "Reset angle",
+      "source": "Reset angle"
+    },
+    {
+      "id": "online:Reset filters",
+      "key": "Reset filters",
+      "source": "Reset filters"
+    },
+    {
+      "id": "online:Reset toolbox layout",
+      "key": "Reset toolbox layout",
+      "source": "Reset toolbox layout"
+    },
+    {
+      "id": "online:Reset view",
+      "key": "Reset view",
+      "source": "Reset view"
+    },
+    {
+      "id": "online:Reset · ",
+      "key": "Reset · ",
+      "source": "Reset · "
+    },
+    {
+      "id": "online:Resize conversation",
+      "key": "Resize conversation",
+      "source": "Resize conversation"
+    },
+    {
+      "id": "online:Resolution: {slot0}{slot1}",
+      "key": "Resolution: {slot0}{slot1}",
+      "source": "Resolution: {slot0}{slot1}"
+    },
+    {
+      "id": "online:Resolve",
+      "key": "Resolve",
+      "source": "Resolve"
+    },
+    {
+      "id": "online:Resolve invalid fields before saving.",
+      "key": "Resolve invalid fields before saving.",
+      "source": "Resolve invalid fields before saving."
+    },
+    {
+      "id": "online:Resolve the account changes before saving.",
+      "key": "Resolve the account changes before saving.",
+      "source": "Resolve the account changes before saving."
+    },
+    {
+      "id": "online:Resolved",
+      "key": "Resolved",
+      "source": "Resolved"
+    },
+    {
+      "id": "online:Resolved by disabling",
+      "key": "Resolved by disabling",
+      "source": "Resolved by disabling"
+    },
+    {
+      "id": "online:Resource",
+      "key": "Resource",
+      "source": "Resource"
+    },
+    {
+      "id": "online:Resource growth",
+      "key": "Resource growth",
+      "source": "Resource growth"
+    },
+    {
+      "id": "online:Resource placement permissions",
+      "key": "Resource placement permissions",
+      "source": "Resource placement permissions"
+    },
+    {
+      "id": "online:Resources",
+      "key": "Resources",
+      "source": "Resources"
+    },
+    {
+      "id": "online:Restart same setup",
+      "key": "Restart same setup",
+      "source": "Restart same setup"
+    },
+    {
+      "id": "online:Restore",
+      "key": "Restore",
+      "source": "Restore"
+    },
+    {
+      "id": "online:Restore device copy",
+      "key": "Restore device copy",
+      "source": "Restore device copy"
+    },
+    {
+      "id": "online:Restore family",
+      "key": "Restore family",
+      "source": "Restore family"
+    },
+    {
+      "id": "online:Restore game settings",
+      "key": "Restore game settings",
+      "source": "Restore game settings"
+    },
+    {
+      "id": "online:Restore skin",
+      "key": "Restore skin",
+      "source": "Restore skin"
+    },
+    {
+      "id": "online:Restore this revision",
+      "key": "Restore this revision",
+      "source": "Restore this revision"
+    },
+    {
+      "id": "online:Restore this version as the current draft? The current version stays in history.",
+      "key": "Restore this version as the current draft? The current version stays in history.",
+      "source": "Restore this version as the current draft? The current version stays in history."
+    },
+    {
+      "id": "online:Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+      "key": "Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+      "source": "Restoring content removes its moderation restriction; each library’s publication rules still apply."
+    },
+    {
+      "id": "online:Restrictions and deletion require a lower-role account.",
+      "key": "Restrictions and deletion require a lower-role account.",
+      "source": "Restrictions and deletion require a lower-role account."
+    },
+    {
+      "id": "online:Result",
+      "key": "Result",
+      "source": "Result"
+    },
+    {
+      "id": "online:Reteaming names team {p0} of {p1}.",
+      "key": "Reteaming names team {p0} of {p1}.",
+      "source": "Reteaming names team {p0} of {p1}."
+    },
+    {
+      "id": "online:Retry",
+      "key": "Retry",
+      "source": "Retry"
+    },
+    {
+      "id": "online:Retry 3D canvas",
+      "key": "Retry 3D canvas",
+      "source": "Retry 3D canvas"
+    },
+    {
+      "id": "online:Retry image",
+      "key": "Retry image",
+      "source": "Retry image"
+    },
+    {
+      "id": "online:Retry loading skins",
+      "key": "Retry loading skins",
+      "source": "Retry loading skins"
+    },
+    {
+      "id": "online:Retry loading studio",
+      "key": "Retry loading studio",
+      "source": "Retry loading studio"
+    },
+    {
+      "id": "online:Retry preview",
+      "key": "Retry preview",
+      "source": "Retry preview"
+    },
+    {
+      "id": "online:Retry the same request",
+      "key": "Retry the same request",
+      "source": "Retry the same request"
+    },
+    {
+      "id": "online:Retry validation",
+      "key": "Retry validation",
+      "source": "Retry validation"
+    },
+    {
+      "id": "online:Retrying",
+      "key": "Retrying",
+      "source": "Retrying"
+    },
+    {
+      "id": "online:Return reserved credit",
+      "key": "Return reserved credit",
+      "source": "Return reserved credit"
+    },
+    {
+      "id": "online:Return to final set",
+      "key": "Return to final set",
+      "source": "Return to final set"
+    },
+    {
+      "id": "online:Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+      "key": "Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+      "source": "Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first."
+    },
+    {
+      "id": "online:Revenue and costs",
+      "key": "Revenue and costs",
+      "source": "Revenue and costs"
+    },
+    {
+      "id": "online:Review account changes to resume saving",
+      "key": "Review account changes to resume saving",
+      "source": "Review account changes to resume saving"
+    },
+    {
+      "id": "online:Review operations",
+      "key": "Review operations",
+      "source": "Review operations"
+    },
+    {
+      "id": "online:Review reports",
+      "key": "Review reports",
+      "source": "Review reports"
+    },
+    {
+      "id": "online:Review set",
+      "key": "Review set",
+      "source": "Review set"
+    },
+    {
+      "id": "online:Revise generated music in Music Studio.",
+      "key": "Revise generated music in Music Studio.",
+      "source": "Revise generated music in Music Studio."
+    },
+    {
+      "id": "online:Revise this version",
+      "key": "Revise this version",
+      "source": "Revise this version"
+    },
+    {
+      "id": "online:Revision restored to your saved draft.",
+      "key": "Revision restored to your saved draft.",
+      "source": "Revision restored to your saved draft."
+    },
+    {
+      "id": "online:Revision {slot0}",
+      "key": "Revision {slot0}",
+      "source": "Revision {slot0}"
+    },
+    {
+      "id": "online:Revision {slot0} checks: {slot1}",
+      "key": "Revision {slot0} checks: {slot1}",
+      "source": "Revision {slot0} checks: {slot1}"
+    },
+    {
+      "id": "online:Revision {value0} · seed {value1} · {value2} seconds",
+      "key": "Revision {value0} · seed {value1} · {value2} seconds",
+      "source": "Revision {value0} · seed {value1} · {value2} seconds"
+    },
+    {
+      "id": "online:Revision {value0} · tick {value1} · live",
+      "key": "Revision {value0} · tick {value1} · live",
+      "source": "Revision {value0} · tick {value1} · live"
+    },
+    {
+      "id": "online:Role",
+      "key": "Role",
+      "source": "Role"
+    },
+    {
+      "id": "online:Room",
+      "key": "Room",
+      "source": "Room"
+    },
+    {
+      "id": "online:Room invite",
+      "key": "Room invite",
+      "source": "Room invite"
+    },
+    {
+      "id": "online:Room match",
+      "key": "Room match",
+      "source": "Room match"
+    },
+    {
+      "id": "online:Room matches go back to their room instead.",
+      "key": "Room matches go back to their room instead.",
+      "source": "Room matches go back to their room instead."
+    },
+    {
+      "id": "online:Room to breathe",
+      "key": "Room to breathe",
+      "source": "Room to breathe"
+    },
+    {
+      "id": "online:Rooms",
+      "key": "Rooms",
+      "source": "Rooms"
+    },
+    {
+      "id": "online:Rotate",
+      "key": "Rotate",
+      "source": "Rotate"
+    },
+    {
+      "id": "online:Rotation ",
+      "key": "Rotation ",
+      "source": "Rotation "
+    },
+    {
+      "id": "online:Run checks",
+      "key": "Run checks",
+      "source": "Run checks"
+    }
+  ]
+}

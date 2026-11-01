@@ -1,0 +1,11 @@
+{
+  "archive": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/validated-android-ffbd",
+  "bytes": 649294552,
+  "cap": 2147483648,
+  "unsigned": "acfa7ddf22bef8e2fdf78e39c0a2268e4bb902011fa87aa2576987549081af0c",
+  "signed": "b0d77346e3223bbdae2ce6f85baa8c120e437d50c4caf8b35ebafafefdab7be2",
+  "raw_elf": "02dd19ecff2d5dfcdab13191a1f7424d892b61e9df42ea7cea7a2807691cfd01",
+  "build_id": "262d072c457ffbf93750d0a9e632383de969bac2",
+  "evidence_files": 83,
+  "manifest_sha256": "0064087a798dcf98a640819ad64cb56b8af16b88fb6445c7daf8e25e1774a9ef"
+}

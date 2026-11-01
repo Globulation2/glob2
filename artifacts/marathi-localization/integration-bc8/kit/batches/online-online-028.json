@@ -1,0 +1,524 @@
+{
+  "id": "online-online-028",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:No release notes.",
+      "key": "No release notes.",
+      "source": "No release notes."
+    },
+    {
+      "id": "online:One JavaScript file.",
+      "key": "One JavaScript file.",
+      "source": "One JavaScript file."
+    },
+    {
+      "id": "online:One manifest and one JavaScript module.",
+      "key": "One manifest and one JavaScript module.",
+      "source": "One manifest and one JavaScript module."
+    },
+    {
+      "id": "online:Pause animation",
+      "key": "Pause animation",
+      "source": "Pause animation"
+    },
+    {
+      "id": "online:Play animation",
+      "key": "Play animation",
+      "source": "Play animation"
+    },
+    {
+      "id": "online:Play music",
+      "key": "Play music",
+      "source": "Play music"
+    },
+    {
+      "id": "online:Playtest",
+      "key": "Playtest",
+      "source": "Playtest"
+    },
+    {
+      "id": "online:Preparing your soundtrack…",
+      "key": "Preparing your soundtrack…",
+      "source": "Preparing your soundtrack…"
+    },
+    {
+      "id": "online:Publish to music library",
+      "key": "Publish to music library",
+      "source": "Publish to music library"
+    },
+    {
+      "id": "online:Publishing…",
+      "key": "Publishing…",
+      "source": "Publishing…"
+    },
+    {
+      "id": "online:Refine your soundtrack",
+      "key": "Refine your soundtrack",
+      "source": "Refine your soundtrack"
+    },
+    {
+      "id": "online:Replace generator package",
+      "key": "Replace generator package",
+      "source": "Replace generator package"
+    },
+    {
+      "id": "online:Replace source with JavaScript file",
+      "key": "Replace source with JavaScript file",
+      "source": "Replace source with JavaScript file"
+    },
+    {
+      "id": "online:Retry saved request",
+      "key": "Retry saved request",
+      "source": "Retry saved request"
+    },
+    {
+      "id": "online:Review the technical results for this finding.",
+      "key": "Review the technical results for this finding.",
+      "source": "Review the technical results for this finding."
+    },
+    {
+      "id": "online:Run current revision",
+      "key": "Run current revision",
+      "source": "Run current revision"
+    },
+    {
+      "id": "online:Saved candidate",
+      "key": "Saved candidate",
+      "source": "Saved candidate"
+    },
+    {
+      "id": "online:Saved privately. Publishing shares only this version.",
+      "key": "Saved privately. Publishing shares only this version.",
+      "source": "Saved privately. Publishing shares only this version."
+    },
+    {
+      "id": "online:Saving…",
+      "key": "Saving…",
+      "source": "Saving…"
+    },
+    {
+      "id": "online:Send",
+      "key": "Send",
+      "source": "Send"
+    },
+    {
+      "id": "online:Send diagnostics to chat",
+      "key": "Send diagnostics to chat",
+      "source": "Send diagnostics to chat"
+    },
+    {
+      "id": "online:Sign in with a registered account to like music",
+      "key": "Sign in with a registered account to like music",
+      "source": "Sign in with a registered account to like music"
+    },
+    {
+      "id": "online:Signed HP per exposed tick, divided by 256; negative values damage units.",
+      "key": "Signed HP per exposed tick, divided by 256; negative values damage units.",
+      "source": "Signed HP per exposed tick, divided by 256; negative values damage units."
+    },
+    {
+      "id": "online:Something wonderful is taking shape.",
+      "key": "Something wonderful is taking shape.",
+      "source": "Something wonderful is taking shape."
+    },
+    {
+      "id": "online:Start live game",
+      "key": "Start live game",
+      "source": "Start live game"
+    },
+    {
+      "id": "online:Start with a feeling",
+      "key": "Start with a feeling",
+      "source": "Start with a feeling"
+    },
+    {
+      "id": "online:Terrain designer",
+      "key": "Terrain designer",
+      "source": "Terrain designer"
+    },
+    {
+      "id": "online:The assistant edits your file. You decide when to test.",
+      "key": "The assistant edits your file. You decide when to test.",
+      "source": "The assistant edits your file. You decide when to test."
+    },
+    {
+      "id": "online:The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+      "key": "The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+      "source": "The assistant edits your manifest and JavaScript together. You decide when to generate or run checks."
+    },
+    {
+      "id": "online:The provider outcome needs reconciliation. No duplicate call will be sent.",
+      "key": "The provider outcome needs reconciliation. No duplicate call will be sent.",
+      "source": "The provider outcome needs reconciliation. No duplicate call will be sent."
+    },
+    {
+      "id": "online:The provider outcome needs reconciliation. Your credit remains reserved.",
+      "key": "The provider outcome needs reconciliation. Your credit remains reserved.",
+      "source": "The provider outcome needs reconciliation. Your credit remains reserved."
+    },
+    {
+      "id": "online:The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+      "key": "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+      "source": "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available."
+    },
+    {
+      "id": "online:This match",
+      "key": "This match",
+      "source": "This match"
+    },
+    {
+      "id": "online:This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later.",
+      "key": "This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later.",
+      "source": "This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later."
+    },
+    {
+      "id": "online:This version is public.",
+      "key": "This version is public.",
+      "source": "This version is public."
+    },
+    {
+      "id": "online:Try “a winding river with fertile banks” or ask how the current generator works.",
+      "key": "Try “a winding river with fertile banks” or ask how the current generator works.",
+      "source": "Try “a winding river with fertile banks” or ask how the current generator works."
+    },
+    {
+      "id": "online:Try “focus on food before expansion” or ask how the current code works.",
+      "key": "Try “focus on food before expansion” or ask how the current code works.",
+      "source": "Try “focus on food before expansion” or ask how the current code works."
+    },
+    {
+      "id": "online:Use working starter",
+      "key": "Use working starter",
+      "source": "Use working starter"
+    },
+    {
+      "id": "online:VIEW",
+      "key": "VIEW",
+      "source": "VIEW"
+    },
+    {
+      "id": "online:Validation failed",
+      "key": "Validation failed",
+      "source": "Validation failed"
+    },
+    {
+      "id": "online:We could not finish this map. Your earlier maps are safe.",
+      "key": "We could not finish this map. Your earlier maps are safe.",
+      "source": "We could not finish this map. Your earlier maps are safe."
+    },
+    {
+      "id": "online:What kind of colony will you build?",
+      "key": "What kind of colony will you build?",
+      "source": "What kind of colony will you build?"
+    },
+    {
+      "id": "online:What landscape will you create?",
+      "key": "What landscape will you create?",
+      "source": "What landscape will you create?"
+    },
+    {
+      "id": "online:Working on your request…",
+      "key": "Working on your request…",
+      "source": "Working on your request…"
+    },
+    {
+      "id": "online:YOU",
+      "key": "YOU",
+      "source": "YOU"
+    },
+    {
+      "id": "online:Your colony AI",
+      "key": "Your colony AI",
+      "source": "Your colony AI"
+    },
+    {
+      "id": "online:Your colony’s soundtrack, in three moods.",
+      "key": "Your colony’s soundtrack, in three moods.",
+      "source": "Your colony’s soundtrack, in three moods."
+    },
+    {
+      "id": "online:Your composer is working…",
+      "key": "Your composer is working…",
+      "source": "Your composer is working…"
+    },
+    {
+      "id": "online:Your landscape",
+      "key": "Your landscape",
+      "source": "Your landscape"
+    },
+    {
+      "id": "online:Your message could not be completed.",
+      "key": "Your message could not be completed.",
+      "source": "Your message could not be completed."
+    },
+    {
+      "id": "online:Your music takes shape here",
+      "key": "Your music takes shape here",
+      "source": "Your music takes shape here"
+    },
+    {
+      "id": "online:Your next battlefield starts here.",
+      "key": "Your next battlefield starts here.",
+      "source": "Your next battlefield starts here."
+    },
+    {
+      "id": "online:Your projects",
+      "key": "Your projects",
+      "source": "Your projects"
+    },
+    {
+      "id": "online:generated",
+      "key": "generated",
+      "source": "generated"
+    },
+    {
+      "id": "online:hand-made",
+      "key": "hand-made",
+      "source": "hand-made"
+    },
+    {
+      "id": "online:no sign-in methods",
+      "key": "no sign-in methods",
+      "source": "no sign-in methods"
+    },
+    {
+      "id": "online:one unit per harvest",
+      "key": "one unit per harvest",
+      "source": "one unit per harvest"
+    },
+    {
+      "id": "online:stock remains available after harvesting",
+      "key": "stock remains available after harvesting",
+      "source": "stock remains available after harvesting"
+    },
+    {
+      "id": "online:the whole stock per harvest",
+      "key": "the whole stock per harvest",
+      "source": "the whole stock per harvest"
+    },
+    {
+      "id": "online:usage pending",
+      "key": "usage pending",
+      "source": "usage pending"
+    },
+    {
+      "id": "online:with {value0} ",
+      "key": "with {value0} ",
+      "source": "with {value0} "
+    },
+    {
+      "id": "online:{count} credit",
+      "key": "{count} credit",
+      "source": {
+        "one": "{count} credit",
+        "other": "{count} credits"
+      }
+    },
+    {
+      "id": "online:{count} credits",
+      "key": "{count} credits",
+      "source": "{count} credits"
+    },
+    {
+      "id": "online:{count} player on this page",
+      "key": "{count} player on this page",
+      "source": {
+        "one": "{count} player on this page",
+        "other": "{count} players on this page"
+      }
+    },
+    {
+      "id": "online:{count} players on this page",
+      "key": "{count} players on this page",
+      "source": "{count} players on this page"
+    },
+    {
+      "id": "online:{count} team · ",
+      "key": "{count} team · ",
+      "source": {
+        "one": "{count} team · ",
+        "other": "{count} teams · "
+      }
+    },
+    {
+      "id": "online:{count} teams · ",
+      "key": "{count} teams · ",
+      "source": "{count} teams · "
+    },
+    {
+      "id": "online:{count} version",
+      "key": "{count} version",
+      "source": {
+        "one": "{count} version",
+        "other": "{count} versions"
+      }
+    },
+    {
+      "id": "online:{count} versions",
+      "key": "{count} versions",
+      "source": "{count} versions"
+    },
+    {
+      "id": "online:{count} {status}",
+      "key": "{count} {status}",
+      "source": "{count} {status}"
+    },
+    {
+      "id": "online:{slot0} · {count} image",
+      "key": "{slot0} · {count} image",
+      "source": {
+        "one": "{slot0} · {count} image",
+        "other": "{slot0} · {count} images"
+      }
+    },
+    {
+      "id": "online:{slot0} · {count} images",
+      "key": "{slot0} · {count} images",
+      "source": "{slot0} · {count} images"
+    },
+    {
+      "id": "online:{value0} HP per exposed tick",
+      "key": "{value0} HP per exposed tick",
+      "source": "{value0} HP per exposed tick"
+    },
+    {
+      "id": "online:{value0} Your credit was returned.",
+      "key": "{value0} Your credit was returned.",
+      "source": "{value0} Your credit was returned."
+    },
+    {
+      "id": "online:{value0} copy",
+      "key": "{value0} copy",
+      "source": "{value0} copy"
+    },
+    {
+      "id": "online:{value0} not found",
+      "key": "{value0} not found",
+      "source": "{value0} not found"
+    },
+    {
+      "id": "online:{value0} playing",
+      "key": "{value0} playing",
+      "source": "{value0} playing"
+    },
+    {
+      "id": "online:{value0} request needs attention in Preview.",
+      "key": "{value0} request needs attention in Preview.",
+      "source": "{value0} request needs attention in Preview."
+    },
+    {
+      "id": "online:{value0} response ready in Preview.",
+      "key": "{value0} response ready in Preview.",
+      "source": "{value0} response ready in Preview."
+    },
+    {
+      "id": "online:{value0} seconds",
+      "key": "{value0} seconds",
+      "source": "{value0} seconds"
+    },
+    {
+      "id": "online:{value0} selected",
+      "key": "{value0} selected",
+      "source": "{value0} selected"
+    },
+    {
+      "id": "online:{value0} {value1} attention",
+      "key": "{value0} {value1} attention",
+      "source": "{value0} {value1} attention"
+    },
+    {
+      "id": "online:{value0} · revision {value1}",
+      "key": "{value0} · revision {value1}",
+      "source": "{value0} · revision {value1}"
+    },
+    {
+      "id": "online:{value0} × {value1} preview pixels",
+      "key": "{value0} × {value1} preview pixels",
+      "source": "{value0} × {value1} preview pixels"
+    },
+    {
+      "id": "online:{value0} × {value1} · {value2} players",
+      "key": "{value0} × {value1} · {value2} players",
+      "source": "{value0} × {value1} · {value2} players"
+    },
+    {
+      "id": "online:{value0}% saturation, {value1}% brightness",
+      "key": "{value0}% saturation, {value1}% brightness",
+      "source": "{value0}% saturation, {value1}% brightness"
+    },
+    {
+      "id": "online:{value0}: {count} open",
+      "key": "{value0}: {count} open",
+      "source": "{value0}: {count} open"
+    },
+    {
+      "id": "online:{value0}: {count} searching",
+      "key": "{value0}: {count} searching",
+      "source": "{value0}: {count} searching"
+    },
+    {
+      "id": "online:{value0}× wheat",
+      "key": "{value0}× wheat",
+      "source": "{value0}× wheat"
+    },
+    {
+      "id": "online:{value0}’s average",
+      "key": "{value0}’s average",
+      "source": "{value0}’s average"
+    },
+    {
+      "id": "online:× Compatibility checks failed",
+      "key": "× Compatibility checks failed",
+      "source": "× Compatibility checks failed"
+    },
+    {
+      "id": "online:▶ Let the globs roam",
+      "key": "▶ Let the globs roam",
+      "source": "▶ Let the globs roam"
+    },
+    {
+      "id": "online:★ Favourited",
+      "key": "★ Favourited",
+      "source": "★ Favourited"
+    },
+    {
+      "id": "online:☆ Favourite",
+      "key": "☆ Favourite",
+      "source": "☆ Favourite"
+    },
+    {
+      "id": "online:♡ Like",
+      "key": "♡ Like",
+      "source": "♡ Like"
+    },
+    {
+      "id": "online:♥ Liked",
+      "key": "♥ Liked",
+      "source": "♥ Liked"
+    },
+    {
+      "id": "online:✓ Passed compatibility checks",
+      "key": "✓ Passed compatibility checks",
+      "source": "✓ Passed compatibility checks"
+    },
+    {
+      "id": "online:✓ uploaded",
+      "key": "✓ uploaded",
+      "source": "✓ uploaded"
+    },
+    {
+      "id": "online:❚❚ Pause the globs",
+      "key": "❚❚ Pause the globs",
+      "source": "❚❚ Pause the globs"
+    },
+    {
+      "id": "online:Converted terrain",
+      "key": "Converted terrain",
+      "source": "Converted terrain"
+    }
+  ]
+}

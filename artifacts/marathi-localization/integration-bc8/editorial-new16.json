@@ -1,0 +1,194 @@
+{
+  "reviewer": "/root/locale_integration",
+  "role": "independent Marathi editorial reviewer",
+  "utc": "2026-11-01T05:22:11.523165+00:00",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "draft_metadata_sha256": "2fdc781fac72e42d04affe4d8c839354a4bf9b11dac64e98a5355d4946ce66dc",
+  "frozen_native_source_file_sha256": "2e8ecfd5117d4bce19aa250dd2aa652ea7a0f6a386bc182e5cccf2e30800df61",
+  "frozen_native_draft_sha256": "64735fc0a2483e11874a754f4f9ca9ef45c040165e806f84c0c32109758733bc",
+  "reviewed_entries": 16,
+  "actual_every_entry_source_to_draft_read": true,
+  "other_new_review_proposals_read": false,
+  "entries": [
+    {
+      "key": "[stats topic overview]",
+      "source": "Overview",
+      "raw_google_target": "आढावा",
+      "recommended_final_target": "आढावा",
+      "change_from_google": false,
+      "rationale": "Accept concise conventional noun for summary tab; overview spans colony, food, work and defence.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats topic economy]",
+      "source": "Economy",
+      "raw_google_target": "अर्थव्यवस्था",
+      "recommended_final_target": "अर्थव्यवस्था",
+      "change_from_google": false,
+      "rationale": "Accept established exact [Economy] glossary target; this tab groups labour, materials and buildings.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats topic world]",
+      "source": "World",
+      "raw_google_target": "जग",
+      "recommended_final_target": "जग",
+      "change_from_google": false,
+      "rationale": "Accept short neutral game-world noun; this topic includes map/score and win-chance information, so नकाशा alone would narrow the source.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats work construction]",
+      "source": "Work & construction",
+      "raw_google_target": "काम आणि बांधकाम",
+      "recommended_final_target": "काम आणि बांधकाम",
+      "change_from_google": false,
+      "rationale": "Accept clear parallel nouns for idle workers and blocked construction section; avoid treating construction as an imperative.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats defence]",
+      "source": "Defence",
+      "raw_google_target": "संरक्षण",
+      "recommended_final_target": "संरक्षण",
+      "change_from_google": false,
+      "rationale": "Accept exact existing [Defense] anchor; section contains warriors and intruders.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats history]",
+      "source": "View history",
+      "raw_google_target": "इतिहास पहा",
+      "recommended_final_target": "इतिहास पहा",
+      "change_from_google": false,
+      "rationale": "Accept and reuse exact existing [view history] target. Action wording is suitable for chart accessible text; avoids unnecessary spelling/style drift.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats waiting]",
+      "source": "Waiting for statistics…",
+      "raw_google_target": "आकडेवारीची वाट पाहत आहे…",
+      "recommended_final_target": "आकडेवारीची प्रतीक्षा आहे…",
+      "change_from_google": true,
+      "rationale": "Prefer neutral status wording without the implied first-person/computer subject of वाट पाहत आहे. Keeps ongoing wait and exact ellipsis, without promising an arrival time or declaring an error.",
+      "severity": "minor editorial refinement"
+    },
+    {
+      "key": "[stats unit details]",
+      "source": "Unit details",
+      "raw_google_target": "युनिट तपशील",
+      "recommended_final_target": "युनिटचे तपशील",
+      "change_from_google": true,
+      "rationale": "Add natural Marathi genitive instead of a bare noun stack; keeps established युनिट and तपशील. This expands colony-wide counts, availability, needs and abilities rather than describing only a selected soldier.",
+      "severity": "minor editorial refinement"
+    },
+    {
+      "key": "[stats topic]",
+      "source": "Topic",
+      "raw_google_target": "विषय",
+      "recommended_final_target": "विषय",
+      "change_from_google": false,
+      "rationale": "Accept ordinary concise selector/category label. No current C++ consumer found for this new catalog label, so no invented UI behavior asserted.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats full history]",
+      "source": "Open full history",
+      "raw_google_target": "संपूर्ण इतिहास उघडा",
+      "recommended_final_target": "संपूर्ण इतिहास उघडा",
+      "change_from_google": false,
+      "rationale": "Accept clear imperative for the expanded history dialog, distinct from the short view-history action.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "raw_google_target": "— अद्याप कोणतीही नोंद झालेली नाही. तपशिलांसाठी आकडेवारी निवडा.",
+      "recommended_final_target": "— अद्याप मोजमापाची नोंद नाही. तपशील पाहण्यासाठी आकडेवारीतील एखादा घटक निवडा.",
+      "change_from_google": true,
+      "rationale": "Clarify that the missing item is a recorded measurement and that the user selects one statistics item/metric. Raw आकडेवारी निवडा reads like selecting the entire collective statistics panel. Preserve initial unknown-reading dash and details action; no fabricated loading/error/correctness claim.",
+      "severity": "minor editorial refinement"
+    },
+    {
+      "key": "[lush_grass]",
+      "source": "Lush grass",
+      "raw_google_target": "हिरवेगार गवत",
+      "recommended_final_target": "हिरवेगार गवत",
+      "change_from_google": false,
+      "rationale": "Accept natural lush-green appearance descriptor; French Herbe luxuriante confirms adjective. Same Grass mechanics, no added fertility promise.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[dry_grass]",
+      "source": "Dry grass",
+      "raw_google_target": "सुके गवत",
+      "recommended_final_target": "सुके गवत",
+      "change_from_google": false,
+      "rationale": "Accept concise standard dry-grass noun phrase; French Herbe sèche agrees. Avoid adding a dead-grass mechanic absent from this cosmetic appearance.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[dune_sand]",
+      "source": "Dune sand",
+      "raw_google_target": "वाळूचे ढिगारे",
+      "recommended_final_target": "वाळूच्या टेकडीतील वाळू",
+      "change_from_google": true,
+      "rationale": "Correct semantic head: source labels sand associated with dunes, not countable piles. French Sable de dune and G::Sand authored appearance confirm the material interpretation. Uses plain Marathi rather than an obscure coined compound; deliberately avoids adding a desert-location assumption. Full phrase may wrap naturally in the brush label.",
+      "severity": "major semantic correction"
+    },
+    {
+      "key": "[pale_sand]",
+      "source": "Pale sand",
+      "raw_google_target": "फिकट वाळू",
+      "recommended_final_target": "फिकट वाळू",
+      "change_from_google": false,
+      "rationale": "Accept simple color descriptor, confirmed by French Sable clair; retains material head वाळू without implying altered sand physics.",
+      "severity": "accept draft"
+    },
+    {
+      "key": "[stats map overlays]",
+      "source": "Map overlays",
+      "raw_google_target": "नकाशा आच्छादने",
+      "recommended_final_target": "नकाशावरील आच्छादने",
+      "change_from_google": true,
+      "rationale": "Prefer natural location/genitive phrase over bare noun stacking; preserve established आच्छादन glossary and plural. Actual header groups starving/damage/defence/fertility map toggles, not graph history.",
+      "severity": "minor editorial refinement"
+    }
+  ],
+  "contexts_read": [
+    "src/hud/InGameStatistics.cpp: topicFor/build/inlineHistory/unitDetails/history controls and waiting/missing-reading handling",
+    "src/hud/InGameStatistics.h: Topic enum",
+    "src/hud/draw/GameGUIDraw.cpp: current map overlay toggle headings",
+    "src/map/TerrainTypeTable.h: authored Grass/Sand looks and labels",
+    "src/map/editor/BrushCatalogTest.cpp: actual terrain brush inventory",
+    "docs/map-generators/game-rules-for-map-design.md: cosmetic look groups"
+  ],
+  "existing_marathi_anchors": {
+    "[Economy]": "अर्थव्यवस्था",
+    "[Defense]": "संरक्षण",
+    "[view history]": "इतिहास पहा",
+    "[Details]": "तपशील",
+    "[Statistics]": "आकडेवारी",
+    "[grass]": "गवत",
+    "[sand]": "वाळू",
+    "[No overlay]": "आच्छादन नाही",
+    "[Fertility overlay]": "सुपीकतेचे आच्छादन"
+  },
+  "cross_language_reference": {
+    "French terrain": {
+      "[lush_grass]": "Herbe luxuriante",
+      "[dry_grass]": "Herbe sèche",
+      "[dune_sand]": "Sable de dune",
+      "[pale_sand]": "Sable clair"
+    },
+    "limitations": "New French/Hindi stats labels are blank; current NB has no targets for these16. No missing translation was represented as an independent linguistic reference."
+  },
+  "format_and_register": "Standard Marathi, existing game glossary, short noun labels and polite familiar imperatives; ellipsis/dash preserved; no new parameter identifiers exist in these16. No new script/font or rendering completion claim.",
+  "findings_summary": {
+    "accepted_google_unchanged": 11,
+    "proposed_changes": 5,
+    "mandatory_semantic_fix": "[dune_sand]: distinguish material label from piles",
+    "finalization": "Author must reconcile all three independent reviews; these are proposals, not canonical final signoff."
+  },
+  "canonical_or_draft_writes": false
+}

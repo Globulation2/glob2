@@ -1,0 +1,509 @@
+{
+  "id": "native-general-004",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[save script]",
+      "key": "[save script]",
+      "source": "Save Script"
+    },
+    {
+      "id": "native:[Save]",
+      "key": "[Save]",
+      "source": "Save"
+    },
+    {
+      "id": "native:[school explanation 2]",
+      "key": "[school explanation 2]",
+      "source": "level of your workers"
+    },
+    {
+      "id": "native:[school explanation]",
+      "key": "[school explanation]",
+      "source": "Improves the building"
+    },
+    {
+      "id": "native:[school]",
+      "key": "[school]",
+      "source": "School"
+    },
+    {
+      "id": "native:[Script Areas]",
+      "key": "[Script Areas]",
+      "source": "Script Areas"
+    },
+    {
+      "id": "native:[scroll lock]",
+      "key": "[scroll lock]",
+      "source": "scroll lock"
+    },
+    {
+      "id": "native:[scroll wheel enabled]",
+      "key": "[scroll wheel enabled]",
+      "source": "Scroll Wheel Enabled"
+    },
+    {
+      "id": "native:[Secondary Objectives]",
+      "key": "[Secondary Objectives]",
+      "source": "Secondary"
+    },
+    {
+      "id": "native:[seeking a job]",
+      "key": "[seeking a job]",
+      "source": "seeking a job"
+    },
+    {
+      "id": "native:[seeking]",
+      "key": "[seeking]",
+      "source": "seeking"
+    },
+    {
+      "id": "native:[select construct barracks]",
+      "key": "[select construct barracks]",
+      "source": "Select Construct Barracks"
+    },
+    {
+      "id": "native:[select construct defencetower]",
+      "key": "[select construct defencetower]",
+      "source": "Select Construct Defense Tower"
+    },
+    {
+      "id": "native:[select construct hospital]",
+      "key": "[select construct hospital]",
+      "source": "Select Construct Hospital"
+    },
+    {
+      "id": "native:[select construct inn]",
+      "key": "[select construct inn]",
+      "source": "Select Construct Inn"
+    },
+    {
+      "id": "native:[select construct racetrack]",
+      "key": "[select construct racetrack]",
+      "source": "Select Construct Racetrack"
+    },
+    {
+      "id": "native:[select construct school]",
+      "key": "[select construct school]",
+      "source": "Select Construct School"
+    },
+    {
+      "id": "native:[select construct stonewall]",
+      "key": "[select construct stonewall]",
+      "source": "Select Construct Stone Wall"
+    },
+    {
+      "id": "native:[select construct swimmingpool]",
+      "key": "[select construct swimmingpool]",
+      "source": "Select Construct Swimming Pool"
+    },
+    {
+      "id": "native:[select delete tool]",
+      "key": "[select delete tool]",
+      "source": "Select Delete Tool"
+    },
+    {
+      "id": "native:[select place clearing area]",
+      "key": "[select place clearing area]",
+      "source": "Select Place Clearing Area"
+    },
+    {
+      "id": "native:[select place farm area]",
+      "key": "[select place farm area]",
+      "source": "Select Place Farm Area"
+    },
+    {
+      "id": "native:[select place forbidden area]",
+      "key": "[select place forbidden area]",
+      "source": "Select Place Forbidden Area"
+    },
+    {
+      "id": "native:[select place guard area]",
+      "key": "[select place guard area]",
+      "source": "Select Place Guard Area"
+    },
+    {
+      "id": "native:[settings]",
+      "key": "[settings]",
+      "source": "Settings"
+    },
+    {
+      "id": "native:[shift %0]",
+      "key": "[shift %0]",
+      "source": "shift-%0"
+    },
+    {
+      "id": "native:[show areas]",
+      "key": "[show areas]",
+      "source": "Show areas"
+    },
+    {
+      "id": "native:[show main menu]",
+      "key": "[show main menu]",
+      "source": "Show Main Menu"
+    },
+    {
+      "id": "native:[skin]",
+      "key": "[skin]",
+      "source": "Display"
+    },
+    {
+      "id": "native:[smoothing]",
+      "key": "[smoothing]",
+      "source": "Smoothing"
+    },
+    {
+      "id": "native:[space]",
+      "key": "[space]",
+      "source": "space"
+    },
+    {
+      "id": "native:[start mission]",
+      "key": "[start mission]",
+      "source": "Start Mission"
+    },
+    {
+      "id": "native:[start new campaign]",
+      "key": "[start new campaign]",
+      "source": "Start New Campaign"
+    },
+    {
+      "id": "native:[Start]",
+      "key": "[Start]",
+      "source": "Start"
+    },
+    {
+      "id": "native:[Starving Map]",
+      "key": "[Starving Map]",
+      "source": "Starving Map"
+    },
+    {
+      "id": "native:[starving]",
+      "key": "[starving]",
+      "source": "starving"
+    },
+    {
+      "id": "native:[Statistics]",
+      "key": "[Statistics]",
+      "source": "Statistics"
+    },
+    {
+      "id": "native:[Still (i)]",
+      "key": "[Still (i)]",
+      "source": "Still"
+    },
+    {
+      "id": "native:[still (w)]",
+      "key": "[still (w)]",
+      "source": "Still"
+    },
+    {
+      "id": "native:[still one unit working]",
+      "key": "[still one unit working]",
+      "source": "One unit still working"
+    },
+    {
+      "id": "native:[Still one]",
+      "key": "[Still one]",
+      "source": "Still one"
+    },
+    {
+      "id": "native:[Stone]",
+      "key": "[Stone]",
+      "source": "Stone"
+    },
+    {
+      "id": "native:[stone]",
+      "key": "[stone]",
+      "source": "stone"
+    },
+    {
+      "id": "native:[stonewall explanation 2]",
+      "key": "[stonewall explanation 2]",
+      "source": "element"
+    },
+    {
+      "id": "native:[stonewall explanation]",
+      "key": "[stonewall explanation]",
+      "source": "Passive defense"
+    },
+    {
+      "id": "native:[stonewall]",
+      "key": "[stonewall]",
+      "source": "Stone Wall"
+    },
+    {
+      "id": "native:[svr hostname]",
+      "key": "[svr hostname]",
+      "source": "Server hostname"
+    },
+    {
+      "id": "native:[Swim]",
+      "key": "[Swim]",
+      "source": "Swim"
+    },
+    {
+      "id": "native:[swimmingpool explanation 2]",
+      "key": "[swimmingpool explanation 2]",
+      "source": "speed of your units"
+    },
+    {
+      "id": "native:[swimmingpool explanation]",
+      "key": "[swimmingpool explanation]",
+      "source": "Improves the swimming"
+    },
+    {
+      "id": "native:[swimmingpool]",
+      "key": "[swimmingpool]",
+      "source": "Swimming pool"
+    },
+    {
+      "id": "native:[switch to adding areas]",
+      "key": "[switch to adding areas]",
+      "source": "Switch To Adding Areas"
+    },
+    {
+      "id": "native:[switch to area brush 1]",
+      "key": "[switch to area brush 1]",
+      "source": "Switch To Area Brush 1"
+    },
+    {
+      "id": "native:[switch to area brush 2]",
+      "key": "[switch to area brush 2]",
+      "source": "Switch To Area Brush 2"
+    },
+    {
+      "id": "native:[switch to area brush 3]",
+      "key": "[switch to area brush 3]",
+      "source": "Switch To Area Brush 3"
+    },
+    {
+      "id": "native:[switch to area brush 4]",
+      "key": "[switch to area brush 4]",
+      "source": "Switch To Area Brush 4"
+    },
+    {
+      "id": "native:[switch to area brush 5]",
+      "key": "[switch to area brush 5]",
+      "source": "Switch To Area Brush 5"
+    },
+    {
+      "id": "native:[switch to area brush 6]",
+      "key": "[switch to area brush 6]",
+      "source": "Switch To Area Brush 6"
+    },
+    {
+      "id": "native:[switch to area brush 7]",
+      "key": "[switch to area brush 7]",
+      "source": "Switch To Area Brush 7"
+    },
+    {
+      "id": "native:[switch to area brush 8]",
+      "key": "[switch to area brush 8]",
+      "source": "Switch To Area Brush 8"
+    },
+    {
+      "id": "native:[switch to removing areas]",
+      "key": "[switch to removing areas]",
+      "source": "Switch To Removing Areas"
+    },
+    {
+      "id": "native:[switch to teams view]",
+      "key": "[switch to teams view]",
+      "source": "Switch to Team view"
+    },
+    {
+      "id": "native:[sys req]",
+      "key": "[sys req]",
+      "source": "sys req"
+    },
+    {
+      "id": "native:[tab]",
+      "key": "[tab]",
+      "source": "tab"
+    },
+    {
+      "id": "native:[teams editor]",
+      "key": "[teams editor]",
+      "source": "Teams Editor"
+    },
+    {
+      "id": "native:[Teams Fixed]",
+      "key": "[Teams Fixed]",
+      "source": "Teams Fixed"
+    },
+    {
+      "id": "native:[teams]",
+      "key": "[teams]",
+      "source": " teams"
+    },
+    {
+      "id": "native:[the barracks is finished]",
+      "key": "[the barracks is finished]",
+      "source": "The barracks is finished."
+    },
+    {
+      "id": "native:[the barracks is under attack]",
+      "key": "[the barracks is under attack]",
+      "source": "The barracks is under attack."
+    },
+    {
+      "id": "native:[the defencetower is finished]",
+      "key": "[the defencetower is finished]",
+      "source": "The defense tower is finished."
+    },
+    {
+      "id": "native:[the defencetower is under attack]",
+      "key": "[the defencetower is under attack]",
+      "source": "The defense tower is under attack."
+    },
+    {
+      "id": "native:[The game has not been finished]",
+      "key": "[The game has not been finished]",
+      "source": "The game has not been finished."
+    },
+    {
+      "id": "native:[the games]",
+      "key": "[the games]",
+      "source": "Games"
+    },
+    {
+      "id": "native:[the hospital is finished]",
+      "key": "[the hospital is finished]",
+      "source": "The hospital is finished."
+    },
+    {
+      "id": "native:[the hospital is under attack]",
+      "key": "[the hospital is under attack]",
+      "source": "The hospital is under attack."
+    },
+    {
+      "id": "native:[The host has cancelled the game]",
+      "key": "[The host has cancelled the game]",
+      "source": "The host has cancelled the game."
+    },
+    {
+      "id": "native:[the maps]",
+      "key": "[the maps]",
+      "source": "Maps"
+    },
+    {
+      "id": "native:[the racetrack is finished]",
+      "key": "[the racetrack is finished]",
+      "source": "The racetrack is finished."
+    },
+    {
+      "id": "native:[the racetrack is under attack]",
+      "key": "[the racetrack is under attack]",
+      "source": "The racetrack is under attack."
+    },
+    {
+      "id": "native:[the replays]",
+      "key": "[the replays]",
+      "source": "Replays"
+    },
+    {
+      "id": "native:[the school is finished]",
+      "key": "[the school is finished]",
+      "source": "The school is finished."
+    },
+    {
+      "id": "native:[the school is under attack]",
+      "key": "[the school is under attack]",
+      "source": "The school is under attack."
+    },
+    {
+      "id": "native:[the stonewall is finished]",
+      "key": "[the stonewall is finished]",
+      "source": "A wall section is finished."
+    },
+    {
+      "id": "native:[the stonewall is under attack]",
+      "key": "[the stonewall is under attack]",
+      "source": "The enemy is at your walls."
+    },
+    {
+      "id": "native:[the swimmingpool is finished]",
+      "key": "[the swimmingpool is finished]",
+      "source": "The swimming pool is finished."
+    },
+    {
+      "id": "native:[the swimmingpool is under attack]",
+      "key": "[the swimmingpool is under attack]",
+      "source": "The swimming pool is under attack."
+    },
+    {
+      "id": "native:[time]",
+      "key": "[time]",
+      "source": "Time"
+    },
+    {
+      "id": "native:[to:]",
+      "key": "[to:]",
+      "source": "to:"
+    },
+    {
+      "id": "native:[toggle draw accessibility aids]",
+      "key": "[toggle draw accessibility aids]",
+      "source": "Toggle team numbers"
+    },
+    {
+      "id": "native:[toggle draw information]",
+      "key": "[toggle draw information]",
+      "source": "Toggle Draw Information"
+    },
+    {
+      "id": "native:[toggle draw unit paths]",
+      "key": "[toggle draw unit paths]",
+      "source": "Toggle Draw Unit Paths"
+    },
+    {
+      "id": "native:[toggle menu screen]",
+      "key": "[toggle menu screen]",
+      "source": "Toggle Menu Screen"
+    },
+    {
+      "id": "native:[toggle recording voice]",
+      "key": "[toggle recording voice]",
+      "source": "Toggle Recording Voice"
+    },
+    {
+      "id": "native:[Total Attack Power]",
+      "key": "[Total Attack Power]",
+      "source": "Total Attack Power"
+    },
+    {
+      "id": "native:[Total Defence Power]",
+      "key": "[Total Defence Power]",
+      "source": "Total Defence Power"
+    },
+    {
+      "id": "native:[Total Hitpoints]",
+      "key": "[Total Hitpoints]",
+      "source": "Total Hitpoints"
+    },
+    {
+      "id": "native:[Total prestige reached]",
+      "key": "[Total prestige reached]",
+      "source": "Total prestige reached"
+    },
+    {
+      "id": "native:[Total]",
+      "key": "[Total]",
+      "source": "Total"
+    },
+    {
+      "id": "native:[Uncontrolled]",
+      "key": "[Uncontrolled]",
+      "source": "Uncontrolled"
+    },
+    {
+      "id": "native:[undo]",
+      "key": "[undo]",
+      "source": "undo"
+    }
+  ]
+}

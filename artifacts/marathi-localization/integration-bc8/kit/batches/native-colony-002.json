@@ -1,0 +1,439 @@
+{
+  "id": "native-colony-002",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "colony",
+  "context": "Workers autonomously gather/build; explorers scout; warriors fight. Flags assign work or military attention, not direct unit movement.",
+  "entries": [
+    {
+      "id": "native:[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]",
+      "key": "[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]",
+      "source": "A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march."
+    },
+    {
+      "id": "native:[A city neighbourhood lacks reachable crops or building room.]",
+      "key": "[A city neighbourhood lacks reachable crops or building room.]",
+      "source": "A city neighbourhood lacks reachable crops or building room."
+    },
+    {
+      "id": "native:[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "key": "[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "source": "Each colony's start is measured on the finished map: the walk to food and wood sources, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness."
+    },
+    {
+      "id": "native:[Building gradients]",
+      "key": "[Building gradients]",
+      "source": "Building gradients..."
+    },
+    {
+      "id": "native:[Loading buildings]",
+      "key": "[Loading buildings]",
+      "source": "Loading buildings..."
+    },
+    {
+      "id": "native:[Flags]",
+      "key": "[Flags]",
+      "source": "Flags"
+    },
+    {
+      "id": "native:[Buildings: %0]",
+      "key": "[Buildings: %0]",
+      "source": "Buildings: %0"
+    },
+    {
+      "id": "native:[Read-only building]",
+      "key": "[Read-only building]",
+      "source": "Read-only building"
+    },
+    {
+      "id": "native:[Share market vision]",
+      "key": "[Share market vision]",
+      "source": "Share market vision"
+    },
+    {
+      "id": "native:[match tip flags]",
+      "key": "[match tip flags]",
+      "source": "Tip: exploration flags send explorers to reveal the map; war flags gather your warriors."
+    },
+    {
+      "id": "native:[stat group buildings]",
+      "key": "[stat group buildings]",
+      "source": "Buildings"
+    },
+    {
+      "id": "native:[stat buildings]",
+      "key": "[stat buildings]",
+      "source": "Buildings standing"
+    },
+    {
+      "id": "native:[stat buildings about]",
+      "key": "[stat buildings about]",
+      "source": "Finished buildings the colony had. Split it to see each kind of building."
+    },
+    {
+      "id": "native:[stat buildings lost]",
+      "key": "[stat buildings lost]",
+      "source": "Buildings lost"
+    },
+    {
+      "id": "native:[stat buildings lost about]",
+      "key": "[stat buildings lost about]",
+      "source": "Buildings destroyed by enemies or demolished by the colony itself."
+    },
+    {
+      "id": "native:[stat blocked buildings]",
+      "key": "[stat blocked buildings]",
+      "source": "Buildings with no way in"
+    },
+    {
+      "id": "native:[stat blocked buildings about]",
+      "key": "[stat blocked buildings about]",
+      "source": "Buildings whose entrances were blocked, so units could not get in or out."
+    },
+    {
+      "id": "native:[stat unit buildings]",
+      "key": "[stat unit buildings]",
+      "source": "buildings"
+    },
+    {
+      "id": "native:[stat column buildings lost]",
+      "key": "[stat column buildings lost]",
+      "source": "Buildings lost"
+    },
+    {
+      "id": "native:[stat marker first building destroyed]",
+      "key": "[stat marker first building destroyed]",
+      "source": "first building destroyed"
+    },
+    {
+      "id": "native:[stat band workers]",
+      "key": "[stat band workers]",
+      "source": "Workers"
+    },
+    {
+      "id": "native:[stat band explorers]",
+      "key": "[stat band explorers]",
+      "source": "Explorers"
+    },
+    {
+      "id": "native:[stat band warriors]",
+      "key": "[stat band warriors]",
+      "source": "Warriors"
+    },
+    {
+      "id": "native:[stat view by building]",
+      "key": "[stat view by building]",
+      "source": "By building"
+    },
+    {
+      "id": "native:[Building strength]",
+      "key": "[Building strength]",
+      "source": "Building strength"
+    },
+    {
+      "id": "native:[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]",
+      "key": "[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]",
+      "source": "Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off."
+    },
+    {
+      "id": "native:[stat worker time]",
+      "key": "[stat worker time]",
+      "source": "How workers spent their time"
+    },
+    {
+      "id": "native:[stat worker time about]",
+      "key": "[stat worker time about]",
+      "source": "What the colony's workers were doing, moment by moment: working for a building, working at a flag, training, eating, healing, waiting hungry or hurt with no inn or hospital free, or idle with nothing to do. A healthy colony keeps most of its workers working, few idle and none waiting."
+    },
+    {
+      "id": "native:[stat idle workers]",
+      "key": "[stat idle workers]",
+      "source": "Idle workers"
+    },
+    {
+      "id": "native:[stat idle workers about]",
+      "key": "[stat idle workers about]",
+      "source": "The share of workers' time spent with nothing to do. High values mean more workers than work; near zero means every worker is busy and jobs may be waiting."
+    },
+    {
+      "id": "native:[stat inn distance]",
+      "key": "[stat inn distance]",
+      "source": "Distance from the inn"
+    },
+    {
+      "id": "native:[stat inn distance about]",
+      "key": "[stat inn distance about]",
+      "source": "How far hungry workers were, on average over their walk, from the inn they were heading for, in map squares in a straight line. A whole trip is roughly twice this. High values mean inns are far from where workers work."
+    },
+    {
+      "id": "native:[stat warriors]",
+      "key": "[stat warriors]",
+      "source": "Warriors"
+    },
+    {
+      "id": "native:[stat warriors about]",
+      "key": "[stat warriors about]",
+      "source": "How many warriors the colony had. Split it to see how many were near home, near an enemy colony, or in open ground. Ground close to both colonies counts as home."
+    },
+    {
+      "id": "native:[stat warrior level]",
+      "key": "[stat warrior level]",
+      "source": "Average warrior attack level"
+    },
+    {
+      "id": "native:[stat warrior level about]",
+      "key": "[stat warrior level about]",
+      "source": "The average attack level of the colony's warriors, counting attack speed and attack strength equally, on the 1 to 4 scale the game shows. Barracks raise it; new untrained warriors pull it down."
+    },
+    {
+      "id": "native:[stat warrior duties]",
+      "key": "[stat warrior duties]",
+      "source": "What warriors were doing"
+    },
+    {
+      "id": "native:[stat warrior duties about]",
+      "key": "[stat warrior duties about]",
+      "source": "How the colony's warriors divided between those sent to a war flag, those hurt badly enough to leave the fight for a hospital (including those being healed), and those free."
+    },
+    {
+      "id": "native:[stat band flag work]",
+      "key": "[stat band flag work]",
+      "source": "At a flag"
+    },
+    {
+      "id": "native:[stat band swarms]",
+      "key": "[stat band swarms]",
+      "source": "Swarms"
+    },
+    {
+      "id": "native:[stat band other buildings]",
+      "key": "[stat band other buildings]",
+      "source": "Other buildings"
+    },
+    {
+      "id": "native:[stat band war flag]",
+      "key": "[stat band war flag]",
+      "source": "On a war flag"
+    },
+    {
+      "id": "native:[stat unit workers]",
+      "key": "[stat unit workers]",
+      "source": "workers"
+    },
+    {
+      "id": "native:[stat unit worker time]",
+      "key": "[stat unit worker time]",
+      "source": "workers' time"
+    },
+    {
+      "id": "native:[stat unit working workers]",
+      "key": "[stat unit working workers]",
+      "source": "workers supplying buildings"
+    },
+    {
+      "id": "native:[stat unit warriors]",
+      "key": "[stat unit warriors]",
+      "source": "warriors"
+    },
+    {
+      "id": "native:[stat unit enemy warriors]",
+      "key": "[stat unit enemy warriors]",
+      "source": "enemy warriors"
+    },
+    {
+      "id": "native:[experiment markets-v2]",
+      "key": "[experiment markets-v2]",
+      "source": "Markets V2"
+    },
+    {
+      "id": "native:[experiment markets-v2 help]",
+      "key": "[experiment markets-v2 help]",
+      "source": "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."
+    },
+    {
+      "id": "native:[dock flags and units]",
+      "key": "[dock flags and units]",
+      "source": "Flags & units"
+    },
+    {
+      "id": "native:[dock building level]",
+      "key": "[dock building level]",
+      "source": "Level"
+    },
+    {
+      "id": "native:[Destroy this building?]",
+      "key": "[Destroy this building?]",
+      "source": "Destroy this building?"
+    },
+    {
+      "id": "native:[library Building families]",
+      "key": "[library Building families]",
+      "source": "Building families"
+    },
+    {
+      "id": "native:[library Building library]",
+      "key": "[library Building library]",
+      "source": "Building library"
+    },
+    {
+      "id": "native:[library Checking building release]",
+      "key": "[library Checking building release]",
+      "source": "Checking building release"
+    },
+    {
+      "id": "native:[library Create in Building Studio]",
+      "key": "[library Create in Building Studio]",
+      "source": "Create in Building Studio"
+    },
+    {
+      "id": "native:[library Enter a building family ID or a link to its family page.]",
+      "key": "[library Enter a building family ID or a link to its family page.]",
+      "source": "Enter a building family ID or a link to its family page."
+    },
+    {
+      "id": "native:[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]",
+      "key": "[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]",
+      "source": "Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps."
+    },
+    {
+      "id": "native:[library Invalid building family ID.]",
+      "key": "[library Invalid building family ID.]",
+      "source": "Invalid building family ID."
+    },
+    {
+      "id": "native:[library Invalid building library response]",
+      "key": "[library Invalid building library response]",
+      "source": "Invalid building library response"
+    },
+    {
+      "id": "native:[library Loading building families]",
+      "key": "[library Loading building families]",
+      "source": "Loading building families"
+    },
+    {
+      "id": "native:[library No building families installed.]",
+      "key": "[library No building families installed.]",
+      "source": "No building families installed."
+    },
+    {
+      "id": "native:[library No public building families yet]",
+      "key": "[library No public building families yet]",
+      "source": "No public building families yet"
+    },
+    {
+      "id": "native:[library Opening building family]",
+      "key": "[library Opening building family]",
+      "source": "Opening building family"
+    },
+    {
+      "id": "native:[intro hint no scout flag]",
+      "key": "[intro hint no scout flag]",
+      "source": "No assigned Exploration Flag was found. Place one on the stone east of your base and request 1 explorer."
+    },
+    {
+      "id": "native:[intro hint no war flag]",
+      "key": "[intro hint no war flag]",
+      "source": "No assigned War Flag was found at the enemy base. Place one over the eastern enemy Swarm and request warriors."
+    },
+    {
+      "id": "native:[lesson warrior-training title]",
+      "key": "[lesson warrior-training title]",
+      "source": "Producing and training warriors"
+    },
+    {
+      "id": "native:[lesson warrior-training briefing]",
+      "key": "[lesson warrior-training briefing]",
+      "source": "Produce warriors at the Swarm, then train them at a Training Camp."
+    },
+    {
+      "id": "native:[lesson warrior-training complete]",
+      "key": "[lesson warrior-training complete]",
+      "source": "You controlled military production and trained warriors. Keep their food supply running; combat units still need to eat."
+    },
+    {
+      "id": "native:[lesson warrior-training produce hint]",
+      "key": "[lesson warrior-training produce hint]",
+      "source": "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors. Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run."
+    },
+    {
+      "id": "native:[lesson warrior-training produce title]",
+      "key": "[lesson warrior-training produce title]",
+      "source": "Produce two warriors"
+    },
+    {
+      "id": "native:[lesson warrior-training produce instruction]",
+      "key": "[lesson warrior-training produce instruction]",
+      "source": "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors."
+    },
+    {
+      "id": "native:[lesson warrior-training produce help]",
+      "key": "[lesson warrior-training produce help]",
+      "source": "Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run."
+    },
+    {
+      "id": "native:[lesson warrior-training produce marker]",
+      "key": "[lesson warrior-training produce marker]",
+      "source": "Produce two warriors"
+    },
+    {
+      "id": "native:[lesson warrior-training build hint]",
+      "key": "[lesson warrior-training build hint]",
+      "source": "Build a Training Camp in the clearing; assign builders. Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges."
+    },
+    {
+      "id": "native:[lesson warrior-training build title]",
+      "key": "[lesson warrior-training build title]",
+      "source": "Build a Training Camp"
+    },
+    {
+      "id": "native:[lesson warrior-training build instruction]",
+      "key": "[lesson warrior-training build instruction]",
+      "source": "Build a Training Camp in the clearing; assign builders."
+    },
+    {
+      "id": "native:[lesson warrior-training build help]",
+      "key": "[lesson warrior-training build help]",
+      "source": "Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges."
+    },
+    {
+      "id": "native:[lesson warrior-training build marker]",
+      "key": "[lesson warrior-training build marker]",
+      "source": "Build a Training Camp"
+    },
+    {
+      "id": "native:[lesson warrior-training train hint]",
+      "key": "[lesson warrior-training train hint]",
+      "source": "Let a warrior complete Training Camp practice. Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session."
+    },
+    {
+      "id": "native:[lesson warrior-training train title]",
+      "key": "[lesson warrior-training train title]",
+      "source": "Train your warriors"
+    },
+    {
+      "id": "native:[lesson warrior-training train instruction]",
+      "key": "[lesson warrior-training train instruction]",
+      "source": "Let a warrior complete Training Camp practice."
+    },
+    {
+      "id": "native:[lesson warrior-training train help]",
+      "key": "[lesson warrior-training train help]",
+      "source": "Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session."
+    },
+    {
+      "id": "native:[lesson warrior-training produce compact]",
+      "key": "[lesson warrior-training produce compact]",
+      "source": "Swarm → warriors only. Supply wheat for 2 warriors."
+    },
+    {
+      "id": "native:[lesson warrior-training build compact]",
+      "key": "[lesson warrior-training build compact]",
+      "source": "Build → Training Camp. Leave space around its edges."
+    },
+    {
+      "id": "native:[lesson warrior-training train compact]",
+      "key": "[lesson warrior-training train compact]",
+      "source": "Let a warrior finish Training Camp practice."
+    }
+  ]
+}

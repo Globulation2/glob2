@@ -1,10 +1,10 @@
 {
   "project": "bradley-personal-20261027",
   "model": "general/nmt",
-  "attempts_including_uncertain_dispatches": 88,
-  "reserved_characters": 193865,
+  "attempts_including_uncertain_dispatches": 89,
+  "reserved_characters": 194087,
   "usd_per_million_input_codepoints": "20",
-  "conservative_usd_before_credits": "3.8773",
+  "conservative_usd_before_credits": "3.88174",
   "ceiling_usd": "9",
   "pricing_source": "https://cloud.google.com/products/translate/pricing",
   "pricing_consulted_utc": "2026-11-01",

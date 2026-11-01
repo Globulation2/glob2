@@ -1,100 +1,183 @@
 {
-  "stage": "Integrated-current checkpoint; native refresh and both browser-game variants/runtime pending",
-  "validation_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
-  "integrated_master": "0d54ef3a99384059e68e78f03f774e062031a3ca",
-  "active_review_kit": "integration-refresh/kit",
-  "source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "stage": "Current64 source/reviews/website checkpoint; native,Android,bothWASM runtime gates pending",
+  "utc": "2026-11-01T06:10:34.869353+00:00",
+  "validation_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "integrated_master": "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+  "active_review_kit": "integration-bc8/kit",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
   "canonical_catalog_sha256": {
-    "native": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
     "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
   },
   "counts": {
-    "native_keys": 3395,
+    "native_keys": 3411,
     "online_keys": 2836,
-    "online_plural_text_variants": 2863,
-    "combined_text_variants": 6258
+    "online_plural_variants": 2863,
+    "review_keys": 6247,
+    "text_variants": 6274,
+    "review_batches": 66
   },
   "passed_gates": [
     "language_brief",
     "source_based_pilot",
-    "structural",
-    "mobile_platforms"
+    "structural"
   ],
   "pending_gates": [
     "desktop_rendering",
     "phone_rendering",
     "browser_startup",
     "native_platforms",
-    "browser_platforms"
+    "browser_platforms",
+    "mobile_platforms"
   ],
-  "google_estimate_usd_before_credits": "3.8773",
-  "current_android": "Official cleanffbd release; unsignedacfa7ddf\u2026, signed+actuallyinstalledb0d77346\u2026, nativebuildID262d072c\u2026; exact3395MRcatalog/Deva/resource/notices; lifecycle7 and actualtutorial/HUD portrait+landscape pass; ownedruntimecleaned. Full hashes in gate-recommendation.",
-  "historical_native": "671producer/3393catalog,34jobs75072samples83292lines0missingglyphs/drawboundsfailures; oldmatrix/font tests retained under actual identities, not relabeled current. Current native capture refresh pending.",
-  "website_carry": "Entire platform tracked tree and dependencies exactly identical671\u2192ffbd; previous6Chromium and8Firefox/WebKit desktop/phone cases retained under actual producers. Current fulltypecheck and37\u00d72836contracts pass.",
-  "browser_units": "147/150; exact unmodified integrated master0d54 inputs reproduce all3replayfixture failures; proof+logs included.",
+  "google": {
+    "project": "bradley-personal-20261027",
+    "attempts": 89,
+    "reserved_codepoints": 194087,
+    "conservative_usd_before_credits": "3.88174",
+    "ceiling_usd": "9",
+    "not_invoice": true
+  },
+  "current_completed": {
+    "linguistics": "3395native unchangedsource/target carry +16freshactualthree-role reviews/finalrechecks; wholeonline unchanged. Sourcebasedbrief/pilot process retained, nofreshwholecatalogclaim.",
+    "website": "Fresh64 productionbuild/fulltypecheck/38\u00d72836contracts and12actual Chromium/Firefox/WebKit\u00d7desktop/phone MRhome/switch cases,0failed/flaky/skipped. Root2+independenteditor2 actual homeimages; ownserver+DBcleaned.",
+    "helper": "28original+integration tests independently reviewed; actualAPI16draftfields chargedonlyonce222codepoints. Localpostdraftmetadata typo recoveredoffline fromverifiedcache; failurelog retained.",
+    "native_structural": "MR3411zero missing/untranslated/pending/obsolete; broadglobalstrict hasSAMEordered29exactbc8baseline errorsinotherlanguages,0introduced. GlobalstrictNOTclaimedpassing.",
+    "browser_units": "148/151;3exactmasterbaseline fixture failures reproduced withidentical7inputs.",
+    "packaging": "Apple4/GOG27pass. ExactpinnedCaddy2.11.4actualfont/CSS/JSON MIME+gzip contract1pass; initialCLIabsence skip retained. Broadbrowserasset suite remainsactive/omittedfromcheckpoint."
+  },
+  "historical": "Prior671 native3393 fullmatrix34jobs/75072samples andffbdAndroid3395 actualrelease/lifecycle/HUD remain underactualproducers. AllffbdAPK/ELF/evidence losslesslyarchived<2GiB beforecurrentrebuild. No oldruntime gate relabeledcurrent64.",
   "stable_evidence": [
     {
       "path": "artifacts/marathi-localization/checks/google-final-budget.json",
-      "sha256": "f89068a948ae27afb7cb60ac5920477aa3f539b204670a3d588c2c3fbfc7ebb9"
+      "sha256": "3fef40e85d72e53318a5ae5ac993a6e16e98b97e3127a0d0801ca283ac1d6a74"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/kit/reviews/mr.json",
-      "sha256": "e92335b6fffe3a2fa998eb474278a28948347fc3112957b2956a1e11e3cd1d05"
+      "path": "artifacts/marathi-localization/integration-bc8/kit/manifest.json",
+      "sha256": "2139f4ad2e4f605d212efa94f5a4afc8a28b089997dbc79a6ad2d9ea944c3368"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/source-target-carry.json",
-      "sha256": "8b43091c797b531a9df698bbeb10e3d7378fe120fb8b7be49cb1ffa1322f1151"
+      "path": "artifacts/marathi-localization/integration-bc8/kit/reviews/mr.json",
+      "sha256": "6108386cc9ecf77f94164d89fbf5bf6b1a0bab5675aeae7e872dcd42eb0d6121"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/semantic-final.json",
-      "sha256": "e6583f67fd1ad8730719dfb1b04652a2e07c3ef2f6d325861c32e3aedf11a12e"
+      "path": "artifacts/marathi-localization/integration-bc8/source-provenance.json",
+      "sha256": "7987ccb29c0c257284c44a107794a0df760b31120da015dbf8ea80a509418e13"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/editorial-final.json",
-      "sha256": "15d585c2fa57afc9c72c969e4533d3c55a9a18043eed8db3e150ad0e1f2f8de5"
+      "path": "artifacts/marathi-localization/integration-bc8/validation-kit-provenance.json",
+      "sha256": "435fd4edb1e212fd52fee125e397da9427da0f0c36ecaf38daf851e4de977330"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/adversarial-final.json",
-      "sha256": "2c9697e8cb0e2e13d45e9d8e494c942926ffb850f5c989545f903cbfafa59899"
+      "path": "artifacts/marathi-localization/integration-bc8/source-target-carry.json",
+      "sha256": "2ab915be7388255a75b9cebb08d09019bf5cc465dad4e198a3c9b9ce1caea833"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/root-checks.json",
-      "sha256": "d24f9870a08991890e0c62e53953cd28ec94ffb9f88c4c1df59f7cba707514cb"
+      "path": "artifacts/marathi-localization/integration-bc8/semantic-final16.json",
+      "sha256": "a08b4ab2ac0f6e2a8b091805a581b97f0ef80381abd8c903ec8940bd874399cc"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/online-runtime-carry.json",
-      "sha256": "afcc7f08bb7b9bf5dad03334c685d6b6dcb12b649f8d5a5a170b7dc8e318d92a"
+      "path": "artifacts/marathi-localization/integration-bc8/editorial-final16.json",
+      "sha256": "966406c04abce895e748d29d428a90517dac2c2bddae91ba377d11f7a0bf861f"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/clean-browser-catalog-inputs.json",
-      "sha256": "2ffcf84976c5fd1fd756d3e75d0a1d96f35fecf6dfdb8929fefd0d563bd1d2ed"
+      "path": "artifacts/marathi-localization/integration-bc8/adversarial-final16.json",
+      "sha256": "a96ec12114e255128de29367e25418d75bddbb5a930d44a7fe6ba6d1f8616789"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/android/gate-recommendation.json",
-      "sha256": "ddc053df9936c513132b7b145a5234fd225f4391f051a5a1ba3d2ada88b0c777"
+      "path": "artifacts/marathi-localization/integration-bc8/google-draft.json",
+      "sha256": "2fdc781fac72e42d04affe4d8c839354a4bf9b11dac64e98a5355d4946ce66dc"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/android/runtime-cleanup.json",
-      "sha256": "e5949213b40eb0a496f6974b49d08265eb250461eae47993670c5a2313f68aad"
+      "path": "artifacts/marathi-localization/integration-bc8/helper-independent-review.json",
+      "sha256": "d1ec583e0f7f34a624a2aec032bc58607ce6607ef74ed6b767c77dc22f8d9355"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/root-overlay-visual-review.json",
-      "sha256": "73c616bdfb83075980c677b5ef86cf27c696815ac8eaf3ceadaf946fa26bd458"
+      "path": "artifacts/marathi-localization/integration-bc8/native-baseline/proof.json",
+      "sha256": "e48a752450f6bbeb1ac4b7c920b522393fc882ecdfd943b92686d359679a42f5"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/root-native-menu-visual-review.json",
-      "sha256": "143268cc652853de0abacf291fcda26a8d37afb341a5d2a9486cf8be9d3218f4"
+      "path": "artifacts/marathi-localization/integration-bc8/native-baseline/master-strict.json",
+      "sha256": "00eef8b34f19981797c49e5c56c552c966de27da063a94cb4fc8794f8c90c5c9"
     },
     {
-      "path": "artifacts/marathi-localization/integration-refresh/android/hud/root-visual-review.json",
-      "sha256": "f0982342f2e37e2673f6cee695fd1ebf1d7413b7e201828f79a5f4ec0649cddf"
+      "path": "artifacts/marathi-localization/integration-bc8/native-baseline/merged-strict.json",
+      "sha256": "7b99fa90a1d688492f3f31ef24fecc8c554471a9d240ca06369b8e89446f98e0"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline-proof.json",
+      "sha256": "48f904367abd3ff9bfa63f855d7ea7602c6dde7cae813515f1ce95d22df25537"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/browser-fixture-baseline.log",
+      "sha256": "957d839d241f7d6906f69bc712541f2337760dad2aa1dc98d9ab685947c3774e"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/browser-unit.log",
+      "sha256": "3dc72a21c04922f3a98faaa86e2906cdc9bf78a73ff69789a1d9f5eaff8345f6"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online-contracts.log",
+      "sha256": "a8c51f7e5f3fc15c53fd54c065ebb95aa213bf347716607680e37d31038db18e"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/platform-typecheck.log",
+      "sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online-production-build.log",
+      "sha256": "074c781932ce10c0087225ebaf6d6e9c7c127e64569e47b6a48aa89e53c6e188"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/provenance.json",
+      "sha256": "a6ecb73947820c5b9879a73e596cf42f3a07c573b29fde6cd88666ddffd5f953"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/execution.json",
+      "sha256": "2e5b8465408a41e8e38b9490e36236fec6db8687980576072d920ab8a86e11c5"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/results.json",
+      "sha256": "782d0b12280a88f9240204bf7e5b9a8e5365ee5ff5f75bd7355e88cdf06aefbd"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/root-visual-review.json",
+      "sha256": "fafd1f7033ea09e891184ca7b9e13810fbc174574c0c9ec650e2c9b0620438be"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/editorial-visual-review.json",
+      "sha256": "fd4a7070c66ba923cc6798b886549e2d7193d47033131934d6d5f0ba761fa3a6"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/runtime-cleanup.json",
+      "sha256": "11520ac0375fdf965e7ff2424928b942d570632d30c3864ea6c690c7574881db"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/caddy-qa/provenance.json",
+      "sha256": "5b382db6cff86df1e7c4934ea31859afc016a969d5e3fdf5a36ce364c3d54f77"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/browser-font-contracts-caddy.log",
+      "sha256": "16bd17008595309c61e94b8e4a1e1645a4ba6b0f27d06eb378f76f7086ffc69a"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/apple-contracts.log",
+      "sha256": "56013940eef560025fa47f39113fe4745cdf0f6455dcd676e6f0e7028f738750"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/gog-contracts.log",
+      "sha256": "c18880bc4404b897dc39a8506bef770e42bc21a7ae1b193d839c5950601e813a"
+    },
+    {
+      "path": "artifacts/marathi-localization/validated-android-ffbd/archive-manifest.json",
+      "sha256": "0064087a798dcf98a640819ad64cb56b8af16b88fb6445c7daf8e25e1774a9ef"
     }
   ],
   "limits": [
-    "Agent-reviewed, not native-human-certified.",
-    "Only API35x86_64 emulator Android runtime; physicalAndroid/otherABI/macOS/Windows/iOS runtime unverified. Apple resource4contracts executedLinux.",
-    "Native current producer and bothWASM/current12case runtime gates pending, no completion claim.",
-    "No fullmatch/fulltutorial playthrough, all dynamicargument or performance claim.",
-    "No simulation/save/replay/network behavior change authored relative integrated master."
+    "Agentreview, not native-human certification.",
+    "Current64native/Android/bothbrowsergame runtime pending; no completion claim.",
+    "macOS/Windows/iOSruntime,physicalAndroid/otherABI runtime unverified; ApplecontractsLinuxonly.",
+    "No complete match/fulltutorial/all-dynamic-argument/performance claim.",
+    "No simulation/save/replay/network change authored relativeintegratedmaster."
   ]
 }

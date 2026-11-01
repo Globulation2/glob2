@@ -1,0 +1,509 @@
+{
+  "id": "native-general-002",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[connecting to]",
+      "key": "[connecting to]",
+      "source": "Connecting to"
+    },
+    {
+      "id": "native:[Construction Site Defaults]",
+      "key": "[Construction Site Defaults]",
+      "source": "Construction Site Defaults"
+    },
+    {
+      "id": "native:[Continue playing]",
+      "key": "[Continue playing]",
+      "source": "Continue playing"
+    },
+    {
+      "id": "native:[control %0]",
+      "key": "[control %0]",
+      "source": "control-%0"
+    },
+    {
+      "id": "native:[Corn]",
+      "key": "[Corn]",
+      "source": "Wheat"
+    },
+    {
+      "id": "native:[crater density]",
+      "key": "[crater density]",
+      "source": "crater count"
+    },
+    {
+      "id": "native:[create map]",
+      "key": "[create map]",
+      "source": "Create map"
+    },
+    {
+      "id": "native:[credits]",
+      "key": "[credits]",
+      "source": "Credits"
+    },
+    {
+      "id": "native:[ctrl - line]",
+      "key": "[ctrl - line]",
+      "source": "Ctrl - Line"
+    },
+    {
+      "id": "native:[current speed]",
+      "key": "[current speed]",
+      "source": "Current speed"
+    },
+    {
+      "id": "native:[custom game]",
+      "key": "[custom game]",
+      "source": "Custom game"
+    },
+    {
+      "id": "native:[customcur]",
+      "key": "[customcur]",
+      "source": "Custom cursor"
+    },
+    {
+      "id": "native:[damage]",
+      "key": "[damage]",
+      "source": "Damage"
+    },
+    {
+      "id": "native:[Damaged Map]",
+      "key": "[Damaged Map]",
+      "source": "Wounded Units Map"
+    },
+    {
+      "id": "native:[decrease game speed]",
+      "key": "[decrease game speed]",
+      "source": "Decrease Game Speed"
+    },
+    {
+      "id": "native:[decrease units working]",
+      "key": "[decrease units working]",
+      "source": "Decrease Units Working"
+    },
+    {
+      "id": "native:[Defeat Your Oppenents]",
+      "key": "[Defeat Your Oppenents]",
+      "source": "Defeat Your Opponents"
+    },
+    {
+      "id": "native:[defencetower explanation 2]",
+      "key": "[defencetower explanation 2]",
+      "source": "units or buildings"
+    },
+    {
+      "id": "native:[defencetower explanation]",
+      "key": "[defencetower explanation]",
+      "source": "Attacks nearby enemy"
+    },
+    {
+      "id": "native:[defencetower]",
+      "key": "[defencetower]",
+      "source": "Defense Tower"
+    },
+    {
+      "id": "native:[Defense Map]",
+      "key": "[Defense Map]",
+      "source": "Defense Map"
+    },
+    {
+      "id": "native:[Defense]",
+      "key": "[Defense]",
+      "source": "Defense"
+    },
+    {
+      "id": "native:[Delete game]",
+      "key": "[Delete game]",
+      "source": "Delete the selected game"
+    },
+    {
+      "id": "native:[delete]",
+      "key": "[delete]",
+      "source": "Delete"
+    },
+    {
+      "id": "native:[desert]",
+      "key": "[desert]",
+      "source": "desert"
+    },
+    {
+      "id": "native:[destroy]",
+      "key": "[destroy]",
+      "source": "Destroy"
+    },
+    {
+      "id": "native:[display]",
+      "key": "[display]",
+      "source": "Display"
+    },
+    {
+      "id": "native:[do nothing]",
+      "key": "[do nothing]",
+      "source": "Do Nothing"
+    },
+    {
+      "id": "native:[don't carry anything]",
+      "key": "[don't carry anything]",
+      "source": "Not carrying anything"
+    },
+    {
+      "id": "native:[down]",
+      "key": "[down]",
+      "source": "down"
+    },
+    {
+      "id": "native:[edit map]",
+      "key": "[edit map]",
+      "source": "Edit Map"
+    },
+    {
+      "id": "native:[editing map]",
+      "key": "[editing map]",
+      "source": "Editing Map"
+    },
+    {
+      "id": "native:[editor]",
+      "key": "[editor]",
+      "source": "Editor"
+    },
+    {
+      "id": "native:[end]",
+      "key": "[end]",
+      "source": "end"
+    },
+    {
+      "id": "native:[enter]",
+      "key": "[enter]",
+      "source": "enter"
+    },
+    {
+      "id": "native:[equals]",
+      "key": "[equals]",
+      "source": "equals"
+    },
+    {
+      "id": "native:[ERROR_CANT_LOAD_MAP]",
+      "key": "[ERROR_CANT_LOAD_MAP]",
+      "source": "The map couldn't be loaded because the file is either damaged or an incompatible version."
+    },
+    {
+      "id": "native:[ERROR_CANT_SAVE_CAMPAIGN]",
+      "key": "[ERROR_CANT_SAVE_CAMPAIGN]",
+      "source": "The campaign couldn't be saved. Check that the destination directory exists, is writable, and has free space."
+    },
+    {
+      "id": "native:[escape]",
+      "key": "[escape]",
+      "source": "escape"
+    },
+    {
+      "id": "native:[f10]",
+      "key": "[f10]",
+      "source": "f10"
+    },
+    {
+      "id": "native:[f11]",
+      "key": "[f11]",
+      "source": "f11"
+    },
+    {
+      "id": "native:[f12]",
+      "key": "[f12]",
+      "source": "f12"
+    },
+    {
+      "id": "native:[f13]",
+      "key": "[f13]",
+      "source": "f13"
+    },
+    {
+      "id": "native:[f14]",
+      "key": "[f14]",
+      "source": "f14"
+    },
+    {
+      "id": "native:[f15]",
+      "key": "[f15]",
+      "source": "f15"
+    },
+    {
+      "id": "native:[f1]",
+      "key": "[f1]",
+      "source": "f1"
+    },
+    {
+      "id": "native:[f2]",
+      "key": "[f2]",
+      "source": "f2"
+    },
+    {
+      "id": "native:[f3]",
+      "key": "[f3]",
+      "source": "f3"
+    },
+    {
+      "id": "native:[f4]",
+      "key": "[f4]",
+      "source": "f4"
+    },
+    {
+      "id": "native:[f5]",
+      "key": "[f5]",
+      "source": "f5"
+    },
+    {
+      "id": "native:[f6]",
+      "key": "[f6]",
+      "source": "f6"
+    },
+    {
+      "id": "native:[f7]",
+      "key": "[f7]",
+      "source": "f7"
+    },
+    {
+      "id": "native:[f8]",
+      "key": "[f8]",
+      "source": "f8"
+    },
+    {
+      "id": "native:[f9]",
+      "key": "[f9]",
+      "source": "f9"
+    },
+    {
+      "id": "native:[Fertility Map]",
+      "key": "[Fertility Map]",
+      "source": "Fertility Map"
+    },
+    {
+      "id": "native:[fog of war]",
+      "key": "[fog of war]",
+      "source": "Fog of war"
+    },
+    {
+      "id": "native:[food]",
+      "key": "[food]",
+      "source": "Food"
+    },
+    {
+      "id": "native:[forbidden area]",
+      "key": "[forbidden area]",
+      "source": "Forbidden area"
+    },
+    {
+      "id": "native:[Free]",
+      "key": "[Free]",
+      "source": "Healthy"
+    },
+    {
+      "id": "native:[free]",
+      "key": "[free]",
+      "source": "free"
+    },
+    {
+      "id": "native:[from:]",
+      "key": "[from:]",
+      "source": "from:"
+    },
+    {
+      "id": "native:[fullscreen]",
+      "key": "[fullscreen]",
+      "source": "Fullscreen"
+    },
+    {
+      "id": "native:[game full]",
+      "key": "[game full]",
+      "source": "Game full"
+    },
+    {
+      "id": "native:[game speed]",
+      "key": "[game speed]",
+      "source": "Game speed"
+    },
+    {
+      "id": "native:[Game]",
+      "key": "[Game]",
+      "source": "Game"
+    },
+    {
+      "id": "native:[general settings]",
+      "key": "[general settings]",
+      "source": "General Settings"
+    },
+    {
+      "id": "native:[go to event]",
+      "key": "[go to event]",
+      "source": "Go To Event"
+    },
+    {
+      "id": "native:[go to home]",
+      "key": "[go to home]",
+      "source": "Go To Home"
+    },
+    {
+      "id": "native:[goto main menu]",
+      "key": "[goto main menu]",
+      "source": "Go back to main menu"
+    },
+    {
+      "id": "native:[grass]",
+      "key": "[grass]",
+      "source": "Grass"
+    },
+    {
+      "id": "native:[ground attack]",
+      "key": "[ground attack]",
+      "source": "ground attack"
+    },
+    {
+      "id": "native:[guard area]",
+      "key": "[guard area]",
+      "source": "Guard area"
+    },
+    {
+      "id": "native:[GUIMapPreview text 0]",
+      "key": "[GUIMapPreview text 0]",
+      "source": "Please choose"
+    },
+    {
+      "id": "native:[GUIMapPreview text 1]",
+      "key": "[GUIMapPreview text 1]",
+      "source": "a map"
+    },
+    {
+      "id": "native:[handmade map]",
+      "key": "[handmade map]",
+      "source": "Handmade map"
+    },
+    {
+      "id": "native:[Happyness]",
+      "key": "[Happyness]",
+      "source": "Happiness"
+    },
+    {
+      "id": "native:[hard pause]",
+      "key": "[hard pause]",
+      "source": "Hard Pause"
+    },
+    {
+      "id": "native:[Harvest]",
+      "key": "[Harvest]",
+      "source": "Harvest"
+    },
+    {
+      "id": "native:[high priority]",
+      "key": "[high priority]",
+      "source": "high"
+    },
+    {
+      "id": "native:[hints]",
+      "key": "[hints]",
+      "source": "Hints"
+    },
+    {
+      "id": "native:[home]",
+      "key": "[home]",
+      "source": "home"
+    },
+    {
+      "id": "native:[hospital explanation 2]",
+      "key": "[hospital explanation 2]",
+      "source": ""
+    },
+    {
+      "id": "native:[hospital explanation]",
+      "key": "[hospital explanation]",
+      "source": "Heals your units"
+    },
+    {
+      "id": "native:[hospital]",
+      "key": "[hospital]",
+      "source": "Hospital"
+    },
+    {
+      "id": "native:[host]",
+      "key": "[host]",
+      "source": "Host a game"
+    },
+    {
+      "id": "native:[hp]",
+      "key": "[hp]",
+      "source": "HP"
+    },
+    {
+      "id": "native:[Human]",
+      "key": "[Human]",
+      "source": "Human"
+    },
+    {
+      "id": "native:[human]",
+      "key": "[human]",
+      "source": "human"
+    },
+    {
+      "id": "native:[hungry]",
+      "key": "[hungry]",
+      "source": "hungry"
+    },
+    {
+      "id": "native:[hungryness]",
+      "key": "[hungryness]",
+      "source": "Hunger"
+    },
+    {
+      "id": "native:[In way]",
+      "key": "[In way]",
+      "source": "On the way"
+    },
+    {
+      "id": "native:[increase game speed]",
+      "key": "[increase game speed]",
+      "source": "Increase Game Speed"
+    },
+    {
+      "id": "native:[increase units working]",
+      "key": "[increase units working]",
+      "source": "Increase Units Working"
+    },
+    {
+      "id": "native:[inn]",
+      "key": "[inn]",
+      "source": "Inn"
+    },
+    {
+      "id": "native:[insert]",
+      "key": "[insert]",
+      "source": "insert"
+    },
+    {
+      "id": "native:[inside]",
+      "key": "[inside]",
+      "source": "Inside"
+    },
+    {
+      "id": "native:[iterate selection]",
+      "key": "[iterate selection]",
+      "source": "Iterate to Next Selection"
+    },
+    {
+      "id": "native:[jobs]",
+      "key": "[jobs]",
+      "source": "jobs"
+    },
+    {
+      "id": "native:[join a game]",
+      "key": "[join a game]",
+      "source": "Join a game"
+    },
+    {
+      "id": "native:[lan]",
+      "key": "[lan]",
+      "source": "LAN Game"
+    }
+  ]
+}

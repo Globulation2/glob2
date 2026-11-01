@@ -1,0 +1,509 @@
+{
+  "id": "native-general-003",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[language incomplete]",
+      "key": "[language incomplete]",
+      "source": "English - Incomplete"
+    },
+    {
+      "id": "native:[language-code]",
+      "key": "[language-code]",
+      "source": "en"
+    },
+    {
+      "id": "native:[language-tr]",
+      "key": "[language-tr]",
+      "source": "Language"
+    },
+    {
+      "id": "native:[language]",
+      "key": "[language]",
+      "source": "English"
+    },
+    {
+      "id": "native:[left meta]",
+      "key": "[left meta]",
+      "source": "left meta"
+    },
+    {
+      "id": "native:[left super]",
+      "key": "[left super]",
+      "source": "left windows key"
+    },
+    {
+      "id": "native:[left]",
+      "key": "[left]",
+      "source": "left"
+    },
+    {
+      "id": "native:[level]",
+      "key": "[level]",
+      "source": "Level"
+    },
+    {
+      "id": "native:[levels]",
+      "key": "[levels]",
+      "source": "Levels"
+    },
+    {
+      "id": "native:[load campaign]",
+      "key": "[load campaign]",
+      "source": "Load Campaign"
+    },
+    {
+      "id": "native:[load game]",
+      "key": "[load game]",
+      "source": "Load game"
+    },
+    {
+      "id": "native:[load map]",
+      "key": "[load map]",
+      "source": "Load Map"
+    },
+    {
+      "id": "native:[load replay]",
+      "key": "[load replay]",
+      "source": "Load Replay"
+    },
+    {
+      "id": "native:[load script]",
+      "key": "[load script]",
+      "source": "Load Script"
+    },
+    {
+      "id": "native:[load]",
+      "key": "[load]",
+      "source": "Load"
+    },
+    {
+      "id": "native:[look around]",
+      "key": "[look around]",
+      "source": "Look around"
+    },
+    {
+      "id": "native:[Lost : %0 has more prestige than you]",
+      "key": "[Lost : %0 has more prestige than you]",
+      "source": "Lost: %0 has more prestige than you"
+    },
+    {
+      "id": "native:[Lost : your colony is dead]",
+      "key": "[Lost : your colony is dead]",
+      "source": "Lost: your colony is dead"
+    },
+    {
+      "id": "native:[low priority]",
+      "key": "[low priority]",
+      "source": "low"
+    },
+    {
+      "id": "native:[lowquality]",
+      "key": "[lowquality]",
+      "source": "Low quality"
+    },
+    {
+      "id": "native:[Magic At. Air]",
+      "key": "[Magic At. Air]",
+      "source": "Air dmg."
+    },
+    {
+      "id": "native:[Magic At. Ground]",
+      "key": "[Magic At. Ground]",
+      "source": "Ground dmg."
+    },
+    {
+      "id": "native:[mark map]",
+      "key": "[mark map]",
+      "source": "Mark Map For Allies"
+    },
+    {
+      "id": "native:[medium priority]",
+      "key": "[medium priority]",
+      "source": "mid"
+    },
+    {
+      "id": "native:[meta %0]",
+      "key": "[meta %0]",
+      "source": "meta-%0"
+    },
+    {
+      "id": "native:[Min required level:]",
+      "key": "[Min required level:]",
+      "source": "Minimum required level:"
+    },
+    {
+      "id": "native:[Mute]",
+      "key": "[Mute]",
+      "source": "Mute"
+    },
+    {
+      "id": "native:[mute]",
+      "key": "[mute]",
+      "source": "mute"
+    },
+    {
+      "id": "native:[new campaign]",
+      "key": "[new campaign]",
+      "source": "New Campaign"
+    },
+    {
+      "id": "native:[new map]",
+      "key": "[new map]",
+      "source": "New Map"
+    },
+    {
+      "id": "native:[no fullscreen]",
+      "key": "[no fullscreen]",
+      "source": "* only in windowed mode"
+    },
+    {
+      "id": "native:[No Hints]",
+      "key": "[No Hints]",
+      "source": "No Hints"
+    },
+    {
+      "id": "native:[no key]",
+      "key": "[no key]",
+      "source": "no key yet"
+    },
+    {
+      "id": "native:[No Objectives]",
+      "key": "[No Objectives]",
+      "source": "No Objectives"
+    },
+    {
+      "id": "native:[no ressources growth areas]",
+      "key": "[no ressources growth areas]",
+      "source": "No Growth Areas"
+    },
+    {
+      "id": "native:[No]",
+      "key": "[No]",
+      "source": "No"
+    },
+    {
+      "id": "native:[number of teams]",
+      "key": "[number of teams]",
+      "source": "number of teams"
+    },
+    {
+      "id": "native:[Number Of Units]",
+      "key": "[Number Of Units]",
+      "source": "Number Of Units"
+    },
+    {
+      "id": "native:[numlock]",
+      "key": "[numlock]",
+      "source": "numlock"
+    },
+    {
+      "id": "native:[objectives]",
+      "key": "[objectives]",
+      "source": "Objectives"
+    },
+    {
+      "id": "native:[of which]",
+      "key": "[of which]",
+      "source": "there are"
+    },
+    {
+      "id": "native:[ok]",
+      "key": "[ok]",
+      "source": "Ok"
+    },
+    {
+      "id": "native:[on press]",
+      "key": "[on press]",
+      "source": "On Press"
+    },
+    {
+      "id": "native:[On the spot]",
+      "key": "[On the spot]",
+      "source": "Here"
+    },
+    {
+      "id": "native:[on unpress]",
+      "key": "[on unpress]",
+      "source": "On release"
+    },
+    {
+      "id": "native:[open chat box]",
+      "key": "[open chat box]",
+      "source": "Open Chat Box"
+    },
+    {
+      "id": "native:[open load menu]",
+      "key": "[open load menu]",
+      "source": "Open Load Menu"
+    },
+    {
+      "id": "native:[open save menu]",
+      "key": "[open save menu]",
+      "source": "Open Save Menu"
+    },
+    {
+      "id": "native:[open scenario editor]",
+      "key": "[open scenario editor]",
+      "source": "Open Scenario Editor"
+    },
+    {
+      "id": "native:[open teams editor]",
+      "key": "[open teams editor]",
+      "source": "Open Teams Editor"
+    },
+    {
+      "id": "native:[open]",
+      "key": "[open]",
+      "source": "open"
+    },
+    {
+      "id": "native:[OpenGL]",
+      "key": "[OpenGL]",
+      "source": "OpenGL"
+    },
+    {
+      "id": "native:[Options]",
+      "key": "[Options]",
+      "source": "Options"
+    },
+    {
+      "id": "native:[options]",
+      "key": "[options]",
+      "source": "options"
+    },
+    {
+      "id": "native:[Orange]",
+      "key": "[Orange]",
+      "source": "Orange"
+    },
+    {
+      "id": "native:[Other Options]",
+      "key": "[Other Options]",
+      "source": "Other Options"
+    },
+    {
+      "id": "native:[page down]",
+      "key": "[page down]",
+      "source": "page down"
+    },
+    {
+      "id": "native:[page up]",
+      "key": "[page up]",
+      "source": "page up"
+    },
+    {
+      "id": "native:[Papyrus]",
+      "key": "[Papyrus]",
+      "source": "Papyrus"
+    },
+    {
+      "id": "native:[pause game]",
+      "key": "[pause game]",
+      "source": "Pause game"
+    },
+    {
+      "id": "native:[pause]",
+      "key": "[pause]",
+      "source": "pause"
+    },
+    {
+      "id": "native:[Paused]",
+      "key": "[Paused]",
+      "source": "Paused"
+    },
+    {
+      "id": "native:[player name]",
+      "key": "[player name]",
+      "source": "Player name"
+    },
+    {
+      "id": "native:[players]",
+      "key": "[players]",
+      "source": "Players"
+    },
+    {
+      "id": "native:[please wait]",
+      "key": "[please wait]",
+      "source": "Please wait"
+    },
+    {
+      "id": "native:[power]",
+      "key": "[power]",
+      "source": "power"
+    },
+    {
+      "id": "native:[press space]",
+      "key": "[press space]",
+      "source": "Press space to continue."
+    },
+    {
+      "id": "native:[Prestige Score]",
+      "key": "[Prestige Score]",
+      "source": "Prestige Score"
+    },
+    {
+      "id": "native:[Prestige Win Enabled]",
+      "key": "[Prestige Win Enabled]",
+      "source": "Prestige Win Enabled"
+    },
+    {
+      "id": "native:[Prestige]",
+      "key": "[Prestige]",
+      "source": "Prestige"
+    },
+    {
+      "id": "native:[Primary Objectives]",
+      "key": "[Primary Objectives]",
+      "source": "Primary"
+    },
+    {
+      "id": "native:[print screen]",
+      "key": "[print screen]",
+      "source": "print screen"
+    },
+    {
+      "id": "native:[priority]",
+      "key": "[priority]",
+      "source": "Priority"
+    },
+    {
+      "id": "native:[Prune]",
+      "key": "[Prune]",
+      "source": "Plum"
+    },
+    {
+      "id": "native:[quit the editor]",
+      "key": "[quit the editor]",
+      "source": "Quit the editor"
+    },
+    {
+      "id": "native:[quit the game]",
+      "key": "[quit the game]",
+      "source": "Quit the game"
+    },
+    {
+      "id": "native:[quit the replay]",
+      "key": "[quit the replay]",
+      "source": "Quit the replay"
+    },
+    {
+      "id": "native:[quit]",
+      "key": "[quit]",
+      "source": "Quit"
+    },
+    {
+      "id": "native:[racetrack explanation 2]",
+      "key": "[racetrack explanation 2]",
+      "source": "speed of your units"
+    },
+    {
+      "id": "native:[racetrack explanation]",
+      "key": "[racetrack explanation]",
+      "source": "Improves the walking"
+    },
+    {
+      "id": "native:[racetrack]",
+      "key": "[racetrack]",
+      "source": "Racetrack"
+    },
+    {
+      "id": "native:[range]",
+      "key": "[range]",
+      "source": "Range"
+    },
+    {
+      "id": "native:[ratios]",
+      "key": "[ratios]",
+      "source": "Proportions"
+    },
+    {
+      "id": "native:[remember unit]",
+      "key": "[remember unit]",
+      "source": "Remember unit counts"
+    },
+    {
+      "id": "native:[remove map]",
+      "key": "[remove map]",
+      "source": "Remove Map"
+    },
+    {
+      "id": "native:[repair]",
+      "key": "[repair]",
+      "source": "Repair"
+    },
+    {
+      "id": "native:[repeat area]",
+      "key": "[repeat area]",
+      "source": "times the same landscape"
+    },
+    {
+      "id": "native:[replay ended]",
+      "key": "[replay ended]",
+      "source": "Replay Ended"
+    },
+    {
+      "id": "native:[return to editor]",
+      "key": "[return to editor]",
+      "source": "Return to the editor"
+    },
+    {
+      "id": "native:[return to game]",
+      "key": "[return to game]",
+      "source": "Return to game"
+    },
+    {
+      "id": "native:[return to replay]",
+      "key": "[return to replay]",
+      "source": "Return to the replay"
+    },
+    {
+      "id": "native:[return]",
+      "key": "[return]",
+      "source": "enter"
+    },
+    {
+      "id": "native:[right meta]",
+      "key": "[right meta]",
+      "source": "right meta"
+    },
+    {
+      "id": "native:[right super]",
+      "key": "[right super]",
+      "source": "right windows key"
+    },
+    {
+      "id": "native:[right]",
+      "key": "[right]",
+      "source": "right"
+    },
+    {
+      "id": "native:[sand]",
+      "key": "[sand]",
+      "source": "Sand"
+    },
+    {
+      "id": "native:[save before quit?]",
+      "key": "[save before quit?]",
+      "source": "Do you want to save before quitting?"
+    },
+    {
+      "id": "native:[save game]",
+      "key": "[save game]",
+      "source": "Save game"
+    },
+    {
+      "id": "native:[save map]",
+      "key": "[save map]",
+      "source": "Save Map"
+    },
+    {
+      "id": "native:[save replay]",
+      "key": "[save replay]",
+      "source": "Save Replay"
+    }
+  ]
+}

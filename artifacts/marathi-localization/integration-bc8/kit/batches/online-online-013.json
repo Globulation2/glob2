@@ -1,0 +1,509 @@
+{
+  "id": "online-online-013",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:My favourites",
+      "key": "My favourites",
+      "source": "My favourites"
+    },
+    {
+      "id": "online:My generators",
+      "key": "My generators",
+      "source": "My generators"
+    },
+    {
+      "id": "online:My landscape",
+      "key": "My landscape",
+      "source": "My landscape"
+    },
+    {
+      "id": "online:My maps",
+      "key": "My maps",
+      "source": "My maps"
+    },
+    {
+      "id": "online:My sets",
+      "key": "My sets",
+      "source": "My sets"
+    },
+    {
+      "id": "online:My skins",
+      "key": "My skins",
+      "source": "My skins"
+    },
+    {
+      "id": "online:Name",
+      "key": "Name",
+      "source": "Name"
+    },
+    {
+      "id": "online:Name or content ID",
+      "key": "Name or content ID",
+      "source": "Name or content ID"
+    },
+    {
+      "id": "online:Name, account id or email",
+      "key": "Name, account id or email",
+      "source": "Name, account id or email"
+    },
+    {
+      "id": "online:Names like Guest-1234 are reserved for guests.",
+      "key": "Names like Guest-1234 are reserved for guests.",
+      "source": "Names like Guest-1234 are reserved for guests."
+    },
+    {
+      "id": "online:Navigation",
+      "key": "Navigation",
+      "source": "Navigation"
+    },
+    {
+      "id": "online:Needs attention",
+      "key": "Needs attention",
+      "source": "Needs attention"
+    },
+    {
+      "id": "online:New AI version",
+      "key": "New AI version",
+      "source": "New AI version"
+    },
+    {
+      "id": "online:New building family",
+      "key": "New building family",
+      "source": "New building family"
+    },
+    {
+      "id": "online:New composition",
+      "key": "New composition",
+      "source": "New composition"
+    },
+    {
+      "id": "online:New display name",
+      "key": "New display name",
+      "source": "New display name"
+    },
+    {
+      "id": "online:New here? Create an account",
+      "key": "New here? Create an account",
+      "source": "New here? Create an account"
+    },
+    {
+      "id": "online:New map",
+      "key": "New map",
+      "source": "New map"
+    },
+    {
+      "id": "online:New messages ",
+      "key": "New messages ",
+      "source": "New messages "
+    },
+    {
+      "id": "online:New set",
+      "key": "New set",
+      "source": "New set"
+    },
+    {
+      "id": "online:New skin",
+      "key": "New skin",
+      "source": "New skin"
+    },
+    {
+      "id": "online:New terrain set",
+      "key": "New terrain set",
+      "source": "New terrain set"
+    },
+    {
+      "id": "online:New to Globulation 2?",
+      "key": "New to Globulation 2?",
+      "source": "New to Globulation 2?"
+    },
+    {
+      "id": "online:New version",
+      "key": "New version",
+      "source": "New version"
+    },
+    {
+      "id": "online:Newest",
+      "key": "Newest",
+      "source": "Newest"
+    },
+    {
+      "id": "online:Newest reports",
+      "key": "Newest reports",
+      "source": "Newest reports"
+    },
+    {
+      "id": "online:News",
+      "key": "News",
+      "source": "News"
+    },
+    {
+      "id": "online:Next",
+      "key": "Next",
+      "source": "Next"
+    },
+    {
+      "id": "online:Next page",
+      "key": "Next page",
+      "source": "Next page"
+    },
+    {
+      "id": "online:Next results",
+      "key": "Next results",
+      "source": "Next results"
+    },
+    {
+      "id": "online:Next stage",
+      "key": "Next stage",
+      "source": "Next stage"
+    },
+    {
+      "id": "online:Next stage: {slot0}",
+      "key": "Next stage: {slot0}",
+      "source": "Next stage: {slot0}"
+    },
+    {
+      "id": "online:Nicowar",
+      "key": "Nicowar",
+      "source": "Nicowar"
+    },
+    {
+      "id": "online:No AIs match these filters.",
+      "key": "No AIs match these filters.",
+      "source": "No AIs match these filters."
+    },
+    {
+      "id": "online:No Android app is associated with this instance.",
+      "key": "No Android app is associated with this instance.",
+      "source": "No Android app is associated with this instance."
+    },
+    {
+      "id": "online:No account needed to try it:",
+      "key": "No account needed to try it:",
+      "source": "No account needed to try it:"
+    },
+    {
+      "id": "online:No accounts match.",
+      "key": "No accounts match.",
+      "source": "No accounts match."
+    },
+    {
+      "id": "online:No actions found.",
+      "key": "No actions found.",
+      "source": "No actions found."
+    },
+    {
+      "id": "online:No active account.",
+      "key": "No active account.",
+      "source": "No active account."
+    },
+    {
+      "id": "online:No attempt usage evidence is available.",
+      "key": "No attempt usage evidence is available.",
+      "source": "No attempt usage evidence is available."
+    },
+    {
+      "id": "online:No building validation engine is available. Try again later.",
+      "key": "No building validation engine is available. Try again later.",
+      "source": "No building validation engine is available. Try again later."
+    },
+    {
+      "id": "online:No commander activity yet.",
+      "key": "No commander activity yet.",
+      "source": "No commander activity yet."
+    },
+    {
+      "id": "online:No comparison",
+      "key": "No comparison",
+      "source": "No comparison"
+    },
+    {
+      "id": "online:No compatible engine is available for this map.",
+      "key": "No compatible engine is available for this map.",
+      "source": "No compatible engine is available for this map."
+    },
+    {
+      "id": "online:No confirmed cash events in this range and payment mode.",
+      "key": "No confirmed cash events in this range and payment mode.",
+      "source": "No confirmed cash events in this range and payment mode."
+    },
+    {
+      "id": "online:No content found.",
+      "key": "No content found.",
+      "source": "No content found."
+    },
+    {
+      "id": "online:No data yet.",
+      "key": "No data yet.",
+      "source": "No data yet."
+    },
+    {
+      "id": "online:No engine agent can check files right now.",
+      "key": "No engine agent can check files right now.",
+      "source": "No engine agent can check files right now."
+    },
+    {
+      "id": "online:No engine agent can validate maps right now.",
+      "key": "No engine agent can validate maps right now.",
+      "source": "No engine agent can validate maps right now."
+    },
+    {
+      "id": "online:No engine agents are registered.",
+      "key": "No engine agents are registered.",
+      "source": "No engine agents are registered."
+    },
+    {
+      "id": "online:No families found.",
+      "key": "No families found.",
+      "source": "No families found."
+    },
+    {
+      "id": "online:No game servers are online right now.",
+      "key": "No game servers are online right now.",
+      "source": "No game servers are online right now."
+    },
+    {
+      "id": "online:No games yet. This AI’s results will appear here after it plays.",
+      "key": "No games yet. This AI’s results will appear here after it plays.",
+      "source": "No games yet. This AI’s results will appear here after it plays."
+    },
+    {
+      "id": "online:No generators match these filters.",
+      "key": "No generators match these filters.",
+      "source": "No generators match these filters."
+    },
+    {
+      "id": "online:No iOS app is associated with this instance.",
+      "key": "No iOS app is associated with this instance.",
+      "source": "No iOS app is associated with this instance."
+    },
+    {
+      "id": "online:No isolated AI validator is available.",
+      "key": "No isolated AI validator is available.",
+      "source": "No isolated AI validator is available."
+    },
+    {
+      "id": "online:No isolated AI validator is available. Please try again later.",
+      "key": "No isolated AI validator is available. Please try again later.",
+      "source": "No isolated AI validator is available. Please try again later."
+    },
+    {
+      "id": "online:No isolated generator validator is available.",
+      "key": "No isolated generator validator is available.",
+      "source": "No isolated generator validator is available."
+    },
+    {
+      "id": "online:No isolated generator validator is available. Please try again later.",
+      "key": "No isolated generator validator is available. Please try again later.",
+      "source": "No isolated generator validator is available. Please try again later."
+    },
+    {
+      "id": "online:No isolated generator worker is available.",
+      "key": "No isolated generator worker is available.",
+      "source": "No isolated generator worker is available."
+    },
+    {
+      "id": "online:No map build has started. Waiting for the provider outcome.",
+      "key": "No map build has started. Waiting for the provider outcome.",
+      "source": "No map build has started. Waiting for the provider outcome."
+    },
+    {
+      "id": "online:No maps match these filters.",
+      "key": "No maps match these filters.",
+      "source": "No maps match these filters."
+    },
+    {
+      "id": "online:No matches yet.",
+      "key": "No matches yet.",
+      "source": "No matches yet."
+    },
+    {
+      "id": "online:No measured results are available for this version.",
+      "key": "No measured results are available for this version.",
+      "source": "No measured results are available for this version."
+    },
+    {
+      "id": "online:No music found. Try different filters, or share the first set.",
+      "key": "No music found. Try different filters, or share the first set.",
+      "source": "No music found. Try different filters, or share the first set."
+    },
+    {
+      "id": "online:No open reports.",
+      "key": "No open reports.",
+      "source": "No open reports."
+    },
+    {
+      "id": "online:No other relay is available; try again shortly.",
+      "key": "No other relay is available; try again shortly.",
+      "source": "No other relay is available; try again shortly."
+    },
+    {
+      "id": "online:No owned building family.",
+      "key": "No owned building family.",
+      "source": "No owned building family."
+    },
+    {
+      "id": "online:No owned {p0} version.",
+      "key": "No owned {p0} version.",
+      "source": "No owned {p0} version."
+    },
+    {
+      "id": "online:No photo.",
+      "key": "No photo.",
+      "source": "No photo."
+    },
+    {
+      "id": "online:No players found. Try another name.",
+      "key": "No players found. Try another name.",
+      "source": "No players found. Try another name."
+    },
+    {
+      "id": "online:No queue {p0}.",
+      "key": "No queue {p0}.",
+      "source": "No queue {p0}."
+    },
+    {
+      "id": "online:No queue.",
+      "key": "No queue.",
+      "source": "No queue."
+    },
+    {
+      "id": "online:No rated players in this view yet. Play a ranked match to start climbing.",
+      "key": "No rated players in this view yet. Play a ranked match to start climbing.",
+      "source": "No rated players in this view yet. Play a ranked match to start climbing."
+    },
+    {
+      "id": "online:No rated players yet. The first wins will put you here.",
+      "key": "No rated players yet. The first wins will put you here.",
+      "source": "No rated players yet. The first wins will put you here."
+    },
+    {
+      "id": "online:No relay accepted the match.",
+      "key": "No relay accepted the match.",
+      "source": "No relay accepted the match."
+    },
+    {
+      "id": "online:No reports.",
+      "key": "No reports.",
+      "source": "No reports."
+    },
+    {
+      "id": "online:No requests need attention.",
+      "key": "No requests need attention.",
+      "source": "No requests need attention."
+    },
+    {
+      "id": "online:No set validator is available. Your draft is saved; try checks later.",
+      "key": "No set validator is available. Your draft is saved; try checks later.",
+      "source": "No set validator is available. Your draft is saved; try checks later."
+    },
+    {
+      "id": "online:No sets found. Try another search or create the first one.",
+      "key": "No sets found. Try another search or create the first one.",
+      "source": "No sets found. Try another search or create the first one."
+    },
+    {
+      "id": "online:No shared maps yet. Be the first to share one.",
+      "key": "No shared maps yet. Be the first to share one.",
+      "source": "No shared maps yet. Be the first to share one."
+    },
+    {
+      "id": "online:No sign-in provider {p0}.",
+      "key": "No sign-in provider {p0}.",
+      "source": "No sign-in provider {p0}."
+    },
+    {
+      "id": "online:No skin reports.",
+      "key": "No skin reports.",
+      "source": "No skin reports."
+    },
+    {
+      "id": "online:No such AI version.",
+      "key": "No such AI version.",
+      "source": "No such AI version."
+    },
+    {
+      "id": "online:No such AI.",
+      "key": "No such AI.",
+      "source": "No such AI."
+    },
+    {
+      "id": "online:No such account.",
+      "key": "No such account.",
+      "source": "No such account."
+    },
+    {
+      "id": "online:No such agent.",
+      "key": "No such agent.",
+      "source": "No such agent."
+    },
+    {
+      "id": "online:No such artifact.",
+      "key": "No such artifact.",
+      "source": "No such artifact."
+    },
+    {
+      "id": "online:No such artwork.",
+      "key": "No such artwork.",
+      "source": "No such artwork."
+    },
+    {
+      "id": "online:No such blob.",
+      "key": "No such blob.",
+      "source": "No such blob."
+    },
+    {
+      "id": "online:No such building family.",
+      "key": "No such building family.",
+      "source": "No such building family."
+    },
+    {
+      "id": "online:No such delivered map.",
+      "key": "No such delivered map.",
+      "source": "No such delivered map."
+    },
+    {
+      "id": "online:No such draft.",
+      "key": "No such draft.",
+      "source": "No such draft."
+    },
+    {
+      "id": "online:No such generator.",
+      "key": "No such generator.",
+      "source": "No such generator."
+    },
+    {
+      "id": "online:No such job.",
+      "key": "No such job.",
+      "source": "No such job."
+    },
+    {
+      "id": "online:No such leaderboard.",
+      "key": "No such leaderboard.",
+      "source": "No such leaderboard."
+    },
+    {
+      "id": "online:No such map.",
+      "key": "No such map.",
+      "source": "No such map."
+    },
+    {
+      "id": "online:No such match.",
+      "key": "No such match.",
+      "source": "No such match."
+    },
+    {
+      "id": "online:No such music release.",
+      "key": "No such music release.",
+      "source": "No such music release."
+    },
+    {
+      "id": "online:No such player.",
+      "key": "No such player.",
+      "source": "No such player."
+    }
+  ]
+}

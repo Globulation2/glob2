@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<string>", line 4, in <module>
+    p=Path('browser/assets/sources.json');v=json.loads(subprocess.check_output(['git','show',':2:browser/assets/sources.json']));b=d.font_subset(Path.cwd());old=Path('browser/assets/sans-core.ttf').read_bytes();v['browser/assets/sans-core.ttf']['languageNames']=hashlib.sha256(''.join(sorted(d.language_names(Path.cwd()))).encode()).hexdigest();v['browser/assets/sans-core.ttf']['output_sha256']=hashlib.sha256(b).hexdigest();Path('browser/assets/sans-core.ttf').write_bytes(b);p.write_text(json.dumps(v,indent=2,sort_keys=True)+'\n');Path('artifacts/marathi-localization/integration-bc8/browser-font-derivative.json').write_text(json.dumps({'font_subset_byte_identical':old==b,'metadata':v['browser/assets/sans-core.ttf']},indent=2)+'\n');print('Official pinned subset byte-identical:',old==b)
+                                                                                                                                   ~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/45cd/glob2/browser/derive_assets.py", line 63, in font_subset
+    from fontTools import subset
+ModuleNotFoundError: No module named 'fontTools'

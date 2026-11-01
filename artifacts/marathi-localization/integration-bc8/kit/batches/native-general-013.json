@@ -1,0 +1,509 @@
+{
+  "id": "native-general-013",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Slot]",
+      "key": "[Slot]",
+      "source": "Slot"
+    },
+    {
+      "id": "native:[Color]",
+      "key": "[Color]",
+      "source": "Color"
+    },
+    {
+      "id": "native:[Player / AI]",
+      "key": "[Player / AI]",
+      "source": "Player / AI"
+    },
+    {
+      "id": "native:[Group]",
+      "key": "[Group]",
+      "source": "Group"
+    },
+    {
+      "id": "native:[Forbid]",
+      "key": "[Forbid]",
+      "source": "Forbid"
+    },
+    {
+      "id": "native:[↓ Low]",
+      "key": "[↓ Low]",
+      "source": "↓ Low"
+    },
+    {
+      "id": "native:[= Normal]",
+      "key": "[= Normal]",
+      "source": "= Normal"
+    },
+    {
+      "id": "native:[↑ High]",
+      "key": "[↑ High]",
+      "source": "↑ High"
+    },
+    {
+      "id": "native:[Details]",
+      "key": "[Details]",
+      "source": "Details"
+    },
+    {
+      "id": "native:[Campaign name]",
+      "key": "[Campaign name]",
+      "source": "Campaign name"
+    },
+    {
+      "id": "native:[Unlocking]",
+      "key": "[Unlocking]",
+      "source": "Unlocking"
+    },
+    {
+      "id": "native:[Parameters]",
+      "key": "[Parameters]",
+      "source": "Parameters"
+    },
+    {
+      "id": "native:[Blank map]",
+      "key": "[Blank map]",
+      "source": "Blank map"
+    },
+    {
+      "id": "native:[Generated]",
+      "key": "[Generated]",
+      "source": "Generated"
+    },
+    {
+      "id": "native:[Preview]",
+      "key": "[Preview]",
+      "source": "Preview"
+    },
+    {
+      "id": "native:[Selected landscape]",
+      "key": "[Selected landscape]",
+      "source": "Selected landscape"
+    },
+    {
+      "id": "native:[Representative preview]",
+      "key": "[Representative preview]",
+      "source": "Representative preview"
+    },
+    {
+      "id": "native:[Hide parameters]",
+      "key": "[Hide parameters]",
+      "source": "Hide parameters"
+    },
+    {
+      "id": "native:[Size and parameters]",
+      "key": "[Size and parameters]",
+      "source": "Size and parameters"
+    },
+    {
+      "id": "native:[Choose a landscape]",
+      "key": "[Choose a landscape]",
+      "source": "Choose a landscape"
+    },
+    {
+      "id": "native:[%0 / Browse]",
+      "key": "[%0 / Browse]",
+      "source": "%0  /  Browse"
+    },
+    {
+      "id": "native:[%0 colonies · %1]",
+      "key": "[%0 colonies · %1]",
+      "source": "%0 colonies · %1"
+    },
+    {
+      "id": "native:[%0 · Team %1]",
+      "key": "[%0 · Team %1]",
+      "source": "%0 · Team %1"
+    },
+    {
+      "id": "native:[Colonies: %0]",
+      "key": "[Colonies: %0]",
+      "source": "Colonies: %0"
+    },
+    {
+      "id": "native:[%0 colonies · %1 AI]",
+      "key": "[%0 colonies · %1 AI]",
+      "source": "%0 colonies · %1 AI"
+    },
+    {
+      "id": "native:[%0 · %1]",
+      "key": "[%0 · %1]",
+      "source": "%0 · %1"
+    },
+    {
+      "id": "native:[Fairness: %0]",
+      "key": "[Fairness: %0]",
+      "source": "Fairness: %0"
+    },
+    {
+      "id": "native:[Colony %0]",
+      "key": "[Colony %0]",
+      "source": "Colony %0"
+    },
+    {
+      "id": "native:[Win chance: %0 · Fitness: %1]",
+      "key": "[Win chance: %0 · Fitness: %1]",
+      "source": "Win chance: %0 · Fitness: %1"
+    },
+    {
+      "id": "native:[%0 · Contribution: %1]",
+      "key": "[%0 · Contribution: %1]",
+      "source": "%0 · Contribution: %1"
+    },
+    {
+      "id": "native:[Min required level %0]",
+      "key": "[Min required level %0]",
+      "source": "Minimum required level: %0"
+    },
+    {
+      "id": "native:[Confirm %0]",
+      "key": "[Confirm %0]",
+      "source": "Ok: %0"
+    },
+    {
+      "id": "native:[%0 %1]",
+      "key": "[%0 %1]",
+      "source": "%0 %1"
+    },
+    {
+      "id": "native:[resume game]",
+      "key": "[resume game]",
+      "source": "Resume game"
+    },
+    {
+      "id": "native:[Add AI]",
+      "key": "[Add AI]",
+      "source": "Add AI"
+    },
+    {
+      "id": "native:[Experiments set by the host]",
+      "key": "[Experiments set by the host]",
+      "source": "Experiments set by the host"
+    },
+    {
+      "id": "native:[Experiments]",
+      "key": "[Experiments]",
+      "source": "Experiments"
+    },
+    {
+      "id": "native:[experiment guard-area-balancing]",
+      "key": "[experiment guard-area-balancing]",
+      "source": "Guard-area balancing"
+    },
+    {
+      "id": "native:[experiment guard-area-balancing help]",
+      "key": "[experiment guard-area-balancing help]",
+      "source": "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others."
+    },
+    {
+      "id": "native:[experiment farm-areas]",
+      "key": "[experiment farm-areas]",
+      "source": "Farm areas"
+    },
+    {
+      "id": "native:[experiment farm-areas help]",
+      "key": "[experiment farm-areas help]",
+      "source": "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."
+    },
+    {
+      "id": "native:[List momentum]",
+      "key": "[List momentum]",
+      "source": "List momentum"
+    },
+    {
+      "id": "native:[List bounce]",
+      "key": "[List bounce]",
+      "source": "List bounce"
+    },
+    {
+      "id": "native:[lan pairing field]",
+      "key": "[lan pairing field]",
+      "source": "Host pairing string (or trusted WSS URL)"
+    },
+    {
+      "id": "native:[lan pairing connect]",
+      "key": "[lan pairing connect]",
+      "source": "Pair and connect"
+    },
+    {
+      "id": "native:[lan discovery instructions]",
+      "key": "[lan discovery instructions]",
+      "source": "Select a host, then paste its pairing string to verify its identity."
+    },
+    {
+      "id": "native:[lan discovery unavailable]",
+      "key": "[lan discovery unavailable]",
+      "source": "LAN discovery is unavailable. Check local network permission or paste a host pairing string."
+    },
+    {
+      "id": "native:[lan discovered host %0]",
+      "key": "[lan discovered host %0]",
+      "source": "Discovered host %0 — pair to view games"
+    },
+    {
+      "id": "native:[lan connection unavailable]",
+      "key": "[lan connection unavailable]",
+      "source": "Unable to reach the LAN host. Check local network permission and the host pairing string."
+    },
+    {
+      "id": "native:[lan connection verification failed %0]",
+      "key": "[lan connection verification failed %0]",
+      "source": "Unable to verify or connect to the LAN host: %0"
+    },
+    {
+      "id": "native:[lan lobby endpoint required]",
+      "key": "[lan lobby endpoint required]",
+      "source": "Use the host lobby endpoint"
+    },
+    {
+      "id": "native:[turn reconnecting]",
+      "key": "[turn reconnecting]",
+      "source": "Connection to the host lost. Reconnecting..."
+    },
+    {
+      "id": "native:[turn waiting for players]",
+      "key": "[turn waiting for players]",
+      "source": "Waiting for every player to load..."
+    },
+    {
+      "id": "native:[turn rejoining]",
+      "key": "[turn rejoining]",
+      "source": "Rejoining the game..."
+    },
+    {
+      "id": "native:[turn catching up %0]",
+      "key": "[turn catching up %0]",
+      "source": "Catching up: %0 turns behind"
+    },
+    {
+      "id": "native:[turn player reconnecting %0]",
+      "key": "[turn player reconnecting %0]",
+      "source": "%0 is reconnecting..."
+    },
+    {
+      "id": "native:[turn player lagging %0]",
+      "key": "[turn player lagging %0]",
+      "source": "%0 is lagging"
+    },
+    {
+      "id": "native:[turn player resyncing %0]",
+      "key": "[turn player resyncing %0]",
+      "source": "%0 is catching up"
+    },
+    {
+      "id": "native:[turn player not connected %0]",
+      "key": "[turn player not connected %0]",
+      "source": "%0 has not connected yet"
+    },
+    {
+      "id": "native:[lan host left]",
+      "key": "[lan host left]",
+      "source": "The host left the game."
+    },
+    {
+      "id": "native:[lan host lost]",
+      "key": "[lan host lost]",
+      "source": "The connection to the host was lost."
+    },
+    {
+      "id": "native:[lan version mismatch %0]",
+      "key": "[lan version mismatch %0]",
+      "source": "The host runs a different version of Globulation 2 (%0)."
+    },
+    {
+      "id": "native:[lan cannot host %0]",
+      "key": "[lan cannot host %0]",
+      "source": "Unable to host a LAN game: %0"
+    },
+    {
+      "id": "native:[play online]",
+      "key": "[play online]",
+      "source": "Play online"
+    },
+    {
+      "id": "native:[Use in room]",
+      "key": "[Use in room]",
+      "source": "Use in room"
+    },
+    {
+      "id": "native:[conn ai]",
+      "key": "[conn ai]",
+      "source": "AI"
+    },
+    {
+      "id": "native:[conn behind %0]",
+      "key": "[conn behind %0]",
+      "source": "Behind %0"
+    },
+    {
+      "id": "native:[conn behind explanation %0 %1]",
+      "key": "[conn behind explanation %0 %1]",
+      "source": "Behind: how far a player's game runs behind the match clock; it includes their delay. Under %0 is normal; from %1 the player is marked slow."
+    },
+    {
+      "id": "native:[conn behind]",
+      "key": "[conn behind]",
+      "source": "Behind"
+    },
+    {
+      "id": "native:[conn card catching up]",
+      "key": "[conn card catching up]",
+      "source": "Catching up"
+    },
+    {
+      "id": "native:[conn card colony works]",
+      "key": "[conn card colony works]",
+      "source": "Your colony keeps working on its own: units finish their jobs and buildings keep running."
+    },
+    {
+      "id": "native:[conn card desync detail]",
+      "key": "[conn card desync detail]",
+      "source": "Rejoining from the match record so you see what everyone else sees. A report was sent automatically."
+    },
+    {
+      "id": "native:[conn card desync]",
+      "key": "[conn card desync]",
+      "source": "Your game fell out of sync"
+    },
+    {
+      "id": "native:[conn card grace %0]",
+      "key": "[conn card grace %0]",
+      "source": "Your colony keeps working on its own: units finish their jobs and buildings keep running. You have %0 to come back before you're removed from the match."
+    },
+    {
+      "id": "native:[conn card input paused]",
+      "key": "[conn card input paused]",
+      "source": "You are catching up · input paused"
+    },
+    {
+      "id": "native:[conn card lost]",
+      "key": "[conn card lost]",
+      "source": "Connection lost"
+    },
+    {
+      "id": "native:[conn card progress %0 %1 %2]",
+      "key": "[conn card progress %0 %1 %2]",
+      "source": "%0 % · %1 of %2 ticks"
+    },
+    {
+      "id": "native:[conn card reconnecting %0]",
+      "key": "[conn card reconnecting %0]",
+      "source": "Reconnecting to the match… attempt %0"
+    },
+    {
+      "id": "native:[conn card replaying %0]",
+      "key": "[conn card replaying %0]",
+      "source": "Replaying the %0 you missed. The screen updates when you're back to the present."
+    },
+    {
+      "id": "native:[conn card seconds left %0]",
+      "key": "[conn card seconds left %0]",
+      "source": "about %0 s left"
+    },
+    {
+      "id": "native:[conn connections]",
+      "key": "[conn connections]",
+      "source": "Connections"
+    },
+    {
+      "id": "native:[conn connection]",
+      "key": "[conn connection]",
+      "source": "Connection"
+    },
+    {
+      "id": "native:[conn delay explanation %0 %1]",
+      "key": "[conn delay explanation %0 %1]",
+      "source": "Delay: the time from your click until it happens, for everyone. It follows your own connection, not the other players'. Good under %0, poor from %1."
+    },
+    {
+      "id": "native:[conn fair]",
+      "key": "[conn fair]",
+      "source": "Fair"
+    },
+    {
+      "id": "native:[conn good]",
+      "key": "[conn good]",
+      "source": "Good"
+    },
+    {
+      "id": "native:[conn grid legend]",
+      "key": "[conn grid legend]",
+      "source": "With more than four players the panel shows each player's ping in milliseconds, or how many seconds behind they are."
+    },
+    {
+      "id": "native:[conn jitter %0]",
+      "key": "[conn jitter %0]",
+      "source": "jitter %0"
+    },
+    {
+      "id": "native:[conn leave match]",
+      "key": "[conn leave match]",
+      "source": "Leave match"
+    },
+    {
+      "id": "native:[conn left]",
+      "key": "[conn left]",
+      "source": "Left"
+    },
+    {
+      "id": "native:[conn notice back %0]",
+      "key": "[conn notice back %0]",
+      "source": "%0 is back."
+    },
+    {
+      "id": "native:[conn notice left %0]",
+      "key": "[conn notice left %0]",
+      "source": "%0 left the match."
+    },
+    {
+      "id": "native:[conn notice lost %0 %1]",
+      "key": "[conn notice lost %0 %1]",
+      "source": "%0 lost connection. The game continues; their colony keeps working while they reconnect (%1 left)."
+    },
+    {
+      "id": "native:[conn ping explanation %0 %1]",
+      "key": "[conn ping explanation %0 %1]",
+      "source": "Ping: the round trip between a player and the relay. Good under %0, poor from %1."
+    },
+    {
+      "id": "native:[conn ping]",
+      "key": "[conn ping]",
+      "source": "Ping"
+    },
+    {
+      "id": "native:[conn players]",
+      "key": "[conn players]",
+      "source": "Players"
+    },
+    {
+      "id": "native:[conn poor]",
+      "key": "[conn poor]",
+      "source": "Poor"
+    },
+    {
+      "id": "native:[conn reconnecting]",
+      "key": "[conn reconnecting]",
+      "source": "Reconnecting"
+    },
+    {
+      "id": "native:[conn relay %0]",
+      "key": "[conn relay %0]",
+      "source": "Relay: %0"
+    },
+    {
+      "id": "native:[conn resyncing]",
+      "key": "[conn resyncing]",
+      "source": "Rejoining"
+    },
+    {
+      "id": "native:[conn slow]",
+      "key": "[conn slow]",
+      "source": "Slow"
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "reviewer_role": "Independent adversarial final recheck; root is author",
+  "verdict": "accept all 16 actual final canonical values",
+  "fresh_read_scope": "All 16 final English→Marathi values actually read from the canonical source/target files and checked against selected final targets and actual statistics/terrain context. No full new reread of unchanged catalogs is claimed.",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "source_files": {
+    "data/texts.keys.txt": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+    "data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+    "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "final_targets_record_sha256": "f688731764216ea2f76896e21ce38794ac856628942065995e0d34ece6d06a17",
+  "prior_own_review_sha256": "55b43cb7e5251941685b879a6f8d61089c7b2f1ec637a4c6c68857160230ae7c",
+  "reviewed_keys": [
+    "[stats topic overview]",
+    "[stats topic economy]",
+    "[stats topic world]",
+    "[stats work construction]",
+    "[stats defence]",
+    "[stats history]",
+    "[stats waiting]",
+    "[stats unit details]",
+    "[stats map overlays]",
+    "[stats topic]",
+    "[stats full history]",
+    "[stats missing readings]",
+    "[lush_grass]",
+    "[dry_grass]",
+    "[dune_sand]",
+    "[pale_sand]"
+  ],
+  "reviewed_count": 16,
+  "entries": [
+    {
+      "key": "[stats topic overview]",
+      "source": "Overview",
+      "actual_final_target": "आढावा",
+      "verdict": "accept",
+      "rationale": "आढावा naturally names the summary tab."
+    },
+    {
+      "key": "[stats topic economy]",
+      "source": "Economy",
+      "actual_final_target": "अर्थव्यवस्था",
+      "verdict": "accept",
+      "rationale": "अर्थव्यवस्था covers the work/material/building economy topic."
+    },
+    {
+      "key": "[stats topic world]",
+      "source": "World",
+      "actual_final_target": "जग",
+      "verdict": "accept",
+      "rationale": "जग retains the world/environment category without narrowing it to terrain alone."
+    },
+    {
+      "key": "[stats work construction]",
+      "source": "Work & construction",
+      "actual_final_target": "काम आणि बांधकाम",
+      "verdict": "accept",
+      "rationale": "काम आणि बांधकाम retains both coordinated activities and reads grammatically."
+    },
+    {
+      "key": "[stats defence]",
+      "source": "Defence",
+      "actual_final_target": "संरक्षण",
+      "verdict": "accept",
+      "rationale": "संरक्षण matches the warriors/intruders context and existing Marathi defence terms."
+    },
+    {
+      "key": "[stats history]",
+      "source": "View history",
+      "actual_final_target": "इतिहास पहा",
+      "verdict": "accept",
+      "rationale": "इतिहास पहा is an action and matches the existing independently reviewed [view history] wording."
+    },
+    {
+      "key": "[stats waiting]",
+      "source": "Waiting for statistics…",
+      "actual_final_target": "आकडेवारीची प्रतीक्षा…",
+      "verdict": "accept",
+      "rationale": "आकडेवारीची प्रतीक्षा… is a short impersonal waiting-for-data status with the authored ellipsis."
+    },
+    {
+      "key": "[stats unit details]",
+      "source": "Unit details",
+      "actual_final_target": "युनिटचे तपशील",
+      "verdict": "accept",
+      "rationale": "युनिटचे तपशील is accepted as a generic category heading using the established uninflected loan युनिट. The details list plainly covers unit totals/types; it introduces no explicit claim that only one selected unit is shown. My earlier plural-s wording was a stylistic preference, not a remaining concrete defect."
+    },
+    {
+      "key": "[stats map overlays]",
+      "source": "Map overlays",
+      "actual_final_target": "नकाशावरील आच्छादने",
+      "verdict": "accept",
+      "rationale": "नकाशावरील आच्छादने supplies the correct locative relationship and established overlay term."
+    },
+    {
+      "key": "[stats topic]",
+      "source": "Topic",
+      "actual_final_target": "विषय",
+      "verdict": "accept",
+      "rationale": "विषय is a natural reusable Topic label."
+    },
+    {
+      "key": "[stats full history]",
+      "source": "Open full history",
+      "actual_final_target": "संपूर्ण इतिहास उघडा",
+      "verdict": "accept",
+      "rationale": "संपूर्ण इतिहास उघडा accurately instructs opening the full history dialog."
+    },
+    {
+      "key": "[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "actual_final_target": "— अद्याप मोजमापाची नोंद नाही. तपशील पाहण्यासाठी आकडेवारीतील एखादा घटक निवडा.",
+      "verdict": "accept",
+      "rationale": "मोजमापाची नोंद identifies a missing recorded reading. आकडेवारीतील एखादा घटक makes selection of a single statistic explicit; negation, yet/अद्याप and the details action are preserved."
+    },
+    {
+      "key": "[lush_grass]",
+      "source": "Lush grass",
+      "actual_final_target": "हिरवेगार गवत",
+      "verdict": "accept",
+      "rationale": "हिरवेगार गवत is an idiomatic lush-grass terrain label with neuter agreement."
+    },
+    {
+      "key": "[dry_grass]",
+      "source": "Dry grass",
+      "actual_final_target": "कोरडे गवत",
+      "verdict": "accept",
+      "rationale": "कोरडे गवत uses a neutral dry adjective agreeing with neuter गवत; it does not invent a distinct dried resource."
+    },
+    {
+      "key": "[dune_sand]",
+      "source": "Dune sand",
+      "actual_final_target": "वाळूच्या टेकड्यांतील वाळू",
+      "verdict": "accept",
+      "rationale": "वाळूच्या टेकड्यांतील वाळू preserves dune-associated sand as the material/terrain head noun."
+    },
+    {
+      "key": "[pale_sand]",
+      "source": "Pale sand",
+      "actual_final_target": "फिकट वाळू",
+      "verdict": "accept",
+      "rationale": "फिकट वाळू retains the pale colour distinction from dune sand."
+    }
+  ],
+  "unchanged_carry": {
+    "independently_verified_against_git_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+    "native_source_target_pairs_equal": 3395,
+    "native_old_bytes_exact_prefix": true,
+    "online_source_target_keys_equal": 2836,
+    "online_whole_files_byte_identical": [
+      "platform/packages/i18n/locales/en.json",
+      "platform/packages/i18n/locales/mr.json"
+    ],
+    "carry_record": "source-target-carry.json",
+    "carry_record_sha256": "2ab915be7388255a75b9cebb08d09019bf5cc465dad4e198a3c9b9ce1caea833",
+    "scope": "3393 original native + previous 2 actual reviewed additions and all online values retain their prior honest review chain through exact value/byte equality; not freshly reread."
+  },
+  "remaining_language_findings": [],
+  "limits": [
+    "Text/context signoff only. Fresh current producer matrix/UI rendering is still required after the overlapping font/renderer integration.",
+    "No native macOS/Windows/iOS runtime claim; no physical-phone claim from desktop compact captures."
+  ],
+  "catalogs_or_drafts_edited": false
+}

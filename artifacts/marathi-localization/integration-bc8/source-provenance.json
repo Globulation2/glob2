@@ -1,0 +1,49 @@
+{
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "source_reference": "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+  "preparation_git_HEAD": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "preparation_context": "Uncommitted merge of parentffbd and actualmasterbc8; source5files independently byte-equal to recordedmaster. This is source/draft preparation, NOT a compiled producer claim. Final compiled source will identify the later clean integration commit.",
+  "source_files": {
+    "data/texts.keys.txt": {
+      "sha256": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+      "master_git_blob": "f208976425497ad9fd56accee85bff01c1e0144e"
+    },
+    "data/texts.en.txt": {
+      "sha256": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+      "master_git_blob": "4ad601e423d3a1254ce108f7220668ccfd0d1467"
+    },
+    "platform/packages/i18n/locales/en.json": {
+      "sha256": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+      "master_git_blob": "4e93d5de67515f96d10220c511184bb9bc2687e6"
+    },
+    "platform/packages/i18n/plural-sources.json": {
+      "sha256": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+      "master_git_blob": "ed9015a390d0fbbd56f262328f046377d9b15956"
+    },
+    "platform/packages/i18n/invariants.json": {
+      "sha256": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a",
+      "master_git_blob": "bf64a954ea956a44ad40246d714c81fcf1cbffa8"
+    }
+  },
+  "native_keys": 3411,
+  "online_keys": 2836,
+  "old_canonical_native_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+  "new_blank_native_keys": [
+    "[lush_grass]",
+    "[dry_grass]",
+    "[dune_sand]",
+    "[pale_sand]",
+    "[stats topic overview]",
+    "[stats topic economy]",
+    "[stats topic world]",
+    "[stats work construction]",
+    "[stats defence]",
+    "[stats history]",
+    "[stats waiting]",
+    "[stats unit details]",
+    "[stats map overlays]",
+    "[stats topic]",
+    "[stats full history]",
+    "[stats missing readings]"
+  ]
+}

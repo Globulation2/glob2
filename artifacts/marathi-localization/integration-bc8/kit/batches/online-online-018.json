@@ -1,0 +1,509 @@
+{
+  "id": "online-online-018",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Run checks & preview",
+      "key": "Run checks & preview",
+      "source": "Run checks & preview"
+    },
+    {
+      "id": "online:Run checks to create a preview.",
+      "key": "Run checks to create a preview.",
+      "source": "Run checks to create a preview."
+    },
+    {
+      "id": "online:Run compatibility checks on the current saved revision first.",
+      "key": "Run compatibility checks on the current saved revision first.",
+      "source": "Run compatibility checks on the current saved revision first."
+    },
+    {
+      "id": "online:Run identifier already used.",
+      "key": "Run identifier already used.",
+      "source": "Run identifier already used."
+    },
+    {
+      "id": "online:Running",
+      "key": "Running",
+      "source": "Running"
+    },
+    {
+      "id": "online:Runtime diagnostics ({slot0})",
+      "key": "Runtime diagnostics ({slot0})",
+      "source": "Runtime diagnostics ({slot0})"
+    },
+    {
+      "id": "online:Sand",
+      "key": "Sand",
+      "source": "Sand"
+    },
+    {
+      "id": "online:Save",
+      "key": "Save",
+      "source": "Save"
+    },
+    {
+      "id": "online:Save and run checks on the current revision before publishing.",
+      "key": "Save and run checks on the current revision before publishing.",
+      "source": "Save and run checks on the current revision before publishing."
+    },
+    {
+      "id": "online:Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+      "key": "Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+      "source": "Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link."
+    },
+    {
+      "id": "online:Save details",
+      "key": "Save details",
+      "source": "Save details"
+    },
+    {
+      "id": "online:Save draft",
+      "key": "Save draft",
+      "source": "Save draft"
+    },
+    {
+      "id": "online:Save photo",
+      "key": "Save photo",
+      "source": "Save photo"
+    },
+    {
+      "id": "online:Save published details",
+      "key": "Save published details",
+      "source": "Save published details"
+    },
+    {
+      "id": "online:Save your changes before importing or uploading artwork. Export uses the saved draft.",
+      "key": "Save your changes before importing or uploading artwork. Export uses the saved draft.",
+      "source": "Save your changes before importing or uploading artwork. Export uses the saved draft."
+    },
+    {
+      "id": "online:Save your changes before publishing.",
+      "key": "Save your changes before publishing.",
+      "source": "Save your changes before publishing."
+    },
+    {
+      "id": "online:Save your draft before leaving for checkout. Device storage is unavailable.",
+      "key": "Save your draft before leaving for checkout. Device storage is unavailable.",
+      "source": "Save your draft before leaving for checkout. Device storage is unavailable."
+    },
+    {
+      "id": "online:Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+      "key": "Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+      "source": "Save your manual building edits in Edit before generating, restoring a version, or undoing."
+    },
+    {
+      "id": "online:Save your manual edits before asking AI to revise the building.",
+      "key": "Save your manual edits before asking AI to revise the building.",
+      "source": "Save your manual edits before asking AI to revise the building."
+    },
+    {
+      "id": "online:Save your manual edits before asking AI to revise the set.",
+      "key": "Save your manual edits before asking AI to revise the set.",
+      "source": "Save your manual edits before asking AI to revise the set."
+    },
+    {
+      "id": "online:Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+      "key": "Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+      "source": "Save your manual terrain edits in Edit before generating, restoring a version, or undoing."
+    },
+    {
+      "id": "online:Saved",
+      "key": "Saved",
+      "source": "Saved"
+    },
+    {
+      "id": "online:Saved draft history",
+      "key": "Saved draft history",
+      "source": "Saved draft history"
+    },
+    {
+      "id": "online:Saved draft · validation remains version-specific.",
+      "key": "Saved draft · validation remains version-specific.",
+      "source": "Saved draft · validation remains version-specific."
+    },
+    {
+      "id": "online:Saving account changes…",
+      "key": "Saving account changes…",
+      "source": "Saving account changes…"
+    },
+    {
+      "id": "online:Scale",
+      "key": "Scale",
+      "source": "Scale"
+    },
+    {
+      "id": "online:Scene and resource gallery",
+      "key": "Scene and resource gallery",
+      "source": "Scene and resource gallery"
+    },
+    {
+      "id": "online:Search",
+      "key": "Search",
+      "source": "Search"
+    },
+    {
+      "id": "online:Search AIs",
+      "key": "Search AIs",
+      "source": "Search AIs"
+    },
+    {
+      "id": "online:Search accounts",
+      "key": "Search accounts",
+      "source": "Search accounts"
+    },
+    {
+      "id": "online:Search buildings",
+      "key": "Search buildings",
+      "source": "Search buildings"
+    },
+    {
+      "id": "online:Search maps",
+      "key": "Search maps",
+      "source": "Search maps"
+    },
+    {
+      "id": "online:Search matches",
+      "key": "Search matches",
+      "source": "Search matches"
+    },
+    {
+      "id": "online:Search must be at most 64 characters.",
+      "key": "Search must be at most 64 characters.",
+      "source": "Search must be at most 64 characters."
+    },
+    {
+      "id": "online:Search must be text.",
+      "key": "Search must be text.",
+      "source": "Search must be text."
+    },
+    {
+      "id": "online:Search names, descriptions, authors…",
+      "key": "Search names, descriptions, authors…",
+      "source": "Search names, descriptions, authors…"
+    },
+    {
+      "id": "online:Search players and AI opponents…",
+      "key": "Search players and AI opponents…",
+      "source": "Search players and AI opponents…"
+    },
+    {
+      "id": "online:Search titles",
+      "key": "Search titles",
+      "source": "Search titles"
+    },
+    {
+      "id": "online:Search unavailable",
+      "key": "Search unavailable",
+      "source": "Search unavailable"
+    },
+    {
+      "id": "online:Seat {value0}",
+      "key": "Seat {value0}",
+      "source": "Seat {value0}"
+    },
+    {
+      "id": "online:Seed",
+      "key": "Seed",
+      "source": "Seed"
+    },
+    {
+      "id": "online:Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+      "key": "Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+      "source": "Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform."
+    },
+    {
+      "id": "online:Select for download",
+      "key": "Select for download",
+      "source": "Select for download"
+    },
+    {
+      "id": "online:Selected frame",
+      "key": "Selected frame",
+      "source": "Selected frame"
+    },
+    {
+      "id": "online:Selected music",
+      "key": "Selected music",
+      "source": "Selected music"
+    },
+    {
+      "id": "online:Selected terrain",
+      "key": "Selected terrain",
+      "source": "Selected terrain"
+    },
+    {
+      "id": "online:Send report",
+      "key": "Send report",
+      "source": "Send report"
+    },
+    {
+      "id": "online:Send skin report",
+      "key": "Send skin report",
+      "source": "Send skin report"
+    },
+    {
+      "id": "online:Send the blob as the body.",
+      "key": "Send the blob as the body.",
+      "source": "Send the blob as the body."
+    },
+    {
+      "id": "online:Send the file as the request body (Content-Type: application/octet-stream).",
+      "key": "Send the file as the request body (Content-Type: application/octet-stream).",
+      "source": "Send the file as the request body (Content-Type: application/octet-stream)."
+    },
+    {
+      "id": "online:Send the job's lease token in {p0}.",
+      "key": "Send the job's lease token in {p0}.",
+      "source": "Send the job's lease token in {p0}."
+    },
+    {
+      "id": "online:Send the match record as the body.",
+      "key": "Send the match record as the body.",
+      "source": "Send the match record as the body."
+    },
+    {
+      "id": "online:Set contents",
+      "key": "Set contents",
+      "source": "Set contents"
+    },
+    {
+      "id": "online:Set exceeds 16 MiB.",
+      "key": "Set exceeds 16 MiB.",
+      "source": "Set exceeds 16 MiB."
+    },
+    {
+      "id": "online:Set file not found.",
+      "key": "Set file not found.",
+      "source": "Set file not found."
+    },
+    {
+      "id": "online:Set library",
+      "key": "Set library",
+      "source": "Set library"
+    },
+    {
+      "id": "online:Set not found.",
+      "key": "Set not found.",
+      "source": "Set not found."
+    },
+    {
+      "id": "online:Set preview engine",
+      "key": "Set preview engine",
+      "source": "Set preview engine"
+    },
+    {
+      "id": "online:Set reports",
+      "key": "Set reports",
+      "source": "Set reports"
+    },
+    {
+      "id": "online:Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "key": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "source": "Set the goals and your globs get to work. Feed your colony, train your units and explore together."
+    },
+    {
+      "id": "online:Set unavailable.",
+      "key": "Set unavailable.",
+      "source": "Set unavailable."
+    },
+    {
+      "id": "online:Set up your colonies and AI opponents.",
+      "key": "Set up your colonies and AI opponents.",
+      "source": "Set up your colonies and AI opponents."
+    },
+    {
+      "id": "online:Set workspace",
+      "key": "Set workspace",
+      "source": "Set workspace"
+    },
+    {
+      "id": "online:Seven smooth spires around a central egg.",
+      "key": "Seven smooth spires around a central egg.",
+      "source": "Seven smooth spires around a central egg."
+    },
+    {
+      "id": "online:Shape asset length mismatch",
+      "key": "Shape asset length mismatch",
+      "source": "Shape asset length mismatch"
+    },
+    {
+      "id": "online:Shape the terrain",
+      "key": "Shape the terrain",
+      "source": "Shape the terrain"
+    },
+    {
+      "id": "online:Share a generator",
+      "key": "Share a generator",
+      "source": "Share a generator"
+    },
+    {
+      "id": "online:Share a map generator",
+      "key": "Share a map generator",
+      "source": "Share a map generator"
+    },
+    {
+      "id": "online:Share a map you made in the editor or with a generator.",
+      "key": "Share a map you made in the editor or with a generator.",
+      "source": "Share a map you made in the editor or with a generator."
+    },
+    {
+      "id": "online:Share a soundtrack",
+      "key": "Share a soundtrack",
+      "source": "Share a soundtrack"
+    },
+    {
+      "id": "online:Share music",
+      "key": "Share music",
+      "source": "Share music"
+    },
+    {
+      "id": "online:Share your AI",
+      "key": "Share your AI",
+      "source": "Share your AI"
+    },
+    {
+      "id": "online:Shop",
+      "key": "Shop",
+      "source": "Shop"
+    },
+    {
+      "id": "online:Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength.",
+      "key": "Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength.",
+      "source": "Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength."
+    },
+    {
+      "id": "online:Show",
+      "key": "Show",
+      "source": "Show"
+    },
+    {
+      "id": "online:Show game view",
+      "key": "Show game view",
+      "source": "Show game view"
+    },
+    {
+      "id": "online:Show matches from",
+      "key": "Show matches from",
+      "source": "Show matches from"
+    },
+    {
+      "id": "online:Show more",
+      "key": "Show more",
+      "source": "Show more"
+    },
+    {
+      "id": "online:Show technical results {slot0}",
+      "key": "Show technical results {slot0}",
+      "source": "Show technical results {slot0}"
+    },
+    {
+      "id": "online:Shuffle pattern · {slot0}",
+      "key": "Shuffle pattern · {slot0}",
+      "source": "Shuffle pattern · {slot0}"
+    },
+    {
+      "id": "online:Sign in",
+      "key": "Sign in",
+      "source": "Sign in"
+    },
+    {
+      "id": "online:Sign in first (session.authenticate).",
+      "key": "Sign in first (session.authenticate).",
+      "source": "Sign in first (session.authenticate)."
+    },
+    {
+      "id": "online:Sign in first.",
+      "key": "Sign in first.",
+      "source": "Sign in first."
+    },
+    {
+      "id": "online:Sign in or link your account",
+      "key": "Sign in or link your account",
+      "source": "Sign in or link your account"
+    },
+    {
+      "id": "online:Sign in to Globulation 2",
+      "key": "Sign in to Globulation 2",
+      "source": "Sign in to Globulation 2"
+    },
+    {
+      "id": "online:Sign in to Globulation 2 {p0}? Your game shows this code:",
+      "key": "Sign in to Globulation 2 {p0}? Your game shows this code:",
+      "source": "Sign in to Globulation 2 {p0}? Your game shows this code:"
+    },
+    {
+      "id": "online:Sign in to create",
+      "key": "Sign in to create",
+      "source": "Sign in to create"
+    },
+    {
+      "id": "online:Sign in to create a building",
+      "key": "Sign in to create a building",
+      "source": "Sign in to create a building"
+    },
+    {
+      "id": "online:Sign in to create a set",
+      "key": "Sign in to create a set",
+      "source": "Sign in to create a set"
+    },
+    {
+      "id": "online:Sign in to download the match record.",
+      "key": "Sign in to download the match record.",
+      "source": "Sign in to download the match record."
+    },
+    {
+      "id": "online:Sign in to download this map.",
+      "key": "Sign in to download this map.",
+      "source": "Sign in to download this map."
+    },
+    {
+      "id": "online:Sign in to like or favourite",
+      "key": "Sign in to like or favourite",
+      "source": "Sign in to like or favourite"
+    },
+    {
+      "id": "online:Sign in to like or report",
+      "key": "Sign in to like or report",
+      "source": "Sign in to like or report"
+    },
+    {
+      "id": "online:Sign in to list your maps.",
+      "key": "Sign in to list your maps.",
+      "source": "Sign in to list your maps."
+    },
+    {
+      "id": "online:Sign in to play on this server.",
+      "key": "Sign in to play on this server.",
+      "source": "Sign in to play on this server."
+    },
+    {
+      "id": "online:Sign in to report this skin",
+      "key": "Sign in to report this skin",
+      "source": "Sign in to report this skin"
+    },
+    {
+      "id": "online:Sign in to save",
+      "key": "Sign in to save",
+      "source": "Sign in to save"
+    },
+    {
+      "id": "online:Sign in to save your skins.",
+      "key": "Sign in to save your skins.",
+      "source": "Sign in to save your skins."
+    },
+    {
+      "id": "online:Sign in to see your account or to delete it.",
+      "key": "Sign in to see your account or to delete it.",
+      "source": "Sign in to see your account or to delete it."
+    },
+    {
+      "id": "online:Sign in to see your library.",
+      "key": "Sign in to see your library.",
+      "source": "Sign in to see your library."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "source": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "hashes": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "batches": 66,
+  "keys": 6247,
+  "pending": [
+    "structural is pending or lacks evidence",
+    "desktop_rendering is pending or lacks evidence",
+    "phone_rendering is pending or lacks evidence",
+    "browser_startup is pending or lacks evidence",
+    "native_platforms is pending or lacks evidence",
+    "browser_platforms is pending or lacks evidence",
+    "mobile_platforms is pending or lacks evidence"
+  ]
+}

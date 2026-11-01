@@ -1,0 +1,202 @@
+{
+  "reviewer_role": "Independent adversarial linguistic review; root remains author",
+  "scope": "All 16 newly added native English sources, actual raw Google targets and stable kit draft values read individually, with real statistics/terrain usage. No other reviewers new proposals read. No catalog/draft writes.",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "snapshot_files": {
+    "artifacts/marathi-localization/integration-bc8/google-draft.json": "2fdc781fac72e42d04affe4d8c839354a4bf9b11dac64e98a5355d4946ce66dc",
+    "artifacts/marathi-localization/integration-bc8/kit/source/native.json": "2e8ecfd5117d4bce19aa250dd2aa652ea7a0f6a386bc182e5cccf2e30800df61",
+    "artifacts/marathi-localization/integration-bc8/kit/drafts/mr/texts.mr.txt": "64735fc0a2483e11874a754f4f9ca9ef45c040165e806f84c0c32109758733bc",
+    "src/hud/InGameStatistics.cpp": "c94be3fdb5bf6c804020258c6ae795d0864f2006de81408bf3c2936cc8791a14",
+    "src/hud/draw/GameGUIDraw.cpp": "e03a6d7da3b4e48ed726c745a40e97473dd3196b4e3d8f43ef0d8c610b2c1d67",
+    "src/map/TerrainTypeTable.h": "bdfb5a1cd40feed4119ef89aebb889201626febe1c5e60c8adb6d5a0ec9ef6da",
+    "data/texts.mr.txt": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+    "data/texts.hi.txt": "6f8227b9c7b6442c58d9f544036368a076af1b0d747a220cd08260586b6a78ab",
+    "data/texts.fr.txt": "a3e68814c86c46cefeaadd141f95036dbccc4033db4a16bce138ed9b3e71d775",
+    "data/texts.nb.txt": "b7c618054f985de9f932a5df8618cb7fa8089b53426fa3391be160b4fc04f545"
+  },
+  "reviewed_keys": [
+    "[stats topic overview]",
+    "[stats topic economy]",
+    "[stats topic world]",
+    "[stats work construction]",
+    "[stats defence]",
+    "[stats history]",
+    "[stats waiting]",
+    "[stats unit details]",
+    "[stats topic]",
+    "[stats full history]",
+    "[stats missing readings]",
+    "[lush_grass]",
+    "[dry_grass]",
+    "[dune_sand]",
+    "[pale_sand]",
+    "[stats map overlays]"
+  ],
+  "reviewed_count": 16,
+  "accepted_raw": 11,
+  "recommended_edits": 5,
+  "references": "Read selected existing Marathi terminology and matching new Hindi/French/Norwegian entries only. Hindi/French new statistics entries are blank; Norwegian has none of these added keys. French supplies the four terrain references quoted in individual rationales. No independent reference is invented for missing translations.",
+  "rendering_limit": "Text/context review only. Width, wrapping, glyph shaping and actual compact presentation still require the new clean production harness run; no visual fit signoff here.",
+  "entries": [
+    {
+      "key": "[stats topic overview]",
+      "source": "Overview",
+      "before": "आढावा",
+      "proposal": "आढावा",
+      "disposition": "accept_raw",
+      "rationale": "A short overview-topic tab summarizing colony, food, work and defence; आढावा is natural Marathi and preserves the summary sense.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats topic economy]",
+      "source": "Economy",
+      "before": "अर्थव्यवस्था",
+      "proposal": "अर्थव्यवस्था",
+      "disposition": "accept_raw",
+      "rationale": "The topic groups work, materials and buildings. अर्थव्यवस्था accurately names this economy topic without implying currency alone.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats topic world]",
+      "source": "World",
+      "before": "जग",
+      "proposal": "जग",
+      "disposition": "accept_raw",
+      "rationale": "The topic groups world/environmental statistics and available alliance chances. जग preserves the broad world category without narrowing it to just the map.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats work construction]",
+      "source": "Work & construction",
+      "before": "काम आणि बांधकाम",
+      "proposal": "काम आणि बांधकाम",
+      "disposition": "accept_raw",
+      "rationale": "Overview section for idle workers and blocked buildings. The two coordinated nouns are grammatical and preserve both work and construction; literal ampersand is not a protected format token here.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats defence]",
+      "source": "Defence",
+      "before": "संरक्षण",
+      "proposal": "संरक्षण",
+      "disposition": "accept_raw",
+      "rationale": "Overview section includes warriors and intruders. संरक्षण is established Marathi and matches existing defence-map and defensive-tactics terminology.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats history]",
+      "source": "View history",
+      "before": "इतिहास पहा",
+      "proposal": "इतिहास पहा",
+      "disposition": "accept_raw",
+      "rationale": "An accessible action label for viewing a statistic history. This exactly agrees with the existing [view history] translation; no unnecessary parallel imperative spelling is introduced.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats waiting]",
+      "source": "Waiting for statistics…",
+      "before": "आकडेवारीची वाट पाहत आहे…",
+      "proposal": "आकडेवारीची प्रतीक्षा…",
+      "disposition": "recommend_edit",
+      "rationale": "This is an impersonal pending-data status in the panel/chart, not dialogue spoken by a character. प्रतीक्षा avoids the raw speaker-like पाहत आहे construction and reads cleanly in the compact status position.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats unit details]",
+      "source": "Unit details",
+      "before": "युनिट तपशील",
+      "proposal": "युनिट्सचे तपशील",
+      "disposition": "recommend_edit",
+      "rationale": "The expandable section lists all units, worker/explorer/warrior totals, availability, health, abilities and happiness. Plural possessive युनिट्सचे makes the aggregate scope and grammatical relationship explicit, using the established युनिट term.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats topic]",
+      "source": "Topic",
+      "before": "विषय",
+      "proposal": "विषय",
+      "disposition": "accept_raw",
+      "rationale": "A reusable Topic field label. विषय is standard Marathi and carries no unwanted Hindi-only sense; it is appropriately short.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats full history]",
+      "source": "Open full history",
+      "before": "संपूर्ण इतिहास उघडा",
+      "proposal": "संपूर्ण इतिहास उघडा",
+      "disposition": "accept_raw",
+      "rationale": "A real button opens the full metric-history dialog from an inline chart. The imperative उघडा and qualifier संपूर्ण accurately distinguish it from the abbreviated inline view.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "before": "— अद्याप कोणतीही नोंद झालेली नाही. तपशिलांसाठी आकडेवारी निवडा.",
+      "proposal": "— अद्याप मोजमापाची नोंद नाही. तपशील पाहण्यासाठी आकडेवारी निवडा.",
+      "disposition": "recommend_edit",
+      "rationale": "The hint concerns unavailable recorded metric readings, not missing arbitrary account/history registration. मोजमापाची नोंद specifies the missing measurement; the second sentence retains the actual action of selecting a statistic for details. Em dash, sentence polarity and the select action remain intact.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[lush_grass]",
+      "source": "Lush grass",
+      "before": "हिरवेगार गवत",
+      "proposal": "हिरवेगार गवत",
+      "disposition": "accept_raw",
+      "rationale": "A lush variant of the Grass terrain group; हिरवेगार is an idiomatic lush-green adjective agreeing with neuter गवत. French Herbe luxuriante independently supports the lush vegetation sense.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[dry_grass]",
+      "source": "Dry grass",
+      "before": "सुके गवत",
+      "proposal": "सुके गवत",
+      "disposition": "accept_raw",
+      "rationale": "A dry Grass terrain variant, not a separate resource. सुके agrees with neuter गवत and preserves the dry attribute; French Herbe sèche confirms this reading.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[dune_sand]",
+      "source": "Dune sand",
+      "before": "वाळूचे ढिगारे",
+      "proposal": "वाळूच्या टेकड्यांतील वाळू",
+      "disposition": "recommend_edit",
+      "rationale": "This is the DUNE_SAND material/texture variant in the Sand group. The raw plural वाळूचे ढिगारे names piles/dunes themselves; the proposal keeps dune-associated sand as the terrain material, consistent with French Sable de dune. This is a semantic-precision recommendation; do not shorten the Marathi wording merely to conceal a fixed widget limitation.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[pale_sand]",
+      "source": "Pale sand",
+      "before": "फिकट वाळू",
+      "proposal": "फिकट वाळू",
+      "disposition": "accept_raw",
+      "rationale": "A pale/light-coloured Sand terrain variant. फिकट conveys colour rather than dryness, quality or brightness; French Sable clair supports the distinction from dune sand.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    },
+    {
+      "key": "[stats map overlays]",
+      "source": "Map overlays",
+      "before": "नकाशा आच्छादने",
+      "proposal": "नकाशावरील आच्छादने",
+      "disposition": "recommend_edit",
+      "rationale": "This header groups hunger, damage, defence and fertility overlays drawn on the map in player/replay HUDs. The locative नकाशावरील supplies a natural Marathi relationship; आच्छादने deliberately matches established overlay terminology.",
+      "source_equal_english": false,
+      "format_contract": "No executable placeholders or markup in this entry; authored ellipsis/em dash retained when present."
+    }
+  ]
+}

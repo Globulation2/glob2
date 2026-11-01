@@ -1,0 +1,146 @@
+{
+  "reviewer": "semantic_review",
+  "role": "independent final semantic reviewer",
+  "decision": "accept",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "fresh_reread_keys": [
+    {
+      "key": "[stats topic overview]",
+      "actual_source": "Overview",
+      "actual_target": "आढावा",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats topic economy]",
+      "actual_source": "Economy",
+      "actual_target": "अर्थव्यवस्था",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats topic world]",
+      "actual_source": "World",
+      "actual_target": "जग",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats work construction]",
+      "actual_source": "Work & construction",
+      "actual_target": "काम आणि बांधकाम",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats defence]",
+      "actual_source": "Defence",
+      "actual_target": "संरक्षण",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats history]",
+      "actual_source": "View history",
+      "actual_target": "इतिहास पहा",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats waiting]",
+      "actual_source": "Waiting for statistics…",
+      "actual_target": "आकडेवारीची प्रतीक्षा…",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats unit details]",
+      "actual_source": "Unit details",
+      "actual_target": "युनिटचे तपशील",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats map overlays]",
+      "actual_source": "Map overlays",
+      "actual_target": "नकाशावरील आच्छादने",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats topic]",
+      "actual_source": "Topic",
+      "actual_target": "विषय",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats full history]",
+      "actual_source": "Open full history",
+      "actual_target": "संपूर्ण इतिहास उघडा",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[stats missing readings]",
+      "actual_source": "— No recorded reading yet. Select a statistic for details.",
+      "actual_target": "— अद्याप मोजमापाची नोंद नाही. तपशील पाहण्यासाठी आकडेवारीतील एखादा घटक निवडा.",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[lush_grass]",
+      "actual_source": "Lush grass",
+      "actual_target": "हिरवेगार गवत",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[dry_grass]",
+      "actual_source": "Dry grass",
+      "actual_target": "कोरडे गवत",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[dune_sand]",
+      "actual_source": "Dune sand",
+      "actual_target": "वाळूच्या टेकड्यांतील वाळू",
+      "decision": "accept",
+      "freshly_reread": true
+    },
+    {
+      "key": "[pale_sand]",
+      "actual_source": "Pale sand",
+      "actual_target": "फिकट वाळू",
+      "decision": "accept",
+      "freshly_reread": true
+    }
+  ],
+  "context_reconciliation": {
+    "[stats waiting]": "Actual impersonal आकडेवारीची प्रतीक्षा… is a concise ongoing waiting status; keeps ellipsis and does not claim data is ready.",
+    "[stats missing readings]": "Actual wording identifies an unrecorded measurement and directs selection of one statistics component for details; precise and natural alternative to initial review proposal.",
+    "[dune_sand]": "Actual plural dune-associated sand wording retains material वाळू, consistent table sand rules/appearance-only documentation.",
+    "[stats unit details]": "Actual possessive युनिटचे retains existing glossary and labels aggregate detail expansion.",
+    "[stats map overlays]": "Actual नकाशावरील locative gives the relationship to the map and retains established आच्छादन terminology."
+  },
+  "exact_carry_verified": {
+    "native_source_keys": 3395,
+    "native_target_keys": 3395,
+    "old_native_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+    "old_native_bytes_exact_prefix": true,
+    "online_source_keys": 2836,
+    "online_target_keys": 2836,
+    "online_target_bytes_identical_to_premerge": true,
+    "removed_or_modified_old_keys": []
+  },
+  "coverage_statement": "Fresh semantic final read of exactly16 new English/actual canonical Marathi pairs, with prior actual UI/terrain contexts. Older3395native and2836online source+target entries carried by independently checked per-key/byte equality to prior reviewed snapshots; no fresh full-catalog reread claimed.",
+  "coverage_native_total": 3411,
+  "outstanding_findings": [],
+  "no_source_edits": true,
+  "certification": "Independent AI review, not native-human certification."
+}

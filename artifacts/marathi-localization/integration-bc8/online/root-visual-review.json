@@ -1,0 +1,27 @@
+{
+  "reviewer": "/root",
+  "utc": "2026-11-01T05:45:48.418933+00:00",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "online_catalog_sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/screenshots/chromium-desktop/mr-home.png",
+      "sha256": "c0c6b4c707db297522032e8bab23032498cb610f038bce9cd0fe32d5558b40ff"
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/screenshots/webkit-phone/mr-home.png",
+      "sha256": "f74e1d2132df2dd47291e1b8414caec02f9553143896ba11cde73d37f6367be7"
+    }
+  ],
+  "assessment": "Actually viewed these two freshcurrent fullpage images. Marathi conjuncts/matras and Devanagari digits clear; desktop fullमराठी andphonecompactMR fit; longhomeparagraphs andbuttonlabels wrap/fit, no glyphboxes or textclippingobserved. Player/map/queue names remain fixturecontent. Below-fold phone map-image placeholders are lazy-loading behavior; no claim allthumbnails loaded. Otherfourhomeimages not independentlyroot-inspected; all12automatedcontracts pass.",
+  "findings": [],
+  "results_sha256": "782d0b12280a88f9240204bf7e5b9a8e5365ee5ff5f75bd7355e88cdf06aefbd",
+  "stats": {
+    "startTime": "2026-11-01T05:40:06.216Z",
+    "duration": 238666.979,
+    "expected": 12,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

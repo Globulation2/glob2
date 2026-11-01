@@ -1,0 +1,14 @@
+{
+  "source_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "image": "caddy:2.11.4-alpine",
+  "image_id": "sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b",
+  "repo_digests": [
+    "caddy@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b"
+  ],
+  "binary_sha256": "b7105518e3ed1c0761f232e44fc09345535533c9cb0abf0e12809416c7ac64d9",
+  "binary_bytes": 48521378,
+  "version": "v2.11.4 h1:XKxkMTgNSizEvKG6QHue6cAsFOteU2qA61w2tKkCWi0=",
+  "created_container": "c0c1a0d6d20f17e0321c72af33805bdb1788dcb3c43e95e19f0c85852fc40129",
+  "own_extraction_container_and_anonymous_volumes_removed": true,
+  "scope": "Development QA only, exact alreadycacheddeploymentbaseimage. No networkpull, runtime dependency/source modification, foreignimage/container deletion, or globalconfig change. Binary stayslocal, only provenance publishes."
+}

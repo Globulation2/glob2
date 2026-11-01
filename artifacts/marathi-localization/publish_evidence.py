@@ -25,7 +25,7 @@ def main():
     previous = json.loads((ROOT / BASE / 'evidence-publication.json').read_text())
     files = {Path(name) for name in previous['files'] if (ROOT / name).is_file()}
     if args.checkpoint or args.pending_browser:
-        files = {p for p in files if not str(p).startswith(str(BASE / 'integration-refresh/native') + '/')}
+        files = {p for p in files if not any(str(p).startswith(str(BASE / x) + '/') for x in ['integration-refresh/native', 'integration-bc8/native', 'integration-bc8/android'])}
 
     # The inventory describes the payload and is added once after it is
     # regenerated. It cannot hash or count an inherited copy of itself.
@@ -42,7 +42,7 @@ def main():
                    'native-render-clean671',
                    'native-focused-results',
                    'browser-render-final', 'browser-game',
-                   'android-rendering', 'android-attempt1-system-ui-anr', 'integration-refresh']
+                   'android-rendering', 'android-attempt1-system-ui-anr', 'integration-refresh', 'integration-bc8']
     extensions = {'.json', '.log', '.png', '.txt', '.md', '.xml', '.py', '.cjs', '.js', '.mjs', '.cpp', '.h', '.sh'}
     for directory in directories:
         if (args.checkpoint or args.pending_browser) and directory in {'browser-game', 'browser-render-final'}:
@@ -51,9 +51,15 @@ def main():
             continue
         for path in (ROOT / BASE / directory).rglob('*'):
             relative = path.relative_to(ROOT)
+            if any(str(relative).startswith(str(BASE / x) + '/') for x in ['integration-bc8/native-baseline/master-snapshot', 'integration-bc8/caddy-qa/config', 'integration-bc8/caddy-qa/data']):
+                continue
+            if str(relative).startswith(str(BASE / 'integration-bc8/preparation-kit') + '/') and path.name != 'manifest.json':
+                continue
+            if (args.checkpoint or args.pending_browser) and relative == BASE / 'integration-bc8/browser-packaging-contracts.log':
+                continue
             if path.name.startswith('publication-') and path.suffix == '.log':
                 continue
-            if (args.checkpoint or args.pending_browser) and str(relative).startswith(str(BASE / 'integration-refresh/native') + '/'):
+            if (args.checkpoint or args.pending_browser) and any(str(relative).startswith(str(BASE / x) + '/') for x in ['integration-refresh/native', 'integration-bc8/native', 'integration-bc8/android']):
                 continue
             if (path.is_file() and (path.suffix in extensions or path.name.endswith(('.json.gz', '.log.gz', '.txt.gz')))
                     and not {'baseline-browser-fixture', 'previous671'} & set(relative.parts)
@@ -79,6 +85,7 @@ def main():
              'publish_evidence.py', 'native_qa_runner.py', 'android_validate_release.py',
              'android_smoke_task.py']
     files.add(BASE / 'validated-android-ba890/archive-manifest.json')
+    files.add(BASE / 'validated-android-ffbd/archive-manifest.json')
     for name in names:
         path = BASE / name
         if (ROOT / path).is_file(): files.add(path)

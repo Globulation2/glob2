@@ -1,0 +1,82 @@
+{
+  "auditor": "/root/locale_integration",
+  "scope": "Independent exact prepared Git evidence tree inventory/hash/content-type and bounded credential-pattern audit; manual producer/scope review is separate. No claim of exhaustive secret detection.",
+  "evidence_commit": "b9088949ff7046ad356013df6c0119d116344956",
+  "manifest_source_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "manifest_sha256": "51101bff7a55a25e0693c455b1c68e221a4ff0d28a2fb0a82c6b8b4898ed9dae",
+  "file_count": 1169,
+  "total_bytes": 214264668,
+  "all_explicit_hashes_match": true,
+  "content_types": {
+    "strict UTF8 text": 283,
+    "parsed JSON": 692,
+    "verified PNG": 188,
+    "large JSON text stream": 2
+  },
+  "large_json_stream_only": [
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/matrix/font-matrix.json",
+      "bytes": 29096780,
+      "syntax_check": "not parsed above16MiB; strict UTF8/NUL/secret scan completed"
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/390x844/matrix/font-matrix.json",
+      "bytes": 32262674,
+      "syntax_check": "not parsed above16MiB; strict UTF8/NUL/secret scan completed"
+    }
+  ],
+  "secret_patterns_checked": [
+    "private_key",
+    "oauth_access_token",
+    "github_token",
+    "google_api_key",
+    "literal_bearer",
+    "literal_access_token_value"
+  ],
+  "credential_pattern_findings": [],
+  "problems": [
+    {
+      "path": "COPYING",
+      "issue": "outside evidence prefix"
+    },
+    {
+      "path": "COPYING",
+      "issue": "unexpected executable/binary/extension"
+    },
+    {
+      "path": "artifacts/marathi-localization/compact-picker-capture-failure/i18n-home-loads-and-renders-mr-desktop/trace.zip",
+      "issue": "unexpected executable/binary/extension"
+    },
+    {
+      "path": "artifacts/marathi-localization/compact-picker-capture-failure/i18n-home-loads-and-renders-mr-desktop/trace.zip",
+      "issue": "content type/encoding/syntax audit failed",
+      "error": "'utf-8' codec can't decode byte 0x9c in position 11: invalid start byte"
+    },
+    {
+      "path": "artifacts/marathi-localization/initial-navigation-failure/i18n-home-loads-and-renders-mr-desktop/trace.zip",
+      "issue": "unexpected executable/binary/extension"
+    },
+    {
+      "path": "artifacts/marathi-localization/initial-navigation-failure/i18n-home-loads-and-renders-mr-desktop/trace.zip",
+      "issue": "content type/encoding/syntax audit failed",
+      "error": "'utf-8' codec can't decode byte 0x9b in position 11: invalid start byte"
+    },
+    {
+      "path": "artifacts/marathi-localization/initial-navigation-failure/i18n-home-loads-and-renders-mr-phone/trace.zip",
+      "issue": "unexpected executable/binary/extension"
+    },
+    {
+      "path": "artifacts/marathi-localization/initial-navigation-failure/i18n-home-loads-and-renders-mr-phone/trace.zip",
+      "issue": "content type/encoding/syntax audit failed",
+      "error": "'utf-8' codec can't decode byte 0x9b in position 11: invalid start byte"
+    },
+    {
+      "path": "artifacts/marathi-localization/native-build.log",
+      "issue": "content type/encoding/syntax audit failed",
+      "error": "NUL bytes in allowed text file"
+    }
+  ],
+  "result": "review required",
+  "audit_tool_sha256": "458ca7a96b1f75f2d10b95a69fa77b3d551f24a084f282a4745219e22b78e3ac",
+  "does_not_mutate_source_or_evidence_tree": true
+}

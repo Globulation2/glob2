@@ -1,0 +1,1 @@
+{"revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63", "passed": ["language_brief", "source_based_pilot", "structural"], "pending": ["desktop_rendering", "phone_rendering", "browser_startup", "native_platforms", "browser_platforms", "mobile_platforms"], "current_website_cases": 12}

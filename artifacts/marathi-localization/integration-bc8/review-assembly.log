@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/assemble_review.py", line 14, in <module>
+    assert {k.removeprefix('native:') for k in keys}==added
+            ^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'removeprefix'

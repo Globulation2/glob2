@@ -1,0 +1,509 @@
+{
+  "id": "native-general-010",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Extra riffles]",
+      "key": "[Extra riffles]",
+      "source": "Extra riffles"
+    },
+    {
+      "id": "native:[Moraine hummocks]",
+      "key": "[Moraine hummocks]",
+      "source": "Moraine hummocks"
+    },
+    {
+      "id": "native:[Drumlin field]",
+      "key": "[Drumlin field]",
+      "source": "Drumlin field"
+    },
+    {
+      "id": "native:[Drumlin spacing]",
+      "key": "[Drumlin spacing]",
+      "source": "Drumlin spacing"
+    },
+    {
+      "id": "native:[Drumlin length]",
+      "key": "[Drumlin length]",
+      "source": "Drumlin length"
+    },
+    {
+      "id": "native:[Water gap]",
+      "key": "[Water gap]",
+      "source": "Water gap"
+    },
+    {
+      "id": "native:[Esker loops]",
+      "key": "[Esker loops]",
+      "source": "Esker loops"
+    },
+    {
+      "id": "native:[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "key": "[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "source": "The eskers could not join every drumlin; use a smaller water gap or a bigger map."
+    },
+    {
+      "id": "native:[Continents]",
+      "key": "[Continents]",
+      "source": "Continents"
+    },
+    {
+      "id": "native:[Continent]",
+      "key": "[Continent]",
+      "source": "Continent"
+    },
+    {
+      "id": "native:[North America]",
+      "key": "[North America]",
+      "source": "North America"
+    },
+    {
+      "id": "native:[South America]",
+      "key": "[South America]",
+      "source": "South America"
+    },
+    {
+      "id": "native:[Africa]",
+      "key": "[Africa]",
+      "source": "Africa"
+    },
+    {
+      "id": "native:[Europe]",
+      "key": "[Europe]",
+      "source": "Europe"
+    },
+    {
+      "id": "native:[Asia]",
+      "key": "[Asia]",
+      "source": "Asia"
+    },
+    {
+      "id": "native:[Oceania]",
+      "key": "[Oceania]",
+      "source": "Oceania"
+    },
+    {
+      "id": "native:[Orientation]",
+      "key": "[Orientation]",
+      "source": "Orientation"
+    },
+    {
+      "id": "native:[Turn to fit]",
+      "key": "[Turn to fit]",
+      "source": "Turn to fit"
+    },
+    {
+      "id": "native:[Upright]",
+      "key": "[Upright]",
+      "source": "Upright"
+    },
+    {
+      "id": "native:[Islets]",
+      "key": "[Islets]",
+      "source": "Islets"
+    },
+    {
+      "id": "native:[Oases]",
+      "key": "[Oases]",
+      "source": "Oases"
+    },
+    {
+      "id": "native:[The world atlas has no such continent.]",
+      "key": "[The world atlas has no such continent.]",
+      "source": "The world atlas has no such continent."
+    },
+    {
+      "id": "native:[Savannah]",
+      "key": "[Savannah]",
+      "source": "Savannah"
+    },
+    {
+      "id": "native:[Watering holes]",
+      "key": "[Watering holes]",
+      "source": "Watering holes"
+    },
+    {
+      "id": "native:[Dry patches]",
+      "key": "[Dry patches]",
+      "source": "Dry patches"
+    },
+    {
+      "id": "native:[Sparse]",
+      "key": "[Sparse]",
+      "source": "Sparse"
+    },
+    {
+      "id": "native:[Normal]",
+      "key": "[Normal]",
+      "source": "Normal"
+    },
+    {
+      "id": "native:[Many]",
+      "key": "[Many]",
+      "source": "Many"
+    },
+    {
+      "id": "native:[Rice terraces]",
+      "key": "[Rice terraces]",
+      "source": "Rice terraces"
+    },
+    {
+      "id": "native:[Unoccupied hills]",
+      "key": "[Unoccupied hills]",
+      "source": "Unoccupied hills"
+    },
+    {
+      "id": "native:[Hill radius]",
+      "key": "[Hill radius]",
+      "source": "Hill radius"
+    },
+    {
+      "id": "native:[Contour band width]",
+      "key": "[Contour band width]",
+      "source": "Contour band width"
+    },
+    {
+      "id": "native:[Stairs per hill]",
+      "key": "[Stairs per hill]",
+      "source": "Stairs per hill"
+    },
+    {
+      "id": "native:[Hills]",
+      "key": "[Hills]",
+      "source": "Hills"
+    },
+    {
+      "id": "native:[Hillsides]",
+      "key": "[Hillsides]",
+      "source": "Hillsides"
+    },
+    {
+      "id": "native:[Terraces per slope]",
+      "key": "[Terraces per slope]",
+      "source": "Terraces per slope"
+    },
+    {
+      "id": "native:[Waviness]",
+      "key": "[Waviness]",
+      "source": "Waviness"
+    },
+    {
+      "id": "native:[Stair spacing]",
+      "key": "[Stair spacing]",
+      "source": "Stair spacing"
+    },
+    {
+      "id": "native:[Locust]",
+      "key": "[Locust]",
+      "source": "Locust"
+    },
+    {
+      "id": "native:[Plantations]",
+      "key": "[Plantations]",
+      "source": "Plantations"
+    },
+    {
+      "id": "native:[Plot size]",
+      "key": "[Plot size]",
+      "source": "Plot size"
+    },
+    {
+      "id": "native:[Farm width]",
+      "key": "[Farm width]",
+      "source": "Farm width"
+    },
+    {
+      "id": "native:[Outpost inns]",
+      "key": "[Outpost inns]",
+      "source": "Outpost inns"
+    },
+    {
+      "id": "native:[Sierpiński Gardens]",
+      "key": "[Sierpiński Gardens]",
+      "source": "Sierpiński Gardens"
+    },
+    {
+      "id": "native:[Maximum nesting]",
+      "key": "[Maximum nesting]",
+      "source": "Maximum nesting"
+    },
+    {
+      "id": "native:[Minimum terminal district side]",
+      "key": "[Minimum terminal district side]",
+      "source": "Minimum terminal district side"
+    },
+    {
+      "id": "native:[Major crossing pairs]",
+      "key": "[Major crossing pairs]",
+      "source": "Major crossing pairs"
+    },
+    {
+      "id": "native:[Maximum fold depth]",
+      "key": "[Maximum fold depth]",
+      "source": "Maximum fold depth"
+    },
+    {
+      "id": "native:[Minimum land spacing]",
+      "key": "[Minimum land spacing]",
+      "source": "Minimum land spacing"
+    },
+    {
+      "id": "native:[Optional local crossings per parent]",
+      "key": "[Optional local crossings per parent]",
+      "source": "Optional local crossings per parent"
+    },
+    {
+      "id": "native:[Lava shield]",
+      "key": "[Lava shield]",
+      "source": "Lava shield"
+    },
+    {
+      "id": "native:[Lava tongues]",
+      "key": "[Lava tongues]",
+      "source": "Lava tongues"
+    },
+    {
+      "id": "native:[Long tongues]",
+      "key": "[Long tongues]",
+      "source": "Long tongues"
+    },
+    {
+      "id": "native:[Crater rim width]",
+      "key": "[Crater rim width]",
+      "source": "Crater rim width"
+    },
+    {
+      "id": "native:[Honeycomb isle]",
+      "key": "[Honeycomb isle]",
+      "source": "Honeycomb isle"
+    },
+    {
+      "id": "native:[Blocks per colony]",
+      "key": "[Blocks per colony]",
+      "source": "Blocks per colony"
+    },
+    {
+      "id": "native:[Rubble]",
+      "key": "[Rubble]",
+      "source": "Rubble"
+    },
+    {
+      "id": "native:[Outline gaps]",
+      "key": "[Outline gaps]",
+      "source": "Outline gaps"
+    },
+    {
+      "id": "native:[Craters per colony]",
+      "key": "[Craters per colony]",
+      "source": "Craters per colony"
+    },
+    {
+      "id": "native:[Wheat fields]",
+      "key": "[Wheat fields]",
+      "source": "Wheat fields"
+    },
+    {
+      "id": "native:[Bridges]",
+      "key": "[Bridges]",
+      "source": "Bridges"
+    },
+    {
+      "id": "native:[Karst towers]",
+      "key": "[Karst towers]",
+      "source": "Karst towers"
+    },
+    {
+      "id": "native:[Tower spacing]",
+      "key": "[Tower spacing]",
+      "source": "Tower spacing"
+    },
+    {
+      "id": "native:[Tower density]",
+      "key": "[Tower density]",
+      "source": "Tower density"
+    },
+    {
+      "id": "native:[Paddy depth]",
+      "key": "[Paddy depth]",
+      "source": "Paddy depth"
+    },
+    {
+      "id": "native:[Home design]",
+      "key": "[Home design]",
+      "source": "Home design"
+    },
+    {
+      "id": "native:[Horseshoe]",
+      "key": "[Horseshoe]",
+      "source": "Horseshoe"
+    },
+    {
+      "id": "native:[Twin gates]",
+      "key": "[Twin gates]",
+      "source": "Twin gates"
+    },
+    {
+      "id": "native:[Three gates]",
+      "key": "[Three gates]",
+      "source": "Three gates"
+    },
+    {
+      "id": "native:[Four gates]",
+      "key": "[Four gates]",
+      "source": "Four gates"
+    },
+    {
+      "id": "native:[Flooded terraces]",
+      "key": "[Flooded terraces]",
+      "source": "Flooded terraces"
+    },
+    {
+      "id": "native:[Sinkholes]",
+      "key": "[Sinkholes]",
+      "source": "Sinkholes"
+    },
+    {
+      "id": "native:[Bajada]",
+      "key": "[Bajada]",
+      "source": "Bajada"
+    },
+    {
+      "id": "native:[Range spacing]",
+      "key": "[Range spacing]",
+      "source": "Range spacing"
+    },
+    {
+      "id": "native:[Ridge width]",
+      "key": "[Ridge width]",
+      "source": "Ridge width"
+    },
+    {
+      "id": "native:[Passes]",
+      "key": "[Passes]",
+      "source": "Passes"
+    },
+    {
+      "id": "native:[Fans per range]",
+      "key": "[Fans per range]",
+      "source": "Fans per range"
+    },
+    {
+      "id": "native:[Stream reach]",
+      "key": "[Stream reach]",
+      "source": "Stream reach"
+    },
+    {
+      "id": "native:[Playa]",
+      "key": "[Playa]",
+      "source": "Playa"
+    },
+    {
+      "id": "native:[Broad fan]",
+      "key": "[Broad fan]",
+      "source": "Broad fan"
+    },
+    {
+      "id": "native:[Long fan]",
+      "key": "[Long fan]",
+      "source": "Long fan"
+    },
+    {
+      "id": "native:[Twin springs]",
+      "key": "[Twin springs]",
+      "source": "Twin springs"
+    },
+    {
+      "id": "native:[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "key": "[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "source": "The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa."
+    },
+    {
+      "id": "native:[Central Quarry]",
+      "key": "[Central Quarry]",
+      "source": "Central Quarry"
+    },
+    {
+      "id": "native:[Quarry size]",
+      "key": "[Quarry size]",
+      "source": "Quarry size"
+    },
+    {
+      "id": "native:[Sand bars]",
+      "key": "[Sand bars]",
+      "source": "Sand bars"
+    },
+    {
+      "id": "native:[Woodland]",
+      "key": "[Woodland]",
+      "source": "Woodland"
+    },
+    {
+      "id": "native:[Central Quarry needs at least two colonies.]",
+      "key": "[Central Quarry needs at least two colonies.]",
+      "source": "Central Quarry needs at least two colonies."
+    },
+    {
+      "id": "native:[Hidden Oasis]",
+      "key": "[Hidden Oasis]",
+      "source": "Hidden Oasis"
+    },
+    {
+      "id": "native:[Pond algae]",
+      "key": "[Pond algae]",
+      "source": "Pond algae"
+    },
+    {
+      "id": "native:[Starting towers]",
+      "key": "[Starting towers]",
+      "source": "Starting towers"
+    },
+    {
+      "id": "native:[Starting school]",
+      "key": "[Starting school]",
+      "source": "Starting school"
+    },
+    {
+      "id": "native:[Mesas]",
+      "key": "[Mesas]",
+      "source": "Mesas"
+    },
+    {
+      "id": "native:[Springs]",
+      "key": "[Springs]",
+      "source": "Springs"
+    },
+    {
+      "id": "native:[Hidden Oasis needs at least two colonies.]",
+      "key": "[Hidden Oasis needs at least two colonies.]",
+      "source": "Hidden Oasis needs at least two colonies."
+    },
+    {
+      "id": "native:[Hidden Oasis holds at most eight colonies.]",
+      "key": "[Hidden Oasis holds at most eight colonies.]",
+      "source": "Hidden Oasis holds at most eight colonies."
+    },
+    {
+      "id": "native:[The pond has no room for that much algae; use a bigger pond.]",
+      "key": "[The pond has no room for that much algae; use a bigger pond.]",
+      "source": "The pond has no room for that much algae; use a bigger pond."
+    },
+    {
+      "id": "native:[Even Ground]",
+      "key": "[Even Ground]",
+      "source": "Even Ground"
+    },
+    {
+      "id": "native:[Balance]",
+      "key": "[Balance]",
+      "source": "Balance"
+    },
+    {
+      "id": "native:[Tight passes]",
+      "key": "[Tight passes]",
+      "source": "Tight passes"
+    }
+  ]
+}

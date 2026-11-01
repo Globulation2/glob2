@@ -1,0 +1,100 @@
+{
+  "utc": "2026-11-01T05:17:06.503521+00:00",
+  "project": "bradley-personal-20261027",
+  "model": "general/nmt",
+  "auth": "Actualdraft used gcloud auth print-access-token; token memory-only. This metadata recovery is offline.",
+  "helper_sha256": "14c2131fe2f3a6a6298c420ac4a755a4a64dc7de620eb4d81a77baeb17b71b16",
+  "reviewed_helper": "helper-independent-review.json",
+  "ledger": "../google-budget.json",
+  "cache": "artifacts/marathi-localization/google-responses/ce5743784d1ca990f555828ebe0d4c7f03144c0c5a679098a4102f0e60f3f038.json",
+  "cache_sha256": "fd428932be30fe69f6e7b306f2a79328b57948523bbdbf21e8e814df7c4c4ffd",
+  "attempt_id": 89,
+  "reserved_codepoints_before": 193865,
+  "reserved_codepoints_after": 194087,
+  "reserved_usd_after": "3.88174",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "entries": [
+    {
+      "key": "[stats topic overview]",
+      "source": "Overview",
+      "raw_google_target": "आढावा"
+    },
+    {
+      "key": "[stats topic economy]",
+      "source": "Economy",
+      "raw_google_target": "अर्थव्यवस्था"
+    },
+    {
+      "key": "[stats topic world]",
+      "source": "World",
+      "raw_google_target": "जग"
+    },
+    {
+      "key": "[stats work construction]",
+      "source": "Work & construction",
+      "raw_google_target": "काम आणि बांधकाम"
+    },
+    {
+      "key": "[stats defence]",
+      "source": "Defence",
+      "raw_google_target": "संरक्षण"
+    },
+    {
+      "key": "[stats history]",
+      "source": "View history",
+      "raw_google_target": "इतिहास पहा"
+    },
+    {
+      "key": "[stats waiting]",
+      "source": "Waiting for statistics…",
+      "raw_google_target": "आकडेवारीची वाट पाहत आहे…"
+    },
+    {
+      "key": "[stats unit details]",
+      "source": "Unit details",
+      "raw_google_target": "युनिट तपशील"
+    },
+    {
+      "key": "[stats topic]",
+      "source": "Topic",
+      "raw_google_target": "विषय"
+    },
+    {
+      "key": "[stats full history]",
+      "source": "Open full history",
+      "raw_google_target": "संपूर्ण इतिहास उघडा"
+    },
+    {
+      "key": "[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "raw_google_target": "— अद्याप कोणतीही नोंद झालेली नाही. तपशिलांसाठी आकडेवारी निवडा."
+    },
+    {
+      "key": "[lush_grass]",
+      "source": "Lush grass",
+      "raw_google_target": "हिरवेगार गवत"
+    },
+    {
+      "key": "[dry_grass]",
+      "source": "Dry grass",
+      "raw_google_target": "सुके गवत"
+    },
+    {
+      "key": "[dune_sand]",
+      "source": "Dune sand",
+      "raw_google_target": "वाळूचे ढिगारे"
+    },
+    {
+      "key": "[pale_sand]",
+      "source": "Pale sand",
+      "raw_google_target": "फिकट वाळू"
+    },
+    {
+      "key": "[stats map overlays]",
+      "source": "Map overlays",
+      "raw_google_target": "नकाशा आच्छादने"
+    }
+  ],
+  "recovery": "Draft succeeded and wrote16blank fields; localmetadata step then hit erroneous Budget.spent attribute. Preserved originalfailurelog; corrected scratchscript tocost. Recovered this provenance solely from verified cachedproviderresponse+existingledger+actualdraft equality, with zero additionalrequests.",
+  "scope": "Initial comparison draft only; independent linguisticreviewsrequired. CanonicalMRcatalog unchanged."
+}

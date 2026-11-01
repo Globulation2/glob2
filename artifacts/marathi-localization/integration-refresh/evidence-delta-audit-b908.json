@@ -1,0 +1,60 @@
+{
+  "auditor": "/root/locale_integration",
+  "result": "accepted for checkpoint publication; no material issue",
+  "evidence_commit": "b9088949ff7046ad356013df6c0119d116344956",
+  "previous_audited_evidence_commit": "e2c5f87070f86fb938109119a973ced4c795bfa2",
+  "source_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "file_count": 1169,
+  "total_bytes": 214264668,
+  "exact_tree_inventory_and_every_payload_hash_verified": true,
+  "publication_budget_bytes": 536870912,
+  "delta": {
+    "added": [
+      "artifacts/marathi-localization/integration-refresh/audit_published_evidence.py",
+      "artifacts/marathi-localization/integration-refresh/audit_trace_archives.py",
+      "artifacts/marathi-localization/integration-refresh/evidence-manual-audit.json",
+      "artifacts/marathi-localization/integration-refresh/evidence-tree-audit.json",
+      "artifacts/marathi-localization/integration-refresh/historical-before-mobile-review-status.json",
+      "artifacts/marathi-localization/integration-refresh/historical-native-build-log-classification.json",
+      "artifacts/marathi-localization/integration-refresh/trace-archive-audit.json"
+    ],
+    "removed": [
+      "artifacts/marathi-localization/integration-refresh/review-status-checkpoint.json"
+    ],
+    "changed": [
+      "artifacts/marathi-localization/EVIDENCE.md"
+    ]
+  },
+  "unchanged_payload_files": 1160,
+  "gate_refs_exact_and_unchanged": 26,
+  "current_gate_split": {
+    "passed": [
+      "language_brief",
+      "mobile_platforms",
+      "source_based_pilot",
+      "structural"
+    ],
+    "pending": [
+      "browser_platforms",
+      "browser_startup",
+      "desktop_rendering",
+      "native_platforms",
+      "phone_rendering"
+    ]
+  },
+  "adjudication": "Same nine original generic candidate flags retained honestly: exact current-source COPYING license; three bounded nested-audited failed-run Playwright ZIPs; exact sparse historical NUL log. New README explicitly describes exceptions and pending/current/old scopes; new failure-log classification matches exact raw bytes and offsets. Ambiguous before-mobile status renamed byte-identically. No other old payload modified.",
+  "credential_audit": "Full exactb908 stream scan has zero configured credential-pattern matches; nested trace contents unchanged from exacte2c5 audit, all request hosts local4587, only locale cookie, no Authorization headers. Bounded scan, not exhaustive secret certification.",
+  "binary_audit": "No SDK/native binaries/APKs/keys/private caches/foreign profiles. Explicit browser failure traces include screenshots/web-font assets; WOFF2 signature-only limit retained. Local old Android executable/APK archive remains excluded except manifest.",
+  "source_review_carry_and_android_scope": "Exact e2c5 independent manual proof and every current mobile/review record unchanged. Current3395/sourcebc991/nativef070/online0a35 and ffbdAndroid remain distinct from old3393/671/ba890. Native/WASM/browser-game gates explicitly pending.",
+  "original_e2_reports_preserved": true,
+  "artifacts_written_only": [
+    "integration-refresh/evidence-tree-audit-b908.json",
+    "integration-refresh/evidence-delta-audit-b908.json"
+  ],
+  "main_source_or_prepared_tree_mutated": false,
+  "limits": [
+    "Earlier generic scan two largeJSONreports checked as text/hash streams rather than JSON parsed; unchanged bytes carried",
+    "WOFF2 trace fonts identified by signature and CRC, not Brotli-decoded",
+    "This accepts an explicitly incomplete checkpoint, not an overall PR merge gate or native/WASM completion"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "reviewer": "/root/locale_integration",
+  "role": "independent Marathi editorial visual review",
+  "producer_revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "online_catalog_sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+  "producer_provenance": {
+    "path": "artifacts/marathi-localization/integration-bc8/online/provenance.json",
+    "sha256": "a6ecb73947820c5b9879a73e596cf42f3a07c573b29fde6cd88666ddffd5f953",
+    "platform_git_inventory_sha256": "5f0013cfcdf94ea99934e55ac9af44aee7eb175a9c2bdb40110ee551cb83c749",
+    "node_version": "v24.22.1",
+    "url": "http://127.0.0.1:4587"
+  },
+  "test_result": {
+    "path": "artifacts/marathi-localization/integration-bc8/online/results.json",
+    "sha256": "782d0b12280a88f9240204bf7e5b9a8e5365ee5ff5f75bd7355e88cdf06aefbd",
+    "stats": {
+      "startTime": "2026-11-01T05:40:06.216Z",
+      "duration": 238666.979,
+      "expected": 12,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "actual_images_read": [
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/screenshots/firefox-phone/mr-home.png",
+      "engine_and_size": "firefox-phone",
+      "pixels": [
+        390,
+        3691
+      ],
+      "sha256": "1ae65a9482b95259f507cd0dc84f1f2d477fbf5e1b202cf765c57d02d5598fe1",
+      "actual_viewed": true
+    },
+    {
+      "path": "artifacts/marathi-localization/integration-bc8/online/screenshots/webkit-desktop/mr-home.png",
+      "engine_and_size": "webkit-desktop",
+      "pixels": [
+        1280,
+        1990
+      ],
+      "sha256": "e1b9a9c52a20aaae4e140ea78311e76d4b7006291fdc46782fbbe1c5773c5780",
+      "actual_viewed": true
+    }
+  ],
+  "assessment": "Actual Firefox phone and WebKit desktop home screenshots viewed independently. Marathi hero headings, body, invite input/button, status badges, navigation, map section metadata, help cards, sidebar and language controls are shaped and wrap within their panels. Phone collapsed MR badge fits; desktop full मराठी choice fits. No tofu or Marathi text clipping observed. Player/match/map/queue names are dynamic authored/server content and retain their names.",
+  "observed_content_scope": "In Firefox phone lower two map image boxes are lazy-load placeholders; no rendered-image claim for those boxes. Existing row name ellipsis is intentional truncation of player/match content, not clipped Marathi UI. Full-page screenshots establish these visible states only, not every account/page flow.",
+  "dynamic_english_checked": "Visible 1 vs1ranked/2vs2ranked are queue.name from server (Home.tsx LadderTeaser), as are authored map/player names. These are not an unlocalized fixed Marathi catalog UI label.",
+  "limits": [
+    "Website rendering only; no WASM browser-game execution claim",
+    "WebKit onLinux is not physical Safari/iOS certification",
+    "No source/server/database changes performed by this reviewer"
+  ],
+  "findings": [],
+  "result": "accepted observed current64 Marathi website rendering"
+}

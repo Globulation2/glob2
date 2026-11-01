@@ -1,0 +1,16 @@
+{
+  "revision": "64aeda1300e3fcb81b074aef1a9a685498edcf63",
+  "argv": [
+    "/usr/lib/chatgpt/resources/cua_node/bin/node",
+    "/home/bradley/.codex/worktrees/45cd/glob2/platform/node_modules/@playwright/test/cli.js",
+    "test",
+    "--config",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/integration-bc8/online/config.cjs",
+    "--grep",
+    "home loads and renders mr$|Marathi switching"
+  ],
+  "exit_code": 0,
+  "scope": "Actual current production website:12cases=3engines\u00d72viewports\u00d7MRhome/switch; no browser-game runtime claim.",
+  "config_sha256": "60fd491ad44e4e40c9ceb5d6cf4890ddb8ce7376eacad0c38357fbdb1d3d843a",
+  "log_sha256": "2a7144fa0dd5f92a2e03ef73920214f48f93cc7a3483dcca14b6ccc87a7a2a30"
+}

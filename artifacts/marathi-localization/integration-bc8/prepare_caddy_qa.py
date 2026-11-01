@@ -1,0 +1,7 @@
+from pathlib import Path
+import subprocess,json,hashlib,shutil
+root=Path.cwd();out=root/'artifacts/marathi-localization/integration-bc8/caddy-qa';out.mkdir(exist_ok=True);image='caddy:2.11.4-alpine';info=json.loads(subprocess.check_output(['docker','image','inspect',image]))[0];assert 'ARG CADDY_IMAGE='+image in (root/'deploy/Dockerfile').read_text();assert shutil.disk_usage(out).free>1024**3
+cid=subprocess.check_output(['docker','create','--entrypoint','/usr/bin/caddy',info['Id'],'version'],text=True).strip()
+try:subprocess.run(['docker','cp',cid+':/usr/bin/caddy',str(out/'caddy')],check=True,stdout=subprocess.DEVNULL)
+finally:subprocess.run(['docker','rm','-v',cid],check=True,stdout=subprocess.DEVNULL)
+exe=out/'caddy';assert exe.stat().st_size<128*1024**2;exe.chmod(0o755);version=subprocess.check_output([str(exe),'version'],text=True).strip();(out/'provenance.json').write_text(json.dumps({'source_revision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'image':image,'image_id':info['Id'],'repo_digests':info['RepoDigests'],'binary_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),'binary_bytes':exe.stat().st_size,'version':version,'created_container':cid,'own_extraction_container_and_anonymous_volumes_removed':True,'scope':'Development QA only, exact alreadycacheddeploymentbaseimage. No networkpull, runtime dependency/source modification, foreignimage/container deletion, or globalconfig change. Binary stayslocal, only provenance publishes.'},indent=2)+'\n');print(version)

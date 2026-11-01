@@ -1,0 +1,33 @@
+{
+  "old_source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "new_source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "new_source_reference": "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+  "unchanged_native_source_and_target_keys": 3395,
+  "unchanged_online_source_and_target_keys": 2836,
+  "removed_or_modified_old_keys": [],
+  "old_canonical_native_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+  "catalog_sha256": {
+    "native": "540819f418f880607fad22780bd25692be84c33794fba08cf758ae0acb80d4eb",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "native_old_bytes_exact_prefix": true,
+  "new_native_keys": [
+    "[stats topic overview]",
+    "[stats topic economy]",
+    "[stats topic world]",
+    "[stats work construction]",
+    "[stats defence]",
+    "[stats history]",
+    "[stats waiting]",
+    "[stats unit details]",
+    "[stats topic]",
+    "[stats full history]",
+    "[stats missing readings]",
+    "[lush_grass]",
+    "[dry_grass]",
+    "[dune_sand]",
+    "[pale_sand]",
+    "[stats map overlays]"
+  ],
+  "scope": "Exact old3395English/Marathi per-key equality plus wholeonline source/target equality. Original3393+prior2 reviewed keys carried through their actual unchanged-value proofs, not freshly reread. Current16 receive independent finalrechecks."
+}

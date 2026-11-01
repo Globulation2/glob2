@@ -1,0 +1,509 @@
+{
+  "id": "native-general-023",
+  "source_sha256": "b7ed54ddecb1840204b30775c4f8cc69c34cc23d0f11695ad9ece2593bd451bb",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[chasm]",
+      "key": "[chasm]",
+      "source": "Chasm"
+    },
+    {
+      "id": "native:[lush_grass]",
+      "key": "[lush_grass]",
+      "source": "Lush grass"
+    },
+    {
+      "id": "native:[dry_grass]",
+      "key": "[dry_grass]",
+      "source": "Dry grass"
+    },
+    {
+      "id": "native:[dune_sand]",
+      "key": "[dune_sand]",
+      "source": "Dune sand"
+    },
+    {
+      "id": "native:[pale_sand]",
+      "key": "[pale_sand]",
+      "source": "Pale sand"
+    },
+    {
+      "id": "native:[brush valid on %0]",
+      "key": "[brush valid on %0]",
+      "source": "Valid on: %0"
+    },
+    {
+      "id": "native:[brush valid nowhere]",
+      "key": "[brush valid nowhere]",
+      "source": "Cannot be placed on any terrain of this map"
+    },
+    {
+      "id": "native:[brush requires experiment %0]",
+      "key": "[brush requires experiment %0]",
+      "source": "Requires the %0 experiment"
+    },
+    {
+      "id": "native:[brush resources custom]",
+      "key": "[brush resources custom]",
+      "source": "Imported resources"
+    },
+    {
+      "id": "native:[brush section zones]",
+      "key": "[brush section zones]",
+      "source": "Zones"
+    },
+    {
+      "id": "native:[brush section areas]",
+      "key": "[brush section areas]",
+      "source": "Areas"
+    },
+    {
+      "id": "native:[brush section tools]",
+      "key": "[brush section tools]",
+      "source": "Tools"
+    },
+    {
+      "id": "native:[brush clearing area]",
+      "key": "[brush clearing area]",
+      "source": "Clearing area"
+    },
+    {
+      "id": "native:[editor unsaved title]",
+      "key": "[editor unsaved title]",
+      "source": "Unsaved changes"
+    },
+    {
+      "id": "native:[editor quit unsaved]",
+      "key": "[editor quit unsaved]",
+      "source": "Save your changes to this map before leaving the editor?"
+    },
+    {
+      "id": "native:[editor load unsaved]",
+      "key": "[editor load unsaved]",
+      "source": "Save your changes to this map before opening another one?"
+    },
+    {
+      "id": "native:[editor save]",
+      "key": "[editor save]",
+      "source": "Save…"
+    },
+    {
+      "id": "native:[editor discard]",
+      "key": "[editor discard]",
+      "source": "Don't save"
+    },
+    {
+      "id": "native:[editor share never saved]",
+      "key": "[editor share never saved]",
+      "source": "Maps are shared from their saved file. Save this map first, then share it."
+    },
+    {
+      "id": "native:[editor share unsaved]",
+      "key": "[editor share unsaved]",
+      "source": "This map has changes that are not saved yet. Sharing uploads the saved file."
+    },
+    {
+      "id": "native:[editor save and share]",
+      "key": "[editor save and share]",
+      "source": "Save and share…"
+    },
+    {
+      "id": "native:[editor share saved version]",
+      "key": "[editor share saved version]",
+      "source": "Share saved version"
+    },
+    {
+      "id": "native:[editor reroll confirm]",
+      "key": "[editor reroll confirm]",
+      "source": "Give every terrain tile a new random look? Terrain types and gameplay stay the same. This cannot be undone."
+    },
+    {
+      "id": "native:[editor reroll]",
+      "key": "[editor reroll]",
+      "source": "Reroll"
+    },
+    {
+      "id": "native:[editor save needs fertility]",
+      "key": "[editor save needs fertility]",
+      "source": "Saving needs the fertility map, so the save was cancelled. Press OK to try again."
+    },
+    {
+      "id": "native:[editor fertility stale]",
+      "key": "[editor fertility stale]",
+      "source": "Fertility map is out of date · Click to refresh"
+    },
+    {
+      "id": "native:[No definition files found in %0]",
+      "key": "[No definition files found in %0]",
+      "source": "No definition files found in %0"
+    },
+    {
+      "id": "native:[From device…]",
+      "key": "[From device…]",
+      "source": "From device…"
+    },
+    {
+      "id": "native:[replace existing file %0?]",
+      "key": "[replace existing file %0?]",
+      "source": "A file named \"%0\" already exists. Replace it?"
+    },
+    {
+      "id": "native:[Replace]",
+      "key": "[Replace]",
+      "source": "Replace"
+    },
+    {
+      "id": "native:[Keep existing file]",
+      "key": "[Keep existing file]",
+      "source": "Keep existing file"
+    },
+    {
+      "id": "native:[editor menu save]",
+      "key": "[editor menu save]",
+      "source": "Save map"
+    },
+    {
+      "id": "native:[editor menu load]",
+      "key": "[editor menu load]",
+      "source": "Open map…"
+    },
+    {
+      "id": "native:[editor menu import resources]",
+      "key": "[editor menu import resources]",
+      "source": "Import resource definitions…"
+    },
+    {
+      "id": "native:[editor menu teams]",
+      "key": "[editor menu teams]",
+      "source": "Teams…"
+    },
+    {
+      "id": "native:[editor menu scenario]",
+      "key": "[editor menu scenario]",
+      "source": "Scenario…"
+    },
+    {
+      "id": "native:[editor menu reroll]",
+      "key": "[editor menu reroll]",
+      "source": "Reroll terrain look…"
+    },
+    {
+      "id": "native:[editor menu file]",
+      "key": "[editor menu file]",
+      "source": "File"
+    },
+    {
+      "id": "native:[editor menu map]",
+      "key": "[editor menu map]",
+      "source": "Map"
+    },
+    {
+      "id": "native:[no resource growth areas]",
+      "key": "[no resource growth areas]",
+      "source": "No-growth areas"
+    },
+    {
+      "id": "native:[dock minimap]",
+      "key": "[dock minimap]",
+      "source": "Minimap"
+    },
+    {
+      "id": "native:[dock search brushes]",
+      "key": "[dock search brushes]",
+      "source": "Search brushes"
+    },
+    {
+      "id": "native:[dock brush shape %0]",
+      "key": "[dock brush shape %0]",
+      "source": "Brush shape %0"
+    },
+    {
+      "id": "native:[dock brush]",
+      "key": "[dock brush]",
+      "source": "Brush"
+    },
+    {
+      "id": "native:[dock brush paint]",
+      "key": "[dock brush paint]",
+      "source": "Paint"
+    },
+    {
+      "id": "native:[dock brush erase]",
+      "key": "[dock brush erase]",
+      "source": "Erase"
+    },
+    {
+      "id": "native:[dock enable for map]",
+      "key": "[dock enable for map]",
+      "source": "Enable for this map"
+    },
+    {
+      "id": "native:[dock enable experiment %0]",
+      "key": "[dock enable experiment %0]",
+      "source": "Enable %0"
+    },
+    {
+      "id": "native:[dock enable experiment hint %0]",
+      "key": "[dock enable experiment hint %0]",
+      "source": "Turns on the %0 experiment for this map only."
+    },
+    {
+      "id": "native:[dock area number]",
+      "key": "[dock area number]",
+      "source": "Area"
+    },
+    {
+      "id": "native:[dock unit level]",
+      "key": "[dock unit level]",
+      "source": "Unit level"
+    },
+    {
+      "id": "native:[dock no brushes match]",
+      "key": "[dock no brushes match]",
+      "source": "No brushes match the search."
+    },
+    {
+      "id": "native:[dock active team]",
+      "key": "[dock active team]",
+      "source": "Active team"
+    },
+    {
+      "id": "native:[dock team count %0]",
+      "key": "[dock team count %0]",
+      "source": "Teams on this map: %0"
+    },
+    {
+      "id": "native:[dock add team]",
+      "key": "[dock add team]",
+      "source": "Add team"
+    },
+    {
+      "id": "native:[dock remove team]",
+      "key": "[dock remove team]",
+      "source": "Remove team"
+    },
+    {
+      "id": "native:[dock nothing selected]",
+      "key": "[dock nothing selected]",
+      "source": "Nothing is selected."
+    },
+    {
+      "id": "native:[dock no properties]",
+      "key": "[dock no properties]",
+      "source": "This object has no editable properties."
+    },
+    {
+      "id": "native:[focus brush search]",
+      "key": "[focus brush search]",
+      "source": "Search brushes"
+    },
+    {
+      "id": "native:[switch to resources view]",
+      "key": "[switch to resources view]",
+      "source": "Switch to resources view"
+    },
+    {
+      "id": "native:[dock resources base]",
+      "key": "[dock resources base]",
+      "source": "Standard resources"
+    },
+    {
+      "id": "native:[dock fertility stale]",
+      "key": "[dock fertility stale]",
+      "source": "The fertility map is out of date."
+    },
+    {
+      "id": "native:[dock fertility refresh]",
+      "key": "[dock fertility refresh]",
+      "source": "Refresh fertility"
+    },
+    {
+      "id": "native:[Enabled %0 for this map]",
+      "key": "[Enabled %0 for this map]",
+      "source": "Enabled %0 for this map"
+    },
+    {
+      "id": "native:[editor fertility tap refresh]",
+      "key": "[editor fertility tap refresh]",
+      "source": "Fertility map out of date: tap to refresh"
+    },
+    {
+      "id": "native:[editor menu import set]",
+      "key": "[editor menu import set]",
+      "source": "Import Terrain & Resource Set"
+    },
+    {
+      "id": "native:[editor menu set library]",
+      "key": "[editor menu set library]",
+      "source": "Set Library"
+    },
+    {
+      "id": "native:[set library loading]",
+      "key": "[set library loading]",
+      "source": "Loading sets…"
+    },
+    {
+      "id": "native:[set library downloading]",
+      "key": "[set library downloading]",
+      "source": "Downloading exact release…"
+    },
+    {
+      "id": "native:[set library connection error]",
+      "key": "[set library connection error]",
+      "source": "Cannot load sets. Check your connection and try again."
+    },
+    {
+      "id": "native:[set library hash error]",
+      "key": "[set library hash error]",
+      "source": "Downloaded set failed its hash check."
+    },
+    {
+      "id": "native:[set library package error]",
+      "key": "[set library package error]",
+      "source": "Invalid set package."
+    },
+    {
+      "id": "native:[set library listing error]",
+      "key": "[set library listing error]",
+      "source": "Invalid set listing."
+    },
+    {
+      "id": "native:[set library release error]",
+      "key": "[set library release error]",
+      "source": "Invalid set release."
+    },
+    {
+      "id": "native:[set library selection help]",
+      "key": "[set library selection help]",
+      "source": "Select entries to import. Required custom resources are included automatically."
+    },
+    {
+      "id": "native:[set library empty]",
+      "key": "[set library empty]",
+      "source": "No sets found."
+    },
+    {
+      "id": "native:[set library release help]",
+      "key": "[set library release help]",
+      "source": "Choose an exact release to inspect and import."
+    },
+    {
+      "id": "native:[set library heading]",
+      "key": "[set library heading]",
+      "source": "Terrain & resource sets"
+    },
+    {
+      "id": "native:[set library browse]",
+      "key": "[set library browse]",
+      "source": "Browse online library"
+    },
+    {
+      "id": "native:[set library local]",
+      "key": "[set library local]",
+      "source": "Map content, credits & local edits"
+    },
+    {
+      "id": "native:[set library local help]",
+      "key": "[set library local help]",
+      "source": "Edit this map's copy. Original release credits remain attached. Changes do not update other maps or the online release."
+    },
+    {
+      "id": "native:[set library apply]",
+      "key": "[set library apply]",
+      "source": "Apply local changes"
+    },
+    {
+      "id": "native:[set library updated]",
+      "key": "[set library updated]",
+      "source": "Local content updated."
+    },
+    {
+      "id": "native:[set library search hint]",
+      "key": "[set library search hint]",
+      "source": "Search themes and creators"
+    },
+    {
+      "id": "native:[set library search]",
+      "key": "[set library search]",
+      "source": "Search"
+    },
+    {
+      "id": "native:[set library set]",
+      "key": "[set library set]",
+      "source": "Set"
+    },
+    {
+      "id": "native:[set library update help]",
+      "key": "[set library update help]",
+      "source": "This explicitly replaces matching placed terrain and resources, including local edits. Removed entries remain on the old release. Existing material amounts are capped to the new capacities."
+    },
+    {
+      "id": "native:[set library import]",
+      "key": "[set library import]",
+      "source": "Import selected entries"
+    },
+    {
+      "id": "native:[set library next]",
+      "key": "[set library next]",
+      "source": "Next page"
+    },
+    {
+      "id": "native:[set library back]",
+      "key": "[set library back]",
+      "source": "Back to results"
+    },
+    {
+      "id": "native:[set library license %0]",
+      "key": "[set library license %0]",
+      "source": "License: %0"
+    },
+    {
+      "id": "native:[set library release %0]",
+      "key": "[set library release %0]",
+      "source": "release %0"
+    },
+    {
+      "id": "native:[set library replace %0]",
+      "key": "[set library replace %0]",
+      "source": "Replace placed entries from release %0"
+    },
+    {
+      "id": "native:[set library preview limit]",
+      "key": "[set library preview limit]",
+      "source": "Previews are shown for the first 64 entries. All entries remain selectable."
+    },
+    {
+      "id": "native:[set library definition]",
+      "key": "[set library definition]",
+      "source": "Properties definition (JSON)"
+    },
+    {
+      "id": "native:[set library artwork]",
+      "key": "[set library artwork]",
+      "source": "Terrain artwork mapping (JSON)"
+    },
+    {
+      "id": "native:[stat band area upkeep]",
+      "key": "[stat band area upkeep]",
+      "source": "Area upkeep"
+    },
+    {
+      "id": "native:[outcome reason eliminated]",
+      "key": "[outcome reason eliminated]",
+      "source": "Colony eliminated."
+    },
+    {
+      "id": "native:[outcome reason opponents defeated]",
+      "key": "[outcome reason opponents defeated]",
+      "source": "All opponents defeated."
+    },
+    {
+      "id": "native:[outcome reason ally won]",
+      "key": "[outcome reason ally won]",
+      "source": "An allied colony won."
+    }
+  ]
+}
