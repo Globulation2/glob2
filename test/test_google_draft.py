@@ -808,6 +808,19 @@ class FilipinoEditorialGoogleDraftTest(unittest.TestCase):
         target = json.loads(DRAFT.PROGRAM.catalog_paths(self.output, 'fil')['online'].read_text())
         self.assertEqual(target[' / {slot0}'], ' / {slot0}')
 
+    def test_modern_ledger_created_on_lock_entry_prevents_editorial_dispatch(self):
+        @DRAFT.contextmanager
+        def concurrent_ledger(output):
+            (output / 'google-budget.json').write_text('{}', encoding='utf-8')
+            yield
+
+        with patch.object(DRAFT, 'kit_lock', concurrent_ledger):
+            with self.assertRaisesRegex(ValueError, 'mix editorial'):
+                self.run_draft()
+        self.assertEqual(self.calls, [])
+        self.assertFalse((self.output / 'google/fil/config.json').exists())
+        self.assertFalse((self.output / 'google/fil/attempts.jsonl').exists())
+
     def test_concurrent_writer_is_rejected(self):
         lock = self.output / 'google/fil/runner.lock'
         with DRAFT.exclusive(lock):

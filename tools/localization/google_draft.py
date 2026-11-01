@@ -860,6 +860,9 @@ def run_editorial(output, locale='fil', project='bradley-personal-20261027', lim
     target_online = json.loads(paths['online'].read_text())
     state = output / 'google' / locale
     with kit_lock(output), exclusive(state / 'runner.lock'):
+        # Another workflow may have created its ledger while we waited for the kit lock.
+        if (output / 'google-budget.json').exists():
+            raise ValueError('Existing plan/blank-fill campaign: do not mix editorial budget ledgers in this kit')
         config = {'version': 1, 'source_sha256': source_hash, 'project': project, 'locale': locale,
                   'model': 'general/nmt', 'rate_usd_per_million': 20}
         config_path = state / 'config.json'
