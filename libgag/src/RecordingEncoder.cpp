@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "RecordingEncoder.h"
+#include <RecordingDefaults.h>
 #include <AudioFormat.h>
 #include <algorithm>
 #include <cerrno>
@@ -33,6 +34,11 @@ void check(int result, const char *operation)
 	char error[AV_ERROR_MAX_STRING_SIZE];
 	av_strerror(result, error, sizeof(error));
 	throw std::runtime_error(std::string(operation) + ": " + error);
+}
+AVCodecID recordingVideoCodec()
+{
+	if (!WebM) return AV_CODEC_ID_H264;
+	return std::strcmp(VideoCodec, "vp9") == 0 ? AV_CODEC_ID_VP9 : AV_CODEC_ID_AV1;
 }
 struct Dictionary
 {
@@ -140,7 +146,7 @@ class IO
 struct Output
 {
 	AVFormatContext *context = nullptr;
-	Output() { check(avformat_alloc_output_context2(&context, nullptr, "mp4", nullptr), "Create MP4 writer"); }
+	explicit Output(bool webm = WebM) { check(avformat_alloc_output_context2(&context, nullptr, webm ? "webm" : "mp4", nullptr), "Create recording writer"); }
 	~Output() { avformat_free_context(context); }
 };
 struct Input
@@ -170,13 +176,23 @@ class FFmpegVideoEncoder final : public VideoEncoder
 		c.flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 		c.color_primaries = AVCOL_PRI_BT709; c.color_trc = AVCOL_TRC_BT709;
 		c.colorspace = AVCOL_SPC_BT709; c.color_range = AVCOL_RANGE_MPEG;
-		const bool software = std::strcmp(name, "libx264") == 0;
+		const bool software = std::strcmp(name, SoftwareEncoder) == 0;
 		c.pix_fmt = software ? AV_PIX_FMT_YUV420P : AV_PIX_FMT_NV12;
 		Dictionary options;
 		if (software)
 		{
-			av_dict_set(&options.value, "preset", "ultrafast", 0);
-			av_dict_set(&options.value, "tune", "zerolatency", 0);
+			if (WebM)
+			{
+				c.bit_rate = 0;
+				av_dict_set(&options.value, recordingVideoCodec() == AV_CODEC_ID_AV1 ? "usage" : "deadline", "realtime", 0);
+				av_dict_set(&options.value, "cpu-used", "8", 0);
+				av_dict_set(&options.value, "lag-in-frames", "0", 0);
+			}
+			else
+			{
+				av_dict_set(&options.value, "preset", "ultrafast", 0);
+				av_dict_set(&options.value, "tune", "zerolatency", 0);
+			}
 			av_dict_set_int(&options.value, "crf", configuration.crf, 0);
 		}
 		else
@@ -222,7 +238,7 @@ class FFmpegVideoEncoder final : public VideoEncoder
 		}
 		int result = avcodec_open2(encoder.get(), encoder->codec, &options.value);
 
-		check(result, "Open H.264 encoder");
+		check(result, "Open video encoder");
 		pixels->format = hardwareFrames ? AV_PIX_FMT_NV12 : c.pix_fmt;
 		pixels->width = c.width; pixels->height = c.height;
 		check(av_frame_get_buffer(pixels.get(), 32), "Allocate video frame");
@@ -231,7 +247,7 @@ class FFmpegVideoEncoder final : public VideoEncoder
 		if (!converter) throw std::runtime_error("Cannot create recording color converter");
 		check(sws_setColorspaceDetails(converter.get(), sws_getCoefficients(SWS_CS_ITU709), 1,
 			sws_getCoefficients(SWS_CS_ITU709), 0, 0, 1<<16, 1<<16), "Set recording colors");
-		info.width = c.width; info.height = c.height; info.encoder = name;
+		info.width = c.width; info.height = c.height; info.fps = configuration.fps; info.encoder = name;
 		if (c.extradata_size) info.extraData.assign(c.extradata, c.extradata + c.extradata_size);
 	}
 	const VideoDescription &description() const override { return info; }
@@ -273,6 +289,10 @@ class FFmpegVideoEncoder final : public VideoEncoder
 		if (result == AVERROR(EAGAIN) || result == AVERROR_EOF) return false;
 		check(result, "Receive video packet");
 		out.bytes.assign(encoded->data, encoded->data + encoded->size);
+		std::size_t extraSize = 0;
+		const auto *extra = av_packet_get_side_data(encoded.get(), AV_PKT_DATA_NEW_EXTRADATA, &extraSize);
+		out.extraData.clear();
+		if (extraSize) out.extraData.assign(extra, extra+extraSize);
 		out.ptsUs = av_rescale_q(encoded->pts, encoder->time_base, {1,1000000});
 		out.dtsUs = av_rescale_q(encoded->dts, encoder->time_base, {1,1000000});
 		out.durationUs = av_rescale_q(std::max<std::int64_t>(1, encoded->duration), encoder->time_base, {1,1000000});
@@ -291,7 +311,7 @@ std::unique_ptr<RecordingFile> openNativeRecordingFile(const std::string &path, 
 std::unique_ptr<VideoEncoder> createVideoEncoder(const VideoConfiguration &configuration, const std::string &reason)
 {
 	std::vector<const char *> candidates;
-	if (!configuration.software)
+	if (!WebM && !configuration.software)
 	{
 #if defined(__APPLE__)
 		candidates = {"h264_videotoolbox"};
@@ -324,7 +344,7 @@ std::unique_ptr<VideoEncoder> createVideoEncoder(const VideoConfiguration &confi
 			catch (const std::exception &e) { if (!failures.empty()) failures += "; "; failures += std::string(name) + (device.empty() ? "" : " ("+device+")") + ": " + e.what(); }
 		}
 	}
-	auto software = std::make_unique<FFmpegVideoEncoder>(configuration, "libx264");
+	auto software = std::make_unique<FFmpegVideoEncoder>(configuration, SoftwareEncoder);
 	software->fallbackReason(std::move(failures));
 	return software;
 }
@@ -333,50 +353,70 @@ struct MediaWriter::Impl
 {
 	IO storage;
 	Output output;
-	Owned<AVCodecContext> audioEncoder = codec(avcodec_find_encoder_by_name("aac"));
+	Owned<AVCodecContext> audioEncoder = codec(avcodec_find_encoder_by_name(WebM ? "libopus" : "aac"));
 	Owned<AVFrame> samples = frame();
 	Owned<AVPacket> encoded = packet();
 	Owned<SwrContext> converter;
 	AVStream *videoStream = nullptr, *audioStream = nullptr;
 	std::vector<std::int16_t> pending;
 	std::int64_t written = 0, audioPts = 0;
-	bool finished = false;
+	bool finished = false, headerWritten = false;
 	Impl(const std::string &path, const VideoDescription &description, OpenRecordingFile open) : storage(open(path,true),true)
 	{
 		auto &c = *audioEncoder;
-		c.sample_rate = AudioSampleRate; c.sample_fmt = AV_SAMPLE_FMT_FLTP; c.time_base = {1,AudioSampleRate}; c.bit_rate = 192000;
+		c.sample_rate = AudioSampleRate; c.sample_fmt = WebM ? AV_SAMPLE_FMT_S16 : AV_SAMPLE_FMT_FLTP; c.time_base = {1,AudioSampleRate}; c.bit_rate = 192000;
 		av_channel_layout_default(&c.ch_layout, 2); c.flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-		check(avcodec_open2(audioEncoder.get(), c.codec, nullptr), "Open AAC encoder");
+		check(avcodec_open2(audioEncoder.get(), c.codec, nullptr), "Open audio encoder");
 		videoStream = avformat_new_stream(output.context, nullptr); audioStream = avformat_new_stream(output.context, nullptr);
 		if (!videoStream || !audioStream) throw std::bad_alloc();
-		videoStream->time_base = {1,3000}; audioStream->time_base = c.time_base;
+		videoStream->time_base = {1,3000}; videoStream->avg_frame_rate = {description.fps,1}; audioStream->time_base = c.time_base;
 		auto &v = *videoStream->codecpar;
-		v.codec_type = AVMEDIA_TYPE_VIDEO; v.codec_id = AV_CODEC_ID_H264;
+		v.codec_type = AVMEDIA_TYPE_VIDEO; v.codec_id = recordingVideoCodec();
 		v.width = description.width; v.height = description.height; v.format = AV_PIX_FMT_YUV420P;
 		v.color_primaries = AVCOL_PRI_BT709; v.color_trc = AVCOL_TRC_BT709; v.color_space = AVCOL_SPC_BT709; v.color_range = AVCOL_RANGE_MPEG;
 		v.extradata = static_cast<unsigned char *>(av_mallocz(description.extraData.size() + AV_INPUT_BUFFER_PADDING_SIZE));
 		if (!v.extradata) throw std::bad_alloc();
 		v.extradata_size = int(description.extraData.size());
 		std::copy(description.extraData.begin(), description.extraData.end(), v.extradata);
-		check(avcodec_parameters_from_context(audioStream->codecpar, audioEncoder.get()), "Describe AAC stream");
+		check(avcodec_parameters_from_context(audioStream->codecpar, audioEncoder.get()), "Describe audio stream");
 		samples->format = c.sample_fmt; samples->sample_rate = c.sample_rate; samples->nb_samples = c.frame_size;
 		check(av_channel_layout_copy(&samples->ch_layout, &c.ch_layout), "Describe audio channels");
-		check(av_frame_get_buffer(samples.get(), 0), "Allocate AAC frame");
+		check(av_frame_get_buffer(samples.get(), 0), "Allocate audio frame");
 		AVChannelLayout stereo = AV_CHANNEL_LAYOUT_STEREO;
 		SwrContext *swr = nullptr;
-		check(swr_alloc_set_opts2(&swr, &stereo, AV_SAMPLE_FMT_FLTP, AudioSampleRate, &stereo, AV_SAMPLE_FMT_S16, AudioSampleRate, 0, nullptr), "Create audio converter");
+		check(swr_alloc_set_opts2(&swr, &stereo, c.sample_fmt, AudioSampleRate, &stereo, AV_SAMPLE_FMT_S16, AudioSampleRate, 0, nullptr), "Create audio converter");
 		converter.reset(swr); check(swr_init(swr), "Initialize audio converter");
 		pending.reserve(std::size_t(c.frame_size)*2);
 		output.context->pb = storage.context; output.context->flags |= AVFMT_FLAG_CUSTOM_IO;
+		// libaom supplies the AV1 sequence header with its first packet. WebM's
+		// live header cannot be patched later, so wait for it before writing.
+		if (v.codec_id != AV_CODEC_ID_AV1 || v.extradata_size) header();
+	}
+	void header()
+	{
 		Dictionary options;
-		av_dict_set(&options.value, "movflags", "+frag_keyframe+delay_moov+default_base_moof", 0);
-		// Microsecond MP4 track ticks overflow a sample duration after about 36
-		// minutes of suspension. 3000 Hz retains exact common frame rates and
-		// sub-millisecond timing while leaving days of room for timestamp gaps.
-		av_dict_set(&options.value, "video_track_timescale", "3000", 0);
-		av_dict_set(&options.value, "frag_duration", "1000000", 0);
+		if (WebM)
+		{
+			av_dict_set(&options.value, "cluster_time_limit", "1000", 0);
+			av_dict_set(&options.value, "live", "1", 0);
+		}
+		else
+		{
+			av_dict_set(&options.value, "movflags", "+frag_keyframe+delay_moov+default_base_moof", 0);
+			// Microsecond MP4 track ticks overflow a sample duration after about 36
+			// minutes of suspension. 3000 Hz retains exact common frame rates and
+			// sub-millisecond timing while leaving days of room for timestamp gaps.
+			av_dict_set(&options.value, "video_track_timescale", "3000", 0);
+			av_dict_set(&options.value, "frag_duration", "1000000", 0);
+		}
 		int result = avformat_write_header(output.context, &options.value);
-		check(result, "Write fragmented MP4 header");
+		check(result, "Write recording header");
+		headerWritten = true;
+	}
+	void requireHeader() const
+	{
+		if (!headerWritten)
+			throw std::runtime_error("Recording video header is unavailable; submit the first video packet before audio or finalization");
 	}
 	void drain()
 	{
@@ -384,16 +424,16 @@ struct MediaWriter::Impl
 		{
 			int result = avcodec_receive_packet(audioEncoder.get(), encoded.get());
 			if (result == AVERROR(EAGAIN) || result == AVERROR_EOF) break;
-			check(result, "Receive AAC packet");
+			check(result, "Receive audio packet");
 			av_packet_rescale_ts(encoded.get(), audioEncoder->time_base, audioStream->time_base);
 			encoded->stream_index = audioStream->index;
-			check(av_interleaved_write_frame(output.context, encoded.get()), "Write AAC packet");
+			check(av_interleaved_write_frame(output.context, encoded.get()), "Write audio packet");
 			av_packet_unref(encoded.get());
 		}
 	}
 	void encode()
 	{
-		check(av_frame_make_writable(samples.get()), "Reuse AAC frame");
+		check(av_frame_make_writable(samples.get()), "Reuse audio frame");
 		const unsigned char *input[] = {reinterpret_cast<const unsigned char *>(pending.data())};
 		check(swr_convert(converter.get(), samples->data, samples->nb_samples, input, samples->nb_samples), "Convert audio");
 		samples->pts = audioPts; audioPts += samples->nb_samples;
@@ -416,16 +456,34 @@ MediaWriter::MediaWriter(const std::string &path, const VideoDescription &descri
 MediaWriter::~MediaWriter() = default;
 void MediaWriter::video(const VideoPacket &video)
 {
-	auto p = packet(); check(av_new_packet(p.get(), int(video.bytes.size())), "Allocate H.264 packet");
+	if (!impl->headerWritten)
+	{
+		if (video.extraData.empty()) throw std::runtime_error("AV1 recording packet has no sequence header");
+		auto &v = *impl->videoStream->codecpar;
+		av_freep(&v.extradata);
+		v.extradata = static_cast<unsigned char *>(av_mallocz(video.extraData.size()+AV_INPUT_BUFFER_PADDING_SIZE));
+		if (!v.extradata) throw std::bad_alloc();
+		v.extradata_size = int(video.extraData.size());
+		std::copy(video.extraData.begin(),video.extraData.end(),v.extradata);
+		impl->header();
+	}
+	auto p = packet(); check(av_new_packet(p.get(), int(video.bytes.size())), "Allocate video packet");
 	std::copy(video.bytes.begin(), video.bytes.end(), p->data);
+	if (!video.extraData.empty())
+	{
+		auto extra = av_packet_new_side_data(p.get(), AV_PKT_DATA_NEW_EXTRADATA, video.extraData.size());
+		if (!extra) throw std::bad_alloc();
+		std::copy(video.extraData.begin(), video.extraData.end(), extra);
+	}
 	p->pts = video.ptsUs; p->dts = video.dtsUs; p->duration = video.durationUs;
 	p->flags = video.key ? AV_PKT_FLAG_KEY : 0;
 	av_packet_rescale_ts(p.get(), {1,1000000}, impl->videoStream->time_base);
 	p->stream_index = impl->videoStream->index;
-	check(av_interleaved_write_frame(impl->output.context, p.get()), "Write H.264 packet");
+	check(av_interleaved_write_frame(impl->output.context, p.get()), "Write video packet");
 }
 void MediaWriter::silenceThrough(std::int64_t end)
 {
+	impl->requireHeader();
 	// A suspended application may return minutes later. Preserve the timestamp
 	// discontinuity instead of encoding minutes of synthetic PCM in a catch-up burst.
 	if (end-impl->written > AudioSampleRate/2)
@@ -449,14 +507,15 @@ void MediaWriter::checkpoint() { impl->storage.flush(); }
 void MediaWriter::finish(std::int64_t durationUs)
 {
 	if (impl->finished) return;
+	impl->requireHeader();
 	silenceThrough(av_rescale(durationUs,AudioSampleRate,1000000));
 	if (!impl->pending.empty())
 	{
 		impl->pending.resize(std::size_t(impl->samples->nb_samples)*2,0);
 		impl->encode();
 	}
-	check(avcodec_send_frame(impl->audioEncoder.get(),nullptr), "Flush AAC encoder"); impl->drain();
-	check(av_write_trailer(impl->output.context), "Finish fragmented MP4"); impl->storage.flush();
+	check(avcodec_send_frame(impl->audioEncoder.get(),nullptr), "Flush audio encoder"); impl->drain();
+	check(av_write_trailer(impl->output.context), "Finish recording"); impl->storage.flush();
 	impl->finished = true;
 }
 void MediaWriter::finalize(const std::string &source, const std::string &destination,
@@ -466,10 +525,15 @@ void MediaWriter::finalize(const std::string &source, const std::string &destina
 	Input input;
 	if (!input.context) throw std::bad_alloc();
 	input.context->pb = inputFile.context; input.context->flags |= AVFMT_FLAG_CUSTOM_IO;
-	check(avformat_open_input(&input.context,nullptr,av_find_input_format("mov"),nullptr), "Open recorded MP4");
-	// Streams are described by our MP4 header; no decoder or stream probing is needed.
+	check(avformat_open_input(&input.context,nullptr,nullptr,nullptr), "Open recorded media");
+	// Streams are described by our container header; no decoder is needed.
+	// Recorder files always place video first. Use that stream rather than this
+	// build's profile so recovery also works for recordings from another build.
+	if (!input.context->nb_streams || input.context->streams[0]->codecpar->codec_type != AVMEDIA_TYPE_VIDEO)
+		throw std::runtime_error("Recorded media has no leading video stream");
+	const auto id = input.context->streams[0]->codecpar->codec_id;
 	IO outputFile(open(destination,true),true);
-	Output output;
+	Output output(id == AV_CODEC_ID_VP9 || id == AV_CODEC_ID_AV1);
 	output.context->pb = outputFile.context; output.context->flags |= AVFMT_FLAG_CUSTOM_IO;
 	for (unsigned i=0; i<input.context->nb_streams; ++i)
 	{
@@ -477,6 +541,7 @@ void MediaWriter::finalize(const std::string &source, const std::string &destina
 		check(avcodec_parameters_copy(stream->codecpar,input.context->streams[i]->codecpar), "Copy recorded stream");
 		if (stream->codecpar->codec_id == AV_CODEC_ID_AAC) stream->codecpar->frame_size = 1024;
 		stream->time_base = input.context->streams[i]->time_base;
+		stream->avg_frame_rate = input.context->streams[i]->avg_frame_rate;
 	}
 	output.context->chapters = static_cast<AVChapter **>(av_calloc(chapters.size(),sizeof(AVChapter *)));
 	if (!chapters.empty() && !output.context->chapters) throw std::bad_alloc();
@@ -507,10 +572,13 @@ void MediaWriter::finalize(const std::string &source, const std::string &destina
 		delete static_cast<IO *>(io->opaque); return 0;
 	};
 	Dictionary options;
-	av_dict_set(&options.value,"movflags","+faststart",0);
-	av_dict_set(&options.value,"video_track_timescale","3000",0);
+	if (id == AV_CODEC_ID_H264)
+	{
+		av_dict_set(&options.value,"movflags","+faststart",0);
+		av_dict_set(&options.value,"video_track_timescale","3000",0);
+	}
 	int result = avformat_write_header(output.context,&options.value);
-	check(result,"Write final MP4 header");
+	check(result,"Write final recording header");
 	auto p = packet();
 	for (;;)
 	{
@@ -527,14 +595,14 @@ void MediaWriter::finalize(const std::string &source, const std::string &destina
 		av_packet_rescale_ts(p.get(),in->time_base,out->time_base); p->pos = -1;
 		check(av_interleaved_write_frame(output.context,p.get()),"Finalize recorded packet"); av_packet_unref(p.get());
 	}
-	check(av_write_trailer(output.context),"Finish final MP4"); outputFile.flush();
+	check(av_write_trailer(output.context),"Finish final recording"); outputFile.flush();
 }
 std::int64_t MediaWriter::duration(const std::string &source, OpenRecordingFile open)
 {
 	IO file(open(source,false),false); Input input;
 	if (!input.context) throw std::bad_alloc();
 	input.context->pb = file.context; input.context->flags |= AVFMT_FLAG_CUSTOM_IO;
-	check(avformat_open_input(&input.context,nullptr,av_find_input_format("mov"),nullptr),"Open interrupted recording");
+	check(avformat_open_input(&input.context,nullptr,nullptr,nullptr),"Open interrupted recording");
 	auto p = packet(); std::int64_t duration = 0;
 	for (;;)
 	{

@@ -192,7 +192,11 @@ speed, through pause and hard pause, and plays the recorded replay back at 1x,
 maximum and fast-forward. The last case captures the engine's per-run checksums
 and requires the first four (speed and pause) and the last three (playback) to
 agree. `python3 test/run_tests.py --filter 'GameSpeed/settings*'` runs the settings
-case alone. That case also clicks the top bar's speed chevrons. The `GameSpeedControl`
+case alone. That case also clicks the top bar's speed chevrons. The desktop
+statistics case captures the bar at 640 and 1280 pixels with zero and five-digit
+prestige/conversion values, checks the clear gutter before speed, and clicks the
+relocated chevrons. Desktop uses measured icon/value groups with common gutters;
+prestige shares touch's trophy, colony value and conditional match-progress bar. The `GameSpeedControl`
 suite (`src/hud/GameSpeedControlTest.cpp`, unit binary) covers the chevron presets and
 the tick-rate readout's window, one-second refresh, stall decay and formatting with
 explicit times.

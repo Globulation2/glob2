@@ -277,7 +277,12 @@ void GameGUITouch::drawStats()
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field());
 		drawPointLabel(r, text, 1.3);
 	}
-	if (statsCatalog.empty()) statsCatalog = Stats::catalogForBuildings(*gui.drawnScene().buildingTypes);
+	if (statsCatalog.empty())
+    {
+        statsCatalog = Stats::catalogForBuildings(*gui.drawnScene().buildingTypes);
+        // This uses hidden opponent state; it belongs in post-game results.
+        std::erase_if(statsCatalog, [](const auto &m) { return m.winProbability; });
+    }
 	const auto &metrics = statsCatalog;
 	const Stats::Metric &metric = metrics[std::size_t(std::clamp(statsMetric, 0, int(metrics.size()) - 1))];
 	auto tr = [](const char *key) { return std::string(Toolkit::getStringTable()->getString(key)); };

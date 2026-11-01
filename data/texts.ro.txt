@@ -4884,6 +4884,10 @@ Unități încercuite, fără niciun pătrat liber pe care să pășească.
 Resurse îndepărtate
 [stat cleared about]
 Resurse îndepărtate de lucrători în zonele de curățare pentru a face loc.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestigiu
 [stat prestige about]

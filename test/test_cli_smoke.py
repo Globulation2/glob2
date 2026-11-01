@@ -490,7 +490,11 @@ class CliSmoke(unittest.TestCase):
         loaded = json.loads((resumed / "result.json").read_text())
         self.assertIn(7, loaded["resolved"]["winning_conditions"])
         self.assertEqual(loaded["ticks"], 96)
-        for index, threshold in enumerate(("0", "500", "1001")):
+        disabled = self.root / "probability-disabled"
+        self.game(disabled, source, extra=("--win-probability", "0"))
+        disabled_report = json.loads((disabled / "result.json").read_text())
+        self.assertNotIn(7, disabled_report["resolved"]["winning_conditions"])
+        for index, threshold in enumerate(("1", "500", "1001")):
             invalid = self.root / f"probability-invalid-{index}"
             self.command(
                 "game",

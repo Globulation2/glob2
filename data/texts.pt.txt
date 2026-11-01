@@ -4884,6 +4884,10 @@ Unidades encurraladas sem nenhum quadrado livre para onde avançar.
 Recursos limpos
 [stat cleared about]
 Recursos removidos pelos trabalhadores nas zonas de limpeza para abrir espaço.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestígio
 [stat prestige about]

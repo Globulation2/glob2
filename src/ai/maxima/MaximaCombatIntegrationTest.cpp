@@ -2,6 +2,7 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
 #include "GradientFixture.h"
+#include "ScopedEnvironment.h"
 #include <algorithm>
 #include <nlohmann/json.hpp>
 #include <utility>
@@ -1700,4 +1701,282 @@ TEST_SUITE("Maxima.Combat")
         }
         CHECK(AIMaxima::WorldHelpers::unlearned_reference_damage_rate(*view,10)==87);
     }
+}
+
+TEST_SUITE("Maxima.Combat")
+{
+TEST_CASE("replacement objectives favor the existing flag with wrapping and bounded preference")
+{
+    glob2test::HeadlessGlobals globals;
+    for(bool wrapped:{false,true}) for(bool continuing:{false,true}) for(int weight:{0,4})
+    {
+        CAPTURE(wrapped);CAPTURE(continuing);CAPTURE(weight);
+        combat_regressions::Fixture f;
+        f.building(wrapped?20:10,10,0);
+        auto* previous=f.building(9,28,1);
+        // Insertion order deliberately favors the home-side alternative on ties.
+        auto* homeSide=f.building(wrapped?20:14,wrapped?30:18,1);
+        auto* nearby=f.building(wrapped?61:32,30,1);
+        auto* superior=f.building(29,0,2);
+        auto* flag=f.building(wrapped?0:29,wrapped?34:29,0,"warflag");
+        for(int i=0;i<4;++i)
+        {
+            auto* unit=f.warrior((wrapped?0:26)+i,wrapped?35:29);
+            if(continuing)f.attach(unit,flag);
+        }
+        auto& a=*f.ai;auto& c=a.context;c.initialize();
+        a.strategy.tactics.flag_minimum_level=1;
+        a.strategy.tactics.route_distance_weight=0;
+        a.strategy.tactics.flag_proximity_weight=weight;
+        a.reconnaissance.beginObservation(a.timer,{1,2});
+        for(auto* building:{previous,homeSide,nearby,superior})
+            a.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(building->gid,
+                building->owner->teamNumber,building->typeNum,building->posX,building->posY,
+                building->type->width,building->type->height,false,a.timer));
+        a.reconnaissance.finishObservation();
+        a.opponents[1].alive=a.opponents[2].alive=true;
+        a.opponents[1].estimated_warriors=a.opponents[2].estimated_warriors=0;
+        a.opponents[1].score=100;a.opponents[2].score=0;
+        if(continuing)
+        {
+            a.tactical_mission.flagId=f.id(flag);
+            a.tactical_mission.kind=AIMaxima::Tactics::MissionSiege;
+            a.tactical_mission.targetTeam=1;a.tactical_mission.targetGid=previous->gid;
+            a.tactical_mission.targetX=previous->posX+previous->type->width/2;
+            a.tactical_mission.targetY=previous->posY+previous->type->height/2;
+            a.tactical_mission.phaseSinceTick=a.timer-5000;
+        }
+        a.attack_target_quarantine_until[previous->gid]=a.timer+1000;
+        a.plan_offense(c);
+        REQUIRE(a.budget.tactical_kind==AIMaxima::Tactics::MissionSiege);
+        CHECK(a.budget.tactical_target_gid==((continuing && weight)?nearby:homeSide)->gid);
+        CHECK(a.offense_diagnostics.flagProximityPenalty==
+            ((continuing && weight)?weight*(wrapped?3:4):0));
+        if(!continuing)CHECK(a.offense_diagnostics.flagProximityDistance==-1);
+        a.attack_target_quarantine_until[nearby->gid]=a.timer+1000;
+        a.plan_offense(c);CHECK(a.budget.tactical_target_gid==homeSide->gid);
+        a.opponents[2].score=1000;
+        a.plan_offense(c);CHECK(a.budget.tactical_target_gid==superior->gid);
+    }
+}
+
+TEST_CASE("new flag proximity cannot make an unreachable nearby building viable")
+{
+    glob2test::HeadlessGlobals globals;combat_regressions::Fixture f;f.islands();
+    f.building(10,10,0);
+    auto* nearby=f.building(26,20,1);auto* reachable=f.building(5,43,1);
+    auto* flag=f.building(18,20,0,"warflag");
+    for(int i=0;i<4;++i)
+    {
+        auto* unit=f.warrior(14+i,20);unit->setPerformance(SWIM,0);unit->setPerformance(FLY,0);
+        f.attach(unit,flag);
+    }
+    auto& a=*f.ai;auto& c=a.context;c.initialize();
+    a.strategy.tactics.flag_proximity_weight=4;
+    a.reconnaissance.beginObservation(a.timer,{1});
+    for(auto* building:{nearby,reachable})
+        a.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(building->gid,1,
+            building->typeNum,building->posX,building->posY,building->type->width,
+            building->type->height,false,a.timer));
+    a.reconnaissance.finishObservation();a.opponents[1].alive=true;
+    a.tactical_mission.flagId=f.id(flag);a.tactical_mission.kind=AIMaxima::Tactics::MissionSiege;
+    a.tactical_mission.targetTeam=1;a.tactical_mission.phaseSinceTick=a.timer-5000;
+    a.plan_offense(c);
+    REQUIRE(a.budget.tactical_kind==AIMaxima::Tactics::MissionSiege);
+    CHECK(a.budget.tactical_target_gid==reachable->gid);
+    CHECK(a.offense_diagnostics.rejections["too_few_reachable"]+
+        a.offense_diagnostics.rejections["no_route"]>0);
+}
+
+TEST_CASE("raid locations use the same preference for the current offensive flag")
+{
+    glob2test::HeadlessGlobals globals;
+    for(int weight:{0,4})
+    {
+        CAPTURE(weight);combat_regressions::Fixture f;f.building(10,10,0);
+        auto* flag=f.building(29,29,0,"warflag");
+        for(int i=0;i<4;++i)f.attach(f.warrior(26+i,29),flag);
+        auto& a=*f.ai;auto& c=a.context;c.initialize();
+        a.strategy.tactics.siege_enabled=false;a.strategy.raiding.enabled=true;
+        a.strategy.raiding.route_distance_weight=0;a.strategy.tactics.flag_proximity_weight=weight;
+        a.tactical_mission.flagId=f.id(flag);a.tactical_mission.kind=AIMaxima::Tactics::MissionSiege;
+        a.tactical_mission.targetTeam=1;a.tactical_mission.phaseSinceTick=a.timer-5000;
+        a.tactics.beginObservation(a.timer);
+        for(int i=0;i<4;++i)
+        {
+            a.tactics.observeWorker(AIMaxima::Tactics::WorkerSighting(100+i,1,14+i,20,a.timer,true,true,4));
+            a.tactics.observeWorker(AIMaxima::Tactics::WorkerSighting(200+i,1,32+i,30,a.timer,true,true,4));
+        }
+        AIMaxima::Tactics::RaidRules rules;rules.width=rules.height=64;rules.tick=a.timer;
+        rules.workerWeight=a.strategy.raiding.worker_weight;a.tactics.finishObservation(rules);
+        REQUIRE(a.tactics.raidCandidates().size()==2);
+        a.plan_offense(c);REQUIRE(a.budget.tactical_kind==AIMaxima::Tactics::MissionRaid);
+        if(weight)CHECK(a.budget.tactical_target_x>=30);
+        else CHECK(a.budget.tactical_target_x<20);
+    }
+}
+
+TEST_CASE("format188 AI execution keeps ring40 without enabling the new proximity preference")
+{
+    glob2test::HeadlessGlobals globals;combat_regressions::Fixture f;
+    struct PreviousStrategyOutput : GAGCore::BinaryOutputStream
+    {
+        using BinaryOutputStream::BinaryOutputStream;
+        void writeText(const std::string& value,std::string_view name) override
+        {
+            if(name!="strategy"){BinaryOutputStream::writeText(value,name);return;}
+            std::istringstream input(value);std::string item,legacy;
+            while(std::getline(input,item,','))if(item.rfind("tactics.flag_proximity_weight=",0))
+            {if(!legacy.empty())legacy+=',';legacy+=item;}
+            BinaryOutputStream::writeText(legacy,name);
+        }
+    };
+    auto* memory=new GAGCore::MemoryStreamBackend;PreviousStrategyOutput output(memory);
+    f.ai->save(&output);output.flush();
+    const std::string bytes(memory->getBuffer(),memory->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    AIMaxima::Maxima restored(&input,&f.player,188);
+    CHECK(restored.strategy.tactics.flag_proximity_weight==0);
+    CHECK(restored.strategy.tactics.enemy_commitment==1);
+    CHECK(restored.strategy.tactics.arrival_grace_ticks==4000);
+    CHECK(restored.strategy.forward_support.inns_enabled);
+    CHECK(restored.strategy.forward_support.hospitals_enabled);
+    CHECK(restored.strategy.forward_support.distance_tiles==40);
+    auto* upgraded=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream saved(upgraded);
+    restored.save(&saved);saved.flush();
+    const std::string current(upgraded->getBuffer(),upgraded->getPosition());
+    GAGCore::BinaryInputStream reload(new GAGCore::MemoryStreamBackend(current.data(),current.size()));
+    reload.seekFromStart(0);
+    AIMaxima::Maxima continued(&reload,&f.player,VERSION_MINOR);
+    CHECK(AIMaxima::StrategyResolver::canonicalValues(continued.strategy)==
+        AIMaxima::StrategyResolver::canonicalValues(restored.strategy));
+}
+
+TEST_CASE("enemy commitment follows successive viable objectives and releases exhausted enemies")
+{
+    glob2test::HeadlessGlobals globals;
+    for(int mode:{0,1})
+    {
+        CAPTURE(mode);combat_regressions::Fixture f;
+        f.building(10,10,0);auto* first=f.building(30,30,1);
+        auto* successor=f.building(42,30,1);auto* alternative=f.building(35,40,2);
+        auto* flag=f.building(24,24,0,"warflag");
+        for(int i=0;i<4;++i) f.attach(f.warrior(20+i,20),flag);
+        auto& a=*f.ai;auto& c=a.context;c.initialize();
+        a.reconnaissance.beginObservation(a.timer,{1,2});
+        for(auto* building:{first,successor,alternative})
+            a.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(building->gid,
+                building->owner->teamNumber,building->typeNum,building->posX,building->posY,
+                building->type->width,building->type->height,false,a.timer));
+        a.reconnaissance.finishObservation();
+        a.opponents[1].alive=a.opponents[2].alive=true;
+        a.opponents[1].score=100;a.opponents[2].score=180;
+        a.tactical_mission.flagId=f.id(flag);a.tactical_mission.kind=AIMaxima::Tactics::MissionSiege;
+        a.tactical_mission.targetTeam=1;a.tactical_mission.targetGid=first->gid;
+        a.tactical_mission.phaseSinceTick=a.timer-a.strategy.tactics.dwell_ticks;
+        a.strategy.tactics.enemy_commitment=mode;
+        a.attack_target_quarantine_until[first->gid]=a.timer+1000;
+        a.plan_offense(c);
+        REQUIRE(a.budget.tactical_kind==AIMaxima::Tactics::MissionSiege);
+        CHECK(a.budget.tactical_target_team==(mode?1:2));
+        if(mode) CHECK(a.budget.tactical_target_gid==successor->gid);
+        a.attack_target_quarantine_until[successor->gid]=a.timer+1000;
+        a.plan_offense(c);CHECK(a.budget.tactical_target_team==2);
+    }
+}
+TEST_CASE("arrival grace protects a partial delivery and still expires for waves and streaming")
+{
+    glob2test::HeadlessGlobals globals;
+    for(bool streaming:{false,true}) for(int grace:{0,12000})
+    {
+        CAPTURE(streaming);CAPTURE(grace);combat_regressions::Fixture f;
+        f.building(10,10,0);auto* target=f.building(35,30,1);
+        auto* flag=f.building(36,31,0,"warflag");
+        f.attach(f.warrior(36,32),flag);
+        for(int i=0;i<3;++i) f.attach(f.warrior(12+i,12),flag);
+        auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+        a.timer=5000;a.strategy.tactics.arrival_grace_ticks=grace;
+        auto& mission=a.tactical_mission;
+        mission.kind=AIMaxima::Tactics::MissionSiege;mission.phase=AIMaxima::Tactics::PhaseEngage;
+        mission.flagId=f.id(flag);mission.targetTeam=1;mission.targetGid=target->gid;
+        mission.targetX=target->posX+target->type->width/2;
+        mission.targetY=target->posY+target->type->height/2;
+        mission.phaseSinceTick=1000;mission.lastProgressTick=1000;mission.lastTargetHp=target->hp;
+        target->seenByMask|=f.player.team->me;
+        a.attack_flags={mission.flagId};
+        if(streaming) a.failed_waves=4;
+        else
+        {
+            AIMaxima::Tactics::Wave wave;wave.flagId=mission.flagId;
+            wave.phase=AIMaxima::Tactics::WaveAdvance;wave.requestedForce=4;
+            wave.targetX=mission.targetX;wave.targetY=mission.targetY;wave.progressTick=a.timer;
+            a.offense_waves={wave};
+        }
+        a.plan_offense(c);a.control_offense(c);
+        CHECK(bool(a.attack_target_quarantine_until.count(target->gid))==(grace==0));
+        if(grace)
+        {
+            a.timer=mission.phaseSinceTick+grace+a.strategy.tactics.stall_ticks;
+            mission.lastProgressTick=a.timer-a.strategy.tactics.stall_ticks;
+            a.plan_offense(c);a.control_offense(c);
+            CHECK(a.attack_target_quarantine_until.count(target->gid)==1);
+        }
+    }
+}
+TEST_CASE("recall telemetry emits numeric byte enums on one complete line")
+{
+    glob2test::ScopedEnvironment telemetry("GLOB2_MAXIMA_TELEMETRY","1");
+    glob2test::HeadlessGlobals globals;combat_regressions::Fixture f;
+    f.building(0,0,0);auto* flag=f.building(24,24,0,"warflag");
+    auto* warrior=f.warrior(23,24);f.attach(warrior,flag);
+    warrior->medical=Unit::MED_FREE;warrior->displacement=Unit::DIS_ATTACKING_AROUND;
+    warrior->destinationPurpose=FEED;warrior->underAttackTimer=9;
+    auto& a=*f.ai;auto& context=a.context;context.initialize();
+    a.tactical_mission.flagId=f.id(flag);a.tactical_mission.kind=AIMaxima::Tactics::MissionSiege;
+    glob2test::withMaximaObservation(context,[&]{a.end_offense(context,"test_emergency");});
+    int records=0;
+    for(const auto& diagnostic:context.bufferedDiagnostics)
+        if(diagnostic.text.find("\trecall_local_unit\t")!=std::string::npos)
+        {
+            ++records;
+            CHECK(diagnostic.text.find("\tmedical=0\tdisplacement=10\tactivity=2\tservice=18\t")!=std::string::npos);
+            CHECK(diagnostic.text.find("\tunder_attack=9\tgame_tick=")!=std::string::npos);
+            CHECK(std::count(diagnostic.text.begin(),diagnostic.text.end(),'\n')==1);
+        }
+    CHECK(records==1);
+}
+TEST_CASE("forward support adds independent demands and honors hunger upgrades and peaceful rules")
+{
+    glob2test::HeadlessGlobals globals;combat_regressions::Fixture f;
+    f.building(0,0,0);auto* flag=f.building(24,24,0,"warflag");
+    auto& a=*f.ai;auto& c=a.context;c.initialize();glob2test::withMaximaObservation(c,[&]{a.configure_development_planner();});
+    a.timer=5000;a.tactical_mission.flagId=f.id(flag);
+    a.tactical_mission.kind=AIMaxima::Tactics::MissionSiege;
+    a.tactical_mission.targetX=a.tactical_mission.targetY=32;
+    a.tactical_mission.phaseSinceTick=0;a.snapshot.warriors=20;a.snapshot.workers=100;
+    a.strategy.forward_support.distance_tiles=12;
+    a.strategy.forward_support.coverage_distance_tiles=20;
+    const auto ordinary=[](const auto& intents) {
+        std::vector<std::tuple<int,int,int,int,int>> result;
+        for(const auto& i:intents) if(i.purpose!=AIMaximaPlacement::ForwardSupport)
+            result.emplace_back(i.buildingType,int(i.purpose),i.unmetCount,i.priority,i.workers);
+        return result;
+    };
+    auto world=a.collect_development_world(c);
+    a.strategy.forward_support.inns_enabled=a.strategy.forward_support.hospitals_enabled=false;
+    const auto baseline=ordinary(glob2test::withMaximaObservation(c,[&]{return a.collect_development_intents(world);}));
+    a.strategy.forward_support.inns_enabled=a.strategy.forward_support.hospitals_enabled=true;
+    glob2test::withMaximaObservation(c,[&]{a.configure_development_planner();});
+    auto offered=glob2test::withMaximaObservation(c,[&]{return a.collect_development_intents(world);});
+    CHECK(ordinary(offered)==baseline);
+    CHECK(std::count_if(offered.begin(),offered.end(),[](const auto& i){return i.purpose==AIMaximaPlacement::ForwardSupport;})==2);
+    f.game.gameHeader.setHungerDisabled(true);f.game.gameHeader.setUnitUpgradesDisabled(true);
+    glob2test::withMaximaObservation(c,[&]{a.configure_development_planner();});
+    world=a.collect_development_world(c);offered=glob2test::withMaximaObservation(c,[&]{return a.collect_development_intents(world);});
+    CHECK(std::count_if(offered.begin(),offered.end(),[](const auto& i){return i.purpose==AIMaximaPlacement::ForwardSupport;})==1);
+    f.game.gameHeader.setPeacefulModeEnabled(true);
+    world=a.collect_development_world(c);offered=glob2test::withMaximaObservation(c,[&]{return a.collect_development_intents(world);});
+    CHECK(std::none_of(offered.begin(),offered.end(),[](const auto& i){return i.purpose==AIMaximaPlacement::ForwardSupport;}));
+}
 }

@@ -4884,6 +4884,10 @@ Jednostki zamknięte bez wolnego pola, na które mogłyby wejść.
 Usunięte zasoby
 [stat cleared about]
 Zasoby usunięte przez robotników w obszarach oczyszczania, aby zrobić miejsce.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestiż
 [stat prestige about]

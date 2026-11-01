@@ -337,6 +337,8 @@ void Maxima::OffenseDiagnostics::reset(int currentTick)
 	clusterCandidates=0;
 	viableClusters=0;
 	bestScore=INT_MIN;
+	flagProximityDistance=-1;
+	flagProximityPenalty=0;
 	rejections.clear();
 }
 
@@ -565,10 +567,37 @@ void Maxima::plan_offense(Context& runtime)
 	int best_score=INT_MIN;
 	Tactics::MissionKind best_kind=Tactics::MissionNone;
 	int best_team=-1, best_gid=-1, best_x=0, best_y=0;
+    const auto proximityPenalty=[&](int x,int y) {
+        return flag ? Tactics::flagProximityPenalty(strategy.tactics.flag_proximity_weight,
+            AIEngine::ObservationQueries::distanceMax(*map,flag->posX,flag->posY,x,y)) : 0;
+    };
+    const auto consider=[&](int score,Tactics::MissionKind kind,int team,int gid,int x,int y) {
+        if(score>best_score)
+        {
+            best_score=score;best_kind=kind;best_team=team;best_gid=gid;best_x=x;best_y=y;
+        }
+    };
 	// A young objective that is still alive is kept whatever else appears, so
 	// the army actually arrives somewhere instead of chasing every sighting.
-	const bool dwelling=active
-		&& timer-tactical_mission.phaseSinceTick<strategy.tactics.dwell_ticks;
+    int enrolledAtFlags=0,healthyAtObjective=0;
+    if(active && strategy.tactics.arrival_grace_ticks>0
+        && timer-tactical_mission.phaseSinceTick<strategy.tactics.arrival_grace_ticks)
+    {
+        std::set<int> seen;
+        const auto observe=[&](const AIEngine::BuildingView* attraction) {
+            if(!attraction || !seen.insert(attraction->gid).second)return;
+            enrolledAtFlags+=attraction->working.count;
+            for(const auto ref:runtime.observation().workers(*attraction))
+                if(const auto* unit=runtime.observation().unit(ref))
+                    if(!unit->isDead && unit->medical==Unit::MED_FREE
+                        && map->distanceSquared(unit->posX,unit->posY,tactical_mission.targetX,tactical_mission.targetY)
+                            <=budget.tactical_siege_radius*budget.tactical_siege_radius) ++healthyAtObjective;
+        };
+        observe(flag);for(const auto* attraction:offenseFlags) observe(attraction);
+    }
+    const bool dwelling=active && (timer-tactical_mission.phaseSinceTick<strategy.tactics.dwell_ticks
+        || Tactics::awaitingEffectiveArrival(strategy.tactics.arrival_grace_ticks,
+            timer-tactical_mission.phaseSinceTick,healthyAtObjective,enrolledAtFlags));
 	bool current_alive=false;
 	int current_score=INT_MIN, current_x=0, current_y=0;
 	bool known_unreachable=false;
@@ -627,7 +656,9 @@ void Maxima::plan_offense(Context& runtime)
 					+std::max(0, opponents[opponent->first].score)
 					+(sighting.construction ? strategy.tactics.target_construction_bonus : 0)
 					-nearby_towers*strategy.tactics.target_tower_penalty
-					-distance*strategy.tactics.route_distance_weight;
+					-distance*strategy.tactics.route_distance_weight-proximityPenalty(x,y);
+                if(active && strategy.tactics.enemy_commitment==1 && opponent->first==tactical_mission.targetTeam)
+                    score+=2*strategy.tactics.retarget_margin;
 				if(active && sighting.gid==tactical_mission.targetGid)
 				{
 					score+=strategy.tactics.retarget_margin;
@@ -636,15 +667,7 @@ void Maxima::plan_offense(Context& runtime)
 					current_x=x;
 					current_y=y;
 				}
-				if(score>best_score)
-				{
-					best_score=score;
-					best_kind=Tactics::MissionSiege;
-					best_team=opponent->first;
-					best_gid=sighting.gid;
-					best_x=x;
-					best_y=y;
-				}
+                consider(score,Tactics::MissionSiege,opponent->first,sighting.gid,x,y);
 			}
 		}
 	}
@@ -659,7 +682,9 @@ void Maxima::plan_offense(Context& runtime)
 			if(distance<0) continue;
 			++offense_diagnostics.viableClusters;
 			int score=candidate->score
-				-distance*strategy.raiding.route_distance_weight;
+				-distance*strategy.raiding.route_distance_weight-proximityPenalty(candidate->x,candidate->y);
+            if(active && strategy.tactics.enemy_commitment==1 && candidate->team==tactical_mission.targetTeam)
+                score+=2*strategy.tactics.retarget_margin;
 			// A cluster that drifted within the threat radius of the current
 			// raid is the same objective moving, not a new one.
 			if(active && tactical_mission.kind==Tactics::MissionRaid
@@ -677,15 +702,7 @@ void Maxima::plan_offense(Context& runtime)
 					current_y=candidate->y;
 				}
 			}
-			if(score>best_score)
-			{
-				best_score=score;
-				best_kind=Tactics::MissionRaid;
-				best_team=candidate->team;
-				best_gid=-1;
-				best_x=candidate->x;
-				best_y=candidate->y;
-			}
+            consider(score,Tactics::MissionRaid,candidate->team,-1,candidate->x,candidate->y);
 		}
 	}
 	if(dwelling && current_alive)
@@ -700,6 +717,12 @@ void Maxima::plan_offense(Context& runtime)
 	offense_diagnostics.bestScore=best_score;
 	if(best_kind!=Tactics::MissionNone)
 	{
+        if(flag)
+        {
+            offense_diagnostics.flagProximityDistance=AIEngine::ObservationQueries::distanceMax(
+                *map,flag->posX,flag->posY,best_x,best_y);
+            offense_diagnostics.flagProximityPenalty=proximityPenalty(best_x,best_y);
+        }
 		budget.tactical_kind=best_kind;
 		budget.tactical_target_team=best_team;
 		budget.tactical_target_gid=best_gid;
@@ -732,12 +755,116 @@ void Maxima::end_offense(Context& runtime, const char* reason)
 	offense_waves.clear();
 	if(tactical_mission.flagId>=0)
 	{
+        std::ostringstream diagnostics;
+        if(telemetry_enabled())
+        {
+            int enrolled=0,arrived=0,underAttack=0;
+            int forwardOnlyWarriors=0,forwardOnlyExplorers=0;
+            std::set<int> forwardBuildings;
+            for(const auto& [id,action]:development_planner.actions())
+                if(action.purpose==AIMaximaPlacement::ForwardSupport)
+                    if(const auto* building=runtime.get_building_register().get_building(action.buildingId))
+                        forwardBuildings.insert(building->gid);
+            // Diagnostic only: distinguish a front outpost from an ordinary
+            // colony anchor using exactly the AI's current visible units.
+            if(!forwardBuildings.empty())
+                for(enemy_team_iterator enemy(runtime);enemy!=enemy_team_iterator();++enemy)
+                    for(const auto* unit:runtime.observation().unitsForTeam(*enemy))
+                        if(unit && !unit->isDead && AIEngine::ObservationQueries::visible(runtime.observation(),
+                            unit->posX,unit->posY,runtime.observedTeam().mask))
+                        {
+                            const bool warrior=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR);
+                            const bool explorer=unit->performance[MAGIC_ATTACK_GROUND]>0;
+                            if(!warrior && !explorer)continue;
+                            const int radius=warrior?144:324;
+                            bool front=false,ordinary=false;
+                            for(const auto* building:runtime.observation().buildingsForTeam(runtime.teamNumber()))
+                                if(building && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual
+                                    && runtime.observation().distanceSquared(unit->posX,unit->posY,building->posX,building->posY)<=radius)
+                                {
+                                    if(forwardBuildings.count(building->gid))front=true;
+                                    else ordinary=true;
+                                }
+                            if(front && !ordinary){forwardOnlyWarriors+=warrior;forwardOnlyExplorers+=explorer;}
+                        }
+            std::set<int> identifiers(flags);
+            identifiers.insert(tactical_mission.flagId);
+            std::set<int> offensiveUnits;
+            for(int id:identifiers)
+                if(const auto* flag=runtime.get_building_register().get_building(id))
+                    for(const auto ref:runtime.observation().workers(*flag))
+                        if(const auto* unit=runtime.observation().unit(ref))
+                        {
+                            offensiveUnits.insert(unit->gid);
+                            ++enrolled;underAttack+=unit->underAttackTimer>0;
+                            arrived+=unit->medical==Unit::MED_FREE
+                                && runtime.observation().distanceSquared(unit->posX,unit->posY,
+                                    tactical_mission.targetX,tactical_mission.targetY)
+                                    <=budget.tactical_siege_radius*budget.tactical_siege_radius;
+                        }
+            if(std::strstr(reason,"emergency"))
+            {
+                const auto recordLocalUnit=[&](const AIEngine::UnitView& unit,int team) {
+                    if(unit.isDead || (team!=runtime.teamNumber()
+                        && !AIEngine::ObservationQueries::visible(runtime.observation(),
+                            unit.posX,unit.posY,runtime.observedTeam().mask)))return;
+                    const bool melee=AIEngine::ObservationQueries::matchesStrategyUnitRole(
+                        runtime.observation(),unit,WARRIOR);
+                    const bool magic=unit.performance[MAGIC_ATTACK_GROUND]>0;
+                    if(!melee && !magic)return;
+                    bool ordinary=false,front=false;
+                    const int radius=melee ? 144 : 324;
+                    for(const auto* building:runtime.observation().buildingsForTeam(runtime.teamNumber()))
+                        if(building && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual
+                            && runtime.observation().distanceSquared(unit.posX,unit.posY,building->posX,building->posY)<=radius)
+                        {
+                            if(forwardBuildings.count(building->gid))front=true;
+                            else ordinary=true;
+                        }
+                    std::ostringstream fields;
+                    fields<<"\tteam="<<team<<"\tgid="<<unit.gid
+                        <<"\tgeneration="<<unit.identity.generation
+                        <<"\tx="<<unit.posX<<"\ty="<<unit.posY
+                        <<"\tmelee="<<melee<<"\tmagic="<<magic
+                        <<"\tattack="<<AIEngine::ObservationQueries::realAttackStrength(runtime.observation(),unit)
+                        <<"\tspeed="<<unit.performance[ATTACK_SPEED]
+                        <<"\thp="<<unit.hp<<"\tmax_hp="<<unit.performance[HP]
+                        <<"\tmedical="<<int(unit.medical)<<"\tdisplacement="<<int(unit.displacement)
+                        <<"\tactivity="<<int(unit.activity)<<"\tservice="<<int(unit.destinationPurpose)
+                        <<"\twalk="<<unit.performance[WALK]<<"\tswim="<<unit.performance[SWIM]
+                        <<"\tfly="<<unit.performance[FLY]
+                        <<"\toffense="<<offensiveUnits.count(unit.gid)
+                        <<"\tordinary_colony="<<ordinary<<"\tforward_colony="<<front
+                        <<"\tunder_attack="<<int(unit.underAttackTimer);
+                    emit_telemetry(runtime,"recall_local_unit",fields.str());
+                };
+                for(const auto* unit:runtime.observation().unitsForTeam(runtime.teamNumber()))
+                    if(unit)recordLocalUnit(*unit,runtime.teamNumber());
+                for(enemy_team_iterator enemy(runtime);enemy!=enemy_team_iterator();++enemy)
+                    for(const auto* unit:runtime.observation().unitsForTeam(*enemy))
+                        if(unit)recordLocalUnit(*unit,*enemy);
+            }
+            diagnostics<<"\tcolony_alarm="<<severe_colony_emergency()
+                <<"\ttactics_enabled="<<budget.tactics_enabled
+                <<"\tpopulation="<<snapshot.population<<"\tpopulation_trend="<<trends.population
+                <<"\tcolony_threat="<<snapshot.visible_colony_threat
+                <<"\texplorer_alarm="<<explorer_defense_emergency()
+                <<"\tthreatened_units="<<snapshot.own_units_under_attack
+                <<"\tthreatened_buildings="<<snapshot.own_buildings_under_attack
+                <<"\tenrolled="<<enrolled<<"\tobjective_arrived="<<arrived
+                <<"\toffense_under_attack="<<underAttack
+                <<"\tforward_only_colony_threat="<<forwardOnlyWarriors
+                <<"\tforward_only_explorer_threat="<<forwardOnlyExplorers
+                <<"\tphase_age="<<timer-tactical_mission.phaseSinceTick
+                <<"\tprogress_age="<<timer-tactical_mission.lastProgressTick;
+        }
 		emit_telemetry(runtime, "mission_finished",
 			"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
 			+"\ttarget_team="+diagnostic_value(tactical_mission.targetTeam)
 			+"\ttarget_gid="+diagnostic_value(tactical_mission.targetGid)
 			+"\treason="+reason
-			+"\tduration="+diagnostic_value(timer-tactical_mission.startedTick));
+			+"\tduration="+diagnostic_value(timer-tactical_mission.startedTick)
+            +diagnostics.str());
 		attack_flag_end_reasons[tactical_mission.flagId]=reason;
 		runtime.cancel_or_destroy_building(tactical_mission.flagId,1u<<WARRIOR);
 	}
@@ -893,6 +1020,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 		if(wave.phase==Tactics::WaveAdvance)advancing+=wave.requestedForce;
 	int committed=0;
 	bool mustering=false,atTarget=false,assemblyFailed=false;
+    int objectiveArrived=0,advancingCohort=0;
 	for(auto it=offense_waves.begin();it!=offense_waves.end();)
 	{
 		Tactics::Wave& wave=*it;
@@ -984,6 +1112,9 @@ bool Maxima::control_offense_waves(Context& runtime)
 			atTarget=atTarget || (arrived>0 && flag
 				&& AIEngine::ObservationQueries::distanceMax((*map),flag->posX,flag->posY,targetX,targetY)
 					<=budget.tactical_siege_radius);
+            advancingCohort+=cohort;
+            if(flag && AIEngine::ObservationQueries::distanceMax(*map,flag->posX,flag->posY,targetX,targetY)<=budget.tactical_siege_radius)
+                objectiveArrived+=arrived;
 			if(cohort>0)wave.progressTick=timer;
 			retire=flag && cohort==0 && timer-wave.progressTick>=policy.muster_stall_ticks;
 		}
@@ -1025,8 +1156,10 @@ bool Maxima::control_offense_waves(Context& runtime)
 	campaign.state=offense_waves.empty() ? CampaignIdle : CampaignActive;
 	campaign.target_team=budget.tactical_target_team;
 	// Travel and assembly consume no siege stall allowance.
-	if(!atTarget)tactical_mission.lastProgressTick=timer;
-	if(atTarget && tactical_mission.kind==Tactics::MissionSiege)
+    const bool awaitingEffectiveForce=Tactics::awaitingEffectiveArrival(strategy.tactics.arrival_grace_ticks,
+        timer-tactical_mission.phaseSinceTick,objectiveArrived,advancingCohort);
+    if(!atTarget || awaitingEffectiveForce)tactical_mission.lastProgressTick=timer;
+    if(atTarget && !awaitingEffectiveForce && tactical_mission.kind==Tactics::MissionSiege)
 	{
 		const int team=tactical_mission.targetTeam;
 		const int local=Building::GIDtoID(tactical_mission.targetGid);
@@ -1056,6 +1189,7 @@ void Maxima::control_offense(Context& runtime)
     auto ownerObservation=runtime.scopeOwnerObservation();
 	if(control_offense_waves(runtime))
 		return;
+	const int arrivalGrace=strategy.tactics.arrival_grace_ticks;
 	auto& registry=runtime.get_building_register();
 	const auto live=[&](int id) {
 		return registry.is_building_found(id) || registry.is_building_pending(id);
@@ -1200,8 +1334,20 @@ void Maxima::control_offense(Context& runtime)
 				tactical_mission.lastProgressTick=timer;
 				campaign.last_progress_tick=timer;
 			}
-			int enrolled=0;
-			for(int id:attack_flags)enrolled+=registry.get_enrolled(id);
+            int enrolled=0,arrived=0;
+            for(int id:attack_flags)
+            {
+                enrolled+=registry.get_enrolled(id);
+                if(arrivalGrace>0)
+                    if(const auto* flag=registry.get_building(id))
+                        for(const auto ref:runtime.observation().workers(*flag))
+                            if(const auto* unit=runtime.observation().unit(ref))
+                                if(!unit->isDead && unit->medical==Unit::MED_FREE
+                                    && runtime.observation().distanceSquared(unit->posX,unit->posY,tactical_mission.targetX,tactical_mission.targetY)<=budget.tactical_siege_radius*budget.tactical_siege_radius) ++arrived;
+            }
+            const bool awaitingEffectiveForce=Tactics::awaitingEffectiveArrival(arrivalGrace,
+                timer-tactical_mission.phaseSinceTick,arrived,enrolled);
+            if(awaitingEffectiveForce)tactical_mission.lastProgressTick=timer;
 			if(enrolled>0 && budget.tactical_quarantine_enabled
 			   && timer-tactical_mission.lastProgressTick
 				>=budget.tactical_stall_ticks)

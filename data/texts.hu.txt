@@ -4884,6 +4884,10 @@ Bekerített egységek, amelyeknek nincs szabad mező, ahová léphetnének.
 Eltakarított nyersanyagok
 [stat cleared about]
 A dolgozók által a tisztítási területeken helycsinálás céljából eltávolított nyersanyagok.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Presztízs
 [stat prestige about]

@@ -16,5 +16,17 @@
     "archive": "x264-0480cb05.tar.gz",
     "directory": "x264-0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
     "sha256": "d0967a1348c85dfde363bb52610403be898171493100561efa0dd05d5fd1ae50"
+  },
+  "vpx": {
+    "url": "https://codeload.github.com/webmproject/libvpx/tar.gz/refs/tags/v1.17.0",
+    "archive": "libvpx-1.17.0.tar.gz",
+    "directory": "libvpx-1.17.0",
+    "sha256": "1020f184046187baa2985dbde38e0691f49c44088bca7a1842b0236c6081dc0a"
+  },
+  "aom": {
+    "url": "https://storage.googleapis.com/aom-releases/libaom-3.15.1.tar.gz",
+    "archive": "libaom-3.15.1.tar.gz",
+    "directory": "libaom-3.15.1",
+    "sha256": "8ca0c52746174603500f0adb6f2a215d69c9ca2aab2acb3caa06fb791d8d01bf"
   }
 }
