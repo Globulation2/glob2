@@ -39,6 +39,11 @@ struct NativeSettings : SettingsScreen {
         return SettingsScreen::applyDisplayMode(w,h,flags);
     }
     Row row(const std::string& id){for(auto r:rows())if(r.id==id)return r;REQUIRE_MESSAGE(false, "no settings row "<<id);return {};}
+    void activateSetting(const std::string& id){
+        // Match a real activation: popup owners must be visible before opening.
+        host().scrollIntoView(id);
+        SettingsScreen::activateSetting(id);
+    }
     void event(SDL_Event e){handleExecutionEvent(e);}
     void key(SDL_Keycode k,Uint16 modifiers=0){SDL_Event e{};e.type=SDL_EVENT_KEY_DOWN;e.key.key=k;e.key.mod=modifiers;handleExecutionEvent(e);}
     void click(const std::string& id){auto r=row(id);host().tapAt({r.control.x+10,r.control.y+10});}
@@ -138,6 +143,7 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE_FALSE(screen.restartRequired());
         const auto windowMode=screen.row("display.mode").number;
         screen.activateSetting("display.mode");
+        REQUIRE(screen.host().popupOpen());
         REQUIRE(screen.row("graphics.torus").kind==SettingsScreen::Kind::Toggle);
         screen.capture(output+"/window-mode-dropdown.bmp");
         screen.key(SDLK_DOWN);screen.key(SDLK_ESCAPE);

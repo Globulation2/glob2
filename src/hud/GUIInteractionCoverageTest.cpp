@@ -157,7 +157,7 @@ TEST_SUITE("GUIInteractionCoverage")
         glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
         auto* building=world.game.addBuilding(8,8,world.game.buildingsTypes.getFinishedTypeNum("inn"),0,0,0);
         REQUIRE(building);
-        auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+        auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.adjustLocalTeam();
         gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.prepareLocalPresentation(gui.frameScene);
         auto& panel=gui.frameScene.panels.building;REQUIRE(panel.valid);
         // Exercise counterfactual immutable observations, leaving simulation state untouched.
@@ -274,7 +274,7 @@ TEST_SUITE("GUIInteractionCoverage")
                 {"recipes",{{"worker",{{"enabled",true},{"duration",1},{"cost",nlohmann::json::object()}}}}}};
             world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
             auto* building=world.game.addBuilding(8,8,typeId,0,0,0);REQUIRE(building);
-            auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+            auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.adjustLocalTeam();
             gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.prepareLocalPresentation(gui.frameScene);
             auto& panel=gui.frameScene.panels.building;REQUIRE(panel.valid);
             const auto checksum=world.checksum();
@@ -386,7 +386,7 @@ TEST_SUITE("GUIInteractionCoverage")
     {
         glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
         glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+        auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.adjustLocalTeam();
         const int current=world.game.buildingsTypes.getTypeNum("inn",0,false);
         const int nextSite=world.game.buildingsTypes.get(current)->nextLevel;
         const int next=world.game.buildingsTypes.get(nextSite)->nextLevel;
