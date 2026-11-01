@@ -106,23 +106,16 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- A cell draws raised decor only when every corner resolves to a decorated
-  material. Any grass, sand, water or other undecorated corner suppresses all
-  raised objects in that cell, preserving a clear border against open ground.
-  Eligibility follows rendered material bindings, including custom materials.
-- Uniform cells keep their existing `full` or connected mask-15 frames and
-  interior variants. A border between decorated materials draws just one
-  material's ornament: a deterministic coordinate/terrain-seed hash chooses a
-  corner, so two-plus-two corners give each material equal odds and three-plus-one
-  corners give a three-to-one split. This uses no simulation random numbers.
-- Mixed decorated cells use the selected material's `edge` frames, including
-  when it occupies just one corner. Connected foliage retains its authored
-  corner geometry; adjacent connected foliage materials join into one crown of
-  the selected material. No overlapping ornaments or new artwork are needed.
-- Connected arrays have 16 mask groups with equal variant counts (top-left bit 1,
-  top-right bit 2, bottom-left bit 4, bottom-right bit 8). `connected_corners`
-  retains its seeded corner-colour variants; `connected_interior` supplies
-  alternative filled-cell crowns.
+- `full` frames are used for cells whose four corners share a decorated
+  appearance.
+- `edge` frames are smaller and pulled toward the cell centre, for cells where two
+  or three corners share it, so clusters do not spill far onto open ground. A
+  single decorated corner draws no decor.
+- Optional `connected` frames follow the four painted corners, including single
+  corners. The flat array has 16 mask groups with the same number of variants
+  in each group: top-left bit 1, top-right bit 2, bottom-left bit 4, bottom-right
+  bit 8. Mask zero draws nothing. These frames override `full`/`edge`; those
+  arrays remain available for older catalogs and standalone object decor.
 - The variant is chosen by a coordinate hash salted with the map's terrain seed,
   unless `connected_corners` is true. Then each mask holds 16 corner tiles: every
   map vertex has one seeded colour bit, shared by all materials, and a cell

@@ -84,24 +84,23 @@ class Compositor
 	using CornerColors = std::array<const std::array<unsigned char, 3> *, 4>;
 	void composeOverview(const Recipe &, SDL_Surface *target, int x, int y,
 						 const CornerColors *cornerColors = nullptr) const;
-	// The shared sprite supports cached row batching; mixed custom sprites use
-	// the ordinary renderer. Material lookup also serves editor swatches.
+	// The shared decor sprite (every decor block names the same one), or null
+	// when the catalog has no decor; the renderer batches decor like resources.
 	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
-	GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
-	// Any undecorated corner suppresses raised objects. Decorated-only borders
-	// choose one material, weighted by corner count, using presentation hashing.
-	GAGCore::Sprite *decorSprite(const SceneMap &, int x, int y) const;
+    GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
+    GAGCore::Sprite *decorSprite(const SceneMap &map, int x, int y) const;
+	// Decor frame drawn over cell (x, y), or -1. Cells with a neighbour of a
+	// different appearance use the smaller edge frames.
 	int decorFrame(const SceneMap &, int x, int y) const;
-
-	struct PreparedMaterialView
-	{
-		unsigned variant = 0;
+    struct PreparedMaterialView
+    {
+        unsigned variant = 0;
         std::uint64_t revision = 0;
         int size = 0;
         std::span<const std::array<unsigned char, 4>> pixels;
         int step = 0;
-	};
-	// Valid until prepare() changes this material. Uploaders copy the canonical
+    };
+    // Valid until prepare() changes this material. Uploaders copy the canonical
     // animation/HD pixels into owned revisions before retaining or queueing them.
     PreparedMaterialView preparedMaterial(const Recipe &, MaterialId) const;
     // Published material revisions own only composition data. A later prepare
@@ -166,8 +165,8 @@ class Compositor
 	bool hasContextualProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
-	std::pair<MaterialId, unsigned> decorMaterial(const SceneMap &, int x, int y) const;
-	void describeShoreCalm(const SceneMap &, Recipe &) const;
+    void describeShoreCalm(const SceneMap&, Recipe &) const;
+    std::pair<MaterialId, unsigned> decorMaterial(const SceneMap&, int x, int y) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;
 	std::array<MaterialId, TERRAIN_COUNT> terrainBindings{};

@@ -2,41 +2,6 @@
 
 Companion to [resource catalogs](resource-catalogs.md).
 
-## Terrain movement
-
-Movement uses a profile separate from resource habitat and building placement.
-Walking is allowed on dry cells and ordinary shoreline cells with at least two
-adjacent walkable corners: a continuous land edge. A single land tip or two
-opposite land corners cannot support walking. Impassable rock corners still block
-ground access. Swimming-only units need four swimmable corners; amphibious units
-can cross cells whose corners all support walking or swimming.
-
-Walking connections also follow the shoreline: cardinal steps need a walkable
-corner on their shared edge, and diagonals need a walkable shared vertex plus two
-clear side cells. Buildings, blocking resources and forbidden paint block passage;
-other units block destinations only. Amphibious globs walk normal beach routes
-and swim for steps that require water. Routing, AI and CPU/GPU gradients share
-these connections. Flying keeps its existing rules.
-
-Gathering remains an adjacent, nonmoving interaction. A walker can gather algae
-or another shoreline resource from a valid beach cell without stepping onto the
-resource's water cell. Interaction goals do not become transit passages; no
-swimming training or extended gathering range is required for ordinary shores.
-
-Saved games use the new movement rules too. Older routing caches are discarded;
-units are not relocated. A unit on newly blocked ground tries a legal neighboring
-escape in N, E, S, W, NE, SE, SW, NW order and stays put when enclosed. New saves
-retain normal scheduled routing continuation. Replays before format 194 are not
-accepted because their movement decisions used different rules.
-
-Raised terrain decor is suppressed when any corner resolves to an undecorated
-material, keeping rock and foliage clear of borders against grass, beaches and
-water. Borders between decorated materials draw one ornament, chosen
-reproducibly from the corner materials using the terrain seed and cell
-coordinates, weighted by corner count. Ridge–outcrop boundaries still read as
-barriers without stacking physically overlapping ornaments. Ground textures
-retain their natural boundaries.
-
 ## Themed terrain and resource sets
 
 The online **Terrain & resources** library at `/sets` holds flexible sets of custom
@@ -193,3 +158,30 @@ Malformed source images receive at most two journalled image corrections for the
 affected entry. Those corrections keep the plan and gameplay definitions intact.
 Known conversion errors show a concise explanation; subprocess paths and Python
 tracebacks stay out of the creator conversation.
+
+## Terrain movement
+
+Movement uses a profile separate from resource habitat and building placement.
+Walking is allowed on dry cells and ordinary shoreline cells with at least two
+adjacent walkable corners: a continuous land edge. A single land tip or two
+opposite land corners cannot support walking. Impassable rock corners still block
+ground access. Swimming-only units need four swimmable corners; amphibious units
+can cross cells whose corners all support walking or swimming.
+
+Walking connections also follow the shoreline: cardinal steps need a walkable
+corner on their shared edge, and diagonals need a walkable shared vertex plus two
+clear side cells. Buildings, blocking resources and forbidden paint block passage;
+other units block destinations only. Amphibious globs walk normal beach routes
+and swim for steps that require water. Routing, AI and CPU/GPU gradients share
+these connections. Flying keeps its existing rules.
+
+Gathering remains an adjacent, nonmoving interaction. A walker can gather algae
+or another shoreline resource from a valid beach cell without stepping onto the
+resource's water cell. Interaction goals do not become transit passages; no
+swimming training or extended gathering range is required for ordinary shores.
+
+Saved games use the new movement rules too. Older routing caches are discarded;
+units are not relocated. A unit on newly blocked ground tries a legal neighboring
+escape in N, E, S, W, NE, SE, SW, NW order and stays put when enclosed. New saves
+retain normal scheduled routing continuation. Replays before format 194 are not
+accepted because their movement decisions used different rules.
