@@ -9,7 +9,7 @@
       "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
       "sources": [
         {
-          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "path": "content-src/gfx/originals/terrain/papyrus.xcf",
           "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
           "native_size": [
             199,
@@ -75,7 +75,7 @@
           "selected_layer": 0
         },
         {
-          "path": "datasrc/gfx/derived/papyrus-native/ressource20.png",
+          "path": "content-src/gfx/derived/papyrus-native/ressource20.png",
           "sha256": "595cce81a1f1c094cdabc150ecc0c4b0fd89f9b09d82e1de7cd298390f7b5aa0",
           "native_size": [
             199,
@@ -99,7 +99,7 @@
       "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
       "sources": [
         {
-          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "path": "content-src/gfx/originals/terrain/papyrus.xcf",
           "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
           "native_size": [
             199,
@@ -165,7 +165,7 @@
           "selected_layer": 1
         },
         {
-          "path": "datasrc/gfx/derived/papyrus-native/ressource21.png",
+          "path": "content-src/gfx/derived/papyrus-native/ressource21.png",
           "sha256": "935534435a09045ca768795fd9417a8e022f81d4f9e7358daebce6c0ad2b5b90",
           "native_size": [
             199,
@@ -189,7 +189,7 @@
       "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
       "sources": [
         {
-          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "path": "content-src/gfx/originals/terrain/papyrus.xcf",
           "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
           "native_size": [
             199,
@@ -255,7 +255,7 @@
           "selected_layer": 2
         },
         {
-          "path": "datasrc/gfx/derived/papyrus-native/ressource22.png",
+          "path": "content-src/gfx/derived/papyrus-native/ressource22.png",
           "sha256": "3462a6df7a2120ff80bc8a7ea35dc9634fa999786266bfbafa47afeace63552b",
           "native_size": [
             199,
@@ -279,7 +279,7 @@
       "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
       "sources": [
         {
-          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "path": "content-src/gfx/originals/terrain/papyrus.xcf",
           "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
           "native_size": [
             199,
@@ -345,7 +345,7 @@
           "selected_layer": 3
         },
         {
-          "path": "datasrc/gfx/derived/papyrus-native/ressource23.png",
+          "path": "content-src/gfx/derived/papyrus-native/ressource23.png",
           "sha256": "d0bfc6baf11f61bf08c50c826e786f32e5583312cf50212b028d4e2726093ca2",
           "native_size": [
             199,
@@ -369,7 +369,7 @@
       "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
       "sources": [
         {
-          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "path": "content-src/gfx/originals/terrain/papyrus.xcf",
           "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
           "native_size": [
             199,
@@ -435,7 +435,7 @@
           "selected_layer": 4
         },
         {
-          "path": "datasrc/gfx/derived/papyrus-native/ressource24.png",
+          "path": "content-src/gfx/derived/papyrus-native/ressource24.png",
           "sha256": "8f1f17539a04dcb81e8d009ee46a562487e660d1061a61411ffadd606465b89c",
           "native_size": [
             199,

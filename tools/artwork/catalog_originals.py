@@ -39,7 +39,7 @@ for row in rows:
     if row['category'] != last:
         last = row['category']
         lines += ['', f'## {last}', '', '| File | Format | Source size | Provenance |', '| --- | --- | --- | --- |']
-    relative = row['path'].removeprefix('datasrc/gfx/')
+    relative = row['path'].removeprefix('content-src/gfx/')
     size = ' × '.join(map(str,row['dimensions'])) if row['dimensions'] else '—'
     origin = 'Repository + recovered archive' if row['archive_paths'] and row['previous_repository_path'] else 'Recovered archive' if row['archive_paths'] else 'Repository'
     lines.append(f"| [{relative.split('/')[-1]}]({quote(relative)}) | {row['format']} | {size} | {origin} |")

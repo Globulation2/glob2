@@ -53,10 +53,10 @@ class ExportMaterial(unittest.TestCase):
         self.tmp.cleanup()
 
     def prepare(self, name):
-        source_dir = self.root / "datasrc/gfx" / name
+        source_dir = self.root / "content-src/gfx" / name
         source_dir.mkdir(parents=True)
         synthetic_material(name).save(source_dir / "material.png")
-        shutil.copy(ROOT / "datasrc/gfx" / name / "provenance.json", source_dir / "provenance.json")
+        shutil.copy(ROOT / "content-src/gfx" / name / "provenance.json", source_dir / "provenance.json")
 
     def test_export_check_and_validate(self):
         self.prepare("boulders")
@@ -85,7 +85,7 @@ class ExportMaterial(unittest.TestCase):
             export_material.check("boulders", self.root)
 
     def test_rejects_small_or_non_square_sources(self):
-        source_dir = self.root / "datasrc/gfx/hedge"
+        source_dir = self.root / "content-src/gfx/hedge"
         source_dir.mkdir(parents=True)
         Image.new("RGBA", (256, 256), (40, 80, 40, 255)).save(source_dir / "material.png")
         with self.assertRaises(ValueError):

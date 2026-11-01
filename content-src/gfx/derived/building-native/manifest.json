@@ -1,7 +1,7 @@
 {
   "frames": [
     {
-      "source": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
+      "source": "content-src/gfx/originals/buildings/school/level-2/science.xcf",
       "exports": [
         {
           "sha256": "b10cb4f7fc43a9d40e5b798cec6048481fa4f1f37450007ed50299309fdc4f48",
@@ -148,7 +148,7 @@
       "id": "school1b0"
     },
     {
-      "source": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
+      "source": "content-src/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
       "exports": [
         {
           "sha256": "f890146efb57ef9ab29a73bf746517576e2a74e17b7a4bdd2188ad875b19946d",
@@ -208,7 +208,7 @@
       "id": "racetrack0b0"
     },
     {
-      "source": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
+      "source": "content-src/gfx/originals/buildings/racetrack/level-2/building10.xcf",
       "exports": [
         {
           "sha256": "30163c7bc7285faace682b9c13c10064514ed91f9cedf8dd461fdcd717490547",
@@ -278,6 +278,6 @@
       "id": "racetrack1b0"
     }
   ],
-  "recipe_sha256": "97231cc74d4a374db79e88ce9819edbf3eff71db47b83f6528fed05468212363",
+  "recipe_sha256": "f473128729df568c273931c0c74c7b6a0b716a04d9475ca16f5ca3a6f36c138c",
   "version": 1
 }

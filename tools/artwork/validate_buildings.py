@@ -5,7 +5,7 @@ from pathlib import Path
 from PIL import Image
 import numpy as np
 ROOT=Path(__file__).resolve().parents[2]
-DERIVED=ROOT/'datasrc/gfx/derived/buildings-v1'
+DERIVED=ROOT/'content-src/gfx/derived/buildings-v1'
 frames=json.loads((DERIVED/'manifest.json').read_text())['frames']
 assert {f['id'] for f in frames}=={'school1b0','racetrack0b0','racetrack1b0'}
 for frame in frames:

@@ -25,7 +25,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/resources/wheat/wheat_1_1.xcf",
+      "source": "content-src/gfx/originals/resources/wheat/wheat_1_1.xcf",
       "file": "wheat_1_1.png",
       "sha256": "1db3d3b0a4a9eb015f7a8cc75b7f3a6d28f4648b5b463eaf902bafe62cd9221d",
       "native_size": [
@@ -70,7 +70,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/resources/wheat/wheat_2_1.xcf",
+      "source": "content-src/gfx/originals/resources/wheat/wheat_2_1.xcf",
       "file": "wheat_2_1.png",
       "sha256": "262c3fb4ebfeb73935b12060d18ca6ebd30f5105853d1647d591f88514da89f6",
       "native_size": [
@@ -115,7 +115,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/resources/wheat/wheat_3_1.xcf",
+      "source": "content-src/gfx/originals/resources/wheat/wheat_3_1.xcf",
       "file": "wheat_3_1.png",
       "sha256": "864e2054594ddfb240e6a0d0f71fbc09c22a189c353052af300a12fcccb73afd",
       "native_size": [
@@ -160,7 +160,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/resources/wheat/wheat_4_1.xcf",
+      "source": "content-src/gfx/originals/resources/wheat/wheat_4_1.xcf",
       "file": "wheat_4_1.png",
       "sha256": "8779186a30e68764b90815ad8ae580fffb45e85224fc796439194e31e7ff9c71",
       "native_size": [
@@ -194,7 +194,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/resources/wheat/wheat_1_2.xcf",
+      "source": "content-src/gfx/originals/resources/wheat/wheat_1_2.xcf",
       "file": "wheat_1_2.png",
       "sha256": "f549a3f77c4d40fd5b996851935a06f8c8620177f1cf53af8cfbb4b634cc17ca",
       "native_size": [
@@ -239,7 +239,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/resources/wheat/wheat_2_2.xcf",
+      "source": "content-src/gfx/originals/resources/wheat/wheat_2_2.xcf",
       "file": "wheat_2_2.png",
       "sha256": "ce575514dea13cb76ce934c15b79252b69f0bff8fceeb2e08bfbae80d6f6c663",
       "native_size": [
@@ -284,7 +284,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/resources/wheat/wheat_3_2.xcf",
+      "source": "content-src/gfx/originals/resources/wheat/wheat_3_2.xcf",
       "file": "wheat_3_2.png",
       "sha256": "493707a87f38105cec1c63f91a93ac34085f3f652efbd6a157d00e664c457380",
       "native_size": [
@@ -329,7 +329,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/resources/wheat/wheat_4_2.xcf",
+      "source": "content-src/gfx/originals/resources/wheat/wheat_4_2.xcf",
       "file": "wheat_4_2.png",
       "sha256": "80f58ec2190c01593154f67241c207874cc867b84df9490fb89e3ca2d0e26f6a",
       "native_size": [

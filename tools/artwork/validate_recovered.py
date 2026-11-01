@@ -9,7 +9,7 @@ from PIL import Image
 import runtime_overrides
 
 ROOT = Path(__file__).resolve().parents[2]
-DERIVED = ROOT / 'datasrc/gfx/derived/recovered-v1'
+DERIVED = ROOT / 'content-src/gfx/derived/recovered-v1'
 PACK = ROOT / 'data/highres/v1'
 records = json.loads((DERIVED/'manifest.json').read_text())['frames']
 pack = {f['id']: f for f in json.loads((PACK/'manifest.json').read_text())['frames']}

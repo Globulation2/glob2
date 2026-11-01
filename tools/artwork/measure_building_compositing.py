@@ -21,7 +21,7 @@ assert classic.size==small.size
 a=np.asarray(classic);b=np.asarray(small)
 assert np.array_equal(a[:,:,3],b[:,:,3])
 assert np.array_equal(a[a[:,:,3]>0],b[b[:,:,3]>0])
-paths=['datasrc/gfx/originals/buildings/hosp/level-1/hopital1.xcf','datasrc/gfx/originals/buildings/defencetower/level-2/tower2.xcf','datasrc/gfx/originals/buildings/defencetower/level-2/tower1.xcf','data/gfx/defencetower1b0r.png']
+paths=['content-src/gfx/originals/buildings/hosp/level-1/hopital1.xcf','content-src/gfx/originals/buildings/defencetower/level-2/tower2.xcf','content-src/gfx/originals/buildings/defencetower/level-2/tower1.xcf','data/gfx/defencetower1b0r.png']
 record=dict(method='GIMP 2.10 saved layer settings: direct visible composite versus separately composited base/team groups',direct_vs_split=rows,low_resolution_tower_team_equals_classic_visible_pixels=True,low_resolution_tower_size=list(small.size),sources=[dict(path=p,sha256=hashlib.sha256((ROOT/p).read_bytes()).hexdigest()) for p in paths])
-(ROOT/'datasrc/gfx/provenance/building-compositing-audit.json').write_text(json.dumps(record,indent=2)+'\n')
+(ROOT/'content-src/gfx/provenance/building-compositing-audit.json').write_text(json.dumps(record,indent=2)+'\n')
 print('PASS: split export differs only by <=3 code values; smaller tower XCF reproduces classic visible team pixels and alpha exactly')

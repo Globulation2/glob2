@@ -3,7 +3,7 @@
   "frames": [
     {
       "id": "school1b0",
-      "source": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
+      "source": "content-src/gfx/originals/buildings/school/level-2/science.xcf",
       "layers": {
         "base": [
           1,
@@ -23,7 +23,7 @@
     },
     {
       "id": "racetrack0b0",
-      "source": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
+      "source": "content-src/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
       "layers": {
         "base": [
           1,
@@ -36,7 +36,7 @@
     },
     {
       "id": "racetrack1b0",
-      "source": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
+      "source": "content-src/gfx/originals/buildings/racetrack/level-2/building10.xcf",
       "layers": {
         "base": [
           1,

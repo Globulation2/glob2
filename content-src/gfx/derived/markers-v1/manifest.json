@@ -9,7 +9,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/g0-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/g0-archive-2026.png",
           "sha256": "3307ac804027ad5652b6427b04d527bcf70b0e31007f28699eb060a5f399a64d",
           "native_size": [
             128,
@@ -33,7 +33,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/g1-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/g1-archive-2026.png",
           "sha256": "61ca21e960c66fe1948533398e84eed70c652eee3b88d1133821b4074b8c3dc1",
           "native_size": [
             128,
@@ -57,7 +57,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/g2-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/g2-archive-2026.png",
           "sha256": "50ecdd801108e931ccbfc751389d9b8ce25c2fe25d180909442fb811c70d909a",
           "native_size": [
             128,
@@ -81,7 +81,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/g3-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/g3-archive-2026.png",
           "sha256": "71fcc0a3dd20434cac5855a99832ab6b76c72407b644a4d62e80a6c86f27dc36",
           "native_size": [
             128,
@@ -105,7 +105,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/g4-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/g4-archive-2026.png",
           "sha256": "a3e3049c120fb3758177beaf89ce659f2901e5914f04e14fe80885873b80930b",
           "native_size": [
             128,
@@ -129,7 +129,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/g5-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/g5-archive-2026.png",
           "sha256": "9eb34051ab38294cad261bb05a8797fe944e73a5f0d3cecea0112db8d9f0f76d",
           "native_size": [
             128,
@@ -153,7 +153,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/g6-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/g6-archive-2026.png",
           "sha256": "1c319a0669d0cd041b9e106ba598ed0f3195e15b74e129d1c9ca0dc1f184f575",
           "native_size": [
             128,
@@ -177,7 +177,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/g7-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/g7-archive-2026.png",
           "sha256": "97bffb76358713883074da9b4052c3773c4dfafd363744b55555670360287982",
           "native_size": [
             128,
@@ -201,7 +201,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/h1-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/h1-archive-2026.png",
           "sha256": "0cec5ec9b8d8a878496c43d93bccececae5057b2fda06d3e53877dbdd6013dfe",
           "native_size": [
             128,
@@ -225,7 +225,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/h2-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/h2-archive-2026.png",
           "sha256": "d84a5728241759ce3cca2f5949deab46feed98ed59dd6f9906cb406c1ba9ff83",
           "native_size": [
             128,
@@ -249,7 +249,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/h3-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/h3-archive-2026.png",
           "sha256": "dfb60f6b060007538b12d51d063cde033ede80e368cbbfea8a850c1ab646d276",
           "native_size": [
             128,
@@ -273,7 +273,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/h4-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/h4-archive-2026.png",
           "sha256": "ddbe5c02e5699cb21cf1637dda285cc26bc1d0c0630e5ee87b43fe21684dd624",
           "native_size": [
             128,
@@ -297,7 +297,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/h5-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/h5-archive-2026.png",
           "sha256": "155e5b5c4a3dc93bef5eb575d3b53dc6138828ee8b50a58cfe0b36b652b1462b",
           "native_size": [
             128,
@@ -321,7 +321,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/h6-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/h6-archive-2026.png",
           "sha256": "de6c447820739c36a93f4658cb80ac06b2fe56a93e25fc3cb1e5881320b0700b",
           "native_size": [
             128,
@@ -345,7 +345,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/h7-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/h7-archive-2026.png",
           "sha256": "b570ff493d232185364f4cba7c58cb0708d38951704ffcad7128f5a5490e9c98",
           "native_size": [
             128,
@@ -369,7 +369,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/h8-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/h8-archive-2026.png",
           "sha256": "7f6c61650d662c053a04a1d9f1ed75793d12e7669208487b0ffa45a715088ff8",
           "native_size": [
             128,
@@ -393,7 +393,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/i0-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/i0-archive-2026.png",
           "sha256": "3c5c1f4fbf99b8fff4ed9d63cc31622e50ffb0bcd18d620e1577524bb3646a1f",
           "native_size": [
             128,
@@ -417,7 +417,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/i1-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/i1-archive-2026.png",
           "sha256": "61d42f32cd3f3d440c3774d5181d4f02c41cd1b2434bc63dbb07e527251d751c",
           "native_size": [
             128,
@@ -441,7 +441,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/i2-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/i2-archive-2026.png",
           "sha256": "434f04ee42ee91bb0fe3159406c363e5576c6d38fd7a04c8d943f57e1d7b7308",
           "native_size": [
             128,
@@ -465,7 +465,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/i3-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/i3-archive-2026.png",
           "sha256": "cf87c0736a49c9ed15c7c7c9796e6270fd68e9eb411124baba43d99a981b46ac",
           "native_size": [
             128,
@@ -489,7 +489,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/i4.png",
+          "path": "content-src/gfx/reference-exports/overlays/i4.png",
           "sha256": "9ce6acd818f85bdc274d1c96de01392861524003a544331b89c5d58ea442d5b2",
           "native_size": [
             128,
@@ -513,7 +513,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/i5-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/i5-archive-2026.png",
           "sha256": "86d8007f0fd71ab3df664ade3d5685e020442bf486fa1d88fcd43f048eae35fe",
           "native_size": [
             128,
@@ -537,7 +537,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/i6-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/i6-archive-2026.png",
           "sha256": "b63ea25bd0fe29dc7e442debb4bf5ec19e2b362f86b6d62f957755a4d13ec60a",
           "native_size": [
             128,
@@ -561,7 +561,7 @@
       "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/overlays/i7-archive-2026.png",
+          "path": "content-src/gfx/reference-exports/overlays/i7-archive-2026.png",
           "sha256": "35729f1837e68ced59277f257b89b2207d3263424a1bf1750bc96aac4ee7dd2c",
           "native_size": [
             128,

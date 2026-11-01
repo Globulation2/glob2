@@ -1,6 +1,6 @@
 [
   {
-    "source": "datasrc/gfx/originals/buildings/barracks/level-1/__building5.xcf",
+    "source": "content-src/gfx/originals/buildings/barracks/level-1/__building5.xcf",
     "historical_name": "__building5.xcf",
     "runtime_family": "barracks",
     "runtime_level_index": 0,
@@ -22,7 +22,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/barracks/level-3/__building12.xcf",
+    "source": "content-src/gfx/originals/buildings/barracks/level-3/__building12.xcf",
     "historical_name": "__building12.xcf",
     "runtime_family": "barracks",
     "runtime_level_index": 2,
@@ -44,7 +44,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/barracks/level-3/__building19.xcf",
+    "source": "content-src/gfx/originals/buildings/barracks/level-3/__building19.xcf",
     "historical_name": "__building19.xcf",
     "runtime_family": "barracks",
     "runtime_level_index": 2,
@@ -66,7 +66,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/inn/level-2/auberge-goth-64.xcf",
+    "source": "content-src/gfx/originals/buildings/inn/level-2/auberge-goth-64.xcf",
     "historical_name": "auberge-goth-64.xcf",
     "runtime_family": "inn",
     "runtime_level_index": 1,
@@ -79,7 +79,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/inn/level-3/auberge-steam.xcf",
+    "source": "content-src/gfx/originals/buildings/inn/level-3/auberge-steam.xcf",
     "historical_name": "auberge-steam.xcf",
     "runtime_family": "inn",
     "runtime_level_index": 2,
@@ -92,7 +92,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/inn/level-2/building8.xcf",
+    "source": "content-src/gfx/originals/buildings/inn/level-2/building8.xcf",
     "historical_name": "building8.xcf",
     "runtime_family": "inn",
     "runtime_level_index": 1,
@@ -107,7 +107,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
+    "source": "content-src/gfx/originals/buildings/racetrack/level-2/building10.xcf",
     "historical_name": "building10.xcf",
     "runtime_family": "racetrack",
     "runtime_level_index": 1,
@@ -122,7 +122,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
+    "source": "content-src/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
     "historical_name": "building3r.xcf",
     "runtime_family": "racetrack",
     "runtime_level_index": 0,
@@ -137,7 +137,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/racetrack/level-1/course-terre.xcf",
+    "source": "content-src/gfx/originals/buildings/racetrack/level-1/course-terre.xcf",
     "historical_name": "course-terre.xcf",
     "runtime_family": "racetrack",
     "runtime_level_index": 0,
@@ -156,7 +156,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/racetrack/level-2/course-goth-256.xcf",
+    "source": "content-src/gfx/originals/buildings/racetrack/level-2/course-goth-256.xcf",
     "historical_name": "course-goth-256.xcf",
     "runtime_family": "racetrack",
     "runtime_level_index": 1,
@@ -169,7 +169,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/racetrack/level-3/course-steam.xcf",
+    "source": "content-src/gfx/originals/buildings/racetrack/level-3/course-steam.xcf",
     "historical_name": "course-steam.xcf",
     "runtime_family": "racetrack",
     "runtime_level_index": 2,
@@ -184,7 +184,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
+    "source": "content-src/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
     "historical_name": "hopital1.xcf",
     "runtime_family": "hosp",
     "runtime_level_index": 0,
@@ -202,7 +202,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
+    "source": "content-src/gfx/originals/buildings/school/level-2/science.xcf",
     "historical_name": "science.xcf",
     "runtime_family": "school",
     "runtime_level_index": 1,
@@ -224,7 +224,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/school/level-2/science1.xcf",
+    "source": "content-src/gfx/originals/buildings/school/level-2/science1.xcf",
     "historical_name": "science1.xcf",
     "runtime_family": "school",
     "runtime_level_index": 1,
@@ -240,7 +240,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
+    "source": "content-src/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
     "historical_name": "tower1.xcf",
     "runtime_family": "defencetower",
     "runtime_level_index": 1,
@@ -255,7 +255,7 @@
     ]
   },
   {
-    "source": "datasrc/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
+    "source": "content-src/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
     "historical_name": "tower2.xcf",
     "runtime_family": "defencetower",
     "runtime_level_index": 1,

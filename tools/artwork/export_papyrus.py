@@ -6,8 +6,8 @@ from pathlib import Path
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[2]
-NATIVE=ROOT/'datasrc/gfx/derived/papyrus-native'
-OUTPUT=ROOT/'datasrc/gfx/derived/papyrus-v1'
+NATIVE=ROOT/'content-src/gfx/derived/papyrus-native'
+OUTPUT=ROOT/'content-src/gfx/derived/papyrus-v1'
 SOURCE_NAMES={i:'ressource%d'%i for i in range(20,25)}
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 

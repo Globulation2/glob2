@@ -6,8 +6,8 @@ from pathlib import Path
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[2]
-NATIVE=ROOT/'datasrc/gfx/derived/tree-native'
-OUTPUT=ROOT/'datasrc/gfx/derived/trees-v1'
+NATIVE=ROOT/'content-src/gfx/derived/tree-native'
+OUTPUT=ROOT/'content-src/gfx/derived/trees-v1'
 # The two five-frame sequences share their later growth stages in classic art.
 SOURCE_NAMES=['trees_1_1','trees_2_1','trees_3_1','trees_4_1','trees_4_1',
               'trees_1_2','trees_2_1','trees_3_1','trees_4_1','trees_4_1']

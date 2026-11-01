@@ -114,7 +114,7 @@ class PipelineTest(unittest.TestCase):
 
     def test_rejects_original_source_as_output(self):
         with self.assertRaises(ValueError):
-            render.prepare(render.ROOT / 'datasrc/gfx/originals/units', '/work/render', 4)
+            render.prepare(render.ROOT / 'content-src/gfx/originals/units', '/work/render', 4)
 
     def test_rejects_wrong_file_version(self):
         with self.assertRaises(ValueError):

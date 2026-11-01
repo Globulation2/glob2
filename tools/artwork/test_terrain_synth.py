@@ -363,7 +363,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_provenance_records_statistics_only_references(self):
         for name in synth.SYNTH_ORDER:
-            document = json.loads((ROOT / "datasrc/gfx" / name / "provenance.json").read_text())
+            document = json.loads((ROOT / "content-src/gfx" / name / "provenance.json").read_text())
             recipe = synth.RECIPES[name]
             with self.subTest(material=name):
                 self.assertEqual(document["pillow"], synth.PILLOW_VERSION)

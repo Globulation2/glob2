@@ -21,7 +21,7 @@ complete reviewed selection explicitly, with base/team pairs and hashes intact.
 The [unit pipeline](../../../tools/unit-animation/README.md) preserves the
 original Blender sources and controls animation exports.
 Reproduce terrain using `tools/artwork/terrain_materials.py`; its retained sources,
-settings and mask records are under `datasrc/gfx/derived/terrain-materials-v1`. Packaging copies these
+settings and mask records are under `content-src/gfx/derived/terrain-materials-v1`. Packaging copies these
 approved finals and never generates new texture details.
 
 Related: [artwork production](../../../docs/assets/artwork-workflow.md).

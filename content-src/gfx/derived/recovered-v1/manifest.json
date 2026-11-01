@@ -21,7 +21,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/swarm/Ruche.png",
+          "path": "content-src/gfx/reference-exports/buildings/swarm/Ruche.png",
           "sha256": "88549c047160eb0a883b334eb091cad8adae4a03a2ffe63dc5d90d8b7ad554e8",
           "native_size": [
             256,
@@ -50,7 +50,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128c.png",
+          "path": "content-src/gfx/reference-exports/buildings/swarm/Morph128c.png",
           "sha256": "9bcb10af8d512456abd00e3424cb83665c32b598891bb64b355490daa2576a49",
           "native_size": [
             512,
@@ -79,7 +79,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/flags/WarFlag.png",
+          "path": "content-src/gfx/reference-exports/buildings/flags/WarFlag.png",
           "sha256": "ba32b3139ab131456e67ec9c9df89a0477d111a42aaa4b736cac3726cf174160",
           "native_size": [
             128,
@@ -108,7 +108,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/flags/ExploFlag.png",
+          "path": "content-src/gfx/reference-exports/buildings/flags/ExploFlag.png",
           "sha256": "5c772959f73fea52ba87c6e237bfc6c5e3dd0e92c43681a52b75339c420c4709",
           "native_size": [
             128,
@@ -137,7 +137,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/flags/RemoveFlag.png",
+          "path": "content-src/gfx/reference-exports/buildings/flags/RemoveFlag.png",
           "sha256": "1b8d789fda8099353c2d935e4c1241eb3e1194dbe557626ee7db8be9846ec221",
           "native_size": [
             128,
@@ -161,7 +161,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64c.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction64c.png",
           "sha256": "c69621d051f0634eda3c07bc87e243173e0693b8a97f5a3798ed11388aed9ae9",
           "native_size": [
             256,
@@ -169,7 +169,7 @@
           ]
         },
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64m.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction64m.png",
           "sha256": "a7b540849cb3f7b0a5d0269b832ca9ffc9545b25fd9940e13c88247a18cb0408",
           "native_size": [
             256,
@@ -193,7 +193,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96c.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction96c.png",
           "sha256": "fbb198ed42d149ef6f66094801a5e6b56b5537dddb52ac3e4276aada74acb323",
           "native_size": [
             384,
@@ -201,7 +201,7 @@
           ]
         },
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96m.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction96m.png",
           "sha256": "2a1e5b5c1fc060176c8a33e4d9f8d5922d540a1ad8f9ee8e77d6b0b8f7ddf355",
           "native_size": [
             384,
@@ -225,7 +225,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128c.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction128c.png",
           "sha256": "d30d202c283512e6d23a9db0c6b5940e7345bfaa959925c13e11d4e310ddcd14",
           "native_size": [
             512,
@@ -233,7 +233,7 @@
           ]
         },
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128m.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction128m.png",
           "sha256": "85be8078274de6720221a66fdc6173f6114607835a58cc19f03db4cdadace089",
           "native_size": [
             512,
@@ -257,7 +257,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192c.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction192c.png",
           "sha256": "b15b0425605344f9ba18b6ae6caa707683a726144dc0361a40bd5610a6515c51",
           "native_size": [
             384,
@@ -265,7 +265,7 @@
           ]
         },
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192m.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction192m.png",
           "sha256": "e6edbe00b53a2df228f2baf1e516f76d72b40317684a805ff92aaefabda81cbb",
           "native_size": [
             384,
@@ -289,7 +289,7 @@
       ],
       "sources": [
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256c.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction256c.png",
           "sha256": "f1dba0fce8a9b4ea4a40151258bec18465a031f19a461232e1056f7985a707ae",
           "native_size": [
             512,
@@ -297,7 +297,7 @@
           ]
         },
         {
-          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256m.png",
+          "path": "content-src/gfx/reference-exports/buildings/construction/Construction256m.png",
           "sha256": "baac33676f1515dade11d177094858a37c6ecdb7f7e90bc582a5e020af3b66aa",
           "native_size": [
             512,

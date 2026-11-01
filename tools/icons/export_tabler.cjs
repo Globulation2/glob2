@@ -9,7 +9,7 @@ const { Resvg } = require('@resvg/resvg-js');
 if (require('@resvg/resvg-js/package.json').version !== '2.6.2')
   throw new Error('Use @resvg/resvg-js@2.6.2 for reproducible exports');
 const root = path.resolve(__dirname, '../..');
-const source = path.join(root, 'datasrc/icons/tabler');
+const source = path.join(root, 'content-src/icons/tabler');
 const manifest = JSON.parse(fs.readFileSync(path.join(source, 'manifest.json')));
 for (const icon of manifest.icons) {
   const bytes = fs.readFileSync(path.join(source, `${icon.name}.svg`));

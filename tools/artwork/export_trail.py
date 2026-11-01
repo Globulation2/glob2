@@ -15,7 +15,7 @@ FIRST_FRAME = 288
 
 
 def frames():
-    with Image.open(ROOT / "datasrc/gfx/trail/material.png") as image:
+    with Image.open(ROOT / "content-src/gfx/trail/material.png") as image:
         source = image.convert("RGB")
     # One 4x4 material sheet supplies sixteen non-directional variants. BOX
     # averages the native grit into the coarse classic 32px texture.

@@ -6,7 +6,7 @@ import numpy as np
 from scipy import ndimage
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-DERIVED=ROOT/'datasrc/gfx/derived/wheat-v1'
+DERIVED=ROOT/'content-src/gfx/derived/wheat-v1'
 frames=json.loads((DERIVED/'manifest.json').read_text())['frames']
 assert {f['id'] for f in frames}=={'ressource%d'%i for i in [10,11,12,13,15,16,17,18]}
 for frame in frames:

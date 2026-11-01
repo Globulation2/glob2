@@ -4,9 +4,9 @@ import os,json
 root=os.environ.get('GLOB2_ART_ROOT',os.getcwd())
 out=os.path.join(root,'.cache/original-art/compositing-audit')
 if not os.path.isdir(out):os.makedirs(out)
-recipes=[('hosp0b0','datasrc/gfx/originals/buildings/hosp/level-1/hopital1.xcf',[1,2,3,4,5],[0]),
-         ('defencetower1b0','datasrc/gfx/originals/buildings/defencetower/level-2/tower2.xcf',[2,3,4,5,6],[0,1]),
-         ('tower-lowres','datasrc/gfx/originals/buildings/defencetower/level-2/tower1.xcf',[1,2],[0])]
+recipes=[('hosp0b0','content-src/gfx/originals/buildings/hosp/level-1/hopital1.xcf',[1,2,3,4,5],[0]),
+         ('defencetower1b0','content-src/gfx/originals/buildings/defencetower/level-2/tower2.xcf',[2,3,4,5,6],[0,1]),
+         ('tower-lowres','content-src/gfx/originals/buildings/defencetower/level-2/tower1.xcf',[1,2],[0])]
 for frame,source,base,team in recipes:
     for kind,selected,pad in [('direct',base+team,False),('base',base,True),('team',team,True)]:
         path=os.path.join(root,source)

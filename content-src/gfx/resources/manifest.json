@@ -34,7 +34,7 @@
       "recipe": "Painted at 16x supersampling and box-filtered to the 32px frame and the 128px HD frame; the object fills its cell."
     },
     {
-      "source": "datasrc/gfx/resources/gold.png",
+      "source": "content-src/gfx/resources/gold.png",
       "output": "data/gfx/ressourcemini8.png",
       "tool": "built-in image_gen",
       "transparent_background": true,
@@ -44,7 +44,7 @@
       "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
     },
     {
-      "source": "datasrc/gfx/resources/metal.png",
+      "source": "content-src/gfx/resources/metal.png",
       "output": "data/gfx/ressourcemini9.png",
       "tool": "built-in image_gen",
       "transparent_background": true,
@@ -54,7 +54,7 @@
       "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
     },
     {
-      "source": "datasrc/gfx/resources/glass.png",
+      "source": "content-src/gfx/resources/glass.png",
       "output": "data/gfx/ressourcemini10.png",
       "tool": "built-in image_gen",
       "transparent_background": true,
@@ -64,7 +64,7 @@
       "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
     },
     {
-      "source": "datasrc/gfx/resources/fabric.png",
+      "source": "content-src/gfx/resources/fabric.png",
       "output": "data/gfx/ressourcemini11.png",
       "tool": "built-in image_gen",
       "transparent_background": true,

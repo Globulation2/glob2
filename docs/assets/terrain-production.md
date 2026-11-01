@@ -12,7 +12,7 @@ layout and water and deep water one 4×4 layout, keeping their animated banks
 at 256 frames each. Frames are stored as
 `data/gfx/terrain-<name>N.png` at 32×32 RGBA and
 `data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
-in `datasrc/gfx/<name>/provenance.json`. The shared tile code in
+in `content-src/gfx/<name>/provenance.json`. The shared tile code in
 `tools/artwork/material_tiles.py` provides sheet cutting, pixel hashing and style
 statistics. The original legacy artwork remains available as style references;
 new terrain frames use their own `terrain-` prefixes and do not overwrite it.
@@ -310,7 +310,7 @@ on another platform is reported with that note. Recipes swapped to
 image-generated art are marked `placeholder_only=True` and skipped by `--check`.
 Writing frames also writes each variant's 128×128 render, the exact source the
 classic tile is downsampled from, as its HD frame (`data/highres/v1/terrain-<name>N.png`
-and `datasrc/gfx/production/procedural-materials/`), registers it in the pack
+and `content-src/gfx/production/procedural-materials/`), registers it in the pack
 manifest and `frames.txt` through `tools/artwork/highres_pack.py`, and records its
 hash in the provenance; `--check` compares both resolutions. `--hd` alone writes
 the renders under `artifacts/terrain/hd/` for review and changes nothing else.
@@ -333,7 +333,7 @@ replacement.
 ### Provenance layout
 
 ```
-datasrc/gfx/<name>/
+content-src/gfx/<name>/
   provenance.json   generator, method (procedural | image-generator | hybrid),
                     generator or exporter sha256, recipe or prompt, Python and
                     Pillow versions, style references ("statistics only"),

@@ -41,15 +41,15 @@
   ],
   "sources": [
     {
-      "path": "datasrc/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
+      "path": "content-src/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
       "sha256": "58ca0b3e781c6f5dcf0658bc0f82e569183602d039845d9f9a4f0e730791fb9a"
     },
     {
-      "path": "datasrc/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
+      "path": "content-src/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
       "sha256": "25f741622134cc68e3c9e1355fe86fa953b7ca6ce730bd2e0ad759545ecc5b4a"
     },
     {
-      "path": "datasrc/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
+      "path": "content-src/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
       "sha256": "6c51179ad2ac3dd4e97c1c698e0821de513d526e799d7a24ddad43b516fa74a0"
     },
     {

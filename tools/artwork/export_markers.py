@@ -4,8 +4,8 @@ import hashlib,json
 from pathlib import Path
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-SOURCE=ROOT/'datasrc/gfx/reference-exports/overlays'
-OUTPUT=ROOT/'datasrc/gfx/derived/markers-v1'
+SOURCE=ROOT/'content-src/gfx/reference-exports/overlays'
+OUTPUT=ROOT/'content-src/gfx/derived/markers-v1'
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def main():

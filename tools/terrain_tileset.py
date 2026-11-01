@@ -37,14 +37,14 @@ BINDINGS = required_bindings()
 
 
 def material_provenance(document, root=ROOT):
-    """Per-material provenance summaries from datasrc/gfx/<key>/provenance.json.
+    """Per-material provenance summaries from content-src/gfx/<key>/provenance.json.
 
     Materials without a provenance file are existing terrain artwork with
     shared periodic variant borders and no AI-generated imagery.
     """
     result = {}
     for material in document["materials"]:
-        path = Path(root) / "datasrc/gfx" / material["key"] / "provenance.json"
+        path = Path(root) / "content-src/gfx" / material["key"] / "provenance.json"
         if not path.is_file():
             result[material["key"]] = dict(method="existing", source="Existing terrain artwork")
             continue

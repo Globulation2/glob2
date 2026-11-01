@@ -88,9 +88,9 @@ python3 tools/artwork/catalog_originals.py
 
 ## Existing workflow migration
 
-Blender units moved from `datasrc/gfx/globules/` to `datasrc/gfx/originals/units/`.
-Building models moved to `datasrc/gfx/originals/buildings/`; cursor models moved
-to `datasrc/gfx/originals/cursors/`. All historical basenames remain unchanged.
+Blender units moved from `content-src/gfx/globules/` to `content-src/gfx/originals/units/`.
+Building models moved to `content-src/gfx/originals/buildings/`; cursor models moved
+to `content-src/gfx/originals/cursors/`. All historical basenames remain unchanged.
 The unit pipeline in `tools/unit-animation/` uses the new source directory.
 Other external scripts should update their source directory using the path
 manifest above. Approved unit renders follow the existing production layout.

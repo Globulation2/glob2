@@ -172,8 +172,8 @@ report: geometry/coverage matching and subtle shading differences are distinct.
 ## High-resolution textures
 
 Native 32-pose sprites remain in `data/gfx`. The Blender originals live in
-`datasrc/gfx/originals/units`. Approved high-resolution layers use the existing
-`datasrc/gfx/production/original-derived` category and are packaged into
+`content-src/gfx/originals/units`. Approved high-resolution layers use the existing
+`content-src/gfx/production/original-derived` category and are packaged into
 `data/highres/v1` alongside the other artwork. Unit icons are not changed.
 The runtime keeps the native logical dimensions (32, 38 or 40 pixels) and uses a
 fixed 128×128 pixel texture for every pose, regardless of native size -- 128 is
@@ -292,7 +292,7 @@ pink registration stripe. `--material mixed` cycles every material for shader ch
 
 `export_units.py` preserves all original source bytes. Worker and warrior surfaces
 are constructed from the retained definition in
-`datasrc/gfx/authored/skins/limb-surfaces.json`, `tools/skins/limb_surface.py`
+`content-src/gfx/authored/skins/limb-surfaces.json`, `tools/skins/limb_surface.py`
 and `tools/skins/chart.py`.
 The established socket/ring topology and its paint chart are retained. The
 builder fits its welded front/top quarter to one connected rest panel using a

@@ -75,7 +75,7 @@ sprite inference over these tiles: it would break their shared boundaries.
 Grass and sand now use the original-based refinement recipe in
 `tools/artwork/terrain_materials.py`, including retained transition masks and
 canonical edges at every mip. Its source material and tuning controls are kept
-in `datasrc/gfx/derived/terrain-materials-v1`; see the
+in `content-src/gfx/derived/terrain-materials-v1`; see the
 [HD artwork guide](../../../docs/assets/high-resolution/README.md).
 `tools/artwork/validate_runtime.py` checks 91,136 directed terrain joins and water
 edges at each mip. The approved final material tiles and atlas mips are the

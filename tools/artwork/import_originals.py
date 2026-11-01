@@ -9,7 +9,7 @@ import struct
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
-ART = ROOT / 'datasrc/gfx'
+ART = ROOT / 'content-src/gfx'
 MANIFEST = ART / 'provenance/stephane-2026-09-08.json'
 
 def digest(data):

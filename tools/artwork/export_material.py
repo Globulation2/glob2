@@ -8,7 +8,7 @@
     "$ENC" tools/artwork/export_material.py --name lava --animate-glow # four procedural glow phases
     "$ENC" tools/artwork/export_material.py --name hedge --prompt      # print the stored prompt
 
-Reads `datasrc/gfx/<name>/material.png` (square, at least 512 pixels), area
+Reads `content-src/gfx/<name>/material.png` (square, at least 512 pixels), area
 averages it to the 128x128 sheet, cuts sixteen 32x32 tiles, shares their
 perimeter (tools/artwork/material_tiles.py, the same code the procedural
 path uses) and writes `data/gfx/terrain-<name>0..15.png` plus a provenance
@@ -145,7 +145,7 @@ def sha256_file(path):
 
 
 def load_source(root, name):
-    path = root / "datasrc/gfx" / name / "material.png"
+    path = root / "content-src/gfx" / name / "material.png"
     require(path.is_file(), f"missing {path.relative_to(root)}")
     with Image.open(path) as image:
         require(image.width == image.height, f"{path.name}: material must be square")
@@ -252,7 +252,7 @@ def provenance_document(name, source_path, frames, hashes, root, animate):
     import terrain_synth  # noqa: E402
 
     recipe = terrain_synth.RECIPES.get(name)
-    previous = root / "datasrc/gfx" / name / "provenance.json"
+    previous = root / "content-src/gfx" / name / "provenance.json"
     replaces = None
     if previous.is_file():
         record = json.loads(previous.read_text())
@@ -308,7 +308,7 @@ def export(name, root=ROOT, animate=False, hd=False):
     frames = export_frames(name, source, animate)
     hashes = write_frames(frames, f"{FRAME_PREFIX}{name}", 0, root)
     document = provenance_document(name, source_path, frames, hashes, root, animate)
-    (root / "datasrc/gfx" / name / "provenance.json").write_text(json.dumps(document, indent=2) + "\n")
+    (root / "content-src/gfx" / name / "provenance.json").write_text(json.dumps(document, indent=2) + "\n")
     if hd:
         out = root / "artifacts/terrain/hd"
         out.mkdir(parents=True, exist_ok=True)
@@ -321,7 +321,7 @@ def export(name, root=ROOT, animate=False, hd=False):
 def check(name, root=ROOT, animate=False):
     """Re-export in memory and compare with the committed frames and provenance."""
     source_path, source = load_source(root, name)
-    provenance_path = root / "datasrc/gfx" / name / "provenance.json"
+    provenance_path = root / "content-src/gfx" / name / "provenance.json"
     require(provenance_path.is_file(), f"missing {provenance_path.relative_to(root)}")
     record = json.loads(provenance_path.read_text())
     require(record.get("method") in ("image-generator", "hybrid"),

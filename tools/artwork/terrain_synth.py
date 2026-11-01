@@ -36,7 +36,7 @@ row-major cell: `cell + cells * block + (cells * blocks) * phase`, where
 render four phases (sixteen for water and deep water).
 Outputs are `data/gfx/terrain-<name>N.png`, the 128x128 HD frames the classic
 tiles were downsampled from (`data/highres/v1/terrain-<name>N.png`, registered in
-the pack through tools/artwork/highres_pack.py) and `datasrc/gfx/<name>/provenance.json`.
+the pack through tools/artwork/highres_pack.py) and `content-src/gfx/<name>/provenance.json`.
 
 Pixel-exact reproduction (`--check`) is pinned to the encoder interpreter on
 Linux x86-64: besides Pillow's resampling kernels, the renders depend on the C
@@ -2640,7 +2640,7 @@ def write_material(name, phases, hd_phases, root):
     ], HD_CATEGORY, root)
     hd_hashes = {f"{HD_PREFIX}{name}{i}.png": pixel_sha256(tile) for i, tile in enumerate(hd_frames)}
     document = provenance_document(name, phases, hashes, root, hd_hashes)
-    path = root / "datasrc/gfx" / name / "provenance.json"
+    path = root / "content-src/gfx" / name / "provenance.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(document, indent=2) + "\n")
     return hashes
@@ -2658,7 +2658,7 @@ def check_material(name, phases, root, hd_phases=None):
     problems = []
     frames = frames_of(name, phases)
     fresh = tile_hashes(frames)
-    provenance_path = root / "datasrc/gfx" / name / "provenance.json"
+    provenance_path = root / "content-src/gfx" / name / "provenance.json"
     if not provenance_path.exists():
         return [f"{name}: missing {provenance_path.relative_to(root)}"]
     provenance = json.loads(provenance_path.read_text())
@@ -2870,7 +2870,7 @@ def main(argv=None):
             stats = style_stats(results[name][0])
             print(f"{name:<14} {len(hashes):3d} frames  luma {stats['luma']:5.1f} std {stats['std']:4.1f} "
                   f"grain {stats['grain']:4.1f} sat {stats['sat']:.2f}")
-        print(f"Wrote {len(names)} materials under {root / 'data/gfx'} and {root / 'datasrc/gfx'}")
+        print(f"Wrote {len(names)} materials under {root / 'data/gfx'} and {root / 'content-src/gfx'}")
 
 
 if __name__ == "__main__":

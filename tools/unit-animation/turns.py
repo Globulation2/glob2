@@ -19,7 +19,7 @@ from render import (
     ROOT, SETS, TURN_BASE, TURN_FRAMES, UNIT_HD_PIXEL_SIZE, prepare, schema_and_scene,
 )
 
-SOURCE_ROOT = ROOT / 'datasrc/gfx/originals/units'
+SOURCE_ROOT = ROOT / 'content-src/gfx/originals/units'
 RECEIPT_VERSION = 1
 
 
@@ -100,7 +100,7 @@ def validate_work(work):
     """Temporary authoring output must not overlap retained sources or assets."""
     work = work.resolve()
     protected = [SOURCE_ROOT, ROOT / 'data/gfx', ROOT / 'data/highres/v1',
-                 ROOT / 'datasrc/gfx/production']
+                 ROOT / 'content-src/gfx/production']
     for path in protected:
         if work.is_relative_to(path.resolve()) or path.resolve().is_relative_to(work):
             raise ValueError('Turn work directory overlaps retained artwork: ' + str(path))

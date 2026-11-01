@@ -5,7 +5,7 @@ How the shared asset pipeline prepares runtime data and how to measure package c
 ## Release asset and bundle sizes
 
 Release packagers share `tools/package_assets.py`. Original artwork stays in
-`data/` and `datasrc/`; generated runtime trees and per-image caches stay under
+`data/` and `content-src/`; generated runtime trees and per-image caches stay under
 `build/`. Runtime artwork is WebP in every client build: units, buildings,
 terrain, resources, effects, UI, icons, wordmarks and browser menu art. Release
 bundles choose the smaller of lossless WebP Q75/method 4 and lossy WebP

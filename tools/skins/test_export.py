@@ -129,7 +129,7 @@ def validate_installed(root, repository):
                     == digest
                 ), (name + ": " + dependency + " changed")
         else:
-            assert source.is_relative_to((repository / "datasrc/gfx").resolve())
+            assert source.is_relative_to((repository / "content-src/gfx").resolve())
         assert (
             hashlib.sha256(source.read_bytes()).hexdigest() == record["sourceSha256"]
         ), (name + ": source changed")

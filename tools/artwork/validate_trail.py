@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "datasrc/gfx/trail"
+SOURCE = ROOT / "content-src/gfx/trail"
 
 
 def require(condition, message):

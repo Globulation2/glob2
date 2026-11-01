@@ -8,8 +8,8 @@ from PIL import Image
 from scipy import ndimage
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / 'datasrc/gfx/reference-exports/buildings'
-OUTPUT = ROOT / 'datasrc/gfx/derived/recovered-v1'
+SOURCE = ROOT / 'content-src/gfx/reference-exports/buildings'
+OUTPUT = ROOT / 'content-src/gfx/derived/recovered-v1'
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def read(path): return np.asarray(Image.open(path).convert('RGBA'), dtype=float) / 255

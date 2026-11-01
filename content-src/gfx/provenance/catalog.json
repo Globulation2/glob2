@@ -1,6 +1,6 @@
 [
   {
-    "path": "datasrc/gfx/originals/buildings/barracks/level-1/__building5.xcf",
+    "path": "content-src/gfx/originals/buildings/barracks/level-1/__building5.xcf",
     "category": "originals/buildings/barracks/level-1",
     "format": "xcf",
     "dimensions": [
@@ -15,7 +15,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/barracks/level-3/__building12.xcf",
+    "path": "content-src/gfx/originals/buildings/barracks/level-3/__building12.xcf",
     "category": "originals/buildings/barracks/level-3",
     "format": "xcf",
     "dimensions": [
@@ -30,7 +30,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/barracks/level-3/__building19.xcf",
+    "path": "content-src/gfx/originals/buildings/barracks/level-3/__building19.xcf",
     "category": "originals/buildings/barracks/level-3",
     "format": "xcf",
     "dimensions": [
@@ -45,17 +45,17 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/catapult-1.blend",
+    "path": "content-src/gfx/originals/buildings/catapult-1.blend",
     "category": "originals/buildings",
     "format": "blend",
     "dimensions": null,
     "bytes": 142360,
     "sha256": "3896bf05f9d92dbce5874c537a56bf621862478857ab7b53c1a93d3f6931f45f",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/buildings/catapult-1.blend"
+    "previous_repository_path": "content-src/gfx/buildings/catapult-1.blend"
   },
   {
-    "path": "datasrc/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
+    "path": "content-src/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
     "category": "originals/buildings/defencetower/level-2",
     "format": "xcf",
     "dimensions": [
@@ -70,7 +70,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
+    "path": "content-src/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
     "category": "originals/buildings/defencetower/level-2",
     "format": "xcf",
     "dimensions": [
@@ -85,7 +85,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
+    "path": "content-src/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
     "category": "originals/buildings/hosp/level-1",
     "format": "xcf",
     "dimensions": [
@@ -100,7 +100,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/inn/level-2/auberge-goth-64.xcf",
+    "path": "content-src/gfx/originals/buildings/inn/level-2/auberge-goth-64.xcf",
     "category": "originals/buildings/inn/level-2",
     "format": "xcf",
     "dimensions": [
@@ -115,7 +115,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/inn/level-2/building8.xcf",
+    "path": "content-src/gfx/originals/buildings/inn/level-2/building8.xcf",
     "category": "originals/buildings/inn/level-2",
     "format": "xcf",
     "dimensions": [
@@ -130,7 +130,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/inn/level-3/auberge-steam.xcf",
+    "path": "content-src/gfx/originals/buildings/inn/level-3/auberge-steam.xcf",
     "category": "originals/buildings/inn/level-3",
     "format": "xcf",
     "dimensions": [
@@ -145,17 +145,17 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/pool-1.blend",
+    "path": "content-src/gfx/originals/buildings/pool-1.blend",
     "category": "originals/buildings",
     "format": "blend",
     "dimensions": null,
     "bytes": 118076,
     "sha256": "de03b606f0c9be1f9d0687cb5f9ae10f08ba0bd700a7176b6bfb24c62a957bc7",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/buildings/pool-1.blend"
+    "previous_repository_path": "content-src/gfx/buildings/pool-1.blend"
   },
   {
-    "path": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
+    "path": "content-src/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
     "category": "originals/buildings/racetrack/level-1",
     "format": "xcf",
     "dimensions": [
@@ -170,7 +170,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/racetrack/level-1/course-terre.xcf",
+    "path": "content-src/gfx/originals/buildings/racetrack/level-1/course-terre.xcf",
     "category": "originals/buildings/racetrack/level-1",
     "format": "xcf",
     "dimensions": [
@@ -185,7 +185,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
+    "path": "content-src/gfx/originals/buildings/racetrack/level-2/building10.xcf",
     "category": "originals/buildings/racetrack/level-2",
     "format": "xcf",
     "dimensions": [
@@ -200,7 +200,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/racetrack/level-2/course-goth-256.xcf",
+    "path": "content-src/gfx/originals/buildings/racetrack/level-2/course-goth-256.xcf",
     "category": "originals/buildings/racetrack/level-2",
     "format": "xcf",
     "dimensions": [
@@ -215,7 +215,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/racetrack/level-3/course-steam.xcf",
+    "path": "content-src/gfx/originals/buildings/racetrack/level-3/course-steam.xcf",
     "category": "originals/buildings/racetrack/level-3",
     "format": "xcf",
     "dimensions": [
@@ -230,7 +230,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
+    "path": "content-src/gfx/originals/buildings/school/level-2/science.xcf",
     "category": "originals/buildings/school/level-2",
     "format": "xcf",
     "dimensions": [
@@ -245,7 +245,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/school/level-2/science1.xcf",
+    "path": "content-src/gfx/originals/buildings/school/level-2/science1.xcf",
     "category": "originals/buildings/school/level-2",
     "format": "xcf",
     "dimensions": [
@@ -260,27 +260,27 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/buildings/tower-1.blend",
+    "path": "content-src/gfx/originals/buildings/tower-1.blend",
     "category": "originals/buildings",
     "format": "blend",
     "dimensions": null,
     "bytes": 152348,
     "sha256": "4c7cc28f5d896b46f735cb43f49f593f9869594e25ca1e9333f8ac45869f6ff6",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/buildings/tower-1.blend"
+    "previous_repository_path": "content-src/gfx/buildings/tower-1.blend"
   },
   {
-    "path": "datasrc/gfx/originals/buildings/tower-2.blend",
+    "path": "content-src/gfx/originals/buildings/tower-2.blend",
     "category": "originals/buildings",
     "format": "blend",
     "dimensions": null,
     "bytes": 135688,
     "sha256": "066cc62cff7c51d37ac284b700fbe4c4ccb3eccf5352fd21d76d83720022dc77",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/buildings/tower-2.blend"
+    "previous_repository_path": "content-src/gfx/buildings/tower-2.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_click.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_click.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -289,10 +289,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_click.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_click.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_click.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_clicked.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_clicked.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -301,10 +301,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_clicked.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_clicked.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_clicked.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_direction_d.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_direction_d.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -313,10 +313,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_direction_d.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_d.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_direction_d.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_direction_l.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_direction_l.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -325,10 +325,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_direction_l.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_l.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_direction_l.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_direction_ld.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_direction_ld.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -337,10 +337,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_direction_ld.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_ld.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_direction_ld.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_direction_lu.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_direction_lu.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -349,10 +349,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_direction_lu.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_lu.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_direction_lu.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_direction_r.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_direction_r.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -361,10 +361,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_direction_r.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_r.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_direction_r.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_direction_rd.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_direction_rd.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -373,10 +373,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_direction_rd.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_rd.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_direction_rd.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_direction_ru.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_direction_ru.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -385,10 +385,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_direction_ru.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_ru.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_direction_ru.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_direction_u.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_direction_u.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -397,10 +397,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_direction_u.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_u.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_direction_u.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_mark.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_mark.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -409,10 +409,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_mark.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_mark.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_mark.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_normal.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_normal.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -421,10 +421,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_normal.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_normal.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_normal.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_wait1.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_wait1.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -433,10 +433,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_wait1.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_wait1.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_wait1.blend"
   },
   {
-    "path": "datasrc/gfx/originals/cursors/cursor_wait2.blend",
+    "path": "content-src/gfx/originals/cursors/cursor_wait2.blend",
     "category": "originals/cursors",
     "format": "blend",
     "dimensions": null,
@@ -445,10 +445,10 @@
     "archive_paths": [
       "glob2-highres/cursor/cursor_wait2.blend"
     ],
-    "previous_repository_path": "datasrc/gfx/cursor/cursor_wait2.blend"
+    "previous_repository_path": "content-src/gfx/cursor/cursor_wait2.blend"
   },
   {
-    "path": "datasrc/gfx/originals/overlays/forbidden.xcf",
+    "path": "content-src/gfx/originals/overlays/forbidden.xcf",
     "category": "originals/overlays",
     "format": "xcf",
     "dimensions": [
@@ -463,7 +463,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/overlays/guard.svg",
+    "path": "content-src/gfx/originals/overlays/guard.svg",
     "category": "originals/overlays",
     "format": "svg",
     "dimensions": null,
@@ -475,7 +475,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/overlays/guard.xcf",
+    "path": "content-src/gfx/originals/overlays/guard.xcf",
     "category": "originals/overlays",
     "format": "xcf",
     "dimensions": [
@@ -490,7 +490,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/overlays/harvest.svg",
+    "path": "content-src/gfx/originals/overlays/harvest.svg",
     "category": "originals/overlays",
     "format": "svg",
     "dimensions": null,
@@ -502,7 +502,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/resources/tree/trees_1_1.xcf",
+    "path": "content-src/gfx/originals/resources/tree/trees_1_1.xcf",
     "category": "originals/resources/tree",
     "format": "xcf",
     "dimensions": [
@@ -514,10 +514,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Arbres/trees_1_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/tree/trees_1_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/tree/trees_1_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/tree/trees_1_2.xcf",
+    "path": "content-src/gfx/originals/resources/tree/trees_1_2.xcf",
     "category": "originals/resources/tree",
     "format": "xcf",
     "dimensions": [
@@ -529,10 +529,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Arbres/trees_1_2.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/tree/trees_1_2.xcf"
+    "previous_repository_path": "content-src/gfx/resources/tree/trees_1_2.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/tree/trees_2_1.xcf",
+    "path": "content-src/gfx/originals/resources/tree/trees_2_1.xcf",
     "category": "originals/resources/tree",
     "format": "xcf",
     "dimensions": [
@@ -544,10 +544,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Arbres/trees_2_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/tree/trees_2_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/tree/trees_2_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/tree/trees_3_1.xcf",
+    "path": "content-src/gfx/originals/resources/tree/trees_3_1.xcf",
     "category": "originals/resources/tree",
     "format": "xcf",
     "dimensions": [
@@ -559,10 +559,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Arbres/trees_3_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/tree/trees_3_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/tree/trees_3_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf",
+    "path": "content-src/gfx/originals/resources/tree/trees_4_1.xcf",
     "category": "originals/resources/tree",
     "format": "xcf",
     "dimensions": [
@@ -574,10 +574,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Arbres/trees_4_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/tree/trees_4_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/tree/trees_4_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat/wheat_1_1.xcf",
+    "path": "content-src/gfx/originals/resources/wheat/wheat_1_1.xcf",
     "category": "originals/resources/wheat",
     "format": "xcf",
     "dimensions": [
@@ -589,10 +589,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blé smarties/blé_1_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_1_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat/wheat_1_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat/wheat_1_2.xcf",
+    "path": "content-src/gfx/originals/resources/wheat/wheat_1_2.xcf",
     "category": "originals/resources/wheat",
     "format": "xcf",
     "dimensions": [
@@ -604,10 +604,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blé smarties/blé_1_2.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_1_2.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat/wheat_1_2.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat/wheat_2_1.xcf",
+    "path": "content-src/gfx/originals/resources/wheat/wheat_2_1.xcf",
     "category": "originals/resources/wheat",
     "format": "xcf",
     "dimensions": [
@@ -619,10 +619,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blé smarties/blé_2_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_2_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat/wheat_2_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat/wheat_2_2.xcf",
+    "path": "content-src/gfx/originals/resources/wheat/wheat_2_2.xcf",
     "category": "originals/resources/wheat",
     "format": "xcf",
     "dimensions": [
@@ -634,10 +634,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blé smarties/blé_2_2.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_2_2.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat/wheat_2_2.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat/wheat_3_1.xcf",
+    "path": "content-src/gfx/originals/resources/wheat/wheat_3_1.xcf",
     "category": "originals/resources/wheat",
     "format": "xcf",
     "dimensions": [
@@ -649,10 +649,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blé smarties/blé_3_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_3_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat/wheat_3_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat/wheat_3_2.xcf",
+    "path": "content-src/gfx/originals/resources/wheat/wheat_3_2.xcf",
     "category": "originals/resources/wheat",
     "format": "xcf",
     "dimensions": [
@@ -664,10 +664,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blé smarties/blé_3_2.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_3_2.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat/wheat_3_2.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat/wheat_4_1.xcf",
+    "path": "content-src/gfx/originals/resources/wheat/wheat_4_1.xcf",
     "category": "originals/resources/wheat",
     "format": "xcf",
     "dimensions": [
@@ -679,10 +679,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blé smarties/blé_4_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_4_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat/wheat_4_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat/wheat_4_2.xcf",
+    "path": "content-src/gfx/originals/resources/wheat/wheat_4_2.xcf",
     "category": "originals/resources/wheat",
     "format": "xcf",
     "dimensions": [
@@ -694,10 +694,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blé smarties/blé_4_2.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_4_2.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat/wheat_4_2.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_1.xcf",
+    "path": "content-src/gfx/originals/resources/wheat-classic/ble_1.xcf",
     "category": "originals/resources/wheat-classic",
     "format": "xcf",
     "dimensions": [
@@ -709,10 +709,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blés/ble_1.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_1.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat-classic/ble_1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_2.xcf",
+    "path": "content-src/gfx/originals/resources/wheat-classic/ble_2.xcf",
     "category": "originals/resources/wheat-classic",
     "format": "xcf",
     "dimensions": [
@@ -724,10 +724,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blés/ble_2.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_2.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat-classic/ble_2.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_3.xcf",
+    "path": "content-src/gfx/originals/resources/wheat-classic/ble_3.xcf",
     "category": "originals/resources/wheat-classic",
     "format": "xcf",
     "dimensions": [
@@ -739,10 +739,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blés/ble_3.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_3.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat-classic/ble_3.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_4.xcf",
+    "path": "content-src/gfx/originals/resources/wheat-classic/ble_4.xcf",
     "category": "originals/resources/wheat-classic",
     "format": "xcf",
     "dimensions": [
@@ -754,10 +754,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blés/ble_4.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_4.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat-classic/ble_4.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_5.xcf",
+    "path": "content-src/gfx/originals/resources/wheat-classic/ble_5.xcf",
     "category": "originals/resources/wheat-classic",
     "format": "xcf",
     "dimensions": [
@@ -769,10 +769,10 @@
     "archive_paths": [
       "glob2-highres/terrain/Blés/ble_5.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_5.xcf"
+    "previous_repository_path": "content-src/gfx/resources/wheat-classic/ble_5.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+    "path": "content-src/gfx/originals/terrain/papyrus.xcf",
     "category": "originals/terrain",
     "format": "xcf",
     "dimensions": [
@@ -787,7 +787,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/terrain/water.xcf",
+    "path": "content-src/gfx/originals/terrain/water.xcf",
     "category": "originals/terrain",
     "format": "xcf",
     "dimensions": [
@@ -799,50 +799,50 @@
     "archive_paths": [
       "glob2-highres/terrain/water/water.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/terrain/water.xcf"
+    "previous_repository_path": "content-src/gfx/terrain/water.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_down.svg",
+    "path": "content-src/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_down.svg",
     "category": "originals/ui/arrows",
     "format": "svg",
     "dimensions": null,
     "bytes": 7461,
     "sha256": "f24769839ab2061fe5c4b27cf851c0721b69b32c2f3995cc63175c34ac5b1530",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_down.svg"
+    "previous_repository_path": "content-src/gfx/arrows/jean_victor_balin_arrow_blue_down.svg"
   },
   {
-    "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_left.svg",
+    "path": "content-src/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_left.svg",
     "category": "originals/ui/arrows",
     "format": "svg",
     "dimensions": null,
     "bytes": 7479,
     "sha256": "16960bfb3f81be33a17c0f4f337d072a193e6239cd4cf16e99a880ef5c0fd66f",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_left.svg"
+    "previous_repository_path": "content-src/gfx/arrows/jean_victor_balin_arrow_blue_left.svg"
   },
   {
-    "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_right.svg",
+    "path": "content-src/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_right.svg",
     "category": "originals/ui/arrows",
     "format": "svg",
     "dimensions": null,
     "bytes": 7484,
     "sha256": "abd29ff542922019cab746e0a114e769e5e05e40ebc1d55927ebfb336a0f0525",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_right.svg"
+    "previous_repository_path": "content-src/gfx/arrows/jean_victor_balin_arrow_blue_right.svg"
   },
   {
-    "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_up.svg",
+    "path": "content-src/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_up.svg",
     "category": "originals/ui/arrows",
     "format": "svg",
     "dimensions": null,
     "bytes": 8507,
     "sha256": "d00af9707e3c9e1a22dde7472087fa8ca4476f5619b312391b7df63dcbd97e41",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_up.svg"
+    "previous_repository_path": "content-src/gfx/arrows/jean_victor_balin_arrow_blue_up.svg"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/bigbutton.xcf",
+    "path": "content-src/gfx/originals/ui/controls/bigbutton.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -854,10 +854,10 @@
     "archive_paths": [
       "glob2-highres/ui/bigbutton.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/bigbutton.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/bigbutton.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_add.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_add.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -867,10 +867,10 @@
     "bytes": 4898,
     "sha256": "a36c100304798e1968c68ce0324ca21d21868f0441fe57ca8065f84c707ad700",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_add.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_add.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_3x3.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_brush_circle_3x3.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -880,10 +880,10 @@
     "bytes": 1468,
     "sha256": "b65707e14bcb4fb11eb4a9f03563dff9a181be23606a716cb13759cd0fc879a1",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_circle_3x3.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_brush_circle_3x3.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_5x5.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_brush_circle_5x5.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -893,10 +893,10 @@
     "bytes": 1516,
     "sha256": "4a21ba849cf74000df303878292fb73a0d6ad8b4076acedc5606a8b07185b8cd",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_circle_5x5.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_brush_circle_5x5.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_7x7.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_brush_circle_7x7.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -906,10 +906,10 @@
     "bytes": 1560,
     "sha256": "80e945a751ef1b821c194ba93c565454216fd1c450a86cc4dc763ac9a143c879",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_circle_7x7.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_brush_circle_7x7.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_1x1.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_brush_square_1x1.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -919,10 +919,10 @@
     "bytes": 1420,
     "sha256": "b6e1f7acbc757d798d37259eee56e2eef35731a5f4415a654e26287b3c27c003",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_square_1x1.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_brush_square_1x1.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_3x3.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_brush_square_3x3.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -932,10 +932,10 @@
     "bytes": 1468,
     "sha256": "54d1c5ced6f5952901a9502e411d549c844061f6ab1b38cdf9ffebc4cad26c9e",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_square_3x3.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_brush_square_3x3.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_5x5.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_brush_square_5x5.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -945,10 +945,10 @@
     "bytes": 1516,
     "sha256": "e62e7b21e3f15720ad40c9e2050d5a8d5dc48738710012c5e7581bee49f74727",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_square_5x5.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_brush_square_5x5.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_7x7.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_brush_square_7x7.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -958,10 +958,10 @@
     "bytes": 1560,
     "sha256": "2f6e21586d6dfc29385a52ed9f077102a32412bb718ed2b7457516c20d577b22",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_square_7x7.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_brush_square_7x7.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/forbidden_remove.xcf",
+    "path": "content-src/gfx/originals/ui/controls/forbidden_remove.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -971,10 +971,10 @@
     "bytes": 5315,
     "sha256": "fd8c4ee27457996d5d7e65a74aaf7e335a2fa28ed07c57567f443334981e3710",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_remove.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/forbidden_remove.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/glob2_gold",
+    "path": "content-src/gfx/originals/ui/controls/glob2_gold",
     "category": "originals/ui/controls",
     "format": "",
     "dimensions": null,
@@ -983,10 +983,10 @@
     "archive_paths": [
       "glob2-highres/ui/glob2_gold"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/glob2_gold"
+    "previous_repository_path": "content-src/gfx/game-gui/glob2_gold"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/minus.xcf",
+    "path": "content-src/gfx/originals/ui/controls/minus.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1001,7 +1001,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/onoff.xcf",
+    "path": "content-src/gfx/originals/ui/controls/onoff.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1013,20 +1013,20 @@
     "archive_paths": [
       "glob2-highres/ui/onoff.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/onoff.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/onoff.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/padlock.svg",
+    "path": "content-src/gfx/originals/ui/controls/padlock.svg",
     "category": "originals/ui/controls",
     "format": "svg",
     "dimensions": null,
     "bytes": 11066,
     "sha256": "b5a0e9c33415752282c850219137fa00cbf3fae587e0e8982b357b2e5d94e82a",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/game-gui/padlock.svg"
+    "previous_repository_path": "content-src/gfx/game-gui/padlock.svg"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/plus.xcf",
+    "path": "content-src/gfx/originals/ui/controls/plus.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1041,7 +1041,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/round-base.xcf",
+    "path": "content-src/gfx/originals/ui/controls/round-base.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1053,10 +1053,10 @@
     "archive_paths": [
       "glob2-highres/ui/round-base.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/round-base.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/round-base.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/selection32x32.xcf",
+    "path": "content-src/gfx/originals/ui/controls/selection32x32.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1068,10 +1068,10 @@
     "archive_paths": [
       "glob2-highres/ui/selection32x32.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/selection32x32.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/selection32x32.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/separator.xcf",
+    "path": "content-src/gfx/originals/ui/controls/separator.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1086,7 +1086,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/tab-building.xcf",
+    "path": "content-src/gfx/originals/ui/controls/tab-building.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1098,10 +1098,10 @@
     "archive_paths": [
       "glob2-highres/ui/gamegui.001.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/tab-building.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/tab-building.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/tab-info.xcf",
+    "path": "content-src/gfx/originals/ui/controls/tab-info.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1113,10 +1113,10 @@
     "archive_paths": [
       "glob2-highres/ui/gamegui.023.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/tab-info.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/tab-info.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/tab-stat-gfx.xcf",
+    "path": "content-src/gfx/originals/ui/controls/tab-stat-gfx.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1128,10 +1128,10 @@
     "archive_paths": [
       "glob2-highres/ui/gamegui.045.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/tab-stat-gfx.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/tab-stat-gfx.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/controls/tab-stat-text.xcf",
+    "path": "content-src/gfx/originals/ui/controls/tab-stat-text.xcf",
     "category": "originals/ui/controls",
     "format": "xcf",
     "dimensions": [
@@ -1143,110 +1143,110 @@
     "archive_paths": [
       "glob2-highres/ui/gamegui.067.xcf"
     ],
-    "previous_repository_path": "datasrc/gfx/game-gui/tab-stat-text.xcf"
+    "previous_repository_path": "content-src/gfx/game-gui/tab-stat-text.xcf"
   },
   {
-    "path": "datasrc/gfx/originals/ui/headset/headset.blend",
+    "path": "content-src/gfx/originals/ui/headset/headset.blend",
     "category": "originals/ui/headset",
     "format": "blend",
     "dimensions": null,
     "bytes": 165768,
     "sha256": "4b780ce7a1c2c988bef83505da51ee5983e9a2b7d1c120196f5f773a860d7290",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/headset/headset.blend"
+    "previous_repository_path": "content-src/gfx/headset/headset.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/explorer.blend",
+    "path": "content-src/gfx/originals/units/explorer.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 89456,
     "sha256": "4d6913061c1e25861a12d45cea72f14d5c8bd8ab603158a2e1077cff70cd959d",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/explorer.blend"
+    "previous_repository_path": "content-src/gfx/globules/explorer.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/glob-warrior-fight.blend",
+    "path": "content-src/gfx/originals/units/glob-warrior-fight.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 177132,
     "sha256": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/glob-warrior-fight.blend"
+    "previous_repository_path": "content-src/gfx/globules/glob-warrior-fight.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/glob-warrior-swim.blend",
+    "path": "content-src/gfx/originals/units/glob-warrior-swim.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 184632,
     "sha256": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/glob-warrior-swim.blend"
+    "previous_repository_path": "content-src/gfx/globules/glob-warrior-swim.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/glob-warrior-walk.blend",
+    "path": "content-src/gfx/originals/units/glob-warrior-walk.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 182352,
     "sha256": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/glob-warrior-walk.blend"
+    "previous_repository_path": "content-src/gfx/globules/glob-warrior-walk.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/glob-warrior.blend",
+    "path": "content-src/gfx/originals/units/glob-warrior.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 150576,
     "sha256": "19bacb5462998c1260af8252cd1d002b0e18e4192a4806aff42dcd03b5177d1f",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/glob-warrior.blend"
+    "previous_repository_path": "content-src/gfx/globules/glob-warrior.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/glob-worker-harvest.blend",
+    "path": "content-src/gfx/originals/units/glob-worker-harvest.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 191700,
     "sha256": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/glob-worker-harvest.blend"
+    "previous_repository_path": "content-src/gfx/globules/glob-worker-harvest.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/glob-worker-swim.blend",
+    "path": "content-src/gfx/originals/units/glob-worker-swim.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 155904,
     "sha256": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/glob-worker-swim.blend"
+    "previous_repository_path": "content-src/gfx/globules/glob-worker-swim.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/glob-worker-walk.blend",
+    "path": "content-src/gfx/originals/units/glob-worker-walk.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 175148,
     "sha256": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/glob-worker-walk.blend"
+    "previous_repository_path": "content-src/gfx/globules/glob-worker-walk.blend"
   },
   {
-    "path": "datasrc/gfx/originals/units/glob-worker-walk2.blend",
+    "path": "content-src/gfx/originals/units/glob-worker-walk2.blend",
     "category": "originals/units",
     "format": "blend",
     "dimensions": null,
     "bytes": 159496,
     "sha256": "1666f9454035f1cc43e978462afa3c3b53361c1eb1c784a1d524a2012e954e89",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/glob-worker-walk2.blend"
+    "previous_repository_path": "content-src/gfx/globules/glob-worker-walk2.blend"
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/auberge-goth.jpg",
+    "path": "content-src/gfx/concept-art/buildings/auberge-goth.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1261,7 +1261,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/auberge-steam.jpg",
+    "path": "content-src/gfx/concept-art/buildings/auberge-steam.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1276,7 +1276,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/combat-goth.jpg",
+    "path": "content-src/gfx/concept-art/buildings/combat-goth.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1291,7 +1291,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/course-1.jpg",
+    "path": "content-src/gfx/concept-art/buildings/course-1.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1306,7 +1306,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/course-2.jpg",
+    "path": "content-src/gfx/concept-art/buildings/course-2.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1321,7 +1321,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/course-3.jpg",
+    "path": "content-src/gfx/concept-art/buildings/course-3.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1336,7 +1336,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/course-goth.jpg",
+    "path": "content-src/gfx/concept-art/buildings/course-goth.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1351,7 +1351,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/course-steam.jpg",
+    "path": "content-src/gfx/concept-art/buildings/course-steam.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1366,7 +1366,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/course-terre.jpg",
+    "path": "content-src/gfx/concept-art/buildings/course-terre.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1381,7 +1381,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/drawing-science2.jpeg",
+    "path": "content-src/gfx/concept-art/buildings/drawing-science2.jpeg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1396,7 +1396,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/drawing-towers1-2.jpeg",
+    "path": "content-src/gfx/concept-art/buildings/drawing-towers1-2.jpeg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1411,7 +1411,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/hopitaux-1-2-3.jpg",
+    "path": "content-src/gfx/concept-art/buildings/hopitaux-1-2-3.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1426,7 +1426,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/newmiam.png",
+    "path": "content-src/gfx/concept-art/buildings/newmiam.png",
     "category": "concept-art/buildings",
     "format": "png",
     "dimensions": [
@@ -1441,7 +1441,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/newpiscine-overlay.png",
+    "path": "content-src/gfx/concept-art/buildings/newpiscine-overlay.png",
     "category": "concept-art/buildings",
     "format": "png",
     "dimensions": [
@@ -1456,7 +1456,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/newpiscine.png",
+    "path": "content-src/gfx/concept-art/buildings/newpiscine.png",
     "category": "concept-art/buildings",
     "format": "png",
     "dimensions": [
@@ -1471,7 +1471,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/science.jpeg",
+    "path": "content-src/gfx/concept-art/buildings/science.jpeg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1486,7 +1486,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/science.png",
+    "path": "content-src/gfx/concept-art/buildings/science.png",
     "category": "concept-art/buildings",
     "format": "png",
     "dimensions": [
@@ -1501,7 +1501,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/tourelle-goth.jpg",
+    "path": "content-src/gfx/concept-art/buildings/tourelle-goth.jpg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1516,7 +1516,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/tower0.jpeg",
+    "path": "content-src/gfx/concept-art/buildings/tower0.jpeg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1531,7 +1531,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/concept-art/buildings/tower2.jpeg",
+    "path": "content-src/gfx/concept-art/buildings/tower2.jpeg",
     "category": "concept-art/buildings",
     "format": "jpeg",
     "dimensions": [
@@ -1546,7 +1546,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128c.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction128c.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1561,7 +1561,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128m.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction128m.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1576,7 +1576,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction160c.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction160c.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1591,7 +1591,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction160m.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction160m.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1606,7 +1606,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192c.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction192c.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1621,7 +1621,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192m.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction192m.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1636,7 +1636,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256c.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction256c.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1651,7 +1651,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256m.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction256m.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1666,7 +1666,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64c.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction64c.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1681,7 +1681,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64m.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction64m.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1696,7 +1696,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96c.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction96c.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1711,7 +1711,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96m.png",
+    "path": "content-src/gfx/reference-exports/buildings/construction/Construction96m.png",
     "category": "reference-exports/buildings/construction",
     "format": "png",
     "dimensions": [
@@ -1726,7 +1726,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building23.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building23.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1741,7 +1741,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building24.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building24.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1756,7 +1756,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building25.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building25.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1771,7 +1771,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building26.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building26.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1786,7 +1786,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building27.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building27.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1801,7 +1801,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building28.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building28.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1816,7 +1816,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building29.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building29.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1831,7 +1831,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building30.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building30.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1846,7 +1846,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building31.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building31.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1861,7 +1861,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building32.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building32.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1876,7 +1876,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building33.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building33.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1891,7 +1891,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building34.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building34.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1906,7 +1906,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building35.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building35.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1921,7 +1921,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building36.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building36.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1936,7 +1936,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building37.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building37.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1951,7 +1951,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building38.png",
+    "path": "content-src/gfx/reference-exports/buildings/direction-templates/building38.png",
     "category": "reference-exports/buildings/direction-templates",
     "format": "png",
     "dimensions": [
@@ -1966,7 +1966,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/flags/ExploFlag.png",
+    "path": "content-src/gfx/reference-exports/buildings/flags/ExploFlag.png",
     "category": "reference-exports/buildings/flags",
     "format": "png",
     "dimensions": [
@@ -1981,7 +1981,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/flags/RemoveFlag.png",
+    "path": "content-src/gfx/reference-exports/buildings/flags/RemoveFlag.png",
     "category": "reference-exports/buildings/flags",
     "format": "png",
     "dimensions": [
@@ -1996,7 +1996,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/flags/WarFlag.png",
+    "path": "content-src/gfx/reference-exports/buildings/flags/WarFlag.png",
     "category": "reference-exports/buildings/flags",
     "format": "png",
     "dimensions": [
@@ -2011,7 +2011,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128c.png",
+    "path": "content-src/gfx/reference-exports/buildings/swarm/Morph128c.png",
     "category": "reference-exports/buildings/swarm",
     "format": "png",
     "dimensions": [
@@ -2026,7 +2026,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128fn.png",
+    "path": "content-src/gfx/reference-exports/buildings/swarm/Morph128fn.png",
     "category": "reference-exports/buildings/swarm",
     "format": "png",
     "dimensions": [
@@ -2041,7 +2041,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/buildings/swarm/Ruche.png",
+    "path": "content-src/gfx/reference-exports/buildings/swarm/Ruche.png",
     "category": "reference-exports/buildings/swarm",
     "format": "png",
     "dimensions": [
@@ -2056,7 +2056,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g0-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/g0-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2071,7 +2071,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g0.png",
+    "path": "content-src/gfx/reference-exports/overlays/g0.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2081,10 +2081,10 @@
     "bytes": 4553,
     "sha256": "7f79a3caa89b6cbba71e82d72888043e3e3e57b41d15c530ff87cb28aa6bb057",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/g0.png"
+    "previous_repository_path": "content-src/gfx/areas/g0.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g1-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/g1-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2099,7 +2099,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g1.png",
+    "path": "content-src/gfx/reference-exports/overlays/g1.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2109,10 +2109,10 @@
     "bytes": 3949,
     "sha256": "72c0be1c43ab4c280b38d9bbdf6eb0e1a4830770c70ee0556b9a08d8f4c2f0ca",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/g1.png"
+    "previous_repository_path": "content-src/gfx/areas/g1.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g2-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/g2-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2127,7 +2127,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g2.png",
+    "path": "content-src/gfx/reference-exports/overlays/g2.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2137,10 +2137,10 @@
     "bytes": 4036,
     "sha256": "39b3e31db40e30e78f6ab4a684f3cf5ac6b22a34acbf6bb641371cd4c0c7176d",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/g2.png"
+    "previous_repository_path": "content-src/gfx/areas/g2.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g3-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/g3-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2155,7 +2155,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g3.png",
+    "path": "content-src/gfx/reference-exports/overlays/g3.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2165,10 +2165,10 @@
     "bytes": 4159,
     "sha256": "86bb7388aaabbbb35f1e9100d96f758addef7a82cf1303e8b49aa7190f91d209",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/g3.png"
+    "previous_repository_path": "content-src/gfx/areas/g3.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g4-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/g4-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2183,7 +2183,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g4.png",
+    "path": "content-src/gfx/reference-exports/overlays/g4.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2193,10 +2193,10 @@
     "bytes": 4181,
     "sha256": "ce728c6033a5eeee5f0f25e664324c287efeae946fe3eda34b8ed1450a850fc2",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/g4.png"
+    "previous_repository_path": "content-src/gfx/areas/g4.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g5-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/g5-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2211,7 +2211,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g5.png",
+    "path": "content-src/gfx/reference-exports/overlays/g5.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2221,10 +2221,10 @@
     "bytes": 3989,
     "sha256": "4279c0462e9852df9e6c1bd4452bf6ac076a8fa1f2e3b047929c067f5a746dd9",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/g5.png"
+    "previous_repository_path": "content-src/gfx/areas/g5.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g6-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/g6-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2239,7 +2239,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g6.png",
+    "path": "content-src/gfx/reference-exports/overlays/g6.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2249,10 +2249,10 @@
     "bytes": 3988,
     "sha256": "f6a8ea428e15cbedc6e5e9f1f4b3a3292071ed6bda591f1fa93e881250cb6163",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/g6.png"
+    "previous_repository_path": "content-src/gfx/areas/g6.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g7-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/g7-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2267,7 +2267,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/g7.png",
+    "path": "content-src/gfx/reference-exports/overlays/g7.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2277,10 +2277,10 @@
     "bytes": 3693,
     "sha256": "189299a0e9b064da9ead894840fceb5434f7104bb1af1a11b516a2a962ddca5b",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/g7.png"
+    "previous_repository_path": "content-src/gfx/areas/g7.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h1-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/h1-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2295,7 +2295,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h1.png",
+    "path": "content-src/gfx/reference-exports/overlays/h1.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2305,10 +2305,10 @@
     "bytes": 1841,
     "sha256": "eb4c52227f028ff95b8a0b008d19a6dbdf903de0dc643d54b692c1724d58f272",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/h1.png"
+    "previous_repository_path": "content-src/gfx/areas/h1.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h2-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/h2-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2323,7 +2323,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h2.png",
+    "path": "content-src/gfx/reference-exports/overlays/h2.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2333,10 +2333,10 @@
     "bytes": 3224,
     "sha256": "c4ef00df7326e0715fc88b8e4aac6b308659ca6bb6e03a34d60e1ae3b882203e",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/h2.png"
+    "previous_repository_path": "content-src/gfx/areas/h2.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h3-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/h3-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2351,7 +2351,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h3.png",
+    "path": "content-src/gfx/reference-exports/overlays/h3.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2361,10 +2361,10 @@
     "bytes": 3479,
     "sha256": "78f96d99b7eba36d4fca7b52f9cf9ea92792d9a38ff36f9784f992b3247e0b0b",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/h3.png"
+    "previous_repository_path": "content-src/gfx/areas/h3.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h4-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/h4-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2379,7 +2379,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h4.png",
+    "path": "content-src/gfx/reference-exports/overlays/h4.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2389,10 +2389,10 @@
     "bytes": 3995,
     "sha256": "9a7a9a9a0242ffcfcca39701097046cef41f63a0bf4621b4bf3fd6aa6290b9ea",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/h4.png"
+    "previous_repository_path": "content-src/gfx/areas/h4.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h5-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/h5-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2407,7 +2407,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h5.png",
+    "path": "content-src/gfx/reference-exports/overlays/h5.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2417,10 +2417,10 @@
     "bytes": 4143,
     "sha256": "e821ad9b8160fe734cffe6b1f8017d794f8f930086639be9a99804fc9876fedb",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/h5.png"
+    "previous_repository_path": "content-src/gfx/areas/h5.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h6-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/h6-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2435,7 +2435,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h6.png",
+    "path": "content-src/gfx/reference-exports/overlays/h6.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2445,10 +2445,10 @@
     "bytes": 4442,
     "sha256": "212d65fadeeb98c745b2da65da09854f8e65ed33ff0e49a65df84abf256c327f",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/h6.png"
+    "previous_repository_path": "content-src/gfx/areas/h6.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h7-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/h7-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2463,7 +2463,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h7.png",
+    "path": "content-src/gfx/reference-exports/overlays/h7.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2473,10 +2473,10 @@
     "bytes": 4511,
     "sha256": "22d3d83c46cc3716a378ada949aac28baa664f2f7b6596cbee013cca6b4730e4",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/h7.png"
+    "previous_repository_path": "content-src/gfx/areas/h7.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h8-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/h8-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2491,7 +2491,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/h8.png",
+    "path": "content-src/gfx/reference-exports/overlays/h8.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2501,10 +2501,10 @@
     "bytes": 4770,
     "sha256": "4707a78652cb445ce93fe8f604814b387520f18b1b0d953e6e9876545d0117e2",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/h8.png"
+    "previous_repository_path": "content-src/gfx/areas/h8.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i0-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/i0-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2519,7 +2519,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i0.png",
+    "path": "content-src/gfx/reference-exports/overlays/i0.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2529,10 +2529,10 @@
     "bytes": 1204,
     "sha256": "988bbed0b8c760a7462f61353a42bb5ee8fabb00417a219fb555e4518d3b031e",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/i0.png"
+    "previous_repository_path": "content-src/gfx/areas/i0.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i1-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/i1-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2547,7 +2547,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i1.png",
+    "path": "content-src/gfx/reference-exports/overlays/i1.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2557,10 +2557,10 @@
     "bytes": 2667,
     "sha256": "d8662a693d5df645825a5fdf10551426284c7e02b5eaa519655d7da6a1f91fdb",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/i1.png"
+    "previous_repository_path": "content-src/gfx/areas/i1.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i2-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/i2-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2575,7 +2575,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i2.png",
+    "path": "content-src/gfx/reference-exports/overlays/i2.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2585,10 +2585,10 @@
     "bytes": 4323,
     "sha256": "536dfd32b3d47c396eb43aa5bd13a6a5562c9ae6020df5bd00dac67260bfbd91",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/i2.png"
+    "previous_repository_path": "content-src/gfx/areas/i2.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i3-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/i3-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2604,7 +2604,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i3.png",
+    "path": "content-src/gfx/reference-exports/overlays/i3.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2614,10 +2614,10 @@
     "bytes": 5634,
     "sha256": "9ce6acd818f85bdc274d1c96de01392861524003a544331b89c5d58ea442d5b2",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/i3.png"
+    "previous_repository_path": "content-src/gfx/areas/i3.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i4.png",
+    "path": "content-src/gfx/reference-exports/overlays/i4.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2627,10 +2627,10 @@
     "bytes": 5634,
     "sha256": "9ce6acd818f85bdc274d1c96de01392861524003a544331b89c5d58ea442d5b2",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/i4.png"
+    "previous_repository_path": "content-src/gfx/areas/i4.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i5-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/i5-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2645,7 +2645,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i5.png",
+    "path": "content-src/gfx/reference-exports/overlays/i5.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2655,10 +2655,10 @@
     "bytes": 4323,
     "sha256": "a17b62e2241bf364054c72123b8a981dde4dd257e0b536cd22ed7b1196fb2a1e",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/i5.png"
+    "previous_repository_path": "content-src/gfx/areas/i5.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i6-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/i6-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2673,7 +2673,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i6.png",
+    "path": "content-src/gfx/reference-exports/overlays/i6.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2683,10 +2683,10 @@
     "bytes": 2682,
     "sha256": "b7a0debd9425e0c3f4c9a2cb557ed8cd3775f3ade4a9561683748d2f67e23cb8",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/i6.png"
+    "previous_repository_path": "content-src/gfx/areas/i6.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i7-archive-2026.png",
+    "path": "content-src/gfx/reference-exports/overlays/i7-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2701,7 +2701,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/overlays/i7.png",
+    "path": "content-src/gfx/reference-exports/overlays/i7.png",
     "category": "reference-exports/overlays",
     "format": "png",
     "dimensions": [
@@ -2711,10 +2711,10 @@
     "bytes": 2695,
     "sha256": "e2cbe42a94396b96dae80eeb74a2bdd1afd450b7f3e35444552e0fe984b05f0a",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/areas/i7.png"
+    "previous_repository_path": "content-src/gfx/areas/i7.png"
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/tree/ressource0.png",
+    "path": "content-src/gfx/reference-exports/resources/tree/ressource0.png",
     "category": "reference-exports/resources/tree",
     "format": "png",
     "dimensions": [
@@ -2729,7 +2729,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/tree/ressource1.png",
+    "path": "content-src/gfx/reference-exports/resources/tree/ressource1.png",
     "category": "reference-exports/resources/tree",
     "format": "png",
     "dimensions": [
@@ -2745,7 +2745,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/tree/ressource2.png",
+    "path": "content-src/gfx/reference-exports/resources/tree/ressource2.png",
     "category": "reference-exports/resources/tree",
     "format": "png",
     "dimensions": [
@@ -2761,7 +2761,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/tree/ressource3.png",
+    "path": "content-src/gfx/reference-exports/resources/tree/ressource3.png",
     "category": "reference-exports/resources/tree",
     "format": "png",
     "dimensions": [
@@ -2777,7 +2777,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/tree/ressource4.png",
+    "path": "content-src/gfx/reference-exports/resources/tree/ressource4.png",
     "category": "reference-exports/resources/tree",
     "format": "png",
     "dimensions": [
@@ -2792,7 +2792,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/tree/ressource5.png",
+    "path": "content-src/gfx/reference-exports/resources/tree/ressource5.png",
     "category": "reference-exports/resources/tree",
     "format": "png",
     "dimensions": [
@@ -2807,7 +2807,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/tree/ressource9.png",
+    "path": "content-src/gfx/reference-exports/resources/tree/ressource9.png",
     "category": "reference-exports/resources/tree",
     "format": "png",
     "dimensions": [
@@ -2822,7 +2822,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource10.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource10.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2837,7 +2837,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource11.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource11.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2852,7 +2852,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource12.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource12.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2867,7 +2867,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource13.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource13.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2882,7 +2882,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource14.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource14.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2897,7 +2897,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource15.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource15.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2912,7 +2912,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource16.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource16.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2927,7 +2927,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource17.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource17.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2942,7 +2942,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource18.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource18.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2957,7 +2957,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource19.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat/ressource19.png",
     "category": "reference-exports/resources/wheat",
     "format": "png",
     "dimensions": [
@@ -2972,7 +2972,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource10.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat-classic/ressource10.png",
     "category": "reference-exports/resources/wheat-classic",
     "format": "png",
     "dimensions": [
@@ -2988,7 +2988,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource11.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat-classic/ressource11.png",
     "category": "reference-exports/resources/wheat-classic",
     "format": "png",
     "dimensions": [
@@ -3004,7 +3004,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource12.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat-classic/ressource12.png",
     "category": "reference-exports/resources/wheat-classic",
     "format": "png",
     "dimensions": [
@@ -3020,7 +3020,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource13.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat-classic/ressource13.png",
     "category": "reference-exports/resources/wheat-classic",
     "format": "png",
     "dimensions": [
@@ -3036,7 +3036,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource14.png",
+    "path": "content-src/gfx/reference-exports/resources/wheat-classic/ressource14.png",
     "category": "reference-exports/resources/wheat-classic",
     "format": "png",
     "dimensions": [
@@ -3052,7 +3052,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/terrain/water/cyrille-cloud.png",
+    "path": "content-src/gfx/reference-exports/terrain/water/cyrille-cloud.png",
     "category": "reference-exports/terrain/water",
     "format": "png",
     "dimensions": [
@@ -3067,7 +3067,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/terrain/water/cyrille-steph-modif-water0.png",
+    "path": "content-src/gfx/reference-exports/terrain/water/cyrille-steph-modif-water0.png",
     "category": "reference-exports/terrain/water",
     "format": "png",
     "dimensions": [
@@ -3082,7 +3082,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/terrain/water/cyrille-water0.png",
+    "path": "content-src/gfx/reference-exports/terrain/water/cyrille-water0.png",
     "category": "reference-exports/terrain/water",
     "format": "png",
     "dimensions": [
@@ -3097,7 +3097,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/terrain/water/steph-cloud.png",
+    "path": "content-src/gfx/reference-exports/terrain/water/steph-cloud.png",
     "category": "reference-exports/terrain/water",
     "format": "png",
     "dimensions": [
@@ -3112,7 +3112,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/terrain/water/steph-water0.png",
+    "path": "content-src/gfx/reference-exports/terrain/water/steph-water0.png",
     "category": "reference-exports/terrain/water",
     "format": "png",
     "dimensions": [
@@ -3127,7 +3127,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui0.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui0.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3142,7 +3142,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui1.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui1.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3157,7 +3157,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui10.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui10.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3172,7 +3172,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui11.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui11.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3187,7 +3187,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui2.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui2.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3202,7 +3202,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui3.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui3.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3217,7 +3217,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui4.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui4.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3232,7 +3232,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui5.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui5.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3247,7 +3247,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui6.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui6.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3262,7 +3262,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui7.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/gamegui7.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3277,7 +3277,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/select.minimap.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/select.minimap.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3292,7 +3292,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/select.rect.0.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/select.rect.0.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3307,7 +3307,7 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/reference-exports/ui/controls/select.rect.1.png",
+    "path": "content-src/gfx/reference-exports/ui/controls/select.rect.1.png",
     "category": "reference-exports/ui/controls",
     "format": "png",
     "dimensions": [
@@ -3322,13 +3322,13 @@
     "previous_repository_path": null
   },
   {
-    "path": "datasrc/gfx/tools/units/rename_globules.py",
+    "path": "content-src/gfx/tools/units/rename_globules.py",
     "category": "tools/units",
     "format": "py",
     "dimensions": null,
     "bytes": 1539,
     "sha256": "9dcfb783a65b7036ad534d45ed525cb459932b6743948911c0bde339b0f7c3a7",
     "archive_paths": [],
-    "previous_repository_path": "datasrc/gfx/globules/rename_globules.py"
+    "previous_repository_path": "content-src/gfx/globules/rename_globules.py"
   }
 ]

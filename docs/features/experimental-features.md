@@ -107,7 +107,7 @@ external terrain name `road`. Existing maps, saves, scripts, map
 reports and `select road` editor actions keep working. The Trail artwork replaces
 the former cobblestone frames without changing movement, ecology or building
 rules. Its generated source and classic-frame recipe are recorded in
-[`datasrc/gfx/trail/`](../../datasrc/gfx/trail).
+[`content-src/gfx/trail/`](../../content-src/gfx/trail).
 
 ## Adding an experiment
 

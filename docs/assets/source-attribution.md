@@ -40,7 +40,7 @@ Original procedural synthesis by tools/artwork/terrain_synth.py (noise fields,
 Worley cells, stamps and palette ramps; no pixels derived from other artwork),
 GPL-3.0-or-later like the rest of the project. Materials later replaced through
 tools/artwork/export_material.py are AI-generated images disclosed as such in
-datasrc/gfx/<name>/provenance.json, with the prompt and reference hashes. See
+content-src/gfx/<name>/provenance.json, with the prompt and reference hashes. See
 [terrain materials](terrain-production.md#material-production).
 
 Foundation deposit sprites (data/gfx/resource-gold-ore0.png, resource-iron-ore0.png,

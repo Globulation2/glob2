@@ -19,7 +19,7 @@ export default defineConfig({
       allow: [
         searchForWorkspaceRoot(fileURLToPath(new URL('.', import.meta.url))),
         fileURLToPath(new URL('../../../../libs/gag/shaders', import.meta.url)),
-        fileURLToPath(new URL('../../../../datasrc/icons/tabler', import.meta.url)),
+        fileURLToPath(new URL('../../../../content-src/icons/tabler', import.meta.url)),
         fileURLToPath(new URL('../../../../data/fonts/scripts', import.meta.url)),
       ],
     },

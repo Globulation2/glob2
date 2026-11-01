@@ -6,7 +6,7 @@ import numpy as np
 from scipy import ndimage
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-frames=json.loads((ROOT/'datasrc/gfx/derived/papyrus-v1/manifest.json').read_text())['frames']
+frames=json.loads((ROOT/'content-src/gfx/derived/papyrus-v1/manifest.json').read_text())['frames']
 assert {f['id'] for f in frames}=={'ressource%d'%i for i in range(20,25)}
 for frame in frames:
     for source in frame['sources']:

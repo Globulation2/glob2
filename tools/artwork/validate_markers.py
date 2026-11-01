@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-DERIVED=ROOT/'datasrc/gfx/derived/markers-v1'
+DERIVED=ROOT/'content-src/gfx/derived/markers-v1'
 frames=json.loads((DERIVED/'manifest.json').read_text())['frames']
 assert {f['id'] for f in frames}=={'area-%s%d'%(family,i) for family in ['guard','clearing','forbidden'] for i in range(8)}
 for frame in frames:

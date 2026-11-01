@@ -34,7 +34,7 @@ def install(staged):
                 raise ValueError("Unexpected staged mesh name")
             source = ROOT / record["source"]
             assert source.resolve().is_relative_to(
-                (ROOT / "datasrc/gfx/originals/units").resolve()
+                (ROOT / "content-src/gfx/originals/units").resolve()
             )
             assert (
                 hashlib.sha256(source.read_bytes()).hexdigest()

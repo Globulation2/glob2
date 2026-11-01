@@ -2465,7 +2465,7 @@
   },
   "generator": "tools/artwork/terrain_decor.py",
   "method": "procedural",
-  "generator_sha256": "b4b33a7606c145c10cf3ff669f6552a7db986152aef084fafd2ed596b40cc6be",
+  "generator_sha256": "a3311e5c40de18a5676bd0a821e83e430b3663c7c0a585c93421005743ad056f",
   "native_size": 64,
   "render_size": 256,
   "pillow": "12.2.0",

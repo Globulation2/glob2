@@ -572,7 +572,7 @@ def main():
                     env.Tar(target, f)
               
     PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
-    PackTar(env["TARFILE"], Glob("datasrc/icons/tabler/*"))
+    PackTar(env["TARFILE"], Glob("content-src/icons/tabler/*"))
     PackTar(env["TARFILE"], Split("tools/icons/export_tabler.cjs libs/gag/include/ui/Icon.h"))
     PackTar(env["TARFILE"], [p for p in sorted(__import__("glob").glob("third_party/**/*", recursive=True)) if os.path.isfile(p)])
     #packaging for apple

@@ -2764,7 +2764,7 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "d7910586d528998436200c21fe4ca534d5ea3db371e3eb83b95c188e96487805"
+      "sha256": "f07aaaf6e32611f3d115804724f2636de0a95e140cbf9efe6455f94e7097199c"
     },
     {
       "runtime": "frames.txt",
@@ -2774,7 +2774,7 @@
     {
       "runtime": "README.md",
       "source": "pack-metadata/README.md",
-      "sha256": "ef54a916fcece72754bbb1bfbd418c91c15222a56f92ee2f8a631644fc11d361"
+      "sha256": "5ffd562ba051b3eb4b4d5bf662cfc6e4587fe7ffed5cdb8ae020946f80b0f05a"
     },
     {
       "runtime": "area-farm0.png",

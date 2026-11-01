@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 from tools.artwork.package_runtime import PRODUCTION, require, sha, validate
 from tools.artwork.validate_runtime import topology
 
-SOURCES = ROOT / 'datasrc/gfx/derived/terrain-materials-v1'
+SOURCES = ROOT / 'content-src/gfx/derived/terrain-materials-v1'
 OUTPUT = PRODUCTION / 'original-materials'
 RECIPE = 'original-based grass and sand v1; retained rugged corner masks'
 SCALE = 4

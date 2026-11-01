@@ -3,7 +3,7 @@
 """Register generated high-resolution frames in the approved artwork pack.
 
 The pack has two committed copies: the approved inputs under
-`datasrc/gfx/production/` (one folder per origin, indexed by `package.json`)
+`content-src/gfx/production/` (one folder per origin, indexed by `package.json`)
 and the assembled source pack `data/highres/v1/` that the game reads. Tools
 that generate world art at 4x (terrain synthesis, material and trail exports)
 call `register_frames` to write each frame into both, upsert its manifest
@@ -19,7 +19,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
-PRODUCTION = Path("datasrc/gfx/production")
+PRODUCTION = Path("content-src/gfx/production")
 RUNTIME = Path("data/highres/v1")
 HEADER = "GLOB2_HIGHRES 1"
 SCALE = 4

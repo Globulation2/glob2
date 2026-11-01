@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render the hand-authored SVG area markers to runtime frames.
 
-Each SVG under datasrc/gfx/authored/ holds one group per animation frame
+Each SVG under content-src/gfx/authored/ holds one group per animation frame
 ("frame0", "frame1", ...) on a canvas four times the classic sprite size. This
 writes, for every frame, the classic sprite (data/gfx/<name><n>.png at 1/4 size)
 and the high-resolution frame (data/highres/v1/<name><n>.png at full size), both
@@ -32,7 +32,7 @@ ElementTree.register_namespace('', SVG_NS)
 ElementTree.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
 
 ROOT = Path(__file__).resolve().parents[2]
-AUTHORED = ROOT / 'datasrc/gfx/authored'
+AUTHORED = ROOT / 'content-src/gfx/authored'
 # Animated markers: name -> number of frames. The classic sprite is the
 # high-resolution canvas / SCALE.
 MARKERS = {'area-farm': 8}

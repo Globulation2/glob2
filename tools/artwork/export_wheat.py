@@ -6,8 +6,8 @@ from pathlib import Path
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[2]
-NATIVE=ROOT/'datasrc/gfx/derived/wheat-native'
-OUTPUT=ROOT/'datasrc/gfx/derived/wheat-v1'
+NATIVE=ROOT/'content-src/gfx/derived/wheat-native'
+OUTPUT=ROOT/'content-src/gfx/derived/wheat-v1'
 # Final ripe color states 14/19 are not in these sources; retain their fallback.
 SOURCE_NAMES={10:'wheat_1_1',11:'wheat_2_1',12:'wheat_3_1',13:'wheat_4_1',
               15:'wheat_1_2',16:'wheat_2_2',17:'wheat_3_2',18:'wheat_4_2'}

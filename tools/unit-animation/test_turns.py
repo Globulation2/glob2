@@ -277,7 +277,7 @@ class TurnTest(unittest.TestCase):
     def test_prepare_rejects_source_and_asset_overlap(self):
         for path in (turns.ROOT, turns.SOURCE_ROOT, turns.SOURCE_ROOT / 'nested',
                      turns.ROOT / 'data', turns.ROOT / 'data/gfx',
-                     turns.ROOT / 'data/highres/v1', turns.ROOT / 'datasrc/gfx/production'):
+                     turns.ROOT / 'data/highres/v1', turns.ROOT / 'content-src/gfx/production'):
             with self.subTest(path=path), self.assertRaises(ValueError):
                 turns.prepare_turns(path, '/work')
 

@@ -33,7 +33,7 @@ All sets share one sprite, `data/gfx/terrain-decorN.png`, with set k at
 frames 12k..12k+11 in `ORDER`, followed by connected hedge/thicket frames
 (16 corner masks, a 4x4 continuous texture block each), so the runtime batches every decor draw like
 resources. HD frames are registered through tools/artwork/highres_pack.py and
-provenance is written to `datasrc/gfx/terrain-decor/provenance.json`.
+provenance is written to `content-src/gfx/terrain-decor/provenance.json`.
 `--write-catalog` adds the `decor` block to each material in tileset.json.
 Pure Python 3 plus Pillow; no numpy.
 """
@@ -1156,7 +1156,7 @@ def generator_sha():
 
 
 def provenance_path(root):
-    return root / "datasrc/gfx/terrain-decor/provenance.json"
+    return root / "content-src/gfx/terrain-decor/provenance.json"
 
 
 def write(results, root):
@@ -1206,7 +1206,7 @@ def write(results, root):
 def check(results, root):
     path = provenance_path(root)
     if not path.exists():
-        return ["missing datasrc/gfx/terrain-decor/provenance.json"]
+        return ["missing content-src/gfx/terrain-decor/provenance.json"]
     provenance = json.loads(path.read_text())
     problems = []
     if provenance.get("generator_sha256") != generator_sha():

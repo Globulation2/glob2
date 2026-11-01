@@ -13,7 +13,7 @@ import shutil
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-PRODUCTION = ROOT / 'datasrc/gfx/production'
+PRODUCTION = ROOT / 'content-src/gfx/production'
 RUNTIME = ROOT / 'data/highres/v1'
 AI = {'current', 'outline_repair', 'painted_repair', 'crystal_repair',
       'resource constrained', 'world constrained'}

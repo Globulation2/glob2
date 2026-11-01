@@ -90,7 +90,7 @@ so transferring those maps includes their custom sprite files.
 Missing installed artwork referenced by manually imported legacy definitions uses
 the visible magenta fallback. A missing spritesheet belonging to a credited set
 bundle is rejected during import or load. The material icons are generated
-artwork recorded in `datasrc/gfx/resources/manifest.json`.
+artwork recorded in `content-src/gfx/resources/manifest.json`.
 
 Save format 140 embeds resolved resource definitions, material stocks and required
 experiment metadata. Startup permits an unavailable or malformed default resource catalog so embedded

@@ -58,7 +58,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/terrain/papyrus.xcf",
+      "source": "content-src/gfx/originals/terrain/papyrus.xcf",
       "sha256": "595cce81a1f1c094cdabc150ecc0c4b0fd89f9b09d82e1de7cd298390f7b5aa0",
       "file": "ressource20.png",
       "selected_layer": 0,
@@ -126,7 +126,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/terrain/papyrus.xcf",
+      "source": "content-src/gfx/originals/terrain/papyrus.xcf",
       "sha256": "935534435a09045ca768795fd9417a8e022f81d4f9e7358daebce6c0ad2b5b90",
       "file": "ressource21.png",
       "selected_layer": 1,
@@ -194,7 +194,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/terrain/papyrus.xcf",
+      "source": "content-src/gfx/originals/terrain/papyrus.xcf",
       "sha256": "3462a6df7a2120ff80bc8a7ea35dc9634fa999786266bfbafa47afeace63552b",
       "file": "ressource22.png",
       "selected_layer": 2,
@@ -262,7 +262,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/terrain/papyrus.xcf",
+      "source": "content-src/gfx/originals/terrain/papyrus.xcf",
       "sha256": "d0bfc6baf11f61bf08c50c826e786f32e5583312cf50212b028d4e2726093ca2",
       "file": "ressource23.png",
       "selected_layer": 3,
@@ -330,7 +330,7 @@
           "mode": 0
         }
       ],
-      "source": "datasrc/gfx/originals/terrain/papyrus.xcf",
+      "source": "content-src/gfx/originals/terrain/papyrus.xcf",
       "sha256": "8f1f17539a04dcb81e8d009ee46a562487e660d1061a61411ffadd606465b89c",
       "file": "ressource24.png",
       "selected_layer": 4,

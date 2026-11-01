@@ -4,9 +4,9 @@ import hashlib,json
 from pathlib import Path
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-NATIVE=ROOT/'datasrc/gfx/derived/building-native'
-OUTPUT=ROOT/'datasrc/gfx/derived/buildings-v1'
-RECIPES=ROOT/'datasrc/gfx/provenance/building-runtime-recipes.json'
+NATIVE=ROOT/'content-src/gfx/derived/building-native'
+OUTPUT=ROOT/'content-src/gfx/derived/buildings-v1'
+RECIPES=ROOT/'content-src/gfx/provenance/building-runtime-recipes.json'
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def main():

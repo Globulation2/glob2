@@ -7,7 +7,7 @@ Development-only; ordinary builds use the committed PNGs. Needs rsvg-convert
 
     python3 tools/icons/export_map_icons.py
 
-Sources are datasrc/icons/map/<name>.svg. Output is data/gfx/mapicon<N>.png,
+Sources are content-src/icons/map/<name>.svg. Output is data/gfx/mapicon<N>.png,
 frame N = icon * len(SIZES) + size, matching MapOverlayQueue's icon lookup:
 keep ICONS and SIZES in step with src/render/MapOverlayQueue.cpp.
 """
@@ -24,7 +24,7 @@ SIZES = [10, 12, 16, 20, 24, 32, 48]
 
 def main():
     for icon, name in enumerate(ICONS):
-        source = ROOT / "datasrc/icons/map" / f"{name}.svg"
+        source = ROOT / "content-src/icons/map" / f"{name}.svg"
         for index, size in enumerate(SIZES):
             frame = icon * len(SIZES) + index
             subprocess.run(["rsvg-convert", "-w", str(size), "-h", str(size), str(source),
