@@ -1,4 +1,4 @@
-name: Temporary Bengali iOS Simulator validation
+name: Temporary Bengali iOS Simulator integration validation
 'on':
   push:
     branches:
@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
-        ref: 31efbe8cd73319cfe2ad4e61acc439b944b55261
+        ref: 06f093ff0e5ce59367991cd87d6932cff09d6e04
         persist-credentials: false
     - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
       with:
@@ -56,7 +56,7 @@ jobs:
                 raise RuntimeError(str(record))
             return b''.join(lines).decode(errors='replace')
         def sim(label,*args,timeout=300):return run(label,['xcrun','simctl','--set',str(device_set),*args],timeout)
-        summary={'passed':False,'source':'31efbe8cd73319cfe2ad4e61acc439b944b55261','workflow_commit':os.environ['GITHUB_SHA'],'scope':'actual iOS arm64 Simulator release build; seeded Bengali profile; startup/background/resume/relaunch; no physical-device, first-visit-onboarding, keyboard, comprehensive gameplay or determinism claim'}
+        summary={'passed':False,'source':'06f093ff0e5ce59367991cd87d6932cff09d6e04','workflow_commit':os.environ['GITHUB_SHA'],'scope':'actual iOS arm64 Simulator release build; seeded Bengali profile; startup/background/resume/relaunch; no physical-device, first-visit-onboarding, keyboard, comprehensive gameplay or determinism claim'}
         try:
             actual=run('source',['git','rev-parse','HEAD']).strip(); assert actual==summary['source']
             assert run('architecture',['uname','-m']).strip()=='arm64'
@@ -160,7 +160,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: bengali-ios-simulator-31efbe8
+        name: bengali-ios-simulator-integration-06f093f
         path: build/ios-bengali-proof/
         if-no-files-found: error
         retention-days: 14
