@@ -261,6 +261,8 @@ wrapper at several authored sizes and raster scales. `screen` adds a screen name
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
+The gameplay preview also captures the win-probability statistics screen and its
+metric explanation, checking that drawing leaves the simulation checksum intact.
 A published tutorial model alone does not prove that its text is visible. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when

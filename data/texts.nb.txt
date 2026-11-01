@@ -4876,6 +4876,10 @@ Enheter som var sperret inne uten en ledig rute å gå til.
 Ressurser ryddet
 [stat cleared about]
 Ressurser fjernet av arbeidere under rydding av områder for å gi plass.
+[stat win probability]
+Seierssjanse
+[stat win probability about]
+Anslått sjanse for at alliansen din vinner, registrert med jevne mellomrom gjennom hele kampen. Allierte deler samme sannsynlighet. Modellen er trent på kamper mellom KI-er. Anslagene tar ikke hensyn til plassering på kartet eller planlagte handlinger. Eldre lagrede spill kan ha ufullstendig historikk.
 [stat prestige]
 Prestisje
 [stat prestige about]
