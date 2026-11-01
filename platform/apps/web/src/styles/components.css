@@ -349,6 +349,7 @@
 .admin-finances .toolbar select {
   max-inline-size: 100%;
   min-inline-size: 0;
+  overflow: hidden;
 }
 .admin-payment-mode-caption {
   display: none;
