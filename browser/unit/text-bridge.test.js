@@ -72,6 +72,13 @@ test('maximum zero leaves Unicode edits unrestricted', () => {
   assert.equal(p.bridge.take(1).value, value);
 });
 
+test('a 32-byte username accepts all ASCII bytes and keeps overflowing Bengali clusters whole', () => {
+  const p = profile({maximum:33});
+  assert.equal(p.edit('a'.repeat(32)), 'a'.repeat(32));
+  assert.equal(p.edit('a'.repeat(33)), 'a'.repeat(32));
+  assert.equal(p.edit('ক'.repeat(8) + 'ক্ষ'), 'ক'.repeat(8));
+});
+
 test('composition is neither truncated nor delivered until compositionend', () => {
   const p = profile({value:'নাম'});
   const value = 'ক'.repeat(8) + 'ক্ষ';

@@ -708,7 +708,8 @@ class TextField : public Node
 	}
 	void commit(Host &host, std::string next, std::size_t nextCursor)
 	{
-		if (options.maxLength && glyphCount(next) > options.maxLength)
+		if ((options.maxLength && glyphCount(next) > options.maxLength) ||
+			(options.maxBytes && next.size() > options.maxBytes))
 			return;
 		cursor = std::min(nextCursor, next.size());
 		auto &state = host.state(key);
@@ -874,7 +875,9 @@ class TextField : public Node
 			SDL_Rect area{bounds.x, bounds.y, bounds.w, bounds.h};
 			SDL_Rect limit{clip.x, clip.y, clip.w, clip.h};
 			// Browser hosts edit natively; native hosts ignore this.
-			GAGCore::browserTextInput(this->browserOwner, area, surface->getW(), surface->getH(), value, options.password, options.maxLength, browserChange, &limit, options.selectForCopy);
+			// The DOM bridge uses an exclusive UTF-8 byte bound.
+			const std::size_t maximum = options.maxBytes ? options.maxBytes + 1 : options.maxLength;
+			GAGCore::browserTextInput(this->browserOwner, area, surface->getW(), surface->getH(), value, options.password, maximum, browserChange, &limit, options.selectForCopy);
 		}
 		if (shown.empty() && !active)
 		{
@@ -925,8 +928,11 @@ class TextField : public Node
 		Host *h = &host;
 		const bool deferred = options.commitOnSubmit;
 		const std::string original = committed;
-		browserChange = [h, k, callback, submit, preview, deferred, original](const std::string &text, std::size_t at, int action)
+		const std::size_t maxBytes = options.maxBytes;
+		browserChange = [h, k, callback, submit, preview, deferred, original, maxBytes](const std::string &text, std::size_t at, int action)
 		{
+			if (maxBytes && text.size() > maxBytes)
+				return;
 			// Mirror commit(): the typed text is the draft (restored across rebuilds)
 			// and, for commit-on-submit fields, reaches the model on Enter or blur.
 			auto &state = h->state(k);

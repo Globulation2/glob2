@@ -634,6 +634,42 @@ void checkTextField()
 	require(f.host.editing().empty(), "escape ends editing");
 }
 
+void checkTextFieldByteLimit()
+{
+	std::string model = "নাম";
+	TextFieldOptions options;
+	options.maxLength = 32;
+	options.maxBytes = 32;
+	options.commitOnSubmit = true;
+	int previews = 0;
+	options.preview = [&](const std::string &) { ++previews; };
+	Fixture f([&](const Presentation &) { return textField("name", model, [&](const std::string &v) { model = v; }, options); }, 400, 100);
+	f.click({20, 20});
+	const auto replace = [&](const std::string &next)
+	{
+		f.key(SDLK_A, SDL_KMOD_CTRL);
+		SDL_Event text{};
+		text.type = SDL_EVENT_TEXT_INPUT;
+		text.text.text = next.c_str();
+		f.host.event(text);
+	};
+	std::string oversized;
+	for (int i = 0; i < 8; ++i) oversized += "ক";
+	oversized += "ক্ষ";
+	require(oversized.size() == 33, "probe crosses the byte cap inside a Bengali conjunct");
+	replace(oversized);
+	require(f.host.state("name").text == "নাম", "oversized edit preserves the whole previous draft");
+	require(previews == 0 && model == "নাম", "rejected edit never reaches preview or model");
+	replace("ক্ষুদ্র");
+	require(f.host.state("name").text == "ক্ষুদ্র", "a complete Bengali edit below the byte cap is accepted");
+	f.key(SDLK_RETURN);
+	require(model == "ক্ষুদ্র", "Enter commits the complete Bengali name");
+	f.click({20, 20});
+	replace(std::string(32, 'a'));
+	f.key(SDLK_RETURN);
+	require(model == std::string(32, 'a'), "all 32 ASCII bytes remain supported");
+}
+
 void checkCopyField()
 {
 	// A failed Copy leaves the text in a field that opens selected and ignores edits.
@@ -1172,6 +1208,7 @@ TEST_SUITE("UILayout")
 	TEST_CASE("choice popup") { checkChoicePopup(); }
 	TEST_CASE("icon segments and choices") { checkIconSegmentsAndChoice(); }
 	TEST_CASE("text field") { checkTextField(); }
+	TEST_CASE("text field UTF-8 byte limit preserves Bengali edits") { checkTextFieldByteLimit(); }
 	TEST_CASE("list view") { checkListView(); }
 	TEST_CASE("copy field") { checkCopyField(); }
 	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }

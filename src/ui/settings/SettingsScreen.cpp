@@ -600,6 +600,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 	{
 		TextFieldOptions options;
 		options.maxLength = BasePlayer::MAX_NAME_LENGTH;
+		options.maxBytes = BasePlayer::MAX_NAME_LENGTH;
 		options.commitOnSubmit = true;
 		// The draft is saved as it is typed (debounced) and Escape restores the
 		// previous name; Enter and focus loss save at once.
