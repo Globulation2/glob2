@@ -22,6 +22,18 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 860 } },
     },
     { name: 'phone', use: { ...devices['Pixel 7'] } },
+    ...(['firefox', 'webkit'] as const).flatMap((browserName) => [
+      {
+        name: `tamil-${browserName}`,
+        testMatch: 'tamil.spec.ts',
+        use: { browserName, viewport: { width: 1280, height: 860 } },
+      },
+      {
+        name: `tamil-${browserName}-phone`,
+        testMatch: 'tamil.spec.ts',
+        use: { browserName, viewport: { width: 393, height: 851 }, deviceScaleFactor: 2 },
+      },
+    ]),
   ],
   webServer: {
     command: 'node e2e/server.ts',

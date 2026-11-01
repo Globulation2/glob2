@@ -21,6 +21,11 @@ existing package. The isolated publication job verifies the artifact before usin
 Google Cloud Workload Identity Federation through the `browser-release`
 GitHub environment; the build job has no cloud identity permission.
 
+Both generated runtime variants must reference the versioned Wasm filename,
+whether Emscripten emits single or double quotes. Changes to these rewriting
+rules bump the static packaging policy so changed output receives a new cache
+identity even when the build inputs are unchanged.
+
 The destination is `gs://glob2-browser-pharaoh-418820-20260909` in project
 `bradley-personal-20261027`. Versioned JavaScript, WebAssembly and data objects receive
 explicit content types and immutable one-year caching. Publication uses

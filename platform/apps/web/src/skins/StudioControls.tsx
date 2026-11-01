@@ -1,3 +1,4 @@
+import { skinMaterialLabel, skinMaterialGroupLabel } from './labels.ts';
 import { t, useLocale } from '../i18n.tsx';
 /* WebGL resources are bounded to the lifetime of this effect. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -138,7 +139,7 @@ export function StudioDialog({
   );
 }
 const SWATCH = 128;
-const SWATCH_COLUMNS = 4;
+const SWATCH_COLUMNS = 2;
 const swatchRows = (count: number) => Math.ceil(count / SWATCH_COLUMNS);
 const SWATCH_HEIGHT =
   SWATCH * MATERIAL_GROUPS.reduce((n, g) => n + swatchRows(g.materials.length), 0);
@@ -292,7 +293,7 @@ function SwatchStrip({
             aria-checked={selected === m.id}
             onClick={() => onSelect(m.id)}
           >
-            <span>{t(m.name)}</span>
+            <span>{skinMaterialLabel(m.key)}</span>
           </button>
         ))}
       </div>
@@ -323,7 +324,7 @@ export function MaterialSwatches({
     <div role="radiogroup" aria-label={t('Material')} className="skin-material-groups">
       {MATERIAL_GROUPS.map((group, index) => (
         <section key={group.name} className="skin-material-group">
-          <h4>{t(group.name)}</h4>
+          <h4>{skinMaterialGroupLabel(group.name)}</h4>
           <SwatchStrip
             source={source}
             color={color}

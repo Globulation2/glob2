@@ -9,7 +9,6 @@
 #include <cmath>
 #include <sstream>
 #include <stdexcept>
-#include <unordered_set>
 
 namespace GAGCore {
 namespace {
@@ -53,15 +52,13 @@ std::shared_ptr<const Sources> discover(const AssetLoader::Directory& directory,
     }
     // Enumerate once per directory rather than opening the next frame and
     // decoding it before discovering subsequent work. Earlier directories win.
-    std::unordered_set<std::string> names;
     const auto slash = name.rfind('/');
     const auto prefix = name.substr(slash == std::string::npos ? 0 : slash + 1);
-    for (const auto &file : directory.names) names.insert(file);
     for (unsigned frame = 0; frame < 65536; ++frame) {
         bool found = false;
         for (bool rotated : {false, true}) {
             const auto file = prefix + std::to_string(frame) + (rotated ? "r.webp" : ".webp");
-            if (!names.contains(file)) continue;
+            if (!std::binary_search(directory.names.begin(), directory.names.end(), file)) continue;
             found = true;
             result->entries.push_back({name + std::to_string(frame) + (rotated ? "r.webp" : ".webp"), rotated, frame});
         }

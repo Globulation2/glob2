@@ -148,6 +148,20 @@ route by language code; changing languages invalidates affected font caches.
 Do not send presentation-form Arabic through the logical shaping route. The
 FontKerning suite checks raster sizes, reloads and language switching.
 
+Map visible captions from stable IDs to translated source strings instead of
+capitalizing the IDs. This includes skin models, materials, shapes, views and
+poses, music metadata fields, and chart axes and legends. Preserve the IDs
+themselves: the swarm's empty pose
+ID is valid and needs a localized static-pose caption.
+
+Translate display text before passing it into shared component props, including
+composer pricing, edit targets and disabled reasons. The extractor does not
+discover an untranslated string merely because a component renders that prop.
+Resolve example labels and their inserted prompts at render time so language
+switching updates both; retain stable identifiers separately from those labels.
+Keep protocol registries and stored custom names intact; localize fixed registry
+labels in the UI and translate system defaults when creating a new document.
+
 Legacy scenario-message panels use the active font’s measured line height. Desktop messages
 retain a 20-pixel minimum advance; touch instructions use the shared cluster-aware
 wrapper and a 24-point minimum advance. The touch cache includes language, font,
@@ -183,43 +197,84 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
-For a gcloud-authenticated machine draft, use the same frozen kit:
+Audit platform startup text outside these two catalogs as well. Android shows
+`preparing_game` from `mobile/android/app/src/main/res/values/strings.xml` while
+staging assets, before the native catalog can load. Add the reviewed counterpart
+in the locale's Android resource directory (for example `values-mr/strings.xml`),
+retain separate source/value hashes and independent review records, and check
+the actual first-run overlay in the packaged application. The catalog inventory
+checks alone do not establish that this startup text is translated.
+
+Apple's local-network permission explanations also live outside the engine
+catalog: `darwin/Info.plist` and `mobile/ios/Info.plist.in` have distinct source
+purposes. Review their localized `InfoPlist.strings` separately. macOS bundles
+copy the declared `.lproj` directories into `Contents/Resources`; iOS CMake
+resources use `Resources/<language>.lproj` (CMake removes the `Resources` prefix
+for the flat iOS bundle). Keep `en.lproj` and `CFBundleDevelopmentRegion=en` as
+the fallback. Packaging contract tests verify copied files and resource paths;
+they do not establish Apple permission-dialog behavior on a device.
+
+For a Tamil plain-text Google Cloud NMT comparison draft, authenticate with `gcloud` and use the
+budget-limited development helper on an existing kit. Pass an explicit project;
+preflight does not dispatch requests. `--keys` accepts a JSON array of exact
+`native:`/`online:` entry IDs for a pilot. Keep the same kit and ledger throughout
+the campaign, including retries. The helper uses POSIX file locking; run it on
+Linux, macOS or WSL. `python3 test/test_translation_program.py` also exercises
+its mocked budget and resumption contracts.
+
+```sh
+python3 tools/localization/google_draft.py --backend plain --output artifacts/localization-ta \
+  --project PROJECT_ID --locale ta --keys artifacts/localization-ta/pilot-keys.json
+# Add --execute only after checking the preflight estimate.
+```
+
+The helper uses English-to-target NMT, fills blank draft values only, and caches
+provider output by source/protected literals, project, target, model and protection
+version. Set catalog identity metadata deliberately before drafting. Its gross
+ceiling is 400,000 request characters (US$8 at US$20/million, before taxes and
+without assuming credits); `--max-characters` can lower but never raise that limit.
+Each attempt reserves its entire character count durably before dispatch; failed
+or uncertain requests remain charged against the ledger. Existing ledger ceilings
+cannot be changed. Credentials are read from `gcloud` into memory and never written
+to request/response evidence. Confirm current provider pricing before a campaign.
+
+Damaged protected literals are reported in `repair_required`, retained in the
+cache/raw response, and left blank in the draft for manual correction. They are
+not silently retried or accepted. Inspect all completed output linguistically;
+placeholder success and provider output are not review sign-offs. Re-running
+resumes cached work and preserves nonblank edits. Do not remove the ledger or
+cache to bypass a ceiling. If frozen sources change, preserve the old kit and
+carry its ledger/cache into the new kit before continuing; stop using the old
+kit for API calls so both kits cannot spend the same remaining allowance.
+
+For the general gcloud-authenticated runner, use the same frozen kit and pass
+its locale explicitly. The default command estimates a source-based pilot without
+API calls; `--execute` makes paid requests. Review that pilot before bulk work:
 
 ```sh
 python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
-  --locale ms --project YOUR_PROJECT_ID --dry-run
+  --locale ms --project YOUR_PROJECT_ID
 python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
-  --locale ms --project YOUR_PROJECT_ID --keys-file artifacts/localization-release/pilot-keys.json
+  --locale ms --project YOUR_PROJECT_ID --execute
+python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
+  --locale ms --project YOUR_PROJECT_ID --phase bulk --pilot-reviewed --execute
 ```
 
-The project must already have billing and Cloud Translation API access. The
-runner obtains an access token through `gcloud auth print-access-token`, uses
-Advanced v3 `general/nmt` with explicit English source, and never changes the
-global gcloud project. The keys file is a JSON array of exact `native:[key]` and
-`online:key` source IDs; use it for a representative pilot, or `--limit N` for
-the first N pending values. After reviewing the pilot, omit the selection flags
-to draft the remaining blank values. Existing nonblank translations are retained.
-`--dry-run` reports pending values and source character counts without API calls.
+`--pilot-size` controls entries per source domain. Existing nonblank translations
+are retained. See [Cloud Translation drafts](#cloud-translation-drafts) for current
+budget, cache, protected-token recovery and locking behavior. Run
+`python3 test/test_cloud_draft.py` when changing this runner.
 
-Requests contain at most 4,500 protected HTML code points and 1,000 entries.
-Oversized messages split at safe word boundaries. Nontranslated spans protect
-placeholders, line breaks, markup and online invariant literals; changed tokens
-or malformed response cardinality stop the run. Raw provider responses and
-request identities are cached under the kit's `cloud/LOCALE/` directory before
-drafts are checkpointed. A restart reuses cached identical requests. Temporary
-network/server errors retry with bounded backoff; ambiguous transport failures
-can still incur duplicate provider charges. Inspect any rejected cached response
-before explicitly removing it to retry. Machine output and a successful runner
-are not linguistic approval. Review every entry through the independent passes
-below; do not publish the kit's cache, credentials or review working files.
-Run `python3 test/test_cloud_draft.py` when changing this runner.
+The runners use separate caches and accounting formats. The general `cloud_draft.py`
+runner does not share the Tamil helper’s hard budget ledger; do not use a separate
+runner to bypass a campaign ceiling.
 
-For Google Cloud machine drafts, prepare a scoped kit (for example,
+For Norwegian Bokmål HTML comparison drafts, prepare a scoped kit (for example,
 `prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
 network access:
 
 ```sh
-python3 tools/localization/google_draft.py --output artifacts/norwegian/kit --locale nb
+python3 tools/localization/google_draft.py --backend html --output artifacts/norwegian/kit --locale nb
 ```
 
 Authenticate `gcloud` to an existing project with Cloud Translation enabled. Pass
@@ -247,8 +302,45 @@ counts the protected HTML payload and persists across resumed invocations. Run
 one writer per kit. Authentication tokens are cached in memory and never written
 to evidence. Requests use bounded retries. Invalid responses remain inspectable;
 `--retry-invalid-responses` archives them under `rejected/` before another paid
-attempt within the same allowance. Raising the allowance is an explicit budget
-change. Provider output remains a machine draft, never a linguistic sign-off.
+attempt within the same allowance. Allowances remain subject to the campaign’s US$8 hard ceiling and existing
+ledger guards. Provider output remains a machine draft, never a linguistic sign-off.
+
+The optional `--backend plain|html` selects either backend explicitly. Each keeps
+its existing request/cache formats. A shared campaign lock and ledger guard reject
+switching backends after paid or reserved work; use the original mode to resume
+that campaign, without deleting or resetting its ledger.
+
+The Marathi blank-fill workflow is selected explicitly and uses its own runner
+and accounting format:
+
+```sh
+python3 tools/localization/google_draft.py --mode blank-fill \
+  --output artifacts/localization-mr --locale mr --project PROJECT_ID --pilot
+# Add --run only after checking the estimate and reviewing the pilot.
+```
+
+Without `--run`, this workflow estimates without sending translation requests.
+Omit `--pilot` after review to process the remaining blank entries. It preserves
+nonempty reviewed values, protects format tokens and literal invariants, segments
+authored newlines, rejects damaged responses and retains valid siblings and cached
+paid responses. Keep the helper as the exclusive catalog writer while it runs:
+it checks draft hashes before replacement and aborts on external edits. Independent
+editors do not participate in its lock.
+
+Blank-fill uses the kit’s `google-budget.json` and an exclusive writer lock. Its
+`--budget-usd` defaults to 9 and cannot exceed US$9. It reserves every submitted
+protected payload code point at US$20 per million before dispatch, including
+uncertain failures and retries, without assuming free credit. POSIX reservations
+flush the file and directory after atomic replacement; durability errors stop
+dispatch. Windows flushes file contents but has no portable directory-flush
+equivalent. Text is UTF-8, and authentication tokens remain in memory.
+
+The blank-fill ledger is distinct from the legacy plain/HTML campaign ledger
+described above. Keep one accounting format and ledger for each campaign across
+refreshed source kits; do not switch workflows or discard ledgers to bypass an
+authorized ceiling. The Tamil campaign retains its US$8 ceiling. These are
+accounted API-request limits, not guarantees about unrelated project spending or
+an exported billing invoice. Provider output is never a linguistic sign-off.
 
 For Telugu Google NMT comparison drafts, use the development-only adapter after
 preparing a Telugu kit and its blank draft:
@@ -361,13 +453,22 @@ Legacy tutorial highlight arrows wait while a modal is open, then resume after
 dismissal so they cannot cover briefing text. The desktop `tutorial:swimming`
 preview at 800×600 also toggles a real highlight and compares the actual modal's
 pixels before, during and after the probe, preserving the simulation checksum.
+It retains the initial presented frame and requires two unchanged baseline frames
+before changing the highlight, distinguishing first-frame composition from arrow
+interference.
 The gameplay preview also captures the win-probability statistics screen and its
 metric explanation, checking that drawing leaves the simulation checksum intact.
-A published tutorial model alone does not prove that its text is visible. Inputs are
-`native.json` and `online.json` key/value objects plus `metadata.json` identifying
-the locale. Preserve the original text-catalog hashes in that metadata when
-converting formats. A small pilot is a font diagnostic, not evidence that the
-whole catalog was displayed.
+
+> > > > > > > A published tutorial model alone does not prove that its text is visible. Inputs are
+> > > > > > > `native.json` and `online.json` key/value objects plus `metadata.json` identifying
+> > > > > > > the locale. Preserve the original text-catalog hashes in that metadata when
+> > > > > > > converting formats. A small pilot is a font diagnostic, not evidence that the
+> > > > > > > whole catalog was displayed.
+
+Tutorial captures also click the actual guidance controls to record the collapsed
+control and re-expanded instructions. Those UI actions and draws must leave the
+simulation checksum unchanged; offscreen phone presentation does not establish
+mobile-platform or physical-touch hardware coverage.
 
 Capture evidence includes the executable hash and compiled build provenance,
 as well as current source, catalog and font hashes. Freeze sources during builds
@@ -455,21 +556,25 @@ Keep building names consistent in lessons and HUD text. The Inn supplies food,
 the Swarm produces units, and flags assign work or military attention. Music
 playback uses **Sedang dimainkan**, rather than the verb for playing a game.
 
-### Hindi, Urdu and Swahili terminology
+### Hindi, Marathi, Urdu and Swahili terminology
+
 
 Use these concept anchors across the game, lessons and online messages. Inflect
 words naturally in sentences rather than substituting labels mechanically.
 Hindi uses contemporary Devanagari, Urdu uses Arabic script with logical text
-order, and Swahili uses standard Latin-script Kiswahili.
+order, Marathi uses contemporary standard Marathi in Devanagari, and Swahili
+uses standard Latin-script Kiswahili. Marathi instructions use respectful plural
+imperatives such as करा and निवडा; shared script does not justify copying Hindi
+grammar. Inns feed units, while Swarms are the hive buildings that create units.
 
-| Concept | Hindi (`hi`) | Urdu (`ur`) | Swahili (`sw`) |
-| --- | --- | --- | --- |
-| Worker | श्रमिक | کارکن | Mfanyakazi |
-| Explorer | खोजी | کھوجی | Mgunduzi |
-| Warrior | योद्धा | جنگجو | Shujaa |
-| Inn | सराय | سرائے | Nyumba ya wageni |
-| Swarm | छत्ता | چھتہ | Kiota |
-| Market | बाज़ार | بازار | Soko |
+| Concept | Hindi (`hi`) | Marathi (`mr`) | Urdu (`ur`) | Swahili (`sw`) |
+| --- | --- | --- | --- | --- |
+| Worker | श्रमिक | कामगार | کارکن | Mfanyakazi |
+| Explorer | खोजी | शोधक | کھوجی | Mgunduzi |
+| Warrior | योद्धा | योद्धा | جنگجو | Shujaa |
+| Inn | सराय | खानावळ | سرائے | Nyumba ya wageni |
+| Swarm | छत्ता | पोळे | چھتہ | Kiota |
+| Market | बाज़ार | बाजार | بازار | Soko |
 
 An assigned worker target requests workers; it does not count workers already
 present. Construction and operating supply use separate targets. Keep those
@@ -514,6 +619,40 @@ When a message inserts a translated model, library category or product name,
 use a neutral label or colon when its grammatical suffix cannot be chosen
 reliably. Reporting metric name slots contain category or product names;
 they are not numeric count placeholders.
+
+### Tamil terminology
+
+Tamil (`ta`, தமிழ்) uses broad contemporary written Tamil in logical Unicode
+order. Use respectful instructions and natural inflection across game and online
+surfaces. The [Microsoft Tamil style guide](https://aka.ms/tamil-styleguide)
+provides software-localization guidance; the [Unicode Tamil chapter](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-12/#G12322)
+describes the script's vowel and puḷḷi behavior.
+
+| Concept                  | Tamil            | Context                                                           |
+| ------------------------ | ---------------- | ----------------------------------------------------------------- |
+| Worker                   | தொழிலாளர்        | Gathering and building unit                                       |
+| Explorer                 | சாரணர்           | Scout, rather than scientific researcher                          |
+| Warrior                  | போர்வீரர்        | Fighting unit                                                     |
+| Player                   | ஆட்டக்காரர்      | Person playing, distinct from a warrior unit                      |
+| Unit                     | அலகு             | Any unit class                                                    |
+| Swarm                    | கூடு             | Unit-producing hive building, rather than a crowd                 |
+| Inn                      | உணவகம்           | Feeds units and attracts converts                                 |
+| Barracks / Training Camp | படைமுகாம்        | Same build-menu control and warrior-training building             |
+| Colony                   | குடியிருப்பு     | Settlement                                                        |
+| Clearing flag            | வள அகற்றும் கொடி | Removes resources, rather than removing the flag                  |
+| Replay                   | மறுபதிவு         | Recorded match playback                                           |
+| Product credit           | வரவு             | Usage balance; distinct from debt or contributor acknowledgements |
+| Commander                | கட்டளை உதவியாளர் | In-game AI assistance role; Hive Mind remains the product name    |
+| Studio                   | படைப்பகம்        | Online authoring workspace                                        |
+| Online instance          | சேவையகம்         | Independent online service installation                           |
+
+Keep keyboard key names and protocol identifiers recognizable. Translate terrain
+controls from their effects, and preserve distinctions between requested workers
+and workers present, capabilities and completed actions, and unit conversion and
+religious conversion. Account wording such as கணக்கு and கடவுச்சொல் follows
+established [Tamil software usage](https://support.google.com/accounts/answer/27441?hl=ta).
+Shared mute/unmute controls cover both audio and chat moderation; keep their
+Tamil action labels neutral rather than making every occurrence audio-specific.
 
 ## Anatomy of a screen
 
@@ -590,16 +729,16 @@ ordered input, release cleanup and capture after actual dispatch.
 `Presentation` is resolved once per frame from the graphic context and passed
 to `build()`:
 
-| Member | Meaning |
-| --- | --- |
-| `viewport`, `safe`, `dialog` | Whole surface; minus platform gutters; minus the onscreen keyboard. Content goes in `safe`, forms and dialogs in `dialog`. |
-| `unit`, `pt()` | Logical pixels per point and the conversion. |
-| `textScale` | Text enlargement over the fonts' authored size: the player's text size, times the theme's `touchTextScale` on touch hosts. |
-| `textGrowth`, `textPt()` | The player's text size alone (1 at 100%), and a length that grows with it, for widths that hold text such as a label column. |
-| `textUnit` | Logical pixels per authored font pixel, used by the text measurer and canvas: `unit × textScale` on touch hosts, `textScale` on pointer hosts. |
-| `touch`, `hover` | Touch capability (48-point targets) and pointer availability (tooltips). |
-| `compact()`, `expanded()` | Width class thresholds at 600 and 960 points. |
-| `phone()`, `landscape()`, `shortLandscape()` | Device shape helpers for structural choices. |
+| Member                                       | Meaning                                                                                                                                        |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `viewport`, `safe`, `dialog`                 | Whole surface; minus platform gutters; minus the onscreen keyboard. Content goes in `safe`, forms and dialogs in `dialog`.                     |
+| `unit`, `pt()`                               | Logical pixels per point and the conversion.                                                                                                   |
+| `textScale`                                  | Text enlargement over the fonts' authored size: the player's text size, times the theme's `touchTextScale` on touch hosts.                     |
+| `textGrowth`, `textPt()`                     | The player's text size alone (1 at 100%), and a length that grows with it, for widths that hold text such as a label column.                   |
+| `textUnit`                                   | Logical pixels per authored font pixel, used by the text measurer and canvas: `unit × textScale` on touch hosts, `textScale` on pointer hosts. |
+| `touch`, `hover`                             | Touch capability (48-point targets) and pointer availability (tooltips).                                                                       |
+| `compact()`, `expanded()`                    | Width class thresholds at 600 and 960 points.                                                                                                  |
+| `phone()`, `landscape()`, `shortLandscape()` | Device shape helpers for structural choices.                                                                                                   |
 
 ### Text size
 
@@ -614,8 +753,8 @@ desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
 
 - The player's preference (`Settings::textSizePercent`, 100–150%, in Settings
   > Display and the in-game options) sets `GAGCore::userTextScale` through
-  `Settings::setTextSizePercent()`. Every host picks it up on its next frame and
-  relayouts; screens need no code for it.
+  > `Settings::setTextSizePercent()`. Every host picks it up on its next frame and
+  > relayouts; screens need no code for it.
 - Themes carry the touch base (`Theme::touchTextScale`, 1.15 for the game's
   themes), so menus, dialogs over gameplay and the end-of-game sheet match.
 - Bespoke touch painters (the gameplay HUD, the phone editor) draw text at
@@ -744,14 +883,14 @@ together in `src/render/overlay/MapZoomControls.h`.
 
 Every screen uses the same scale, so menus read alike:
 
-| Use | How |
-| --- | --- |
-| Page title | `pageTitle()` (Heading, left-aligned); `page()`, `menu()`, Settings, the hub and the room all use it |
-| Hero content | `title()` (Title): the main-menu wordmark fallback, the result banner, large numbers |
-| Section header | `heading()`, never a plain `label()` |
-| Body, list rows, fields, tabs, action buttons | Body (the default) |
-| Hints, help and notes | `hint()` (Support, muted) |
-| Small metadata | `caption()` |
+| Use                                           | How                                                                                                  |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Page title                                    | `pageTitle()` (Heading, left-aligned); `page()`, `menu()`, Settings, the hub and the room all use it |
+| Hero content                                  | `title()` (Title): the main-menu wordmark fallback, the result banner, large numbers                 |
+| Section header                                | `heading()`, never a plain `label()`                                                                 |
+| Body, list rows, fields, tabs, action buttons | Body (the default)                                                                                   |
+| Hints, help and notes                         | `hint()` (Support, muted)                                                                            |
+| Small metadata                                | `caption()`                                                                                          |
 
 Only the main menu's launch buttons use the Heading font for buttons.
 
@@ -797,15 +936,15 @@ compiled `light` and `dark` themes (`ThemeCatalog::builtinLight()` and
 
 ```json
 {
-	"schema": 1,
-	"id": "ocean",
-	"name": "Ocean",
-	"extends": "dark",
-	"palette": { "accent": "#ff8a65", "panel": "#0f2233f4" },
-	"hud": { "border": "#3fa7a0" },
-	"backdrop": { "kind": "colony", "veil": "#07131d70", "wordmark": "" },
-	"buttons": { "kind": "palette" },
-	"metrics": { "radius": 6, "focusRing": 2 }
+  "schema": 1,
+  "id": "ocean",
+  "name": "Ocean",
+  "extends": "dark",
+  "palette": { "accent": "#ff8a65", "panel": "#0f2233f4" },
+  "hud": { "border": "#3fa7a0" },
+  "backdrop": { "kind": "colony", "veil": "#07131d70", "wordmark": "" },
+  "buttons": { "kind": "palette" },
+  "metrics": { "radius": 6, "focusRing": 2 }
 }
 ```
 

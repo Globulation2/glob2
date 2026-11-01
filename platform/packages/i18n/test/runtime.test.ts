@@ -66,6 +66,12 @@ describe('online locale resolution', () => {
   });
   it('respects written scripts for installed script-specific catalogs', () => {
     expect(resolveLocale('hi-Deva-IN')).toBe('hi');
+    expect(resolveLocale('mr')).toBe('mr');
+    expect(resolveLocale('mr-IN')).toBe('mr');
+    expect(resolveLocale('mr-Deva-IN')).toBe('mr');
+    expect(resolveLocale(['mr-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('mr-u-nu-latn')).toBe('mr');
+    expect(resolveLocale('mr-x-arab')).toBe('mr');
     expect(resolveLocale(['hi-Latn', 'fr'])).toBe('fr');
     expect(resolveLocale('hi-u-nu-latn')).toBe('hi');
     expect(resolveLocale('hi-x-arab')).toBe('hi');
@@ -91,6 +97,12 @@ describe('online locale resolution', () => {
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
+  });
+  it('resolves Tamil regions and script without claiming Latin transliteration', () => {
+    for (const tag of ['ta', 'ta-IN', 'ta-LK', 'ta-Taml', 'ta-Taml-IN', 'ta-u-nu-latn'])
+      expect(resolveLocale(tag)).toBe('ta');
+    expect(resolveLocale(['ta-Latn', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ta')).toBe('ta');
   });
   it.each(locales)('loads selectable $code through the default browser loader', async (locale) => {
     vi.resetModules();
@@ -149,6 +161,21 @@ describe('message presentation', () => {
       `many ${new Intl.NumberFormat('ar').format(11)}`,
     );
   });
+  it('uses Marathi plural categories and localized counts', async () => {
+    registerCatalog('mr', {
+      '{count} item': { one: '{count} एक', other: '{count} अनेक' },
+    });
+    await setLocale('mr');
+    expect(new Intl.PluralRules('mr').resolvedOptions().pluralCategories.sort()).toEqual([
+      'one',
+      'other',
+    ]);
+    for (const count of [0, 1, 2, 12, 1.5]) {
+      expect(tp('{count} item', '{count} items', count)).toBe(
+        `${new Intl.NumberFormat('mr').format(count)} ${count === 1 ? 'एक' : 'अनेक'}`,
+      );
+    }
+  });
   it('notifies subscribers and formats with the selected locale', async () => {
     registerCatalog('de', {});
     let updates = 0;
@@ -172,8 +199,9 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 40 unique game catalog mappings including Bengali, Malay and Telugu', () => {
-    expect(locales).toHaveLength(40);
+  it('contains 42 unique game catalog mappings including Tamil, Bengali, Malay, Marathi and Telugu', () => {
+    expect(locales).toHaveLength(42);
+    expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
     expect(locales).toContainEqual({
       code: 'nb',
       gameCode: 'nb',
@@ -189,6 +217,7 @@ describe('message presentation', () => {
       dir: 'ltr',
     });
     expect(locales).toContainEqual({ code: 'bn', gameCode: 'bn', name: 'বাংলা', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'mr', gameCode: 'mr', name: 'मराठी', dir: 'ltr' });
     expect(locales).toContainEqual({ code: 'te', gameCode: 'te', name: 'తెలుగు', dir: 'ltr' });
   });
 });
@@ -239,6 +268,19 @@ describe('startup loading and presentation', () => {
     await runtime.setLocale('te');
     expect(browserScope.document.cookie).toContain('glob2_locale=te');
   });
+  it('loads the Tamil catalog from a regional browser preference and formats credit counts', async () => {
+    const runtime = await fresh('other_cookie=1');
+    vi.stubGlobal('navigator', { languages: ['ta-LK'] });
+    await runtime.initialize();
+    expect(runtime.getLocale()).toBe('ta');
+    expect(browserScope.document.documentElement.lang).toBe('ta');
+    expect(browserScope.document.documentElement.dir).toBe('ltr');
+    expect(browserScope.document.cookie).toBe('other_cookie=1');
+    expect(runtime.t('Password')).toBe('கடவுச்சொல்');
+    expect(runtime.tp('{count} credit', '{count} credits', 1)).toBe('1 வரவு');
+    expect(runtime.tp('{count} credit', '{count} credits', 0)).toBe('0 வரவுகள்');
+    expect(runtime.tp('{count} credit', '{count} credits', 2)).toBe('2 வரவுகள்');
+  });
   it('a failed initial download cannot override a newer successful switch', async () => {
     const runtime = await fresh();
     let fail!: (reason: Error) => void;
@@ -263,9 +305,10 @@ describe('startup loading and presentation', () => {
     runtime.configureCatalogLoader(async () => ({}));
     await runtime.initialize();
     expect(browserScope.document.documentElement.dir).toBe('rtl');
-    await runtime.setLocale('en');
-    expect(browserScope.document.documentElement.lang).toBe('en');
+    await runtime.setLocale('mr');
+    expect(browserScope.document.documentElement.lang).toBe('mr');
     expect(browserScope.document.documentElement.dir).toBe('ltr');
+    expect(browserScope.document.cookie).toContain('glob2_locale=mr');
   });
   it('English also hides unknown raw diagnostics while showing known public errors', async () => {
     const runtime = await fresh('glob2_locale=en');
