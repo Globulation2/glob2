@@ -45,6 +45,9 @@ for (const mode of ['serial', 'threaded']) for (const phone of [false, true]) {
       await clickControl(page, 'popup/2'); // Exercise the player's 150% text setting.
       await expect.poll(async () => (await control(page, 'display.textsize')).label).toMatch(/150\s*%/);
       await expect.poll(async () => Boolean((await snapshot(page)).controls['popup/2'])).toBe(false);
+      const scaleAppliedLoop = (await snapshot(page)).loop;
+      await expect.poll(async () => (await snapshot(page)).loop).toBeGreaterThanOrEqual(scaleAppliedLoop + 2);
+      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       await page.screenshot({path: info.outputPath('fil-settings-large-text.png')});
       if ((await snapshot(page)).controls['nav.current']) {
         await clickControl(page, 'nav.current');
