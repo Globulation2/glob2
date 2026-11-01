@@ -85,6 +85,7 @@ void provisionLanIdentity(NetworkConfig &config)
 	using Key = std::unique_ptr<EVP_PKEY, decltype(&EVP_PKEY_free)>;
 	using Cert = std::unique_ptr<X509, decltype(&X509_free)>;
 	using Bio = std::unique_ptr<BIO, decltype(&BIO_free)>;
+	using Name = std::unique_ptr<X509_NAME, decltype(&X509_NAME_free)>;
 	Key key(EVP_PKEY_Q_keygen(nullptr, nullptr, "EC", "prime256v1"), EVP_PKEY_free);
 	Cert cert(X509_new(), X509_free);
 	if (!key || !cert)
@@ -98,11 +99,13 @@ void provisionLanIdentity(NetworkConfig &config)
 	X509_gmtime_adj(X509_getm_notBefore(cert.get()), -60);
 	X509_gmtime_adj(X509_getm_notAfter(cert.get()), 7 * 24 * 60 * 60);
 	X509_set_pubkey(cert.get(), key.get());
-	auto *name = X509_get_subject_name(cert.get());
-	X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC,
+	Name name(X509_NAME_new(), X509_NAME_free);
+	if (!name || X509_NAME_add_entry_by_txt(name.get(), "CN", MBSTRING_ASC,
 							   reinterpret_cast<const unsigned char *>("Globulation 2 LAN session"),
-							   -1, -1, 0);
-	X509_set_issuer_name(cert.get(), name);
+							   -1, -1, 0) != 1 ||
+		X509_set_subject_name(cert.get(), name.get()) != 1 ||
+		X509_set_issuer_name(cert.get(), name.get()) != 1)
+		throw std::runtime_error("LAN identity subject generation failed");
 	X509V3_CTX context{};
 	X509V3_set_ctx(&context, cert.get(), cert.get(), nullptr, nullptr, 0);
 	std::string san = "DNS:localhost";
