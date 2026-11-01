@@ -1,0 +1,80 @@
+{
+  "language": "Norwegian Bokmål",
+  "locale": "nb",
+  "native_keys": 3395,
+  "online_keys": 2836,
+  "plural_messages": 27,
+  "certification": "Agent-reviewed; not native-human-certified",
+  "source_revision": "a4dfcf9bf82bb128554581a6adba676e8cca644f",
+  "current_head": "3881b5b9390416700b1b190c24d6cebc51fb067b",
+  "integration_base": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "runtime": "GCC15.2.0; SDL3.4.16 andSDL_ttf3.2.2 headers. Finalruntime requires isolatedsameABI/identicalheader SDL_ttf3.2.2+embeddedpinnedHarfBuzz10.1.0 overlay ahead oforiginalSDLprefix. No sharedprefix mutations or repo dependency changes. Node24.11.0 verificationonly.",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "review_roles": {
+    "author": "root, operating Google Cloud Translation v3",
+    "native_meaning_reviewer": "locale_integration",
+    "online_meaning_reviewer": "google_draft_tool",
+    "editor": "norwegian_brief"
+  },
+  "machine_draft": {
+    "api": "Cloud Translation v3 translateText",
+    "source": "en",
+    "provider_target": "no",
+    "attempts": 75,
+    "attempted_protected_characters": 240121,
+    "character_cap": 350000,
+    "planning_rate_per_million_usd": 20,
+    "planning_estimate_usd": 4.8,
+    "actual_billing": "Not measured; estimate only"
+  },
+  "post_draft_changed_entries": {
+    "native": 1024,
+    "online": 862
+  },
+  "verification": {
+    "structural": "Latest3395 source/corpus strictchecker0errors;latest-kitdraft0errors0untranslated",
+    "linguistic_review": "All3395native/2836online accepted by explicitfullreview+exactunchangedvaluecarry-forward;4UIrefinements+2newstatsindependentlyreviewed.",
+    "browser_full_workflows": "12 passed before single rendered-context shortening",
+    "browser_final_affected_home": "2 passed after shortening; measured placeholder131.6px <= phone190px",
+    "native_locale_smoke": "20 passed against final SystemLanguage.cpp including legacy no_NO_NY",
+    "native_translation_regressions": "10passed after3395-keysource integration",
+    "draft_runner": "10 passed",
+    "translation_program": "13 passed",
+    "platform_localization": "38 passed in4 files",
+    "browser_package_contracts": "27 passed, 1 skipped (28 total; optional host fontTools unavailable); exact font-subset reproduction independently verified with pinned fontTools",
+    "typecheck": "AllAPI/web/e2e projects passed afterbrowserguardfix",
+    "locale_index_continuity": "passed: all existing native locale indices equal integrated master; nb appended",
+    "legacy_script_continuation": "18 finalintegratedcases passed",
+    "native_startup": "8 finalintegratedcases passed",
+    "shipped_narrative": "33packagedmaps,93refs/69keys,10exactJSlessons;0nativegaps;final388source.",
+    "native_build": "Final3881b5b939 default-supported-feature productionpreview/focusedtest build passed; development -O0 -g1,notreleasepackage.",
+    "native_focused_total": "35/35cases,5746/5746assertions,0failed0skipped; final3881b5b939dirtyfalse;originalregisteredsuitesSystemLanguage,LegacyScriptCoverage,FontKerning.",
+    "font_fix_diagnostic": "9/9 FontKerning cases,4732assertions pass on caa2364 with pinnedHarfBuzz10.1.0-enabledSDL_ttf3.2.2 overlay; finalintegrated35pending.",
+    "font_failure_baseline": "HB0 initial font-script cases5fail due missingshaping support; fullLatinmatrix146 scale2drawnwidth failures beforeNBopt-in. ProperHB1 direct probe independently confirms rawhinting607px→618.5logicalpx at2x against616budget.",
+    "font_regressions": "9 finalintegratedFontKerningcases passed withHB10.1.0",
+    "platform_lint": "FullESLint+Prettierpassed; resolvesold7efCI3nonnullassertionfailures",
+    "font_final_delta": "42freshsubset samples passed allglyph/drawbounds;37512exactunchangedbaseline+36updated/new=37548finalcoverage,6controls excluded. composition-audit.json passed.",
+    "native_rendering": "All19commands0;36freshPNGaccepted,desktop1024x768/phone390x844,actualstatisticshelp/captions,correctshortlabels,allgame/tutorial/statdrawchecksums preserved.",
+    "font_final_coverage": "37548exactfinalsamples:37512unchangedverifiedbaseline+36freshupdated/newlabelrows;6nbcontrolrowsseparate. Zero missingglyphs/drawboundfailures. Font/layoutcode,fontbytes,DSO/compilerinputsidentical;oldprovenancepreserved.",
+    "runtime_catalog": "Everyfinalcapturefirst-resolvedNBpayloadmatcheslive/runtimeexportb7c618054f985de9f932a5df8618cb7fa8089b53426fa3391be160b4fc04f545."
+  },
+  "pending": [],
+  "limits": [
+    "No native-human Norwegian certification",
+    "No Android/iOS on-device validation",
+    "No native Windows/macOS runtime validation",
+    "No simulation/rule/save/replay/network-format changes; no simulation equivalence claim needed for catalog/locale presentation changes",
+    "Native focused build selects the original registered SystemLanguageTest.cpp and LegacyScriptCoverageTest.cpp entries via archived ignored site_init.py; no full engine-suite claim.",
+    "ScriptEditorScreen briefingcaptioncontextverifiedbysource/sharedfontmetrics;notcapturedasdistincteditorview. Collapsedlegacytutorialmessagesnotexercised."
+  ],
+  "catalog_sha256": {
+    "native": "b7c618054f985de9f932a5df8618cb7fa8089b53426fa3391be160b4fc04f545",
+    "online": "af4a15b2ec28107344d0c2af982bb67e860db71669d6bd794f3c16d7f1481b71"
+  },
+  "final_source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+  "hosted_ci": "Requestedci:run;pendingrun41269088366atpreparation. Old7efTypeScriptlintfailurefixed;full localESLint+Prettier/TSCpassed. No introducedknownfailureunresolved.",
+  "newer_master_review": {
+    "revision": "e9275c2ae198c9a431f9cba3313ef1209ab06109",
+    "scope": "MaximaAIworkerpriorityonly+simrevision/goldenrecord; no changes tolocale/font/rendering/packaging/CIinputs. Keptvalidatedbase perrepositoryno-unrelated-rebasepolicy."
+  }
+}
