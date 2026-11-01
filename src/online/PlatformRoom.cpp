@@ -1,4 +1,6 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
 // Copyright (C) 2026 glob2 contributors
 
@@ -225,7 +227,7 @@ void PlatformRoom::call(const std::string &method, Json params, std::function<vo
 							   event.text = response.error.code == "not_found" ? text("[room invite not found]")
 											: response.error.code == "update_required"
 												? text("[room update required]")
-												: problem;
+												: Glob2UI::apiErrorText(response.error);
 							   push(std::move(event));
 						   }
 						   else
@@ -337,7 +339,7 @@ void PlatformRoom::systemLinesFor(const Json &previous, const Json &next)
 																		: std::string();
 	};
 	if (!startNotice(next).empty() && startNotice(next) != startNotice(previous))
-		notice(startNotice(next));
+		{ Glob2UI::DiagnosticText presenter; notice(presenter(startNotice(next))); }
 	if (choice(previous) != choice(next))
 		notice(formatted("[room map changed %0]", mapName()));
 	else if (previous.value("rules", Json()) != next.value("rules", Json()))
@@ -1026,7 +1028,7 @@ void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, cons
 												: text("[room map upload failed]");
 				Event event;
 				event.kind = Event::Message;
-				event.text = formatted("[room map upload failed %0]", problem);
+				event.text = formatted("[room map upload failed %0]", !response.ok ? Glob2UI::apiErrorText(response.error) : Glob2UI::onlineProblemText(problem));
 				push(std::move(event));
 				return;
 			}

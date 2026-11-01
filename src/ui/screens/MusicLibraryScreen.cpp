@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
 #include "MusicUI.h"
 #include "MusicLibraryScreen.h"
@@ -64,7 +65,7 @@ void MusicLibraryScreen::refreshInstalled()
 	}
 	catch (const std::exception &e)
 	{
-		notice = e.what();
+		notice = musicError(e.what());
 	}
 	invalidate();
 }
@@ -168,7 +169,7 @@ void MusicLibraryScreen::onTimer(Uint32)
 		{
 			if (!job->error().empty())
 			{
-				notice = job->error();
+				notice = musicError(job->error());
 				queue.clear();
 			}
 			else if (previewOnly)
@@ -227,13 +228,22 @@ void MusicLibraryScreen::onTimer(Uint32)
 	try
 	{
 		if (state != HttpFetch::State::Done)
-			throw std::runtime_error(error.empty() ? musicText("Music download failed.") : error);
+			throw std::runtime_error(error.empty() ? "Music download failed." : error);
 		if (response.status < 200 || response.status >= 300)
 		{
 			auto json = Json::parse(response.body, nullptr, false);
+			if (onlineErrorLocale() == "bg")
+			{
+				const auto problem = Online::errorFromJson(json, "http_" + std::to_string(response.status));
+				std::clog << "Music library API: " << problem.message << '\n';
+				notice = apiErrorText(problem);
+				queue.clear();
+				invalidate();
+				return;
+			}
 			throw std::runtime_error(json.is_object()
-										 ? json.value("message", musicText("Music request failed."))
-										 : musicText("Music request failed."));
+										 ? json.value("message", "Music request failed.")
+										 : "Music request failed.");
 		}
 		if (kind == FetchKind::Catalog)
 		{
@@ -275,7 +285,7 @@ void MusicLibraryScreen::onTimer(Uint32)
 	}
 	catch (const std::exception &e)
 	{
-		notice = e.what();
+		notice = musicError(e.what());
 		queue.clear();
 	}
 	invalidate();
@@ -495,7 +505,7 @@ Element MusicLibraryScreen::build(const Presentation &p)
 								 }
 								 catch (const std::exception &e)
 								 {
-									 notice = e.what();
+									 notice = musicError(e.what());
 								 }
 							 },
 							 {.enabled = idle})},

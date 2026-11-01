@@ -780,7 +780,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                                           '{slot0}: starts at {slot1}, holds {slot2}; {slot3}'
                                         }
                                         slots={{
-                                          slot0: propertyLabel(material),
+                                          slot0: <code>{material}</code>,
                                           slot1: yielding.initial,
                                           slot2: yielding.capacity,
                                           slot3:
@@ -974,11 +974,5 @@ function propertyLabel(key: string) {
     passable: t('Units can cross'),
     buildable: t('Buildings allowed'),
   };
-  return (
-    labels[key] ??
-    key
-      .replace(/Q8$/, '')
-      .replace(/([a-z])([A-Z])/g, '$1 $2')
-      .replace(/^./, (c) => c.toUpperCase())
-  );
+  return Object.hasOwn(labels, key) ? labels[key] : <code>{key}</code>;
 }

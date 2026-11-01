@@ -3,6 +3,8 @@
 // Draft overlays and evidence live outside the shipped language inventory.
 #include "GlobalContainer.h"
 #include "Engine.h"
+#include "InGameStatistics.h"
+#include "touch/GameGUITouch.h"
 #include "tutorial/TutorialModel.h"
 #include "tutorial/TutorialGuidance.h"
 #include "sim/presentation/SceneInputs.h"
@@ -10,8 +12,12 @@
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
-#include "InGameStatistics.h"
-#include "GameGUITouch.h"
+#include "NewMapScreen.h"
+#include "MapEdit.h"
+#include "EditorDock.h"
+#include "Race.h"
+#include "OnlineServices.h"
+#include "PlatformClient.h"
 #include "GameGUIDialog.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
@@ -57,6 +63,20 @@ struct TranslationPreviewAccess
     static GameGUI &gui(Engine &engine) { return engine.gui; }
     static bool currentWorldAdmitted(const Engine &engine) {
         return engine.retainedPresentation && engine.retainedPresentation->world.tick == engine.gui.game.stepCounter;
+    }
+    static InGameStatisticsPanel &openStatistics(GameGUI &gui) {
+        gui.clearSelection();
+        gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+        if (gui.touch && gui.touch->usesHUD()) gui.touch->menuAction(3);
+        return gui.statistics();
+    }
+    static bool openStatisticsDetails(GameGUI &gui) {
+        auto *dialog = gui.activeDialog();
+        if (!dialog) return false;
+        auto *button = dialog->host().find("stats/history/details");
+        if (!button) return false;
+        dialog->host().tapAt(button->bounds.center());
+        return true;
     }
     static void openMenu(GameGUI &gui) { gui.openMainMenu(); }
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
@@ -132,6 +152,27 @@ struct TranslationPreviewAccess
         gui.viewportY = gui.camera.tileY();
         rebaseViewport(gui);
     }
+    static void initializeBlankEditor(MapEdit &editor) {
+        // Same owner-side blank-map setup as EditorActionCoverageTest.
+        editor.game.map.setSize(5, 5, GRASS);
+        editor.game.map.setGame(&editor.game);
+        editor.game.addTeam();
+        editor.game.teams[0]->race.loadDefault();
+        for (int y = 0; y < 32; ++y) for (int x = 0; x < 32; ++x)
+            editor.game.map.clearImmobileUnit(x, y);
+        editor.viewportX = editor.viewportY = 0;
+        editor.updateCamera();
+        editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
+        editor.preparePresentation();
+    }
+    static ScriptEditorScreen &openScriptEditor(MapEdit &editor) {
+        editor.performAction("open scenario editor");
+        return *editor.scriptEditor;
+    }
+    static void closeScriptEditor(MapEdit &editor) { editor.performAction("close scenario editor"); }
+    static void showEditorTerrain(MapEdit &editor) { editor.performAction("switch to terrain view"); }
+    static void openEditorMenu(MapEdit &editor) { editor.performAction("open menu screen"); }
+    static void closeEditorMenu(MapEdit &editor) { editor.performAction("close menu screen"); }
 };
 namespace
 {
@@ -195,6 +236,8 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
     for (const auto *name : {"data/texts.en.txt", "data/texts.keys.txt",
              "platform/packages/i18n/locales/en.json", "libgag/src/TrueTypeFont.cpp",
              "libgag/src/BidiText.cpp", "libgag/src/ui/TextLayout.cpp",
+             "src/hud/InGameStatistics.cpp", "src/hud/InGameStatistics.h",
+             "src/team/stats/MetricCatalog.cpp", "src/team/stats/MetricCatalog.h",
              "src/hud/draw/GameGUIDraw.cpp", "src/hud/touch/GameGUITouchView.cpp",
              "src/hud/touch/GameGUITouch.cpp", "src/hud/touch/GameGUITouch.h",
              "libgag/include/TouchText.h", "libgag/include/TrueTypeFont.h",
@@ -204,6 +247,13 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "src/hud/GameGUIControls.cpp", "src/hud/touch/GameGUITouchInspection.cpp",
              "browser/shell.html", "browser/ApplicationHost.cpp",
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
+             "src/map/editor/screens/NewMapScreen.cpp", "src/map/editor/MapEditIO.cpp",
+             "src/map/editor/MapEditDraw.cpp", "src/map/editor/EditorDock.cpp",
+             "src/map/editor/PhoneEditor.cpp", "src/ui/settings/SettingsScreenGeneral.cpp",
+             "src/ui/settings/SettingsScreenCustomAIs.cpp", "src/ui/settings/SettingsScreenOnline.cpp",
+             "src/ui/settings/SettingsScreenKeyboard.cpp", "src/online/PlatformClient.cpp",
+             "src/online/PlatformProtocol.cpp", "src/online/PlatformProtocol.h",
+             "src/online/ApiErrorText.cpp", "src/online/ApiErrorText.h", "src/ui/ApiErrorText.h",
              "src/game/screens/EndGameScreen.cpp", "src/team/stats/TeamStatChart.cpp",
              "src/team/stats/MetricCatalog.cpp", "src/hud/InGameStatistics.cpp",
              "src/hud/InGameStatistics.h", "src/app/SystemLanguage.cpp", "src/app/Settings.cpp",
@@ -282,7 +332,8 @@ struct ProductionMeasurer : GAGGUI::ui::TextMeasurer
     std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &text) const override
     { return font.getStringClusterEnds(text); }
 };
-void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &output, int width, int height)
+void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &output, int width, int height,
+                unsigned selectedSize = 0, float selectedScale = 0)
 {
     GAGCore::Toolkit::init("glob2-translation-font-preview");
     GAGCore::Toolkit::getFileManager()->addDir(root.string());
@@ -292,19 +343,22 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
     Json manifest = {{"kind", "production-font-matrix"}, {"pilot", pilot.string()},
         {"logical_width", width}, {"logical_height", height}, {"samples", Json::array()},
         {"authored_sizes", {10, 13, 20}}, {"raster_scales", {1.0, 1.5, 2.0}},
-        {"limits", {"Draft overlay only; no language registered or locale finalized.",
+        {"limits", {"Overlay capture only; this command does not register or finalize a locale.",
                     "Uses production TrueTypeFont and shared UI wrapText, not a game screen.",
                     "Raw raster fits_width/height remain diagnostic; drawn_fits_width/height use the production draw destination, preserving the whole bitmap.",
                     "Glyph checks and images require independent linguistic/visual inspection.",
                     "Placeholder tokens are shown literally; no claim of formatted-message coverage."}}};
     manifest["evidence_identity"] = evidenceIdentity(root, pilot);
     manifest["native_keys_overridden"] = localized;
+    manifest["selected_size"] = selectedSize ? Json(selectedSize) : Json(nullptr);
+    manifest["selected_scale"] = selectedScale ? Json(selectedScale) : Json(nullptr);
     int hb = 0, hbMinor = 0, hbMicro = 0;
     TTF_GetHarfBuzzVersion(&hb, &hbMinor, &hbMicro);
     manifest["harfbuzz"] = {hb, hbMinor, hbMicro};
     {
         const auto rows = samples(pilot);
         for (unsigned size : {10u, 13u, 20u}) for (float scale : {1.0f, 1.5f, 2.0f}) {
+            if (selectedSize && (size != selectedSize || scale != selectedScale)) continue;
             const char *scaleName = scale == 1.0f ? "1" : scale == 1.5f ? "1.5" : "2";
             const int pixelWidth = int(std::lround(width * scale));
             const int pixelHeight = int(std::lround(height * scale));
@@ -392,6 +446,21 @@ public:
     }
     void render() {
         this->beginExecution(globalContainer->gfx);
+        redraw();
+    }
+    bool hasControl(const std::string &key) {
+        return this->GAGGUI::ui::UIScreen::host().find(key) != nullptr;
+    }
+    bool containsText(const std::string &expected) {
+        const auto visit = [&](const auto &self, GAGGUI::ui::Node *node) -> bool {
+            if (!node) return false;
+            if (node->accessibleText() == expected) return true;
+            for (const auto &child : node->children) if (self(self, child.get())) return true;
+            return false;
+        };
+        return visit(visit, this->GAGGUI::ui::UIScreen::host().root());
+    }
+    void redraw() {
         this->paintFrame(SDL_GetTicks());
         this->paintFrame(SDL_GetTicks());
     }
@@ -453,7 +522,30 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
     globals.load();
     const auto localized = installDraftOverlay(root, pilot, output);
     globals.settings.language = pilotLocale(pilot);
-    Json controls;
+    const bool onlineSettings = screen == "settings-ais" || screen == "settings-online";
+    if (onlineSettings) require(NET_Init(), "Initialize SDL_net for offline Settings captures");
+    struct NetworkScope { bool active; ~NetworkScope() { if (active) NET_Quit(); } } network{onlineSettings};
+    // Real client and real library controls, with no external account/provider
+    // requests: loopback port 1 is deliberately unavailable in this capture.
+    Online::ServicesOwner services;
+    const auto *fixtureOrigin = SDL_getenv("GLOB2_TRANSLATION_PREVIEW_HTTP_ORIGIN");
+    const auto *fixtureNotice = SDL_getenv("GLOB2_TRANSLATION_PREVIEW_EXPECT_NOTICE");
+    const bool httpFixture = fixtureOrigin && *fixtureOrigin;
+    std::string origin = "http://127.0.0.1:1";
+    if (httpFixture) {
+        require(screen == "settings-ais" && fixtureNotice && *fixtureNotice,
+            "HTTP fixture is only available in the AI Settings CLI preview with expected notice");
+        origin = fixtureOrigin;
+        const std::string prefix = "http://127.0.0.1:";
+        require(origin.starts_with(prefix), "HTTP preview fixture requires IPv4 loopback");
+        const auto port = origin.substr(prefix.size());
+        require(!port.empty() && port.size() <= 5 &&
+            std::all_of(port.begin(), port.end(), [](char c) { return c >= '0' && c <= '9'; }) &&
+            std::stoi(port) > 0 && std::stoi(port) <= 65535,
+            "HTTP preview fixture requires a numeric loopback port");
+    }
+    if (onlineSettings && !httpFixture) services.get().client.start(origin);
+    Json controls, actions = Json::array();
     {
         FrontendTheme theme;
         require(theme.colony->load(), "Load bundled menu colony");
@@ -461,14 +553,52 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
         GAGGUI::ScreenStack stack(*globals.gfx);
         if (screen == "main") {
             Preview<MainMenuScreen> preview; preview.render(); controls = preview.bounds();
-        } else if (screen == "settings" || screen == "settings-audio" || screen == "settings-player") {
+        } else if (screen == "settings" || screen == "settings-audio" || screen == "settings-ais" ||
+                   screen == "settings-online" || screen == "settings-player" || screen == "settings-controls") {
+            require(screen != "settings-controls" || !GAGCore::phonePresentationRequested(),
+                "Keyboard Controls category is unavailable in the phone presentation");
             Preview<SettingsScreen> preview;
             if (screen == "settings-audio") preview.selectCategory(SettingsScreen::Category::Audio);
-            if (screen == "settings-player") preview.selectCategory(SettingsScreen::Category::Player);
-            preview.render(); controls = preview.bounds();
+            else if (screen == "settings-ais") preview.selectCategory(SettingsScreen::Category::CustomAIs);
+            else if (screen == "settings-online") preview.selectCategory(SettingsScreen::Category::Online);
+            else if (screen == "settings-player") preview.selectCategory(SettingsScreen::Category::Player);
+            else if (screen == "settings-controls") preview.selectCategory(SettingsScreen::Category::Controls);
+            preview.render();
+            if (screen == "settings-ais") {
+                require(preview.hasControl("ai.browse"), "Community AI Library is available in this build");
+                // Native HTTP advances only when pumped. Start fixture timers after
+                // cold menu/font setup, immediately before the real Browse action.
+                if (httpFixture) services.get().client.start(origin);
+                preview.activateSetting("ai.browse");
+                preview.redraw();
+                actions.push_back(httpFixture ? "Opened AI Library through its production button; controlled localhost HTTP fixture." : "Opened AI Library through its production button; client uses unavailable loopback origin.");
+                if (preview.hasControl("ais/gotit")) {
+                    preview.activateSetting("ais/gotit");
+                    preview.redraw();
+                    actions.push_back("Dismissed the local AI Library introduction through its production button.");
+                }
+                for (const auto *tag : {"Balanced", "Rush", "Defensive", "Economy", "Expansion", "Experimental", "Beginner-friendly"})
+                    require(preview.hasControl(std::string("ais/tag/") + tag), "Production AI tag control: " + std::string(tag));
+                if (httpFixture) {
+                    const Uint64 deadline = SDL_GetTicks() + 15000;
+                    do {
+                        Online::pump();
+                        preview.redraw();
+                        if (preview.containsText(fixtureNotice)) break;
+                        SDL_Delay(10);
+                    } while (SDL_GetTicks() < deadline);
+                    require(preview.containsText(fixtureNotice),
+                        "Real HTTP decoder and AI Settings callback produced the expected notice");
+                    actions.push_back("Observed expected notice through production HTTP decoder and AI Settings callback; controlled localhost fixture only.");
+                }
+            }
+            controls = preview.bounds();
         } else if (screen == "lobby" || screen == "lobby-players") {
             Preview<CustomGameScreen> preview(stack);
             if (screen == "lobby-players") preview.selectTab(1);
+            preview.render(); controls = preview.bounds();
+        } else if (screen == "new-map") {
+            Preview<NewMapScreen> preview;
             preview.render(); controls = preview.bounds();
         } else throw std::runtime_error("Unknown screen: " + screen);
         GAGCore::DrawableSurface image(globals.gfx->getW(), globals.gfx->getH());
@@ -477,9 +607,136 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
     }
     writeJson(output / (screen + ".json"), {{"kind", "production-screen-draft-overlay"}, {"screen", screen},
         {"pilot", pilot.string()}, {"evidence_identity", evidenceIdentity(root, pilot)}, {"native_keys_overridden", localized}, {"width", width}, {"height", height},
-        {"controls", controls}, {"limits", {"Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
+        {"controls", controls}, {"screen_actions", actions},
+        {"http_fixture_origin", httpFixture ? Json(origin) : Json(nullptr)},
+        {"expected_notice", httpFixture ? Json(fixtureNotice) : Json(nullptr)},
+        {"online_environment", onlineSettings ? "CLI preview uses controlled localhost fixture or unavailable loopback; no production server, remote account/provider or physical-device verification." : "Not exercised."}, {"limits", {"Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
             "Control bounds include scrollable content and do not independently prove text fitting.",
             "Does not verify gameplay HUD, tutorial, dialogs, browser, mobile platform, or full locale."}}});
+    globalContainer = nullptr;
+}
+
+void editorPreview(const fs::path &root, const fs::path &pilot, const fs::path &output,
+                   int width, int height, bool scriptEditorMode = false)
+{
+    GlobalContainer globals("glob2-translation-editor-preview");
+    globalContainer = &globals;
+    globals.fileManager->addDir(root.string());
+    globals.settings.mute = 1;
+    globals.settings.screenWidth = width;
+    globals.settings.screenHeight = height;
+    // PhoneEditor requires the portable renderer's UI transforms. Record this
+    // explicit production renderer choice rather than silently drawing a dock.
+    globals.settings.screenFlags = GAGCore::GraphicContext::PORTABLEGPU;
+    globals.rendererLaunchOverride = GAGCore::RendererBackend::PortableSDL;
+    globals.load();
+    require(globals.gfx->hasPortableRenderer(), "Editor capture needs the portable SDL renderer");
+    globals.gfx->setResponsiveViewport(true, 800, 600);
+    const auto localized = installDraftOverlay(root, pilot, output);
+    globals.settings.language = pilotLocale(pilot);
+    Json result = {{"kind", scriptEditorMode ? "production-script-editor-draft-overlay" : "production-editor-draft-overlay"}, {"pilot", pilot.string()},
+        {"evidence_identity", evidenceIdentity(root, pilot)}, {"native_keys_overridden", localized},
+        {"width", width}, {"height", height}, {"renderer", "portable-sdl"},
+        {"phone_presentation_requested", GAGCore::phonePresentationRequested()},
+        {"map_setup", "32 by 32 grass tiles, one default-race team; no simulation steps"},
+        {"captures", Json::array()},
+        {"limits", {"Production MapEdit drawEditing on a local blank map; not a native mobile-platform claim.",
+            "Setup and menu navigation use controlled preview friend access, not physical pointer input.",
+            "Dock/dialog control bounds do not independently establish text fitting; phone tray bounds are not inventoried.",
+            "No save/load, map generation, brush placement or online service is exercised."}}};
+    {
+        FrontendTheme theme;
+        FrontendScope editorTheme(false);
+        MapEdit editor;
+        TranslationPreviewAccess::initializeBlankEditor(editor);
+        editor.beginEditing();
+        require(!GAGCore::phonePresentationRequested() || editor.usesPhone(),
+            "Requested phone editor presentation must be active");
+        result["uses_phone_editor"] = editor.usesPhone();
+        result["logical_width"] = globals.gfx->getW();
+        result["logical_height"] = globals.gfx->getH();
+        const auto profile = fs::path(globals.fileManager->getDir(0));
+        auto draw = [&] {
+            if (!globals.gfx->beginRenderFrame()) return false;
+            editor.drawEditing();
+            return true;
+        };
+        auto capture = [&](const std::string &name) {
+            const auto before = editor.game.checkSum();
+            const auto bitmap = profile / ("translation-preview-" + name + ".bmp");
+            fs::remove(bitmap);
+            const Uint64 readyDeadline = SDL_GetTicks() + 15000;
+            bool rendered = draw();
+            while (!rendered && SDL_GetTicks() < readyDeadline) { SDL_Delay(1); rendered = draw(); }
+            require(rendered, "Render current editor UI before capture");
+            globals.gfx->printScreen(bitmap.filename().string());
+            const Uint64 deadline = SDL_GetTicks() + 15000;
+            while (!fs::exists(bitmap) && SDL_GetTicks() < deadline) { draw(); SDL_Delay(1); }
+            require(fs::exists(bitmap), "Production editor screenshot completed");
+            Surface image(SDL_LoadBMP(bitmap.string().c_str()), SDL_DestroySurface);
+            require(bool(image), "Read production editor screenshot");
+            require(IMG_SavePNG(image.get(), (output / (name + ".png")).string().c_str()), "Save editor PNG");
+            const auto after = editor.game.checkSum();
+            require(before == after, "Editor drawing must preserve simulation checksum");
+            Json controls = Json::array();
+            auto *dialog = editor.activeDialog();
+            if (!dialog) dialog = editor.editorDock();
+            if (dialog) for (auto *node : dialog->host().interactiveNodes()) {
+                const auto r = node->bounds;
+                controls.push_back({{"key", node->key}, {"x", r.x}, {"y", r.y},
+                    {"width", r.w}, {"height", r.h},
+                    {"within_viewport", r.x >= 0 && r.y >= 0 &&
+                        r.x + r.w <= globals.gfx->getW() && r.y + r.h <= globals.gfx->getH()}});
+            }
+            result["captures"].push_back({{"name", name}, {"checksum_before_draw", before},
+                {"checksum_after_draw", after}, {"image_width", image->w}, {"image_height", image->h},
+                {"dialog_open", editor.hasDialog()}, {"controls", std::move(controls)}});
+        };
+        if (scriptEditorMode) {
+            const auto beforeEditing = editor.game.checkSum();
+            auto &script = TranslationPreviewAccess::openScriptEditor(editor);
+            require(editor.activeDialog() == &script, "Production scenario editor is the active dialog");
+            script.selectLanguage(ScriptEditorScreen::Language::JavaScript);
+            const std::string valid = "// Translation preview: local validation only.\nfunction step(ctx) {\n  return [];\n}\n";
+            script.setScriptText(valid);
+            capture("script-editor-cursor");
+            auto recordStatus = [&](const std::string &name, bool expectedResult) {
+                const auto *cursor = script.host().find("script/cursor");
+                require(cursor != nullptr, "Production localized script cursor exists");
+                const auto r = cursor->bounds;
+                result["script_states"].push_back({{"name", name}, {"compile_result", expectedResult},
+                    {"compilation_text", script.compilationText()}, {"cursor_text", cursor->accessibleText()},
+                    {"cursor_bounds", {{"x", r.x}, {"y", r.y}, {"width", r.w}, {"height", r.h}}},
+                    {"source_sha256", [&] { Online::Sha256 hash; hash.update(script.scriptText().data(), script.scriptText().size()); return Online::Sha256::toHex(hash.finish()); }()}});
+            };
+            result["script_states"] = Json::array();
+            const bool success = script.compile();
+            require(success, "Production JavaScript validation accepts the controlled valid script");
+            require(!script.compilationText().empty(), "Production compile success has a visible status");
+            capture("script-editor-success");
+            recordStatus("success", success);
+            script.setScriptText("function step( {\n");
+            const bool failure = script.compile();
+            require(!failure, "Production JavaScript validation rejects the controlled syntax error");
+            require(!script.compilationText().empty(), "Production compile failure has a visible status");
+            capture("script-editor-failure");
+            recordStatus("failure", failure);
+            TranslationPreviewAccess::closeScriptEditor(editor);
+            require(beforeEditing == editor.game.checkSum(), "Validation and closing without confirmation preserve map state");
+            result["limits"].push_back("Script source is controlled harness input; compile validates through the production compiler, never confirms or saves the scenario.");
+        } else {
+            capture("editor");
+            const auto beforeNavigation = editor.game.checkSum();
+            TranslationPreviewAccess::showEditorTerrain(editor);
+            capture("editor-terrain");
+            TranslationPreviewAccess::openEditorMenu(editor);
+            require(editor.hasDialog(), "Production editor menu opened");
+            capture("editor-dialog");
+            TranslationPreviewAccess::closeEditorMenu(editor);
+            require(beforeNavigation == editor.game.checkSum(), "Editor UI navigation must preserve simulation checksum");
+        }
+    }
+    writeJson(output / (scriptEditorMode ? "script-editor.json" : "editor.json"), result);
     globalContainer = nullptr;
 }
 
@@ -487,6 +744,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                      const std::string &kind, int width, int height)
 {
     const bool tutorial = kind == "tutorial" || kind.starts_with("tutorial:");
+    const bool statistics = kind == "statistics-navigation";
     const std::string livePrefix = "ingame-statistics:";
     const bool history = kind == "ingame-statistics-history";
     const bool liveStatistics = history || kind.starts_with(livePrefix);
@@ -500,7 +758,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
         else if (topicName == "world") topic = InGameStatisticsPanel::Topic::World;
         else require(topicName == "overview", "Known production statistics topic");
     }
-    require(kind == "gameplay" || kind == "statistics" || tutorial || liveStatistics || mapOverlays, "Unknown game preview kind");
+    require(kind == "gameplay" || kind == "statistics" || statistics || tutorial || liveStatistics || mapOverlays, "Unknown game preview kind");
     const std::string lesson = kind == "tutorial" ? "introduction" : (tutorial ? kind.substr(9) : "");
     if (tutorial) {
         const auto catalog = readJson(root / "scripts/tutorials/catalog.json");
@@ -636,7 +894,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             const auto before = gui.game.checkSum();
             const auto metrics = Stats::catalogForBuildings(gui.game.buildingsTypes);
             const auto metric = std::find_if(metrics.begin(), metrics.end(), [](const auto &entry) {
-                return entry.id == "win probability";
+                return std::string(entry.id) == "win probability";
             });
             require(metric != metrics.end(), "Production win probability metric exists");
             FrontendTheme theme;
@@ -794,7 +1052,41 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["briefing_dismissed"] = briefing;
             result["tutorial_capture_dialog_free"] = true;
         }
-        if (kind != "statistics") capture(captureKind);
+        if (statistics) {
+            const auto beforeNavigation = gui.game.checkSum();
+            auto &panel = TranslationPreviewAccess::openStatistics(gui);
+            result["statistics_views"] = Json::array();
+            auto statisticsCapture = [&](const std::string &name) {
+                capture(name);
+                Json controls = Json::array();
+                for (auto *node : panel.host().interactiveNodes())
+                    controls.push_back({{"key", node->key}, {"text", node->accessibleText()}});
+                result["statistics_views"].push_back({{"name", name},
+                    {"topic", int(panel.topic())}, {"selected_metric", panel.selectedMetric()},
+                    {"history_available", panel.history() != nullptr}, {"statistics_tick", panel.tick()},
+                    {"win_probability_metric_available", panel.metric("win probability") != nullptr},
+                    {"controls", std::move(controls)}});
+            };
+            panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
+            statisticsCapture("statistics-overview");
+            panel.selectTopic(InGameStatisticsPanel::Topic::Economy);
+            statisticsCapture("statistics-economy");
+            panel.selectTopic(InGameStatisticsPanel::Topic::World);
+            statisticsCapture("statistics-world");
+            // Only open metrics present in the production catalog. Live-player
+            // win probabilities are normally hidden; never fabricate access,
+            // history, readings or a showChances flag for a translation image.
+            for (const auto *id : {"population", "win probability"}) {
+                if (!panel.metric(id)) continue;
+                panel.openMetric(id);
+                const std::string name = id == std::string("population") ? "statistics-population-history" : "statistics-win-probability-history";
+                statisticsCapture(name);
+                if (TranslationPreviewAccess::openStatisticsDetails(gui)) statisticsCapture(name + "-details");
+                TranslationPreviewAccess::closeMenu(gui);
+            }
+            require(beforeNavigation == gui.game.checkSum(), "Statistics navigation must preserve simulation state");
+            result["limits"].push_back("Statistics use only real published local-game readings. A short session can show waiting/empty history; no history is synthesized. Win probability remains unavailable wherever production live-player policy hides it; no hidden help/detail coverage is claimed.");
+        } else if (kind != "statistics") capture(captureKind);
         if (tutorial) {
             auto *card = TranslationPreviewAccess::guidance(gui);
             require(card != nullptr, "Actual tutorial guidance card available");
@@ -1030,19 +1322,35 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|statistics|ingame-statistics:TOPIC|ingame-statistics-history|map-overlays|tutorial[:LESSON-ID]");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H [SIZE SCALE] | screen ROOT DRAFT OUTPUT W H SCREEN | editor|script-editor ROOT DRAFT OUTPUT W H | game ROOT DRAFT OUTPUT W H gameplay|statistics|statistics-navigation|ingame-statistics:TOPIC|ingame-statistics-history|map-overlays|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);
         const int width = std::stoi(argv[5]), height = std::stoi(argv[6]);
         require(width >= 240 && width <= 4096 && height >= 240 && height <= 4096, "Viewport out of supported range");
         fs::create_directories(output);
-        if (mode == "matrix") fontMatrix(root, pilot, output, width, height);
+        if (mode == "matrix") {
+            require(argc == 7 || argc == 9, "Matrix takes ROOT DRAFT OUTPUT W H and optional SIZE SCALE");
+            unsigned size = 0;
+            float scale = 0;
+            if (argc == 9) {
+                const std::string sizeArg = argv[7], scaleArg = argv[8];
+                require(sizeArg == "10" || sizeArg == "13" || sizeArg == "20", "Matrix SIZE must be 10, 13 or 20");
+                require(scaleArg == "1" || scaleArg == "1.5" || scaleArg == "2", "Matrix SCALE must be 1, 1.5 or 2");
+                size = unsigned(std::stoi(sizeArg));
+                scale = std::stof(scaleArg);
+            }
+            fontMatrix(root, pilot, output, width, height, size, scale);
+        }
+        else if (mode == "editor" || mode == "script-editor") {
+            require(argc == 7, "Editor modes take ROOT DRAFT OUTPUT W H");
+            editorPreview(root, pilot, output, width, height, mode == "script-editor");
+        }
         else if (mode == "screen") {
             require(argc == 8, "Screen mode needs screen name");
             screenPreview(root, pilot, output, argv[7], width, height);
         } else if (mode == "game") {
-            require(argc == 8, "Game mode needs gameplay or tutorial");
+            require(argc == 8, "Game mode needs gameplay, statistics or tutorial");
             gameplayPreview(root, pilot, output, argv[7], width, height);
         } else throw std::runtime_error("Unknown mode");
         return 0;

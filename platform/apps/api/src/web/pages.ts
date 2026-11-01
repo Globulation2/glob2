@@ -143,6 +143,7 @@ const ASSET_NAME = /^[a-zA-Z0-9-]+\.(webp|png|jpg|woff2|ttf|js|css|txt)$/;
 
 // Serve the same pinned script fonts as the app; never accept arbitrary paths.
 const scriptFontRoot = new URL('../../../../../data/fonts/', import.meta.url);
+const bulgarianFont = new URL('../../../../../browser/assets/sans-core.ttf', import.meta.url);
 const scriptFontManifest = JSON.parse(
   readFileSync(new URL('scripts/manifest.json', scriptFontRoot), 'utf8'),
 ) as { fonts: { name: string }[] };
@@ -161,14 +162,19 @@ export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
       try {
         if (file === 'script-fonts.css') {
           body = Buffer.from(
-            readFileSync(scriptFontsCss, 'utf8').replaceAll(
-              '../../../data/fonts/scripts/',
-              `${ASSETS}/`,
-            ),
+            readFileSync(scriptFontsCss, 'utf8')
+              .replaceAll('../../../data/fonts/scripts/', `${ASSETS}/`)
+              .replaceAll('../../../browser/assets/', `${ASSETS}/`),
           );
+        } else if (file === 'sans-core.ttf') {
+          body = readFileSync(bulgarianFont);
         } else if (scriptFontNames.has(file)) {
           body = readFileSync(new URL(`scripts/${file}`, scriptFontRoot));
-        } else if (file === 'LICENSE-Noto.txt') {
+        } else if (
+          file === 'LICENSE-Noto.txt' ||
+          file === 'LICENSE-DejaVu.txt' ||
+          file === 'LICENSE-Droid.txt'
+        ) {
           body = readFileSync(new URL(file, scriptFontRoot));
         } else {
           if (ext === 'ttf') return reply.status(404).send();

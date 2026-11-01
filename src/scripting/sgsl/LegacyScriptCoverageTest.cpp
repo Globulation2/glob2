@@ -58,7 +58,7 @@ void loadLanguageInventory(const std::filesystem::path& listing, const std::stri
         if (!entry.empty() && entry.back() == '\r') entry.pop_back();
         if (entry.empty() || (!excludedLanguage.empty() && entry == "data/texts." + excludedLanguage + ".txt")) continue;
         // Marathi was published before this PR; omit its later Telugu and Filipino additions in that historical fixture.
-        if (publishedWithoutTelugu && (entry == "data/texts.te.txt" || entry == "data/texts.fil.txt")) continue;
+        if (publishedWithoutTelugu && (entry == "data/texts.te.txt" || entry == "data/texts.fil.txt" || entry == "data/texts.bg.txt")) continue;
         contents += (glob2test::sourceRoot() / entry).string() + "\n";
     }
     glob2test::writeFile(listing, contents);
@@ -68,6 +68,29 @@ void loadLanguageInventory(const std::filesystem::path& listing, const std::stri
     strings->setDefaultLang(strings->getLangCode("en"));
     strings->setLang(strings->getLangCode("en"));
 }
+
+// Toolkit's string table survives HeadlessGlobals; restore it even when a REQUIRE aborts.
+struct RestoreLanguageInventory
+{
+    GlobalContainer& globals;
+    std::string settingsLanguage;
+    std::string tableLanguage;
+    explicit RestoreLanguageInventory(GlobalContainer& container)
+        : globals(container), settingsLanguage(container.settings.language),
+          tableLanguage(GAGCore::Toolkit::getStringTable()->getString("[language-code]")) {}
+    ~RestoreLanguageInventory()
+    {
+        globals.settings.language = settingsLanguage;
+        auto* strings = GAGCore::Toolkit::getStringTable();
+        const bool loaded = strings->load((glob2test::sourceRoot() / "data/texts.list.txt").string());
+        CHECK(loaded);
+        if (loaded)
+        {
+            strings->setDefaultLang(strings->getLangCode("en"));
+            strings->setLang(strings->getLangCode(tableLanguage));
+        }
+    }
+};
 
 // The released pre-152 SGSL layout has no per-story private RNG fields.
 // Keep this historical input independent of the current writer.
@@ -111,6 +134,7 @@ std::string saveBeforePrivateRandom(MapScriptSGSL& script, Game& game)
 void checkCatalogLanguageTokens(const std::string& language, const std::string& message)
 {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    RestoreLanguageInventory restoreInventory(globals.globals);
     glob2test::TempDir temporary("sgsl-languages");
     const auto listing = temporary.path / "texts.list.txt";
     World w;
@@ -136,6 +160,7 @@ void checkCatalogLanguageTokens(const std::string& language, const std::string& 
 void checkCatalogLanguageDisplay(const std::string& language, const std::string& message)
 {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    RestoreLanguageInventory restoreInventory(globals.globals);
     for (const auto& [selectedLanguage, expected] : {
         std::pair{language, message}, std::pair{std::string("en"), std::string("English message")},
         std::pair{std::string("fr"), std::string("Authored fallback")}})
@@ -154,6 +179,7 @@ void checkCatalogLanguageDisplay(const std::string& language, const std::string&
 void checkCatalogLanguageSavedContinuation(const std::string& language)
 {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    RestoreLanguageInventory restoreInventory(globals.globals);
     glob2test::TempDir temporary("sgsl-save-languages");
     const auto listing = temporary.path / "texts.list.txt";
     const std::string source =
@@ -217,6 +243,19 @@ void checkCatalogLanguageSavedContinuation(const std::string& language)
 
 TEST_SUITE("LegacyScriptCoverage")
 {
+    TEST_CASE("Bulgarian SGSL language tokens require the installed catalog")
+    {
+        checkCatalogLanguageTokens("bg", "Българско съобщение");
+    }
+    TEST_CASE("Bulgarian SGSL selects its message and retains an authored default")
+    {
+        checkCatalogLanguageDisplay("bg", "Българско съобщение");
+    }
+    TEST_CASE("adding Bulgarian preserves legacy SGSL source bytes and saved program counters")
+    {
+        checkCatalogLanguageSavedContinuation("bg");
+    }
+
     TEST_CASE("Malay SGSL language tokens require the installed catalog")
     {
         checkCatalogLanguageTokens("ms", "Mesej Melayu");
@@ -250,6 +289,7 @@ TEST_SUITE("LegacyScriptCoverage")
     TEST_CASE("Marathi SGSL language tokens require the installed catalog")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreInventory(globals.globals);
         glob2test::TempDir temporary("sgsl-languages");
         const auto listing = temporary.path / "texts.list.txt";
         World w;
@@ -270,6 +310,7 @@ TEST_SUITE("LegacyScriptCoverage")
         REQUIRE(strings->getNumberOfLanguage() == int(oldCodes.size()) + 1);
         for (size_t i = 0; i < oldCodes.size(); ++i)
         {
+            if (oldCodes[i] == "bg") continue; // Bulgarian follows the released Filipino inventory.
             CAPTURE(oldCodes[i]);
             CHECK(strings->getLangCode(oldCodes[i]) == int(i));
         }
@@ -286,6 +327,7 @@ TEST_SUITE("LegacyScriptCoverage")
     TEST_CASE("Marathi SGSL selects its message and retains an authored default for other locales")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreInventory(globals.globals);
         for (const auto& [language, expected] : {
             std::pair{"mr", "मराठी संदेश"}, std::pair{"en", "English message"},
             std::pair{"fr", "Authored fallback"}})
@@ -304,6 +346,7 @@ TEST_SUITE("LegacyScriptCoverage")
     TEST_CASE("adding Marathi preserves legacy SGSL source bytes and saved program counters")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreInventory(globals.globals);
         glob2test::TempDir temporary("sgsl-save-languages");
         const auto listing = temporary.path / "texts.list.txt";
         const std::string source =
@@ -367,6 +410,7 @@ TEST_SUITE("LegacyScriptCoverage")
     TEST_CASE("Filipino SGSL language tokens require the installed catalog")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreInventory(globals.globals);
         glob2test::TempDir temporary("sgsl-languages");
         const auto listing = temporary.path / "texts.list.txt";
         World w;
@@ -387,6 +431,7 @@ TEST_SUITE("LegacyScriptCoverage")
         REQUIRE(strings->getNumberOfLanguage() == int(oldCodes.size()) + 1);
         for (size_t i = 0; i < oldCodes.size(); ++i)
         {
+            if (oldCodes[i] == "bg") continue; // Bulgarian follows the released Filipino inventory.
             CAPTURE(oldCodes[i]);
             CHECK(strings->getLangCode(oldCodes[i]) == int(i));
         }
@@ -421,6 +466,7 @@ TEST_SUITE("LegacyScriptCoverage")
     TEST_CASE("adding Filipino preserves legacy SGSL source bytes and saved program counters")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreInventory(globals.globals);
         glob2test::TempDir temporary("sgsl-save-languages");
         const auto listing = temporary.path / "texts.list.txt";
         const std::string source =
@@ -484,6 +530,7 @@ TEST_SUITE("LegacyScriptCoverage")
     TEST_CASE("catalog languages and quoted locale names preserve suspended story continuation")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreInventory(globals.globals);
         auto* strings=GAGCore::Toolkit::getStringTable();
         struct RestoreLanguage
         {

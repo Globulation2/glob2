@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 #pragma once
@@ -43,6 +44,7 @@ class MatchStartScreen : public Glob2UI::Screen
 	std::shared_ptr<Online::OnlineMatch> flow;
 	std::unique_ptr<MapPreview> preview;
 	std::string previewFile;
+	Glob2UI::DiagnosticText failureText;
 	int lastStep = -1;
 	bool playing = false;
 	Uint32 lastRefresh = 0;

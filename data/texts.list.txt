@@ -42,3 +42,4 @@ data/texts.bn.txt
 data/texts.mr.txt
 data/texts.te.txt
 data/texts.fil.txt
+data/texts.bg.txt

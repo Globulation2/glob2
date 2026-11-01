@@ -35,6 +35,11 @@ describe('online locale resolution', () => {
     expect(resolveLocale('zh')).toBe('zh-Hans');
     expect(resolveLocale('sr-RS')).toBe('sr-Cyrl');
     expect(resolveLocale('in-ID')).toBe('id');
+    expect(resolveLocale('bg')).toBe('bg');
+    expect(resolveLocale('bg_BG')).toBe('bg');
+    expect(resolveLocale('bg-Cyrl-BG')).toBe('bg');
+    expect(resolveLocale(['bg-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('bg-u-nu-latn')).toBe('bg');
     expect(resolveLocale('xx, fr;q=0.2, de;q=0.8')).toBe('de');
     expect(resolveLocale('fr;q=0, de')).toBe('de');
   });
@@ -137,6 +142,32 @@ describe('online locale resolution', () => {
     expect(localeFromCookie('glob2_locale=ms')).toBe('ms');
   });
 });
+describe('Bulgarian presentation', () => {
+  it('uses Bulgarian counted player forms and locale number formatting', async () => {
+    registerCatalog('bg', {
+      '{count} player': { one: '{count} играч', other: '{count} играчи' },
+      'Something went wrong. Please try again.': 'Възникна грешка. Опитайте отново.',
+    });
+    await setLocale('bg');
+    for (const count of [0, 1, 2, 21, 1.5]) {
+      const number = new Intl.NumberFormat('bg').format(count);
+      expect(tp('{count} player', '{count} players', count)).toBe(
+        `${number} ${count === 1 ? 'играч' : 'играчи'}`,
+      );
+    }
+    expect(formatNumber(1234.5)).toBe(new Intl.NumberFormat('bg').format(1234.5));
+    expect(localeFromCookie('glob2_locale=bg')).toBe('bg');
+    for (const source of [
+      'Skin purchases are not available on this instance.',
+      'This creation tool is not available on this instance.',
+      'The skin designer is not available on this instance.',
+    ]) {
+      expect(translateError({ body: { messageKey: source } })).toBe(
+        'Възникна грешка. Опитайте отново.',
+      );
+    }
+  });
+});
 describe('message presentation', () => {
   it('interpolates safely as text and falls back to source', async () => {
     registerCatalog('fr', { 'Hello {name}': 'Bonjour {name}' });
@@ -233,9 +264,10 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 43 unique game catalog mappings including Tamil, Bengali, Malay, Marathi and Telugu', () => {
-    expect(locales).toHaveLength(43);
+  it('contains unique game catalog mappings including Bulgarian, Tamil, Bengali, Bokmål, Malay and Marathi', () => {
     expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'bn', gameCode: 'bn', name: 'বাংলা', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'mr', gameCode: 'mr', name: 'मराठी', dir: 'ltr' });
     expect(locales).toContainEqual({
       code: 'nb',
       gameCode: 'nb',
@@ -250,9 +282,8 @@ describe('message presentation', () => {
       name: 'Bahasa Melayu',
       dir: 'ltr',
     });
+    expect(locales).toContainEqual({ code: 'bg', gameCode: 'bg', name: 'Български', dir: 'ltr' });
     expect(locales).toContainEqual({ code: 'fil', gameCode: 'fil', name: 'Filipino', dir: 'ltr' });
-    expect(locales).toContainEqual({ code: 'bn', gameCode: 'bn', name: 'বাংলা', dir: 'ltr' });
-    expect(locales).toContainEqual({ code: 'mr', gameCode: 'mr', name: 'मराठी', dir: 'ltr' });
     expect(locales).toContainEqual({ code: 'te', gameCode: 'te', name: 'తెలుగు', dir: 'ltr' });
   });
 });

@@ -492,6 +492,9 @@ void GameGUITouch::drawHUD()
 	gfx->drawFilledRect(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), int(ui.actions.h),
 		InGameTouchTheme::paper());
 	gfx->drawHorzLine(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), InGameTouchTheme::border());
+	const auto *strings = Toolkit::getStringTable();
+	const bool fitBulgarianCaptions = strings && strings->doesStringExist("[language-code]") &&
+		strings->getString("[language-code]") == "bg";
 	for (int i = 0; i < 6; ++i)
 	{
 		const auto button = navigationButtonRect(ui, i);
@@ -509,10 +512,30 @@ void GameGUITouch::drawHUD()
         }
         if(guided) gfx->drawRect(int(x+2*unit),int(button.y+2*unit),int(width-4*unit),int(button.h-4*unit),Color(255,220,80));
 		drawNavigationIcon(icon, {x + width / 2, button.y + 17 * unit}, selected);
-		const auto rect = navigationLabelRect(ui, i);
+		auto rect = navigationLabelRect(ui, i);
 		const auto text = navigationLabel(i);
-		drawPointLabel(rect, text, .86, false,
-			navigationLabelLineHeight(pointLines(text, rect.w, .86)));
+		double textScale = .86;
+		// Keep natural single-word captions whole when they only just exceed
+		// a slot. Borrow one point from each label inset, leaving hit areas,
+		// icons and the existing accessible navigation height unchanged.
+		if (fitBulgarianCaptions && text.find_first_of(" \t\r\n") == std::string::npos)
+		{
+			auto *font = globalContainer->standardFont;
+			InGameTouchTheme::TextStyle style(font);
+			const double advance = font->getStringWidth(text) + 8;
+			if (advance * textScale * gfx->textUnitsPerPoint() > rect.w)
+			{
+				rect.x -= unit;
+				rect.w += 2 * unit;
+				// standard is authored at 13px (GlobalContainer::loadGameFonts).
+				// Retain at least 10px and the player's text-size multiplier;
+				// words that still cannot fit keep production cluster wrapping.
+				textScale = std::clamp((rect.w - .25 * unit) / (advance * gfx->textUnitsPerPoint()),
+					10.0 / 13.0, .86);
+			}
+		}
+		drawPointLabel(rect, text, textScale, false,
+			navigationLabelLineHeight(pointLines(text, rect.w, textScale)));
 	}
 
 }

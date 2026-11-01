@@ -35,19 +35,23 @@ for (const locale of locales) {
         .evaluate((element) => {
           const select = element as HTMLSelectElement;
           const style = getComputedStyle(select);
-          const compact = select.parentElement!.querySelector('.language-preference-compact')!;
+          const compact = select.parentElement?.querySelector('.language-preference-compact');
+          if (!compact) throw new Error('Expected the compact language label.');
+          const selected = select.selectedOptions[0];
+          if (!selected) throw new Error('Expected a selected language option.');
+          const compactText = compact.textContent;
+          if (compactText === null) throw new Error('Expected compact language text.');
           const compactVisible = getComputedStyle(compact).display !== 'none';
-          const label = compactVisible
-            ? compact.textContent!.trim()
-            : select.selectedOptions[0]!.text;
+          const label = compactVisible ? compactText.trim() : selected.text;
           const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d')!;
+          const context = canvas.getContext('2d');
+          if (!context) throw new Error('Expected a 2D context for language text measurement.');
           context.font = compactVisible ? getComputedStyle(compact).font : style.font;
           const available =
             select.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
           return {
             label,
-            fullName: select.selectedOptions[0]!.text,
+            fullName: selected.text,
             textWidth: context.measureText(label).width,
             available,
           };

@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/LibraryText.h"
 #include "CustomGameScreen.h"
@@ -145,7 +146,7 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 	if (preferences.load(*files))
 	{
 		setup = preferences.setup;
-        if(!preferences.missingGeneratorId.empty())message="Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
+        if(!preferences.missingGeneratorId.empty())message=Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[missing map generator %0]", "Missing map generator: %0. A native landscape was selected."), {preferences.missingGeneratorId}) : "Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
 		userMaps = preferences.userMaps && separateMapLibraries;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
 		listMaps();
@@ -238,7 +239,7 @@ void CustomGameScreen::launch()
 		}
 		catch (const std::exception &e)
 		{
-			message = e.what();
+			message = Glob2UI::exceptionText(e);
 			invalidate();
 			return;
 		}
@@ -659,7 +660,9 @@ bool CustomGameScreen::generateMap()
 	previewPending = false;
 	if (!setup.validation().empty())
 	{
-		message = tr(setup.validation());
+		message = Glob2UI::bulgarianErrorLocale() ? validationError(setup.validation()) : tr(setup.validation());
+		if (setup.validation() == "Shared control needs a free controller slot (maximum %0).")
+			message = FormattableString(message).arg(Team::MAX_COUNT);
 		invalidate();
 		return false;
 	}
@@ -836,7 +839,7 @@ void CustomGameScreen::onTimer(Uint32 tick)
 			loadMap(path.string());
 		}
 		else
-			message = catalogDownload->error().empty() ? tr("maps download failed") : catalogDownload->error();
+			message = catalogDownload->error().empty() ? tr("maps download failed") : mapDownloadError(catalogDownload->error());
 		catalogDownload.reset();
 		invalidate();
 	}
@@ -982,7 +985,7 @@ void CustomGameScreen::showAIProfile(int colony)
 			}
 			catch (const std::exception &e)
 			{
-				message = e.what();
+				message = Glob2UI::exceptionText(e);
 			}
 		}
 		invalidate();
@@ -1021,7 +1024,7 @@ Element CustomGameScreen::build(const Presentation &p)
 		}
 		catch (const std::exception &e)
 		{
-			message = e.what();
+			message = Glob2UI::exceptionText(e);
 		}
 	}
 	GAGCore::ApplicationHost::customGameReady(validMap && !previewBusy() && setup.validation().empty());
@@ -1064,8 +1067,10 @@ Element CustomGameScreen::build(const Presentation &p)
 									? tr("Game speed") + " " + speed.getGameSpeedText()
 									: teamsLabel(setup.teamLayout()) + "  /  " + std::to_string(setup.activeColonies()) + " " +
 										  tr("colonies") + "  /  " + rulesetTitle + "  /  " + speed.getGameSpeedText();
-	const std::string note = !setup.random && !validMap && !message.empty() ? message
-		: error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : tr(error);
+	std::string note = !setup.random && !validMap && !message.empty() ? message
+		: error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : (Glob2UI::bulgarianErrorLocale() ? validationError(error) : tr(error));
+	if (Glob2UI::bulgarianErrorLocale() && error == "Shared control needs a free controller slot (maximum %0).")
+		note = FormattableString(note).arg(Team::MAX_COUNT);
 	bool ready = error.empty();
 	if (forRoom)
 		ready = setup.validation().empty() && (setup.random || validMap);

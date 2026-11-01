@@ -251,3 +251,23 @@ it('keeps a long localized copy template and whole graphemes without changing th
     await setLocale('en');
   }
 });
+
+it('localizes only a fresh guest name and restores authored guest names unchanged', async () => {
+  registerCatalog('bg', { 'My colony': 'Моята колония' });
+  await setLocale('bg');
+  try {
+    const first = renderHook(() => useSkinDocument(undefined));
+    await waitFor(() => expect(first.result.current.hydrated).toBe(true));
+    expect(first.result.current.data.name).toBe('Моята колония');
+    act(() => first.result.current.edit({ name: 'My colony / авторски избор' }));
+    act(() => first.result.current.saveLocal());
+    first.unmount();
+    await setLocale('en');
+    const restored = renderHook(() => useSkinDocument(undefined));
+    await waitFor(() => expect(restored.result.current.hydrated).toBe(true));
+    expect(restored.result.current.data.name).toBe('My colony / авторски избор');
+    expect(request).not.toHaveBeenCalled();
+  } finally {
+    await setLocale('en');
+  }
+});

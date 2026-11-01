@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #pragma once
@@ -46,6 +47,7 @@ class NewMapScreen : public Glob2UI::Screen
 	std::unique_ptr<MapPreview> preview;
 	bool parameters = false, previewDirty = true;
 	Uint32 previewDue = 0;
+	Glob2UI::DiagnosticText validationError;
 	std::string error;
 	void chooseMethod(int method);
 	void invalidatePreview();

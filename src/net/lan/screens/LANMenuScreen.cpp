@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -49,7 +50,7 @@ void LANMenuScreen::host()
 			catch (const std::exception &error)
 			{
 				screens.push(std::make_unique<MessageScreen>(
-					FormattableString(tr("[lan cannot host %0]")).arg(error.what()),
+					FormattableString(tr("[lan cannot host %0]")).arg(Glob2UI::exceptionText(error)),
 					std::vector<std::string>{tr("[ok]")}));
 				return;
 			}

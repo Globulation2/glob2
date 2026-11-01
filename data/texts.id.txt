@@ -6820,5 +6820,41 @@ Jumlah ikan
 Pesan ▸
 [Camp-site amount]
 Jumlah perkemahan
+[script compilation success]
+Kompilasi berhasil
+[script error at %0:%1: %2]
+Kesalahan pada %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Kegagalan kompilasi: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilasi gagal: %0
+[script loading failed %0]
+Gagal memuat skrip dari %0
+[script saving failed %0]
+Penyimpanan skrip ke %0 gagal.
+[script line %0 column %1]
+Baris: %0 Kolom: %1
+[game stopped %0]
+Permainan dihentikan: %0
+[game stopped script help]
+Periksa kode JavaScript yang tertanam dan penggunaan sumber dayanya sebelum memulai ulang permainan ini.
+[missing map generator %0]
+Generator peta tidak ditemukan: %0. Lanskap bawaan telah dipilih.
+[hive standing order paused]
+Sebuah perintah tetap memerlukan perhatian dan telah dijeda.
+[hive connection changed orders paused]
+Koneksi berubah. Tinjau perintah tetap Anda yang dijeda sebelum melanjutkannya.
+[hive standing order fresh instruction]
+Perintah tetap memerlukan instruksi baru setelah terhubung kembali. Anda dapat membatalkannya atau meminta komandan untuk menggantinya.
+[hive order confirmation failed]
+Sebuah perintah tidak dapat dikonfirmasi. Tinjau perintah tetap Anda sebelum melanjutkannya.
+[hive previous order sending]
+Perintah Anda sebelumnya masih dalam proses pengiriman. Pesan ini telah disimpan; buka komandan untuk mengirimnya lagi.
+[hive order received %0]
+Perintah diterima: %0
+[hive order not confirmed]
+Perintah belum dikonfirmasi. Buka komandan untuk mencoba lagi; pesan Anda telah disimpan.
+[hive standing order update failed]
+Pembaruan perintah tetap gagal. Perintah Anda dijeda pada perangkat ini; coba lagi menggunakan kontrol yang sesuai.
 [AI for all computer colonies]
 AI untuk semua koloni yang dikendalikan komputer

@@ -252,6 +252,12 @@ export const locales = [
     dir: 'ltr',
   },
   {
+    code: 'bg',
+    gameCode: 'bg',
+    name: 'Български',
+    dir: 'ltr',
+  },
+  {
     code: 'mr',
     gameCode: 'mr',
     name: 'मराठी',

@@ -6820,5 +6820,41 @@ Arrain kopurua
 Mezuak ▸
 [Camp-site amount]
 Kanpaleku kopurua
+[script compilation success]
+Konpilazio arrakastatsua
+[script error at %0:%1: %2]
+Errorea %0 lerroan, %1 zutabean: %2
+[script compilation failure %0:%1:(%2):%3]
+Konpilazio-hutsegitea: %0:%1:(%2):%3
+[script compilation failed %0]
+Konpilazioak huts egin du: %0
+[script loading failed %0]
+Huts egin du %0-tik scripta kargatzeak
+[script saving failed %0]
+Huts egin du scripta %0-n gordetzeak
+[script line %0 column %1]
+Lerroa: %0 Zutabea: %1
+[game stopped %0]
+Jokoa geldituta: %0
+[game stopped script help]
+Berrikusi txertatutako JavaScript kodea eta haren baliabideen erabilera joko hau berrabiarazi aurretik.
+[missing map generator %0]
+Mapa-sortzailea falta da: %0. Jokoan integratutako paisaia bat hautatu da.
+[hive standing order paused]
+Agindu iraunkor batek arreta behar du eta pausatu egin da.
+[hive connection changed orders paused]
+Konexioa aldatu da. Berrikusi pausatutako agindu iraunkorrak berriro hasi aurretik.
+[hive standing order fresh instruction]
+Agindu iraunkor batek berriro konektatu ondoren argibide berri bat behar du. Bertan behera utzi edo komandanteari ordezkatzeko eska diezaiokezu.
+[hive order confirmation failed]
+Ezin izan da agindu bat berretsi. Berrikusi zure agindu iraunkorrak berrabiarazi aurretik.
+[hive previous order sending]
+Zure aurreko agindua bidaltzen ari da oraindik. Mezu hau gorde da; ireki komandantea berriro bidaltzeko.
+[hive order received %0]
+Agindua jaso da: %0
+[hive order not confirmed]
+Agindua ez da berretsi. Ireki komandantea berriro saiatzeko; zure mezua gorde da.
+[hive standing order update failed]
+Agindu iraunkorra eguneratzeak huts egin du. Zure agindua gailu honetan pausatuta dago; saiatu berriro dagokion kontrola erabiliz.
 [AI for all computer colonies]
 AA ordenagailuak kontrolatutako kolonia guztientzat

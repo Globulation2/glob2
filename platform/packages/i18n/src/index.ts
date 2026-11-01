@@ -53,20 +53,21 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     const [language, ...parts] = tag.split('-');
     // These catalogs cover a specific written form. Unicode extensions and
     // private-use tags may contain script-like words without selecting a script.
-    const writtenScript =
-      language === 'hi' || language === 'mr'
-        ? 'deva'
-        : language === 'bn'
-          ? 'beng'
-          : language === 'ur'
-            ? 'arab'
-            : language === 'sw' || language === 'ms' || language === 'fil' || language === 'tl'
-              ? 'latn'
-              : language === 'te'
-                ? 'telu'
-                : language === 'ta'
-                  ? 'taml'
-                  : undefined;
+    const writtenScript = (
+      {
+        bg: 'cyrl',
+        hi: 'deva',
+        mr: 'deva',
+        bn: 'beng',
+        ur: 'arab',
+        sw: 'latn',
+        ms: 'latn',
+        fil: 'latn',
+        tl: 'latn',
+        te: 'telu',
+        ta: 'taml',
+      } as Record<string, string>
+    )[language ?? ''];
     if (writtenScript) {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);
@@ -121,6 +122,7 @@ export function hasMessage(source: string, locale = selected): boolean {
   return !!catalog && Object.hasOwn(catalog, source);
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
+  bg: () => import('../locales/bg.json', { with: { type: 'json' } }),
   fil: () => import('../locales/fil.json', { with: { type: 'json' } }),
   bn: () => import('../locales/bn.json', { with: { type: 'json' } }),
   ms: () => import('../locales/ms.json', { with: { type: 'json' } }),

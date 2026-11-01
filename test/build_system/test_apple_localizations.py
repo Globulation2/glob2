@@ -34,8 +34,8 @@ def strings(path):
 
 class AppleLocalizationTests(unittest.TestCase):
     def fixture(self, root):
-        directories = [root / 'en.lproj', root / 'mr.lproj', root / 'ta.lproj', root / 'te.lproj']
-        for directory, value in zip(directories, ('English purpose.', 'मराठी चाचणी.', 'தமிழ் சோதனை.', 'తెలుగు పరీక్ష.')):
+        directories = [root / 'en.lproj', root / 'mr.lproj', root / 'ta.lproj', root / 'te.lproj', root / 'bg.lproj']
+        for directory, value in zip(directories, ('English purpose.', 'मराठी चाचणी.', 'தமிழ் சோதனை.', 'తెలుగు పరీక్ష.', 'Българска цел.')):
             directory.mkdir(parents=True)
             (directory / 'InfoPlist.strings').write_text(
                 '"NSLocalNetworkUsageDescription" = ' + json.dumps(value, ensure_ascii=False) + ';\n', encoding='utf-8')
@@ -114,6 +114,7 @@ class AppleLocalizationTests(unittest.TestCase):
             self.assertEqual((root / '1.txt').read_text(), 'Resources/mr.lproj')
             self.assertEqual((root / '2.txt').read_text(), 'Resources/ta.lproj')
             self.assertEqual((root / '3.txt').read_text(), 'Resources/te.lproj')
+            self.assertEqual((root / '4.txt').read_text(), 'Resources/bg.lproj')
             self.assertEqual(set((root / 'sources.txt').read_text().split(';')),
                              {str(directory / 'InfoPlist.strings') for directory in directories})
 
@@ -126,7 +127,7 @@ class AppleLocalizationTests(unittest.TestCase):
                 for keyword in node.keywords:
                     if keyword.arg == 'BUNDLE_RESOURCEDIRS':
                         declared.extend(ast.literal_eval(keyword.value))
-        self.assertTrue({'darwin/en.lproj', 'darwin/mr.lproj', 'darwin/ta.lproj', 'darwin/te.lproj'} <= set(declared))
+        self.assertTrue({'darwin/en.lproj', 'darwin/mr.lproj', 'darwin/ta.lproj', 'darwin/te.lproj', 'darwin/bg.lproj'} <= set(declared))
         for base, plist_path in ((ROOT / 'darwin', ROOT / 'darwin/Info.plist'),
                                  (ROOT / 'mobile/ios', ROOT / 'mobile/ios/Info.plist.in')):
             with self.subTest(platform=base):
@@ -150,6 +151,11 @@ class AppleLocalizationTests(unittest.TestCase):
                 self.assertRegex(tamil['NSLocalNetworkUsageDescription'], r'[\u0b80-\u0bff]')
                 self.assertIn('Globulation 2', tamil['NSLocalNetworkUsageDescription'])
                 self.assertNotEqual(tamil, english)
+                bulgarian = strings(base / 'bg.lproj/InfoPlist.strings')
+                self.assertEqual(set(bulgarian), set(english))
+                self.assertRegex(bulgarian['NSLocalNetworkUsageDescription'], r'[\u0400-\u04ff]')
+                self.assertIn('Globulation 2', bulgarian['NSLocalNetworkUsageDescription'])
+                self.assertNotEqual(bulgarian, english)
 
 
 if __name__ == '__main__':

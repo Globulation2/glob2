@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GenerationRequest.h"
@@ -120,6 +121,7 @@ class LandscapePickerScreen : public Glob2UI::Screen
 	/// Parallel to entries[]: the live reason this entry cannot generate at the sheet's size and
 	/// colony count, or empty when it can. Recomputed at construction and by setShared() whenever
 	/// that size or count changes; a validateGenerationRequest check, so it costs no worker time.
+	std::vector<std::string> incompatibleText;
 	std::vector<std::string> incompatible;
 	/// Every tag category present across entries[]'s own tags (each generator's own
 	/// GeneratorDefinition::tags, carried in by the caller), fixed at construction in a stable

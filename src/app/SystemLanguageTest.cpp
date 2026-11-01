@@ -8,6 +8,7 @@
 #include "GlobalContainer.h"
 #include "SystemLanguage.h"
 #include <SDL3/SDL_hints.h>
+#include <optional>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <string>
@@ -22,8 +23,17 @@ namespace
 	// Restores SDL's preferred-locale override, which is process-wide.
 	struct PreferredLocales
 	{
-		explicit PreferredLocales(const char *locales) { SDL_SetHint(SDL_HINT_PREFERRED_LOCALES, locales); }
-		~PreferredLocales() { SDL_ResetHint(SDL_HINT_PREFERRED_LOCALES); }
+		std::optional<std::string> previous;
+		explicit PreferredLocales(const char *locales)
+		{
+			if (const auto *value = SDL_GetHint(SDL_HINT_PREFERRED_LOCALES)) previous = value;
+			SDL_SetHint(SDL_HINT_PREFERRED_LOCALES, locales);
+		}
+		~PreferredLocales()
+		{
+			if (previous) SDL_SetHint(SDL_HINT_PREFERRED_LOCALES, previous->c_str());
+			else SDL_ResetHint(SDL_HINT_PREFERRED_LOCALES);
+		}
 	};
 
 	std::string startupLanguage(const std::string &saved)
@@ -39,6 +49,15 @@ namespace
 
 TEST_SUITE("SystemLanguage")
 {
+	TEST_CASE("preferred locale fixture restores an existing hint")
+	{
+		PreferredLocales outer("bg_BG");
+		{
+			PreferredLocales inner("fr_FR");
+			CHECK(std::string(SDL_GetHint(SDL_HINT_PREFERRED_LOCALES)) == "fr_FR");
+		}
+		CHECK(std::string(SDL_GetHint(SDL_HINT_PREFERRED_LOCALES)) == "bg_BG");
+	}
 	TEST_CASE("ISO locales map to the historical catalog codes")
 	{
 		CHECK(code("cs") == "cz");
@@ -52,6 +71,12 @@ TEST_SUITE("SystemLanguage")
 
 	TEST_CASE("regional and script variants pick the matching catalog")
 	{
+		CHECK(code("bg") == "bg");
+		CHECK(code("bg", "BG") == "bg");
+		CHECK(code("bg_BG") == "bg");
+		CHECK(code("bg-Cyrl-BG") == "bg");
+		CHECK(code("bg-Latn").empty());
+		CHECK(code("bg-u-nu-latn") == "bg");
 		CHECK(code("pt", "BR") == "br");
 		CHECK(code("pt_BR") == "br");
 		CHECK(code("pt", "PT") == "pt");
@@ -258,6 +283,15 @@ TEST_SUITE("SystemLanguage")
 		CHECK(startupLanguage("ms") == "ms");
 	}
 
+
+
+	TEST_CASE("Bulgarian system preference and explicit profile choice")
+	{
+		PreferredLocales locales("bg_BG,en_US");
+		CHECK(startupLanguage("") == "bg");
+		CHECK(startupLanguage("unsupported") == "bg");
+		CHECK(startupLanguage("fr") == "fr");
+	}
 
 	TEST_CASE("Marathi startup follows preferences and preserves a saved language")
 	{
