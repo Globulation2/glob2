@@ -3,7 +3,6 @@
 #include "GradientFixture.h"
 #include "TerrainLine.h"
 #include "TerrainPresentation.h"
-#include "TerrainExperiments.h"
 #include "BinaryStream.h"
 #include "TextStream.h"
 #include "PackedArray.h"
