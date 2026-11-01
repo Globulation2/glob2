@@ -322,5 +322,12 @@
     "final-run.log": "a9555832372691f704e63d7f7648b9607edec2c8944bb52a44c5cddcfbfa4701",
     "refresh-fixture.mjs": "b4193d19cec4fcc4c0e3784a9d91394f653ffc340c9e93bece0d7feccc3391d1",
     "fixture-heartbeat-refresh.json": "1cda443770ba9f48c6d6f09e2bcd88b3b7d43fdc0ce944e5734e351330b98a87"
+  },
+  "later_revision_compatibility": {
+    "tested_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+    "current_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+    "binding_evidence": "artifacts/bengali-localization-v2/web-final-binding.json",
+    "binding_sha256": "b915fed9d5f31f8be2928ab168a397e2311d443b457cf0cfee1cc45592325eb6",
+    "scope": "Existing account/room evidence remains component-compatible because tracked platform sources/catalogs/fonts/dependencies/build inputs are unchanged. Original test revision and producer retained; no new full-tree build claimed."
   }
 }

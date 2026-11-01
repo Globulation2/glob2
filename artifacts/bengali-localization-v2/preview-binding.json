@@ -1,0 +1,176 @@
+{
+  "source_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "source_identity": {
+    "revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039"
+  },
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "original_catalog_sha256": {
+    "native": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "converted_catalog_sha256": {
+    "native": "2f1027ba435ce0b9b73202e5b9d1620bace3a53561d9f9844cee90566764465d",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "conversion": "The harness reads key/value JSON; its evidence_identity.catalog_sha256 hashes the converted preview files, not native alternating-line text. input_metadata.catalog_sha256 retains original installed catalog file hashes. Exact per-key equality is checked for both complete surfaces.",
+  "records": [
+    {
+      "path": "native/desktop/gameplay.json",
+      "sha256": "048ccaa123d71e14edc5ea321e2fd6c6ad67df88f6c79c5a92cb706163c23bb4",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/desktop/lobby-players.json",
+      "sha256": "aaacbafa13b2d751e867fd3cd653aab8eda0aa7b06c0891c566bfaa673d68366",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/desktop/lobby.json",
+      "sha256": "03d2fea1fdf88d22b8efc261a6ef40cb98167a60be041cc032b5794e9228f851",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/desktop/main.json",
+      "sha256": "c86e435a86753a7303ff5c4af80059ea3ed0ba48a99749f6469af05caabf90d6",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/desktop/settings-audio.json",
+      "sha256": "c0180289d5a09835c2c013b87debd4f3be1c5dc229d73643c48b2d932f258603",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/desktop/settings.json",
+      "sha256": "7342050180772cf89dcfb7601475581a45c84105518493b3f153a8d9e186232e",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/desktop/tutorial-food-supply.json",
+      "sha256": "a7ad010dfb982e47f589f8503dcb74d6dcde4812cb68f13029164bd9f6ea7a6f",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/desktop/tutorial-introduction.json",
+      "sha256": "b920cd6aa0e39cd5d2cc4f408d61c0760214018957e4e21f41b150434efc99be",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone/gameplay.json",
+      "sha256": "5b3dd7adf926fec3689ee076723e9907c1b02e825bda8a183f1340a386b02378",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone/lobby-players.json",
+      "sha256": "7c5ecd7f2b6d78673581686489a64803075f13860701c7d54f3c918e81b466e6",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone/lobby.json",
+      "sha256": "241668297789d260ba8350c4f91b2665b684625a68d6e7ef5df11e6359bce268",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone/main.json",
+      "sha256": "e034269cc1aa4c97cfdccf57bec69a27b2c039e5007259351f8eafc1029d2dbf",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone/settings-audio.json",
+      "sha256": "19cd34d5bb66b7bb0aa4f872b03b05a52290b89ce7b9e5cf71320326a0d1ac9a",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone/settings.json",
+      "sha256": "9646d883fb56ec206f157f0627bfbb24b0dd301293120ddaa5b459aac89d4d5e",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone/tutorial-food-supply.json",
+      "sha256": "e0b407b26dd844bf301a3faf6f2492f37b1f6c1063c392e5285f4a9bfad764ef",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone/tutorial-introduction.json",
+      "sha256": "d70f5f653b08f5d192e0d4bf48c740c00432e2144cc08cf7bd2249e8c07693d6",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone-text150/main.json",
+      "sha256": "20c98ee5e56391f4377ce164aabd2351ef38bd771ff6291c8a8a3fe33b0d1a79",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone-text150/settings.json",
+      "sha256": "400f41f13b1763af9856d09cbdbcf9c766c15121548f13424e6b8856ef97a37b",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/phone-text150/tutorial-introduction.json",
+      "sha256": "8bccbaf6307961bc45577eab374bd671b0f736c7f29735e607cfdc50a726bafb",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "native/fresh-phone/tutorial-introduction.json",
+      "sha256": "7abdf9a897eb87704fa17db06993fdf297f4d09fc8523382a1896be8e5435875",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "complete catalog overlay"
+    },
+    {
+      "path": "font-matrix/font-matrix.json",
+      "sha256": "634c4f24f2fdfcba30e70802d645d12609296d12db97e8d0a24539d9be2aa289",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "selected pilot font diagnostic"
+    },
+    {
+      "path": "font-probe-matrix/font-matrix.json",
+      "sha256": "938487ced524f6f6afabd2fd63777cea6fa4bf8527ee08b39b5ca6758b8d40d1",
+      "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "producer_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+      "scope": "synthetic shaping probes; not catalog translations"
+    }
+  ],
+  "limitations": "Only captures actually listed are validated. This binding does not assert complete screen coverage, linguistic approval, native test completion, shipping-release readiness or unexecuted platforms."
+}

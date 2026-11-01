@@ -1,0 +1,10 @@
+{
+  "locale": "bn",
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "catalog_sha256": {
+    "native": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "diagnostic_samples": true,
+  "scope": "Synthetic shaping probes, not translation catalog entries; original catalog hashes retained separately."
+}

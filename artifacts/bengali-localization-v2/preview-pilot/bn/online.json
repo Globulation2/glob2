@@ -1,0 +1,19 @@
+{
+  "Cancel": "বাতিল করুন",
+  "Language": "ভাষা",
+  "Map library": "মানচিত্রের সংগ্রহ",
+  "Password": "পাসওয়ার্ড",
+  "Play in browser": "ব্রাউজারে খেলুন",
+  "Publish": "প্রকাশ করুন",
+  "Save": "সংরক্ষণ করুন",
+  "Sign in": "সাইন ইন করুন",
+  "Sign out": "সাইন আউট করুন",
+  "{count} credit": {
+    "one": "{count} ক্রেডিট",
+    "other": "{count} ক্রেডিট"
+  },
+  "{count} player on this page": {
+    "one": "এই পৃষ্ঠায় {count} জন খেলোয়াড়",
+    "other": "এই পৃষ্ঠায় {count} জন খেলোয়াড়"
+  }
+}

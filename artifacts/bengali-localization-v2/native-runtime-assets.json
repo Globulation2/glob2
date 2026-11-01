@@ -1,0 +1,49 @@
+{
+  "revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "profile": "Linux full-feature fast development runtime export",
+  "scope": "Actual exported Bengali/font/notice/catalog bytes; not a shipping release package or mobile runtime claim.",
+  "files": [
+    {
+      "path": "data/texts.bn.txt",
+      "packaged_path": "build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/texts.bn.txt",
+      "sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+      "bytes": 398802
+    },
+    {
+      "path": "data/texts.list.txt",
+      "packaged_path": "build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/texts.list.txt",
+      "sha256": "216f0718b08294b3f1074f129cbb138584466b95c2af844c8cb488c24b702677",
+      "bytes": 692
+    },
+    {
+      "path": "data/texts.incomplete.txt",
+      "packaged_path": "build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/texts.incomplete.txt",
+      "sha256": "36f233a888372175375c98e6553a3fb479d53c63b771890949c9d199f3812141",
+      "bytes": 704
+    },
+    {
+      "path": "data/fonts/sans.ttf",
+      "packaged_path": "build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/sans.ttf",
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "bytes": 8137448
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "packaged_path": "build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "bytes": 200048
+    },
+    {
+      "path": "data/fonts/scripts/manifest.json",
+      "packaged_path": "build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/manifest.json",
+      "sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+      "bytes": 4543
+    },
+    {
+      "path": "data/fonts/LICENSE-Noto.txt",
+      "packaged_path": "build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/LICENSE-Noto.txt",
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "bytes": 4377
+    }
+  ]
+}

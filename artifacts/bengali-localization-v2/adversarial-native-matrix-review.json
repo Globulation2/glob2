@@ -1,0 +1,138 @@
+{
+  "verdict": "pass_for_examined_host_images",
+  "reviewer": "independent adversarial Bengali agent; not native-human certification",
+  "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "scope": "Actual 14 pilot font-matrix pages, 6 separate synthetic shaping-probe pages, and desktop production main-menu screenshot visually read. Sizes10/13/20 at1x/2x. This is a selected-string host rendering matrix, not every catalog string or iOS/device rendering.",
+  "observations": [
+    "Bengali conjuncts, pre-base vowels, upper/lower marks and digits retain readable shapes across sizes/scales.",
+    "No clipped marks, overlapping sample rows or replacement boxes observed.",
+    "Wrapped pilot sentences preserve readable line breaks; unsusbstituted placeholders are intentional in isolated font samples.",
+    "Main-menu Bengali captions fit their controls with clear baselines and no observed clipping.",
+    "The matrix includes a deliberately rendered incomplete-language label as a source sample; actual main menu does not display it."
+  ],
+  "findings": [],
+  "matrix_metadata": [
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-matrix.json",
+      "sha256": "634c4f24f2fdfcba30e70802d645d12609296d12db97e8d0a24539d9be2aa289",
+      "samples": 288,
+      "all_has_glyphs": true,
+      "all_drawn_bounds_fit": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-probe-matrix/font-matrix.json",
+      "sha256": "938487ced524f6f6afabd2fd63777cea6fa4bf8527ee08b39b5ca6758b8d40d1",
+      "samples": 30,
+      "all_has_glyphs": true,
+      "all_drawn_bounds_fit": true
+    }
+  ],
+  "images": [
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/main.png",
+      "sha256": "f4d64b60d454d243f8199aec0baff656c8f26291aeb82084e3b429a896c5dbaf",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-10-scale-1-page-001.png",
+      "sha256": "40993c1c97d49e6826eb604c6c94985db3dfba3e01f245b6e1bf5dd40eb791ad",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-10-scale-1-page-002.png",
+      "sha256": "598b6dc405b661e267a84d3d3ac029072386672932aad3869595a77652c77c9b",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-10-scale-2-page-001.png",
+      "sha256": "b5dd4a432db4b19f878312b4c6fa52baa52ecc0540ce588ce5a19f488a97064f",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-10-scale-2-page-002.png",
+      "sha256": "6b9fb801f81cebabec87364bf6f8809cb8e5ce5ea949305dcf1424db2fb9e47c",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-13-scale-1-page-001.png",
+      "sha256": "a66f722ae840abf8f12c4e7ad6b2e056c798a686f104a3e59c27a49cc52fbb93",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-13-scale-1-page-002.png",
+      "sha256": "90a0e08fc0be2182dd54c1aae379cc27ad4d71aee84936538acfbd51fe8ca115",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-13-scale-2-page-001.png",
+      "sha256": "2faaa0a0870f96ac885b14459ecf9dc6ee9443398fbd3b6a73130aedea3e72a5",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-13-scale-2-page-002.png",
+      "sha256": "05fcdf39952a29f23b10e69c78ec4df6a80884eae8701e6708f1d9f7c192a3a8",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-20-scale-1-page-001.png",
+      "sha256": "c503ec3c5d7c00e730e2f123f69c43c0f5580f891a9b77eccaef3326da97b2cd",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-20-scale-1-page-002.png",
+      "sha256": "bf92a5de6918dc8484e268671c957b80377a0092f319e78b4f3fb709850cfd9b",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-20-scale-1-page-003.png",
+      "sha256": "aacee9cc2a5222b9e6f967a6a5b62bbcd56acdb6f13071de81c3072ea608b7eb",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-20-scale-2-page-001.png",
+      "sha256": "99c079f8a1a90beef3666cb203fe07a10df47adb65083712f1ae71d5b9412fa2",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-20-scale-2-page-002.png",
+      "sha256": "f474f5cb17e1fbe71418cb6ad529b4b7a72e098fd2a391b9d59104ca046d98ff",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-matrix/font-20-scale-2-page-003.png",
+      "sha256": "9db00cbcbead1d195de8a657f7b6f8bc3e7b16ef37df189fadc716dd69abfb8a",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-probe-matrix/font-10-scale-1-page-001.png",
+      "sha256": "63aa3abbf45d6b04af66d1864fb745f4a30f0ea6fa4a636553f8c3e17770adda",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-probe-matrix/font-10-scale-2-page-001.png",
+      "sha256": "cb18ffaeba1f8afbabd7fde15d67d4e451e760fdd30a388d40fefd96c5073335",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-probe-matrix/font-13-scale-1-page-001.png",
+      "sha256": "30b8fef5999dcf4792f2c662b71122386e5b3c0058d53ca6ba018ba311e0f61b",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-probe-matrix/font-13-scale-2-page-001.png",
+      "sha256": "465622c64a82ec9cb2d001d2b9e70d61e5337cfd4474232bdce9e8ecc9f2ad1d",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-probe-matrix/font-20-scale-1-page-001.png",
+      "sha256": "03a5d8e1374788754a1aa0ab7d69fdde3428d6ba46f9b6c057ad2890b7699db6",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/font-probe-matrix/font-20-scale-2-page-001.png",
+      "sha256": "d066a29b3bde5ef819e4a963b275c021a9cd0793e5f7ed9807d324b1992c19a2",
+      "visually_reviewed": true
+    }
+  ],
+  "pending": "Remaining desktop/phone production-screen captures will receive a separate final pass. iOS run41254569038 currently in progress, no iOS success claim."
+}

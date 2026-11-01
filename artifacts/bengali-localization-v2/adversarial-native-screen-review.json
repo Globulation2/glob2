@@ -1,0 +1,248 @@
+{
+  "state": "complete_for_final_available_capture_set",
+  "reviewer": "independent adversarial Bengali agent, not native-human certification",
+  "producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "scope": "Actual host production screens: desktop1280x860, phone412x839 at100% and150% text, plus separate fresh-profile100% briefing. These are Linux/X11 host captures, not mobile-device screenshots.",
+  "findings": [],
+  "observations": [
+    "Readable Bengali shaping and controls in examined seven screens.",
+    "Phone150 main labels fit; settings captions wrap and remain readable in scrollable content; bottom row partial visibility is bounded by normal scroll viewport.",
+    "Lobby map preview still loading in captured state, so no ready-preview visual assertion.",
+    "MCP/Hive Mind/JavaScript/FFA/Numbi and local username are identifiers/names, not untranslated Bengali prose.",
+    "150% tutorial overlay and in-game menu remain legible without observed Bengali mark clipping.",
+    "150% Teams caption wraps দলগু / লো inside one word; visually awkward but identifiable with icon and context, with no broken glyph cluster. Nonblocking maximum-text-size limitation.",
+    "150% profile pre-acknowledges onboarding; no briefing image exists, so no enlarged briefing coverage is claimed. Default-size briefing will be separately examined if captured.",
+    "Desktop tutorial instructions, tutorial/gameplay dialogs and bottom zoom caption remain legible; three gameplay zoom states viewed, with little additional Bengali prose beyond fixed HUD.",
+    "Fresh-profile100% briefing, guidance and menu actually viewed: Bengali instructions and three tabs/button legible, conjuncts/marks intact, no blocking truncation/overlap. Defaultphone main/settings also visually passed.",
+    "Defaultphone audio and map-setup lobby legible; Players tab wraps খেলোয়াড় / রা inside the word but remains readable without glyph loss. Map preview is loading in this capture, so no ready-preview assertion.",
+    "Defaultphone tutorial briefing/guidance/menu and gameplay/menu examined: full bottom toolbar captions fit at100%, readable Bengali dialog text, no observed clipping or missing clusters.",
+    "Food-supply tutorial guidance/briefing/menu atdesktop andphone all visually read: instructions, numeric worker assignment and inn/wheat terminology remain understandable; no clipping/mark loss or conflicting visible target directions observed."
+  ],
+  "images": [
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/main.png",
+      "sha256": "f4d64b60d454d243f8199aec0baff656c8f26291aeb82084e3b429a896c5dbaf",
+      "visually_reviewed": true,
+      "metadata_sha256": "c86e435a86753a7303ff5c4af80059ea3ed0ba48a99749f6469af05caabf90d6"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/settings.png",
+      "sha256": "895ebf30e39aa4652d1c1e10ff8d457cc2946786113f5422c9e7344fb01ae699",
+      "visually_reviewed": true,
+      "metadata_sha256": "7342050180772cf89dcfb7601475581a45c84105518493b3f153a8d9e186232e"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/settings-audio.png",
+      "sha256": "46626df78a6a7c12e9a8a4d2e4b79e6a52b07aabb2f612b0d780f5b12d59ad6b",
+      "visually_reviewed": true,
+      "metadata_sha256": "c0180289d5a09835c2c013b87debd4f3be1c5dc229d73643c48b2d932f258603"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/lobby.png",
+      "sha256": "e609b140fa3807301312b33bb699a3f9449e3a18747cac7679ff5ae959f3d3f8",
+      "visually_reviewed": true,
+      "metadata_sha256": "03d2fea1fdf88d22b8efc261a6ef40cb98167a60be041cc032b5794e9228f851"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/lobby-players.png",
+      "sha256": "25fc4cc464fce714ccb4c97650975c9235b8f5945ade8ccdb5f072b758eb1ef3",
+      "visually_reviewed": true,
+      "metadata_sha256": "aaacbafa13b2d751e867fd3cd653aab8eda0aa7b06c0891c566bfaa673d68366"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone-text150/main.png",
+      "sha256": "70861288e00e9b74340c736fbbcf6ba5a22231ed158e548de70c7ce328099d87",
+      "visually_reviewed": true,
+      "metadata_sha256": "20c98ee5e56391f4377ce164aabd2351ef38bd771ff6291c8a8a3fe33b0d1a79"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone-text150/settings.png",
+      "sha256": "430f0c9bc299983b33450ae6d26ca835d9c38d8cfd121141c5609502e78be47d",
+      "visually_reviewed": true,
+      "metadata_sha256": "400f41f13b1763af9856d09cbdbcf9c766c15121548f13424e6b8856ef97a37b"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone-text150/tutorial-introduction.png",
+      "sha256": "53cd5690b7273fabd9f9877d14e8305b323cb3cbf31dd545e6b4dd5924c73012",
+      "visually_reviewed": true,
+      "metadata_sha256": "8bccbaf6307961bc45577eab374bd671b0f736c7f29735e607cfdc50a726bafb"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone-text150/tutorial-introduction-dialog.png",
+      "sha256": "f8021898af9aee9ca2ed74fd99056dba26a875969633d064593565cb5497e915",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/tutorial-introduction.png",
+      "sha256": "c4c3d7428e3371006e28ae9920e44dac4ae23b420f68b3060afaf9cbacec764f",
+      "visually_reviewed": true,
+      "metadata_sha256": "b920cd6aa0e39cd5d2cc4f408d61c0760214018957e4e21f41b150434efc99be"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/tutorial-introduction-dialog.png",
+      "sha256": "02d7ca0a455f6d5e989a2de19dbb57b3fa5598f9e4f3da112145ba4461155264",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/gameplay.png",
+      "sha256": "0850df8c40591451a0eb2c63e629050232163b77b1a799a3a34dd7bc7bfb2086",
+      "visually_reviewed": true,
+      "metadata_sha256": "048ccaa123d71e14edc5ea321e2fd6c6ad67df88f6c79c5a92cb706163c23bb4"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/gameplay-dialog.png",
+      "sha256": "ea52bb106e2ed6f87157d0a7fb9768fd2b30669dcf30e3edb083e1830e956fa5",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/gameplay-zoom-fit.png",
+      "sha256": "0ab14e89972806698b05458a7f2208eafededafa2d86c30c0462732c6cd99115",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/gameplay-zoom-plus.png",
+      "sha256": "0e2959474e9e24ec7f9b24606a4e3f3957853d6b93fc04c6aa34719c2a61e4d6",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/main.png",
+      "sha256": "d21d1a1c2ec9abf754e474b71d6ec86ee5cdd722801bf8834c1cc137a6c6fd52",
+      "visually_reviewed": true,
+      "metadata_sha256": "e034269cc1aa4c97cfdccf57bec69a27b2c039e5007259351f8eafc1029d2dbf"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/settings.png",
+      "sha256": "a014d00bd995a1f9e72b15d66f2efa6da49d73d4c63b10bc9931919befa3410a",
+      "visually_reviewed": true,
+      "metadata_sha256": "9646d883fb56ec206f157f0627bfbb24b0dd301293120ddaa5b459aac89d4d5e"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/fresh-phone/tutorial-introduction.png",
+      "sha256": "9496012827eca70fd14835435db111fd447a6821e42096a745b375dc1cdfe4db",
+      "visually_reviewed": true,
+      "metadata_sha256": "7abdf9a897eb87704fa17db06993fdf297f4d09fc8523382a1896be8e5435875"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/fresh-phone/tutorial-introduction-dialog.png",
+      "sha256": "317945f49ef8b318ec3ddf2eab0ae6e63d1bdce58f470a03808c35f73c00e929",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/fresh-phone/tutorial-introduction-briefing.png",
+      "sha256": "f2360a2e4d2879ae113b88abc935f9aa4dd90994d16a79972e1087d8e53d8856",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/settings-audio.png",
+      "sha256": "e11d173348282e6b7d558c9d94039fa84d4b5b87c1a3870f7800d94237f298f2",
+      "visually_reviewed": true,
+      "metadata_sha256": "19cd34d5bb66b7bb0aa4f872b03b05a52290b89ce7b9e5cf71320326a0d1ac9a"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/lobby.png",
+      "sha256": "25aec306deebcb7a540b1490e023200e668d2825ac02b032b1e4ce0184ca7182",
+      "visually_reviewed": true,
+      "metadata_sha256": "241668297789d260ba8350c4f91b2665b684625a68d6e7ef5df11e6359bce268"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/lobby-players.png",
+      "sha256": "00c174e5febd116a109db4e1a96841ea802d19383e8802ead8265e1a72e05498",
+      "visually_reviewed": true,
+      "metadata_sha256": "7c5ecd7f2b6d78673581686489a64803075f13860701c7d54f3c918e81b466e6"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/tutorial-introduction.png",
+      "sha256": "8a9d118e2480875ad962efedc4e1e0c1ffb6f8ac0d07b8bec77a83e141ac3be1",
+      "visually_reviewed": true,
+      "metadata_sha256": "d70f5f653b08f5d192e0d4bf48c740c00432e2144cc08cf7bd2249e8c07693d6"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/tutorial-introduction-dialog.png",
+      "sha256": "cde0c8b7cc2017060c64f07bca6a172f4f3ad7da184eca9d8c69350270ce29cf",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/tutorial-introduction-briefing.png",
+      "sha256": "78373a32a378b3010341f125f5ec53c0f78ae8d8942eb7d0b215bfde54842433",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/gameplay.png",
+      "sha256": "17f71e5194bdba24f2fad1342c40647ba82a2b41f9cb56b5113749b8748c37ea",
+      "visually_reviewed": true,
+      "metadata_sha256": "5b3dd7adf926fec3689ee076723e9907c1b02e825bda8a183f1340a386b02378"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/gameplay-dialog.png",
+      "sha256": "571da27d209b371200375102be4c6bffad6b3157d775507b056aeb05e9cae7b4",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/tutorial-food-supply.png",
+      "sha256": "1463bf358fd911a7e70878a2e2f55d67c2be4595b53ccfa348baf9649fba82dd",
+      "visually_reviewed": true,
+      "metadata_sha256": "a7ad010dfb982e47f589f8503dcb74d6dcde4812cb68f13029164bd9f6ea7a6f"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/tutorial-food-supply-briefing.png",
+      "sha256": "9347532b66b73d8544de75d17df1fb0a92295cd96eb1516cc3663b47f0bc7b30",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/desktop/tutorial-food-supply-dialog.png",
+      "sha256": "d8417204d1b19ad4070bf2784e6def5b691cb5c523e2ef197316a832b6530462",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/tutorial-food-supply.png",
+      "sha256": "40edb4eb54a026d4870647b1dc1b8c2733a381ba7f944861f6d08717f02f3275",
+      "visually_reviewed": true,
+      "metadata_sha256": "e0b407b26dd844bf301a3faf6f2492f37b1f6c1063c392e5285f4a9bfad764ef"
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/tutorial-food-supply-briefing.png",
+      "sha256": "087fce835409fe8144ae4d39e4d09011ed730f4affa641687d922b808cc587b4",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native/phone/tutorial-food-supply-dialog.png",
+      "sha256": "a1ee86b97d24df98b2e0b32b0774a0d16eb2c4bb6efa406b7fd25ee418da6517",
+      "visually_reviewed": true,
+      "metadata_sha256": null
+    }
+  ],
+  "reviewed_image_count": 34,
+  "verdict": "pass_with_no_blocking_findings",
+  "actual_native_image_count": 34,
+  "coverage_exact_match": true,
+  "limitations": [
+    "Independent agent review, not native-human certification.",
+    "Linux/X11 host production screen captures; not iOS/Android physical-device evidence.",
+    "Current views/scroll positions only, not exhaustive reachable screens or every translated string.",
+    "150% Teams caption and narrow100% Players tab have readable within-word wraps; nonblocking.",
+    "Lobby map previews are loading in captured views, so no ready-preview assertion.",
+    "150% profile pre-acknowledged onboarding; fresh100% separate captures cover actual briefing.",
+    "iOS validation has separate pending job evidence; not covered by this verdict."
+  ],
+  "matrix_review": {
+    "path": "artifacts/bengali-localization-v2/adversarial-native-matrix-review.json",
+    "sha256": "552b8591c2716600b966085d5419a7e88985d998816e4938e1d61d38760e0f37",
+    "all20matrixpages_actually_viewed": true,
+    "pilot_samples": 288,
+    "synthetic_probe_samples": 30,
+    "coverage": "selected pilot strings plus separate synthetic shaping probes, not all3393 native targets"
+  }
+}
