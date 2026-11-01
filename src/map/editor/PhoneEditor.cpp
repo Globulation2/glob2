@@ -128,12 +128,55 @@ void PhoneEditor::prepare()
 	const double cardsHeight = tight ? cardHeight - 6 : cardHeight;
 	const double chipsHeight = cards && chips.size() > 1 ? (tight ? chipHeight - 4 : chipHeight) : 0;
 	const double dock = (modes + (tools ? cardsHeight + chipsHeight : 0)) * unit;
-	double header = headerHeight * unit;
-	for (const auto &caption : headerCaptions())
+	const auto captions = headerCaptions();
+	std::array<double, 4> widths{}, minimumWidths{};
+	widths.fill(safe.w / 4);
+	double minimumTotal = 0;
+	bool needsWidth = false;
+	for (int i = 0; i < 4; ++i)
 	{
-		const auto lines = wrapTouchText(globalContainer->standardFont, caption,
-			std::max(1., (safe.w / 4 - 9 * unit) / gfx->textUnitsPerPoint()));
-		header = std::max(header, modeCaptionLineHeight(lines) * lines.size() + 8 * unit);
+		double wordWidth = 0;
+		std::istringstream words(captions[i]);
+		for (std::string word; words >> word;)
+			wordWidth = std::max(wordWidth,
+				double(globalContainer->standardFont->getStringWidth(word)) * gfx->textUnitsPerPoint());
+		minimumWidths[i] = std::max(InGameTouchTheme::target * unit, wordWidth + 9 * unit);
+		minimumTotal += minimumWidths[i];
+		needsWidth = needsWidth || minimumWidths[i] > widths[i];
+	}
+	int columns = 4;
+	if (needsWidth)
+	{
+		// Keep the usual quarters when they fit. Otherwise lend space from
+		// short actions before resorting to two rows; never shrink the type.
+		if (minimumTotal <= safe.w)
+			for (int i = 0; i < 4; ++i)
+				widths[i] = minimumWidths[i] + (safe.w - minimumTotal) / 4;
+		else
+		{
+			columns = 2;
+			widths.fill(safe.w / 2);
+		}
+	}
+	std::array<double, 2> rowHeights{headerHeight * unit, headerHeight * unit};
+	for (int i = 0; i < 4; ++i)
+	{
+		const auto lines = wrapTouchText(globalContainer->standardFont, captions[i],
+			std::max(1., (widths[i] - 9 * unit) / gfx->textUnitsPerPoint()));
+		rowHeights[i / columns] = std::max(rowHeights[i / columns],
+			modeCaptionLineHeight(lines) * lines.size() + 8 * unit);
+	}
+	double header = 0;
+	for (int row = 0; row < 4 / columns; ++row)
+	{
+		double x = safe.x;
+		for (int column = 0; column < columns; ++column)
+		{
+			const int i = row * columns + column;
+			headerButtons[i] = {x, safe.y + header, widths[i], rowHeights[row]};
+			x += widths[i];
+		}
+		header += rowHeights[row];
 	}
 	content = {safe.x, safe.y + header, safe.w,
 			   std::max(0., safe.h - header - dock)};
@@ -281,7 +324,9 @@ int PhoneEditor::hit(ViewPoint p) const
 	if (editor.panelMode == MapEdit::Teams && tray.contains(p))
 		return -21;
 	if (p.y < content.y)
-		return -2 - std::clamp(int((p.x - safe.x) * 4 / safe.w), 0, 3);
+		for (int i = 0; i < 4; ++i)
+			if (headerButtons[i].contains(p))
+				return -2 - i;
 	if (!tools && modeBar.contains(p))
 		return -6;
 	if (tools && modeBar.contains(p))
@@ -1018,9 +1063,11 @@ void PhoneEditor::label(ViewRect r, const std::string &text)
 	auto *font = globalContainer->standardFont;
 	const double unit = gfx->logicalUnitsPerPoint(), scale = gfx->textUnitsPerPoint();
 	font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255, 249, 229)));
-	SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
+	SDL_Rect clip{int(r.x + 4 * unit), int(r.y), int(std::max(0., r.w - 8 * unit)), int(r.h)};
 	gfx->setUITransform(scale, r.x + 4 * unit, r.y + (r.h - 16 * scale) / 2, &clip);
-	gfx->drawString(0, 0, font, text, std::max(1, int((r.w - 8 * unit) / scale)));
+	// The transform already clips in screen coordinates. A second font-width
+	// clip mixes those bounds with local x=0 in the legacy GL path.
+	gfx->drawString(0, 0, font, text);
 	gfx->setUITransform();
 	gfx->setClipRect();
 	font->popStyle();
@@ -1114,7 +1161,9 @@ void PhoneEditor::draw()
 	const auto labels = headerCaptions();
 	for (int i = 0; i < 4; ++i)
 	{
-		ViewRect r{safe.x + i * safe.w / 4, safe.y, safe.w / 4 - unit, content.y - safe.y - 4 * unit};
+		auto r = headerButtons[i];
+		r.w -= unit;
+		r.h -= 4 * unit;
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper());
 		const auto lines = wrapTouchText(globalContainer->standardFont, labels[i],
 			std::max(1., (r.w - 8 * unit) / gfx->textUnitsPerPoint()));

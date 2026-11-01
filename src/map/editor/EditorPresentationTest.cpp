@@ -14,8 +14,14 @@
 #include "Race.h"
 #include <InterfacePresentation.h>
 #include <SDL3/SDL.h>
+#ifdef HAVE_OPENGL
+#include <SDL3/SDL_opengl.h>
+#endif
+#include <array>
 #include <optional>
+#include <sstream>
 #include <string>
+#include <vector>
 
 namespace
 {
@@ -141,11 +147,34 @@ TEST_SUITE("EditorPresentation")
 		CHECK(phone.content.y + phone.content.h <= phone.modeBar.y);
 		CHECK(phone.mapButton().w >= globalContainer->standardFont->getStringWidth("Minimap") *
 			gfx->textUnitsPerPoint() + 8 * gfx->logicalUnitsPerPoint());
+		for (const char *terrain : {"lush_grass", "dry_grass", "dune_sand", "pale_sand"})
+		{
+			CAPTURE(terrain);
+			editor.performAction(std::string("select terrain ") + terrain);
+			CHECK(editor.currentBrushId() == std::string("terrain/") + terrain);
+			phone.prepare();
+			std::istringstream caption(phone.headerCaptions()[2]);
+			for (std::string word; caption >> word;)
+				CHECK(globalContainer->standardFont->getStringWidth(word) * gfx->textUnitsPerPoint() <=
+					phone.headerButtons[2].w - 9 * gfx->logicalUnitsPerPoint());
+			for (int i = 0; i < 4; ++i)
+			{
+				const auto button = phone.headerButtons[i];
+				CHECK(phone.hit({button.x + button.w / 2, button.y + button.h / 2}) == -2 - i);
+			}
+		}
+		editor.performAction("select terrain grass");
 		globalContainer->settings.setTextSizePercent(100);
 		phone.prepare();
 		CHECK(phone.modeColumns == 5);
 		CHECK(phone.modeBar.h == 44 * gfx->logicalUnitsPerPoint());
 		CHECK(phone.content.y - phone.safe.y == 48 * gfx->logicalUnitsPerPoint());
+		for (int i = 0; i < 4; ++i)
+		{
+			CHECK(phone.headerButtons[i].x == doctest::Approx(phone.safe.x + i * phone.safe.w / 4));
+			CHECK(phone.headerButtons[i].y == phone.safe.y);
+			CHECK(phone.headerButtons[i].w == doctest::Approx(phone.safe.w / 4));
+		}
 		globalContainer->settings.setTextSizePercent(150);
 		phone.prepare();
 		const int grass = phone.rowOf("terrain/grass");
@@ -175,6 +204,73 @@ TEST_SUITE("EditorPresentation")
 		gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/filipino-software-editor-large.bmp");
 		editor.drawEditing();
 	}
+
+#ifdef HAVE_OPENGL
+	TEST_CASE("legacy GL phone labels retain visible clipped ink away from the origin [display][artifacts]")
+	{
+		PresentationScope scope;
+		glob2test::setEnv("GLOB2_MOBILE_UI", "1");
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true,
+			.width = 390, .height = 844, .screenFlags = GAGCore::GraphicContext::USEGPU};
+		options.beforeLoad = [](GlobalContainer &globals) {
+			globals.settings.language = "fil";
+			globals.settings.setTextSizePercent(150);
+		};
+		glob2test::HeadlessGlobals globals(options);
+		auto *gfx = globalContainer->gfx;
+		REQUIRE(gfx->backendSwitchStatus().active == GAGCore::RendererBackend::LegacyGL);
+		gfx->setResponsiveViewport(true, 800, 600);
+		PresentationScope::host(390, 844, true);
+		MapEdit editor;
+		blank(editor);
+		editor.beginEditing();
+		REQUIRE(editor.usesPhone());
+		auto &phone = *editor.phone;
+		const double unit = gfx->logicalUnitsPerPoint();
+		const std::array<GAGCore::ViewRect, 2> boxes{{
+			{120 * unit, 180 * unit, 160 * unit, 48 * unit},
+			{110 * unit, 285 * unit, 52 * unit, 48 * unit}}};
+		REQUIRE(globalContainer->standardFont->getStringWidth("Minimap") * gfx->textUnitsPerPoint() >
+			boxes[1].w - 8 * unit); // This caption must actually reach the clip edge.
+		gfx->setClipRect();
+		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
+		phone.label(boxes[0], "Pumili");
+		phone.label(boxes[1], "Minimap");
+		GAGCore::Sprite::flushBatches(gfx);
+		glFinish();
+		GLint viewport[4]{};
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		REQUIRE(viewport[2] > 0);
+		REQUIRE(viewport[3] > 0);
+		std::vector<unsigned char> pixels(std::size_t(viewport[2]) * viewport[3] * 4);
+		glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+		std::array<unsigned, 2> ink{};
+		unsigned escapedInk = 0;
+		for (int y = 0; y < viewport[3]; ++y)
+			for (int x = 0; x < viewport[2]; ++x)
+			{
+				const auto offset = (std::size_t(y) * viewport[2] + x) * 4;
+				if (pixels[offset] <= 30 && pixels[offset + 1] <= 30 && pixels[offset + 2] <= 30)
+					continue;
+				const GAGCore::ViewPoint point{(x + .5) * gfx->getW() / viewport[2],
+					(viewport[3] - y - .5) * gfx->getH() / viewport[3]};
+				bool inside = false;
+				for (std::size_t i = 0; i < boxes.size(); ++i)
+				{
+					// One logical pixel tolerates drawable rounding at the scissor edge.
+					const GAGCore::ViewRect clip{boxes[i].x + 4 * unit - 1, boxes[i].y - 1,
+						boxes[i].w - 8 * unit + 2, boxes[i].h + 2};
+					if (clip.contains(point)) { ++ink[i]; inside = true; }
+				}
+				if (!inside) ++escapedInk;
+			}
+		CHECK(ink[0] > 20);
+		CHECK(ink[1] > 20);
+		CHECK(escapedInk == 0);
+		gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/filipino-legacy-phone-label-clipping.bmp");
+		gfx->nextFrame();
+	}
+#endif
 
 	TEST_CASE("the editor presentation table follows room and overrides")
 	{

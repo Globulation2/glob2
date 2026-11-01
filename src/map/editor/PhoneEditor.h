@@ -6,6 +6,7 @@
 #include <TouchInput.h>
 #include "BrushHUD.h"
 #include <memory>
+#include <array>
 #include <optional>
 #include <set>
 #include <cstdint>
@@ -71,6 +72,7 @@ class PhoneEditor
 	std::vector<Row> rows;
 	std::vector<Chip> chips;
 	GAGCore::ViewRect safe, content;
+	std::array<GAGCore::ViewRect, 4> headerButtons{};
 	bool tools = true, pan = false, onMap = false;
 	// Terrain, resources, buildings, flags/units, teams.
 	static constexpr int modeCount = 5;
