@@ -216,6 +216,12 @@ export const locales = [
     dir: 'ltr',
   },
   {
+    code: 'ta',
+    gameCode: 'ta',
+    name: 'தமிழ்',
+    dir: 'ltr',
+  },
+  {
     code: 'bn',
     gameCode: 'bn',
     name: 'বাংলা',

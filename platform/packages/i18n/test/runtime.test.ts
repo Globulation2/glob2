@@ -90,6 +90,12 @@ describe('online locale resolution', () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
   });
+  it('resolves Tamil regions and script without claiming Latin transliteration', () => {
+    for (const tag of ['ta', 'ta-IN', 'ta-LK', 'ta-Taml', 'ta-Taml-IN', 'ta-u-nu-latn'])
+      expect(resolveLocale(tag)).toBe('ta');
+    expect(resolveLocale(['ta-Latn', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ta')).toBe('ta');
+  });
   it.each(locales)('loads selectable $code through the default browser loader', async (locale) => {
     vi.resetModules();
     const runtime = await import('../src/index.ts');
@@ -185,7 +191,10 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains unique game catalog mappings including Malay', () => {
+  it('contains 41 unique game catalog mappings including Tamil, Bengali, Malay and Marathi', () => {
+    expect(locales).toHaveLength(41);
+    expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
+    expect(locales).toContainEqual({ code: 'bn', gameCode: 'bn', name: 'বাংলা', dir: 'ltr' });
     expect(locales).toContainEqual({
       code: 'nb',
       gameCode: 'nb',
@@ -236,6 +245,19 @@ describe('startup loading and presentation', () => {
     expect(browserScope.document.cookie).toBe('other_cookie=1');
     await runtime.setLocale('fr');
     expect(browserScope.document.cookie).toContain('glob2_locale=fr');
+  });
+  it('loads the Tamil catalog from a regional browser preference and formats credit counts', async () => {
+    const runtime = await fresh('other_cookie=1');
+    vi.stubGlobal('navigator', { languages: ['ta-LK'] });
+    await runtime.initialize();
+    expect(runtime.getLocale()).toBe('ta');
+    expect(browserScope.document.documentElement.lang).toBe('ta');
+    expect(browserScope.document.documentElement.dir).toBe('ltr');
+    expect(browserScope.document.cookie).toBe('other_cookie=1');
+    expect(runtime.t('Password')).toBe('கடவுச்சொல்');
+    expect(runtime.tp('{count} credit', '{count} credits', 1)).toBe('1 வரவு');
+    expect(runtime.tp('{count} credit', '{count} credits', 0)).toBe('0 வரவுகள்');
+    expect(runtime.tp('{count} credit', '{count} credits', 2)).toBe('2 வரவுகள்');
   });
   it('a failed initial download cannot override a newer successful switch', async () => {
     const runtime = await fresh();

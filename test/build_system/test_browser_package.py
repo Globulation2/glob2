@@ -262,6 +262,56 @@ class BrowserPackageTests(unittest.TestCase):
         self.assertNotEqual(version, module.package(self.source, self.output))
         module.verify(self.output)
 
+    def test_generated_wasm_literals_support_both_quote_styles_in_both_runtimes(self):
+        self.threaded_source()
+        for serial_quote, threaded_quote in (("'", "'"), ("'", '"'), ('"', "'")):
+            with self.subTest(serial=serial_quote, threaded=threaded_quote):
+                for prefix, quote in (("", serial_quote), ("threaded/", threaded_quote)):
+                    other_quote = '"' if quote == "'" else "'"
+                    (self.source / (prefix + "index.js")).write_text(
+                        "function findWasmBinary() { return locateFile("
+                        + quote + "index.wasm" + quote + "); }\n"
+                        + "const secondReference = " + other_quote + "index.wasm" + other_quote + ";\n"
+                        + "const unrelated = 'other-index.wasm';\n"
+                    )
+                version = module.package(self.source, self.output)
+                module.verify(self.output)
+                for prefix, quote in (("", serial_quote), ("threaded/", threaded_quote)):
+                    script = (self.output / (prefix + f"index-{version}.js")).read_text()
+                    self.assertIn(f"locateFile({quote}index-{version}.wasm{quote})", script)
+                    self.assertNotRegex(script, r"(['\"])index\.wasm\1")
+                    self.assertIn("'other-index.wasm'", script)
+
+    def test_verify_rejects_unversioned_wasm_even_with_valid_checksums(self):
+        self.threaded_source()
+        version = module.package(self.source, self.output)
+        for prefix in ("", "threaded/"):
+            for quote in ("'", '"'):
+                with self.subTest(runtime=prefix or "serial", quote=quote):
+                    script = self.output / (prefix + f"index-{version}.js")
+                    previous = script.read_bytes()
+                    corrupt = f"function findWasmBinary() {{ return locateFile({quote}index.wasm{quote}); }}".encode()
+                    script.write_bytes(corrupt)
+                    script.with_suffix('.js.gz').write_bytes(gzip.compress(corrupt, mtime=0))
+                    self.refresh_checksums()
+                    with self.assertRaisesRegex(ValueError, 'Unversioned game WebAssembly runtime reference'):
+                        module.verify(self.output)
+                    script.write_bytes(previous)
+                    script.with_suffix('.js.gz').write_bytes(gzip.compress(previous, mtime=0))
+                    self.refresh_checksums()
+
+    def test_rewrite_policy_changes_identity_and_upgrades_owned_v1_output(self):
+        self.assertEqual(module.POLICY, b"browser-static-gzip-v2\0")
+        with patch.object(module, 'POLICY', b"browser-static-gzip-v1\0"):
+            previous_version = module.package(self.source, self.output)
+        version = module.package(self.source, self.output)
+        self.assertNotEqual(previous_version, version)
+        self.assertFalse((self.output / f"index-{previous_version}.js").exists())
+        self.assertTrue((self.output / f"index-{version}.js").exists())
+        self.assertEqual(json.loads((self.output / module.MARKER).read_text())['policy'],
+                         'browser-static-gzip-v2')
+        module.verify(self.output)
+
     def test_dual_runtime_rejects_missing_worker_sidecar(self):
         self.threaded_source()
         version = module.package(self.source, self.output)

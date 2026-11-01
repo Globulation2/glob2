@@ -1,292 +1,170 @@
 #!/usr/bin/env python3
-"""Paid calls must remain bounded, resumable and safe for format contracts."""
+"""Cloud drafts must preserve work and enforce cost before any paid dispatch."""
 import importlib.util
 import json
 import io
 from urllib.error import HTTPError
-import os
-import subprocess
-import sys
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 SPEC = importlib.util.spec_from_file_location('google_draft',
     Path(__file__).resolve().parents[1] / 'tools/localization/google_draft.py')
 DRAFT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(DRAFT)
+PROJECT = 'glob2-translation-test'
 
 
-class GoogleDraftTest(unittest.TestCase):
+class PlainGoogleDraftTest(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        self.root = Path(self.temporary.name)
+        self.folder = Path(self.temporary.name)
 
-    def test_preserves_placeholders_invariants_urls_and_fragment_spaces(self):
-        source = ' with {slot0}: %12\nJavaScript matchId https://example.com/a '
-        masked, protected = DRAFT.mask(source, ['matchId'])
-        self.assertNotIn('{slot0}', masked)
-        self.assertNotIn('matchId', masked)
-        self.assertEqual(DRAFT.unmask(masked.strip(), protected, source), source)
+    def entry(self, text='Hello {name}', key='Hello {name}'):
+        masked, protected = DRAFT.protect(text)
+        return {'surface': 'online', 'key': key, 'category': None,
+                'source': text, 'content': masked, 'protected': protected}
+
+    def dispatch(self, project, payload):
+        self.assertEqual(project, PROJECT)
+        self.assertEqual(payload['sourceLanguageCode'], 'en')
+        self.assertEqual(payload['targetLanguageCode'], 'ta')
+        self.assertEqual(payload['mimeType'], 'text/plain')
+        return {'translations': [{'translatedText': value.replace('Hello', 'வணக்கம்')}
+                                 for value in payload['contents']]}
+
+    def test_protects_repeated_tokens_and_contract_literals(self):
+        source = r'%0 %0 {name} https://example.org/path `code` simVersion\n\n Ctrl+Enter Globulation 2'
+        masked, protected = DRAFT.protect(source, ['simVersion'])
+        self.assertNotIn('{name}', masked)
+        self.assertNotIn('simVersion', masked)
+        self.assertEqual(DRAFT.restore(masked, protected), source)
         with self.assertRaises(ValueError):
-            DRAFT.unmask(masked.replace('ZXQPH0QXZ', ''), protected, source)
+            DRAFT.restore(masked.replace('__G2P0__', ''), protected)
         with self.assertRaises(ValueError):
-            DRAFT.unmask(masked + ' ZXQPH0QXZ', protected, source)
+            DRAFT.restore(masked + '__G2P0__', protected)
         with self.assertRaises(ValueError):
-            DRAFT.mask('ZXQPH0QXZ')
+            DRAFT.protect('reserved __G2P0__')
 
-    def test_budget_prevents_call_past_cap_and_is_preserved_after_restart(self):
-        path = self.root / 'ledger.json'
-        budget = DRAFT.Budget(path, 'project', '0.0001')
-        calls = []
+    def test_access_token_is_memory_only_and_refreshed_after_45_minutes(self):
+        with patch.object(DRAFT, '_ACCESS_TOKEN', None), patch.object(DRAFT, '_TOKEN_OBTAINED_AT', 0):
+            with patch.object(DRAFT.time, 'monotonic', side_effect=[100, 101, 2801]):
+                with patch.object(DRAFT.subprocess, 'check_output', side_effect=['first-token\n', 'new-token\n']) as auth:
+                    self.assertEqual(DRAFT.access_token(), 'first-token')
+                    self.assertEqual(DRAFT.access_token(), 'first-token')
+                    self.assertEqual(DRAFT.access_token(), 'new-token')
+                    self.assertEqual(auth.call_count, 2)
+        with patch.object(DRAFT, '_ACCESS_TOKEN', None):
+            with patch.object(DRAFT.subprocess, 'check_output', side_effect=[OSError('auth unavailable'), 'recovered']) as auth:
+                with self.assertRaises(OSError):
+                    DRAFT.access_token()
+                self.assertEqual(DRAFT.access_token(), 'recovered')
+                self.assertEqual(auth.call_count, 2)
 
-        def translate(project, payload):
-            self.assertTrue(path.exists(), 'reservation must be durable before API dispatch')
-            self.assertEqual(json.loads(path.read_text())['attempts'][0]['state'], 'dispatched_or_uncertain')
-            calls.append(payload)
-            return {'translations': [{'translatedText': 'परीक्षण'}]}
+    def test_fragment_boundary_spaces_survive_provider_trimming(self):
+        entry = self.entry(' · Hello {name} ')
+        self.assertEqual(DRAFT.restore_entry('· வணக்கம் __G2P0__', entry), ' · வணக்கம் {name} ')
 
-        DRAFT.fetch('project', {'contents': ['hello']}, self.root / 'cache', budget, translate)
-        resumed = DRAFT.Budget(path, 'project', '0.0001')
+    def test_preflight_never_dispatches_and_counts_actual_masked_characters(self):
+        entry = self.entry()
+        dispatch = Mock(side_effect=AssertionError('Preflight must not make paid calls'))
+        summary, results = DRAFT.translate(self.folder, [entry], PROJECT, 'ta', dispatch=dispatch)
+        dispatch.assert_not_called()
+        self.assertEqual(summary['new_request_characters'], len(entry['content']))
+        self.assertEqual(results, {})
+        self.assertFalse((self.folder / 'ledger.json').exists())
+
+    def test_success_cache_resumes_without_dispatch_and_maps_duplicate_sources(self):
+        first = self.entry()
+        second = {**first, 'key': 'Same source in another entry'}
+        dispatch = Mock(side_effect=self.dispatch)
+        summary, result = DRAFT.translate(self.folder, [first, second], PROJECT, 'ta', dispatch=dispatch, execute=True)
+        self.assertEqual(dispatch.call_count, 1)
+        self.assertEqual(len(dispatch.call_args.args[1]['contents']), 1)
+        identity = DRAFT.cache_key(first, PROJECT, 'ta')
+        self.assertEqual(result[identity], 'வணக்கம் {name}')
+        self.assertEqual(summary['characters_reserved'], len(first['content']))
+        _, resumed = DRAFT.translate(self.folder, [first], PROJECT, 'ta', dispatch=dispatch, execute=True)
+        self.assertEqual(dispatch.call_count, 1)
+        self.assertEqual(resumed, result)
+        self.assertNotEqual(identity, DRAFT.cache_key(first, PROJECT, 'hi'))
+        raw = '\n'.join(path.read_text() for path in self.folder.rglob('*.json'))
+        self.assertNotIn('Bearer', raw)
+        self.assertNotIn('Authorization', raw)
+
+    def test_failed_and_uncertain_requests_consume_budget_before_dispatch(self):
+        entry = self.entry('Hello', 'Hello')
+        limit = len(entry['content'])
+        def failure(project, payload):
+            ledger = json.loads((self.folder / 'ledger.json').read_text())
+            self.assertEqual(ledger['attempts'][0]['characters_reserved'], limit)
+            raise TimeoutError('Provider may have processed this request')
+        with self.assertRaises(TimeoutError):
+            DRAFT.translate(self.folder, [entry], PROJECT, 'ta', limit, failure, True)
+        dispatch = Mock(side_effect=self.dispatch)
+        with self.assertRaisesRegex(ValueError, 'Insufficient remaining budget'):
+            DRAFT.translate(self.folder, [entry], PROJECT, 'ta', limit, dispatch, True)
+        dispatch.assert_not_called()
+        ledger = json.loads((self.folder / 'ledger.json').read_text())
+        self.assertEqual(ledger['attempts'][0]['state'], 'failed_or_uncertain')
+        with self.assertRaisesRegex(ValueError, 'project/budget differs'):
+            DRAFT.translate(self.folder, [entry], PROJECT, 'ta', limit + 1, dispatch, True)
+
+    def test_damaged_response_is_retained_and_not_retried_silently(self):
+        entry = self.entry()
+        dispatch = Mock(return_value={'translations': [{'translatedText': 'வணக்கம்'}]})
+        summary, results = DRAFT.translate(self.folder, [entry], PROJECT, 'ta', dispatch=dispatch, execute=True)
+        self.assertEqual(results, {})
+        self.assertEqual(len(summary['repair_required']), 1)
+        self.assertTrue((self.folder / 'responses/00001.json').exists())
+        summary, results = DRAFT.translate(self.folder, [entry], PROJECT, 'ta', dispatch=dispatch, execute=True)
+        self.assertEqual(len(summary['repair_required']), 1)
+        self.assertEqual(dispatch.call_count, 1)
+
+    def test_budget_and_response_count_fail_closed(self):
+        entry = self.entry()
+        dispatch = Mock(return_value={'translations': []})
         with self.assertRaises(ValueError):
-            DRAFT.fetch('project', {'contents': ['again']}, self.root / 'cache', resumed, translate)
-        self.assertEqual(len(calls), 1)
-        with self.assertRaises(ValueError):
-            DRAFT.Budget(path, 'different-project', '9')
-        with self.assertRaises(ValueError):
-            DRAFT.Budget(path, 'project', '10')
+            DRAFT.translate(self.folder, [entry], PROJECT, 'ta', limit=400001, dispatch=dispatch, execute=True)
+        dispatch.assert_not_called()
+        with self.assertRaisesRegex(ValueError, 'count differs'):
+            DRAFT.translate(self.folder, [entry], PROJECT, 'ta', dispatch=dispatch, execute=True)
+        self.assertEqual(dispatch.call_count, 1)
 
-    def test_cached_response_does_not_spend_or_dispatch_again(self):
-        budget = DRAFT.Budget(self.root / 'ledger.json', 'project', '9')
-        payload = {'contents': ['hello']}
-        calls = []
+    def test_nonblank_work_is_not_selected_or_overwritten(self):
+        source = {'native': {'[hello]': 'Hello'}, 'online': {'Hello {name}': 'Hello {name}'}}
+        target = {'native': {'[hello]': 'ஏற்கெனவே திருத்தப்பட்டது'}, 'online': {'Hello {name}': ''}}
+        entries = DRAFT.pending_entries(source, target, {})
+        self.assertEqual(len(entries), 1)
+        paths = {'native': self.folder / 'native.txt', 'online': self.folder / 'online.json'}
+        paths['native'].write_text('[hello]\nஏற்கெனவே திருத்தப்பட்டது\n')
+        paths['online'].write_text(json.dumps({'Hello {name}': 'இப்போது திருத்தப்பட்டது {name}'}))
+        identity = DRAFT.cache_key(entries[0], PROJECT, 'ta')
+        DRAFT.apply_results(paths, entries, {identity: 'வணக்கம் {name}'}, PROJECT, 'ta')
+        self.assertEqual(json.loads(paths['online'].read_text())['Hello {name}'], 'இப்போது திருத்தப்பட்டது {name}')
+        self.assertIn('ஏற்கெனவே திருத்தப்பட்டது', paths['native'].read_text())
 
-        def translate(project, body):
-            calls.append(body)
-            return {'translations': [{'translatedText': 'नमस्कार'}]}
-
-        first = DRAFT.fetch('project', payload, self.root / 'cache', budget, translate)
-        second = DRAFT.fetch('project', payload, self.root / 'cache', budget, translate)
-        self.assertEqual(first, second)
-        self.assertEqual(len(calls), 1)
-        self.assertEqual(budget.characters, 5)
-        cache = next((self.root / 'cache').glob('*.json'))
-        value = json.loads(cache.read_text())
-        value['response']['translations'][0]['translatedText'] = 'corrupted'
-        cache.write_text(json.dumps(value))
-        with self.assertRaises(ValueError):
-            DRAFT.fetch('project', payload, self.root / 'cache', budget, translate)
-        self.assertEqual(len(calls), 1)
-
-    def test_uncertain_failure_counts_again_on_explicit_rerun(self):
-        budget = DRAFT.Budget(self.root / 'ledger.json', 'project', '9')
-
-        def timeout(project, payload):
-            raise TimeoutError('no response')
-
-        for _ in range(2):
-            with self.assertRaises(TimeoutError):
-                DRAFT.fetch('project', {'contents': ['hello']}, self.root / 'cache', budget, timeout)
-        self.assertEqual(budget.characters, 10)
-        self.assertEqual(len(budget.value['attempts']), 2)
-        self.assertTrue(all(attempt['state'] == 'dispatched_or_uncertain'
-                            for attempt in budget.value['attempts']))
-
-    def test_ledger_directory_sync_failure_prevents_paid_dispatch(self):
-        budget = DRAFT.Budget(self.root / 'ledger.json', 'project', '9')
-        calls = []
-        with patch.object(DRAFT, 'fsync_directory', side_effect=OSError('directory sync failed')):
-            with self.assertRaisesRegex(OSError, 'directory sync failed'):
-                DRAFT.fetch('project', {'contents': ['hello']}, self.root / 'cache', budget,
-                            lambda project, payload: calls.append(payload))
-        self.assertEqual(calls, [])
-        self.assertFalse((self.root / 'cache').exists())
-
-    def test_external_edit_during_request_is_preserved_and_response_cached(self):
-        paths = DRAFT.PROGRAM.catalog_paths(self.root, 'mr')
-        paths['native'].parent.mkdir(parents=True)
-        paths['native'].write_text('[hello]\n\n[edited]\nold editorial\n', encoding='utf-8')
-        DRAFT.atomic_json(paths['online'], {'Edited': 'old online editorial'})
-        DRAFT.atomic_json(self.root / 'manifest.json', {'source_sha256': 'test'})
-        targets = {'native': {'[hello]': '', '[edited]': 'old editorial'},
-                   'online': {'Edited': 'old online editorial'}}
-        source = 'Hello'
-        masked, protected = DRAFT.mask(source)
-        items = [{'id': 'native:[hello]', 'surface': 'native', 'key': '[hello]', 'category': None,
-                  'source': source, 'masked': masked, 'protected': protected,
-                  'pieces': [{'source': source, 'masked': masked, 'protected': protected}]}]
-
-        def translate(project, payload):
-            paths['native'].write_text('[hello]\n\n[edited]\nnew editorial\n', encoding='utf-8')
-            DRAFT.atomic_json(paths['online'], {'Edited': 'new online editorial'})
-            return {'translations': [{'translatedText': 'नमस्कार'}]}
-
-        with patch.object(DRAFT, 'entries', return_value=(paths, targets, items)):
-            with self.assertRaisesRegex(ValueError, 'catalogs changed'):
-                DRAFT.run(self.root, 'mr', 'project', execute=True, translate=translate)
-        native, errors = DRAFT.PROGRAM.CHECKER.read_table(paths['native'])
-        self.assertEqual(errors, [])
-        self.assertEqual(native, {'[hello]': '', '[edited]': 'new editorial'})
-        self.assertEqual(json.loads(paths['online'].read_text()), {'Edited': 'new online editorial'})
-        cached = json.loads(next((self.root / 'google-responses').glob('*.json')).read_text())
-        self.assertEqual(cached['response']['translations'][0]['translatedText'], 'नमस्कार')
-        ledger = json.loads((self.root / 'google-budget.json').read_text())
-        self.assertEqual(ledger['attempts'][0]['state'], 'response_received')
-
-    def test_request_bounds_and_representative_pilot(self):
-        items = [{'masked': 'a' * 10, 'id': str(i), 'domain': str(i % 3)} for i in range(15)]
-        groups = list(DRAFT.batches(items, max_characters=25, max_items=3))
-        self.assertTrue(all(sum(len(item['masked']) for item in group) <= 25 for group in groups))
-        with self.assertRaises(ValueError):
-            list(DRAFT.batches(items, max_characters=5))
-        selected = DRAFT.pilot_entries(items, 5)
-        self.assertEqual([item['domain'] for item in selected], ['0', '1', '2', '0', '1'])
-
-    def test_bad_item_retains_valid_siblings_without_repair(self):
-        paths = DRAFT.PROGRAM.catalog_paths(self.root, 'mr')
-        paths['native'].parent.mkdir(parents=True)
-        paths['native'].write_text('[good]\n\n[bad]\n\n[later]\n\n', encoding='utf-8')
-        DRAFT.atomic_json(paths['online'], {})
-        DRAFT.atomic_json(self.root / 'manifest.json', {'source_sha256': 'test'})
-        targets = {'native': {'[good]': '', '[bad]': '', '[later]': ''}, 'online': {}}
-        items = []
-        for key, source in [('[good]', 'Hello'), ('[bad]', 'Value %0'), ('[later]', 'Later ' + 'a' * 3990)]:
-            masked, protected = DRAFT.mask(source)
-            items.append({'id': 'native:' + key, 'surface': 'native', 'key': key, 'category': None,
-                          'source': source, 'masked': masked, 'protected': protected,
-                          'pieces': [{'source': source, 'masked': masked, 'protected': protected}]})
-
-        def translate(project, payload):
-            return {'translations': [{'translatedText': 'नमस्कार' if text == 'Hello' else
-                                     'नंतर' if text.startswith('Later ') else 'damaged'}
-                                     for text in payload['contents']]}
-
-        with patch.object(DRAFT, 'entries', return_value=(paths, targets, items)):
-            summary = DRAFT.run(self.root, 'mr', 'project', execute=True, translate=translate)
-        self.assertEqual(len(summary['rejected_entries']), 1)
-        native, errors = DRAFT.PROGRAM.CHECKER.read_table(paths['native'])
-        self.assertEqual(errors, [])
-        self.assertEqual(native, {'[good]': 'नमस्कार', '[bad]': '', '[later]': 'नंतर'})
-        failures = json.loads(next((self.root / 'google-failures').glob('*.json')).read_text())
-        self.assertEqual(failures['failures'][0]['id'], 'native:[bad]')
-
-    @unittest.skipIf(sys.platform == 'win32', 'POSIX C locale establishes an ASCII default')
-    def test_ascii_default_locale_preserves_filled_marathi_and_resumes_utf8_cache(self):
-        # Exercise actual disk reads/writes in a fresh non-UTF8 process, rather
-        # than mocking Path.read_text or assuming the test runner's locale.
-        script = r"""
-import codecs, importlib.util, json, locale, pathlib, sys
-spec = importlib.util.spec_from_file_location('draft', sys.argv[1])
-draft = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(draft)
-assert not sys.flags.utf8_mode
-if codecs.lookup(locale.getpreferredencoding(False)).name != 'ascii':
-    raise SystemExit(77)
-root = pathlib.Path(sys.argv[2])
-paths = draft.PROGRAM.catalog_paths(root, 'mr')
-paths['native'].parent.mkdir(parents=True)
-filled = '\u0938\u0902\u092a\u093e\u0926\u093f\u0924'
-translated = '\u0928\u092e\u0938\u094d\u0915\u093e\u0930'
-paths['native'].write_text('[edited]\n' + filled + '\n', encoding='utf-8')
-draft.atomic_json(paths['online'], {'Edited': filled, 'Hello': ''})
-invariant = draft.PROGRAM.ROOT / 'platform/packages/i18n/invariants.json'
-draft.atomic_json(root / 'manifest.json', {
-    'locales': ['mr'], 'source_sha256': 'test',
-    'source_files': {'platform/packages/i18n/invariants.json': draft.PROGRAM.digest(invariant.read_bytes())},
-    'batches': [{'path': 'native.json'}, {'path': 'online.json'}]})
-draft.atomic_json(root / 'native.json', {'surface': 'native', 'domain': 'general', 'entries': [
-    {'id': 'native:[edited]', 'key': '[edited]', 'source': 'Edited'}]})
-draft.atomic_json(root / 'online.json', {'surface': 'online', 'domain': 'online', 'entries': [
-    {'id': 'online:Edited', 'key': 'Edited', 'source': 'Edited'},
-    {'id': 'online:Hello', 'key': 'Hello', 'source': 'Hello'}]})
-calls = []
-def fake(project, payload):
-    calls.append(payload)
-    return {'translations': [{'translatedText': translated}]}
-draft.run(root, 'mr', 'project', execute=True, translate=fake)
-# Re-open all persistent state and re-use the UTF8 response cache after an
-# explicit blank restoration; a cache miss would attempt fake dispatch again.
-draft.atomic_json(paths['online'], {'Edited': filled, 'Hello': ''})
-def forbidden(*args):
-    raise AssertionError('Cache resume must not dispatch another request')
-draft.run(root, 'mr', 'project', execute=True, translate=forbidden)
-assert len(calls) == 1
-assert paths['native'].read_text(encoding='utf-8') == '[edited]\n' + filled + '\n'
-assert json.loads(paths['online'].read_text(encoding='utf-8')) == {'Edited': filled, 'Hello': translated}
-assert filled.encode('utf-8') in paths['online'].read_bytes()
-assert len(json.loads((root / 'google-budget.json').read_text(encoding='utf-8'))['attempts']) == 1
-# Exercise the independent HTML-plan cache under the same ASCII locale too.
-class Client:
-    project = 'project'
-    location = 'global'
-    calls = 0
-    def call(self, method, payload):
-        self.calls += 1
-        return {'translations': [{'translatedText': translated}]}
-client = Client()
-plan = {'locale': 'nb', 'source_sha256': 'frozen', 'chunks': [['Hello']],
-        'entries': [{'surface': 'native', 'key': '[hello]', 'variant': '', 'source': 'Hello'}]}
-run = draft.translate(plan, root, client, 'nb', 10000)
-assert json.loads((run / 'native.json').read_text(encoding='utf-8')) == {'[hello]': translated}
-draft.translate(plan, root, client, 'nb', 1)
-assert client.calls == 1
-assert len(json.loads((root / 'google-budget.json').read_text(encoding='utf-8'))['attempts']) == 2
-"""
-        environment = dict(os.environ, PYTHONUTF8='0', PYTHONCOERCECLOCALE='0', LC_ALL='C')
-        result = subprocess.run([sys.executable, '-c', script, str(SPEC.origin), str(self.root)],
-                                env=environment, capture_output=True, text=True, encoding='utf-8')
-        if result.returncode == 77:
-            self.skipTest('This platform keeps a non-ASCII encoding in the C locale')
-        self.assertEqual(result.returncode, 0, result.stderr)
-
-    def test_dry_run_is_unpaid_and_apply_preserves_editorial_text_and_plurals(self):
-        paths = DRAFT.PROGRAM.catalog_paths(self.root, 'mr')
-        paths['native'].parent.mkdir(parents=True)
-        paths['native'].write_text('[hello]\n\n[edited]\nसंपादित\n', encoding='utf-8')
-        DRAFT.atomic_json(paths['online'], {'{count} item': {'one': '', 'other': ''}, ' ': '', 'Paragraphs': ''})
-        invariant = DRAFT.PROGRAM.ROOT / 'platform/packages/i18n/invariants.json'
-        DRAFT.atomic_json(self.root / 'manifest.json', {
-            'locales': ['mr'], 'source_sha256': 'frozen-test-source', 'source_files': {'platform/packages/i18n/invariants.json':
-            DRAFT.PROGRAM.digest(invariant.read_bytes())},
-            'batches': [{'path': 'native.json'}, {'path': 'online.json'}]})
-        DRAFT.atomic_json(self.root / 'native.json', {'surface': 'native', 'domain': 'general', 'entries': [
-            {'id': 'native:[hello]', 'key': '[hello]', 'source': 'Hello'},
-            {'id': 'native:[edited]', 'key': '[edited]', 'source': 'Edited'}]})
-        DRAFT.atomic_json(self.root / 'online.json', {'surface': 'online', 'domain': 'online', 'entries': [
-            {'id': 'online:{count} item', 'key': '{count} item',
-             'source': {'one': '{count} item', 'other': '{count} items'}},
-            {'id': 'online: ', 'key': ' ', 'source': ' '},
-            {'id': 'online:Paragraphs', 'key': 'Paragraphs', 'source': 'Hello\\n\\nworld\nagain'}]})
-        calls = []
-
-        def translate(project, payload):
-            calls.append(payload)
-            self.assertTrue(all('\n' not in text and '\\n' not in text for text in payload['contents']))
-            return {'translations': [{'translatedText': text.replace('Hello', 'नमस्कार').replace('items', 'वस्तू').replace('item', 'वस्तू')}
-                                     for text in payload['contents']]}
-
-        summary = DRAFT.run(self.root, 'mr', 'project', translate=translate)
-        self.assertTrue(summary['dry_run'])
-        self.assertEqual(calls, [])
-        self.assertFalse((self.root / 'google-budget.json').exists())
-        self.assertEqual(summary['pending_variants'], 4)
-        DRAFT.run(self.root, 'mr', 'project', execute=True, translate=translate)
-        native, errors = DRAFT.PROGRAM.CHECKER.read_table(paths['native'])
-        self.assertEqual(errors, [])
-        self.assertEqual(native, {'[hello]': 'नमस्कार', '[edited]': 'संपादित'})
-        online = json.loads(paths['online'].read_text())
-        self.assertEqual(online['{count} item'], {'one': '{count} वस्तू', 'other': '{count} वस्तू'})
-        self.assertEqual(online[' '], ' ')
-        self.assertEqual(online['Paragraphs'], 'नमस्कार\\n\\nworld\nagain')
-        run = json.loads(next((self.root / 'google-runs').glob('*.json')).read_text())
-        self.assertEqual(run['source_sha256'], 'frozen-test-source')
-        self.assertEqual(len(run['entries']), 4)
-        DRAFT.run(self.root, 'mr', 'project', execute=True, translate=translate)
-        self.assertEqual(len(calls), 1)
+    def test_plural_variants_and_pilot_filter(self):
+        source = {'native': {'[hello]': 'Hello'}, 'online': {'{count} items': {'one': '{count} item', 'other': '{count} items'}}}
+        targets = {'native': {'[hello]': ''}, 'online': {'{count} items': {'one': '', 'other': ''}}}
+        entries = DRAFT.pending_entries(source, targets, {}, ['online:{count} items'])
+        self.assertEqual({entry['category'] for entry in entries}, {'one', 'other'})
+        self.assertEqual(len(entries), 2)
+        for entry in entries:
+            self.assertEqual(entry['protected'], ['{count}'])
 
 
+    def test_plain_dispatch_refuses_existing_html_paid_ledger(self):
+        prior = self.folder / 'google' / 'nb' / 'attempts'
+        prior.mkdir(parents=True)
+        (prior / 'paid.json').write_text('{"characters":100}')
+        dispatch = Mock()
+        with self.assertRaisesRegex(ValueError, 'other protection mode'):
+            DRAFT.translate(self.folder / 'google-nmt', [self.entry()], PROJECT, 'ta',
+                            dispatch=dispatch, execute=True)
+        dispatch.assert_not_called()
 
 
 class FakeClient:
@@ -302,7 +180,7 @@ class FakeClient:
                                  for value in payload['contents']]}
 
 
-class GooglePlanDraftTest(unittest.TestCase):
+class HtmlGoogleDraftTest(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
@@ -315,27 +193,27 @@ class GooglePlanDraftTest(unittest.TestCase):
 
     def test_protection_preserves_placeholders_markup_urls_and_fragments(self):
         source = r'  Hello %0 / {slot0}: <b>https://globulation2.org/help</b>\n  '
-        result = DRAFT.restore(source, DRAFT.protect(source).replace('Hello', 'Hei'))
+        result = DRAFT.restore_html(source, DRAFT.protect_html(source).replace('Hello', 'Hei'))
         self.assertEqual(result, source.replace('Hello', 'Hei'))
         with self.assertRaisesRegex(ValueError, 'protected tokens'):
-            DRAFT.restore(source, DRAFT.protect(source).replace('%0', '%1'))
+            DRAFT.restore_html(source, DRAFT.protect_html(source).replace('%0', '%1'))
         with self.assertRaisesRegex(ValueError, 'protected tokens'):
-            DRAFT.restore('Hello {name}', 'Hei')
-        self.assertEqual(DRAFT.restore(' / ', '/'), ' / ')
-        self.assertEqual(DRAFT.restore('', ''), '')
+            DRAFT.restore_html('Hello {name}', 'Hei')
+        self.assertEqual(DRAFT.restore_html(' / ', '/'), ' / ')
+        self.assertEqual(DRAFT.restore_html('', ''), '')
 
     def test_bare_protocol_allows_norwegian_compound_suffix_without_becoming_url(self):
         source = 'Enter an https:// address.'
-        self.assertEqual(DRAFT.restore(source, 'Skriv inn en https://-adresse.'),
+        self.assertEqual(DRAFT.restore_html(source, 'Skriv inn en https://-adresse.'),
                          'Skriv inn en https://-adresse.')
         # Bare scheme payload is unchanged, preserving previously paid cache keys.
-        self.assertEqual(DRAFT.protect(source), source)
+        self.assertEqual(DRAFT.protect_html(source), source)
         with self.assertRaisesRegex(ValueError, 'protected tokens'):
-            DRAFT.restore(source, 'Skriv inn en http://-adresse.')
+            DRAFT.restore_html(source, 'Skriv inn en http://-adresse.')
         with self.assertRaisesRegex(ValueError, 'protected tokens'):
-            DRAFT.restore('Open https://globulation2.org/help',
+            DRAFT.restore_html('Open https://globulation2.org/help',
                           'Åpne https://globulation2.org/hjelp')
-        self.assertEqual(DRAFT.restore('Open https://[::1]/help',
+        self.assertEqual(DRAFT.restore_html('Open https://[::1]/help',
                                       'Åpne https://[::1]/help'), 'Åpne https://[::1]/help')
 
     def test_relative_routes_and_bare_web_addresses_cannot_be_translated(self):
@@ -343,37 +221,37 @@ class GooglePlanDraftTest(unittest.TestCase):
                                 ('www.globulation2.org', 'www.globulation2.no'),
                                 ('/play/?mode=serial', '/spill/?mode=serial')]:
             with self.subTest(source=source):
-                protected = DRAFT.protect(source)
+                protected = DRAFT.protect_html(source)
                 self.assertIn('translate="no"', protected)
-                self.assertEqual(DRAFT.restore(source, protected), source)
+                self.assertEqual(DRAFT.restore_html(source, protected), source)
                 with self.assertRaisesRegex(ValueError, 'protected tokens'):
-                    DRAFT.restore(source, altered)
-        self.assertEqual(DRAFT.protect('front/back application/octet-stream'),
+                    DRAFT.restore_html(source, altered)
+        self.assertEqual(DRAFT.protect_html('front/back application/octet-stream'),
                          'front/back application/octet-stream')
 
     def test_resume_reuses_exact_request_without_touching_editorial_work(self):
         editorial = self.output / 'drafts/nb/texts.nb.txt'
         editorial.parent.mkdir(parents=True)
         editorial.write_text('Independently edited')
-        run = DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
-        second_run = DRAFT.translate(self.plan, self.output, self.client, 'nb', 1)
+        run = DRAFT.translate_html(self.plan, self.output, self.client, 'nb', 10000)
+        second_run = DRAFT.translate_html(self.plan, self.output, self.client, 'nb', 1)
         self.assertEqual(run, second_run)
         self.assertEqual(len(self.client.calls), 1)
         self.assertEqual(editorial.read_text(), 'Independently edited')
         self.assertEqual(json.loads((run / 'native.json').read_text()), {'[hello %0]': 'Hei %0'})
         # Target differences must never reuse a response from another translation request.
-        DRAFT.translate(self.plan, self.output, self.client, 'no', 10000)
+        DRAFT.translate_html(self.plan, self.output, self.client, 'no', 10000)
         self.assertEqual(len(self.client.calls), 2)
 
     def test_budget_is_checked_before_network_and_counts_uncertain_attempts(self):
         with self.assertRaisesRegex(ValueError, 'budget exhausted'):
-            DRAFT.translate(self.plan, self.output, self.client, 'nb', 1)
+            DRAFT.translate_html(self.plan, self.output, self.client, 'nb', 1)
         self.assertEqual(self.client.calls, [])
-        size = sum(len(DRAFT.protect(text)) for text in self.plan['chunks'][0])
+        size = sum(len(DRAFT.protect_html(text)) for text in self.plan['chunks'][0])
         self.client.call = lambda *_: (_ for _ in ()).throw(HTTPError('url', 503, 'busy', {}, None))
         with patch.object(DRAFT.time, 'sleep'):
             with self.assertRaisesRegex(ValueError, 'budget exhausted'):
-                DRAFT.translate(self.plan, self.output, self.client, 'nb', size)
+                DRAFT.translate_html(self.plan, self.output, self.client, 'nb', size)
         attempts = list((self.output / 'google/nb/attempts').glob('*.json'))
         self.assertEqual(len(attempts), 1)
         self.assertEqual(json.loads(attempts[0].read_text())['characters'], size)
@@ -381,19 +259,19 @@ class GooglePlanDraftTest(unittest.TestCase):
     def test_damaged_output_is_retained_but_never_emitted_as_a_catalog(self):
         self.client.call = lambda *_: {'translations': [{'translatedText': 'Hei'}, {'translatedText': 'Hei'}]}
         with self.assertRaisesRegex(ValueError, 'protected tokens'):
-            DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+            DRAFT.translate_html(self.plan, self.output, self.client, 'nb', 10000)
         self.assertEqual(len(list((self.output / 'google/nb/responses').glob('*.json'))), 1)
         self.assertFalse((self.output / 'google/nb/runs').exists())
 
     def test_invalid_cache_requires_explicit_retry_and_preserves_rejected_output(self):
         self.client.call = lambda *_: {'translations': [{'translatedText': 'Hei'}, {'translatedText': 'Hei'}]}
         with self.assertRaises(ValueError):
-            DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+            DRAFT.translate_html(self.plan, self.output, self.client, 'nb', 10000)
         replacement = FakeClient()
         with self.assertRaisesRegex(ValueError, 'retry-invalid-responses'):
-            DRAFT.translate(self.plan, self.output, replacement, 'nb', 10000)
+            DRAFT.translate_html(self.plan, self.output, replacement, 'nb', 10000)
         self.assertEqual(replacement.calls, [])
-        DRAFT.translate(self.plan, self.output, replacement, 'nb', 10000, retry_invalid=True)
+        DRAFT.translate_html(self.plan, self.output, replacement, 'nb', 10000, retry_invalid=True)
         self.assertEqual(len(replacement.calls), 1)
         self.assertEqual(len(list((self.output / 'google/nb/rejected').glob('*.json'))), 1)
         self.assertEqual(len(list((self.output / 'google/nb/attempts').glob('*.json'))), 2)
@@ -435,108 +313,35 @@ class GooglePlanDraftTest(unittest.TestCase):
             DRAFT.make_plan(self.output, 'nb', ['missing'])
 
 
-
-class GoogleMergedApiTest(unittest.TestCase):
-    def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory()
-        self.addCleanup(self.temporary.cleanup)
-        self.output = Path(self.temporary.name)
-        self.client = FakeClient()
-        self.plan = {'locale': 'nb', 'source_sha256': 'frozen',
-                     'chunks': [['Hello']], 'entries': [
-                         {'surface': 'native', 'key': '[hello]', 'variant': '', 'source': 'Hello'}]}
-
-    def test_plan_and_blank_fill_share_existing_campaign_usd_ceiling(self):
-        budget = DRAFT.Budget(self.output / 'google-budget.json', self.client.project, '0.0001')
-        DRAFT.fetch(self.client.project, {'contents': ['abcd']}, self.output / 'google-responses',
-                    budget, lambda *_: {'translations': [{'translatedText': 'old'}]})
-        with self.assertRaisesRegex(ValueError, 'exceed'):
-            DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000, ceiling='0.0001')
-        self.assertEqual(self.client.calls, [])
-        ledger = json.loads(budget.path.read_text(encoding='utf-8'))
-        self.assertEqual(sum(a['characters'] for a in ledger['attempts']), 4)
-
-    def test_existing_upstream_paid_cache_and_attempts_adopt_once_without_network(self):
-        payload = {'sourceLanguageCode': 'en', 'targetLanguageCode': 'nb',
-                   'mimeType': 'text/html', 'contents': ['Hello']}
-        folder = self.output / 'google/nb'
-        key = DRAFT.cache_key(payload, self.client.project, self.client.location)
-        DRAFT.atomic_json(folder / 'attempts/old.json', {
-            'request_sha256': key, 'characters': 5, 'project': self.client.project,
-            'location': self.client.location, 'attempt': 1})
-        cached = folder / 'responses' / (key + '.json')
-        DRAFT.atomic_json(cached, {'request': payload, 'project': self.client.project,
-            'location': self.client.location, 'response': {'translations': [{'translatedText': 'Hei'}]}})
-        previous = cached.read_bytes()
-        for _ in range(2):
-            DRAFT.translate(self.plan, self.output, self.client, 'nb', 1)
-        self.assertEqual(self.client.calls, [])
-        self.assertEqual(cached.read_bytes(), previous)
-        ledger = json.loads((self.output / 'google-budget.json').read_text(encoding='utf-8'))
-        self.assertEqual(len(ledger['attempts']), 1)
-        self.assertEqual(ledger['attempts'][0]['characters'], 5)
-
-    def test_shared_kit_lock_blocks_both_apis_before_dispatch_or_catalog_reads(self):
-        with DRAFT.kit_lock(self.output):
-            with self.assertRaises(OSError):
-                DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
-            with self.assertRaises(OSError):
-                DRAFT.run(self.output, 'mr', self.client.project, execute=True)
-        self.assertEqual(self.client.calls, [])
-        self.assertFalse((self.output / 'google-budget.json').exists())
-
-    def test_html_physical_control_contract_fails_before_paid_dispatch(self):
-        for source in ('Hello\nworld', 'Hello\rworld', 'Hello\tworld'):
-            with self.subTest(source=source):
-                with self.assertRaisesRegex(ValueError, 'blank-fill'):
-                    DRAFT.protect(source)
-                with self.assertRaisesRegex(ValueError, 'blank-fill'):
-                    DRAFT.restore(source, 'Hei world')
-                plan = dict(self.plan, chunks=[[source]])
-                with self.assertRaisesRegex(ValueError, 'blank-fill'):
-                    DRAFT.translate(plan, self.output, self.client, 'nb', 10000)
-        self.assertEqual(self.client.calls, [])
-        self.assertFalse((self.output / 'google-budget.json').exists())
-
-    def test_stale_low_level_budget_instances_cannot_overspend_shared_ledger(self):
-        path = self.output / 'google-budget.json'
-        first = DRAFT.Budget(path, self.client.project, '0.0001')
-        stale = DRAFT.Budget(path, self.client.project, '0.0001')
-        DRAFT.fetch(self.client.project, {'contents': ['hello']}, self.output / 'cache', first,
-                    lambda *_: {'translations': [{'translatedText': 'Hei'}]})
-        calls = []
-        with self.assertRaisesRegex(ValueError, 'exceed'):
-            DRAFT.fetch(self.client.project, {'contents': ['again']}, self.output / 'cache', stale,
-                        lambda *args: calls.append(args))
-        self.assertEqual(calls, [])
-        self.assertEqual(len(json.loads(path.read_text(encoding='utf-8'))['attempts']), 1)
-
-    def test_plan_directory_fsync_failure_prevents_network(self):
-        with patch.object(DRAFT, 'fsync_directory', side_effect=OSError('no durable directory')):
-            with self.assertRaisesRegex(OSError, 'no durable directory'):
-                DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+    def test_html_dispatch_refuses_existing_plain_reserved_budget(self):
+        prior = self.output / 'google-nmt'
+        prior.mkdir()
+        (prior / 'ledger.json').write_text('{"attempts":[{"characters_reserved":100}]}')
+        with self.assertRaisesRegex(ValueError, 'other protection mode'):
+            DRAFT.translate_html(self.plan, self.output, self.client, 'nb', 10000)
         self.assertEqual(self.client.calls, [])
 
-    def test_auth_retry_reserves_before_each_post_and_obeys_cap(self):
-        client = DRAFT.GoogleClient('test-project')
-        with patch.object(DRAFT.subprocess, 'check_output', return_value='not-a-real-token'):
-            with patch.object(DRAFT, 'urlopen', side_effect=HTTPError('url', 401, 'expired', {}, io.BytesIO())) as network:
-                with self.assertRaisesRegex(ValueError, 'budget exhausted'):
-                    DRAFT.translate(self.plan, self.output, client, 'nb', 5)
-        self.assertEqual(network.call_count, 1)
-        ledger = json.loads((self.output / 'google-budget.json').read_text(encoding='utf-8'))
-        self.assertEqual(len(ledger['attempts']), 1)
-        self.assertEqual(ledger['attempts'][0]['state'], 'dispatched_or_uncertain')
 
-    def test_new_plan_cache_hash_detects_mutation_without_dispatch(self):
-        DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
-        cached = next((self.output / 'google/nb/responses').glob('*.json'))
-        record = json.loads(cached.read_text(encoding='utf-8'))
-        record['response']['translations'][0]['translatedText'] = 'tampered but token-valid'
-        DRAFT.atomic_json(cached, record)
-        with self.assertRaisesRegex(ValueError, 'Corrupt'):
-            DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
-        self.assertEqual(len(self.client.calls), 1)
+class BackendIsolationTest(unittest.TestCase):
+    def test_plain_cannot_reset_segmented_paid_ledger(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            (output / 'google-budget.json').write_text('{"attempts":[{"state":"dispatched_or_uncertain"}]}')
+            with self.assertRaisesRegex(ValueError, 'other protection mode'):
+                DRAFT.assert_backend_budget(output, 'plain')
+
+    def test_segmented_cannot_reset_plain_paid_ledger(self):
+        import test_google_draft_segmented as segmented
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            (output / 'google-nmt').mkdir()
+            (output / 'google-nmt' / 'ledger.json').write_text('{"attempts":[{"characters_reserved":10}]}')
+            with self.assertRaisesRegex(ValueError, 'other protection mode'):
+                with segmented.DRAFT.kit_lock(output):
+                    self.fail('Cannot acquire paid writer for another backend')
+
+
+from test_google_draft_segmented import SegmentedGoogleDraftTest
 
 
 if __name__ == '__main__':
