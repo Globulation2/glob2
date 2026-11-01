@@ -82,7 +82,9 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Metal",
+    "Mineral"
   ],
   "sl": [
     " ({slot0})",
@@ -181,7 +183,9 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "{count} {status}"
+    "{count} {status}",
+    "Lava",
+    "Mineral"
   ],
   "hu": [
     " · ",
@@ -419,7 +423,12 @@
     "♥ {slot0} likes",
     "♥ {slot0} · {slot1}",
     "✕",
-    "＋"
+    "＋",
+    "1 week",
+    "Accounts",
+    "Audit",
+    "Cartoon",
+    "Lava"
   ],
   "ja": [
     " ({slot0})",
@@ -604,7 +613,10 @@
     "✕",
     "＋",
     "V",
-    "{count} {status}"
+    "{count} {status}",
+    "Expansion",
+    "Lava",
+    "Mineral"
   ],
   "ru": [
     " ({slot0})",
@@ -787,7 +799,8 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "{count} {status}"
+    "{count} {status}",
+    "Metal"
   ],
   "uk": [
     " ({slot0})",
@@ -1151,7 +1164,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Audit"
   ],
   "pt-PT": [
     " · ",
@@ -1242,7 +1256,12 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Coral",
+    "Experimental",
+    "Lava",
+    "Metal",
+    "Mineral"
   ],
   "it": [
     " / {slot0}",
@@ -1338,7 +1357,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Lava"
   ],
   "zh-Hans": [
     " / {slot0}",
@@ -1530,7 +1550,11 @@
     "{count} {status}",
     "{slot0} · {count} image",
     "{slot0} · {count} images",
-    "{value0} {value1} attention"
+    "{value0} {value1} attention",
+    "Audit",
+    "Chrome",
+    "Expansion",
+    "Finances"
   ],
   "el": [
     " · ",
@@ -1724,7 +1748,13 @@
     "⠿ {slot0}",
     "＋",
     "{count} credit",
-    "{count} {status}"
+    "{count} {status}",
+    "Audit",
+    "Coral",
+    "Experimental",
+    "Metal",
+    "Mineral",
+    "Organic"
   ],
   "ca": [
     " (provisional)",
@@ -1825,7 +1855,11 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Experimental",
+    "Finances",
+    "Lava",
+    "Mineral"
   ],
   "pt-BR": [
     " · ",
@@ -1919,7 +1953,12 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Coral",
+    "Experimental",
+    "Lava",
+    "Metal",
+    "Mineral"
   ],
   "ko": [
     " ({slot0})",
@@ -2444,7 +2483,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Audit"
   ],
   "id": [
     " · ",
@@ -2555,7 +2595,10 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Audit",
+    "Lava",
+    "Mineral"
   ],
   "da": [
     " · ",
@@ -2699,7 +2742,10 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Lava",
+    "Metal",
+    "Mineral"
   ],
   "sv": [
     " ({slot0})",
@@ -2814,7 +2860,10 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Expansion",
+    "Lava",
+    "Mineral"
   ],
   "es": [
     " / {slot0}",
@@ -2906,7 +2955,12 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Coral",
+    "Experimental",
+    "Lava",
+    "Metal",
+    "Mineral"
   ],
   "ar": [
     " ({slot0})",
@@ -3344,7 +3398,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Lava"
   ],
   "ms": [
     " ({slot0})",
@@ -3439,6 +3494,9 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Audit",
+    "Lava",
+    "Mineral"
   ]
 }
