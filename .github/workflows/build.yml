@@ -808,7 +808,7 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.run_web_build == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 120
     env:
       CCACHE_DIR: /tmp/glob2-wasm-ccache
       CCACHE_COMPILERCHECK: content
