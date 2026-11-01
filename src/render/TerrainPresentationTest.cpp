@@ -1705,10 +1705,17 @@ TEST_SUITE("TerrainValidation")
 			map.setResourceByIndex(x, y, WOOD, 3);
 		auto &gfx = *globals->gfx;
 		std::vector<RendererBackend> backends{RendererBackend::Software};
+		std::ofstream backendEvidence(glob2test::artifactDir() / "rendering-backends.txt");
+		REQUIRE(backendEvidence.good());
 		for (const auto &choice : gfx.rendererAvailability())
+		{
+			backendEvidence << rendererBackendName(choice.backend)
+							<< " available=" << choice.available << " reason=" << choice.reason
+							<< '\n';
 			if (choice.available && (choice.backend == RendererBackend::SDLGPU ||
 									 choice.backend == RendererBackend::ProgrammableGL))
 				backends.push_back(choice.backend);
+		}
 		if (backends.size() == 1)
 			MESSAGE("Decor GPU parity coverage unavailable: no accelerated backend");
 		const auto draw = [&](const SceneMap &scene, bool whole, int zoom, int viewport)
@@ -1733,12 +1740,15 @@ TEST_SUITE("TerrainValidation")
 			for (int row = 0; row < rgba->h; ++row)
 				std::memcpy(pixels.data() + size_t(row) * rgba->w * 4,
 							static_cast<Uint8 *>(rgba->pixels) + row * rgba->pitch, rgba->w * 4);
-			if (whole && gfx.backendSwitchStatus().active == RendererBackend::Software)
-				REQUIRE(IMG_SavePNG(rgba.get(),
-									(glob2test::artifactDir() /
-									 ("decorated-borders-" + std::to_string(zoom) + "x.png"))
-										.string()
-										.c_str()));
+			if (whole)
+				REQUIRE(IMG_SavePNG(
+					rgba.get(),
+					(glob2test::artifactDir() /
+					 ("decorated-borders-" +
+					  std::string(rendererBackendName(gfx.backendSwitchStatus().active)) + "-" +
+					  std::to_string(zoom) + "x-view" + std::to_string(viewport) + ".png"))
+						.string()
+						.c_str()));
 			gfx.nextFrame();
 			return pixels;
 		};
@@ -1750,6 +1760,10 @@ TEST_SUITE("TerrainValidation")
 			REQUIRE(gfx.requestBackendSwitch(backend));
 			gfx.nextFrame();
 			REQUIRE(gfx.backendSwitchStatus().phase == RendererSwitchPhase::Complete);
+			REQUIRE(gfx.backendSwitchStatus().active == backend);
+			const auto identity = gfx.renderingIdentity();
+			backendEvidence << "tested=" << identity.backend << " glVendor=" << identity.glVendor
+							<< " glRenderer=" << identity.glRenderer << '\n';
 			for (const auto [zoom, viewport] : {std::pair{1, 0}, std::pair{1, 15}, std::pair{3, 3}})
 			{
 				CAPTURE(zoom);
@@ -1767,6 +1781,8 @@ TEST_SUITE("TerrainValidation")
 			map.setVertexTerrain(5, 5, OUTCROP);
 			glob2test::observeMap(map, scene);
 		}
+		backendEvidence.flush();
+		REQUIRE(backendEvidence.good());
 	}
 
 	TEST_CASE("decorated borders choose one material and suppress undecorated corners [display]")
