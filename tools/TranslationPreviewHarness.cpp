@@ -30,7 +30,10 @@
 #include <SDL3_net/SDL_net.h>
 #include <nlohmann/json.hpp>
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <cstring>
+#include <set>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -69,6 +72,13 @@ struct TranslationPreviewAccess
         return gui.inGameMenu == GameGUI::IGM_STATISTICS && gui.activeDialog();
     }
     static GAGGUI::ui::UIDialog *dialog(GameGUI &gui) { return gui.activeDialog(); }
+    static std::set<int> &highlights(GameGUI &gui) { return gui.highlights; }
+    static int modalProbeHighlight() { return GameGUI::HighlightRightSidePanel; }
+    static std::vector<std::array<int, 3>> highlightArrows(const GameGUI &gui) {
+        std::vector<std::array<int, 3>> result;
+        for (const auto &arrow : gui.arrowPositions) result.push_back({arrow.x, arrow.y, arrow.sprite});
+        return result;
+    }
     static void openMapOverlays(GameGUI &gui) {
         gui.clearSelection();
         gui.displayMode = GameGUI::STAT_GRAPH_VIEW;
@@ -567,6 +577,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             require(before == after, "Drawing must preserve simulation checksum");
             result["captures"].push_back({{"name", name}, {"checksum_before_draw", before},
                 {"checksum_after_draw", after}, {"image_width", image->w}, {"image_height", image->h}});
+            return image;
         };
 
         if (kind == "statistics") {
@@ -616,7 +627,86 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             // A tick-12 automatic briefing can cover the current lesson model.
             // Preserve that real opening state, then expose the actual guidance.
             const bool briefing = TranslationPreviewAccess::initialBriefingOpen(gui);
-            if (briefing) capture(captureKind + "-briefing");
+            if (briefing) {
+                auto baseline = capture(captureKind + "-briefing");
+                if (lesson == "swimming" && width == 800 && height == 600 &&
+                    !GAGCore::phonePresentationRequested()) {
+                    // Toggle one real legacy highlight without replacing the
+                    // tutorial model or its actual briefing. updateTutorial()
+                    // re-adds lesson highlights, but does not manage this ID.
+                    const auto before = gui.game.checkSum();
+                    const auto saved = TranslationPreviewAccess::highlights(gui);
+                    const int highlight = TranslationPreviewAccess::modalProbeHighlight();
+                    require(!saved.contains(highlight), "Modal probe highlight starts absent");
+                    const auto originalArrows = TranslationPreviewAccess::highlightArrows(gui);
+                    const auto panel = TranslationPreviewAccess::dialog(gui)->panelBounds();
+                    TranslationPreviewAccess::highlights(gui).insert(highlight);
+                    auto probe = capture(captureKind + "-briefing-highlight-probe");
+                    const auto probeArrows = TranslationPreviewAccess::highlightArrows(gui);
+                    TranslationPreviewAccess::highlights(gui) = saved;
+                    auto restored = capture(captureKind + "-briefing-highlight-restored");
+                    require(TranslationPreviewAccess::highlights(gui) == saved,
+                            "Modal probe restores original UI highlights");
+                    require(probeArrows.size() == originalArrows.size() + 1,
+                            "Modal probe adds one actual legacy arrow");
+                    std::array<int, 3> added{};
+                    unsigned addedCount = 0;
+                    for (const auto &arrow : probeArrows)
+                        if (std::find(originalArrows.begin(), originalArrows.end(), arrow) == originalArrows.end()) {
+                            added = arrow; ++addedCount;
+                        }
+                    require(addedCount == 1, "Modal probe identifies the added production arrow");
+                    const GAGGUI::ui::Rect arrow{added[0], added[1],
+                        globals.gamegui->getW(added[2]), globals.gamegui->getH(added[2])};
+                    require(panel.intersects(arrow), "Real legacy arrow intersects actual briefing panel");
+                    Surface first(SDL_ConvertSurface(baseline.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+                    Surface second(SDL_ConvertSurface(probe.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+                    Surface last(SDL_ConvertSurface(restored.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+                    require(bool(first) && bool(second) && bool(last), "Convert modal pixel comparisons");
+                    require(first->w == second->w && first->h == second->h &&
+                            first->w == last->w && first->h == last->h, "Stable modal screenshot dimensions");
+                    const double scaleX = double(first->w) / globals.gfx->getW();
+                    const double scaleY = double(first->h) / globals.gfx->getH();
+                    const int left = std::clamp(int(std::ceil((panel.x + 2) * scaleX)), 0, first->w);
+                    const int top = std::clamp(int(std::ceil((panel.y + 2) * scaleY)), 0, first->h);
+                    const int right = std::clamp(int(std::floor((panel.right() - 2) * scaleX)), left, first->w);
+                    const int bottom = std::clamp(int(std::floor((panel.bottom() - 2) * scaleY)), top, first->h);
+                    require(right > left && bottom > top, "Nonempty actual modal interior ROI");
+                    require(SDL_LockSurface(first.get()) && SDL_LockSurface(second.get()) &&
+                            SDL_LockSurface(last.get()), "Lock modal pixel comparisons");
+                    size_t differing = 0, restorationDifferences = 0;
+                    Online::Sha256 baselineHash, probeHash, restoredHash;
+                    for (int y = top; y < bottom; ++y) {
+                        const auto *a = static_cast<const Uint8 *>(first->pixels) + y * first->pitch + left * 4;
+                        const auto *b = static_cast<const Uint8 *>(second->pixels) + y * second->pitch + left * 4;
+                        const auto *c = static_cast<const Uint8 *>(last->pixels) + y * last->pitch + left * 4;
+                        baselineHash.update(a, size_t(right - left) * 4);
+                        probeHash.update(b, size_t(right - left) * 4);
+                        restoredHash.update(c, size_t(right - left) * 4);
+                        for (int x = 0; x < right - left; ++x) {
+                            differing += std::memcmp(a + x * 4, b + x * 4, 4) != 0;
+                            restorationDifferences += std::memcmp(a + x * 4, c + x * 4, 4) != 0;
+                        }
+                    }
+                    SDL_UnlockSurface(first.get()); SDL_UnlockSurface(second.get()); SDL_UnlockSurface(last.get());
+                    require(before == gui.game.checkSum(), "Modal pixel probe preserves simulation checksum");
+                    result["modal_highlight_comparison"] = {
+                        {"panel", {panel.x, panel.y, panel.w, panel.h}},
+                        {"roi_pixels", {left, top, right - left, bottom - top}},
+                        {"added_actual_arrow", {arrow.x, arrow.y, arrow.w, arrow.h}},
+                        {"baseline_arrow_count", originalArrows.size()}, {"probe_arrow_count", probeArrows.size()},
+                        {"differing_pixels", differing}, {"restoration_differing_pixels", restorationDifferences},
+                        {"baseline_roi_sha256", Online::Sha256::toHex(baselineHash.finish())},
+                        {"probe_roi_sha256", Online::Sha256::toHex(probeHash.finish())},
+                        {"restored_roi_sha256", Online::Sha256::toHex(restoredHash.finish())},
+                        {"checksum_before", before}, {"checksum_after", gui.game.checkSum()}};
+                    // Preserve actual failing pixels and measurements before
+                    // reporting the regression, including on the unfixed code.
+                    writeJson(output / (captureKind + ".json"), result);
+                    require(differing == 0 && restorationDifferences == 0,
+                            "Modal briefing pixels must be independent of legacy highlights");
+                }
+            }
             const auto before = gui.game.checkSum();
             if (briefing) TranslationPreviewAccess::closeMenu(gui);
             require(!TranslationPreviewAccess::dialogOpen(gui), "Tutorial guidance capture must be dialog-free");

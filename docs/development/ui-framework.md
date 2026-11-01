@@ -302,6 +302,10 @@ presentation navigation and preserve the simulation checksum while drawing.
 Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
+Legacy tutorial highlight arrows wait while a modal is open, then resume after
+dismissal so they cannot cover briefing text. The desktop `tutorial:swimming`
+preview at 800×600 also toggles a real highlight and compares the actual modal's
+pixels before, during and after the probe, preserving the simulation checksum.
 The gameplay preview also captures the win-probability statistics screen and its
 metric explanation, checking that drawing leaves the simulation checksum intact.
 A published tutorial model alone does not prove that its text is visible. Inputs are

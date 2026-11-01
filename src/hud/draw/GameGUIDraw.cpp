@@ -920,11 +920,13 @@ void GameGUI::drawAll(int team)
 	if (scrollableText)
 		drawInGameScrollableText();
 
-	// draw the highlight arrows
-	for(int i=0; i<(int)arrowPositions.size(); ++i)
+	// Modal text must remain above the legacy tutorial highlight arrows.
+	if (!activeDialog())
 	{
-		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
-
+		for(int i=0; i<(int)arrowPositions.size(); ++i)
+		{
+			globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
+		}
 	}
     if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
     if (!activeDialog()) Tutorial::drawDestination(*this);
