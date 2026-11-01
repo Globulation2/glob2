@@ -598,6 +598,9 @@ TEST_CASE("archived SGSL save retains embedded source and continuation" * doctes
         REQUIRE(baseline.game.checkSum()==restored.game.checkSum());
         trace<<baseline.game.stepCounter<<" "<<baseline.game.checkSum()<<"\n";
     }
+    // Windows requires the writer to release the file before it can be renamed.
+    trace.close();
+    REQUIRE(trace.good());
     std::filesystem::rename(glob2test::artifactDir()/"introduction.trace",glob2test::artifactDir()/"legacy-campaign.trace");
 }
 
