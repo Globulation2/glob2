@@ -1,0 +1,1711 @@
+{
+  "archive": "filipino-native-validation.tar.gz",
+  "archive_bytes": 43790924,
+  "archive_sha256": "81b2dd37f51e5404a15a61dd78c80bbe25fa2dd0c085bcf64b62a022092fcfbb",
+  "archive_limit_bytes": 62914560,
+  "kit_relative_paths": true,
+  "authority": {
+    "visual/native-review.json": "6054f2d63565310d2e9b37e02e275a0bd92eeb221fd4713ce7c031b53e5d7070",
+    "adversary/review.json": "c79e789286f61d14fc8aa64d46fa178cb52812c33122a3315f04881772fbc8e5",
+    "adversary/compact-labels-final.json": "faff3473eb6299505221a392f76d8428e09d99effae73b9ce94f919eaf5bbb16"
+  },
+  "source_final": "22be432380b0fd45a1883530ecccb46261d28c32",
+  "historical_source": "091b6ef5120fc0d6aa37ac9570e2cc61c9f878c2",
+  "native_catalog_sha256": "8dcf24182cd5c711f2df1ebbca435cfde2d38a78c038b447de309fd63666b57d",
+  "online_catalog_sha256": "99ed554f753390682d437318e20ed9d7ddbd54fbe2c798df41b42d4fb3fb2446",
+  "real_screen_png_count": 87,
+  "matrix_png_included": 7,
+  "matrix_png_omitted": 3565,
+  "complete_matrix_json": [
+    "rendering/native-final/phone-full-matrix/font-matrix.json",
+    "rendering/native-fixed/phone-full-matrix/font-matrix.json"
+  ],
+  "entries": [
+    {
+      "path": "adversary/compact-labels-final.json",
+      "bytes": 1831,
+      "sha256": "faff3473eb6299505221a392f76d8428e09d99effae73b9ce94f919eaf5bbb16"
+    },
+    {
+      "path": "adversary/review.json",
+      "bytes": 756767,
+      "sha256": "c79e789286f61d14fc8aa64d46fa178cb52812c33122a3315f04881772fbc8e5"
+    },
+    {
+      "path": "author/compact-labels/author-delta.json",
+      "bytes": 257241,
+      "sha256": "beda8a88afa43f5281f65d121bed22e6d9de75fa31c16dfa61b1b251abd5465e"
+    },
+    {
+      "path": "author/compact-labels/metadata-before.json",
+      "bytes": 633,
+      "sha256": "7d9259293786e0938bba574369efd80b32cc73382ff9b830449c28e76271508f"
+    },
+    {
+      "path": "author/compact-labels/native-after.txt",
+      "bytes": 229270,
+      "sha256": "8dcf24182cd5c711f2df1ebbca435cfde2d38a78c038b447de309fd63666b57d"
+    },
+    {
+      "path": "author/compact-labels/native-before.json",
+      "bytes": 256532,
+      "sha256": "e036ef3230b57b8b2333793d63c399f85086bfa9342baf0cca1a647e9a978384"
+    },
+    {
+      "path": "author/compact-labels/native-before.txt",
+      "bytes": 229277,
+      "sha256": "5c86dff4c8e9fb03c89bae1185740767dfc56959003e55e81c3bb84479531f61"
+    },
+    {
+      "path": "author/compact-labels/official-before.json",
+      "bytes": 1440887,
+      "sha256": "6b73e1f38291d7fd9856c26136e4782e18ce9ad689779784e7b270937ba25bb0"
+    },
+    {
+      "path": "author/compact-labels/online-before.json",
+      "bytes": 221231,
+      "sha256": "99ed554f753390682d437318e20ed9d7ddbd54fbe2c798df41b42d4fb3fb2446"
+    },
+    {
+      "path": "author/compact-labels/provenance-before.json",
+      "bytes": 328328,
+      "sha256": "d9baba57254350cc78fff9847b21f5a40cbc22e4cd13d80bec1e605b517db0aa"
+    },
+    {
+      "path": "drafts/fil/metadata.json",
+      "bytes": 633,
+      "sha256": "adfeaaa5105d72df7c1fbfd12a50e190ce7869b481b59a58c26e3cf36d9e24ae"
+    },
+    {
+      "path": "drafts/fil/native.json",
+      "bytes": 256525,
+      "sha256": "f42dd9bd4731c73a179fb3a9e09b10ec2912170b8c7107b7fac991e2cb08dfe5"
+    },
+    {
+      "path": "drafts/fil/online.json",
+      "bytes": 221231,
+      "sha256": "99ed554f753390682d437318e20ed9d7ddbd54fbe2c798df41b42d4fb3fb2446"
+    },
+    {
+      "path": "editor/native-adversarial-delta.json",
+      "bytes": 7708,
+      "sha256": "21c386ddffb1e200f842cf055d3940afbcd9acc592ea1c01e28849803d9d020a"
+    },
+    {
+      "path": "editor/native-after-adversary.txt",
+      "bytes": 229277,
+      "sha256": "5c86dff4c8e9fb03c89bae1185740767dfc56959003e55e81c3bb84479531f61"
+    },
+    {
+      "path": "editor/native-editor.txt",
+      "bytes": 229280,
+      "sha256": "81270c25c5370d2b59e97600366e4e0e1e8eb29cfe464aaea02ae5e0854e6765"
+    },
+    {
+      "path": "editor/online-final.json",
+      "bytes": 221231,
+      "sha256": "99ed554f753390682d437318e20ed9d7ddbd54fbe2c798df41b42d4fb3fb2446"
+    },
+    {
+      "path": "font-coverage.log",
+      "bytes": 98,
+      "sha256": "ab600259b44e69c8e050f295917d207cab20850b9cfe3dce94ec9814c8041504"
+    },
+    {
+      "path": "linguistic/compact-labels-editor-final.json",
+      "bytes": 3118,
+      "sha256": "f2d9c7c5d9c5200e6c5715839afccf8cfd9d513f6e033b97b67a7f844be4eafe"
+    },
+    {
+      "path": "linguistic/compact-labels-meaning-final.json",
+      "bytes": 150550,
+      "sha256": "1c9f61b92550fd67cdcff997d7ed1446cde4e936dc5e098c89cf0908e0a60402"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 284523,
+      "sha256": "2d81de104e9b2c040525519d286af8bb21dab083d8c720b455c0a1efc0a5ccb8"
+    },
+    {
+      "path": "native-final-font-coverage.log",
+      "bytes": 98,
+      "sha256": "90f9afd77cc00bddac0f14ba1cfdbaba6363a204a827f8ed32cddf56ef149549"
+    },
+    {
+      "path": "native-final-strict.log",
+      "bytes": 3161,
+      "sha256": "f4e66cb8ccb86ec5e90b587ace54b1049f2bfec8775e2d0f6bec559e46edcc27"
+    },
+    {
+      "path": "native-final-translations-tests.log",
+      "bytes": 107,
+      "sha256": "35709f17d124b43d84e18fd34a1d7d2ebdb302eff34ea17848ff9a9a30822a78"
+    },
+    {
+      "path": "native-width-fixed-build.log",
+      "bytes": 157053,
+      "sha256": "4f59e59d547d2d78d5ca1562abf122f95a85e0a62d4038d7609c8ed006aef0c6"
+    },
+    {
+      "path": "native-width-fixed-focused.log",
+      "bytes": 1589,
+      "sha256": "974b9e42dcb80cd869a6d924437274bbe3bae63a24add9ad87d427d30d65e606"
+    },
+    {
+      "path": "native-width-fixed-junit.xml",
+      "bytes": 2405,
+      "sha256": "887abfe709608ec3d9d9655fe24a201ab99cad7fad047fcf7f67ca5afb5b2648"
+    },
+    {
+      "path": "native-width-fixed-results.json",
+      "bytes": 1119,
+      "sha256": "4b0964e8533b979c226b6c741a9b11ce735e95567a75d3a247df73a9d00e6e5e"
+    },
+    {
+      "path": "published/README-native.md",
+      "bytes": 3479,
+      "sha256": "422a2f2a68c598b2f9ec371a54c69df127aec5dd803b1d4cb7709cb565d706b6"
+    },
+    {
+      "path": "published/native-omitted-matrix-pngs.json",
+      "bytes": 823476,
+      "sha256": "ff1f1e89566d808465aa0eaf393e3e0fb691a4973e88c2fe83d98b1d1253e3b0"
+    },
+    {
+      "path": "rendering/audit_native.py",
+      "bytes": 3563,
+      "sha256": "addfd68774e2c25008d314c0a6d04089257fc60ba8b44cd4acc6643b973ce20c"
+    },
+    {
+      "path": "rendering/audit_native_combined.py",
+      "bytes": 6256,
+      "sha256": "5344775684f5a2d8eebcae227d978dfed224430b199614a13fbd3c7eeef28593"
+    },
+    {
+      "path": "rendering/audit_native_fixed.py",
+      "bytes": 6953,
+      "sha256": "22cfda949807c5f60a9cf46a02775497a9618dd92e0dcdcc08ce5714f40731b5"
+    },
+    {
+      "path": "rendering/binary-derivation-fil-width.json",
+      "bytes": 2071,
+      "sha256": "14b86f97aa74ad41972d8e77d05c49ba9e69e911d9f4910f7bd97089e48af7ec"
+    },
+    {
+      "path": "rendering/binary-derivation.json",
+      "bytes": 874,
+      "sha256": "63c1788b770e9b8fc27d55bb487b0738e8c9396fd47ed19823d8a114033c60fc"
+    },
+    {
+      "path": "rendering/capture_native.py",
+      "bytes": 8201,
+      "sha256": "e8bcb7c5a668534e5148dec0e117f98620cc1c7ccaf2cd172586c32cc432a56f"
+    },
+    {
+      "path": "rendering/capture_native_final.py",
+      "bytes": 8716,
+      "sha256": "b1be698eaa3585b21626582b13b9e70928f62d39d57cb0c70ac24692946deab0"
+    },
+    {
+      "path": "rendering/capture_native_fixed.py",
+      "bytes": 7823,
+      "sha256": "2c21c8cc39bb0847bfe8e6e809d0a50912b26a17838c436b0bb130874a026ae3"
+    },
+    {
+      "path": "rendering/compare_native_width.py",
+      "bytes": 3040,
+      "sha256": "1aaa84e11bd3bf3d1e96e0a4ac2c119f099616cf263bea7665e8d6e780ddfb08"
+    },
+    {
+      "path": "rendering/derive-fixed-retry.log",
+      "bytes": 88,
+      "sha256": "74ebccebe908c9b2c4632547c1b8c43bf19d33cf19e25635d0f9614c5fdf73fe"
+    },
+    {
+      "path": "rendering/derive-fixed.log",
+      "bytes": 1136,
+      "sha256": "219890e0f8e8e93b2d7d582ad29523ff9ffdbe434b3d1727c908ec43af53e13c"
+    },
+    {
+      "path": "rendering/derive_fixed.py",
+      "bytes": 2185,
+      "sha256": "6746ea37f7b4186476437ac1f4c282b3611ac9000c3b1f339d2289aaea66caea"
+    },
+    {
+      "path": "rendering/hold_matrix.py",
+      "bytes": 1340,
+      "sha256": "76da9b6f8a2cdb9b7f7ae70328fb59f7f948ecf9869916a1be0a9f4ce76846e7"
+    },
+    {
+      "path": "rendering/matrix-hold-runner.log",
+      "bytes": 43,
+      "sha256": "eeec2d89366f22b39cdb8367d1baa217455e7d6aa8b8824b9edae6d53d863ba4"
+    },
+    {
+      "path": "rendering/matrix-hold.json",
+      "bytes": 300,
+      "sha256": "4d10e84aed9b7e63696877ff85dd9181d2320f5f9b227c16090614aa66c09672"
+    },
+    {
+      "path": "rendering/native/capture-manifest.json",
+      "bytes": 34347,
+      "sha256": "69fe5517b0a7e96d91af927153e2cf266940ff07e0b516f2b635b9029434f955"
+    },
+    {
+      "path": "rendering/native/desktop-gameplay/draft-list.txt",
+      "bytes": 2354,
+      "sha256": "cad79af6d73f93d6de829b6cd1dc51971a014a96d0f37df3e807942c041788f8"
+    },
+    {
+      "path": "rendering/native/desktop-gameplay/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-gameplay/gameplay-dialog.png",
+      "bytes": 454811,
+      "sha256": "6f29a95e52596e569e6e5d218bb33e46ca1cea648e32b996757d6ef4c0fc7c4b"
+    },
+    {
+      "path": "rendering/native/desktop-gameplay/gameplay-zoom-fit.png",
+      "bytes": 63387,
+      "sha256": "dd26c6f4dd5bff2804bb3d281893fa4a0e8765ef293265b657f2ce6e43ef3675"
+    },
+    {
+      "path": "rendering/native/desktop-gameplay/gameplay-zoom-plus.png",
+      "bytes": 653914,
+      "sha256": "c2c3298a72416922aad2b9bcc03357ac337fd7873ea6210c2c72f444556c2170"
+    },
+    {
+      "path": "rendering/native/desktop-gameplay/gameplay.json",
+      "bytes": 13187,
+      "sha256": "33dc8d4260a3ea6bc85c4e762b00579e757a8be1b833c6247851f6c28baf5658"
+    },
+    {
+      "path": "rendering/native/desktop-gameplay/gameplay.png",
+      "bytes": 601499,
+      "sha256": "68471d4d66e73b1b71c26f70b21552130b18601745077db6cb1e8d41b49d4864"
+    },
+    {
+      "path": "rendering/native/desktop-gameplay/process.log.gz",
+      "bytes": 149,
+      "sha256": "fcf53afeb6608e7e071b1988ad1ddd54472c82697a406ebff8e61b480c681b69"
+    },
+    {
+      "path": "rendering/native/desktop-lobby/draft-list.txt",
+      "bytes": 2351,
+      "sha256": "96515ddede701c912a6d540706c58176c1761482b2a090b58581d18537e356da"
+    },
+    {
+      "path": "rendering/native/desktop-lobby/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-lobby/lobby.json",
+      "bytes": 13212,
+      "sha256": "b59c58b6f8a83359d570209ae8d977c3788f67a25054cbe4b6ef76bb606a5697"
+    },
+    {
+      "path": "rendering/native/desktop-lobby/lobby.png",
+      "bytes": 232038,
+      "sha256": "d5379a6f32bee1803facbfed3644ec07f93020d8c9ab0981c75ea4170d01fb97"
+    },
+    {
+      "path": "rendering/native/desktop-lobby/process.log.gz",
+      "bytes": 92,
+      "sha256": "73639f675fd3504f7d4567ddb7985dec6a88248e45631c779a01daba0827632a"
+    },
+    {
+      "path": "rendering/native/desktop-lobby-players/draft-list.txt",
+      "bytes": 2359,
+      "sha256": "8dd47f7e693b6c909b5729e00c451342c181a45f41891947e22840178d408bff"
+    },
+    {
+      "path": "rendering/native/desktop-lobby-players/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-lobby-players/lobby-players.json",
+      "bytes": 13506,
+      "sha256": "711f21d3e255077d1a6678abcb6de0b1fd747c0e24b00edd94fb61e0a3aabc3a"
+    },
+    {
+      "path": "rendering/native/desktop-lobby-players/lobby-players.png",
+      "bytes": 237531,
+      "sha256": "caa3e33dfbee4d2927b964cb62f75f9718543e8af19556a690d3bfa165e41a5a"
+    },
+    {
+      "path": "rendering/native/desktop-lobby-players/process.log.gz",
+      "bytes": 92,
+      "sha256": "28b5143387d184e92bd836820d4838fa52f129412f7e85b28bfe79c71b59bf01"
+    },
+    {
+      "path": "rendering/native/desktop-main/draft-list.txt",
+      "bytes": 2350,
+      "sha256": "8aabaa43925a9f1e19429d8836b4ba2eaa6d502a20a9f5f989bef22f9de25979"
+    },
+    {
+      "path": "rendering/native/desktop-main/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-main/main.json",
+      "bytes": 12134,
+      "sha256": "054fc9ecffaac60257fa80da843c91909be35ddde889358cb8af283b2a8ecff0"
+    },
+    {
+      "path": "rendering/native/desktop-main/main.png",
+      "bytes": 1251372,
+      "sha256": "f87437e966ea5355610174ed16529a93b79b38fecda5b529d482b4d46e58cc8c"
+    },
+    {
+      "path": "rendering/native/desktop-main/process.log.gz",
+      "bytes": 92,
+      "sha256": "5f519649b0192f880201a911350eac8bd232702716dfea67b24d71f5a17ca7e9"
+    },
+    {
+      "path": "rendering/native/desktop-settings/draft-list.txt",
+      "bytes": 2354,
+      "sha256": "7c9350b3df83b41e0e34a9906df661975ec38f5c475d47c522e6961778b48e02"
+    },
+    {
+      "path": "rendering/native/desktop-settings/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-settings/process.log.gz",
+      "bytes": 92,
+      "sha256": "c1b153fe5b101fdad5423eb2967ce4687118d625a7ba7fb73f059db6beab5695"
+    },
+    {
+      "path": "rendering/native/desktop-settings/settings.json",
+      "bytes": 15829,
+      "sha256": "b41830bcb1183480e39e5b2abf0474d44dcf80f78a357efd8112d1de38dd1ffe"
+    },
+    {
+      "path": "rendering/native/desktop-settings/settings.png",
+      "bytes": 667598,
+      "sha256": "f27446d6e36ff7a4aa33d2abd842b04d66ddd4980fc3a0fa470f6b8bee09055b"
+    },
+    {
+      "path": "rendering/native/desktop-settings-audio/draft-list.txt",
+      "bytes": 2360,
+      "sha256": "93aa00587e4f004e1689c2309b822acf6573ac1c7daec078cb8bc3de98b740d9"
+    },
+    {
+      "path": "rendering/native/desktop-settings-audio/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-settings-audio/process.log.gz",
+      "bytes": 92,
+      "sha256": "4544b91b3546940111f51d897fb7c81ddd146167634566c9cd253524bd4c08cf"
+    },
+    {
+      "path": "rendering/native/desktop-settings-audio/settings-audio.json",
+      "bytes": 13128,
+      "sha256": "ada0399ede81b0aae2923312971e3a4c6be9012295d01c1de10e15e42c983b16"
+    },
+    {
+      "path": "rendering/native/desktop-settings-audio/settings-audio.png",
+      "bytes": 637272,
+      "sha256": "4277ef0a6609dcd912eadc5dd699d2875a557a270bd664677248ec5761f7706d"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:defensive-tactics/draft-list.txt",
+      "bytes": 2372,
+      "sha256": "86861b2ac4a3454004761ac5c781841916447454172ac7daad08e5857da25651"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:defensive-tactics/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:defensive-tactics/process.log.gz",
+      "bytes": 149,
+      "sha256": "e970854b3447c7a40f98bc08a36c7c0aafaec59148be6480783a0d22e9aee1a8"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:defensive-tactics/tutorial-defensive-tactics-dialog.png",
+      "bytes": 485319,
+      "sha256": "09f4ff2df1100184d462baf9726aa513e69360c626fa8b6419853c06c8b8873f"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:defensive-tactics/tutorial-defensive-tactics.json",
+      "bytes": 12752,
+      "sha256": "740f3d5eee57dcd0cd7985bac6024d5373d70f897d24f55d7dc1f0e90b42b506"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:defensive-tactics/tutorial-defensive-tactics.png",
+      "bytes": 853802,
+      "sha256": "b11dbb6183506568c5a44edaa2b47dc708448d8e63669865fd49d9ffe1f0ef6b"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:food-supply/draft-list.txt",
+      "bytes": 2366,
+      "sha256": "d33795ba9cc760a8fb3a699c9e8f89515a6fc061f00f4e27c2732ce2b112cc04"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:food-supply/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:food-supply/process.log.gz",
+      "bytes": 149,
+      "sha256": "f3f009ea4411efae961b820da6a8dd6302976f8d49b3917bc582789e48c0a611"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:food-supply/tutorial-food-supply-briefing.png",
+      "bytes": 785102,
+      "sha256": "36a14ba1b210eeae71a7224ddc40c545e0aff63dc2789c0970b097517db5502f"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:food-supply/tutorial-food-supply-dialog.png",
+      "bytes": 479470,
+      "sha256": "c901043ba220b87ea4b07152c269cf8f9f64ce7e6783e03a99be6eaab9b61da2"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:food-supply/tutorial-food-supply.json",
+      "bytes": 12875,
+      "sha256": "9d3bfbfdb36b89c854f6ac5034c1e38fd0852f9b6bb206abeef644de2ca6e79a"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:food-supply/tutorial-food-supply.png",
+      "bytes": 855210,
+      "sha256": "a3958e97f10a972284f0ed3a0cb9e60964393ae470471883236444accbcac2ab"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:fortifications/draft-list.txt",
+      "bytes": 2369,
+      "sha256": "15a81e23b0544c5b323b48aaa96a389562b28c42421078266df9f946feccaab8"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:fortifications/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:fortifications/process.log.gz",
+      "bytes": 149,
+      "sha256": "4062c78c2a32a770df9933bef7a8287616b4a49b1c52b245102533b61445a514"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:fortifications/tutorial-fortifications-dialog.png",
+      "bytes": 485127,
+      "sha256": "c13374d883d9ac108af0a3f481efcf2f2d5f9b6a9006e83b2baae90e8ed890a8"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:fortifications/tutorial-fortifications.json",
+      "bytes": 12731,
+      "sha256": "f7efa9545c93881da62be4ae1d0697bcbfa43a3efa6ea4aadf9a4aa376076ab4"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:fortifications/tutorial-fortifications.png",
+      "bytes": 859228,
+      "sha256": "3040f0b03baa3e80b9896813b556cbd95d2611cf7a9227a804bd7d27351e9a4c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:healing/draft-list.txt",
+      "bytes": 2362,
+      "sha256": "138be24599e858372da810fdc0127eec3e04051cde3cb1b1baf08cf9359ff7c8"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:healing/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:healing/process.log.gz",
+      "bytes": 149,
+      "sha256": "1b6819c2fd606bf9238c79b849e10c967aaebbd619e31bab08cd5111dd39f4f9"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:healing/tutorial-healing-briefing.png",
+      "bytes": 793901,
+      "sha256": "71fbf02477248c8da1ae92b3f055c7aaa56586f374230967fabd5a04b1e841f5"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:healing/tutorial-healing-dialog.png",
+      "bytes": 479969,
+      "sha256": "df3c52acae80b0294979d02a7279e668a4965b3eeb9c72c6e16f1a3a867002c8"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:healing/tutorial-healing.json",
+      "bytes": 12875,
+      "sha256": "08a343696ec9b56297343a42a37dc90c9f6b37df9c1fee4441efdd01e3b7ad96"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:healing/tutorial-healing.png",
+      "bytes": 842510,
+      "sha256": "dec53d6bf0e51c12595703ab633da29b32c33fb4ab34d6e92b77f815109c9a8d"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:introduction/draft-list.txt",
+      "bytes": 2367,
+      "sha256": "2798d2fa8df0f8680192c0d57432891024ced02097af0ee41b4e86117234e022"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:introduction/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:introduction/process.log.gz",
+      "bytes": 149,
+      "sha256": "e224b27bdc8e3ab46387ef044e0bc2ba1f80b7bebb41db677627221848274ab1"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:introduction/tutorial-introduction-dialog.png",
+      "bytes": 478229,
+      "sha256": "dbdb273537e75dff4d5548813a6fc6c6d416e570ae9122589d6d0c0e7a27b425"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:introduction/tutorial-introduction.json",
+      "bytes": 12689,
+      "sha256": "0dcc2e9624171958a12522ac8805909cdc947c8aec3090c2f9fbcce22960d071"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:introduction/tutorial-introduction.png",
+      "bytes": 858877,
+      "sha256": "7b119934f6e684808a498fa6bced0ed12de0c6cf32d1f049fa59a424574d970b"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:schools/draft-list.txt",
+      "bytes": 2362,
+      "sha256": "bec8d0c898485a4c10d0cc3e682bd52d442a041f996a018de4baf64062d5e787"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:schools/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:schools/process.log.gz",
+      "bytes": 149,
+      "sha256": "ee340fc47212215a1c062a6475faa02b72f3a5c0666656f6a0e4dd61882453de"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:schools/tutorial-schools-briefing.png",
+      "bytes": 783442,
+      "sha256": "2a79145d3cdfe6614c4159af261df05b29a849c739883a6602a5d9bfc8d96e63"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:schools/tutorial-schools-dialog.png",
+      "bytes": 481166,
+      "sha256": "e58c5946e24fc53a0d5fdb560896168df13c36f902edc6d346c8cb8ef4d05c77"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:schools/tutorial-schools.json",
+      "bytes": 12871,
+      "sha256": "20cdc7b61af8c07d7075451785bc07e3cc82ba806657ef2fc103217e54d4ce8d"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:schools/tutorial-schools.png",
+      "bytes": 844031,
+      "sha256": "503070b5e2f1146380bc39e39abd43233dd8a3df94b305ab6708cb16e864d795"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:swimming/draft-list.txt",
+      "bytes": 2363,
+      "sha256": "d90023553215f9c5cac92f59b3f8992c4e7e0267ec36809eef763e3d9183354b"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:swimming/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:swimming/process.log.gz",
+      "bytes": 149,
+      "sha256": "35c4979fe3c5ea89a4949858563eecfd94fb4fa0de8d30c7b588c5ac0d530f3b"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:swimming/tutorial-swimming-briefing.png",
+      "bytes": 796760,
+      "sha256": "f6c29b7ac254da24f9cda6466e2e0abeba1e37a0c3d35fb316ab5091fda0b18c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:swimming/tutorial-swimming-dialog.png",
+      "bytes": 483921,
+      "sha256": "8c893e882b2c2c7480da43b1efb1f6e760e1fa7845dc7d153d445ba46cdf4e1c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:swimming/tutorial-swimming.json",
+      "bytes": 12883,
+      "sha256": "ef187fd782624bf457650edeefc799be25dded523f3f8aea72b824ebdd6dffc6"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:swimming/tutorial-swimming.png",
+      "bytes": 847861,
+      "sha256": "6d36d73035f35ad9fc09c2cf116a9f6c5696b901726a995ceccdbcecc2870c19"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:upgrades/draft-list.txt",
+      "bytes": 2363,
+      "sha256": "bb55d7cea4165fb607115b239aea619784531b40aef22df358a59e6c0f6c7567"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:upgrades/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:upgrades/process.log.gz",
+      "bytes": 149,
+      "sha256": "01ed935831f7501031fd01ab74b793f46e89f4396e7f545b2bebc9b6bacc45b2"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:upgrades/tutorial-upgrades-dialog.png",
+      "bytes": 486014,
+      "sha256": "153083075d013ca485ca3e6f3101fc87b889cb8158652aff4b776cc15afb8105"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:upgrades/tutorial-upgrades.json",
+      "bytes": 12694,
+      "sha256": "f9110417389cfd4c6ee83b7fac85c51f6a74d91b936ca6c35f1de1d49b951efb"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:upgrades/tutorial-upgrades.png",
+      "bytes": 887768,
+      "sha256": "9dd0aa780ade31c02f0d1240de9b659ee2485d338ec25b4e75d74c439dd6ec76"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:walking-training/draft-list.txt",
+      "bytes": 2371,
+      "sha256": "2d14d1ec95f6f3f6cfd526cf063d525ce2b8b2679678aa61850086c8947eae2b"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:walking-training/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:walking-training/process.log.gz",
+      "bytes": 149,
+      "sha256": "dfaa5fe60c033b29c2dff439709b75e0bb989e287924fa57c71ee5017793bd53"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:walking-training/tutorial-walking-training-briefing.png",
+      "bytes": 808985,
+      "sha256": "9603a131a3a04fe1c44fe33785921110ea2bda9d3ab74bc2dd671e812e5cfa0b"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:walking-training/tutorial-walking-training-dialog.png",
+      "bytes": 483414,
+      "sha256": "5b6ae969fd14e179cdf27c80517ae05ce5d73429918a31163c7b98f599d8f3c4"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:walking-training/tutorial-walking-training.json",
+      "bytes": 12944,
+      "sha256": "1705f3d91e81bcf91fd1f3d8c994b528e35c89cdb636cc46a3c301898b89c98d"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:walking-training/tutorial-walking-training.png",
+      "bytes": 863224,
+      "sha256": "f4de1aba0540791534e3bc2b2a2c208836d73ea6a552d6a23c9210e7f4f94e06"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:warrior-training/draft-list.txt",
+      "bytes": 2371,
+      "sha256": "2f06106ff4a39524565d7f49691f84bee281a26c32b17158b1b3377502c685f7"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:warrior-training/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:warrior-training/process.log.gz",
+      "bytes": 149,
+      "sha256": "9e1c477560740342903938c591e7f6dbe5b85f00297503bdeaa437bc9643c9b9"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:warrior-training/tutorial-warrior-training-briefing.png",
+      "bytes": 790145,
+      "sha256": "c7b1bbded237797a9f5935e5039065f711dab17fdf5501c0dabacd6b6d3729de"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:warrior-training/tutorial-warrior-training-dialog.png",
+      "bytes": 478327,
+      "sha256": "02502b11e4e34a22e5836aaafc178d400381a4cab752dc6694264f017515ae86"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:warrior-training/tutorial-warrior-training.json",
+      "bytes": 12944,
+      "sha256": "108ca9a08dd09b44d3f12c53ad7da7305c08bbb594034bc05900e067906ac195"
+    },
+    {
+      "path": "rendering/native/desktop-tutorial:warrior-training/tutorial-warrior-training.png",
+      "bytes": 843503,
+      "sha256": "224e1a4a6dc6a730a5052f9b85beb75d78b3c66d9e7700a94c4594a873b8a38f"
+    },
+    {
+      "path": "rendering/native/phone-gameplay/draft-list.txt",
+      "bytes": 2352,
+      "sha256": "48a52d9ffd7650c6f0641156b4de70e48b4282921e229fe7c706b3756feb01a1"
+    },
+    {
+      "path": "rendering/native/phone-gameplay/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-gameplay/gameplay-dialog.png",
+      "bytes": 52599,
+      "sha256": "6084df32dae5c9abece4b7cc6d808eed8d79ce7b41df0bb96c1dc73bdf3c85a8"
+    },
+    {
+      "path": "rendering/native/phone-gameplay/gameplay.json",
+      "bytes": 12405,
+      "sha256": "80aeeafbf3529af854ecc976d4fb151ee898c6d3131d8f377bf83d94e5012db4"
+    },
+    {
+      "path": "rendering/native/phone-gameplay/gameplay.png",
+      "bytes": 199154,
+      "sha256": "b2b82bf4d2afaff8ca4bf0dc92873d03fadb1066f05966ccaeefe9d9010d0083"
+    },
+    {
+      "path": "rendering/native/phone-gameplay/process.log.gz",
+      "bytes": 149,
+      "sha256": "cd1c3ce60359f5f2502035d69d23ed3620cefa1a3d7175a540ed6bf801ee3b5d"
+    },
+    {
+      "path": "rendering/native/phone-lobby/draft-list.txt",
+      "bytes": 2349,
+      "sha256": "af015b713b8940cc6a56c3eb03119f6e8452bd4ed75f9df419060d0eaa2358af"
+    },
+    {
+      "path": "rendering/native/phone-lobby/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-lobby/lobby.json",
+      "bytes": 13214,
+      "sha256": "ea6542168f904f4055a373f431e7f55119ad465281460b112427dc32d321df7f"
+    },
+    {
+      "path": "rendering/native/phone-lobby/lobby.png",
+      "bytes": 43695,
+      "sha256": "024641764f6f40db983cbbdcf38deea392a0bd1bbfef523bb1b64ddc5be47466"
+    },
+    {
+      "path": "rendering/native/phone-lobby/process.log.gz",
+      "bytes": 92,
+      "sha256": "397e341d8e22355d62996ea5bfe9bc129981df34ad9f48a2408b711a2d8c2101"
+    },
+    {
+      "path": "rendering/native/phone-lobby-players/draft-list.txt",
+      "bytes": 2357,
+      "sha256": "527f9f6b0991c22be9075ff6dd6e2364bbe74de2a11565d4f1c5fd4cb77fd073"
+    },
+    {
+      "path": "rendering/native/phone-lobby-players/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-lobby-players/lobby-players.json",
+      "bytes": 13494,
+      "sha256": "67d0ecfa02470f3da5007a5da1207c52f1e9d2ed2e8665a4581c70e51f716d5e"
+    },
+    {
+      "path": "rendering/native/phone-lobby-players/lobby-players.png",
+      "bytes": 51495,
+      "sha256": "1bfd3453fd2dfe4316861fb8e7671ca5afc07b33f24b8ba4bdea5604b838e196"
+    },
+    {
+      "path": "rendering/native/phone-lobby-players/process.log.gz",
+      "bytes": 92,
+      "sha256": "c5232dafd0f11749e50f6a0687a2c31928f756e25d31340b19624c2748c56210"
+    },
+    {
+      "path": "rendering/native/phone-main/draft-list.txt",
+      "bytes": 2348,
+      "sha256": "97f6f49ad4676e7c8f36e8c60e82f0367f72db88ea6ab1c041694ab120a5b369"
+    },
+    {
+      "path": "rendering/native/phone-main/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-main/main.json",
+      "bytes": 11585,
+      "sha256": "4b61e75af2d4059bd5e4781b82b0de5713e7dbc897fd8a6c21f0844a8a384369"
+    },
+    {
+      "path": "rendering/native/phone-main/main.png",
+      "bytes": 346969,
+      "sha256": "025e103fe62d9e7c486b854d1b2359f1c61f5c7a1f20c66d2383e18cd66bfecc"
+    },
+    {
+      "path": "rendering/native/phone-main/process.log.gz",
+      "bytes": 92,
+      "sha256": "c4c8f0690e80aa66d1ca67faa5f55fba5fe2f9135c50308fb1b89151cd15ae58"
+    },
+    {
+      "path": "rendering/native/phone-settings/draft-list.txt",
+      "bytes": 2352,
+      "sha256": "3c017d5267b689f6579f913ed48303688acc9c4a674f852d653b7b4574b5cc2d"
+    },
+    {
+      "path": "rendering/native/phone-settings/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-settings/process.log.gz",
+      "bytes": 92,
+      "sha256": "b69b19ec35bbc8f885b7aefd04cd6e2d41d734f63ca2124cf7dc11b34888d5cc"
+    },
+    {
+      "path": "rendering/native/phone-settings/settings.json",
+      "bytes": 14471,
+      "sha256": "fb4b9d1bde7c5d680508bfc7b1221076755c1b701f4f563d8f1603437149957b"
+    },
+    {
+      "path": "rendering/native/phone-settings/settings.png",
+      "bytes": 67518,
+      "sha256": "febe34278dbed4cd2576821d07d97d85e9147502082b2e842c98c92c7eaad256"
+    },
+    {
+      "path": "rendering/native/phone-settings-audio/draft-list.txt",
+      "bytes": 2358,
+      "sha256": "6407bed48ebd2cae4204bc9a386200707bfbe526cbc8e428320d58e3d3c63d4d"
+    },
+    {
+      "path": "rendering/native/phone-settings-audio/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-settings-audio/process.log.gz",
+      "bytes": 92,
+      "sha256": "8b6c5707ff997c82a8e6221de503e1d5cc910324b32d51e5714646a380e4e84e"
+    },
+    {
+      "path": "rendering/native/phone-settings-audio/settings-audio.json",
+      "bytes": 11478,
+      "sha256": "b5f43cae28d397232ad017e2fe0eb89914d9e6c5dee5d69d051c62d2808b1d96"
+    },
+    {
+      "path": "rendering/native/phone-settings-audio/settings-audio.png",
+      "bytes": 40806,
+      "sha256": "e653fec9a655d86259bd9a11e7d2462e338e0304217fd7cea1a7336272ab882e"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:defensive-tactics/draft-list.txt",
+      "bytes": 2370,
+      "sha256": "dd3823177d36bd9aa3ddf242ee79581ae5a334eef12caa995820880aeb1c8ff1"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:defensive-tactics/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:defensive-tactics/process.log.gz",
+      "bytes": 149,
+      "sha256": "5bd317154cbefea694c7e3868a47c074010c38be6702c07656935278b29eb576"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:defensive-tactics/tutorial-defensive-tactics-dialog.png",
+      "bytes": 66746,
+      "sha256": "21e8774a398ff5effc41ae5a3c1ef336af4876a16af59e30142361aff2cbc372"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:defensive-tactics/tutorial-defensive-tactics.json",
+      "bytes": 12746,
+      "sha256": "e2854f65251bcd5edafbec74a8770b58c95c9bfd57ffc3a0bb07ee45b96f2ebf"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:defensive-tactics/tutorial-defensive-tactics.png",
+      "bytes": 275448,
+      "sha256": "60f6752e31b438cb7d3110b8e2d0fbd0d900ef9ad0c6e4dbbae093a12bb6c587"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:food-supply/draft-list.txt",
+      "bytes": 2364,
+      "sha256": "b44773d555ca0e1ec409f003871e2181234851cc5e28b82f824b0d57d73d8dfe"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:food-supply/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:food-supply/process.log.gz",
+      "bytes": 149,
+      "sha256": "a4ed1b8ce01f4867a0f040b674ad8101839de941f2448c6c24e5787ca47102aa"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:food-supply/tutorial-food-supply-briefing.png",
+      "bytes": 237675,
+      "sha256": "2ad35a035910b19c3fda8d96e9bbf2344624c83afffb869071e56ed8e6601363"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:food-supply/tutorial-food-supply-dialog.png",
+      "bytes": 65878,
+      "sha256": "323ed0e82203ccfed240d93d87a3cc60311a1fd4c4de9568b76b127c291716c6"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:food-supply/tutorial-food-supply.json",
+      "bytes": 12868,
+      "sha256": "0bbd1e23611ccfbf8b1851311615ad5f5e05d69d814f3b2e923def1593072b39"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:food-supply/tutorial-food-supply.png",
+      "bytes": 280073,
+      "sha256": "09985a1be66a1d55632eee3ca8374d6cc8628754b07c4a5ff64b7ae619e70145"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:fortifications/draft-list.txt",
+      "bytes": 2367,
+      "sha256": "125c9f9fb13eac6ea7989b50ffc19295a6081a86bab2a5ab4ab7ec4d4d736545"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:fortifications/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:fortifications/process.log.gz",
+      "bytes": 149,
+      "sha256": "2635f37d9933d30b4a7608772ac572e0dd1dbf9f6475b2b00913095d72d6988e"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:fortifications/tutorial-fortifications-briefing.png",
+      "bytes": 246198,
+      "sha256": "e8ee709e5d3a98139f828f4647e2331512aaf217ed535106670d7493f301d06d"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:fortifications/tutorial-fortifications-dialog.png",
+      "bytes": 66717,
+      "sha256": "5046c423322b04966e7a7f02b59e8d2792c717bb8a41a68b6dace984c3873d77"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:fortifications/tutorial-fortifications.json",
+      "bytes": 12922,
+      "sha256": "3cc32dd48d9c4ede95b0106b94901b741bdb1827b37b47585b4289c7c97e8691"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:fortifications/tutorial-fortifications.png",
+      "bytes": 281426,
+      "sha256": "6019e0ea4067cc8a37d7b71b729561513de5f378ed6eb96eac497beb28794846"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:healing/draft-list.txt",
+      "bytes": 2360,
+      "sha256": "ff0ddb4ab81bc229b7e67bd07aee712a39bfc930ebb65c5b684852b6df051269"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:healing/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:healing/process.log.gz",
+      "bytes": 149,
+      "sha256": "be3700c23bf9741c3c8a315c6ed11934e51fb609b0467e8d0014441365c29a71"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:healing/tutorial-healing-briefing.png",
+      "bytes": 241058,
+      "sha256": "ef5c766a6b544eb41d3490545d93cb28d577ec23e186df06101ca9579b1b339f"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:healing/tutorial-healing-dialog.png",
+      "bytes": 66659,
+      "sha256": "0fdd6b8dff576fd085e6e60fd2747d48bbdcf30fd658ac9d14c09bef4a00945f"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:healing/tutorial-healing.json",
+      "bytes": 12868,
+      "sha256": "292f297fc629f2721a6cb5906bc51585cc391816157851d9ed8308b73056f2ca"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:healing/tutorial-healing.png",
+      "bytes": 283090,
+      "sha256": "9e033f42307a2ef509dc404b31beb97eefaaa6b8672b5ac3850419522f33c782"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:introduction/draft-list.txt",
+      "bytes": 2365,
+      "sha256": "8e204a05a932f39e8cff9ef04d86c69a8aa4598bf3e29805c476fc5bb093f26b"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:introduction/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:introduction/process.log.gz",
+      "bytes": 149,
+      "sha256": "e3d6d782881fb07cd3dc9cae1ab914b2756129a7123419c2d058077bbab95af2"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:introduction/tutorial-introduction-briefing.png",
+      "bytes": 248369,
+      "sha256": "1b51656aedb377fd43af25b5d8ddee6bddd8f596ffc5ff3a55150e686c4f6132"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:introduction/tutorial-introduction-dialog.png",
+      "bytes": 67761,
+      "sha256": "50e0cc88288d7da6640e4ba8642d3f87fedbcc8b16d23f980b3d7c81af946c45"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:introduction/tutorial-introduction.json",
+      "bytes": 12878,
+      "sha256": "f15101e416596522c6dbdf2a93a251b1d8dbfacaff306ec95ccca937985d8c59"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:introduction/tutorial-introduction.png",
+      "bytes": 290231,
+      "sha256": "23e3dfc4a5a306cde53e882af02dd7f4b3457694f33d77bd1c03308c4eed76bb"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:schools/draft-list.txt",
+      "bytes": 2360,
+      "sha256": "3d1e30c2f897e9bf4eac781da2aef09067381a3ce4e22adb6d7c667a1ca747ed"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:schools/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:schools/process.log.gz",
+      "bytes": 149,
+      "sha256": "b52a576580cf2beff68dec28da33c50c5e0b5ff751c0eaa12e35913f3d7a4b34"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:schools/tutorial-schools-briefing.png",
+      "bytes": 241557,
+      "sha256": "231802e5e22a15bc36d929da3dc0a2294685d321b3299a8d95397a149d3b153a"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:schools/tutorial-schools-dialog.png",
+      "bytes": 68628,
+      "sha256": "738ff56362c29daf53c59fccabd7d27b8cf8ed1091a346ffad4a839e78b58f4e"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:schools/tutorial-schools.json",
+      "bytes": 12864,
+      "sha256": "873492724bce7a6db234bd5dc48640f739ba6bd26aee7f8cbe281d5ca3fd59f1"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:schools/tutorial-schools.png",
+      "bytes": 296418,
+      "sha256": "b543fb224613d653eb4d2d763550cd807384fc37864ad1e25911cce60770c1f0"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:swimming/draft-list.txt",
+      "bytes": 2361,
+      "sha256": "abe959d38307b310cea17067b8107e245c88f9d258cb1336ca0653d0edaf644f"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:swimming/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:swimming/process.log.gz",
+      "bytes": 149,
+      "sha256": "fb71fc0854992167e255bac2818cfd829228bd27f774a1200614b6f6217f3794"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:swimming/tutorial-swimming-dialog.png",
+      "bytes": 66696,
+      "sha256": "78be0b534ed553c8dc80c75bd95c998e3517113edf36363e0ea340acc4e41685"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:swimming/tutorial-swimming.json",
+      "bytes": 12685,
+      "sha256": "e6877468a159a28373f418a5045cbd64d0eaaf4f5474681f5cbbf64b77ae1e8f"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:swimming/tutorial-swimming.png",
+      "bytes": 285200,
+      "sha256": "aaea522fc571dc8e86f8ca5900916584bd5cdd7be35e66e381032e8c63c35123"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:upgrades/draft-list.txt",
+      "bytes": 2361,
+      "sha256": "820bb34b34cb94e2cc7ad24e98c3b3976f273bba19fd91986ab90481aff62527"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:upgrades/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:upgrades/process.log.gz",
+      "bytes": 149,
+      "sha256": "f73aff984ccd776db57692b842cf97c4853cc8b114a3a80180390c94036ab9be"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:upgrades/tutorial-upgrades-briefing.png",
+      "bytes": 238240,
+      "sha256": "ff230100ed6506d0cf65e6de1bf19873e864a28fa4768e0fba35e50b15add071"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:upgrades/tutorial-upgrades-dialog.png",
+      "bytes": 66316,
+      "sha256": "bcb9257abb9bae54f14b4d46871fe282b486286c3617740a3773b72a627659d8"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:upgrades/tutorial-upgrades.json",
+      "bytes": 12879,
+      "sha256": "ef90ee8d39acce655d6e17b80c9bc36dd9bc8b741d195f48f9e6dc9c3184067d"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:upgrades/tutorial-upgrades.png",
+      "bytes": 277932,
+      "sha256": "43483c093fd039eaa158c57885f6e6974427fdd32147b59427a32dfbe4df3892"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:walking-training/draft-list.txt",
+      "bytes": 2369,
+      "sha256": "79988d8973ae43dbb517d4d2720936547f542fbf6027eafa888abef7fbb86f2f"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:walking-training/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:walking-training/process.log.gz",
+      "bytes": 149,
+      "sha256": "2aaf1a52f1046f69ef9ba02082c0f794a8e971f9a8a850bc3c99928888ed3d5e"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:walking-training/tutorial-walking-training-dialog.png",
+      "bytes": 66702,
+      "sha256": "a2b20dde437ed05f8649f446bc0c59b37d2a08fdc3aedc5d638ff3e17add29c7"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:walking-training/tutorial-walking-training.json",
+      "bytes": 12738,
+      "sha256": "1f386fc1f40d216eb73540863caaf01ddca00f2521f023bbc2e254a9d22f06d4"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:walking-training/tutorial-walking-training.png",
+      "bytes": 282710,
+      "sha256": "1dbe056a44d534f2e0a2ebed6afbe72b6f285fcb6b73b0579b47c0ac20eb0839"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:warrior-training/draft-list.txt",
+      "bytes": 2369,
+      "sha256": "aa7dbfc93682dba1e93903337285f232478af06901b63b1166b077bbb27a7b60"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:warrior-training/draft-overlay.txt",
+      "bytes": 229277,
+      "sha256": "493f5be08dbd8a0845b8706988925aa4238e9840085c2c392688d139dd46803c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:warrior-training/process.log.gz",
+      "bytes": 149,
+      "sha256": "cb9fac6659f9fe7e9716ff347d514a6163e45e681d1dd1ebcec385606a2fadb2"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:warrior-training/tutorial-warrior-training-briefing.png",
+      "bytes": 252189,
+      "sha256": "cb4f2ad036fbaf4c7536d854864955fb1c4f6629031411b3f1f7109b5d1cad11"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:warrior-training/tutorial-warrior-training-dialog.png",
+      "bytes": 66716,
+      "sha256": "79a69df58522a5bbf49080f7bded2c27e4718ff8f5c5791b25b0174e650045db"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:warrior-training/tutorial-warrior-training.json",
+      "bytes": 12937,
+      "sha256": "e897e80ecb5a30c5c89193cabc8d2c80152dd806087f0b87d07444755a31801c"
+    },
+    {
+      "path": "rendering/native/phone-tutorial:warrior-training/tutorial-warrior-training.png",
+      "bytes": 287763,
+      "sha256": "dbe6aa88eaaef6d6392f1508f990d775273d69ad8f3dcf7eb9dd1107bb0bbefb"
+    },
+    {
+      "path": "rendering/native/source-carry-forward.diff",
+      "bytes": 2574,
+      "sha256": "0f7d4d02645c8a9843a5084d70d4aa3e05f59b9007f44aed6d5c67d427fcc63d"
+    },
+    {
+      "path": "rendering/native-capture-runner.log",
+      "bytes": 2582,
+      "sha256": "7a0052572e42965333db25c40e17cfc6e411c7b80931fa727119300054922723"
+    },
+    {
+      "path": "rendering/native-final/capture-manifest.json",
+      "bytes": 7806,
+      "sha256": "2f67bcd20f98da8bc5d7600a209c1b4e2f72a7a88474766bfc79eaf4727706b7"
+    },
+    {
+      "path": "rendering/native-final/matrix-summary.json",
+      "bytes": 753324,
+      "sha256": "df04bf85aa83c5db846fff58b28674c02fb3edf168b9c02516d7d7c318b88750"
+    },
+    {
+      "path": "rendering/native-final/phone-full-matrix/font-10-scale-2-page-018.png",
+      "bytes": 234104,
+      "sha256": "651a99440997058891627d48d923cc190e4d2fe7e3cf165993618196bd69bcf8"
+    },
+    {
+      "path": "rendering/native-final/phone-full-matrix/font-matrix.json",
+      "bytes": 34969297,
+      "sha256": "754983a5799153dde9820f0bac5a2f3f2832acaadb86bd45bf78673084624171"
+    },
+    {
+      "path": "rendering/native-final/phone-full-matrix/process.log.gz",
+      "bytes": 32,
+      "sha256": "dce14e2d853b9fedcfd25678bb02d5fef6a14f815cb0b805ef697111227bf422"
+    },
+    {
+      "path": "rendering/native-final/phone-gameplay/draft-list.txt",
+      "bytes": 2358,
+      "sha256": "671953b9ae5d63e3082fef9e6e25754506358ca4160f41c432010f16b65440c1"
+    },
+    {
+      "path": "rendering/native-final/phone-gameplay/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-final/phone-gameplay/gameplay-dialog.png",
+      "bytes": 50213,
+      "sha256": "19be082ab0f5843a6cfafbe84f8eb7cde77770aec64749c09b45956ee0b56fa4"
+    },
+    {
+      "path": "rendering/native-final/phone-gameplay/gameplay.json",
+      "bytes": 12411,
+      "sha256": "7f9efd09fb9cefb0ab89bdc7489f59ed6e2548fd1fcf6f7a04372ef9690d50f7"
+    },
+    {
+      "path": "rendering/native-final/phone-gameplay/gameplay.png",
+      "bytes": 203405,
+      "sha256": "9e5db503f8f24a7c69dad5157e7bd6d38f05f186cb58e43e3005c2d80954201f"
+    },
+    {
+      "path": "rendering/native-final/phone-gameplay/process.log.gz",
+      "bytes": 149,
+      "sha256": "461c8f930615bd8e9fb3a28969a72aff3e396d443ce8f08a3030d53830711cc0"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby/draft-list.txt",
+      "bytes": 2355,
+      "sha256": "b9475d98fbbbccc39d8b308f866c24c703d42d3e5ebb7c0d41ebecde8e8f3e16"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby/lobby.json",
+      "bytes": 13218,
+      "sha256": "11781ae9c0e0e6506b93ba2726097add2ca4cd74097c9697bacc609308d4721c"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby/lobby.png",
+      "bytes": 46682,
+      "sha256": "5708f34d8488b4f009d6bb0d3b15c2e039bd06a8228c837dfb3eac5a68f9ea42"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby/process.log.gz",
+      "bytes": 92,
+      "sha256": "cf4af59b7a52af8c747f90298035578bcd1f20a7401300ef644d94b2bd9c9b5f"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby-players/draft-list.txt",
+      "bytes": 2363,
+      "sha256": "b040be997a2495aac0542890931f5605d9d8ce18aef98d0e7d2b846f3a9f2968"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby-players/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby-players/lobby-players.json",
+      "bytes": 13500,
+      "sha256": "411958b68074d4e1131051842c4105bf26ecbbb571872ecfb5a564fdd544548a"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby-players/lobby-players.png",
+      "bytes": 50958,
+      "sha256": "4a901604b2d19f073659564d21960f9d98ce16d5485300997cff71cf7674fe2d"
+    },
+    {
+      "path": "rendering/native-final/phone-lobby-players/process.log.gz",
+      "bytes": 92,
+      "sha256": "9c7bde2ea2c89700e9f5ddf7c3c30f9987f365f820797f146bf3ba26f76fb273"
+    },
+    {
+      "path": "rendering/native-final/phone-tutorial:introduction/draft-list.txt",
+      "bytes": 2371,
+      "sha256": "db60fa64444028580d0906910c195dc649f6bd98a847ec4cee4101afd47e9a5c"
+    },
+    {
+      "path": "rendering/native-final/phone-tutorial:introduction/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-final/phone-tutorial:introduction/process.log.gz",
+      "bytes": 149,
+      "sha256": "3eb0b60f513dcbc638d86b5729d098d5b50ad7124c371a659f4097de6eb1abbe"
+    },
+    {
+      "path": "rendering/native-final/phone-tutorial:introduction/tutorial-introduction-briefing.png",
+      "bytes": 252576,
+      "sha256": "217b0afcca496fdc9ee20774e838d4ab732067cc8e267ccd2c9f50be97041bd4"
+    },
+    {
+      "path": "rendering/native-final/phone-tutorial:introduction/tutorial-introduction-dialog.png",
+      "bytes": 80153,
+      "sha256": "0a004e1fdaa348bac512084697447e820d44f77725ed404aaac3cf9a8188db11"
+    },
+    {
+      "path": "rendering/native-final/phone-tutorial:introduction/tutorial-introduction.json",
+      "bytes": 12884,
+      "sha256": "d53ba64f97d33435a93410c92097987a179ad43bb9e3a6372a303f6da9cd00c0"
+    },
+    {
+      "path": "rendering/native-final/phone-tutorial:introduction/tutorial-introduction.png",
+      "bytes": 285136,
+      "sha256": "91373cbbc4e4cdc6a6ee55ca669f31365ef8d62ddf279c92714899011e82bea2"
+    },
+    {
+      "path": "rendering/native-final/source-carry-forward.diff",
+      "bytes": 3016,
+      "sha256": "3d3bf7e2fe2550ade42784cca37506e8a190f51a00b975649e8e0f9c25664b33"
+    },
+    {
+      "path": "rendering/native-final-runner.log",
+      "bytes": 281,
+      "sha256": "701fe0d99241d0b67d7cea73b48cae10b0915502148404aec195a9b59d34d7d1"
+    },
+    {
+      "path": "rendering/native-fixed/capture-manifest.json",
+      "bytes": 9998,
+      "sha256": "0bf2697e441077231afc868711a12ad80a73ee7e610d07704c02a00f9204b469"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-gameplay/draft-list.txt",
+      "bytes": 2360,
+      "sha256": "6ce997e09903864a8baa7e384cf080798b2e603f46d249f0f229da504eb05827"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-gameplay/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-gameplay/gameplay-dialog.png",
+      "bytes": 454979,
+      "sha256": "9dd89756d8a30f6e7f410eb2f5e8a67dcb96b6fea0366140c3deba86d1aa0ca8"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-gameplay/gameplay-zoom-fit.png",
+      "bytes": 63351,
+      "sha256": "572721779f4181902358967af0b251d134f65dd412bf65fd96ba190de13eeed1"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-gameplay/gameplay-zoom-plus.png",
+      "bytes": 654178,
+      "sha256": "b038b2a7beb622cb308f7c97c5882460787eec67cba3c5345f68593e0480c547"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-gameplay/gameplay.json",
+      "bytes": 13203,
+      "sha256": "41e82f803d4deedff2eba38977ee6665383791ac2840100a41cbfacabbc0034e"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-gameplay/gameplay.png",
+      "bytes": 601584,
+      "sha256": "3be5c3a81de89358f182940980144455c4b322e9e5b489a9f8e487088c632d80"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-gameplay/process.log.gz",
+      "bytes": 149,
+      "sha256": "24ec615bbbe72fb73cd9ff406d06341c126fa24d171ed33cc73f0b460b7b210f"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-settings/draft-list.txt",
+      "bytes": 2360,
+      "sha256": "190a77db7bb0e3d7229df33d3895430644b759deed49a36066fc51bc2f1c4679"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-settings/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-settings/process.log.gz",
+      "bytes": 92,
+      "sha256": "854c1ed85a3474a8a799d548ef40a1325c582abedac790cffafb9bd12ecd1974"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-settings/settings.json",
+      "bytes": 15845,
+      "sha256": "855f83f68fc4f2eb0dc93fe17e7e29ed97de72c2ac2753c6a6c7f9c45b67922e"
+    },
+    {
+      "path": "rendering/native-fixed/desktop-settings/settings.png",
+      "bytes": 667598,
+      "sha256": "f27446d6e36ff7a4aa33d2abd842b04d66ddd4980fc3a0fa470f6b8bee09055b"
+    },
+    {
+      "path": "rendering/native-fixed/matrix-summary.json",
+      "bytes": 370740,
+      "sha256": "57894b3c1495329ecd92706a38ca8bffee5edbfcef2e35ee313ae26dd20d0993"
+    },
+    {
+      "path": "rendering/native-fixed/phone-full-matrix/font-10-scale-1-page-041.png",
+      "bytes": 39918,
+      "sha256": "51bea9eaa70f4a88e41f2225be3ac8ec631a3b9b40e2f405f7143ae7f8a58042"
+    },
+    {
+      "path": "rendering/native-fixed/phone-full-matrix/font-10-scale-2-page-018.png",
+      "bytes": 693152,
+      "sha256": "d412572019a9ac3394437c938b82390bf035e78ef7a9e294b2353fd40831a195"
+    },
+    {
+      "path": "rendering/native-fixed/phone-full-matrix/font-13-scale-1-page-001.png",
+      "bytes": 55994,
+      "sha256": "71503e5f43f1a5a127da65092a64284ddc92d48ea8340fafe6d6ff3fb5913b98"
+    },
+    {
+      "path": "rendering/native-fixed/phone-full-matrix/font-13-scale-2-page-001.png",
+      "bytes": 282477,
+      "sha256": "579769befdb2d76a29a50c81b48d52733f815d28a36af1de372cd03239d66dca"
+    },
+    {
+      "path": "rendering/native-fixed/phone-full-matrix/font-20-scale-1-page-001.png",
+      "bytes": 75843,
+      "sha256": "830afd5f9867d8465a4a2b0641427bd6988a8f9e490ba7a2287bc993a8fa15a2"
+    },
+    {
+      "path": "rendering/native-fixed/phone-full-matrix/font-20-scale-2-page-083.png",
+      "bytes": 255013,
+      "sha256": "26f8da6c2c06fc2991b5ab580151d342f353921dfc29dfc4587d0736b80ea5a8"
+    },
+    {
+      "path": "rendering/native-fixed/phone-full-matrix/font-matrix.json",
+      "bytes": 34968711,
+      "sha256": "8c1026556817d553fd5b3b4831d616573773e57fc1f11f992457a83aa4ca9a6a"
+    },
+    {
+      "path": "rendering/native-fixed/phone-full-matrix/process.log.gz",
+      "bytes": 32,
+      "sha256": "4240fc6369bf1647d3de40faf72e40a8543bd7a02ede639096b15d27f33d476b"
+    },
+    {
+      "path": "rendering/native-fixed/phone-gameplay/draft-list.txt",
+      "bytes": 2358,
+      "sha256": "7a93e0d6c50e3e129ab74fffa333033d1279c478a78c6656c0f8f016b9ba92ea"
+    },
+    {
+      "path": "rendering/native-fixed/phone-gameplay/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-fixed/phone-gameplay/gameplay-dialog.png",
+      "bytes": 53001,
+      "sha256": "740593dbaa353fa295295f0495c7877943fb2fcf86e1e8392aade98bf7811a81"
+    },
+    {
+      "path": "rendering/native-fixed/phone-gameplay/gameplay.json",
+      "bytes": 12421,
+      "sha256": "d8e2e92a30167741406af07d251912afa86ef55a94fc24b908ece5f10d05eded"
+    },
+    {
+      "path": "rendering/native-fixed/phone-gameplay/gameplay.png",
+      "bytes": 198672,
+      "sha256": "84817ef98949cf747829dba0041002f02d9d4a49bdbcca98bc61e73ea83a6fcf"
+    },
+    {
+      "path": "rendering/native-fixed/phone-gameplay/process.log.gz",
+      "bytes": 149,
+      "sha256": "49a521484995cdb0b0b7dac7ca5fea045cd537b6b156225af67d8d30dff7b1f6"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby/draft-list.txt",
+      "bytes": 2355,
+      "sha256": "02d326a857b80da4293bee0ddfff97e3f80908fae7d6b1f8fc4f038c678bfdfe"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby/lobby.json",
+      "bytes": 13228,
+      "sha256": "715005bbb3062af8e36846130d11164713c5d917155bc7a3d3743e0d77eb198e"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby/lobby.png",
+      "bytes": 47580,
+      "sha256": "b0a2aa4d46ed62201d2015dfc04bc6c8d6d840d4d90a2b48055c7548f85efb23"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby/process.log.gz",
+      "bytes": 92,
+      "sha256": "2c1d8e1c5634b9e108126f013595eda6dfd794e753707462d6c6fc53bf135357"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby-players/draft-list.txt",
+      "bytes": 2363,
+      "sha256": "465cc704a8d06d755c0691cc2788877b9b725992d72cafd8aac771328fbd6daf"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby-players/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby-players/lobby-players.json",
+      "bytes": 13510,
+      "sha256": "905f94046478bad621563526ec97ebcedb8709f0eaa1735c92258df443242183"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby-players/lobby-players.png",
+      "bytes": 51824,
+      "sha256": "8e1604a5a955d83b1a419719d6ea523435c1ef4a5638c8eee9827a6a2429b4dd"
+    },
+    {
+      "path": "rendering/native-fixed/phone-lobby-players/process.log.gz",
+      "bytes": 92,
+      "sha256": "75214348dd1b022e9a56e7968849ed57b6cbcde388cf121de36a621a1a0eba3f"
+    },
+    {
+      "path": "rendering/native-fixed/phone-tutorial:introduction/draft-list.txt",
+      "bytes": 2371,
+      "sha256": "d29652308894605da93922ca0eb92de75aa43121a27321bddf78aad7cccf406d"
+    },
+    {
+      "path": "rendering/native-fixed/phone-tutorial:introduction/draft-overlay.txt",
+      "bytes": 229270,
+      "sha256": "33c55095600818367337fd00cab42cfa592c4a078579fa878ebe63ee580357dd"
+    },
+    {
+      "path": "rendering/native-fixed/phone-tutorial:introduction/process.log.gz",
+      "bytes": 149,
+      "sha256": "fc5c85a8143f1fe97abd188d4d1ea2f82e6d47c3e9811ee07737b3248cb54671"
+    },
+    {
+      "path": "rendering/native-fixed/phone-tutorial:introduction/tutorial-introduction-dialog.png",
+      "bytes": 80772,
+      "sha256": "e888982d9b7a32591695f8625372dedd3a4c2a99632bb22057cdacb8fc49009a"
+    },
+    {
+      "path": "rendering/native-fixed/phone-tutorial:introduction/tutorial-introduction.json",
+      "bytes": 12699,
+      "sha256": "9e94101590c5fa1a802fc9b88b909abebb83d0c4fc0af7916d3638f761de7494"
+    },
+    {
+      "path": "rendering/native-fixed/phone-tutorial:introduction/tutorial-introduction.png",
+      "bytes": 286054,
+      "sha256": "60a0c76108914ebede599b03b33247036c9d5be36a39b3b5eeb3cef9c951694b"
+    },
+    {
+      "path": "rendering/native-fixed-runner.log",
+      "bytes": 331,
+      "sha256": "6b1643d532d4ddf6be0eb9fc891ee4443da063c1937ad5d5beb23359d0456a01"
+    },
+    {
+      "path": "rendering/native-font-carry-forward.diff",
+      "bytes": 6602,
+      "sha256": "7c2c0984ff9829d44b9895c6a44532e998a89407a56470c348f491d322a558ff"
+    },
+    {
+      "path": "rendering/prepare_final_capture.py",
+      "bytes": 5089,
+      "sha256": "3916224503d1d63bc92c79db292118c1c7938da9e542a6caa8ba6b5c917c9603"
+    },
+    {
+      "path": "rendering/startup-fixture-carry-forward.diff",
+      "bytes": 667,
+      "sha256": "4e787c633950887e18ad599c6610091d7d8c876b33b84d72ab65c0f7a04e3679"
+    },
+    {
+      "path": "rendering/startup-fixture-carry-forward.json",
+      "bytes": 726,
+      "sha256": "c129a58967469a37808955052a96c01a5b86b51b5f21bd8ec8c409c76e02fcb9"
+    },
+    {
+      "path": "run_native_focused.py",
+      "bytes": 2650,
+      "sha256": "1c27a88276bd1113e3ea0e4f61c8235664b24cc5e07faa99bcf1ceb004bb82c7"
+    },
+    {
+      "path": "sdl-reuse.json",
+      "bytes": 20407,
+      "sha256": "cb58ca4326cb1fa655dcfa7e8d011f0de52374053f11ea93f2cf5508a774bc40"
+    },
+    {
+      "path": "sdl-reused/sdl3-manifest.json",
+      "bytes": 2285,
+      "sha256": "f4bcd64be2dc1815dd0dc855bc78c5e5af1ac985e38296ca3531d3dad7c1e484"
+    },
+    {
+      "path": "source/native.json",
+      "bytes": 217173,
+      "sha256": "48a993de84cae8cbadcd7577ce2bf93131299248eb5a93c902f48835e4c471cf"
+    },
+    {
+      "path": "source/online.json",
+      "bytes": 194411,
+      "sha256": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69"
+    },
+    {
+      "path": "visual/native-findings.json",
+      "bytes": 3298,
+      "sha256": "253e658e9ba626e208c565d3b29cdabd28e43020c182d2a0e7c5518f4630074d"
+    },
+    {
+      "path": "visual/native-highdpi-finding.json",
+      "bytes": 383944,
+      "sha256": "5dd4775e55a4050afb365d52502224f4e1487c7a7297d57aed8eee36fa7e427e"
+    },
+    {
+      "path": "visual/native-inspections.json",
+      "bytes": 28065,
+      "sha256": "936dd2ce1b541c86bba2a41046b1b391aed51e99937467c8fe687c79c7b584b5"
+    },
+    {
+      "path": "visual/native-review.json",
+      "bytes": 1165483,
+      "sha256": "6054f2d63565310d2e9b37e02e275a0bd92eeb221fd4713ce7c031b53e5d7070"
+    },
+    {
+      "path": "visual/native-width-carry-forward.json",
+      "bytes": 216616,
+      "sha256": "90e1421f3d6eaadd60fcd1d1535c1797e5d8a7d3610c4d3e40061f996cddd693"
+    },
+    {
+      "path": "visual/phone-audio-footer-crop.png",
+      "bytes": 7018,
+      "sha256": "f6accfe8cef29ededeee8af9462ccac73ad9d89a884c2a3cad84dea238205ae2"
+    }
+  ],
+  "limits": [
+    "Linux software renderer/forcedphone presentation only; no actualAndroid/iOS.",
+    "Historical091screens retain true producer and oldcaptions. Final22be native review carries unchanged1xgeometry by exact893PNGhash/18768sample proof.",
+    "Selectedbuilding/longhelp actualbrowser evidence separate.",
+    "No executables,libraries,fonts,artworktrees,profiles,credentials,traces,caches."
+  ]
+}
