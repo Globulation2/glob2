@@ -69,6 +69,14 @@ with `staffing.new_inn_workers` or `staffing.new_swarm_workers`, then follow
 the same loop. Swarm allowances remain bounded by the colony labour plan.
 Controller state belongs to the building's lifetime and is saved with Maxima.
 
+At each food-ledger review, completed inns and swarms are ranked separately by
+existing wheat-route quality (average supply distance, including the penalty for
+unreachable wheat). The worst half, rounded down, receive low worker priority;
+the rest receive normal priority. Equal scores are ordered by building ID.
+Construction sites and upgrades are excluded from this ranking. Ordinary inn
+construction receives high priority during a food emergency and normal priority
+otherwise. These priority reviews require the food ledger to be enabled.
+
 ## Development
 
 Schools retain their early population and technology gates. Once the higher

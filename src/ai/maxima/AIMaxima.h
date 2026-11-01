@@ -728,6 +728,9 @@ private:
 	int food_supported_swarms;
     int food_birth_crop_rate=0; // recurring wheat packets/tick, FoodLedger RateScale
 	bool food_ledger_valid;
+	void update_worker_priorities(AIMaximaRuntime::Context& runtime,
+		const AIMaximaPlacement::WorldState& world,
+		const AIMaximaFoodLedger::Result& ledger);
 	void update_food_retirement(AIMaximaRuntime::Context& runtime,
 		const AIMaximaPlacement::WorldState& world);
 	///Neighbouring cells a protected stack's growth can actually spread into.
