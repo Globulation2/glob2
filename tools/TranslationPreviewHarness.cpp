@@ -3,6 +3,8 @@
 // Draft overlays and evidence live outside the shipped language inventory.
 #include "GlobalContainer.h"
 #include "Engine.h"
+#include "InGameStatistics.h"
+#include "touch/GameGUITouch.h"
 #include "tutorial/TutorialModel.h"
 #include "sim/presentation/SceneInputs.h"
 #include "MainMenuScreen.h"
@@ -54,6 +56,20 @@ struct TranslationPreviewAccess
     static GameGUI &gui(Engine &engine) { return engine.gui; }
     static bool currentWorldAdmitted(const Engine &engine) {
         return engine.retainedPresentation && engine.retainedPresentation->world.tick == engine.gui.game.stepCounter;
+    }
+    static InGameStatisticsPanel &openStatistics(GameGUI &gui) {
+        gui.clearSelection();
+        gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+        if (gui.touch && gui.touch->usesHUD()) gui.touch->menuAction(3);
+        return gui.statistics();
+    }
+    static bool openStatisticsDetails(GameGUI &gui) {
+        auto *dialog = gui.activeDialog();
+        if (!dialog) return false;
+        auto *button = dialog->host().find("stats/history/details");
+        if (!button) return false;
+        dialog->host().tapAt(button->bounds.center());
+        return true;
     }
     static void openMenu(GameGUI &gui) { gui.openMainMenu(); }
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
@@ -151,6 +167,8 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
     for (const auto *name : {"data/texts.en.txt", "data/texts.keys.txt",
              "platform/packages/i18n/locales/en.json", "libgag/src/TrueTypeFont.cpp",
              "libgag/src/BidiText.cpp", "libgag/src/ui/TextLayout.cpp",
+             "src/hud/InGameStatistics.cpp", "src/hud/InGameStatistics.h",
+             "src/team/stats/MetricCatalog.cpp", "src/team/stats/MetricCatalog.h",
              "src/hud/draw/GameGUIDraw.cpp", "src/hud/touch/GameGUITouchView.cpp",
              "src/hud/touch/GameGUITouch.cpp", "src/hud/touch/GameGUITouch.h",
              "libgag/include/TouchText.h", "libgag/include/TrueTypeFont.h",
@@ -639,7 +657,8 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                      const std::string &kind, int width, int height)
 {
     const bool tutorial = kind == "tutorial" || kind.starts_with("tutorial:");
-    require(kind == "gameplay" || tutorial, "Unknown game preview kind");
+    const bool statistics = kind == "statistics";
+    require(kind == "gameplay" || statistics || tutorial, "Unknown game preview kind");
     const std::string lesson = kind == "tutorial" ? "introduction" : (tutorial ? kind.substr(9) : "");
     if (tutorial) {
         const auto catalog = readJson(root / "scripts/tutorials/catalog.json");
@@ -767,7 +786,41 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["automatic_briefing_dismissed"] = briefing;
             result["tutorial_capture_dialog_free"] = true;
         }
-        capture(captureKind);
+        if (statistics) {
+            const auto beforeNavigation = gui.game.checkSum();
+            auto &panel = TranslationPreviewAccess::openStatistics(gui);
+            result["statistics_views"] = Json::array();
+            auto statisticsCapture = [&](const std::string &name) {
+                capture(name);
+                Json controls = Json::array();
+                for (auto *node : panel.host().interactiveNodes())
+                    controls.push_back({{"key", node->key}, {"text", node->accessibleText()}});
+                result["statistics_views"].push_back({{"name", name},
+                    {"topic", int(panel.topic())}, {"selected_metric", panel.selectedMetric()},
+                    {"history_available", panel.history() != nullptr}, {"statistics_tick", panel.tick()},
+                    {"win_probability_metric_available", panel.metric("win probability") != nullptr},
+                    {"controls", std::move(controls)}});
+            };
+            panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
+            statisticsCapture("statistics-overview");
+            panel.selectTopic(InGameStatisticsPanel::Topic::Economy);
+            statisticsCapture("statistics-economy");
+            panel.selectTopic(InGameStatisticsPanel::Topic::World);
+            statisticsCapture("statistics-world");
+            // Only open metrics present in the production catalog. Live-player
+            // win probabilities are normally hidden; never fabricate access,
+            // history, readings or a showChances flag for a translation image.
+            for (const auto *id : {"population", "win probability"}) {
+                if (!panel.metric(id)) continue;
+                panel.openMetric(id);
+                const std::string name = id == std::string("population") ? "statistics-population-history" : "statistics-win-probability-history";
+                statisticsCapture(name);
+                if (TranslationPreviewAccess::openStatisticsDetails(gui)) statisticsCapture(name + "-details");
+                TranslationPreviewAccess::closeMenu(gui);
+            }
+            require(beforeNavigation == gui.game.checkSum(), "Statistics navigation must preserve simulation state");
+            result["limits"].push_back("Statistics use only real published local-game readings. A short session can show waiting/empty history; no history is synthesized. Win probability remains unavailable wherever production live-player policy hides it; no hidden help/detail coverage is claimed.");
+        } else capture(captureKind);
         if (kind == "gameplay" && !GAGCore::phonePresentationRequested()) {
             const auto originalCamera = gui.camera;
             const int originalViewportX = gui.viewportX, originalViewportY = gui.viewportY;
@@ -824,7 +877,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H [SIZE SCALE] | screen ROOT DRAFT OUTPUT W H SCREEN | editor|script-editor ROOT DRAFT OUTPUT W H | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H [SIZE SCALE] | screen ROOT DRAFT OUTPUT W H SCREEN | editor|script-editor ROOT DRAFT OUTPUT W H | game ROOT DRAFT OUTPUT W H gameplay|statistics|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);
@@ -852,7 +905,7 @@ int main(int argc, char **argv)
             require(argc == 8, "Screen mode needs screen name");
             screenPreview(root, pilot, output, argv[7], width, height);
         } else if (mode == "game") {
-            require(argc == 8, "Game mode needs gameplay or tutorial");
+            require(argc == 8, "Game mode needs gameplay, statistics or tutorial");
             gameplayPreview(root, pilot, output, argv[7], width, height);
         } else throw std::runtime_error("Unknown mode");
         return 0;

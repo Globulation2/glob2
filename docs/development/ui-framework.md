@@ -336,8 +336,8 @@ actions. For controlled API-error captures, `settings-ais` also accepts
 requires that exact notice in the screen's accessible text before capturing.
 Record the local fixture response and request receipts separately; these captures
 do not verify a production server. `game` adds
-`gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
-the real engine and menu dialog. Tutorial IDs must belong to the current shipped
+`gameplay`, `statistics`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
+the real engine and menu dialog. Statistics captures navigate the real Overview, Economy and World topics and available metric history/details. They retain live-player visibility rules and never synthesize history or expose hidden win probabilities. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
 A published tutorial model alone does not prove that its text is visible. Inputs are

@@ -1,5 +1,37 @@
+[hub finish in browser, game continues]
+Завършете влизането в браузъра си. Играта продължава сама, след като приключите.
+[hub browser did not open]
+Вашият браузър не се отвори. Отворете страницата за вход, за да продължите.
+[hub compare code %0]
+Ако страницата го поиска, проверете дали на нея е изписан кодът %0.
+[hub code copied]
+Кодът е копиран
+[settings Finish in your browser. The game continues by itself.]
+Завършете в браузъра си. Играта продължава сама.
+[music set]
+Музикален комплект
+[random music set]
+Случаен за всеки мач
+[playing music set %0]
+В момента звучи: %0
+[music set failed]
+Не можа да се зареди този музикален комплект.
+[settings Edge scrolling]
+Превъртане при ръба
+[settings Edge scrolling in fullscreen]
+Превъртане при ръба на цял екран
+[settings Edge scrolling in windowed mode]
+Превъртане при ръба в прозорец
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+Преместване на картите в играта и редактора, когато показалецът достигне ръба на прозореца.
 [%0 has left the game]
 %0 напусна играта.
+[start recording]
+Начало на запис
+[stop recording]
+Спиране на записа
+[finalizing recording]
+Финализиране на записа…
 [%0 level %1]
 %0 — ниво %1
 [%0 units can't access building]
@@ -374,16 +406,6 @@ f9
 Играта е пълна
 [game shortcuts]
 Клавишни комбинации за играта
-[game speed help]
-Само за един играч и повторения. Мултиплейърът работи с 1x.
-[music set]
-Музикален комплект
-[random music set]
-Случаен за всеки мач
-[playing music set %0]
-В момента звучи: %0
-[music set failed]
-Не можа да се зареди този музикален комплект.
 [game speed]
 Скорост на играта
 [Game]
@@ -534,8 +556,6 @@ bg
 Позволява обмен на
 [market]
 Пазар
-[maximum game speed]
-Максимално
 [medium priority]
 среден
 [meta %0]
@@ -544,8 +564,6 @@ Meta-%0
 Минимално необходимо ниво:
 [Minimum Level To Flag]
 Мин. ниво на единица
-[multiplayer game speed]
-Скорост на играта: 1x (мултиплейър)
 [Music volume]
 Сила на звука (музика)
 [Mute]
@@ -686,8 +704,6 @@ Print Screen
 Възстановяване на клавишни комбинации по подразбиране
 [return to editor]
 Връщане към редактора
-[Reroll terrain look]
-Нов случаен облик на терена
 [return to game]
 Връщане към играта
 [return to replay]
@@ -712,6 +728,8 @@ Enter
 Запазване на играта
 [save map]
 Запазване на картата
+[Reroll terrain look]
+Нов случаен облик на терена
 [save replay]
 Запазване на повторението
 [save script]
@@ -994,8 +1012,6 @@ Tab
 Общо натрупан престиж
 [Total]
 Общо
-[tutorial]
-Урок
 [tutorial text 1]
 Добре дошли в основния урок за Globulation 2! Този урок ще обхване всичко - от строежа на ханове, през изследването на зони, до унищожаването на врагове! Тук няма недостиг на полезни знания!
 [tutorial text 2]
@@ -1004,6 +1020,8 @@ Tab
 Справихте се добре дотук. Сега нека преминем към воините, казармите и подобренията.
 [tutorial text 4]
 Почти сте готови. Остават само флагове и атака. След това ще знаете достатъчно, за да изпробвате персонализирани игри и евентуално да играете онлайн срещу някои от най-добрите играчи на Globulation 2.
+[tutorial]
+Урок
 [Uncontrolled]
 Неконтролирано
 [undo]
@@ -1102,6 +1120,12 @@ Tab
 Вашият %0 е под атака
 [Your unit got converted to %0's team]
 Ваша единица се присъедини към отбора на %0
+[game speed help]
+Само за един играч и повторения. Мултиплейърът работи с 1x.
+[maximum game speed]
+Максимално
+[multiplayer game speed]
+Скорост на играта: 1x (мултиплейър)
 [Units still inside: %0]
 Все още вътре: %0
 [Units still working: %0]
@@ -2186,10 +2210,10 @@ OpenGL не е наличен в тази компилация.
 Статистика 1/3 >
 [Stats page two]
 Статистика 2/3 >
-[Stats next page]
-Страница (P)
 [Stats page three]
 Статистика 3/3 >
+[Stats next page]
+Страница (P)
 [Stats blocked units]
 Блокирани единици S/C
 [Stats blocked buildings]
@@ -2216,12 +2240,12 @@ OpenGL не е наличен в тази компилация.
 Растеж в рамките на 32 плочки
 [Stats low HP 25]
 Единици на 25% HP
+[Stats low food 25]
+Единици с 25% хранителен резерв
 [Stats low HP 50]
 Единици на 50% HP
 [Stats low HP 75]
 Единици на 75% HP
-[Stats low food 25]
-Единици с 25% хранителен резерв
 [Stats low food 50]
 Единици с 50% хранителен резерв
 [Stats low food 75]
@@ -3274,22 +3298,6 @@ CPU %0%
 Отскачане на списъците
 [Map momentum]
 Инерция на картата
-[lan pairing field]
-Низ за сдвояване на хост (или надежден WSS URL)
-[lan pairing connect]
-Сдвояване и свързване
-[lan discovery instructions]
-Изберете хост, след което поставете низа му за сдвояване, за да потвърдите неговата самоличност.
-[lan discovery unavailable]
-Откриването в LAN не е достъпно. Проверете разрешението за локалната мрежа или поставете низа за сдвояване с домакина.
-[lan discovered host %0]
-Открит хост %0 — сдвояване за преглед на игри
-[lan connection unavailable]
-Невъзможно е да се достигне до хоста LAN. Проверете разрешенията за локална мрежа и низа за сдвояване на хоста.
-[lan connection verification failed %0]
-Невъзможна проверка или свързване с хоста LAN: %0
-[lan lobby endpoint required]
-Използвайте крайната точка на лобито на хоста
 [settings Artwork]
 Графика
 [settings Original]
@@ -3356,6 +3364,22 @@ CPU %0%
 Размер на текста
 [settings Enlarge interface text without changing the map scale.]
 Уголемяване на текста на интерфейса без промяна на мащаба на картата.
+[lan pairing field]
+Низ за сдвояване на хост (или надежден WSS URL)
+[lan pairing connect]
+Сдвояване и свързване
+[lan discovery instructions]
+Изберете хост, след което поставете низа му за сдвояване, за да потвърдите неговата самоличност.
+[lan discovery unavailable]
+Откриването в LAN не е достъпно. Проверете разрешението за локалната мрежа или поставете низа за сдвояване с домакина.
+[lan discovered host %0]
+Открит хост %0 — сдвояване за преглед на игри
+[lan connection unavailable]
+Невъзможно е да се достигне до хоста LAN. Проверете разрешенията за локална мрежа и низа за сдвояване на хоста.
+[lan connection verification failed %0]
+Невъзможна проверка или свързване с хоста LAN: %0
+[lan lobby endpoint required]
+Използвайте крайната точка на лобито на хоста
 [turn reconnecting]
 Връзката с хоста е загубена. Възстановява се връзка...
 [turn waiting for players]
@@ -4537,7 +4561,7 @@ CPU %0%
 [room picker for %0]
 За %0 играчи в стаята
 [room picker generated]
-Генерирано
+Генерирани
 [room picker premade]
 Предварително изработени
 [room picker catalog]
@@ -4604,12 +4628,6 @@ CPU %0%
 Отваряне на командира
 [stop commander]
 Спиране на командира
-[start recording]
-Начало на запис
-[stop recording]
-Спиране на записа
-[finalizing recording]
-Финализиране на записа…
 [settings Recording]
 Запис
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
@@ -4643,7 +4661,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [Custom AI library saved.]
 Библиотеката с персонализирани ИИ е запазена.
 [Storage could not be saved. The previous library is retained.]
-Паметта не можа да бъде запазена. Предишната библиотека е запазена.
+Данните не можаха да бъдат запазени. Предишната библиотека се запазва.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
 Импортирайте един файл с ИИ на JavaScript, след което го изберете при настройването на локална игра.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
@@ -4759,7 +4777,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [stat seeking food]
 Единици, търсещи храна
 [stat seeking food about]
-Единици, които са спрели работа, за да намерят хан. Тези, които също са с под пълно здраве, се броят за отслабващи.
+Единици, които са спрели работа, за да намерят хан. Тези, чието здраве също е под максималното, се броят за отслабващи.
 [stat in care]
 Единици, които се хранят или лекуват
 [stat in care about]
@@ -4863,11 +4881,11 @@ FFmpeg не е наличен, така че записът е изключен.
 [stat growth nearby]
 Растеж на ресурсите в близост до колонията
 [stat growth nearby about]
-Колко материални запаси са се увеличили в ресурси в рамките на 32 квадрата от сградите на колонията, в точки на растеж, а не в добити товари. Разделете го, за да видите колко близо до дома са се увеличили.
+С колко са нараснали запасите от материали в ресурсите на разстояние до 32 полета от сградите на колонията, измерено в точки на растеж, а не в добити товари. Разделете данните, за да видите на какво разстояние от колонията е настъпил растежът.
 [stat growth map]
 Растеж на ресурсите по цялата карта
 [stat growth map about]
-Колко материални запаси са се увеличили в ресурси навсякъде по картата, в точки на растеж, а не в добити товари. Това е едно и също за всяка колония.
+С колко са нараснали запасите от материали в ресурсите по цялата карта, измерено в точки на растеж, а не в добити товари. Стойността е една и съща за всяка колония.
 [stat stranded]
 Единици, които не могат да се движат
 [stat stranded about]
@@ -4876,6 +4894,34 @@ FFmpeg не е наличен, така че записът е изключен.
 Разчистени ресурси
 [stat cleared about]
 Ресурси, премахнати от работници при разчистване на площи, за да се освободи място.
+[stats topic overview]
+Общ преглед
+[stats topic economy]
+Икономика
+[stats topic world]
+Свят
+[stats work construction]
+Работа и строителство
+[stats defence]
+Отбрана
+[stats history]
+Преглед на историята
+[stats waiting]
+Изчакване на статистика…
+[stats unit details]
+Подробности за единиците
+[stats map overlays]
+Слоеве на картата
+[stats topic]
+Тема
+[stats full history]
+Отворете пълната история
+[stats missing readings]
+— Все още няма записана стойност. Изберете показател за подробности.
+[stat win probability]
+Вероятност за победа
+[stat win probability about]
+Прогнозна вероятност вашият съюз да победи, отчитана през целия мач. Съюзниците имат една и съща вероятност за победа. Моделът е обучен върху мачове с ИИ; оценките не отчитат разположението по картата или планираните ходове. По-старите запазени игри може да имат непълна история.
 [stat prestige]
 Престиж
 [stat prestige about]
@@ -4897,11 +4943,11 @@ FFmpeg не е наличен, така че записът е изключен.
 [stat band peckish]
 Наполовина пълен
 [stat band fed]
-Добре хранен
+Добре нахранени
 [stat band critical]
 Критично
 [stat band wounded]
-Ранен
+Ранени
 [stat band hurt]
 Наранени
 [stat band healthy]
@@ -4925,15 +4971,15 @@ FFmpeg не е наличен, така че записът е изключен.
 [stat band upgrades]
 Надстройки
 [stat band built]
-Построен
+Построени
 [stat band upgraded]
-Обновено
+Подобрени
 [stat band repaired]
-Ремонтиран
+Ремонтирани
 [stat band destroyed]
-Унищожен
+Унищожени
 [stat band demolished]
-Разрушен
+Разрушени
 [stat band melee]
 Воини
 [stat band magic]
@@ -5023,7 +5069,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [stat column prestige]
 Престиж
 [stat marker wiped out]
-последната загубена единица
+загубена е последната единица
 [stat marker first combat death]
 първата единица, убита в бой
 [stat marker first building destroyed]
@@ -5121,7 +5167,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [ruleset blitz description]
 Бърз старт, ранен край
 [Gentle]
-Нежно
+Щадящ
 [ruleset gentle description]
 Щадящи правила за първи мач
 [Sandbox]
@@ -5151,7 +5197,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [Shifting alliances]
 Променящи се съюзи
 [ruleset shifting alliances description]
-Отборите могат да се сменят в 60-минутно състезание
+Съюзите могат да се променят в 60-минутно състезание
 [Changed from %0: %1]
 Променено от %0: %1
 [Combat is off, so the rules below have no effect.]
@@ -5290,24 +5336,6 @@ FFmpeg не е наличен, така че записът е изключен.
 Музикален комплект
 [settings Random each match]
 Изберете „Случаен за всеки мач“ за автоматичен избор на музика в началото на всеки мач.
-[settings Edge scrolling]
-Превъртане при ръба
-[settings Edge scrolling in fullscreen]
-Превъртане при ръба на цял екран
-[settings Edge scrolling in windowed mode]
-Превъртане при ръба в прозорец
-[settings Move the game and editor maps when the mouse reaches the window edge.]
-Преместване на картите в играта и редактора, когато показалецът достигне ръба на прозореца.
-[hub finish in browser, game continues]
-Завършете влизането в браузъра си. Играта продължава сама, след като приключите.
-[hub browser did not open]
-Вашият браузър не се отвори. Отворете страницата за вход, за да продължите.
-[hub compare code %0]
-Ако страницата го поиска, проверете дали на нея е изписан кодът %0.
-[hub code copied]
-Кодът е копиран
-[settings Finish in your browser. The game continues by itself.]
-Завършете в браузъра си. Играта продължава сама.
 [AI Library]
 Библиотека с ИИ
 [Authoring guide]
@@ -5982,8 +6010,6 @@ Discord е отворен. Можете да се върнете в играта
 Discord не можа да се отвори. Копирайте линка за покана и го отворете в браузъра си.
 [discord link copied]
 Линкът за покана е копиран.
-[discord copy failed]
-Не можа да се копира линкът. Изберете поканата по-горе, за да я копирате ръчно.
 [settings CPU automatic]
 Автоматично чрез CPU
 [settings Scalar]
@@ -6056,6 +6082,8 @@ MCP сървър
 Лява ръка
 [Right hand]
 Дясна ръка
+[discord copy failed]
+Не можа да се копира линкът. Изберете поканата по-горе, за да я копирате ръчно.
 [stat ground movement]
 Наземно придвижване
 [stat ground movement about]
@@ -6442,8 +6470,6 @@ MCP сървър
 Показване на целта
 [intro scout destination]
 Разузнайте тук
-[intro attack destination]
-Атака тук
 [intro compact scout]
 Флагове → Разузнавателен флаг. Поставете го върху камъка; заявете 1 разузнавач.
 [intro compact build]
@@ -6772,6 +6798,8 @@ MCP сървър
 Удържайте зоната за охрана. Поддържайте хановете снабдени.
 [lesson defensive-tactics counterattack compact]
 Боен флаг → вражески рояк. Заявете 3 воини; радиус ≤4.
+[intro attack destination]
+Атака тук
 [Grassland]
 Тревни площи
 [Kopjes]
@@ -6780,10 +6808,10 @@ MCP сървър
 Пътеки за дивеч
 [Fish amount]
 Количество риба
-[Camp-site amount]
-Количество лагери
 [scenario messages]
 Съобщения ▸
+[Camp-site amount]
+Количество лагери
 [script compilation success]
 Успешна компилация
 [script error at %0:%1: %2]

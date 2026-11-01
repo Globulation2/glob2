@@ -68,6 +68,7 @@ class GameGUITouch
 
   private:
 	friend class GameGUITouchHarness;
+	friend struct TranslationPreviewAccess;
 	friend class MobileGalleryGameplay;
 	GameGUI &gui;
 	TouchDial::Painter dialPainter;
