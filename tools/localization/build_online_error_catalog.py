@@ -51,6 +51,7 @@ def generate(english_path, bulgarian_path, output):
     if ')' + delimiter + '"' in encoded:
         raise ValueError('C++ resource delimiter collision')
     sha = lambda value: hashlib.sha256(value).hexdigest()
+    chunks = [encoded[start:start + 8192] for start in range(0, len(encoded), 8192)]
     text = ('// Generated; do not edit. Source: authoritative en/bg online catalogs only.\n'
             '#pragma once\n#include <string_view>\nnamespace Online::ErrorCatalogData {\n'
             f'inline constexpr char EnglishSha256[] = "{sha(english_bytes)}";\n'
@@ -58,7 +59,10 @@ def generate(english_path, bulgarian_path, output):
             f'inline constexpr unsigned MessageCount = {len(messages)};\n'
             f'inline constexpr unsigned ExcludedPluralCount = {plurals};\n'
             'inline constexpr std::string_view Chunks[] = {\n' +
-            ''.join(f'R"{delimiter}({encoded[start:start + 8192]}){delimiter}",\n' for start in range(0, len(encoded), 8192)) +
+            # The one-argument string_view constructor scans every literal in
+            # constant evaluation and exhausts Clang's default step budget for
+            # a full catalog. Keep the literal bytes and supply their byte size.
+            ''.join(f'{{R"{delimiter}({chunk}){delimiter}", {len(chunk.encode("utf-8"))}}},\n' for chunk in chunks) +
             '};\n'
             '}\n')
     text.encode('ascii')  # MSVC, native and both Emscripten variants share bytes.

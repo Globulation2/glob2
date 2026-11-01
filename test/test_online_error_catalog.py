@@ -4,6 +4,8 @@ import importlib.util
 import json
 from pathlib import Path
 import re
+import shutil
+import subprocess
 import tempfile
 import unittest
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,6 +75,25 @@ class OnlineErrorCatalogTest(unittest.TestCase):
         self.assertTrue(self.output.read_bytes().isascii())
         english = json.loads(en.read_text())
         self.assertEqual(result['message_count'], sum(isinstance(v, str) for v in english.values()))
+    @unittest.skipUnless(shutil.which('clang++-18'), 'Clang 18 is required for the default constexpr-limit regression')
+    def test_full_catalog_compiles_with_default_clang18_limits_and_preserves_payload(self):
+        en = ROOT / 'platform/packages/i18n/locales/en.json'
+        bg = ROOT / 'platform/packages/i18n/locales/bg.json'
+        MODULE.generate(en, bg, self.output)
+        chunks = re.findall(r'R"(G2ERR[0-9a-f]+)\((.*?)\)\1"', self.output.read_text(), re.S)
+        expected = ''.join(value for _, value in chunks).encode('utf-8')
+        english, bulgarian = json.loads(en.read_text()), json.loads(bg.read_text())
+        self.assertEqual(json.loads(expected)['messages'],
+                         {key: bulgarian[key] for key, value in english.items() if isinstance(value, str)})
+        source = self.folder / 'probe.cpp'
+        source.write_text('#include "Catalog.h"\n#include <iostream>\n'
+                          'int main() { for (auto chunk : Online::ErrorCatalogData::Chunks) '
+                          'std::cout.write(chunk.data(), chunk.size()); }\n')
+        binary = self.folder / 'probe'
+        compiled = subprocess.run([shutil.which('clang++-18'), '-std=c++20', str(source), '-o', str(binary)],
+                                  capture_output=True, text=True, timeout=60)
+        self.assertEqual(compiled.returncode, 0, compiled.stderr)
+        self.assertEqual(subprocess.check_output([str(binary)], timeout=10), expected)
     def test_ambiguous_english_literals_are_rejected(self):
         self.english['legacy-id'] = MODULE.GENERIC
         self.bulgarian['legacy-id'] = 'Друга грешка.'
