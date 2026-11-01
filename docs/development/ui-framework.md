@@ -119,7 +119,13 @@ progress; old displayed messages may retain their original wording or language
 fallback until the script emits another message.
 
 Campaign mission titles are localized for display while selection still uses
-original mission IDs. Unrecognized custom text is displayed as authored. Legacy desktop tutorial and
+original mission IDs. A fresh campaign editor uses the translated new-campaign
+label as its initial editable title, stripping native soft word-break hints before
+it can become a filename or progress identity. Loaded campaign titles and authored
+mission names, map paths and prerequisites retain their stored values. Script-editor
+status, cursor and file-failure wrappers use registered keys; compiler diagnostic
+payloads, source code and filenames remain technical or authored content.
+Unrecognized custom text is displayed as authored. Legacy desktop tutorial and
 history messages use the shared UTF-8 wrapper, including unspaced CJK text and
 explicit line breaks.
 

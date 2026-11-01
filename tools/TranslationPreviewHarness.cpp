@@ -3,12 +3,16 @@
 // Draft overlays and evidence live outside the shipped language inventory.
 #include "GlobalContainer.h"
 #include "Engine.h"
+#include "InGameStatistics.h"
+#include "touch/GameGUITouch.h"
 #include "tutorial/TutorialModel.h"
 #include "sim/presentation/SceneInputs.h"
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
 #include "CampaignEditor.h"
+#include "scripting/map/ScriptEditorScreen.h"
+#include "Game.h"
 #include "MapHeader.h"
 #include <TextBreaks.h>
 #include "FrontendTheme.h"
@@ -56,6 +60,20 @@ struct TranslationPreviewAccess
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
     static bool initialBriefingOpen(const GameGUI &gui) { return gui.inGameMenu == GameGUI::IGM_OBJECTIVES; }
     static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
+    static bool statisticsHistoryOpen(const GameGUI &gui) { return gui.inGameMenu == GameGUI::IGM_STATISTICS && gui.activeDialog() != nullptr; }
+    static InGameStatisticsPanel &statistics(GameGUI &gui) { return gui.statistics(); }
+    static int showStatisticsSidebar(GameGUI &gui) {
+        const int previous = int(gui.displayMode);
+        gui.clearSelection();
+        gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+        return previous;
+    }
+    static void restoreDisplayMode(GameGUI &gui, int mode) { gui.displayMode = GameGUI::DisplayMode(mode); }
+    static void drawPhoneStatisticsComponent(GameGUI &gui) {
+        if (!gui.touch) throw std::runtime_error("Phone statistics component requires the real touch HUD");
+        const auto area = gui.touch->statisticsContentRect();
+        gui.drawStatisticsPanel({int(area.x), int(area.y), int(area.w), int(area.h)});
+    }
     static void rebaseViewport(GameGUI &gui) {
         gui.torusView.rebaseViewport(gui.viewportX, gui.viewportY);
     }
@@ -133,7 +151,9 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "libgag/include/ui/TextLayout.h", "libgag/src/DrawableSurfaceCompound.cpp",
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
              "tools/TranslationPreviewHarness.cpp", "src/campaign/Campaign.cpp", "src/campaign/Campaign.h",
-             "src/campaign/screens/CampaignEditor.cpp", "src/campaign/screens/CampaignEditor.h"})
+             "src/campaign/screens/CampaignEditor.cpp", "src/campaign/screens/CampaignEditor.h",
+             "src/hud/InGameStatistics.cpp", "src/hud/InGameStatistics.h",
+             "src/scripting/map/ScriptEditorScreen.cpp", "src/scripting/map/ScriptEditorScreen.h"})
         result["source_sha256"][name] = sha256(root / name);
     for (const auto *surface : {"native", "online"})
         result["catalog_sha256"][surface] = sha256(pilot / (std::string(surface) + ".json"));
@@ -398,6 +418,28 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
             Preview<CustomGameScreen> preview(stack);
             if (screen == "lobby-players") preview.selectTab(1);
             preview.render(); controls = preview.bounds();
+        } else if (screen == "script-editor-success" || screen == "script-editor-failure") {
+            Game game(nullptr);
+            ScriptEditorScreen preview(&game);
+            preview.attach(*globals.gfx);
+            preview.selectLanguage(ScriptEditorScreen::Language::JavaScript);
+            const bool success = screen == "script-editor-success";
+            preview.setScriptText(success ? "function step(ctx) { return []; }\n" : "function step( { invalid syntax\n");
+            require(preview.compile() == success, "Real script validator reports expected status");
+            if (success) require(preview.compilationText() == GAGCore::Toolkit::getStringTable()->getString("[script compile success]"),
+                                 "Actual script editor shows localized compilation success");
+            preview.update(Uint32(SDL_GetTicks()));
+            preview.draw(Uint32(SDL_GetTicks()));
+            preview.update(Uint32(SDL_GetTicks()));
+            preview.draw(Uint32(SDL_GetTicks()));
+            controls = Json::array();
+            for (auto *node : preview.host().interactiveNodes()) {
+                const auto r = node->bounds;
+                controls.push_back({{"key", node->key}, {"x", r.x}, {"y", r.y}, {"width", r.w}, {"height", r.h},
+                    {"within_viewport", r.x >= 0 && r.y >= 0 && r.x + r.w <= globals.gfx->getW() && r.y + r.h <= globals.gfx->getH()}});
+            }
+            writeJson(output / (screen + "-status.json"), {{"compiled", success}, {"status", preview.compilationText()},
+                {"scope", "Actual production JavaScript validator and script editor; source text and technical diagnostic payloads remain unchanged."}});
         } else if (screen == "campaign-editor-new" || screen == "campaign-editor-loaded") {
             const bool loaded = screen == "campaign-editor-loaded";
             const std::string authoredName = "Author Campaign QA";
@@ -525,9 +567,17 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             now += 40;
             SDL_Delay(1);
         }
+        bool phoneStatisticsComponent = false;
         auto draw = [&] {
             if (!globals.gfx->beginRenderFrame()) return false;
-            engine.drawSession(true);
+            if (phoneStatisticsComponent) {
+                // Component-only phone evidence: the actual panel uses the
+                // real session's published scene, not a synthetic statistics
+                // fixture or a claim that the touch lens was navigated.
+                globals.gfx->drawFilledRect(0, 0, globals.gfx->getW(), globals.gfx->getH(), GAGCore::Color(20, 20, 20));
+                TranslationPreviewAccess::drawPhoneStatisticsComponent(gui);
+                globals.gfx->nextFrame();
+            } else engine.drawSession(true);
             return true;
         };
         const Uint64 readyDeadline = SDL_GetTicks() + 15000;
@@ -639,6 +689,55 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             gui.viewportX = originalViewportX;
             gui.viewportY = originalViewportY;
             TranslationPreviewAccess::rebaseViewport(gui);
+        }
+        if (kind == "gameplay") {
+            const auto beforeStatistics = gui.game.checkSum();
+            const bool phone = GAGCore::phonePresentationRequested();
+            const int previousMode = TranslationPreviewAccess::showStatisticsSidebar(gui);
+            auto &panel = TranslationPreviewAccess::statistics(gui);
+            phoneStatisticsComponent = phone;
+            const std::string prefix = phone ? "statistics-phone-component-" : "statistics-sidebar-";
+            result["statistics"] = {{"panel_scope", phone ? "Production panel component at phone statistics bounds; no touch navigation exercised."
+                                                          : "Production gameplay sidebar; display mode opened by harness access."},
+                {"navigation", "Topic and full-history controls activated through public UI Host actions; scrollIntoView positions controls. No physical pointer/touch claim."},
+                {"data", "Unmodified real session scene/history; the short session may correctly report insufficient recorded history."},
+                {"topics", Json::array()}};
+            const Uint64 statisticsDeadline = SDL_GetTicks() + 15000;
+            bool statisticsDrawn = draw();
+            while (!statisticsDrawn && SDL_GetTicks() < statisticsDeadline) { SDL_Delay(1); statisticsDrawn = draw(); }
+            require(statisticsDrawn, "Lay out actual statistics panel before UI actions");
+            const char *topics[] = {"overview", "colony", "economy", "military", "world"};
+            for (int index = 0; index < 5; ++index) {
+                panel.update(Uint32(SDL_GetTicks()));
+                panel.host().layoutIfNeeded();
+                const auto topicKey = "stats/topic/" + std::to_string(index);
+                const auto topicBounds = panel.host().bounds(topicKey);
+                require(!topicBounds.empty(), "Statistics topic control laid out");
+                panel.host().tapAt(topicBounds.center());
+                require(panel.topic() == InGameStatisticsPanel::Topic(index), "Statistics topic action applied");
+                capture(prefix + topics[index]);
+                const auto metric = panel.selectedMetric();
+                require(!metric.empty() && panel.metric(metric), "Actual selected statistics metric exists");
+                const auto historyKey = "stats/full-history/" + metric;
+                panel.host().scrollIntoView(historyKey);
+                panel.update(Uint32(SDL_GetTicks()));
+                panel.host().layoutIfNeeded();
+                const auto historyBounds = panel.host().bounds(historyKey);
+                require(!historyBounds.empty(), "Statistics full-history control laid out");
+                panel.host().tapAt(historyBounds.center());
+                require(TranslationPreviewAccess::statisticsHistoryOpen(gui), "Statistics history action opened real dialog");
+                phoneStatisticsComponent = false;
+                capture(prefix + topics[index] + "-history-dialog");
+                result["statistics"]["topics"].push_back({{"topic", topics[index]}, {"metric_id", metric},
+                    {"history_available", panel.history() != nullptr}, {"published_sample_tick", panel.tick()}});
+                TranslationPreviewAccess::closeMenu(gui);
+                phoneStatisticsComponent = phone;
+            }
+            phoneStatisticsComponent = false;
+            TranslationPreviewAccess::restoreDisplayMode(gui, previousMode);
+            require(beforeStatistics == gui.game.checkSum(), "Statistics navigation and draws must preserve simulation state");
+            result["statistics"]["checksum_before_ui"] = beforeStatistics;
+            result["statistics"]["checksum_after_ui"] = gui.game.checkSum();
         }
         TranslationPreviewAccess::openMenu(gui);
         capture(captureKind + "-dialog");

@@ -127,8 +127,13 @@ additional editor views check the localized new-campaign name and an authored
 campaign saved and loaded through the real campaign format. Its title, mission
 names, map paths and prerequisite identities remain unchanged; native word-break
 hints are excluded from newly authored default names. These views use ignored,
-isolated profiles and add no shipped campaign fixtures. Captures also include a bounded
-40-native/20-online sample matrix at 10, 13 and 20 pixels at 1×/2× raster scale.
+isolated profiles and add no shipped campaign fixtures. Four script-editor views also
+exercise the actual JavaScript validator with valid and invalid source; technical
+diagnostic payloads remain unchanged. Gameplay captures cover all five statistics
+topics and their actual history dialogs. Phone statistics panels are explicitly
+marked component-only: they use the real session data and production bounds but
+do not demonstrate navigation through the touch lens. Captures include a bounded
+60-native/20-online (480 measured cases) sample matrix at 10, 13 and 20 pixels at 1×/2× raster scale.
 Review the actual PNGs before accepting visual quality. These are native-platform
 CPU/HarfBuzz/software-SDL captures, not physical-screen, GPU or mobile-OS tests.
 The same helper can capture a separately built Linux release harness; keep each
