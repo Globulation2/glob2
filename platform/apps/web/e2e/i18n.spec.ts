@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
 import { AI_TAGS } from '@glob2/protocol';
 import { locales } from '../../../packages/i18n/src/locales.ts';
+import type { SeededHistory } from '../../api/test/historySeed.ts';
+import { INVITE_CODE } from './showcase.ts';
 
 for (const locale of locales) {
   test(`home loads and renders ${locale.code}`, async ({ page, context }, info) => {
@@ -88,7 +90,8 @@ for (const locale of locales) {
     }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    // The guest fixture has no skins.designer feature or moderation role.
+    // The maintained fixture enables the skin designer with sales disabled.
+    // The guest still has no moderation role.
     // Assert destinations so a missing translated navigation item cannot pass.
     expect(
       await page
@@ -104,6 +107,7 @@ for (const locale of locales) {
       '/ais',
       '/buildings',
       '/music',
+      '/skins',
     ]);
     const themeChangeLabel = catalog['{value0}. Change theme'];
     const defaultThemeLabel = catalog['Theme: same as this device'];
