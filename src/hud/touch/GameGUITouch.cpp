@@ -64,8 +64,10 @@ MobileLayout GameGUITouch::layout() const
 	// Keep the icon band, then reserve the actual wrapped label height and
 	// bottom padding. Tall scripts and accessibility text grow upward into
 	// the world; drawing and hit regions share the resulting action strip.
-	const double labelHeight = navigationLabelHeight(result.actions.w / 6 - 4);
-	result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0));
+	const auto &navigation = measureNavigation(result.actions.w);
+	const double labelHeight = navigation.height;
+	result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0)) *
+		(6 / navigation.columns);
 	result.actions.y = result.safe.y + result.safe.h - result.actions.h;
 	// Persistent palettes float too: the map remains visible below their last
 	// icon, and opening an inspector never changes the camera's framing.
@@ -421,8 +423,9 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 			return 8;
 		if (speedRect().contains(point))
 			return 49;
-		if (layout().actions.contains(point))
-			return 10 + std::min(5, int((point.x - layout().actions.x) / (layout().actions.w / 6)));
+		const auto navigation = layout();
+		if (navigation.actions.contains(point))
+			return 10 + navigationButtonAt(navigation, point);
 		const auto header = allocationRect();
 		if (header.contains(point) &&
 			point.x >= header.x + header.w - 48 * globalContainer->gfx->logicalUnitsPerPoint())
@@ -458,8 +461,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 		return targets;
 	const auto ui = layout();
 	for (int i = 0; i < 6; ++i)
-		targets.push_back(
-			{ui.actions.x + i * ui.actions.w / 6, ui.actions.y, ui.actions.w / 6, ui.actions.h});
+		targets.push_back(navigationButtonRect(ui, i));
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION)
 	{
 		targets = {confirmRect(), cancelRect()};
@@ -1350,8 +1352,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText;
 	if (hudInput && layout().actions.contains(point))
 	{
-		const int button =
-			std::min(5, int((point.x - layout().actions.x) / (layout().actions.w / 6)));
+		const int button = navigationButtonAt(layout(), point);
 		if (button == 2)
 			showStatistics = false;
 		if (globalContainer->replaying && button < 2)

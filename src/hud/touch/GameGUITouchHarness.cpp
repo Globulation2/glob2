@@ -5,6 +5,7 @@
 #include "ScopedEnvironment.h"
 #include <nlohmann/json.hpp>
 #include <string>
+#include <sstream>
 #include <memory>
 #include <algorithm>
 #include <iostream>
@@ -1282,12 +1283,12 @@ class GameGUITouchHarness
 		for (double growth : {1.0, 1.5}) {
 			GAGCore::userTextScale = growth;
 			const auto ui = gui.touch->layout();
-			gui.touch->navigationLabelHeight(ui.actions.w / unit / 6 - 4);
+			(void)gui.touch->measureNavigation(ui.actions.w / unit).height;
 			const unsigned calls = font.widthCalls;
 			const unsigned clusters = font.clusterCalls;
 			REQUIRE(calls > 0);
 			for (int repeat = 0; repeat < 10; ++repeat)
-				gui.touch->navigationLabelHeight(ui.actions.w / unit / 6 - 4);
+				(void)gui.touch->measureNavigation(ui.actions.w / unit).height;
 			CHECK(font.widthCalls == calls + 10 * 6); // Only six whole-caption probes per cache hit.
 			CHECK(font.clusterCalls == clusters); // Wrapping/shaping is not repeated on a cache hit.
 			CHECK(ui.actions.h > 48 * unit);
@@ -1322,19 +1323,105 @@ class GameGUITouchHarness
 		CHECK(gui.touch->layout().actions.h > oldHeight);
 		CHECK(font.widthCalls > beforeReload + 6);
 		const auto beforeResize = font.widthCalls;
-		gui.touch->navigationLabelHeight(40);
+		(void)gui.touch->measureNavigation(240).height;
 		CHECK(font.widthCalls > beforeResize + 6);
 		const auto beforeReplay = font.widthCalls;
 		const bool replaying = globalContainer->replaying;
 		globalContainer->replaying = !replaying;
-		gui.touch->navigationLabelHeight(40);
+		(void)gui.touch->measureNavigation(240).height;
 		globalContainer->replaying = replaying;
 		CHECK(font.widthCalls > beforeReplay + 6);
 		const auto beforeLanguage = font.widthCalls;
 		strings->setLang(strings->getLangCode("en"));
-		gui.touch->navigationLabelHeight(40);
+		(void)gui.touch->measureNavigation(240).height;
 		CHECK(font.widthCalls > beforeLanguage + 6);
 		strings->setLang(strings->getLangCode("ur"));
+	}
+
+	static void filipinoNavigationTypography()
+	{
+		struct Restore
+		{
+			double text = GAGCore::userTextScale;
+			int language = GAGCore::Toolkit::getStringTable()->getLang();
+			~Restore() {
+				GAGCore::userTextScale = text;
+				GAGCore::Toolkit::getStringTable()->setLang(language);
+			}
+		} restore;
+		glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		strings->setLang(strings->getLangCode("fil"));
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Filipino navigation", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Filipino navigation fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		const auto checksum = gui.game.checkSum();
+		auto *gfx = globalContainer->gfx;
+		gfx->setResponsiveViewport(true, 390, 844);
+		REQUIRE(gfx->getW() == 390);
+		REQUIRE(gfx->getH() == 844);
+		auto checkNavigation = [&](int expectedColumns) {
+			const auto ui = gui.touch->layout();
+			const double unit = gfx->logicalUnitsPerPoint();
+			CHECK(gui.touch->measureNavigation(ui.actions.w / unit).columns == expectedColumns);
+			const auto targets = gui.touch->keyboardTargets();
+			REQUIRE(targets.size() >= 6);
+			for (int i = 0; i < 6; ++i)
+			{
+				CAPTURE(i);
+				const auto button = gui.touch->navigationButtonRect(ui, i);
+				const auto rect = gui.touch->navigationLabelRect(ui, i);
+				const auto text = gui.touch->navigationLabel(i);
+				const auto lines = gui.touch->pointLines(text, rect.w, .86);
+				{
+					InGameTouchTheme::TextStyle style(globalContainer->standardFont);
+					std::istringstream words(text);
+					for (std::string word; words >> word;)
+					{
+						CHECK(globalContainer->standardFont->getStringWidth(word) <=
+							rect.w / (.86 * gfx->textUnitsPerPoint()) - 8 + .001);
+						CHECK(std::any_of(lines.begin(), lines.end(), [&](const auto &line) {
+							return line.find(word) != std::string::npos;
+						}));
+					}
+				}
+				const auto centre = GAGCore::ViewPoint{button.x + button.w / 2, button.y + button.h / 2};
+				CHECK(gui.touch->interfaceRegion(centre) == 10 + i);
+				CHECK(targets[i].x == doctest::Approx(button.x));
+				CHECK(targets[i].y == doctest::Approx(button.y));
+				CHECK(targets[i].w == doctest::Approx(button.w));
+				CHECK(targets[i].h == doctest::Approx(button.h));
+				CHECK(rect.y >= button.y);
+				CHECK(rect.y + rect.h <= button.y + button.h + .001);
+			}
+			CHECK(ui.world.y + ui.world.h == doctest::Approx(ui.actions.y));
+			CHECK(gui.game.checkSum() == checksum);
+			return ui;
+		};
+		GAGCore::userTextScale = 1;
+		const auto normal = checkNavigation(6);
+		CHECK(normal.actions.h == doctest::Approx(48 * gfx->logicalUnitsPerPoint()));
+		GAGCore::userTextScale = 1.5;
+		const auto enlarged = checkNavigation(3);
+		CHECK(enlarged.actions.h >= 96 * gfx->logicalUnitsPerPoint());
+		glob2test::drawGUI(gui, 0);
+		gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/filipino-hud-navigation-large.bmp");
+		gfx->nextFrame();
+		const int oldW = gfx->getW(), oldH = gfx->getH();
+		SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), 844, 390);
+		REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+		SDL_Event resized{};
+		resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+		GAGCore::GraphicContext::translateMouseEvent(&resized);
+		gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+		REQUIRE(gfx->getW() == 844);
+		REQUIRE(gfx->getH() == 390);
+		checkNavigation(6);
 	}
 
 	static void notifications()
@@ -5478,6 +5565,17 @@ TEST_SUITE("GameGUITouch")
 		glob2test::HeadlessGlobals globals(options);
 		REQUIRE(NET_Init());
 		GameGUITouchHarness::navigationTypography();
+		NET_Quit();
+	}
+
+	GLOB2_TEST_CASE("Filipino navigation keeps whole words and shared targets at enlarged text sizes", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 390, .height = 844,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		options.beforeLoad = [](GlobalContainer &globals) { globals.settings.language = "fil"; };
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::filipinoNavigationTypography();
 		NET_Quit();
 	}
 

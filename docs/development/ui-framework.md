@@ -570,7 +570,10 @@ button fitting and display-density textures for the finished labels.
 The phone HUD's bottom navigation reserves its icon band and measures every
 translated, wrapped caption using the active font and text-size preference.
 Captions taller than the original 16-point slot expand the action strip upward
-with bottom padding; world bounds and hit regions use that same strip geometry.
+with bottom padding. When whole words cannot fit across six buttons, navigation
+uses balanced rows of three, two or one button. Normal-size captions retain the
+six-button row when they fit. Drawing, pointer input and keyboard targets share
+the same button rectangles; world bounds end above the resulting strip.
 Do not shorten a translation to compensate for a fixed-height caption clip.
 Touch text wrapping preserves the active font's shaped clusters, including an
 indivisible cluster wider than its slot, and retains explicit blank lines.
