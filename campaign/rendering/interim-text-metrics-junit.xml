@@ -1,4 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="TextMetrics"><testcase classname="TextMetrics" name="offscreen transformed text rasterizes at the requested resolution" time="0.137972" status="run" />
-    <testcase classname="TextMetrics" name="font metrics do not rasterize or evict rendered text" time="2.18802" status="run" />
-  </testsuite></testsuites>

@@ -1,8 +1,0 @@
-{
-  "locale": "ja",
-  "full_native_catalog_path": "data/texts.ja.txt",
-  "full_native_catalog_sha256": "eef903c80f23532173f437f21d528e3abc492adb55e7b403e26398472edaa486",
-  "full_online_catalog_path": "platform/packages/i18n/locales/ja.json",
-  "full_online_catalog_sha256": "2583812aac85b8e8511f63237ba19b68da01bb5181f298da2284371723530426",
-  "scope": "Full shipped catalog overlay; viewport/platform claims reported separately."
-}

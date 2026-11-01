@@ -1,36 +1,40 @@
-# Current partial release evidence
+# Thai localization: final review evidence
 
-Actual qualification source: `667b2624f356a8c3f0d005535f54ffb0e46b6619`. Only language brief, pilot process and structural gates are closed. Six rendering/browser/platform gates remain pending. Historical producer revisions retain their original scope.
+Implementation: [`3eb4c73e29a1164383166f7ee80d338deb00608c`](https://github.com/Globulation2/glob2/tree/3eb4c73e29a1164383166f7ee80d338deb00608c). Standard Thai (`th`, ไทย), 3,430 native + 3,012 online entries, 53 review batches. Agent-reviewed; no native-human certification.
 
-- [Current 46-batch role approvals](platform/thai-localization-release/reviews/th.json)
-- [Current six pending gates](platform/thai-localization-release/checks/status-three-cheap-gates.json)
-- [156 derived per-test cross-browser results](campaign/browser-qa/crossbrowser-tests-derived-results.json)
-- [Cross-browser producer provenance](campaign/browser-qa/crossbrowser-test-provenance.json)
-- [Snapshot manifest, exact hashes and whole-file omissions](manifest.json)
+The nine release gates are complete. Each report retains its actual producer, flags, commands and coverage. Linux SIM116 rendering depth is carried through explicit component equality; SIM117 compatibility/browser/container/OS executions are separately identified. SDK117 executions used `53db9c314c`; the final generator-only Clang correction and two documentation updates are recorded separately. No old executable or screenshot is relabelled as a new build.
 
-The original 271 MB Playwright report remains local. The explicitly derived report preserves every test result, duration, retry, error, skip annotation, browser and viewport; embedded image bodies are replaced by decoded hashes/sizes. Separate actual Thai visual captures are included. No native/WASM release qualification is inferred from online captures.
+- [Final release status](evidence/thai-localization-final-0a38/checks/status-final.json.gz)
+- [Hash-bound approvals and gates](evidence/thai-localization-final-0a38/reviews/th.json.gz)
+- [Final independent source/evidence sanity audit](evidence/thai-localization/integration-985/final-source-evidence-sanity-audit.json.gz)
+- [Language brief](https://github.com/Globulation2/glob2/blob/f4aa967db2c9cbb9857adf588bd33b64252ec4c9/campaign/language-brief.json)
+- [Actual Google campaign ledger](evidence/thai-localization/google/th/ledger.json.gz)
+- [Native SIM117 qualification](evidence/thai-localization/integration-985/native117-integration-qualification.json.gz)
+- [Current browser startup and golden checks](evidence/thai-localization/integration-985/browser117-automated-qualification.json.gz)
+- [Actual website handoff and touch tutorial](evidence/thai-localization/integration-985/browser-bridge-final117-qualification.json.gz)
+- [Production containers and package HTTP](evidence/thai-localization/integration-985/containers-final117-summary.json.gz)
+- [Final Clang fix and resource equivalence](evidence/thai-localization/integration-985/catalog-length-fix/final-fix-qualification.json.gz)
 
-Earlier successor links below describe historical evidence only. The current release kit above has 3413 native and 2852 online entries.
+| Platform | Actual current qualification |
+| --- | --- |
+| windows | [Source, build, runtime and visual report](evidence/thai-localization/integration-985/hosted117/windows/independent-windows-assessment.json.gz) |
+| macos | [Source, build, runtime and visual report](evidence/thai-localization/integration-985/hosted117/macos/independent-macos-assessment.json.gz) |
+| android | [Source, build, runtime and visual report](evidence/thai-localization/integration-985/hosted117/android/independent-android-assessment.json.gz) |
+| ios | [Source, build, runtime and visual report](evidence/thai-localization/integration-985/hosted117/ios/independent-ios-assessment.json.gz) |
 
-# Thai localization evidence
+## Current SDK screenshots
 
-Source revision: `667b2624f356a8c3f0d005535f54ffb0e46b6619`.
+These links open the selected actual images. Inspection scope and original producer hashes are recorded in the platform reports above. The manifest records each current capture source and hash; identical image bodies are stored once, so some links point to another platform or an older directory.
 
-[Browse exact committed implementation](https://github.com/Globulation2/glob2/commit/667b2624f356a8c3f0d005535f54ffb0e46b6619).
+- **windows**: [localization-windows/1280x800-campaign-editor-loaded/campaign-editor-loaded.png](evidence/thai-localization/integration-985/hosted117/windows/localization-windows/1280x800-campaign-editor-loaded/campaign-editor-loaded.png), [localization-windows/1280x800-gameplay/gameplay-dialog.png](evidence/thai-localization/integration-985/hosted117/windows/localization-windows/1280x800-gameplay/gameplay-dialog.png), [localization-windows/1280x800-main/main.png](evidence/thai-localization/integration-f36/os-final651/windows-old114/diagnostics/localization-windows/1280x800-main/main.png), [localization-windows/1280x800-script-editor-failure/script-editor-failure.png](evidence/thai-localization/integration-985/hosted117/windows/localization-windows/1280x800-script-editor-failure/script-editor-failure.png), [localization-windows/1280x800-settings/settings.png](evidence/thai-localization/integration-f36/os-final651/windows-old114/diagnostics/localization-windows/1280x800-settings/settings.png), [localization-windows/1280x800-tutorial/tutorial-introduction-briefing.png](evidence/thai-localization/integration-985/hosted117/windows/localization-windows/1280x800-tutorial/tutorial-introduction-briefing.png), [localization-windows/390x844-campaign-editor-loaded/campaign-editor-loaded.png](evidence/thai-localization/integration-985/hosted117/windows/localization-windows/390x844-campaign-editor-loaded/campaign-editor-loaded.png)
+- **macos**: [localization-macos/1280x800-campaign-editor-loaded/campaign-editor-loaded.png](evidence/thai-localization/integration-985/hosted117/windows/localization-windows/1280x800-campaign-editor-loaded/campaign-editor-loaded.png), [localization-macos/1280x800-gameplay/gameplay-dialog.png](evidence/thai-localization/integration-985/hosted117/macos/localization-macos/1280x800-gameplay/gameplay-dialog.png), [localization-macos/1280x800-main/main.png](evidence/thai-localization/integration-f36/os-final651/macos-old114/diagnostics/localization-macos/1280x800-main/main.png), [localization-macos/1280x800-script-editor-failure/script-editor-failure.png](evidence/thai-localization/integration-985/hosted117/windows/localization-windows/1280x800-script-editor-failure/script-editor-failure.png), [localization-macos/1280x800-settings/settings.png](evidence/thai-localization/integration-f36/os-final651/windows-old114/diagnostics/localization-windows/1280x800-settings/settings.png), [localization-macos/1280x800-tutorial/tutorial-introduction-briefing.png](evidence/thai-localization/integration-985/hosted117/macos/localization-macos/1280x800-tutorial/tutorial-introduction-briefing.png), [localization-macos/390x844-campaign-editor-loaded/campaign-editor-loaded.png](evidence/thai-localization/integration-985/hosted117/windows/localization-windows/390x844-campaign-editor-loaded/campaign-editor-loaded.png)
+- **android**: [runtime/mobile-smoke/relaunched.png](evidence/thai-localization/integration-985/hosted117/android/runtime/mobile-smoke/relaunched.png), [runtime/mobile-smoke/resumed.png](evidence/thai-localization/integration-985/hosted117/android/runtime/mobile-smoke/resumed.png), [runtime/mobile-smoke/rotation-0.png](evidence/thai-localization/integration-985/hosted117/android/runtime/mobile-smoke/rotation-0.png), [runtime/mobile-smoke/rotation-1.png](evidence/thai-localization/integration-985/hosted117/android/runtime/mobile-smoke/rotation-1.png), [runtime/mobile-smoke/settings.png](evidence/thai-localization/integration-985/hosted117/android/runtime/mobile-smoke/settings.png), [runtime/mobile-smoke/startup.png](evidence/thai-localization/integration-985/hosted117/android/runtime/mobile-smoke/startup.png)
+- **ios**: [ios/smoke/relaunched.png](evidence/thai-localization/integration-985/hosted117/ios/smoke/relaunched.png), [ios/smoke/resumed.png](evidence/thai-localization/integration-985/hosted117/ios/smoke/resumed.png), [ios/smoke/startup.png](evidence/thai-localization/integration-985/hosted117/ios/smoke/startup.png)
 
-This dedicated evidence snapshot contains frozen sources/catalogs, actual Google responses and budget ledger, independent agent review history (including exact-hash carry dependencies), focused checks, and available screenshots. Review the manifest for exact file hashes and collection scope.
+The provider ledger contains 107 actual requests/responses and US$5.58182 conservatively reserved against the US$25 ceiling. Frozen original reviews, initial findings, exact-hash carry proofs and individual unchanged-English rationales remain separate from coordinator integration notes. The raw17 machine draft is preserved alongside the corrected final-batch snapshot; no genuine approval record was rewritten.
 
-Collection status is provisional until the PR release gates and platform visual reviews are complete. Logs are losslessly gzip-compressed. SDKs, binaries, application/source archives, private fixture cookies and profiles are excluded.
+This collection does not certify physical devices, physical Thai IME use, every translated string visually, or a fully offline website shell. Diagnostic source-raster width flags are distinguished from actual drawing clipping. Earlier failed attempts and environment fixes retain their original results. Historical bodies omitted by the representative-image/log policy have exact hashes and explicit dispositions in the manifest; required final gate evidence is retained or resolved through verified immutable public bytes.
 
-Approval records report agent review, not native-human certification.
+[Manifest and complete file/hash inventory](manifest.json) records compression, aliases, original hashes, exact historical links and whole-file omissions. JSON and text payloads are losslessly gzip-compressed: download and use `gzip -dc FILE.json.gz` to inspect them. PNGs are ordinary image files. The snapshot contains no application archives, SDKs, credentials, private browser state or user profiles.
 
-- [Historical successor and carry proof (source-current at its original revision)](successor/successor-proof.json)
-- [Historical per-batch role approvals](successor/checks/independent-final-approvals.json)
-- [Historical release-gate status](successor/checks/status.json)
-- [Language brief and terminology](campaign/language-brief.json)
-- [Review history and immutable carry dependencies](campaign/reviews)
-- [Actual Google requests/responses](campaign/google/th/requests) and [budget ledger](campaign/google/th/ledger.json)
-- [Focused checks](campaign/checks) and [rendering evidence](campaign/rendering)
-- [Browser report](campaign/browser-qa/report.json) and [capture provenance](campaign/browser-qa/provenance.json) (if included)
-
-Historical capture scope: the original28-view collection remains interim;20 e100 studio views cover unchanged studio components; [Two fresh username-hint SSR views](campaign/browser-qa/username-hint-final-report.json) cover the revised auth text. [Historical native input equality](successor/checks/native-rendered-input-equivalence.json) documents the earlier3e5 rendered inputs only. It does not qualify the current3413-entry native catalog or its20 new entries. Inspect each report and actual build provenance; pending platform gates remain open.
+The final publication reference audit resolves all 72 direct passed-gate references and every required current SDK117/container dependency. It separately records 134 non-required historical references (111 available locally but unselected, 19 old source-blob gaps, three missing paths/identifiers and one old relative-summary mismatch), plus explicit representative-image and superseded-log omissions. These retain their historical limitations and are not used to replace current qualification. The complete 12.93 MB mechanical reference report remains local under the reviewed storage budget; its SHA256 is `ad1aa31907aef1d8f4b1dfb913c76983f925a54dab2c0639ba249909506a15a0`.

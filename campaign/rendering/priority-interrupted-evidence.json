@@ -1,7 +1,0 @@
-{
-  "command": "GLOB2_SDL3_PREFIX=artifacts/thai-localization/sdl-prefix python3 tools/dev_build.py --build=build/thai-localization translation-preview-harness unit-tests -j8",
-  "started_revision": "dee2d8eb599a262468c39866239fc7860bc2d361",
-  "result": "Coordinator requested interruption before current master integration and OS shell patch; exit130. No complete native target or final tests claimed. Objects retained.",
-  "log_sha256": "cff27cf8f0d54f2b41f05196e181317dc0c5da02113fad265c14a9199aeeeff5",
-  "prior_probe_validity": "Direct SDL_ttf Thai font-readiness10/13/20px reports remain valid for their explicitly hashed font and SDL/HarfBuzz inputs; standalone soft-break smoke and syntax checks remain scoped to recorded source hashes. Full current integration evidence requires rebuilt final source."
-}

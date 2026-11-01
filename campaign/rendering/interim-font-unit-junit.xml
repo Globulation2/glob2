@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="BidiText"><testcase classname="BidiText" name="logical shaping runs preserve Arabic codepoints and numeric ratios" time="0.000537" status="run" />
-    <testcase classname="BidiText" name="logical shaping keeps both ends of spaced numeric brackets in one direction" time="0.000516" status="run" />
-    <testcase classname="BidiText" name="left-to-right text is unchanged" time="0" status="run" />
-    <testcase classname="BidiText" name="Arabic letters join and read right to left" time="0" status="run" />
-    <testcase classname="BidiText" name="numbers and Latin words keep their own order inside right-to-left text" time="0" status="run" />
-    <testcase classname="BidiText" name="matches fribidi on every Arabic and Persian catalog value" time="5.36227" status="run" />
-  </testsuite></testsuites>

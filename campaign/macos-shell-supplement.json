@@ -1,8 +1,0 @@
-{
-  "id": "macos:NSLocalNetworkUsageDescription",
-  "source_file": "darwin/Info.plist",
-  "source_file_sha256": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896",
-  "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
-  "provider_draft": "Globulation 2 ค้นหาและเข้าร่วมเกมผู้เล่นหลายคนที่โฮสต์อยู่บนเครือข่ายท้องถิ่นของคุณ",
-  "reserved_usd": "5.38718"
-}

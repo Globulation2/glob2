@@ -1,1 +1,0 @@
-{"message":"You must have repository read permissions or have the repository runners fine-grained permission.","documentation_url":"https://docs.github.com/rest/actions/self-hosted-runners#list-self-hosted-runners-for-a-repository","status":"403"}

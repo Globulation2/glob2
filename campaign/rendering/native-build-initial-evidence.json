@@ -1,6 +1,0 @@
-{
-  "command": "GLOB2_SDL3_PREFIX=artifacts/thai-localization/sdl-prefix python3 tools/dev_build.py --build=build/thai-localization unit-tests engine-tests translation-preview-harness -j8",
-  "result": "Interrupted by coordinator request at final catalog registration boundary; exit130. Not a complete build or test pass. Objects retained for final source rebuild.",
-  "log_sha256": "96b2222d30cbca51f6fcc506e2fc485b442d56bd9719d18af735aea3f9ca83ea",
-  "notes": "Initial build compiled current pinned SDL/HarfBuzz and recording development dependency bundles, then most native sources. Unit test runner invoked prematurely while link file lacked execute permission; no tests ran in that attempt."
-}

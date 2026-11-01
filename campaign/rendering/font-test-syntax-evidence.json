@@ -1,6 +1,0 @@
-{
-  "command": "c++ -std=c++20 -fsyntax-only -Ilibgag/include -Ilibusl/src -Itest/support -I/home/bradley/glob2-claude/build/sdl3/prefix/include libgag/src/FontKerningTest.cpp",
-  "exit_code": 0,
-  "source_sha256": "2bed6bd0052ba6b7299f20bcc2789f1d23478cc2825cbafca85edc7f0c442d40",
-  "limits": "Syntax validation only; runtime shaping evidence will use freshly built pinned HarfBuzz-enabled SDL3_ttf."
-}

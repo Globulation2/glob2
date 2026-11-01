@@ -1,4 +1,0 @@
-Settings::load("preferences.txt") : error, can't open file.
-2026-11-01 02:56:48.093 Glob2[40965:547515] Unbalanced calls to begin/end appearance transitions for <SDL_uikitviewcontroller: 0x108db4000>.
-2026-11-01 02:56:48.094 Glob2[40965:547515] Unbalanced calls to begin/end appearance transitions for <SDL_uikitviewcontroller: 0x108db4000>.
-2026-11-01 02:56:50.478 Glob2[40965:547515] Glob2 screen ready: 21AudioPreferenceScreen
