@@ -6,6 +6,7 @@ import subprocess
 from pathlib import Path
 sys.path.append( os.path.dirname(__file__) )
 from addDependentLibsToBundle import addDependentLibsToBundle
+from moltenvk import install_macos
 
 def run(command) :
     print(("\033[32m:: ", command, "\033[0m"))
@@ -43,7 +44,6 @@ def createBundle(target, source, env) :
             raise RuntimeError('Release dSYM UUID does not match executable')
         subprocess.run(['strip', '-S', '-x', packaged], check=True)
     # Dynamic compute dependencies cannot be discovered through Mach-O linkage.
-    from moltenvk import install_macos
     install_macos(bundleDir, env['BUILDDIR'])
     # Exported image bytes and source notices are the only runtime resources.
     from tools.package_assets import export_assets
