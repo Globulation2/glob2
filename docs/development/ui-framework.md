@@ -137,13 +137,20 @@ bindings. Fixed studio copy passed through `ChatComposer`, `NewStudio`,
 `RevisionControls` and conversation/status props must be translated by the caller;
 project titles, prompts and generated responses remain user content. Fresh set
 workspaces start with the translated new-set title and category names with unused
-numeric suffixes for new entries. Empty skin-name fields use the translated
-new-skin label. This initialization leaves existing authored names, package UUIDs
-and executable preset/property identities unchanged. Newly
-cataloged legacy English UI may retain explicit English values and scoped
+numeric suffixes for new entries. Fresh skin documents use the translated
+`My colony` title, and empty skin-name fields use the translated `New skin` label.
+`skinCopyName` reserves room for the translated copy suffix within both the form
+and protocol limits while preserving complete graphemes. This initialization
+leaves existing authored names, package UUIDs and executable preset/property
+identities unchanged. Newly cataloged legacy English UI may retain explicit
+English values and scoped
 `shared-values.json` exceptions in existing locales until translated; a completed
-new locale must translate those messages. Render representative screens in each language to check font
-coverage, text fitting and layout. The legacy Arabic/Persian route in
+new locale must translate those messages. Render representative screens in each
+language to check font coverage, text fitting and layout. Keep the skin material
+canvas and button grid at the same column count; give Thai labels more width and
+line height and allow descriptions to wrap. Center buttons with independent CSS
+`translate` when they inherit the shared design system's active `transform`, so
+pressing them preserves their pointer target. The legacy Arabic/Persian route in
 `TrueTypeFont` shapes text into visual order before rasterization and uses an
 explicit left-to-right SDL_ttf direction to prevent a second reordering pass.
 Complex script fonts retain their shaping tables and use logical directional
