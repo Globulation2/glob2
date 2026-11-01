@@ -113,6 +113,7 @@
       "Controls",
       "Desert",
       "Editor",
+      "Error: %0",
       "Experimental",
       "Forts",
       "Hospital",
@@ -124,6 +125,7 @@
       "Oceania",
       "P %0/%1/%2",
       "Paper",
+      "Port",
       "Prunes",
       "Script",
       "Total",
@@ -131,9 +133,7 @@
       "Tutorial ▸",
       "Zones",
       "bases",
-      "desert",
-      "Port",
-      "Error: %0"
+      "desert"
     ],
     "texts.cz.txt": [
       "%0 min",
@@ -147,10 +147,10 @@
       "Editor",
       "Info",
       "P %0/%1/%2",
+      "Port",
       "Server",
       "Server: %0",
-      "Start",
-      "Port"
+      "Start"
     ],
     "texts.de.txt": [
       "%0 Level %1",
@@ -186,6 +186,7 @@
       "Pause",
       "Ping",
       "Polder",
+      "Port",
       "Prestige",
       "Radius",
       "Region %0",
@@ -202,10 +203,10 @@
       "Teams %0/%1",
       "Teams…",
       "Version",
-      "Veteran",
-      "Port"
+      "Veteran"
     ],
     "texts.dk.txt": [
+      "%0 · revision %1",
       "256 × 256",
       "= Normal",
       "Alliance",
@@ -232,6 +233,7 @@
       "Ping",
       "Pink",
       "Polder",
+      "Port",
       "Prestige",
       "Radius",
       "Sand",
@@ -248,9 +250,7 @@
       "Upload",
       "Version",
       "Veteran",
-      "version %0",
-      "Port",
-      "%0 · revision %1"
+      "version %0"
     ],
     "texts.eo.txt": [
       "%0 min",
@@ -277,6 +277,7 @@
       "Color",
       "Coral",
       "Editor",
+      "Error: %0",
       "Experimental",
       "Hospital",
       "Lava",
@@ -290,8 +291,7 @@
       "Total",
       "Tutorial",
       "Tutorial ▸",
-      "bases",
-      "Error: %0"
+      "bases"
     ],
     "texts.eu.txt": [
       "%0 min",
@@ -357,8 +357,10 @@
       "Expansion",
       "Forts",
       "Grain",
+      "Introduction",
       "Magenta",
       "Menu",
+      "Messages ▸",
       "Normal",
       "Obstacles",
       "Options",
@@ -371,12 +373,14 @@
       "Plantations",
       "Polder",
       "Population",
+      "Port",
       "Prestige",
       "Proportions",
       "Prunes",
       "Replays",
       "Score",
       "Script",
+      "Silence",
       "Standard",
       "Terrain",
       "Total",
@@ -385,11 +389,7 @@
       "bases",
       "colonies",
       "options",
-      "version %0",
-      "Port",
-      "Silence",
-      "Introduction",
-      "Messages ▸"
+      "version %0"
     ],
     "texts.gr.txt": [
       "%0 / %1 HP · %2",
@@ -400,13 +400,13 @@
     "texts.hu.txt": [
       "CPU %0%",
       "Editor",
+      "Globulation 2 Discord",
       "Info",
       "Magenta",
       "Online",
       "P %0/%1/%2",
       "Ping",
       "Polder",
-      "Globulation 2 Discord",
       "Port"
     ],
     "texts.id.txt": [
@@ -576,9 +576,9 @@
       "P %0/%1/%2",
       "Ping",
       "Polder",
+      "Port",
       "host",
-      "host %0",
-      "Port"
+      "host %0"
     ],
     "texts.pt.txt": [
       "%0 min",
@@ -635,6 +635,8 @@
       "P %0/%1/%2",
       "Ping",
       "Polder",
+      "Port",
+      "Scalar",
       "Script",
       "Server",
       "Set",
@@ -642,9 +644,7 @@
       "Total",
       "Tutorial",
       "Tutorial ▸",
-      "Veteran",
-      "Scalar",
-      "Port"
+      "Veteran"
     ],
     "texts.ru.txt": [
       "256 × 256"
@@ -674,9 +674,9 @@
       "Online",
       "P %0/%1/%2",
       "Polder",
-      "Server",
       "Port",
-      "Seed: %0"
+      "Seed: %0",
+      "Server"
     ],
     "texts.sr.txt": [
       "256 × 256"
@@ -686,6 +686,7 @@
       "%0 min",
       "%0 min %1 s",
       "%0 s",
+      "%0 · revision %1",
       "%0/%1  >",
       "/min",
       "256 × 256",
@@ -722,8 +723,7 @@
       "Version",
       "Veteran",
       "jitter %0",
-      "version %0",
-      "%0 · revision %1"
+      "version %0"
     ],
     "texts.tr.txt": [
       "%0 KB",
@@ -934,6 +934,18 @@
       "Tutorial",
       "Veteran",
       "sim %0",
+      "–"
+    ],
+    "texts.ta.txt": [
+      "%0 KB",
+      "1 vs 1",
+      "256 × 256",
+      "AI: %0",
+      "CPU %0%",
+      "FFA",
+      "Globulation 2 Discord",
+      "Hive Mind",
+      "P %0/%1/%2",
       "–"
     ]
   }
