@@ -255,7 +255,7 @@ function Recovery({ row, reload }: { row: AdminOperation; reload: () => void }) 
                       {
                         input: t('Input tokens (including cached)'),
                         cachedInput: t('Cached input tokens'),
-                        cacheWrite: 'Cache creation/write tokens',
+                        cacheWrite: t('Cache write tokens'),
                         output: t('Output tokens'),
                       }[key]
                     }
