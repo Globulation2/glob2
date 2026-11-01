@@ -215,8 +215,15 @@ describe('message presentation', () => {
     });
     expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
     expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
-    for (const [code, name] of [['th', 'ไทย'], ['te', 'తెలుగు'], ['mr', 'मराठी'], ['bn', 'বাংলা'], ['ms', 'Bahasa Melayu'], ['nb', 'Norsk bokmål']])
-      expect(locales).toContainEqual({code, gameCode: code, name, dir: 'ltr'});
+    for (const [code, name] of [
+      ['th', 'ไทย'],
+      ['te', 'తెలుగు'],
+      ['mr', 'मराठी'],
+      ['bn', 'বাংলা'],
+      ['ms', 'Bahasa Melayu'],
+      ['nb', 'Norsk bokmål'],
+    ])
+      expect(locales).toContainEqual({ code, gameCode: code, name, dir: 'ltr' });
   });
 });
 

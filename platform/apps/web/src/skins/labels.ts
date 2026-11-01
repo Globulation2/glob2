@@ -177,5 +177,4 @@ const shapeLabels: Record<SwarmMeshId, { name: () => string; description: () => 
 export const skinShapeLabel = (id: SwarmMeshId): string => shapeLabels[id].name();
 export const skinShapeDescription = (id: SwarmMeshId): string => shapeLabels[id].description();
 
-
 export { skinCopyName } from './skinNames.ts';

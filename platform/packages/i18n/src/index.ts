@@ -59,16 +59,16 @@ export function resolveLocale(input: string | readonly string[]): Locale {
         : language === 'th'
           ? 'thai'
           : language === 'bn'
-          ? 'beng'
-          : language === 'ur'
-            ? 'arab'
-            : language === 'sw' || language === 'ms'
-              ? 'latn'
-              : language === 'te'
-                ? 'telu'
-                : language === 'ta'
-                  ? 'taml'
-                  : undefined;
+            ? 'beng'
+            : language === 'ur'
+              ? 'arab'
+              : language === 'sw' || language === 'ms'
+                ? 'latn'
+                : language === 'te'
+                  ? 'telu'
+                  : language === 'ta'
+                    ? 'taml'
+                    : undefined;
     if (writtenScript) {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);

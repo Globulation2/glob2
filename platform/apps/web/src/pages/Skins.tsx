@@ -639,7 +639,7 @@ function SkinStudio() {
                     </optgroup>
                     {(['front', 'back', 'left', 'right'] as const).map((v) => (
                       <option key={v} value={v}>
-                        {skinLabel(v[0]!.toUpperCase() + v.slice(1))}
+                        {skinLabel(v.charAt(0).toUpperCase() + v.slice(1))}
                       </option>
                     ))}
                   </select>
