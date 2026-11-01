@@ -1,0 +1,31 @@
+{
+  "id": "native-maps-002",
+  "predecessor_source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "target_sha256": "f0c77524849440f8fe832e61a0e81833d9cc8984750d768bc8235dd5bc066eef",
+  "carried_keys": [
+    "native:[terrain palette hint]",
+    "native:[terrain rule algae grow]",
+    "native:[editor map saved]",
+    "native:[editor map shared]",
+    "native:[editor menu import terrain]",
+    "native:[library All generators]",
+    "native:[library Downloading generator…]",
+    "native:[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+    "native:[library Editor tool: generates terrain for the map editor.]",
+    "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+    "native:[library Generator file hash mismatch]",
+    "native:[library Generator installed. Future selections use this release.]",
+    "native:[library Generator package identity mismatch]",
+    "native:[library Generators]",
+    "native:[library Map generators]",
+    "native:[library My generators]",
+    "native:[library Playable generator]",
+    "native:[library Saving generator library…]"
+  ],
+  "fresh_reviewed_keys": [],
+  "predecessor_batch_sha256": "ac2409b67e90aa4f747fabb5f251dbca4f885d54a6621aed88e007d670393056",
+  "predecessor_aggregate_review_sha256": "333280b267a3641b216c0cefc5269af743865f6b531695b4b78ad41a544aa533",
+  "state": "exact equality proven; owner carry acceptance pending",
+  "approval_created": false
+}

@@ -1,8 +1,22 @@
+# Current partial release evidence
+
+Actual qualification source: `667b2624f356a8c3f0d005535f54ffb0e46b6619`. Only language brief, pilot process and structural gates are closed. Six rendering/browser/platform gates remain pending. Historical producer revisions retain their original scope.
+
+- [Current 46-batch role approvals](platform/thai-localization-release/reviews/th.json)
+- [Current six pending gates](platform/thai-localization-release/checks/status-three-cheap-gates.json)
+- [156 derived per-test cross-browser results](campaign/browser-qa/crossbrowser-tests-derived-results.json)
+- [Cross-browser producer provenance](campaign/browser-qa/crossbrowser-test-provenance.json)
+- [Snapshot manifest, exact hashes and whole-file omissions](manifest.json)
+
+The original 271 MB Playwright report remains local. The explicitly derived report preserves every test result, duration, retry, error, skip annotation, browser and viewport; embedded image bodies are replaced by decoded hashes/sizes. Separate actual Thai visual captures are included. No native/WASM release qualification is inferred from online captures.
+
+Earlier successor links below describe historical evidence only. The current release kit above has 3413 native and 2852 online entries.
+
 # Thai localization evidence
 
-Source revision: `03abf217c082d97f1512b2ac691ef64d3e30b065`.
+Source revision: `667b2624f356a8c3f0d005535f54ffb0e46b6619`.
 
-[Browse exact committed implementation](https://github.com/Globulation2/glob2/commit/03abf217c082d97f1512b2ac691ef64d3e30b065).
+[Browse exact committed implementation](https://github.com/Globulation2/glob2/commit/667b2624f356a8c3f0d005535f54ffb0e46b6619).
 
 This dedicated evidence snapshot contains frozen sources/catalogs, actual Google responses and budget ledger, independent agent review history (including exact-hash carry dependencies), focused checks, and available screenshots. Review the manifest for exact file hashes and collection scope.
 
@@ -10,30 +24,13 @@ Collection status is provisional until the PR release gates and platform visual 
 
 Approval records report agent review, not native-human certification.
 
-- [Source-current successor and carry proof](successor/successor-proof.json)
-- [Actual per-batch role approvals](successor/checks/independent-final-approvals.json)
-- [Current release-gate status](successor/checks/status.json)
+- [Historical successor and carry proof (source-current at its original revision)](successor/successor-proof.json)
+- [Historical per-batch role approvals](successor/checks/independent-final-approvals.json)
+- [Historical release-gate status](successor/checks/status.json)
 - [Language brief and terminology](campaign/language-brief.json)
 - [Review history and immutable carry dependencies](campaign/reviews)
 - [Actual Google requests/responses](campaign/google/th/requests) and [budget ledger](campaign/google/th/ledger.json)
 - [Focused checks](campaign/checks) and [rendering evidence](campaign/rendering)
 - [Browser report](campaign/browser-qa/report.json) and [capture provenance](campaign/browser-qa/provenance.json) (if included)
 
-Capture scope is explicit: the original28-view collection remains interim;20 e100 studio views cover unchanged studio components; [Two fresh username-hint SSR views](campaign/browser-qa/username-hint-final-report.json) cover the revised auth text. [Native input equality](successor/checks/native-rendered-input-equivalence.json) permits unchanged3e5 native capture evidence only. Inspect each report and actual build provenance; pending platform gates remain open.
-
-This partial snapshot closes desktop/phone rendering only:58 focused native tests,36 PNGs and360 matrix measurements. Their actual producer is a Linux development/software build, not a release-platform certification. Platform/Caddy container QA passed; engine-container and mobile/release-platform work remain pending.
-
-- [fresh username hint SSR](campaign/browser-qa/username-hint-final-report.json)
-- [unchanged native rendered inputs](successor/checks/native-rendered-input-equivalence.json)
-- [display scope inventory](campaign/reviews/display-scope-audit.json)
-- [exact source and target approvals](successor/checks/independent-final-approvals.json)
-- [prior username approval history](successor/reviews/pre-username)
-- [native development verification](campaign/rendering/final-native-verification.json)
-- [native actual PNGs](platform/thai-localization__native-final/manifest.json)
-- [platform and Caddy container QA](platform/thai-localization-final__container-qa/summary.json)
-- [iOS second failure and bundle pass](platform/thai-localization__platform__ios-b6e-bounded/result.json)
-- [Android first failure](platform/thai-localization__platform__android-e100-runtime__mobile-smoke/result.json)
-- [latest QA only source equivalence](successor/checks/qualification-only-head-equivalence-03ab.json)
-- [actual Android release emulator review](platform/thai-localization__platform__android-cedc-bounded/visual-review.json)
-- [latest master fixture reproduction](platform/thai-localization__checks__master-baseline-80596/provenance.json)
-- [latest master exact source hashes](platform/thai-localization__checks__master-baseline-80596/source-hashes.json)
+Historical capture scope: the original28-view collection remains interim;20 e100 studio views cover unchanged studio components; [Two fresh username-hint SSR views](campaign/browser-qa/username-hint-final-report.json) cover the revised auth text. [Historical native input equality](successor/checks/native-rendered-input-equivalence.json) documents the earlier3e5 rendered inputs only. It does not qualify the current3413-entry native catalog or its20 new entries. Inspect each report and actual build provenance; pending platform gates remain open.

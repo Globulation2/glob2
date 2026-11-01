@@ -778,6 +778,14 @@
       "reserved_usd": "0.01988",
       "state": "response_received",
       "time_unix": 1793488996.7450697
+    },
+    {
+      "request_sha256": "8685a856a4d6b918c854b28074b01aef5a9b0885e6f633b068bed11a39be5a40",
+      "characters": 1684,
+      "usd_per_million": "20",
+      "reserved_usd": "0.03368",
+      "state": "response_received",
+      "time_unix": 1793506931.644453
     }
   ]
 }

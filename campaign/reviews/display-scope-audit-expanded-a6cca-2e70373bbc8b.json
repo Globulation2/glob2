@@ -1,0 +1,1998 @@
+{
+  "reviewer": "thai_brief",
+  "revision": "3e5aa1a7518df50145001de239f384f283a9e82f",
+  "scope": "Read-only source audit of bundled tutorial/campaign display fields and browser launcher/accessibility chrome. Does not claim every runtime path visually rendered.",
+  "tutorial_display_references": [
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".title",
+      "source_key": "[intro menu]",
+      "thai": "บท​แนะนำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".briefing",
+      "source_key": "[intro briefing]",
+      "thai": "เรียนรู้​การควบคุม​ทางอ้อม : สอดแนม​โดย​ใช้​ธง ส่ง​เสบียง​ให้​อาณานิคม และ​สั่งการ​โจมตี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".completionTitle",
+      "source_key": "[intro complete]",
+      "thai": "จบ​บทแนะนำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".completionBody",
+      "source_key": "[intro complete body]",
+      "thai": "คุณ​กำหนด​งาน​ให้​ยูนิต​ที่​ทำงาน​เอง เพิ่ม​อาหาร ขยาย​อาณานิคม และ​จัด​การบุก​แล้ว เรียน​เรื่อง​การ​ฝึก​ทักษะ การ​อัปเกรด และ​การ​ป้องกัน​ต่อ​ใน​บทเรียน​ฝึกสอน หรือ​กลับ​เมนูหลัก​เพื่อ​เริ่ม​แมตช์",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[0].title",
+      "source_key": "[intro goal scout]",
+      "thai": "สำรวจ​จุด​สังเกต​ที่​เป็น​หิน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[intro instruction scout]",
+      "thai": "เปิด​เมนู​ธง และ​วาง​ธงสำรวจ​ไว้​บน​กลุ่ม​หิน​ทาง​ทิศตะวันออก​ของ​อาณานิคม​ของ​คุณ มอบหมาย​นักสำรวจ​หนึ่ง​ตัว แล้ว​เฝ้าดู​นักสำรวจ​เดินทาง​ไป​ยัง​ธง​นั้น",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[intro compact scout]",
+      "thai": "ธง → ธงสำรวจ วาง​ธง​ลง​บน​ก้อนหิน กำหนด​นักสำรวจ 1 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[0].help",
+      "source_key": "[intro help scout]",
+      "thai": "ใช้​แผนที่​ย่อ​เลื่อน​ไป​ตะวันออก​เพื่อ​หา​กอง​หิน เลือก​ธงสำรวจ​ใน​ธง วาง​บน​หิน แล้ว​กดปุ่ม​เมาส์​รอง​เพื่อ​ออกจาก​โหมด​วาง เลือก​ธง​และ​กำหนด​นักสำรวจ 1 ตัว ธง​ร้องขอ​ยูนิต ไม่​ได้​ย้าย​ยูนิต​ทันที นักสำรวจ​อาจ​หยุด​กิน​อาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[intro help touch scout]",
+      "thai": "ลาก​พื้นที่ว่าง​เพื่อ​เลื่อน​มุมมอง​ก่อน​วาง​ธง หา​กอง​หิน​ทาง​ตะวันออก เปิด​ธง เลือก​ธงสำรวจ วาง​บน​หิน​แล้ว​ยืนยัน เลือก​ธง​แล้ว​ตั้ง​จำนวน​นักสำรวจ 1 ตัว ยูนิต​เดินทาง​เอง​และ​อาจ​หยุด​กิน​อาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[1].title",
+      "source_key": "[intro goal build]",
+      "thai": "สร้าง​โรงเตี๊ยม​เพิ่ม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[intro instruction build]",
+      "thai": "เปิด​สร้าง แล้ว​วาง​โรงเตี๊ยม​ใกล้​ข้าวสาลี มอบหมาย​คนงานว่าง​ให้​ก่อสร้าง และ​คง​คนงาน​ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​ไว้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[intro compact build]",
+      "thai": "สร้าง → โรงเตี๊ยม วาง​ไว้​ใกล้​ทุ่ง​ข้าวสาลี มอบหมาย​คนงานก่อสร้าง 2 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[1].help",
+      "source_key": "[intro help build]",
+      "thai": "การ​ก่อสร้าง​ใช้​ไม้​ที่​คนงาน​ขน​มา เลือก​โรงเตี๊ยม​จาก​แผง​เลือก​อาคาร วาง​บน​ที่โล่ง​ใกล้​ข้าวสาลี และ​กำหนด​คนงานก่อสร้าง 2 ตัว จำนวน​เป้าหมาย​คือ​จำนวน​ที่​ร้องขอ ไม่​ใช่​คนงาน​ที่​อยู่แล้ว คง​คนงาน​ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​และ​รัง​ไว้ วาง​ตรงไหน​ที่​ถูกต้อง​ก็​นับ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[intro help touch build]",
+      "thai": "เลือก​โรงเตี๊ยม​จาก​สร้าง วาง​บน​ที่โล่ง​ใกล้​ข้าวสาลี​แล้ว​ยืนยัน เลือก​พื้นที่​ก่อสร้าง​และ​กำหนด​คนงาน 2 ตัว จำนวน​เป้าหมาย​คือ​จำนวน​ที่​ร้องขอ ไม่​ใช่​จำนวน​ที่​มี​อยู่ ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​และ​รัง​ต่อไป วาง​ตรงไหน​ที่​ถูกต้อง​ก็​นับ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[2].title",
+      "source_key": "[intro goal supply]",
+      "thai": "ส่ง​เสบียง​ให้​โรงเตี๊ยม​ใหม่",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[2].instruction",
+      "source_key": "[intro instruction supply]",
+      "thai": "เลือก​โรงเตี๊ยม​ใหม่​ที่​สร้าง​เสร็จ​แล้ว มอบหมาย​คนงาน​ส่ง​เสบียง​อย่าง​น้อย 1 ตัว แล้ว​รอ​ให้​ส่ง​ข้าวสาลี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[2].touchInstruction",
+      "source_key": "[intro compact supply]",
+      "thai": "เลือก​โรงเตี๊ยม​ใหม่ กำหนด​คนงาน​ส่ง​เสบียง​อย่าง​น้อย 1 ตัว รอ​ข้าวสาลี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[2].help",
+      "source_key": "[intro help supply]",
+      "thai": "งาน​ก่อสร้าง​กับ​งาน​ส่ง​เสบียง​มี​จำนวน​คนงาน​เป้าหมาย​แยกกัน เลือก​โรงเตี๊ยม​ที่​สร้าง​เสร็จ จากนั้น​เพิ่ม​คนงาน​ใช้งาน คนงาน​ส่ง​เสบียง​เก็บ​ข้าวสาลี​มา​ที่นี่ ยูนิต​ที่​หิว​กิน​อาหาร​ที่​โรงเตี๊ยม หาก​ไม่​มี​คนงาน​ส่ง​เสบียง อาหาร​จะ​หมด​ในที่สุด เปิดทาง​ไป​ยัง​แปลง​ข้าวสาลี​ไว้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[2].touchHelp",
+      "source_key": "[intro help touch supply]",
+      "thai": "เลือก​โรงเตี๊ยม​ใหม่​ที่​เสร็จ​แล้ว​และ​เพิ่ม​จำนวน​คนงาน​ที่​มอบหมาย งาน​ก่อสร้าง​กับ​ส่ง​เสบียง​มี​เป้าหมาย​แยกกัน คนงาน​ส่ง​เสบียง​เก็บ​ข้าวสาลี​มา​ที่นี่ ยูนิต​ที่​หิว​กิน​อาหาร​ที่​โรงเตี๊ยม หาก​ไม่​มี​คนงาน​ส่ง​เสบียง อาหาร​ใน​อาคาร​จะ​หมด​ในที่สุด เปิดทาง​ไป​ยัง​ข้าวสาลี​ไว้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[3].title",
+      "source_key": "[intro goal grow]",
+      "thai": "ขยาย​กำลังแรงงาน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[3].instruction",
+      "source_key": "[intro instruction grow]",
+      "thai": "เลือก​รัง ตั้ง​จำนวน​คนงาน​ที่​มอบหมาย​อย่าง​น้อย 2 และ​ตั้ง​สัดส่วน​ให้​สร้าง​เฉพาะ​คนงาน ส่ง​เสบียง​ให้​โรงเตี๊ยม​ทั้งสอง​แห่ง​ระหว่าง​รอ​คนงาน​ใหม่​เกิด",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[3].touchInstruction",
+      "source_key": "[intro compact grow]",
+      "thai": "เลือก​รัง กำหนด​คนงาน​ส่ง​เสบียง 2 ตัว สร้าง​เฉพาะ​คนงาน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[3].help",
+      "source_key": "[intro help grow]",
+      "thai": "รัง​ใช้​ข้าวสาลี​สร้าง​ยูนิต ตั้ง​สัดส่วน​คนงาน​เป็น 1 นักสำรวจ​และ​นักรบ​เป็น 0 เพิ่ม​คนงาน​ที่​มอบหมาย​ให้​รัง​เป็น 2 ขึ้นไป คนงาน​ส่ง​เสบียง​มากขึ้น​ขน​ข้าวสาลี​ได้​เร็ว​ขึ้น แต่​ดึง​คนงาน​จาก​งาน​อื่น ส่ง​อาหาร​ให้​โรงเตี๊ยม​ทั้งสอง​ต่อไป",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[3].touchHelp",
+      "source_key": "[intro help touch grow]",
+      "thai": "เลือก​รัง ตั้ง​สัดส่วน​คนงาน​เป็น 1 นักสำรวจ​และ​นักรบ​เป็น 0 เพิ่ม​คนงาน​ที่​มอบหมาย​เป็น 2 ขึ้นไป คนงาน​ส่ง​เสบียง​นำ​ข้าวสาลี​มา​สร้าง​ยูนิต​ใหม่ แต่​ต้อง​แบ่ง​จาก​งาน​อื่น ส่ง​เสบียง​ให้​โรงเตี๊ยม​ทั้งสอง​ต่อไป",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[4].title",
+      "source_key": "[intro goal attack]",
+      "thai": "ทำลาย​รัง​ศัตรู",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[4].instruction",
+      "source_key": "[intro instruction attack]",
+      "thai": "หา​รัง​ศัตรู​ถัดไป​ทาง​ตะวันออก ใช้​ธงรบ​ชี้​เป้า​ให้​นักรบ​โจมตี เปิด​ช่วยเหลือ​ได้​หาก​ต้อง​การทบทวน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[4].touchInstruction",
+      "source_key": "[intro compact attack]",
+      "thai": "ธง → ธงรบ วาง​ทับ​รัง​ศัตรู กำหนด​นักรบ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[4].help",
+      "source_key": "[intro help attack]",
+      "thai": "เปิด​ธง เลือก​ธงรบ แล้ว​วาง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​ของ​หิน ออกจาก​โหมด​วาง​ด้วย​ปุ่ม​เมาส์​รอง​ก่อน​เลือก​ธง แล้ว​กำหนด​นักรบ​สูงสุด 4 ตัว ใช้​รัศมี​เล็ก​เพื่อ​รวมกำลัง หาก​นักรบ​หมด​ให้​สร้าง​เพิ่ม​ที่​รัง​ของ​คุณ นักรบ​อาจ​หยุด​กิน​อาหาร จึง​ต้อง​ส่ง​เสบียง​ให้​โรงเตี๊ยม​ต่อไป",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".steps[4].touchHelp",
+      "source_key": "[intro help touch attack]",
+      "thai": "เปิด​ธง เลือก​ธงรบ วาง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​ของ​หิน​แล้ว​ยืนยัน เลือก​ธง​และ​กำหนด​นักรบ​สูงสุด 4 ตัว ใช้​รัศมี​เล็ก​เพื่อ​รวมกำลัง หาก​ไม่​มี​นักรบ​ให้​สร้าง​ที่​รัง​ของ​คุณ นักรบ​อาจ​หยุด​กิน​อาหาร จึง​ต้อง​ส่ง​เสบียง​ให้​โรงเตี๊ยม​ต่อไป",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[0]",
+      "source_key": "[intro hint scout]",
+      "thai": "ธงสำรวจ​ตรง​กอง​หิน​ตะวันออก​ต้อง​กำหนด​นักสำรวจ​ไว้ ตรวจ​เป้าหมาย​และ​จำนวน​นักสำรวจ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[1]",
+      "source_key": "[intro hint build]",
+      "thai": "หาก​คุณ​รื้อถอน​โรงเตี๊ยม​ใหม่ ให้​สร้าง​ใหม่ มิเช่นนั้น ให้​ตรวจสอบ​สถานที่ก่อสร้าง​และ​เป้าหมาย​จำนวน​คนงาน งาน​จัดหา​วัสดุ​ที่​มี​อยู่แล้ว​อาจ​ใช้​คนงาน​ของ​คุณ​อยู่ ดังนั้น​ให้​จัด​หาอาหาร​อย่าง​ต่อเนื่อง​ในขณะที่​จัดหา​คนงานก่อสร้าง​ให้​พร้อม​ใช้งาน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[2]",
+      "source_key": "[intro hint supply]",
+      "thai": "เลือก​โรงเตี๊ยม​ใหม่​ที่​สร้าง​เสร็จ​แล้ว ตรวจสอบ​เป้าหมาย​จำนวน​คนงาน​และ​คอย​ดู​การ​ส่งมอบ​ข้าวสาลี คนงาน​อาจ​ต้องการ​เวลา​ใน​การ​เดินทาง​หรือ​รับประทาน​อาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[3]",
+      "source_key": "[intro hint grow]",
+      "thai": "ตรวจ​เสบียง​ของ​รัง​และ​ตั้ง​ให้​สร้าง​เฉพาะ​คนงาน ส่ง​อาหาร​ให้​โรงเตี๊ยม​ต่อไป​ระหว่าง​รอ​คนงาน​ใหม่",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[4]",
+      "source_key": "[intro hint attack]",
+      "thai": "ตรวจสอบ​ธงรบ จำนวน​นักรบ​ที่​ต้องการ และ​เสบียงอาหาร นักรบ​ของ​คุณ​ต้องการ​เวลา​ใน​การ​เดินทาง​และ​โจมตี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[5]",
+      "source_key": "[intro hint no scout flag]",
+      "thai": "ไม่​พบ​ธงสำรวจ​ที่​มอบหมาย​ยูนิต​ไว้ วาง​ธง​บน​หิน​ทาง​ตะวันออก​ของ​ฐาน​แล้ว​กำหนด​นักสำรวจ 1 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[6]",
+      "source_key": "[intro hint no suppliers]",
+      "thai": "โรงเตี๊ยม​ใหม่​หรือ​พื้นที่​ก่อสร้าง​มี​จำนวน​คนงาน​เป้าหมาย​เป็น 0 เลือก​อาคาร​แล้ว​กำหนด​คนงาน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[7]",
+      "source_key": "[intro hint no war flag]",
+      "thai": "ไม่​พบ​ธงรบ​ที่​มอบหมาย​ยูนิต​ไว้​ใน​ฐาน​ศัตรู วาง​ธง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​แล้ว​กำหนด​นักรบ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "field": ".hints[8]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".title",
+      "source_key": "[tutorial food title]",
+      "thai": "ฝึก​ส่ง​เสบียงอาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".briefing",
+      "source_key": "[tutorial food briefing]",
+      "thai": "ฝึก​เพิ่ม​เสบียงอาหาร: สร้าง​โรงเตี๊ยม​เพิ่ม มอบหมาย​คนงาน​ส่ง​เสบียง แล้ว​ดู​ข้าวสาลี​มาถึง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".completionBody",
+      "source_key": "[tutorial food complete]",
+      "thai": "คุณ​สร้าง​โรงเตี๊ยม​และ​ส่ง​ข้าวสาลี​ให้​แล้ว ลอง​บทเรียน​อื่น​หรือ​กลับ​เมนูหลัก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[0].title",
+      "source_key": "[intro goal build]",
+      "thai": "สร้าง​โรงเตี๊ยม​เพิ่ม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[intro instruction build]",
+      "thai": "เปิด​สร้าง แล้ว​วาง​โรงเตี๊ยม​ใกล้​ข้าวสาลี มอบหมาย​คนงานว่าง​ให้​ก่อสร้าง และ​คง​คนงาน​ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​ไว้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[intro compact build]",
+      "thai": "สร้าง → โรงเตี๊ยม วาง​ไว้​ใกล้​ทุ่ง​ข้าวสาลี มอบหมาย​คนงานก่อสร้าง 2 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[0].help",
+      "source_key": "[intro help build]",
+      "thai": "การ​ก่อสร้าง​ใช้​ไม้​ที่​คนงาน​ขน​มา เลือก​โรงเตี๊ยม​จาก​แผง​เลือก​อาคาร วาง​บน​ที่โล่ง​ใกล้​ข้าวสาลี และ​กำหนด​คนงานก่อสร้าง 2 ตัว จำนวน​เป้าหมาย​คือ​จำนวน​ที่​ร้องขอ ไม่​ใช่​คนงาน​ที่​อยู่แล้ว คง​คนงาน​ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​และ​รัง​ไว้ วาง​ตรงไหน​ที่​ถูกต้อง​ก็​นับ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[intro help touch build]",
+      "thai": "เลือก​โรงเตี๊ยม​จาก​สร้าง วาง​บน​ที่โล่ง​ใกล้​ข้าวสาลี​แล้ว​ยืนยัน เลือก​พื้นที่​ก่อสร้าง​และ​กำหนด​คนงาน 2 ตัว จำนวน​เป้าหมาย​คือ​จำนวน​ที่​ร้องขอ ไม่​ใช่​จำนวน​ที่​มี​อยู่ ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​และ​รัง​ต่อไป วาง​ตรงไหน​ที่​ถูกต้อง​ก็​นับ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[1].title",
+      "source_key": "[intro goal supply]",
+      "thai": "ส่ง​เสบียง​ให้​โรงเตี๊ยม​ใหม่",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[intro instruction supply]",
+      "thai": "เลือก​โรงเตี๊ยม​ใหม่​ที่​สร้าง​เสร็จ​แล้ว มอบหมาย​คนงาน​ส่ง​เสบียง​อย่าง​น้อย 1 ตัว แล้ว​รอ​ให้​ส่ง​ข้าวสาลี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[intro compact supply]",
+      "thai": "เลือก​โรงเตี๊ยม​ใหม่ กำหนด​คนงาน​ส่ง​เสบียง​อย่าง​น้อย 1 ตัว รอ​ข้าวสาลี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[1].help",
+      "source_key": "[intro help supply]",
+      "thai": "งาน​ก่อสร้าง​กับ​งาน​ส่ง​เสบียง​มี​จำนวน​คนงาน​เป้าหมาย​แยกกัน เลือก​โรงเตี๊ยม​ที่​สร้าง​เสร็จ จากนั้น​เพิ่ม​คนงาน​ใช้งาน คนงาน​ส่ง​เสบียง​เก็บ​ข้าวสาลี​มา​ที่นี่ ยูนิต​ที่​หิว​กิน​อาหาร​ที่​โรงเตี๊ยม หาก​ไม่​มี​คนงาน​ส่ง​เสบียง อาหาร​จะ​หมด​ในที่สุด เปิดทาง​ไป​ยัง​แปลง​ข้าวสาลี​ไว้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[intro help touch supply]",
+      "thai": "เลือก​โรงเตี๊ยม​ใหม่​ที่​เสร็จ​แล้ว​และ​เพิ่ม​จำนวน​คนงาน​ที่​มอบหมาย งาน​ก่อสร้าง​กับ​ส่ง​เสบียง​มี​เป้าหมาย​แยกกัน คนงาน​ส่ง​เสบียง​เก็บ​ข้าวสาลี​มา​ที่นี่ ยูนิต​ที่​หิว​กิน​อาหาร​ที่​โรงเตี๊ยม หาก​ไม่​มี​คนงาน​ส่ง​เสบียง อาหาร​ใน​อาคาร​จะ​หมด​ในที่สุด เปิดทาง​ไป​ยัง​ข้าวสาลี​ไว้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[0]",
+      "source_key": "[intro hint scout]",
+      "thai": "ธงสำรวจ​ตรง​กอง​หิน​ตะวันออก​ต้อง​กำหนด​นักสำรวจ​ไว้ ตรวจ​เป้าหมาย​และ​จำนวน​นักสำรวจ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[1]",
+      "source_key": "[intro hint build]",
+      "thai": "หาก​คุณ​รื้อถอน​โรงเตี๊ยม​ใหม่ ให้​สร้าง​ใหม่ มิเช่นนั้น ให้​ตรวจสอบ​สถานที่ก่อสร้าง​และ​เป้าหมาย​จำนวน​คนงาน งาน​จัดหา​วัสดุ​ที่​มี​อยู่แล้ว​อาจ​ใช้​คนงาน​ของ​คุณ​อยู่ ดังนั้น​ให้​จัด​หาอาหาร​อย่าง​ต่อเนื่อง​ในขณะที่​จัดหา​คนงานก่อสร้าง​ให้​พร้อม​ใช้งาน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[2]",
+      "source_key": "[intro hint supply]",
+      "thai": "เลือก​โรงเตี๊ยม​ใหม่​ที่​สร้าง​เสร็จ​แล้ว ตรวจสอบ​เป้าหมาย​จำนวน​คนงาน​และ​คอย​ดู​การ​ส่งมอบ​ข้าวสาลี คนงาน​อาจ​ต้องการ​เวลา​ใน​การ​เดินทาง​หรือ​รับประทาน​อาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[3]",
+      "source_key": "[intro hint grow]",
+      "thai": "ตรวจ​เสบียง​ของ​รัง​และ​ตั้ง​ให้​สร้าง​เฉพาะ​คนงาน ส่ง​อาหาร​ให้​โรงเตี๊ยม​ต่อไป​ระหว่าง​รอ​คนงาน​ใหม่",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[4]",
+      "source_key": "[intro hint attack]",
+      "thai": "ตรวจสอบ​ธงรบ จำนวน​นักรบ​ที่​ต้องการ และ​เสบียงอาหาร นักรบ​ของ​คุณ​ต้องการ​เวลา​ใน​การ​เดินทาง​และ​โจมตี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[5]",
+      "source_key": "[intro hint no scout flag]",
+      "thai": "ไม่​พบ​ธงสำรวจ​ที่​มอบหมาย​ยูนิต​ไว้ วาง​ธง​บน​หิน​ทาง​ตะวันออก​ของ​ฐาน​แล้ว​กำหนด​นักสำรวจ 1 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[6]",
+      "source_key": "[intro hint no suppliers]",
+      "thai": "โรงเตี๊ยม​ใหม่​หรือ​พื้นที่​ก่อสร้าง​มี​จำนวน​คนงาน​เป้าหมาย​เป็น 0 เลือก​อาคาร​แล้ว​กำหนด​คนงาน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[7]",
+      "source_key": "[intro hint no war flag]",
+      "thai": "ไม่​พบ​ธงรบ​ที่​มอบหมาย​ยูนิต​ไว้​ใน​ฐาน​ศัตรู วาง​ธง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​แล้ว​กำหนด​นักรบ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "field": ".hints[8]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".title",
+      "source_key": "[lesson healing title]",
+      "thai": "โรงพยาบาล​และ​การรักษา",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".briefing",
+      "source_key": "[lesson healing briefing]",
+      "thai": "สร้าง​โรงพยาบาล​และ​ช่วย​คนงาน​บาดเจ็บ​ให้​ฟื้นตัว เมื่อ​เริ่ม ยูนิต​ใน​อาณานิคม​กิน​อาหาร​อิ่ม​แล้ว และ​มี​คนงาน​บาดเจ็บ 1 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".completionBody",
+      "source_key": "[lesson healing complete]",
+      "thai": "โรงพยาบาล​รักษา​ยูนิต​บาดเจ็บ​แล้ว ส่ง​เสบียง​ให้​โรงเตี๊ยม​ต่อไป เพราะ​ความหิว​ทำให้​ยูนิต​บาดเจ็บ​ได้​อีก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[0].title",
+      "source_key": "[lesson healing build title]",
+      "thai": "สร้าง​โรงพยาบาล",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[lesson healing build instruction]",
+      "thai": "สร้าง​โรงพยาบาล​บน​พื้นที่โล่ง; มอบหมาย​คนงานก่อสร้าง 2 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[lesson healing build compact]",
+      "thai": "สร้าง → โรงพยาบาล เว้น​ทางเข้าออก​และ​มอบหมาย​คนงานก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[0].help",
+      "source_key": "[lesson healing build help]",
+      "thai": "เว้น​ทาง​ให้​ยูนิต​เข้าออก โรงพยาบาล​รักษา​บาดเจ็บ โรงเตี๊ยม​ให้อาหาร ยูนิต​ตัว​นี้​กิน​อิ่ม​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[lesson healing build help]",
+      "thai": "เว้น​ทาง​ให้​ยูนิต​เข้าออก โรงพยาบาล​รักษา​บาดเจ็บ โรงเตี๊ยม​ให้อาหาร ยูนิต​ตัว​นี้​กิน​อิ่ม​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[1].title",
+      "source_key": "[lesson healing heal title]",
+      "thai": "รอ​ให้​ผู้ป่วย​ฟื้นตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[lesson healing heal instruction]",
+      "thai": "เปิดทาง​ให้​เข้า​โรงพยาบาล​ได้ แล้ว​เฝ้าดู​คนงาน​บาดเจ็บ​ฟื้นตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[lesson healing heal compact]",
+      "thai": "ให้​คนงาน​ที่​ได้รับบาดเจ็บ​พัก​รักษาตัว​ที่​โรงพยาบาล",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[1].help",
+      "source_key": "[lesson healing heal help]",
+      "thai": "ยูนิต​จะ​ค้นหา​การรักษา​ตัวเอง​โดยอัตโนมัติ ติดตาม​คนงาน​ที่​ได้รับบาดเจ็บ ไม่​ใช่​ยูนิต​ที่​เพิ่ง​เกิด หาก​มัน​ตาย ให้​เริ่มใหม่​หรือ​โหลด​เซฟ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[lesson healing heal help]",
+      "thai": "ยูนิต​จะ​ค้นหา​การรักษา​ตัวเอง​โดยอัตโนมัติ ติดตาม​คนงาน​ที่​ได้รับบาดเจ็บ ไม่​ใช่​ยูนิต​ที่​เพิ่ง​เกิด หาก​มัน​ตาย ให้​เริ่มใหม่​หรือ​โหลด​เซฟ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".hints[0]",
+      "source_key": "[lesson healing build hint]",
+      "thai": "สร้าง​โรงพยาบาล​บน​พื้นที่โล่ง มอบหมาย​คนงานก่อสร้าง 2 ตัว เว้น​ที่ว่าง​ให้​ยูนิต​เข้า​และ​ออก​ได้ โรงพยาบาล​รักษา​บาดแผล โรงเตี๊ยม​จัด​หาอาหาร ผู้ป่วย​ราย​นี้​ได้รับ​อาหาร​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".hints[1]",
+      "source_key": "[lesson healing heal hint]",
+      "thai": "รักษา​โรงพยาบาล​ให้​เข้าถึง​ได้​ง่าย คอย​สังเกต​การฟื้นตัว​ของ​คนงาน​ที่​ได้รับบาดเจ็บ ยูนิต​จะ​หาทาง​รักษา​ตัวเอง​โดยอัตโนมัติ ติดตาม​คนงาน​ที่​ได้รับบาดเจ็บ ไม่​ใช่​ยูนิต​ที่​เพิ่ง​เกิด หาก​มัน​ตาย ให้​เริ่มใหม่​หรือ​โหลด​ไฟล์​บันทึก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "field": ".hints[2]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".title",
+      "source_key": "[lesson walking-training title]",
+      "thai": "การ​ฝึก​เดิน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".briefing",
+      "source_key": "[lesson walking-training briefing]",
+      "thai": "สร้าง​สนามวิ่ง แล้ว​ดู​คนงาน​เดิม​ฝึก​จน​เดิน​เร็ว​ขึ้น",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".completionBody",
+      "source_key": "[lesson walking-training complete]",
+      "thai": "คนงาน​เรียน​ทักษะ​เดิน​เร็ว​ขึ้น​แล้ว การ​ฝึก​พัฒนา​คนงาน​ที่​มี​อยู่ แต่​ยัง​ต้อง​ส่ง​อาหาร​ให้​อาณานิคม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[0].title",
+      "source_key": "[lesson walking-training build title]",
+      "thai": "สร้าง​สนามวิ่ง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[lesson walking-training build instruction]",
+      "thai": "สร้าง​สนามวิ่ง​ใน​พื้นที่โล่ง​ที่​ทำเครื่องหมาย​ไว้ และ​มอบหมาย​คนงานก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[lesson walking-training build compact]",
+      "thai": "สร้าง → สนามวิ่ง เว้น​ที่​รอบ​อาคาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[0].help",
+      "source_key": "[lesson walking-training build help]",
+      "thai": "สนามวิ่ง​ต้อง​ใช้​ไม้​และ​หิน เว้น​ช่องว่าง​รอบ​ขอบ​ไว้​สำหรับ​ทางเข้า ทางออก และ​การ​ขยาย​ในอนาคต",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[lesson walking-training build help]",
+      "thai": "สนามวิ่ง​ต้อง​ใช้​ไม้​และ​หิน เว้น​ช่องว่าง​รอบ​ขอบ​ไว้​สำหรับ​ทางเข้า ทางออก และ​การ​ขยาย​ในอนาคต",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[1].title",
+      "source_key": "[lesson walking-training train title]",
+      "thai": "ฝึก​คนงาน​เดิม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[lesson walking-training train instruction]",
+      "thai": "รักษา​พื้นที่​สนามวิ่ง​ให้​สามารถ​เข้าถึง​ได้ และ​ให้​คนงาน​ฝึก​จน​เสร็จสิ้น",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[lesson walking-training train compact]",
+      "thai": "รอ​ให้​คนงาน​ฝึก​ที่​สนามวิ่ง​จน​เสร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[1].help",
+      "source_key": "[lesson walking-training train help]",
+      "thai": "ยูนิต​ที่​มี​คุณสมบัติ​เหมาะสม​ฝึก​เอง เว้น​คนงาน​บางส่วน​จาก​งาน​ส่ง​เสบียง และ​เก็บ​อาหาร​ใน​โรงเตี๊ยม​ทั้งสอง​ให้​พอ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[lesson walking-training train help]",
+      "thai": "ยูนิต​ที่​มี​คุณสมบัติ​เหมาะสม​ฝึก​เอง เว้น​คนงาน​บางส่วน​จาก​งาน​ส่ง​เสบียง และ​เก็บ​อาหาร​ใน​โรงเตี๊ยม​ทั้งสอง​ให้​พอ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".hints[0]",
+      "source_key": "[lesson walking-training build hint]",
+      "thai": "สร้าง​สนามวิ่ง​ใน​พื้นที่โล่ง​ที่​ทำเครื่องหมาย​ไว้ มอบหมาย​คนงาน สนามวิ่ง​ต้อง​ใช้​ไม้​และ​หิน เว้น​ช่องว่าง​รอบ​ขอบ​ไว้​สำหรับ​ทางเข้า ทางออก และ​การ​ขยาย​ใน​ภายหลัง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".hints[1]",
+      "source_key": "[lesson walking-training train hint]",
+      "thai": "เปิด​ทางเข้า​สนามวิ่ง​แล้ว​รอ​ให้​คนงาน​ฝึก​จน​เสร็จ ยูนิต​ที่​มี​คุณสมบัติ​เหมาะสม​ฝึก​เอง เว้น​คนงาน​บางส่วน​จาก​งาน​ส่ง​เสบียง และ​เก็บ​อาหาร​ไว้​ใน​โรงเตี๊ยม​ทั้งสอง​ให้​พอ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "field": ".hints[2]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".title",
+      "source_key": "[lesson swimming title]",
+      "thai": "การ​ว่ายน้ำ​และ​ทรัพยากร​ใน​น้ำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".briefing",
+      "source_key": "[lesson swimming briefing]",
+      "thai": "ฝึก​คนงาน​ให้​ว่ายน้ำ แล้ว​ใช้​สาหร่าย​จาก​บ่อ​สร้าง​โรงเรียน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".completionBody",
+      "source_key": "[lesson swimming complete]",
+      "thai": "คนงาน​ที่​ว่ายน้ำ​ได้​ขน​ทรัพยากร​ใน​น้ำ​มา​ให้​โรงเรียน การ​เข้าถึง​น้ำ​เพิ่ม​งาน​ที่​อาณานิคม​ทำได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[0].title",
+      "source_key": "[lesson swimming build title]",
+      "thai": "สร้าง​สระว่ายน้ำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[lesson swimming build instruction]",
+      "thai": "สร้าง​สระว่ายน้ำ​ทาง​ทิศตะวันตก​ของ​สระน้ำ และ​มอบหมาย​คนงานก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[lesson swimming build compact]",
+      "thai": "สร้าง → สระว่ายน้ำ ทางตะวันตก​ของ​บ่อน้ำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[0].help",
+      "source_key": "[lesson swimming build help]",
+      "thai": "เว้น​ที่ว่าง​รอบ​สระว่ายน้ำ คนงาน​เก็บ​สาหร่าย​ใน​น้ำ​ลึก​ไม่​ได้​จนกว่า​จะ​ว่ายน้ำ​เป็น",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[lesson swimming build help]",
+      "thai": "เว้น​ที่ว่าง​รอบ​สระว่ายน้ำ คนงาน​เก็บ​สาหร่าย​ใน​น้ำ​ลึก​ไม่​ได้​จนกว่า​จะ​ว่ายน้ำ​เป็น",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[1].title",
+      "source_key": "[lesson swimming train title]",
+      "thai": "ฝึก​นักว่ายน้ำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[lesson swimming train instruction]",
+      "thai": "รอ​ให้​คนงาน​เดิม​ฝึก​ว่ายน้ำ​จน​เสร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[lesson swimming train compact]",
+      "thai": "ให้​คนงาน​เรียน​ว่ายน้ำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[1].help",
+      "source_key": "[lesson swimming train help]",
+      "thai": "ยูนิต​เลือก​ฝึก​เอง ส่ง​เสบียง​ต่อไป​และ​เปิดทาง​ให้​คนงานว่าง​ไป​ถึง​สระว่ายน้ำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[lesson swimming train help]",
+      "thai": "ยูนิต​เลือก​ฝึก​เอง ส่ง​เสบียง​ต่อไป​และ​เปิดทาง​ให้​คนงานว่าง​ไป​ถึง​สระว่ายน้ำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[2].title",
+      "source_key": "[lesson swimming water-job title]",
+      "thai": "ใช้​สาหร่าย​จาก​บ่อ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[2].instruction",
+      "source_key": "[lesson swimming water-job instruction]",
+      "thai": "สร้าง​โรงเรียน​ใกล้​กับ​อาณานิคม มอบหมาย​ให้​คนงานก่อสร้าง​ไปหา​ไม้​และ​สาหร่าย",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[2].touchInstruction",
+      "source_key": "[lesson swimming water-job compact]",
+      "thai": "สร้าง → โรงเรียน มอบหมาย​คนงานก่อสร้าง​ไป​เก็บ​ไม้​และ​สาหร่าย",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[2].help",
+      "source_key": "[lesson swimming water-job help]",
+      "thai": "สาหร่าย​เจริญเติบโต​ใน​สระน้ำ นักว่ายน้ำ​ที่​ได้รับ​การฝึกฝน​ต้อง​ลง​ไป​ใน​น้ำ​เพื่อ​เก็บ​สาหร่าย ควร​คง​พื้นที่​โรงเรียน​ไว้​บน​พื้นที่โล่ง​ที่​คนงาน​ส่ง​เสบียง​สามารถ​เข้าถึง​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".steps[2].touchHelp",
+      "source_key": "[lesson swimming water-job help]",
+      "thai": "สาหร่าย​เจริญเติบโต​ใน​สระน้ำ นักว่ายน้ำ​ที่​ได้รับ​การฝึกฝน​ต้อง​ลง​ไป​ใน​น้ำ​เพื่อ​เก็บ​สาหร่าย ควร​คง​พื้นที่​โรงเรียน​ไว้​บน​พื้นที่โล่ง​ที่​คนงาน​ส่ง​เสบียง​สามารถ​เข้าถึง​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".hints[0]",
+      "source_key": "[lesson swimming build hint]",
+      "thai": "สร้าง​สระว่ายน้ำ​ทาง​ทิศตะวันตก​ของ​สระน้ำ มอบหมาย​คนงาน​ให้​ทำงาน เว้น​พื้นที่​รอบ​สระว่ายน้ำ​ไว้ คนงาน​ไม่​สามารถ​เก็บ​สาหร่าย​ใน​น้ำ​ลึก​ได้​จนกว่า​จะ​เรียนรู้​ที่จะ​ว่ายน้ำ​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".hints[1]",
+      "source_key": "[lesson swimming train hint]",
+      "thai": "รอ​ให้​คนงาน​เดิม​ฝึก​ว่ายน้ำ​จน​เสร็จ ยูนิต​เลือก​ฝึก​เอง ส่ง​เสบียง​ต่อไป​และ​เปิดทาง​ให้​คนงานว่าง​ไป​ถึง​สระว่ายน้ำ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".hints[2]",
+      "source_key": "[lesson swimming water-job hint]",
+      "thai": "สร้าง​โรงเรียน​ใกล้​กับ​อาณานิคม มอบหมาย​ให้​คนงานก่อสร้าง​ไปหา​ไม้​และ​สาหร่าย สาหร่าย​จะ​เจริญเติบโต​ใน​บ่อ นัก​ว่ายน้ำ​ที่​ฝึกฝน​มา​แล้วจะ​ต้อง​ลง​ไป​ใน​น้ำ​เพื่อ​เก็บ​สาหร่าย ตั้ง​โรงเรียน​ไว้​บน​พื้นที่โล่ง​ที่​คนงาน​ส่ง​เสบียง​สามารถ​เข้าถึง​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "field": ".hints[3]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".title",
+      "source_key": "[lesson schools title]",
+      "thai": "โรงเรียน​และ​ทักษะ​คนงาน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".briefing",
+      "source_key": "[lesson schools briefing]",
+      "thai": "ใช้​คนงาน​ที่​ว่ายน้ำ​ได้​ซึ่ง​เตรียม​ไว้​สร้าง​โรงเรียน แล้ว​ดู​คนงาน​ฝึก​ก่อสร้าง​และ​เก็บเกี่ยว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".completionBody",
+      "source_key": "[lesson schools complete]",
+      "thai": "โรงเรียน​ของ​คุณ​ช่วย​พัฒนา​ทักษะ​แรงงาน คนงานก่อสร้าง​ที่​มีฝีมือ​จะ​ปลดล็อก​การ​อัปเกรด การ​เก็บเกี่ยว​ที่​ดีขึ้น​ช่วย​รักษา​เศรษฐกิจ​ที่​กำลัง​เติบโต",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[0].title",
+      "source_key": "[lesson schools build title]",
+      "thai": "สร้าง​โรงเรียน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[lesson schools build instruction]",
+      "thai": "สร้าง​โรงเรียน​ใน​พื้นที่​โล่ง แล้ว​มอบหมาย​คนงาน​ก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[lesson schools build compact]",
+      "thai": "สร้าง → โรงเรียน มอบหมาย​คนงานก่อสร้าง​ไป​เก็บ​ไม้​และ​สาหร่าย",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[0].help",
+      "source_key": "[lesson schools build help]",
+      "thai": "อาณานิคม​มี​คนงาน​ว่ายน้ำ​ได้​เพื่อ​เก็บ​สาหร่าย​แล้ว เปิดทาง​ไปหา​ไม้​และ​น้ำ​ไว้ ไม้​ผล​ให้​ทรัพยากร​สำหรับ​เกียรติยศ ส่วน​อาหาร​ยัง​มาจาก​ข้าวสาลี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[lesson schools build help]",
+      "thai": "อาณานิคม​มี​คนงาน​ว่ายน้ำ​ได้​เพื่อ​เก็บ​สาหร่าย​แล้ว เปิดทาง​ไปหา​ไม้​และ​น้ำ​ไว้ ไม้​ผล​ให้​ทรัพยากร​สำหรับ​เกียรติยศ ส่วน​อาหาร​ยัง​มาจาก​ข้าวสาลี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[1].title",
+      "source_key": "[lesson schools learn title]",
+      "thai": "สอน​การ​ก่อสร้าง​และ​การ​เก็บเกี่ยว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[lesson schools learn instruction]",
+      "thai": "รอ​ให้​คนงาน​เดิม​ฝึก​ที่​โรงเรียน​จน​เสร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[lesson schools learn compact]",
+      "thai": "รอ​ให้​คนงาน​ฝึก​ที่​โรงเรียน​จน​เสร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[1].help",
+      "source_key": "[lesson schools learn help]",
+      "thai": "โรงเรียน​แห่ง​นี้​สอน​ทั้ง​งานก่อสร้าง​และ​การ​เก็บเกี่ยว​ไป​พร้อมกัน ควร​มี​คนงาน​พร้อม​ใช้งาน​อยู่​เสมอ เพราะ​สถานที่ก่อสร้าง​เพียง​อย่าง​เดียว​ไม่​สามารถ​ฝึกฝน​ใคร​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[lesson schools learn help]",
+      "thai": "โรงเรียน​แห่ง​นี้​สอน​ทั้ง​งานก่อสร้าง​และ​การ​เก็บเกี่ยว​ไป​พร้อมกัน ควร​มี​คนงาน​พร้อม​ใช้งาน​อยู่​เสมอ เพราะ​สถานที่ก่อสร้าง​เพียง​อย่าง​เดียว​ไม่​สามารถ​ฝึกฝน​ใคร​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".hints[0]",
+      "source_key": "[lesson schools build hint]",
+      "thai": "สร้าง​โรงเรียน​ใน​ที่โล่ง​แล้ว​มอบหมาย​คนงานก่อสร้าง อาณานิคม​มี​คนงาน​ว่ายน้ำ​ได้​เพื่อ​เก็บ​สาหร่าย​แล้ว เปิดทาง​ไปหา​ไม้​และ​น้ำ​ไว้ ไม้​ผล​ให้​ทรัพยากร​สำหรับ​เกียรติยศ ส่วน​อาหาร​ยัง​มาจาก​ข้าวสาลี",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".hints[1]",
+      "source_key": "[lesson schools learn hint]",
+      "thai": "ให้​คนงาน​ที่​มี​อยู่​เรียนจบ​หลักสูตร​ที่​โรงเรียน โรงเรียน​สอน​ทั้ง​งานก่อสร้าง​และ​งาน​เก็บเกี่ยว​ผลผลิต​ควบคู่กันไป ต้อง​เตรียม​คนงาน​ให้​พร้อม​เสมอ เพราะ​ไซต์​ก่อสร้าง​เพียง​อย่าง​เดียว​ไม่​สามารถ​ฝึก​ใคร​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "field": ".hints[2]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".title",
+      "source_key": "[lesson upgrades title]",
+      "thai": "การ​อัปเกรด​อาคาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".briefing",
+      "source_key": "[lesson upgrades briefing]",
+      "thai": "ใช้​คนงาน​ที่​เตรียม​ไว้​และ​มี​ทักษะ​เพื่อ​อัปเกรด​สนามวิ่ง แล้ว​ฝึก​ให้​เกิน​ระดับ​แรก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".completionBody",
+      "source_key": "[lesson upgrades complete]",
+      "thai": "คุณ​อัปเกรด​อาคาร​และ​ใช้​การ​ฝึก​ที่​ดีขึ้น​แล้ว การ​อัปเกรด​ถัดไป​ทำ​วงจร​เดิม​ด้วย​โรงเรียน​ระดับสูง ทักษะ วัสดุ และ​พื้นที่​ที่​เพียงพอ จนถึง​ระดับ 3",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[0].title",
+      "source_key": "[lesson upgrades upgrade title]",
+      "thai": "อัปเกรด​สนามวิ่ง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[lesson upgrades upgrade instruction]",
+      "thai": "เลือก​สนามวิ่ง → อัปเกรด แล้ว​มอบหมาย​คนงาน​ก่อสร้าง​ที่​มี​ทักษะ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[lesson upgrades upgrade compact]",
+      "thai": "เลือก​สนามวิ่ง → อัปเกรด มอบหมาย​คนงานก่อสร้าง​ที่​มี​ทักษะ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[0].help",
+      "source_key": "[lesson upgrades upgrade help]",
+      "thai": "คนงาน​เหล่านี้​เรียน​ทักษะ​โรงเรียน​ระดับ​แรก​แล้ว การ​อัปเกรด​ต้อง​ใช้​พื้นที่​และ​วัสดุ​เพิ่ม และ​หยุด​บริการ​ของ​อาคาร​ชั่วคราว การ​อัปเกรด​ที่​ยกเลิก​ไม่​นับ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[lesson upgrades upgrade help]",
+      "thai": "คนงาน​เหล่านี้​เรียน​ทักษะ​โรงเรียน​ระดับ​แรก​แล้ว การ​อัปเกรด​ต้อง​ใช้​พื้นที่​และ​วัสดุ​เพิ่ม และ​หยุด​บริการ​ของ​อาคาร​ชั่วคราว การ​อัปเกรด​ที่​ยกเลิก​ไม่​นับ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[1].title",
+      "source_key": "[lesson upgrades train title]",
+      "thai": "ใช้การ​ฝึก​ที่​ได้รับ​การปรับปรุง​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[lesson upgrades train instruction]",
+      "thai": "ให้​คนงาน​เดิม​ฝึก​เดิน​ให้​เร็ว​ขึ้น​ที่​สนามวิ่ง​ที่​อัปเกรด​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[lesson upgrades train compact]",
+      "thai": "ให้​คนงาน​ฝึก​ที่​สนามวิ่ง​ที่​อัปเกรด​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[1].help",
+      "source_key": "[lesson upgrades train help]",
+      "thai": "การ​อัปเกรด​ที่​เสร็จ​สมบูรณ์​จะ​ช่วย​เพิ่ม​ระดับ​การฝึกฝน​ที่​มี​อยู่ ระดับ​อาคาร​ที่สูง​ขึ้น​ต้องการ​ทักษะ​การ​ก่อสร้าง​ที่สูง​ขึ้น โดย​ระดับ​ที่​แสดง​ให้​ผู้เล่น​เห็นจะ​เริ่มต้น​ที่​ระดับ 1",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[lesson upgrades train help]",
+      "thai": "การ​อัปเกรด​ที่​เสร็จ​สมบูรณ์​จะ​ช่วย​เพิ่ม​ระดับ​การฝึกฝน​ที่​มี​อยู่ ระดับ​อาคาร​ที่สูง​ขึ้น​ต้องการ​ทักษะ​การ​ก่อสร้าง​ที่สูง​ขึ้น โดย​ระดับ​ที่​แสดง​ให้​ผู้เล่น​เห็นจะ​เริ่มต้น​ที่​ระดับ 1",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".hints[0]",
+      "source_key": "[lesson upgrades upgrade hint]",
+      "thai": "เลือก​สนามวิ่ง เลือก \"อัปเกรด\" และ​มอบหมาย​คนงานก่อสร้าง​ที่​มี​ทักษะ คนงาน​เหล่านี้​ได้​เรียนรู้​ทักษะ​ระดับ​แรก​ของ​โรงเรียน​มา​แล้ว การ​อัปเกรด​ต้องการ​พื้นที่​และ​วัสดุ​เพิ่มเติม และ​จะ​ขัดจังหวะ​การ​ให้บริการ​ของ​อาคาร การ​อัปเกรด​ที่​ถูก​ยกเลิก​จะ​ไม่​นับ​รวม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".hints[1]",
+      "source_key": "[lesson upgrades train hint]",
+      "thai": "ให้​คนงาน​เดิม​ฝึก​เดิน​ให้​เร็ว​ขึ้น​ที่​สนามวิ่ง​ที่​อัปเกรด​แล้ว การ​อัปเกรด​ที่​เสร็จ​เพิ่ม​ระดับ​การ​ฝึก​ที่​มี อาคาร​ระดับสูง​ต้อง​ใช้​ทักษะ​ก่อสร้าง​สูง​ขึ้น ระดับ​ที่​แสดง​เริ่ม​จาก 1",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "field": ".hints[2]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".title",
+      "source_key": "[lesson warrior-training title]",
+      "thai": "การผลิต​และ​ฝึกฝน​นักรบ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".briefing",
+      "source_key": "[lesson warrior-training briefing]",
+      "thai": "สร้าง​นักรบ​ที่​รัง แล้ว​ฝึก​ที่​ค่ายฝึก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".completionBody",
+      "source_key": "[lesson warrior-training complete]",
+      "thai": "คุณ​กำหนด​การ​สร้าง​นักรบ​และ​ฝึก​นักรบ​แล้ว ส่ง​อาหาร​ต่อเนื่อง​ไว้ เพราะ​นักรบ​ยัง​ต้อง​กิน​อาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[0].title",
+      "source_key": "[lesson warrior-training produce title]",
+      "thai": "สร้าง​นักรบ​สอง​ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[lesson warrior-training produce instruction]",
+      "thai": "ตั้ง​รัง​ให้​สร้าง​เฉพาะ​นักรบ มอบหมาย​คนงาน​ส่ง​วัสดุ​แล้ว​รอ​นักรบ 2 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[lesson warrior-training produce compact]",
+      "thai": "รัง → สร้าง​เฉพาะ​นักรบ ส่ง​ข้าวสาลี​สำหรับ​นักรบ 2 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[0].help",
+      "source_key": "[lesson warrior-training produce help]",
+      "thai": "ตั้ง​อัตราส่วน​คนงาน​และ​นักสำรวจ​เป็น 0 และ​นักรบ​เป็น 1 รัง​ใช้​ข้าวสาลี​สร้าง​ยูนิต​ใหม่ อัตราส่วน​กำหนด​ชนิด​ยูนิต ส่วน​คนงาน​ส่ง​วัสดุ​ทำให้​รัง​ผลิต​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[lesson warrior-training produce help]",
+      "thai": "ตั้ง​อัตราส่วน​คนงาน​และ​นักสำรวจ​เป็น 0 และ​นักรบ​เป็น 1 รัง​ใช้​ข้าวสาลี​สร้าง​ยูนิต​ใหม่ อัตราส่วน​กำหนด​ชนิด​ยูนิต ส่วน​คนงาน​ส่ง​วัสดุ​ทำให้​รัง​ผลิต​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[1].title",
+      "source_key": "[lesson warrior-training build title]",
+      "thai": "สร้าง​ค่ายฝึก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[lesson warrior-training build instruction]",
+      "thai": "สร้าง​ค่ายฝึก​ใน​พื้นที่โล่ง​แล้ว​มอบหมาย​คนงานก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[lesson warrior-training build compact]",
+      "thai": "สร้าง → ค่ายฝึก เว้น​ที่ว่าง​รอบ​อาคาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[1].help",
+      "source_key": "[lesson warrior-training build help]",
+      "thai": "หยุด​หรือ​ลด​การ​สร้าง​นักรบ​เมื่อ​มี​เพียงพอ ค่ายฝึก​สอน​ทักษะ​การต่อสู้​และ​ต้อง​มี​ที่ว่าง​รอบ​อาคาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[lesson warrior-training build help]",
+      "thai": "หยุด​หรือ​ลด​การ​สร้าง​นักรบ​เมื่อ​มี​เพียงพอ ค่ายฝึก​สอน​ทักษะ​การต่อสู้​และ​ต้อง​มี​ที่ว่าง​รอบ​อาคาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[2].title",
+      "source_key": "[lesson warrior-training train title]",
+      "thai": "ฝึกฝน​นักรบ​ของ​คุณ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[2].instruction",
+      "source_key": "[lesson warrior-training train instruction]",
+      "thai": "รอ​ให้​นักรบ​ฝึก​ที่​ค่ายฝึก​จน​เสร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[2].touchInstruction",
+      "source_key": "[lesson warrior-training train compact]",
+      "thai": "รอ​ให้​นักรบ​ฝึก​ที่​ค่ายฝึก​จน​เสร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[2].help",
+      "source_key": "[lesson warrior-training train help]",
+      "thai": "นักรบ​หา​ที่​ฝึก​เอง​โดยอัตโนมัติ ส่ง​เสบียง​ให้​โรงเตี๊ยม​เสมอ​และ​เปิด​ทางเข้า​ค่ายฝึก การ​สร้าง​ค่าย​อย่าง​เดียว​ยัง​ไม่​นับว่า​ฝึก​สำเร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".steps[2].touchHelp",
+      "source_key": "[lesson warrior-training train help]",
+      "thai": "นักรบ​หา​ที่​ฝึก​เอง​โดยอัตโนมัติ ส่ง​เสบียง​ให้​โรงเตี๊ยม​เสมอ​และ​เปิด​ทางเข้า​ค่ายฝึก การ​สร้าง​ค่าย​อย่าง​เดียว​ยัง​ไม่​นับว่า​ฝึก​สำเร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".hints[0]",
+      "source_key": "[lesson warrior-training produce hint]",
+      "thai": "ตั้ง​รัง​ให้​สร้าง​เฉพาะ​นักรบ มอบหมาย​คนงาน​ส่ง​วัสดุ​แล้ว​รอ​นักรบ 2 ตัว ตั้ง​อัตราส่วน​คนงาน​และ​นักสำรวจ​เป็น 0 และ​นักรบ​เป็น 1 รัง​ใช้​ข้าวสาลี​สร้าง​ยูนิต​ใหม่ อัตราส่วน​กำหนด​ชนิด​ยูนิต ส่วน​คนงาน​ส่ง​วัสดุ​ทำให้​รัง​ผลิต​ได้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".hints[1]",
+      "source_key": "[lesson warrior-training build hint]",
+      "thai": "สร้าง​ค่ายฝึก​ใน​พื้นที่​โล่ง แล้ว​มอบหมาย​คนงาน​ก่อสร้าง หยุด​หรือ​ลด​การ​สร้าง​นักรบ​เมื่อ​มี​เพียงพอ ค่ายฝึก​สอน​ทักษะ​การต่อสู้​และ​ต้อง​มี​ที่ว่าง​รอบ​อาคาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".hints[2]",
+      "source_key": "[lesson warrior-training train hint]",
+      "thai": "รอ​ให้​นักรบ​ฝึก​ที่​ค่ายฝึก​จน​เสร็จ นักรบ​หา​ที่​ฝึก​เอง​โดยอัตโนมัติ ส่ง​เสบียง​ให้​โรงเตี๊ยม​เสมอ​และ​เปิด​ทางเข้า​ค่ายฝึก การ​สร้าง​ค่าย​อย่าง​เดียว​ยัง​ไม่​นับว่า​ฝึก​สำเร็จ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "field": ".hints[3]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".title",
+      "source_key": "[lesson fortifications title]",
+      "thai": "หอคอย​และ​กำแพง​ป้องกัน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".briefing",
+      "source_key": "[lesson fortifications briefing]",
+      "thai": "สร้าง​หอคอย​ที่​มี​เสบียง​และ​กำแพง​ป้องกัน แล้ว​ทดสอบ​รับ​การบุก​เล็ก​ๆ หนึ่ง​ครั้ง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".completionBody",
+      "source_key": "[lesson fortifications complete]",
+      "thai": "แนว​ป้องกันที่​มี​เสบียง​หยุด​การบุก​ทดสอบ​ได้ หอคอย​ต้อง​มี​หิน และ​กำแพง​ต้อง​เว้น​ช่อง​ให้​คนงาน​ส่ง​เสบียง​เข้าถึง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[0].title",
+      "source_key": "[lesson fortifications tower title]",
+      "thai": "สร้าง​หอคอย​ป้องกัน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[lesson fortifications tower instruction]",
+      "thai": "สร้าง​หอคอย​ใน​พื้นที่​ที่​ทำเครื่องหมาย​ไว้ และ​มอบหมาย​คนงานก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[lesson fortifications tower compact]",
+      "thai": "สร้าง → หอคอย วาง​ใน​พื้นที่​ที่​ทำเครื่องหมาย​ไว้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[0].help",
+      "source_key": "[lesson fortifications tower help]",
+      "thai": "วาง​ใกล้​เหมือง​หิน​และ​เว้น​ทาง​ให้​คนงาน​ส่ง​เสบียง การบุก​จะ​ไม่​เริ่ม​จนกว่า​เป้าหมาย​เตรียมการ​จะ​ครบ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[lesson fortifications tower help]",
+      "thai": "วาง​ใกล้​เหมือง​หิน​และ​เว้น​ทาง​ให้​คนงาน​ส่ง​เสบียง การบุก​จะ​ไม่​เริ่ม​จนกว่า​เป้าหมาย​เตรียมการ​จะ​ครบ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[1].title",
+      "source_key": "[lesson fortifications walls title]",
+      "thai": "ป้องกัน​หอคอย​ด้วย​กำแพง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[lesson fortifications walls instruction]",
+      "thai": "สร้างกำแพง​อย่าง​น้อย 2 ส่วน​ใกล้​กับ​หอคอย และ​รักษา​ทางเข้า​ด้าน​ทิศตะวันตก​ให้​เปิด​อยู่​เสมอ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[lesson fortifications walls compact]",
+      "thai": "สร้างกำแพง 2 ส่วน เว้น​ช่อง​ทางตะวันตก​ของ​หอคอย​ไว้",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[1].help",
+      "source_key": "[lesson fortifications walls help]",
+      "thai": "กำแพง​สร้าง​จาก​หิน และ​แต่ละ​สถานที่​ก็​ต้องการ​คนงาน อย่า​ปิดกั้น​หอคอย : คนงาน​ส่ง​เสบียง​จำเป็นต้อง​มี​เส้นทาง ช่องทาง​ด้าน​ตะวันตก​ที่​ทำเครื่องหมาย​ไว้​ต้อง​คงไว้​ให้​โล่ง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[lesson fortifications walls help]",
+      "thai": "กำแพง​สร้าง​จาก​หิน และ​แต่ละ​สถานที่​ก็​ต้องการ​คนงาน อย่า​ปิดกั้น​หอคอย : คนงาน​ส่ง​เสบียง​จำเป็นต้อง​มี​เส้นทาง ช่องทาง​ด้าน​ตะวันตก​ที่​ทำเครื่องหมาย​ไว้​ต้อง​คงไว้​ให้​โล่ง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[2].title",
+      "source_key": "[lesson fortifications supply title]",
+      "thai": "ส่ง​กระสุน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[2].instruction",
+      "source_key": "[lesson fortifications supply instruction]",
+      "thai": "เลือก​หอคอย​และ​มอบหมาย​คนงาน​ส่ง​เสบียง รอ​ให้​มี​หิน​อย่าง​น้อย 2 หน่วย",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[2].touchInstruction",
+      "source_key": "[lesson fortifications supply compact]",
+      "thai": "เลือก​หอคอย → คนงาน​ส่ง​เสบียง รอ​หิน 2 หน่วย",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[2].help",
+      "source_key": "[lesson fortifications supply help]",
+      "thai": "หอคอย​ที่​สร้าง​เสร็จ​ต้อง​กำหนด​จำนวน​คนงาน​ส่ง​เสบียง​เพื่อ​ขน​กระสุน แยกจาก​จำนวน​คนงาน​ก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[2].touchHelp",
+      "source_key": "[lesson fortifications supply help]",
+      "thai": "หอคอย​ที่​สร้าง​เสร็จ​ต้อง​กำหนด​จำนวน​คนงาน​ส่ง​เสบียง​เพื่อ​ขน​กระสุน แยกจาก​จำนวน​คนงาน​ก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[3].title",
+      "source_key": "[lesson fortifications hold title]",
+      "thai": "ทดสอบ​แนว​ป้องกัน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[3].instruction",
+      "source_key": "[lesson fortifications hold instruction]",
+      "thai": "นักรบ​ทดสอบ​กำลัง​มา ส่ง​เสบียง​ให้​หอคอย​และ​เปิดทาง​ให้​คนงาน​เข้าถึง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[3].touchInstruction",
+      "source_key": "[lesson fortifications hold compact]",
+      "thai": "คอย​ส่ง​เสบียง​ให้​หอคอย​เพื่อ​ป้องกัน​การ​โจมตีจาก​ผู้บุกรุก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[3].help",
+      "source_key": "[lesson fortifications hold help]",
+      "thai": "ยึด​พื้นที่​ไว้​จนกว่า​ผู้​โจมตี​จะ​พ่ายแพ้​หรือ​ถูก​ขับไล่​กลับ​ไป กำแพง​ที่​ปิดกั้น​เส้นทาง​ลำเลียง​เสบียง​อาจ​ทำให้​หอคอย​ขาดแคลน​กระสุน หาก​อาณานิคม​ล้มเหลว ให้​เริ่มใหม่​หรือ​โหลด​ไฟล์​บันทึก​ก่อนหน้า",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".steps[3].touchHelp",
+      "source_key": "[lesson fortifications hold help]",
+      "thai": "ยึด​พื้นที่​ไว้​จนกว่า​ผู้​โจมตี​จะ​พ่ายแพ้​หรือ​ถูก​ขับไล่​กลับ​ไป กำแพง​ที่​ปิดกั้น​เส้นทาง​ลำเลียง​เสบียง​อาจ​ทำให้​หอคอย​ขาดแคลน​กระสุน หาก​อาณานิคม​ล้มเหลว ให้​เริ่มใหม่​หรือ​โหลด​ไฟล์​บันทึก​ก่อนหน้า",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".hints[0]",
+      "source_key": "[lesson fortifications tower hint]",
+      "thai": "สร้าง​หอคอย​ใน​พื้นที่​ที่​ทำเครื่องหมาย​แล้ว​มอบหมาย​คนงานก่อสร้าง วาง​ใกล้​เหมือง​หิน​และ​เว้น​ทาง​ให้​คนงาน​ส่ง​เสบียง การบุก​จะ​ไม่​เริ่ม​จนกว่า​เป้าหมาย​เตรียมการ​จะ​ครบ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".hints[1]",
+      "source_key": "[lesson fortifications walls hint]",
+      "thai": "สร้าง​กำแพง​อย่าง​น้อย 2 ส่วน​ใกล้​หอคอย เว้น​ทางเข้า​ตะวันตก​ไว้ กำแพง​ใช้​หิน​และ​ต้อง​กำหนด​คนงาน​ให้​แต่ละ​จุด​ก่อสร้าง อย่า​ล้อม​ปิด​หอคอย เพราะ​คนงาน​ส่ง​เสบียง​ต้อง​มี​ทางเข้า ช่องทาง​ตะวันตก​ที่​ทำเครื่องหมาย​ต้อง​โล่ง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".hints[2]",
+      "source_key": "[lesson fortifications supply hint]",
+      "thai": "เลือก​หอคอย​และ​มอบหมาย​คนงาน​ส่ง​เสบียง รอ​ให้​มี​หิน​อย่าง​น้อย 2 หน่วย หอคอย​ที่​เสร็จ​ต้อง​กำหนด​คนงาน​ใช้งาน​เพื่อ​ขน​กระสุน แยกจาก​จำนวน​คนงานก่อสร้าง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".hints[3]",
+      "source_key": "[lesson fortifications hold hint]",
+      "thai": "นักรบ​ทดสอบ​กำลัง​เข้ามา​ใกล้ คอย​ส่ง​เสบียง​ให้​หอคอย​และ​เข้าถึง​ได้​ง่าย ยึด​พื้นที่​ไว้​จนกว่า​ผู้​โจมตี​จะ​พ่ายแพ้​หรือ​ถูก​ขับไล่​กลับ​ไป กำแพง​ที่​ปิดกั้น​การ​ส่ง​เสบียง​อาจ​ทำให้​หอคอย​ขาด​กระสุน​ได้ หาก​อาณานิคม​ล้มเหลว ให้​เริ่มใหม่​หรือ​โหลด​ไฟล์​บันทึก​ก่อนหน้า",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "field": ".hints[4]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".title",
+      "source_key": "[lesson defensive-tactics title]",
+      "thai": "เขต​ป้องกัน​และ​ยุทธวิธี​ธง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".briefing",
+      "source_key": "[lesson defensive-tactics briefing]",
+      "thai": "สำรวจ​ศัตรู​ทดสอบ เตรียม​เขต​ป้องกัน ตั้งรับ แล้ว​จัดการ​โต้กลับ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".completionTitle",
+      "source_key": "[tutorial complete]",
+      "thai": "จบ​บทเรียน​แล้ว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".completionBody",
+      "source_key": "[lesson defensive-tactics complete]",
+      "thai": "คุณ​สำรวจ ป้องกัน​เขต และ​สั่ง​โต้กลับ​แล้ว จำนวน​เป้าหมาย​ของ​ธง​ร้องขอ​ยูนิต ส่วน​รัศมี​กำหนด​พื้นที่​ที่​ยูนิต​ทำงาน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[0].title",
+      "source_key": "[lesson defensive-tactics scout title]",
+      "thai": "สอดแนม​ฐานทัพ​ศัตรู",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[0].instruction",
+      "source_key": "[lesson defensive-tactics scout instruction]",
+      "thai": "ปัก​ธงสำรวจ​ที่​ฐานทัพ​ศัตรู และ​ส่ง​นักสำรวจ 1 ตัว​ไป​ประจำการ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[0].touchInstruction",
+      "source_key": "[lesson defensive-tactics scout compact]",
+      "thai": "ธง → ธงสำรวจ วาง​ที่​ฐาน​ศัตรู กำหนด​นักสำรวจ 1 ตัว",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[0].help",
+      "source_key": "[lesson defensive-tactics scout help]",
+      "thai": "ธง​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​เปิดเผย​ความเคลื่อนไหว​ผ่าน​หมอกสงคราม​และ​อาจ​หยุด​กิน​อาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[0].touchHelp",
+      "source_key": "[lesson defensive-tactics scout help]",
+      "thai": "ธง​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​เปิดเผย​ความเคลื่อนไหว​ผ่าน​หมอกสงคราม​และ​อาจ​หยุด​กิน​อาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[1].title",
+      "source_key": "[lesson defensive-tactics guard title]",
+      "thai": "เตรียม​เขต​ป้องกัน",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[1].instruction",
+      "source_key": "[lesson defensive-tactics guard instruction]",
+      "thai": "วาด​เขต​ป้องกัน​ใน​พื้นที่​ที่​ทำเครื่องหมาย แล้ว​รอ​นักรบ 2 ตัว​เข้าถึง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[1].touchInstruction",
+      "source_key": "[lesson defensive-tactics guard compact]",
+      "thai": "ธง → ป้องกัน ระบาย 4 ช่อง รอ​นักรบ 2 ตัว​มาถึง",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[1].help",
+      "source_key": "[lesson defensive-tactics guard help]",
+      "thai": "เปิด​ธง เลือก​ป้องกัน แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​ป้องกัน​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[1].touchHelp",
+      "source_key": "[lesson defensive-tactics guard help]",
+      "thai": "เปิด​ธง เลือก​ป้องกัน แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​ป้องกัน​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[2].title",
+      "source_key": "[lesson defensive-tactics repel title]",
+      "thai": "ขับไล่​การ​โจมตี​ฝึกซ้อม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[2].instruction",
+      "source_key": "[lesson defensive-tactics repel instruction]",
+      "thai": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​ป้องกัน​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[2].touchInstruction",
+      "source_key": "[lesson defensive-tactics repel compact]",
+      "thai": "คุม​เขต​ป้องกัน ส่ง​เสบียง​ให้​โรงเตี๊ยม",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[2].help",
+      "source_key": "[lesson defensive-tactics repel help]",
+      "thai": "การบุก​เล็ก​ๆ เริ่ม​หลัง​เตรียมพร้อม เอาชนะ​หรือ​ขับไล่​ผู้​บุก​ทั้งสอง​ตัว ศัตรู​บาดเจ็บ​อาจ​ถอย นักรบ​อาจ​ไป​กิน​อาหาร​ชั่วคราว หาก​ป้องกัน​ไม่​สำเร็จ​ให้​โหลด​บันทึก​ก่อนหน้า​หรือ​เริ่มใหม่",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[2].touchHelp",
+      "source_key": "[lesson defensive-tactics repel help]",
+      "thai": "การบุก​เล็ก​ๆ เริ่ม​หลัง​เตรียมพร้อม เอาชนะ​หรือ​ขับไล่​ผู้​บุก​ทั้งสอง​ตัว ศัตรู​บาดเจ็บ​อาจ​ถอย นักรบ​อาจ​ไป​กิน​อาหาร​ชั่วคราว หาก​ป้องกัน​ไม่​สำเร็จ​ให้​โหลด​บันทึก​ก่อนหน้า​หรือ​เริ่มใหม่",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[3].title",
+      "source_key": "[lesson defensive-tactics counterattack title]",
+      "thai": "รวมกำลัง​โต้กลับ",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[3].instruction",
+      "source_key": "[lesson defensive-tactics counterattack instruction]",
+      "thai": "วาง​ธงรบ​ทับ​รัง​ศัตรู กำหนด​นักรบ 3 ตัว​และ​รัศมี​ไม่​เกิน 4",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[3].touchInstruction",
+      "source_key": "[lesson defensive-tactics counterattack compact]",
+      "thai": "ธงรบ → รัง​ศัตรู กำหนด​นักรบ 3 ตัว รัศมี ≤4",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[3].help",
+      "source_key": "[lesson defensive-tactics counterattack help]",
+      "thai": "เขต​ป้องกัน​กับ​ธงรบ​ใช้กำลัง​นักรบ​ชุด​เดียวกัน ลบ​ช่อง​เขต​ป้องกัน​หาก​ดึง​นักรบ​ค้าง​ไว้ ส่ง​อาหาร​ให้​พอ​ระหว่าง​เดินทาง​และ​บุก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".steps[3].touchHelp",
+      "source_key": "[lesson defensive-tactics counterattack help]",
+      "thai": "เขต​ป้องกัน​กับ​ธงรบ​ใช้กำลัง​นักรบ​ชุด​เดียวกัน ลบ​ช่อง​เขต​ป้องกัน​หาก​ดึง​นักรบ​ค้าง​ไว้ ส่ง​อาหาร​ให้​พอ​ระหว่าง​เดินทาง​และ​บุก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".hints[0]",
+      "source_key": "[lesson defensive-tactics scout hint]",
+      "thai": "วาง​ธงสำรวจ​ที่​ฐานทัพ​ศัตรู; มอบหมาย​นักสำรวจ 1 ตัว ธง​จะ​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​จะ​เปิดเผย​ความเคลื่อนไหว​ปัจจุบัน​ผ่าน​หมอก​แห่ง​สงคราม และ​อาจ​หยุดพัก​เพื่อ​รับประทาน​อาหาร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".hints[1]",
+      "source_key": "[lesson defensive-tactics guard hint]",
+      "thai": "ระบาย​เขต​ป้องกัน​ใน​พื้นที่​ที่​ทำเครื่องหมาย แล้ว​รอ​นักรบ 2 ตัว​ไป​ถึง เปิด​ธง เลือก​ป้องกัน แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​ป้องกัน​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".hints[2]",
+      "source_key": "[lesson defensive-tactics repel hint]",
+      "thai": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​ป้องกัน​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม การบุก​เล็ก​ๆ เริ่ม​หลัง​เตรียมพร้อม เอาชนะ​หรือ​ขับไล่​ผู้​บุก​ทั้งสอง​ตัว ศัตรู​บาดเจ็บ​อาจ​ถอย นักรบ​อาจ​ไป​กิน​อาหาร​ชั่วคราว หาก​ป้องกัน​ไม่​สำเร็จ​ให้​โหลด​บันทึก​ก่อนหน้า​หรือ​เริ่มใหม่",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".hints[3]",
+      "source_key": "[lesson defensive-tactics counterattack hint]",
+      "thai": "วาง​ธงรบ​ทับ​รัง​ศัตรู กำหนด​นักรบ 3 ตัว​และ​รัศมี​ไม่​เกิน 4 เขต​ป้องกัน​กับ​ธงรบ​ใช้กำลัง​นักรบ​ชุด​เดียวกัน ลบ​ช่อง​เขต​ป้องกัน​หาก​ดึง​นักรบ​ค้าง​ไว้ ส่ง​อาหาร​ให้​พอ​ระหว่าง​เดินทาง​และ​บุก",
+      "covered": true
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "field": ".hints[4]",
+      "source_key": "[intro hint retry]",
+      "thai": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม",
+      "covered": true
+    }
+  ],
+  "tutorial_reference_count": 233,
+  "missing_or_blank_tutorial_translation": [],
+  "authored_metadata": [
+    {
+      "file": "scripts/tutorials/introduction.json",
+      "name": "Introduction",
+      "display_title_key": "[intro menu]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/food-supply.json",
+      "name": "Food supply practice",
+      "display_title_key": "[tutorial food title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/healing.json",
+      "name": "Hospitals and healing",
+      "display_title_key": "[lesson healing title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/walking-training.json",
+      "name": "Walking training",
+      "display_title_key": "[lesson walking-training title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/swimming.json",
+      "name": "Swimming and water resources",
+      "display_title_key": "[lesson swimming title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/schools.json",
+      "name": "Schools and worker skills",
+      "display_title_key": "[lesson schools title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/upgrades.json",
+      "name": "Upgrading buildings",
+      "display_title_key": "[lesson upgrades title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/warrior-training.json",
+      "name": "Producing and training warriors",
+      "display_title_key": "[lesson warrior-training title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/fortifications.json",
+      "name": "Towers and protective walls",
+      "display_title_key": "[lesson fortifications title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    },
+    {
+      "file": "scripts/tutorials/defensive-tactics.json",
+      "name": "Guard zones and flag tactics",
+      "display_title_key": "[lesson defensive-tactics title]",
+      "classification": "Stable authored map metadata, not the lesson selector display title; preserve file/map identifiers. Generic map browsers retain authored names."
+    }
+  ],
+  "campaign_txt_files": [],
+  "bundled_maps": [
+    {
+      "file": "campaigns/defensive-tactics.map.gz",
+      "sha256": "0a3f8bec0360b2624849726f9ca5e63e15afcc19e6a68d6625f70fd551a663fb",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/food-supply.map.gz",
+      "sha256": "615a5a0a24acc595f70bc064f337d53d014e0d07bfb1847d980d31226f8ec39c",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/fortifications.map.gz",
+      "sha256": "7cf3efb299f411e0e31b87642f5213c174a0f5b4f267287b85690da0e411f6d0",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/healing.map.gz",
+      "sha256": "098b7e0baa4609c55a35039fb68e962be8ae77cea77f58c7535d6725acfcf9fb",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/introduction.map.gz",
+      "sha256": "ec37f18bc7b9e67e15a887f58ab4e43ff56dd5e375ed54fd1bdcb72bd3659688",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/schools.map.gz",
+      "sha256": "a3cae2d538bcbc64cca1abcbe544c3d38f8b5cf281943deec58741d3c495b6c8",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/swimming.map.gz",
+      "sha256": "1a3314067acc61c37f4786d5a3385f887d698335533918f9311473b530e4cea8",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/upgrades.map.gz",
+      "sha256": "e672c0f16387505f0797b5caaad2e42110d5944b4a5a1ba4bc4a856262710f3a",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/walking-training.map.gz",
+      "sha256": "9ee2940613dccbdf7964d2c48423f66be4cc914dee02bcd9dbb3e4264c2f224d",
+      "legacy_sgsl_show_calls": 0
+    },
+    {
+      "file": "campaigns/warrior-training.map.gz",
+      "sha256": "4b2a708e4b94327f93e667dcfdd4acd14fbedaa4adff6906ee08d69a3f872502",
+      "legacy_sgsl_show_calls": 0
+    }
+  ],
+  "browser_launcher_strings": [
+    {
+      "source": "Check the connection, then try again.",
+      "thai": "ตรวจสอบการเชื่อมต่อ แล้วลองใหม่อีกครั้ง",
+      "covered": true
+    },
+    {
+      "source": "Close",
+      "thai": "ปิด",
+      "covered": true
+    },
+    {
+      "source": "Could not load this language. Please try again.",
+      "thai": "ไม่สามารถโหลดภาษานี้ได้ โปรดลองอีกครั้ง",
+      "covered": true
+    },
+    {
+      "source": "Download progress",
+      "thai": "ความคืบหน้าการดาวน์โหลด",
+      "covered": true
+    },
+    {
+      "source": "Downloading replay…",
+      "thai": "กำลังดาวน์โหลดรีเพลย์…",
+      "covered": true
+    },
+    {
+      "source": "Downloading the game…",
+      "thai": "กำลังดาวน์โหลดเกม…",
+      "covered": true
+    },
+    {
+      "source": "Game text field",
+      "thai": "ช่องข้อความเกม",
+      "covered": true
+    },
+    {
+      "source": "Language",
+      "thai": "ภาษา",
+      "covered": true
+    },
+    {
+      "source": "Loading game…",
+      "thai": "กำลังโหลดเกม…",
+      "covered": true
+    },
+    {
+      "source": "Open {target} ↗",
+      "thai": "เปิด {target} ↗",
+      "covered": true
+    },
+    {
+      "source": "Password",
+      "thai": "รหัสผ่าน",
+      "covered": true
+    },
+    {
+      "source": "Starting the game…",
+      "thai": "เริ่มเกม…",
+      "covered": true
+    },
+    {
+      "source": "The browser kept the page from opening.",
+      "thai": "เบราว์เซอร์ไม่อนุญาตให้เปิดหน้าเว็บ",
+      "covered": true
+    },
+    {
+      "source": "The first visit downloads the game once. Later visits start from this device's copy.",
+      "thai": "การเข้าชมครั้งแรกจะดาวน์โหลดเกมเพียงครั้งเดียว การเข้าชมครั้งต่อๆ ไปจะเริ่มต้นจากสำเนาเกมในอุปกรณ์นี้",
+      "covered": true
+    },
+    {
+      "source": "The game could not be downloaded.",
+      "thai": "ไม่สามารถดาวน์โหลดเกมได้",
+      "covered": true
+    },
+    {
+      "source": "Try again",
+      "thai": "ลองอีกครั้ง",
+      "covered": true
+    },
+    {
+      "source": "a few seconds left",
+      "thai": "เหลือเวลาอีกไม่กี่วินาที",
+      "covered": true
+    },
+    {
+      "source": "about {minutes} min left",
+      "thai": "เหลือเวลาประมาณ {minutes} นาที",
+      "covered": true
+    },
+    {
+      "source": "about {seconds} s left",
+      "thai": "เหลือเวลาประมาณ {seconds} วินาที",
+      "covered": true
+    },
+    {
+      "source": "{loaded} of {total} MB",
+      "thai": "{loaded} จาก {total} MB",
+      "covered": true
+    }
+  ],
+  "source_file_sha256": {
+    "src/tutorial/LessonCatalogScreen.h": "3ca44db28d4a83c747c581f2b72ec1ff705ce020ff928e4c409a4ff2df89005f",
+    "src/tutorial/TutorialGuidance.h": "2898d4b07e8c2de3fbb4ce2770526b59b731f45941942540dc69ae1e9ba6b3f8",
+    "src/hud/GameGUIDialog.cpp": "15d2ec8a3e40693251c91b11cc0d1b49f66bd9bdde59365f3beedf0b0745b7dc",
+    "src/campaign/screens/CampaignSelectorScreen.cpp": "6b45b8cfdb44f262f69f59f89c807a8f92ac2be5de47a7346fc43d3394f97140",
+    "src/campaign/screens/CampaignMenuScreen.cpp": "d262830d5b7b1faca3caf2e42a22e1b9651f2abf54173caa802d38370d6da9bd",
+    "src/scripting/sgsl/Parser.cpp": "1198fef4227162f28164b16cc4389a2605a84e4a79624f03fe1f4a9ebeca1904",
+    "src/scripting/sgsl/StoryExecute.cpp": "e7a8945e01d1a97d1ffa2a542a5879f3947cc6062a31c5d6ad38f2eb3676fd03",
+    "tools/tutorials/build.py": "0acff6b0b5dfb803ff59294b9e155bf97639f4d49f9c1993b939f9adfe45b88a",
+    "tools/tutorials/content.py": "9c4e57f64e979e11544b8651d9d2c227a433aa7037050b77d59e64fe0795eecc",
+    "browser/shell.html": "556ba59567d5f685797d1ecb840313ce5500d818fb38606c004fec5b46e2c4af",
+    "browser/loader.js": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1",
+    "browser/locales/th.json": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680",
+    "data/texts.th.txt": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
+    "src/campaign/Campaign.cpp": "c6d1a9d49f808e51d9b60752865d388fad745cdc40b564892c1202bdd3de4cef",
+    "src/campaign/screens/CampaignEditor.cpp": "c8a74bc07ae0953068689cce311d5c35792ace6e877302aa165ae654af9b5212",
+    "src/map/editor/screens/EditorMainMenu.cpp": "ae19def5ef22756ba8ab13626afc9a3f4090f83f3db7a5ded625acfe3dbc4e1f"
+  },
+  "source_evidence": [
+    {
+      "file": "src/tutorial/LessonCatalogScreen.h",
+      "lines": [
+        39,
+        49,
+        50
+      ],
+      "interpretation": "Actual lesson selector reads title/briefing and translates both; English map name metadata does not supply these labels."
+    },
+    {
+      "file": "src/tutorial/TutorialGuidance.h",
+      "lines": [
+        44,
+        45,
+        60,
+        71,
+        85,
+        90,
+        94
+      ],
+      "interpretation": "Native desktop/touch tutorial titles, instructions, completion body, recovery and help are translated at display."
+    },
+    {
+      "file": "src/hud/GameGUIDialog.cpp",
+      "lines": [
+        25,
+        546,
+        552,
+        567
+      ],
+      "interpretation": "Legacy Scenario screen localizes known catalog keys for briefing/objective/hint, preserving unknown authored prose. Bundled lesson metadata uses keys."
+    },
+    {
+      "file": "src/campaign/screens/CampaignSelectorScreen.cpp",
+      "lines": [
+        13,
+        16,
+        25
+      ],
+      "interpretation": "No official .txt campaign remains in checkout; retired Tutorial_Campaign explicitly hidden, even on upgraded installations. Third party imported campaign names/descriptions are authored content."
+    },
+    {
+      "file": "tools/tutorials/content.py",
+      "lines": [
+        24,
+        31
+      ],
+      "interpretation": "Packaging validation rejects retired campaign/map/SGSL tutorial assets; no need to translate retired unreachable files."
+    },
+    {
+      "file": "src/scripting/sgsl/Parser.cpp",
+      "lines": [
+        153,
+        176
+      ],
+      "interpretation": "Legacy imported SGSL show(text,lang), label and jump syntax is content/execution language. No bundled .sgsl or show() calls found in current 10 maps; do not change interpreter identifiers."
+    },
+    {
+      "file": "tools/tutorials/build.py",
+      "lines": [
+        167
+      ],
+      "interpretation": "Top-level name stored as authored map identity; briefing/objectives/hints are separate catalog keys. Map names also feed save/editor/online contracts; leave identities intact and use separate localized title in official lesson UI."
+    },
+    {
+      "file": "browser/shell.html",
+      "lines": [
+        99,
+        100,
+        195,
+        331,
+        349,
+        351,
+        361,
+        659
+      ],
+      "interpretation": "Launcher visible loading/errors/progress/link affordances and game text input/password aria labels pass through browserText/shared online catalog. Canvas and logo brand retain Globulation 2."
+    },
+    {
+      "file": "browser/shell.html",
+      "lines": [
+        345,
+        350,
+        365,
+        366,
+        497
+      ],
+      "interpretation": "Raw runtime exceptions are technical diagnostics sent to logs/tool protocols; user download failure display uses translated generic error and recovery instruction, not diagnostic English."
+    }
+  ],
+  "findings": [
+    {
+      "id": "new-campaign-default-name",
+      "severity": "minor",
+      "status": "reported to integration coordinator; no tracked edit by reviewer",
+      "source": "No Name",
+      "usage": [
+        {
+          "file": "src/campaign/Campaign.cpp",
+          "line": 185,
+          "role": "Model constructor default English name"
+        },
+        {
+          "file": "src/campaign/screens/CampaignEditor.cpp",
+          "line": 36,
+          "role": "Name text field directly displays model name"
+        },
+        {
+          "file": "src/map/editor/screens/EditorMainMenu.cpp",
+          "line": 27,
+          "role": "New Campaign creates editor with empty incoming filename, making default visible"
+        }
+      ],
+      "reason": "This is a fixed default authored by application when creating a new campaign, not an imported/user-authored campaign identity. It should not be excluded with actual authored map/campaign content.",
+      "proposal": "For empty incoming new-campaign filename only, initialize campaign.setName(GAGCore::withoutSoftWordBreaks(tr(\"[new campaign]\"))) using existing TextBreaks.h helper. Clean Thai name แคมเปญใหม่ excludes native layout U+200B hints from persisted name/filename. Preserve model constructor and all loaded/imported identifiers. Existing fully reviewed key; no API or source catalog change needed."
+    }
+  ],
+  "limitations": [
+    "Read-only source inspection and key presence audit; does not substitute for platform package or actual rendered workflow checks.",
+    "Generic authored map/campaign names, save names, SGSL content supplied by users, URLs, technical identifiers and brand labels are preserved. Official playable lesson title/description/instructions are translated through separate catalog fields."
+  ],
+  "supplemental_audit": "Follow-up inspected new campaign editor defaults beyond bundled official tutorial metadata. Found one fixed English initial value; previously asserted no finding applied only to bundled tutorial display fields and launcher chrome."
+}

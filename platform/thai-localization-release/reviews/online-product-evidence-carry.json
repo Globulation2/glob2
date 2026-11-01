@@ -1,0 +1,381 @@
+{
+  "author": "thai_brief",
+  "kind": "Online product evidence carry; no fresh build/test claim",
+  "qualification_revision": "667b2624f356a8c3f0d005535f54ffb0e46b6619",
+  "release_kit_source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "release_manifest_sha256": "783eac40ab71545c54a1d0988ad72562c8db4989079fee8cf7a1364787313b6d",
+  "original_fa57_product_producer": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+  "sourceCurrent_five_inputs": true,
+  "exact_fa57_to_qualification_platform_and_font_trees": {
+    "platform": {
+      "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9": "eb2fa8b56fbfc3924172609847d6825eea6bb22d",
+      "667b2624f356a8c3f0d005535f54ffb0e46b6619": "eb2fa8b56fbfc3924172609847d6825eea6bb22d"
+    },
+    "data/fonts": {
+      "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9": "ceb706e204770284b3e83843beebc68856f0d826",
+      "667b2624f356a8c3f0d005535f54ffb0e46b6619": "ceb706e204770284b3e83843beebc68856f0d826"
+    }
+  },
+  "per_file_source_equality_count": 1390,
+  "full_dist_exact_equality_count": 471,
+  "source_and_dist_proof_path": "artifacts/thai-localization-release/reviews/provenance/online-product-source-equality.json",
+  "source_and_dist_proof_sha256": "f8050520f69d3205794662d61342ca74ab1ad91daf525b6dbd32991aef124029",
+  "raw_online_thai_sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
+  "online_keys": 2852,
+  "directly_carried_current_product_evidence": {
+    "firefox_webkit": [
+      {
+        "path": "artifacts/thai-localization/browser-qa/firefox/provenance.json",
+        "sha256": "ce5c917f6b8e6fe5fa711645418c23eb8a95f9d5433c547dfa1f0a3b5474a48f",
+        "original_source_revision": "cffca88dcad7d3787b1208ac2f16aee67228d099",
+        "original_product_assets_revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+        "actual_views": 30,
+        "explicitly_mocked_views": 10,
+        "full_dist_file_count_exact": 471,
+        "browser_version": "155.0",
+        "phone_scope": "emulated viewport/touch context, not physicalOS"
+      },
+      {
+        "path": "artifacts/thai-localization/browser-qa/webkit/provenance.json",
+        "sha256": "effb45a3b6b2930b54f2885379d263f07e6b544234f48db6db22af1560cca089",
+        "original_source_revision": "cffca88dcad7d3787b1208ac2f16aee67228d099",
+        "original_product_assets_revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+        "actual_views": 30,
+        "explicitly_mocked_views": 10,
+        "full_dist_file_count_exact": 471,
+        "browser_version": "26.6",
+        "phone_scope": "emulated viewport/touch context, not physicalOS"
+      }
+    ],
+    "full156_tests": {
+      "report": "artifacts/thai-localization/browser-qa/crossbrowser-tests.json",
+      "sha256": "ce6a142afeb661a5ec417688237e499d11b21d8229178f83e07214670e0a9392",
+      "original_provenance": "artifacts/thai-localization/browser-qa/crossbrowser-test-provenance.json",
+      "original_provenance_sha256": "539195c39736ce04ecf39544ef56177e3e879b5b529e09c2f75affc46cf613f4",
+      "counts": {
+        "firefox-desktop": 39,
+        "firefox-phone": 39,
+        "webkit-desktop": 39,
+        "webkit-phone": 39
+      },
+      "stats": {
+        "startTime": "2026-11-01T02:47:17.768Z",
+        "duration": 2709674.031,
+        "expected": 156,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "chromium_final_username_ssr": {
+      "report": "artifacts/thai-localization/browser-qa/username-hint-final-report.json",
+      "sha256": "ab6e2333dba8f123ebbffcfbd0ce38ab2a131575abc2d19b1c772e86d882bda1",
+      "original_product_producer": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+      "actual_views": 2,
+      "served_bundle_assets_exact": [],
+      "result": "Exact final hint, Thai marks, actual NotoSansThai font,0overflow; no physicalIME claim."
+    }
+  },
+  "scoped_older_chromium_carry": {
+    "studio20": {
+      "report": "artifacts/thai-localization/browser-qa/postbuild-studio-verification.json",
+      "sha256": "820b809362cb8462935d2cff973ff7fdd6f3297a730b1694ca6d095ff324675c",
+      "actual_producer": "e100fe68d435784f98d0f51d62331d1ba74febea",
+      "all_non_catalog_platform_source_bytes_equal": true,
+      "all13_css_and1_font_recorded_assets_exact": [
+        {
+          "path": "platform/apps/web/dist/assets/Account-BY2xzm8t.css",
+          "sha256": "7e132b12374b4f240d26be3b9107da5755a5f8133a5d7801df33ece9806aee6c",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/AiBuildingStudio-DcRBDZ1j.css",
+          "sha256": "d0e750d75f0c725f2cb71d93a3d9e42cb0929a7cd225558ec2a10931ddd2547d",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/Ais-Cl7SnRIn.css",
+          "sha256": "442c44bd1ed44f9d25d9f2c863c22985bcd76fad07867029f36ab09711083394",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/CodingStudio-BxPoZYIn.css",
+          "sha256": "299d7eaadc3e97835178ec701dc73672d050089b3837fe0e9777dacaf31bdf86",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/MusicStudio-Bu9vl4DZ.css",
+          "sha256": "c43842f9362baa460f36c8a013c24ca3ea0a09cf286052df6d0531fa8db1c1e8",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+          "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/Studio-B8AFNURH.css",
+          "sha256": "b9a2ba2c845a3d515a6247b7c80042d95635cc8d19cb57f5e6314cabf25fbf56",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/TerrainStudio-BTDnIWOD.css",
+          "sha256": "d571db2215316064a4a0841680c638d7e0a50cc68b35357916e227ec2a3101ec",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/buildings-6h6IbQbV.css",
+          "sha256": "7a39ce6a98fa2f4974704fc6d69b7793be21b9d34bc765ae54904ce0492da006",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/editor-Br_kD0ds.css",
+          "sha256": "6eebd659b4bf63fdc64facd7a96cd559dbe85d55e6c648f58ceaa5d554b043a4",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/index-DIwZHyaD.css",
+          "sha256": "9c7b6fd5ca14ecbb9f85b8f57d940b7d120828f4035b5dfb38467bd4c9c8014f",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/library-C5eXv-Ec.css",
+          "sha256": "5a2b6bbf77cade94ad83f86433061c6b6238f04cafab730d94f0d6ffbb5cca03",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/sets-Z-XzXdoP.css",
+          "sha256": "279f7f23c3854ee190c1f699b1bf27e8eae0e63b305a55db1c87709b77aa966b",
+          "equal": true
+        },
+        {
+          "path": "platform/apps/web/dist/assets/studio-jx6z6FUz.css",
+          "sha256": "8a73443cd4326c304974033d6ce803ed84029d97bcddd5b8dacdbe6f3c2cd144",
+          "equal": true
+        }
+      ],
+      "only_catalog_difference": [
+        "3 to 32 letters, digits, dots, dashes or underscores. Other players see it."
+      ],
+      "unrelated_changed_key_actual_only_caller": "platform/apps/api/src/routes/signin.ts:279, freshly rechecked infa57 SSR; not used in studio workflow.",
+      "scope": "10Thai+10English explicit mocked restoredmap-studio states/settings/eligibility. OriginalE100 producer preserved; no wholeE100 JS/HTML byte-equality claim. Original screenshots and report unchanged."
+    },
+    "original28": {
+      "report": "artifacts/thai-localization/browser-qa/report.json",
+      "report_sha256": "b85f58d7f198318b02af43acc58edc8126a6092898a374edb6423ae06a473f1c",
+      "source_provenance": "artifacts/thai-localization/browser-qa/provenance.json",
+      "source_provenance_sha256": "04e08a9fca576ae7b28f0132a86dd93ec9a7598b98fb63ad922557ac3a380f18",
+      "actual_producer": "5af0b9212b80b2a968424d5c676e87c8b0e5863e",
+      "actual_catalog_sha256": "8bc1380c2899c9bdc89fa9bb43fb67794c51a0f32d734fcdd1616eb408a94ab6",
+      "changed_platform_paths": [
+        "platform/apps/web/src/components/studio/Studio.tsx",
+        "platform/apps/web/src/pages/AiBuildingStudio.tsx",
+        "platform/apps/web/src/pages/CodingStudio.tsx",
+        "platform/apps/web/src/pages/TerrainStudio.tsx",
+        "platform/apps/web/src/pages/music-studio/Workspace.tsx",
+        "platform/apps/web/src/pages/studio/StudioWorkspace.tsx",
+        "platform/apps/web/src/styles/studio.css",
+        "platform/packages/i18n/locales/ar.json",
+        "platform/packages/i18n/locales/ca.json",
+        "platform/packages/i18n/locales/cs.json",
+        "platform/packages/i18n/locales/da.json",
+        "platform/packages/i18n/locales/de.json",
+        "platform/packages/i18n/locales/el.json",
+        "platform/packages/i18n/locales/en.json",
+        "platform/packages/i18n/locales/eo.json",
+        "platform/packages/i18n/locales/es.json",
+        "platform/packages/i18n/locales/eu.json",
+        "platform/packages/i18n/locales/fa.json",
+        "platform/packages/i18n/locales/fi.json",
+        "platform/packages/i18n/locales/fr.json",
+        "platform/packages/i18n/locales/hi.json",
+        "platform/packages/i18n/locales/hu.json",
+        "platform/packages/i18n/locales/id.json",
+        "platform/packages/i18n/locales/it.json",
+        "platform/packages/i18n/locales/ja.json",
+        "platform/packages/i18n/locales/ko.json",
+        "platform/packages/i18n/locales/nl.json",
+        "platform/packages/i18n/locales/pl.json",
+        "platform/packages/i18n/locales/pt-BR.json",
+        "platform/packages/i18n/locales/pt-PT.json",
+        "platform/packages/i18n/locales/ro.json",
+        "platform/packages/i18n/locales/ru.json",
+        "platform/packages/i18n/locales/sk.json",
+        "platform/packages/i18n/locales/sl.json",
+        "platform/packages/i18n/locales/sr-Cyrl.json",
+        "platform/packages/i18n/locales/sv.json",
+        "platform/packages/i18n/locales/sw.json",
+        "platform/packages/i18n/locales/th.json",
+        "platform/packages/i18n/locales/tr.json",
+        "platform/packages/i18n/locales/uk.json",
+        "platform/packages/i18n/locales/ur.json",
+        "platform/packages/i18n/locales/vi.json",
+        "platform/packages/i18n/locales/zh-Hans.json",
+        "platform/packages/i18n/locales/zh-Hant.json",
+        "platform/packages/i18n/scripts/source-contract.ts",
+        "platform/packages/i18n/shared-values.json",
+        "platform/packages/i18n/test/source-contract.test.ts"
+      ],
+      "scope": "Historical discovery/baseline evidence. Do not relabel all28 captures as finalfa57. Discoveredstudio footer/settings issues superseded byE100/FFWK final captures; username hint superseded byfa57 SSR. Finalfa57 FF/WK30actualroutes each cover current home/auth/invite/match/libraries/account/disabledstudio states."
+    }
+  },
+  "older_bundle_comparisons": [
+    {
+      "report": "artifacts/thai-localization/browser-qa/provenance.json",
+      "sha256": "04e08a9fca576ae7b28f0132a86dd93ec9a7598b98fb63ad922557ac3a380f18",
+      "recorded_asset_count": 200,
+      "old_asset_paths_changed_or_absent_now": [
+        "platform/apps/web/dist/index.html",
+        "platform/apps/web/dist/assets/index-DCN4q0Zr.js",
+        "platform/apps/web/dist/assets/Account-DyrcaOLF.js",
+        "platform/apps/web/dist/assets/Admin-Bu-Ufi9y.js",
+        "platform/apps/web/dist/assets/AiBuildingStudio-CBK9-dFv.js",
+        "platform/apps/web/dist/assets/AiStudio-BD-OTyHJ.js",
+        "platform/apps/web/dist/assets/Ais-DKsNDlzE.js",
+        "platform/apps/web/dist/assets/Ais-j429LPEa.js",
+        "platform/apps/web/dist/assets/BuildingLibrary-DqcRCzda.js",
+        "platform/apps/web/dist/assets/BuildingStudio-CQaELLXp.js",
+        "platform/apps/web/dist/assets/BuildingStudio-eA1tAiJU.js",
+        "platform/apps/web/dist/assets/CodeEditor-Bh4hpg_T.js",
+        "platform/apps/web/dist/assets/CodeEditor-CH9YKITy.js",
+        "platform/apps/web/dist/assets/CodingStudio-DxEh5b67.js",
+        "platform/apps/web/dist/assets/Cover-DRt0iqTO.js",
+        "platform/apps/web/dist/assets/Editor-CRposvuC.js",
+        "platform/apps/web/dist/assets/Editor-YR29rSjE.js",
+        "platform/apps/web/dist/assets/GeneratorStudio-C1MGG-6A.js",
+        "platform/apps/web/dist/assets/Generators-Cv5mjnif.js",
+        "platform/apps/web/dist/assets/Library-D3hp6jUD.js",
+        "platform/apps/web/dist/assets/Library-oTnXaIJc.js",
+        "platform/apps/web/dist/assets/LineChart-BChsbXJ0.js",
+        "platform/apps/web/dist/assets/MapStudio-R3HwCvEr.js",
+        "platform/apps/web/dist/assets/Maps-DVjimsg8.js",
+        "platform/apps/web/dist/assets/Match-BvQZE66V.js",
+        "platform/apps/web/dist/assets/MusicStudio-DtuUo7LX.js",
+        "platform/apps/web/dist/assets/Player-Cw5bfeys.js",
+        "platform/apps/web/dist/assets/Studio-CfgvBElX.js",
+        "platform/apps/web/dist/assets/TerrainStudio-2cf-QWib.js",
+        "platform/apps/web/dist/assets/Workspace-Db-IcCaO.js",
+        "platform/apps/web/dist/assets/Workspace-zXUTOaW3.js",
+        "platform/apps/web/dist/assets/ar-Ct7YNa__.js",
+        "platform/apps/web/dist/assets/art-CcJuA6do.js",
+        "platform/apps/web/dist/assets/ca-f_yx4wpN.js",
+        "platform/apps/web/dist/assets/common-BWmp7czq.js",
+        "platform/apps/web/dist/assets/cs-CEZ0vhCj.js",
+        "platform/apps/web/dist/assets/da-D8UqRe6v.js",
+        "platform/apps/web/dist/assets/de-1pCbJiAs.js",
+        "platform/apps/web/dist/assets/el-ClOkBeLD.js",
+        "platform/apps/web/dist/assets/en-CcTDYBPR.js",
+        "platform/apps/web/dist/assets/en-DDwHxNAt.js",
+        "platform/apps/web/dist/assets/eo-B_rXP3B6.js",
+        "platform/apps/web/dist/assets/es-VUJHt8Ro.js",
+        "platform/apps/web/dist/assets/eu-CBxKp4hJ.js",
+        "platform/apps/web/dist/assets/fa-CA1KE03-.js",
+        "platform/apps/web/dist/assets/fi-ChzOPpZE.js",
+        "platform/apps/web/dist/assets/fr-Ylq0IdQ5.js",
+        "platform/apps/web/dist/assets/generatorApi-CNCWaERr.js",
+        "platform/apps/web/dist/assets/hi-To2Pks7P.js",
+        "platform/apps/web/dist/assets/hu-DnkqZuLv.js",
+        "platform/apps/web/dist/assets/i18n-DeYarNGk.js",
+        "platform/apps/web/dist/assets/id-Dw5XSGe9.js",
+        "platform/apps/web/dist/assets/it-o5gBIkuV.js",
+        "platform/apps/web/dist/assets/ja-Cgfevl1Q.js",
+        "platform/apps/web/dist/assets/ko-DlXDn1o6.js",
+        "platform/apps/web/dist/assets/library-KpqtXJfT.js",
+        "platform/apps/web/dist/assets/nl-TAxQiMgh.js",
+        "platform/apps/web/dist/assets/pl-BD46wSI1.js",
+        "platform/apps/web/dist/assets/playerLinks-BzikN2XO.js",
+        "platform/apps/web/dist/assets/pt-BR-CWWua9kb.js",
+        "platform/apps/web/dist/assets/pt-PT-BoJDRQws.js",
+        "platform/apps/web/dist/assets/react-DGtsJrPt.js",
+        "platform/apps/web/dist/assets/ro-Bfec6hcD.js",
+        "platform/apps/web/dist/assets/router-DnFj-8N7.js",
+        "platform/apps/web/dist/assets/ru-C_s1Qnxp.js",
+        "platform/apps/web/dist/assets/sets-C7oX8mWP.js",
+        "platform/apps/web/dist/assets/sk-u4_IZiSY.js",
+        "platform/apps/web/dist/assets/sl-3sSmNJNX.js",
+        "platform/apps/web/dist/assets/sr-Cyrl-vlPfvQzr.js",
+        "platform/apps/web/dist/assets/storage-K91rm9BD.js",
+        "platform/apps/web/dist/assets/studio-CcxzTzeT.js",
+        "platform/apps/web/dist/assets/sv-ChclUjjg.js",
+        "platform/apps/web/dist/assets/sw-DrwLoNSv.js",
+        "platform/apps/web/dist/assets/th-CS6HhErY.js",
+        "platform/apps/web/dist/assets/theme-nYH83gbP.js",
+        "platform/apps/web/dist/assets/tr-DT9GAIxI.js",
+        "platform/apps/web/dist/assets/uk-BV_m0Bic.js",
+        "platform/apps/web/dist/assets/ur-CqA5YmNw.js",
+        "platform/apps/web/dist/assets/useRevisionUndo-DDlpdOvc.js",
+        "platform/apps/web/dist/assets/vi-Cm5Rguv0.js",
+        "platform/apps/web/dist/assets/zh-Hans-Pk4xg-oy.js",
+        "platform/apps/web/dist/assets/zh-Hant-C-rM2jvI.js",
+        "platform/apps/web/dist/assets/studio-CnRZcrxV.css"
+      ],
+      "whole_old_bundle_equal": false
+    },
+    {
+      "report": "artifacts/thai-localization/browser-qa/postbuild-studio-verification.json",
+      "sha256": "820b809362cb8462935d2cff973ff7fdd6f3297a730b1694ca6d095ff324675c",
+      "recorded_asset_count": 196,
+      "old_asset_paths_changed_or_absent_now": [
+        "platform/apps/web/dist/index.html",
+        "platform/apps/web/dist/assets/index-BgY-PXiG.js",
+        "platform/apps/web/dist/assets/Account-BPeq3WAw.js",
+        "platform/apps/web/dist/assets/Admin-cySbq9UI.js",
+        "platform/apps/web/dist/assets/AiBuildingStudio-ClfC1Wus.js",
+        "platform/apps/web/dist/assets/AiStudio-OVT49L8n.js",
+        "platform/apps/web/dist/assets/Ais-BVcfCtd2.js",
+        "platform/apps/web/dist/assets/Ais-Cx3XedPu.js",
+        "platform/apps/web/dist/assets/BuildingLibrary-C28DwwJh.js",
+        "platform/apps/web/dist/assets/BuildingStudio--dLucPCG.js",
+        "platform/apps/web/dist/assets/BuildingStudio-B3IGz0Si.js",
+        "platform/apps/web/dist/assets/CodeEditor-C5M0lqD1.js",
+        "platform/apps/web/dist/assets/CodeEditor-DPDGtxgn.js",
+        "platform/apps/web/dist/assets/CodingStudio-BsFz4xlf.js",
+        "platform/apps/web/dist/assets/Cover-CcdXT_KB.js",
+        "platform/apps/web/dist/assets/Editor-Dow6-FLd.js",
+        "platform/apps/web/dist/assets/Editor-x9Cz8w-3.js",
+        "platform/apps/web/dist/assets/GeneratorStudio-BpE9R3Yi.js",
+        "platform/apps/web/dist/assets/Generators-C_oy3JGn.js",
+        "platform/apps/web/dist/assets/Library-B9FY0Teg.js",
+        "platform/apps/web/dist/assets/Library-D5EG63UO.js",
+        "platform/apps/web/dist/assets/LineChart-VJKE3Mzm.js",
+        "platform/apps/web/dist/assets/MapStudio-CNcrXg0M.js",
+        "platform/apps/web/dist/assets/Maps-B1Xh96l9.js",
+        "platform/apps/web/dist/assets/Match-C1Vo_Clm.js",
+        "platform/apps/web/dist/assets/MusicStudio-Cnl7WCwr.js",
+        "platform/apps/web/dist/assets/Player-UXfbjXQA.js",
+        "platform/apps/web/dist/assets/Studio-C9p0tO9q.js",
+        "platform/apps/web/dist/assets/TerrainStudio-BXvzbbE_.js",
+        "platform/apps/web/dist/assets/Workspace-BssScfTp.js",
+        "platform/apps/web/dist/assets/Workspace-HbgKVXku.js",
+        "platform/apps/web/dist/assets/art-ZaK8X00i.js",
+        "platform/apps/web/dist/assets/common-CLkQWEvf.js",
+        "platform/apps/web/dist/assets/generatorApi-CCh0M_tP.js",
+        "platform/apps/web/dist/assets/i18n-BDBJ_W7R.js",
+        "platform/apps/web/dist/assets/library-CorBcUAy.js",
+        "platform/apps/web/dist/assets/playerLinks-Bhugdh14.js",
+        "platform/apps/web/dist/assets/react-DkDvG8vY.js",
+        "platform/apps/web/dist/assets/router-DCUkEb1M.js",
+        "platform/apps/web/dist/assets/sets-BJqlaH-V.js",
+        "platform/apps/web/dist/assets/storage-BeNs-hiH.js",
+        "platform/apps/web/dist/assets/studio-cPCyJjYl.js",
+        "platform/apps/web/dist/assets/th-oEoD3K8y.js",
+        "platform/apps/web/dist/assets/theme-Bwgy1VU1.js",
+        "platform/apps/web/dist/assets/useRevisionUndo-t6hRSOdA.js"
+      ],
+      "whole_old_bundle_equal": false
+    }
+  ],
+  "readiness": {
+    "online_rendering_half": "Ready for coordinator scoped evidence binding from exact current-product records and classified older evidence.",
+    "online_browser_half": "Ready for coordinator scoped evidence binding:156crossbrowser tests,80FFWK captures,2finalChromiumSSR views,20scopedChromiumstudio views.",
+    "native_game_rendering": "Pending separate finalsource/native platform evidence.",
+    "browser_game_and_online_to_play_handoff": "Pending final packaged producer/path notification; interim rawbuild handoff remains historical.",
+    "global_release_gates": "No new global gate pass written or inferred."
+  },
+  "limits": [
+    "No server restart, state mutation, provider request, fresh online build or rerun performed for this carry.",
+    "Phone emulation, scripted composition and DOM insertion are not physicalmobileOS/IME coverage.",
+    "Only recorded/viewed screenshots establish actual visual scope, not wholecatalog rendered certification.",
+    "Native new20 statistics/script entries and final native/browsergame binaries are excluded from this online carry."
+  ]
+}

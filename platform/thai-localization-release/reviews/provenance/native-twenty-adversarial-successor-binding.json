@@ -1,0 +1,67 @@
+{
+  "adversarial_reviewer": "online_adversarial",
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "supplement_source_sha256": "c39ac7bdc9df9dbacf3184b579573709cf8702f57046b84434623762a63aa0ad",
+  "target_sha256": "ba13c39fa9d5552b4a72f060ef0680cb5dfc588b89505b4867136bfe6c335836",
+  "approved_keys": [
+    "native:[script compile success]",
+    "native:[script error at %0:%1: %2]",
+    "native:[script compile failure %0:%1:(%2):%3]",
+    "native:[script load failed %0]",
+    "native:[script save failed %0]",
+    "native:[script cursor %0 %1]",
+    "native:[stat win probability]",
+    "native:[stat win probability about]",
+    "native:[stats topic overview]",
+    "native:[stats topic economy]",
+    "native:[stats topic world]",
+    "native:[stats work construction]",
+    "native:[stats defence]",
+    "native:[stats history]",
+    "native:[stats waiting]",
+    "native:[stats unit details]",
+    "native:[stats map overlays]",
+    "native:[stats topic]",
+    "native:[stats full history]",
+    "native:[stats missing readings]"
+  ],
+  "fresh_semantic_review_record": "reviews/provenance/native-twenty-adversarial-r1.json",
+  "fresh_semantic_review_record_sha256": "68657abf8b8bf5cde63a4581d89ce23d001a9096a48eebab04274dc52b923a97",
+  "value_equality_to_actual_successor_verified": true,
+  "scope": "Binding my genuine20-key fresh approval to unchanged actual successor values; no other role approval and no rendering gate claim",
+  "batches": [
+    {
+      "id": "native-master-stats-001",
+      "keys": [
+        "native:[stat win probability about]",
+        "native:[stat win probability]",
+        "native:[stats defence]",
+        "native:[stats full history]",
+        "native:[stats history]",
+        "native:[stats map overlays]",
+        "native:[stats missing readings]",
+        "native:[stats topic economy]",
+        "native:[stats topic overview]",
+        "native:[stats topic world]",
+        "native:[stats topic]",
+        "native:[stats unit details]",
+        "native:[stats waiting]",
+        "native:[stats work construction]"
+      ],
+      "target_sha256": "0c179eabe93a8093eb333fad4731d632711133f887b1b1fbd19c9a6950956f3c"
+    },
+    {
+      "id": "native-script-wrappers-001",
+      "keys": [
+        "native:[script compile failure %0:%1:(%2):%3]",
+        "native:[script compile success]",
+        "native:[script cursor %0 %1]",
+        "native:[script error at %0:%1: %2]",
+        "native:[script load failed %0]",
+        "native:[script save failed %0]"
+      ],
+      "target_sha256": "3e8f6948cdfc7635f28e2e1cf034bf640d1580cdd46379b720ec788ed3f3fbcc"
+    }
+  ],
+  "findings": []
+}

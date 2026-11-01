@@ -1,0 +1,132 @@
+{
+  "coordinator": "root",
+  "source_sha256": "c39ac7bdc9df9dbacf3184b579573709cf8702f57046b84434623762a63aa0ad",
+  "targets": {
+    "native:[script compile success]": "คอมไพล์​สำเร็จ",
+    "native:[script error at %0:%1: %2]": "ข้อผิดพลาด​ที่ %0:%1: %2",
+    "native:[script compile failure %0:%1:(%2):%3]": "คอมไพล์​ไม่สำเร็จ: %0:%1:(%2):%3",
+    "native:[script load failed %0]": "โหลด​สคริปต์​จาก %0 ไม่สำเร็จ",
+    "native:[script save failed %0]": "บันทึก​สคริปต์​ไปยัง %0 ไม่สำเร็จ",
+    "native:[script cursor %0 %1]": "บรรทัด %0 คอลัมน์ %1",
+    "native:[stat win probability]": "โอกาส​ชนะ",
+    "native:[stat win probability about]": "ค่าประมาณ​โอกาส​ที่​พันธมิตร​ของ​คุณ​จะ​ชนะ โดย​บันทึก​ค่า​เป็นระยะ​ตลอด​แมตช์ ทีม​ที่​เป็น​พันธมิตร​กัน​ใช้​ค่า​ความน่าจะเป็น​เดียวกัน แบบจำลอง​นี้​ฝึก​จาก​ข้อมูล​เกม​ที่ AI เล่น ค่าประมาณ​ไม่คำนึงถึง​ตำแหน่ง​หรือ​แผนการเล่น ไฟล์​บันทึก​เก่า​อาจ​มี​ข้อมูล​ย้อนหลัง​ไม่ครบถ้วน",
+    "native:[stats topic overview]": "ภาพรวม",
+    "native:[stats topic economy]": "เศรษฐกิจ",
+    "native:[stats topic world]": "โลก",
+    "native:[stats work construction]": "งาน​และ​การก่อสร้าง",
+    "native:[stats defence]": "การป้องกัน",
+    "native:[stats history]": "ดู​ประวัติ",
+    "native:[stats waiting]": "กำลัง​รอ​ข้อมูล​สถิติ…",
+    "native:[stats unit details]": "รายละเอียด​ยูนิต",
+    "native:[stats map overlays]": "ชั้นข้อมูล​บน​แผนที่",
+    "native:[stats topic]": "หัวข้อ",
+    "native:[stats full history]": "เปิด​ดู​ประวัติ​ทั้งหมด",
+    "native:[stats missing readings]": "— ยัง​ไม่มี​ค่า​ที่​บันทึก​ไว้ เลือก​สถิติ​เพื่อ​ดู​รายละเอียด"
+  },
+  "target_sha256": "ba13c39fa9d5552b4a72f060ef0680cb5dfc588b89505b4867136bfe6c335836",
+  "meaning_review": "reviews/native-twenty-meaning-r1.json",
+  "editor_review": "reviews/supplement-editor-initial-private.json",
+  "status": "Reconciled candidate; awaiting independent adversarial review and final meaning recheck.",
+  "reconciliation": [
+    {
+      "id": "native:[script compile success]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[script error at %0:%1: %2]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[script compile failure %0:%1:(%2):%3]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[script load failed %0]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[script save failed %0]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[script cursor %0 %1]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[stat win probability]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[stat win probability about]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[stats topic overview]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[stats topic economy]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[stats topic world]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[stats work construction]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[stats defence]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[stats history]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[stats waiting]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[stats unit details]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[stats map overlays]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[stats topic]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    },
+    {
+      "id": "native:[stats full history]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Both reviews agree on central meaning. Choose concise status/cursor wording, broad งาน for general work, ประวัติ consistent with existing recorded-history UI, and shared-alliance probability wording explicitly clarified by the following sentence."
+    },
+    {
+      "id": "native:[stats missing readings]",
+      "decision": "Use independently edited candidate; preserves all placeholders.",
+      "reason": "Meaning reviewer and editor independently agree on exact clean target."
+    }
+  ]
+}

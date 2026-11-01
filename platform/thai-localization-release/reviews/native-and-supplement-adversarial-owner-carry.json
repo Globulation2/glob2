@@ -1,0 +1,144 @@
+{
+  "reviewer": "thai_rendering",
+  "role": "adversarial",
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "revision_verified": "667b2624f356a8c3f0d005535f54ffb0e46b6619",
+  "native_carry_keys": 3393,
+  "online_supplement_carry_keys": 16,
+  "fresh_reviewed_keys": [],
+  "whole_catalog_approval": false,
+  "new20_approval_claim": false,
+  "records": [
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-colony-001.json",
+      "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-colony-002.json",
+      "sha256": "d5e89a4269cbd8d00e1c077261fbbfec307db73718534364c689402b868d1c80",
+      "count": 26
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-001.json",
+      "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-002.json",
+      "sha256": "b0f91ace02c831ebb40652040a8a8dcf9228d9354d1b61c9bda5b6ce7c7f6f3e",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-003.json",
+      "sha256": "b2e213e8b489477393d4be0cc16d74225a0be0d22525bb4daf2efee4d65cd707",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-004.json",
+      "sha256": "cc49f1dc9994c5755fccaa72b9b1c12c5828781df762ba06ceaccd35403b4fd3",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-005.json",
+      "sha256": "03d11e17b92e85eabee0960763a64ae32f7c91666fe5892a02316f0612e654d6",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-006.json",
+      "sha256": "5ed53118f0f22e7c645b292e9fb447ac1282d4e189cf0b9097b4472220b89ce2",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-007.json",
+      "sha256": "c9d6c9c37376a12218e3fcfb671fe14469deaa0173a06ea7206c5c933d067577",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-008.json",
+      "sha256": "973f0e7c7eece166a62a9b61c19e3a1657f5188b14f100e407dab51d5a5a90a5",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-009.json",
+      "sha256": "c675c8a5c5ac11d048cd732dc45070c15c4addee9b93664fce1fdc41b117a73b",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-010.json",
+      "sha256": "f0abe98b67c2c8900e5cdc4338fc00bcea60b40a2d0ff4d92f02fd0e26b3895f",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-011.json",
+      "sha256": "ac994a819462525245c8f889995f711677dea254b1fc8d3a2aa8e1257d0ba5b4",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-012.json",
+      "sha256": "f849ef3358f9d930bcba682671bf621b280bda784e16a87a7b6c61a2e3169f31",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-013.json",
+      "sha256": "45ee4874d495f1c11f4745d97e047d872125a9aa098c5ea8df57bdc65ebdb4a9",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-014.json",
+      "sha256": "ffe5400130f1ee86b9224197b3120ad49eb772c1eb6b830c532c19abfa236b35",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-015.json",
+      "sha256": "53490f4d2c670e5311acd2dc174416f0af8419b0a6d5fe489a77be9933cee61f",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-016.json",
+      "sha256": "7160441bf5f0c2335dc21fe1f20f04f18176be5dfbc951fdfb038245050d9aab",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-general-017.json",
+      "sha256": "991fb647065fd1f4f6e3fa99962a2603ad85ce99395bb6e1168cebffbe08e6f3",
+      "count": 37
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-maps-001.json",
+      "sha256": "7a2c648f27c04c7059701a9d89b4f4ae235fc6ba3a75055d0369caa618610abe",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-maps-002.json",
+      "sha256": "9b3f37a874f2afa73a017a117cf97e470caef3e575f11481790c9036afcfec02",
+      "count": 18
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-settings-001.json",
+      "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-settings-002.json",
+      "sha256": "e89155dc31cc1d4de80d3c2928d9f9067277ff0c9b1003c71ff4bfd5a162f944",
+      "count": 160
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-settings-003.json",
+      "sha256": "5807551d80d6074c2ab602e093b9ca5eaf6c17633c445c242531bbc4ada2d61b",
+      "count": 99
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/native-tutorial-001.json",
+      "sha256": "3c7a344210e9307433fda28c6426195ef34d9768d6bf3c68a5dddf67bbe48c6d",
+      "count": 13
+    },
+    {
+      "path": "artifacts/thai-localization-release/reviews/final-adversarial/online-supplement-001.json",
+      "sha256": "e645b811225fa87e88854896c7437ea3e885e22639e03d9fcb4fafd3d53561a9",
+      "count": 16
+    }
+  ],
+  "status": "exact scoped predecessor carry approved"
+}

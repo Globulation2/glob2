@@ -1,0 +1,104 @@
+{
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "owner": "online_adversarial",
+  "approved_carried_batches": 18,
+  "approved_carried_keys": 2836,
+  "fresh_readings_claimed_for_old_keys": 0,
+  "records": [
+    {
+      "path": "reviews/final-adversarial/online-online-001.json",
+      "sha256": "c0cb3fa75cc6109cbc6e964b42eb4fa93ce06028845e7ad61295cf36d6376b9e",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-002.json",
+      "sha256": "f360b53f2ae860ab8c6daa0e150e4abb686783285f0bc376ba32c44fe1428aa2",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-003.json",
+      "sha256": "26f7d8894f4e752c1fd7738b1082c81672d90a54fc22742f9db149aeaaf496a5",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-004.json",
+      "sha256": "fd2e9e92b561c0b65a77ddbdb01527abbfee8970f02d8e3409d40f879406bd61",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-005.json",
+      "sha256": "e49411b4999c9c9572eb3e535f1ace4877c1d1f0c08a87986a31bae7b4a4a234",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-006.json",
+      "sha256": "d3045b15cf66a49b6ccfa7062f4264d720e806b9c81ee398e42750fbf54261ca",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-007.json",
+      "sha256": "dc22f4fb604d115ba3d58d2d3b218968062d0f66fa8efec6e19835ec5c773997",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-008.json",
+      "sha256": "1affacc4383afbd99e428b4c91ac485acc3974630cf13d199f28f23ac12bda52",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-009.json",
+      "sha256": "17011203bfbabe3900f96c47fe320fed757a95fa0002ecd1b9959b77aa184cf5",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-010.json",
+      "sha256": "c40ab107fa16c2efcf8edeeaeae5df554a8341df517f343139851a25931b4b13",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-011.json",
+      "sha256": "3797065988641914185ccb84d132ab2aaf1607a50e972300377737dfc57edc3c",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-012.json",
+      "sha256": "42fad8877446bad79cab8de007ebedb37b4352ac6fcb3ac6a2fd9de0d1c86266",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-013.json",
+      "sha256": "bbe03b5a2539033d6f28b17042d343535b9a8977c0103eb857166d73547bed7f",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-014.json",
+      "sha256": "f2ad8e1d68a82c7fa7c3edbf8576542a79412809f108d05f3ba46195beb112a9",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-015.json",
+      "sha256": "e589fc1de0339f439a09db7b3c70746b72c4eac7a24b114d06d943181e932d8c",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-016.json",
+      "sha256": "92353b6b526e163ef07f3b9653e4d4480d231abb549c9d55aba3141c4ca40818",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-017.json",
+      "sha256": "9a9fe74c5a5600db93e855a5373d4bbe64a5b8e0794612874af0f4a394b726c7",
+      "keys": 160
+    },
+    {
+      "path": "reviews/final-adversarial/online-online-018.json",
+      "sha256": "ff1524b6219d786c11c177acd352d925f8a2e2de79dfbaefd71b96a125c438ce",
+      "keys": 116
+    }
+  ],
+  "native20_provenance_byte_copy_sha256": "68657abf8b8bf5cde63a4581d89ce23d001a9096a48eebab04274dc52b923a97",
+  "native20_target_sha256": "ba13c39fa9d5552b4a72f060ef0680cb5dfc588b89505b4867136bfe6c335836",
+  "other_owners_approvals_created": false,
+  "gates_passed_created": false,
+  "history_files_byte_verified": 334
+}

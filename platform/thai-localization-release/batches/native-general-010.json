@@ -1,0 +1,969 @@
+{
+  "id": "native-general-010",
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[room lan badge]",
+      "key": "[room lan badge]",
+      "source": "Local network · not rated",
+      "target": "เครือข่าย​ท้องถิ่น · ไม่​คิด​เรตติ้ง"
+    },
+    {
+      "id": "native:[room lan list hint %0]",
+      "key": "[room lan list hint %0]",
+      "source": "Others on the same network see %0 in the LAN game list on the main menu.",
+      "target": "ผู้ใช้งาน​คนอื่นๆ ใน​เครือข่าย​เดียวกัน​จะ​เห็น %0 ใน​รายการ​เกม LAN บน​เมนูหลัก"
+    },
+    {
+      "id": "native:[room leave]",
+      "key": "[room leave]",
+      "source": "Leave",
+      "target": "ออก"
+    },
+    {
+      "id": "native:[room match label]",
+      "key": "[room match label]",
+      "source": "Room",
+      "target": "ห้อง"
+    },
+    {
+      "id": "native:[room member joined %0]",
+      "key": "[room member joined %0]",
+      "source": "%0 joined.",
+      "target": "%0 เข้าร่วม​แล้ว"
+    },
+    {
+      "id": "native:[room member left %0]",
+      "key": "[room member left %0]",
+      "source": "%0 left.",
+      "target": "%0 ออก​แล้ว"
+    },
+    {
+      "id": "native:[room member ready %0]",
+      "key": "[room member ready %0]",
+      "source": "%0 is ready.",
+      "target": "%0 พร้อม​แล้ว"
+    },
+    {
+      "id": "native:[room needs two seats]",
+      "key": "[room needs two seats]",
+      "source": "Invite a friend or add an AI to start",
+      "target": "เชิญ​เพื่อน​หรือ​เพิ่ม AI เพื่อ​เริ่มต้น"
+    },
+    {
+      "id": "native:[room no map]",
+      "key": "[room no map]",
+      "source": "No map yet",
+      "target": "ยัง​ไม่​มี​แผนที่"
+    },
+    {
+      "id": "native:[room not ready]",
+      "key": "[room not ready]",
+      "source": "Not ready",
+      "target": "ยัง​ไม่​พร้อม"
+    },
+    {
+      "id": "native:[room open for a person]",
+      "key": "[room open for a person]",
+      "source": "Open for a person",
+      "target": "เปิดรับ​ผู้เล่น"
+    },
+    {
+      "id": "native:[room open seat detail]",
+      "key": "[room open seat detail]",
+      "source": "Anyone with the invite can take it",
+      "target": "ผู้​ที่​มี​คำเชิญ​เข้ามา​นั่ง​ได้"
+    },
+    {
+      "id": "native:[room open seat]",
+      "key": "[room open seat]",
+      "source": "Open seat",
+      "target": "ที่นั่ง​ว่าง"
+    },
+    {
+      "id": "native:[room person]",
+      "key": "[room person]",
+      "source": "Person",
+      "target": "ผู้เล่น"
+    },
+    {
+      "id": "native:[room preparing map]",
+      "key": "[room preparing map]",
+      "source": "Preparing map on the server…",
+      "target": "กำลัง​เตรียม​แผนที่​บน​เซิร์ฟเวอร์…"
+    },
+    {
+      "id": "native:[room public]",
+      "key": "[room public]",
+      "source": "Public",
+      "target": "สาธารณะ"
+    },
+    {
+      "id": "native:[room ready?]",
+      "key": "[room ready?]",
+      "source": "Ready",
+      "target": "พร้อม"
+    },
+    {
+      "id": "native:[room ready]",
+      "key": "[room ready]",
+      "source": "✓ Ready",
+      "target": "✓ พร้อม"
+    },
+    {
+      "id": "native:[room remove from room]",
+      "key": "[room remove from room]",
+      "source": "Remove from room",
+      "target": "นำ​ออกจาก​ห้อง"
+    },
+    {
+      "id": "native:[room rule off]",
+      "key": "[room rule off]",
+      "source": "Off",
+      "target": "ปิด"
+    },
+    {
+      "id": "native:[room rule on]",
+      "key": "[room rule on]",
+      "source": "On",
+      "target": "เปิด"
+    },
+    {
+      "id": "native:[room rules changed]",
+      "key": "[room rules changed]",
+      "source": "The rules changed.",
+      "target": "กฎ​เปลี่ยนไป​แล้ว"
+    },
+    {
+      "id": "native:[room rules]",
+      "key": "[room rules]",
+      "source": "Rules",
+      "target": "กฎ"
+    },
+    {
+      "id": "native:[room say something]",
+      "key": "[room say something]",
+      "source": "Say something…",
+      "target": "พิมพ์​ข้อความ…"
+    },
+    {
+      "id": "native:[room seat hint]",
+      "key": "[room seat hint]",
+      "source": "Players can move to an open seat themselves. Change Team to rebalance.",
+      "target": "ผู้เล่น​สามารถ​ย้าย​ไป​นั่ง​ที่ว่าง​ได้​ด้วย​ตนเอง เปลี่ยน​ทีม​เพื่อ​ปรับ​สมดุล​ใหม่"
+    },
+    {
+      "id": "native:[room seat options]",
+      "key": "[room seat options]",
+      "source": "Seat options",
+      "target": "ตัวเลือก​ที่นั่ง"
+    },
+    {
+      "id": "native:[room seats summary %0 %1 %2]",
+      "key": "[room seats summary %0 %1 %2]",
+      "source": "%0 players · %1 AI · %2 open",
+      "target": "ผู้เล่น %0 คน · AI %1 · ว่าง %2 ที่"
+    },
+    {
+      "id": "native:[room seats]",
+      "key": "[room seats]",
+      "source": "Seats",
+      "target": "ที่นั่ง"
+    },
+    {
+      "id": "native:[room seed]",
+      "key": "[room seed]",
+      "source": "Seed",
+      "target": "ค่า​สุ่ม"
+    },
+    {
+      "id": "native:[room send]",
+      "key": "[room send]",
+      "source": "Send",
+      "target": "ส่ง"
+    },
+    {
+      "id": "native:[room set by host]",
+      "key": "[room set by host]",
+      "source": "Set by the host",
+      "target": "ตั้งค่า​โดย​โฮสต์"
+    },
+    {
+      "id": "native:[room share text %0]",
+      "key": "[room share text %0]",
+      "source": "Join my Globulation 2 room: %0",
+      "target": "เข้าร่วม​ห้อง Globulation 2 ของ​ฉัน : %0"
+    },
+    {
+      "id": "native:[room share]",
+      "key": "[room share]",
+      "source": "Share…",
+      "target": "แบ่งปัน…"
+    },
+    {
+      "id": "native:[room size]",
+      "key": "[room size]",
+      "source": "Size",
+      "target": "ขนาด"
+    },
+    {
+      "id": "native:[room starting match]",
+      "key": "[room starting match]",
+      "source": "Starting the match…",
+      "target": "กำลัง​เริ่ม​แมตช์…"
+    },
+    {
+      "id": "native:[room take seat]",
+      "key": "[room take seat]",
+      "source": "Take seat",
+      "target": "นั่ง​ที่นี่"
+    },
+    {
+      "id": "native:[room team %0]",
+      "key": "[room team %0]",
+      "source": "Team %0",
+      "target": "ทีม %0"
+    },
+    {
+      "id": "native:[room update required]",
+      "key": "[room update required]",
+      "source": "This room plays another version of the game. Update to join it.",
+      "target": "ห้อง​นี้​เล่น​เกม​เวอร์ชัน​อื่น อัปเดต​เพื่อ​เข้าร่วม"
+    },
+    {
+      "id": "native:[room uploaded map]",
+      "key": "[room uploaded map]",
+      "source": "Uploaded map",
+      "target": "แผนที่​ที่​อัปโหลด​แล้ว"
+    },
+    {
+      "id": "native:[room waiting for %0]",
+      "key": "[room waiting for %0]",
+      "source": "Waiting for %0 to be ready",
+      "target": "กำลัง​รอ​ให้ %0 พร้อม"
+    },
+    {
+      "id": "native:[room waiting for you]",
+      "key": "[room waiting for you]",
+      "source": "Press Ready when you're set",
+      "target": "กด \"พร้อม\" เมื่อ​คุณ​พร้อม​แล้ว"
+    },
+    {
+      "id": "native:[room match over]",
+      "key": "[room match over]",
+      "source": "Match over. Ready up for another round!",
+      "target": "แมตช์​จบ​แล้ว กด​พร้อม​เพื่อ​เล่น​รอบ​ใหม่!"
+    },
+    {
+      "id": "native:[room waiting for host]",
+      "key": "[room waiting for host]",
+      "source": "Waiting for the host to start",
+      "target": "กำลัง​รอ​ให้​โฮสต์​เริ่ม"
+    },
+    {
+      "id": "native:[room waiting for players %0]",
+      "key": "[room waiting for players %0]",
+      "source": "Waiting for %0 players to be ready",
+      "target": "กำลัง​รอ​ให้​ผู้เล่น %0 พร้อม"
+    },
+    {
+      "id": "native:[room who can find it]",
+      "key": "[room who can find it]",
+      "source": "Who can find it",
+      "target": "ใคร​จะ​หา​เจอ​ได้​บ้าง"
+    },
+    {
+      "id": "native:[room you created]",
+      "key": "[room you created]",
+      "source": "You created the room.",
+      "target": "คุณ​เป็น​คน​สร้าง​ห้อง​นี้​ขึ้น​มา"
+    },
+    {
+      "id": "native:[room you joined %0]",
+      "key": "[room you joined %0]",
+      "source": "You joined %0.",
+      "target": "คุณ​เข้าร่วม %0 แล้ว"
+    },
+    {
+      "id": "native:[room you were removed]",
+      "key": "[room you were removed]",
+      "source": "The host removed you from the room.",
+      "target": "โฮสต์​นำ​คุณ​ออกจาก​ห้อง​แล้ว"
+    },
+    {
+      "id": "native:[room you]",
+      "key": "[room you]",
+      "source": "you",
+      "target": "คุณ"
+    },
+    {
+      "id": "native:[trust invited to room %0]",
+      "key": "[trust invited to room %0]",
+      "source": "Invited to room %0",
+      "target": "ได้​รับเชิญ​เข้า​ห้อง %0"
+    },
+    {
+      "id": "native:[trust join as guest]",
+      "key": "[trust join as guest]",
+      "source": "Join as guest",
+      "target": "เข้าร่วม​เป็น​ผู้เยี่ยมชม"
+    },
+    {
+      "id": "native:[trust not official]",
+      "key": "[trust not official]",
+      "source": "This server isn't run by the Globulation 2 project.",
+      "target": "เซิร์ฟเวอร์​นี้​ไม่​ได้​ดำเนินการ​โดย​โครงการ Globulation 2"
+    },
+    {
+      "id": "native:[trust remember]",
+      "key": "[trust remember]",
+      "source": "Remember this server",
+      "target": "จดจำ​เซิร์ฟเวอร์​นี้​ไว้"
+    },
+    {
+      "id": "native:[trust separate identity %0]",
+      "key": "[trust separate identity %0]",
+      "source": "You'll join as a guest there. Your %0 account, rating and history stay where they are.",
+      "target": "คุณ​จะ​เข้าร่วม​ที่นั่น​เป็น​ผู้เยี่ยมชม บัญชี เรตติ้ง และ​ประวัติ​ของ​คุณ​บน %0 ยัง​คงอยู่​ที่​เดิม"
+    },
+    {
+      "id": "native:[trust title]",
+      "key": "[trust title]",
+      "source": "Join a game on another server?",
+      "target": "เข้าร่วม​เกม​ใน​เซิร์ฟเวอร์​อื่น?"
+    },
+    {
+      "id": "native:[trust what it sees]",
+      "key": "[trust what it sees]",
+      "source": "The server sees your display name, your connection's address and the games you play on it.",
+      "target": "เซิร์ฟเวอร์​เห็น​ชื่อ​ที่​แสดง ที่อยู่​การ​เชื่อมต่อ และ​เกม​ที่​คุณ​เล่น​บน​เซิร์ฟเวอร์​นั้น"
+    },
+    {
+      "id": "native:[hub code]",
+      "key": "[hub code]",
+      "source": "Code",
+      "target": "รหัส"
+    },
+    {
+      "id": "native:[results draw]",
+      "key": "[results draw]",
+      "source": "Draw",
+      "target": "เสมอ"
+    },
+    {
+      "id": "native:[qm 2 vs 2]",
+      "key": "[qm 2 vs 2]",
+      "source": "2 vs 2",
+      "target": "2 ต่อ 2"
+    },
+    {
+      "id": "native:[qm 1 vs 1]",
+      "key": "[qm 1 vs 1]",
+      "source": "1 vs 1",
+      "target": "1 ต่อ 1"
+    },
+    {
+      "id": "native:[qm ping about]",
+      "key": "[qm ping about]",
+      "source": "Ping about",
+      "target": "ปิง​ประมาณ"
+    },
+    {
+      "id": "native:[qm ranked]",
+      "key": "[qm ranked]",
+      "source": "Ranked",
+      "target": "จัดอันดับ"
+    },
+    {
+      "id": "native:[qm casual %0]",
+      "key": "[qm casual %0]",
+      "source": "Casual %0",
+      "target": "ทั่วไป %0"
+    },
+    {
+      "id": "native:[qm rated]",
+      "key": "[qm rated]",
+      "source": "Ranked",
+      "target": "จัดอันดับ"
+    },
+    {
+      "id": "native:[qm unrated]",
+      "key": "[qm unrated]",
+      "source": "Unrated",
+      "target": "ไม่​คิด​เรตติ้ง"
+    },
+    {
+      "id": "native:[qm solo queue]",
+      "key": "[qm solo queue]",
+      "source": "solo queue",
+      "target": "คิว​เดี่ยว"
+    },
+    {
+      "id": "native:[qm ai joins after %0]",
+      "key": "[qm ai joins after %0]",
+      "source": "AI joins after %0",
+      "target": "AI เข้าร่วม​หลังจาก %0"
+    },
+    {
+      "id": "native:[qm fair maps %0]",
+      "key": "[qm fair maps %0]",
+      "source": "Maps: %0",
+      "target": "แผนที่ : %0"
+    },
+    {
+      "id": "native:[qm cooldown %0]",
+      "key": "[qm cooldown %0]",
+      "source": "You declined a match. You can search again in %0.",
+      "target": "คุณ​ปฏิเสธ​แมตช์ ค้นหา​ใหม่​ได้​อีก %0"
+    },
+    {
+      "id": "native:[qm sign in to play ranked]",
+      "key": "[qm sign in to play ranked]",
+      "source": "Ranked queues are for signed-in accounts; sign in first.",
+      "target": "คิว​จัดอันดับ​ใช้ได้​เฉพาะ​บัญชี​ที่​ลงชื่อเข้าใช้ โปรด​ลงชื่อเข้าใช้​ก่อน"
+    },
+    {
+      "id": "native:[online update required]",
+      "key": "[online update required]",
+      "source": "This version of the game is too old for the server; update to play online.",
+      "target": "เกม​เวอร์ชัน​นี้​เก่า​เกินไป​สำหรับ​เซิร์ฟเวอร์ โปรด​อัปเดต​เพื่อ​เล่น​ออนไลน์"
+    },
+    {
+      "id": "native:[online server behind]",
+      "key": "[online server behind]",
+      "source": "The server hasn't been updated to this version yet; online play opens once it is.",
+      "target": "เซิร์ฟเวอร์​ยัง​ไม่​ได้​อัปเดต​เป็น​เวอร์ชัน​นี้ การ​เล่น​ออนไลน์​จะ​เปิด​ให้บริการ​เมื่อ​อัปเดต​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[online version mismatch]",
+      "key": "[online version mismatch]",
+      "source": "The server plays a different version of the game; online play isn't available with this copy.",
+      "target": "เซิร์ฟเวอร์​นี้​ใช้​เกม​เวอร์ชัน​ที่​แตกต่าง​ออก​ไป การ​เล่น​ออนไลน์​จึง​ไม่​สามารถ​ใช้งาน​ได้​กับ​เกม​เวอร์ชัน​นี้"
+    },
+    {
+      "id": "native:[qm already searching]",
+      "key": "[qm already searching]",
+      "source": "You are already searching or in a match.",
+      "target": "คุณ​กำลัง​หา​คู่แข่ง​หรือ​อยู่​ใน​แมตช์​แล้ว"
+    },
+    {
+      "id": "native:[online connection problem]",
+      "key": "[online connection problem]",
+      "source": "The server could not be reached.",
+      "target": "ไม่​สามารถ​ติดต่อ​เซิร์ฟเวอร์​ได้"
+    },
+    {
+      "id": "native:[qm find match]",
+      "key": "[qm find match]",
+      "source": "Find match",
+      "target": "หา​คู่แข่ง"
+    },
+    {
+      "id": "native:[qm opponents rated %0 to %1]",
+      "key": "[qm opponents rated %0 to %1]",
+      "source": "Opponents rated %0 to %1",
+      "target": "ฝ่ายตรงข้าม​ได้รับ​การประเมิน​คะแนน %0 ถึง %1"
+    },
+    {
+      "id": "native:[qm region %0]",
+      "key": "[qm region %0]",
+      "source": "Region %0",
+      "target": "ภูมิภาค %0"
+    },
+    {
+      "id": "native:[qm searching]",
+      "key": "[qm searching]",
+      "source": "Searching",
+      "target": "กำลัง​ค้นหา"
+    },
+    {
+      "id": "native:[qm measuring relays]",
+      "key": "[qm measuring relays]",
+      "source": "Measuring relays",
+      "target": "กำลัง​ทดสอบ​รีเลย์"
+    },
+    {
+      "id": "native:[qm joining queue]",
+      "key": "[qm joining queue]",
+      "source": "Joining the queue",
+      "target": "เข้าร่วม​คิว"
+    },
+    {
+      "id": "native:[qm waiting for a person]",
+      "key": "[qm waiting for a person]",
+      "source": "Waiting for a person: AI opponents are off.",
+      "target": "กำลัง​รอ​ผู้เล่น: ปิด​คู่ต่อสู้ AI อยู่"
+    },
+    {
+      "id": "native:[qm ai in %0 rated]",
+      "key": "[qm ai in %0 rated]",
+      "source": "If no one is found, you'll play the closest-rated AI in %0",
+      "target": "หาก​ไม่​พบ​ผู้เล่น คุณ​จะ​เล่น​กับ AI ที่​เรตติ้ง​ใกล้​คุณ​ที่สุด​ใน​อีก %0"
+    },
+    {
+      "id": "native:[qm ai in %0]",
+      "key": "[qm ai in %0]",
+      "source": "If no one is found, an AI joins in %0",
+      "target": "หาก​ไม่​พบ​ผู้เล่น AI จะ​เข้าร่วม​ใน​อีก %0"
+    },
+    {
+      "id": "native:[qm ai after %0]",
+      "key": "[qm ai after %0]",
+      "source": "If no one is found, an AI takes the seat after %0",
+      "target": "หาก​ไม่​พบ​ผู้เล่น AI จะ​นั่ง​แทน​เมื่อ​ผ่าน​ไป %0"
+    },
+    {
+      "id": "native:[qm allow ai short]",
+      "key": "[qm allow ai short]",
+      "source": "Allow AI",
+      "target": "อนุญาต AI"
+    },
+    {
+      "id": "native:[qm allow ai]",
+      "key": "[qm allow ai]",
+      "source": "Allow an AI opponent",
+      "target": "อนุญาต​ให้​มี​คู่ต่อสู้​ที่​เป็น AI"
+    },
+    {
+      "id": "native:[qm cancel]",
+      "key": "[qm cancel]",
+      "source": "Cancel",
+      "target": "ยกเลิก"
+    },
+    {
+      "id": "native:[qm cancel search]",
+      "key": "[qm cancel search]",
+      "source": "Cancel search",
+      "target": "ยกเลิก​การ​ค้นหา"
+    },
+    {
+      "id": "native:[qm usual wait %0]",
+      "key": "[qm usual wait %0]",
+      "source": "usual wait %0",
+      "target": "เวลา​รอ​ปกติ %0"
+    },
+    {
+      "id": "native:[qm widening]",
+      "key": "[qm widening]",
+      "source": "widening as you wait",
+      "target": "ขยาย​ช่วง​ค้นหา​ขณะ​รอ"
+    },
+    {
+      "id": "native:[qm ais are rated]",
+      "key": "[qm ais are rated]",
+      "source": "(rated: AIs have ratings too)",
+      "target": "(คิด​เรตติ้ง: AI ก็​มี​เรตติ้ง)"
+    },
+    {
+      "id": "native:[qm opponent declined]",
+      "key": "[qm opponent declined]",
+      "source": "Your opponent didn't accept. You're back at the front of the queue.",
+      "target": "คู่แข่ง​ไม่​ตอบรับ คุณ​กลับ​ไป​อยู่​หน้า​คิว​แล้ว"
+    },
+    {
+      "id": "native:[qm %0 did not accept]",
+      "key": "[qm %0 did not accept]",
+      "source": "%0 didn't accept. You're back at the front of the queue.",
+      "target": "%0 ไม่​ตอบรับ คุณ​กลับ​ไป​อยู่​หน้า​คิว​แล้ว"
+    },
+    {
+      "id": "native:[qm start failed]",
+      "key": "[qm start failed]",
+      "source": "The match could not start. You're searching again.",
+      "target": "เริ่ม​แมตช์​ไม่​ได้ กำลัง​หา​คู่แข่ง​ใหม่"
+    },
+    {
+      "id": "native:[qm you declined]",
+      "key": "[qm you declined]",
+      "source": "You declined the match. You can search again after a short wait.",
+      "target": "คุณ​ปฏิเสธ​การ​จับคู่ คุณ​สามารถ​ค้นหา​ใหม่​ได้​อีกครั้ง​หลังจาก​รอ​สักครู่"
+    },
+    {
+      "id": "native:[qm you did not answer]",
+      "key": "[qm you did not answer]",
+      "source": "You didn't accept in time. You can search again after a short wait.",
+      "target": "คุณ​ไม่​ได้​กด​ตอบรับ​ทันเวลา คุณ​สามารถ​ลอง​ค้นหา​อีกครั้ง​ได้​หลังจาก​รอ​สักครู่"
+    },
+    {
+      "id": "native:[qm search ended]",
+      "key": "[qm search ended]",
+      "source": "The search ended.",
+      "target": "การ​ค้นหา​สิ้นสุดลง​แล้ว"
+    },
+    {
+      "id": "native:[qm try again]",
+      "key": "[qm try again]",
+      "source": "Try again",
+      "target": "ลอง​อีกครั้ง"
+    },
+    {
+      "id": "native:[online connecting]",
+      "key": "[online connecting]",
+      "source": "Connecting…",
+      "target": "กำลัง​เชื่อมต่อ…"
+    },
+    {
+      "id": "native:[qm no queues]",
+      "key": "[qm no queues]",
+      "source": "This server has no quick-match queues.",
+      "target": "เซิร์ฟเวอร์​นี้​ไม่​มี​คิว​หา​คู่แข่ง​ด่วน"
+    },
+    {
+      "id": "native:[qm quick match]",
+      "key": "[qm quick match]",
+      "source": "Quick match",
+      "target": "หา​คู่แข่ง​ด่วน"
+    },
+    {
+      "id": "native:[qm phone searching note]",
+      "key": "[qm phone searching note]",
+      "source": "The search keeps running if you leave this screen.",
+      "target": "การ​ค้นหา​จะ​ยังคง​ทำงาน​ต่อไป​แม้ว่า​คุณ​จะ​ออกจาก​หน้าจอ​นี้"
+    },
+    {
+      "id": "native:[qm phone intro]",
+      "key": "[qm phone intro]",
+      "source": "Pick a queue below; the search runs while you browse.",
+      "target": "เลือก​คิว​ด้านล่าง การ​ค้นหา​จะ​ทำงาน​ขณะที่​คุณ​กำลัง​เลือก​ดู​ข้อมูล"
+    },
+    {
+      "id": "native:[qm online]",
+      "key": "[qm online]",
+      "source": "Online",
+      "target": "ออนไลน์"
+    },
+    {
+      "id": "native:[qm keeps running note]",
+      "key": "[qm keeps running note]",
+      "source": "The search keeps running if you leave this screen.",
+      "target": "การ​ค้นหา​จะ​ยังคง​ทำงาน​ต่อไป​แม้ว่า​คุณ​จะ​ออกจาก​หน้าจอ​นี้"
+    },
+    {
+      "id": "native:[qm ai]",
+      "key": "[qm ai]",
+      "source": "AI",
+      "target": "AI"
+    },
+    {
+      "id": "native:[qm provisional]",
+      "key": "[qm provisional]",
+      "source": "provisional",
+      "target": "เบื้องต้น"
+    },
+    {
+      "id": "native:[qm accepted]",
+      "key": "[qm accepted]",
+      "source": "✓ accepted",
+      "target": "✓ ตอบรับ​แล้ว"
+    },
+    {
+      "id": "native:[qm declined]",
+      "key": "[qm declined]",
+      "source": "declined",
+      "target": "ปฏิเสธ"
+    },
+    {
+      "id": "native:[qm waiting]",
+      "key": "[qm waiting]",
+      "source": "waiting…",
+      "target": "กำลัง​รอ…"
+    },
+    {
+      "id": "native:[qm ai badge]",
+      "key": "[qm ai badge]",
+      "source": "AI",
+      "target": "AI"
+    },
+    {
+      "id": "native:[qm match found]",
+      "key": "[qm match found]",
+      "source": "Match found",
+      "target": "พบ​แมตช์​แล้ว"
+    },
+    {
+      "id": "native:[qm playing an ai]",
+      "key": "[qm playing an ai]",
+      "source": "Playing an AI",
+      "target": "เล่น​กับ AI"
+    },
+    {
+      "id": "native:[qm vs]",
+      "key": "[qm vs]",
+      "source": "vs",
+      "target": "ปะทะ"
+    },
+    {
+      "id": "native:[qm ai explanation rated]",
+      "key": "[qm ai explanation rated]",
+      "source": "No one in your rating range was searching. You'll play the AI closest to your rating; the result counts for your rating and the AI's.",
+      "target": "ไม่​มี​ใคร​ใน​ช่วง​เรตติ้ง​ของ​คุณ​กำลัง​ค้นหา​อยู่ คุณ​จะ​ได้​เล่น​กับ AI ที่​ใกล้เคียง​กับ​เรตติ้ง​ของ​คุณ​มาก​ที่สุด ผลลัพธ์​จะ​นับ​รวมทั้ง​เรตติ้ง​ของ​คุณ​และ​ของ AI ด้วย"
+    },
+    {
+      "id": "native:[qm ai explanation]",
+      "key": "[qm ai explanation]",
+      "source": "No one was searching. You'll play the AI closest to your rating; this game is unrated.",
+      "target": "ไม่​มี​ใคร​กำลัง​หา​คู่แข่ง คุณ​จะ​เล่น​กับ AI ที่​มี​เรตติ้ง​ใกล้​คุณ​ที่สุด แมตช์​นี้​ไม่​คิด​เรตติ้ง"
+    },
+    {
+      "id": "native:[qm casual explanation]",
+      "key": "[qm casual explanation]",
+      "source": "The match starts straight away; casual games are unrated.",
+      "target": "แมตช์​เริ่ม​ทันที เกม​ทั่วไป​ไม่​คิด​เรตติ้ง"
+    },
+    {
+      "id": "native:[qm accepted button]",
+      "key": "[qm accepted button]",
+      "source": "Accepted",
+      "target": "ตอบรับ​แล้ว"
+    },
+    {
+      "id": "native:[qm accept]",
+      "key": "[qm accept]",
+      "source": "Accept",
+      "target": "ตอบรับ"
+    },
+    {
+      "id": "native:[qm decline]",
+      "key": "[qm decline]",
+      "source": "Decline",
+      "target": "ปฏิเสธ"
+    },
+    {
+      "id": "native:[qm both must accept]",
+      "key": "[qm both must accept]",
+      "source": "Both must accept",
+      "target": "ทั้งสองฝ่าย​ต้อง​ตอบรับ"
+    },
+    {
+      "id": "native:[qm accept explanation]",
+      "key": "[qm accept explanation]",
+      "source": "Both players must accept. Declining or letting the timer run out puts you at the back of the queue.",
+      "target": "ผู้เล่น​ทั้งสอง​ต้อง​ตอบรับ หาก​ปฏิเสธ​หรือ​ปล่อย​ให้​หมดเวลา คุณ​จะ​ไป​อยู่​ท้าย​คิว"
+    },
+    {
+      "id": "native:[qm starting in %0]",
+      "key": "[qm starting in %0]",
+      "source": "Starting in %0…",
+      "target": "เริ่ม​ใน​อีก %0…"
+    },
+    {
+      "id": "native:[qm preparing match]",
+      "key": "[qm preparing match]",
+      "source": "Preparing the match…",
+      "target": "กำลัง​เตรียม​แมตช์…"
+    },
+    {
+      "id": "native:[qm match assigned %0 %1]",
+      "key": "[qm match assigned %0 %1]",
+      "source": "Match %0 is ready on %1, but this build cannot connect to online matches yet.",
+      "target": "แมตช์ %0 พร้อม​บน %1 แล้ว แต่​เกม​รุ่น​นี้​ยัง​เชื่อมต่อ​แมตช์​ออนไลน์​ไม่​ได้"
+    },
+    {
+      "id": "native:[online jan]",
+      "key": "[online jan]",
+      "source": "Jan",
+      "target": "ม.ค."
+    },
+    {
+      "id": "native:[online feb]",
+      "key": "[online feb]",
+      "source": "Feb",
+      "target": "ก.พ."
+    },
+    {
+      "id": "native:[online mar]",
+      "key": "[online mar]",
+      "source": "Mar",
+      "target": "มี.ค."
+    },
+    {
+      "id": "native:[online apr]",
+      "key": "[online apr]",
+      "source": "Apr",
+      "target": "เม.ย."
+    },
+    {
+      "id": "native:[online may]",
+      "key": "[online may]",
+      "source": "May",
+      "target": "พ.ค."
+    },
+    {
+      "id": "native:[online jun]",
+      "key": "[online jun]",
+      "source": "Jun",
+      "target": "มิ.ย."
+    },
+    {
+      "id": "native:[online jul]",
+      "key": "[online jul]",
+      "source": "Jul",
+      "target": "ก.ค."
+    },
+    {
+      "id": "native:[online aug]",
+      "key": "[online aug]",
+      "source": "Aug",
+      "target": "ส.ค."
+    },
+    {
+      "id": "native:[online sep]",
+      "key": "[online sep]",
+      "source": "Sep",
+      "target": "ก.ย."
+    },
+    {
+      "id": "native:[online oct]",
+      "key": "[online oct]",
+      "source": "Oct",
+      "target": "ต.ค."
+    },
+    {
+      "id": "native:[online nov]",
+      "key": "[online nov]",
+      "source": "Nov",
+      "target": "พ.ย."
+    },
+    {
+      "id": "native:[online dec]",
+      "key": "[online dec]",
+      "source": "Dec",
+      "target": "ธ.ค."
+    },
+    {
+      "id": "native:[profile win letter]",
+      "key": "[profile win letter]",
+      "source": "W",
+      "target": "ช"
+    },
+    {
+      "id": "native:[profile loss letter]",
+      "key": "[profile loss letter]",
+      "source": "L",
+      "target": "พ"
+    },
+    {
+      "id": "native:[profile draw letter]",
+      "key": "[profile draw letter]",
+      "source": "–",
+      "target": "–"
+    },
+    {
+      "id": "native:[profile history unavailable]",
+      "key": "[profile history unavailable]",
+      "source": "This server does not offer match history yet.",
+      "target": "เซิร์ฟเวอร์​นี้​ยัง​ไม่​แสดง​ประวัติ​การแข่งขัน"
+    },
+    {
+      "id": "native:[profile downloading replay]",
+      "key": "[profile downloading replay]",
+      "source": "Downloading the replay…",
+      "target": "กำลัง​ดาวน์โหลด​รีเพลย์…"
+    },
+    {
+      "id": "native:[profile no replay]",
+      "key": "[profile no replay]",
+      "source": "No replay is available for this match.",
+      "target": "ไม่​มี​รีเพลย์​สำหรับ​แมตช์​นี้"
+    },
+    {
+      "id": "native:[profile room with %0]",
+      "key": "[profile room with %0]",
+      "source": "Room · %0 colonies",
+      "target": "ห้อง · %0 อาณานิคม"
+    },
+    {
+      "id": "native:[profile with %0 vs %1]",
+      "key": "[profile with %0 vs %1]",
+      "source": "with %0 vs %1",
+      "target": "ร่วมกับ %0 ปะทะ %1"
+    },
+    {
+      "id": "native:[profile vs %0]",
+      "key": "[profile vs %0]",
+      "source": "vs %0",
+      "target": "ปะทะ %0"
+    },
+    {
+      "id": "native:[profile room]",
+      "key": "[profile room]",
+      "source": "Room",
+      "target": "ห้อง"
+    },
+    {
+      "id": "native:[profile casual]",
+      "key": "[profile casual]",
+      "source": "Casual",
+      "target": "ทั่วไป"
+    },
+    {
+      "id": "native:[profile ai filled]",
+      "key": "[profile ai filled]",
+      "source": "AI filled",
+      "target": "เติม​ที่ว่าง​ด้วย AI"
+    },
+    {
+      "id": "native:[profile provisional %0 games]",
+      "key": "[profile provisional %0 games]",
+      "source": "provisional · %0 games",
+      "target": "เบื้องต้น · %0 เกม"
+    },
+    {
+      "id": "native:[profile unrated]",
+      "key": "[profile unrated]",
+      "source": "unrated",
+      "target": "ไม่​คิด​เรตติ้ง"
+    },
+    {
+      "id": "native:[profile checking]",
+      "key": "[profile checking]",
+      "source": "checking…",
+      "target": "กำลัง​ตรวจสอบ…"
+    },
+    {
+      "id": "native:[profile %0 min]",
+      "key": "[profile %0 min]",
+      "source": "%0 min",
+      "target": "%0 นาที"
+    },
+    {
+      "id": "native:[profile match page]",
+      "key": "[profile match page]",
+      "source": "Match page",
+      "target": "หน้า​แมตช์"
+    },
+    {
+      "id": "native:[profile replay]",
+      "key": "[profile replay]",
+      "source": "Replay",
+      "target": "รีเพลย์"
+    },
+    {
+      "id": "native:[profile win rate last %0]",
+      "key": "[profile win rate last %0]",
+      "source": "Win rate, last %0",
+      "target": "อัตรา​ชนะ​ช่วง %0 ล่าสุด"
+    },
+    {
+      "id": "native:[profile %0 w %1 l %2 d]",
+      "key": "[profile %0 w %1 l %2 d]",
+      "source": "%0 W · %1 L · %2 draw",
+      "target": "%0 ชนะ · %1 แพ้ · %2 เสมอ"
+    },
+    {
+      "id": "native:[profile typical game]",
+      "key": "[profile typical game]",
+      "source": "Typical game",
+      "target": "เวลา​เกม​ปกติ"
+    },
+    {
+      "id": "native:[profile median length]",
+      "key": "[profile median length]",
+      "source": "your median length",
+      "target": "มัธยฐาน​เวลา​เกม​ของ​คุณ"
+    }
+  ]
+}

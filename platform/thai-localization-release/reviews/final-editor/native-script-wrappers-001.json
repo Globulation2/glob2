@@ -1,0 +1,33 @@
+{
+  "editor": "cloud_adapter",
+  "confirmed_by": "cloud_adapter",
+  "id": "native-script-wrappers-001",
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "target_sha256": "3e8f6948cdfc7635f28e2e1cf034bf640d1580cdd46379b720ec788ed3f3fbcc",
+  "approved_keys": [
+    "native:[script compile failure %0:%1:(%2):%3]",
+    "native:[script compile success]",
+    "native:[script cursor %0 %1]",
+    "native:[script error at %0:%1: %2]",
+    "native:[script load failed %0]",
+    "native:[script save failed %0]"
+  ],
+  "fresh_reviewed_keys": [
+    "native:[script compile failure %0:%1:(%2):%3]",
+    "native:[script compile success]",
+    "native:[script cursor %0 %1]",
+    "native:[script error at %0:%1: %2]",
+    "native:[script load failed %0]",
+    "native:[script save failed %0]"
+  ],
+  "carried_keys": [],
+  "findings": [],
+  "accepted_english": {},
+  "status": "approved-exact-independently-reviewed-hinted-candidate",
+  "prior_review_path": "artifacts/thai-localization/reviews/supplement-editor-initial-private.json",
+  "prior_record_sha256": "f89721bfae92311ebd1889f4be66434f8ab42c294196ef3a77e3c725ea014111",
+  "candidate_path": "artifacts/thai-localization/native-twenty-editor-candidate.json",
+  "candidate_record_sha256": "2f11a85c677985b6759dcd7cfd376cdd1a90228165903f33d1e4e1f840d77ff5",
+  "candidate_all_twenty_target_sha256": "ba13c39fa9d5552b4a72f060ef0680cb5dfc588b89505b4867136bfe6c335836",
+  "review_basis": "All20 source, raw Google target, editor wording and explicit U+200B boundaries were freshly independently read before meaning findings; this record binds exact already-reviewed bytes to current registered catalog and successor batch. No fresh whole-catalog or platform approval. AI technical acronym accepted in model explanation, consistent with existing usage."
+}

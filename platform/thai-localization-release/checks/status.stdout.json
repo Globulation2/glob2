@@ -1,0 +1,20 @@
+{
+  "source_current": true,
+  "locales": {
+    "th": [
+      "review catalog hashes are missing or stale",
+      "every source batch must have exactly one review record",
+      "language brief lacks variety/script/region, sources or terminology rationales",
+      "language_brief is pending or lacks evidence",
+      "source_based_pilot is pending or lacks evidence",
+      "structural is pending or lacks evidence",
+      "desktop_rendering is pending or lacks evidence",
+      "phone_rendering is pending or lacks evidence",
+      "browser_startup is pending or lacks evidence",
+      "native_platforms is pending or lacks evidence",
+      "browser_platforms is pending or lacks evidence",
+      "mobile_platforms is pending or lacks evidence",
+      "97 English matches lack individual reviewed exceptions"
+    ]
+  }
+}

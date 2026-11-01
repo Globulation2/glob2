@@ -1,0 +1,19 @@
+{
+  "com.apple.CoreSimulator.SimRuntime.iOS-27-0": [],
+  "com.apple.CoreSimulator.SimRuntime.tvOS-27-0": [],
+  "com.apple.CoreSimulator.SimRuntime.xrOS-27-0": [],
+  "com.apple.CoreSimulator.SimRuntime.iOS-27-1": [
+    {
+      "dataPath": "/Users/runner/work/glob2/glob2/build/mobile-tools/ios-localization-48e9fc5626754cb6bb5a68be4fc6b162/00099545-2D45-4632-92DD-16A4FD12B507/data",
+      "dataPathSize": 1610149888,
+      "logPath": "/Users/runner/Library/Logs/CoreSimulator/00099545-2D45-4632-92DD-16A4FD12B507",
+      "udid": "00099545-2D45-4632-92DD-16A4FD12B507",
+      "lastUsedAt": "2026-11-01T02:49:17Z",
+      "isAvailable": true,
+      "logPathSize": 245760,
+      "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Duo",
+      "state": "Booted",
+      "name": "Glob2-Mobile"
+    }
+  ]
+}

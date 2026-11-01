@@ -1,0 +1,105 @@
+{
+  "reviewer": "thai_brief",
+  "scope": "Supplemental read-only fixed-default audit and minimal proposed patch only; prior hash-bound display-scope audit preserved as historical evidence. No tracked edits or new translation/API calls.",
+  "revision": "18bd216762d2d1a8bc09f76827e9820e9e987a61",
+  "patch_path": "artifacts/thai-localization/new-campaign-default.patch",
+  "patch_sha256": "f108e4b251b019dd7ac8b2528f62ab847bdabd89f14bd9c4cf714a136adc04ba",
+  "original_sources_sha256": {
+    "src/campaign/screens/CampaignEditor.cpp": "c8a74bc07ae0953068689cce311d5c35792ace6e877302aa165ae654af9b5212",
+    "src/campaign/Campaign.cpp": "c6d1a9d49f808e51d9b60752865d388fad745cdc40b564892c1202bdd3de4cef",
+    "src/map/editor/screens/EditorMainMenu.cpp": "ae19def5ef22756ba8ab13626afc9a3f4090f83f3db7a5ded625acfe3dbc4e1f",
+    "src/map/io/MapHeader.cpp": "977eadf50cb68021e85b122ab9577e04551ec060d529418fcd5e37568954d167",
+    "libgag/include/TextBreaks.h": "ef909748d4d718596bcb066a2b3a323cd3879cd3c38e9ca2c82575f391ea3a3d"
+  },
+  "finding": {
+    "id": "new-campaign-default-name",
+    "severity": "minor",
+    "original_value": "No Name",
+    "source_sites": [
+      {
+        "file": "src/campaign/Campaign.cpp",
+        "line": 185,
+        "meaning": "Constructor default name is English."
+      },
+      {
+        "file": "src/map/editor/screens/EditorMainMenu.cpp",
+        "line": 27,
+        "meaning": "New campaign enters editor with empty filename, so constructor default becomes initial editable name."
+      },
+      {
+        "file": "src/campaign/screens/CampaignEditor.cpp",
+        "line": 36,
+        "meaning": "Campaign name field displays stored name without translating authored content."
+      }
+    ],
+    "proposed_target_key": "[new campaign]",
+    "existing_reviewed_thai": "แคมเปญ​ใหม่",
+    "clean_persisted_thai": "แคมเปญใหม่",
+    "meaning_verdict": "Existing key means New Campaign and clean Thai แคมเปญใหม่ is a natural initial editable title. Strip only catalog presentation U+200B hints before storing name."
+  },
+  "identity_and_simulation_analysis": [
+    {
+      "file": "src/campaign/screens/CampaignEditor.cpp",
+      "lines": [
+        11,
+        15
+      ],
+      "conclusion": "Only the empty incoming filename branch changes. Nonempty input still loads exactly as before, and failed load retains original filename fallback. Loaded/imported campaign names are not overwritten."
+    },
+    {
+      "file": "src/campaign/Campaign.cpp",
+      "lines": [
+        243,
+        247,
+        256,
+        402
+      ],
+      "conclusion": "Campaign name IS authored persistence identity: save path derives from name and campaignName serialized. This patch intentionally changes only the default title/filename of a newly authored campaign before any user edits; do not claim no effect on newly authored filenames."
+    },
+    {
+      "file": "src/campaign/Campaign.cpp",
+      "lines": [
+        284,
+        288,
+        309,
+        316
+      ],
+      "conclusion": "Campaign progress export/import binds existing campaign name plus mission/map/prerequisite identities. Existing loaded names untouched; the patch does not rewrite progress data or alter mission names, map filenames, prerequisites or unlock keys."
+    },
+    {
+      "file": "src/campaign/Campaign.cpp",
+      "lines": [
+        350,
+        353
+      ],
+      "conclusion": "Mission lookup uses per-map names independently. No changes to this logic, simulation rules, map bytes, execution identifiers, random seeds, network or save-format schema. Default empty campaign has no missions."
+    },
+    {
+      "file": "libgag/include/TextBreaks.h",
+      "line": 10,
+      "conclusion": "Reuse existing withoutSoftWordBreaks rather than persist invisible Thai layout hints into authored title/filename."
+    }
+  ],
+  "remaining_fixed_default_scope": [
+    {
+      "source": "No Name",
+      "site": "src/campaign/Campaign.cpp:185",
+      "decision": "Keep model default stable; fix new editor entry only."
+    },
+    {
+      "source": "unnamed",
+      "site": "src/map/io/MapHeader.cpp:373",
+      "decision": "Technical sanitized filename fallback when supplied name empty; preserve filesystem identifier, not owned UI caption."
+    },
+    {
+      "source": "English tutorial definition top-level name",
+      "decision": "Stable authored bundled map metadata; actual official lesson selector display uses separately translated title/briefing fields. Detailed233references already audited."
+    }
+  ],
+  "validation": "Read source and derived patch only; root must review/apply, build and capture actual new editor default before final packaged evidence. No test/build pass inferred by this artifact.",
+  "patch_check": {
+    "command": "git apply --check artifacts/thai-localization/new-campaign-default.patch",
+    "exit_code": 0,
+    "scope": "Read-only patch applicability, not build/runtime validation."
+  }
+}

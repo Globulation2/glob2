@@ -1,0 +1,1372 @@
+{
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "catalog_sha256": {
+    "native": "b1c6e611d1fa9e0c7697508e3442360368df5d8a66abe55e79d9f34dfb2f0f1b",
+    "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
+  },
+  "qualification_revision": "667b2624f356a8c3f0d005535f54ffb0e46b6619",
+  "certification": "Agent-reviewed; not native-human-certified.",
+  "scope": "Actual Google pilot and independent reviews preceded bulk. Later iterative edits are explicit, not claimed byte-identical to originalpilot. Current56 values inherit genuine independently approved final per-key records. New20 actual Google draft and independent rounds are separately linked.",
+  "original_pilot_keys": 56,
+  "pilot_source_equal_keys": 56,
+  "target_evolution": {
+    "reviewed soft-break annotation only": 38,
+    "byte-exact original pilot target": 17,
+    "later independently reviewed meaning improvement": 1
+  },
+  "per_key": [
+    {
+      "id": "native:[%0 has left the game]",
+      "source_equal": true,
+      "pilot_target_sha256": "86ddc58be3e7e23046e7702ed7a1acd4ceadcac01541fcc37f336324a48e4bfd",
+      "actual_target_sha256": "ffc58b82949c613473dd31abb35621eeb88cc355030f87754bc5833611a60758",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 level %1]",
+      "source_equal": true,
+      "pilot_target_sha256": "45c4b5c59082483458883f3cb56d606daa37188102ff41c25f531449421873ee",
+      "actual_target_sha256": "45c4b5c59082483458883f3cb56d606daa37188102ff41c25f531449421873ee",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units can't access building]",
+      "source_equal": true,
+      "pilot_target_sha256": "cb4a6696fd8bc6c1735d1c466d28df6d4390e577d50c04cb2e5ee96498f777ef",
+      "actual_target_sha256": "e8bdb5b7dd6025ea6aa1f3d025a9453373c83a023bd48b1fed306990cfc12b9d",
+      "same_as_prior_final_catalog": true,
+      "classification": "later independently reviewed meaning improvement",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units can't access flag]",
+      "source_equal": true,
+      "pilot_target_sha256": "950676abcd21a867f4cfaedf3ebaf162323fe119faf63dadf9ccc750363260d6",
+      "actual_target_sha256": "26e2a19b6d4e1ce7d3b386626c29f5774f74d4a7d275a56a818ff48aaff4dddc",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units can't access fruit]",
+      "source_equal": true,
+      "pilot_target_sha256": "ad20d76aed00be1e985bc1e26e654fed0d67eb1dd5ed9f70138a88cf2e7bfc4f",
+      "actual_target_sha256": "3402174a7f716dea2caf5110697878a93b0f1b926f34dbaa347d489bb0a2d996",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units can't access resource]",
+      "source_equal": true,
+      "pilot_target_sha256": "de934a3c0387dc38aa3ead34ecb0bbd425298d68f639ab5c074fc33e1f9ae732",
+      "actual_target_sha256": "6c825c16ac4615bdd21fb6dea2a2ad9dd8bce42330bb2e7a2680e1d8483a0b72",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units not available]",
+      "source_equal": true,
+      "pilot_target_sha256": "594ea30ee3079fc5e4ee1288af0b5364ac2ed0726d707819a18770adb7f66da6",
+      "actual_target_sha256": "2f418033bc762af2b7d12691cb62623dad93b1d2258aec5dd34ea3d055c86c91",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units too far from building]",
+      "source_equal": true,
+      "pilot_target_sha256": "501399ba768fc7a1390f3d24894af47f6e05112b21c49a6e44e7f73d594b271f",
+      "actual_target_sha256": "a63fd9904a92ae1999953b0d910a4e8d4e35a0a08f8977bf450f307f2b71269c",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units too far from flag]",
+      "source_equal": true,
+      "pilot_target_sha256": "8e5a02a0df7e774b9c59f1de606715ec0584191d230cc2abb42c5f14b24e4732",
+      "actual_target_sha256": "5052bb621948872cc6b352b02be1a1c0459a0f3b8e1ad61523f7f4882fb898e5",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units too far from fruit]",
+      "source_equal": true,
+      "pilot_target_sha256": "5c620ba54031213401e4cfb6432fbf586b489ed7a54c7b47af7de42318141126",
+      "actual_target_sha256": "b831362299bfddd606ca9aac44c747d20e30ec40367412088c76478e9fe2dc8e",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units too far from resource]",
+      "source_equal": true,
+      "pilot_target_sha256": "74ecebbf13ee5e9aa584a4ee27eb8a706f114a0d204db53f4e745114f3ce1ce8",
+      "actual_target_sha256": "f2a62b4f4322206a4bf54972949eaf46fa25154d046993b43a857d855ce4ecff",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[%0 units too low level]",
+      "source_equal": true,
+      "pilot_target_sha256": "104efa78b1d0edd4e12a1b202958959a64e07c0a35ea2024f94bf67db119a48c",
+      "actual_target_sha256": "0142fe04bd2dff839645c3803af2a1b7c4308b368c745183ff54647ba6ea9bbd",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[%0% Uploaded]",
+      "source_equal": true,
+      "pilot_target_sha256": "3e9bf8ed09c621604e034004d4290c27cd87ce206195b9a67f9282e59bbf14d3",
+      "actual_target_sha256": "62a90db6df5bb1d6a7ed66970cbab7b8cde03141b35983446e36a43229c7dc7c",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[%0's team unit got converted to your team]",
+      "source_equal": true,
+      "pilot_target_sha256": "c5649e56e0846cbba55f8c9ca26d2e2a8766407c47cdc755a459a9dd19ae645c",
+      "actual_target_sha256": "0386cd39eaf65e730ac4bfa1b1df57b309652d0e2020be04dbf2bddcca8a1003",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[clearingflag]",
+      "source_equal": true,
+      "pilot_target_sha256": "c0fbf0aa38b7f86a16e6e2bb7a2586b6d5813a23a08cc7634baa51c94e281d2a",
+      "actual_target_sha256": "c0fbf0aa38b7f86a16e6e2bb7a2586b6d5813a23a08cc7634baa51c94e281d2a",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[explorationflag]",
+      "source_equal": true,
+      "pilot_target_sha256": "4faf54b300ca9747b8b83c4b7a0dfe73ff67a9189500c39ef039c5c6109305d5",
+      "actual_target_sha256": "4faf54b300ca9747b8b83c4b7a0dfe73ff67a9189500c39ef039c5c6109305d5",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[Explorer]",
+      "source_equal": true,
+      "pilot_target_sha256": "cd639d19e352f1f390318b411c1240224d61474dd182c032d2659edb1a670ea5",
+      "actual_target_sha256": "cd639d19e352f1f390318b411c1240224d61474dd182c032d2659edb1a670ea5",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[music set]",
+      "source_equal": true,
+      "pilot_target_sha256": "464e440657c5d5814cdade7743730973b06363b5062ffb06ee8f59e0d32de7f1",
+      "actual_target_sha256": "f4e72fbe40470eeadf93876dc554e52e9c1bcd776d14adacca3f4c6c0ac617f4",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native:[random music set]",
+      "source_equal": true,
+      "pilot_target_sha256": "eccf0fbe5bfb0b720a65693aed918495222a4fb96ac4a2eeacfaa2057d22c3d1",
+      "actual_target_sha256": "c50493fe3ce02a32bee73821d06b58aade8557d16f588e267324f662b5f82188",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native:[playing music set %0]",
+      "source_equal": true,
+      "pilot_target_sha256": "30b7e7f8009dee2c10029468c8aa6202d874bec0a32589ed6c6e927a2c530011",
+      "actual_target_sha256": "e39673d09dde5d5b845627bad62ea19eb8d6386a8739e148fdac672cca105428",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native:[music set failed]",
+      "source_equal": true,
+      "pilot_target_sha256": "443cbb3446faa49cb25ed347a0cd7345c6b873398661e35d79f97b4fe64e4609",
+      "actual_target_sha256": "be2094099413bcd5c9d0ec34de87c4c3d6b7b1a7453bf3c1b148eacf1344767e",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native:[inn explanation]",
+      "source_equal": true,
+      "pilot_target_sha256": "a2e05a135b56399eb86f17d8fd6f2a084421a1dade831e47311a9b27373c4bcf",
+      "actual_target_sha256": "7660833fd35476ec8ab931942fc026e7f8d702b8da0b9f270490aafa133da145",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[inn]",
+      "source_equal": true,
+      "pilot_target_sha256": "661f5959cfc904539f64923609c16953f1d4775782106076e0e2d9a4b215f880",
+      "actual_target_sha256": "661f5959cfc904539f64923609c16953f1d4775782106076e0e2d9a4b215f880",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-general-002",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-002.json",
+          "sha256": "6857336c01828523da3ba53fb7890540eb9fda2f7a1e42f57ad325b410bc67de"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-002.json",
+          "sha256": "00f13c5a4f683f1c9c35b3298011a7de84af5735bc35d416a5c9e7953c423ddb"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-002.json",
+          "sha256": "b0f91ace02c831ebb40652040a8a8dcf9228d9354d1b61c9bda5b6ce7c7f6f3e"
+        }
+      }
+    },
+    {
+      "id": "native:[market explanation 2]",
+      "source_equal": true,
+      "pilot_target_sha256": "66927562c72e3d7940fbf0b1b5b55e37b03301afa62fd03740ab1bf0202a7587",
+      "actual_target_sha256": "8acd94131fcb3775743e742d1dbd9cb76d9f7c4a347999985ed171e3364ea235",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[market explanation]",
+      "source_equal": true,
+      "pilot_target_sha256": "254cf7a2dc6a43f4631cab77c9f7d9ca74d6fc3fd84181e19b2ea2d85b03f500",
+      "actual_target_sha256": "19d6d025536ecd8b4bad78438b733f6b2a0ec478168676597e1e5a65a10af193",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[market]",
+      "source_equal": true,
+      "pilot_target_sha256": "5a092355fff44aaf0fadb5d1e8e95ea8c7e5c290e995c16940a16adaf8fe5149",
+      "actual_target_sha256": "5a092355fff44aaf0fadb5d1e8e95ea8c7e5c290e995c16940a16adaf8fe5149",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[swarm explanation]",
+      "source_equal": true,
+      "pilot_target_sha256": "bd9d4289a56bb1703f49d7dfb6ab7074a3251a62e70b61ad573101c8b410e1c9",
+      "actual_target_sha256": "9f3e745987a861cca3d0cca433775c816bcd5c37b573969960572bde7f68dceb",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[swarm]",
+      "source_equal": true,
+      "pilot_target_sha256": "faa6d790a6d3719bc9cd9672fe63388af82c9e8242c6aba24e54d21a086df390",
+      "actual_target_sha256": "faa6d790a6d3719bc9cd9672fe63388af82c9e8242c6aba24e54d21a086df390",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[warflag explanation]",
+      "source_equal": true,
+      "pilot_target_sha256": "5d56d9f835cc738a02f503675e6a7a02f5f7859db2a847b7b1b39cfde9c929a0",
+      "actual_target_sha256": "da303e261b91cffab9760113694241975b365fbc9a23b7117ab3b8507d8b3b5b",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[warflag]",
+      "source_equal": true,
+      "pilot_target_sha256": "7fde0aed68132ccc89ba93b4d741cdafe023c1f2c1e14c668ffbdbee948b9500",
+      "actual_target_sha256": "7fde0aed68132ccc89ba93b4d741cdafe023c1f2c1e14c668ffbdbee948b9500",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[Warrior]",
+      "source_equal": true,
+      "pilot_target_sha256": "6dbbb917607ff1928069375db401879510ee60af1377bb77caaea734a1916989",
+      "actual_target_sha256": "6dbbb917607ff1928069375db401879510ee60af1377bb77caaea734a1916989",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[Worker]",
+      "source_equal": true,
+      "pilot_target_sha256": "aa594591291dc723e7daeda552cfdc80026068ba36568c69130d1b0033be6232",
+      "actual_target_sha256": "aa594591291dc723e7daeda552cfdc80026068ba36568c69130d1b0033be6232",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "native-colony-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native:[Pass width]",
+      "source_equal": true,
+      "pilot_target_sha256": "0e56508d81cbc38eaf56a5c49800e781d7ae3f26a338b6f48774ae4843835d7d",
+      "actual_target_sha256": "202508d4536f939f30a0b786bf9ce992ea11a23f014b534de80e68616e32025c",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-004",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-004.json",
+          "sha256": "226aecb6c932df9c55b4fd888bd3f49110188e26646cc013d41857bd004bf8ab"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-004.json",
+          "sha256": "d41f822466ba1feb8dc7d6e0a02623ccae789dc0777805ba6d83b1c21f902679"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-004.json",
+          "sha256": "cc49f1dc9994c5755fccaa72b9b1c12c5828781df762ba06ceaccd35403b4fd3"
+        }
+      }
+    },
+    {
+      "id": "native:[Sandbars]",
+      "source_equal": true,
+      "pilot_target_sha256": "35c82308d69696ea36ee26a7dd641634186624ec0d747c017388e1009876844e",
+      "actual_target_sha256": "e0e9cad31b7ae393666fe22b11e0e2bd14458cbb12a725c152daf6fe52f50337",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-maps-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-maps-001.json",
+          "sha256": "b3e2da6f312561a92b177f0073ee0af4f2d3dda4f6ff5153609fc7f411e74126"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-maps-001.json",
+          "sha256": "f13c5cc4a0dfcad2062bc4072d267da42a7bb46d3f8421ee7e7ba81df44ca6be"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-maps-001.json",
+          "sha256": "7a2c648f27c04c7059701a9d89b4f4ae235fc6ba3a75055d0369caa618610abe"
+        }
+      }
+    },
+    {
+      "id": "native:[Fjord bank deposits]",
+      "source_equal": true,
+      "pilot_target_sha256": "32e87680ec3d41ed9fb38d0556a3f4037659f295e7054a8a81e60828c2224831",
+      "actual_target_sha256": "d169cd4d5e9ce4cbf1f300f02ba458b8b23c80a05613738aab5694b3367bb610",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-005",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-005.json",
+          "sha256": "1a0ce794ab74f63b8b6ce693ce665b5d142b09bdf7ab7ed89da4fdea720307a9"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-005.json",
+          "sha256": "feb43a63a3ad5dd576169b38b322c7786b54e3759d94217b9534d196e4fbe024"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-005.json",
+          "sha256": "03d11e17b92e85eabee0960763a64ae32f7c91666fe5892a02316f0612e654d6"
+        }
+      }
+    },
+    {
+      "id": "native:[Stream reach]",
+      "source_equal": true,
+      "pilot_target_sha256": "5cee3f963a9979ea8ba97733b2de4c43210543e2a215910934e5111d93cf350c",
+      "actual_target_sha256": "9bbd8c2e6093537652ff83a30bfe0b6cde721cfde85af2ab64fb19f0b376506c",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-007",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-007.json",
+          "sha256": "3908179ce12d0e948908a531f2130177fef5ba19c27c76ac58109988f1949b0a"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-007.json",
+          "sha256": "0291882aa1d9c17ee715285f16d615a27df6a0260e46eb0aef0f79a73bcb6db0"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-007.json",
+          "sha256": "c9d6c9c37376a12218e3fcfb671fe14469deaa0173a06ea7206c5c933d067577"
+        }
+      }
+    },
+    {
+      "id": "native:[hub cant reach %0]",
+      "source_equal": true,
+      "pilot_target_sha256": "e6778aae4e876778b67aa84cafca6def580357bd882eb8e724e345ffba971003",
+      "actual_target_sha256": "75d2a64c643bd66f1b1a9deef2e9be209d7360fbe7e16e839a5a3d890e619ef6",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-009",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-009.json",
+          "sha256": "4177a5fc9a707b8c7dd9110ac93717fe63d59e007a13a1c4141dfcf7d94284f2"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-009.json",
+          "sha256": "cc73eb6f05428429708017abfc7615a40e7cb83605160911b5809b2b21af7175"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-009.json",
+          "sha256": "c675c8a5c5ac11d048cd732dc45070c15c4addee9b93664fce1fdc41b117a73b"
+        }
+      }
+    },
+    {
+      "id": "native:[start recording]",
+      "source_equal": true,
+      "pilot_target_sha256": "4e8d46077aeb1611c447522f49572d136d8cdfdd5863ee493d90932375b119de",
+      "actual_target_sha256": "44ef52834f45e49c858a1386709c861d1b77e58f73f169190aae42aebc5f4507",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[stop recording]",
+      "source_equal": true,
+      "pilot_target_sha256": "237f9d43ebb4f7561c46b48a8f1c53b4da52e47a9ffa008cfdfcc985abe4824e",
+      "actual_target_sha256": "65be1abc5338669f5b40e00a6e1b86fa467c141fef53e2ca91c0c54b63832894",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[finalizing recording]",
+      "source_equal": true,
+      "pilot_target_sha256": "b3ac4dbe017ed4ea80a79e3a16f9d543ad8e185bc9dacb0e50bfe28191c01311",
+      "actual_target_sha256": "715c4bdbe4573e63cc1c4636ecc573affd1030ff4069f5e0fd1eac54d679bbe4",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[settings Edge scrolling]",
+      "source_equal": true,
+      "pilot_target_sha256": "650fd021bf2462beab9fa7d74d7b9a73bed8a78d41d4c93e6a1dc0be2aa4b9b1",
+      "actual_target_sha256": "33e7dd90a790418e9f725d24984f7c9353eb1ed332b7972f283ec6ddd3a03d51",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native:[settings Edge scrolling in fullscreen]",
+      "source_equal": true,
+      "pilot_target_sha256": "9b5e0ea4350a9e45e858ec834d339a150e7d569c7741107bf447e4ade9f54584",
+      "actual_target_sha256": "591ac3b97f96f5db343335eb9c59c9e6966d1908b913507bd4fba18093a1a479",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native:[settings Edge scrolling in windowed mode]",
+      "source_equal": true,
+      "pilot_target_sha256": "a7b1ccca09acce528a07ee49c75b9488d9276f7977d02cd95ddb16deedd7aa0e",
+      "actual_target_sha256": "c691251b872447437c12893545be532c25720bf835d1460370f9cc488cd8283a",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source_equal": true,
+      "pilot_target_sha256": "12f04b9b6a4820f1ffcd8f13cf3baee2dd3f063ccc469cb158bd7cb6f87f5885",
+      "actual_target_sha256": "7204f3b03ebe455b5ee095a8c071787447b035f57562bb5db566a5efd839d863",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native:[hub finish in browser, game continues]",
+      "source_equal": true,
+      "pilot_target_sha256": "0c3341c445b8b9bfa76dded1d013c192141a80d014be9fdcf7fa11b7ce7265c7",
+      "actual_target_sha256": "439f27d0cf041b49e36153c83040d9bc4df652fa8ed1559060533e573819e833",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[hub browser did not open]",
+      "source_equal": true,
+      "pilot_target_sha256": "79fd678020cc8dc1774166293410d3d92eab1ec3b0d8496c7bb94c481b3dee25",
+      "actual_target_sha256": "afad372294a174ed4c96bf2576bdd16a8b9867ad3b8a75735b593b50d087742a",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[hub compare code %0]",
+      "source_equal": true,
+      "pilot_target_sha256": "e898a7ed17711813c48ab2184062891806bf69f3726dbf283c099b6b2b1d0780",
+      "actual_target_sha256": "cc2bf34477ceeae0daf7306414fb5aeeafd1260577366f543d2aad2bb2b78787",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[hub code copied]",
+      "source_equal": true,
+      "pilot_target_sha256": "bde1d5b205da3065849c469129bc2b385f5c925d43df80bad758c1b06dbe6494",
+      "actual_target_sha256": "0eefbab351cf29fa498188a8fa273739f045611d4f3bb4c4f6554db59d98c7bc",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-general-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native:[settings Finish in your browser. The game continues by itself.]",
+      "source_equal": true,
+      "pilot_target_sha256": "6c51b6d3d20db992ea82a375a95b2634ed46ee15125959108b1ce8b615834098",
+      "actual_target_sha256": "f861cca3aa67585f2bd6a492e073167586acea6d53d89ee7652c7e051116949b",
+      "same_as_prior_final_catalog": true,
+      "classification": "reviewed soft-break annotation only",
+      "current_final_batch": "native-settings-001",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "online:Create account",
+      "source_equal": true,
+      "pilot_target_sha256": "1c236d99409312f9083cfbfbcdac16bd551434876ba2c6e02ba6bfc0888331a3",
+      "actual_target_sha256": "1c236d99409312f9083cfbfbcdac16bd551434876ba2c6e02ba6bfc0888331a3",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "online-online-004",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-004.json",
+          "sha256": "a41e649810bc83ab136cde3cf7c81fe2dde14b985ca6233c63023fa3f5632898"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-004.json",
+          "sha256": "9ed482890c34bf92a2ccbcab30cb4f68258a42a3aaef4ca04fd25ee77b4ac8e1"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-004.json",
+          "sha256": "fd2e9e92b561c0b65a77ddbdb01527abbfee8970f02d8e3409d40f879406bd61"
+        }
+      }
+    },
+    {
+      "id": "online:Licence",
+      "source_equal": true,
+      "pilot_target_sha256": "208b2154a49f0f12c089f8c8ee02eb8e528d2aa403e4ddc05344c0a04e54bdc2",
+      "actual_target_sha256": "208b2154a49f0f12c089f8c8ee02eb8e528d2aa403e4ddc05344c0a04e54bdc2",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "online-online-007",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-007.json",
+          "sha256": "b6bd5af27cc79c2456d7d45fccbcee9560f6b6fed1291795180f94a50f9c6cfa"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-007.json",
+          "sha256": "4007d01200c86bcb53213d1e687370bd0395ab552020067fc6f3211e808c2f3b"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-007.json",
+          "sha256": "dc22f4fb604d115ba3d58d2d3b218968062d0f66fa8efec6e19835ec5c773997"
+        }
+      }
+    },
+    {
+      "id": "online:License",
+      "source_equal": true,
+      "pilot_target_sha256": "208b2154a49f0f12c089f8c8ee02eb8e528d2aa403e4ddc05344c0a04e54bdc2",
+      "actual_target_sha256": "208b2154a49f0f12c089f8c8ee02eb8e528d2aa403e4ddc05344c0a04e54bdc2",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "online-online-007",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-007.json",
+          "sha256": "b6bd5af27cc79c2456d7d45fccbcee9560f6b6fed1291795180f94a50f9c6cfa"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-007.json",
+          "sha256": "4007d01200c86bcb53213d1e687370bd0395ab552020067fc6f3211e808c2f3b"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-007.json",
+          "sha256": "dc22f4fb604d115ba3d58d2d3b218968062d0f66fa8efec6e19835ec5c773997"
+        }
+      }
+    },
+    {
+      "id": "online:Room",
+      "source_equal": true,
+      "pilot_target_sha256": "82b407808523db1edf62d4c319fa3601868432c32ff9a878f220e71cc678485f",
+      "actual_target_sha256": "82b407808523db1edf62d4c319fa3601868432c32ff9a878f220e71cc678485f",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "online-online-011",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-011.json",
+          "sha256": "708ba386af08af6382517e1a127cf4d06b0a06fffaac9db4717a6ab4dd6753d3"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-011.json",
+          "sha256": "eed8e7060f1e07e8ede060b05e89f804e478b030b26b73378759048b8877a942"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-011.json",
+          "sha256": "3797065988641914185ccb84d132ab2aaf1607a50e972300377737dfc57edc3c"
+        }
+      }
+    },
+    {
+      "id": "online:Rooms",
+      "source_equal": true,
+      "pilot_target_sha256": "82b407808523db1edf62d4c319fa3601868432c32ff9a878f220e71cc678485f",
+      "actual_target_sha256": "82b407808523db1edf62d4c319fa3601868432c32ff9a878f220e71cc678485f",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "online-online-011",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-011.json",
+          "sha256": "708ba386af08af6382517e1a127cf4d06b0a06fffaac9db4717a6ab4dd6753d3"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-011.json",
+          "sha256": "eed8e7060f1e07e8ede060b05e89f804e478b030b26b73378759048b8877a942"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-011.json",
+          "sha256": "3797065988641914185ccb84d132ab2aaf1607a50e972300377737dfc57edc3c"
+        }
+      }
+    },
+    {
+      "id": "online:Sign in",
+      "source_equal": true,
+      "pilot_target_sha256": "f3fb53dc8e23a291eb216a79cc487c783807666dd1917d81e097d53353def937",
+      "actual_target_sha256": "f3fb53dc8e23a291eb216a79cc487c783807666dd1917d81e097d53353def937",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "online-online-012",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-012.json",
+          "sha256": "72e1a6b7991f8b99daa76f55a93a1e4c413709c2cc9e5da526b4561a31d1caae"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-012.json",
+          "sha256": "65168098e6335f7f2d5dfd23911af8fb515b4fe7f36fd039888e702af2b3322c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-012.json",
+          "sha256": "42fad8877446bad79cab8de007ebedb37b4352ac6fcb3ac6a2fd9de0d1c86266"
+        }
+      }
+    },
+    {
+      "id": "online:Upload",
+      "source_equal": true,
+      "pilot_target_sha256": "9cc05be53d21c8fb7bd245215b4ab47eba559b5456cd437423088986e7a4519d",
+      "actual_target_sha256": "9cc05be53d21c8fb7bd245215b4ab47eba559b5456cd437423088986e7a4519d",
+      "same_as_prior_final_catalog": true,
+      "classification": "byte-exact original pilot target",
+      "current_final_batch": "online-online-014",
+      "current_role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-014.json",
+          "sha256": "6b5f0a97083d153970942e482c63d3951c7eb1e0d1465b53425e9a3ff3fb01c7"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-014.json",
+          "sha256": "3e27498e71aaacfee51538ac4049ff139eac920c6e9f8be95ff4a0495eb647cd"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-014.json",
+          "sha256": "f2ad8e1d68a82c7fa7c3edbf8576542a79412809f108d05f3ba46195beb112a9"
+        }
+      }
+    }
+  ],
+  "original_evidence": [
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/pilot-final-recheck.json",
+      "sha256": "dd502ac0f2574de5a3c2a99a3821140409cd22116da52a3f21c8bfbeb9f56c54"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/pilot-adversarial.json",
+      "sha256": "7984c2247c7d1c683e48ebcb9cf17b6fa0fcd4f176d71366709d2389efab4699"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/pilot-editor-reconciliation.json",
+      "sha256": "526416f496d0dae102175f80753219cfa90e6403fc45da42540bc55769f184a0"
+    }
+  ],
+  "new_twenty_evidence": [
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/native-twenty-sources.json",
+      "sha256": "b0a428ef4c4f0602f64ff966a4ce53b4eee284ca85c5a1ceb9a72cf02b0a2d52"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/native-twenty-google.json",
+      "sha256": "fb4471b1d62b4c3a1c1be04f64b9819206675529edc6c867c415e4a3aa58cf5f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/native-twenty-reconciled-r1.json",
+      "sha256": "d0e62b722898114e425a966ecb8c28947178fde98af50d6da594800c77d4f2a2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/native-twenty-meaning-r1.json",
+      "sha256": "ee90a781518f76d634ff25d02bf776ccd02d4e2956029bdbedb3ab12b04d80f3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/supplement-editor-initial-private.json",
+      "sha256": "f89721bfae92311ebd1889f4be66434f8ab42c294196ef3a77e3c725ea014111"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/native-twenty-adversarial-r1.json",
+      "sha256": "68657abf8b8bf5cde63a4581d89ce23d001a9096a48eebab04274dc52b923a97"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/native-twenty-meaning-final-r1.json",
+      "sha256": "d52b3fdaf09594392c0c4d5daa619f037dc2bd81eaa519695bb8154a58986fb2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-release/reviews/meaning-carry-owner-approval.json",
+      "sha256": "ac5f349d64670dce491da0149a1259d53064aa12c8e4ba7fafe8db90eaedcdc8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-release/reviews/editor-carry-owner-approval.json",
+      "sha256": "1a6ec8482fe5d7fc48ebe274db816b1fad7263f2fcf36238c64f0f1b910adab0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-release/reviews/provenance/native-twenty-adversarial-successor-binding.json",
+      "sha256": "23d21193e4c007930eade642ff562f1043d9ea307fa6be9d9171316ca68a2c5c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/google/th/ledger.json",
+      "sha256": "0569aa3866f80f658cbb743d6fcccfc819367332d2ae7331092c2e1692bf66c2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/google/th/requests/8685a856a4d6b918c854b28074b01aef5a9b0885e6f633b068bed11a39be5a40.json",
+      "sha256": "e6b574d44fe7478bcc5729e481c683b78c8e5a0e637ae7c916b53d2288f4b382"
+    }
+  ],
+  "unresolved_findings": 0
+}

@@ -1,0 +1,6421 @@
+{
+  "kind": "Explicit derived per-test report; not full original PlaywrightJSON",
+  "original_path": "artifacts/thai-localization/browser-qa/crossbrowser-tests.json",
+  "original_sha256": "ce6a142afeb661a5ec417688237e499d11b21d8229178f83e07214670e0a9392",
+  "original_bytes": 271203615,
+  "derivation_command": "python3 artifacts/thai-localization/evidence-publisher/prepare_partial_667.py",
+  "derivation": "Retain every156test ID/status/results/duration/retry/errors/skips/annotations/browser/viewport; replace each embedded base64 screenshot body with its decoded byte count and SHA256. Full271MB original remains local; exceeds40MiBrawfile cap. Actual separately captured Firefox/WebKit screenshots and provenance included.",
+  "projects": [
+    {
+      "outputDir": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/crossbrowser-test-results",
+      "repeatEach": 1,
+      "retries": 0,
+      "metadata": {
+        "actualWorkers": 1
+      },
+      "id": "firefox-desktop",
+      "name": "firefox-desktop",
+      "testDir": "/home/bradley/.codex/worktrees/0ec0/glob2/platform/apps/web/e2e",
+      "testIgnore": [],
+      "testMatch": [
+        "thai.spec.ts",
+        "i18n.spec.ts"
+      ],
+      "timeout": 120000
+    },
+    {
+      "outputDir": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/crossbrowser-test-results",
+      "repeatEach": 1,
+      "retries": 0,
+      "metadata": {
+        "actualWorkers": 1
+      },
+      "id": "firefox-phone",
+      "name": "firefox-phone",
+      "testDir": "/home/bradley/.codex/worktrees/0ec0/glob2/platform/apps/web/e2e",
+      "testIgnore": [],
+      "testMatch": [
+        "thai.spec.ts",
+        "i18n.spec.ts"
+      ],
+      "timeout": 120000
+    },
+    {
+      "outputDir": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/crossbrowser-test-results",
+      "repeatEach": 1,
+      "retries": 0,
+      "metadata": {
+        "actualWorkers": 1
+      },
+      "id": "webkit-desktop",
+      "name": "webkit-desktop",
+      "testDir": "/home/bradley/.codex/worktrees/0ec0/glob2/platform/apps/web/e2e",
+      "testIgnore": [],
+      "testMatch": [
+        "thai.spec.ts",
+        "i18n.spec.ts"
+      ],
+      "timeout": 120000
+    },
+    {
+      "outputDir": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/crossbrowser-test-results",
+      "repeatEach": 1,
+      "retries": 0,
+      "metadata": {
+        "actualWorkers": 1
+      },
+      "id": "webkit-phone",
+      "name": "webkit-phone",
+      "testDir": "/home/bradley/.codex/worktrees/0ec0/glob2/platform/apps/web/e2e",
+      "testIgnore": [],
+      "testMatch": [
+        "thai.spec.ts",
+        "i18n.spec.ts"
+      ],
+      "timeout": 120000
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T02:47:17.768Z",
+    "duration": 2709674.031,
+    "expected": 156,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "id": "1c708d8d2348e8ed7c9f-d31600df88cd0b85f428:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-d31600df88cd0b85f428",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ar",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 22466,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:47:22.957Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ar-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 916416,
+              "original_attachment_sha256": "4ef8a33a128367990bae3e4de4e4c82915095ff12f3daaac75a20c100c6d169a",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c62be84027d9a6b40794:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-c62be84027d9a6b40794",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pt-BR",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12002,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:47:53.526Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pt-BR-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1053598,
+              "original_attachment_sha256": "91ccaf2be27abb965424a27813263b3c86e94b8fea3e9d13f94f9c8d8c5c22c4",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-e17e117d540a7f65192c:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-e17e117d540a7f65192c",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ca",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6535,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:48:05.745Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ca-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1037280,
+              "original_attachment_sha256": "759ee335c5afa157035c2e9d0cfb2079912c3efc84af1e8474dd96d33aaa1a22",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-faca97de396c19f318bc:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-faca97de396c19f318bc",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders cs",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8540,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:48:12.404Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "cs-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1033937,
+              "original_attachment_sha256": "d388128682f8462e2e0f81b9c71a142da9f3c1dccfe7cda2a1a5b159b53ab996",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-4451b77f0dbe4ae3c5f1:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-4451b77f0dbe4ae3c5f1",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders de",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 9920,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:48:21.059Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "de-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1069560,
+              "original_attachment_sha256": "3265584d70875a084af35815ff90c301dbef9423a8edf2bf866685154eebad06",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-4ea16ff712e9bf15f361:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-4ea16ff712e9bf15f361",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders da",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12730,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:48:31.094Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "da-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1028764,
+              "original_attachment_sha256": "35c15a7d07df9e32b20fdbc0ba0599402c37a612099cccdf61429f560912c553",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-d9ae7b3bfcf070e05c9e:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-d9ae7b3bfcf070e05c9e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders en",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6163,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:48:43.932Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "en-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1028108,
+              "original_attachment_sha256": "5878a04e6e71801199ff90075cc5b6dd06c3422ed8871566d7ff0c300743ffda",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-68c70987fbaa66825c57:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-68c70987fbaa66825c57",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders es",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7221,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:48:50.197Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "es-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1114091,
+              "original_attachment_sha256": "fe59eff8879af5adf36f2c43ffcd221dd770d4e710768e43ef703615c877139e",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-febc952f0675f4caa844:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-febc952f0675f4caa844",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders eo",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 4823,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:48:57.488Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "eo-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1032385,
+              "original_attachment_sha256": "5539d74161bdd040dde48fd2f54f6a587961c3e20f3730e3bf5f4933944abfdb",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-1bbfb9e36b6cfa112ae9:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-1bbfb9e36b6cfa112ae9",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders eu",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 20660,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:49:02.438Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "eu-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1069180,
+              "original_attachment_sha256": "ea3c125fc42e7791074f266f72cd2b33ca60e410d9546ebeea811d287fef651b",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-94cb50c2968ac2864296:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-94cb50c2968ac2864296",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fa",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8842,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:49:23.231Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fa-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 914185,
+              "original_attachment_sha256": "ac7972e1b691db48264ae579329d6e86b5832a724d29ed767b918fd69df82d84",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-ba5d4ac71b4328891bea:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-ba5d4ac71b4328891bea",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fr",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 15741,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:49:32.205Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fr-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1070121,
+              "original_attachment_sha256": "88c9ff0041939f3c3cd1698443c6fb22fa702d8ea172d3d3beb06589f0e1c999",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-62b0bacf7e2b60c7c286:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-62b0bacf7e2b60c7c286",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders el",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8889,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:49:48.032Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "el-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1150143,
+              "original_attachment_sha256": "8af9de7bfe19dd738de6470b563f9a172efff361de6f03799649b8b99d3877e8",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-1ddd9477b9e6085620b1:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-1ddd9477b9e6085620b1",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders hu",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 16306,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:49:56.973Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "hu-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1058188,
+              "original_attachment_sha256": "aee5d777172ac36b44387fbf52205bf7418d5ae1c4144f603b9de0cbe67094a4",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-9144efd70147ea8f0325:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-9144efd70147ea8f0325",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders it",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 11556,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:50:13.382Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "it-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1031412,
+              "original_attachment_sha256": "6c3615c7f38fda7f681c0858a72cf403c4a9e778a8f20d5de898ebdfc1439c77",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-2dbe08ee873d9b229218:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-2dbe08ee873d9b229218",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders nl",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 9126,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:50:25.086Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "nl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1071574,
+              "original_attachment_sha256": "274b427ae4372c908cf3921a61b0c7ac44f6f09ab5242e940cb26b4599c1d2cb",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-05f74c04d3c6827927c9:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-05f74c04d3c6827927c9",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pl",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 11271,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:50:34.322Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1046805,
+              "original_attachment_sha256": "f7e41433ceff53c0404f8e6cb84c374946b264a1c60e7a2311d37867fa93781a",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b293ae5014ce29100800:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-b293ae5014ce29100800",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pt-PT",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 4724,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:50:45.634Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pt-PT-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1055359,
+              "original_attachment_sha256": "bbdd8b26bdbe0f7f20d9146aa9a972e5bb0458a342ce78fe44f7fa1d67de5501",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-10f12621c60e6d1af062:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-10f12621c60e6d1af062",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ro",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8184,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:50:50.418Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ro-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1041846,
+              "original_attachment_sha256": "2322a3eb3cf8dd30e1fc43ed937c26ed872428bf307521a79b84d7a1f7e2e46c",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-6efcf6211bb085f68e58:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-6efcf6211bb085f68e58",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ru",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 14223,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:50:58.727Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ru-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1050251,
+              "original_attachment_sha256": "8b37739a21f1cf62814037105095b3e6b68a5f317cc19b540e519496bfae4956",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-e13fcb8ae9add27d932e:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-e13fcb8ae9add27d932e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sl",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 9442,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:51:13.037Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1034904,
+              "original_attachment_sha256": "89f5e78180cd2400db4fae756b7c4e16d627154479f072b76735ca49001d3ed2",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-109929e9c1c6363b5459:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-109929e9c1c6363b5459",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sk",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12344,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:51:22.552Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sk-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1046643,
+              "original_attachment_sha256": "4705661bc11b4dc152ad47e1efa5c3d4b50309e9023ef40b5a2fee414812a265",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-563e98a70fe1de8856eb:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-563e98a70fe1de8856eb",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sr-Cyrl",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10732,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:51:35.056Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sr-Cyrl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1043139,
+              "original_attachment_sha256": "88f746cbc8a4515db96e7fb0cc0202fc246286cfaabbb7461afb79865b173154",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-0fb06f8447b752cc5ad8:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-0fb06f8447b752cc5ad8",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fi",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5538,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:51:45.918Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1030513,
+              "original_attachment_sha256": "a6e0efea26ddbf946a68041adac7fbc4eff1bc5f736e07792ec61f771d003017",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-18238df3ecdb9eafd753:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-18238df3ecdb9eafd753",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sv",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6799,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:51:51.531Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sv-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1032063,
+              "original_attachment_sha256": "d6bc37ae3f70a52642f2d5610cbb8a36299a839899346d6f2c38bb4f9bbd0334",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-bf0a14f191eb73762c12:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-bf0a14f191eb73762c12",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders tr",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10730,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:51:58.414Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "tr-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1032431,
+              "original_attachment_sha256": "2a3c27d7e16a280ba3d1c20687d15ea0e121d92725971e7369021739f77839d0",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-728daa287c9daebf6558:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-728daa287c9daebf6558",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders zh-Hant",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6200,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:52:09.253Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "zh-Hant-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1010175,
+              "original_attachment_sha256": "390645c6175459fef7d8c0e1d4919cdd779b1cc427e13dc5093e6d9205e4ff44",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-2403e78dd906f27f56b2:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-2403e78dd906f27f56b2",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders zh-Hans",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8517,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:52:15.516Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "zh-Hans-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1004802,
+              "original_attachment_sha256": "f35752f12f47d39028125bc4a7106717b695826411b35a9d915f208049948982",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-f7d71436606066ea4ebe:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-f7d71436606066ea4ebe",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders uk",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6791,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:52:24.136Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "uk-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1071969,
+              "original_attachment_sha256": "1d1f73833471e3f107f8aab56d3dc9dbd9c1d83a8e6bad08638581f0375c00fe",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-7c63d71ee0f0942d2a9a:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-7c63d71ee0f0942d2a9a",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders id",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 14248,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:52:31.050Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "id-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1053960,
+              "original_attachment_sha256": "6772a64588a5d03ee703e3a3acf13b216994b60c2e19d8f4771e51ce123dea52",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-d621a67eff25be419cd7:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-d621a67eff25be419cd7",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders vi",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5944,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:52:45.383Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "vi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1075790,
+              "original_attachment_sha256": "f0e0e2d7340543dc28fb85740ef8f9940fe84fb479f14b3d20d8903063dc8612",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-229710cd1ab385471ded:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-229710cd1ab385471ded",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ja",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5406,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:52:51.414Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ja-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1093274,
+              "original_attachment_sha256": "45c141111635f15f1b7207d36ebf3dbca62cbb490762ac3b5b1d1cf25e757d29",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-982b7bb386811eddb7ec:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-982b7bb386811eddb7ec",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ko",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 4791,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:52:56.860Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ko-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1027212,
+              "original_attachment_sha256": "9fcf7ca9ef06abfd9e32ae85d7150e972706dd9ff3b8441cab079226617e32b5",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-222d7375b1c7ea6318c1:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-222d7375b1c7ea6318c1",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders hi",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7261,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:53:01.701Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "hi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 992433,
+              "original_attachment_sha256": "b7b3ffa032a557b313b79e7c35312fdfeaf50849a972724da3ebf6ecf81d486a",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-6a64b83c381042f8d6de:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-6a64b83c381042f8d6de",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ur",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6193,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:53:09.017Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ur-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 918351,
+              "original_attachment_sha256": "2a80629434c60a3c2dcc17cf5d99ef3552bdb43cffa92b93a25e500f89731965",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-15e17e754060f865a9ce:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-15e17e754060f865a9ce",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sw",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 4876,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:53:15.273Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sw-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1059154,
+              "original_attachment_sha256": "3efd8972d1e06afee84d845886f96419b254150b1f7654cf56da513a443a4a7f",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-fe4a963aea77844c6f4f:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-fe4a963aea77844c6f4f",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders th",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6526,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:53:20.197Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "th-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1042742,
+              "original_attachment_sha256": "2bc731b226be400e769f41534373ad742426af8b8e088e93d282e4f0c8c3c043",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-6b60b35c462a23bb69e1:firefox-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-6b60b35c462a23bb69e1",
+      "file": "i18n.spec.ts",
+      "line": 64,
+      "title": "changing the selected language updates the page without losing input",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5200,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:53:26.799Z",
+          "annotations": [],
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-aa1be013cd32093eb65e:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-aa1be013cd32093eb65e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ar",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 18047,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:53:50.362Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ar-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1725864,
+              "original_attachment_sha256": "98673455d1f85fa360423de8d82faf69a10dbf7c2431e1a923838eae1235fe08",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-42761527280dd4ab16c8:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-42761527280dd4ab16c8",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pt-BR",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7788,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:54:20.095Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pt-BR-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1750092,
+              "original_attachment_sha256": "fb397873fc5a3b8c4e947ae4c2582a5bf37d1857486adc2587e30bca1b44f2f7",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-a539431cc520d2eb5849:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-a539431cc520d2eb5849",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ca",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6030,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:54:28.031Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ca-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1829178,
+              "original_attachment_sha256": "a1d5c0dab1b2ab584732772b231719e8091bb8d0092b4d41deaef62232e51078",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-ef879a0810c39113437a:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-ef879a0810c39113437a",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders cs",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 9955,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:54:34.243Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "cs-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1741619,
+              "original_attachment_sha256": "ffcba97ea0c8c64a8b0a6af54faa97ec1c54df84449fc7d23f2c2597f6f4dfd6",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-5bb4a4b461163845c824:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-5bb4a4b461163845c824",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders de",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7805,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:54:44.369Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "de-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1798114,
+              "original_attachment_sha256": "48f3dd5f4da6eadebc5e652aa9baa980db9f0161ebd0b5224150367048947925",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-94997f21995a5dc5dd68:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-94997f21995a5dc5dd68",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders da",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 9301,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:54:52.236Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "da-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1734061,
+              "original_attachment_sha256": "ca9b1cba9b019d3231294ccd17f5b562049cafce2596d31b436de1e7f20cb3dd",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-e18d994a54f41833c312:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-e18d994a54f41833c312",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders en",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5779,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:55:01.685Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "en-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1717340,
+              "original_attachment_sha256": "cdd5161b0b21d37063918058095b2216d714cf7d6ccb6c1c0b080170ef5b50f8",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-f66006966ded682e4062:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-f66006966ded682e4062",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders es",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8206,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:55:07.628Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "es-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1874431,
+              "original_attachment_sha256": "da7b49078e28d2fdc884bfda275a9af5ee909aa80d5ff9e37861c78f9f9752a8",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-438c9ed9cf88155f3b11:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-438c9ed9cf88155f3b11",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders eo",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5263,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:55:15.896Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "eo-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1750833,
+              "original_attachment_sha256": "a887470ac858376b73e28d6a61aa491efc7d36d9ce1ba60f83d6652469d7dc9a",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-6073858a90c9e802a120:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-6073858a90c9e802a120",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders eu",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 11279,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:55:21.202Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "eu-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1770266,
+              "original_attachment_sha256": "5c05e203c81ecd86bedeec352618b8bf77b7b9e573469a2caaa84bea689d1ea1",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-1d39ec36816c4d8872c0:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-1d39ec36816c4d8872c0",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fa",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10974,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:55:32.546Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fa-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1766100,
+              "original_attachment_sha256": "04ad7c7d469a9f5ae30f558ad7aa6a60609e0bc4f22500b000554c95337a7da4",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-dec44d913cf3a18716e3:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-dec44d913cf3a18716e3",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fr",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6915,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:55:43.597Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fr-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1782624,
+              "original_attachment_sha256": "9fa01df3cfb523c9822e4a895bae3c3e0564689f073cef4507720bf018befcd9",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c66eec0022e7b0652d78:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-c66eec0022e7b0652d78",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders el",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6512,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:55:50.571Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "el-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1897059,
+              "original_attachment_sha256": "150093a54f98737953f22c619d83ac4c30a3e2977fe8c01d55c2f8d892a72719",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-94a6ab68363a0a28d7ae:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-94a6ab68363a0a28d7ae",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders hu",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6063,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:55:57.136Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "hu-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1748504,
+              "original_attachment_sha256": "30d7b62075174a21e9e0347ff372fca32928d75a1c9cdfc16ddc5193a055e488",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-8b77494b9438caeab83f:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-8b77494b9438caeab83f",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders it",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 9767,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:56:03.255Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "it-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1758943,
+              "original_attachment_sha256": "7b24a6436a02b9dc3dc46292891af9c6ff2c7c0697be6d9d2903ff7570500578",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-d86256fb46374b5a71d5:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-d86256fb46374b5a71d5",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders nl",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8031,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:56:13.074Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "nl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1814542,
+              "original_attachment_sha256": "28c4cbe1a7d5d932ac147ce055a6e1139d08b86fb71bf1e422e88dcb8d9363ae",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-05a1c700d38dc1a0d0a8:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-05a1c700d38dc1a0d0a8",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pl",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12893,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:56:21.202Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1761636,
+              "original_attachment_sha256": "f8cd6be90cff1131490bff9240193d728be737399516b95ffdb363ed33309d2f",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-e6c91512bc717e9d5007:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-e6c91512bc717e9d5007",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pt-PT",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8465,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:56:34.247Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pt-PT-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1762046,
+              "original_attachment_sha256": "e1409c1af52de655114e60ff6c87c5c3da952edd1fd2f15aa5aba6445a0c9c81",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-bca2a9454268107a922f:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-bca2a9454268107a922f",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ro",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5704,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:56:42.796Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ro-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1756958,
+              "original_attachment_sha256": "9e062bb66a4097f21572525b840dcc2782d2a14ea505e685eff929dd4f5e8930",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c3bea1c41f5bf1254fc7:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-c3bea1c41f5bf1254fc7",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ru",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 15162,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:56:48.568Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ru-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1751241,
+              "original_attachment_sha256": "0202fb017332753e1d3826f3db123c4cc4b3f5a5b206951f0040654d2cc69e9c",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-f145bc8c74a57950a6c5:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-f145bc8c74a57950a6c5",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sl",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 19495,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:57:03.798Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1770060,
+              "original_attachment_sha256": "439b36b0a343d985273ac283e357d06f71015a1cd0e2ca761064b8b7dcc89324",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-9eb1dec61413ae91264a:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-9eb1dec61413ae91264a",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sk",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 15187,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:57:23.384Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sk-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1795563,
+              "original_attachment_sha256": "8d70be8a142c08a1fdcc8ddfdc336dab248a1002cd533294583c9eccf7058a3a",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-feaabd59821a634bdaa4:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-feaabd59821a634bdaa4",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sr-Cyrl",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10707,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:57:38.741Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sr-Cyrl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1802574,
+              "original_attachment_sha256": "05f50b6c873e313f638a648ae9bfaa15cb95d1f9ef458bc6fc61985b8c677603",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-d48b6ab33006062b3391:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-d48b6ab33006062b3391",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fi",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5962,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:57:49.555Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1747083,
+              "original_attachment_sha256": "e783de1817aad7f5583d87ad20e6ff942a53290e777714ad32ca9b31253b9eaf",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-2ffc0f14b5e54f89cf63:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-2ffc0f14b5e54f89cf63",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sv",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10397,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:57:55.556Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sv-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1752420,
+              "original_attachment_sha256": "acc29734d7b48614ed9e8b1044df45914f5c2c7e952e7a7170ae61d99e8b571e",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-9f981388e5ee6bd2e690:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-9f981388e5ee6bd2e690",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders tr",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8853,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:58:06.026Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "tr-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1800289,
+              "original_attachment_sha256": "c2d3e8e9385d1cb87509efe014ca540af2536ea39990517f40825766cdae31cc",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-3797637a09cae7c58f02:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-3797637a09cae7c58f02",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders zh-Hant",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7891,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:58:15.015Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "zh-Hant-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1669841,
+              "original_attachment_sha256": "4685bec0dd810598f8e66bd41f652ef529340520962b1bf42f0f32b630854f59",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-4f423b7a1a31d390d302:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-4f423b7a1a31d390d302",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders zh-Hans",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8158,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:58:22.973Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "zh-Hans-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1662187,
+              "original_attachment_sha256": "9a33bbe412e6703c692dbf86b7c1b0c62fa3127be99bfbf39f3b555c68a6321f",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-7834cf341cd619d854db:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-7834cf341cd619d854db",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders uk",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7369,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:58:31.196Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "uk-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1731017,
+              "original_attachment_sha256": "7aa67764d1206ce864be840d316a59473ecdb2f5d20f3aa272a5545a7620c5de",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-0516b34945291b3eb40a:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-0516b34945291b3eb40a",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders id",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10328,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:58:38.673Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "id-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1807828,
+              "original_attachment_sha256": "fb38b6859d57baac64540b7dab5460c62a4eed4caa3ec7aa1360afdc2305d815",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-8909e2d881edc74b8b22:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-8909e2d881edc74b8b22",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders vi",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5794,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:58:49.084Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "vi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1805220,
+              "original_attachment_sha256": "e87471f2876c6e601fb399b9e0bfd678dc250a09d2671c27dfc86181209931dc",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-81a652dad58bb3013292:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-81a652dad58bb3013292",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ja",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6258,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:58:54.922Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ja-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1770000,
+              "original_attachment_sha256": "7de110c85e95d5087d57ebe55efac144500a717d23d8f419714dfaff7b183d2f",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-68b5a61544a169da7136:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-68b5a61544a169da7136",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ko",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7816,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:59:01.246Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ko-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1652250,
+              "original_attachment_sha256": "239da5b0290072db1ea67db8888a6e3e24dbf1632226c972b85d10d8068c052a",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-22f779affc5f8bd50647:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-22f779affc5f8bd50647",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders hi",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5006,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:59:09.141Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "hi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1629134,
+              "original_attachment_sha256": "598a56f471c1aa1a2d36ef81fd0b5288799165b73b3a22fcb9ee86a1f203a2cc",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-8e7cd34bc3abadac6bc3:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-8e7cd34bc3abadac6bc3",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ur",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7165,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:59:14.226Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ur-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1714629,
+              "original_attachment_sha256": "e72d59849d1b3105e6b75451d13cc18652413bf1e034617cf9295894912febf1",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-08758a68c81d456774d7:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-08758a68c81d456774d7",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sw",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7125,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:59:21.447Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sw-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1748998,
+              "original_attachment_sha256": "3d7435c62ea626d5f018260773ca89136772ec3ef7549410cc9291ab9e71951f",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-206af0d67d18169c4913:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-206af0d67d18169c4913",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders th",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 6442,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:59:28.663Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "th-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1687313,
+              "original_attachment_sha256": "03fd0b9edd38ecacc3bcf724dd3066637d28a537ab57f47358b12fab8af214fd",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c885d83c191a34fc507c:firefox-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-c885d83c191a34fc507c",
+      "file": "i18n.spec.ts",
+      "line": 64,
+      "title": "changing the selected language updates the page without losing input",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 5056,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:59:35.180Z",
+          "annotations": [],
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c20961012c4168bc10a5:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-c20961012c4168bc10a5",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ar",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 33894,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:59:49.550Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ar-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 834500,
+              "original_attachment_sha256": "d6cfff2bce870f0bdf98008fd0c1b1fd4d22f9a7d05a24dd48f97ab63f347b50",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-3bed692df46d9574dd55:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-3bed692df46d9574dd55",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pt-BR",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 18110,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:00:24.516Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pt-BR-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 967139,
+              "original_attachment_sha256": "df980076a8a5606f22ad8cc22b22cb38cfcb680e8314c541e384218fb1ebe775",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b2447725d8520e36f81d:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-b2447725d8520e36f81d",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ca",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 9675,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:00:42.739Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ca-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 955253,
+              "original_attachment_sha256": "3b4e3f00da647fb0d1d1c459c431ad78ca9435651ec2448d3ad56278d591cd9b",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-2c4624165bc68e25b5d6:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-2c4624165bc68e25b5d6",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders cs",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 32715,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:00:52.467Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "cs-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 950174,
+              "original_attachment_sha256": "72042c49eec0fb50c879316c08494cfb85b07920becd2c681825dfb2543c6aae",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-ca9bcb701c4b5d4b00be:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-ca9bcb701c4b5d4b00be",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders de",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 38417,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:01:25.265Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "de-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 976200,
+              "original_attachment_sha256": "79621b2084ad6defcbe19aec5b761ee01e182e58dd252315efebe72fa40fc076",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-efe905906cfc0ee8cec1:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-efe905906cfc0ee8cec1",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders da",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 17913,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:02:03.766Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "da-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 941849,
+              "original_attachment_sha256": "795012ce2180717bd6092546bd270f0c0d3d5e99674ef612b9b6853185a00478",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-25a212f86dbe42548c7a:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-25a212f86dbe42548c7a",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders en",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12119,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:02:21.773Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "en-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 939761,
+              "original_attachment_sha256": "fd90dcd62634c57cd8227743bfdddbe42f87468edf17931af046cff459a53445",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-88dc08d7af04f3dc7191:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-88dc08d7af04f3dc7191",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders es",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 13633,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:02:33.942Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "es-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1014536,
+              "original_attachment_sha256": "423d4f0357be8eecf552d6b7f1067d504ac6cc3cb8477ea2da68a46fcfd46a32",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-60a5a3b52fbfc0760b5d:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-60a5a3b52fbfc0760b5d",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders eo",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 8959,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:02:47.618Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "eo-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 946246,
+              "original_attachment_sha256": "19db8d1b663afcd21cdfb75066f58d83dd2dbf555ba5b36110032fcfc15d5fec",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-cf02ead3f490ff7a6e60:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-cf02ead3f490ff7a6e60",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders eu",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 33044,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:02:56.638Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "eu-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 977066,
+              "original_attachment_sha256": "fa7c1786e0d6aa03b360906b42f0a1cf9e5fb8ad9dc5943a8c5e9caea03f34e5",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-cb167dabb87727655079:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-cb167dabb87727655079",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fa",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12331,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:03:29.732Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fa-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 833158,
+              "original_attachment_sha256": "3aa1dbb1d01add74c283a009e78fbf311e81e22d8f9f5f73e0795c251e5b57bb",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-151b63aacd1c0af0c7fa:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-151b63aacd1c0af0c7fa",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fr",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 25854,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:03:42.101Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fr-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 980771,
+              "original_attachment_sha256": "2227ed00b1849ad6c04a5bf94f06690c2abcb87e8d51af69cb9b2a9d584ac643",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b29fb4436c146d989e76:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-b29fb4436c146d989e76",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders el",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 33018,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:04:07.977Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "el-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1057621,
+              "original_attachment_sha256": "19accf41808e95389db6bccda496087f75400af1245c1d290f5c7760163e8241",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-67b07bc7cd8ab4af06cc:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-67b07bc7cd8ab4af06cc",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders hu",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10455,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:04:41.027Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "hu-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 973953,
+              "original_attachment_sha256": "d7e16222b92498bbbf02b28f51a9219b833ed5fcb09b9b7a14c8f02e3eb96aaa",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b4b2768330fee56f32a5:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-b4b2768330fee56f32a5",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders it",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 24554,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:04:51.524Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "it-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 947368,
+              "original_attachment_sha256": "dbc49d711a40959e9c5856e3a139d872a393e4bbc8166907ac0b2aa2a2143335",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-695840d66d3fc5e3f38b:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-695840d66d3fc5e3f38b",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders nl",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 31921,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:05:16.198Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "nl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 976806,
+              "original_attachment_sha256": "044ec27a86cea8c72a0535aa772e25f279a84f9f80a9f68683c13d79d4bd1a12",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-56c23eda851e9891b68e:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-56c23eda851e9891b68e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pl",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 14502,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:05:48.268Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 961436,
+              "original_attachment_sha256": "27b8e085d0715d50950fb889ab2ed3af2100d5ceb61f34daba32774cf2fd9053",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b481d4bb2772d9f2363e:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-b481d4bb2772d9f2363e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pt-PT",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 34594,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:06:02.871Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pt-PT-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 969678,
+              "original_attachment_sha256": "c6e74b4e28eb36c711e1baa5a96395621c67748ec5f5189e0af69a761baa0490",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-f6450f313bb523e0371f:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-f6450f313bb523e0371f",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ro",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12364,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:06:37.526Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ro-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 949822,
+              "original_attachment_sha256": "3050a1b2fffb212a745517981ccf5d3b30dc4cf59391759523e85d419607431b",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-d644757172d8bfaf17ca:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-d644757172d8bfaf17ca",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ru",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 36295,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:06:49.973Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ru-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 961968,
+              "original_attachment_sha256": "989a2b9770a00baa32688c138b7990aaea7374f9a3a78041279848556cf15956",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-365142493d0c9cad2e66:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-365142493d0c9cad2e66",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sl",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 28720,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:07:26.422Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 951165,
+              "original_attachment_sha256": "cda74134bdb74c4f469f57d1472e25ec4471eeeb336ca71f88ffb55f978112e9",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c0245d5ab1c7d6b3dfbf:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-c0245d5ab1c7d6b3dfbf",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sk",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 28338,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:07:55.185Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sk-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 956109,
+              "original_attachment_sha256": "c9e8623e01bccdd7bcd1d1e9fab22e05faf866bea01c7ff02531b17db23e55b6",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-66abd8769b752710a97e:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-66abd8769b752710a97e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sr-Cyrl",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 11221,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:08:23.584Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sr-Cyrl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 954060,
+              "original_attachment_sha256": "d987bfa05ba3a7049a7af8ba4d8d3f5e19e933c6f994095ea1a0575aa55ab7ce",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-a26438d6c4b6d2e260b2:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-a26438d6c4b6d2e260b2",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fi",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 24750,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:08:34.868Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 944516,
+              "original_attachment_sha256": "7fc5399324b70350fb508ac305198b0613f32fa7c59ed2619245ca6acc370944",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-fe7fe534fe3d4f0cbf52:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-fe7fe534fe3d4f0cbf52",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sv",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 26363,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:08:59.678Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sv-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 945219,
+              "original_attachment_sha256": "c8263c806f34ac1982cdf37bc82ad1c78e6624bb0ea04ad845397bde84463ab5",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-bfab9d4f7d34680c13e1:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-bfab9d4f7d34680c13e1",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders tr",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 15380,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:09:26.093Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "tr-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 944485,
+              "original_attachment_sha256": "21b5ebcece5b9e346c8d6e64b47f16d529e941cd5c3453fa75addffe0b620432",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-6aa94254066272d32ea3:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-6aa94254066272d32ea3",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders zh-Hant",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 36623,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:09:41.557Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "zh-Hant-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 932169,
+              "original_attachment_sha256": "d4a526e0c24643abc3f39e04bbb3d8f6aae92959c6e5bbaeabebdc502bae4f00",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c54ced4dc68021b36a9f:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-c54ced4dc68021b36a9f",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders zh-Hans",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 35564,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:10:18.235Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "zh-Hans-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 926054,
+              "original_attachment_sha256": "fa04fd827f8688a092b1ab86bf9435438bce703eb7e9830ea5143a0034e21f28",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-13ee7042e8e7c05a4a3e:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-13ee7042e8e7c05a4a3e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders uk",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 31686,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:10:53.872Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "uk-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 977996,
+              "original_attachment_sha256": "b81b9198f9e04597079fed0b227d1c840af837f0fb029b6b3fb041f15cd1a213",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-f67ed1d511e1ef589263:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-f67ed1d511e1ef589263",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders id",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 33019,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:11:25.622Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "id-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 961439,
+              "original_attachment_sha256": "f5a7703ee36f2ef1451aeee919a71c32d7400be5e85e5f3be5d6c4d92c4be322",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-49e41c4391b900a4fcc5:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-49e41c4391b900a4fcc5",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders vi",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12366,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:11:58.715Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "vi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 989445,
+              "original_attachment_sha256": "9b82e43f98d1d01e678903e42fe7520d1574690395984869567df3fb1985e0e9",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-63c70f8fc49d825c6f32:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-63c70f8fc49d825c6f32",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ja",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 30193,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:12:11.174Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ja-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1007781,
+              "original_attachment_sha256": "f7cc303bf4121d0296233ade3a7bd923eae211a2d84ff49b6659a806ed66ffaa",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-83307ca4bc3bf757849c:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-83307ca4bc3bf757849c",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ko",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 33823,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:12:41.477Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ko-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 935597,
+              "original_attachment_sha256": "9a0a7dc5fea5cf52a2115762e93e87f72f65c4c29939a953c68800174ffe3640",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b72f39f44ab86f3a8467:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-b72f39f44ab86f3a8467",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders hi",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 17633,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:13:15.370Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "hi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 917918,
+              "original_attachment_sha256": "65f816d10cf4c2612c3f3216518c779821c04c5209713e623a011e23f87d9a13",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c2a6d1efcb95787dc981:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-c2a6d1efcb95787dc981",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ur",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 12702,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:13:33.048Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ur-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 839236,
+              "original_attachment_sha256": "ebb0b7175fd35e7444a573e19f4886f9d9485a21c466e8675de5dc9a69ce3fa4",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c235f6e0af63b614582e:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-c235f6e0af63b614582e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sw",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 24930,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:13:45.819Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sw-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 969901,
+              "original_attachment_sha256": "f5d959e77e22bc75a3aa484cde5d8a1bc23be681514eda3660ead21f172c3fc0",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-761a11d7d588982b86c1:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-761a11d7d588982b86c1",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders th",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 14099,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:14:10.820Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "th-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 952222,
+              "original_attachment_sha256": "74b6a22bd00e11f7a19c9e421ed12beac92f102c65239dd0880ff706cf71d975",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-a867063a038b43dca6a3:webkit-desktop",
+      "spec_id": "1c708d8d2348e8ed7c9f-a867063a038b43dca6a3",
+      "file": "i18n.spec.ts",
+      "line": 64,
+      "title": "changing the selected language updates the page without losing input",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7380,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:14:24.957Z",
+          "annotations": [],
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-a7127e322856060451b5:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-a7127e322856060451b5",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ar",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 32611,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:14:52.795Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ar-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1721084,
+              "original_attachment_sha256": "a4f426849617015f2ecaaf63d41083a709c0bde21241a2a9cf7a002090212233",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-a27cab60457036ef1d7c:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-a27cab60457036ef1d7c",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pt-BR",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 23459,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:15:26.709Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pt-BR-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1798489,
+              "original_attachment_sha256": "35fd8fe36bdf7bf9a60020024b2710ab60569020b0d0b1e24b32cd23592652d0",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-837a597b84ef629ea7b2:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-837a597b84ef629ea7b2",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ca",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 28845,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:15:50.327Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ca-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1777426,
+              "original_attachment_sha256": "308e218ef55acb8b0f370994635a9284211471d6ef495652e7e79749a0784534",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b0199945408b3f37f8df:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-b0199945408b3f37f8df",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders cs",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 23525,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:16:19.284Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "cs-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1727008,
+              "original_attachment_sha256": "f416815ef62a287ebd44369de1a31c9a65074454f076031f70ccbc689029132e",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-60c8f4132cb3a2a0e7c2:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-60c8f4132cb3a2a0e7c2",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders de",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 23536,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:16:42.926Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "de-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1811936,
+              "original_attachment_sha256": "9a10074f7971e3755c12b6ea098bb4f6356b89e04ef4557647cdf3ad12eaed66",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-5f133dd338c885239531:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-5f133dd338c885239531",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders da",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 28739,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:17:06.551Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "da-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1708165,
+              "original_attachment_sha256": "bf19cd72ab7e76c68b6bcc48f9d74259dd2abd1c2614d0260e2131f83075904f",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b289a1247ee86db5e506:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-b289a1247ee86db5e506",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders en",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 26717,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:17:35.356Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "en-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1691920,
+              "original_attachment_sha256": "6be54f4d9382eb28eacf4f3cbadb17ee2e827899a4edbc3eb45ce4c289c86005",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-2dba9f7f71f8a2d31570:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-2dba9f7f71f8a2d31570",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders es",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 39336,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:18:02.172Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "es-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1809281,
+              "original_attachment_sha256": "39514abe2c3c22367a43d5a7fe09e6d48c6ea2676fcb95fa1a495f91535ace6d",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-9c2e02ca5c3214b91013:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-9c2e02ca5c3214b91013",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders eo",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 26516,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:18:41.602Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "eo-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1722667,
+              "original_attachment_sha256": "9ac76252140229b26ccc92fb8bd4a6e402d4ff912342bf1ea58fb25af2422360",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b63d34c9691af0646534:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-b63d34c9691af0646534",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders eu",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 29057,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:19:08.174Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "eu-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1759771,
+              "original_attachment_sha256": "ce8936b09dd93b60d83fece619d5127b7472b8c689e457f9c12da550d14147fb",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-9bb06bb692d7c81af673:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-9bb06bb692d7c81af673",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fa",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 30277,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:19:37.275Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fa-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1726786,
+              "original_attachment_sha256": "1f329dbf98f98d9a697b35aa6c9f64fc21f1917678a69055cffd722f72ecf9a6",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-0186d4b6b148d9bd7b22:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-0186d4b6b148d9bd7b22",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fr",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 14684,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:20:07.593Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fr-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1824703,
+              "original_attachment_sha256": "d543e69882b4fdc0d0cb9d28790064de8523635d28a0c94ba9b99f673adc288a",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c644d94d31778e958e22:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-c644d94d31778e958e22",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders el",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 31564,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:20:22.327Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "el-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1878195,
+              "original_attachment_sha256": "7c266d68fd55e68f945f451e906a70b1f033c991388fd36245ce0f149e5098b1",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-0469c658e40f53684745:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-0469c658e40f53684745",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders hu",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 9791,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:20:53.980Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "hu-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1796680,
+              "original_attachment_sha256": "ebc0cdc07b73a966316e003e6036276ed8805a8b14670d32d40f70417807365d",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-0ecc72389a5be2625c2e:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-0ecc72389a5be2625c2e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders it",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 25577,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:21:03.856Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "it-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1737620,
+              "original_attachment_sha256": "b865698f75a48f48453cb98f1d609d15e333be9bacc694c344d582a887b6baef",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-bf3562ebe9201d2610a1:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-bf3562ebe9201d2610a1",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders nl",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 37037,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:21:29.523Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "nl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1766806,
+              "original_attachment_sha256": "18b0426a9cefcfb2dfe568ab1d47d04ad225ba6fdba7030832cfc490155c34a8",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-e8fdb4d08c24af4b3e10:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-e8fdb4d08c24af4b3e10",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pl",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 26940,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:22:06.620Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1759055,
+              "original_attachment_sha256": "3fe233c243fd6dec2281a64ab00fab57f28dc1ffd1ddb38d069fd3fe979effc1",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-29ea59f6557805b70500:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-29ea59f6557805b70500",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders pt-PT",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 30752,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:22:33.622Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "pt-PT-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1805881,
+              "original_attachment_sha256": "d00c794de52550fb056587cc9ffbbed8183ce248c4e0af08e97f86edb4be700d",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-6c6eca2afee6dba83b69:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-6c6eca2afee6dba83b69",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ro",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 32765,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:23:04.468Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ro-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1748754,
+              "original_attachment_sha256": "c140fb080c3087924627248a61a5fbee1b76c0ee731cbcb4e8aa6d76aaaf4a3a",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-143473a323e9dbe92625:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-143473a323e9dbe92625",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ru",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 31772,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:23:37.278Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ru-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1748160,
+              "original_attachment_sha256": "de625504c7627dcd029367a65ee71501c5cb841d12d46e8cba0ecbe049097793",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-566897c96eadfa7c18bf:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-566897c96eadfa7c18bf",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sl",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 30635,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:24:09.119Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1757255,
+              "original_attachment_sha256": "ec0288d7ba1aa8f3550ef025b667cd28c4ec0a6188ae110c11eae82c748c069d",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-3a17bc445bcf599ed55e:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-3a17bc445bcf599ed55e",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sk",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 25529,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:24:39.830Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sk-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1745553,
+              "original_attachment_sha256": "a58d2d8d8f20f7d81bbb962730a868747743a223a9c07fc24c52b0ec7d40b208",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-7542399148107e3d3fbc:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-7542399148107e3d3fbc",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sr-Cyrl",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 24568,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:25:05.437Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sr-Cyrl-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1699694,
+              "original_attachment_sha256": "46c3d13e2992d065bb0a9e64e465f8a0fff8bec17c64465fb1d4944e707e9f18",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-9378e5bcbc8e8e2e66d0:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-9378e5bcbc8e8e2e66d0",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders fi",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 32982,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:25:30.058Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "fi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1733808,
+              "original_attachment_sha256": "d2cd0f721f608cc0819bae0c681292f8034375427461c0ca268972ec3caa5fa8",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-8bfe951e5fc3b774d0f3:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-8bfe951e5fc3b774d0f3",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sv",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 27911,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:26:03.139Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sv-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1704508,
+              "original_attachment_sha256": "8591e4f45531c38d9492933094388d9a553dd99020b70a11949d295c2653dc46",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-b4d23e2f213e53df72f3:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-b4d23e2f213e53df72f3",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders tr",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 26596,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:26:31.118Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "tr-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1737687,
+              "original_attachment_sha256": "e7fd4c044492499931efa6dbfce00252e86372cab4907bca68a2025f5bc39d5d",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c2c342f51ab3d18eff34:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-c2c342f51ab3d18eff34",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders zh-Hant",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 32682,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:26:57.782Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "zh-Hant-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1671429,
+              "original_attachment_sha256": "d6812c0a56a2101fb18f14aec6cc23fb209cde5c7f2a84625b7fb70a66c3a2a5",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-633a9ae16cd4aad90bc1:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-633a9ae16cd4aad90bc1",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders zh-Hans",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 28259,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:27:30.523Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "zh-Hans-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1662703,
+              "original_attachment_sha256": "4a28d720ba505d0e6e5bcb6ddafc3c1162098242498df7834b12558a2ed3809d",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-c644a1e80247cf80f65f:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-c644a1e80247cf80f65f",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders uk",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10980,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:27:58.836Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "uk-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1712329,
+              "original_attachment_sha256": "a62ffc1b509a8b90fe16daee7449351e4e0203f9b17b655ec3280bcea019803f",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-8cf2ded2c884d405ffc5:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-8cf2ded2c884d405ffc5",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders id",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 27328,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:28:09.883Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "id-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1762271,
+              "original_attachment_sha256": "5c6b88a9da5665f8c69f98c0c948757493d1ec38273685f8b7db1d94b031204e",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-165040d7f5d1aee15cc8:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-165040d7f5d1aee15cc8",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders vi",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 32473,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:28:37.256Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "vi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1801592,
+              "original_attachment_sha256": "248e25df2c47f6d7535c8950d69194b09c30faff562659a215ded5191227a510",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-2105ebd2333d49b7c8ee:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-2105ebd2333d49b7c8ee",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ja",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 25809,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:29:09.835Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ja-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1801724,
+              "original_attachment_sha256": "1461ce5eb94a806bd75561b06bf0d3f5a66c14327138e3a3406e68b253325ca5",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-ece60493d8c7a383ae2b:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-ece60493d8c7a383ae2b",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ko",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 28948,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:29:35.711Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ko-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1621310,
+              "original_attachment_sha256": "4a2a182cc6ed5c218ede03f88779a7d154931534a4e8589501c0d39b6d0bfdf5",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-db9f690ea961f56d7d9f:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-db9f690ea961f56d7d9f",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders hi",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 27394,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:30:04.748Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "hi-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1641735,
+              "original_attachment_sha256": "cfebce460bb85eccfb0afa062aba729cbe12cf3b0fc64906753b4b9d8edaf3ec",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-dc575313469579f8b1ce:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-dc575313469579f8b1ce",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders ur",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 15884,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:30:32.215Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "ur-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1735533,
+              "original_attachment_sha256": "99dc3648be81b46bb2e1dcb1702545288166a893572b5a6e67646265a08d1eec",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-d39b5e00154e7ccdf7c4:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-d39b5e00154e7ccdf7c4",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders sw",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 39901,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:30:48.145Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "sw-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1770918,
+              "original_attachment_sha256": "97d4f6f0c975c21493d815213cb073dea7bcfcf7c3ce16e1708e8e87fc36e135",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-9f5a421bd9883b986c8c:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-9f5a421bd9883b986c8c",
+      "file": "i18n.spec.ts",
+      "line": 7,
+      "title": "home loads and renders th",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 40366,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:31:28.093Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "th-home",
+              "contentType": "image/png",
+              "original_attachment_bytes": 1675747,
+              "original_attachment_sha256": "cdbe63be34368864ef87859a041b8e6212616d3fd8ee399fc2c5a3d78179bdf1",
+              "body_omitted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1c708d8d2348e8ed7c9f-4841aa2a6217bcd208e4:webkit-phone",
+      "spec_id": "1c708d8d2348e8ed7c9f-4841aa2a6217bcd208e4",
+      "file": "i18n.spec.ts",
+      "line": 64,
+      "title": "changing the selected language updates the page without losing input",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 7421,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:32:08.547Z",
+          "annotations": [],
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "aa5138cf01427e7a1559-4f5ef387f5799f9ddfd2:firefox-desktop",
+      "spec_id": "aa5138cf01427e7a1559-4f5ef387f5799f9ddfd2",
+      "file": "thai.spec.ts",
+      "line": 5,
+      "title": "Thai auto-selection loads the bundled font and survives switching and refresh",
+      "project": "firefox-desktop",
+      "browser": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10297,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:53:32.116Z",
+          "annotations": [],
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "aa5138cf01427e7a1559-1e5839ae04d18ba3a8c3:firefox-phone",
+      "spec_id": "aa5138cf01427e7a1559-1e5839ae04d18ba3a8c3",
+      "file": "thai.spec.ts",
+      "line": 5,
+      "title": "Thai auto-selection loads the bundled font and survives switching and refresh",
+      "project": "firefox-phone",
+      "browser": "firefox",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 4274,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T02:59:40.310Z",
+          "annotations": [],
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "aa5138cf01427e7a1559-8ceaa32710bbea1b1a85:webkit-desktop",
+      "spec_id": "aa5138cf01427e7a1559-8ceaa32710bbea1b1a85",
+      "file": "thai.spec.ts",
+      "line": 5,
+      "title": "Thai auto-selection loads the bundled font and survives switching and refresh",
+      "project": "webkit-desktop",
+      "browser": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "isMobile": null,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 15286,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:14:32.509Z",
+          "annotations": [],
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "aa5138cf01427e7a1559-74982b910a9b2cd25eb4:webkit-phone",
+      "spec_id": "aa5138cf01427e7a1559-74982b910a9b2cd25eb4",
+      "file": "thai.spec.ts",
+      "line": 5,
+      "title": "Thai auto-selection loads the bundled font and survives switching and refresh",
+      "project": "webkit-phone",
+      "browser": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "isMobile": true,
+      "status": "expected",
+      "expectedStatus": "passed",
+      "timeout": 120000,
+      "annotations": [],
+      "results": [
+        {
+          "workerIndex": 3,
+          "parallelIndex": 0,
+          "status": "passed",
+          "duration": 10235,
+          "errors": [],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-11-01T03:32:16.056Z",
+          "annotations": [],
+          "attachments": []
+        }
+      ]
+    }
+  ]
+}

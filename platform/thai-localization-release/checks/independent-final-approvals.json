@@ -1,0 +1,907 @@
+{
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "catalog_sha256": {
+    "native": "b1c6e611d1fa9e0c7697508e3442360368df5d8a66abe55e79d9f34dfb2f0f1b",
+    "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
+  },
+  "old_batches": 44,
+  "new_batches": 2,
+  "batch_count": 46,
+  "role_coverage": {
+    "final-meaning": 6265,
+    "final-editor": 6265,
+    "final-adversarial": 6265
+  },
+  "accepted_english": 97,
+  "resolved_draft_findings": 26,
+  "open_linguistic_findings": 0,
+  "per_batch_evidence": [
+    {
+      "id": "native-colony-001",
+      "keys": 160,
+      "target_sha256": "4add673c443db1795aad6f2e0268a3e52f91ff297fd83b8db09d88bbcfe1f1da",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-001.json",
+          "sha256": "ffba03e4f2763591ded5258ee9f736b72edb95d1e4e1f7ac093df345f311e15e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-001.json",
+          "sha256": "0834340fcf0f1e2687f1665a99904f3f7f0cbc4d4eed228adeb0e34ccdbe4b74"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-001.json",
+          "sha256": "e89eaa1a5eb19504d1db3c4db7dc7afeabae1cdbe148dc36aa63bf4801a0d529"
+        }
+      }
+    },
+    {
+      "id": "native-colony-002",
+      "keys": 26,
+      "target_sha256": "de180c8da8df063805b9c5ea4e82e6068e690a4f35fb7fba58653e8b3c994c2c",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-colony-002.json",
+          "sha256": "8437a13019f32405c3e6ee35075d1e1e8084dc2be49a3f52f14c16688b575b46"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-colony-002.json",
+          "sha256": "f349e425cbc55b6cf82cb6f08d6b2f68212d6cbe0e2807ab6c887f4d9ea91b3b"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-colony-002.json",
+          "sha256": "d5e89a4269cbd8d00e1c077261fbbfec307db73718534364c689402b868d1c80"
+        }
+      }
+    },
+    {
+      "id": "native-general-001",
+      "keys": 160,
+      "target_sha256": "781df89b7eb114f9eeef725eeea286c65475e40edc4cc4995aac4e8be54eade1",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-001.json",
+          "sha256": "8c03b8271403738f09838895ca1b202e68022834cc20123c99270ca474047674"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-001.json",
+          "sha256": "c108f5b962c9545c6d7d6a7c20b16195557bda9bb5f1840a5afeb6d14383c77c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-001.json",
+          "sha256": "6db845300c08076a51e1dd5e0008b33d773795650bd64f7ba16405099585d562"
+        }
+      }
+    },
+    {
+      "id": "native-general-002",
+      "keys": 160,
+      "target_sha256": "ed4f73b3d6991cb9439f0124b6b2ab4bdf49ec34d6ad8e711ef49342aa0bda29",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-002.json",
+          "sha256": "6857336c01828523da3ba53fb7890540eb9fda2f7a1e42f57ad325b410bc67de"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-002.json",
+          "sha256": "00f13c5a4f683f1c9c35b3298011a7de84af5735bc35d416a5c9e7953c423ddb"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-002.json",
+          "sha256": "b0f91ace02c831ebb40652040a8a8dcf9228d9354d1b61c9bda5b6ce7c7f6f3e"
+        }
+      }
+    },
+    {
+      "id": "native-general-003",
+      "keys": 160,
+      "target_sha256": "3f1dfca399115c32a6ec14b0a967fd0796290c2bdb35e14c6a90d6b8712ee088",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-003.json",
+          "sha256": "1e414e8a456fdc5cb1c6ff984dd14f69bdccd57e74855a4b8a6a05ba0da96b72"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-003.json",
+          "sha256": "c259d752c256a8422a162725ff648bc0e1d135849464134501899aa4962f3ab8"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-003.json",
+          "sha256": "b2e213e8b489477393d4be0cc16d74225a0be0d22525bb4daf2efee4d65cd707"
+        }
+      }
+    },
+    {
+      "id": "native-general-004",
+      "keys": 160,
+      "target_sha256": "da693c074f474c5c64f5eca485bc8e3c17ebe1b4db7357be2a827a7f6ee52f93",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-004.json",
+          "sha256": "226aecb6c932df9c55b4fd888bd3f49110188e26646cc013d41857bd004bf8ab"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-004.json",
+          "sha256": "d41f822466ba1feb8dc7d6e0a02623ccae789dc0777805ba6d83b1c21f902679"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-004.json",
+          "sha256": "cc49f1dc9994c5755fccaa72b9b1c12c5828781df762ba06ceaccd35403b4fd3"
+        }
+      }
+    },
+    {
+      "id": "native-general-005",
+      "keys": 160,
+      "target_sha256": "e12a1c53904a7d583a414ecf95b9418cd2be9a127ffd6c661127ce5397162ce6",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-005.json",
+          "sha256": "1a0ce794ab74f63b8b6ce693ce665b5d142b09bdf7ab7ed89da4fdea720307a9"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-005.json",
+          "sha256": "feb43a63a3ad5dd576169b38b322c7786b54e3759d94217b9534d196e4fbe024"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-005.json",
+          "sha256": "03d11e17b92e85eabee0960763a64ae32f7c91666fe5892a02316f0612e654d6"
+        }
+      }
+    },
+    {
+      "id": "native-general-006",
+      "keys": 160,
+      "target_sha256": "6991d25b9158accd47a3483689a6c11c6e67aff43ab46fbe605e8eee88aa315e",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-006.json",
+          "sha256": "cfcb0ec84b1428107c0bb17168b4255842e7198e1a15e27555eba491bce2122e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-006.json",
+          "sha256": "56123bf6ca3071ff17376e56bb9b09eed3f4860efb3a1a6c43762255a5afcbc0"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-006.json",
+          "sha256": "5ed53118f0f22e7c645b292e9fb447ac1282d4e189cf0b9097b4472220b89ce2"
+        }
+      }
+    },
+    {
+      "id": "native-general-007",
+      "keys": 160,
+      "target_sha256": "8ebf62181eb20a63f978731c29666c66b7ee4ff5b03b650f93b5acfc6126634c",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-007.json",
+          "sha256": "3908179ce12d0e948908a531f2130177fef5ba19c27c76ac58109988f1949b0a"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-007.json",
+          "sha256": "0291882aa1d9c17ee715285f16d615a27df6a0260e46eb0aef0f79a73bcb6db0"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-007.json",
+          "sha256": "c9d6c9c37376a12218e3fcfb671fe14469deaa0173a06ea7206c5c933d067577"
+        }
+      }
+    },
+    {
+      "id": "native-general-008",
+      "keys": 160,
+      "target_sha256": "5c53f76bbdfeb9eb155c4619d9d79c60707eda84c359e4389895205ef4145651",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-008.json",
+          "sha256": "60f0e0ef16e3270223d47ea96bab80621131ddaeb0e19fa883cf6608c5daeffe"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-008.json",
+          "sha256": "c19fed6652ad1d53c0354e96eb30364611d6fc17388a329aa43a1e72790ed541"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-008.json",
+          "sha256": "973f0e7c7eece166a62a9b61c19e3a1657f5188b14f100e407dab51d5a5a90a5"
+        }
+      }
+    },
+    {
+      "id": "native-general-009",
+      "keys": 160,
+      "target_sha256": "5455e4f651caf60df934ebf9e8cdf6f68835bf2cc6cc7149d646aecea5086401",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-009.json",
+          "sha256": "4177a5fc9a707b8c7dd9110ac93717fe63d59e007a13a1c4141dfcf7d94284f2"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-009.json",
+          "sha256": "cc73eb6f05428429708017abfc7615a40e7cb83605160911b5809b2b21af7175"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-009.json",
+          "sha256": "c675c8a5c5ac11d048cd732dc45070c15c4addee9b93664fce1fdc41b117a73b"
+        }
+      }
+    },
+    {
+      "id": "native-general-010",
+      "keys": 160,
+      "target_sha256": "64fd09915d747473533959f4b37cfab8f05f7666d2dc7380ffe16035ae3964ce",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-010.json",
+          "sha256": "66b0930682efc2b96cc8240aafa1d5ee7d98f29da9536a9e3b0ecad0c0fc8494"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-010.json",
+          "sha256": "a590363a0f42c2f0f5ace5b1c91092a0b61e51fa18b4ab3e888e2bb81a4a92e5"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-010.json",
+          "sha256": "f0abe98b67c2c8900e5cdc4338fc00bcea60b40a2d0ff4d92f02fd0e26b3895f"
+        }
+      }
+    },
+    {
+      "id": "native-general-011",
+      "keys": 160,
+      "target_sha256": "f6e0260db76769720b4c872b3f1c7e35443da4a6ffaea0457de31944695919b2",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-011.json",
+          "sha256": "452651433d1476c3efafd40a0add4d23719f761eb94cc9ad52130002a4d96298"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-011.json",
+          "sha256": "238bc349a2b1226df0acb95fb780f1cab169ad0862997148e00ef3812f656ad1"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-011.json",
+          "sha256": "ac994a819462525245c8f889995f711677dea254b1fc8d3a2aa8e1257d0ba5b4"
+        }
+      }
+    },
+    {
+      "id": "native-general-012",
+      "keys": 160,
+      "target_sha256": "c236e1ac83af125875663aa4a7830a1a6f4a58303effb7e92626cae1e3a844ca",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-012.json",
+          "sha256": "d2564dd015b30acf8e89f8ca20349add0c403005f7a3238ebb6f84df98829b8f"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-012.json",
+          "sha256": "9005897c21c564615dc75c6f7e794bc2c582920d30500a7b7715f315b33c835b"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-012.json",
+          "sha256": "f849ef3358f9d930bcba682671bf621b280bda784e16a87a7b6c61a2e3169f31"
+        }
+      }
+    },
+    {
+      "id": "native-general-013",
+      "keys": 160,
+      "target_sha256": "9ec1d7ae6deba913744c2b23012c6a2cf926a27c04e827e3e226420b8798b268",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-013.json",
+          "sha256": "d7c10ba15fd6be4b0bf00fd60a3308e15ad9bdff46d60d144a4a8a78cd7db5c5"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-013.json",
+          "sha256": "3cc66bdb19003dc612cf2a4cd028aaca6259a68c9d646480de17aa31cf2d09fd"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-013.json",
+          "sha256": "45ee4874d495f1c11f4745d97e047d872125a9aa098c5ea8df57bdc65ebdb4a9"
+        }
+      }
+    },
+    {
+      "id": "native-general-014",
+      "keys": 160,
+      "target_sha256": "f07af1347c023a1c5c38eb6b4d66c684fd22689470a5f600231be399bb4e8e32",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-014.json",
+          "sha256": "b22e210263621de99ddc760c82a1c8f7fbcb9da242d77bfee52c5dfb257b8415"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-014.json",
+          "sha256": "1e3af35fa478fb1eb25f29b7622e282dba7d37eb96109654b641d158307b9a61"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-014.json",
+          "sha256": "ffe5400130f1ee86b9224197b3120ad49eb772c1eb6b830c532c19abfa236b35"
+        }
+      }
+    },
+    {
+      "id": "native-general-015",
+      "keys": 160,
+      "target_sha256": "99b562765ffdd18a532999eee48590817e209f255541e62908513702091be8a7",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-015.json",
+          "sha256": "d3ef660483686837ffd552a4d80a506c159e6c11c6b5071dd2e91333e7f8d239"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-015.json",
+          "sha256": "b832a24464004cc34445d65fa01f8025b478b1df003ed2077b4224d7f3900b73"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-015.json",
+          "sha256": "53490f4d2c670e5311acd2dc174416f0af8419b0a6d5fe489a77be9933cee61f"
+        }
+      }
+    },
+    {
+      "id": "native-general-016",
+      "keys": 160,
+      "target_sha256": "3ef80fbc63eb48b97630c269f135c61644cddb530f2a3085213cdba3dbb61231",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-016.json",
+          "sha256": "3888aca0796577a6c8a64c4886971f63c6bdf5608de41ad3fd41b446a1f9f3cb"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-016.json",
+          "sha256": "99ee8080ef4211ff569ed4f889155e6a616304f150470cf06f95ea16c2db306e"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-016.json",
+          "sha256": "7160441bf5f0c2335dc21fe1f20f04f18176be5dfbc951fdfb038245050d9aab"
+        }
+      }
+    },
+    {
+      "id": "native-general-017",
+      "keys": 37,
+      "target_sha256": "064cce93956d6f6c5b3390130915e48772eb297d96cf822a5e5116a5b4c95483",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-general-017.json",
+          "sha256": "3afb71b1e0e51ba8e82cbc14109e752ef55b4d48086a7060acf3e062da3602d1"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-general-017.json",
+          "sha256": "5f63c91170ccfb2dbfe7c5e0f24c65ad13d93f0fa1b5f6a8179b53ab5f2b2d5a"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-general-017.json",
+          "sha256": "991fb647065fd1f4f6e3fa99962a2603ad85ce99395bb6e1168cebffbe08e6f3"
+        }
+      }
+    },
+    {
+      "id": "native-maps-001",
+      "keys": 160,
+      "target_sha256": "cb32b3962c1bb81f72297afb46fd5d932d7cc4d989f93250c269d9dff820d23d",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-maps-001.json",
+          "sha256": "b3e2da6f312561a92b177f0073ee0af4f2d3dda4f6ff5153609fc7f411e74126"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-maps-001.json",
+          "sha256": "f13c5cc4a0dfcad2062bc4072d267da42a7bb46d3f8421ee7e7ba81df44ca6be"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-maps-001.json",
+          "sha256": "7a2c648f27c04c7059701a9d89b4f4ae235fc6ba3a75055d0369caa618610abe"
+        }
+      }
+    },
+    {
+      "id": "native-maps-002",
+      "keys": 18,
+      "target_sha256": "f0c77524849440f8fe832e61a0e81833d9cc8984750d768bc8235dd5bc066eef",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-maps-002.json",
+          "sha256": "cb3b28f7e5418c4e1b4c8209e686d32089a9a07748b96e916fb9c97fdf91d132"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-maps-002.json",
+          "sha256": "d9dc27fc1357350c8cac5dd231cccb5a12321df384ceb671d5682f529413d546"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-maps-002.json",
+          "sha256": "9b3f37a874f2afa73a017a117cf97e470caef3e575f11481790c9036afcfec02"
+        }
+      }
+    },
+    {
+      "id": "native-settings-001",
+      "keys": 160,
+      "target_sha256": "c58806cf821b0126fb6701654cc57039a10d19e1a71f1d80241aad4f9f0cda79",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-001.json",
+          "sha256": "835b36134a0c41d6e01a9dc352ef7d18da2e5f3d55c8231425b7aba77a29c022"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-001.json",
+          "sha256": "285e289e6ab2ba6f39c391ad6441d82ed03e52b86e3c87e9a31c98ea97376349"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-001.json",
+          "sha256": "0236740237ae00f698074766bfdaed7f4b86c50d8b0611bbe668f1f15ba6e008"
+        }
+      }
+    },
+    {
+      "id": "native-settings-002",
+      "keys": 160,
+      "target_sha256": "4fdaa46225ade802cef3f186ff29dd7bd7b4ae9d2c1d760a57b07de038d629df",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-002.json",
+          "sha256": "1941dee307f45a26c7f0cb836cbbe22d69277e17ae63c5193cb29b72ff25994a"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-002.json",
+          "sha256": "bc26ceee6bf12f33e3f0175f386a1467dbc1e3f095e3e42664315e4365c15912"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-002.json",
+          "sha256": "e89155dc31cc1d4de80d3c2928d9f9067277ff0c9b1003c71ff4bfd5a162f944"
+        }
+      }
+    },
+    {
+      "id": "native-settings-003",
+      "keys": 99,
+      "target_sha256": "db5ed97a231057d17d91aa4f9495785cf058d75beebb2cb3983e1a79d4801b83",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-settings-003.json",
+          "sha256": "ee32f28a01efc9fd57c4d76d88a4a03344eafcbc6ce7762bd3eae611644747f3"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-settings-003.json",
+          "sha256": "a7fdf587c7d3b8819a7d7dc5c9b493a6b26fa69f647b7cf71cc9a247515962de"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-settings-003.json",
+          "sha256": "5807551d80d6074c2ab602e093b9ca5eaf6c17633c445c242531bbc4ada2d61b"
+        }
+      }
+    },
+    {
+      "id": "native-tutorial-001",
+      "keys": 13,
+      "target_sha256": "4f8124dc07fd541c9d90174384338e309ba2b1e83d0912ddf4b546fdca4a7992",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-tutorial-001.json",
+          "sha256": "96cc5390b70230d496790365c700a4185041ef057c3b79fc926f66d0edd752c6"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-tutorial-001.json",
+          "sha256": "a36f015f4cb32f0e60d3040e25237c835008d1b884a204a85c698f7a5a74174d"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-tutorial-001.json",
+          "sha256": "3c7a344210e9307433fda28c6426195ef34d9768d6bf3c68a5dddf67bbe48c6d"
+        }
+      }
+    },
+    {
+      "id": "online-online-001",
+      "keys": 160,
+      "target_sha256": "f71a921dfdc6447532748e775670e7382ad22877894878d314130cc2f2f562a8",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-001.json",
+          "sha256": "fcf4514baa4ba525a617917091c77abb3f2edf269a07a077d262159be66253ca"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-001.json",
+          "sha256": "440f7e6b131cf0ac496f189c6191e0c3a0c6964c66202af0907fc65cde7d0302"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-001.json",
+          "sha256": "c0cb3fa75cc6109cbc6e964b42eb4fa93ce06028845e7ad61295cf36d6376b9e"
+        }
+      }
+    },
+    {
+      "id": "online-online-002",
+      "keys": 160,
+      "target_sha256": "b43d5f5a48f557c735611f042ee51794d5f1f3a2090f526e39c5e6860f5f4d2d",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-002.json",
+          "sha256": "2631c4f319c637e931cba8e42f5444af4aed1c7fc42938bdb99a0a0433144993"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-002.json",
+          "sha256": "2b0c159e6d1fd747d386f21ef57c5ec8acb01576519df5e14c83e70c085377f8"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-002.json",
+          "sha256": "f360b53f2ae860ab8c6daa0e150e4abb686783285f0bc376ba32c44fe1428aa2"
+        }
+      }
+    },
+    {
+      "id": "online-online-003",
+      "keys": 160,
+      "target_sha256": "573d955a307107bbbf10b12b79fa3a5ebbbf66774574b5047384164e3592f5a2",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-003.json",
+          "sha256": "96462bafd23b5f34c35c8e9cdc74fcc52a9f880bee7fd724e51f7fe063d4834e"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-003.json",
+          "sha256": "9241b0fb39c6d68a7edd60f1a6bdb87c6c63dc49d29421ebf060e2d1cac2d399"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-003.json",
+          "sha256": "26f7d8894f4e752c1fd7738b1082c81672d90a54fc22742f9db149aeaaf496a5"
+        }
+      }
+    },
+    {
+      "id": "online-online-004",
+      "keys": 160,
+      "target_sha256": "b12cdc8b41aa7f9052b9bfc5b8638b9e9d98bc415aa2c486285261844cc840ed",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-004.json",
+          "sha256": "a41e649810bc83ab136cde3cf7c81fe2dde14b985ca6233c63023fa3f5632898"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-004.json",
+          "sha256": "9ed482890c34bf92a2ccbcab30cb4f68258a42a3aaef4ca04fd25ee77b4ac8e1"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-004.json",
+          "sha256": "fd2e9e92b561c0b65a77ddbdb01527abbfee8970f02d8e3409d40f879406bd61"
+        }
+      }
+    },
+    {
+      "id": "online-online-005",
+      "keys": 160,
+      "target_sha256": "57c2779e8ba9c2a3bb939194b4a1f2680183bc210452bd0ca3fe2f23b9dbd4ca",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-005.json",
+          "sha256": "f9816202c0c04b83a8c3b6588cd648da71eb5bdaa0beca2a8244cc3017668576"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-005.json",
+          "sha256": "67b40f9a663a5b08258a3b7791aa5ae4bcc24fce0b7f203507c5df25b1c5117f"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-005.json",
+          "sha256": "e49411b4999c9c9572eb3e535f1ace4877c1d1f0c08a87986a31bae7b4a4a234"
+        }
+      }
+    },
+    {
+      "id": "online-online-006",
+      "keys": 160,
+      "target_sha256": "f8a033f2203801ace2a9b0ad8869a6000e6894b153c270590cdfaf825593fe2f",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-006.json",
+          "sha256": "e2be690af6cf20d0bdc2af42ae752733c9d1754b6af6fdd49e60e90f54701513"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-006.json",
+          "sha256": "e7a7f152a4f84269ff45023315a1402ba18192916eada216ad2be5d30e2dcc2a"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-006.json",
+          "sha256": "d3045b15cf66a49b6ccfa7062f4264d720e806b9c81ee398e42750fbf54261ca"
+        }
+      }
+    },
+    {
+      "id": "online-online-007",
+      "keys": 160,
+      "target_sha256": "ce112152558b3505609f1e4226614976b4c122b77f1afdf5d038e05c19f00162",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-007.json",
+          "sha256": "b6bd5af27cc79c2456d7d45fccbcee9560f6b6fed1291795180f94a50f9c6cfa"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-007.json",
+          "sha256": "4007d01200c86bcb53213d1e687370bd0395ab552020067fc6f3211e808c2f3b"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-007.json",
+          "sha256": "dc22f4fb604d115ba3d58d2d3b218968062d0f66fa8efec6e19835ec5c773997"
+        }
+      }
+    },
+    {
+      "id": "online-online-008",
+      "keys": 160,
+      "target_sha256": "b92d5785e4b06724832d5ff1c035221c36a6e2f0b2c36ecb31838aad883997aa",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-008.json",
+          "sha256": "cecae3e04faf1459127cf9eb9c99252a2cd26e1cd48a3ff2422eb556e54fbec3"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-008.json",
+          "sha256": "a9f292a9afcd2fccdafbf7b7eaae793f8e06d4155fa896edac53ff70c309a7f6"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-008.json",
+          "sha256": "1affacc4383afbd99e428b4c91ac485acc3974630cf13d199f28f23ac12bda52"
+        }
+      }
+    },
+    {
+      "id": "online-online-009",
+      "keys": 160,
+      "target_sha256": "8e09bfc5b0cf6d38d09cf42404f28df1e627ce0e598be808aa94c77f725b948a",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-009.json",
+          "sha256": "e766b8e15bdb3451520182ee0414a7f012fbcf3ed8c24b65f614f8850dca6a85"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-009.json",
+          "sha256": "0f40416ef544af22d53665e712ac99d34ba609cbaf153f5bff50a6df0c36f21e"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-009.json",
+          "sha256": "17011203bfbabe3900f96c47fe320fed757a95fa0002ecd1b9959b77aa184cf5"
+        }
+      }
+    },
+    {
+      "id": "online-online-010",
+      "keys": 160,
+      "target_sha256": "ebaecf684da77279e41bfeb2f39c1544cac9387daa2f28d183f54d513cb80edd",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-010.json",
+          "sha256": "d10387d8394fa02b38e16935d0bf782fb992739ed924a1abff4069053934207f"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-010.json",
+          "sha256": "5a8b3b761df7488058f9218001569da2e27734ff7eab97780e52f12e60da5189"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-010.json",
+          "sha256": "c40ab107fa16c2efcf8edeeaeae5df554a8341df517f343139851a25931b4b13"
+        }
+      }
+    },
+    {
+      "id": "online-online-011",
+      "keys": 160,
+      "target_sha256": "6d265e90ad30e522d0fcee6965972f8fda9c9c72f80861f4041b6d9511259014",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-011.json",
+          "sha256": "708ba386af08af6382517e1a127cf4d06b0a06fffaac9db4717a6ab4dd6753d3"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-011.json",
+          "sha256": "eed8e7060f1e07e8ede060b05e89f804e478b030b26b73378759048b8877a942"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-011.json",
+          "sha256": "3797065988641914185ccb84d132ab2aaf1607a50e972300377737dfc57edc3c"
+        }
+      }
+    },
+    {
+      "id": "online-online-012",
+      "keys": 160,
+      "target_sha256": "91d7b16069a55d8eadef2ed557c553ac6e27e216f012730ad5ac3cdc70692703",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-012.json",
+          "sha256": "72e1a6b7991f8b99daa76f55a93a1e4c413709c2cc9e5da526b4561a31d1caae"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-012.json",
+          "sha256": "65168098e6335f7f2d5dfd23911af8fb515b4fe7f36fd039888e702af2b3322c"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-012.json",
+          "sha256": "42fad8877446bad79cab8de007ebedb37b4352ac6fcb3ac6a2fd9de0d1c86266"
+        }
+      }
+    },
+    {
+      "id": "online-online-013",
+      "keys": 160,
+      "target_sha256": "a8add17c71136607eed7e816a670afd2096144e7ff795ceb67452ffe5f0e1249",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-013.json",
+          "sha256": "b6a46b2d23660dbd99ef0c6dee04308b6838074a958442231b0d05b3d77ec4d0"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-013.json",
+          "sha256": "a221f6a05bf4e3e104200347f707c49cc943fc01c13339dadc8fcec1382f309f"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-013.json",
+          "sha256": "bbe03b5a2539033d6f28b17042d343535b9a8977c0103eb857166d73547bed7f"
+        }
+      }
+    },
+    {
+      "id": "online-online-014",
+      "keys": 160,
+      "target_sha256": "8449178ed35c2bc54ec7d3b2ee18a600da4c185731926049d0429ec7ec096e41",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-014.json",
+          "sha256": "6b5f0a97083d153970942e482c63d3951c7eb1e0d1465b53425e9a3ff3fb01c7"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-014.json",
+          "sha256": "3e27498e71aaacfee51538ac4049ff139eac920c6e9f8be95ff4a0495eb647cd"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-014.json",
+          "sha256": "f2ad8e1d68a82c7fa7c3edbf8576542a79412809f108d05f3ba46195beb112a9"
+        }
+      }
+    },
+    {
+      "id": "online-online-015",
+      "keys": 160,
+      "target_sha256": "da76e08d2d86daa7c7e421814448ca92a566c76437d47e41fb04fd9db40631f5",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-015.json",
+          "sha256": "41dd0007474d9d58caa7e413467ecf4d190b06797e5254b94b37d633f952b950"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-015.json",
+          "sha256": "8a16bee266a1f1a089cf1591a76e8bdca1423c86f7edbb4bd1c08e984c3e0c84"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-015.json",
+          "sha256": "e589fc1de0339f439a09db7b3c70746b72c4eac7a24b114d06d943181e932d8c"
+        }
+      }
+    },
+    {
+      "id": "online-online-016",
+      "keys": 160,
+      "target_sha256": "2495283a5945473f8fbb7eb1eebc19100c331dd8c25b5d7b526498c29ddea590",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-016.json",
+          "sha256": "dee7747695c4f035773a19d6a2790d67d6e41ae6a111aab58b694236adf78a4b"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-016.json",
+          "sha256": "a24a01d61a301c79d6ce63bda85e1a84bcfd0711b1b9ebb7be793d03339d42f6"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-016.json",
+          "sha256": "92353b6b526e163ef07f3b9653e4d4480d231abb549c9d55aba3141c4ca40818"
+        }
+      }
+    },
+    {
+      "id": "online-online-017",
+      "keys": 160,
+      "target_sha256": "704b66d39966531e24101cbd1bba512ad2551d3675074c03eb40789d01de2294",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-017.json",
+          "sha256": "0cba4f1dde47bc4861d02108215d1efb395e965e67cdd1f57c73443f3feb6a8b"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-017.json",
+          "sha256": "29f2364ef85347ff243abae62b31294a75dbb71710760f8f494b48e51536f3ee"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-017.json",
+          "sha256": "9a9fe74c5a5600db93e855a5373d4bbe64a5b8e0794612874af0f4a394b726c7"
+        }
+      }
+    },
+    {
+      "id": "online-online-018",
+      "keys": 116,
+      "target_sha256": "5316985a69655733666c003cef1678662b1a4163fe755a9dec1a76d1c77707f3",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-online-018.json",
+          "sha256": "534dd4dafa68cf2b000d482ab750145c1d6916086cde560190be87df4b0e0327"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-online-018.json",
+          "sha256": "a0625e69b75cd566a4ca576f6f083f399a51270c8bee8eab601b6b9089681d83"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-online-018.json",
+          "sha256": "ff1524b6219d786c11c177acd352d925f8a2e2de79dfbaefd71b96a125c438ce"
+        }
+      }
+    },
+    {
+      "id": "online-supplement-001",
+      "keys": 16,
+      "target_sha256": "a65c52f427daa6bbad668b438ebc31503869b56f47d0240356255a7d3937978c",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/online-supplement-001.json",
+          "sha256": "ceb8def4cb4719f2101c536ee23441df0c58175b89b213fa23cfee9399dc63b3"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/online-supplement-001.json",
+          "sha256": "1543350d5176dafb56cfd144f4fd26c52bb6446bbaee82431fa3a293ebee7666"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/online-supplement-001.json",
+          "sha256": "e645b811225fa87e88854896c7437ea3e885e22639e03d9fcb4fafd3d53561a9"
+        }
+      }
+    },
+    {
+      "id": "native-master-stats-001",
+      "keys": 14,
+      "target_sha256": "0c179eabe93a8093eb333fad4731d632711133f887b1b1fbd19c9a6950956f3c",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-master-stats-001.json",
+          "sha256": "2b0b3a7f14ce2e3f0ade4928a43c34a4f3790dc4bf653d8aef08f9248280c682"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-master-stats-001.json",
+          "sha256": "187a3f5e22c76229d74db341e3f1f2c0a83dffdd1030e1f9c53579b8771ef06e"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-master-stats-001.json",
+          "sha256": "e3d92379ccb9343390466d87a6ed5520ab4f7cc7c36493c1a4592d8569f916ce"
+        }
+      }
+    },
+    {
+      "id": "native-script-wrappers-001",
+      "keys": 6,
+      "target_sha256": "3e8f6948cdfc7635f28e2e1cf034bf640d1580cdd46379b720ec788ed3f3fbcc",
+      "role_evidence": {
+        "final-meaning": {
+          "path": "reviews/final-meaning/native-script-wrappers-001.json",
+          "sha256": "3acd0f731c0b755af4a647c33e660fabc30a87929a969bc53c59ec2b0e9754e0"
+        },
+        "final-editor": {
+          "path": "reviews/final-editor/native-script-wrappers-001.json",
+          "sha256": "0b287d487b96cdc227b3c047e0a1ce0b4dd5cadde8eaf18f25bb175cb273449e"
+        },
+        "final-adversarial": {
+          "path": "reviews/final-adversarial/native-script-wrappers-001.json",
+          "sha256": "048b56768276ef0fb12ea553d09a2edd853b9e09da79b17ce16289763f90562b"
+        }
+      }
+    }
+  ],
+  "aggregate_sha256": "b307162009fcaee2da4b4e94e3224940060572be6a42e3ad447c7cde93a213e2",
+  "pending_gates": [
+    "language_brief",
+    "source_based_pilot",
+    "structural",
+    "desktop_rendering",
+    "phone_rendering",
+    "browser_startup",
+    "native_platforms",
+    "browser_platforms",
+    "mobile_platforms"
+  ],
+  "gate_passes_created": false
+}

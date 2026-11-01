@@ -1,0 +1,79 @@
+{
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "catalog_sha256": {
+    "native": "b1c6e611d1fa9e0c7697508e3442360368df5d8a66abe55e79d9f34dfb2f0f1b",
+    "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
+  },
+  "qualification_revision": "667b2624f356a8c3f0d005535f54ffb0e46b6619",
+  "certification": "Agent-reviewed; not native-human-certified.",
+  "scope": "Retain actual StandardThai terminology/orthography brief and primary references; current6245 carry and fresh20 reviewed terms (computer compilation, AI probability model, stats history/measurements) have exact final independent approvals. No unresolved linguistic uncertainty.",
+  "original_brief": {
+    "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/language-brief.json",
+    "sha256": "c12e04b61d2e39e58e157867944d0056318c7feee42b3d4ba864b052aa54da3d"
+  },
+  "original_full_brief_reference": {
+    "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/reviews/th.json",
+    "sha256": "333280b267a3641b216c0cefc5269af743865f6b531695b4b78ad41a544aa533"
+  },
+  "current_owner_proofs": [
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-release/reviews/meaning-carry-owner-approval.json",
+      "sha256": "ac5f349d64670dce491da0149a1259d53064aa12c8e4ba7fafe8db90eaedcdc8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-release/reviews/editor-carry-owner-approval.json",
+      "sha256": "1a6ec8482fe5d7fc48ebe274db816b1fad7263f2fcf36238c64f0f1b910adab0"
+    }
+  ],
+  "new_twenty_evidence": [
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/native-twenty-sources.json",
+      "sha256": "b0a428ef4c4f0602f64ff966a4ce53b4eee284ca85c5a1ceb9a72cf02b0a2d52"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/native-twenty-google.json",
+      "sha256": "fb4471b1d62b4c3a1c1be04f64b9819206675529edc6c867c415e4a3aa58cf5f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/native-twenty-reconciled-r1.json",
+      "sha256": "d0e62b722898114e425a966ecb8c28947178fde98af50d6da594800c77d4f2a2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/native-twenty-meaning-r1.json",
+      "sha256": "ee90a781518f76d634ff25d02bf776ccd02d4e2956029bdbedb3ab12b04d80f3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/supplement-editor-initial-private.json",
+      "sha256": "f89721bfae92311ebd1889f4be66434f8ab42c294196ef3a77e3c725ea014111"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/native-twenty-adversarial-r1.json",
+      "sha256": "68657abf8b8bf5cde63a4581d89ce23d001a9096a48eebab04274dc52b923a97"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/reviews/native-twenty-meaning-final-r1.json",
+      "sha256": "d52b3fdaf09594392c0c4d5daa619f037dc2bd81eaa519695bb8154a58986fb2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-release/reviews/meaning-carry-owner-approval.json",
+      "sha256": "ac5f349d64670dce491da0149a1259d53064aa12c8e4ba7fafe8db90eaedcdc8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-release/reviews/editor-carry-owner-approval.json",
+      "sha256": "1a6ec8482fe5d7fc48ebe274db816b1fad7263f2fcf36238c64f0f1b910adab0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-release/reviews/provenance/native-twenty-adversarial-successor-binding.json",
+      "sha256": "23d21193e4c007930eade642ff562f1043d9ea307fa6be9d9171316ca68a2c5c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/google/th/ledger.json",
+      "sha256": "0569aa3866f80f658cbb743d6fcccfc819367332d2ae7331092c2e1692bf66c2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/google/th/requests/8685a856a4d6b918c854b28074b01aef5a9b0885e6f633b068bed11a39be5a40.json",
+      "sha256": "e6b574d44fe7478bcc5729e481c683b78c8e5a0e637ae7c916b53d2288f4b382"
+    }
+  ],
+  "unresolved_uncertainty": []
+}

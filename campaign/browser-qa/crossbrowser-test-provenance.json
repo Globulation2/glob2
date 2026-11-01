@@ -1,0 +1,31 @@
+{
+  "scope": "Existing online i18n.spec.ts +thai.spec.ts across Firefox/WebKit desktop/phone. Full37language homepage regression perproject, switching/input preservation and Thai auto-selection/font/persistence. Fixture seeded local server; no provider generation or payments. Phone contexts are emulated, not physical OS coverage.",
+  "tested_online_product_source": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+  "run_start_source": "cffca88dcad7d3787b1208ac2f16aee67228d099",
+  "completion_revision": "18bd216762d2d1a8bc09f76827e9820e9e987a61",
+  "counts": {
+    "firefox-desktop": 39,
+    "firefox-phone": 39,
+    "webkit-desktop": 39,
+    "webkit-phone": 39
+  },
+  "statuses": {
+    "expected": 156
+  },
+  "stats": {
+    "startTime": "2026-11-01T02:47:17.768Z",
+    "duration": 2709674.031,
+    "expected": 156,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "raw_thai_catalog_sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
+  "json_report_sha256": "ce6a142afeb661a5ec417688237e499d11b21d8229178f83e07214670e0a9392",
+  "config_sha256": "c17a1dfb509a9d56b71448c845a141fa956539669d1e1f2a35a98c59c5137034",
+  "test_source_sha256": {
+    "platform/apps/web/e2e/i18n.spec.ts": "7074013f69ef46dbf31ce90b98367434ca5acd7cad6df9c7388df2238f95084f",
+    "platform/apps/web/e2e/thai.spec.ts": "e0efd466f01727f2bcfa445fc8e77a7473a563159fb6cd07dce80ad25280fc4a"
+  },
+  "result": "PASS156/156; no failed, skipped or flaky cases"
+}

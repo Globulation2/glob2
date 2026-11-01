@@ -1,0 +1,29 @@
+{
+  "id": "online-supplement-001",
+  "predecessor_source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "target_sha256": "a65c52f427daa6bbad668b438ebc31503869b56f47d0240356255a7d3937978c",
+  "carried_keys": [
+    "online:Saving your project…",
+    "online:Generation is unavailable.",
+    "online:Wait for the current request to finish.",
+    "online:Generation is unavailable. Saved projects remain accessible.",
+    "online:Generation is unavailable. Saved music remains accessible.",
+    "online:An available Map credit is needed to chat or build.",
+    "online:An available Music credit is needed to chat or build.",
+    "online:New soundtrack",
+    "online:Finish active work or resolve the revision conflict first.",
+    "online:Choose a valid request cap.",
+    "online: · comparing",
+    "online:The last build did not complete.",
+    "online:Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+    "online:Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+    "online:Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery.",
+    "online:Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery."
+  ],
+  "fresh_reviewed_keys": [],
+  "predecessor_batch_sha256": "296a80b20fdf133c760c4a5390e5886c62bbbefef4cadae348da2dc57ccfd8f8",
+  "predecessor_aggregate_review_sha256": "333280b267a3641b216c0cefc5269af743865f6b531695b4b78ad41a544aa533",
+  "state": "exact equality proven; owner carry acceptance pending",
+  "approval_created": false
+}

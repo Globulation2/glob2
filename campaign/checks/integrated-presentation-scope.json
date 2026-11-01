@@ -1,0 +1,6 @@
+{
+  "head": "024c6bf92cf471d2623a5984de232c645379712f",
+  "base": "e9275c2ae198c9a431f9cba3313ef1209ab06109",
+  "simulation_files_changed": [],
+  "scope": "Thai changes remain localization and presentation; master simulation, version, telemetry and terrain changes integrated unchanged. No new runtime dependency or Thai simulation revision."
+}

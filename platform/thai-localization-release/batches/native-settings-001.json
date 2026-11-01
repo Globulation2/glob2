@@ -1,0 +1,969 @@
+{
+  "id": "native-settings-001",
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "surface": "native",
+  "domain": "settings",
+  "context": "Labels and help describe settings. Prefer short labels and explain their effect plainly.",
+  "entries": [
+    {
+      "id": "native:[settings Finish in your browser. The game continues by itself.]",
+      "key": "[settings Finish in your browser. The game continues by itself.]",
+      "source": "Finish in your browser. The game continues by itself.",
+      "target": "ดำเนินการ​ให้​เสร็จ​ใน​เบราว์เซอร์ เกม​จะ​ดำเนินการ​ต่อ​โดยอัตโนมัติ"
+    },
+    {
+      "id": "native:[music set]",
+      "key": "[music set]",
+      "source": "Music set",
+      "target": "ชุด​เพลง"
+    },
+    {
+      "id": "native:[random music set]",
+      "key": "[random music set]",
+      "source": "Random each match",
+      "target": "สุ่ม​ทุก​แมตช์"
+    },
+    {
+      "id": "native:[playing music set %0]",
+      "key": "[playing music set %0]",
+      "source": "Playing: %0",
+      "target": "กำลัง​เล่น: %0"
+    },
+    {
+      "id": "native:[music set failed]",
+      "key": "[music set failed]",
+      "source": "Could not load this music set.",
+      "target": "ไม่​สามารถ​โหลด​ชุด​เพลง​นี้​ได้"
+    },
+    {
+      "id": "native:[settings Edge scrolling]",
+      "key": "[settings Edge scrolling]",
+      "source": "Edge scrolling",
+      "target": "เลื่อน​แผนที่​ที่​ขอบ​จอ"
+    },
+    {
+      "id": "native:[settings Edge scrolling in fullscreen]",
+      "key": "[settings Edge scrolling in fullscreen]",
+      "source": "Edge scrolling in fullscreen",
+      "target": "เลื่อนที่​ขอบ​จอ​เมื่อ​เต็ม​หน้าจอ"
+    },
+    {
+      "id": "native:[settings Edge scrolling in windowed mode]",
+      "key": "[settings Edge scrolling in windowed mode]",
+      "source": "Edge scrolling in windowed mode",
+      "target": "เลื่อนที่​ขอบ​จอ​ใน​โหมด​หน้าต่าง"
+    },
+    {
+      "id": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "key": "[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source": "Move the game and editor maps when the mouse reaches the window edge.",
+      "target": "เลื่อน​แผนที่​ใน​เกม​และ​ตัวแก้ไข​เมื่อ​เมาส์​ถึง​ขอบ​หน้าต่าง"
+    },
+    {
+      "id": "native:[add shortcut]",
+      "key": "[add shortcut]",
+      "source": "Add Shortcut",
+      "target": "เพิ่ม​ปุ่มลัด"
+    },
+    {
+      "id": "native:[editor shortcuts]",
+      "key": "[editor shortcuts]",
+      "source": "Editor Shortcuts",
+      "target": "ปุ่มลัด​สำหรับ​โปรแกรม​แก้ไข"
+    },
+    {
+      "id": "native:[flag settings explanation]",
+      "key": "[flag settings explanation]",
+      "source": "The default radius of the flag",
+      "target": "รัศมี​เริ่มต้น​ของ​ธง"
+    },
+    {
+      "id": "native:[game shortcuts]",
+      "key": "[game shortcuts]",
+      "source": "Game Shortcuts",
+      "target": "ปุ่มลัด​เกม"
+    },
+    {
+      "id": "native:[keyboard settings]",
+      "key": "[keyboard settings]",
+      "source": "Keyboard Settings",
+      "target": "การ​ตั้งค่า​แป้นพิมพ์"
+    },
+    {
+      "id": "native:[Music volume]",
+      "key": "[Music volume]",
+      "source": "Volume (music)",
+      "target": "ระดับเสียง (ดนตรี)"
+    },
+    {
+      "id": "native:[remove shortcut]",
+      "key": "[remove shortcut]",
+      "source": "Remove Shortcut",
+      "target": "ลบ​ปุ่มลัด"
+    },
+    {
+      "id": "native:[restore default shortcuts]",
+      "key": "[restore default shortcuts]",
+      "source": "Restore Default Keyboard Shortcuts",
+      "target": "คืน​ค่า​ปุ่มลัด​แป้นพิมพ์​ตาม​ค่า​เริ่มต้น"
+    },
+    {
+      "id": "native:[shortcut explanation enter]",
+      "key": "[shortcut explanation enter]",
+      "source": "Enter: send a chat message",
+      "target": "Enter: ส่ง​ข้อความ​แชท"
+    },
+    {
+      "id": "native:[shortcut explanation v]",
+      "key": "[shortcut explanation v]",
+      "source": "V: hold to speak",
+      "target": "V : กด​ค้าง​ไว้​เพื่อ​พูด"
+    },
+    {
+      "id": "native:[unit settings explanation]",
+      "key": "[unit settings explanation]",
+      "source": "The default number of units assigned",
+      "target": "จำนวน​ยูนิต​ที่​มอบหมาย​เริ่มต้น"
+    },
+    {
+      "id": "native:[Generation failed. Adjust settings or press Start to retry.]",
+      "key": "[Generation failed. Adjust settings or press Start to retry.]",
+      "source": "Generation failed. Adjust settings or press Start to retry.",
+      "target": "สร้าง​แผนที่​ไม่​สำเร็จ ปรับ​การ​ตั้งค่า​หรือ​กด​เริ่ม​เพื่อ​ลอง​ใหม่"
+    },
+    {
+      "id": "native:[Preview unavailable. Adjust settings or start to retry.]",
+      "key": "[Preview unavailable. Adjust settings or start to retry.]",
+      "source": "Preview unavailable. Adjust settings or start to retry.",
+      "target": "ไม่​มี​ตัวอย่าง ปรับ​การ​ตั้งค่า​หรือ​กด​เริ่ม​เพื่อ​ลอง​ใหม่"
+    },
+    {
+      "id": "native:[Generation failed. Adjust settings or try again.]",
+      "key": "[Generation failed. Adjust settings or try again.]",
+      "source": "Generation failed. Adjust settings or try again.",
+      "target": "สร้าง​แผนที่​ไม่​สำเร็จ ปรับ​การ​ตั้งค่า​หรือ​ลอง​ใหม่"
+    },
+    {
+      "id": "native:[Map settings changed. Generate a new preview or start.]",
+      "key": "[Map settings changed. Generate a new preview or start.]",
+      "source": "Map settings changed. Generate a new preview or start.",
+      "target": "การ​ตั้งค่า​แผนที่​เปลี่ยน​แล้ว สร้าง​ตัวอย่าง​ใหม่​หรือ​กด​เริ่ม"
+    },
+    {
+      "id": "native:[settings Add key to sequence]",
+      "key": "[settings Add key to sequence]",
+      "source": "Add key to sequence",
+      "target": "เพิ่ม​ปุ่ม​ใน​ลำดับ"
+    },
+    {
+      "id": "native:[settings Add shortcut]",
+      "key": "[settings Add shortcut]",
+      "source": "Add shortcut",
+      "target": "เพิ่ม​ปุ่มลัด"
+    },
+    {
+      "id": "native:[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "source": "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",
+      "target": "ปรับ​จำนวน​ยูนิต​ที่​มอบหมาย​ด้วย​ล้อ​เมาส์ เมื่อ​ปิด​ตัวเลือก​นี้​ให้​กด Ctrl ค้าง​ไว้ ส่วน Shift ใช้​ปรับ​รัศมี​ธง และ​ตัวเลือก​นี้​ยัง​ควบคุม​ล้อ​เมาส์​ใน​เมนู​อื่น​ด้วย"
+    },
+    {
+      "id": "native:[settings Adjust music and voice volume.]",
+      "key": "[settings Adjust music and voice volume.]",
+      "source": "Adjust music and voice volume.",
+      "target": "ปรับระดับ​เสียงเพลง​และ​เสียงพูด"
+    },
+    {
+      "id": "native:[settings Adjust the pace of play.]",
+      "key": "[settings Adjust the pace of play.]",
+      "source": "Adjust the pace of play.",
+      "target": "ปรับ​จังหวะ​การ​เล่น​ให้​เหมาะสม"
+    },
+    {
+      "id": "native:[settings Advanced binding]",
+      "key": "[settings Advanced binding]",
+      "source": "Advanced binding",
+      "target": "กำหนด​ปุ่ม​ขั้นสูง"
+    },
+    {
+      "id": "native:[settings Artwork & effects]",
+      "key": "[settings Artwork & effects]",
+      "source": "Artwork & effects",
+      "target": "งานศิลปะ​และ​เอฟเฟกต์"
+    },
+    {
+      "id": "native:[settings Audio]",
+      "key": "[settings Audio]",
+      "source": "Audio",
+      "target": "เสียง"
+    },
+    {
+      "id": "native:[settings Bind Escape]",
+      "key": "[settings Bind Escape]",
+      "source": "Bind Escape",
+      "target": "กำหนด Esc"
+    },
+    {
+      "id": "native:[settings Building]",
+      "key": "[settings Building]",
+      "source": "Building",
+      "target": "อาคาร"
+    },
+    {
+      "id": "native:[settings Building defaults]",
+      "key": "[settings Building defaults]",
+      "source": "Building defaults",
+      "target": "ค่า​เริ่มต้น​ของ​อาคาร"
+    },
+    {
+      "id": "native:[settings Cancel]",
+      "key": "[settings Cancel]",
+      "source": "Cancel",
+      "target": "ยกเลิก"
+    },
+    {
+      "id": "native:[settings Changes saved automatically]",
+      "key": "[settings Changes saved automatically]",
+      "source": "Changes saved automatically",
+      "target": "การเปลี่ยนแปลง​ถูก​บันทึก​โดยอัตโนมัติ"
+    },
+    {
+      "id": "native:[settings Changes you make during play update these defaults for future games.]",
+      "key": "[settings Changes you make during play update these defaults for future games.]",
+      "source": "Changes you make during play update these defaults for future games.",
+      "target": "การเปลี่ยนแปลง​ที่​คุณ​ทำ​ระหว่าง​การ​เล่น​จะ​อัปเดต​ค่า​เริ่มต้น​เหล่านี้​สำหรับ​การ​เล่น​เกม​ในอนาคต"
+    },
+    {
+      "id": "native:[settings Changing the renderer requires a restart.]",
+      "key": "[settings Changing the renderer requires a restart.]",
+      "source": "Changing the renderer requires a restart.",
+      "target": "เปลี่ยน​ตัวเรนเดอร์​แล้ว​ต้อง​ปิด​และ​เปิด​เกม​ใหม่"
+    },
+    {
+      "id": "native:[settings Choose a binding to change it, or add another shortcut for an action.]",
+      "key": "[settings Choose a binding to change it, or add another shortcut for an action.]",
+      "source": "Choose a binding to change it, or add another shortcut for an action.",
+      "target": "เลือก​ปุ่มลัด​เพื่อ​เปลี่ยน หรือ​เพิ่ม​ปุ่มลัด​อื่น​สำหรับ​การกระทำ​นั้น"
+    },
+    {
+      "id": "native:[settings Choose a window or fill the screen.]",
+      "key": "[settings Choose a window or fill the screen.]",
+      "source": "Choose a window or fill the screen.",
+      "target": "เลือก​หน้าต่าง​หรือ​แสดงผล​เต็ม​หน้าจอ"
+    },
+    {
+      "id": "native:[settings Choose how the game looks on your screen.]",
+      "key": "[settings Choose how the game looks on your screen.]",
+      "source": "Choose how the game looks on your screen.",
+      "target": "เลือก​วิธีการ​แสดงผล​เกม​บน​หน้าจอ​ของ​คุณ"
+    },
+    {
+      "id": "native:[settings Completed]",
+      "key": "[settings Completed]",
+      "source": "Completed",
+      "target": "สร้าง​เสร็จ"
+    },
+    {
+      "id": "native:[settings Construction]",
+      "key": "[settings Construction]",
+      "source": "Construction",
+      "target": "การ​ก่อสร้าง"
+    },
+    {
+      "id": "native:[settings Controls]",
+      "key": "[settings Controls]",
+      "source": "Controls",
+      "target": "การควบคุม"
+    },
+    {
+      "id": "native:[settings Could not change display mode. The previous mode was restored.]",
+      "key": "[settings Could not change display mode. The previous mode was restored.]",
+      "source": "Could not change display mode. The previous mode was restored.",
+      "target": "ไม่​สามารถ​เปลี่ยน​โหมด​การแสดงผล​ได้ ระบบ​ได้คืน​ค่า​โหมด​ก่อนหน้า​แล้ว"
+    },
+    {
+      "id": "native:[settings Could not save]",
+      "key": "[settings Could not save]",
+      "source": "Could not save",
+      "target": "ไม่​สามารถ​บันทึก​ได้"
+    },
+    {
+      "id": "native:[settings Current display]",
+      "key": "[settings Current display]",
+      "source": "Current display",
+      "target": "จอแสดงผล​ปัจจุบัน"
+    },
+    {
+      "id": "native:[settings Default]",
+      "key": "[settings Default]",
+      "source": "Default",
+      "target": "ค่า​เริ่มต้น"
+    },
+    {
+      "id": "native:[settings Display]",
+      "key": "[settings Display]",
+      "source": "Display",
+      "target": "การ​แสดงผล"
+    },
+    {
+      "id": "native:[settings Display & graphics]",
+      "key": "[settings Display & graphics]",
+      "source": "Display & graphics",
+      "target": "การ​แสดงผล​และ​กราฟิก"
+    },
+    {
+      "id": "native:[settings Display the Globulation 2 cursor.]",
+      "key": "[settings Display the Globulation 2 cursor.]",
+      "source": "Display the Globulation 2 cursor.",
+      "target": "แสดง​เคอร์เซอร์​สำหรับ Globulation 2"
+    },
+    {
+      "id": "native:[settings Done]",
+      "key": "[settings Done]",
+      "source": "Done",
+      "target": "เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[settings Edit shortcut]",
+      "key": "[settings Edit shortcut]",
+      "source": "Edit shortcut",
+      "target": "แก้ไข​ปุ่มลัด"
+    },
+    {
+      "id": "native:[settings Multiply the operating system display scale for menus, text and the sidebar.]",
+      "key": "[settings Multiply the operating system display scale for menus, text and the sidebar.]",
+      "source": "Multiply the operating system display scale for menus, text and the sidebar.",
+      "target": "คูณ​ขนาด​การ​แสดงผล​ของ​ระบบปฏิบัติการ​สำหรับ​เมนู ข้อความ และ​แถบ​ด้าน​ข้าง"
+    },
+    {
+      "id": "native:[settings Flags]",
+      "key": "[settings Flags]",
+      "source": "Flags",
+      "target": "ธง"
+    },
+    {
+      "id": "native:[settings Full]",
+      "key": "[settings Full]",
+      "source": "Full",
+      "target": "เต็ม"
+    },
+    {
+      "id": "native:[settings Fullscreen]",
+      "key": "[settings Fullscreen]",
+      "source": "Fullscreen",
+      "target": "เต็ม​หน้าจอ"
+    },
+    {
+      "id": "native:[settings Game]",
+      "key": "[settings Game]",
+      "source": "Game",
+      "target": "เกม"
+    },
+    {
+      "id": "native:[settings Game speed]",
+      "key": "[settings Game speed]",
+      "source": "Game speed",
+      "target": "ความเร็ว​ของ​เกม"
+    },
+    {
+      "id": "native:[settings Gameplay]",
+      "key": "[settings Gameplay]",
+      "source": "Gameplay",
+      "target": "เกมเพลย์"
+    },
+    {
+      "id": "native:[settings Graphics detail]",
+      "key": "[settings Graphics detail]",
+      "source": "Graphics detail",
+      "target": "รายละเอียด​กราฟิก"
+    },
+    {
+      "id": "native:[settings Interface scale]",
+      "key": "[settings Interface scale]",
+      "source": "Interface scale",
+      "target": "ขนาด​ส่วน​ติดต่อ"
+    },
+    {
+      "id": "native:[settings Keep]",
+      "key": "[settings Keep]",
+      "source": "Keep",
+      "target": "ใช้​ต่อ"
+    },
+    {
+      "id": "native:[settings Keep this display mode?]",
+      "key": "[settings Keep this display mode?]",
+      "source": "Keep this display mode?",
+      "target": "ต้องการ​คง​โหมด​การ​แสดงผล​นี้​ไว้​หรือไม่?"
+    },
+    {
+      "id": "native:[settings Keep your volume levels while silencing audio.]",
+      "key": "[settings Keep your volume levels while silencing audio.]",
+      "source": "Keep your volume levels while silencing audio.",
+      "target": "รักษา​ระดับเสียง​ของ​คุณ​ไว้​ในขณะที่​ปิด​เสียง"
+    },
+    {
+      "id": "native:[settings Key]",
+      "key": "[settings Key]",
+      "source": "Key",
+      "target": "ปุ่ม"
+    },
+    {
+      "id": "native:[settings Keyboard shortcuts]",
+      "key": "[settings Keyboard shortcuts]",
+      "source": "Keyboard shortcuts",
+      "target": "ปุ่มลัด​แป้นพิมพ์"
+    },
+    {
+      "id": "native:[settings Keys form a sequence in order. Each key can trigger on press or release.]",
+      "key": "[settings Keys form a sequence in order. Each key can trigger on press or release.]",
+      "source": "Keys form a sequence in order. Each key can trigger on press or release.",
+      "target": "ปุ่ม​ต่างๆ เรียงลำดับ​กัน แต่ละ​ปุ่ม​สามารถ​ทำงาน​ได้​เมื่อ​กด​หรือ​ปล่อย"
+    },
+    {
+      "id": "native:[settings Language]",
+      "key": "[settings Language]",
+      "source": "Language",
+      "target": "ภาษา"
+    },
+    {
+      "id": "native:[settings Language & player]",
+      "key": "[settings Language & player]",
+      "source": "Language & player",
+      "target": "ภาษา​และ​ผู้เล่น"
+    },
+    {
+      "id": "native:[settings Language used throughout the interface.]",
+      "key": "[settings Language used throughout the interface.]",
+      "source": "Language used throughout the interface.",
+      "target": "ภาษา​ที่​ใช้​ตลอดทั้ง​อินเทอร์เฟซ"
+    },
+    {
+      "id": "native:[settings Level]",
+      "key": "[settings Level]",
+      "source": "Level",
+      "target": "ระดับ"
+    },
+    {
+      "id": "native:[settings Map editor]",
+      "key": "[settings Map editor]",
+      "source": "Map editor",
+      "target": "โปรแกรม​แก้ไข​แผนที่"
+    },
+    {
+      "id": "native:[settings Match the desktop]",
+      "key": "[settings Match the desktop]",
+      "source": "Match the desktop",
+      "target": "ตาม​เดสก์ท็อป"
+    },
+    {
+      "id": "native:[settings Missing font]",
+      "key": "[settings Missing font]",
+      "source": "Missing font",
+      "target": "ไม่​พบ​แบบอักษร"
+    },
+    {
+      "id": "native:[settings Music volume]",
+      "key": "[settings Music volume]",
+      "source": "Music volume",
+      "target": "ระดับ​เสียงเพลง"
+    },
+    {
+      "id": "native:[settings Mute audio]",
+      "key": "[settings Mute audio]",
+      "source": "Mute audio",
+      "target": "ปิด​เสียง"
+    },
+    {
+      "id": "native:[settings Name shown to other players.]",
+      "key": "[settings Name shown to other players.]",
+      "source": "Name shown to other players.",
+      "target": "ชื่อ​จะ​ปรากฏ​ให้​ผู้เล่น​คนอื่น​เห็น"
+    },
+    {
+      "id": "native:[settings Off]",
+      "key": "[settings Off]",
+      "source": "Off",
+      "target": "ปิด"
+    },
+    {
+      "id": "native:[settings On]",
+      "key": "[settings On]",
+      "source": "On",
+      "target": "เปิด"
+    },
+    {
+      "id": "native:[settings OpenGL is not available in this build.]",
+      "key": "[settings OpenGL is not available in this build.]",
+      "source": "OpenGL is not available in this build.",
+      "target": "OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร์ชัน​นี้"
+    },
+    {
+      "id": "native:[settings Player name]",
+      "key": "[settings Player name]",
+      "source": "Player name",
+      "target": "ชื่อ​ผู้เล่น"
+    },
+    {
+      "id": "native:[settings Press]",
+      "key": "[settings Press]",
+      "source": "Press",
+      "target": "กด"
+    },
+    {
+      "id": "native:[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+      "key": "[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+      "source": "Press a key. Escape cancels capture. Use Bind Escape to assign Escape.",
+      "target": "กด​ปุ่ม​ที่​ต้องการ ส่วน Esc ใช้​ยกเลิก หาก​ต้องการ​ตั้ง Esc เป็น​ปุ่มลัด ให้​เลือก​กำหนด Esc"
+    },
+    {
+      "id": "native:[settings Radius]",
+      "key": "[settings Radius]",
+      "source": "Radius",
+      "target": "รัศมี"
+    },
+    {
+      "id": "native:[settings Reduced]",
+      "key": "[settings Reduced]",
+      "source": "Reduced",
+      "target": "ลด​รายละเอียด"
+    },
+    {
+      "id": "native:[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]",
+      "key": "[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]",
+      "source": "Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.",
+      "target": "การ​ลด​รายละเอียด​จะ​ปิด​ใช้งาน​เมฆ​และ​เงา​ของ​เมฆ ลด​ความ​ซับซ้อน​ของ​เอฟเฟกต์​เวทมนตร์ และ​ลด​ความ​โปร่งใส"
+    },
+    {
+      "id": "native:[settings Release]",
+      "key": "[settings Release]",
+      "source": "Release",
+      "target": "ปล่อย"
+    },
+    {
+      "id": "native:[settings Remember assignments between games]",
+      "key": "[settings Remember assignments between games]",
+      "source": "Remember assignments between games",
+      "target": "จำ​การมอบหมาย​ข้าม​เกม"
+    },
+    {
+      "id": "native:[settings Remove key]",
+      "key": "[settings Remove key]",
+      "source": "Remove key",
+      "target": "ลบ​ปุ่ม"
+    },
+    {
+      "id": "native:[settings Remove shortcut]",
+      "key": "[settings Remove shortcut]",
+      "source": "Remove shortcut",
+      "target": "ลบ​ปุ่มลัด"
+    },
+    {
+      "id": "native:[settings Renderer]",
+      "key": "[settings Renderer]",
+      "source": "Renderer",
+      "target": "ตัวเรนเดอร์"
+    },
+    {
+      "id": "native:[settings Replace conflicting bindings]",
+      "key": "[settings Replace conflicting bindings]",
+      "source": "Replace conflicting bindings",
+      "target": "แทนที่​การ​กำหนด​ปุ่ม​ที่​ซ้ำ​กัน"
+    },
+    {
+      "id": "native:[settings Replace shortcuts in this context with the defaults? This saves immediately.]",
+      "key": "[settings Replace shortcuts in this context with the defaults? This saves immediately.]",
+      "source": "Replace shortcuts in this context with the defaults? This saves immediately.",
+      "target": "ต้อง​การแทนที่​ปุ่มลัด​ใน​บริบท​นี้​ด้วย​ค่า​เริ่มต้น​หรือไม่? การ​ดำเนินการ​นี้​จะ​บันทึก​ทันที"
+    },
+    {
+      "id": "native:[settings Resolution]",
+      "key": "[settings Resolution]",
+      "source": "Resolution",
+      "target": "ความ​ละเอียด"
+    },
+    {
+      "id": "native:[settings Restore default shortcuts]",
+      "key": "[settings Restore default shortcuts]",
+      "source": "Restore default shortcuts",
+      "target": "คืน​ค่า​ปุ่มลัด​เริ่มต้น"
+    },
+    {
+      "id": "native:[settings Retry]",
+      "key": "[settings Retry]",
+      "source": "Retry",
+      "target": "ลอง​ใหม่​อีกครั้ง"
+    },
+    {
+      "id": "native:[settings Revert]",
+      "key": "[settings Revert]",
+      "source": "Revert",
+      "target": "คืน​ค่า"
+    },
+    {
+      "id": "native:[settings Reverting in]",
+      "key": "[settings Reverting in]",
+      "source": "Reverting in",
+      "target": "คืน​ค่า​ใน​อีก"
+    },
+    {
+      "id": "native:[settings Save shortcut]",
+      "key": "[settings Save shortcut]",
+      "source": "Save shortcut",
+      "target": "บันทึก​ปุ่มลัด"
+    },
+    {
+      "id": "native:[settings Saved — restart required]",
+      "key": "[settings Saved — restart required]",
+      "source": "Saved — restart required",
+      "target": "บันทึก​แล้ว — ต้อง​เปิด​เกม​ใหม่"
+    },
+    {
+      "id": "native:[settings Saving…]",
+      "key": "[settings Saving…]",
+      "source": "Saving…",
+      "target": "กำลัง​บันทึก…"
+    },
+    {
+      "id": "native:[settings Scroll wheel enabled]",
+      "key": "[settings Scroll wheel enabled]",
+      "source": "Scroll wheel enabled",
+      "target": "เปิด​ใช้งาน​ล้อเลื่อน"
+    },
+    {
+      "id": "native:[settings Set starting unit assignments by building type and level.]",
+      "key": "[settings Set starting unit assignments by building type and level.]",
+      "source": "Set starting unit assignments by building type and level.",
+      "target": "ตั้ง​จำนวน​ยูนิต​เริ่มต้น​ที่​มอบหมาย​ตาม​ชนิด​และ​ระดับ​อาคาร"
+    },
+    {
+      "id": "native:[settings Set your language and player name.]",
+      "key": "[settings Set your language and player name.]",
+      "source": "Set your language and player name.",
+      "target": "ตั้งค่า​ภาษา​และ​ชื่อ​ผู้เล่น​ของ​คุณ"
+    },
+    {
+      "id": "native:[settings Settings]",
+      "key": "[settings Settings]",
+      "source": "Settings",
+      "target": "การ​ตั้งค่า"
+    },
+    {
+      "id": "native:[settings Single-player and replays only. Multiplayer runs at 1x.]",
+      "key": "[settings Single-player and replays only. Multiplayer runs at 1x.]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x.",
+      "target": "ปรับ​ได้​เฉพาะ​เกม​ผู้เล่น​คนเดียว​และ​รีเพลย์ โหมด​หลาย​ผู้เล่น​ใช้​ความเร็ว 1x"
+    },
+    {
+      "id": "native:[settings Software]",
+      "key": "[settings Software]",
+      "source": "Software",
+      "target": "ซอฟต์แวร์"
+    },
+    {
+      "id": "native:[settings Starting unit counts and radius for newly placed flags.]",
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "source": "Starting unit counts and radius for newly placed flags.",
+      "target": "จำนวน​ยูนิต​และ​รัศมี​เริ่มต้น​ของ​ธง​ที่​วาง​ใหม่"
+    },
+    {
+      "id": "native:[settings This shortcut conflicts with existing bindings:]",
+      "key": "[settings This shortcut conflicts with existing bindings:]",
+      "source": "This shortcut conflicts with existing bindings:",
+      "target": "ปุ่มลัด​นี้​ขัดแย้ง​กับ​การ​ตั้ง​ค่าที่​มี​อยู่แล้ว :"
+    },
+    {
+      "id": "native:[settings Trigger]",
+      "key": "[settings Trigger]",
+      "source": "Trigger",
+      "target": "ทำงาน​เมื่อ"
+    },
+    {
+      "id": "native:[settings Unbound]",
+      "key": "[settings Unbound]",
+      "source": "Unbound",
+      "target": "ยัง​ไม่​กำหนด"
+    },
+    {
+      "id": "native:[settings Unit counts assigned to new construction sites.]",
+      "key": "[settings Unit counts assigned to new construction sites.]",
+      "source": "Unit counts assigned to new construction sites.",
+      "target": "จำนวน​ยูนิต​ที่​มอบหมาย​ให้​พื้นที่​ก่อสร้าง​ใหม่"
+    },
+    {
+      "id": "native:[settings Unit counts for completed buildings.]",
+      "key": "[settings Unit counts for completed buildings.]",
+      "source": "Unit counts for completed buildings.",
+      "target": "จำนวน​ยูนิต​ที่​มอบหมาย​ให้​อาคาร​ที่​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[settings Unit counts while a building is being upgraded.]",
+      "key": "[settings Unit counts while a building is being upgraded.]",
+      "source": "Unit counts while a building is being upgraded.",
+      "target": "จำนวน​ยูนิต​ที่​มอบหมาย​ระหว่าง​อัปเกรด​อาคาร"
+    },
+    {
+      "id": "native:[settings Units]",
+      "key": "[settings Units]",
+      "source": "Units",
+      "target": "ยูนิต"
+    },
+    {
+      "id": "native:[settings Upgrades]",
+      "key": "[settings Upgrades]",
+      "source": "Upgrades",
+      "target": "การ​อัปเกรด"
+    },
+    {
+      "id": "native:[settings Use game cursor]",
+      "key": "[settings Use game cursor]",
+      "source": "Use game cursor",
+      "target": "ใช้​เคอร์เซอร์​เกม"
+    },
+    {
+      "id": "native:[settings Voice volume]",
+      "key": "[settings Voice volume]",
+      "source": "Voice volume",
+      "target": "ระดับ​เสียงพูด"
+    },
+    {
+      "id": "native:[settings Window mode]",
+      "key": "[settings Window mode]",
+      "source": "Window mode",
+      "target": "โหมด​หน้าต่าง"
+    },
+    {
+      "id": "native:[settings Window-only sizes also switch the game to windowed mode.]",
+      "key": "[settings Window-only sizes also switch the game to windowed mode.]",
+      "source": "Window-only sizes also switch the game to windowed mode.",
+      "target": "ขนาดที่​ใช้ได้​เฉพาะ​โหมด​หน้าต่าง​จะ​เปลี่ยน​เกม​เป็น​โหมด​หน้าต่าง​ด้วย"
+    },
+    {
+      "id": "native:[settings Windowed]",
+      "key": "[settings Windowed]",
+      "source": "Windowed",
+      "target": "หน้าต่าง"
+    },
+    {
+      "id": "native:[settings Windowed only]",
+      "key": "[settings Windowed only]",
+      "source": "Windowed only",
+      "target": "เฉพาะ​หน้าต่าง​เท่านั้น"
+    },
+    {
+      "id": "native:[settings seconds]",
+      "key": "[settings seconds]",
+      "source": "seconds",
+      "target": "วินาที"
+    },
+    {
+      "id": "native:[settings Flag]",
+      "key": "[settings Flag]",
+      "source": "Flag",
+      "target": "ธง"
+    },
+    {
+      "id": "native:[settings High-resolution artwork]",
+      "key": "[settings High-resolution artwork]",
+      "source": "High-resolution artwork",
+      "target": "งานศิลปะ​ความ​ละเอียด​สูง"
+    },
+    {
+      "id": "native:[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "key": "[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "source": "Apply artwork on the next game or editor load (OpenGL).",
+      "target": "ใช้​ภาพประกอบ​ใน​การ​โหลด​เกม​หรือ​โปรแกรม​แก้ไข​ครั้ง​ถัดไป (OpenGL)"
+    },
+    {
+      "id": "native:[settings Automatic torus view]",
+      "key": "[settings Automatic torus view]",
+      "source": "Automatic torus view",
+      "target": "มุมมอง​ทอรัส​อัตโนมัติ"
+    },
+    {
+      "id": "native:[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "key": "[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "source": "Automatically show the torus overview while moving around the map (OpenGL).",
+      "target": "แสดง​ภาพรวม​ทอรัส​อัตโนมัติ​ขณะ​เลื่อน​แผนที่ (OpenGL)"
+    },
+    {
+      "id": "native:[settings Autosave]",
+      "key": "[settings Autosave]",
+      "source": "Autosave",
+      "target": "บันทึก​อัตโนมัติ"
+    },
+    {
+      "id": "native:[settings Save the game automatically about every 10 seconds.]",
+      "key": "[settings Save the game automatically about every 10 seconds.]",
+      "source": "Save the game automatically about every 10 seconds.",
+      "target": "เกม​จะ​บันทึก​อัตโนมัติ​ทุกๆ ประมาณ 10 วินาที"
+    },
+    {
+      "id": "native:[Optional major shortcuts]",
+      "key": "[Optional major shortcuts]",
+      "source": "Optional major shortcuts",
+      "target": "ทางลัด​หลัก​เสริม"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "key": "[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful dry woodland shortcut on this seed.",
+      "target": "ค่า​สุ่ม​นี้​สร้าง​ทางลัด​บน​บก​ผ่าน​ป่า​ที่​ใช้งาน​ได้​ใน​ทะเลสาบ​พอร์เทจ​ไม่​ได้"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "key": "[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful swimming shortcut on this seed.",
+      "target": "ค่า​สุ่ม​นี้​สร้าง​ทางลัด​ว่ายน้ำ​ที่​ใช้งาน​ได้​ใน​ทะเลสาบ​พอร์เทจ​ไม่​ได้"
+    },
+    {
+      "id": "native:[settings continue]",
+      "key": "[settings continue]",
+      "source": "Continue",
+      "target": "ดำเนินการ​ต่อ"
+    },
+    {
+      "id": "native:[settings save failed]",
+      "key": "[settings save failed]",
+      "source": "Settings save not confirmed. Retry, or continue.",
+      "target": "การ​บันทึก​การ​ตั้งค่า​ไม่​ได้รับ​การ​ยืนยัน โปรด​ลอง​ใหม่​อีกครั้ง หรือ​ดำเนินการ​ต่อ"
+    },
+    {
+      "id": "native:[Hide keyboard]",
+      "key": "[Hide keyboard]",
+      "source": "Hide keyboard",
+      "target": "ซ่อน​แป้นพิมพ์"
+    },
+    {
+      "id": "native:[settings Interface layout]",
+      "key": "[settings Interface layout]",
+      "source": "Interface layout",
+      "target": "เค้าโครง​อินเทอร์เฟซ"
+    },
+    {
+      "id": "native:[settings Automatic]",
+      "key": "[settings Automatic]",
+      "source": "Automatic",
+      "target": "อัตโนมัติ"
+    },
+    {
+      "id": "native:[settings Compact]",
+      "key": "[settings Compact]",
+      "source": "Compact",
+      "target": "กะทัดรัด"
+    },
+    {
+      "id": "native:[settings Spacious]",
+      "key": "[settings Spacious]",
+      "source": "Spacious",
+      "target": "กว้างขวาง"
+    },
+    {
+      "id": "native:[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]",
+      "key": "[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]",
+      "source": "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
+      "target": "แบบ​กว้าง​ใช้​แผง​ด้าน​ข้าง​เมื่อ​มี​ที่​พอ แบบ​กะทัดรัด​ใช้​แถบ​เครื่องมือ​และ​แผง​เลื่อน"
+    },
+    {
+      "id": "native:[settings Menu theme]",
+      "key": "[settings Menu theme]",
+      "source": "Menu theme",
+      "target": "ธีม​เมนู"
+    },
+    {
+      "id": "native:[settings Colours and backdrop of menus, lobbies and results.]",
+      "key": "[settings Colours and backdrop of menus, lobbies and results.]",
+      "source": "Colours and backdrop of menus, lobbies and results.",
+      "target": "สีสัน​และ​พื้น​หลัง​ของ​เมนู ล็อบบี้ และ​ผลลัพธ์"
+    },
+    {
+      "id": "native:[settings In-game theme]",
+      "key": "[settings In-game theme]",
+      "source": "In-game theme",
+      "target": "ธีม​ใน​เกม"
+    },
+    {
+      "id": "native:[settings Colours of dialogs and the touch interface during a game and in the editor.]",
+      "key": "[settings Colours of dialogs and the touch interface during a game and in the editor.]",
+      "source": "Colours of dialogs and the touch interface during a game and in the editor.",
+      "target": "สี​กล่อง​โต้ตอบ​และ​ส่วน​ติดต่อ​แบบ​สัมผัส​ระหว่าง​เล่น​เกม​และ​ใน​ตัวแก้ไข"
+    },
+    {
+      "id": "native:[theme light]",
+      "key": "[theme light]",
+      "source": "Light",
+      "target": "สว่าง"
+    },
+    {
+      "id": "native:[theme dark]",
+      "key": "[theme dark]",
+      "source": "Dark",
+      "target": "มืด"
+    },
+    {
+      "id": "native:[theme classic]",
+      "key": "[theme classic]",
+      "source": "Classic",
+      "target": "คลาสสิก"
+    },
+    {
+      "id": "native:[theme ocean]",
+      "key": "[theme ocean]",
+      "source": "Ocean",
+      "target": "มหาสมุทร"
+    },
+    {
+      "id": "native:[theme dune]",
+      "key": "[theme dune]",
+      "source": "Dune",
+      "target": "เนินทราย"
+    },
+    {
+      "id": "native:[theme high-contrast]",
+      "key": "[theme high-contrast]",
+      "source": "High contrast",
+      "target": "คอนทราสต์​สูง"
+    },
+    {
+      "id": "native:[settings One-finger zoom]",
+      "key": "[settings One-finger zoom]",
+      "source": "One-finger zoom",
+      "target": "ซูม​ด้วย​นิ้ว​เดียว"
+    },
+    {
+      "id": "native:[settings Double-tap the map, hold, then drag to zoom.]",
+      "key": "[settings Double-tap the map, hold, then drag to zoom.]",
+      "source": "Double-tap the map, hold, then drag to zoom.",
+      "target": "แตะ​แผนที่​สอง​ครั้ง​ค้าง​ไว้ แล้ว​ลาก​เพื่อ​ซูม​เข้าออก"
+    },
+    {
+      "id": "native:[settings Platform default]",
+      "key": "[settings Platform default]",
+      "source": "Platform default",
+      "target": "ค่า​เริ่มต้น​ของ​แพลตฟอร์ม"
+    },
+    {
+      "id": "native:[settings Drag up zooms in]",
+      "key": "[settings Drag up zooms in]",
+      "source": "Drag up zooms in",
+      "target": "ลาก​ขึ้น​เพื่อ​ซูม​เข้า"
+    },
+    {
+      "id": "native:[settings Drag down zooms in]",
+      "key": "[settings Drag down zooms in]",
+      "source": "Drag down zooms in",
+      "target": "ลาก​ลง​เพื่อ​ซูม​เข้า"
+    },
+    {
+      "id": "native:[settings Thumb side]",
+      "key": "[settings Thumb side]",
+      "source": "Thumb side",
+      "target": "ด้าน​นิ้วโป้ง"
+    },
+    {
+      "id": "native:[settings Phone controls gather in this bottom corner.]",
+      "key": "[settings Phone controls gather in this bottom corner.]",
+      "source": "Phone controls gather in this bottom corner.",
+      "target": "ปุ่ม​ควบคุม​ต่างๆ ของ​โทรศัพท์​จะ​รวมกัน​อยู่​ที่​มุม​ด้านล่าง​นี้"
+    }
+  ]
+}

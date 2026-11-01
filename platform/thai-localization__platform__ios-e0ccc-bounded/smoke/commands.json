@@ -1,0 +1,141 @@
+[
+  {
+    "arguments": [
+      "list",
+      "devices",
+      "--json"
+    ],
+    "seconds": 2.984,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "launchctl",
+      "list"
+    ],
+    "seconds": 4.243,
+    "success": true
+  },
+  {
+    "arguments": [
+      "launch",
+      "--stdout=/Users/runner/work/glob2/glob2/build/mobile-smoke-ios-th/startup-stdout.txt",
+      "--stderr=/Users/runner/work/glob2/glob2/build/mobile-smoke-ios-th/startup-stderr.txt",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "org.globulation2.glob2"
+    ],
+    "seconds": 3.105,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 02:56:42",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 40965 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 4.848,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 02:56:42",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 40965 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 4.538,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 02:56:42",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 40965 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 24.682,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "log",
+      "show",
+      "--start",
+      "2026-11-01 02:56:42",
+      "--style",
+      "compact",
+      "--predicate",
+      "processIdentifier == 40965 AND eventMessage CONTAINS \"Glob2 screen ready:\""
+    ],
+    "seconds": 30.154,
+    "success": false
+  },
+  {
+    "arguments": [
+      "spawn",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "launchctl",
+      "list"
+    ],
+    "seconds": 12.991,
+    "success": true
+  },
+  {
+    "arguments": [
+      "spawn",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "log",
+      "show",
+      "--last",
+      "3m",
+      "--style",
+      "compact",
+      "--predicate",
+      "process == \"Glob2\" OR eventMessage CONTAINS \"org.globulation2.glob2\""
+    ],
+    "seconds": 16.163,
+    "success": true
+  },
+  {
+    "arguments": [
+      "io",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "screenshot",
+      "/Users/runner/work/glob2/glob2/build/mobile-smoke-ios-th/failure.png"
+    ],
+    "seconds": 3.392,
+    "success": false
+  },
+  {
+    "arguments": [
+      "terminate",
+      "00099545-2D45-4632-92DD-16A4FD12B507",
+      "org.globulation2.glob2"
+    ],
+    "seconds": 2.388,
+    "success": true
+  }
+]

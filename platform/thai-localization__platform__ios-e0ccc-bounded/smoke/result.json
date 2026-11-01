@@ -1,0 +1,6 @@
+{
+  "device": "00099545-2D45-4632-92DD-16A4FD12B507",
+  "checks": [],
+  "passed": false,
+  "error": "Command '['xcrun', 'simctl', '--set', '/Users/runner/work/glob2/glob2/build/mobile-tools/ios-localization-48e9fc5626754cb6bb5a68be4fc6b162', 'spawn', '00099545-2D45-4632-92DD-16A4FD12B507', 'log', 'show', '--start', '2026-11-01 02:56:42', '--style', 'compact', '--predicate', 'processIdentifier == 40965 AND eventMessage CONTAINS \"Glob2 screen ready:\"']' timed out after 30 seconds"
+}

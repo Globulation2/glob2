@@ -1,0 +1,15 @@
+{
+  "operation": "restore verified immutable historical report; preserve expanded report separately",
+  "historical_git_commit": "4d05a625b12deab093d78de44d5dc2fe7c5e2de1",
+  "historical_git_path": "campaign/reviews/display-scope-audit.json",
+  "manifest_path": "artifacts/thai-localization/evidence-snapshot-03ab-mobile-partial/manifest.json",
+  "manifest_sha256": "95bc2888f3db3a0358aa0ae529bdf92e04e4e886e0408729c31aedd0f6665085",
+  "verified_historical_sha256": "cd9a9974d2870ac812cfb2cec17d54616bbad4f8fabd4ee5c39bd7fd07f0a261",
+  "restored_path": "artifacts/thai-localization/reviews/display-scope-audit.json",
+  "expanded_audit_path": "artifacts/thai-localization/reviews/display-scope-audit-expanded-a6cca-2e70373bbc8b.json",
+  "expanded_audit_sha256": "2e70373bbc8b6e5862f720224d8008af4afac51ea6a0c5359698b013af2c605f",
+  "expanded_audit_bytes": 131227,
+  "historical_bytes": 129243,
+  "tracked_files_modified": false,
+  "note": "No silent replacement of history: current expanded audit bytes archived before restoring exact Git+snapshot+manifest-agreed historical bytes. New native-defaults and twenty-source supplements remain separate."
+}

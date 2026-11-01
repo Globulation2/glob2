@@ -1,0 +1,11 @@
+{
+  "editor": "cloud_adapter",
+  "source_kit_genesis_revision": "a6cca745c87e0bce4a0c55447712b4e9fdab79e4",
+  "qualification_revision": "667b2624f356a8c3f0d005535f54ffb0e46b6619",
+  "source_sha256": "39640ccfa4356f714b5bb411a4015bd213814f765dd99dd3000be011f6800ecc",
+  "scoped_owner_approval_path": "artifacts/thai-localization-release/reviews/editor-carry-owner-approval.json",
+  "scoped_owner_approval_sha256": "1a6ec8482fe5d7fc48ebe274db816b1fad7263f2fcf36238c64f0f1b910adab0",
+  "supplement_all_twenty_source_values_equal_freeze": true,
+  "source_files_current": true,
+  "note": "Qualification-only successor registers new-key pending blanks for other native locales. All five Thai source-contract files remain equal to reviewed sourcekit; original approval left immutable. No new platform gate approval."
+}
