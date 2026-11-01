@@ -54,7 +54,7 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     // These catalogs cover a specific written form. Unicode extensions and
     // private-use tags may contain script-like words without selecting a script.
     const writtenScript =
-      language === 'hi'
+      language === 'hi' || language === 'mr'
         ? 'deva'
         : language === 'bn'
           ? 'beng'
@@ -119,6 +119,7 @@ const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
   bn: () => import('../locales/bn.json', { with: { type: 'json' } }),
   ms: () => import('../locales/ms.json', { with: { type: 'json' } }),
   hi: () => import('../locales/hi.json', { with: { type: 'json' } }),
+  mr: () => import('../locales/mr.json', { with: { type: 'json' } }),
   ur: () => import('../locales/ur.json', { with: { type: 'json' } }),
   sw: () => import('../locales/sw.json', { with: { type: 'json' } }),
   ar: () => import('../locales/ar.json', { with: { type: 'json' } }),

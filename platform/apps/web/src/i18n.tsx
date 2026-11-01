@@ -44,22 +44,27 @@ export function LanguageSelector() {
   return (
     <div className="language-preference">
       <label>
-        {t('Language')}
-        <select
-          data-testid="language-selector"
-          aria-label={t('Language')}
-          value={locale}
-          onChange={(event) => {
-            setError(false);
-            void localization.setLocale(event.target.value).catch(() => setError(true));
-          }}
-        >
-          {localization.locales.map((item) => (
-            <option key={item.code} value={item.code} lang={item.code}>
-              {item.name}
-            </option>
-          ))}
-        </select>
+        <span className="language-preference-label">{t('Language')}</span>
+        <span className="language-preference-control">
+          <select
+            data-testid="language-selector"
+            aria-label={t('Language')}
+            value={locale}
+            onChange={(event) => {
+              setError(false);
+              void localization.setLocale(event.target.value).catch(() => setError(true));
+            }}
+          >
+            {localization.locales.map((item) => (
+              <option key={item.code} value={item.code} lang={item.code}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          <span className="language-preference-compact" aria-hidden="true">
+            {locale.split('-')[0]?.toUpperCase()}
+          </span>
+        </span>
       </label>
       {error && <p role="alert">{t('Could not load this language. Please try again.')}</p>}
     </div>

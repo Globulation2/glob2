@@ -175,6 +175,23 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+Audit platform startup text outside these two catalogs as well. Android shows
+`preparing_game` from `mobile/android/app/src/main/res/values/strings.xml` while
+staging assets, before the native catalog can load. Add the reviewed counterpart
+in the locale's Android resource directory (for example `values-mr/strings.xml`),
+retain separate source/value hashes and independent review records, and check
+the actual first-run overlay in the packaged application. The catalog inventory
+checks alone do not establish that this startup text is translated.
+
+Apple's local-network permission explanations also live outside the engine
+catalog: `darwin/Info.plist` and `mobile/ios/Info.plist.in` have distinct source
+purposes. Review their localized `InfoPlist.strings` separately. macOS bundles
+copy the declared `.lproj` directories into `Contents/Resources`; iOS CMake
+resources use `Resources/<language>.lproj` (CMake removes the `Resources` prefix
+for the flat iOS bundle). Keep `en.lproj` and `CFBundleDevelopmentRegion=en` as
+the fallback. Packaging contract tests verify copied files and resource paths;
+they do not establish Apple permission-dialog behavior on a device.
+
 For a gcloud-authenticated machine draft, use the same frozen kit:
 
 ```sh
@@ -206,41 +223,67 @@ are not linguistic approval. Review every entry through the independent passes
 below; do not publish the kit's cache, credentials or review working files.
 Run `python3 test/test_cloud_draft.py` when changing this runner.
 
-For Google Cloud machine drafts, prepare a scoped kit (for example,
-`prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
-network access:
+The separate `cloud_draft.py` runner makes paid requests unless `--dry-run`
+is supplied; it does not share the durable USD ledger described below. Use
+`google_draft.py` for a campaign with an enforced provider-cost ceiling.
+
+The development-only `google_draft.py` helper has two draft workflows. Both
+default to an unpaid estimate and authenticate with `gcloud auth print-access-token`:
+
 
 ```sh
+# HTML-protected plan: separate machine-run output, selected pilot batches optional.
 python3 tools/localization/google_draft.py --output artifacts/norwegian/kit --locale nb
+# Text/plain blank-fill: representative 100-message pilot.
+python3 tools/localization/google_draft.py --output artifacts/translation-program --locale mr --project PROJECT_ID --pilot
 ```
 
-Authenticate `gcloud` to an existing project with Cloud Translation enabled. Pass
-`--project PROJECT_ID --execute --max-characters LIMIT` to make paid Translation
-v3 requests. `--price-per-million` changes the planning estimate; verify actual
-project pricing before interpreting it as a cost forecast. The runner queries
-supported languages and selects `nb` when available, otherwise Google's `no`
-target for the Bokmål catalog. `--batches BATCH_ID ...` limits the source-based
-pilot to selected manifest batches. Complete and review that pilot before running
-the full catalog.
+Prepare a scoped translation kit and blank draft first. In HTML-plan mode,
+`--project PROJECT_ID --execute --max-characters LIMIT` makes paid Translation v3
+requests; `--batches BATCH_ID ...` selects a source-based pilot. Review that pilot
+before translating the remaining catalog. Bokmål uses provider `nb` when supported,
+otherwise `no`. This mode protects substitutions, literal line breaks, authored
+markup, URLs, relative routes and `www` addresses with non-translatable HTML
+spans. It rejects physical LF/CR/tab source characters before dispatch; use the
+blank-fill workflow for exact segmented multiline preservation. Immutable
+responses live under `google/LOCALE/responses/`, and machine catalogs under
+`google/LOCALE/runs/PLAN_HASH/`; they never replace editorial drafts or registered
+catalogs. Invalid-response retries require `--retry-invalid-responses` and retain
+rejected responses.
 
-The runner protects substitutions, literal line breaks, authored markup and URLs
-(including standalone relative routes and `www` addresses)
-with non-translatable HTML spans and rejects changed tokens. Outer whitespace is
-restored for message fragments. These checks do not establish correct meaning or
-word order. Exact request/project/location matches reuse immutable provider
-responses under the kit's `google/LOCALE/responses/`; generated JSON catalogs live
-under `google/LOCALE/runs/PLAN_HASH/`. They never replace `drafts/`, registered
-catalogs or review records. Copy a selected machine draft into the editorial
-workspace only when intentionally beginning review.
+In blank-fill mode, add `--run` for paid text/plain requests; omit `--pilot` after
+reviewing the pilot to process the remaining blank entries. `--mode blank-fill`
+selects its unpaid estimate explicitly; `--run`, `--pilot`, `--limit` and `--surface`
+also select this workflow. It preserves nonempty reviewed values, protects format
+tokens and literal invariants, segments authored newlines, rejects damaged
+responses and retains valid siblings plus cached paid responses. Keep the helper
+as the exclusive catalog writer while it runs. It captures draft hashes before
+reading and checks them before replacement; detected external edits abort while
+preserving disk edits and cached responses. Independent editors do not participate
+in its lock.
 
-The cumulative character allowance counts every attempted translation request,
-including uncertain failures and retries, before dispatch. It conservatively
-counts the protected HTML payload and persists across resumed invocations. Run
-one writer per kit. Authentication tokens are cached in memory and never written
-to evidence. Requests use bounded retries. Invalid responses remain inspectable;
-`--retry-invalid-responses` archives them under `rejected/` before another paid
-attempt within the same allowance. Raising the allowance is an explicit budget
-change. Provider output remains a machine draft, never a linguistic sign-off.
+Both paid paths share the kit's `google-budget.json` and exclusive writer lock.
+`--budget-usd` defaults to 9 and cannot exceed US$9, reserving every submitted
+protected payload code point at US$20 per million before dispatch without assuming
+free credit. Uncertain failures, authentication retries and requested invalid-output
+retries each reserve an attempt; historical HTML-plan attempt files are adopted
+once without rewriting old response caches. The ledger itself also locks and
+reloads for low-level callers. HTML `--max-characters` is an additional allowance;
+`--price-per-million` changes its planning estimate, not the enforced ledger rate.
+Verify current provider pricing before use: this ceiling bounds the campaign's
+accounted requests, not unrelated project spending or an exported billing invoice.
+
+POSIX reservation writes flush both the file and its directory after atomic
+replacement; durability errors abort dispatch. Windows flushes file contents but
+has no portable directory-flush equivalent, so its guarantee covers process
+failures rather than OS crashes. All disk text uses UTF-8. Authentication tokens
+remain in memory and are never saved in evidence. Provider output is an initial
+draft, never a linguistic sign-off.
+
+Keep one ledger for the campaign across refreshed source kits. Low-level callers
+can supply `Budget(explicit_campaign_path, project, ceiling)` and `fetch` with an
+explicit shared response cache under the campaign root's `kit_lock`. A symlink to
+a ledger is insufficient because atomic replacement replaces the link itself.
 
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
@@ -404,21 +447,25 @@ Keep building names consistent in lessons and HUD text. The Inn supplies food,
 the Swarm produces units, and flags assign work or military attention. Music
 playback uses **Sedang dimainkan**, rather than the verb for playing a game.
 
-### Hindi, Urdu and Swahili terminology
+### Hindi, Marathi, Urdu and Swahili terminology
+
 
 Use these concept anchors across the game, lessons and online messages. Inflect
 words naturally in sentences rather than substituting labels mechanically.
 Hindi uses contemporary Devanagari, Urdu uses Arabic script with logical text
-order, and Swahili uses standard Latin-script Kiswahili.
+order, Marathi uses contemporary standard Marathi in Devanagari, and Swahili
+uses standard Latin-script Kiswahili. Marathi instructions use respectful plural
+imperatives such as करा and निवडा; shared script does not justify copying Hindi
+grammar. Inns feed units, while Swarms are the hive buildings that create units.
 
-| Concept | Hindi (`hi`) | Urdu (`ur`) | Swahili (`sw`) |
-| --- | --- | --- | --- |
-| Worker | श्रमिक | کارکن | Mfanyakazi |
-| Explorer | खोजी | کھوجی | Mgunduzi |
-| Warrior | योद्धा | جنگجو | Shujaa |
-| Inn | सराय | سرائے | Nyumba ya wageni |
-| Swarm | छत्ता | چھتہ | Kiota |
-| Market | बाज़ार | بازار | Soko |
+| Concept | Hindi (`hi`) | Marathi (`mr`) | Urdu (`ur`) | Swahili (`sw`) |
+| --- | --- | --- | --- | --- |
+| Worker | श्रमिक | कामगार | کارکن | Mfanyakazi |
+| Explorer | खोजी | शोधक | کھوجی | Mgunduzi |
+| Warrior | योद्धा | योद्धा | جنگجو | Shujaa |
+| Inn | सराय | खानावळ | سرائے | Nyumba ya wageni |
+| Swarm | छत्ता | पोळे | چھتہ | Kiota |
+| Market | बाज़ार | बाजार | بازار | Soko |
 
 An assigned worker target requests workers; it does not count workers already
 present. Construction and operating supply use separate targets. Keep those
