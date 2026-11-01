@@ -47,3 +47,7 @@ Current manifests: [archive inventory](evidence/integrated-manifest.json), [fina
 
 [Actual phone skin editor with readable two-line Telugu hint](evidence/previews/online-phone-final.png) — actual producer `5b2421e8510f85b7538fcaed19fb58c90db71a50`.
 
+
+## Final current packaging checks
+
+[Exact commands/results](evidence/current-checks/current-packaging-regressions.json) record twelve additional current-source packaging/MIME tests at `5b2421e8`, including actual Caddy serving the final Telugu JSON and thirteen pinned fonts. All passed. [File hashes](evidence/current-checks/manifest.json) and raw logs are adjacent. The immutable final audit and all three direct image previews were verified publicly accessible (HTTP200). No source or existing packet changed.

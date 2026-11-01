@@ -1,0 +1,29 @@
+{
+  "commit": "0bc39a37b2dca75140b2ea13fd94fd332d430c31",
+  "checks": [
+    {
+      "path": "evidence/integrated-final-gate-audit.json",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "content_length": "1227"
+    },
+    {
+      "path": "evidence/previews/native-final.png",
+      "status": 200,
+      "content_type": "image/png",
+      "content_length": "1062973"
+    },
+    {
+      "path": "evidence/previews/tutorial-final.png",
+      "status": 200,
+      "content_type": "image/png",
+      "content_length": "486945"
+    },
+    {
+      "path": "evidence/previews/online-phone-final.png",
+      "status": 200,
+      "content_type": "image/png",
+      "content_length": "797902"
+    }
+  ]
+}

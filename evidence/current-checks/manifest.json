@@ -1,0 +1,26 @@
+[
+  {
+    "file": "current-packaging-regressions.json",
+    "sha256": "0d772be896b6118550a619e434660680ec69f3c2d2afefa109496ed8be85f090"
+  },
+  {
+    "file": "test_browser_publish.log",
+    "sha256": "ee8d52b71ef3221abdd7bfd224f172341efc5b98ad4fd0b84e39752aaf0952bb"
+  },
+  {
+    "file": "test_mobile_recording_notices.log",
+    "sha256": "4b42b0a07ac1672a9a5176d07efa1d74f094d53d6a77d58330d65573b6b2a8d6"
+  },
+  {
+    "file": "test_mobile_release_dependency_identity.log",
+    "sha256": "0d5f19ead2bf9676d74342ac6c647b4bf2294bed713605930a76f4b7d5b1c878"
+  },
+  {
+    "file": "test_browser_font_types.log",
+    "sha256": "8270162f72b25037bb5ce5a9dbc2742241e25cf4009d87afa4e1bffe0f45d892"
+  },
+  {
+    "file": "public-evidence-accessibility.json",
+    "sha256": "d4ac3883bc7f9b4b59b486434cfa508f8870825d5e4bdcdd9f918b6d5e612a59"
+  }
+]

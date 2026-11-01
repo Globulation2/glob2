@@ -1,0 +1,37 @@
+{
+  "head": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "test/build_system/test_browser_publish.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.8819912420003675
+    },
+    {
+      "command": [
+        "python3",
+        "test/build_system/test_mobile_recording_notices.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.6433395399944857
+    },
+    {
+      "command": [
+        "python3",
+        "test/build_system/test_mobile_release_dependency_identity.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.1258282039925689
+    },
+    {
+      "command": [
+        "python3",
+        "test/deployment/test_browser_font_types.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.33613693399820477
+    }
+  ]
+}
