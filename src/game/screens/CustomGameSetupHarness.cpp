@@ -323,7 +323,7 @@ struct CustomGameSetupHarness
         globalContainer->liveSpectating = true;
         world.gui.statistics().selectTopic(InGameStatisticsPanel::Topic::World);
         globalContainer->gfx->drawFilledRect(0, 0, 640, 480, 0, 0, 32);
-        world.gui.drawStatisticsPage(195);
+        world.gui.drawStatisticsPanel();
         const auto path = glob2test::artifactDir() / "probability-sixteen-colonies.png";
         REQUIRE(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), path.string().c_str()));
         globalContainer->liveSpectating = false;

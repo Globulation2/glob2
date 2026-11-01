@@ -654,9 +654,14 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["tutorial_briefing_available"] = briefingAvailable;
             result["preview_briefing_opened"] = previewOpenedBriefing;
             if (briefing) {
+                const bool modalProbe = lesson == "swimming" && width == 800 && height == 600 &&
+                    !GAGCore::phonePresentationRequested();
+                // Preserve the first presented frame, then require two unchanged
+                // baseline frames before perturbing the real tutorial highlight.
+                if (modalProbe) capture(captureKind + "-briefing-initial-frame");
                 auto baseline = capture(captureKind + "-briefing");
-                if (lesson == "swimming" && width == 800 && height == 600 &&
-                    !GAGCore::phonePresentationRequested()) {
+                if (modalProbe) {
+                    auto stableBaseline = capture(captureKind + "-briefing-baseline-stability");
                     // Toggle one real legacy highlight without replacing the
                     // tutorial model or its actual briefing. updateTutorial()
                     // re-adds lesson highlights, but does not manage this ID.
@@ -688,9 +693,11 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                     Surface first(SDL_ConvertSurface(baseline.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
                     Surface second(SDL_ConvertSurface(probe.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
                     Surface last(SDL_ConvertSurface(restored.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
-                    require(bool(first) && bool(second) && bool(last), "Convert modal pixel comparisons");
+                    Surface stable(SDL_ConvertSurface(stableBaseline.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+                    require(bool(first) && bool(second) && bool(last) && bool(stable), "Convert modal pixel comparisons");
                     require(first->w == second->w && first->h == second->h &&
-                            first->w == last->w && first->h == last->h, "Stable modal screenshot dimensions");
+                            first->w == last->w && first->h == last->h &&
+                            first->w == stable->w && first->h == stable->h, "Stable modal screenshot dimensions");
                     const double scaleX = double(first->w) / globals.gfx->getW();
                     const double scaleY = double(first->h) / globals.gfx->getH();
                     const int left = std::clamp(int(std::ceil((panel.x + 2) * scaleX)), 0, first->w);
@@ -699,21 +706,24 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                     const int bottom = std::clamp(int(std::floor((panel.bottom() - 2) * scaleY)), top, first->h);
                     require(right > left && bottom > top, "Nonempty actual modal interior ROI");
                     require(SDL_LockSurface(first.get()) && SDL_LockSurface(second.get()) &&
-                            SDL_LockSurface(last.get()), "Lock modal pixel comparisons");
-                    size_t differing = 0, restorationDifferences = 0;
+                            SDL_LockSurface(last.get()) && SDL_LockSurface(stable.get()), "Lock modal pixel comparisons");
+                    size_t differing = 0, restorationDifferences = 0, baselineDifferences = 0;
                     Online::Sha256 baselineHash, probeHash, restoredHash;
                     for (int y = top; y < bottom; ++y) {
                         const auto *a = static_cast<const Uint8 *>(first->pixels) + y * first->pitch + left * 4;
                         const auto *b = static_cast<const Uint8 *>(second->pixels) + y * second->pitch + left * 4;
                         const auto *c = static_cast<const Uint8 *>(last->pixels) + y * last->pitch + left * 4;
+                        const auto *d = static_cast<const Uint8 *>(stable->pixels) + y * stable->pitch + left * 4;
                         baselineHash.update(a, size_t(right - left) * 4);
                         probeHash.update(b, size_t(right - left) * 4);
                         restoredHash.update(c, size_t(right - left) * 4);
                         for (int x = 0; x < right - left; ++x) {
                             differing += std::memcmp(a + x * 4, b + x * 4, 4) != 0;
                             restorationDifferences += std::memcmp(a + x * 4, c + x * 4, 4) != 0;
+                            baselineDifferences += std::memcmp(a + x * 4, d + x * 4, 4) != 0;
                         }
                     }
+                    SDL_UnlockSurface(stable.get());
                     SDL_UnlockSurface(first.get()); SDL_UnlockSurface(second.get()); SDL_UnlockSurface(last.get());
                     require(before == gui.game.checkSum(), "Modal pixel probe preserves simulation checksum");
                     result["modal_highlight_comparison"] = {
@@ -721,6 +731,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                         {"roi_pixels", {left, top, right - left, bottom - top}},
                         {"added_actual_arrow", {arrow.x, arrow.y, arrow.w, arrow.h}},
                         {"baseline_arrow_count", originalArrows.size()}, {"probe_arrow_count", probeArrows.size()},
+                        {"baseline_stability_differing_pixels", baselineDifferences},
                         {"differing_pixels", differing}, {"restoration_differing_pixels", restorationDifferences},
                         {"baseline_roi_sha256", Online::Sha256::toHex(baselineHash.finish())},
                         {"probe_roi_sha256", Online::Sha256::toHex(probeHash.finish())},
@@ -729,7 +740,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                     // Preserve actual failing pixels and measurements before
                     // reporting the regression, including on the unfixed code.
                     writeJson(output / (captureKind + ".json"), result);
-                    require(differing == 0 && restorationDifferences == 0,
+                    require(baselineDifferences == 0 && differing == 0 && restorationDifferences == 0,
                             "Modal briefing pixels must be independent of legacy highlights");
                 }
             }
