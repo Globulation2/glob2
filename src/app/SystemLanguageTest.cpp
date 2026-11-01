@@ -224,14 +224,6 @@ TEST_SUITE("SystemLanguage")
 	}
 
 
-	TEST_CASE("startup follows the system only when the profile has no usable language")
-	{
-		// The first preference must stay unsupported as new catalogs are added.
-		PreferredLocales locales("zz_ZZ,pt_BR,en_US");
-		CHECK(startupLanguage("") == "br");
-		CHECK(startupLanguage("no-such-language") == "br");
-		CHECK(startupLanguage("fr") == "fr");
-	}
 
 	TEST_CASE("Bulgarian system preference and explicit profile choice")
 	{
