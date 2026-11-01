@@ -6029,7 +6029,7 @@
     {
       "key": "hedge",
       "sprite": "data/gfx/terrain-hedge",
-      "profile": "canopy",
+      "profile": "brush",
       "preview": [39, 67, 41],
       "variants": [
         {
@@ -7078,7 +7078,7 @@
     {
       "key": "thicket",
       "sprite": "data/gfx/terrain-thicket",
-      "profile": "canopy",
+      "profile": "brush",
       "preview": [60, 77, 35],
       "variants": [
         {
@@ -29615,7 +29615,7 @@
       "key": "dune_sand",
       "sprite": "data/gfx/terrain-dune_sand",
       "profile": "sand",
-      "preview": [203, 151, 85],
+      "preview": [202, 150, 85],
       "variants": [
         {
           "frame": 0,
@@ -30645,7 +30645,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [203, 151, 85],
+      "minimap": [202, 150, 85],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -30656,7 +30656,7 @@
       "key": "pale_sand",
       "sprite": "data/gfx/terrain-pale_sand",
       "profile": "sand",
-      "preview": [211, 201, 168],
+      "preview": [210, 201, 168],
       "variants": [
         {
           "frame": 0,
@@ -31686,7 +31686,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [211, 201, 168],
+      "minimap": [210, 201, 168],
       "seam": {
         "height": 2,
         "cast_q8": 40,
