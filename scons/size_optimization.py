@@ -2,6 +2,7 @@
 
 import shlex
 import subprocess
+import re
 
 PROFILES = ("none", "gc", "lto", "size")
 
@@ -11,7 +12,8 @@ def release_defaults(env):
         # LINKFLAGS can contain SCons Literal nodes (for example $ORIGIN
         # rpaths). Inspect their text without replacing the original nodes,
         # whose literal quoting must survive through command generation.
-        if not any(str(flag).startswith("-O") for flag in env.Split(env[flags])):
+        if not any(re.fullmatch(r"-O(?:[0-9]+|[sgz]|fast)?", str(flag))
+                   for flag in env.Split(env[flags])):
             env.Append(**{flags: ["-O3"]})
 
 
