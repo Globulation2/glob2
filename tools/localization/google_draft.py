@@ -105,23 +105,23 @@ def unmask(text, protected, source):
 
 
 def entries(output, locale):
-    manifest = json.loads((output / 'manifest.json').read_text())
+    manifest = json.loads((output / 'manifest.json').read_text(encoding='utf-8'))
     if locale not in manifest['locales']:
         raise ValueError('Locale is not in the frozen kit')
     invariants_path = PROGRAM.ROOT / 'platform/packages/i18n/invariants.json'
     if PROGRAM.digest(invariants_path.read_bytes()) != manifest['source_files']['platform/packages/i18n/invariants.json']:
         raise ValueError('Invariant contract changed since the kit was frozen')
-    invariants = json.loads(invariants_path.read_text())
+    invariants = json.loads(invariants_path.read_text(encoding='utf-8'))
     paths = PROGRAM.catalog_paths(output, locale)
     native, errors = PROGRAM.CHECKER.read_table(paths['native'])
     if errors:
         raise ValueError('; '.join(errors))
-    online = json.loads(paths['online'].read_text())
+    online = json.loads(paths['online'].read_text(encoding='utf-8'))
     targets = {'native': native, 'online': online}
     result = []
     plural_categories = PROGRAM.plural_categories(locale)
     for batch in manifest['batches']:
-        payload = json.loads((output / batch['path']).read_text())
+        payload = json.loads((output / batch['path']).read_text(encoding='utf-8'))
         for entry in payload['entries']:
             surface, key, source = payload['surface'], entry['key'], entry['source']
             variants = source if isinstance(source, dict) else {None: source}
@@ -187,7 +187,7 @@ class Budget:
         self.ceiling = Decimal(str(ceiling))
         if not Decimal('0') < self.ceiling <= MAX_BUDGET_USD:
             raise ValueError('Budget must be greater than zero and at most US$9')
-        self.value = json.loads(path.read_text()) if path.exists() else {
+        self.value = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {
             'schema_version': 1, 'project': project, 'rate_usd_per_million': str(RATE_USD_PER_MILLION),
             'attempts': []}
         if self.value['project'] != project or self.value['rate_usd_per_million'] != str(RATE_USD_PER_MILLION):
@@ -266,7 +266,7 @@ def fetch(project, payload, cache, budget, translate=google_translate):
     key = digest(identity)
     path = cache / (key + '.json')
     if path.exists():
-        cached = json.loads(path.read_text())
+        cached = json.loads(path.read_text(encoding='utf-8'))
         if cached.get('request') != identity or cached.get('response_sha256') != digest(cached['response']):
             raise ValueError('Corrupt Google response cache')
         return cached['response']
@@ -338,7 +338,7 @@ def run(output, locale, project, ceiling='9', limit=None, execute=False, transla
                    'ceiling_usd': str(budget.ceiling), 'dry_run': not execute}
         if not execute:
             return summary
-        run_identity = {'source_sha256': json.loads((output / 'manifest.json').read_text())['source_sha256'],
+        run_identity = {'source_sha256': json.loads((output / 'manifest.json').read_text(encoding='utf-8'))['source_sha256'],
                         'locale': locale, 'project': project, 'pilot': pilot, 'surface': surface,
                         'entries': [{'id': item['id'], 'category': item['category'],
                                      'source': item['source']} for item in items]}

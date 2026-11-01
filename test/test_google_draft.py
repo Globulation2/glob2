@@ -2,6 +2,9 @@
 """Paid calls must remain bounded, resumable and safe for format contracts."""
 import importlib.util
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -166,6 +169,59 @@ class GoogleDraftTest(unittest.TestCase):
         self.assertEqual(native, {'[good]': 'नमस्कार', '[bad]': '', '[later]': 'नंतर'})
         failures = json.loads(next((self.root / 'google-failures').glob('*.json')).read_text())
         self.assertEqual(failures['failures'][0]['id'], 'native:[bad]')
+
+    @unittest.skipIf(sys.platform == 'win32', 'POSIX C locale establishes an ASCII default')
+    def test_ascii_default_locale_preserves_filled_marathi_and_resumes_utf8_cache(self):
+        # Exercise actual disk reads/writes in a fresh non-UTF8 process, rather
+        # than mocking Path.read_text or assuming the test runner's locale.
+        script = r"""
+import codecs, importlib.util, json, locale, pathlib, sys
+spec = importlib.util.spec_from_file_location('draft', sys.argv[1])
+draft = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(draft)
+assert not sys.flags.utf8_mode
+if codecs.lookup(locale.getpreferredencoding(False)).name != 'ascii':
+    raise SystemExit(77)
+root = pathlib.Path(sys.argv[2])
+paths = draft.PROGRAM.catalog_paths(root, 'mr')
+paths['native'].parent.mkdir(parents=True)
+filled = '\u0938\u0902\u092a\u093e\u0926\u093f\u0924'
+translated = '\u0928\u092e\u0938\u094d\u0915\u093e\u0930'
+paths['native'].write_text('[edited]\n' + filled + '\n', encoding='utf-8')
+draft.atomic_json(paths['online'], {'Edited': filled, 'Hello': ''})
+invariant = draft.PROGRAM.ROOT / 'platform/packages/i18n/invariants.json'
+draft.atomic_json(root / 'manifest.json', {
+    'locales': ['mr'], 'source_sha256': 'test',
+    'source_files': {'platform/packages/i18n/invariants.json': draft.PROGRAM.digest(invariant.read_bytes())},
+    'batches': [{'path': 'native.json'}, {'path': 'online.json'}]})
+draft.atomic_json(root / 'native.json', {'surface': 'native', 'domain': 'general', 'entries': [
+    {'id': 'native:[edited]', 'key': '[edited]', 'source': 'Edited'}]})
+draft.atomic_json(root / 'online.json', {'surface': 'online', 'domain': 'online', 'entries': [
+    {'id': 'online:Edited', 'key': 'Edited', 'source': 'Edited'},
+    {'id': 'online:Hello', 'key': 'Hello', 'source': 'Hello'}]})
+calls = []
+def fake(project, payload):
+    calls.append(payload)
+    return {'translations': [{'translatedText': translated}]}
+draft.run(root, 'mr', 'project', execute=True, translate=fake)
+# Re-open all persistent state and re-use the UTF8 response cache after an
+# explicit blank restoration; a cache miss would attempt fake dispatch again.
+draft.atomic_json(paths['online'], {'Edited': filled, 'Hello': ''})
+def forbidden(*args):
+    raise AssertionError('Cache resume must not dispatch another request')
+draft.run(root, 'mr', 'project', execute=True, translate=forbidden)
+assert len(calls) == 1
+assert paths['native'].read_text(encoding='utf-8') == '[edited]\n' + filled + '\n'
+assert json.loads(paths['online'].read_text(encoding='utf-8')) == {'Edited': filled, 'Hello': translated}
+assert filled.encode('utf-8') in paths['online'].read_bytes()
+assert len(json.loads((root / 'google-budget.json').read_text(encoding='utf-8'))['attempts']) == 1
+"""
+        environment = dict(os.environ, PYTHONUTF8='0', PYTHONCOERCECLOCALE='0', LC_ALL='C')
+        result = subprocess.run([sys.executable, '-c', script, str(SPEC.origin), str(self.root)],
+                                env=environment, capture_output=True, text=True, encoding='utf-8')
+        if result.returncode == 77:
+            self.skipTest('This platform keeps a non-ASCII encoding in the C locale')
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_dry_run_is_unpaid_and_apply_preserves_editorial_text_and_plurals(self):
         paths = DRAFT.PROGRAM.catalog_paths(self.root, 'mr')

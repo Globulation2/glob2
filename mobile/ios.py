@@ -16,12 +16,23 @@ from ios_release import marketing_version
 import official_instance
 from mobile_toolchain import ROOT, discover
 from sources import INCLUDE_DIRECTORIES
+from apple_localizations import localization_files
 
 BUNDLE_ID = 'org.globulation2.glob2'
 
 
 def cmake_quote(value):
     return '"'+str(value).replace('\\','/').replace('"','\\"').replace('$','\\$').replace(';','\\;')+'"'
+
+
+def localized_resource_lines(resource_root):
+    lines = []
+    directories = [Path(resource_root) / (locale + '.lproj') for locale in ('en', 'mr')]
+    for resource in localization_files(directories):
+        lines += ['target_sources(Glob2 PRIVATE ' + cmake_quote(resource) + ')',
+                  'set_source_files_properties(' + cmake_quote(resource) +
+                  ' PROPERTIES MACOSX_PACKAGE_LOCATION ' + cmake_quote('Resources/' + resource.parent.name) + ')']
+    return lines
 
 
 def main():
@@ -137,6 +148,7 @@ def main():
         'target_sources(Glob2 PRIVATE '+cmake_quote(icons)+')',
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
+    lines += localized_resource_lines(ROOT / 'mobile/ios')
     sys.path.insert(0, str(ROOT / 'scons'))
     from moltenvk import prepare as prepare_moltenvk
     compute_framework, compute_license = prepare_moltenvk('ios', output, args.environment)

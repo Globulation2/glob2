@@ -166,6 +166,23 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+Audit platform startup text outside these two catalogs as well. Android shows
+`preparing_game` from `mobile/android/app/src/main/res/values/strings.xml` while
+staging assets, before the native catalog can load. Add the reviewed counterpart
+in the locale's Android resource directory (for example `values-mr/strings.xml`),
+retain separate source/value hashes and independent review records, and check
+the actual first-run overlay in the packaged application. The catalog inventory
+checks alone do not establish that this startup text is translated.
+
+Apple's local-network permission explanations also live outside the engine
+catalog: `darwin/Info.plist` and `mobile/ios/Info.plist.in` have distinct source
+purposes. Review their localized `InfoPlist.strings` separately. macOS bundles
+copy the declared `.lproj` directories into `Contents/Resources`; iOS CMake
+resources use `Resources/<language>.lproj` (CMake removes the `Resources` prefix
+for the flat iOS bundle). Keep `en.lproj` and `CFBundleDevelopmentRegion=en` as
+the fallback. Packaging contract tests verify copied files and resource paths;
+they do not establish Apple permission-dialog behavior on a device.
+
 For a Google Cloud comparison draft, use the development-only helper after
 preparing the kit and blank draft:
 
