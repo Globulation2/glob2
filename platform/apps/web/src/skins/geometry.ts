@@ -56,6 +56,14 @@ export const ACTIONS = {
   explorer: ['fly'],
   swarm: [''],
 };
+/** Display names only; animation IDs and asset paths keep ACTIONS values. */
+export const ACTION_LABELS: Readonly<Record<string, string>> = {
+  walk: 'Walk',
+  swim: 'Swim',
+  harvest: 'Harvest',
+  fight: 'Fight',
+  fly: 'Fly',
+};
 /** The fitted format each unit clip animates from; swarms stay baked. */
 export const UNIT_CLIP_FORMATS = {
   'worker-walk': 'gsb',

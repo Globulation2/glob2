@@ -130,8 +130,11 @@ The JSON tutorial inventory distinguishes legacy language blocks from current
 `display_catalog_gaps`. Generator/building/resource names and keyboard names
 built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
-bindings, and render representative screens in each language to check font
-coverage, text fitting and layout. The legacy Arabic/Persian route in
+bindings. It also requires catalog keys for fixed UI metadata: AI tags and compatibility
+captions, connection-quality terms, route/admin/map labels, match verdicts, music
+moods/check guidance and skin model/material/shape/pose captions. Translate their displayed labels while preserving canonical protocol
+values in filters and requests. Render representative screens in each language to
+check font coverage, text fitting and layout. The legacy Arabic/Persian route in
 `TrueTypeFont` shapes text into visual order before rasterization and uses an
 explicit left-to-right SDL_ttf direction to prevent a second reordering pass.
 Complex script fonts retain their shaping tables and use logical directional
@@ -145,7 +148,13 @@ retain a 20-pixel minimum advance; touch instructions use the shared cluster-awa
 wrapper and a 24-point minimum advance. The touch cache includes language, font,
 width and text-size inputs. Drawing, scroll limits and hit areas share the same
 measured footer and collapsed-label bounds. Test both expanded instructions and
-the collapsed control when changing fonts or text-size behavior.
+the collapsed control when changing fonts or text-size behavior. The collapsed
+mobile tutorial uses cluster-safe title ellipsis; expanding it restores the full
+wrapped title. Mobile statistics, the Tools strip and map peek temporarily own
+foreground painting and input. They cancel tutorial pointer and keyboard focus
+without changing its lesson or collapsed state; statistics paint above the minimap.
+Collapsed browser account actions retain their complete translated accessible
+names and show an icon in a 44-pixel target.
 
 ### Preparing independently reviewed locales
 
@@ -168,6 +177,37 @@ plural forms. Drafts never overwrite existing work. `check-draft --locale hi`
 checks draft keys and tokens and reports untranslated entries and English matches
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
+
+For a gcloud-authenticated machine draft, use the same frozen kit:
+
+```sh
+python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
+  --locale ms --project YOUR_PROJECT_ID --dry-run
+python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
+  --locale ms --project YOUR_PROJECT_ID --keys-file artifacts/localization-release/pilot-keys.json
+```
+
+The project must already have billing and Cloud Translation API access. The
+runner obtains an access token through `gcloud auth print-access-token`, uses
+Advanced v3 `general/nmt` with explicit English source, and never changes the
+global gcloud project. The keys file is a JSON array of exact `native:[key]` and
+`online:key` source IDs; use it for a representative pilot, or `--limit N` for
+the first N pending values. After reviewing the pilot, omit the selection flags
+to draft the remaining blank values. Existing nonblank translations are retained.
+`--dry-run` reports pending values and source character counts without API calls.
+
+Requests contain at most 4,500 protected HTML code points and 1,000 entries.
+Oversized messages split at safe word boundaries. Nontranslated spans protect
+placeholders, line breaks, markup and online invariant literals; changed tokens
+or malformed response cardinality stop the run. Raw provider responses and
+request identities are cached under the kit's `cloud/LOCALE/` directory before
+drafts are checkpointed. A restart reuses cached identical requests. Temporary
+network/server errors retry with bounded backoff; ambiguous transport failures
+can still incur duplicate provider charges. Inspect any rejected cached response
+before explicitly removing it to retry. Machine output and a successful runner
+are not linguistic approval. Review every entry through the independent passes
+below; do not publish the kit's cache, credentials or review working files.
+Run `python3 test/test_cloud_draft.py` when changing this runner.
 
 For Google Cloud machine drafts, prepare a scoped kit (for example,
 `prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
@@ -215,6 +255,15 @@ The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
 Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other
 Fula varieties must not be silently advertised as covered.
 
+The installed native catalog list also defines the language tokens accepted by
+the legacy SGSL lexer, including bare codes in `show("text", ms)`. Registering a
+new code therefore expands map/script acceptance even when no renderer or game
+rule changes. Bump `SIM_REVISION` and regenerate the golden match record/trace in
+the same change. Keep existing catalog order stable, verify saved SGSL source
+bytes and program counters across registration, and test the affected replay and
+network acceptance boundaries. This does not by itself change the save format or
+justify moving its minimum supported version.
+
 Each language needs a brief identifying its actual variety, script and region,
 with cited orthography, grammar and dictionary sources and terminology rationales.
 Unresolved uncertainty blocks finalization. Establish a source-based pilot before
@@ -259,7 +308,7 @@ describe it as agent-reviewed and keep unverified platforms explicit.
 Build `translation-preview-harness` for unregistered catalog captures. Its
 `matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
 wrapper at several authored sizes and raster scales. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
+(`main`, `settings`, `settings-audio`, `settings-player`, `lobby` or `lobby-players`); `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
@@ -335,6 +384,77 @@ Review complete sentences and assembled browser fragments. Preserve necessary
 boundary spaces, but avoid spaces introduced around protected placeholders before
 punctuation. Numeric counts usually take an unchanged noun; do not mechanically
 add `mga` or assume the runtime's `one` plural category means exactly one.
+
+### Cloud Translation drafts
+
+Prepare a Bengali kit with `prepare --locales bn --output
+artifacts/bengali-localization` and `draft --locale bn --output
+artifacts/bengali-localization` using the translation-program tool above. Then
+`python3 tools/localization/cloud_draft.py --project PROJECT_ID` estimates a
+Bengali pilot without sending a paid request. Add
+`--execute` to request the pilot through Translation API v3 using the active
+`gcloud` credentials. Review the pilot before running `--phase bulk
+--pilot-reviewed --execute`. `--output` selects the kit and `--locale` selects its
+language. Existing translations are never overwritten.
+
+The runner defaults to a US$10 ceiling and accounts conservatively at US$20 per
+million NMT input characters without assuming free credits. Every request attempt
+is reserved before transmission, including retries whose outcome may be unknown.
+Verify the current [NMT tariff](https://cloud.google.com/products/translate/pricing)
+before requesting paid drafts; update the accounting rate if it changes.
+Successful responses are cached and checkpointed. Protected-token failures retain
+the response and block retransmission until a reviewer supplies a correction;
+formatting-only templates bypass translation. Keep the accounting and response
+files with the kit when resuming. A leftover runner lock needs investigation
+before removal. Credentials are never written into the kit.
+
+### Bengali conventions
+
+Bengali (`bn`, বাংলা) uses contemporary standard written Bengali for readers in
+Bangladesh and West Bengal, in Bengali script and logical left-to-right order.
+Use respectful আপনি/করুন forms and concise familiar wording, with consistent
+terms across lessons, game controls and the online platform. Preserve product
+names, code, filenames, shortcuts and formatting tokens. Dynamic online numbers
+continue to use the existing locale formatting functions.
+
+The concept anchors are শ্রমিক (Worker), অনুসন্ধানকারী (Explorer), যোদ্ধা
+(Warrior), সরাইখানা (Inn), মৌচাক (the Swarm building), বাজার (Market), and পতাকা
+(Flag). A moving swarm may be a ঝাঁক; the unit-producing building is a মৌচাক.
+Describe assignment targets as requested workers rather than workers already
+present. Terrain passes mean গিরিপথ, while river banks mean নদীর পাড়.
+
+The pinned Noto Sans Bengali asset supplies shaping tables for HarfBuzz in the
+game and the shared browser font CSS. Retain those tables and the OFL licence in
+packages. Check conjuncts, reph, vowel signs, mixed Latin text and Bengali digits
+at small sizes; glyph coverage alone does not establish correct shaping or fit.
+Explicit non-Bengali script tags must not select the Bengali-script catalog.
+After adding or changing a language's displayed name, regenerate the checked-in
+browser assets with the pinned exporter command in `browser/derive_assets.py`.
+Its font fingerprint includes the language-name inventory even when the resulting
+subset font bytes stay identical.
+
+### Malay terminology
+
+The `ms` catalog uses standard Malaysian Malay in Latin/Rumi script, displayed
+as **Bahasa Melayu**. Explicit Jawi/Arabic-script locale preferences do not select
+this catalog. Use contemporary Malaysian software terms: **Tetapan**, **fail**,
+**akaun**, **kata laluan**, **pelayar web**, **muat turun** and **muat naik**.
+Indonesian translations can clarify game concepts, but are not Malaysian wording
+authorities. Consult [DBP's dictionary and terminology](https://prpm.dbp.gov.my/)
+for disputed words and review each term in its actual gameplay context.
+
+| Concept | Malay (`ms`) |
+| --- | --- |
+| Worker / Explorer / Warrior | Pekerja / Penjelajah / Pahlawan |
+| Inn / Swarm / Market | Penginapan / Sarang / Pasar |
+| Racetrack | Litar Larian (unit training, not horse racing) |
+| Room / Match | Bilik / Perlawanan |
+| Map generator / Terrain | Penjana peta / Rupa bumi |
+| Stream reach / Sand bar | Panjang anak sungai / Beting pasir |
+
+Keep building names consistent in lessons and HUD text. The Inn supplies food,
+the Swarm produces units, and flags assign work or military attention. Music
+playback uses **Sedang dimainkan**, rather than the verb for playing a game.
 
 ### Hindi, Urdu and Swahili terminology
 
@@ -556,10 +676,11 @@ bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
 
-Script-layout locales, Filipino, Swahili and Norwegian Bokmål draw high-DPI text at the
-authored width used by wrapping and hit testing. The complete high-resolution
-bitmap is resampled into that destination: font hinting at a larger raster size
-must not make a fitted line overflow its layout.
+Script-layout locales, Filipino, Swahili, Norwegian Bokmål and Malay draw high-DPI text
+at the authored width used by wrapping and hit testing. The complete
+high-resolution bitmap is resampled into that destination; font hinting at a
+larger raster size must not make a fitted line overflow its layout. Legacy
+Latin locales retain their existing geometry.
 
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored

@@ -472,9 +472,10 @@ void GameGUITouch::drawHUD()
 		drawScenarioMessage();
 		drawPanel();
 	}
+	drawMinimap();
+    // Match interfaceRegion(): the sheet owns the overlap with the minimap.
 	if (statsOpen && !activeDialog())
 		drawStats();
-	drawMinimap();
 	if (!activeDialog())
 	{
 		drawOverlayLegend();

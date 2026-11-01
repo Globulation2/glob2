@@ -72,6 +72,19 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("").empty());
 	}
 
+	TEST_CASE("Bengali regions share the Bengali script catalog")
+	{
+		CHECK(code("bn") == "bn");
+		CHECK(code("bn", "BD") == "bn");
+		CHECK(code("bn-IN") == "bn");
+		CHECK(code("bn_Beng_BD") == "bn");
+		CHECK(code("bn-Beng", "IN") == "bn");
+		CHECK(code("bn-Latn").empty());
+		CHECK(code("bn-Deva", "IN").empty());
+		CHECK(code("bn-u-nu-latn") == "bn");
+		CHECK(code("bn-x-latn") == "bn");
+	}
+
 	TEST_CASE("Norwegian Bokmaal accepts generic Norwegian but never Nynorsk")
 	{
 		CHECK(code("nb") == "nb");
@@ -164,6 +177,18 @@ TEST_SUITE("SystemLanguage")
 		CHECK(startupLanguage("fr") == "fr");
 		CHECK(startupLanguage("fil") == "fil");
 	}
+	TEST_CASE("Bengali startup respects the system and saved language")
+	{
+		{
+			PreferredLocales locales("bn_BD,fr_FR,en_US");
+			CHECK(startupLanguage("") == "bn");
+			CHECK(startupLanguage("fr") == "fr");
+		}
+		{
+			PreferredLocales locales("fr_FR,en_US");
+			CHECK(startupLanguage("bn") == "bn");
+		}
+	}
 
 	TEST_CASE("Norwegian startup follows preferences and preserves a saved language")
 	{
@@ -176,9 +201,33 @@ TEST_SUITE("SystemLanguage")
 	TEST_CASE("startup follows the system only when the profile has no usable language")
 	{
 		// The first preference must stay unsupported as new catalogs are added.
-		PreferredLocales locales("zz_ZZ,pt_BR,en_US");
+		PreferredLocales locales("xx_XX,pt_BR,en_US");
 		CHECK(startupLanguage("") == "br");
 		CHECK(startupLanguage("no-such-language") == "br");
 		CHECK(startupLanguage("fr") == "fr");
 	}
+	TEST_CASE("Malay selects Rumi without advertising Jawi coverage")
+	{
+		CHECK(code("ms") == "ms");
+		CHECK(code("ms", "MY") == "ms");
+		CHECK(code("ms-MY") == "ms");
+		CHECK(code("ms-Latn-MY") == "ms");
+		CHECK(code("ms_Arab_MY").empty());
+		CHECK(code("ms-Arab-Latn").empty());
+		CHECK(code("ms-u-nu-arab") == "ms");
+		CHECK(code("ms-x-arab") == "ms");
+		auto installed = [](const std::string &c) { return c == "ms" || c == "en"; };
+		CHECK(SystemLanguage::choose({{"ms-Arab", "MY"}, {"en", ""}}, installed) == "en");
+		CHECK(SystemLanguage::choose({{"ms-Latn", "MY"}, {"en", ""}}, installed) == "ms");
+	}
+
+	TEST_CASE("Malay startup preserves an explicit saved choice")
+	{
+		PreferredLocales locales("ms_MY,en_US");
+		CHECK(startupLanguage("") == "ms");
+		CHECK(startupLanguage("fr") == "fr");
+		CHECK(startupLanguage("ms") == "ms");
+	}
+
+
 }

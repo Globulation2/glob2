@@ -516,7 +516,7 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
           >
             {(Object.keys(VISIBILITY_TEXT) as MapVisibility[]).map((v) => (
               <option key={v} value={v}>
-                {VISIBILITY_TEXT[v]}
+                {t(VISIBILITY_TEXT[v])}
               </option>
             ))}
           </select>
@@ -1035,7 +1035,7 @@ export function MapUpload() {
           >
             {(Object.keys(VISIBILITY_TEXT) as MapVisibility[]).map((v) => (
               <option key={v} value={v}>
-                {VISIBILITY_TEXT[v]}
+                {t(VISIBILITY_TEXT[v])}
               </option>
             ))}
           </select>

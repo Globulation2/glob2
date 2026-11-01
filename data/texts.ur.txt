@@ -6813,10 +6813,10 @@ MCP سرور چالو کریں
 [scenario messages]
 پیغامات ▸
 [lush_grass]
-
+سرسبز گھاس
 [dry_grass]
-
+سوکھی گھاس
 [dune_sand]
-
+ٹیلے کی ریت
 [pale_sand]
-
+ہلکے رنگ کی ریت

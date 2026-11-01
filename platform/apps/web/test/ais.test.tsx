@@ -3,6 +3,9 @@ import { afterEach, beforeEach, it, expect, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { pendingAiReport } from '@glob2/protocol';
 import { App } from '../src/App.tsx';
+// Resolve the tested lazy page before the per-screen assertion deadlines begin.
+import '../src/pages/Ais.tsx';
+import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
 const id = '11111111-1111-4111-8111-111111111111',
   now = '2026-10-04T12:00:00Z';
 const report = pendingAiReport('a'.repeat(64), '129-51-' + 'b'.repeat(64));
@@ -78,9 +81,10 @@ beforeEach(() => {
     }),
   );
 });
-afterEach(() => {
+afterEach(async () => {
   cleanup();
   vi.unstubAllGlobals();
+  await setLocale('en');
 });
 it('requires a passing checklist and invalidates it when the file changes', async () => {
   window.history.replaceState(null, '', '/ais/new');
@@ -170,4 +174,67 @@ it('continues beyond the bounded restored page count using cursor navigation', a
   expect(window.location.search).toBe('?tags=Economy&cursor=page-20');
   expect(screen.queryByRole('heading', { name: 'Builder 1' })).toBeNull();
   expect(screen.getByRole('button', { name: 'Show more' })).toBeTruthy();
+});
+
+it('translates tag controls and badges while filtering with canonical protocol values', async () => {
+  registerCatalog('ms', { Rush: 'Serbuan', Economy: 'Ekonomi', Broken: 'Rosak' });
+  await setLocale('ms');
+  const ai = {
+    id,
+    name: 'Tag controller',
+    description: 'Authored description',
+    owner: { id, displayName: 'Author' },
+    tags: ['Rush', 'Economy'],
+    latestVersion: { label: '1.0' },
+    likes: 0,
+    downloads: 0,
+    updatedAt: now,
+  };
+  const original = vi.mocked(fetch).getMockImplementation();
+  vi.mocked(fetch).mockImplementation(async (input, init) => {
+    const url = new URL(String(input), 'http://localhost');
+    if (url.pathname === '/api/v1/ais') return Response.json({ items: [ai] });
+    if (url.pathname === '/api/v1/ais/' + id)
+      return Response.json({ ai, versions: [], viewer: { owner: false, moderator: false } });
+    if (url.pathname === '/api/v1/ais/' + id + '/reports') return Response.json({});
+    if (!original) throw Error('Missing fetch fixture');
+    return original(input, init);
+  });
+  window.history.replaceState(null, '', '/ais');
+  const { container } = render(<App />);
+  await screen.findByRole('heading', { name: 'Tag controller' });
+  const badgeLabels = () =>
+    [...container.querySelectorAll('.ai-tags .badge')].map((badge) => badge.textContent);
+  expect(badgeLabels()).toEqual(['Serbuan', 'Ekonomi']);
+  fireEvent.click(screen.getByRole('button', { name: 'Serbuan' }));
+  await waitFor(() =>
+    expect(
+      vi.mocked(fetch).mock.calls.some(([input]) => {
+        const url = new URL(String(input), 'http://localhost');
+        return url.pathname === '/api/v1/ais' && url.searchParams.get('tags') === 'Rush';
+      }),
+    ).toBe(true),
+  );
+  expect(new URLSearchParams(window.location.search).get('tags')).toBe('Rush');
+  const cardHeading = await screen.findByRole('heading', { name: 'Tag controller' });
+  fireEvent.click(cardHeading.closest('a')!);
+  await screen.findByRole('heading', { level: 1, name: 'Tag controller' });
+  expect(badgeLabels()).toEqual(['Serbuan', 'Ekonomi']);
+  fireEvent.click(screen.getByRole('button', { name: 'Report' }));
+  expect((screen.getByRole('option', { name: 'Rosak' }) as HTMLOptionElement).value).toBe('broken');
+  fireEvent.change(screen.getByRole('combobox', { name: 'Reason' }), {
+    target: { value: 'broken' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Send report' }));
+  await waitFor(() =>
+    expect(
+      vi
+        .mocked(fetch)
+        .mock.calls.some(
+          ([input, init]) =>
+            String(input).includes('/api/v1/ais/' + id + '/reports') &&
+            JSON.parse(String(init?.body)).reason === 'broken',
+        ),
+    ).toBe(true),
+  );
 });

@@ -6813,10 +6813,10 @@ Idadi ya maeneo ya kambi
 [scenario messages]
 Ujumbe ▸
 [lush_grass]
-
+Nyasi mbichi
 [dry_grass]
-
+Nyasi kavu
 [dune_sand]
-
+Mchanga wa matuta
 [pale_sand]
-
+Mchanga wa rangi hafifu

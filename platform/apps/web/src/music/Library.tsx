@@ -23,6 +23,12 @@ import {
   useLibrarySearch,
 } from '../components/library.tsx';
 import { Cover } from './Cover.tsx';
+const UPLOADS = [
+  ['calm', 'Calm'],
+  ['building', 'Building'],
+  ['combat', 'Combat'],
+  ['cover', 'Cover'],
+] as const;
 function errorText(error: unknown) {
   return error instanceof Error ? error.message : String(error);
 }
@@ -503,16 +509,16 @@ export function MusicDetail({ id }: { id: string }) {
       {owner && !release.generated && ['draft', 'inspected'].includes(release.status) && (
         <section className="music-upload">
           <h2>{t('Prepare this release')}</h2>
-          {[...MOODS, t('Cover')].map((mood, i) => (
-            <label key={mood}>
-              {mood} {release.uploaded.includes(mood.toLowerCase()) ? t('✓ uploaded') : ''}
+          {UPLOADS.map(([kind, label]) => (
+            <label key={kind}>
+              {t(label)} {release.uploaded.includes(kind) ? t('✓ uploaded') : ''}
               <input
                 type="file"
                 disabled={busy}
-                accept={i === 3 ? 'image/*' : 'audio/*'}
+                accept={kind === 'cover' ? 'image/*' : 'audio/*'}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) void action('PUT', `/uploads/${mood.toLowerCase()}`, file);
+                  if (file) void action('PUT', `/uploads/${kind}`, file);
                 }}
               />
             </label>
@@ -531,7 +537,7 @@ export function MusicDetail({ id }: { id: string }) {
             <>
               <p>
                 {release.inspection.seconds
-                  .map((seconds, i) => `${MOODS[i]}: ${seconds.toFixed(3)}s`)
+                  .map((seconds, i) => `${t(MOODS[i])}: ${seconds.toFixed(3)}s`)
                   .join(' · ')}
               </p>
               <label>
@@ -547,7 +553,7 @@ export function MusicDetail({ id }: { id: string }) {
                   {release.inspection.seconds
                     .map(
                       (seconds, i, all) =>
-                        `${MOODS[i]}: ${Math.abs(seconds - (repair === 'trim' ? Math.min(...all) : Math.max(...all))).toFixed(3)}s ${repair === 'trim' ? t('removed from end') : t('silence added at end')}`,
+                        `${t(MOODS[i])}: ${Math.abs(seconds - (repair === 'trim' ? Math.min(...all) : Math.max(...all))).toFixed(3)}s ${repair === 'trim' ? t('removed from end') : t('silence added at end')}`,
                     )
                     .join(' · ')}
                 </p>

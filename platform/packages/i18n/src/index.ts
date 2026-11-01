@@ -56,15 +56,18 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     const writtenScript =
       language === 'hi'
         ? 'deva'
-        : language === 'ur'
-          ? 'arab'
-          : language === 'sw' || language === 'fil' || language === 'tl'
-            ? 'latn'
-            : undefined;
+        : language === 'bn'
+          ? 'beng'
+          : language === 'ur'
+            ? 'arab'
+            : language === 'sw' || language === 'ms' || language === 'fil' || language === 'tl'
+              ? 'latn'
+              : undefined;
     if (writtenScript) {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);
-      if (subtags.some((part) => /^[a-z]{4}$/.test(part) && part !== writtenScript)) continue;
+      const scripts = subtags.filter((part) => /^[a-z]{4}$/.test(part));
+      if (scripts.some((script) => script !== writtenScript)) continue;
     }
     // Legacy no-nyn and no_NO_NY explicitly request Nynorsk, which has no catalog.
     if (language === 'no') {
@@ -115,6 +118,8 @@ export function hasMessage(source: string, locale = selected): boolean {
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
   fil: () => import('../locales/fil.json', { with: { type: 'json' } }),
+  bn: () => import('../locales/bn.json', { with: { type: 'json' } }),
+  ms: () => import('../locales/ms.json', { with: { type: 'json' } }),
   hi: () => import('../locales/hi.json', { with: { type: 'json' } }),
   ur: () => import('../locales/ur.json', { with: { type: 'json' } }),
   sw: () => import('../locales/sw.json', { with: { type: 'json' } }),

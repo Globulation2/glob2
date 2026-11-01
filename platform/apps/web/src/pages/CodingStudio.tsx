@@ -1062,6 +1062,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   </div>
                   <StudioTabs
                     label={t('Workspace view')}
+                    idPrefix="studio-tab-workspace-view"
                     panels={{
                       code: 'studio-panel-workspace-view-code',
                       changes: 'studio-panel-workspace-view-changes',
