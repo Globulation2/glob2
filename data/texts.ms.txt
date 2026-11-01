@@ -6818,8 +6818,6 @@ Rumput subur
 Rumput kering
 [dune_sand]
 Pasir gumuk
-[pale_sand]
-Pasir pucat
 [script compile success]
 
 [script error at %0:%1: %2]
@@ -6832,3 +6830,5 @@ Pasir pucat
 
 [script cursor %0 %1]
 
+[pale_sand]
+Pasir pucat
