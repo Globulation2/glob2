@@ -147,7 +147,6 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 		setup = preferences.setup;
         if(!preferences.missingGeneratorId.empty())message="Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
 		userMaps = preferences.userMaps && separateMapLibraries;
-		landscapeSortOrder = preferences.landscapeSortOrder;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
 		listMaps();
 		if (setup.random)
@@ -324,7 +323,6 @@ void CustomGameScreen::savePreferences()
 	CustomGamePreferences preferences;
 	preferences.setup = setup;
 	preferences.userMaps = userMaps;
-	preferences.landscapeSortOrder = landscapeSortOrder;
 	std::copy(std::begin(librarySelection), std::end(librarySelection),
 			  preferences.librarySelection);
 	std::copy(std::begin(expanded), std::end(expanded), preferences.expanded);
@@ -365,18 +363,15 @@ LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 		shown.push_back(std::move(entry));
 	}
 	auto picker = std::make_unique<LandscapePickerScreen>(
-		tr("Landscape"), std::move(shown), selected,
-		LandscapePickerScreen::SortOrder(landscapeSortOrder));
+		tr("Landscape"), std::move(shown), selected);
 	auto *result = picker.get(); // Non-owning; ScreenStack retains ownership through completion.
 	screens.push(std::move(picker),
 				 [this, entries](GAGGUI::Screen &screen, int result)
 				 {
 					 auto &picker = static_cast<LandscapePickerScreen &>(screen);
-					 // Persisted the next time preferences save, the way any other lobby choice on this screen is.
-					 landscapeSortOrder = int(picker.currentSortOrder());
 					 // Size and colony count are shared lobby settings the picker can also change (FEEDBACK
 					 // 2026-09-17); bring them back whether or not a landscape was actually picked, so backing
-					 // out still keeps what was chosen there, the same two-way relationship the sort order has.
+					 // out still keeps what was chosen there.
 					 if (picker.sharedWDec() != setup.generator.wDec ||
 						 picker.sharedHDec() != setup.generator.hDec ||
 						 picker.sharedTeams() != setup.capacity)
