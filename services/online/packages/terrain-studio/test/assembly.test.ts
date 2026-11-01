@@ -43,7 +43,7 @@ it('assembles normal terrain packages with shared appearance bindings', () => {
   expect(p.terrains[0]).toMatchObject({ key, base: 'marsh', properties: { groundSpeedQ8: 128 } });
   expect(p.assets.terrains[key]).toMatchObject({
     profile: 'soft',
-    sprite: 'data/sets/' + art.sheet.hash,
+    sprite: 'content/data/sets/' + art.sheet.hash,
   });
   expect(p.credits).toEqual(b.credits);
 });

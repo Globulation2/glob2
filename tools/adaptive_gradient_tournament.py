@@ -172,7 +172,7 @@ def prepare(a):
  if not Path(a.split_registry).exists():raise ValueError('Freeze the persistent split registry before preparing collection')
  registry=json.loads(Path(a.split_registry).read_text())['assignments']
  maps=json.loads(Path(a.maps).read_text());amendment=json.loads(Path(a.routing_amendment).read_text()) if a.routing_amendment else None
- if amendment is not None and amendment!=accepted_routing(document,maps):raise ValueError('Actual-size routing amendment differs from frozen maps/roles')
+ if amendment is not None and amendment!=accepted_routing(document,maps):raise ValueError('Actual-size routing amendment differs from frozen content/maps/roles')
  effective={r['group']:r for r in amendment['assignments']} if amendment else {}
  maps=maps.get('maps',maps) if isinstance(maps,dict) else maps;index={r['group']:r for r in maps};supplied=[inspect_bundle(p) for p in a.bundle];modelhash={b['build_options'].get('model_sha256') for b in supplied};headerhash={b['build_options'].get('header_sha256') for b in supplied}
  if len(modelhash)!=1 or len(headerhash)!=1 or None in modelhash|headerhash:raise ValueError('Pin common actual model/header in all bundles')

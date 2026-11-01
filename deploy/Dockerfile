@@ -56,7 +56,7 @@ RUN --mount=type=cache,id=glob2-relay-build-${TARGETARCH},target=/source/build,s
 FROM source AS engine-source
 
 # The headless engine is the ordinary client binary run with SDL's dummy
-# drivers. Its data/ is what the sim version's data hash covers, computed with
+# drivers. Its content/data/ is what the sim version's data hash covers, computed with
 # this repository's deploy/sim_version.py.
 FROM cpp-deps AS engine-build
 ARG JOBS=4
@@ -127,13 +127,13 @@ ARG GLOB2_WEBSITE_URL=
 ARG GLOB2_DOWNLOAD_URL=
 COPY services/online/ ./
 COPY examples/javascript /app/examples/javascript
-COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
-COPY data/fonts/scripts /app/data/fonts/scripts
-COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
+COPY content/data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
+COPY content/data/fonts/scripts /app/data/fonts/scripts
+COPY content/data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libs/gag/shaders /app/libs/gag/shaders
 # Set authoring and Terrain Studio import the shared resource registry.
-COPY data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/data/resources/registry.json
 COPY --from=music-web-build /source/services/online/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
 COPY --from=music-web-build /source/services/online/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
 RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \
@@ -153,8 +153,8 @@ COPY services/online/apps/ai-music-worker apps/ai-music-worker
 COPY services/online/apps/ai-terrain-worker apps/ai-terrain-worker
 COPY services/online/apps/ai-building-worker apps/ai-building-worker
 # Server-rendered account and invite pages use the approved script fonts.
-COPY data/fonts/scripts /app/data/fonts/scripts
-COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
+COPY content/data/fonts/scripts /app/data/fonts/scripts
+COPY content/data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -174,11 +174,11 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
 COPY --from=platform-runtime-deps /app/services/online /app/services/online
 COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
 COPY examples/javascript /app/examples/javascript
-COPY data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
 COPY docs/map-generators/javascript.md /app/docs/map-generators/javascript.md
-COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
-COPY data/generators/examples/swamp /app/data/generators/examples/swamp
+COPY content/data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
+COPY content/data/generators/examples/swamp /app/data/generators/examples/swamp
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
 RUN printf '#!/bin/sh\nexec node /app/services/online/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
     chmod 755 /usr/local/bin/platform /usr/local/bin/glob2-platform-init
@@ -224,7 +224,7 @@ COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/services/online /app/services/online
 COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
 COPY examples/javascript /app/examples/javascript
-COPY data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
 COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
@@ -271,7 +271,7 @@ CMD ["node", "apps/ai-terrain-worker/src/main.ts"]
 FROM engine-agent AS ai-building-worker
 USER root
 COPY docs/features/building-catalogs.md docs/features/building-semantics.md docs/features/building-authoring.md docs/features/resource-catalogs.md /opt/glob2/share/docs/features/
-COPY data/gfx/inn0b0.png data/gfx/inn0b0r.png data/gfx/hosp0b0.png data/gfx/hosp0b0r.png data/gfx/defencetower0b0.png data/gfx/defencetower0b0r.png /opt/glob2/share/studio/building-references/
+COPY content/data/gfx/inn0b0.png content/data/gfx/inn0b0r.png content/data/gfx/hosp0b0.png content/data/gfx/hosp0b0r.png content/data/gfx/defencetower0b0.png content/data/gfx/defencetower0b0r.png /opt/glob2/share/studio/building-references/
 ENV GLOB2_SOURCE_DIR=/opt/glob2/share
 USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-building-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
@@ -343,7 +343,7 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
 COPY --from=platform-runtime-deps /app/services/online /app/services/online
 COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
 # Shared protocol set-authoring imports the registry when the worker starts.
-COPY data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/data/resources/registry.json
 ENV NODE_ENV=production BLOB_STORE=fs BLOB_DIR=/var/lib/glob2/blobs
 WORKDIR /app/services/online
 USER 10001:10001

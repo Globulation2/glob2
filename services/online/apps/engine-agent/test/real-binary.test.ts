@@ -1,6 +1,6 @@
 // generate → validate → preview against a real glob2 binary, for generators of
 // the default quick-match pool. Runs only when GLOB2_BINARY names a binary;
-// GLOB2_WORKDIR is the directory holding its data/ (default: the repository
+// GLOB2_WORKDIR is the directory holding its content/data/ (default: the repository
 // root). Example:
 //   GLOB2_BINARY=build/darwin/client/release/src/glob2 npx vitest run apps/engine-agent
 // GLOB2_EVIDENCE_DIR, when set, receives each preview PNG and the job results.
@@ -109,7 +109,7 @@ describe.runIf(binary)('real glob2 binary', () => {
           'game',
           'run',
           '--map-file',
-          resolve(REPO, 'maps/balanced_for_2.map.gz'),
+          resolve(REPO, 'content/maps/balanced_for_2.map.gz'),
           '--game-seed',
           '2',
           '--player',

@@ -19,6 +19,6 @@ for (const icon of manifest.icons) {
   for (const points of [20, 24]) for (const scale of [1, 2, 3]) {
     const pixels = points * scale;
     const renderer = new Resvg(svg, { fitTo: { mode: 'width', value: pixels } });
-    fs.writeFileSync(path.join(root, 'data/gui', `tabler-${icon.name}-${pixels}.png`), renderer.render().asPng());
+    fs.writeFileSync(path.join(root, 'content/data/gui', `tabler-${icon.name}-${pixels}.png`), renderer.render().asPng());
   }
 }

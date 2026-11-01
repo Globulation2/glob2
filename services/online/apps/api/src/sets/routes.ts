@@ -29,7 +29,7 @@ import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { TerrainStudio } from '@glob2/terrain-studio';
 import { HiveError } from '@glob2/billing';
-import { UUID, canModerate } from '../maps/catalog.ts';
+import { UUID, canModerate } from '../content/maps/catalog.ts';
 
 export async function setLibraryRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;

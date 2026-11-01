@@ -4,7 +4,7 @@
 
 Run with Blender 3.6.23 --background --factory-startup -t 1
 --python-exit-code 1 --python tools/skins/generate_swarms.py --
---output data/skins/colony-v1. Metaball polygonization is threaded and only
+--output content/data/skins/colony-v1. Metaball polygonization is threaded and only
 reproducible byte for byte with a single thread (-t 1).
 
 Each design is a seeded list of metaball elements, the same primitive the

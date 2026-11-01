@@ -40,10 +40,10 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
     expect(fonts.body).not.toContain('../../assets/');
     const scriptCss = await app.inject('/signin/assets/script-fonts.css');
     expect(scriptCss.statusCode).toBe(200);
-    expect(scriptCss.body).not.toContain('../../../data/');
+    expect(scriptCss.body).not.toContain('../../../content/data/');
     const manifest = JSON.parse(
       readFileSync(
-        new URL('../../../../../data/fonts/scripts/manifest.json', import.meta.url),
+        new URL('../../../../../content/data/fonts/scripts/manifest.json', import.meta.url),
         'utf8',
       ),
     ) as { fonts: { name: string; sha256: string; bytes: number }[] };

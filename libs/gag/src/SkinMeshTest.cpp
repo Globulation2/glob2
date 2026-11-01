@@ -61,7 +61,7 @@ TEST_SUITE("SkinMesh")
             {
                 GAGCore::SkinMesh mesh;
                 std::string error;
-                REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/(name+extension)).string(), error));
+                REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/(name+extension)).string(), error));
                 std::vector<float> original;
                 REQUIRE(mesh.evaluate(0, original));
                 const auto identity = mesh.identity;
@@ -174,7 +174,7 @@ TEST_SUITE("SkinMesh")
         for (unsigned shape=0; shape<shapes.size(); ++shape)
         {
             GAGCore::SkinMesh mesh; std::string error;
-            REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/(std::string(shapes[shape])+".gsk")).string(), error));
+            REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/(std::string(shapes[shape])+".gsk")).string(), error));
             const auto &t=Online::SkinViews[shape];
             auto zero=mesh.rotatedView(0,t.inverse,t.projection,t.normals);
             REQUIRE(zero.poses.size()==mesh.poses.size());
@@ -210,7 +210,7 @@ TEST_SUITE("SkinMesh")
         glob2test::ToolkitScope toolkit;
         auto *gfx=GAGCore::Toolkit::initGraphic(640,480,GAGCore::GraphicContext::USEGPU,"Swarm camera and material contract");
         GAGCore::SkinMesh mesh; std::string error;
-        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1/swarm-crown.gsk").string(),error));
+        REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1/swarm-crown.gsk").string(),error));
         const auto &t=Online::SkinViews[1];
         std::array<GAGCore::SkinMesh,4> variants;
         for (unsigned i=0;i<4;++i) variants[i]=mesh.rotatedView(i*90,t.inverse,t.projection,t.normals);
@@ -268,7 +268,7 @@ TEST_SUITE("SkinMesh")
         std::array<GAGCore::SkinMesh,Models> meshes;
         for (unsigned m=0;m<Models;++m) {
             std::string error;
-            REQUIRE(meshes[m].load((glob2test::sourceRoot()/"data/skins/colony-v1"/(std::string(models[m].mesh)+".gsk")).string(),error));
+            REQUIRE(meshes[m].load((glob2test::contentRoot()/"data/skins/colony-v1"/(std::string(models[m].mesh)+".gsk")).string(),error));
         }
         GAGCore::DrawableSurface paint(512,512), material(512,512);
         paint.drawFilledRect(0,0,512,512,GAGCore::Color(237,146,82));
@@ -521,11 +521,11 @@ TEST_CASE("export readback matches live compositing for every pose and rotated s
     };
     for(unsigned clip=0;clip<7;++clip) {
         GAGCore::SkinMesh mesh;std::string error;
-        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/(exportPath?GAGCore::skinClipFile(Online::SkinSpriteClips[clip]):std::string(Online::SkinSpriteClips[clip])+".gsk")).string(),error));
+        REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/(exportPath?GAGCore::skinClipFile(Online::SkinSpriteClips[clip]):std::string(Online::SkinSpriteClips[clip])+".gsk")).string(),error));
         for(unsigned frame=0;frame<256;++frame)compare(mesh,frame,clip<3?0:clip<6?1:2,clip);
         // Publishing uses the fitted meshes; compare every derived heading to
         // live compositing and, when supplied, the exported turn page alpha.
-        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/GAGCore::skinClipFile(Online::SkinSpriteClips[clip])).string(),error));
+        REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/GAGCore::skinClipFile(Online::SkinSpriteClips[clip])).string(),error));
         const auto &view=Online::UnitSkinViews[clip];
         const auto turns=mesh.stationaryTurns(view.inverse,view.projection,view.normals);
         REQUIRE(turns.identity);
@@ -533,7 +533,7 @@ TEST_CASE("export readback matches live compositing for every pose and rotated s
     }
     for(unsigned choice=0;choice<Online::SWARM_MESHES.size();++choice) {
         GAGCore::SkinMesh mesh;std::string error;
-        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/Online::SWARM_MESHES[choice].file).string(),error));
+        REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/Online::SWARM_MESHES[choice].file).string(),error));
         for(unsigned angle:{0u,127u,359u}) {
             const auto &view=Online::SkinViews[choice];
             auto oriented=angle?mesh.rotatedView(angle,view.inverse,view.projection,view.normals):mesh;

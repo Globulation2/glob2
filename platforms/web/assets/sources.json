@@ -15,7 +15,7 @@
     "lossy": true,
     "output_sha256": "023396c34c24377fb64ef8dc65a251a3eb1c734390cb55cbaf64b1204091fd68",
     "sha256": "42af3e40fdb860aa3ca67cb212944a8768948786b4d5ce15cc1adf5dcad8bfe7",
-    "source": "data/gfx/menu-colony.png"
+    "source": "content/data/gfx/menu-colony.png"
   },
   "platforms/web/assets/menu-wordmark.webp": {
     "image_recipe": {
@@ -33,12 +33,12 @@
     "lossy": true,
     "output_sha256": "68abf86d324b56bc967083386439da85cb5c8d41b63d6db2ab8b47ba813f50e7",
     "sha256": "020f34e218f137b34f9af53c85532662a9efebcf7b4b8f955b761b07528cd32d",
-    "source": "data/gfx/menu-wordmark.png"
+    "source": "content/data/gfx/menu-wordmark.png"
   },
   "platforms/web/assets/sans-core.ttf": {
     "languageNames": "a5ec32b7188bb9d97e027c9fd274053b900e9d6b1be54f490d19b0e59b1d9e91",
     "output_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
     "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
-    "source": "data/fonts/sans.ttf"
+    "source": "content/data/fonts/sans.ttf"
   }
 }

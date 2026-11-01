@@ -106,7 +106,7 @@ def import_archive(archive):
                 target.write_bytes(data)
                 existing[sha] = target
             size, kind = dimensions(data)
-            candidate = ROOT / 'data/gfx' / PurePosixPath(item.filename).name
+            candidate = ROOT / 'content/data/gfx' / PurePosixPath(item.filename).name
             runtime_size, _ = dimensions(candidate.read_bytes()) if candidate.is_file() else (None, None)
             records.append(dict(archive_path=item.filename, path=str(target.relative_to(ROOT)),
                 bytes=len(data), sha256=sha, archive_modified=list(item.date_time),

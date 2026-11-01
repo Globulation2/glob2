@@ -160,9 +160,9 @@ export class Pipeline {
         try {
           let image: Buffer;
           try {
-            image = await readFile(join(this.root, 'data/gfx', stem + '.png'));
+            image = await readFile(join(this.root, 'content/data/gfx', stem + '.png'));
           } catch {
-            image = await readFile(join(this.root, 'data/gfx', stem + '.webp'));
+            image = await readFile(join(this.root, 'content/data/gfx', stem + '.webp'));
           }
           references.push(await sharp(image).png().toBuffer());
         } catch {
@@ -196,7 +196,7 @@ export class Pipeline {
             entry.kind === 'terrain'
               ? row.input.base.assets.terrains[key]?.['sprite']
               : (oldEntry?.['presentation'] as { sprite?: string } | undefined)?.sprite;
-          const sheet = row.input.base.assets.sheets.find((s) => sprite === 'data/sets/' + s.hash);
+          const sheet = row.input.base.assets.sheets.find((s) => sprite === 'content/data/sets/' + s.hash);
           const imageReferences = sheet
             ? [Buffer.from(sheet.png, 'base64url'), ...references].slice(0, 4)
             : references;

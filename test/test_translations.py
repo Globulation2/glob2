@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-spec = importlib.util.spec_from_file_location('check_translations', Path(__file__).resolve().parents[1] / 'data/check_translations.py')
+spec = importlib.util.spec_from_file_location('check_translations', Path(__file__).resolve().parents[1] / 'content/data/check_translations.py')
 checker = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(checker)
 
@@ -18,12 +18,12 @@ class TranslationAuditTest(unittest.TestCase):
         # Include the shared lesson controls and introduction recovery messages,
         # which are rendered by the UI rather than stored in lesson definitions.
         keys = lesson_keys | {
-            key for key in checker.read_lines(root / 'data/texts.keys.txt')
+            key for key in checker.read_lines(root / 'content/data/texts.keys.txt')
             if key.startswith(('[intro ', '[tutorial ', '[lesson '))
             or key == '[scenario messages]'
         }
         self.assertTrue(keys)
-        for name in checker.read_lines(root / 'data/texts.list.txt')[1:]:
+        for name in checker.read_lines(root / 'content/data/texts.list.txt')[1:]:
             table, errors = checker.read_table(root / name)
             self.assertEqual(errors, [])
             with self.subTest(catalog=name):
@@ -32,16 +32,16 @@ class TranslationAuditTest(unittest.TestCase):
     def test_catalogs_do_not_reintroduce_english_fallbacks(self):
         root = Path(__file__).resolve().parents[1]
         allowed = json.loads((root / 'test/translation_shared_values.json').read_text())
-        english, errors = checker.read_table(root / 'data/texts.en.txt')
+        english, errors = checker.read_table(root / 'content/data/texts.en.txt')
         self.assertEqual(errors, [])
-        for name in checker.read_lines(root / 'data/texts.list.txt')[1:]:
-            if name == 'data/texts.en.txt':
+        for name in checker.read_lines(root / 'content/data/texts.list.txt')[1:]:
+            if name == 'content/data/texts.en.txt':
                 continue
             translated, errors = checker.read_table(root / name)
             self.assertEqual(errors, [])
             vocabulary = set(allowed['standard_names_and_key_legends']) | set(
                 allowed['shared_vocabulary'][Path(name).name])
-            for key in checker.read_lines(root / 'data/texts.keys.txt'):
+            for key in checker.read_lines(root / 'content/data/texts.keys.txt'):
                 source = english[key]
                 with self.subTest(catalog=name, key=key):
                     value = translated.get(key)
@@ -158,40 +158,40 @@ panel.actions = {{"id", "Untranslated action", [] {}}, {"ok", tr("[localized]"),
             (root / 'data').mkdir()
             (root / 'src').mkdir()
             (root / 'src/test.cpp').write_text('getString("[missing lookup]");', encoding='utf-8')
-            (root / 'data/texts.list.txt').write_text('data/texts.keys.txt\ndata/texts.en.txt\ndata/texts.xx.txt\n', encoding='utf-8')
+            (root / 'content/data/texts.list.txt').write_text('content/data/texts.keys.txt\ndata/texts.en.txt\ndata/texts.xx.txt\n', encoding='utf-8')
             keys = ['[language-code]', '[language]', '[language incomplete]', '[language-tr]', '[%0 to %1]', '[inn explanation 2]', '[new control]', '[school explanation]', '[school explanation 2]', '[absent]']
-            (root / 'data/texts.keys.txt').write_text('\n'.join(keys)+'\n', encoding='utf-8')
+            (root / 'content/data/texts.keys.txt').write_text('\n'.join(keys)+'\n', encoding='utf-8')
             english = ['en', 'English', 'English - Incomplete', 'Language', '%0 to %1', '', 'New control', 'Improves construction', 'for workers', 'Present in English']
             other = ['xx', 'Example', 'Example - Incomplete', 'Language', '%0 to %0', '', '', 'Localized complete sentence', '']
             for code, values in [('en', english), ('xx', other)]:
-                (root / f'data/texts.{code}.txt').write_text(''.join(k+'\n'+v+'\n' for k,v in zip(keys, values)), encoding='utf-8')
-            (root / 'scripts/tutorials').mkdir(parents=True)
-            (root / 'scripts/tutorials/catalog.json').write_text(json.dumps([
-                {'definition': 'scripts/tutorials/sample.json'}]))
-            (root / 'scripts/tutorials/sample.json').write_text(json.dumps({
+                (root / f'content/data/texts.{code}.txt').write_text(''.join(k+'\n'+v+'\n' for k,v in zip(keys, values)), encoding='utf-8')
+            (root / 'content/scripts/tutorials').mkdir(parents=True)
+            (root / 'content/scripts/tutorials/catalog.json').write_text(json.dumps([
+                {'definition': 'content/scripts/tutorials/sample.json'}]))
+            (root / 'content/scripts/tutorials/sample.json').write_text(json.dumps({
                 'title': '[new control]', 'steps': [{'help': '[absent]'}]}))
-            (root / 'data/themes').mkdir()
-            (root / 'data/themes/index.json').write_text('{"themes":["missing-theme"]}', encoding='utf-8')
+            (root / 'content/data/themes').mkdir()
+            (root / 'content/data/themes/index.json').write_text('{"themes":["missing-theme"]}', encoding='utf-8')
             result = checker.audit(root)
-            self.assertEqual(result['coverage']['tutorials']['scripts/tutorials/sample.json'], {
+            self.assertEqual(result['coverage']['tutorials']['content/scripts/tutorials/sample.json'], {
                 'key_count': 2,
-                'display_catalog_gaps': {'data/texts.en.txt': [],
-                    'data/texts.xx.txt': ['[absent]', '[new control]']}})
+                'display_catalog_gaps': {'content/data/texts.en.txt': [],
+                    'content/data/texts.xx.txt': ['[absent]', '[new control]']}})
             self.assertTrue(any('unknown translation key [theme missing-theme]' in e for e in result['errors']))
             self.assertTrue(any('unknown translation key [missing lookup]' in e for e in result['errors']))
             self.assertTrue(any('invalid placeholders' in e for e in result['errors']))
-            self.assertEqual(result['languages']['data/texts.xx.txt']['untranslated'], ['[absent]', '[new control]'])
+            self.assertEqual(result['languages']['content/data/texts.xx.txt']['untranslated'], ['[absent]', '[new control]'])
             self.assertTrue(any('missing key [absent]' in e for e in result['errors']))
             self.assertTrue(any('would show an English second line' in e for e in result['errors']))
             # An approved fallback only affects completeness, never structural errors.
-            (root / 'data/texts.pending.txt').write_text('[new control]\n[unknown]\n', encoding='utf-8')
+            (root / 'content/data/texts.pending.txt').write_text('[new control]\n[unknown]\n', encoding='utf-8')
             pending_result = checker.audit(root)
-            self.assertEqual(pending_result['languages']['data/texts.xx.txt']['pending'], ['[new control]'])
-            self.assertEqual(pending_result['languages']['data/texts.en.txt']['pending'], [])
+            self.assertEqual(pending_result['languages']['content/data/texts.xx.txt']['pending'], ['[new control]'])
+            self.assertEqual(pending_result['languages']['content/data/texts.en.txt']['pending'], [])
             self.assertTrue(any('unknown pending key [unknown]' in e for e in pending_result['errors']))
             self.assertTrue(any('invalid placeholders' in e for e in pending_result['errors']))
-            self.assertIn('[absent]', pending_result['languages']['data/texts.xx.txt']['untranslated'])
-            (root / 'data/texts.incomplete.txt').write_text('data/texts.xx.txt\ndata/texts.en.txt\n', encoding='utf-8')
+            self.assertIn('[absent]', pending_result['languages']['content/data/texts.xx.txt']['untranslated'])
+            (root / 'content/data/texts.incomplete.txt').write_text('content/data/texts.xx.txt\ndata/texts.en.txt\n', encoding='utf-8')
             self.assertTrue(any('must match texts.list.txt in order' in e for e in checker.audit(root)['errors']))
 
 

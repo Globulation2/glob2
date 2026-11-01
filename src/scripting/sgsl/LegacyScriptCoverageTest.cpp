@@ -51,13 +51,13 @@ std::string save(MapScriptSGSL& script, Game& game)
 
 void loadLanguageInventory(const std::filesystem::path& listing, bool includeLanguage, const char* language = "ms")
 {
-    std::istringstream entries(glob2test::readFile(glob2test::sourceRoot() / "data/texts.list.txt"));
+    std::istringstream entries(glob2test::readFile(glob2test::contentRoot() / "data/texts.list.txt"));
     std::string contents, entry;
     while (std::getline(entries, entry))
     {
         if (!entry.empty() && entry.back() == '\r') entry.pop_back();
         if (entry.empty() || (!includeLanguage && entry == std::string("data/texts.") + language + ".txt")) continue;
-        contents += (glob2test::sourceRoot() / entry).string() + "\n";
+        contents += (glob2test::contentRoot() / entry).string() + "\n";
     }
     glob2test::writeFile(listing, contents);
     auto* strings = GAGCore::Toolkit::getStringTable();

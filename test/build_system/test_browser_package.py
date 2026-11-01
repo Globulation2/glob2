@@ -44,7 +44,7 @@ class BrowserPackageTests(unittest.TestCase):
         web_assets.launcher_script_fonts(module.ROOT, self.source)
         module.package(self.source, self.output)
         module.verify(self.output)
-        manifest = json.loads((module.ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        manifest = json.loads((module.ROOT / 'content/data/fonts/scripts/manifest.json').read_text())
         for font in manifest['fonts']:
             name = 'fonts/' + font['name'] + '-Regular.ttf'
             self.assertEqual(hashlib.sha256((self.output / name).read_bytes()).hexdigest(), font['sha256'])

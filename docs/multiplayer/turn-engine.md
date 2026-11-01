@@ -212,7 +212,8 @@ record. `glob2 info sim-version --format json` prints the JSON.
   Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`), the default resource
   registry (`data/resources/registry.json`), the default building
   manifest (`data/buildings/manifest.json`) and every definition it references, and the USL runtime
-  (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. For each file the hash
+  (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. Paths are the engine's virtual paths, relative to
+  the runtime tree (`content/` in a checkout), not to the repository. For each file the hash
   takes the path bytes, one zero byte, the content length as a big-endian 64-bit number
   and the content, with every CR LF pair replaced by LF so a Windows checkout with
   automatic line-ending conversion hashes the same. A missing file contributes its path,

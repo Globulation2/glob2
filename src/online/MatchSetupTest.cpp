@@ -675,7 +675,7 @@ TEST_SUITE("MatchSetup")
 	TEST_CASE("a map file is found and checked by the hash of its decompressed bytes")
 	{
 		glob2test::HeadlessGlobals globals;
-		const std::string path = (glob2test::sourceRoot() / "maps/SmallForTwo.map.gz").string();
+		const std::string path = (glob2test::contentRoot() / "maps/SmallForTwo.map.gz").string();
 		const std::string hash = mapContentHash(path);
 		REQUIRE(hash.size() == 64);
 		const fs::path inflated = glob2test::inflated("maps/SmallForTwo.map.gz");

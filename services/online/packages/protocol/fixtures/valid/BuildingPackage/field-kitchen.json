@@ -9,7 +9,7 @@
       "properties": {
         "width": 2,
         "height": 2,
-        "gameSprite": "data/gfx/inn0b"
+        "gameSprite": "content/data/gfx/inn0b"
       },
       "semantics": {
         "placeable": true,

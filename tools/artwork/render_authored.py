@@ -3,8 +3,8 @@
 
 Each SVG under content-src/gfx/authored/ holds one group per animation frame
 ("frame0", "frame1", ...) on a canvas four times the classic sprite size. This
-writes, for every frame, the classic sprite (data/gfx/<name><n>.png at 1/4 size)
-and the high-resolution frame (data/highres/v1/<name><n>.png at full size), both
+writes, for every frame, the classic sprite (content/data/gfx/<name><n>.png at 1/4 size)
+and the high-resolution frame (content/data/highres/v1/<name><n>.png at full size), both
 rendered from the same vector source so they cannot drift apart. Registering the
 high-resolution frames in the pack (frames.txt, manifest.json, production/) is
 done by tools/artwork/package_runtime.py --capture-approved afterwards.
@@ -37,7 +37,7 @@ AUTHORED = ROOT / 'content-src/gfx/authored'
 # high-resolution canvas / SCALE.
 MARKERS = {'area-farm': 8}
 SCALE = 4
-# Single classic-size images with no high-resolution layer: svg name -> data/gfx file.
+# Single classic-size images with no high-resolution layer: svg name -> content/data/gfx file.
 CLASSIC = {'gamegui58': 'gamegui58.png'}
 
 
@@ -68,11 +68,11 @@ def outputs():
         if canvas % SCALE:
             raise SystemExit(f'{name}.svg: canvas {canvas} is not a multiple of {SCALE}')
         for frame in range(frames):
-            yield source, frame, canvas, ROOT / 'data/highres/v1' / f'{name}{frame}.png'
-            yield source, frame, canvas // SCALE, ROOT / 'data/gfx' / f'{name}{frame}.png'
+            yield source, frame, canvas, ROOT / 'content/data/highres/v1' / f'{name}{frame}.png'
+            yield source, frame, canvas // SCALE, ROOT / 'content/data/gfx' / f'{name}{frame}.png'
     for name, file in CLASSIC.items():
         source = (AUTHORED / f'{name}.svg').read_bytes()
-        yield source, None, int(ElementTree.fromstring(source).get('width')), ROOT / 'data/gfx' / file
+        yield source, None, int(ElementTree.fromstring(source).get('width')), ROOT / 'content/data/gfx' / file
 
 
 def check_marker_pairs():
@@ -84,8 +84,8 @@ def check_marker_pairs():
     failures = []
     for name, frames in MARKERS.items():
         for frame in range(frames):
-            hd = Image.open(ROOT / 'data/highres/v1' / f'{name}{frame}.png').convert('RGBA')
-            classic = Image.open(ROOT / 'data/gfx' / f'{name}{frame}.png').convert('RGBA')
+            hd = Image.open(ROOT / 'content/data/highres/v1' / f'{name}{frame}.png').convert('RGBA')
+            classic = Image.open(ROOT / 'content/data/gfx' / f'{name}{frame}.png').convert('RGBA')
             size = classic.size
             down = hd.resize(size, Image.Resampling.LANCZOS)
             a, b = classic.tobytes(), down.tobytes()

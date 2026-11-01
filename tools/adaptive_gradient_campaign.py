@@ -385,7 +385,7 @@ class Campaign:
                 or provenance.get('expected_families') != self.config['expected_families']
                 or {m['path']: m['sha256'] for m in provenance.get('manifests', [])} != request['manifests']
                 or provenance.get('split', {}).get('registry', {}).get('sha256') != file_hash(registry)):
-            raise ValueError('Research fit provenance differs from requested data/splits/family scope')
+            raise ValueError('Research fit provenance differs from requested content/data/splits/family scope')
         emitted, header = directory / 'candidate.json', directory / 'AdaptiveGradientModel.h'
         model.emit(SimpleNamespace(model=str(research), contract=data.CONTRACT_ID, output=str(emitted), header=str(header)))
         return dict(research=str(research), model=str(emitted), header=str(header)), [research, emitted, header]

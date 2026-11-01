@@ -13,14 +13,14 @@ from asset_bundle import include_asset, restore_gzip_assets, verify_apk_assets
 
 class AssetBundleTest(unittest.TestCase):
     def test_cache_and_metadata_are_not_indexed(self):
-        for name in ('data/__pycache__/check_translations.cpython-314.pyc',
-                     'maps/.DS_Store', 'data/CVS/Entries', 'scripts/editor~'):
+        for name in ('content/data/__pycache__/check_translations.cpython-314.pyc',
+                     'content/maps/.DS_Store', 'content/data/CVS/Entries', 'scripts/editor~'):
             self.assertFalse(include_asset(name), name)
-        for name in ('data/gfx/inn.png', 'maps/tutorial.map', 'scripts/test.txt'):
+        for name in ('content/data/gfx/inn.png', 'content/maps/tutorial.map', 'scripts/test.txt'):
             self.assertTrue(include_asset(name), name)
 
     def test_final_package_matches_index(self):
-        entries = {'data/a.txt': b'game data', 'maps/test.map': b'map'}
+        entries = {'content/data/a.txt': b'game data', 'content/maps/test.map': b'map'}
         digest = hashlib.sha256()
         for name, contents in entries.items():
             digest.update(name.encode() + b'\0' + hashlib.sha256(contents).digest())
@@ -31,7 +31,7 @@ class AssetBundleTest(unittest.TestCase):
                 with zipfile.ZipFile(apk, 'w') as package:
                     package.writestr('assets/glob2-bundle/index.list', index)
                     for name, contents in entries.items():
-                        if variant == 'missing' and name == 'maps/test.map':
+                        if variant == 'missing' and name == 'content/maps/test.map':
                             continue
                         package.writestr('assets/glob2-bundle/' + name,
                                          b'wrong' if variant == 'changed' else contents)
@@ -45,10 +45,10 @@ class AssetBundleTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             assets = root / 'assets'
-            compressed = assets / 'maps/test.map.gz'
+            compressed = assets / 'content/maps/test.map.gz'
             compressed.parent.mkdir(parents=True)
             compressed.write_bytes(gzip.compress(b'map data', mtime=0))
-            name = 'maps/test.map.gz'
+            name = 'content/maps/test.map.gz'
             digest = hashlib.sha256(name.encode() + b'\0' + hashlib.sha256(compressed.read_bytes()).digest()).hexdigest()
             apk = root / 'app.apk'
             with zipfile.ZipFile(apk, 'w') as package:
@@ -64,7 +64,7 @@ class AssetBundleTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             assets = root / 'assets'
-            compressed = assets / 'maps/test.map.gz'
+            compressed = assets / 'content/maps/test.map.gz'
             compressed.parent.mkdir(parents=True)
             compressed.write_bytes(gzip.compress(b'map data', mtime=0))
             apk = root / 'app.apk'

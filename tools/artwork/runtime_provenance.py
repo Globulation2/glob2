@@ -18,7 +18,7 @@ CATEGORIES.update({recipe: 'Original-based terrain with deterministic grain and 
 CATEGORIES['soft mask resampling'] = 'Non-AI mask resampling'
 
 def render():
-    manifest = json.loads((ROOT / 'data/highres/v1/manifest.json').read_text())
+    manifest = json.loads((ROOT / 'content/data/highres/v1/manifest.json').read_text())
     rows = []
     for frame in manifest['frames']:
         recipe = frame['recipe']
@@ -37,7 +37,7 @@ def render():
             require(hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest() == source['sha256'],
                     'Provenance source hash differs: ' + source['path'])
         for layer in frame['layers']:
-            path = ROOT / 'data/highres/v1' / layer['file']
+            path = ROOT / 'content/data/highres/v1' / layer['file']
             require(hashlib.sha256(path.read_bytes()).hexdigest() == layer['sha256'],
                     'Provenance layer hash differs: ' + str(path))
         native = '—'
@@ -63,7 +63,7 @@ def render():
              '| Source category | Frames |', '| --- | ---: |']
     lines += ['| %s | %d |' % item for item in sorted(counts.items())]
     lines += ['', f'Total: **{len(rows)} frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in '
-              '[the pack manifest](../../../data/highres/v1/manifest.json). '
+              '[the pack manifest](../../../content/data/highres/v1/manifest.json). '
               'See [original export recipes](../../../content-src/gfx/recovered-runtime.md) for limitations.', '',
               '| Frame | Source category | Logical canvas | Native canvas/source | Recipe |',
               '| --- | --- | --- | --- | --- |']

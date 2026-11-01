@@ -44,7 +44,7 @@ class SteamWindowsPackageTests(unittest.TestCase):
             stage(self.source, self.exe, self.runtime, output)
         self.assertTrue((output / "SDL3.dll").is_file())
         self.assertTrue((output / "libwinpthread-1.dll").is_file())
-        self.assertTrue((output / "data/asset.txt").is_file())
+        self.assertTrue((output / "content/data/asset.txt").is_file())
         self.assertTrue((output / "COPYING").is_file())
         self.assertIn("glob2.exe", (output / "SHA256SUMS.txt").read_text())
 

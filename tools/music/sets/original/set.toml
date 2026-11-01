@@ -4,12 +4,12 @@ license = "GPL-3.0-or-later"
 credits = ["The original Globulation 2 in-game soundtrack, distributed with the game."]
 shipped = false
 description = """
-The soundtrack Globulation 2 has always shipped (data/zik/original, 53.475 s per
+The soundtrack Globulation 2 has always shipped (content/data/zik/original, 53.475 s per
 mood). It is not built by the pipeline: there is no recipe, and `install` never
 touches it. It is kept as the reference for feel and as a calibration point for the
 QA thresholds, so it carries the waivers below to document, measure by measure, where
 it predates today's rules. Check it in place with
-`python3 -m glob2music check ../../data/zik/original` (run from tools/music).
+`python3 -m glob2music check ../../content/data/zik/original` (run from tools/music).
 """
 
 [qa.waivers]

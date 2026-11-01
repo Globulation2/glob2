@@ -67,18 +67,18 @@ class ExportMaterial(unittest.TestCase):
         self.assertEqual(document["prompt"], export_material.MATERIAL_PROMPTS["boulders"])
         self.assertEqual(len(document["reference_sha256"]), 4)
         for i in range(16):
-            path = self.root / f"data/gfx/terrain-boulders{i}.png"
+            path = self.root / f"content/data/gfx/terrain-boulders{i}.png"
             with Image.open(path) as image:
                 self.assertEqual(image.size, (32, 32))
-                self.assertEqual(pixel_sha256(image), document["runtime_sha256"][f"data/gfx/terrain-boulders{i}.png"])
+                self.assertEqual(pixel_sha256(image), document["runtime_sha256"][f"content/data/gfx/terrain-boulders{i}.png"])
         self.assertEqual(export_material.check("boulders", self.root), 16)
         result = validate_material.validate("boulders", self.root)
         self.assertEqual(result["method"], "image-generator")
         # Any edit to a committed frame or the source is caught.
-        with Image.open(self.root / "data/gfx/terrain-boulders5.png") as image:
+        with Image.open(self.root / "content/data/gfx/terrain-boulders5.png") as image:
             edited = image.copy()
         edited.putpixel((10, 10), (255, 0, 255, 255))
-        edited.save(self.root / "data/gfx/terrain-boulders5.png")
+        edited.save(self.root / "content/data/gfx/terrain-boulders5.png")
         with self.assertRaises(ValueError):
             validate_material.validate("boulders", self.root)
         with self.assertRaises(ValueError):

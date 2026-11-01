@@ -69,9 +69,9 @@ class WindowsRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="stage $ with spaces ") as temporary:
             root = Path(temporary)
             stage, output = root / "stage", root / "lists"
-            (stage / "data/gfx").mkdir(parents=True)
+            (stage / "content/data/gfx").mkdir(parents=True)
             (stage / "glob2.exe").write_bytes(b"game")
-            (stage / "data/gfx/image.webp").write_bytes(b"image")
+            (stage / "content/data/gfx/image.webp").write_bytes(b"image")
             file_lists(stage, output)
             install = (output / "install.nsh").read_text()
             self.assertIn("$ with spaces", install)

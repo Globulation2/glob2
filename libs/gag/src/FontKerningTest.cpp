@@ -35,7 +35,7 @@ struct TtfScope
 
 std::string fontPath()
 {
-	return (glob2test::sourceRoot() / "data/fonts/sans.ttf").string();
+	return (glob2test::contentRoot() / "data/fonts/sans.ttf").string();
 }
 
 // The widest run of blank columns between two inked columns, i.e. the widest gap

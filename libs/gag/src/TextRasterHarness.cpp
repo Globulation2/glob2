@@ -159,7 +159,7 @@ void checkRasterIsPixelExact(const std::vector<unsigned char> &frame, int frameW
 							 int offX, int offY, const char *text, int logicalX, int logicalY)
 {
 	const int size = static_cast<int>(std::lround(20 * scale));
-	TTF_Font *reference = TTF_OpenFont((glob2test::sourceRoot() / "data/fonts/sans.ttf").string().c_str(), size);
+	TTF_Font *reference = TTF_OpenFont((glob2test::contentRoot() / "data/fonts/sans.ttf").string().c_str(), size);
 	require(reference != NULL, "Could not open the reference font at the scaled size");
 	SDL_Color white{255, 255, 255, 255};
 	SDL_Surface *rendered = TTF_RenderText_Blended(reference, text, 0, white);

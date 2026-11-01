@@ -53,7 +53,7 @@ def establish_options(env):
     opts.Add(BoolVariable("mingw", "Build with mingw enabled if not auto-detected", 0))
     opts.Add(BoolVariable("mingwcross", "Cross-compile with mingw for Win32", 0))
     opts.Add("crossroot", "Path to include/ and lib/ containing Win32 files for cross-compiling", "../local")
-    opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
+    opts.Add("font", "Build the game using an alternative font placed in the content/data/font folder", "sans.ttf")
     opts.Add("official_instance", "Origin of the official multiplayer platform instance", official_instance.DEFAULT_ORIGIN)
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
@@ -624,15 +624,15 @@ def main():
     Export('isWindowsPlatform')
 
     targets = [
-        "campaigns",
-        "data",
+        "content/campaigns",
+        "content/data",
         "debian",
         "platforms/linux/fedora",
         "libs/gag",
         "libs/usl",
-        "maps",
+        "content/maps",
         "third_party/natsort",
-        "scripts",
+        "content/scripts",
         "scons",
         "src",
         "test",

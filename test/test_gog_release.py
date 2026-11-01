@@ -42,10 +42,10 @@ class GOGReleaseTests(unittest.TestCase):
 
     def test_changed_or_unlisted_files_are_rejected(self):
         self.assertEqual(verify_manifest(self.depot, "windows"), self.metadata)
-        (self.depot / "data/fonts/sans.ttf").write_bytes(b"modified")
+        (self.depot / "content/data/fonts/sans.ttf").write_bytes(b"modified")
         with self.assertRaisesRegex(ValueError, "modified"):
             verify_manifest(self.depot, "windows")
-        (self.depot / "data/fonts/sans.ttf").write_bytes(b"asset")
+        (self.depot / "content/data/fonts/sans.ttf").write_bytes(b"asset")
         (self.depot / "unlisted").write_bytes(b"extra")
         with self.assertRaisesRegex(ValueError, "inventory"):
             verify_manifest(self.depot, "windows")
@@ -78,7 +78,7 @@ class GOGReleaseTests(unittest.TestCase):
                 preflight('v0.11.0.0', public)
 
     def test_retired_tutorial_assets_are_rejected_even_when_inventoried(self):
-        for name in ('campaigns/Tutorial_Campaign.txt', 'campaigns/tutorial-part1.map.gz',
+        for name in ('content/campaigns/Tutorial_Campaign.txt', 'content/campaigns/tutorial-part1.map.gz',
                      'scripts/tutorial_part1.sgsl'):
             with self.subTest(asset=name):
                 retired = self.depot / name
@@ -90,13 +90,13 @@ class GOGReleaseTests(unittest.TestCase):
                 retired.unlink()
 
     def test_every_catalog_lesson_is_required_not_just_introduction(self):
-        (self.depot / 'campaigns/defensive-tactics.map.gz').unlink()
+        (self.depot / 'content/campaigns/defensive-tactics.map.gz').unlink()
         write_manifest(self.depot, self.metadata)
-        with self.assertRaisesRegex(ValueError, 'missing asset: campaigns/defensive-tactics.map.gz'):
+        with self.assertRaisesRegex(ValueError, 'missing asset: content/campaigns/defensive-tactics.map.gz'):
             verify_manifest(self.depot, 'windows')
 
     def test_verified_webp_artwork_can_replace_png(self):
-        png = self.depot / "data/gfx/ressource0.png"
+        png = self.depot / "content/data/gfx/ressource0.png"
         png.with_suffix(".webp").write_bytes(b"exported artwork")
         png.unlink()
         write_manifest(self.depot, self.metadata)

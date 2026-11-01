@@ -18,14 +18,14 @@ def main():
     frames=[]
     for record in native['frames']:
         original=ROOT/record['source'];assert sha(original)==record['source_sha256']
-        logical=Image.open(ROOT/'data/gfx'/(record['id']+'.png')).size
+        logical=Image.open(ROOT/'content/data/gfx'/(record['id']+'.png')).size
         sources=[dict(path=record['source'],sha256=record['source_sha256'],native_size=record['native_size'],layers=record['source_layers']),dict(path=str(RECIPES.relative_to(ROOT)),sha256=sha(RECIPES))]
         layers=[]
         assert {l['role'] for l in record['exports']}=={'base','team'}
         for layer in record['exports']:
             path=NATIVE/layer['file'];assert sha(path)==layer['sha256']
             image=Image.open(path).convert('RGBA');assert list(image.size)==record['native_size']
-            size=Image.open(ROOT/'data/gfx'/layer['file']).size
+            size=Image.open(ROOT/'content/data/gfx'/layer['file']).size
             result=image.resize((size[0]*4,size[1]*4),Image.Resampling.LANCZOS)
             cap=image.getchannel('A').getextrema()[1]
             # Lanczos edge ringing must not increase saved translucent opacity.

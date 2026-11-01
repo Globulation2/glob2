@@ -611,7 +611,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("compiled pages validate metadata and stale catalogs use source fallback [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
 		j["compiled_pack"] = "data/terrain/test-pack/atlas.json";
 		const auto root = glob2test::artifactDir();
@@ -672,7 +672,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("compositor preserves native artwork overridden before startup [display] [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		auto document = nlohmann::json::parse(input);
 		document["compiled_pack"] = "data/terrain/startup-override/atlas.json";
 		for (auto &material : document["materials"])
@@ -746,7 +746,7 @@ TEST_SUITE("TerrainMaterials")
 			  "[display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
 		// Pad the shipped catalog to 64 materials with grass clones.
 		for (auto i = j["materials"].size(); i < 64; ++i)
@@ -1178,7 +1178,7 @@ TEST_SUITE("TerrainMaterials")
 			auto definitions = catalog();
 			if (legacy)
 			{
-				std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+				std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 				auto j = nlohmann::json::parse(input);
 				j["version"] = 1;
 				j.erase("boundary_warp_q8");
@@ -1525,7 +1525,7 @@ TEST_SUITE("TerrainMaterials")
 					CHECK(c.variantIndex(water, x, y, seed) == (unsigned(y) & (grid - 1)) * grid + (unsigned(x) & (grid - 1)));
 				}
 
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		const auto j = nlohmann::json::parse(input);
 		std::size_t index = 0;
 		while (j["materials"][index]["key"] != "water")
@@ -1585,7 +1585,7 @@ TEST_SUITE("TerrainMaterials")
 			for (int y = -8; y < 64; ++y)
 				for (int x = -8; x < 64; ++x)
 					CHECK(c.variantIndex(c.find("water"), x, y, seed) == c.variantIndex(c.find("deep_water"), x, y, seed));
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		const auto document = nlohmann::json::parse(input);
 		std::size_t index = 0;
 		while (document["materials"][index]["key"] != "scree") ++index;
@@ -1609,7 +1609,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("catalog rejects corrupt references and grows independently of gameplay IDs")
 	{
 		glob2test::HeadlessGlobals globals;
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
 		for (auto i = j["materials"].size(); i < 64; ++i)
 		{

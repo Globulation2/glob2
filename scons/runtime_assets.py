@@ -63,7 +63,7 @@ def install_export(exported, destination):
             or hashlib.sha256(path.read_bytes()).hexdigest() == previous[relative]
         ):
             path.unlink()
-    for relative in ("data/highres/v1/manifest.json", "data/highres/v1/README.md"):
+    for relative in ("content/data/highres/v1/manifest.json", "content/data/highres/v1/README.md"):
         (destination / relative).unlink(missing_ok=True)
     for relative in current:
         target = destination / relative

@@ -7,8 +7,8 @@ use the shared runtime export without these browser crop/font derivatives. Regen
 the original file while `sources.json` does not match it, and
 test/build_system/test_web_assets.py fails.
 
-- sans-core.ttf: data/fonts/sans.ttf without the CJK outlines appended from Droid
-  Sans Fallback (see data/fonts/README.md), keeping every original DejaVu glyph,
+- sans-core.ttf: content/data/fonts/sans.ttf without the CJK outlines appended from Droid
+  Sans Fallback (see content/data/fonts/README.md), keeping every original DejaVu glyph,
   its hinting and layout tables, plus the characters of every language's own name
   for the language list. The full font arrives later in the `font-cjk` package.
 - Menu images use the shared pinned lossy/lossless WebP selection policy. The wordmark
@@ -30,9 +30,9 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 from tools.package_assets import encode_image, image_recipe, encoder_ready, encoder_python
 OUTPUT = ROOT / 'platforms/web/assets'
-FONT = 'data/fonts/sans.ttf'
-COLONY = 'data/gfx/menu-colony.png'
-WORDMARK = 'data/gfx/menu-wordmark.png'
+FONT = 'content/data/fonts/sans.ttf'
+COLONY = 'content/data/gfx/menu-colony.png'
+WORDMARK = 'content/data/gfx/menu-wordmark.png'
 # MainMenuScreen::loadWordmark's crop (x, y, w, h); keep a margin around it.
 WORDMARK_CROP = (76, 232, 1956, 284)
 WORDMARK_MARGIN = 8
@@ -51,7 +51,7 @@ def digest(path):
 def language_names(root):
     """Characters of each translation's own [language] and [language incomplete] values."""
     characters = set()
-    for path in sorted((Path(root) / 'data').glob('texts.*.txt')):
+    for path in sorted((Path(root) / 'content/data').glob('texts.*.txt')):
         lines = path.read_text(encoding='utf-8').split('\n')
         for index, line in enumerate(lines[:-1]):
             if line in ('[language]', '[language incomplete]'):

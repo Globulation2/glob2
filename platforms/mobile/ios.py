@@ -174,7 +174,7 @@ def main():
     shutil.copy2(compute_license,notice/'LICENSE')
     resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses','shaders')]
     if args.script_tests:
-        resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures','examples/javascript')]
+        resource_roots += [(ROOT / 'content', 'games')] + [(ROOT, folder) for folder in ('test/fixtures','examples/javascript')]
     for resource_root, folder in resource_roots:
         for resource in sorted((resource_root/folder).rglob('*')):
             if resource.is_file():

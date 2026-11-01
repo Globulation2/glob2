@@ -15,7 +15,7 @@ TEST_CASE("offscreen transformed text rasterizes at the requested resolution" *
 		TtfScope() { REQUIRE(TTF_Init()); }
 		~TtfScope() { TTF_Quit(); }
 	} ttf;
-	const auto path = (glob2test::sourceRoot() / "data/fonts/sans.ttf").string();
+	const auto path = (glob2test::contentRoot() / "data/fonts/sans.ttf").string();
 	TrueTypeFont font(path, 13);
 	font.setStyle(Font::Style(Font::STYLE_NORMAL, 255, 239, 204));
 	const std::string text = "Cancel Upgrade · مرحبا";
@@ -57,7 +57,7 @@ TEST_CASE("font metrics do not rasterize or evict rendered text" *
 	glob2test::ToolkitScope toolkit;
 	struct FontProbe : TrueTypeFont
 	{
-		FontProbe() : TrueTypeFont((glob2test::sourceRoot() / "data/fonts/sans.ttf").string(), 13)
+		FontProbe() : TrueTypeFont((glob2test::contentRoot() / "data/fonts/sans.ttf").string(), 13)
 		{
 		}
 		using TrueTypeFont::getStringCached;
@@ -121,6 +121,6 @@ TEST_CASE("font metrics do not rasterize or evict rendered text" *
 	font.getStringWidth("Workers 123");
 	CHECK_FALSE(font.load("missing-font.ttf", 20));
 	CHECK(font.metricsCache.size() == 1);
-	REQUIRE(font.load((glob2test::sourceRoot() / "data/fonts/sans.ttf").string(), 20));
+	REQUIRE(font.load((glob2test::contentRoot() / "data/fonts/sans.ttf").string(), 20));
 	CHECK(font.metricsCache.empty());
 }

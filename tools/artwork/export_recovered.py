@@ -45,7 +45,7 @@ def export():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     records = []
     def save(frame, arrays, sources, method):
-        classic = ROOT / 'data/gfx' / (frame + '.png')
+        classic = ROOT / 'content/data/gfx' / (frame + '.png')
         if not classic.exists(): classic = classic.with_name(frame + 'r.png')
         size = Image.open(classic).size
         layers = []

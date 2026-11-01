@@ -17,25 +17,25 @@ class TerrainRuntimeFingerprintTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp:
             root, stage = Path(tmp) / "source", Path(tmp) / "stage"
-            (root / "data/gfx").mkdir(parents=True)
-            (stage / "data/gfx").mkdir(parents=True)
-            names = [f"data/gfx/fixture{i}.png" for i in range(2)]
+            (root / "content/data/gfx").mkdir(parents=True)
+            (stage / "content/data/gfx").mkdir(parents=True)
+            names = [f"content/data/gfx/fixture{i}.png" for i in range(2)]
             images = [Image.frombytes("RGB", (32, 32), random.Random(i).randbytes(32 * 32 * 3))
                       for i in range(2)]
             for name, image in zip(names, images):
                 image.save(root / name)
-            images[0].save(stage / "data/gfx/fixture0.webp", quality=25)
+            images[0].save(stage / "content/data/gfx/fixture0.webp", quality=25)
             sheet = Image.new("RGB", (32 * package_assets.SHEET_COLUMNS, 32))
             sheet.paste(images[1], (32, 0))
-            sheet.save(stage / "data/gfx/test-sheet-0.webp", quality=25)
-            plan = {"data/gfx/test": [{"name": "test-sheet-0.png", "size": (32, 32),
+            sheet.save(stage / "content/data/gfx/test-sheet-0.webp", quality=25)
+            plan = {"content/data/gfx/test": [{"name": "test-sheet-0.png", "size": (32, 32),
                                       "frames": [root / "unused.png", root / names[1]]}]}
             fingerprints = package_assets.terrain_runtime_fingerprints(
                 terrain_tileset, names, root, stage, plan
             )
-            with Image.open(stage / "data/gfx/fixture0.webp") as decoded:
+            with Image.open(stage / "content/data/gfx/fixture0.webp") as decoded:
                 self.assertEqual(fingerprints[names[0]], terrain_tileset.pixel_fingerprint(decoded))
-            with Image.open(stage / "data/gfx/test-sheet-0.webp") as decoded:
+            with Image.open(stage / "content/data/gfx/test-sheet-0.webp") as decoded:
                 self.assertEqual(fingerprints[names[1]], terrain_tileset.pixel_fingerprint(
                     decoded.crop((32, 0, 64, 32))))
             for name, original in zip(names, images):
@@ -52,22 +52,22 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "source"
-            (root / "data/gfx").mkdir(parents=True)
-            (root / "data/terrain").mkdir()
+            (root / "content/data/gfx").mkdir(parents=True)
+            (root / "content/data/terrain").mkdir()
             (root / "tools").mkdir()
             shutil.copyfile(Path(package_assets.__file__).with_name("terrain_tileset.py"),
                             root / "tools/terrain_tileset.py")
-            Image.new("RGBA", (32, 32), (20, 80, 130, 255)).save(root / "data/gfx/tile0.png")
+            Image.new("RGBA", (32, 32), (20, 80, 130, 255)).save(root / "content/data/gfx/tile0.png")
             document = {
-                "version": 1, "compiled_pack": "data/terrain/compiled/atlas.json",
+                "version": 1, "compiled_pack": "content/data/terrain/compiled/atlas.json",
                 "profiles": [{"key": "flat", "roughness_q8": 0,
                               "contours_q12": [[0] * 5 for _ in range(4)]}],
                 "materials": [{"key": "water", "profile": "flat",
-                               "sprite": "data/gfx/tile", "preview": [20, 80, 130],
+                               "sprite": "content/data/gfx/tile", "preview": [20, 80, 130],
                                "variants": [{"frame": 0, "weight": 1}]}],
                 "bindings": {key: "water" for key in terrain_tileset.BINDINGS},
             }
-            (root / "data/terrain/tileset.json").write_text(json.dumps(document))
+            (root / "content/data/terrain/tileset.json").write_text(json.dumps(document))
             script = (
                 "import importlib.util,sys; "
                 "assert importlib.util.find_spec('PIL') is None; "
@@ -87,16 +87,16 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                     self.assertEqual(audit["optimized"], optimized)
                     self.assertTrue((output / document["compiled_pack"]).is_file())
                     if not optimized:
-                        self.assertEqual((output / "data/gfx/tile0.png").read_bytes(),
-                                         (root / "data/gfx/tile0.png").read_bytes())
+                        self.assertEqual((output / "content/data/gfx/tile0.png").read_bytes(),
+                                         (root / "content/data/gfx/tile0.png").read_bytes())
 
 
 class AssetExportTests(unittest.TestCase):
     def test_script_diagnostics_are_not_runtime_assets(self):
-        self.assertFalse(include_asset('data/fonts/script-probes.json'))
-        self.assertFalse(include_asset('data/fonts/check_script_support.py'))
-        self.assertTrue(include_asset('data/fonts/scripts/NotoSansDevanagari-Regular.ttf'))
-        self.assertTrue(include_asset('data/fonts/LICENSE-Noto.txt'))
+        self.assertFalse(include_asset('content/data/fonts/script-probes.json'))
+        self.assertFalse(include_asset('content/data/fonts/check_script_support.py'))
+        self.assertTrue(include_asset('content/data/fonts/scripts/NotoSansDevanagari-Regular.ttf'))
+        self.assertTrue(include_asset('content/data/fonts/LICENSE-Noto.txt'))
 
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -105,13 +105,13 @@ class AssetExportTests(unittest.TestCase):
         self.root.mkdir()
         self.output = Path(self.temp.name) / "output"
         self.cache = Path(self.temp.name) / "cache"
-        self.image = self.root / "data/gfx/frame0.png"
+        self.image = self.root / "content/data/gfx/frame0.png"
         self.image.parent.mkdir(parents=True)
         im = Image.new("RGBA", (64, 64), (20, 80, 130, 0))
         im.putpixel((0, 0), (200, 40, 30, 255))
         im.save(self.image)
-        (self.root / "data/fonts").mkdir()
-        (self.root / "data/fonts/LICENSE.txt").write_text("notice")
+        (self.root / "content/data/fonts").mkdir()
+        (self.root / "content/data/fonts/LICENSE.txt").write_text("notice")
 
     def export(self, **kwargs):
         kwargs.setdefault("jobs", 1)
@@ -173,7 +173,7 @@ class AssetExportTests(unittest.TestCase):
             Image.open(self.image).convert("RGBA").tobytes(),
         )
         self.assertEqual(self.image.read_bytes(), original)
-        self.assertTrue((self.output / "data/fonts/LICENSE.txt").is_file())
+        self.assertTrue((self.output / "content/data/fonts/LICENSE.txt").is_file())
         self.assertFalse((self.output / "export.json").exists())
 
     def test_cached_export_is_repeatable_and_stale_files_disappear(self):
@@ -181,7 +181,7 @@ class AssetExportTests(unittest.TestCase):
         self.assertEqual(first, self.export())
         self.image.unlink()
         self.export()
-        self.assertFalse(any((self.output / "data/gfx").glob("*")))
+        self.assertFalse(any((self.output / "content/data/gfx").glob("*")))
 
     def test_cache_blob_corruption_is_repaired(self):
         first = self.export()
@@ -202,12 +202,12 @@ class AssetExportTests(unittest.TestCase):
         self.assertNotEqual(first["files"], second["files"])
 
     def test_filters_metadata_but_preserves_linux_store_screenshot(self):
-        self.assertFalse(include_asset("data/highres/v1/manifest.json"))
-        self.assertFalse(include_asset("data/fonts/build_chinese_font.py"))
-        self.assertTrue(include_asset("data/highres/v1/frames.txt"))
-        self.assertFalse(include_asset("data/screenshots/game.png", "macos"))
-        self.assertTrue(include_asset("data/screenshots/game.png", "linux"))
-        self.assertTrue(include_asset("data/fonts/README.md"))
+        self.assertFalse(include_asset("content/data/highres/v1/manifest.json"))
+        self.assertFalse(include_asset("content/data/fonts/build_chinese_font.py"))
+        self.assertTrue(include_asset("content/data/highres/v1/frames.txt"))
+        self.assertFalse(include_asset("content/data/screenshots/game.png", "macos"))
+        self.assertTrue(include_asset("content/data/screenshots/game.png", "linux"))
+        self.assertTrue(include_asset("content/data/fonts/README.md"))
 
     def test_refuses_source_and_unowned_output(self):
         with self.assertRaises(ValueError):
@@ -229,12 +229,12 @@ class AssetExportTests(unittest.TestCase):
         Image.frombytes("RGB", (64, 64), random.Random(99).randbytes(64*64*3)).save(self.image)
         second = self.export()
         record = next(x for x in second["files"] if x["source"].endswith(".png"))
-        self.assertEqual(record["output"], "data/gfx/frame0.webp")
-        self.assertFalse((self.output / "data/gfx/frame0.png").exists())
+        self.assertEqual(record["output"], "content/data/gfx/frame0.webp")
+        self.assertFalse((self.output / "content/data/gfx/frame0.png").exists())
         self.assertEqual((self.output / "user.txt").read_text(), "retain")
         self.export(optimized=False)
-        self.assertFalse((self.output / "data/gfx/frame0.webp").exists())
-        self.assertTrue((self.output / "data/gfx/frame0.png").exists())
+        self.assertFalse((self.output / "content/data/gfx/frame0.webp").exists())
+        self.assertTrue((self.output / "content/data/gfx/frame0.png").exists())
 
     def test_corrupt_source_keeps_previous_export(self):
         self.export()
@@ -280,7 +280,7 @@ class AssetExportTests(unittest.TestCase):
     def test_original_profile_needs_no_conversion(self):
         self.export(optimized=False)
         self.assertEqual(
-            (self.output / "data/gfx/frame0.png").read_bytes(), self.image.read_bytes()
+            (self.output / "content/data/gfx/frame0.png").read_bytes(), self.image.read_bytes()
         )
 
     def test_high_depth_png_is_not_quantized_to_webp(self):
@@ -293,13 +293,13 @@ class AssetExportTests(unittest.TestCase):
         self.assertEqual(self.image.read_bytes(), original)
 
     def test_linux_screenshots_keep_their_png_representation(self):
-        folder = self.root / "data/screenshots"
+        folder = self.root / "content/data/screenshots"
         folder.mkdir()
         screenshot = folder / "game.png"
         screenshot.write_bytes(self.image.read_bytes())
         self.export(platform="linux")
         self.assertEqual(
-            (self.output / "data/screenshots/game.png").read_bytes(),
+            (self.output / "content/data/screenshots/game.png").read_bytes(),
             screenshot.read_bytes(),
         )
 
@@ -328,10 +328,10 @@ class AssetExportTests(unittest.TestCase):
 
     def test_png_cannot_win_even_when_smaller_and_hd_index_uses_webp(self):
         # This artwork's optimized PNG is smaller than either WebP encoding.
-        source = self.root / "data/gfx/gamegui47.png"
-        actual = package_assets.ROOT / "data/gfx/gamegui47.png"
+        source = self.root / "content/data/gfx/gamegui47.png"
+        actual = package_assets.ROOT / "content/data/gfx/gamegui47.png"
         source.write_bytes(actual.read_bytes())
-        hd = self.root / "data/highres/v1"
+        hd = self.root / "content/data/highres/v1"
         hd.mkdir(parents=True)
         text = "glob2-highres 1\nframe0 64 64 4 base.png team.png\n"
         (hd / "frames.txt").write_text(text)
@@ -339,11 +339,11 @@ class AssetExportTests(unittest.TestCase):
         self.assertTrue(all(r["output"].endswith(".webp") for r in audit["files"]
                             if r["source"].endswith(".png")))
         self.assertEqual((hd / "frames.txt").read_text(), text)
-        self.assertEqual((self.output / "data/highres/v1/frames.txt").read_text(),
+        self.assertEqual((self.output / "content/data/highres/v1/frames.txt").read_text(),
                          text.replace(".png", ".webp"))
 
     def test_source_hd_atlas_placement_is_verified_before_encoding(self):
-        directory = self.root / "data/highres/v1"
+        directory = self.root / "content/data/highres/v1"
         directory.mkdir(parents=True)
         frame = Image.new("RGBA", (8, 8), (37, 53, 83, 177))
         frame.save(directory / "terrain0.png")
@@ -440,13 +440,13 @@ class AssetExportTests(unittest.TestCase):
 
 
 class SpriteSheetExportTests(unittest.TestCase):
-    """Optimized exports pack data/gfx/unit's frames into sheets for Sprite::load."""
+    """Optimized exports pack content/data/gfx/unit's frames into sheets for Sprite::load."""
 
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / "source"
-        self.gfx = self.root / "data/gfx"
+        self.gfx = self.root / "content/data/gfx"
         self.gfx.mkdir(parents=True)
         self.output = Path(self.temp.name) / "output"
         self.cache = Path(self.temp.name) / "cache"
@@ -468,13 +468,13 @@ class SpriteSheetExportTests(unittest.TestCase):
     def unpack(self):
         """{frame name: RGBA bytes} cut out of the exported sheets like Sprite::load."""
         frames = {}
-        index = (self.output / "data/gfx/unit.sheet").read_text()
+        index = (self.output / "content/data/gfx/unit.sheet").read_text()
         for line in index.splitlines():
             if not line or line.startswith("#"):
                 continue
             name, layer, first, count, width, height = line.split()
             first, count, width, height = int(first), int(count), int(width), int(height)
-            sheet = next((self.output / "data/gfx").glob(Path(name).stem + ".*"))
+            sheet = next((self.output / "content/data/gfx").glob(Path(name).stem + ".*"))
             with Image.open(sheet) as image:
                 image = image.convert("RGBA")
                 self.assertEqual(image.width % width, 0)
@@ -503,13 +503,13 @@ class SpriteSheetExportTests(unittest.TestCase):
     def test_sheets_hold_every_frame_exactly_and_replace_the_frames(self):
         audit = self.export(lossy=False)
         self.assertEqual(self.unpack(), self.frames)
-        shipped = {p.name for p in (self.output / "data/gfx").iterdir()}
+        shipped = {p.name for p in (self.output / "content/data/gfx").iterdir()}
         self.assertFalse(any(name.startswith("unit") and name[4].isdigit() for name in shipped))
         self.assertTrue(any(name.startswith("unitmini0.") for name in shipped))
         packed = [item for item in audit["files"] if "packed_from" in item]
         self.assertEqual(
             sorted(f["source"] for item in packed for f in item["packed_from"]),
-            sorted("data/gfx/" + name for name in self.frames),
+            sorted("content/data/gfx/" + name for name in self.frames),
         )
         self.assertEqual(audit["source_bytes"], sum(p.stat().st_size for p in self.gfx.iterdir()))
 
@@ -519,7 +519,7 @@ class SpriteSheetExportTests(unittest.TestCase):
             self.assertEqual(self.unpack(), self.frames)
         lines = [
             line.split()[1:]
-            for line in (self.output / "data/gfx/unit.sheet").read_text().splitlines()
+            for line in (self.output / "content/data/gfx/unit.sheet").read_text().splitlines()
             if line and not line.startswith("#")
         ]
         self.assertEqual(
@@ -551,8 +551,8 @@ class SpriteSheetExportTests(unittest.TestCase):
 
     def test_original_profile_keeps_the_frames(self):
         self.export(optimized=False)
-        self.assertFalse((self.output / "data/gfx/unit.sheet").exists())
-        self.assertEqual((self.output / "data/gfx/unit5r.png").read_bytes(), (self.gfx / "unit5r.png").read_bytes())
+        self.assertFalse((self.output / "content/data/gfx/unit.sheet").exists())
+        self.assertEqual((self.output / "content/data/gfx/unit5r.png").read_bytes(), (self.gfx / "unit5r.png").read_bytes())
 
     def test_frames_behind_a_gap_are_rejected(self):
         Image.new("RGBA", (4, 4)).save(self.gfx / "unit8r.png")

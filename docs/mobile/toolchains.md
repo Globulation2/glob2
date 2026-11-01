@@ -42,7 +42,7 @@ and cache reuse under alternating transforms.
 ## App icons
 
 Both mobile packages use the canonical blue Glob artwork from
-`data/icons/glob2-icon-128x128.png`, on the in-game purple background. Android
+`content/data/icons/glob2-icon-128x128.png`, on the in-game purple background. Android
 ships density-specific legacy icons and a padded adaptive foreground; iOS ships
 an opaque iPhone/iPad AppIcon asset catalog, compiled by Xcode into the bundle.
 The canonical source is 128 pixels; larger sizes are resampled from that source.

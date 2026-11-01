@@ -26,7 +26,7 @@ def configure(env):
               root / 'libs/gag/shaders/skin-materials.json',
               root / 'libs/gag/shaders/skin-material.glsl']
     for pattern in ('*.gsk', '*.gsr', '*.gsb', '*.guv', '*.view.json'):
-        inputs += sorted((root / 'data/skins/colony-v1').glob(pattern))
+        inputs += sorted((root / 'content/data/skins/colony-v1').glob(pattern))
 
     def generate(target, source, env):
         recipe = json.loads(inputs[0].read_text())

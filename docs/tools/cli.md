@@ -68,7 +68,7 @@ glob2 game run --map-file artifacts/river.map.gz --game-seed 713 \
 glob2 game run --load-game artifacts/game/final.game.gz --ticks 128 \
   --telemetry checksums --output-dir artifacts/continued
 glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr \
-  --map-file maps/FourSquares1.map.gz --output-dir artifacts/verified
+  --map-file content/maps/FourSquares1.map.gz --output-dir artifacts/verified
 ```
 
 Each structured job needs a fresh output directory without `result.json`. A saved
@@ -497,7 +497,7 @@ Choose at most one: `--output`, `--preview`.
 Choose at most one: `--preview-scale`, `--preview-size`.
 
 ```sh
-glob2 map preview maps/FourSquares1.map.gz --output artifacts/map.png
+glob2 map preview content/maps/FourSquares1.map.gz --output artifacts/map.png
 ```
 
 ### `glob2 map render`
@@ -525,7 +525,7 @@ Platform: all.
 `--field-color` requires `--render-field`.
 
 ```sh
-glob2 map render maps/FourSquares1.map.gz --output artifacts/game-view.png
+glob2 map render content/maps/FourSquares1.map.gz --output artifacts/game-view.png
 ```
 
 ### `glob2 map import-image`
@@ -584,7 +584,7 @@ Platform: all.
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
-glob2 map export-image maps/FourSquares1.map.gz --output artifacts/terrain.png
+glob2 map export-image content/maps/FourSquares1.map.gz --output artifacts/terrain.png
 ```
 
 ### `glob2 map inspect-package`
@@ -753,7 +753,7 @@ Structured jobs isolate engine tuning and diagnostic environment variables.
 `--set` requires `--generator`.
 
 ```sh
-glob2 game run --map-file maps/FourSquares1.map.gz --game-seed 713 --player castor --player cortex --player castor --player cortex --ticks 64 --telemetry checksums --output-dir artifacts/game
+glob2 game run --map-file content/maps/FourSquares1.map.gz --game-seed 713 --player castor --player cortex --player castor --player cortex --ticks 64 --telemetry checksums --output-dir artifacts/game
 ```
 
 ### `glob2 game repeat`
@@ -850,7 +850,7 @@ Platform: all.
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
-glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir artifacts/verified
+glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file content/maps/FourSquares1.map.gz --output-dir artifacts/verified
 ```
 
 ### `glob2 online join`
@@ -1148,7 +1148,7 @@ Platform: all.
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
-glob2 script attach maps/FourSquares1.map.gz examples/javascript/scenario.js artifacts/scripted.map.gz
+glob2 script attach content/maps/FourSquares1.map.gz examples/javascript/scenario.js artifacts/scripted.map.gz
 ```
 
 ### `glob2 assets compose-buildings`
@@ -1263,7 +1263,7 @@ Platform: all.
 | `--runs` | integer; default 0; 0..2147483647 | Game count; 0 repeats forever. |
 | `--ticks` | integer; default 90000; ticks; 0..2147483647 | Tick cap per random game; 0 runs until game end; overrides GLOB2_TEST_MAX_TICKS. |
 | `--ai-types` | string | Comma-separated random AI pool. |
-| `--map` | string | Map name resolved as maps/NAME.map. |
+| `--map` | string | Map name resolved as content/maps/NAME.map. |
 | `--matchup` | string | Comma-separated per-team AIs; requires --map. |
 | `--save-game-as` | file | Write the initial game before running. |
 | `--building-catalog` | file | Building catalog manifest. |
@@ -1410,7 +1410,7 @@ Platform: all.
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
-glob2 dev dump-resources maps/FourSquares1.map.gz
+glob2 dev dump-resources content/maps/FourSquares1.map.gz
 ```
 
 ### `glob2 dev dump-wheat`
@@ -1433,7 +1433,7 @@ Platform: all.
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
-glob2 dev dump-wheat maps/FourSquares1.map.gz --team 0
+glob2 dev dump-wheat content/maps/FourSquares1.map.gz --team 0
 ```
 
 ### `glob2 dev dump-tiled`
@@ -1459,7 +1459,7 @@ Platform: all.
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
-glob2 dev dump-tiled maps/FourSquares1.map.gz --repeat-x 2 --repeat-y 2
+glob2 dev dump-tiled content/maps/FourSquares1.map.gz --repeat-x 2 --repeat-y 2
 ```
 
 ### `glob2 dev hive-worker`

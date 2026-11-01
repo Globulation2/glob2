@@ -34,11 +34,11 @@ its neutral locale directories are deliberate. The separate `google-play/`
 export uses Play locale identifiers and still requires console verification.
 Do not upload the F-Droid directory tree as ready Play metadata. Merge AppStream summary,
 description paragraphs and screenshot captions into the corresponding existing
-nodes in `data/org.globulation2.Globulation2.metainfo.xml`; the exported fragment
+nodes in `content/data/org.globulation2.Globulation2.metainfo.xml`; the exported fragment
 is not a replacement component and its `source_role` hints are not AppStream
 attributes. Preserve release history, approved screenshot URLs and factual
 edition-specific qualifications. The desktop fragment supplies translated
-`Comment` values for `data/glob2.desktop`; preserve launcher settings and do not
+`Comment` values for `content/data/glob2.desktop`; preserve launcher settings and do not
 infer a new `GenericName` translation from a different marketing field.
 
 Console fields and locale availability require separate verification. Source
@@ -155,7 +155,7 @@ writable fork and set `FLATHUB_FORK` (an `owner/repository` GitHub Actions
 variable) and `FLATHUB_GH_TOKEN` (a secret with permission to push that fork and
 open a PR). `flathub-update.yml` then opens a Flathub update PR. A Flathub
 maintainer must review and merge it; the workflow does not bypass that review.
-Keep the upstream AppStream metadata in `data/` updated with each release's
+Keep the upstream AppStream metadata in `content/data/` updated with each release's
 notes and screenshots.
 
 [Release index](README.md) · [Documentation index](../README.md).

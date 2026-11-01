@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ENTITLEMENTS = ROOT / "platforms/macos/AppStore.entitlements"
-ICON_SOURCE = ROOT / "data/icons/glob2-icon-128x128.png"
+ICON_SOURCE = ROOT / "content/data/icons/glob2-icon-128x128.png"
 sys.path.insert(0, str(ROOT / "scons"))
 from build_layout import PACKAGE_VERSION
 

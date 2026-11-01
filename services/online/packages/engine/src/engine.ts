@@ -48,7 +48,7 @@ export type EngineCommand = 'catalog' | 'generate' | 'inspect' | 'verify';
 export interface EngineOptions {
   /** Path of the glob2 binary. */
   binary: string;
-  /** Working directory for the binary (holds its data/ directory). */
+  /** Working directory for the binary (holds its content/data/ directory). */
   workdir: string;
   /** Parent of per-job scratch directories (default: the OS temp dir). */
   scratchRoot?: string;

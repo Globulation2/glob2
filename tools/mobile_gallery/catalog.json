@@ -736,7 +736,7 @@
     {
       "id": "map-share",
       "title": "Share a map",
-      "description": "Upload form for maps/balanced.map; visibility defaults to Unlisted.",
+      "description": "Upload form for content/maps/balanced.map; visibility defaults to Unlisted.",
       "group": "Online screens"
     },
     {

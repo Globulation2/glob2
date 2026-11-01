@@ -88,7 +88,7 @@ commit. Its build exposes the source directory on `PYTHONPATH` so spawned asset
 encoder workers can import the tagged tools under SCons.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
-`data/screenshots/`; the AppStream metadata pins its URL to the commit that
+`content/data/screenshots/`; the AppStream metadata pins its URL to the commit that
 introduced it so Flathub can mirror a stable image. Confirm the URL resolves
 before publication, and pin any replacement screenshot to its own commit. Add
 the release notes once the release candidate is settled. The
@@ -96,7 +96,7 @@ the release notes once the release candidate is settled. The
 installed with other icon sizes.
 Flathub reads the AppStream screenshot from the installed metainfo file. The
 Snap Store manages screenshots in its listing separately from `snapcraft.yaml`;
-upload `data/screenshots/globulation2-gameplay.png` to that listing when the snap
+upload `content/data/screenshots/globulation2-gameplay.png` to that listing when the snap
 name is registered. Snapcraft imports the same AppStream component ID for the
 app's desktop metadata, but `snapcraft upload-metadata` transfers summary,
 description and icon only.

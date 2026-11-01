@@ -99,7 +99,7 @@ def load_records(work):
 def validate_work(work):
     """Temporary authoring output must not overlap retained sources or assets."""
     work = work.resolve()
-    protected = [SOURCE_ROOT, ROOT / 'data/gfx', ROOT / 'data/highres/v1',
+    protected = [SOURCE_ROOT, ROOT / 'content/data/gfx', ROOT / 'content/data/highres/v1',
                  ROOT / 'content-src/gfx/production']
     for path in protected:
         if work.is_relative_to(path.resolve()) or path.resolve().is_relative_to(work):
@@ -361,7 +361,7 @@ def main():
             parser.error('render needs --blender and a positive --workers')
         render_turns(work, args.blender.resolve(), args.workers)
     else:
-        install_turns(work, ROOT / 'data/gfx', ROOT / 'data/highres/v1')
+        install_turns(work, ROOT / 'content/data/gfx', ROOT / 'content/data/highres/v1')
 
 
 if __name__ == '__main__':

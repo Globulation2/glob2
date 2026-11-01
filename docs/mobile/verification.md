@@ -64,7 +64,7 @@ where available; **Export feedback** creates the portable JSON copy to share or
 keep. Import merges nonempty review entries by stable screen ID.
 
 `tools/MobileGalleryHarness.cpp` selects fixture states and renders through the
-normal screen stack, `GameGUI` and `MapEdit`. It uses bundled maps/campaigns,
+normal screen stack, `GameGUI` and `MapEdit`. It uses bundled content/maps/campaigns,
 a fixed generated-map seed, and a disposable profile for each viewport. The gameplay fixture advances 4,096 simulation ticks, populates three named
 players and authored objectives, and records/loads a replay in its disposable
 profile. No chat submission, account creation, uploads or personal saves occur. Screen fixtures may select internal state directly; this is a visual

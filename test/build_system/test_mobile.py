@@ -157,21 +157,21 @@ class PlayBundleAssetTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)
             assets=root/'assets'
-            source=assets/'maps/example.map.gz'
+            source=assets/'content/maps/example.map.gz'
             source.parent.mkdir(parents=True)
             source.write_bytes(gzip.compress(b'map contents'))
             digest=hashlib.sha256()
-            digest.update(b'maps/example.map.gz\0'+hashlib.sha256(source.read_bytes()).digest())
+            digest.update(b'content/maps/example.map.gz\0'+hashlib.sha256(source.read_bytes()).digest())
             bundle=root/'app.aab'
             with zipfile.ZipFile(bundle,'w') as archive:
                 archive.writestr(prefix+'index.list',digest.hexdigest()+'\nmaps/example.map.gz\n')
-                archive.writestr(prefix+'maps/example.map',b'map contents')
+                archive.writestr(prefix+'content/maps/example.map',b'map contents')
             self.assertTrue(restore_gzip_assets(bundle,assets,prefix))
             verify_apk_assets(bundle,prefix)
             self.assertFalse(restore_gzip_assets(bundle,assets,prefix))
             with zipfile.ZipFile(bundle,'w') as archive:
                 archive.writestr(prefix+'index.list',digest.hexdigest()+'\nmaps/example.map.gz\n')
-                archive.writestr(prefix+'maps/example.map.gz',b'changed')
+                archive.writestr(prefix+'content/maps/example.map.gz',b'changed')
             with self.assertRaises(ValueError): verify_apk_assets(bundle,prefix)
 
 

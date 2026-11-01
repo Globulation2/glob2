@@ -27,7 +27,7 @@ target for the whole stereo stream. Vorbis music is no longer supported. Music
 sets retain their directory names and contain `a1.opus`, `a2.opus`, and `a3.opus`.
 The three tracks must decode to exactly equal positive frame counts, with one
 logical stream each, so mood changes remain aligned. Intro and menu music live
-in `data/zik/intro.opus` and `data/zik/menu.opus`.
+in `content/data/zik/intro.opus` and `content/data/zik/menu.opus`.
 
 Use `python3 tools/encode_music.py INPUT OUTPUT.opus` to encode from PCM masters
 or convert an existing custom Vorbis track. It uses FFmpeg/libopus with

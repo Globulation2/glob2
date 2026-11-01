@@ -83,19 +83,19 @@ as matches and the editor; see [render pacing](../architecture/rendering.md#targ
     compare it against the previous release with the gallery
     (`tools/mobile_gallery/capture.py`) at a desktop and a phone size; the
     framework is a means of keeping screens responsive, not a redesign.
-12. **Register new text keys** in `data/texts.keys.txt` with English fallback
-    text in `data/texts.en.txt`; the capture runs fail on missing keys.
+12. **Register new text keys** in `content/data/texts.keys.txt` with English fallback
+    text in `content/data/texts.en.txt`; the capture runs fail on missing keys.
     Leave untranslated catalog values blank so the runtime uses English, and mark
-    those catalogs with `*` in `data/texts.incomplete.txt`. When English fallback
-    is accepted for new controls, list only those keys in `data/texts.pending.txt`;
+    those catalogs with `*` in `content/data/texts.incomplete.txt`. When English fallback
+    is accepted for new controls, list only those keys in `content/data/texts.pending.txt`;
     strict validation still rejects other untranslated text and all structural
     errors. Remove pending keys once every catalog has a translation.
 
 ## Translation coverage checks
 
-Run `python3 data/check_translations.py --strict` and
+Run `python3 content/data/check_translations.py --strict` and
 `python3 test/test_translations.py` when changing user-visible text.
-Use `python3 data/check_translations.py --json` for per-language missing,
+Use `python3 content/data/check_translations.py --json` for per-language missing,
 untranslated, shared-English and placeholder findings, plus the source coverage
 inventory. The checker reads the catalogs without rewriting them.
 
@@ -746,9 +746,9 @@ and Display → Interface appearance offers both.
 
 #### Theme files
 
-Themes are JSON files. Shipped themes live in `data/themes/<id>.json` and are
-listed, in display order, in `data/themes/index.json`; assets they use go in
-`data/themes/<id>/`. Players can add their own as `<user data>/themes/<id>.json`;
+Themes are JSON files. Shipped themes live in `content/data/themes/<id>.json` and are
+listed, in display order, in `content/data/themes/index.json`; assets they use go in
+`content/data/themes/<id>/`. Players can add their own as `<user data>/themes/<id>.json`;
 a shipped theme wins any id clash. A broken or missing file never removes the
 compiled `light` and `dark` themes (`ThemeCatalog::builtinLight()` and
 `builtinDark()`), and a test keeps the shipped files identical to them.
@@ -777,13 +777,13 @@ compiled `light` and `dark` themes (`ThemeCatalog::builtinLight()` and
   colours for Dark and Ocean. `veil` washes over available artwork only.
   `wordmark` replaces the main
   menu wordmark with an image shown as drawn. Backdrop and wordmark overrides
-  must name `.webp` artwork under `data/`; lookup retains user-directory priority.
+  must name `.webp` artwork under `content/data/`; lookup retains user-directory priority.
   Without an override the shipped wordmark is
   recoloured with `ink` and `accent`.
 - `buttons.kind` `sprite` paints bordered buttons with a three-slice sprite set
   (`<sprite>0..5.webp`, left, middle and right with their highlights, as
-  `data/gfx/guitheme`); their labels use `ink`. Flat buttons keep the palette.
-- Asset paths must stay under `data/`. Unknown tokens and invalid values are
+  `content/data/gfx/guitheme`); their labels use `ink`. Flat buttons keep the palette.
+- Asset paths must stay under `content/data/`. Unknown tokens and invalid values are
   reported on standard error and leave the inherited value.
 
 Every shipped theme must keep `ink` on `paper` and on fields, and `hud.ink` on
@@ -848,8 +848,8 @@ numeric choices remain readable. The gameplay action strip retains its
 game-specific sprites and labels, which distinguish construction, flags and team tools.
 
 Original SVGs and a source manifest live in `content-src/icons/tabler/`, pinned to
-Tabler v3.48.0. Generated PNG sources live in `data/gui/`; the distributed MIT notice is
-`data/tabler-icons-license.txt`. Ordinary builds convert the committed sources to
+Tabler v3.48.0. Generated PNG sources live in `content/data/gui/`; the distributed MIT notice is
+`content/data/tabler-icons-license.txt`. Ordinary builds convert the committed sources to
 WebP in the runtime tree and need no SVG renderer or network access. To regenerate with the pinned development tool:
 
 ```sh

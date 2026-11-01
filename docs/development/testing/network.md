@@ -57,7 +57,7 @@ This runs separate host and joining client processes with real SDL lobby widgets
 uses the actual `LANFindScreen` Pair and connect path with the host session fingerprint.
 It clicks Ready and Leave Game, then rejoins. Both cycles download the map into the
 guest's content-addressed map cache and compare its bytes with the fixture source
-(`maps/FourSquares1.map`). The host verifies readiness, roster size, unique names and
+(`content/maps/FourSquares1.map`). The host verifies readiness, roster size, unique names and
 seat numbering, and both departures. Linux CI runs this automatically with SDL's dummy
 video/audio drivers.
 

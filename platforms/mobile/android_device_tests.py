@@ -111,9 +111,9 @@ def main():
                   'x86_64': 'x86_64-linux-android'}[args.arch]
         shutil.copy2(prebuilt / 'sysroot/usr/lib' / triple / 'libc++_shared.so', payload / 'libc++_shared.so')
         for name in ('data', 'maps', 'campaigns', 'scripts'):
-            shutil.copytree(ROOT / name, payload / name)
+            shutil.copytree(ROOT / 'content' / name, payload / name)
         # Fixture-driven cases resolve everything through glob2test::sourceRoot().
-        shutil.copytree(ROOT / 'games', payload / 'games')
+        shutil.copytree(ROOT / 'content/games', payload / 'games')
         shutil.copytree(ROOT / 'test/fixtures', payload / 'test/fixtures')
         shutil.copytree(ROOT / 'test/maxima/fixtures', payload / 'test/maxima/fixtures')
         shutil.copytree(ROOT / 'examples/javascript', payload / 'examples/javascript')

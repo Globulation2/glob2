@@ -11,7 +11,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "data/icons/glob2-icon-128x128.png"
+SOURCE = ROOT / "content/data/icons/glob2-icon-128x128.png"
 BACKGROUND = (43, 28, 66, 255)
 IOS_BACKGROUND = (76, 54, 118, 255)
 

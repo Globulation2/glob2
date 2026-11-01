@@ -21,11 +21,11 @@ import {
 } from '../src/skins/projection.ts';
 const root = resolve(import.meta.dirname, '../../../../..');
 function asset(name: string) {
-  const b = readFileSync(resolve(root, `data/skins/colony-v1/${name}.gsk`));
+  const b = readFileSync(resolve(root, `content/data/skins/colony-v1/${name}.gsk`));
   return {
     mesh: decode(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength)),
     view: JSON.parse(
-      readFileSync(resolve(root, `data/skins/colony-v1/${name}.view.json`), 'utf8'),
+      readFileSync(resolve(root, `content/data/skins/colony-v1/${name}.view.json`), 'utf8'),
     ) as ViewTransform,
   };
 }

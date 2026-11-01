@@ -14,13 +14,13 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
-SPEC = importlib.util.spec_from_file_location('translation_checker', ROOT / 'data/check_translations.py')
+SPEC = importlib.util.spec_from_file_location('translation_checker', ROOT / 'content/data/check_translations.py')
 CHECKER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHECKER)
 LOCALES = ('hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
            'pa-Guru', 'pa-Arab', 'kn', 'am', 'yo', 'my', 'jv', 'ne', 'om',
            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'nb', 'ms')
-SOURCE_PATHS = ('data/texts.keys.txt', 'data/texts.en.txt',
+SOURCE_PATHS = ('content/data/texts.keys.txt', 'content/data/texts.en.txt',
                 'services/online/packages/i18n/locales/en.json',
                 'services/online/packages/i18n/plural-sources.json',
                 'services/online/packages/i18n/invariants.json')

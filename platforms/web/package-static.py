@@ -91,7 +91,7 @@ def package(source, destination):
     launcher_fonts = {}
     if b'href="script-fonts.css"' in files['html']:
         launcher_fonts['script-fonts.css'] = (source / 'script-fonts.css').read_bytes()
-        font_manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        font_manifest = json.loads((ROOT / 'content/data/fonts/scripts/manifest.json').read_text())
         for font in font_manifest['fonts']:
             name = 'fonts/' + font['name'] + '-Regular.ttf'
             data = (source / name).read_bytes()
@@ -293,7 +293,7 @@ def verify(directory):
     names += [name for name in expected if (name == "i18n.js" or (name.startswith("locales/") and name.endswith(".json")))]
     if b'href="script-fonts.css"' in (directory / 'index.html').read_bytes():
         names += ['script-fonts.css', 'fonts/LICENSE-Noto.txt']
-        font_manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        font_manifest = json.loads((ROOT / 'content/data/fonts/scripts/manifest.json').read_text())
         for font in font_manifest['fonts']:
             name = 'fonts/' + font['name'] + '-Regular.ttf'
             names.append(name)

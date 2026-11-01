@@ -18,7 +18,7 @@ import sys
 from typing import NamedTuple
 
 ROOT = Path(__file__).resolve().parents[2]
-INSTALLED = ROOT / "data/skins/colony-v1"
+INSTALLED = ROOT / "content/data/skins/colony-v1"
 DESIGNER = ROOT / "services/online/apps/web/public/skins/models"
 
 # Every unit clip holds eight headings of 32 animation phases.

@@ -15,7 +15,7 @@
 
 ## How the game uses a set
 
-A set is a directory `data/zik/<set>/` holding `a1.opus` (calm), `a2.opus` (building)
+A set is a directory `content/data/zik/<set>/` holding `a1.opus` (calm), `a2.opus` (building)
 and `a3.opus` (combat). `src/audio/SoundMixer.cpp` loads all three. When the mood
 changes, it crossfades to the other file *at the same playback position*, and every
 file loops forever. So the pipeline guarantees that:
@@ -29,7 +29,7 @@ file loops forever. So the pipeline guarantees that:
   switching sets or moods is never jarring.
 
 Players choose a set, or Random, in Settings > Audio and in the in-game Options
-dialog. Any directory under `data/zik/` (or the user data directory) whose three
+dialog. Any directory under `content/data/zik/` (or the user data directory) whose three
 files load and validate becomes available.
 
 ## Shipped sets
@@ -50,7 +50,7 @@ make these arrangements acceptable in play.
 Every set directory ships a `LICENSE.txt` that is generated from its `set.toml`,
 with credits, licence link, change notes and any AI disclosure. Third-party sources
 are also listed in [source attribution](source-attribution.md) and in the in-game
-credits (`data/authors.txt`).
+credits (`content/data/authors.txt`).
 
 ## Layout
 
@@ -99,7 +99,7 @@ uv pip install --python .venv/bin/python -r requirements-samples.txt
 .venv/bin/python -m glob2music fetch moss-lanterns
 .venv/bin/python -m glob2music build moss-lanterns   # out/moss-lanterns/: a1–a3.opus, preview.opus, qa.json, build.json
 .venv/bin/python -m glob2music check moss-lanterns
-.venv/bin/python -m glob2music install moss-lanterns # checks again, then writes data/zik/moss-lanterns/
+.venv/bin/python -m glob2music install moss-lanterns # checks again, then writes content/data/zik/moss-lanterns/
 ```
 
 `check` also accepts any directory holding `a1.opus`–`a3.opus`, which is useful for
@@ -220,7 +220,7 @@ person still listens to every set before it ships.
 4. Listen to `preview.opus` and to in-game switching. Copying `out/<set>/` to
    `~/.glob2/data/zik/<set>/` makes it selectable without installing it.
 5. After a maintainer approves it by ear, set `shipped = true` and run `install`. Add
-   the credits to `data/authors.txt` and [source attribution](source-attribution.md),
+   the credits to `content/data/authors.txt` and [source attribution](source-attribution.md),
    Native packaging discovers set directories automatically.
 
 New shipped sets must use the score methods above. Finished-song generation and
@@ -256,7 +256,7 @@ Keep source Vorbis files outside runtime asset directories. Listen again after
 conversion, including loop boundaries and mood transitions; automated QA cannot
 approve the audible changes from the fixed 48 kbps target.
 
-The browser build downloads `data/zik/original/` in its `music` package and every
+The browser build downloads `content/data/zik/original/` in its `music` package and every
 other set in `music-sets`. Both are background packages that arrive after the main
 menu, so the extra sets never delay startup. Until `music-sets` arrives, the game
 offers only the original set (`scons/web_assets.py`, `platforms/web/README.md`).

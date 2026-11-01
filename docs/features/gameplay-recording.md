@@ -220,10 +220,10 @@ rendering, camera movement, audio, runtime, dimensions and warmup identical:
 ```sh
 node platforms/web/benchmarks/recording.cjs http://127.0.0.1:8770 artifacts/recording-benchmark
 GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 software-render-benchmark
-PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=off PROFILE_SECONDS=20 \
+PROFILE_SAVE=content/games/gd-bigarena-long.game.gz PROFILE_RECORD=off PROFILE_SECONDS=20 \
   PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
   build/darwin/client/release/test/SoftwareRenderBenchmark --window-size 1920x1080
-PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=artifacts/qualification.mp4 \
+PROFILE_SAVE=content/games/gd-bigarena-long.game.gz PROFILE_RECORD=artifacts/qualification.mp4 \
   PROFILE_SECONDS=20 PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
   build/darwin/client/release/test/SoftwareRenderBenchmark --window-size 1920x1080
 ```

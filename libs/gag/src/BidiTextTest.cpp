@@ -157,7 +157,7 @@ TEST_SUITE("BidiText")
 	{
 		for (const char *catalog : {"data/texts.ar.txt", "data/texts.fa.txt"})
 		{
-			std::ifstream file(glob2test::sourceRoot() / catalog);
+			std::ifstream file(glob2test::contentRoot() / catalog);
 			REQUIRE(file);
 			std::string key, value;
 			int compared = 0;

@@ -3,7 +3,7 @@
 Maxima resolves a complete strategy when first asked for an order or a save.
 Sources apply in this order, with later assignments taking precedence:
 
-1. `data/maxima/base.strategy`, or the complete file named by `GLOB2_MAXIMA_BASE`.
+1. `content/data/maxima/base.strategy`, or the complete file named by `GLOB2_MAXIMA_BASE`.
 2. The match-format layer: `duel`, `ffa3`, `ffa4`, `ffa5plus`, or allied `2v2`.
    `GLOB2_MAXIMA_FORMAT` overrides automatic selection.
 3. Files in `GLOB2_MAXIMA_LAYERS`, separated by semicolons.

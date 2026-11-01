@@ -29,7 +29,7 @@ class FontCoverageTest(unittest.TestCase):
         ttf.TTF_FontHasGlyph.restype = ctypes.c_bool
         ttf.TTF_Init.restype = ctypes.c_bool
         self.assertTrue(ttf.TTF_Init())
-        font_paths = [ROOT / 'data/fonts/sans.ttf', *sorted((ROOT / 'data/fonts/scripts').glob('*.ttf'))]
+        font_paths = [ROOT / 'content/data/fonts/sans.ttf', *sorted((ROOT / 'content/data/fonts/scripts').glob('*.ttf'))]
         fonts = []
         try:
             for path in font_paths:

@@ -131,7 +131,7 @@ export class Pipeline {
     ).join('\n\n');
     const examples = await Promise.all(
       ['inn', 'hospital', 'defencetower', 'swarm'].map((name) =>
-        readFile(join(this.root, 'data/buildings', name + '.json'), 'utf8'),
+        readFile(join(this.root, 'content/data/buildings', name + '.json'), 'utf8'),
       ),
     );
     const prompt = plannerPrompt(

@@ -3,7 +3,7 @@
 """Paint the landscape resource sprites (the `landscape-resources` experiment).
 
 Every resource gets one frame per stock level, written as
-`data/gfx/resource-<key><frame>.png`, plus a 4x HD frame registered through
+`content/data/gfx/resource-<key><frame>.png`, plus a 4x HD frame registered through
 tools/artwork/highres_pack.py. Trees use the stock trees' 40x44 frame and two
 variants per level; fish add FISH_FRAMES animation frames per level.
 
@@ -522,7 +522,7 @@ def render(build):
 
 def sheet(rendered, ground, scale=3):
     """Preview: each resource's frames in a row, every frame on a ground tile."""
-    tile = Image.open(ROOT / f"data/gfx/{ground}.png").convert("RGBA")
+    tile = Image.open(ROOT / f"content/data/gfx/{ground}.png").convert("RGBA")
     cell = 48
     width = max(len(f) for f in rendered.values()) * cell + 8
     out = Image.new("RGBA", (width, len(rendered) * cell + 8), (30, 30, 30, 255))
@@ -559,7 +559,7 @@ def main(argv=None):
     hd_frames = []
     for name, frames in rendered.items():
         for i, (classic, hd) in enumerate(frames):
-            classic.save(ROOT / f"data/gfx/resource-{name}{i}.png", optimize=True)
+            classic.save(ROOT / f"content/data/gfx/resource-{name}{i}.png", optimize=True)
             hd_frames.append({"id": f"resource-{name}{i}", "image": hd, "recipe": f"{HD_RECIPE}: {name}",
                               "sources": [source_record(Path(__file__).resolve(), ROOT)]})
     register_frames(hd_frames, HD_CATEGORY)

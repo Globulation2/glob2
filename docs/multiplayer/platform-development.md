@@ -36,7 +36,7 @@ own one-command test; see
 
 ## Online interface languages
 
-The online interface supports the same language inventory as `data/texts.list.txt`.
+The online interface supports the same language inventory as `content/data/texts.list.txt`.
 `services/online/packages/i18n` owns the canonical English messages, translated JSON
 catalogs, browser locale mappings, interpolation, plurals and formatters. Game
 catalog aliases are mapped explicitly: browser language tags must never interpret

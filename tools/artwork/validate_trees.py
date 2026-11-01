@@ -13,7 +13,7 @@ for frame in frames:
         assert hashlib.sha256((ROOT/source['path']).read_bytes()).hexdigest()==source['sha256']
     name=frame['id']+'.png'
     new=Image.open(DERIVED/name).convert('RGBA')
-    classic=Image.open(ROOT/'data/gfx'/name).convert('RGBA')
+    classic=Image.open(ROOT/'content/data/gfx'/name).convert('RGBA')
     assert new.size==(classic.width*4,classic.height*4)
     a=np.asarray(classic)[:,:,3]>80
     b=np.asarray(new.resize(classic.size,Image.Resampling.LANCZOS))[:,:,3]>80

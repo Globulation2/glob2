@@ -39,7 +39,7 @@ static void run(bool software,bool fallback,bool original)
     Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
     auto gfx=Toolkit::initGraphic(1280,960,software?0:GraphicContext::USEGPU,"HD runtime pack validation");
     {
-        std::ifstream input(glob2test::sourceRoot()/"data/highres/v1/frames.txt");std::string magic,id,base,team;int version,w,h,scale;
+        std::ifstream input(glob2test::contentRoot()/"data/highres/v1/frames.txt");std::string magic,id,base,team;int version,w,h,scale;
         input>>magic>>version;REQUIRE(version==1);
         std::vector<Frame> frames;
         std::map<std::string,std::unique_ptr<Sprite>> sprites;

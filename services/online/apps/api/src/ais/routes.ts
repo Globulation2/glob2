@@ -22,7 +22,7 @@ import { authenticate, requireAccount, requireRole, type Identity } from '../ide
 import { apiError } from '../errors.ts';
 import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
-import { CATALOG_RULES, UUID, canModerate } from '../maps/catalog.ts';
+import { CATALOG_RULES, UUID, canModerate } from '../content/maps/catalog.ts';
 
 import { aiCatalogViews } from './catalogViews.ts';
 export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) {

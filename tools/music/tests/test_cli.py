@@ -72,7 +72,7 @@ class ResolveTest(unittest.TestCase):
             with mock.patch.object(cli, 'OUT_DIR', out), mock.patch.object(cli, 'REPO_ROOT', repo):
                 # Reference sets are always the shipped files.
                 self.assertEqual(cli._resolve('original')[0], repo / 'data' / 'zik' / 'original')
-                # A shipped set not built locally falls back to data/zik only when installed.
+                # A shipped set not built locally falls back to content/data/zik only when installed.
                 self.assertEqual(cli._resolve('moss-lanterns')[0], out / 'moss-lanterns')
                 (repo / 'data' / 'zik' / 'moss-lanterns' / 'a1.opus').write_bytes(b'')
                 directory, m = cli._resolve('moss-lanterns')
@@ -115,7 +115,7 @@ class RegisterAndInstallTest(unittest.TestCase):
 
     def test_recursive_discovery_needs_no_registration_edit(self):
         with tempfile.TemporaryDirectory() as tmp:
-            text = (Path(__file__).resolve().parents[3] / 'data/zik/SConscript').read_text()
+            text = (Path(__file__).resolve().parents[3] / 'content/data/zik/SConscript').read_text()
             zik = self.zik(tmp, text)
             cli._register_set(zik, 'new-set')
             self.assertEqual((zik / 'SConscript').read_text(), text)

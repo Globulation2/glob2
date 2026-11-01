@@ -139,11 +139,11 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         # The plan also reads the browser copies (platforms/web/derive_assets.py) and the game
         # sprite names in GlobalContainer::loadGameGraphics, terrain and building tables.
         plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'platforms/web/derive_assets.py',
-                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'data/terrain/tileset.json', 'data/resources/registry.json']
+                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'content/data/terrain/tileset.json', 'content/data/resources/registry.json']
         plan_inputs += [str(p) for p in Path('platforms/web/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
-        plan_inputs += [str(p) for p in Path('data/buildings').rglob('*.json')]
-        plan_inputs += [str(p) for p in Path('data/resources').rglob('*.json')]
+        plan_inputs += [str(p) for p in Path('content/data/buildings').rglob('*.json')]
+        plan_inputs += [str(p) for p in Path('content/data/resources').rglob('*.json')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
             Action(lambda target, source, env: web_assets.build(root, asset_output, target[0].abspath, asset_root) and 0,
                    'Packaging browser game data'))
@@ -215,7 +215,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
         tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
                                '--preload-file', 'examples/javascript@/examples/javascript',
-                               '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
+                               '--preload-file', 'content/games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
         for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/field/WebGPUGradientTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp', '#src/replay/ReplayTelemetryTest.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp',
@@ -257,7 +257,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         tests.Depends(harness, ['platforms/web/gradient-compute.js', 'platforms/web/storage.js', 'platforms/web/file-selection.js',
                                'platforms/web/audio.js', 'platforms/web/runtime.js', 'platforms/web/webgl-shaders.js', 'platforms/web/canvas-size.js'])
         env.Depends(harness, assets)
-        tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'examples/javascript', 'games')
+        tests.Depends(harness, [str(p) for directory in ('content/data', 'content/maps', 'content/campaigns', 'content/scripts', 'test/fixtures', 'examples/javascript', 'content/games')
                                for p in Path(directory).rglob('*') if p.is_file()])
         tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('wasm', 'data')], harness)
         if threaded:
@@ -386,8 +386,8 @@ def build_web(directory, identity, arguments):
     localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('services/online/packages/i18n/locales').glob('*.json'))])
     # The pre-Wasm HTML launcher cannot use fonts inside Emscripten's VFS.
     # Keep its same-origin, lazy HTTP font faces available on standalone hosts.
-    script_font_manifest = json.loads(Path('data/fonts/scripts/manifest.json').read_text())
-    script_font_files = ['data/fonts/scripts/' + font['name'] + '-Regular.ttf'
+    script_font_manifest = json.loads(Path('content/data/fonts/scripts/manifest.json').read_text())
+    script_font_files = ['content/data/fonts/scripts/' + font['name'] + '-Regular.ttf'
                          for font in script_font_manifest['fonts']]
     script_font_targets = [str(Path(directory) / 'script-fonts.css'),
                            str(Path(directory) / 'fonts/LICENSE-Noto.txt')] + [
@@ -396,8 +396,8 @@ def build_web(directory, identity, arguments):
         web_assets.launcher_script_fonts(Path.cwd(), directory)
         return 0
     script_fonts = env.Command(script_font_targets,
-        ['services/online/packages/i18n/script-fonts.css', 'data/fonts/scripts/manifest.json',
-         'data/fonts/LICENSE-Noto.txt', 'scons/web_assets.py'] + script_font_files,
+        ['services/online/packages/i18n/script-fonts.css', 'content/data/fonts/scripts/manifest.json',
+         'content/data/fonts/LICENSE-Noto.txt', 'scons/web_assets.py'] + script_font_files,
         Action(launcher_fonts, 'Packaging launcher script fonts'))
     env.Depends(page, [loader, presentation_surface, localization, script_fonts])
     env.Alias('web-package', [page, loader, presentation_surface])

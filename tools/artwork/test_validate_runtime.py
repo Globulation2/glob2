@@ -19,7 +19,7 @@ class ExportValidationTests(unittest.TestCase):
         self.pack = self.root / 'source'
         self.pack.mkdir()
         self.export = self.root / 'runtime'
-        self.hd = self.export / 'data/highres/v1'
+        self.hd = self.export / 'content/data/highres/v1'
         self.hd.mkdir(parents=True)
         image = Image.new('RGBA', (4, 4), (10, 50, 120, 127))
         image.save(self.pack / 'inn0b0.png')
@@ -30,7 +30,7 @@ class ExportValidationTests(unittest.TestCase):
         self.layer = dict(file='inn0b0.png', sha256=validator.digest(self.pack / 'inn0b0.png'))
         self.manifest = dict(frames=[dict(layers=[self.layer])], terrain_atlas=dict(levels=[]),
                              resource_atlas=dict(levels=[]))
-        self.record = dict(source='data/highres/v1/inn0b0.png', output='data/highres/v1/inn0b0.webp',
+        self.record = dict(source='content/data/highres/v1/inn0b0.png', output='content/data/highres/v1/inn0b0.webp',
                            source_sha256=self.layer['sha256'], output_sha256=validator.digest(self.hd / 'inn0b0.webp'),
                            recipe=image_recipe(lossy=False), lossy=False)
         self.audit = dict(optimized=True, lossy_images=False, files=[self.record])
@@ -46,8 +46,8 @@ class ExportValidationTests(unittest.TestCase):
         self.check()
 
     def test_generated_terrain_can_have_multiple_outputs_per_catalog_source(self):
-        self.audit['files'] += [dict(source='data/terrain/tileset.json',
-                                     output=f'data/terrain/compiled/texture{i}.webp') for i in range(2)]
+        self.audit['files'] += [dict(source='content/data/terrain/tileset.json',
+                                     output=f'content/data/terrain/compiled/texture{i}.webp') for i in range(2)]
         self.write_audit()
         self.check()
         self.audit['files'].append(dict(self.record))
@@ -56,11 +56,11 @@ class ExportValidationTests(unittest.TestCase):
             self.check()
 
     def test_source_png_runtime_name_and_stale_index_fail(self):
-        self.record['output'] = 'data/highres/v1/inn0b0.png'
+        self.record['output'] = 'content/data/highres/v1/inn0b0.png'
         self.write_audit()
         with self.assertRaisesRegex(ValueError, 'Runtime filename'):
             self.check()
-        self.record['output'] = 'data/highres/v1/inn0b0.webp'
+        self.record['output'] = 'content/data/highres/v1/inn0b0.webp'
         self.write_audit()
         (self.hd / 'frames.txt').write_text((self.pack / 'frames.txt').read_text())
         with self.assertRaisesRegex(ValueError, 'index differs'):

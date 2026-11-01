@@ -112,8 +112,8 @@ The capture run also creates `checkpoints/foundation/`, `checkpoints/settings/`
 and `checkpoints/setup/` indexes using the same images and feedback IDs. The
 single-player Setup checkpoint excludes multiplayer Additional Game Options.
 Missing runtime translation keys fail the capture run. Register new keys in
-`data/texts.keys.txt`, provide English fallback text, and keep every language
-table structurally complete; run `python3 data/check_translations.py` as well.
+`content/data/texts.keys.txt`, provide English fallback text, and keep every language
+table structurally complete; run `python3 content/data/check_translations.py` as well.
 Languages with pending translations remain marked incomplete and use the runtime
 English fallback. Frontend touch text uses separate 16/14-point font aliases so
 changes to menu readability do not alter in-game/editor metrics.

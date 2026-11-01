@@ -38,13 +38,13 @@ class ChangedPathsTest(unittest.TestCase):
         )
         # A soundtrack set's files are packaged game data: native and browser builds.
         self.assert_jobs(
-            ["data/zik/woodland/a1.ogg", "data/zik/woodland/LICENSE.txt"],
+            ["content/data/zik/woodland/a1.ogg", "content/data/zik/woodland/LICENSE.txt"],
             native=True, browser=True, map_generators=False,
             deployment=False, cross_platform=False, music=False, platform=False,
         )
-        # The shared data/zik/SConscript is a build input: every job.
+        # The shared content/data/zik/SConscript is a build input: every job.
         self.assert_jobs(
-            ["data/zik/SConscript"], native=True, browser=True, map_generators=True,
+            ["content/data/zik/SConscript"], native=True, browser=True, map_generators=True,
             deployment=True, cross_platform=True,
         )
 

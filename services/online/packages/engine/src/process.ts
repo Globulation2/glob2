@@ -22,7 +22,7 @@ export interface ProcessLimits {
 export interface RunOptions {
   binary: string;
   args: readonly string[];
-  /** Working directory (where the engine finds its data/ directory). */
+  /** Working directory (where the engine finds its content/data/ directory). */
   cwd: string;
   /** Extra environment on top of a minimal inherited one. */
   env?: Record<string, string>;

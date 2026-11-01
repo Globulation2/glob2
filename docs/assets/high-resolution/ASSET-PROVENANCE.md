@@ -17,7 +17,7 @@ Catalog terrain materials use original procedural 8×8 blocks with shared bounda
 | Procedural terrain synthesis | 9244 |
 | Recovered original | 2076 |
 
-Total: **11873 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../content-src/gfx/recovered-runtime.md) for limitations.
+Total: **11873 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../content/data/highres/v1/manifest.json). See [original export recipes](../../../content-src/gfx/recovered-runtime.md) for limitations.
 
 | Frame | Source category | Logical canvas | Native canvas/source | Recipe |
 | --- | --- | --- | --- | --- |

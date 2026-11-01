@@ -10,8 +10,8 @@ are produced by `tools/artwork/terrain_synth.py`. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
 layout and water and deep water one 4×4 layout, keeping their animated banks
 at 256 frames each. Frames are stored as
-`data/gfx/terrain-<name>N.png` at 32×32 RGBA and
-`data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
+`content/data/gfx/terrain-<name>N.png` at 32×32 RGBA and
+`content/data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
 in `content-src/gfx/<name>/provenance.json`. The shared tile code in
 `tools/artwork/material_tiles.py` provides sheet cutting, pixel hashing and style
 statistics. The original legacy artwork remains available as style references;
@@ -103,7 +103,7 @@ neighbouring cells and occlude each other.
 A material opts in with a `decor` block:
 
 ```json
-"decor": {"sprite": "data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
+"decor": {"sprite": "content/data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
 - `full` frames are used for cells whose four corners share a decorated
@@ -157,7 +157,7 @@ boundary irregularity and woody gaps between crowns. The other sets are faceted 
 a shared grain, and broad stepped bedrock blocks with sparse lichen. Ridge and
 outcrop rocks are flat-shaded prisms: a convex ring raised into walls, with
 sloping top facets meeting at an off-centre peak, so each face takes one light
-value. The tool writes `data/gfx/terrain-decorN.png`
+value. The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
@@ -242,7 +242,7 @@ repetition of the shared edge motifs while retaining the same tile dimensions
 and feature density. Shared boundary motifs can still become recognizable;
 judge repetition in mixed-block previews.
 
-Regular water (`terrain_synth.py` recipe `water`, sprite `data/gfx/terrain-water`)
+Regular water (`terrain_synth.py` recipe `water`, sprite `content/data/gfx/terrain-water`)
 keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)).
 Water and deep water use one 4×4 layout with sixteen phases
 (`animation_ticks 6`, preserving the 96-tick loop). Each phase renders 512×512
@@ -309,7 +309,7 @@ on `round()` boundaries, so the provenance records the platform and a mismatch
 on another platform is reported with that note. Recipes swapped to
 image-generated art are marked `placeholder_only=True` and skipped by `--check`.
 Writing frames also writes each variant's 128×128 render, the exact source the
-classic tile is downsampled from, as its HD frame (`data/highres/v1/terrain-<name>N.png`
+classic tile is downsampled from, as its HD frame (`content/data/highres/v1/terrain-<name>N.png`
 and `content-src/gfx/production/procedural-materials/`), registers it in the pack
 manifest and `frames.txt` through `tools/artwork/highres_pack.py`, and records its
 hash in the provenance; `--check` compares both resolutions. `--hd` alone writes

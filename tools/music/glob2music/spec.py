@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The trio format and every quality threshold: the single source of numbers.
 
-Globulation 2 plays in-game music as a *trio*: ``data/zik/<set_id>/a1.opus`` (calm),
+Globulation 2 plays in-game music as a *trio*: ``content/data/zik/<set_id>/a1.opus`` (calm),
 ``a2.opus`` (building) and ``a3.opus`` (combat). ``SoundMixer::openMusicSet`` accepts a
 set only when all three are 48000 Hz stereo Ogg Opus files with one logical stream
 and the same PCM frame count, because the mixer switches mood by crossfading into

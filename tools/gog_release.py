@@ -25,8 +25,8 @@ ASSETS = ("data", "maps", "campaigns", "scripts")
 UBUNTU_COPYRIGHT_ROOT = Path("/usr/share/doc")
 COMMON_LICENSE_ROOT = Path("/usr/share/common-licenses")
 REQUIRED_ASSETS = (
-    "data/fonts/sans.ttf", "data/gfx/ressource0.png",
-    "maps/SmallForTwo.map.gz",
+    "content/data/fonts/sans.ttf", "content/data/gfx/ressource0.png",
+    "content/maps/SmallForTwo.map.gz",
 ) + packaged_assets(ROOT)
 VERSION_PATTERN = re.compile(r'^PACKAGE_VERSION = "([0-9]+(?:\.[0-9]+)+)"$', re.MULTILINE)
 LIBRARY_PATTERN = re.compile(r"^\s*(\S+)\s+=>\s+(/\S+)", re.MULTILINE)
@@ -89,8 +89,8 @@ def preflight(tag, upstream_ref, source_root=None, reuse_released=False, mode="b
                 "workflow_commit": head}
     # The mirror may carry release workflows, but game source must be identical
     # to the public tag selected for this release.
-    game_paths = ("SConstruct", "scons", "src", "libs", "third_party", "data",
-                  "maps", "campaigns", "scripts", "platforms/macos", "vcpkg.json")
+    game_paths = ("SConstruct", "scons", "src", "libs", "third_party", "content",
+                  "platforms/macos", "vcpkg.json")
     changed = command("git", "diff", "--name-only", upstream, head, "--", *game_paths)
     if changed:
         raise ValueError(f"game source differs from public tag:\n{changed}")
@@ -162,7 +162,7 @@ def verify_manifest(depot, platform):
     reject_retired_assets(root)
     for asset in REQUIRED_ASSETS:
         if not (root / asset).is_file() and not (
-                asset.startswith("data/") and asset.endswith(".png") and
+                asset.startswith("content/data/") and asset.endswith(".png") and
                 (root / Path(asset).with_suffix(".webp")).is_file()):
             raise ValueError(f"missing asset: {asset}")
     executable = {"windows": depot / "glob2.exe",

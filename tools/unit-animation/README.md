@@ -171,10 +171,10 @@ report: geometry/coverage matching and subtle shading differences are distinct.
 
 ## High-resolution textures
 
-Native 32-pose sprites remain in `data/gfx`. The Blender originals live in
+Native 32-pose sprites remain in `content/data/gfx`. The Blender originals live in
 `content-src/gfx/originals/units`. Approved high-resolution layers use the existing
 `content-src/gfx/production/original-derived` category and are packaged into
-`data/highres/v1` alongside the other artwork. Unit icons are not changed.
+`content/data/highres/v1` alongside the other artwork. Unit icons are not changed.
 The runtime keeps the native logical dimensions (32, 38 or 40 pixels) and uses a
 fixed 128×128 pixel texture for every pose, regardless of native size -- 128 is
 a power of two, unlike 152 or 160 (38 or 40 × 4), which the engine's texture
@@ -246,7 +246,7 @@ From the repository root, using Blender **3.6.23**:
 blender -b --disable-autoexec --python-exit-code 1 --python tools/skins/export_units.py -- \
   --output artifacts/skins/units
 python3 tools/skins/make_paint.py artifacts/skins/units --material mixed
-cp data/skins/colony-v1/swarm.gsk artifacts/skins/units/
+cp content/data/skins/colony-v1/swarm.gsk artifacts/skins/units/
 python3 tools/skins/test_export.py artifacts/skins/units
 python3 tools/skins/install_units.py artifacts/skins/units
 scons release=1 skin-preview
@@ -255,7 +255,7 @@ GLOB2_SKIN_PREVIEW_DIR="$PWD/artifacts/skins/units" build/linux/client/release/s
 ```
 
 Validate the installed package with `python3 tools/skins/test_export.py
-data/skins/colony-v1`. This checks retained source and mesh hashes, complete clip
+content/data/skins/colony-v1`. This checks retained source and mesh hashes, complete clip
 coverage, shared paint coordinates across actions, animation in all headings,
 unclipped geometry, normalized lighting normals, and identical designer models for
 all seven unit actions and the swarm. Workers and warriors additionally require
@@ -341,7 +341,7 @@ transfer, including ellipsoid orientations; only its UVs change to a body-space
 front/back and top/bottom folded chart. Swarm geometry and UVs are unchanged.
 
 `install_units.py` validates all three generated sets before copying unit meshes,
-surface contracts and provenance into `data/skins/colony-v1`, and copies all unit
+surface contracts and provenance into `content/data/skins/colony-v1`, and copies all unit
 actions into the web designer. Preset paint remains reproducible through
 `make_paint.py`; changing UVs alone does not require replacing immutable preset
 texture bytes. Colony Studio offers free camera orbit, action, animation and paused-frame
@@ -474,8 +474,8 @@ in the generator, then regenerate and install every shape with Blender 3.6.23:
 
 ```sh
 blender --background --factory-startup -t 1 --python-exit-code 1 \
-  --python tools/skins/generate_swarms.py -- --output data/skins/colony-v1
-cp data/skins/colony-v1/swarm-*.gsk services/online/apps/web/public/skins/models/
+  --python tools/skins/generate_swarms.py -- --output content/data/skins/colony-v1
+cp content/data/skins/colony-v1/swarm-*.gsk services/online/apps/web/public/skins/models/
 ```
 
 `-t 1` is required: metaball surfacing is only byte-reproducible on one thread.
@@ -498,7 +498,7 @@ the same texel density. `tools/skins/swarm_metrics.py MESH.gsk... --preview DIR
 --paint PNG` (NumPy; Blender's bundled Python has it) reports texel density,
 visible seams and UV islands as the game camera sees a static mesh, and can
 render shaded previews for review. To see a shape in a real scene, copy
-`data/skins/colony-v1/*.gsk` beside a `paint.webp` under `artifacts/`, point
+`content/data/skins/colony-v1/*.gsk` beside a `paint.webp` under `artifacts/`, point
 `GLOB2_SKIN_PREVIEW_DIR` there and set `GLOB2_SKIN_PREVIEW_SWARM=<id>`; the
 previews above then draw team 0's swarm with that shape, painted from the
 atlas's swarm quadrant. `--paint` takes a 256px swarm paint, such as that
@@ -636,9 +636,9 @@ checker:
 ```sh
 scons release=1 server=0 skin-preview
 build/linux/client/release/src/skin-preview \
-  data/skins/colony-v1/worker-walk.gsb artifacts/review/shapes --rig-review
+  content/data/skins/colony-v1/worker-walk.gsb artifacts/review/shapes --rig-review
 build/linux/client/release/src/skin-preview \
-  data/skins/colony-v1/worker-walk.gsk artifacts/review/baked --rig-review
+  content/data/skins/colony-v1/worker-walk.gsk artifacts/review/baked --rig-review
 python3 tools/skins/rig_silhouette.py artifacts/review/baked artifacts/review/shapes
 ```
 

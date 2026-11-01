@@ -460,7 +460,7 @@ second launch joins directly. In-client "Join by code" covers the rest.
 | --- | --- |
 | Windows installer | `platforms/windows/win32_installer.nsi`: `HKCR\glob2` URL protocol → `glob2.exe "%1"` |
 | macOS | `platforms/macos/Info.plist` `CFBundleURLTypes` |
-| Linux (deb, rpm, Flatpak, Snap) | `data/glob2.desktop`: `Exec=glob2 %u`, `MimeType=x-scheme-handler/glob2` |
+| Linux (deb, rpm, Flatpak, Snap) | `content/data/glob2.desktop`: `Exec=glob2 %u`, `MimeType=x-scheme-handler/glob2` |
 | Android | intent filter for `glob2://join` and a verified App Link for `https://<official host>/j/` (`officialInstanceHost` placeholder) |
 | iOS | `CFBundleURLTypes` and `applinks:<official host>` (written by `platforms/mobile/ios.py`) |
 

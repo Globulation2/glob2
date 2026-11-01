@@ -8,7 +8,7 @@ inference images are excluded from Git.
 
 `python3 tools/artwork/package_runtime.py` assembles the committed approved
 original/AI/material/mask folders into the PNG **source pack** in
-`data/highres/v1`, without model tooling. It reproduces reviewed source pixels
+`content/data/highres/v1`, without model tooling. It reproduces reviewed source pixels
 byte-for-byte. These PNGs are retained for provenance and editing; the client
 loads WebP artwork.
 
@@ -31,7 +31,7 @@ selects a source-pack destination and does not produce a playable client tree.
 Source manifests and provenance README files are excluded from runtime bundles.
 Experimental terrain beyond the 272 legacy connected tiles uses the shared
 terrain compiler and native fallback rather than this HD pack. The catalogue
-materials (`data/gfx/terrain-<name>N.png`) are produced by
+materials (`content/data/gfx/terrain-<name>N.png`) are produced by
 `tools/artwork/terrain_synth.py` (procedural originals) and
 `tools/artwork/export_material.py` (image-generated materials with stored
 prompts), both validated by `tools/artwork/validate_material.py`; see

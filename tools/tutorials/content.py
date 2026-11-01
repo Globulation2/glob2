@@ -2,8 +2,8 @@
 import json
 from pathlib import Path
 
-CATALOG = 'scripts/tutorials/catalog.json'
-RUNTIME = 'scripts/tutorials/runtime.js'
+CATALOG = 'content/scripts/tutorials/catalog.json'
+RUNTIME = 'content/scripts/tutorials/runtime.js'
 
 
 def catalog_lessons(root):
@@ -23,9 +23,9 @@ def packaged_assets(root):
 
 def reject_retired_assets(root):
     root = Path(root)
-    candidates = [root / 'campaigns/Tutorial_Campaign.txt',
-                  *root.glob('campaigns/tutorial-part*.map*'),
-                  *root.glob('scripts/tutorial_part*.sgsl')]
+    candidates = [root / 'content/campaigns/Tutorial_Campaign.txt',
+                  *root.glob('content/campaigns/tutorial-part*.map*'),
+                  *root.glob('content/scripts/tutorial_part*.sgsl')]
     retired = sorted(str(path.relative_to(root)) for path in candidates if path.is_file())
     if retired:
         raise ValueError('retired tutorial assets must not ship: ' + ', '.join(retired))

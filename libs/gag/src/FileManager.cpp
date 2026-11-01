@@ -181,6 +181,13 @@ namespace GAGCore
 	void FileManager::addDir(const std::string dir)
 	{
 		dirList.push_back(dir);
+		// A source checkout keeps the runtime tree (data/, maps/, campaigns/,
+		// scripts/, games/) under content/. Installed layouts hold it at the
+		// root itself, so they never match.
+		const std::string content = dir + DIR_SEPARATOR + "content";
+		std::error_code error;
+		if (std::filesystem::is_directory(content + DIR_SEPARATOR + "data", error))
+			dirList.push_back(content);
 	}
 	
 	void FileManager::addWriteSubdir(const std::string subdir)

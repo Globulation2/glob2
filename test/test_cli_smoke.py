@@ -389,7 +389,7 @@ class CliSmoke(unittest.TestCase):
                 "verify",
                 ROOT / "test/fixtures/multiplayer/FourSquares1.g2mr",
                 "--map-file",
-                ROOT / "maps/FourSquares1.map.gz",
+                ROOT / "content/maps/FourSquares1.map.gz",
                 "--output-dir",
                 output,
                 "--compute-threads",
@@ -610,7 +610,7 @@ class CliSmoke(unittest.TestCase):
         # Exercise the production argument forwarding with a nonnumeric path
         # containing spaces, then remove it so reloads must use embedded rules.
         catalog_dir = self.root / "custom building catalog"
-        shutil.copytree(ROOT / "data/buildings", catalog_dir)
+        shutil.copytree(ROOT / "content/data/buildings", catalog_dir)
         example = ROOT / "test/fixtures/building-catalog/authoring"
         shutil.copy2(example / "field-kitchen.json", catalog_dir)
         manifest_path = catalog_dir / "manifest.json"

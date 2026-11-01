@@ -1035,7 +1035,7 @@ TEST_CASE("farm harvest uses the touched material policy before pooling neighbor
 // previously cached default registry cannot make this regression pass.
 TEST_CASE("embedded resource save starts with an invalid installed catalog" * doctest::test_suite("RuntimeResources"))
 {
-    const auto frozen = ResourceRegistry::loadFile((glob2test::sourceRoot() / "data/resources/registry.json").string());
+    const auto frozen = ResourceRegistry::loadFile((glob2test::contentRoot() / "data/resources/registry.json").string());
     const auto directory = glob2test::profileDir() / "data/resources";
     std::filesystem::create_directories(directory);
     const auto path = directory / "registry.json";
@@ -1342,7 +1342,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
 TEST_CASE("frozen resource saves ignore reordered modified installed defaults in a fresh process" * doctest::test_suite("RuntimeResources"))
 {
     using Json=nlohmann::json;
-    auto installed=Json::parse(ResourceRegistry::loadFile((glob2test::sourceRoot()/"data/resources/registry.json").string())->serialize());
+    auto installed=Json::parse(ResourceRegistry::loadFile((glob2test::contentRoot()/"data/resources/registry.json").string())->serialize());
     std::reverse(installed["resources"].begin(),installed["resources"].end());
     for(auto& resource:installed["resources"])
         if(resource["key"]=="trees") resource["properties"]["growthRate"]=0;

@@ -167,12 +167,12 @@ without menu controls or status bars; no separate sprite animations are overlaid
   The browser download screen (`platforms/web/shell.html`) uses the same theme choice
   and palette, with the shared wordmark, Glob icon and Nunito font served from
   `/signin/assets/`, and the site's `/favicon-32.png` favicon.
-- **Type**: Glob2 Sans (the game font, a Latin subset of `data/fonts/sans.ttf`)
+- **Type**: Glob2 Sans (the game font, a Latin subset of `content/data/fonts/sans.ttf`)
   for headings and numbers, Nunito (SIL OFL, self-hosted) for body text.
 - **Team colours** are the engine's (`src/team/Team.cpp`: hue `team × 360 / teams`,
   HSV 0.8/0.9), computed in `src/colors.ts`. Swatches show the exact colour;
   chart lines use the same hue adjusted to keep 3:1 contrast in either theme.
-- **Art** in `src/art/` is generated from `data/gfx` and `data/highres` by
+- **Art** in `src/art/` is generated from `content/data/gfx` and `content/data/highres` by
   `apps/web/art/build_art.py`, which also writes the server-rendered pages'
   images and fonts to `apps/api/src/web/static/`. See `apps/web/art/README.md`
   for sources, licences and contrast ratios.

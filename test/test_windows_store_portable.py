@@ -15,9 +15,9 @@ spec.loader.exec_module(portable)
 class PortableStoreTest(unittest.TestCase):
     def archive(self, root, extra=None):
         payload = {"glob2.exe": b"MZimmutable released binary", "COPYING": b"GPL\n",
-                   "data/icons/glob2-icon-128x128.webp": b"released icon",
+                   "content/data/icons/glob2-icon-128x128.webp": b"released icon",
                    "SDL3.dll": b"MZimmutable released DLL",
-                   "data/map.webp": b"immutable map",
+                   "content/data/map.webp": b"immutable map",
                    "licenses/binutils/COPYING.LIB": b"License\r\n"}
         payload.update(extra or {})
         archive = root / "payload.zip"

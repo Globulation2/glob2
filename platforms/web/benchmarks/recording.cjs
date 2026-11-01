@@ -9,7 +9,7 @@ const {execFileSync}=require('node:child_process');
 const {clickMainMenu,clickControl,clickListRow,clickSettingsDone}=require('../tests/main-menu');
 const seconds=Number(process.env.GLOB2_RECORD_SECONDS || 20),repeats=Number(process.env.GLOB2_RECORD_REPEATS || 3);
 const output=path.resolve(process.argv[3] || 'artifacts/recording-benchmark');
-const fixture=path.resolve(process.env.GLOB2_RECORD_FIXTURE || 'games/gd-bigarena-long.game.gz');
+const fixture=path.resolve(process.env.GLOB2_RECORD_FIXTURE || 'content/games/gd-bigarena-long.game.gz');
 const percentile=(values,p)=>values.length ? [...values].sort((a,b)=>a-b)[Math.min(values.length-1,Math.floor(values.length*p))] : null;
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 async function measure(browser,runtime,width,height,scale,encoder,repeat) {

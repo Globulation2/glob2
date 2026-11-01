@@ -95,7 +95,7 @@ resumed successfully.
 
 Budget disk space for late saves and logs as well as initial maps. Compress completed
 artifacts without changing active outputs. For a review bundle, include requests,
-analysis scripts, build provenance, representative maps/saves and the telemetry
+analysis scripts, build provenance, representative content/maps/saves and the telemetry
 used for conclusions. If filtering noisy logs, retain every record the analysis
 uses and say what was omitted. Finish analyses before packaging, then verify the
 archive's contents against its manifest so it cannot contain a half-written summary.

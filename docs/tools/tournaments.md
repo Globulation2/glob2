@@ -15,7 +15,7 @@ or tournament adjudication is part of the worker or engine.
 ## Start locally
 
 Build the production client (`scons -j4 release=1 server=0`), then prepare a directory
-containing `glob2` and `data/`. Include optional symbols and any other runtime files
+containing `glob2` and `content/data/`. Include optional symbols and any other runtime files
 needed by that build. Bundles must contain regular files, not symlinks. Run from the
 repository root:
 
@@ -102,7 +102,7 @@ build/src/glob2 game run --map-file /tmp/generated/map-r0.map.gz \
 To exercise a custom profile, append repeatable rule arguments to a new game:
 
 ```sh
-build/src/glob2 game run --map-file maps/SmallForTwo.map.gz \
+build/src/glob2 game run --map-file content/maps/SmallForTwo.map.gz \
   --game-seed 19 --player cortex --player maxima \
   --rule noUpgrades=1 --rule noHunger=1 --rule peaceful=1 \
   --ticks 30000 --save initial --save final --write-replay \

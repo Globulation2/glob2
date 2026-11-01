@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[3]
 class MaximaNamingTest(unittest.TestCase):
     def test_ui_uses_dedicated_name_and_description_keys(self) -> None:
         names = (ROOT / "src/ai/AINames.cpp").read_text()
-        keys = (ROOT / "data/texts.keys.txt").read_text().splitlines()
-        english = (ROOT / "data/texts.en.txt").read_text()
+        keys = (ROOT / "content/data/texts.keys.txt").read_text().splitlines()
+        english = (ROOT / "content/data/texts.en.txt").read_text()
         # One table row drives the CLI name and both localized keys.
         self.assertRegex(names, r'\{AI::MAXIMA,\s*"maxima",\s*"AIMaxima"')
         self.assertIn("[AIMaxima]", keys)
@@ -21,8 +21,8 @@ class MaximaNamingTest(unittest.TestCase):
         self.assertRegex(english, r"\[AIMaxima-Description\]\n[^\n]+\n")
 
     def test_configuration_and_build_paths_are_renamed(self) -> None:
-        self.assertTrue((ROOT / "data/maxima/base.strategy").is_file())
-        self.assertFalse((ROOT / "data/nicowar-v3").exists())
+        self.assertTrue((ROOT / "content/data/maxima/base.strategy").is_file())
+        self.assertFalse((ROOT / "content/data/nicowar-v3").exists())
         manifests = "\n".join(
             (ROOT / name).read_text()
             for name in (
@@ -52,7 +52,7 @@ class MaximaNamingTest(unittest.TestCase):
             ROOT / "src/AINicowarV2.h",
             ROOT / "src/AINicowarV4.cpp",
             ROOT / "src/AINicowarV4.h",
-            ROOT / "data/nicowar-v2.default.txt",
+            ROOT / "content/data/nicowar-v2.default.txt",
         )
         self.assertFalse(any(path.exists() for path in retired))
         active = "\n".join(

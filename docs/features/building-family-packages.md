@@ -36,7 +36,7 @@ and base fingerprint and retains its exact canonical output.
 Sprites have a local `key` and ordered `frames`. Each frame declares `imageHash`,
 `width`, `height`, and optionally `teamColorHash` for the existing rotated-color
 layer. A variant uses `package:<sprite-key>` in `gameSprite` or `miniSprite`, or
-references installed `data/gfx/` artwork. Composition replaces package references
+references installed `content/data/gfx/` artwork. Composition replaces package references
 with content-addressed sprite paths. Damage frame ranges, miniature indices and
 all sixteen connected-segment frames must fit the declared sprite. Artwork hashes
 contribute to catalog identity. Composition validates declarations; it does not

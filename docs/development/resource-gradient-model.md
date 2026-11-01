@@ -275,7 +275,7 @@ target-change, route-change and weighted-cost-change slices. A good pooled score
 cannot waive a guard or forbidden-escape regression. Coefficient emission is not
 production approval: compare total gradient work and ordinary release CPU against
 master, the resource-only reference, and useful fixed-interval baselines using
-matched maps/seeds, repeated interleaved order and controlled physical-core/SMT
+matched content/maps/seeds, repeated interleaved order and controlled physical-core/SMT
 load. Keep diagnostic quality repeats separate from production timings.
 
 Review age/demand joint support explicitly. Historical uncapped cohorts retain

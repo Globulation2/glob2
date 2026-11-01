@@ -15,12 +15,12 @@ for frame in frames:
     for layer in frame['layers']:
         native=Image.open(ROOT/layer['native_file']).convert('RGBA')
         actual=Image.open(DERIVED/layer['file']).convert('RGBA')
-        original=Image.open(ROOT/'data/gfx'/layer['file']).convert('RGBA')
+        original=Image.open(ROOT/'content/data/gfx'/layer['file']).convert('RGBA')
         assert actual.size==(original.width*4,original.height*4)
         expected=native.resize(actual.size,Image.Resampling.LANCZOS)
         expected.putalpha(expected.getchannel('A').point(lambda x:min(x,layer['alpha_ceiling'])))
         assert actual.tobytes()==expected.tobytes(),layer['file']
-        assert (ROOT/'data/highres/v1'/layer['file']).read_bytes()==(DERIVED/layer['file']).read_bytes()
+        assert (ROOT/'content/data/highres/v1'/layer['file']).read_bytes()==(DERIVED/layer['file']).read_bytes()
         if frame['id']=='school1b0' and layer['role']=='team':
             assert actual.getchannel('A').getextrema()[1]==64,'School overlay lost its 25% opacity'
         # Ignore very faint filtering fringes when comparing silhouettes.

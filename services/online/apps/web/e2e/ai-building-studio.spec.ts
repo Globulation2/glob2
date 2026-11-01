@@ -124,7 +124,7 @@ test('building workspace supports revision-bound chat, previews, restoration and
   // Portable runs use stock art. Local visual evidence may use a generated
   // sprite without committing provider output as a permanent test fixture.
   const image = readFileSync(
-    resolve(process.env['BUILDING_PREVIEW_IMAGE'] ?? '../../../data/gfx/inn0b0.png'),
+    resolve(process.env['BUILDING_PREVIEW_IMAGE'] ?? '../../../content/data/gfx/inn0b0.png'),
   );
   await page.route('**/api/v1/**/assets/**', (route) =>
     route.fulfill({ contentType: 'image/png', body: image }),

@@ -49,7 +49,7 @@ def frames():
 
 def main():
     for slot, tile in enumerate(frames(), start=FIRST_FRAME):
-        tile.save(ROOT / f"data/gfx/terrain{slot}.png")
+        tile.save(ROOT / f"content/data/gfx/terrain{slot}.png")
     print("Exported sixteen 32x32 opaque Trail frames (288–303)")
 
 

@@ -83,18 +83,22 @@ class ReleaseWorkflowTests(unittest.TestCase):
         text=(ROOT/'.github/workflows/gog-staging.yml').read_text()
         for platform in ('linux','macos'):
             block=text.split('\n  '+platform+':',1)[1]
-            selector='case "$CLI_VERSION" in'+block.split('case "$CLI_VERSION" in',1)[1].split('esac',1)[0]+'esac'
-            for version,expected in (('1',['--nox','SAVE','10','1']),
-                                     ('2',['game','repeat','SAVE','--ticks','10','--runs','1']),
-                                     ('3',None)):
-                with self.subTest(platform=platform,version=version), tempfile.TemporaryDirectory() as directory:
+            selector='save='+block.split('\n          save=',1)[1].split('esac',1)[0]+'esac'
+            # Sources released before the content/ move keep the fixture in games/.
+            for version,expected,layout in (('1',['--nox','SAVE','10','1'],'content/games'),
+                                            ('2',['game','repeat','SAVE','--ticks','10','--runs','1'],'content/games'),
+                                            ('2',['game','repeat','SAVE','--ticks','10','--runs','1'],'games'),
+                                            ('3',None,'content/games')):
+                with self.subTest(platform=platform,version=version,layout=layout), tempfile.TemporaryDirectory() as directory:
+                    (Path(directory)/layout).mkdir(parents=True)
+                    (Path(directory)/layout/'cross-replay.game.gz').write_bytes(b'')
                     script='set -euo pipefail\n'+selector+'\nprintf "%s\\n" "${repeat_args[@]}"'
                     result=subprocess.run(['bash','-c',script],cwd=directory,
                                           env={**os.environ,'CLI_VERSION':version},capture_output=True,text=True)
                     if expected is None:
                         self.assertNotEqual(result.returncode,0)
                     else:
-                        expected=[str(Path(directory).resolve()/'games/cross-replay.game.gz') if arg=='SAVE' else arg for arg in expected]
+                        expected=[str(Path(directory).resolve()/layout/'cross-replay.game.gz') if arg=='SAVE' else arg for arg in expected]
                         self.assertEqual(result.returncode,0,result.stderr)
                         self.assertEqual(result.stdout.splitlines(),expected)
 

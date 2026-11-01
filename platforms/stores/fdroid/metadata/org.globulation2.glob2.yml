@@ -30,9 +30,9 @@ Builds:
       - games
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
     scanignore:
-      - maps/*.map.gz
-      - campaigns/*.map.gz
-      - data/menu/colony.bin
+      - content/maps/*.map.gz
+      - content/campaigns/*.map.gz
+      - content/data/menu/colony.bin
     build: python3 platforms/mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
       $$SDK$$ --android-ndk $$NDK$$
     ndk: 28.2.13676358
@@ -57,9 +57,9 @@ Builds:
       - games
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
     scanignore:
-      - maps/*.map.gz
-      - campaigns/*.map.gz
-      - data/menu/colony.bin
+      - content/maps/*.map.gz
+      - content/campaigns/*.map.gz
+      - content/data/menu/colony.bin
     build: python3 platforms/mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
       $$SDK$$ --android-ndk $$NDK$$
     ndk: 28.2.13676358
@@ -84,9 +84,9 @@ Builds:
       - games
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
     scanignore:
-      - maps/*.map.gz
-      - campaigns/*.map.gz
-      - data/menu/colony.bin
+      - content/maps/*.map.gz
+      - content/campaigns/*.map.gz
+      - content/data/menu/colony.bin
     build: python3 platforms/mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk
       $$SDK$$ --android-ndk $$NDK$$
     ndk: 28.2.13676358

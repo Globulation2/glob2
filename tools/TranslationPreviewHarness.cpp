@@ -122,7 +122,7 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
     else if (fs::exists(legacyKit)) result["source_revision"] = readJson(legacyKit).value("source_revision", "");
     if (fs::exists(pilot / "metadata.json"))
         result["input_metadata"] = readJson(pilot / "metadata.json");
-    for (const auto *name : {"data/texts.en.txt", "data/texts.keys.txt",
+    for (const auto *name : {"content/data/texts.en.txt", "content/data/texts.keys.txt",
              "services/online/packages/i18n/locales/en.json", "libs/gag/src/TrueTypeFont.cpp",
              "libs/gag/src/BidiText.cpp", "libs/gag/src/ui/TextLayout.cpp",
              "src/hud/draw/GameGUIDraw.cpp", "src/hud/touch/GameGUITouchView.cpp",
@@ -138,7 +138,7 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
     for (unsigned i = 0; i < files->getDirCount(); ++i)
         result["runtime_search_paths"].push_back(files->getDir(i));
     std::vector<std::string> fontNames{"data/fonts/sans.ttf"};
-    for (const auto &font : fs::directory_iterator(root / "data/fonts/scripts"))
+    for (const auto &font : fs::directory_iterator(root / "content/data/fonts/scripts"))
         if (font.path().extension() == ".ttf") fontNames.push_back("data/fonts/scripts/" + font.path().filename().string());
     std::sort(fontNames.begin(), fontNames.end());
     for (const auto &font : fontNames) {
@@ -317,7 +317,7 @@ unsigned installDraftOverlay(const fs::path &root, const fs::path &pilot, const 
     const auto locale = pilotLocale(pilot);
     require(locale != "en", "Draft overlay must identify a translated locale");
     const fs::path table = output / "draft-overlay.txt";
-    std::ifstream english(root / "data/texts.en.txt");
+    std::ifstream english(root / "content/data/texts.en.txt");
     std::ofstream overlay(table);
     std::string key, value;
     unsigned applied = 0;
@@ -334,11 +334,11 @@ unsigned installDraftOverlay(const fs::path &root, const fs::path &pilot, const 
     std::ofstream list(listing);
     // Legacy SGSL parses language blocks against the installed catalog codes.
     // Retain the existing inventory while adding this unregistered overlay.
-    std::ifstream installed(root / "data/texts.list.txt");
+    std::ifstream installed(root / "content/data/texts.list.txt");
     std::string entry;
     while (std::getline(installed, entry)) {
         if (entry.empty() || fs::path(entry).filename() == "texts." + locale + ".txt") continue;
-        list << (root / entry).string() << '\n';
+        list << (root / "content" / entry).string() << '\n';
     }
     require(installed.eof(), "Read installed language inventory");
     list << table.string() << '\n';
@@ -402,10 +402,10 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
     require(kind == "gameplay" || tutorial, "Unknown game preview kind");
     const std::string lesson = kind == "tutorial" ? "introduction" : (tutorial ? kind.substr(9) : "");
     if (tutorial) {
-        const auto catalog = readJson(root / "scripts/tutorials/catalog.json");
+        const auto catalog = readJson(root / "content/scripts/tutorials/catalog.json");
         bool found = false;
         for (const auto &entry : catalog)
-            if (readJson(root / entry["definition"].get<std::string>())["id"] == lesson) found = true;
+            if (readJson(root / "content" / entry["definition"].get<std::string>())["id"] == lesson) found = true;
         require(found, "Known production tutorial lesson");
     }
     const std::string captureKind = tutorial ? "tutorial-" + lesson : kind;
@@ -427,7 +427,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
     const std::string map = tutorial ? "campaigns/" + lesson + ".map" : "maps/balanced.map";
     Json result = {{"kind", "production-game-draft-overlay"}, {"locale", pilotLocale(pilot)},
         {"simulation_execution", "serial with scripted host clock"},
-        {"map", map}, {"map_sha256", sha256(root / (map + ".gz"))},
+        {"map", map}, {"map_sha256", sha256(root / "content" / (map + ".gz"))},
         {"evidence_identity", evidenceIdentity(root, pilot)}, {"native_keys_overridden", localized},
         {"width", width}, {"height", height}, {"simulation_steps", Json::array()}, {"captures", Json::array()},
         {"phone_presentation_requested", GAGCore::phonePresentationRequested()},

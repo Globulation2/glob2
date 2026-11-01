@@ -68,7 +68,7 @@ python3 test/run_tests.py --filter 'TeamStatsSave/*'
 ```
 
 The two legacy cases inflate the gzip-compressed fixtures (`test/fixtures/team-stats/version88.game.gz`,
-`games/gd-small-2ai.game.gz`) so they exercise loading a genuinely raw legacy save, and
+`content/games/gd-small-2ai.game.gz`) so they exercise loading a genuinely raw legacy save, and
 compare the printed trace with `version88.expected.txt` / `version84.expected.txt`
 (`--update-fixtures` rewrites them).
 
@@ -173,8 +173,8 @@ Build `scons release=1 server=0 save-size-harness`, then run:
 
 ```sh
 python3 test/measure_save_sizes.py build/darwin/client/release/test/SaveSizeHarness \
-  artifacts/save-size/baseline maps/SmallForTwo.map.gz maps/Holiday_Island_2.map.gz \
-  games/gd-small-2ai.game.gz games/gd-large-4ai.game.gz
+  artifacts/save-size/baseline content/maps/SmallForTwo.map.gz content/maps/Holiday_Island_2.map.gz \
+  content/games/gd-small-2ai.game.gz content/games/gd-large-4ai.game.gz
 ```
 
 Use the native build directory for the host (or the explicit custom build path).

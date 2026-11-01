@@ -23,8 +23,8 @@ from pathlib import Path
 from PIL import Image, ImageFilter
 
 REPO = Path(__file__).resolve().parents[5]
-GFX = REPO / "data/gfx"
-HIGHRES = REPO / "data/highres/v1"
+GFX = REPO / "content/data/gfx"
+HIGHRES = REPO / "content/data/highres/v1"
 OUT = STATIC = PUBLIC = Path()  # assigned only after an explicit destination
 
 # Unit sprite atlas layout (src/unit/render/UnitSkin.cpp, src/unit/render/UnitAnimation.h):
@@ -154,7 +154,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     STATIC.mkdir(parents=True, exist_ok=True)
 
-    # Hero: the live menu colony (data/gfx/menu-colony.png, the game's own menu backdrop).
+    # Hero: the live menu colony (content/data/gfx/menu-colony.png, the game's own menu backdrop).
     colony = Image.open(GFX / "menu-colony.png").convert("RGB")
     save_webp(colony, "colony-1600.webp", quality=60)
     save_webp(colony.resize((960, 540), Image.LANCZOS), "colony-960.webp", quality=62)
@@ -204,12 +204,12 @@ def main() -> None:
 
     # Favicons from the game icon.
     PUBLIC.mkdir(parents=True, exist_ok=True)
-    shutil.copy(REPO / "data/icons/glob2-icon-32x32.png", PUBLIC / "favicon-32.png")
+    shutil.copy(REPO / "content/data/icons/glob2-icon-32x32.png", PUBLIC / "favicon-32.png")
     shutil.copy(REPO / "platforms/mobile/ios/Assets.xcassets/AppIcon.appiconset/icon-180.png",
                 PUBLIC / "apple-touch-icon.png")
-    shutil.copy(REPO / "data/icons/glob2-icon-32x32.png", STATIC / "favicon-32.png")
-    shutil.copy(REPO / "data/icons/glob2-icon-64x64.png", OUT / "glob-64.png")
-    shutil.copy(REPO / "data/icons/glob2-icon-64x64.png", STATIC / "glob-64.png")
+    shutil.copy(REPO / "content/data/icons/glob2-icon-32x32.png", STATIC / "favicon-32.png")
+    shutil.copy(REPO / "content/data/icons/glob2-icon-64x64.png", OUT / "glob-64.png")
+    shutil.copy(REPO / "content/data/icons/glob2-icon-64x64.png", STATIC / "glob-64.png")
 
     # Fonts for the server-rendered pages: the game font and the body font.
     # Glob2 Sans is retained in the theme checkout; font regeneration is a separate asset change.

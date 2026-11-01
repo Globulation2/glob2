@@ -96,7 +96,7 @@ class CheckSimRevisionTest(unittest.TestCase):
         self.assertEqual(sim_version.sim_version_key(self.root).split('-')[:2], before.split('-')[:2])
 
     def test_catalog_files_are_discovered_and_hashed(self):
-        directory = self.root / 'data/buildings'
+        directory = self.root / 'content/data/buildings'
         directory.mkdir(parents=True)
         manifest = directory / 'manifest.json'
         manifest.write_text(json.dumps({'files': ['second.json', 'first.json']}))
@@ -104,7 +104,7 @@ class CheckSimRevisionTest(unittest.TestCase):
         (directory / 'second.json').write_text('{"variants":[]}')
         files = sim_version.sim_data_files(self.root)
         self.assertEqual(files, tuple(sorted(files)))
-        self.assertIn('data/buildings/first.json', files)
+        self.assertIn('content/data/buildings/first.json', files)
         before = sim_version.data_hash(self.root)
         (directory / 'first.json').write_text('{"variants":[1]}')
         self.assertNotEqual(sim_version.data_hash(self.root), before)
@@ -116,17 +116,17 @@ class CheckSimRevisionTest(unittest.TestCase):
             sim_version.sim_data_files(self.root)
 
     def test_unit_catalog_is_hashed_and_historical_keys_copy_its_bytes(self):
-        directory = self.root / 'data/buildings'
+        directory = self.root / 'content/data/buildings'
         directory.mkdir(parents=True)
         (directory / 'manifest.json').write_text(json.dumps({'files': []}))
         legacy = sim_version.sim_version_key(self.root)
         self.commit('pre-unit-catalog')
         before = self.git('rev-parse', 'HEAD').stdout.decode().strip()
         self.assertEqual(checker.key_at(self.root, before, sim_version), legacy)
-        units = self.root / 'data/units/registry.json'
+        units = self.root / 'content/data/units/registry.json'
         units.parent.mkdir(parents=True)
         units.write_text('{"schemaVersion":1,"units":[]}')
-        self.assertIn('data/units/registry.json', sim_version.sim_data_files(self.root))
+        self.assertIn('content/data/units/registry.json', sim_version.sim_data_files(self.root))
         key = sim_version.sim_version_key(self.root)
         self.assertNotEqual(key, legacy)
         self.commit('unit-catalog')

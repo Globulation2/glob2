@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def install(staged):
-    destination = ROOT / "data/skins/colony-v1"
+    destination = ROOT / "content/data/skins/colony-v1"
     designer = ROOT / "services/online/apps/web/public/skins/models"
     manifest = json.loads((destination / "manifest.json").read_text())
     # Validate the complete set and provenance before replacing any assets.

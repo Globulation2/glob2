@@ -48,7 +48,7 @@ def from_legacy(output):
     import numpy as np
     from swarm_metrics import rasterize, write_png
     output.mkdir(parents=True, exist_ok=True)
-    for path in sorted((ROOT / 'data/skins/colony-v1').glob('*.gsk')):
+    for path in sorted((ROOT / 'content/data/skins/colony-v1').glob('*.gsk')):
         data = path.read_bytes()
         _, count, index_count, frames, _ = struct.unpack_from('<4sIIII', data)
         indices = np.frombuffer(data, '<u4', index_count, 20 + count * 8).reshape(-1, 3)

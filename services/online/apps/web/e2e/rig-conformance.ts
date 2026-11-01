@@ -46,7 +46,7 @@ const assets = [
     // inside the ordinary mesh agreement budget.
     positionTolerance: 0.00001,
   },
-  { name: 'installed explorer-fly', bytes: read('data/skins/colony-v1/explorer-fly.gsr') },
+  { name: 'installed explorer-fly', bytes: read('content/data/skins/colony-v1/explorer-fly.gsr') },
 ];
 
 for (const asset of assets) {

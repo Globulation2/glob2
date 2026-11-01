@@ -24,7 +24,7 @@ from export_swarm import export
 
 
 def write(name, projection, rotation, pivot=None):
-    path = ROOT / 'data/skins/colony-v1' / (name + '.gsk')
+    path = ROOT / 'content/data/skins/colony-v1' / (name + '.gsk')
     data = path.read_bytes()
     _, count, indices, frames, _ = struct.unpack_from('<4sIIII', data)
     poses = np.frombuffer(data, '<f4', offset=20 + count * 8 + indices * 4).reshape(frames, count, 6)
@@ -36,7 +36,7 @@ def write(name, projection, rotation, pivot=None):
     record = dict(version=1, meshSha256=hashlib.sha256(data).hexdigest(),
                   clipToModel=inverse.flatten().tolist(), modelToClip=projection.flatten().tolist(),
                   normalToModel=rotation.T.flatten().tolist(), pivot=list(pivot), radius=radius)
-    for folder in ('data/skins/colony-v1', 'services/online/apps/web/public/skins/models'):
+    for folder in ('content/data/skins/colony-v1', 'services/online/apps/web/public/skins/models'):
         (ROOT / folder / (name + '.view.json')).write_text(json.dumps(record, indent=2) + '\n')
     return record
 
@@ -64,7 +64,7 @@ def main():
         bpy.ops.wm.read_factory_settings(use_empty=True)
         export(Path(directory))
         generated = (Path(directory) / 'swarm.gsk').read_bytes()
-        installed = (ROOT / 'data/skins/colony-v1/swarm.gsk').read_bytes()
+        installed = (ROOT / 'content/data/skins/colony-v1/swarm.gsk').read_bytes()
         _, count, indices, _, _ = struct.unpack_from('<4sIIII', installed)
         start = 20 + count * 8 + indices * 4
         assert generated[:start] == installed[:start], 'Classic topology or UVs changed'

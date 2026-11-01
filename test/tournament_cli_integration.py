@@ -179,7 +179,7 @@ def main():
     legacy.write_bytes(gzip.decompress((root/'test/fixtures/team-stats/version88.game.gz').read_bytes()))
     run('empty-player-save',['game', 'run','--load-game',str(legacy),'--ticks','10000'],2)
     legacy_v84=legacy_fixtures/'gd-small-2ai.game'
-    legacy_v84.write_bytes(gzip.decompress((root/'games/gd-small-2ai.game.gz').read_bytes()))
+    legacy_v84.write_bytes(gzip.decompress((root/'content/games/gd-small-2ai.game.gz').read_bytes()))
     run('legacy-v84',['game', 'run','--load-game',str(legacy_v84),'--ticks','10000'])
     (output/'verification.json').write_text(json.dumps({'passed':True,'cases':records,'ticks':args.ticks,'binary_sha256':hashlib.sha256(binary.read_bytes()).hexdigest(),'platform':platform.platform()},indent=2))
     print(f'PASS {len(records)} main-binary cases; retained artifacts: {output}')

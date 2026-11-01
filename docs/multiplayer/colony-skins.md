@@ -350,7 +350,7 @@ renderer recipe queues fresh derivatives at startup. Existing match pins and
 immutable bundles remain valid.
 See [unit rigs](../../tools/unit-animation/README.md#unit-rigs-gsb1-blend-shapes-and-gsr1-bone-rigs).
 
-Skin meshes are installed under `data/skins/colony-v1`; they share the web
+Skin meshes are installed under `content/data/skins/colony-v1`; they share the web
 designer's UV layout, each model sampling its own `colony-v2` quadrant. The browser ships them in an on-demand `skins` package
 requested when visible paint is available. Classic rendering continues during
 the download; hidden or unskinned colonies do not initiate it. Failed package requests retry at most every ten

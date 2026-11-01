@@ -3,7 +3,7 @@ dist/
 coverage/
 .env
 /instance.yaml
-/data/
+/content/data/
 /keys/
 *.tsbuildinfo
 

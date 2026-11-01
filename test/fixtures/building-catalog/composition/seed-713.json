@@ -9,7 +9,7 @@
         "decLeft": -1,
         "decTop": -1,
         "fillable": 1,
-        "gameSprite": "data/gfx/market0b",
+        "gameSprite": "content/data/gfx/market0b",
         "height": 3,
         "hpInit": 400,
         "hpMax": 400,
@@ -30,7 +30,7 @@
           0,
           0
         ],
-        "miniSprite": "data/gfx/minimarket0b",
+        "miniSprite": "content/data/gfx/minimarket0b",
         "width": 1,
         "level": 1
       },
@@ -122,7 +122,7 @@
       "previous": "",
       "properties": {
         "defaultUnitStayRange": 3,
-        "gameSprite": "data/gfx/clearingflag",
+        "gameSprite": "content/data/gfx/clearingflag",
         "height": 1,
         "hueImage": 1,
         "isCloaked": 1,
@@ -240,7 +240,7 @@
         "decLeft": -1,
         "decTop": -1,
         "foodable": 1,
-        "gameSprite": "data/gfx/inn0b",
+        "gameSprite": "content/data/gfx/inn0b",
         "gameSpriteCount": 2,
         "height": 2,
         "hpInit": 200,
@@ -263,7 +263,7 @@
           0
         ],
         "maxUnitInside": 4,
-        "miniSprite": "data/gfx/miniinn0b",
+        "miniSprite": "content/data/gfx/miniinn0b",
         "width": 3,
         "level": 3
       },
@@ -366,7 +366,7 @@
         "decLeft": -2,
         "decTop": -2,
         "fillable": 1,
-        "gameSprite": "data/gfx/swarm0b",
+        "gameSprite": "content/data/gfx/swarm0b",
         "height": 3,
         "hpInit": 700,
         "hpMax": 700,
@@ -388,7 +388,7 @@
           0,
           0
         ],
-        "miniSprite": "data/gfx/miniswarm0b",
+        "miniSprite": "content/data/gfx/miniswarm0b",
         "regenerationSpeed": 3,
         "viewingRange": 4,
         "width": 4,

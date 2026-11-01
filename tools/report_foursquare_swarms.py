@@ -28,7 +28,7 @@ for ax in axs:ax.set_xlabel('Game ticks (thousands)');ax.legend(frameon=False,fo
 fig.suptitle('FourSquares · 96 games with reserve floor 6',fontsize=14);fig.savefig(p/'swarm-staffing.png',dpi=170);plt.close(fig)
 text='''# Swarm capacity and staffing audit
 
-Reserve floor 6 is now retained in `data/maxima/base.strategy`; the engine's resolved FFA4 configuration was verified. No economic parameters were changed.
+Reserve floor 6 is now retained in `content/data/maxima/base.strategy`; the engine's resolved FFA4 configuration was verified. No economic parameters were changed.
 
 This audit uses all 96 games from the reserve-floor-6 experiment and their three unallied Nicowar opponents. Each of 24 seeds has four Maxima seat rotations. Opponent comparisons first average the three Nicowars within each game.
 

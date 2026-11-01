@@ -2,79 +2,79 @@
    with content hashes; no operating-system font installation is required. */
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansDevanagari-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansDevanagari-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0900-097F, U+1CD0-1CFF, U+A8E0-A8FF;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansBengali-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansBengali-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansGurmukhi-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0A00-0A7F;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansGujarati-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansGujarati-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0A80-0AFF;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansOriya-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansOriya-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0B00-0B7F;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansTamil-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansTamil-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0B80-0BFF;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansTelugu-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansTelugu-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0C00-0C7F;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansKannada-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansKannada-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0C80-0CFF;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansMalayalam-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansMalayalam-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0D00-0D7F;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansThai-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansThai-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0E00-0E7F;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansMyanmar-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansMyanmar-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+1000-109F, U+A9E0-A9FF, U+AA60-AA7F;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansEthiopic-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansEthiopic-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+1200-139F, U+2D80-2DDF, U+AB00-AB2F;
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../data/fonts/scripts/NotoSansArabic-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansArabic-Regular.ttf') format('truetype');
   font-display: swap;
   unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF;
 }

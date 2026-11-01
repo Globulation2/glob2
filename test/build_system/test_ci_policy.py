@@ -102,9 +102,9 @@ class PolicyTest(unittest.TestCase):
     def test_music_pipeline_is_a_cheap_job_and_sets_are_packaged_data(self):
         music = self.select(['tools/music/glob2music/qa/seam.py', 'tools/music/sets/woodland/set.toml'])
         self.assertEqual({flag for flag, on in music.items() if on}, {'music'})
-        assets = self.select(['data/zik/woodland/a1.ogg', 'data/zik/woodland/LICENSE.txt'])
+        assets = self.select(['content/data/zik/woodland/a1.ogg', 'content/data/zik/woodland/LICENSE.txt'])
         self.assertEqual({flag for flag, on in assets.items() if on}, {'native', 'browser'})
-        self.assertEqual(self.select(['data/zik/SConscript']), policy.full())
+        self.assertEqual(self.select(['content/data/zik/SConscript']), policy.full())
         # Music-only PRs stay cheap; mixing engine code also runs the predictive budget.
         report, _ = self.exercise('pull_request', ['tools/music/glob2music/cli.py'])
         self.assertEqual({flag for flag, on in report['selection'].items() if on}, {'music'})
@@ -113,10 +113,10 @@ class PolicyTest(unittest.TestCase):
         self.assertTrue(report['selection']['music'])
         self.assertEqual(report['verification_mode'], 'predictive')
         self.assertGreater(report['execution_plan']['ranked_count'], 0)
-        report, _ = self.exercise('pull_request', ['data/zik/woodland/a1.ogg'])
+        report, _ = self.exercise('pull_request', ['content/data/zik/woodland/a1.ogg'])
         self.assertEqual(report['verification_mode'], 'predictive')
         self.assertTrue(any(report['selection'].values()))
-        report, _ = self.exercise('pull_request', ['data/zik/woodland/a1.ogg'], labels=['ci:run'])
+        report, _ = self.exercise('pull_request', ['content/data/zik/woodland/a1.ogg'], labels=['ci:run'])
         self.assertTrue(report['selection']['native'] and report['selection']['browser'])
         self.assertFalse(report['selection']['music'])
         report, _ = self.exercise('schedule', [], reused_run=123)
@@ -142,7 +142,7 @@ class PolicyTest(unittest.TestCase):
             self.assertFalse(self.select([path])['platform_stack'], path)
 
     def test_terrain_catalog_and_compiler_are_shared_boundaries(self):
-        for path in ('data/terrain/tileset.json','tools/terrain_tileset.py','tools/test_terrain_tileset.py'):
+        for path in ('content/data/terrain/tileset.json','tools/terrain_tileset.py','tools/test_terrain_tileset.py'):
             self.assertEqual(self.select([path]),policy.full())
 
     def test_shared_unknown_and_unavailable_inputs_fail_closed(self):

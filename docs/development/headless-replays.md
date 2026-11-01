@@ -230,7 +230,7 @@ pipeline to produce curated datasets (exact counts per matchup).
 ```
 
 - `--map <name>` is the bare map filename without `.map` (resolved as
-  `maps/<name>.map`, or `maps/<name>.map.gz` when that exists). On a typo the
+  `content/maps/<name>.map`, or `content/maps/<name>.map.gz` when that exists). On a typo the
   binary fails fast with a clear message; it does **not** silently retry
   random maps.
 - `--matchup <list>` is one AI name per team. The list length must
@@ -573,7 +573,7 @@ offloading when measuring checksum optimizations.
 | 4 | Econo | `AI::ECONO` | Expansionist (shared AI runtime) |
 | 5 | Nicowar | `AI::NICOWAR` | Strongest economy-focused AI (shared AI runtime) |
 | 6 | Cortex | `AI::CORTEX` | Food-aware growth and supported attack waves (experimental) |
-| 7 | Maxima | `AI::MAXIMA` | Standalone colony developer with relentless attacks; strategy configured through `data/maxima` and `GLOB2_MAXIMA_*` (see [Maxima](../ai/maxima/README.md)) |
+| 7 | Maxima | `AI::MAXIMA` | Standalone colony developer with relentless attacks; strategy configured through `content/data/maxima` and `GLOB2_MAXIMA_*` (see [Maxima](../ai/maxima/README.md)) |
 | 8 | Cabino | `AI::CABINO` | Resurrected 2005-2007 Nicowar: independent cooperating modules, outside the shared AI runtime. |
 
 Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The player type encodes which AI: `P_AI + implementationID` maps to the enum above.

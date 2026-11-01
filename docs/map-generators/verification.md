@@ -20,7 +20,7 @@ Use contracts, map inspection and populated games for different questions: legal
   must be evenly divisible by `step`. A `GeneratorControl::Kind::Toggle` control must be exactly 0 to 1 in
   steps of 1, with no allowed values, power-of-two formatting or terrain weight; the lobby and
   editor show it as a checkbox. Every control label needs matching entries in
-  `data/texts.en.txt` (`[Label]` / `Label`) and `data/texts.keys.txt` (`[Label]`), the same as any
+  `content/data/texts.en.txt` (`[Label]` / `Label`) and `content/data/texts.keys.txt` (`[Label]`), the same as any
   other UI string.
 
 ## Verification tools
@@ -75,7 +75,7 @@ Use contracts, map inspection and populated games for different questions: legal
   table. It is not wired into CI and makes no coverage claim; point a profiler at its PID while it
   runs, or use its own timings for a quick before/after comparison at a fixed seed and round count.
 - The normal client's [map CLI](cli.md) generates maps and PNG previews with
-  `map generate`, loads maps/saves with `map preview`, and lists settings with
+  `map generate`, loads content/maps/saves with `map preview`, and lists settings with
   `map generators`. It supports config files and CLI controls, and reuses the lobby/picker preview renderer.
   Compare a new generator with its nearest neighbours at 128, 256, and 512 tiles
   using the documented batch commands before showing it.

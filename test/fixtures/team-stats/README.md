@@ -10,7 +10,7 @@ between live-statistics refreshes on a 32×32 map.
 
 The expected text files record the original loader's live-statistics outputs
 before and after 64 statistics steps for this fixture and the repository's
-version-84 `games/gd-small-2ai.game.gz`. The shared regression runner compares
+version-84 `content/games/gd-small-2ai.game.gz`. The shared regression runner compares
 stdout exactly against these traces; see the commands in `test/README.md`.
 
 `TeamStatsSaveHarness PROFILE ROOT --write-fixture FILE` generates a fixture
@@ -22,7 +22,7 @@ Use a disposable profile whose name starts with `glob2-save-test-`.
 
 `version129-muka-1100.game.gz` predates worker time use and the defence snapshot
 (format 133). It was written at `f007962b4` by
-`glob2 game run --map-file maps/Muka.map.gz --game-seed 7 --player warrush
+`glob2 game run --map-file content/maps/Muka.map.gz --game-seed 7 --player warrush
 --player cortex --ticks 1100 --save final`, so it holds three packed 512-tick
 measurement history samples per team (ticks 0, 512 and 1024).
 

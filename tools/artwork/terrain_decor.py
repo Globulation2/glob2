@@ -29,7 +29,7 @@ Usage (pinned encoder interpreter, as for terrain_synth.py):
     "$ENC" tools/artwork/terrain_decor.py --sheet artifacts/terrain/decor.png
     "$ENC" tools/artwork/terrain_decor.py --check
 
-All sets share one sprite, `data/gfx/terrain-decorN.png`, with set k at
+All sets share one sprite, `content/data/gfx/terrain-decorN.png`, with set k at
 frames 12k..12k+11 in `ORDER`, followed by connected hedge/thicket frames
 (16 corner masks, a 4x4 continuous texture block each), so the runtime batches every decor draw like
 resources. HD frames are registered through tools/artwork/highres_pack.py and
@@ -62,8 +62,8 @@ CELL = 32 * SCALE
 PAD = (S - CELL) // 2
 FULL, EDGE = 8, 4    # frames per size class: full 0..7, edge 8..11
 FRAMES = FULL + EDGE
-PREFIX = "data/gfx/terrain-decor"
-HD_PREFIX = "data/highres/v1/terrain-decor"
+PREFIX = "content/data/gfx/terrain-decor"
+HD_PREFIX = "content/data/highres/v1/terrain-decor"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain decor v1"
 LIGHT = (-0.62, -0.78)  # toward the upper left, screen space
@@ -1236,7 +1236,7 @@ def write_catalog(root):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from terrain_profile_curves import dump_catalog
 
-    path = root / "data/terrain/tileset.json"
+    path = root / "content/data/terrain/tileset.json"
     document = json.loads(path.read_text())
     # The canopy owns foliage irregularity and depth. A quiet underlay must
     # not expose the old brush profile's spines below the raised surface.
@@ -1276,7 +1276,7 @@ def connected_sheet(results):
     panel_w, panel_h = width * 32, height * 32
     out = Image.new("RGBA", (panel_w * 2, (panel_h + 28) * len(results)), (32, 35, 30, 255))
     labels = ImageDraw.Draw(out)
-    grass = Image.open(ROOT / "data/gfx/terrain0.png").convert("RGBA")
+    grass = Image.open(ROOT / "content/data/gfx/terrain0.png").convert("RGBA")
     for row, (name, frames) in enumerate(results.items()):
         vertices = {(x, y) for y in range(4, 11) for x in range(2, 15)}
         vertices -= {(x, y) for y in range(6, 9) for x in range(6, 9)}
@@ -1355,7 +1355,7 @@ def main(argv=None):
     if args.sheet:
         ground = {}
         for name in names:
-            path = root / f"data/gfx/terrain-{name}0.png"
+            path = root / f"content/data/gfx/terrain-{name}0.png"
             if path.exists():
                 ground[name] = Image.open(path).convert("RGBA")
         args.sheet.parent.mkdir(parents=True, exist_ok=True)

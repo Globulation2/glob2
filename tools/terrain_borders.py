@@ -25,7 +25,7 @@ def trail_fraying(x, y):
 
 
 def main():
-    root = Path(__file__).resolve().parents[1] / "data/gfx"
+    root = Path(__file__).resolve().parents[1] / "content/data/gfx"
     last = TILE_SIZE - 1
     for source, first in BORDER_FRAMES:
         with Image.open(root / f"terrain{source}.png") as image:

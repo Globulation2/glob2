@@ -12,13 +12,13 @@ from check_translations import read_table, lesson_translation_keys  # noqa: E402
 
 
 def rows():
-    table, errors = read_table(ROOT / 'data/texts.zh-cn.txt')
+    table, errors = read_table(ROOT / 'content/data/texts.zh-cn.txt')
     if errors:
         raise ValueError('\n'.join(errors))
-    result = [('ui', 'data/texts.zh-cn.txt', '', key, value, '')
+    result = [('ui', 'content/data/texts.zh-cn.txt', '', key, value, '')
               for key, value in sorted(table.items())]
     missing = 0
-    english, errors = read_table(ROOT / 'data/texts.en.txt')
+    english, errors = read_table(ROOT / 'content/data/texts.en.txt')
     if errors:
         raise ValueError('\n'.join(errors))
     for definition, keys in lesson_translation_keys(ROOT).items():

@@ -584,7 +584,7 @@ void maintenanceProtectionAgreement()
 void archipelagoHarvestDoesNotSealWheat()
 {
     Game game(NULL);
-    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend((glob2test::sourceRoot() / "maps/Archipelago.map.gz").string()));
+    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend((glob2test::contentRoot() / "maps/Archipelago.map.gz").string()));
     REQUIRE(game.load(&input));
     Player player;player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player);ai.context.initialize();
@@ -611,7 +611,7 @@ void seedStabilityAcrossMaps()
     const char* maps[]={"Holiday_Island_2","Archipelago","Isles","Migration",
         "Garden_3","A_big_pond","Wild_River","Sand_River"};
     for(const char* name:maps) {
-        Game game(NULL);std::string path=(glob2test::sourceRoot() / ("maps/"+std::string(name)+".map.gz")).string();
+        Game game(NULL);std::string path=(glob2test::contentRoot() / ("maps/"+std::string(name)+".map.gz")).string();
         BinaryInputStream input(GAGCore::openInflatingFileStreamBackend(path));
         REQUIRE(game.load(&input));
         Player player;player.setTeam(game.teams[0]);
@@ -654,7 +654,7 @@ void seedStabilityAcrossMaps()
 void farmingRespectsDiscovery()
 {
     Game game(NULL);
-    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend((glob2test::sourceRoot() / "maps/Archipelago.map.gz").string()));
+    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend((glob2test::contentRoot() / "maps/Archipelago.map.gz").string()));
     REQUIRE(game.load(&input));
     Player player;player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player);ai.context.initialize();

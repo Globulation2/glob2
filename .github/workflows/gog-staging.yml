@@ -180,7 +180,9 @@ jobs:
           ref: ${{ needs.preflight.outputs.source_commit }}
           persist-credentials: false
           path: fixture
-          sparse-checkout: games/cross-replay.game.gz
+          sparse-checkout: |
+            content/games/cross-replay.game.gz
+            games/cross-replay.game.gz
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
@@ -198,7 +200,8 @@ jobs:
           $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'gog-profile'
           $env:GLOB2_ASSET_DIR = $depot
           Set-Location $depot
-          $save = "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz"
+          $save = "$env:GITHUB_WORKSPACE\fixture\content\games\cross-replay.game.gz"
+          if (-not (Test-Path $save)) { $save = "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" }
           switch ($env:CLI_VERSION) {
             '1' { $repeatArgs = @('--nox', $save, '10', '1') }
             '2' { $repeatArgs = @('game', 'repeat', $save, '--ticks', '10', '--runs', '1') }
@@ -249,9 +252,11 @@ jobs:
           CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}
         run: |
           set -euo pipefail
+          save="$PWD/content/games/cross-replay.game.gz"
+          [ -f "$save" ] || save="$PWD/games/cross-replay.game.gz"
           case "$CLI_VERSION" in
-            1) repeat_args=(--nox "$PWD/games/cross-replay.game.gz" 10 1) ;;
-            2) repeat_args=(game repeat "$PWD/games/cross-replay.game.gz" --ticks 10 --runs 1) ;;
+            1) repeat_args=(--nox "$save" 10 1) ;;
+            2) repeat_args=(game repeat "$save" --ticks 10 --runs 1) ;;
             *) exit 1 ;;
           esac
           stage="$PWD/artifacts/gog/install"
@@ -307,9 +312,11 @@ jobs:
           CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}
         run: |
           set -euo pipefail
+          save="$PWD/content/games/cross-replay.game.gz"
+          [ -f "$save" ] || save="$PWD/games/cross-replay.game.gz"
           case "$CLI_VERSION" in
-            1) repeat_args=(--nox "$PWD/games/cross-replay.game.gz" 10 1) ;;
-            2) repeat_args=(game repeat "$PWD/games/cross-replay.game.gz" --ticks 10 --runs 1) ;;
+            1) repeat_args=(--nox "$save" 10 1) ;;
+            2) repeat_args=(game repeat "$save" --ticks 10 --runs 1) ;;
             *) exit 1 ;;
           esac
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
@@ -430,7 +437,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Released payload staging failed' }
           $env:GLOB2_ASSET_DIR = (Resolve-Path artifacts/gog/windows).Path
           $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'gog-released-profile'
-          python -c "import subprocess; subprocess.run(['artifacts/gog/windows/glob2.exe','game','repeat','source/games/cross-replay.game.gz','--ticks','10','--runs','1'],check=True,timeout=90)"
+          python -c "import os, subprocess; save=next(p for p in ('source/content/games/cross-replay.game.gz','source/games/cross-replay.game.gz') if os.path.exists(p)); subprocess.run(['artifacts/gog/windows/glob2.exe','game','repeat',save,'--ticks','10','--runs','1'],check=True,timeout=90)"
           if ($LASTEXITCODE -ne 0) { throw 'Released Windows smoke failed' }
           tar -C artifacts/gog/windows -czf artifacts/gog/windows.tar.gz .
           if ($LASTEXITCODE -ne 0) { throw 'Depot archive failed' }
@@ -496,7 +503,9 @@ jobs:
           repository: Globulation2/glob2
           ref: ${{ needs.preflight.outputs.source_commit }}
           path: source
-          sparse-checkout: games/cross-replay.game.gz
+          sparse-checkout: |
+            content/games/cross-replay.game.gz
+            games/cross-replay.game.gz
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
@@ -512,7 +521,8 @@ jobs:
           RUN apt-get update -qq && apt-get install -y --no-upgrade --no-install-recommends libgl1 libglu1-mesa libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxss1 libxtst6 libxkbcommon0 libwayland-client0 libwayland-cursor0 libwayland-egl1 libudev1 libasound2 libpulse0 libdbus-1-3 && rm -rf /var/lib/apt/lists/*
           DOCKERFILE
           docker build -t glob2-gog-smoke - < "$RUNNER_TEMP/GogSmoke.Dockerfile"
-          docker run --rm --network none -v "$PWD/artifacts/gog/linux:/game:ro" -v "$PWD/source/games:/fixtures:ro" glob2-gog-smoke /bin/sh -ec '
+          fixtures="$PWD/source/content/games"; [ -d "$fixtures" ] || fixtures="$PWD/source/games"
+          docker run --rm --network none -v "$PWD/artifacts/gog/linux:/game:ro" -v "$fixtures:/fixtures:ro" glob2-gog-smoke /bin/sh -ec '
             export LD_LIBRARY_PATH=/game/lib GLOB2_ASSET_DIR=/game/share/glob2 GLOB2_USER_DATA_DIR=/tmp/gog-profile
             ldd /game/bin/glob2 > /tmp/linked.txt
             cat /tmp/linked.txt
@@ -582,7 +592,7 @@ jobs:
           import os, subprocess
           from pathlib import Path
           app=Path(os.environ['RESTORED'])/'Glob2.app'
-          fixture=Path('source/games/cross-replay.game.gz').resolve()
+          fixture=next(p for p in (Path('source/content/games/cross-replay.game.gz'), Path('source/games/cross-replay.game.gz')) if p.exists()).resolve()
           subprocess.run([str(app/'Contents/MacOS/glob2'),'game','repeat',str(fixture),'--ticks','10','--runs','1'],cwd=app,check=True,timeout=90)
           PYTHON
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

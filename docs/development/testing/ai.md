@@ -60,7 +60,7 @@ manager can be copied without retaining mutable gradient or entity references.
 Linux and Windows CI run it.
 `check_parallel_compute.py` also resumes the version 121 four-controller fixture in
 `test/fixtures/echo/` at 1, 2, 4 and 8 workers and compares checksums and saves.
-That fixture was saved at tick 256 from `maps/FourSquares1.map.gz`, game seed
+That fixture was saved at tick 256 from `content/maps/FourSquares1.map.gz`, game seed
 123, with Econo, Nicowar, Econo and Nicowar in player order.
 The same check starts a fresh four-controller game to cover concurrent cache creation.
 It also starts four Castor controllers to exercise concurrent lazy map-gradient

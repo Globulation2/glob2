@@ -39,7 +39,7 @@ it('imports exactly one module, preserving the entry, and keeps invalid manifest
   const starter = generatorStarter(),
     d = decodeGeneratorDraft(starter),
     m = JSON.parse(d.manifest);
-  m.entry = 'maps/my-map.js';
+  m.entry = 'content/maps/my-map.js';
   const bytes = JSON.stringify({ formatVersion: 1, manifest: m, modules: { [m.entry]: d.script } });
   expect(JSON.parse(generatorPackage(importGeneratorPackage(bytes)))).toEqual(JSON.parse(bytes));
   expect(() =>

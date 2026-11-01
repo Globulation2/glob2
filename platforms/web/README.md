@@ -332,7 +332,7 @@ function names in CPU profiles while keeping release optimization. Install the
 browser test dependencies, serve the build, then run from the repository root:
 
 ```sh
-GLOB2_PROFILE_FIXTURE=games/gd-bigarena-long.game.gz \
+GLOB2_PROFILE_FIXTURE=content/games/gd-bigarena-long.game.gz \
 node platforms/web/profile.js 'http://127.0.0.1:8765/?renderer=webgl2&threads=serial' \
   artifacts/browser-performance/serial
 ```

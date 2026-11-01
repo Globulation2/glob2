@@ -13,14 +13,14 @@ Commands:
     preview DIR|SET_ID [-o OUT] [--crossfade S] [--segment S]
                               calm -> building -> combat -> calm listening file
     install SET_ID [--data-dir DIR]
-                              check, then copy into data/zik/<id>/ with SConscripts
+                              check, then copy into content/data/zik/<id>/ with SConscripts
     calibrate [--json OUT] [--jobs N]
                               rerun QA over the listening-verdict corpus
 
 ``check`` accepts any directory holding a1/a2/a3.opus. When the directory or argument
 names a set under ``sets/``, that set's waivers are applied (``--manifest`` points at
 another ``set.toml``). A set id checks ``out/<id>``, or the installed
-``data/zik/<id>`` when the set ships and has not been built locally. Exit codes:
+``content/data/zik/<id>`` when the set ships and has not been built locally. Exit codes:
 0 pass (warnings allowed), 1 a check failed, 2 usage or input error.
 """
 import argparse
@@ -192,7 +192,7 @@ def cmd_preview(args):
 
 
 def _registered_sconscript(zik_dir, set_id):
-    """The text of data/zik/SConscript with ``set_id`` in its list of set directories.
+    """The text of content/data/zik/SConscript with ``set_id`` in its list of set directories.
 
     Raises ``ManifestError`` when the file is missing or does not have the expected
     shape (the original ``SConscript("original/SConscript")`` call or the generated
@@ -200,7 +200,7 @@ def _registered_sconscript(zik_dir, set_id):
     """
     path = Path(zik_dir) / 'SConscript'
     if not path.exists():
-        raise ManifestError(f'{path}: not found; is {zik_dir} a data/zik directory?')
+        raise ManifestError(f'{path}: not found; is {zik_dir} a content/data/zik directory?')
     text = path.read_text()
     if 'os.walk(source_root)' in text and '.opus' in text:
         return text
@@ -215,7 +215,7 @@ def _registered_sconscript(zik_dir, set_id):
 
 
 def _register_set(zik_dir, set_id):
-    """Add ``set_id`` to data/zik/SConscript's list of set directories (idempotent)."""
+    """Add ``set_id`` to content/data/zik/SConscript's list of set directories (idempotent)."""
     text = _registered_sconscript(zik_dir, set_id)
     (Path(zik_dir) / 'SConscript').write_text(text)
 
@@ -286,7 +286,7 @@ def main(argv=None):
                    help='smoothstep fade seconds (default: gameplay timing, about 0.37 s)')
     p.add_argument('--segment', type=float, default=40.0)
     p.set_defaults(fn=cmd_preview)
-    p = sub.add_parser('install', help='install a built set into data/zik')
+    p = sub.add_parser('install', help='install a built set into content/data/zik')
     p.add_argument('set_id')
     p.add_argument('--data-dir')
     p.add_argument('--unshipped', action='store_true')

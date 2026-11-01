@@ -51,7 +51,7 @@ static std::string readFile(const std::string& p){std::ifstream f(p);return {std
 // profile's English table so long labels have to wrap and clip correctly.
 static void writeExpandedStrings()
 {
-    std::ifstream source(glob2test::sourceRoot()/"data/texts.en.txt");
+    std::ifstream source(glob2test::contentRoot()/"data/texts.en.txt");
     std::vector<std::string> lines;
     for(std::string line;std::getline(source,line);)lines.push_back(line);
     const std::regex slot("%[0-9]");

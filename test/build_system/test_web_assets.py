@@ -29,22 +29,22 @@ class WebAssetPlanTests(unittest.TestCase):
             output = Path(folder)
             web_assets.launcher_script_fonts(ROOT, output)
             css = (output / 'script-fonts.css').read_text()
-            self.assertNotIn('../../../data/', css)
-            manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+            self.assertNotIn('content/data/', css)
+            manifest = json.loads((ROOT / 'content/data/fonts/scripts/manifest.json').read_text())
             for font in manifest['fonts']:
                 name = font['name'] + '-Regular.ttf'
                 data = (output / 'fonts' / name).read_bytes()
                 self.assertEqual(hashlib.sha256(data).hexdigest(), font['sha256'])
                 self.assertIn('fonts/' + name, css)
             self.assertEqual((output / 'fonts/LICENSE-Noto.txt').read_bytes(),
-                             (ROOT / 'data/fonts/LICENSE-Noto.txt').read_bytes())
+                             (ROOT / 'content/data/fonts/LICENSE-Noto.txt').read_bytes())
 
     def test_skin_meshes_are_only_in_the_on_demand_package(self):
-        meshes = list((ROOT / 'data/skins/colony-v1').glob('*.gsk'))
-        manifest = json.loads((ROOT / 'data/skins/colony-v1/manifest.json').read_text())
+        meshes = list((ROOT / 'content/data/skins/colony-v1').glob('*.gsk'))
+        manifest = json.loads((ROOT / 'content/data/skins/colony-v1/manifest.json').read_text())
         self.assertEqual(sorted(p.name for p in meshes), sorted(manifest['meshes']))
         for path in meshes:
-            self.assertEqual(self.owner[path.relative_to(ROOT).as_posix()], 'skins')
+            self.assertEqual(self.owner[path.relative_to(ROOT / 'content').as_posix()], 'skins')
         self.assertNotIn('data/skins/colony-v1/manifest.json', self.packages['core'])
 
     def test_simulation_data_starts_with_the_game(self):
@@ -60,19 +60,19 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertFalse([p for p in self.owner if p.endswith(('SConscript', '.py', '.md'))])
 
     def test_script_fonts_are_available_before_optional_downloads(self):
-        fonts = sorted((ROOT / 'data/fonts/scripts').glob('*.ttf'))
+        fonts = sorted((ROOT / 'content/data/fonts/scripts').glob('*.ttf'))
         self.assertEqual(len(fonts), 13, 'All approved shaping fonts must ship')
         for font in fonts:
-            path = font.relative_to(ROOT).as_posix()
+            path = font.relative_to(ROOT / 'content').as_posix()
             self.assertEqual(self.owner.get(path), 'core', path)
             self.assertNotIn(path, self.packages.get('font-cjk', []))
             self.assertEqual(web_assets.contents(ROOT, 'core', path, {}), font.read_bytes())
 
     def test_only_current_tutorial_assets_ship(self):
-        catalog = json.loads((ROOT / 'scripts/tutorials/catalog.json').read_text())
+        catalog = json.loads((ROOT / 'content/scripts/tutorials/catalog.json').read_text())
         self.assertEqual(self.owner.get('scripts/tutorials/catalog.json'), 'core')
         for entry in catalog:
-            lesson = json.loads((ROOT / entry['definition']).read_text())
+            lesson = json.loads((ROOT / 'content' / entry['definition']).read_text())
             for path in (entry['definition'], entry['script'], lesson['map']):
                 self.assertEqual(self.owner.get(path), 'core', path)
         self.assertNotIn('campaigns/Tutorial_Campaign.txt', self.owner)
@@ -119,8 +119,8 @@ class WebAssetPlanTests(unittest.TestCase):
             (root / 'src/map/TerrainPresentation.h').write_text(
                 'constexpr auto atlas = "data/gfx/future-terrain";\n'
                 'constexpr auto backdrop = "data/gfx/future-backdrop";\n')
-            (root / 'data/terrain').mkdir(parents=True)
-            (root / 'data/terrain/tileset.json').write_text(json.dumps({'materials': [
+            (root / 'content/data/terrain').mkdir(parents=True)
+            (root / 'content/data/terrain/tileset.json').write_text(json.dumps({'materials': [
                 {'sprite': 'data/materials/rock', 'decor': {'sprite': 'data/gfx/glow'}}]}))
             names = web_assets.game_sprites(root)
             self.assertEqual(names, {'unit', 'terrain', 'gamegui', 'swarm0b',
@@ -139,7 +139,7 @@ class WebAssetPlanTests(unittest.TestCase):
                 'sprite("data/gfx/unit"); sprite("data/gfx/terrain");\n'
                 'sprite("data/gfx/gamegui"); sprite("data/gfx/swarm0b");\n}\n')
             (root / 'src/map/TerrainPresentation.h').write_text('')
-            definitions = root / 'data/buildings/experimental'
+            definitions = root / 'content/data/buildings/experimental'
             definitions.mkdir(parents=True)
             (definitions / 'manifest.json').write_text('{"files":["refuge.json"]}')
             (definitions / 'refuge.json').write_text(json.dumps({'variants': [{
@@ -153,14 +153,14 @@ class WebAssetPlanTests(unittest.TestCase):
                 {'data/custom/refuge0.png', 'data/gfx/refuge-icon3r.png'})
 
     def test_resource_catalog_artwork_is_in_game_package(self):
-        for resource in json.loads((ROOT / 'data/resources/registry.json').read_text())['resources']:
+        for resource in json.loads((ROOT / 'content/data/resources/registry.json').read_text())['resources']:
             prefix = resource['presentation']['sprite']
             self.assertIn(prefix.removeprefix('data/gfx/'), web_assets.game_sprites(ROOT))
             if prefix != 'data/gfx/ressource':
-                frames = sorted((ROOT / 'data/gfx').glob(Path(prefix).name + '[0-9]*.png'))
+                frames = sorted((ROOT / 'content/data/gfx').glob(Path(prefix).name + '[0-9]*.png'))
                 self.assertTrue(frames, prefix)
                 for frame in frames:
-                    self.assertEqual(self.owner[frame.relative_to(ROOT).as_posix()], 'game')
+                    self.assertEqual(self.owner[frame.relative_to(ROOT / 'content').as_posix()], 'game')
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'src/app').mkdir(parents=True)
@@ -170,8 +170,8 @@ class WebAssetPlanTests(unittest.TestCase):
                 'sprite("data/gfx/unit"); sprite("data/gfx/terrain");\n'
                 'sprite("data/gfx/gamegui"); sprite("data/gfx/swarm0b");\n}\n')
             (root / 'src/map/TerrainPresentation.h').write_text('')
-            (root / 'data/resources').mkdir(parents=True)
-            (root / 'data/resources/custom.json').write_text(json.dumps({'resources': [
+            (root / 'content/data/resources').mkdir(parents=True)
+            (root / 'content/data/resources/custom.json').write_text(json.dumps({'resources': [
                 {'presentation': {'sprite': 'data/custom/ore'}}]}))
             names = web_assets.game_sprites(root)
             self.assertIn('data/custom/ore', names)
@@ -184,8 +184,8 @@ class WebAssetPlanTests(unittest.TestCase):
                   and any(isinstance(target, ast.Name) and target.id == 'plan_inputs'
                           for target in node.targets)]
         self.assertEqual(len(inputs), 1)
-        self.assertIn('data/terrain/tileset.json', ast.literal_eval(inputs[0]))
-        self.assertIn('data/resources/registry.json', ast.literal_eval(inputs[0]))
+        self.assertIn('content/data/terrain/tileset.json', ast.literal_eval(inputs[0]))
+        self.assertIn('content/data/resources/registry.json', ast.literal_eval(inputs[0]))
         self.assertEqual(self.owner['data/terrain/tileset.json'], 'core')
 
     def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):
@@ -201,7 +201,7 @@ class WebAssetPlanTests(unittest.TestCase):
         # Every selectable catalog must be discoverable before optional downloads,
         # then arrive intact in translations. Exercise the installed inventory so
         # newly registered languages cannot silently miss either package.
-        catalogs = (ROOT / 'data/texts.list.txt').read_text().splitlines()[1:]
+        catalogs = (ROOT / 'content/data/texts.list.txt').read_text().splitlines()[1:]
         for path in catalogs:
             if path == 'data/texts.en.txt':
                 continue
@@ -211,13 +211,13 @@ class WebAssetPlanTests(unittest.TestCase):
                 stub = web_assets.contents(ROOT, 'core', path, {}).decode()
                 lines = stub.split('\n')
                 pairs = dict(zip(lines[0::2], lines[1::2]))
-                source = (ROOT / path).read_text().split('\n')
+                source = (ROOT / 'content' / path).read_text().split('\n')
                 original = dict(zip(source[0::2], source[1::2]))
                 self.assertEqual(set(pairs) - {''}, set(web_assets.STUB_KEYS))
                 self.assertEqual({key: pairs[key] for key in web_assets.STUB_KEYS},
                                  {key: original[key] for key in web_assets.STUB_KEYS})
                 full = web_assets.contents(ROOT, 'translations', path, {})
-                self.assertEqual(full, (ROOT / path).read_bytes())
+                self.assertEqual(full, (ROOT / 'content' / path).read_bytes())
 
     def test_music_and_artwork_the_game_reloads_per_match_are_optional(self):
         self.assertEqual(self.owner['data/zik/intro.opus'], 'menu-music')
@@ -228,7 +228,7 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
 
     def test_every_installed_music_set_is_owned_and_opus_only(self):
-        sets = [p for p in (ROOT / 'data/zik').iterdir() if p.is_dir()]
+        sets = [p for p in (ROOT / 'content/data/zik').iterdir() if p.is_dir()]
         catalogue = {'original'}
         for manifest in (ROOT / 'tools/music/sets').glob('*/set.toml'):
             with manifest.open('rb') as source:
@@ -287,14 +287,14 @@ class BrowserCopyTests(unittest.TestCase):
     def test_a_stale_copy_falls_back_to_the_original(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            texts = [p.relative_to(ROOT).as_posix() for p in (ROOT / 'data').glob('texts.*.txt')]
+            texts = [p.relative_to(ROOT).as_posix() for p in (ROOT / 'content/data').glob('texts.*.txt')]
             for path in texts + ['platforms/web/derive_assets.py', 'tools/package_assets.py', 'platforms/web/assets/sources.json',
-                         'data/gfx/menu-colony.png', 'data/gfx/menu-wordmark.png', 'data/fonts/sans.ttf',
+                         'content/data/gfx/menu-colony.png', 'content/data/gfx/menu-wordmark.png', 'content/data/fonts/sans.ttf',
                          'platforms/web/assets/sans-core.ttf', 'platforms/web/assets/menu-colony.webp', 'platforms/web/assets/menu-wordmark.webp']:
                 (root / path).parent.mkdir(parents=True, exist_ok=True)
                 (root / path).write_bytes((ROOT / path).read_bytes())
             self.assertEqual(len(web_assets.derived_assets(root)), 3)
-            (root / 'data/gfx/menu-colony.png').write_bytes(b'changed')
+            (root / 'content/data/gfx/menu-colony.png').write_bytes(b'changed')
             self.assertEqual(sorted(web_assets.derived_assets(root)), ['data/fonts/sans.ttf', 'data/gfx/menu-wordmark.png'])
 
     def test_a_copy_stands_in_for_a_re_encoded_export_when_smaller(self):
@@ -348,7 +348,7 @@ class BrowserCopyTests(unittest.TestCase):
             from fontTools.ttLib import TTFont
         except ImportError:
             self.skipTest('fontTools is not installed')
-        full = TTFont(ROOT / 'data/fonts/sans.ttf', lazy=True)
+        full = TTFont(ROOT / 'content/data/fonts/sans.ttf', lazy=True)
         core = TTFont(ROOT / 'platforms/web/assets/sans-core.ttf', lazy=True)
         full_map, core_map = full.getBestCmap(), core.getBestCmap()
         original = {cp for cp, name in full_map.items() if not name.startswith('cjk')}

@@ -166,7 +166,7 @@ TEST_CASE("guidance adapts to desktop touch and large text without consuming map
         glob2test::HeadlessGlobals globals(options);
         globals->settings.setTextSizePercent(textSize);
         Engine engine;
-        REQUIRE(engine.initCampaignTask((glob2test::sourceRoot()/Tutorial::IntroductionMap).string()).run());
+        REQUIRE(engine.initCampaignTask((glob2test::contentRoot()/Tutorial::IntroductionMap).string()).run());
         engine.prepareRun(); engine.beginSession(0);
         CHECK(engine.gui.game.teams[0]->liveUnits.size()==13);
         engine.gui.game.setWaitingOnMask(0);
@@ -358,7 +358,7 @@ TEST_CASE("expanded lesson catalog and guidance fit both phone orientations [dis
         Tutorial::LessonCatalogScreen catalog;REQUIRE(catalog.entries.size()>=10);
         for(size_t i=2;i<catalog.entries.size();++i) {
             CAPTURE(width);CAPTURE(height);CAPTURE(text);CAPTURE(i);
-            Engine engine;REQUIRE(engine.initCampaignTask((glob2test::sourceRoot()/catalog.entries[i].map).string()).run());
+            Engine engine;REQUIRE(engine.initCampaignTask((glob2test::contentRoot()/catalog.entries[i].map).string()).run());
             engine.prepareRun();engine.beginSession(0);engine.gui.game.setWaitingOnMask(0);
             for(int t=0;t<64;++t)engine.gui.game.step(0);
             glob2test::drawGUI(engine.gui,0);

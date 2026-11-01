@@ -23,7 +23,7 @@ import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { normalizeBuildingArtwork } from './images.ts';
-import { UUID } from '../maps/catalog.ts';
+import { UUID } from '../content/maps/catalog.ts';
 
 /** Private authoring workspace. Engine validation is a separate publication boundary. */
 export async function buildingDraftRoutes(app: FastifyInstance, identity: Identity) {
@@ -163,8 +163,8 @@ export async function buildingDraftRoutes(app: FastifyInstance, identity: Identi
               height: 2,
               hpInit: 200,
               hpMax: 200,
-              gameSprite: 'data/gfx/inn0b',
-              miniSprite: 'data/gfx/miniinn0b',
+              gameSprite: 'content/data/gfx/inn0b',
+              miniSprite: 'content/data/gfx/miniinn0b',
             },
             semantics: { placeable: true, instantPlacement: true },
           },

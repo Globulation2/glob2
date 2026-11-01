@@ -23,7 +23,7 @@ def main():
         image=Image.open(native).convert('RGBA')
         assert list(image.size)==src['native_size']
         filename='ressource%d.png'%index
-        size=Image.open(ROOT/'data/gfx'/filename).size
+        size=Image.open(ROOT/'content/data/gfx'/filename).size
         image.resize((size[0]*4,size[1]*4),Image.Resampling.LANCZOS).save(OUTPUT/filename)
         frames.append(dict(id=Path(filename).stem,width=size[0],height=size[1],scale=4,
             recipe='recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize',

@@ -9,7 +9,7 @@
 
 ## Importing resources
 
-The stock registry in `data/resources/registry.json` defines these basic deposits:
+The stock registry in `content/data/resources/registry.json` defines these basic deposits:
 
 | Resource key | Material supplied |
 | --- | --- |
@@ -61,7 +61,7 @@ definitions and 32 MiB, including the fully resolved snapshot saved with a map.
     },
     "presentation": {
       "name": "Mixed crop",
-      "sprite": "data/gfx/ressource",
+      "sprite": "content/data/gfx/ressource",
       "minimap": [100, 160, 50],
       "levels": [
         {"stock": 0, "variants": [{"frame": 10, "weight": 1}]},
@@ -82,7 +82,7 @@ when the optional experiment translation keys are unavailable.
 `presentation.levels` starts at stock zero and has strictly increasing stock
 thresholds. The selected level uses the **total stock across all materials**.
 Each level has one or more weighted sprite variants. `sprite` is a canonical
-`data/`-relative sprite prefix; traversal and absolute paths are rejected.
+`content/data/`-relative sprite prefix; traversal and absolute paths are rejected.
 Optional `animationFrames`, `animationStride` and `animationTicks` default to one.
 All effective frame indices must fit 0–65535. Installed artwork is loaded through
 the normal asset system. Themed set sheets use map-owned artwork bundles instead,
@@ -110,7 +110,7 @@ experiment transport and deterministic presentation choices.
 ### Foundation deposit artwork
 
 The gold ore, iron ore, silica and cotton deposit sprites
-(`data/gfx/resource-<name>0.png`) and their 4x HD frames are painted
+(`content/data/gfx/resource-<name>0.png`) and their 4x HD frames are painted
 procedurally by `tools/artwork/paint_resources.py`. Deposit art should fill its
 32px cell the way the stock rocks do, with an identifying silhouette as well as
 colour: boulders with gold veins and nuggets, darker boulders with rust bands
@@ -167,7 +167,7 @@ keeps its crop; an empty field and a boundary with wheat use the lowest-ID crop,
 wheat. Fish are the first resource to use `animationFrames`: each stock level is
 twelve frames advanced every three ticks, so the animation pauses with the game.
 
-The sprites (`data/gfx/resource-<key><frame>.png`, with 4x HD frames) are painted
+The sprites (`content/data/gfx/resource-<key><frame>.png`, with 4x HD frames) are painted
 by `tools/artwork/paint_landscape.py` in the classic pastel style: one frame per
 stock level, a second tree look five frames later, and twelve fish frames per
 level. Fish are tinted toward the water and translucent so they read as
@@ -182,7 +182,7 @@ python3 tools/artwork/package_runtime.py --check
 
 ### Adding a built-in resource
 
-1. Add the entry to `data/resources/registry.json` with a `requiredExperiment`
+1. Add the entry to `content/data/resources/registry.json` with a `requiredExperiment`
    (declare a new experiment in `experiments` if none fits). Only the eight legacy
    resources are ungated. New keys sort after the legacy slots, so they can renumber
    later gated resources in newly created maps; code must look resources up by key.
@@ -193,12 +193,12 @@ python3 tools/artwork/package_runtime.py --check
 2. Paint its frames and HD frames with a deterministic tool under
    `tools/artwork/`, run `package_runtime.py --check`, and credit the artwork in
    `docs/assets/source-attribution.md`.
-3. Add `[<presentation name>]` to `data/texts.keys.txt` and every catalog listed in
-   `data/texts.list.txt` (blank when untranslated), and list it in
-   `data/texts.pending.txt` until every catalog translates it.
+3. Add `[<presentation name>]` to `content/data/texts.keys.txt` and every catalog listed in
+   `content/data/texts.list.txt` (blank when untranslated), and list it in
+   `content/data/texts.pending.txt` until every catalog translates it.
 4. Run the `ResourceRegistry`, `BrushCatalog`, `TerrainResources` and
    `RuntimeResources` suites, `test/build_system/test_web_assets.py` and
-   `data/check_translations.py --strict`.
+   `content/data/check_translations.py --strict`.
 5. Editing `registry.json` changes the simulation data hash and so the sim version
    key; follow [Simulation version](../multiplayer/turn-engine.md#simulation-version).
 

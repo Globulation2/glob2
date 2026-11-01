@@ -18,7 +18,7 @@ args = parser.parse_args()
 binary = args.binary.resolve()
 output = args.output.resolve()
 output.mkdir(parents=True, exist_ok=True)
-fixture = root / 'games/cross-replay.game.gz'
+fixture = root / 'content/games/cross-replay.game.gz'
 replay = output / 'native.replay'
 command = [str(binary), 'game', 'repeat', str(fixture), '--ticks', '1500', '--runs', '1']
 with tempfile.TemporaryDirectory(prefix='glob2-browser-determinism-') as profile:
@@ -30,14 +30,14 @@ with tempfile.TemporaryDirectory(prefix='glob2-browser-determinism-') as profile
                        SDL_AUDIODRIVER='dummy'))
 trace = Path(str(replay) + '.checksums').read_bytes()
 assert len(trace) > 1000, 'Missing or empty simulation trace'
-metadata = {'fixture': 'games/cross-replay.game.gz', 'seed': 42, 'ticks': 1500,
+metadata = {'fixture': 'content/games/cross-replay.game.gz', 'seed': 42, 'ticks': 1500,
             'fixture_sha256': hashlib.sha256(fixture.read_bytes()).hexdigest(),
             'trace_sha256': hashlib.sha256(trace).hexdigest(), 'command': command}
 
 # The committed turn-protocol match record, verified headlessly. Its per-tick
 # checksum trace must match every other platform's (and the browsers').
 record = root / 'test/fixtures/multiplayer/FourSquares1.g2mr'
-match_map = root / 'maps/FourSquares1.map.gz'
+match_map = root / 'content/maps/FourSquares1.map.gz'
 verify_dir = output / 'verify-match'
 shutil.rmtree(verify_dir, ignore_errors=True)
 verify_command = [str(binary), 'match', 'verify', str(record), '--map-file', str(match_map), '--output-dir', str(verify_dir)]

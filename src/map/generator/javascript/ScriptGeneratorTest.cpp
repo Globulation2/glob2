@@ -351,7 +351,7 @@ TEST_CASE("Optional JavaScript examples generate repeatable validated worlds [sl
 	for (const char *name : {"swamp", "forts", "even-ground"})
 	{
 		auto p = JSGen::Package::load(
-			(glob2test::sourceRoot() / "data/generators/examples" / name).string());
+			(glob2test::contentRoot() / "data/generators/examples" / name).string());
 		auto entries = GeneratorRegistry::builtins().entries();
 		entries.push_back(p->definition(1000000));
 		GeneratorRegistry registry(std::move(entries));
