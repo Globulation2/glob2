@@ -4884,6 +4884,30 @@ AI 遥测
 清除的资源
 [stat cleared about]
 工人在清除区域中为腾出空间而移除的资源。
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]

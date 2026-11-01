@@ -28,6 +28,7 @@ namespace Online { class SkinDownloads; }
 #include "GameGUIMessageManager.h"
 #include "GameEventFeed.h"
 #include "GameGUIDialog.h"
+class InGameStatisticsPanel;
 namespace Tutorial { class Guidance; }
 #include "GameSpeedControl.h"
 #include "render/Minimap.h"
@@ -411,6 +412,7 @@ private:
 	friend class TorusRenderBenchmark;
 	friend class SoftwareRenderBenchmark;
 	bool persistPreferences;
+    friend class InGameStatisticsPanel;
     friend class GameGUITouch;
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
@@ -749,14 +751,12 @@ private:
 	bool showUnitWorkingToBuilding;
 
 	const TeamStats *teamStats;
-	int measurementPage = 0;
-	//! Pages of the statistics text view: the colony summary, the metric groups
-	//! and, when spectating, the win chances.
-	int statisticsPages() const;
-	void drawStatisticsPage(int y);
-	//! Each side's chance of winning, under the statistics. Drawn for live
-	//! spectators, independently of the game's winning conditions.
-	void drawWinProbabilities(int x, int y);
+    std::unique_ptr<InGameStatisticsPanel> statisticsPanel;
+    InGameStatisticsPanel &statistics();
+    bool statisticsVisible() const;
+    bool handleStatisticsEvent(const SDL_Event &event);
+    void drawStatisticsPanel(GAGGUI::ui::Rect bounds);
+    void drawStatisticsPage(int y);
 	Team *localTeam;
 
 	Uint32 chatMask;
@@ -789,7 +789,8 @@ private:
 		IGM_HIVE,
 		IGM_CONFIRM_LEAVE,
 		IGM_TELEMETRY,
-        IGM_TUTORIAL_RESTART
+        IGM_TUTORIAL_RESTART,
+        IGM_STATISTICS
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;

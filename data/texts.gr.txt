@@ -4884,6 +4884,30 @@ CPU %0%
 Πόροι που καθαρίστηκαν
 [stat cleared about]
 Πόροι που αφαίρεσαν οι εργάτες σε ζώνες καθαρισμού για να ανοίξουν χώρο.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
