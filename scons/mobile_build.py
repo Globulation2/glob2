@@ -151,7 +151,7 @@ def build_mobile(directory, identity, arguments):
             def available(options):
                 required = options.get('require', ())
                 # Android builds have no desktop OpenGL and are not MinGW.
-                return 'opengl' not in required and 'mac' not in required
+                return not set(required).intersection(('opengl', 'mac', 'no-recording', 'installed-paths'))
 
             def test_objects(entries, prefix):
                 out = []

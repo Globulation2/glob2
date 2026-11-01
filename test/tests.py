@@ -8,7 +8,8 @@ Placement rule: a test joins UNIT_TESTS if it needs neither GlobalContainer nor 
 client object; otherwise it joins ENGINE_TESTS. Entry options:
   cxxflags  extra compiler flags for that translation unit only
   defines   extra preprocessor defines for that translation unit only
-  require   build features the entry needs: 'wss', 'not-mingw', 'opengl'
+  require   build features the entry needs: 'wss', 'not-mingw', 'opengl',
+            'recording', 'no-recording', 'installed-paths' (Linux packaging)
 """
 
 # Linked into both test binaries.
@@ -80,7 +81,8 @@ ENGINE_TESTS = [
     ('#libgag/src/MacScrollVisualHarness.cpp', dict(require={'mac'})),
     ('#src/ai/AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
 
-    ('GameplayRecordingIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('GameplayRecordingIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'], require={'recording'})),
+    ('GameplayRecordingDisabledTest.cpp', dict(require={'no-recording'})),
     ('#src/hud/GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/hud/GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/editor/EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -250,8 +252,10 @@ UNIT_TESTS = [
     '#libgag/src/EventQueueTest.cpp',
     '#src/map/generator/MapGeneratorGoldenCoverageTest.cpp',
 
-    '#libgag/src/GameplayRecordingTest.cpp',
-    '#libgag/src/RecordingSessionTest.cpp',
+    ('#libgag/src/GameplayRecordingTest.cpp', dict(require={'recording'})),
+    ('#libgag/src/RecordingSessionTest.cpp', dict(require={'recording'})),
+    ('#libgag/src/RecordingDisabledTest.cpp', dict(require={'no-recording'})),
+    ('#libgag/src/InstalledPathsTest.cpp', dict(require={'installed-paths'}, cxxflags=['-fno-access-control'])),
     'support/RecordingValidationProcess.cpp',
     '#libusl/test/USLCoverageTest.cpp',
     '#libgag/src/SurfaceCoverageTest.cpp',

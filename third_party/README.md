@@ -1,5 +1,24 @@
 # Vendored dependencies
 
+## Distribution packaging audit
+
+Review these groups when preparing an official distro package. This table
+describes build choices, not distribution approval or a substitute for notices.
+The selected release's lock files and retained license texts are authoritative.
+
+| Component | License/source and local changes | Distro alternative |
+| --- | --- | --- |
+| SDL3 family | zlib; versions/hashes in `scons/sdl3-versions.json`; patches in `scons/vcpkg-ports/` fix X11 lifecycle, PNG channel preservation and font kerning, plus platform/build portability. | Use compatible system SDL3/image/ttf/net with `GLOB2_SDL3_PREFIX` unset; qualify the required fixes. |
+| FFmpeg/x264/NVIDIA headers | Source hashes in `scons/recording-versions.json`. FFmpeg's selected GPL-enabled build includes GPL x264; codec sources and notices/configuration accompany upstream distributions. NVIDIA header notices are retained separately. No engine changes are carried in those sources. | Native Linux `recording=system` links distro FFmpeg; `recording=disabled` omits the runtime stack. Still review sources included in the tarball. |
+| QuickJS-ng/OpenLibm | MIT QuickJS plus OpenLibm's mixed permissive notices; exact commits, source hashes and ordered patches in `javascript-vendor.json`. Deterministic math, metering, persistence and restricted capabilities are intentional modifications. | Retain these reviewed forks; replacing either with an arbitrary system library can change simulation execution. Seek downstream bundled-library review with the documented patch series. |
+| nlohmann/json | MIT; unmodified amalgamation documented below. | A matching system header is a potential downstream substitution; test protocol parsing and installed notices. No system-header build switch is implied. |
+| Vulkan headers | Apache-2.0 SPDX notices in retained headers; used to describe dynamically loaded APIs. | Review matching system-header substitution with renderer build/platform checks. |
+| Asset encoder | Build-only Pillow (HPND), libwebp (BSD-style), setuptools (MIT) and pybind11 (BSD-style); exact inputs in `tools/asset-encoder-sources.json`. | Pre-provision the pinned toolchain offline with `tools/build_asset_encoder.py`; do not ship its private Python environment. Qualify generated pixels before changing encoder versions. |
+
+Inspect [asset/font/music licensing](../docs/development/licensing.md) separately.
+The [downstream release process](../docs/releases/desktop.md#downstream-linux-distributions)
+covers source completeness, clean offline builds and installed-package evidence.
+
 ## JSON for Modern C++
 
 nlohmann/json v3.12.0 (MIT), from

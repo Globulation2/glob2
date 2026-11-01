@@ -1,6 +1,7 @@
 from sources import GAG_SOURCES
 Import("env")
-libgag_sources = list(GAG_SOURCES)
+from recording_config import sources as recording_sources
+libgag_sources = recording_sources(GAG_SOURCES, env.get('recording', 'bundled'))
 if env["PLATFORM"] == "darwin" and not env.get("mingw") and not env.get("mingwcross"):
     libgag_sources.append("MacScrollMonitor.mm")
 
@@ -8,8 +9,17 @@ if env["PLATFORM"] == "darwin" and not env.get("mingw") and not env.get("mingwcr
     
 Import("env")
 from dev_compile import objects as development_objects, unique
-mapping = development_objects(env, libgag_sources,
-    lambda source: env.File(source.removeprefix('#libgag/src/').rsplit('.', 1)[0] + '.o').abspath)
+target = lambda source: env.File(source.removeprefix('#libgag/src/').rsplit('.', 1)[0] + '.o').abspath
+# Like DATADIR, this is a path policy, not a different public ABI. Track the
+# define in the two consumers' compile signatures without disabling unity/PCH
+# for the other sources or recompiling unrelated simulation objects.
+path_sources = [source for source in ('FileManager.cpp', 'GraphicContextRenderer.cpp')
+                if env.get('installed_paths') and source in libgag_sources]
+mapping = development_objects(env, [source for source in libgag_sources if source not in path_sources], target)
+if path_sources:
+    installed = env.Clone()
+    installed.Append(CPPDEFINES=['GLOB2_INSTALLED_PATHS'])
+    mapping.update(development_objects(installed, path_sources, target))
 l1 = env.StaticLibrary("gag", unique(mapping.values()))
 if env.get("RUNTIME_ASSET_STAMP"):
     env.Requires(l1, env["RUNTIME_ASSET_STAMP"])

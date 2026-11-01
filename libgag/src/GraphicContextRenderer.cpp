@@ -46,7 +46,7 @@ std::string GraphicContext::rendererShaderDirectory()
             auto directory = Toolkit::getFileManager()->getDir(i) + "/shaders";
             if (std::filesystem::exists(directory + "/webgl2/primitive.frag")) return directory;
         }
-#ifdef GLOB2_RENDER_SHADER_DIR
+#if defined(GLOB2_RENDER_SHADER_DIR) && !defined(GLOB2_INSTALLED_PATHS)
     return GLOB2_RENDER_SHADER_DIR;
 #else
     return "data/renderer-shaders";
