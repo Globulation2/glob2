@@ -1,0 +1,4 @@
+PASS GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (155.9s)
+
+1 passed, 0 failed, 0 skipped (155.9s of test time)
+[run_tests] JUnit report: artifacts/statistics/touch-200-rerun.xml (1 cases)

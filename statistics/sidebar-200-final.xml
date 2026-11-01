@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="73" failures="1" errors="1" skipped="0"><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="configured keyboard actions toggle presentation and queue pause without changing simulation [display]" time="8.04981" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="construction choice displays recipe costs independently of storage [display][artifacts]" time="14.6393" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="custom mixed building panels render without mutating simulation [display][artifacts]" time="7.61246" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="desktop building menu clicks queue authoritative worker and priority orders [display]" time="9.56574" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="home keyboard action wraps the camera and script messages preserve history [display]" time="5.64256" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="in-game music selection uses readable phone popup rows [display][artifacts][writes-preferences]" time="7.12993" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="initial camera survives waiting for the first presentation [display]" time="5.63703" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="local victory popup and results show the same deciding condition [display][artifacts]" time="7.37315" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]" time="7.0398" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match dialogs accept return and distinguish continuing from ending a game [display]" time="4.39861" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]" time="12.476" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]" time="14.6127" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]" time="6.51771" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="service progress horizon covers mixed visits and preserves stock horizons" time="0.621673" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics sheet scroll stays open and fits phone rotations [display][artifacts]" time="8.18535" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" time="10.359" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]" time="8.68637" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="8.48489" status="run" />
+  <testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="22.0869" status="run">
+      <error message="exception">
+        No empty ground visible in the phone world
+      </error>
+    </testcase>
+  <testcase classname="GameGUITouch" name="attack marks follow mobile minimaps without extra lifetime ticks [display][artifacts]" time="7.21323" status="run" />
+  <testcase classname="GameGUITouch" name="building inventory shows material stocks below the mobile title [display][artifacts]" time="9.36503" status="run" />
+  <testcase classname="GameGUITouch" name="curved labels retain physical glyph detail and reuse their cache [display][artifacts]" time="6.64211" status="run" />
+  <testcase classname="GameGUITouch" name="live statistics hide post-game probability across topics [display][artifacts]" time="5.89782" status="run" />
+  <testcase classname="GameGUITouch" name="notifications clear system gutters and HUD at mobile text sizes [display][artifacts]" time="7.51209" status="run" />
+  <testcase classname="GameGUITouch" name="phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]" time="6.98327" status="run" />
+  <testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="6.34476" status="run" />
+  <testcase classname="GameGUITouch" name="spectators inspect building controls without editing their configuration [display][artifacts]" time="22.8232" status="run" />
+  <testcase classname="GameGUITouch" name="touch scroll momentum on the map; the HUD palette and the editor [display]" time="13.0058" status="run" />
+  <testcase classname="GameGUITouch" name="tutorial wrapping preserves shaped clusters and refreshes font metrics [display]" time="7.09939" status="run" />
+  <testcase classname="GameGUITouch" name="unit taps have a zoom independent halo and show unit stats [display][artifacts]" time="10.6043" status="run" />
+  </testsuite><testsuite name="GameSpeed"><testcase classname="GameSpeed" name="desktop statistics spacing and speed hit target [display][artifacts][writes-preferences]" time="11.3302" status="run" />
+  <testcase classname="GameSpeed" name="live engine speed; pause; hard pause and replay playback [display][writes-preferences]" time="19.142" status="run">
+      <failure message="true" type="REQUIRE_FALSE">
+src/game/GameSpeedTest.cpp:426:
+REQUIRE_FALSE( running ) is NOT correct!
+  values: REQUIRE_FALSE( true )
+
+      </failure>
+    </testcase>
+  <testcase classname="GameSpeed" name="presets; bounds; legacy settings and persistence" time="1.40705" status="run" />
+  <testcase classname="GameSpeed" name="settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]" time="8.60988" status="run" />
+  </testsuite><testsuite name="PanelButtonHit"><testcase classname="PanelButtonHit" name="MatchesOldExpressionWhereDefined" time="0.000614" status="run" />
+    <testcase classname="PanelButtonHit" name="IndexNeverNegative" time="0.005738" status="run" />
+    <testcase classname="PanelButtonHit" name="LeftMarginSelectsFirstButton" time="0" status="run" />
+    <testcase classname="PanelButtonHit" name="InRangeButtons" time="0.000269" status="run" />
+    <testcase classname="PanelButtonHit" name="BeyondLastButtonIsDead" time="0" status="run" />
+    <testcase classname="PanelButtonHit" name="ReplayStripLayout" time="0" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.015898" status="run" />
+    <testcase classname="UILayout" name="settings toggles keep captions left and the full row actionable" time="0.041341" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0.000128" status="run" />
+    <testcase classname="UILayout" name="wrap and ellipsis preserve shaping clusters" time="0.000136" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0.00012" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0.000238" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0.00034" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0.000691" status="run" />
+    <testcase classname="UILayout" name="native gestures retain fractions ownership and survive rebuilds" time="0.000709" status="run" />
+    <testcase classname="UILayout" name="native gesture bounds settle and external jumps cancel the tail" time="0.009166" status="run" />
+    <testcase classname="UILayout" name="native nested capture does not transfer to parent and missing owners consume tails" time="0.000373" status="run" />
+    <testcase classname="UILayout" name="native popup scrolling owns its tail after dismissal" time="0.004079" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.029267" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.005188" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.005781" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0.001222" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0.001106" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.007822" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0.000105" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0.000258" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0.000229" status="run" />
+    <testcase classname="UILayout" name="icon segments and choices" time="0.000306" status="run" />
+    <testcase classname="UILayout" name="text field" time="0.000141" status="run" />
+    <testcase classname="UILayout" name="list view" time="0" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0.000231" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0.000114" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.062964" status="run" />
+  </testsuite></testsuites>

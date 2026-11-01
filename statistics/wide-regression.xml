@@ -1,0 +1,534 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="119" failures="38" errors="0" skipped="0"><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="configured keyboard actions toggle presentation and queue pause without changing simulation [display]" time="2.1283" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="construction choice displays recipe costs independently of storage [display][artifacts]" time="4.28499" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="custom mixed building panels render without mutating simulation [display][artifacts]" time="4.48531" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="desktop building menu clicks queue authoritative worker and priority orders [display]" time="2.5468" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="home keyboard action wraps the camera and script messages preserve history [display]" time="2.63823" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="in-game music selection uses readable phone popup rows [display][artifacts][writes-preferences]" time="2.3308" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="initial camera survives waiting for the first presentation [display]" time="2.57066" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="local victory popup and results show the same deciding condition [display][artifacts]" time="3.09714" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]" time="2.83724" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match dialogs accept return and distinguish continuing from ending a game [display]" time="2.24226" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]" time="3.66929" status="run">
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 10
+          remaining := 10
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 10
+          remaining := 10
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 10
+          remaining := 10
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 10
+          remaining := 0
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 10
+          remaining := 0
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 10
+          remaining := 0
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 100
+          remaining := 100
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 100
+          remaining := 100
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 100
+          remaining := 100
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 100
+          remaining := 0
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 100
+          remaining := 0
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 100
+          remaining := 0
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 250
+          remaining := 250
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 250
+          remaining := 250
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 250
+          remaining := 250
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 250
+          remaining := 0
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 250
+          remaining := 0
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := false
+          duration := 250
+          remaining := 0
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 10
+          remaining := 10
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 10
+          remaining := 10
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 10
+          remaining := 10
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 10
+          remaining := 0
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 10
+          remaining := 0
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 10
+          remaining := 0
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 100
+          remaining := 100
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 100
+          remaining := 100
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 100
+          remaining := 100
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 100
+          remaining := 0
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 100
+          remaining := 0
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 100
+          remaining := 0
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 250
+          remaining := 250
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 250
+          remaining := 250
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 250
+          remaining := 250
+          delta := 255
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 250
+          remaining := 0
+          delta := 0
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 250
+          remaining := 0
+          delta := 127
+
+      </failure>
+      <failure message="false == true" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:228:
+CHECK( (markerPixels&gt;0)==!instant ) is NOT correct!
+  values: CHECK( false == true )
+  logged: instant := false
+          smooth := true
+          duration := 250
+          remaining := 0
+          delta := 255
+
+      </failure>
+    </testcase>
+  <testcase classname="GUIInteractionCoverage" name="mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]" time="5.24839" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]" time="3.49745" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="service progress horizon covers mixed visits and preserves stock horizons" time="0.191336" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics sheet scroll stays open and fits phone rotations [display][artifacts]" time="3.55202" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" time="4.7324" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]" time="3.30882" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="2.19038" status="run">
+      <failure message="false" type="REQUIRE">
+src/hud/touch/GameGUITouchHarness.cpp:63:
+REQUIRE( static_cast&lt;bool&gt;(condition) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: Dragging a flag must not pan the map
+
+      </failure>
+    </testcase>
+  <testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="6.27187" status="run">
+      <failure message="false" type="REQUIRE">
+src/hud/touch/GameGUITouchHarness.cpp:63:
+REQUIRE( static_cast&lt;bool&gt;(condition) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: One-finger zoom must show its readout while dragging
+
+      </failure>
+    </testcase>
+  <testcase classname="GameGUITouch" name="attack marks follow mobile minimaps without extra lifetime ticks [display][artifacts]" time="2.96954" status="run" />
+  <testcase classname="GameGUITouch" name="building inventory shows material stocks below the mobile title [display][artifacts]" time="3.88001" status="run" />
+  <testcase classname="GameGUITouch" name="curved labels retain physical glyph detail and reuse their cache [display][artifacts]" time="2.40567" status="run" />
+  <testcase classname="GameGUITouch" name="live statistics hide post-game probability across topics [display][artifacts]" time="3.10867" status="run" />
+  <testcase classname="GameGUITouch" name="notifications clear system gutters and HUD at mobile text sizes [display][artifacts]" time="3.08774" status="run" />
+  <testcase classname="GameGUITouch" name="phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]" time="3.17318" status="run" />
+  <testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="2.33733" status="run" />
+  <testcase classname="GameGUITouch" name="spectators inspect building controls without editing their configuration [display][artifacts]" time="10.5294" status="run" />
+  <testcase classname="GameGUITouch" name="touch scroll momentum on the map; the HUD palette and the editor [display]" time="3.36891" status="run" />
+  <testcase classname="GameGUITouch" name="tutorial wrapping preserves shaped clusters and refreshes font metrics [display]" time="2.97048" status="run" />
+  <testcase classname="GameGUITouch" name="unit taps have a zoom independent halo and show unit stats [display][artifacts]" time="3.66938" status="run" />
+  </testsuite><testsuite name="GameSpeed"><testcase classname="GameSpeed" name="live engine speed; pause; hard pause and replay playback [display][writes-preferences]" time="17.3431" status="run" />
+  <testcase classname="GameSpeed" name="presets; bounds; legacy settings and persistence" time="0.498448" status="run" />
+  <testcase classname="GameSpeed" name="settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]" time="3.14582" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="40.3724" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="28.1437" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="3.90552" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="8.5602" status="run" />
+  <testcase classname="TeamStatsSave" name="Delayed observation telemetry saves remain readable" time="0.608345" status="run" />
+  <testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="3.98522" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant reset accepts refreshed diagnostics and restored snapshots" time="6.38627" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant snapshot reset clears vanished types without clearing history" time="3.4785" status="run" />
+  <testcase classname="TeamStatsSave" name="clearing telemetry counts operations once by configured primary material" time="2.50749" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.616798" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="1.11588" status="run" />
+  <testcase classname="TeamStatsSave" name="defender recruitment refusal excludes idle reserves while retaining combat and stock smoothing" time="1.66952" status="run" />
+  <testcase classname="TeamStatsSave" name="diagnostic probability history preserves replay acceptance boundaries [save-format]" time="0.497903" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.391403" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="4.17236" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.731015" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.741712" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="5.02335" status="run" />
+  <testcase classname="TeamStatsSave" name="nonuniform combat levels retain per-unit defender recruitment eligibility" time="2.25515" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="1.75612" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.757659" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="1.24899" status="run" />
+  <testcase classname="TeamStatsSave" name="probability history rejects samples beyond the saved game tick [save-format]" time="2.63551" status="run" />
+  <testcase classname="TeamStatsSave" name="probability save section preserves Maxima-era statistics layouts [save-format]" time="1.37646" status="run" />
+  <testcase classname="TeamStatsSave" name="probability text history and integral survive a team save [save-format]" time="3.2887" status="run" />
+  <testcase classname="TeamStatsSave" name="retained format152 magic levels count each explorer once through migration and current continuation [save-format]" time="10.125" status="run" />
+  </testsuite><testsuite name="MetricCatalog"><testcase classname="MetricCatalog" name="Win probability charts retain explicit coverage, zero chances and fractional percentages" time="0.000404" status="run" />
+    <testcase classname="MetricCatalog" name="Every metric has a unique id, a group and a source for its value" time="0.000184" status="run" />
+    <testcase classname="MetricCatalog" name="The averaging windows offered are whole minutes and include the default" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="A view keeps only the choices its metric offers, and those that go together" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Counters chart as smoothed rates and as totals" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Net metrics run below zero" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Hunger is drawn as bands of the population that add up to 100%" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Samples from before a save gained coverage are left out" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Shares compare teams sample by sample" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Tower accuracy is hits per shot over the window" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Text panels read the latest value: a rate once there are two samples" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Counters relative to the population are per 100 units and may exceed 100" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Shares are taken by tick when teams do not have the same samples" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="A map-wide metric is one series however many teams recorded it" time="0" status="run" />
+    <testcase classname="MetricCatalog" name="Markers name the first combat death, the first building destroyed and each wipe-out" time="0" status="run" />
+  </testsuite><testsuite name="MetricSeries"><testcase classname="MetricSeries" name="A counter's rate per minute follows its slope and shortens its window at the start" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Nested thresholds become disjoint bands that add up to the whole" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Percentages stay within 0-100 when the part outruns its whole" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Bands of unequal length and negative values normalise without reading past the end" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Axes use round steps and include zero" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Texts switch form at their boundaries" time="0" status="run" />
+  </testsuite><testsuite name="PanelButtonHit"><testcase classname="PanelButtonHit" name="MatchesOldExpressionWhereDefined" time="0.000495" status="run" />
+    <testcase classname="PanelButtonHit" name="IndexNeverNegative" time="0.006728" status="run" />
+    <testcase classname="PanelButtonHit" name="LeftMarginSelectsFirstButton" time="0" status="run" />
+    <testcase classname="PanelButtonHit" name="InRangeButtons" time="0.000258" status="run" />
+    <testcase classname="PanelButtonHit" name="BeyondLastButtonIsDead" time="0" status="run" />
+    <testcase classname="PanelButtonHit" name="ReplayStripLayout" time="0" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.001023" status="run" />
+    <testcase classname="UILayout" name="settings toggles keep captions left and the full row actionable" time="0.013881" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap and ellipsis preserve shaping clusters" time="0" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0.000116" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0.000157" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0.001683" status="run" />
+    <testcase classname="UILayout" name="native gestures retain fractions ownership and survive rebuilds" time="0.000904" status="run" />
+    <testcase classname="UILayout" name="native gesture bounds settle and external jumps cancel the tail" time="0.001907" status="run" />
+    <testcase classname="UILayout" name="native nested capture does not transfer to parent and missing owners consume tails" time="0.000127" status="run" />
+    <testcase classname="UILayout" name="native popup scrolling owns its tail after dismissal" time="0.000423" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.016307" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.00153" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.001144" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0.000426" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0.000372" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.004505" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0.000103" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0" status="run" />
+    <testcase classname="UILayout" name="icon segments and choices" time="0.000102" status="run" />
+    <testcase classname="UILayout" name="text field" time="0" status="run" />
+    <testcase classname="UILayout" name="list view" time="0" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0.000106" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.01171" status="run" />
+  </testsuite></testsuites>

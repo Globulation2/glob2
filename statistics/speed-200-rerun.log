@@ -1,0 +1,4 @@
+PASS GameSpeed/live engine speed; pause; hard pause and replay playback [display][writes-preferences] (26.0s)
+
+1 passed, 0 failed, 0 skipped (26.0s of test time)
+[run_tests] JUnit report: artifacts/statistics/speed-200-rerun.xml (1 cases)
