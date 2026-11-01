@@ -170,17 +170,22 @@ freeze the threshold in the cohort and use an explicit zero only when playing
 out complete end games is part of the assessment. Resolve tick-cap survivors by
 final win probability rather than the historical economic calculation.
 
-Use **integrated whole-match win probability**, normalized by observed game time,
-as the primary continuous effectiveness metric alongside wins, losses and draws.
-It captures improvements in the strength and duration of an AI's position that
-can leave discrete match outcomes unchanged, making small changes easier to
-measure. Standard reports collect and analyze it automatically; custom scripts
-should use the retained integer area/coverage summary rather than count samples
-or infer it from the final chance. Compare paired seeds and seat rotations, report
-confidence intervals and missing coverage, and keep model identities, stopping
-rules, opponents and map distributions comparable. Retain actual outcomes as a
-check against improving the model score without improving play. Old or partial
-history is unavailable, never zero. See [tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
+Use the **adjusted win-probability trajectory score** (`log_time_outcome_v1`,
+log curvature `c=2`) as the primary continuous effectiveness metric alongside
+wins, losses and draws. It integrates the retained probability curve on a log
+clock through the fixed game tick limit, then credits a declared win with 1 and
+a loss with 0 for the remaining horizon. Probability-based early stops receive
+the same outcome credit, explicitly labelled predicted rather than actual.
+Tick caps receive no invented terminal tail. Shared winners each receive full
+credit; count an alliance once. Use `tools.tournaments.probability.group_score`
+or the standard reports, not the legacy linear area/observed-time mean. Compact
+results retain a versioned log integral before dropping curves; old compact
+records without that integral are unavailable, never silently approximated.
+Compare paired seeds and seat rotations, report confidence intervals and missing
+coverage, and keep metric version, horizon, model, stopping rules, opponents and
+map distributions comparable. Retain actual outcomes and completion times as
+checks against improving a model score without improving play. See
+[tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
 
 ## Review and merge ownership
 

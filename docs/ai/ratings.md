@@ -2,14 +2,16 @@
 
 The custom-game selector shows measured relative AI strength, sorted weakest first, with inactive last. Difficulty bands are below 1450 Easy, 1450–1699 Medium, and 1700+ Hard. Saved AI identities do not depend on this ordering.
 
-For new AI changes, use [mean whole-match win probability](../tools/tournaments.md#whole-game-probability-scores)
-as the standard continuous effectiveness score alongside wins, losses, draws and
-outcome-based ratings. It retains trajectory improvements that do not change the
-winner, making small changes easier to detect. Tournament CLI games now default
-to 95% early victory and final-probability cap adjudication; paired reports include
-the integrated score and its uncertainty automatically. Keep matched stopping
-rules and models. The published ratings below describe their historical cohort;
-they have not been recalculated under these defaults.
+For new AI changes, use the [adjusted win-probability trajectory score](../tools/tournaments.md#whole-game-probability-scores)
+(`log_time_outcome_v1`, `c=2`) as the standard continuous effectiveness score
+alongside wins, losses, draws and outcome-based ratings. It uses log-time weights
+and credits declared wins/losses through the fixed game horizon. Predicted early
+victories receive full credit and remain distinct from actual engine endings;
+cap adjudication still uses final probability and creates no score tail.
+Tournament games retain the 95% early-victory default. Paired reports preserve
+score/model/horizon/stopping cohorts and report missing coverage explicitly.
+The published ratings below describe their historical cohort; they have not been
+recalculated under the new scoring policy. The old linear AUC remains a diagnostic.
 
 The current ratings measure source `d37c0c353`, including Maxima fixes #367/#368. They do **not** measure the newer Maxima changes in #370/#371. They use 19,948 successful games in 9,974 complete swapped-side pairs, from a planned 20,000-game tournament across 60 compatible generators. Previous-version outcomes are kept separate.
 
