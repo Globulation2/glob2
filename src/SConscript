@@ -64,6 +64,11 @@ def development_program(target, sources):
     from build_timing import record
     return record(local, local.Program(target, unique([strict_objects.get(source, source) if isinstance(source, str) else source for source in sources])), "link")
 
+# Serve the same player contract across native, browser and mobile builds.
+from hive_api import configure as configure_hive_api
+hive_contract = configure_hive_api(local, local['BUILDDIR'])
+local.Depends(ordinary_mapping['hive/LocalCommander.cpp'], hive_contract)
+
 # Resolve these sources explicitly so Program does not compile them with generic flags.
 program_sources = unique([strict_objects.get(source, source) for source in source_files])
 

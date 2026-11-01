@@ -11,7 +11,7 @@ namespace
 {
 constexpr auto ModernVersion = "2026-07-28";
 constexpr auto LegacyVersion = "2025-11-25";
-const Json ServerInfo = {{"name", "globulation2-ui"}, {"version", "1.0"}};
+const Json ServerInfo = {{"name", "globulation2-ui"}, {"version", "1.1"}};
 
 bool validID(const Json &id)
 {

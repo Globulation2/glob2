@@ -4,6 +4,8 @@
 #include "GlobalContainer.h"
 #include "ui/LibraryText.h"
 #include <algorithm>
+#include <array>
+#include <ui/PositionedControls.h>
 #include <cmath>
 #include <string>
 
@@ -36,6 +38,16 @@ inline MapZoomControlsLayout mapZoomControlsLayout(const MapCamera &camera, bool
     return {x, gfx->getH() - height - 4, width, height, middle, gap};
 }
 
+// Shared translated geometry for painting, human hit testing and inspection.
+inline std::array<GAGGUI::ui::Rect, 3> mapZoomControlBounds(
+    const MapCamera &camera, bool sidebar = false, bool softwareMap = false)
+{
+    const auto box = mapZoomControlsLayout(camera, sidebar, softwareMap);
+    return {{{box.x, box.y, 24, box.height},
+             {box.x + 24, box.y, box.middleWidth, box.height},
+             {box.x + box.plus(), box.y, 24, box.height}}};
+}
+
 // Fixed screen-space controls shared by gameplay, replays, and the editor.
 inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false, bool softwareMap = false)
 {
@@ -45,9 +57,8 @@ inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false, b
     if (!box.height) return;
     gfx->setClipRect(box.x, box.y, box.width, box.height);
     gfx->drawFilledRect(box.x, box.y, box.width, box.height, 20, 25, 35, 230);
-    gfx->drawRect(box.x, box.y, 24, box.height, 120, 130, 150);
-    gfx->drawRect(box.x + 24, box.y, box.middleWidth, box.height, 120, 130, 150);
-    gfx->drawRect(box.x + box.plus(), box.y, 24, box.height, 120, 130, 150);
+    for (const auto &button : mapZoomControlBounds(camera, sidebar, softwareMap))
+        gfx->drawRect(button.x, button.y, button.w, button.h, 120, 130, 150);
     auto caption = [&](int left, int width, int pad, const std::string &text)
     {
         const int rightPad = std::min(pad, 4);
@@ -76,17 +87,39 @@ inline bool clickMapZoomControls(MapCamera &camera, int x, int y, bool sidebar =
                                  double anchorX = -1, double anchorY = -1)
 {
     const auto box = mapZoomControlsLayout(camera, sidebar, softwareMap);
-    x -= box.x;
-    if (!box.height || x < 0 || x >= box.width || y < box.y || y >= box.y + box.height)
+    const GAGGUI::ui::Point point{x, y};
+    if (!GAGGUI::ui::Rect{box.x, box.y, box.width, box.height}.contains(point))
         return false;
-    if (x < box.plus() + 24 && (softwareMap || globalContainer->gfx->canDrawStretchedSprite()))
+    const auto buttons = mapZoomControlBounds(camera, sidebar, softwareMap);
+    for (int i = 0; i < 3; ++i)
+    if (buttons[i].contains(point) && (softwareMap || globalContainer->gfx->canDrawStretchedSprite()))
     {
-        const double zoom = x < 24 ? camera.zoom / 1.1
-                          : x >= box.plus() ? camera.zoom * 1.1
+        const double zoom = i == 0 ? camera.zoom / 1.1
+                          : i == 2 ? camera.zoom * 1.1
                           : camera.zoom == 1.0 ? camera.minimumZoom() : 1.0;
         if (anchorX < 0 || anchorY < 0)
             anchorX = camera.width / 2, anchorY = camera.height / 2;
         camera.setZoom(zoom, anchorX, anchorY);
     }
     return true;
+}
+
+inline std::vector<GAGGUI::ui::PositionedControl> mapZoomControls(
+    const MapCamera &camera, const std::string &prefix, std::function<void(int)> activate,
+    bool sidebar = false, bool softwareMap = false)
+{
+    using namespace GAGGUI::ui;
+    const auto bounds=mapZoomControlBounds(camera,sidebar,softwareMap);
+    std::vector<PositionedControl> controls;
+    const char *keys[]={"out","fit","in"};
+    const std::string labels[]={"Zoom out", camera.zoom == 1.0 ? Glob2UI::libraryText("Fit") : "100%", "Zoom in"};
+    for(int i=0;i<3;++i)
+    {
+        PositionedControl c;
+        c.key=prefix+"/"+keys[i];c.label=labels[i];c.bounds=bounds[i];
+        c.enabled=softwareMap || globalContainer->gfx->canDrawStretchedSprite();
+        c.tap=[activate,i](Point){activate(i);};
+        controls.push_back(std::move(c));
+    }
+    return controls;
 }

@@ -23,8 +23,9 @@ using std::static_pointer_cast;
 void GameGUI::handleMenuClick(int mx, int my, int button)
 {
     if(globalContainer->isViewingGame() && parkForClient([&]{handleMenuClick(mx,my,button);})) return;
+	if (button==SDL_BUTTON_LEFT && activateHudControlAt({globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+mx,my})) return;
 	// handle minimap
-	if (my<128 && mx > (RIGHT_MENU_OFFSET) && mx < RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
+	if (minimap.imageBounds().contains(GAGGUI::ui::Point{globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+mx,my}))
 	{
 		if (putMark)
 		{
@@ -75,13 +76,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		handleMenuClickBuildingSelection(mx, my, button);
 	}
-	else if ((displayMode==CONSTRUCTION_VIEW && !globalContainer->isViewingGame()))
-	{
-		// Use the same hit grid as the hover preview so click and hover cannot drift.
-		const auto id = pickChoiceUnderMouse(YPOS_BASE_CONSTRUCTION, buildingsChoiceName.size(), 2);
-		if (id && buildingsChoiceState[*id])
-			setSelection(TOOL_SELECTION, (void *)buildingsChoiceName[*id].c_str());
-	}
 	else if ((displayMode==FLAG_VIEW && !globalContainer->isViewingGame()))
 	{
 		int dec = (RIGHT_MENU_WIDTH - BrushTool::WIDTH)/2;
@@ -109,91 +103,5 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				setSelection(TOOL_SELECTION, (void*)flagsChoiceName[*id].c_str());
 		}
 	}
-	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->isViewingGame()) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->isViewingGame()))
-	{
-		if(mx > 8 && mx < 24)
-		{
-			// In replays, this menu bar is 15 pixels lower than usual to show "Watching: player-name"
-			int inc;
 
-			if (globalContainer->isViewingGame()) inc = 15;
-			else inc = 0;
-
-			if(my > YPOS_BASE_STAT+28+inc && my < YPOS_BASE_STAT+44+inc)
-			{
-				showDamagedMap=false;
-				showDefenseMap=false;
-				showFertilityMap=false;
-				showStarvingMap=!showStarvingMap;
-			}
-
-			if(my > YPOS_BASE_STAT+52+inc && my < YPOS_BASE_STAT+68+inc)
-			{
-				showDamagedMap=!showDamagedMap;
-				showStarvingMap=false;
-				showDefenseMap=false;
-				showFertilityMap=false;
-			}
-
-			if(my > YPOS_BASE_STAT+76+inc && my < YPOS_BASE_STAT+92+inc)
-			{
-				showDefenseMap=!showDefenseMap;
-				showStarvingMap=false;
-				showDamagedMap=false;
-				showFertilityMap=false;
-			}
-
-			if(my > YPOS_BASE_STAT+100+inc && my < YPOS_BASE_STAT+116+inc)
-			{
-				showFertilityMap=!showFertilityMap;
-				showDefenseMap=false;
-				showStarvingMap=false;
-				showDamagedMap=false;
-			}
-		}
-	}
-	else if (replayDisplayMode==RDM_REPLAY_VIEW && globalContainer->isViewingGame())
-	{
-		int x = REPLAY_PANEL_XOFFSET;
-		int y = REPLAY_PANEL_YOFFSET;
-		int inc = REPLAY_PANEL_SPACE_BETWEEN_OPTIONS;
-
-		if (mx > x && mx < x+20 && my > y+1*inc && my < y+1*inc + 20)
-		{
-			// Disable/show fog of war
-			globalContainer->replayShowFog = !globalContainer->replayShowFog;
-
-			if (globalContainer->replayShowFog) minimap.setMinimapMode( Minimap::ShowFOW );
-			else minimap.setMinimapMode( Minimap::HideFOW );
-		}
-		if (mx > x && mx < x+20 && my > y+2*inc && my < y+2*inc + 20)
-		{
-			// Disable/enable combined vision
-			if (globalContainer->replayVisibleTeams == 0xFFFFFFFF)
-			{
-				globalContainer->replayVisibleTeams = Team::teamNumberToMask(localTeamNo);
-			}
-			else
-			{
-				globalContainer->replayVisibleTeams = 0xFFFFFFFF;
-			}
-		}
-		if (mx > x && mx < x+20 && my > y+3*inc && my < y+3*inc + 20)
-		{
-			// Show/hide player's areas
-			globalContainer->replayShowAreas = !globalContainer->replayShowAreas;
-		}
-		if (mx > x && mx < x+20 && my > y+4*inc && my < y+4*inc + 20)
-		{
-			// Show/hide flags
-			globalContainer->replayShowFlags = !globalContainer->replayShowFlags;
-		}
-
-        const auto& frame = drawnScene();
-        const int count = frame.world.teams ? int(frame.world.teams->values.size()) : 0;
-        for (int i = 0; i < count; ++i)
-            if (mx > x && mx < x + 20 && my > y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i + 1) * inc &&
-                my < y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i + 1) * inc + 20)
-                selectViewedTeam(i);
-	}
 }

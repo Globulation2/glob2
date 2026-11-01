@@ -6820,3 +6820,5 @@ Quantidade de peixes
 Mensagens ▸
 [Camp-site amount]
 Quantidade de acampamentos
+[AI for all computer colonies]
+IA evit an holl drevadennoù meret gant an urzhiataer

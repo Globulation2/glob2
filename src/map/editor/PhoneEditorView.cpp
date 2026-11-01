@@ -5,6 +5,7 @@
 // return through named editor actions or ValueScrollBox::setValue.
 #include "PhoneEditor.h"
 #include "MapEdit.h"
+#include "MapEditInspector.h"
 #include "GlobalContainer.h"
 #include "InGameTouchTheme.h"
 #include "BrushCoverage.h"
@@ -43,46 +44,19 @@ void PhoneEditor::prepareInspector()
 	inspectorBody = {inspector.x + 8 * u, inspector.y + 76 * u, w - 16 * u, h - 80 * u};
 	content = wide ? ViewRect{safe.x, safe.y + 48 * u, safe.w - w - 4 * u, safe.h - 48 * u}
 				   : ViewRect{safe.x, safe.y + 48 * u, safe.w, inspector.y - safe.y - 48 * u};
-	const int identity = editor.panelMode == MapEdit::BuildingEditor
-							 ? editor.selectedBuildingGID
-							 : 65536 + editor.selectedUnitGID;
-	if (identity != inspectorIdentity)
+	const auto model = buildInspectorModel(editor);
+	const int identity = model.identity;
+	if (identity != inspectorIdentity || model.generation != inspectorGeneration)
 	{
 		inspectorScroll = 0;
 		inspectorIdentity = identity;
+		inspectorGeneration = model.generation;
 	}
 	properties.clear();
-	auto add = [&](const char *key, ValueScrollBox *value)
-	{
-		if (value->enabled)
-			properties.push_back({value, translated(key), {}});
-	};
-	if (editor.panelMode == MapEdit::BuildingEditor)
-	{
-		add("[hp]", editor.buildingHPScrollBox);
-		add("[assigned]", editor.buildingAssignedScrollBox);
-		add("[Worker Ratio]", editor.buildingWorkerRatioScrollBox);
-		add("[Explorer Ratio]", editor.buildingExplorerRatioScrollBox);
-		add("[Warrior Ratio]", editor.buildingWarriorRatioScrollBox);
-		add("[Bullets]", editor.buildingBulletsScrollBox);
-		add("[Minimum Level To Flag]", editor.buildingMinimumLevelScrollBox);
-		add("[Worker]",editor.buildingWorkerLevelScrollBox);
-		add("[ground attack]",editor.buildingBombingScrollBox);
-		for (int r=0; r<MaterialCount; ++r)
-			if (editor.buildingResourceControls[r]->enabled)
-				properties.push_back({editor.buildingResourceControls[r],getMaterialName(r),{}});
-		add("[range]", editor.buildingRadiusScrollBox);
-	}
-	else
-	{
-		add("[hp]", editor.unitHPScrollBox);
-		add("[Walk]", editor.unitWalkLevelScrollBox);
-		add("[Swim]", editor.unitSwimLevelScrollBox);
-		add("[Build]", editor.unitBuildLevelScrollBox);
-		add("[At. speed]", editor.unitAttackSpeedLevelScrollBox);
-		add("[At. strength]", editor.unitAttackStrengthLevelScrollBox);
-		add("[Magic At. Ground]", editor.unitMagicGroundAttackLevelScrollBox);
-	}
+	// Share the complete row model with the desktop dock, including registry
+	// materials and type-specific rows. Presentation owns only geometry.
+	for (const auto &row : model.rows)
+		properties.push_back({row.value, row.caption, row.key, {}});
 	inspectorMaximum = std::max(0., properties.size() * 72 * u - inspectorBody.h);
 	syncInspector();
 	for (size_t i = 0; i < properties.size(); ++i)
@@ -282,7 +256,11 @@ void PhoneEditor::drawInteractionPreview()
 
 bool PhoneEditor::showsMapButton() const
 {
-	return !peekOpen && !inspecting() && !editor.hasDialog() && editor.panelMode != MapEdit::Teams;
+	if (peekOpen || inspecting() || editor.hasDialog() || editor.panelMode == MapEdit::Teams)
+		return false;
+	const auto button = mapButton();
+	return button.w > 0 && button.h > 0 && button.x >= content.x && button.y >= content.y &&
+		button.x + button.w <= content.x + content.w && button.y + button.h <= content.y + content.h;
 }
 // In the content's bottom corner away from the thumb, clear of the brush rail.
 ViewRect PhoneEditor::mapButton() const

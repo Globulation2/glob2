@@ -621,19 +621,34 @@ ViewRect GameGUITouch::scenarioMessageRect() const
 	auto rect = layout().world;
 	rect.x += 8 * unit;
 	rect.y = minimapRect().y + minimapRect().h + 8 * unit;
-	rect.w = std::min(rect.w - 16 * unit, 560 * unit);
+	rect.w = std::max(0.0, std::min(rect.w - 16 * unit, 560 * unit));
 	rect.h = std::max(0.0, layout().actions.y - rect.y);
 	InGameTouchTheme::TextStyle textStyle(globalContainer->standardFont);
 	const int labelHeight = globalContainer->standardFont->getStringHeight(
 		Toolkit::getStringTable()->getString("[scenario messages]"));
 	// drawPointLabel uses a 1.15 text scale. Its collapsed target must grow
 	// with the actual translated label too, not clip a tall script at 48pt.
-	rect.h = scenarioMessageCollapsed ? std::max(48.0, labelHeight * 1.15 * InGameTouchTheme::textGrowth() + 16) * unit
+	rect.h = scenarioMessageCollapsed ? std::min(rect.h, std::max(48.0, labelHeight * 1.15 * InGameTouchTheme::textGrowth() + 16) * unit)
 							   : std::min(rect.h, (std::min<size_t>(3, scenarioMessageLines.size()) *
 														   scenarioMessagePitch() +
 													   16 + scenarioMessageFooterHeight()) *
 													  unit);
 	return rect;
+}
+ViewRect GameGUITouch::scenarioMessageContinueRect() const
+{
+	auto rect = scenarioMessageRect();
+	const double height = scenarioMessageCollapsed ? 0 :
+		std::min(rect.h, scenarioMessageFooterHeight() * globalContainer->gfx->logicalUnitsPerPoint());
+	return {rect.x, rect.y + rect.h - height, rect.w, height};
+}
+ViewRect GameGUITouch::scenarioMessageCollapseRect() const
+{
+	const auto rect = scenarioMessageRect();
+	const double size = 48 * globalContainer->gfx->logicalUnitsPerPoint();
+	const double width = std::min(rect.w, size);
+	return {rect.x + rect.w - width, rect.y, width,
+		std::min(size, std::max(0.0, rect.h - scenarioMessageContinueRect().h))};
 }
 void GameGUITouch::prepareScenarioMessage()
 {
@@ -703,8 +718,9 @@ void GameGUITouch::drawScenarioMessage()
 		drawPointLabel(rect, GAGCore::Toolkit::getStringTable()->getString("[scenario messages]"));
 		return;
 	}
-	const double footerHeight = scenarioMessageFooterHeight() * unit;
-	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w - 48 * unit),
+	const auto continueRect = scenarioMessageContinueRect();
+	const double footerHeight = continueRect.h;
+	SDL_Rect clip{int(rect.x), int(rect.y), int(std::max(0.0, rect.w - 48 * unit)),
 				  int(std::max(0.0, rect.h - footerHeight))};
 	// The cached font-aware step is in authored pixels; pitch converts it
 	// to the same point units used by layout and scrolling.
@@ -727,7 +743,9 @@ void GameGUITouch::drawScenarioMessage()
 							std::max(1, int(2 * unit)), int(textHeight * textHeight / content),
 							Color(170, 185, 190));
 	}
-	drawPointLabel({rect.x + rect.w - 48 * unit, rect.y, 48 * unit, 48 * unit}, "−", 1.2);
+	const auto collapseRect = scenarioMessageCollapseRect();
+	if (collapseRect.w > 0 && collapseRect.h > 0)
+		drawPointLabel(collapseRect, "−", 1.2);
 	if (gui.swallowSpaceKey)
 	{
 		gfx->drawFilledRect(int(rect.x), int(rect.y + rect.h - footerHeight), int(rect.w),

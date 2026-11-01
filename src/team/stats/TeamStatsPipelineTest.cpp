@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include <algorithm>
 #include "ScopedEnvironment.h"
+#include "JoiningThread.h"
 #include "Engine.h"
 #include "Player.h"
 #include "AI.h"
@@ -790,7 +791,7 @@ TEST_SUITE("TeamStatsPipeline")
 		w.game.stepCounter = 1;
 		CHECK_FALSE(p.publishDue(w.game));
 		CHECK(p.metrics.published == 0);
-		std::jthread release(
+		glob2test::JoiningThread release(
 			[&]
 			{
 				gate.deadline.wait(false);

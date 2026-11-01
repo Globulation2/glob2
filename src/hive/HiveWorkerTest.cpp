@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "hive/HiveWorker.h"
+#include "ProgramSchedule.h"
+#include <map>
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <sstream>
@@ -106,4 +108,28 @@ TEST_CASE("Hive Mind replacement migration is preflighted and cannot emit effect
 	CHECK(Hive::invoke(input).at("ok") == true);
 	input["migration"] = "function step(){return {orders:[{type:'delete'}]}}";
 	CHECK(Hive::invoke(input).at("ok") == false);
+}
+
+TEST_CASE("Hive Mind serves due programs fairly after slow workers without catch-up bursts" *
+		  doctest::test_suite("HiveMind"))
+{
+	struct Program
+	{
+		bool paused = false;
+		unsigned nextTick = 0;
+		Hive::Json definition = {{"intervalTicks", 25}};
+	};
+	std::map<std::string, Program> programs;
+	programs["a"] = {};
+	programs["b"] = {};
+	programs["c"] = {};
+	CHECK(Hive::scheduleDue(programs, 0) == "a");
+	CHECK(Hive::scheduleDue(programs, 50) == "b");
+	CHECK(Hive::scheduleDue(programs, 100) == "c");
+	CHECK(Hive::scheduleDue(programs, 150) == "a");
+	CHECK(programs.at("a").nextTick == 175);
+	programs.at("b").paused = true;
+	CHECK(Hive::scheduleDue(programs, 150) == "c");
+	CHECK(Hive::scheduleDue(programs, 150).empty());
+	CHECK(Hive::scheduleDue(programs, 175) == "a");
 }

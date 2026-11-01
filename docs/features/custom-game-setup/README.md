@@ -51,7 +51,7 @@ limits when their homes, resources or routes need more room.
   weights.
 - Each colony has a numbered color swatch, controller, AI/difficulty and team.
   You, AI, shared You + AI, and Closed are explicit choices. Shared control uses
-  two of the twelve controller records; the UI explains unavailable combinations.
+  two of the sixteen controller records; the UI explains unavailable combinations.
 - The Teams choice above the colonies offers every shape the open colonies can
   take: FFA, each two-team split from the most even down to one against all, and
   each split into three or more equal teams (8 colonies: 4 vs 4, 3 vs 5, 2 vs 6,
@@ -63,6 +63,12 @@ limits when their homes, resources or routes need more room.
   "Custom teams". Online rooms use the same choice and names, plus Humans vs AI and
   without one against all. Reducing map capacity retains hidden assignments for a
   later larger map.
+- AI for all computer colonies changes the strategy of every active AI or shared
+  You + AI colony together. It shows Mixed when their strategies differ. Human,
+  Closed and retained assignments beyond the current map capacity keep their
+  strategies. Individual AI choices remain available below. A colony switched to
+  AI later restores its own retained strategy. For an eight-Nicowar FFA, switch
+  your colony to AI, then choose Nicowar in this shared choice.
 - AI profiles explain strategy, strengths and suggested counterplay. Cortex is
   Medium difficulty. All eight native AI implementations are retained.
 - All-AI matches launch live watching, with whole-map visibility, optional colony

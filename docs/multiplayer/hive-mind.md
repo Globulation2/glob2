@@ -204,3 +204,46 @@ Rows are restricted to the account that owns the session. Internal client, lease
 and run capabilities are excluded.
 
 [Multiplayer index](README.md) · [Documentation index](../README.md).
+
+## Local human-match scripting through MCP
+
+Desktop local matches can run the same synchronous `step(ctx)` player scripts without
+an account, credits or supervision. `hive_status` returns availability, limits and a
+match-session identity; `hive_api` returns the shared player JavaScript `contract`
+and a separate authoritative `local_control_contract`. Online UUID, migration and
+program-management instructions are excluded from the local API. Online/LAN games,
+replays, spectators and AI takeover reject local execution.
+All observations use the player's existing fog/ownership filter. Capturing observations
+and validating completed order batches use the parked simulation access boundary.
+
+Acquire an MCP control token, then submit `hive_run` with `token`, `session`, a unique
+`operation_key`, and `source`. A response of `queued` means admission only. Poll
+`hive_result` with `session` and `operation_key` for output, errors, observation tick,
+submission tick and order count. Submitted orders still pass through the human order
+queue; submission does not guarantee the later gameplay outcome.
+
+`hive_program` supports `list`, `inspect`, `install`, `replace`, `pause`, `resume` and
+`cancel`. Mutations require the control token, session and operation key. Named programs
+use `name`, `source`, optional `description` and `interval_ticks` (minimum 25).
+Replacement additionally requires `expected_revision`. Replacement preflight validates
+returned orders without submitting them or publishing wake effects; failure preserves
+the old program. Successful replacement resets the program's globals; migration
+source is unsupported locally. One-shot invocations do not share globals. Pause state
+survives replacement. Name revisions remain monotonic after
+cancellation/reinstallation, and local card keys include that revision so a stale action
+cannot target a new definition. `inspect` returns source, revision, pause state and recent result.
+
+Source is limited to 128 KiB, eight standing orders, 32 orders per invocation and the
+shared 64-order submission queue. Due programs run by oldest deadline, with stable name
+order breaking ties so a slow worker cannot starve later programs. Deadlines move from
+the current dispatch tick to prevent catch-up bursts. A bounded 256-entry session
+journal rejects additional operations when full; it does not evict executed keys and
+risk executing a retried operation twice. Reusing a key with different arguments fails.
+
+Standing orders continue through MCP disconnects and input-lease expiry. Their in-game
+Hive cards show recent output/errors and pause/resume/cancel controls. Worker failures
+pause an affected program. The local `wakeAgent` API produces inspectable `local_events`
+only, with no model or network request. Programs/globals/journals are never saved; leaving
+or loading a match discards them. A changed player seat, team, mode or AI takeover retires
+the service even while idle or waiting for a worker. Detached workers own filtered JSON
+only, and late results cannot reach a replacement match or restored player context.

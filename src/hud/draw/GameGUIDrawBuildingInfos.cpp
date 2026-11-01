@@ -11,6 +11,7 @@
 
 void GameGUI::drawBuildingInfos(void)
 {
+	HudControlPaint controls(*this);
 	const SceneBuildingPanel* selBuild = &drawnScene().panels.building;
 	const auto* selected = std::get_if<BuildingRef>(&selection);
     if (!selBuild->valid || !selected || selected->gid != selBuild->state().gid || selected->generation != selBuild->state().scriptIdentity
@@ -20,11 +21,6 @@ void GameGUI::drawBuildingInfos(void)
 	int ypos = YPOS_BASE_BUILDING;
 	unsigned unitInsideBarYDec = 0;
 
-	if (buildingInfoScrollGid!=selBuild->state().gid)
-	{
-		buildingInfoScrollGid=selBuild->state().gid;
-		buildingInfoScroll=0; buildingInfoScrollMaximum=0;
-	}
 	BuildingPreviewRows previewRows;
 	const auto preview=hoveredBuildingPreview(*selBuild);
 	const int bottom=globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET-4;

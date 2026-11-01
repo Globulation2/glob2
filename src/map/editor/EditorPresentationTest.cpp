@@ -11,6 +11,7 @@
 #include "PhoneEditor.h"
 #include "EditorDialogs.h"
 #include <ui/Host.h>
+#include <nlohmann/json.hpp>
 #include "Race.h"
 #include <InterfacePresentation.h>
 #include <SDL3/SDL.h>
@@ -20,6 +21,7 @@
 #include <array>
 #include <optional>
 #include <sstream>
+#include <cmath>
 #include <string>
 #include <vector>
 
@@ -127,6 +129,24 @@ TEST_SUITE("EditorPresentation")
 		auto &phone = *editor.phone;
 		phone.chooseMode(0);
 		phone.prepare();
+		auto checkExposedGeometry = [&] {
+			auto &host = phone.inspectionHost();
+			auto check = [&](const std::string &key, GAGCore::ViewRect expected, int target) {
+				CAPTURE(key);
+				const auto exposed = host.bounds(key);
+				CHECK(exposed.x == int(std::floor(expected.x)));
+				CHECK(exposed.y == int(std::floor(expected.y)));
+				CHECK(exposed.w == int(std::ceil(expected.x + expected.w)) - exposed.x);
+				CHECK(exposed.h == int(std::ceil(expected.y + expected.h)) - exposed.y);
+				CHECK(phone.hit({expected.x + expected.w / 2, expected.y + expected.h / 2}) == target);
+			};
+			const char *keys[] = {"menu", "team", "level", "selection"};
+			for (int i = 0; i < 4; ++i)
+				check(std::string("editor/") + keys[i], phone.headerButtons[i], -2 - i);
+			for (int i = 0; i < phone.modeCount; ++i)
+				check("tray/mode/" + std::to_string(i), phone.modeRect(i), -10 - i);
+		};
+		checkExposedGeometry();
 		// Four narrow columns still split Koponan: balance three buttons above two.
 		const double lineHeight = globalContainer->standardFont->getStringHeight("Ag") * gfx->textUnitsPerPoint();
 		CHECK(phone.modeColumns == 3);
@@ -153,7 +173,8 @@ TEST_SUITE("EditorPresentation")
 			editor.performAction(std::string("select terrain ") + terrain);
 			CHECK(editor.currentBrushId() == std::string("terrain/") + terrain);
 			phone.prepare();
-			std::istringstream caption(phone.headerCaptions()[2]);
+			checkExposedGeometry();
+			std::istringstream caption(phone.headerLabels()[2]);
 			for (std::string word; caption >> word;)
 				CHECK(globalContainer->standardFont->getStringWidth(word) * gfx->textUnitsPerPoint() <=
 					phone.headerButtons[2].w - 9 * gfx->logicalUnitsPerPoint());
@@ -166,6 +187,7 @@ TEST_SUITE("EditorPresentation")
 		editor.performAction("select terrain grass");
 		globalContainer->settings.setTextSizePercent(100);
 		phone.prepare();
+		checkExposedGeometry();
 		CHECK(phone.modeColumns == 5);
 		CHECK(phone.modeBar.h == 44 * gfx->logicalUnitsPerPoint());
 		CHECK(phone.content.y - phone.safe.y == 48 * gfx->logicalUnitsPerPoint());
@@ -564,4 +586,186 @@ TEST_SUITE("EditorPresentation")
 			}
 		}
 	}
+	TEST_CASE("compact controls share semantic and human selection scroll clipping and modal ownership [display]")
+	{
+		using namespace GAGGUI::ui;
+		PresentationScope scope;
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+			.display = true, .width = 700, .height = 520, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		PresentationScope::host(700, 520, false);
+		MapEdit editor;
+		blank(editor);
+		editor.beginEditing();
+		REQUIRE(editor.usesPhone());
+		auto &phone = *editor.phone;
+		auto dispatch = [&](const std::string &key, SemanticAction action)
+		{
+			auto &host = phone.inspectionHost();
+			REQUIRE(host.find(key));
+			std::string error;
+			const bool applied = host.act(key, action, error);
+			INFO(error);
+			CHECK(applied);
+		};
+		dispatch("tray/mode/0", {ActionKind::Activate, {}});
+		CHECK(phone.paletteMode == 0);
+		// Browser consumers keep numeric tray keys and the tray's owning root,
+		// while MCP inspects the complete compact surface in the same frame.
+		const auto legacy = nlohmann::json::parse(diagnosticJSON(phone.browserControls()));
+		CHECK(legacy.at("root").at("x") == int(phone.modeBar.x));
+		CHECK(legacy.at("root").at("y") == int(phone.modeBar.y));
+		CHECK(legacy.at("root").at("w") == int(phone.modeBar.w));
+		CHECK(legacy.at("root").at("h") == int(phone.modeBar.h + phone.tray.h));
+		CHECK_FALSE(legacy.at("controls").contains("editor/menu"));
+		for (int i = 0; i < phone.modeCount; ++i)
+		{
+			const auto &control = legacy.at("controls").at("tray/mode/" + std::to_string(i));
+			CHECK(control.at("label") == "");
+		}
+		for (const auto &row : phone.rows)
+		{
+			const auto &control = legacy.at("controls").at("tray/" + row.id);
+			CHECK(control.at("x") == int(row.rect.x));
+			CHECK(control.at("w") == int(row.rect.w));
+			std::string label = row.lines.empty() ? std::string{} : row.lines.front();
+			std::erase_if(label, [](unsigned char c) { return c < 0x20; });
+			CHECK(control.at("label") == label);
+		}
+		REQUIRE(phone.inspectionHost().find("editor/map"));
+		CHECK(phone.inspectionHost().find("editor/map")->supportedActions().empty());
+		dispatch("tray/terrain/grass", {ActionKind::Activate, {}});
+		CHECK(editor.currentBrushId() == "terrain/grass");
+		// Human input uses the same model and activation path.
+		phone.prepare();
+		const auto grass = phone.inspectionHost().bounds("tray/terrain/grass").center();
+		CHECK(phone.hit({double(grass.x), double(grass.y)}) == phone.rowOf("terrain/grass"));
+		phone.clearTool();
+		for (const auto type : {SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP})
+		{
+			SDL_Event event{};
+			event.type = type;
+			event.button.which = 1;
+			event.button.button = SDL_BUTTON_LEFT;
+			event.button.x = grass.x;
+			event.button.y = grass.y;
+			editor.advanceEditing({event}, SDL_GetTicks());
+		}
+		CHECK(editor.currentBrushId() == "terrain/grass");
+		const auto before = phone.inspectionHost().inspect();
+		dispatch("tray/scroll", {ActionKind::Scroll, 100000});
+		CHECK(phone.offset == doctest::Approx(phone.maximum));
+		std::string error;
+		CHECK_FALSE(phone.inspectionHost().act("tray/terrain/grass", {ActionKind::Activate, {}}, error));
+		CHECK_FALSE(error.empty());
+		dispatch("tray/scroll", {ActionKind::Scroll, -100000});
+		CHECK(phone.offset == 0);
+		// Opening the map peek transfers ownership: palette targets disappear.
+		dispatch("editor/show-minimap", {ActionKind::Activate, {}});
+		CHECK(phone.peekOpen);
+		CHECK_FALSE(phone.inspectionHost().find("tray/mode/0"));
+		CHECK(phone.inspectionHost().find("editor/minimap"));
+		dispatch("editor/peek/done", {ActionKind::Activate, {}});
+		CHECK_FALSE(phone.peekOpen);
+		dispatch("editor/menu", {ActionKind::Activate, {}});
+		REQUIRE(editor.activeDialog());
+		const auto owners = editor.inspectionHosts();
+		REQUIRE(owners.size() == 1);
+		CHECK(owners.front() == &editor.activeDialog()->host());
+		CHECK(owners.front()->inspect().instance != before.instance);
+	}
+
+	TEST_CASE("compact semantic terrain cards use mainline brushes without experiment unlocks [display]")
+	{
+		using namespace GAGGUI::ui;
+		PresentationScope scope;
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+			.display = true, .width = 700, .height = 520, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		PresentationScope::host(700, 520, false);
+		MapEdit editor;
+		blank(editor);
+		editor.beginEditing();
+		REQUIRE(editor.usesPhone());
+		auto &phone = *editor.phone;
+		std::string error;
+		REQUIRE(phone.inspectionHost().act("tray/mode/0", {ActionKind::Activate, {}}, error));
+		phone.prepare(); // The mode action invalidates the layout; inspect its next frame.
+		const int row = phone.rowOf("terrain/hedge");
+		REQUIRE(row >= 0);
+		const int reveal = int(std::ceil(phone.rows[row].rect.x - phone.cardBar.x));
+		REQUIRE(phone.inspectionHost().act("tray/scroll", {ActionKind::Scroll, reveal}, error));
+		auto &host = phone.inspectionHost();
+		REQUIRE(host.find("tray/terrain/hedge"));
+		CHECK(editor.game.gameHeader.getExperiments().empty());
+		REQUIRE(host.act("tray/terrain/hedge", {ActionKind::Activate, {}}, error));
+		CHECK(editor.currentBrushId() == "terrain/hedge");
+		CHECK_FALSE(editor.activeDialog());
+		CHECK(editor.game.gameHeader.getExperiments().empty());
+	}
+
+	TEST_CASE("compact inspector values use shared bindings and entity-specific keys [display]")
+	{
+		using namespace GAGGUI::ui;
+		PresentationScope scope;
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+			.display = true, .width = 700, .height = 520, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		PresentationScope::host(700, 520, false);
+		MapEdit editor;
+		blank(editor);
+		editor.beginEditing();
+		REQUIRE(editor.usesPhone());
+		editor.performAction("set place building selection inn");
+		editor.mouseX = 10 * 32 + 16;
+		editor.mouseY = 10 * 32 + 16;
+		editor.performAction("place building");
+		editor.performAction("unselect");
+		editor.performAction("select map building");
+		REQUIRE(editor.panelMode == MapEdit::BuildingEditor);
+		editor.preparePresentation();
+		auto &phone = *editor.phone;
+		auto &host = phone.inspectionHost();
+		const std::string key = "editor/inspect/" + std::to_string(editor.selectedBuildingGID) + "/hp";
+		REQUIRE(host.find(key));
+		auto *value = editor.buildingHPScrollBox;
+		const int hp = value->currentValue();
+		REQUIRE(hp > 1);
+		std::string error;
+		CHECK(host.act(key, {ActionKind::SetValue, hp - 1}, error));
+		editor.preparePresentation();
+		CHECK(value->currentValue() == hp - 1);
+		CHECK_FALSE(phone.inspectionHost().act(key, {ActionKind::SetValue, value->maximumValue() + 1}, error));
+		CHECK(value->currentValue() == hp - 1);
+		CHECK(phone.inspectionHost().act(key + "/plus", {ActionKind::Activate, {}}, error));
+		editor.preparePresentation();
+		CHECK(value->currentValue() == hp);
+		// A recycled entity slot with identical presentation must still retire
+		// its old target. Model a new allocation's generation without changing
+		// any label, value or rectangle.
+		auto command = semanticDispatch();
+		const auto snapshot = phone.inspectionHost().inspect();
+		command->surface = snapshot.instance;
+		command->key = key;
+		command->action = {ActionKind::SetValue, hp - 1};
+		std::function<void(const std::vector<ControlSnapshot> &)> find = [&](const auto &nodes)
+		{
+			for (const auto &node : nodes)
+			{
+				if (node.key == key) command->revision = node.revision;
+				find(node.children);
+			}
+		};
+		find(snapshot.controls);
+		REQUIRE(command->revision > 0);
+		REQUIRE(editor.view.selectedBuilding);
+		++editor.view.selectedBuilding->scriptIdentity;
+		editor.game.invalidateObservation();
+		editor.preparePresentation();
+		CHECK(phone.inspectionHost().event(command->event()));
+		CHECK_FALSE(command->error.empty());
+		CHECK(value->currentValue() == hp);
+		CHECK(phone.inspectionHost().act("editor/inspector/scroll", {ActionKind::Scroll, 100000}, error));
+		CHECK(phone.inspectorScroll == doctest::Approx(phone.inspectorMaximum));
+		CHECK(phone.inspectionHost().act("editor/inspector/close", {ActionKind::Activate, {}}, error));
+		CHECK_FALSE(phone.inspectionHost().find(key));
+	}
+
 }

@@ -6820,3 +6820,5 @@ Tuyong damo
 Buhangin ng burol
 [pale_sand]
 Maputlang buhangin
+[AI for all computer colonies]
+AI para sa lahat ng kolonyang kontrolado ng computer
