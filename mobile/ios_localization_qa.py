@@ -155,10 +155,10 @@ def run_qa(root, output, locale):
         container = Path(sim('get_app_container', device, BUNDLE, 'data'))
         profile = container/'Documents/LocalizationQA'; profile.mkdir(parents=True, exist_ok=False)
         # Do not prefill language: exercise the actual SDL preferred-locale selection.
-        (profile/'preferences.txt').write_text('thumbSideChosen=1\nintroductionOffered=1\n')
+        (profile/'preferences.txt').write_text('thumbSideChosen=1\naudioPreferenceChosen=1\nmute=1\nintroductionOffered=1\n')
         env = dict(os.environ, SIMCTL_CHILD_SDL_PREFERRED_LOCALES='th_TH',
                    SIMCTL_CHILD_GLOB2_USER_DATA_DIR=str(profile))
-        summary['fixture'] = {'profile': str(profile), 'first_run_choices': 'hand and introduction marked offered',
+        summary['fixture'] = {'profile': str(profile), 'first_run_choices': 'hand and introduction marked offered; audio chosen as silence',
                               'locale_input': 'SDL_PREFERRED_LOCALES=th_TH via simctl child environment; AppleLanguages th,en',
                               'language_prefilled': False}
         smoke = root/'build/mobile-smoke-ios-th'

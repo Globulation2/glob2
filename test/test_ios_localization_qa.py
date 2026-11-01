@@ -123,6 +123,10 @@ class FailureEvidence(unittest.TestCase):
                     self.assertEqual(kwargs['env']['SIMCTL_CHILD_SDL_PREFERRED_LOCALES'],'th_TH')
                     profile=Path(kwargs['env']['SIMCTL_CHILD_GLOB2_USER_DATA_DIR'])
                     self.assertNotIn('language=',(profile/'preferences.txt').read_text())
+                    # Application::mainMenu requires this choice on every mobile
+                    # platform; ios_smoke intentionally starts past setup.
+                    self.assertIn('audioPreferenceChosen=1\n',(profile/'preferences.txt').read_text())
+                    self.assertIn('mute=1\n',(profile/'preferences.txt').read_text())
                     smoke=root/'build/mobile-smoke-ios-th';smoke.mkdir(parents=True);(smoke/'failure.png').write_bytes(b'image')
                     return qa.subprocess.CompletedProcess(parts,1,'smoke failed')
                 return qa.subprocess.CompletedProcess(parts,0,text)

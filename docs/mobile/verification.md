@@ -46,9 +46,10 @@ failure does not discard that work. Cache keys retain the pinned toolchain and
 dependency inputs; app binaries and game objects are rebuilt for the checked-out
 revision.
 
-The fixture marks the initial hand choice and introduction as offered and forces
-Thai through `SDL_PREFERRED_LOCALES` plus the simulator language defaults. It
-leaves the saved game language unset, so startup exercises locale selection.
+The fixture marks the initial hand and audio choices complete (silence selected)
+and the introduction as offered, then forces Thai through
+`SDL_PREFERRED_LOCALES` plus the simulator language defaults. It leaves the saved
+game language unset, so startup exercises locale selection.
 Review the actual screenshots before accepting visual quality. This fixture
 establishes simulator startup, background/resume and fresh-process relaunch;
 it does not establish the OS permission popup, Thai IME interaction or physical
