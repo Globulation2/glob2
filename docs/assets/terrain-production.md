@@ -4,7 +4,8 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 29 built-in materials, including grass, sand, road, ice and regular water,
+All 33 built-in materials, including grass, sand, their lush, dry, dune and pale
+looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
 layout and water and deep water one 4×4 layout, keeping their animated banks
@@ -84,7 +85,12 @@ unchanged and that native frames equal downsampling the unsliced block.
 Group readability is part of the recipes: obstacles are lit from the top left and cast onto grass, hazards warm
 and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
 barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
-and light, void near black with a cast onto every neighbour.
+and light, void near black with a cast onto every neighbour. The grass and sand
+looks keep the grain of the classic tile they stand in for and change only its
+colour: lush and dry grass are soft like grass, dune and pale sand speckled at the
+native pixel like sand. Like grass and sand they are four-layout 8×8 block
+materials, and they take the same pair treatments (`GRASS_LOOKS` and `SAND_LOOKS`
+in the synthesiser).
 
 ### Raised obstacle decor
 

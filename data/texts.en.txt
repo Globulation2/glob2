@@ -5696,6 +5696,14 @@ Dark water
 Hole
 [chasm]
 Chasm
+[lush_grass]
+Lush grass
+[dry_grass]
+Dry grass
+[dune_sand]
+Dune sand
+[pale_sand]
+Pale sand
 [terrain group water]
 Water
 [terrain group sand]

@@ -6822,5 +6822,13 @@ MCP سرور چالو کریں
 
 [script cursor %0 %1]
 
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [scenario messages]
 پیغامات ▸

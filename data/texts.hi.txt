@@ -6822,5 +6822,13 @@ MCP सर्वर चालू करें
 
 [script cursor %0 %1]
 
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [scenario messages]
 संदेश ▸

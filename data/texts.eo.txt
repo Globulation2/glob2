@@ -5696,6 +5696,14 @@ Malhela akvo
 Truo
 [chasm]
 Abismo
+[lush_grass]
+Abunda herbo
+[dry_grass]
+Seka herbo
+[dune_sand]
+Duna sablo
+[pale_sand]
+Pala sablo
 [terrain group water]
 Akvo
 [terrain group sand]

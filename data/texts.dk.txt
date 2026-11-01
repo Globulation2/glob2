@@ -5696,6 +5696,14 @@ Mørkt vand
 Hul
 [chasm]
 Afgrund
+[lush_grass]
+Frodigt græs
+[dry_grass]
+Tørt græs
+[dune_sand]
+Klitsand
+[pale_sand]
+Lyst sand
 [terrain group water]
 Vand
 [terrain group sand]

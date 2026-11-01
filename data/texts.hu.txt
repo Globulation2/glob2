@@ -5696,6 +5696,14 @@ Sötét víz
 Lyuk
 [chasm]
 Szakadék
+[lush_grass]
+Dús fű
+[dry_grass]
+Száraz fű
+[dune_sand]
+Dűnehomok
+[pale_sand]
+Világos homok
 [terrain group water]
 Víz
 [terrain group sand]

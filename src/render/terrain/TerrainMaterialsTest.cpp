@@ -4,6 +4,7 @@
 #include "ComputeExecutor.h"
 #include <PresentationWork.h>
 #include <cstring>
+#include <numeric>
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
 #include "TerrainCatalogIO.h"
@@ -822,6 +823,191 @@ TEST_SUITE("TerrainMaterials")
 			}
 		}
 	}
+	TEST_CASE("surf washes a beach within eight pixels and repeats each period [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		definitions.boundaryWarp = {}; // A straight water/sand edge at x = 16.
+		for (auto &profile : definitions.profiles)
+			profile.roughness = profile.speckle = 0;
+		const auto water = definitions.find("water"), sand = definitions.find("sand");
+		const auto surf = definitions.materials[water].surf;
+		REQUIRE(surf.period > 0);
+		REQUIRE(definitions.materials[sand].surf.period == 0);
+		TerrainVisual::Recipe r;
+		r.width = r.height = 16;
+		r.x = 3;
+		r.y = 5;
+		r.corners = {water, sand, water, sand};
+		using Columns = std::array<unsigned, 32>;
+		const auto render = [&](TerrainVisual::Compositor &compositor, int time)
+		{
+			compositor.prepare(false, time);
+			GAGCore::DrawableSurface result(32, 32);
+			compositor.compose(r, result.getSDLSurface(), 0, 0, 1);
+			Columns brightness{};
+			for (int y = 0; y < 32; ++y)
+			{
+				const auto *row = reinterpret_cast<const Uint32 *>(
+					static_cast<const unsigned char *>(result.getSDLSurface()->pixels) +
+					y * result.getSDLSurface()->pitch);
+				for (int x = 0; x < 32; ++x)
+					brightness[x] += (row[x] >> 16 & 255) + (row[x] >> 8 & 255) + (row[x] & 255);
+			}
+			return brightness;
+		};
+		auto still = definitions;
+		for (auto &material : still.materials)
+			material.surf = {};
+		TerrainVisual::Compositor surfCompositor(definitions), stillCompositor(still);
+		std::vector<Columns> frames;
+		int darker = 0, lighter = 0;
+		for (int step = 0; step < 8; ++step)
+		{
+			const int time = step * surf.period / 8;
+			// Water animates its texture as well, so compare at the same time.
+			const auto plain = render(stillCompositor, time);
+			const auto washed = render(surfCompositor, time);
+			for (int x = 0; x < 32; ++x)
+			{
+				INFO("time " << time << " x " << x);
+				if (x < 8 || x >= 24)
+					CHECK(washed[x] == plain[x]); // Bands end before the cell's edges.
+			}
+			CHECK(washed[12] > plain[12]); // Shallows lighten the water near the beach.
+			darker += washed[19] < plain[19];
+			lighter += washed[19] > plain[19];
+			frames.push_back(washed);
+		}
+		// Wet sand when the wash has drained; foam and a water sheet as it arrives.
+		CHECK(darker > 0);
+		CHECK(lighter > 0);
+		CHECK(std::count(frames.begin(), frames.end(), frames[0]) == 1); // It moves.
+		// After a whole surf period and a whole texture cycle the frame repeats.
+		const auto &textured = definitions.materials[water];
+		const int cycle = std::lcm(surf.period, textured.animationFrames * textured.animationTicks);
+		CHECK(render(surfCompositor, cycle + surf.period / 8) == frames[1]);
+		// Surf without texture animation still invalidates its pages as time advances.
+		const auto dark = definitions.find("dark_water");
+		REQUIRE(definitions.materials[dark].animationFrames == 1);
+		REQUIRE(definitions.materials[dark].surf.period > 0);
+		CHECK(surfCompositor.animated(dark));
+		// Still dark water re-blends once per surf step, not on every tick.
+		const auto &darkSurf = definitions.materials[dark].surf;
+		REQUIRE(darkSurf.ticks > 1);
+		const int step = 7 * darkSurf.ticks;
+		surfCompositor.prepare(false, step);
+		const auto revision = surfCompositor.materialRevision(dark);
+		surfCompositor.prepare(false, step);
+		CHECK(surfCompositor.materialRevision(dark) == revision);
+		surfCompositor.prepare(false, step + darkSurf.ticks - 1);
+		CHECK(surfCompositor.materialRevision(dark) == revision);
+		surfCompositor.prepare(false, step + darkSurf.ticks);
+		CHECK(surfCompositor.materialRevision(dark) == revision + 1);
+		// Within one step the composed wash is identical.
+		const auto washed = [&](int time)
+		{
+			std::vector<unsigned> result;
+			for (int margin = 0; margin < 2048; margin += 64)
+				for (bool surfSide : {false, true})
+				{
+					unsigned value[3] = {180, 160, 120};
+					TerrainVisual::applySurf(darkSurf, surfSide, margin, 5000, 9000, unsigned(time), value);
+					result.insert(result.end(), value, value + 3);
+				}
+			return result;
+		};
+		bool moved = false;
+		for (int k = 0; k < darkSurf.period; k += darkSurf.ticks)
+		{
+			for (int t = 1; t < darkSurf.ticks; ++t)
+				CHECK(washed(k + t) == washed(k));
+			moved = moved || washed(k) != washed(k + darkSurf.ticks);
+		}
+		CHECK(moved);
+	}
+	TEST_CASE("shore calm quiets waves toward land without shifting the water's colour [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		using TerrainVisual::shoreCalmAt;
+		// Full calm at the shoreline, fading out within the reach and smoothly.
+		CHECK(shoreCalmAt(0) == 0);
+		CHECK(shoreCalmAt(1) > shoreCalmAt(2));
+		CHECK(shoreCalmAt(2) > shoreCalmAt(4));
+		const int beyond = (TerrainVisual::ShoreCalmReachQ8 + 128) / 256 + 1;
+		CHECK(shoreCalmAt((beyond - 1) * (beyond - 1)) > 0);
+		CHECK(shoreCalmAt(beyond * beyond) == 0);
+		CHECK(TerrainVisual::ShoreCalmSearch >= beyond - 1);
+		CHECK(TerrainVisual::shoreCalm({255, 255, 255, 255}, 37, 200) == 255);
+		CHECK(TerrainVisual::shoreCalm({}, 37, 200) == 0);
+		CHECK(TerrainVisual::shoreCalm({200, 0, 200, 0}, 0, 128) == 200);
+		CHECK(TerrainVisual::shoreCalm({200, 0, 200, 0}, 256, 128) == 0);
+
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		TerrainVisual::Compositor compositor(definitions);
+		const auto &materials = compositor.catalog().materials;
+		const auto water = definitions.find("water"), deep = definitions.find("deep_water");
+		CHECK(materials[water].shoreCalm);
+		CHECK(materials[deep].shoreCalm);
+		CHECK_FALSE(materials[definitions.find("dark_water")].shoreCalm); // Its surface is still.
+		CHECK_FALSE(materials[definitions.find("sand")].shoreCalm);
+		// Calm keeps the colour and cuts the wave contrast, at every phase.
+		for (const auto id : {water, deep})
+			for (int time : {0, 37, 211})
+			{
+				CAPTURE(time);
+				compositor.prepare(false, time);
+				TerrainVisual::Recipe r;
+				r.width = r.height = 64;
+				r.x = 9;
+				r.y = 13;
+				r.corners = {id, id, id, id};
+				const auto statistics = [&](const TerrainVisual::Recipe &recipe)
+				{
+					GAGCore::DrawableSurface result(32, 32);
+					compositor.compose(recipe, result.getSDLSurface(), 0, 0, 1);
+					double sum[3] = {}, luma = 0, luma2 = 0;
+					for (int y = 0; y < 32; ++y)
+						for (int x = 0; x < 32; ++x)
+						{
+							const auto pixel = reinterpret_cast<const Uint32 *>(
+								static_cast<const unsigned char *>(result.getSDLSurface()->pixels) +
+								y * result.getSDLSurface()->pitch)[x];
+							const double rgb[3] = {double(pixel >> 16 & 255), double(pixel >> 8 & 255),
+												   double(pixel & 255)};
+							for (int k = 0; k < 3; ++k)
+								sum[k] += rgb[k] / 1024;
+							const double l = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2];
+							luma += l / 1024;
+							luma2 += l * l / 1024;
+						}
+					return std::array<double, 4>{sum[0], sum[1], sum[2], std::sqrt(luma2 - luma * luma)};
+				};
+				const auto open = statistics(r);
+				r.calm = {255, 255, 255, 255};
+				const auto shore = statistics(r);
+				for (int k = 0; k < 3; ++k)
+					CHECK(std::abs(shore[k] - (open[k] + (materials[id].calmMean[k] - open[k]) * 0.75)) < 1.5);
+				CHECK(shore[3] < open[3] * 0.35);
+			}
+
+		// describe() derives the calm from the distance to land.
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .terrain = WATER, .discovered = true});
+		for (int y = 0; y < 32; ++y)
+			fixture.game.map.setVertexTerrain(16, y, SAND);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		auto &game = globals->terrainCompositor();
+		const auto at = [&](int x) { return game.describe(scene, x, 7); };
+		CHECK_FALSE(at(4).calmed()); // Open water keeps its waves.
+		CHECK(at(15).calm == std::array<std::uint8_t, 4>{at(15).calm[0], 255, at(15).calm[0], 255});
+		CHECK(at(15).calm[0] == shoreCalmAt(1));
+		CHECK(at(14).calm[1] == at(15).calm[0]); // Corners are shared, so the fade is continuous.
+		CHECK(at(14).calm[0] == shoreCalmAt(4));
+		CHECK(at(16).calm == std::array<std::uint8_t, 4>{255, at(15).calm[0], 255, at(15).calm[0]});
+	}
 	TEST_CASE("mixed cells compose exactly as a direct per-pixel coverage blend [display]")
 	{
 		// The reference is the blend before cell masks: sample coverage per pixel
@@ -908,8 +1094,16 @@ TEST_SUITE("TerrainMaterials")
 								unsigned value = unsigned(alpha ? rgb[k] / alpha : 0) * shade >> 8;
 								return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
 							};
-							const Uint32 expected = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) |
-													(channel(1) << 8) | channel(2);
+							unsigned value[3] = {channel(0), channel(1), channel(2)};
+							const auto &selfSurf = c.materials[mask.material[dominant]].surf;
+							const auto &otherSurf = c.materials[mask.neighbor].surf;
+							if ((selfSurf.period > 0) != (otherSurf.period > 0))
+								TerrainVisual::applySurf(selfSurf.period ? selfSurf : otherSurf,
+														 selfSurf.period > 0, int(mask.margin),
+														 r.x * 8192 + (2 * x + 1) * 4096 / size,
+														 r.y * 8192 + (2 * y + 1) * 4096 / size, 0, value);
+							const Uint32 expected = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) |
+													(value[1] << 8) | value[2];
 							mismatches += pixels(actual, x, y) != expected;
 						}
 					INFO("seed " << seed << " scale " << scale << " corners " << corners[0] << ","
@@ -989,7 +1183,10 @@ TEST_SUITE("TerrainMaterials")
 				j["version"] = 1;
 				j.erase("boundary_warp_q8");
 				for (auto &material : j["materials"])
+				{
 					material.erase("seam");
+					material.erase("surf");
+				}
 				const int roughness[] = {256, 320, 192};
 				for (unsigned i = 0; i < j["profiles"].size(); ++i)
 				{
@@ -1030,7 +1227,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 15866489041356360345ull : 14215220908205104757ull));
+			CHECK(digest == (legacy ? 7551547235460948223ull : 3380676554505949637ull));
 		}
 	}
 	TEST_CASE("the Python validator's built-in name list mirrors the terrain table")
@@ -1467,6 +1664,14 @@ TEST_SUITE("TerrainMaterials")
 			{nlohmann::json::json_pointer("/materials/3/seam/height"), -1},
 			{nlohmann::json::json_pointer("/materials/3/seam/fringe"), {0, 0}},
 			{nlohmann::json::json_pointer("/materials/3/seam/fringe_width_q8"), 2049},
+			{nlohmann::json::json_pointer("/materials/3/surf"), nlohmann::json::array()},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 0}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 60}, {"wet_q8", 257}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 60}, {"ticks", 0}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 60}, {"ticks", 61}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"),
+			 {{"period", 60}, {"reach_q8", 1800}, {"foam_width_q8", 300}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 60}, {"shallow", {0, 0}}}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 0}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {true, 0, 0}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 1.5, 0}},

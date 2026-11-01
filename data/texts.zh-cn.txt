@@ -5696,6 +5696,14 @@ AI 生成
 坑洞
 [chasm]
 深渊
+[lush_grass]
+茂盛草原
+[dry_grass]
+枯黄草原
+[dune_sand]
+沙丘沙地
+[pale_sand]
+浅色沙地
 [terrain group water]
 水
 [terrain group sand]

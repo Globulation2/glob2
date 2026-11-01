@@ -117,7 +117,9 @@ the classic `water`, `sand`, `grass`, `ice` and `road` (the compatibility key fo
 Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge_rock`,
 `outcrop`, `dirt`, `clay`, `gravel`, `flower_meadow`, `mud`, `marsh`, `deep_snow`,
 `scree`, `dirt_track`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
-`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`). There are no shore
+`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`, and the grass and
+sand looks `lush_grass`, `dry_grass`, `dune_sand` and `pale_sand`). The looks share every
+rule of grass or sand and differ only in artwork and colours. There are no shore
 types: mixed corners make transitions. The base supplies all simulation
 defaults; appearance selects a shipped material and resolved preview colors independently.
 Detailed artwork and natural boundaries use the shared [material catalog](../assets/terrain-materials.md);

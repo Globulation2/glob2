@@ -46,7 +46,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_every_catalogue_type_has_a_recipe(self):
         self.assertEqual(sorted(synth.RECIPES), sorted(synth.SYNTH_ORDER))
-        self.assertEqual(len(synth.BUILTIN_ORDER), 24)
+        self.assertEqual(len(synth.BUILTIN_ORDER), 28)
         for name, recipe in synth.RECIPES.items():
             self.assertEqual(recipe.name, name)
             self.assertIn(recipe.profile, ("rock", "soft", "crisp", "brush", "sand", "fractured", "cliff", "cobblestone", "frozen"))

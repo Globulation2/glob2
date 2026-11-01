@@ -18,3 +18,7 @@
 [script load failed %0]
 [script save failed %0]
 [script cursor %0 %1]
+[lush_grass]
+[dry_grass]
+[dune_sand]
+[pale_sand]
