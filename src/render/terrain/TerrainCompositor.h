@@ -70,7 +70,13 @@ class Compositor
 	// A uniform recipe ignores the mask; a mixed one composes from it when given.
 	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale,
 				 const CellMask *mask = nullptr) const;
-	bool animated(MaterialId id) const { return definitions.materials[id].animationFrames > 1; }
+	// Animated textures or surf: either changes this material's composed pixels over time.
+	bool animated(MaterialId id) const
+	{
+		const auto &m = definitions.materials[id];
+		return m.animationFrames > 1 || m.surf.period > 0;
+	}
+	unsigned surfTime() const { return preparedTime; }
 	// Subtile palette samples share the detailed renderer's material partition.
 	static constexpr int OverviewSamples = 4;
 	// Per corner (Recipe::corners order), an overview colour replacing the
@@ -116,6 +122,7 @@ class Compositor
         std::vector<std::vector<Texture>> textures;
         std::vector<char> included;
         std::size_t bytes = 0;
+        unsigned surfTime = 0; // Animation time of the surf phase, as prepared.
         // Every recipe corner must be included in this immutable snapshot.
         void compose(const Recipe &, SDL_Surface *, int scale, const CellMask * = nullptr) const;
         void compose(const Recipe &, SDL_Surface *, int scale, CpuScratch &,
@@ -144,7 +151,8 @@ class Compositor
       std::weak_ptr<const Catalog> publishedCatalog;
       std::size_t cpuPublicationBytes() const;
       static void composePixels(const Catalog &, const Recipe &, SDL_Surface *, int, int, int,
-                                std::span<const PreparedMaterialView>, const CellMask *);
+                                std::span<const PreparedMaterialView>, const CellMask *,
+                                unsigned surfTime);
       static void buildMask(const Catalog &, const Recipe &, int, CellMask &);
 	struct Texture
 	{
@@ -157,6 +165,7 @@ class Compositor
 	bool hasContextualProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
+    void describeShoreCalm(const SceneMap&, Recipe &) const;
     std::pair<MaterialId, unsigned> decorMaterial(const SceneMap&, int x, int y) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;
@@ -183,5 +192,6 @@ class Compositor
                          const std::vector<unsigned char> *wanted);
 	std::vector<std::uint64_t> materialRevisions;
 	int resolution = 1;
+	unsigned preparedTime = 0;
 };
 } // namespace TerrainVisual

@@ -201,7 +201,15 @@ class GpuTerrainPageCache
                 data->materials[slot]=material(compositor,recipe,palette[slot]);
                 const auto &seam=compositor.catalog().materials[palette[slot]].seam;
                 data->seams[slot]={seam.height,seam.cast,seam.castWidth,seam.fringe,seam.fringeWidth,seam.fringeColor};
+                const auto &surf=compositor.catalog().materials[palette[slot]].surf;
+                const auto &material=compositor.catalog().materials[palette[slot]];
+                const std::uint32_t calm=material.shoreCalm?
+                    std::uint32_t(256-TerrainVisual::ShoreCalmContrastQ8)<<24|material.calmMean[0]<<16|material.calmMean[1]<<8|material.calmMean[2]:0;
+                data->surfs[slot]={surf.period,surf.reach,surf.foam,surf.foamWidth,surf.shallow,surf.shallowWidth,
+                                   surf.wet,surf.wetWidth,surf.shallowColor,surf.foamColor,surf.ticks,calm};
             }
+            data->surfOriginX=recipe.x*8192;data->surfOriginY=recipe.y*8192;data->surfTime=compositor.surfTime();
+            for(unsigned k=0;k<4;++k)data->shoreCalm|=std::uint32_t(recipe.calm[k])<<(8*k);
             DrawPacket packet;packet.kind=DrawPacket::Kind::WeightedCompose;packet.blend=DrawPacket::Blend::Opaque;
             packet.weightedCompose=std::move(data);packets.push_back(std::move(packet));
         }
@@ -1067,7 +1075,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							}
 							if (tiles[i].discovered)
 							{
-								if (gpu && downsample > 1 && !native &&
+								// Calmed shore cells vary within a variant; compose those.
+								if (gpu && downsample > 1 && !native && !recipe.calmed() &&
 									std::all_of(corners.begin(), corners.end(),
 												[&](auto id) { return id == corners[0]; }))
 									copyUniform(recipe, target, x * n, y * n, n);

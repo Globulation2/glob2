@@ -1,306 +1,282 @@
 #!/usr/bin/env python3
-"""Resumable, gross-cost-capped Google v3 NMT drafts; development tooling only."""
+"""Create resumable Google Cloud machine drafts without changing reviewed catalogs."""
 import argparse
 from collections import Counter
-from contextlib import contextmanager
-try:
-    import fcntl
-except ImportError:  # Read-only inventory and tests remain importable elsewhere.
-    fcntl = None
-import html
+import hashlib
+from html import escape
 from html.parser import HTMLParser
+import importlib.util
 import json
-import os
 from pathlib import Path
 import re
 import subprocess
 import time
-import urllib.request
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
+import uuid
 
-import translation_program as program
-
-RATE_MICRODOLLARS = 20  # $20 / million Unicode characters, ignoring free credits.
-CAP_MICRODOLLARS = 9_000_000
-TELUGU_METADATA = {
-    '[language-code]': 'te',
-    '[language]': 'తెలుగు',
-    '[language incomplete]': 'తెలుగు — అసంపూర్ణం',
-}
-TOKEN = re.compile(r'%[0-9]+|\{[a-zA-Z][a-zA-Z0-9_]*\}')
-NAMED_LITERALS = ('Globulation 2', 'Hive Mind', 'Castor', 'Cortex', 'Maxima',
-                  'Nicowar', 'Numbi', 'Econo', 'Warrush', 'Cabino', 'JavaScript',
-                  'OpenGL', 'WebGL', 'SDL')
-TECHNICAL = re.compile(
-    r'https?://[^\s<>"\']+|(?<!\w)/(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+/?'
-    r'|(?:[A-Za-z0-9_.-]+/){2,}[A-Za-z0-9_./-]+'
-    r'|(?:data|scripts|browser|platform|src)/[A-Za-z0-9_./-]+'
-    r'|[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\.[A-Za-z0-9_.-]+|\\[nrt]')
+SPEC = importlib.util.spec_from_file_location('translation_program', Path(__file__).with_name('translation_program.py'))
+PROGRAM = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(PROGRAM)
+# Standalone routes are executable links too. Exclude slashes within ordinary
+# words/MIME types and within absolute URLs, which have their own protection.
+LINK = re.compile(r'(?<![\w/])www\.[^\s<>]+|(?<![\w:/])/[A-Za-z0-9._~/-]+(?:[?#][^\s<>]*)?')
+# Keep executable substitutions, authored markup, URLs and literal line breaks intact.
+PROTECTED = re.compile(r'https?://[^\s<>]+|<[^>]+>|\{[a-zA-Z][a-zA-Z0-9_]*\}|%[0-9]+|%%|\\[nrt]|' + LINK.pattern)
+# Validate bare schemes independently: Norwegian can attach a compound suffix,
+# as in "https://-adresse", without creating a URL. Keep outbound protection
+# stable so already-paid exact request payloads remain resumable.
+URL = re.compile(r'https?://[a-zA-Z0-9\[][\S]*?(?=[\s<>]|$)')
+SCHEME = re.compile(r'https?://')
+CONTENT_TOKEN = re.compile(r'<[^>]+>|\{[a-zA-Z][a-zA-Z0-9_]*\}|%[0-9]+|%%|\\[nrt]')
 
 
-def atomic_json(path, value):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + '.tmp')
-    with temporary.open('w', encoding='utf-8') as handle:
-        handle.write(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
-        handle.flush()
-        os.fsync(handle.fileno())
-    temporary.replace(path)
-    directory = os.open(path.parent, os.O_RDONLY)
-    try:
-        os.fsync(directory)
-    finally:
-        os.close(directory)
+def protected_tokens(text):
+    return Counter(CONTENT_TOKEN.findall(text) + URL.findall(text) + SCHEME.findall(text) + LINK.findall(text))
 
 
-@contextmanager
-def locked(folder):
-    if fcntl is None:
-        raise RuntimeError('Live translation runs require Linux fcntl locking')
-    folder.mkdir(parents=True, exist_ok=True)
-    with (folder / 'run.lock').open('a') as handle:
-        fcntl.flock(handle, fcntl.LOCK_EX)
-        yield
+
+def fingerprint(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
-def protect(text, invariants=()):
-    literals = set(TOKEN.findall(text)) | set(TECHNICAL.findall(text)) | {item for item in invariants if item in text}
-    names = {name for name in NAMED_LITERALS
-             if re.search(r'(?<!\w)' + re.escape(name) + r'(?!\w)', text)}
-    if 'GLOB2TOKEN' in text:
-        raise ValueError('Source contains reserved token prefix')
-    alternatives = [(item, False) for item in literals] + [(name, True) for name in names - literals]
-    alternatives.sort(key=lambda item: (-len(item[0]), item[0]))
-    pattern = re.compile('|'.join((r'(?<!\w)' + re.escape(item) + r'(?!\w)') if named else re.escape(item)
-                                  for item, named in alternatives)) if alternatives else None
-    replacements = []
-    chunks = []
-    offset = 0
-    for match in pattern.finditer(text) if pattern else ():
-        chunks.append(html.escape(text[offset:match.start()]))
-        marker = f'GLOB2TOKEN{len(replacements):04d}'
-        replacements.append((marker, match.group()))
-        chunks.append(f'<span translate="no" class="notranslate">{marker}</span>')
-        offset = match.end()
-    chunks.append(html.escape(text[offset:]))
-    return ''.join(chunks), replacements
+def protect(text):
+    parts, position = [], 0
+    for token in PROTECTED.finditer(text):
+        parts.append(escape(text[position:token.start()]))
+        parts.append('<span translate="no" class="notranslate">' + escape(token.group()) + '</span>')
+        position = token.end()
+    parts.append(escape(text[position:]))
+    return ''.join(parts)
 
 
-class TextOnly(HTMLParser):
+class PlainText(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.parts = []
-        self.depth = 0
-
-    def handle_starttag(self, tag, attrs):
-        if tag != 'span' or self.depth:
-            raise ValueError('Unexpected markup in translation')
-        self.depth += 1
-
-    def handle_endtag(self, tag):
-        if tag != 'span' or self.depth != 1:
-            raise ValueError('Malformed translation markup')
-        self.depth -= 1
 
     def handle_data(self, data):
         self.parts.append(data)
 
-    def handle_comment(self, data):
-        raise ValueError('Unexpected comment in translation')
 
-
-def restore(text, replacements):
-    parser = TextOnly()
-    parser.feed(text)
+def restore(source, translated):
+    parser = PlainText()
+    parser.feed(translated)
     parser.close()
-    if parser.depth:
-        raise ValueError('Unclosed translation markup')
-    value = ''.join(parser.parts)
-    if set(re.findall(r'GLOB2TOKEN\d+', value)) != {marker for marker, _ in replacements}:
-        raise ValueError('Unknown or missing protected token')
-    for marker, original in replacements:
-        if value.count(marker) != 1:
-            raise ValueError('Duplicated or damaged protected token')
-        value = value.replace(marker, original)
-    if 'GLOB2TOKEN' in value or '\ufffd' in value or '\x00' in value or not value.strip():
-        raise ValueError('Invalid translated text')
-    return value
+    result = ''.join(parser.parts)
+    # Translation services can normalize outer spaces, which are significant in fragments.
+    prefix = source[:len(source) - len(source.lstrip())]
+    suffix = source[len(source.rstrip()):]
+    result = prefix + result.strip() + suffix if source.strip() else source
+    if protected_tokens(source) != protected_tokens(result):
+        raise ValueError('Translation changed protected tokens')
+    if not result.strip() and source.strip():
+        raise ValueError('Translation returned empty text')
+    if '\ufffd' in result or '\x00' in result or '\n' in result or '\r' in result:
+        raise ValueError('Translation contains invalid or physical line-break characters')
+    return result
 
 
-def reserve(folder, project, payload):
-    path = folder / 'ledger.json'
-    ledger = json.loads(path.read_text()) if path.exists() else {'project': project, 'attempts': []}
-    if ledger['project'] != project:
-        raise ValueError('Cannot reuse ledger with another project')
-    characters = sum(map(len, payload['contents']))
-    cost = characters * RATE_MICRODOLLARS
-    spent = sum(item['reserved_microdollars'] for item in ledger['attempts'])
-    if spent + cost > CAP_MICRODOLLARS:
-        raise ValueError('Gross $9 translation cap would be exceeded; no request sent')
-    ledger['attempts'].append({'time': time.time(), 'request_sha256': program.digest(json.dumps(payload, sort_keys=True).encode()),
-                               'characters': characters, 'reserved_microdollars': cost})
-    atomic_json(path, ledger)  # No release on failure: uncertain outcomes may be billed.
-    return spent + cost
-
-
-def translate(folder, project, contents, send):
-    payload = {'sourceLanguageCode': 'en', 'targetLanguageCode': 'te', 'mimeType': 'text/html',
-               'model': f'projects/{project}/locations/global/models/general/nmt', 'contents': contents}
-    key = program.digest(json.dumps(payload, sort_keys=True).encode())
-    path = folder / 'responses' / (key + '.json')
-    if path.exists():
-        record = json.loads(path.read_text(encoding='utf-8'))
-        if record['request'] != payload:
-            raise ValueError('Cached request mismatch')
-        response = record['response']
-    else:
-        reserve(folder, project, payload)
-        response = send(payload)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        # Preserve even malformed successful API output, never overwrite raw evidence.
-        with path.open('x', encoding='utf-8') as handle:
-            json.dump({'request': payload, 'response': response}, handle, ensure_ascii=False, indent=2)
-            handle.write('\n')
-            handle.flush()
-            os.fsync(handle.fileno())
-    values = response.get('translations', [])
-    if len(values) != len(contents) or any(not isinstance(v.get('translatedText'), str) for v in values):
-        raise ValueError('Malformed Google response; raw response retained')
-    return [v['translatedText'] for v in values]
-
-
-def request_sender(project):
-    token = None
-    refreshed = 0.0
-    def send(payload):
-        nonlocal token, refreshed
-        if token is None or time.monotonic() - refreshed >= 45 * 60:
-            token = subprocess.check_output(['gcloud', 'auth', 'print-access-token'], text=True).strip()
-            refreshed = time.monotonic()
-        request = urllib.request.Request(f'https://translation.googleapis.com/v3/projects/{project}/locations/global:translateText',
-                    data=json.dumps(payload).encode(), headers={'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json', 'x-goog-user-project': project})
-        with urllib.request.urlopen(request, timeout=90) as response:
-            return json.load(response)
-    return send
-
-
-def _run(output, project, execute=False, expected_name='Bradley personal', pilot=False):
+def make_plan(output, locale, selected=None, request_characters=4000):
     manifest = json.loads((output / 'manifest.json').read_text())
-    if 'te' not in manifest['locales'] or manifest['source_sha256'] != program.sources()[4]:
-        raise ValueError('Telugu kit is absent or source snapshot is stale')
-    online_source = json.loads((output / 'source/online.json').read_text())
-    invariants = json.loads((program.ROOT / 'platform/packages/i18n/invariants.json').read_text())
-    native_source = json.loads((output / 'source/native.json').read_text())
-    paths = program.catalog_paths(output, 'te')
-    native, errors = program.CHECKER.read_table(paths['native'])
-    if errors:
-        raise ValueError('; '.join(errors))
-    # These identify the target catalog, rather than describing English. Sending
-    # the English language code/name to NMT produces a mislabeled catalog.
-    for key, value in TELUGU_METADATA.items():
-        if key in native and not native[key].strip():
-            native[key] = value
-    online = json.loads(paths['online'].read_text())
-    jobs = []
-    for surface, source, target in [('native', native_source, native), ('online', online_source, online)]:
-        for key, original in source.items():
-            variants = target[key] if isinstance(target[key], dict) else {'other': target[key]}
-            for category, value in variants.items():
-                if value.strip() or (surface == 'native' and key in program.CHECKER.OPTIONAL_BLANKS and not original):
-                    continue
-                source_value = original if isinstance(original, str) else original.get(category, original['other'])
-                protected, replacements = protect(source_value, invariants.get(key, []) if surface == 'online' else ())
-                jobs.append((surface, key, category, protected, replacements))
-    if pilot:
-        selected = []
-        groups = {}
-        for job in jobs:
-            group = (job[0], program.domain(job[0], job[1]))
-            groups.setdefault(group, []).append(job)
-        for entries in groups.values():
-            selected.extend(entries[:3])
-            selected.extend(sorted(entries, key=lambda job: len(job[3]), reverse=True)[:1])
-        selected.extend([job for job in jobs if isinstance(online.get(job[1]), dict)][:6])
-        jobs = list(dict.fromkeys(tuple(job[:4]) + (tuple(job[4]),) for job in selected))
-    # Exact protected content deduplication: each key keeps its own restoration map.
-    unique = list(dict.fromkeys(job[3] for job in jobs))
-    estimate = sum(map(len, unique)) * RATE_MICRODOLLARS / 1_000_000
-    print(json.dumps({'pending_variants': len(jobs), 'unique_requests': len(unique), 'gross_estimate_usd': estimate,
-                      'cap_usd': CAP_MICRODOLLARS / 1_000_000}))
-    if not execute:
-        return
-    project_info = json.loads(subprocess.check_output(['gcloud', 'projects', 'describe', project, '--format=json'], text=True))
-    if project_info.get('name', '').casefold() != expected_name.casefold() or project_info.get('projectId') != project:
-        raise ValueError('Project ID/display name does not match explicit Bradley project')
-    folder = output / 'google'
-    translated = {}
-    for path in sorted((folder / 'responses').glob('*.json')):
-        record = json.loads(path.read_text(encoding='utf-8'))
-        request = record['request']
-        if request.get('model') != f'projects/{project}/locations/global/models/general/nmt':
-            raise ValueError('Cache project/model mismatch')
-        values = record['response'].get('translations', [])
-        if len(values) != len(request['contents']):
-            raise ValueError('Malformed cached response')
-        for source, value in zip(request['contents'], values):
-            if not isinstance(value.get('translatedText'), str):
-                raise ValueError('Malformed cached translation')
-            translated[source] = value['translatedText']
-    send = request_sender(project)
-    batch = []
-    def flush():
-        if batch:
-            translated.update(zip(batch, translate(folder, project, batch, send)))
-            batch.clear()
-    for value in unique:
-        if value in translated:
+    if locale not in manifest['locales']:
+        raise ValueError('Locale is not in this translation kit')
+    if selected and set(selected) - {batch['id'] for batch in manifest['batches']}:
+        raise ValueError('Unknown batch selection')
+    entries = []
+    for batch in manifest['batches']:
+        if selected and batch['id'] not in selected:
             continue
-        if batch and (len(batch) >= 200 or sum(map(len, batch)) + len(value) > 25000):
-            flush()
-        if len(value) > 25000:
-            raise ValueError('Single protected input exceeds request limit')
-        batch.append(value)
-    flush()
-    # Validate every result before changing either draft catalog.
-    for surface, key, category, source, replacements in jobs:
-        value = restore(translated[source], replacements)
-        original = restore(source, replacements)
-        if Counter(TOKEN.findall(value)) != Counter(TOKEN.findall(original)):
-            raise ValueError('Translation introduced or damaged placeholders: ' + key)
-        if surface == 'native' and ('\n' in value or '\r' in value):
-            raise ValueError('Translation introduced native catalog line breaks: ' + key)
-        for literal in invariants.get(key, []) if surface == 'online' else ():
-            if value.count(literal) != original.count(literal):
-                raise ValueError('Translation changed literal invariant count: ' + key)
-        target = native if surface == 'native' else online
-        if isinstance(target[key], dict):
-            target[key][category] = value
+        payload = json.loads((output / batch['path']).read_text())
+        if payload['source_sha256'] != manifest['source_sha256']:
+            raise ValueError('Batch source hash does not match manifest')
+        for entry in payload['entries']:
+            variants = {'': entry['source']} if isinstance(entry['source'], str) else entry['source']
+            for variant, text in variants.items():
+                entries.append({'surface': payload['surface'], 'key': entry['key'], 'variant': variant,
+                                'source': text, 'batch': batch['id']})
+    # Deduplicate identical source text, preserving stable source order and all key mappings.
+    texts = list(dict.fromkeys(item['source'] for item in entries if item['source'].strip()))
+    chunks, chunk, size = [], [], 0
+    for text in texts:
+        encoded = protect(text)
+        if len(encoded) > 30000:
+            raise ValueError('A single source exceeds the API request limit')
+        if chunk and (size + len(encoded) > request_characters or len(chunk) >= 100):
+            chunks.append(chunk)
+            chunk, size = [], 0
+        chunk.append(text)
+        size += len(encoded)
+    if chunk:
+        chunks.append(chunk)
+    return {'source_sha256': manifest['source_sha256'], 'locale': locale,
+            'entries': entries, 'chunks': chunks}
+
+
+class GoogleClient:
+    def __init__(self, project, location='global'):
+        if not re.fullmatch(r'[a-zA-Z0-9:._-]+', project) or not re.fullmatch(r'[a-z0-9-]+', location):
+            raise ValueError('Invalid Google project or location')
+        self.project, self.location = project, location
+        self._token, self._token_time = None, 0
+
+    def token(self, refresh=False):
+        if refresh or self._token is None or time.monotonic() - self._token_time > 2700:
+            self._token = subprocess.check_output(
+                ['gcloud', 'auth', 'print-access-token'], text=True,
+                stderr=subprocess.DEVNULL, timeout=60).strip()
+            if not self._token:
+                raise ValueError('gcloud returned an empty access token')
+            self._token_time = time.monotonic()
+        return self._token
+
+    def request(self, request):
+        for attempt in range(2):
+            request.headers['Authorization'] = 'Bearer ' + self.token(refresh=attempt == 1)
+            try:
+                with urlopen(request, timeout=90) as response:
+                    return json.load(response)
+            except HTTPError as error:
+                if error.code != 401 or attempt:
+                    raise
+                error.close()
+
+    def call(self, method, payload):
+        request = Request(f'https://translation.googleapis.com/v3/projects/{self.project}/locations/{self.location}:{method}',
+                          data=json.dumps(payload).encode(), method='POST',
+                          headers={'Content-Type': 'application/json',
+                                   'x-goog-user-project': self.project})
+        return self.request(request)
+
+    def target(self, locale):
+        # supportedLanguages uses GET, unlike translateText.
+        request = Request(f'https://translation.googleapis.com/v3/projects/{self.project}/locations/{self.location}/supportedLanguages',
+                          headers={'x-goog-user-project': self.project})
+        languages = {item['languageCode'] for item in self.request(request)['languages'] if item.get('supportTarget')}
+        candidates = ['nb', 'no'] if locale == 'nb' else [locale]
+        for candidate in candidates:
+            if candidate in languages:
+                return candidate
+        raise ValueError('Requested target language is unavailable')
+
+
+def cache_key(payload, project, location):
+    return fingerprint({'project': project, 'location': location, 'payload': payload})
+
+
+def validate_response(chunk, response):
+    values = response.get('translations', [])
+    if len(values) != len(chunk):
+        raise ValueError('Google returned an unexpected translation count')
+    return {source: restore(source, value['translatedText']) for source, value in zip(chunk, values)}
+
+
+def translate(plan, output, client, target, max_characters, retries=2, retry_invalid=False):
+    folder = output / 'google' / plan['locale']
+    cache, attempts = folder / 'responses', folder / 'attempts'
+    cache.mkdir(parents=True, exist_ok=True)
+    attempts.mkdir(parents=True, exist_ok=True)
+    translated, requests_made = {}, 0
+    for chunk in plan['chunks']:
+        payload = {'sourceLanguageCode': 'en', 'targetLanguageCode': target,
+                   'mimeType': 'text/html', 'contents': [protect(text) for text in chunk]}
+        key = cache_key(payload, client.project, client.location)
+        path = cache / (key + '.json')
+        if path.exists():
+            record = json.loads(path.read_text())
+            if record.get('request') != payload or record.get('project') != client.project or record.get('location') != client.location:
+                raise ValueError('Cached request provenance mismatch')
+            response = record['response']
+            try:
+                validate_response(chunk, response)
+            except (ValueError, KeyError, TypeError):
+                if not retry_invalid:
+                    raise ValueError('Cached invalid response retained; use --retry-invalid-responses to retry within budget') from None
+                rejected = folder / 'rejected'
+                rejected.mkdir(exist_ok=True)
+                path.rename(rejected / (key + '-' + uuid.uuid4().hex + '.json'))
+        if not path.exists():
+            for attempt in range(retries + 1):
+                charged = sum(json.loads(p.read_text())['characters'] for p in attempts.glob('*.json'))
+                characters = sum(map(len, payload['contents']))
+                if charged + characters > max_characters:
+                    raise ValueError(f'Character budget exhausted: {charged} attempted, next request {characters}, limit {max_characters}')
+                # Count before dispatch: a lost response can still have incurred a charge.
+                PROGRAM.write_json(attempts / (uuid.uuid4().hex + '.json'), {
+                    'request_sha256': key, 'characters': characters, 'project': client.project,
+                    'location': client.location, 'attempt': attempt + 1})
+                try:
+                    response = client.call('translateText', payload)
+                    requests_made += 1
+                    break
+                except (HTTPError, URLError, TimeoutError) as error:
+                    code = error.code if isinstance(error, HTTPError) else None
+                    if isinstance(error, HTTPError):
+                        error.close()
+                    if code is not None and code not in (429, 500, 502, 503, 504):
+                        raise ValueError(f'Google Translation HTTP {code}; response body omitted') from None
+                    if attempt == retries:
+                        raise ValueError('Google Translation retries exhausted; attempts retained for budgeting') from None
+                    time.sleep(min(2 ** attempt, 8))
+            # Persist actual output before validation so failed translations remain inspectable.
+            record = {'request': payload, 'project': client.project, 'location': client.location, 'response': response}
+            with path.open('x', encoding='utf-8') as stream:
+                json.dump(record, stream, ensure_ascii=False, indent=2)
+                stream.write('\n')
+        translated.update(validate_response(chunk, response))
+    catalogs = {'native': {}, 'online': {}}
+    for item in plan['entries']:
+        value = translated.get(item['source'], item['source'])
+        catalog = catalogs[item['surface']]
+        if item['variant']:
+            catalog.setdefault(item['key'], {})[item['variant']] = value
         else:
-            target[key] = value
-    keys = (output / 'source/native-keys.txt').read_text().splitlines()
-    temporary = paths['native'].with_suffix('.tmp')
-    temporary.write_text(''.join(key + '\n' + native[key] + '\n' for key in keys), encoding='utf-8')
-    temporary.replace(paths['native'])
-    atomic_json(paths['online'], online)
-
-
-def run(output, project, execute=False, expected_name='Bradley personal', pilot=False):
-    if execute:
-        with locked(output / 'google'):
-            return _run(output, project, execute, expected_name, pilot)
-    return _run(output, project, execute, expected_name, pilot)
+            catalog[item['key']] = value
+    run = folder / 'runs' / fingerprint({'plan': plan, 'project': client.project, 'location': client.location, 'target': target})
+    for surface, catalog in catalogs.items():
+        PROGRAM.write_json(run / (surface + '.json'), catalog)
+    PROGRAM.write_json(run / 'metadata.json', {
+        'locale': plan['locale'], 'provider': 'google-cloud-translation-v3', 'target': target,
+        'project': client.project, 'location': client.location, 'source_sha256': plan['source_sha256'],
+        'plan_sha256': fingerprint(plan), 'requests_made': requests_made,
+        'certification': 'Machine draft; no linguistic review or locale registration'})
+    return run
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--project', required=True, help='Explicit project ID, never active gcloud default')
-    parser.add_argument('--expected-project-name', default='Bradley personal')
-    parser.add_argument('--run', action='store_true', help='Without this flag, print inventory/cost only')
-    parser.add_argument('--pilot', action='store_true', help='Draft representative domain, long-text and plural samples first')
+    parser.add_argument('--output', type=Path, required=True, help='Existing translation-program kit')
+    parser.add_argument('--locale', default='nb')
+    parser.add_argument('--project')
+    parser.add_argument('--location', default='global')
+    parser.add_argument('--batches', nargs='+', help='Selected pilot batch IDs; omit for all')
+    parser.add_argument('--request-characters', type=int, default=4000)
+    parser.add_argument('--max-characters', type=int, help='Cumulative attempted characters, including retries and prior runs')
+    parser.add_argument('--price-per-million', type=float, default=20, help='Planning estimate only; verify current project pricing')
+    parser.add_argument('--retry-invalid-responses', action='store_true', help='Archive invalid cached outputs and retry them within the same budget')
+    parser.add_argument('--execute', action='store_true', help='Make billable requests; default only estimates')
     args = parser.parse_args()
-    run(args.output, args.project, args.run, args.expected_project_name, args.pilot)
+    try:
+        if not 1 <= args.request_characters <= 30000 or args.price_per_million < 0:
+            raise ValueError('Invalid request size or price')
+        plan = make_plan(args.output, args.locale, args.batches, args.request_characters)
+        characters = sum(len(protect(text)) for chunk in plan['chunks'] for text in chunk)
+        print(json.dumps({'entries': len(plan['entries']), 'requests_before_cache': len(plan['chunks']),
+                          'characters_before_cache': characters,
+                          'estimated_cost_before_cache': round(characters * args.price_per_million / 1000000, 4)}), flush=True)
+        if args.execute:
+            if not args.project or not args.max_characters or args.max_characters < 1:
+                raise ValueError('--execute requires --project and a positive --max-characters')
+            client = GoogleClient(args.project, args.location)
+            target = client.target(args.locale)
+            print('Provider target: ' + target, flush=True)
+            print(translate(plan, args.output, client, target, args.max_characters, retry_invalid=args.retry_invalid_responses), flush=True)
+    except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as error:
+        if isinstance(error, HTTPError):
+            parser.exit(1, f'Google Translation HTTP {error.code}; response body omitted\n')
+        parser.exit(1, str(error) + '\n')
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

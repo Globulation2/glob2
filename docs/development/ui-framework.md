@@ -170,9 +170,45 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+For Google Cloud machine drafts, prepare a scoped kit (for example,
+`prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
+network access:
+
+```sh
+python3 tools/localization/google_draft.py --output artifacts/norwegian/kit --locale nb
+```
+
+Authenticate `gcloud` to an existing project with Cloud Translation enabled. Pass
+`--project PROJECT_ID --execute --max-characters LIMIT` to make paid Translation
+v3 requests. `--price-per-million` changes the planning estimate; verify actual
+project pricing before interpreting it as a cost forecast. The runner queries
+supported languages and selects `nb` when available, otherwise Google's `no`
+target for the Bokmål catalog. `--batches BATCH_ID ...` limits the source-based
+pilot to selected manifest batches. Complete and review that pilot before running
+the full catalog.
+
+The runner protects substitutions, literal line breaks, authored markup and URLs
+(including standalone relative routes and `www` addresses)
+with non-translatable HTML spans and rejects changed tokens. Outer whitespace is
+restored for message fragments. These checks do not establish correct meaning or
+word order. Exact request/project/location matches reuse immutable provider
+responses under the kit's `google/LOCALE/responses/`; generated JSON catalogs live
+under `google/LOCALE/runs/PLAN_HASH/`. They never replace `drafts/`, registered
+catalogs or review records. Copy a selected machine draft into the editorial
+workspace only when intentionally beginning review.
+
+The cumulative character allowance counts every attempted translation request,
+including uncertain failures and retries, before dispatch. It conservatively
+counts the protected HTML payload and persists across resumed invocations. Run
+one writer per kit. Authentication tokens are cached in memory and never written
+to evidence. Requests use bounded retries. Invalid responses remain inspectable;
+`--retry-invalid-responses` archives them under `rejected/` before another paid
+attempt within the same allowance. Raising the allowance is an explicit budget
+change. Provider output remains a machine draft, never a linguistic sign-off.
+
 For Telugu Google NMT comparison drafts, use the development-only adapter after
 preparing a Telugu kit and its blank draft:
-`python3 tools/localization/google_draft.py --output artifacts/localization-telugu --project PROJECT_ID --pilot`.
+`python3 tools/localization/google_draft_telugu.py --output artifacts/localization-telugu --project PROJECT_ID --pilot`.
 This is a dry run; add `--run` to send requests using the current `gcloud auth`
 identity. Supply the explicit project ID whose display name is `Bradley personal`
 (or pass its exact display name with `--expected-project-name`). The adapter never
@@ -201,7 +237,9 @@ Linux contributor tool and requires Python's `fcntl` locking support.
 
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
-system tag alone must never enable an unfinished locale. Punjabi scripts use
+system tag alone must never enable an unfinished locale. Norwegian Bokmål uses
+`nb`; generic `no` selects Bokmål, while explicit `nn`, legacy `no-nyn` and
+`no-NO-NY` preferences fall through to the next supported language. Punjabi scripts use
 `pa-guru` and `pa-arab`; explicit scripts take precedence over country defaults.
 The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
 Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other
@@ -264,6 +302,8 @@ presentation navigation and preserve the simulation checksum while drawing.
 Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
+The gameplay preview also captures the win-probability statistics screen and its
+metric explanation, checking that drawing leaves the simulation checksum intact.
 A published tutorial model alone does not prove that its text is visible. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when
@@ -533,6 +573,11 @@ replacement/reload clears these metrics. Layout measurement neither creates
 bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
+
+Script-layout locales, Swahili and Norwegian Bokmål draw high-DPI text at the
+authored width used by wrapping and hit testing. The complete high-resolution
+bitmap is resampled into that destination: font hinting at a larger raster size
+must not make a fitted line overflow its layout.
 
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored

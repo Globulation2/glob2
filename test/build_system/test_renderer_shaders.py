@@ -165,8 +165,8 @@ class RendererShaderTest(unittest.TestCase):
     def test_integer_terrain_contracts(self):
         meta = shader.metadata()
         compose = meta['uniformBlocks']['terrain-compose-fragment']
-        self.assertEqual(compose['size'], 144)
-        self.assertEqual([m['offset'] for m in compose['members']], [0, 16, 80])
+        self.assertEqual(compose['size'], 352)
+        self.assertEqual([m['offset'] for m in compose['members']], [0, 16, 80, 144, 160, 224, 288])
         self.assertEqual(meta['uniformBlocks']['terrain-reduce-fragment']['size'], 16)
         self.assertEqual([t['binding'] for t in meta['terrainComposeTextures']], list(range(6)))
         self.assertEqual([t['webgpuImageBinding'] for t in meta['terrainComposeTextures']], list(range(0, 12, 2)))
@@ -181,7 +181,7 @@ class RendererShaderTest(unittest.TestCase):
         translated = shader.webgpu_sources(ROOT, meta, 'terrain-compose')['frag']
         self.assertIn('uniform utexture2D coverageWeightsTexture', translated)
         self.assertIn('texelFetch(usampler2D(coverageWeightsTexture,coverageWeightsSampler)', translated)
-        self.assertIn('terrain_compose_fragment_size = 144', shader.layout_header(meta))
+        self.assertIn('terrain_compose_fragment_size = 352', shader.layout_header(meta))
 
     def test_rejects_overlapping_vertex_attributes(self):
         with tempfile.TemporaryDirectory() as directory:

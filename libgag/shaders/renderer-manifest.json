@@ -422,6 +422,25 @@
           "name": "seamFringe",
           "type": "ivec4",
           "count": 4
+        },
+        {
+          "name": "surfPlace",
+          "type": "ivec4"
+        },
+        {
+          "name": "surfShape",
+          "type": "ivec4",
+          "count": 4
+        },
+        {
+          "name": "surfBand",
+          "type": "ivec4",
+          "count": 4
+        },
+        {
+          "name": "surfColor",
+          "type": "ivec4",
+          "count": 4
         }
       ]
     },

@@ -52,6 +52,9 @@ namespace SystemLanguage
 
 		if (language == "zh")
 			return has("hant") || has("tw") || has("hk") || has("mo") ? "zh-tw" : "zh-cn";
+		// Generic Norwegian defaults to Bokmål. Both legacy Nynorsk forms
+		// (no-nyn and no_NO_NY) explicitly request the other written standard.
+		if (language == "no") return has("nyn") || (has("no") && has("ny")) ? "" : "nb";
 		if (language == "pt")
 			return has("br") ? "br" : "pt";
 		std::set<std::string> scripts;
@@ -88,7 +91,7 @@ namespace SystemLanguage
 			{"ar", "ar"}, {"ca", "ca"}, {"cs", "cz"}, {"da", "dk"}, {"de", "de"}, {"el", "gr"},
 			{"en", "en"}, {"eo", "eo"}, {"es", "es"}, {"eu", "eu"}, {"fa", "fa"}, {"fi", "fi"},
 			{"fr", "fr"}, {"hu", "hu"}, {"id", "id"}, {"in", "id"}, {"it", "it"}, {"ja", "ja"},
-			{"ko", "ko"}, {"nl", "nl"}, {"pl", "pl"}, {"ro", "ro"}, {"ru", "ru"}, {"sk", "sk"},
+			{"ko", "ko"}, {"nb", "nb"}, {"nl", "nl"}, {"pl", "pl"}, {"ro", "ro"}, {"ru", "ru"}, {"sk", "sk"},
 			{"sl", "si"}, {"sr", "sr"}, {"sv", "sv"}, {"tr", "tr"}, {"uk", "uk"}, {"vi", "vi"},
 			{"am", "am"}, {"bho", "bho"}, {"bn", "bn"}, {"fil", "fil"}, {"tl", "fil"},
 			{"gu", "gu"}, {"ha", "ha"}, {"hi", "hi"}, {"ig", "ig"}, {"jv", "jv"}, {"jw", "jv"},
