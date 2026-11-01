@@ -176,6 +176,22 @@
   display: block !important;
 }
 
+.operation-recovery fieldset {
+  min-width: 0;
+}
+.operation-recovery .field {
+  grid-template-columns: minmax(0, 1fr);
+}
+.operation-recovery input,
+.operation-recovery textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+.operation-recovery button {
+  max-width: 100%;
+  white-space: normal;
+}
+
 /* Creative workspaces share the app surface while keeping their drafts mounted. */
 .map-studio {
   container-type: inline-size;

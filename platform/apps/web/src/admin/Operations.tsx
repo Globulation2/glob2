@@ -188,7 +188,7 @@ function Recovery({ row, reload }: { row: AdminOperation; reload: () => void }) 
     }
   }
   return (
-    <article className="card" style={{ overflowWrap: 'anywhere' }}>
+    <article className="card operation-recovery" style={{ overflowWrap: 'anywhere' }}>
       <h3>
         <RichMessage
           source={'{slot0} · {slot1}'}
