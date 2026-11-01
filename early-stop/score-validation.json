@@ -1,0 +1,44 @@
+{
+  "termination": "win_probability",
+  "ticks": 5122,
+  "horizon": 6144,
+  "threshold": 501,
+  "fixture_purpose": "Use501 to reach the actual early-stop path quickly; standard default stays950.",
+  "winning_teams": [
+    1
+  ],
+  "scores": [
+    {
+      "metric": "log_time_outcome_v1",
+      "coefficient": 2,
+      "horizon_ticks": 6144,
+      "model": "conditional-logit-v1-1991b39cc920b525c4110c5bed70e08a419a6eb263d2fffb0e57774cc0d22861",
+      "start_tick": 0,
+      "end_tick": 5122,
+      "weighted_area": 0.4634727940361213,
+      "available": true,
+      "unavailable_reason": null,
+      "score": 0.4634727940361213,
+      "outcome_credit": 0.0,
+      "outcome_source": "probability_stop",
+      "observed_weight": 0.8930114599652321,
+      "terminal_weight": 0.10698854003476796
+    },
+    {
+      "metric": "log_time_outcome_v1",
+      "coefficient": 2,
+      "horizon_ticks": 6144,
+      "model": "conditional-logit-v1-1991b39cc920b525c4110c5bed70e08a419a6eb263d2fffb0e57774cc0d22861",
+      "start_tick": 0,
+      "end_tick": 5122,
+      "weighted_area": 0.4289621714032324,
+      "available": true,
+      "unavailable_reason": null,
+      "score": 0.5359507114380003,
+      "outcome_credit": 1.0,
+      "outcome_source": "probability_stop",
+      "observed_weight": 0.8930114599652321,
+      "terminal_weight": 0.10698854003476796
+    }
+  ]
+}

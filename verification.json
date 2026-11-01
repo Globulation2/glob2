@@ -1,0 +1,64 @@
+{
+  "status": "passed",
+  "base": "857761d70d6c5783d6ddda3ab3d769756e1ca916",
+  "fetched_master": "8fd9edb0b413a9dc19618e75149458bf525506af",
+  "overlapping_upstream_changes": [],
+  "environment": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "metric": {
+    "id": "log_time_outcome_v1",
+    "coefficient": 2,
+    "fixed_horizon": true,
+    "early_stopping_default_permille": 950,
+    "predicted_terminal_credit": true
+  },
+  "scope": "Tournament tooling, tests and documentation only; engine, saves, simulation revision, replay/network gates and runtime dependencies unchanged by this patch.",
+  "checks": {
+    "python_tests": 139,
+    "documentation": "310 documents,0errors",
+    "main_cli": {
+      "execution": "cli/execution.json",
+      "cases": "cli/output/verification.json",
+      "new_assertions": "full/compact score identity and continued-save scoring"
+    },
+    "real_probability_stop": {
+      "ticks": 5122,
+      "horizon": 6144,
+      "threshold": 501,
+      "evidence": "early-stop/score-validation.json",
+      "note": "501fixture exercises the real path quickly; normal default remains950."
+    },
+    "retained_data": {
+      "games": 672,
+      "team_histories": 2240,
+      "maximum_independent_formula_error": 3.3306690738754696e-16,
+      "full_compact_exact": true,
+      "old_reports_unchanged": true
+    },
+    "entrypoints": [
+      "ablations reanalyze (shared implementation for all planners)",
+      "pooled AI leaderboard"
+    ]
+  },
+  "limits": [
+    "Older compact results lacking the new integral and dropped histories cannot be reconstructed; new score is explicitly unavailable.",
+    "Probability-stop credit is predicted evidence, not an independently confirmed natural victory.",
+    "Linux/Python3.12 tooling/CLI checks; other operating systems were not run. No engine computation changed."
+  ],
+  "source_files": {
+    "AGENTS.md": "da05b5520948bd5c4fef3b68a9b1c3ef8a119245b7b66205656723e68b924597",
+    "docs/ai/architecture/win-probability-model.md": "5fcf94c0bb85ba6e355d9ebadd15931caff4cee0e91e5e9fd3f5e82c1b3fc7b9",
+    "docs/ai/development.md": "1e075e7405f1e7a74eb370d5371de3162c217412daaa6e0060ce3f5edfa2ba1d",
+    "docs/ai/ratings.md": "307a6e440393072844ebb3b6020f924e928d01e6b6f7acf8410fe0fd86f0278c",
+    "docs/tools/tournaments.md": "46aa05bd32d98eb7e809b1b6725b897babba8ea8f85c6590e84be108f94bf6be",
+    "test/test_tournaments.py": "c2a51654b9baefcc25d65c598b691f77d3c11b58b52d4a925bb9ba7bfccc6c89",
+    "test/tournament_cli_integration.py": "03f08637ef05a02148f586c8eeb109ee13a83198cbdb53f80f4eaed6ee0e3921",
+    "tools/tournaments/analysis.py": "8b029e962b37d3c9afcfa2f97f4372c5a4a2e559443e188475453f0d4b340ccc",
+    "tools/tournaments/experiments.py": "ae0466af4f0937e84004cc28b500efa19fce76bf1a567b9be38e8aac02303520",
+    "tools/tournaments/jobs.py": "36685b30652bef790a962e3820f178064ad9bd9a9c3f658553ea064094fe87ad",
+    "tools/tournaments/probability.py": "d5be36bf48ee6f33c1740a5a93a8c62f57adf0bdcb0b6d5ddeae164784c20d47",
+    "tools/tournaments/worker.py": "c8652aa25fa7a26e21d7ec021d98e14ea39a3965e922afad516c4c9d4f5babbd",
+    "tools/tournaments_ai_leaderboard.py": "3caabd721f769d488470199a306b450bef554b3e0d049a67910b5074ab0e3d6d"
+  },
+  "patch_sha256": "17d23098a9d6b8b3b406f6925e7119acc4fbd3d7374a088235885a709e383bc8"
+}

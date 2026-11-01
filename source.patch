@@ -1,0 +1,1152 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 57a8d99d00..97f0dbb38e 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -170,17 +170,22 @@ freeze the threshold in the cohort and use an explicit zero only when playing
+ out complete end games is part of the assessment. Resolve tick-cap survivors by
+ final win probability rather than the historical economic calculation.
+ 
+-Use **integrated whole-match win probability**, normalized by observed game time,
+-as the primary continuous effectiveness metric alongside wins, losses and draws.
+-It captures improvements in the strength and duration of an AI's position that
+-can leave discrete match outcomes unchanged, making small changes easier to
+-measure. Standard reports collect and analyze it automatically; custom scripts
+-should use the retained integer area/coverage summary rather than count samples
+-or infer it from the final chance. Compare paired seeds and seat rotations, report
+-confidence intervals and missing coverage, and keep model identities, stopping
+-rules, opponents and map distributions comparable. Retain actual outcomes as a
+-check against improving the model score without improving play. Old or partial
+-history is unavailable, never zero. See [tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
++Use the **adjusted win-probability trajectory score** (`log_time_outcome_v1`,
++log curvature `c=2`) as the primary continuous effectiveness metric alongside
++wins, losses and draws. It integrates the retained probability curve on a log
++clock through the fixed game tick limit, then credits a declared win with 1 and
++a loss with 0 for the remaining horizon. Probability-based early stops receive
++the same outcome credit, explicitly labelled predicted rather than actual.
++Tick caps receive no invented terminal tail. Shared winners each receive full
++credit; count an alliance once. Use `tools.tournaments.probability.group_score`
++or the standard reports, not the legacy linear area/observed-time mean. Compact
++results retain a versioned log integral before dropping curves; old compact
++records without that integral are unavailable, never silently approximated.
++Compare paired seeds and seat rotations, report confidence intervals and missing
++coverage, and keep metric version, horizon, model, stopping rules, opponents and
++map distributions comparable. Retain actual outcomes and completion times as
++checks against improving a model score without improving play. See
++[tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
+ 
+ ## Review and merge ownership
+ 
+diff --git a/docs/ai/architecture/win-probability-model.md b/docs/ai/architecture/win-probability-model.md
+index 0260e0688b..40372199fd 100644
+--- a/docs/ai/architecture/win-probability-model.md
++++ b/docs/ai/architecture/win-probability-model.md
+@@ -213,7 +213,9 @@ Headless results automatically include the trace and an exact integer
+ trapezoidal-area summary. Detailed `GLOB2_WINPROB` log records still require
+ `--telemetry team-timeline`; the automatic summary does not. The tournament
+ framework uses final probability for its default cap adjudication and reports
+-normalized whole-game probability separately from outcomes. See
++the adjusted trajectory score (`c=2` log time plus outcome credit) separately
++from ratings. Probability-stop credits are labelled predicted; the raw model
++trace and linear area remain unchanged. See
+ [whole-game scores](../../tools/tournaments.md#whole-game-probability-scores).
+ The original calibration labels and measurements above used the historical
+ economic adjudication, not this new default; these changes do not refit the model.
+diff --git a/docs/ai/development.md b/docs/ai/development.md
+index 5c05bf3bd1..dd55d8ea7d 100644
+--- a/docs/ai/development.md
++++ b/docs/ai/development.md
+@@ -77,17 +77,20 @@ well as standard comparisons. Its CLI and planners default to 95% probability
+ victory, and cap adjudication uses final win probability. Every game records the
+ probability trajectory automatically, without a verbose telemetry request.
+ 
+-Treat **mean whole-match win probability** (trapezoidal area divided by observed
+-duration) as the standard continuous score for AI effectiveness, alongside wins,
+-losses and draws. A small change can improve the probability trajectory across
+-many games without flipping their eventual winners; looking only at outcomes
+-throws that signal away. Standard reports include this score, seed-block
+-intervals and paired ablation effects automatically. Custom scripts should read
+-`probability_scores` or the compact per-team area/coverage summary, counting an
+-alliance once. Use matched maps/seeds, seat rotations and held-out comparisons.
+-Keep models and stopping rules identical; report missing or partial history as
+-unavailable. Check actual outcomes and representative games as well: a fitted
+-state model is a sensitive diagnostic, not a complete description of good play.
++Treat the **adjusted win-probability trajectory score** (`log_time_outcome_v1`,
++`c=2`) as the standard continuous effectiveness score alongside wins, losses and
++draws. It weights earlier trajectory strength more heavily and credits completed
++outcomes through the fixed tick horizon. Probability-based early victories also
++receive full outcome credit, labelled predicted; caps receive no terminal tail.
++Standard reports include the score, coverage and paired seed-block intervals.
++Custom scripts should use `tools.tournaments.probability.group_score`, counting
++an alliance once. The raw linear AUC is retained as a legacy diagnostic and is
++no longer the standard score. Compact results preserve the required log integral;
++older compact payloads lacking it cannot reconstruct the new score.
++Use matched maps/seeds, rotations and held-out comparisons. Keep score version,
++coefficient, horizon, model and stopping rules identical. Report unavailable
++history explicitly and check actual wins, completion times and representative
++play: this is a trajectory score, not a calibrated probability of winning.
+ See [whole-game scoring](../tools/tournaments.md#whole-game-probability-scores).
+ 
+ ## Verify and review
+diff --git a/docs/ai/ratings.md b/docs/ai/ratings.md
+index a8dc0d9b95..affa51d168 100644
+--- a/docs/ai/ratings.md
++++ b/docs/ai/ratings.md
+@@ -2,14 +2,16 @@
+ 
+ The custom-game selector shows measured relative AI strength, sorted weakest first, with inactive last. Difficulty bands are below 1450 Easy, 1450–1699 Medium, and 1700+ Hard. Saved AI identities do not depend on this ordering.
+ 
+-For new AI changes, use [mean whole-match win probability](../tools/tournaments.md#whole-game-probability-scores)
+-as the standard continuous effectiveness score alongside wins, losses, draws and
+-outcome-based ratings. It retains trajectory improvements that do not change the
+-winner, making small changes easier to detect. Tournament CLI games now default
+-to 95% early victory and final-probability cap adjudication; paired reports include
+-the integrated score and its uncertainty automatically. Keep matched stopping
+-rules and models. The published ratings below describe their historical cohort;
+-they have not been recalculated under these defaults.
++For new AI changes, use the [adjusted win-probability trajectory score](../tools/tournaments.md#whole-game-probability-scores)
++(`log_time_outcome_v1`, `c=2`) as the standard continuous effectiveness score
++alongside wins, losses, draws and outcome-based ratings. It uses log-time weights
++and credits declared wins/losses through the fixed game horizon. Predicted early
++victories receive full credit and remain distinct from actual engine endings;
++cap adjudication still uses final probability and creates no score tail.
++Tournament games retain the 95% early-victory default. Paired reports preserve
++score/model/horizon/stopping cohorts and report missing coverage explicitly.
++The published ratings below describe their historical cohort; they have not been
++recalculated under the new scoring policy. The old linear AUC remains a diagnostic.
+ 
+ The current ratings measure source `d37c0c353`, including Maxima fixes #367/#368. They do **not** measure the newer Maxima changes in #370/#371. They use 19,948 successful games in 9,974 complete swapped-side pairs, from a planned 20,000-game tournament across 60 compatible generators. Previous-version outcomes are kept separate.
+ 
+diff --git a/docs/tools/tournaments.md b/docs/tools/tournaments.md
+index 56aafb082b..97dd8869df 100644
+--- a/docs/tools/tournaments.md
++++ b/docs/tools/tournaments.md
+@@ -514,8 +514,8 @@ unsupported combinations remain reported failures rather than being filtered out
+   failed jobs and map-generation jobs retain their diagnostic artifacts.
+   For rating-only runs, set `outputs.result` to `outcome`. The retained payload
+   includes termination, winners, team/player identity, survival, prestige,
+-  military totals and compact probability summaries needed by adjudication and
+-  whole-game scoring, while omitting
++  military totals, raw probability summaries and the versioned log integral
++  needed by adjusted trajectory scoring, while omitting
+   per-tick histories and other bulky result details. Installed bundles are fully
+   hashed before atomic publication and then treated as immutable; workers do not
+   rehash the complete bundle before every queued game.
+@@ -674,71 +674,94 @@ above. Both use the same production report serializer.
+ 
+ ## Whole-game probability scores
+ 
+-**Use mean whole-match win probability as the standard continuous AI effectiveness
+-score alongside wins, losses and draws**, including in custom assessments. Small
+-improvements can strengthen the trajectory of many games without changing who
+-wins them; the integral retains that information, making it more sensitive than
+-outcomes alone. Standard reanalysis and pooled leaderboards report it automatically.
+-Use the paired `win_probability_mean` effect to assess an ablation, with matched
+-seeds, seat rotations and held-out maps, rather than judging a small change only
+-by its win count. Actual outcomes remain an essential supporting check.
+-
+-Every game automatically collects probability history, independently of verbose
+-telemetry and of the early-victory rule. Full engine results include per-team
+-`win_probability_history` rows `[tick, permille]` and a compact `win_probability`
+-summary: `model`, `final_model`, `permille`, `start_tick`, `end_tick`,
+-`area_twice_permille_ticks`, and `mean`. The model identity fingerprints the fitted
+-fixed-point coefficients and feature transforms. Compact `outputs.result: outcome`
+-retains the summary and drops the samples. No `team-timeline` logs are required.
+-
+-The integral is trapezoidal between actual sample ticks, including the final
+-partial interval. Divide `area_twice_permille_ticks` by 2000 for area in
+-probability × ticks, then by `end_tick - start_tick` for **mean win probability**
+-from 0 to 1. For example, a linear rise from 40% to 80% has a mean of 60%.
+-The mean gives games equal weight regardless of duration; raw area also remains
+-available for analyses where duration matters. Allies share one trace and are
+-counted once, rather than their probabilities being added.
+-
+-Reanalysis exports `probability_scores` in JSON/CSV and a Markdown table, grouped
+-by format, build, variant, competitor, model and stopping threshold. Ablations
+-also separate subject and opponent roles, including when both run the same AI,
+-so their complementary probabilities cannot cancel a measured improvement.
+-It reports wins/losses/draws, game and scored-game counts, missing
+-coverage, mean probability, mean area and deterministic 95% intervals resampled
+-by seed block (keeping correlated rotations together). Ablation `paired_effects`
+-adds `win_probability_mean`: candidate minus baseline for the configured subject,
+-with raw paired differences and seed-block bootstrap intervals that keep
+-rotations together, separated by model and stopping threshold. Elo and placements remain
+-outcome-based; probability scores do not overwrite wins. W/L/D uses the selected
+-final-outcome policy; separate cap and probability-stop counts preserve which
+-games ended through adjudication or early victory. The pooled leaderboard
+-also includes probability scores.
+-
+-Custom scripts can use the same reader rather than reimplementing the integral:
++**Use the adjusted win-probability trajectory score as the standard continuous
++AI effectiveness score alongside wins, losses and draws**, including custom
++assessments. Its identity is `log_time_outcome_v1`, with log curvature `c=2`.
++It replaces the previous linear AUC divided by observed game duration.
++Standard reanalysis, experiment entry points and pooled leaderboards use it.
++This is a trajectory/utility score from 0 to 1, not a calibrated win probability.
++
++Let `H` be the absolute game tick limit, `T` its observed end, and `p(t)` the
++piecewise-linear retained model curve. The normalized clock is
++`g(t) = ln(1 + 2*t/H) / ln(3)`. Equivalently, `tau=H/2`; changing the log base
++has no effect after normalization. The first half of the horizon receives
++about 63.1% of the weight. Each game is weighted equally in aggregate reports.
++
++The score is `integral_0^T p(t) dg(t) + u * (1 - g(T))`:
++
++- On an `engine_end`, `u=1` for every declared winner, including shared winners,
++  and `u=0` for a loss. Terminal utility is a scoring convention; it does not
++  replace the recorded probability samples with invented 100% predictions.
++- On a `win_probability` early stop, apply the same 1/0 credit using its declared
++  predicted winners/losers. Reports label the source `probability_stop`, separately
++  from actual `engine` endings. The default threshold remains 950 permille.
++- At a `tick_cap`, `T=H`, so there is no terminal tail. The usual final-probability
++  adjudication still determines W/L/D and ratings; it does not invent a score tail.
++- An alliance shares one trace and is counted once. Never add allied probabilities.
++  A winning alliance receives one full group credit, not a sum over its members.
++
++Raw engine results still contain `win_probability_history` (`[tick, permille]`)
++and the original `win_probability` summary (`model`, `final_model`, `permille`,
++`start_tick`, `end_tick`, `area_twice_permille_ticks`, `mean`). The latter remains
++linear/trapezoidal: area divided by 2000 gives probability × ticks; dividing by
++observed duration gives the **legacy** mean. Neither field is the new score.
++The fixed model identity fingerprints the coefficients and feature transforms.
++
++Workers with `outputs.result: outcome` calculate a per-team
++`win_probability_log_integral` before discarding the large curve. This sufficient
++statistic retains metric/coefficient, resolved horizon, model, coverage, weighted
++area and availability. Final group credit is derived from retained outcomes on
++analysis. Compact results therefore score identically to full results without
++verbose logs. Old full results with complete histories can be rescored. Old
++compact records containing only linear area cannot recover the log integral;
++they are unavailable for the new metric, with an explicit reason. Never treat
++missing or partial history as zero, reconstruct it from the final probability,
++or silently fall back to the old mean.
++
++Analysis report schema 2 exports `probability_scores` in JSON/CSV and Markdown.
++The aggregate `mean` is now the adjusted score, identified by `metric`,
++`coefficient` and `horizon_ticks`. Groups retain format, build, variant, subject
++or opponent role, model and stopping threshold; different horizons are never
++pooled. Each entry includes W/L/D, scored/total games, unavailable reasons,
++`outcome_credit_sources`, cap/early-stop counts and deterministic 95% seed-block
++intervals. `legacy_linear_mean`, `legacy_linear_scored_games` and
++`legacy_linear_mean_area_probability_ticks` preserve the old diagnostic.
++
++Paired ablations export `paired_effects` with metric `log_time_outcome_v1`:
++candidate minus baseline for the configured subject, raw differences and
++seed-block intervals that keep correlated rotations together. Pairing requires
++matching format, build, score definition, horizon, model and stopping rule.
++Elo and placements remain outcome-based; changing this continuous score does
++not rewrite wins, adjudication policies or previously published reports.
++
++Custom scripts should use the shared reader rather than reimplementing the score:
+ 
+ ```python
+-from tools.tournaments.probability import group_summary
++from tools.tournaments.probability import group_score
+ 
+-side = group_summary(
++side = group_score(
+     [t for t in result["teams"] if t["alliance"] == alliance],
+-    expected_end_tick=result["ticks"],
++    result,
++    config=job["config"],
+ )
+-if side is None or not side["whole_game"]:
+-    raise ValueError("Whole-match probability score is unavailable")
+-score = side["mean"]  # 0..1, higher is better
++if not side["available"]:
++    raise ValueError(side["unavailable_reason"])
++score = side["score"]  # 0..1, higher is better
+ ```
+ 
+-Older saves start history at the first newly observed sample. Scores with missing
+-opening or terminal coverage, no elapsed time, or mixed models after a refit are marked
+-unavailable for whole-game summaries, rather than extrapolated. Partial observed
+-scores and coverage remain in raw observations. Cap adjudication requires a
+-prediction at the actual terminal tick; an up-to-date final prediction remains
+-usable even when opening history is missing. Changing early-stopping thresholds
+-changes the measured duration: compare matched rules, model, maps and opponents.
+-These are model-based scores, useful for detecting smaller trajectory changes;
+-their sensitivity does not establish robustness to every AI change. The model was
+-trained on AI games and cannot see position or planned attacks. Retain actual
+-wins, held-out maps and paired evidence alongside the probability score.
++The resolved `tick_limit` takes precedence over the job request; compact records
++retain that horizon in their integral. For a standalone full result, pass its
++resolved metadata or the game job configuration. The configured horizon is fixed,
++not inferred from how quickly a game ended. Zero elapsed time, missing opening or terminal coverage, inconsistent alliance
++traces, or mixed model identities make the adjusted score unavailable. Missing terminal outcomes also remain explicit.
++Cap adjudication can still use a fresh final prediction when history is partial.
++
++Use matched models, horizons, stopping rules, maps and opponents. A probability
++stop credited as a win is still the same model's prediction, not independent
++confirmation of victory; disable early victory when testing natural conversion
++or validating that model. Retain actual outcomes, completion times and held-out
++maps alongside this score. Choosing `c=2` fixes a weighting preference; it does
++not make every actual win rank above every unresolved game.
+ 
+ ## Ending decided games early
+ 
+diff --git a/test/test_tournaments.py b/test/test_tournaments.py
+index 825abf8dfa..da2771b039 100644
+--- a/test/test_tournaments.py
++++ b/test/test_tournaments.py
+@@ -1,8 +1,10 @@
+ #!/usr/bin/env python3
+ """Protocol, durable lease acceptance, transfer corruption and offline analysis tests."""
+ import base64
++import copy
+ import hashlib
+ import json
++import math
+ import os
+ from pathlib import Path
+ import sys
+@@ -19,7 +21,7 @@ from tools.tournaments.model import job, validate_experiment, validate_job
+ from tools.tournaments.transfer import put_chunk, offset
+ from tools.tournaments.worker import Worker, installed_bundle, outcome_only, pack
+ from tools.tournaments.analysis import adjudicate, paired_effects, probability_scores, observations
+-from tools.tournaments.probability import summary, group_summary, stopping_threshold
++from tools.tournaments.probability import summary, group_summary, group_score, stopping_threshold, SCORE_METRIC
+ 
+ FAKE = '''#!/usr/bin/env python3
+ import json, pathlib, sys
+@@ -761,14 +763,17 @@ def _probability_team(n, chance=500, area=1000000, start=0, end=1000, **extra):
+     return dict(team=n, alliance=n, alive=True, outcome='unresolved', prestige=100-n,
+                 units=50, buildings=10, eliminated_tick=-1,
+                 win_probability=dict(model='test-model', permille=chance, start_tick=start,
+-                                     end_tick=end, area_twice_permille_ticks=area), **extra)
++                                     end_tick=end, area_twice_permille_ticks=area),
++                win_probability_history=[[start, int(area/(end-start)-chance) if end>start else chance], [end,chance]], **extra)
+ 
+ 
+ def _probability_row(name='baseline', mean=500, block='one', build='build'):
++    teams=[_probability_team(0, mean, mean*2000), _probability_team(1, 1000-mean, (1000-mean)*2000)]
++    result=dict(ticks=1000,termination='tick_cap',teams=teams,winning_teams=[])
+     return dict(build=build, block=block, pair=block, held_out=False, variant=name,
+                 format='1v1', competitors=['subject', 'rival'], groups=[0, 1], subject_group=0,
+-                ticks=1000, placements=[1, 2], probabilities=[summary(_probability_team(0, mean, mean*2000)),
+-                                                          summary(_probability_team(1, 1000-mean, (1000-mean)*2000))])
++                ticks=1000, placements=[1, 2], probabilities=[summary(t) for t in teams],
++                trajectory_scores=[group_score([t],result,{'ticks':1000}) for t in teams])
+ 
+ 
+ class ProbabilityTests(unittest.TestCase):
+@@ -815,7 +820,8 @@ class ProbabilityTests(unittest.TestCase):
+         self.assertEqual(len(scores), 2)
+         subject=next(s for s in scores if s['role']=='subject')
+         opponent=next(s for s in scores if s['role']=='opponent')
+-        self.assertEqual((subject['mean'], opponent['mean']), (.51,.49))
++        self.assertAlmostEqual(subject['mean'], .51)
++        self.assertAlmostEqual(opponent['mean'], .49)
+         self.assertEqual((subject['wins'], opponent['losses']), (1,1))
+ 
+     def test_paired_probability_intervals_keep_same_seed_rotations_together(self):
+@@ -825,7 +831,7 @@ class ProbabilityTests(unittest.TestCase):
+                 row=_probability_row(variant, 510, 'one-seed')
+                 row['pair']='rotation-'+str(rotation)
+                 rows.append(row)
+-        effect=next(s for s in paired_effects(rows, 100) if s['metric']=='win_probability_mean')
++        effect=next(s for s in paired_effects(rows, 100) if s['metric']==SCORE_METRIC)
+         self.assertEqual((effect['pairs'], effect['blocks']), (2,1))
+         self.assertIsNone(effect['interval'])
+ 
+@@ -833,7 +839,7 @@ class ProbabilityTests(unittest.TestCase):
+         from tools.tournaments.model import job
+         from tools.tournaments.analysis import reanalyze
+         request = job('game', 'a'*64, seeds={'game': 42},
+-                      config={'players': ['castor', 'cortex'], 'win_probability_permille': 950},
++                      config={'players': ['castor', 'cortex'], 'ticks':1000, 'win_probability_permille': 950},
+                       labels={'format': '1v1', 'block': 'paired-map'})
+         result = dict(termination='tick_cap', ticks=1000, winning_teams=[],
+                       teams=[_probability_team(0, 300), _probability_team(1, 700)],
+@@ -842,16 +848,17 @@ class ProbabilityTests(unittest.TestCase):
+             root=Path(directory)
+             (root/'results').mkdir()
+             (root/'experiment.json').write_text(json.dumps(dict(id='probability', jobs=[request])))
+-            record=dict(id='attempt', host='local', category='success', job=request, result=outcome_only(result), artifacts=[])
++            record=dict(id='attempt', host='local', category='success', job=request, result=outcome_only(result, request['config']), artifacts=[])
+             (root/'results'/(request['id']+'.json')).write_text(json.dumps(record))
+             report=reanalyze(root, draws=10)
+             self.assertEqual(report['policy']['name'], 'win_probability')
+             winner=next(s for s in report['probability_scores'] if s['competitor']=='cortex')
+             self.assertEqual((winner['wins'], winner['losses'], winner['draws']), (1,0,0))
+-            self.assertEqual(winner['mean'], .5)
++            self.assertAlmostEqual(winner['mean'], .1+.4/math.log(3))
+             self.assertTrue((root/'reports/win_probability/probability_scores.csv').is_file())
+             text=(root/'reports/win_probability/report.md').read_text()
+-            self.assertIn('Mean whole-game win probability', text)
++            self.assertIn('Adjusted win-probability trajectory score', text)
++            self.assertEqual(report['score_definition']['coefficient'], 2)
+             self.assertIn('W / L / D', text)
+ 
+     def test_cap_uses_final_probability_instead_of_economy(self):
+@@ -909,7 +916,7 @@ class ProbabilityTests(unittest.TestCase):
+         candidate=_probability_row('improved', 510)
+         baseline['win_probability_permille']=950
+         candidate['win_probability_permille']=0
+-        self.assertFalse(any(s['metric']=='win_probability_mean' for s in paired_effects([baseline,candidate], 10)))
++        self.assertFalse(any(s['metric']==SCORE_METRIC for s in paired_effects([baseline,candidate], 10)))
+         candidate['variant']='baseline'
+         scores=probability_scores([baseline,candidate], 10)
+         subject=[s for s in scores if s['competitor']=='subject']
+@@ -921,7 +928,7 @@ class ProbabilityTests(unittest.TestCase):
+                 row=_probability_row(variant, 510, block)
+                 row['win_probability_permille']=threshold
+                 rows.append(row)
+-        effects=[s for s in paired_effects(rows, 10) if s['metric']=='win_probability_mean']
++        effects=[s for s in paired_effects(rows, 10) if s['metric']==SCORE_METRIC]
+         self.assertEqual({s['win_probability_permille'] for s in effects}, {0,950})
+         self.assertTrue(all(s['pairs']==1 for s in effects))
+ 
+@@ -929,7 +936,7 @@ class ProbabilityTests(unittest.TestCase):
+         rows=[_probability_row(block='one'), _probability_row('improved', 510, 'one'),
+               _probability_row(block='two'), _probability_row('improved', 520, 'two')]
+         effects=paired_effects(rows, draws=100, seed=42)
+-        probability=next(x for x in effects if x['metric']=='win_probability_mean')
++        probability=next(x for x in effects if x['metric']==SCORE_METRIC)
+         self.assertAlmostEqual(probability['mean_effect'], .015)
+         placement=next(x for x in effects if x['metric']=='placement')
+         self.assertEqual(placement['mean_effect'], 0)
+@@ -946,4 +953,162 @@ class ProbabilityTests(unittest.TestCase):
+ 
+ 
+ 
++def _adjusted_team(n=0, points=None, outcome='unresolved', alliance=None):
++    p=points or [[0,500],[1000,500]]
++    area=sum((a[1]+b[1])*(b[0]-a[0]) for a,b in zip(p,p[1:]))
++    return dict(team=n, alliance=n if alliance is None else alliance, alive=outcome!='lost',
++                eliminated_tick=-1, outcome=outcome, prestige=0,units=10,buildings=1,
++                win_probability_history=p,win_probability=dict(model='fixture',permille=p[-1][1],
++                start_tick=p[0][0],end_tick=p[-1][0],area_twice_permille_ticks=area))
++
++
++def _adjusted_result(teams=None, end=1000, horizon=1000, termination='tick_cap', winners=None):
++    return dict(schema_version=1,status='completed',ticks=end,termination=termination,
++                winning_teams=winners or [],teams=teams or [_adjusted_team(),_adjusted_team(1)],
++                players=[dict(team=0,ai='maxima'),dict(team=1,ai='castor')],
++                resolved=dict(tick_limit=horizon,rules=dict(winProbabilityPermille=950)))
++
++
++class TrajectoryScoreTests(unittest.TestCase):
++    def test_linear_rise_matches_independent_quadrature(self):
++        t=_adjusted_team(points=[[0,200],[400,800],[1000,600]])
++        r=_adjusted_result([t]);v=group_score([t],r)
++        # Midpoint numerical integration, independent of the analytic reader.
++        steps=50000;delta=1000/steps
++        def probability(x):return .2+.6*x/400 if x<400 else .8-.2*(x-400)/600
++        expected=sum(probability((i+.5)*delta)*2/(1000+2*(i+.5)*delta)/math.log(3)*delta for i in range(steps))
++        self.assertAlmostEqual(v['score'],expected,places=9)
++        self.assertEqual(v['metric'],SCORE_METRIC)
++        self.assertEqual(v['coefficient'],2)
++
++    def test_faster_real_wins_receive_more_credit_for_equal_earlier_strength(self):
++        def evaluate(ticks,termination='engine_end',outcome='won'):
++            t=_adjusted_team(points=[[0,600],[ticks,600]],outcome=outcome)
++            return group_score([t],_adjusted_result([t],end=ticks,horizon=1000,termination=termination,winners=[0] if outcome=='won' else []))
++        early=evaluate(200);late=evaluate(600);cap=evaluate(1000,'tick_cap','unresolved');loss=evaluate(200,'engine_end','lost')
++        self.assertGreater(early['score'],late['score']);self.assertGreater(late['score'],cap['score']);self.assertGreater(cap['score'],loss['score'])
++        self.assertAlmostEqual(early['score'],1-.4*math.log(1.4)/math.log(3))
++        self.assertEqual(early['outcome_source'],'engine');self.assertEqual(loss['outcome_credit'],0)
++        self.assertIsNone(cap['outcome_credit']);self.assertEqual(cap['terminal_weight'],0)
++
++    def test_probability_stop_credits_full_predicted_outcome_and_tags_it(self):
++        a=_adjusted_team(points=[[0,500],[300,960]],outcome='won');b=_adjusted_team(1,[[0,500],[300,40]],'lost')
++        r=_adjusted_result([a,b],end=300,horizon=1000,termination='win_probability',winners=[0])
++        winner=group_score([a],r);loser=group_score([b],r)
++        self.assertEqual((winner['outcome_credit'],loser['outcome_credit']),(1,0))
++        self.assertEqual(winner['outcome_source'],'probability_stop')
++        self.assertAlmostEqual(winner['score']+loser['score'],1)
++        actual=copy.deepcopy(r);actual['termination']='engine_end'
++        self.assertEqual(group_score([a],actual)['score'],winner['score'])
++        self.assertEqual(group_score([a],actual)['outcome_source'],'engine')
++
++    def test_shared_winners_each_receive_full_credit_and_alliance_counts_once(self):
++        a=_adjusted_team(points=[[0,400],[500,400]],alliance=7);b=_adjusted_team(1,[[0,400],[500,400]],alliance=7)
++        r=_adjusted_result([a,b],end=500,horizon=1000,termination='engine_end',winners=[0,1])
++        self.assertEqual(group_score([a,b],r)['score'],group_score([a],r)['score'])
++        self.assertEqual(group_score([b],r)['outcome_credit'],1)
++        # A group wins when one member is declared: do not sum their probabilities.
++        r['winning_teams']=[0]
++        self.assertEqual(group_score([a,b],r)['outcome_credit'],1)
++
++    def test_compaction_preserves_score_and_actual_resolved_horizon(self):
++        a=_adjusted_team(points=[[0,300],[200,800],[500,900]],outcome='won')
++        r=_adjusted_result([a],end=500,horizon=1000,termination='win_probability',winners=[0])
++        full=group_score([a],r);compact=outcome_only(r,{'ticks':2000})
++        self.assertNotIn('win_probability_history',compact['teams'][0])
++        self.assertEqual(compact['teams'][0]['win_probability'],a['win_probability'])
++        self.assertEqual(group_score(compact['teams'],compact,{'ticks':2000}),full)
++        self.assertEqual(outcome_only(compact),compact)
++
++    def test_old_full_history_scores_but_old_compact_cannot_invent_log_area(self):
++        r=_adjusted_result();self.assertTrue(group_score(r['teams'][:1],r)['available'])
++        del r['teams'][0]['win_probability_history']
++        v=group_score(r['teams'][:1],r)
++        self.assertFalse(v['available']);self.assertIsNone(v['score']);self.assertEqual(v['unavailable_reason'],'missing_history')
++
++    def test_partial_mixed_stale_or_missing_horizons_are_unavailable(self):
++        for points in ([[200,500],[1000,500]],[[0,500],[900,500]]):
++            t=_adjusted_team(points=points);self.assertFalse(group_score([t],_adjusted_result([t]))['available'])
++        t=_adjusted_team();t['win_probability']['model']='mixed'
++        self.assertFalse(group_score([t],_adjusted_result([t]))['available'])
++        r=_adjusted_result();del r['resolved']
++        self.assertEqual(group_score(r['teams'][:1],r)['unavailable_reason'],'missing_horizon')
++        self.assertTrue(group_score(r['teams'][:1],r,{'ticks':1000})['available'])
++        self.assertEqual(group_score([_adjusted_team()],_adjusted_result(horizon=500))['unavailable_reason'],'horizon_before_end')
++
++    def test_unknown_early_end_does_not_receive_invented_outcome_credit(self):
++        t=_adjusted_team(points=[[0,500],[200,500]])
++        r=_adjusted_result([t],end=200,horizon=1000,termination='tick_cap')
++        self.assertEqual(group_score([t],r)['unavailable_reason'],'unresolved_before_horizon')
++        for termination in ('engine_end','win_probability'):
++            r['termination']=termination
++            self.assertEqual(group_score([t],r)['unavailable_reason'],'missing_terminal_outcome')
++
++    def test_invalid_history_or_cached_integrals_are_rejected(self):
++        for mutate in (lambda t:t['win_probability_history'].append([1000,500]),
++                       lambda t:t['win_probability_history'].__setitem__(1,[1000,1001]),
++                       lambda t:t['win_probability'].__setitem__('area_twice_permille_ticks',900000)):
++            t=_adjusted_team();mutate(t)
++            with self.assertRaises(ValueError):group_score([t],_adjusted_result([t]))
++        c=outcome_only(_adjusted_result());c['teams'][0]['win_probability_log_integral']['weighted_area']=float('nan')
++        with self.assertRaisesRegex(ValueError,'compact'):group_score(c['teams'][:1],c)
++
++    def test_horizon_and_format_cohorts_do_not_pool_or_pair(self):
++        rows=[]
++        for horizon,fmt in ((1000,'1v1'),(2000,'1v1'),(1000,'ffa')):
++            for arm in ('baseline','candidate'):
++                r=_adjusted_result(horizon=horizon,termination='engine_end',winners=[0])
++                j=job('game','a'*64,config={'ticks':horizon},labels={'pair':'same-map','format':fmt,'variant':arm,'block':'seed'})
++                rows+=observations([dict(job=j,result=r,category='success')],'win_probability')
++        effects=[e for e in paired_effects(rows,0) if e['metric']==SCORE_METRIC]
++        self.assertEqual({(e['format'],e['horizon_ticks']) for e in effects},{('1v1',1000),('1v1',2000),('ffa',1000)})
++        scores=probability_scores(rows,0)
++        self.assertEqual(len([s for s in scores if s['role']=='subject']),6)
++        mismatch=copy.deepcopy(rows[:2]);mismatch[1]['trajectory_scores'][0]['horizon_ticks']=3000
++        self.assertFalse(any(e['metric']==SCORE_METRIC for e in paired_effects(mismatch,0)))
++
++
++class AdjustedScoreCompatibilityTests(unittest.TestCase):
++    def test_unknown_cached_or_observation_metric_never_falls_back_to_auc(self):
++        compact=outcome_only(_adjusted_result())
++        compact['teams'][0]['win_probability_log_integral']['metric']='future-score'
++        value=group_score(compact['teams'][:1],compact)
++        self.assertFalse(value['available'])
++        self.assertEqual(value['unavailable_reason'],'unsupported_cached_metric')
++        row=_probability_row('candidate')
++        row['trajectory_scores'][0]['metric']='future-score'
++        score=next(v for v in probability_scores([row],0) if v['role']=='subject')
++        self.assertEqual(score['unavailable_reasons'],{'unsupported_score_metric':1})
++        self.assertIsNone(score['mean'])
++        self.assertEqual(score['legacy_linear_mean'],.5)
++        self.assertFalse(any(v['metric']==SCORE_METRIC for v in paired_effects([_probability_row(),row],0)))
++
++    def test_actual_predicted_and_cap_sources_are_reported_separately(self):
++        rows=[]
++        for block,termination,end in (('actual','engine_end',200),('predicted','win_probability',200),('cap','tick_cap',1000)):
++            teams=[_adjusted_team(0,[[0,500],[end,960]],'won' if termination!='tick_cap' else 'unresolved'),
++                   _adjusted_team(1,[[0,500],[end,40]],'lost' if termination!='tick_cap' else 'unresolved')]
++            result=_adjusted_result(teams,end=end,termination=termination,winners=[0] if termination!='tick_cap' else [])
++            request=job('game','a'*64,config={'ticks':1000},labels={'block':block})
++            rows+=observations([dict(job=request,result=outcome_only(result),category='success')],'win_probability')
++        scores=probability_scores(rows,0)
++        self.assertEqual(len(scores),2)
++        for score in scores:
++            self.assertEqual(score['scored_games'],3)
++            self.assertEqual(score['outcome_credit_sources'],{'engine':1,'probability_stop':1,'tick_cap':1})
++            self.assertEqual(score['probability_ended_games'],1)
++            self.assertEqual(score['capped_games'],1)
++
++    def test_old_compact_reports_coverage_instead_of_a_fabricated_score(self):
++        result=_adjusted_result()
++        for team in result['teams']:
++            del team['win_probability_history']
++        request=job('game','a'*64,config={'ticks':1000})
++        rows=observations([dict(job=request,result=result,category='success')],'win_probability')
++        for score in probability_scores(rows,0):
++            self.assertIsNone(score['mean'])
++            self.assertEqual(score['unavailable_reasons'],{'missing_history':1})
++            self.assertAlmostEqual(score['legacy_linear_mean'],.5)
++
++
+ if __name__ == '__main__': unittest.main()
+diff --git a/test/tournament_cli_integration.py b/test/tournament_cli_integration.py
+index dfb9461498..7bcdf93bf3 100644
+--- a/test/tournament_cli_integration.py
++++ b/test/tournament_cli_integration.py
+@@ -3,6 +3,7 @@
+ import sys
+ from pathlib import Path
+ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
++sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+ from build_paths import native_binary
+ import argparse
+ import gzip
+@@ -120,6 +121,13 @@ def main():
+         area = sum((b[0]-a[0])*(a[1]+b[1]) for a,b in zip(history,history[1:]))
+         assert probability['area_twice_permille_ticks'] == area
+         assert abs(probability['mean'] - area / (2000*value['ticks'])) < .000001
++    from tools.tournaments.probability import group_score, SCORE_METRIC
++    from tools.tournaments.worker import outcome_only
++    compact=outcome_only(value)
++    for full_team, compact_team in zip(value['teams'], compact['teams']):
++        expected=group_score([full_team], value)
++        assert expected['available'] and expected['metric']==SCORE_METRIC
++        assert expected==group_score([compact_team],compact)
+     original_ticks=tick_records(original/'game.replay.checksums')
+     for name,save in [('initial-reload','initial.game.gz'),('continuation','checkpoint-512.game.gz')]:
+         restored,target=run(name,['game', 'run','--load-game',str(original/save),'--ticks',str(args.ticks),'--telemetry','checksums','--save','final'],
+@@ -128,6 +136,7 @@ def main():
+         for before, after in zip(value['teams'], restored['teams']):
+             assert before['win_probability'] == after['win_probability']
+             assert before['win_probability_history'] == after['win_probability_history']
++            assert group_score([before],value)==group_score([after],restored)
+         assert trace and all(original_ticks[t]==record for t,record in trace.items()),name
+         assert restored['players']==value['players']
+     _,normal=run('defaults',base)
+diff --git a/tools/tournaments/analysis.py b/tools/tournaments/analysis.py
+index dee1d2dc35..4e225b884e 100644
+--- a/tools/tournaments/analysis.py
++++ b/tools/tournaments/analysis.py
+@@ -9,7 +9,7 @@ import statistics
+ from .common import atomic_json, digest
+ from .fairness_statistics import share_table, squared_bias, bias_interval, rms_points, seed_for, benjamini_hochberg, holm
+ from .results import Results
+-from .probability import group_summary, stopping_threshold
++from .probability import group_summary, group_score, stopping_threshold, SCORE_METRIC, SCORE_COEFFICIENT, SCORE_DEFINITION
+ 
+ POLICY_VERSION = 2
+ POLICIES = ('win_probability', 'prestige', 'survivor_draw', 'military')
+@@ -95,6 +95,8 @@ def observations(records, policy):
+         competitors = ['+'.join(sorted(groups[key])) for key in keys]
+         probabilities = [group_summary([t for t in result['teams']
+                          if (t['alliance'] if fmt == '2v2' else t['team']) == key], result['ticks']) for key in keys]
++        scores = [group_score([t for t in result['teams']
++                  if (t['alliance'] if fmt == '2v2' else t['team']) == key], result, job['config']) for key in keys]
+         rows.append({'job_id': job['id'], 'format': fmt, 'block': str(labels.get('block', digest(job['inputs']))),
+                      'map': labels.get('map', labels.get('map_seed')), 'build': job['build'],
+                      'seeds': job['seeds'],
+@@ -106,7 +108,7 @@ def observations(records, policy):
+                      'termination': result['termination'],
+                      'win_probability_permille': stopping_threshold(result, job['config']),
+                      'engine_outcome': outcome['engine_outcome'], 'groups': keys,
+-                     'competitors': competitors, 'probabilities': probabilities, 'placements': [outcome['placements'][key] for key in keys],
++                     'competitors': competitors, 'probabilities': probabilities, 'trajectory_scores': scores, 'placements': [outcome['placements'][key] for key in keys],
+                      'winners': outcome['winners'], 'policy': outcome['policy'], 'teams': result['teams']})
+     return rows
+ 
+@@ -226,87 +228,112 @@ def _block_mean_interval(blocks, draws, rng):
+     return [percentile(estimates, .025), percentile(estimates, .975)]
+ 
+ 
++def _usable_score(value):
++    if not value or not value.get('available'):
++        return False
++    if value.get('metric') != SCORE_METRIC or value.get('coefficient') != SCORE_COEFFICIENT:
++        return False
++    score = value.get('score')
++    if type(score) not in (int, float) or not math.isfinite(score) or not 0 <= score <= 1:
++        raise ValueError('invalid adjusted probability score')
++    return True
++
++
+ def paired_effects(rows, draws=1000, seed=1):
+     paired = defaultdict(dict)
+     for row in rows:
+         if row['pair'] is not None:
+-            # Keep complete matched configurations; subject may be any player.
+-            paired[(row['build'], str(row['pair']), row['held_out'])][row['variant']] = row
++            value = row.get('trajectory_scores', [None] * len(row['groups']))[row['groups'].index(row['subject_group'])]
++            cohort = tuple(value.get(k) if value else None for k in ('metric', 'coefficient', 'horizon_ticks', 'model'))
++            cohort += (row.get('win_probability_permille', 0),)
++            # The same map/pair label may recur at several horizons or models.
++            # Keep every compatible pair instead of overwriting earlier variants.
++            paired[(row['format'], row['build'], str(row['pair']), row['held_out'], cohort)][row['variant']] = row
+     differences = defaultdict(list)
+-    for (build, pair, held_out), variants in paired.items():
++    for (fmt, build, pair, held_out, _), variants in paired.items():
+         baseline = variants.get('baseline')
+-        if not baseline: continue
++        if not baseline:
++            continue
+         for name, row in variants.items():
+-            if name == 'baseline': continue
+-            for metric in ('ticks', 'placement', 'win_probability_mean'):
+-                if metric == 'win_probability_mean':
+-                    a = row.get('probabilities', [None] * len(row['groups']))[row['groups'].index(row['subject_group'])]
+-                    b = baseline.get('probabilities', [None] * len(baseline['groups']))[baseline['groups'].index(baseline['subject_group'])]
+-                    if (not a or not b or not a['whole_game'] or not b['whole_game'] or a['model'] != b['model']
++            if name == 'baseline':
++                continue
++            for metric in ('ticks', 'placement', SCORE_METRIC):
++                if metric == SCORE_METRIC:
++                    a = row.get('trajectory_scores', [None] * len(row['groups']))[row['groups'].index(row['subject_group'])]
++                    b = baseline.get('trajectory_scores', [None] * len(baseline['groups']))[baseline['groups'].index(baseline['subject_group'])]
++                    if (not _usable_score(a) or not _usable_score(b)
++                            or any(a[k] != b[k] for k in ('metric', 'coefficient', 'horizon_ticks', 'model'))
+                             or row.get('win_probability_permille', 0) != baseline.get('win_probability_permille', 0)):
+                         continue
+-                    differences[(build, held_out, name, metric, a['model'], row.get('win_probability_permille', 0))].append((pair, a['mean'] - b['mean'], row['block']))
+-                    continue
+-                effect = (row['ticks'] - baseline['ticks']) if metric == 'ticks' else (row['placements'][row['groups'].index(row.get('subject_group',row['groups'][0]))] - baseline['placements'][baseline['groups'].index(baseline.get('subject_group',baseline['groups'][0]))])
+-                differences[(build, held_out, name, metric, None, None)].append((pair, effect, row['block']))
++                    differences[(fmt, build, held_out, name, metric, a['model'], row.get('win_probability_permille', 0), a['horizon_ticks'])].append((pair, a['score'] - b['score'], row['block']))
++                else:
++                    effect = (row['ticks'] - baseline['ticks']) if metric == 'ticks' else (row['placements'][row['groups'].index(row.get('subject_group',row['groups'][0]))] - baseline['placements'][baseline['groups'].index(baseline.get('subject_group',baseline['groups'][0]))])
++                    differences[(fmt, build, held_out, name, metric, None, None, None)].append((pair, effect, row['block']))
+     rng = random.Random(seed)
+     output = []
+-    for (build, held_out, variant, metric, model, threshold), pairs in sorted(differences.items(), key=lambda item: str(item[0])):
++    for (fmt, build, held_out, variant, metric, model, threshold, horizon), pairs in sorted(differences.items(), key=lambda item: str(item[0])):
+         values = [value for _, value, _ in pairs]
+         blocks = defaultdict(list)
+         for _, value, block in pairs:
+             blocks[block].append(value)
+-        if metric == 'win_probability_mean':
++        if metric == SCORE_METRIC:
+             interval = _block_mean_interval(blocks, draws, rng)
+         else:
+             estimates = [statistics.mean(rng.choices(values, k=len(values))) for _ in range(draws)] if len(values) > 1 else []
+             interval = [percentile(estimates, .025), percentile(estimates, .975)] if estimates else None
+-        output.append({'build': build, 'held_out': held_out, 'variant': variant, 'metric': metric,
+-                       **({'model': model, 'win_probability_permille': threshold, 'blocks': len(blocks),
+-                           'resampling': 'seed_block'} if metric == 'win_probability_mean' else {}),
+-                       'pairs': len(values), 'mean_effect': statistics.mean(values),
+-                       'interval': interval,
++        output.append({'format': fmt, 'build': build, 'held_out': held_out, 'variant': variant, 'metric': metric,
++                       **({'model': model, 'coefficient': SCORE_COEFFICIENT, 'horizon_ticks': horizon,
++                           'win_probability_permille': threshold, 'blocks': len(blocks),
++                           'resampling': 'seed_block'} if metric == SCORE_METRIC else {}),
++                       'pairs': len(values), 'mean_effect': statistics.mean(values), 'interval': interval,
+                        'raw_pairs': [(pair, value) for pair, value, _ in pairs]})
+     return output
+ 
+ 
+ def probability_scores(rows, draws=1000, seed=1):
+-    """Standard continuous AI score beside W/L/D, with seed-block uncertainty.
++    """Standard c=2 log-time/outcome score, with equally weighted games.
+ 
+-    Average each game's normalized integral, rather than pooling raw area (which
+-    would give longer games more weight). Keep model/threshold cohorts separate.
++    Keep prediction model, stopping rule and fixed horizon cohorts separate.
++    Legacy linear area remains an explicitly named diagnostic, never a fallback.
+     """
+     groups = defaultdict(list)
+     for row in rows:
+         for i, competitor in enumerate(row['competitors']):
+-            value = row.get('probabilities', [None] * len(row['competitors']))[i]
+-            # In an ablation both sides may run the same AI implementation.
+-            # Pooling subject and opponent would cancel every improvement.
++            value = row.get('trajectory_scores', [None] * len(row['competitors']))[i]
++            raw = row.get('probabilities', [None] * len(row['competitors']))[i]
+             role = ('subject' if row['groups'][i] == row['subject_group'] else 'opponent') if row.get('pair') is not None else 'competitor'
+             key = (row['format'], row['build'], row['variant'], competitor, role,
+-                   value['model'] if value else None, row.get('win_probability_permille', 0))
++                   value['model'] if value else (raw['model'] if raw else None),
++                   row.get('win_probability_permille', 0), value['horizon_ticks'] if value else None)
+             best = min(row['placements'])
+             leading = row['placements'][i] == best
+             outcome = 'draws' if leading and row['placements'].count(best) > 1 else 'wins' if leading else 'losses'
+-            groups[key].append((row['block'], value, outcome, row.get('termination')))
++            groups[key].append((row['block'], value, raw, outcome, row.get('termination')))
+     output = []
+-    for (fmt, build, variant, competitor, role, model, threshold), entries in sorted(groups.items(), key=lambda item: str(item[0])):
+-        usable = [(block, value) for block, value, _, _ in entries if value and value['whole_game']]
+-        outcomes = Counter(outcome for _, _, outcome, _ in entries)
++    for (fmt, build, variant, competitor, role, model, threshold, horizon), entries in sorted(groups.items(), key=lambda item: str(item[0])):
++        usable = [(block, value) for block, value, _, _, _ in entries if _usable_score(value)]
++        legacy = [raw for _, _, raw, _, _ in entries if raw and raw['whole_game']]
++        outcomes = Counter(outcome for _, _, _, outcome, _ in entries)
++        missing = Counter((value.get('unavailable_reason') or 'unsupported_score_metric') if value else 'missing_score'
++                          for _, value, _, _, _ in entries if not _usable_score(value))
++        sources = Counter(value['outcome_source'] for _, value in usable)
+         blocks = defaultdict(list)
+         for block, value in usable:
+-            blocks[block].append(value['mean'])
+-        rng = random.Random(seed_for(seed, fmt, build, variant, competitor, role, model, threshold))
+-        output.append({'format': fmt, 'build': build, 'variant': variant, 'competitor': competitor,
+-                       'role': role,
++            blocks[block].append(value['score'])
++        rng = random.Random(seed_for(seed, fmt, build, variant, competitor, role, model, threshold, SCORE_METRIC, horizon))
++        output.append({'format': fmt, 'build': build, 'variant': variant, 'competitor': competitor, 'role': role,
++                       'metric': SCORE_METRIC, 'coefficient': SCORE_COEFFICIENT, 'horizon_ticks': horizon,
+                        'model': model, 'win_probability_permille': threshold, 'games': len(entries),
+                        **{name: outcomes[name] for name in ('wins', 'losses', 'draws')},
+-                       'probability_ended_games': sum(end == 'win_probability' for _, _, _, end in entries),
+-                       'capped_games': sum(end == 'tick_cap' for _, _, _, end in entries),
++                       'probability_ended_games': sum(end == 'win_probability' for _, _, _, _, end in entries),
++                       'capped_games': sum(end == 'tick_cap' for _, _, _, _, end in entries),
++                       'outcome_credit_sources': dict(sources),
+                        'scored_games': len(usable), 'unavailable': len(entries) - len(usable),
+-                       'blocks': len(blocks),
+-                       'mean': statistics.mean(v['mean'] for _, v in usable) if usable else None,
+-                       'mean_area_probability_ticks': statistics.mean(v['area'] for _, v in usable) if usable else None,
++                       'unavailable_reasons': dict(missing), 'blocks': len(blocks),
++                       'mean': statistics.mean(v['score'] for _, v in usable) if usable else None,
++                       'legacy_linear_scored_games': len(legacy),
++                       'legacy_linear_mean': statistics.mean(v['mean'] for v in legacy) if legacy else None,
++                       'legacy_linear_mean_area_probability_ticks': statistics.mean(v['area'] for v in legacy) if legacy else None,
+                        'interval': _block_mean_interval(blocks, draws, rng)})
+     return output
+ 
+@@ -347,7 +374,7 @@ def reanalyze(directory, policy='win_probability', draws=1000, seed=1, k=32, out
+                               (r.get('diagnostics') or {}).get('stack_signature')) for r in attempts if r['category']!='success')
+     rows = observations(records, policy)
+     matchup, breakdown = matchup_tables(rows)
+-    report = {'schema_version': 1, 'experiment': source.manifest['id'], 'policy': {'name': policy, 'version': POLICY_VERSION, 'options': {}},
++    report = {'schema_version': 2, 'score_definition': dict(SCORE_DEFINITION), 'experiment': source.manifest['id'], 'policy': {'name': policy, 'version': POLICY_VERSION, 'options': {}},
+               'elo': {'initial': 1500, 'k': k, 'order': 'manifest', 'ffa': 'simultaneous pairwise / opponent count'},
+               'ratings': rate(rows,k), 'uncertainty': bootstrap_ratings(rows,source.manifest,draws,seed,k),
+               'committed_results': len(records), 'planned_jobs': len(source.manifest['jobs']),
+@@ -396,14 +423,14 @@ def reanalyze(directory, policy='win_probability', draws=1000, seed=1, k=32, out
+               'Duel intervals resample whole swapped-side pairs within each generator. Missing/unidentifiable fits are explicit in duel_rating_fit; sequential diagnostics are retained separately.',
+               'Raw observations, failures, configurations, pairing and distribution summaries are in the adjacent JSON and CSV files.']
+     if report['probability_scores']:
+-        lines += ['', '## Mean whole-game win probability', '',
+-                  'Trapezoidal area divided by observed duration; allies counted once. Higher is better.',
+-                  'Early stopping changes the observed duration. Compare matched stopping rules and models.',
+-                  '', '| Format | Build | Variant | Competitor | Role | Stop (permille) | W / L / D | Scored / games | Mean | 95% block interval |',
+-                  '| --- | --- | --- | --- | --- | ---: | --- | ---: | ---: | --- |']
++        lines += ['', '## Adjusted win-probability trajectory score', '',
++                  'Log-time weighting (c=2) through the fixed tick horizon, with win/loss credit after engine or probability-stop endings; allies counted once. Higher is better.',
++                  'Probability-stop credit is predicted; engine credit is actual. Caps receive no terminal tail. Compare matched horizons, stopping rules and models; missing curves are unavailable.',
++                  '', '| Format | Build | Variant | Competitor | Role | Horizon | Stop (permille) | W / L / D | Scored / games | Actual / predicted / cap endings | Mean score | 95% block interval |',
++                  '| --- | --- | --- | --- | --- | ---: | ---: | --- | ---: | --- | ---: | --- |']
+         for score in report['probability_scores']:
+             mean = f"{score['mean']:.4f}" if score['mean'] is not None else 'unavailable'
+-            lines.append(f"| {score['format']} | {score['build'][:12]} | {score['variant']} | {score['competitor']} | {score['role']} | {score['win_probability_permille']} | {score['wins']} / {score['losses']} / {score['draws']} | {score['scored_games']} / {score['games']} | {mean} | {score['interval']} |")
++            lines.append(f"| {score['format']} | {score['build'][:12]} | {score['variant']} | {score['competitor']} | {score['role']} | {score['horizon_ticks']} | {score['win_probability_permille']} | {score['wins']} / {score['losses']} / {score['draws']} | {score['scored_games']} / {score['games']} | {score['outcome_credit_sources'].get('engine',0)} / {score['outcome_credit_sources'].get('probability_stop',0)} / {score['outcome_credit_sources'].get('tick_cap',0)} | {mean} | {score['interval']} |")
+     if report['map_telemetry']['groups']:
+         lines += ['', '## Map telemetry', '',
+                   '| Generator | Revision | Maps | Missing traces | Incomplete traces |',
+diff --git a/tools/tournaments/experiments.py b/tools/tournaments/experiments.py
+index e3d7a098a8..cfe2543cfa 100644
+--- a/tools/tournaments/experiments.py
++++ b/tools/tournaments/experiments.py
+@@ -9,7 +9,7 @@ from .analysis import POLICIES, reanalyze
+ from .bundles import inspect_bundle
+ from .common import atomic_json, digest, read_json
+ from .coordinator import Coordinator
+-from .jobs import win_probability_threshold
++from .jobs import DEFAULT_GAME_TICKS, win_probability_threshold
+ from .model import generator_samples, grid, job, rotations, seeded_samples, validate_experiment
+ 
+ 
+@@ -83,7 +83,7 @@ class Planner:
+                   'symmetric_control': method == 15, 'block': f'{method}:{map_seed}:{game_seed}'}
+         value = job('game', build, seeds={'map': map_seed, 'game': game_seed},
+                     config={'generator': method, 'params': params, 'candidates': config.get('candidates', 5),
+-                            'players': players, 'ticks': config.get('ticks', 90000), 'ai_params': {},
++                            'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS), 'ai_params': {},
+                             **({'rules': config['rules']} if 'rules' in config else {}),
+                             **({'alliances': alliances} if alliances else {}),
+                             'win_probability_permille': win_probability_threshold(config)},
+@@ -130,7 +130,7 @@ class Planner:
+         value = job('game', build,
+                     inputs={'map': {'job': generated['id'], 'artifact': f'map-r{rotation}.map.gz'}},
+                     depends_on=[generated['id']], seeds={'game': seed},
+-                    config={'players': players, 'ticks': config.get('ticks', 90000),
++                    config={'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS),
+                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
+                             **({'rules': config['rules']} if 'rules' in config else {}),
+                             'win_probability_permille': win_probability_threshold(config)},
+@@ -264,7 +264,7 @@ def experiment_main(kind):
+     try:
+         if args.command=='reanalyze':
+             report=reanalyze(args.directory,args.policy,args.draws,args.seed,args.k,args.output)
+-            print(json.dumps({'results':report['committed_results'],'ratings':report['ratings'],'probability_scores':report['probability_scores']},indent=2))
++            print(json.dumps({'results':report['committed_results'],'ratings':report['ratings'],'score_definition':report['score_definition'],'probability_scores':report['probability_scores']},indent=2))
+         else:
+             manifest=Planner(kind,read_json(args.config),[inspect_bundle(p) for p in args.bundle]).plan()
+             if args.command=='plan': atomic_json(args.output,manifest)
+diff --git a/tools/tournaments/jobs.py b/tools/tournaments/jobs.py
+index 82d7b80e0b..3985aebca5 100644
+--- a/tools/tournaments/jobs.py
++++ b/tools/tournaments/jobs.py
+@@ -6,6 +6,7 @@ from .common import read_json
+ 
+ _TYPES = {}
+ _UNIFIED_COLLECTORS=('unified-gradient-h128-v4','unified-gradient-spatial-h128-v3')
++DEFAULT_GAME_TICKS = 90000
+ DEFAULT_WIN_PROBABILITY_PERMILLE = 950
+ 
+ 
+@@ -152,7 +153,7 @@ class EngineJob:
+             if not isinstance(config.get('rules', {}), dict) or any(
+                     not isinstance(k, str) or type(v) is not int for k, v in config.get('rules', {}).items()):
+                 raise ValueError('rules must map names to integer values')
+-            if type(config.get('ticks', 90000)) is not int or config.get('ticks', 90000) < 1:
++            if type(config.get('ticks', DEFAULT_GAME_TICKS)) is not int or config.get('ticks', DEFAULT_GAME_TICKS) < 1:
+                 raise ValueError('ticks must be a positive integer')
+             if config.get('alliances') and len(config['alliances']) != len(config.get('players', [])):
+                 raise ValueError('one alliance required per player')
+@@ -167,7 +168,7 @@ class EngineJob:
+             raise ValueError('telemetry log mode requires requested telemetry')
+         if job['outputs'].get('log_mode') == 'win-probability' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):
+             raise ValueError('win-probability logs require game team-timeline telemetry')
+-        if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', 90000) > 4096
++        if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', DEFAULT_GAME_TICKS) > 4096
+                 and 'artifact_bytes' not in job['limits']):
+             raise ValueError('detailed checksums for long games require an explicit artifact_bytes limit; use short focused probes')
+         if job['outputs'].get('result', 'full') not in ('full', 'outcome'):
+@@ -197,7 +198,7 @@ class EngineJob:
+                     inputs.get('map', inputs.get('save')))
+             if 'game' in job['seeds']:
+                 add('--game-seed', job['seeds']['game'])
+-            add('--ticks', config.get('ticks', 90000))
++            add('--ticks', config.get('ticks', DEFAULT_GAME_TICKS))
+             for player in config.get('players', []):
+                 add('--player', player)
+             for player, params in sorted(config.get('ai_params', {}).items()):
+diff --git a/tools/tournaments/probability.py b/tools/tournaments/probability.py
+index f0ee949be3..5f55462f2f 100644
+--- a/tools/tournaments/probability.py
++++ b/tools/tournaments/probability.py
+@@ -1,8 +1,8 @@
+-"""Probability summaries from automatic engine statistics, without verbose logs.
++"""Raw engine probability summaries and the standard adjusted trajectory score.
+ 
+-The engine integrates piecewise-linear probability with a trapezoidal rule.
+-Area has units of probability*ticks; mean is area / observed ticks. Never
+-extrapolate missing history from legacy saves or invent a terminal 100% point.
++Raw area/mean and retained curves are never rewritten. The standard c=2 score
++uses a fixed horizon and an explicitly outcome-derived terminal tail, including
++predicted probability-stop victories; that tail is not observed model history.
+ """
+ 
+ 
+@@ -52,3 +52,162 @@ def group_summary(teams, expected_end_tick=None):
+     if any(v != values[0] for v in values[1:]):
+         raise ValueError('inconsistent alliance win probabilities')
+     return values[0]
++
++
++# Report/tooling identity, independent of the engine's prediction model and sim version.
++SCORE_METRIC = 'log_time_outcome_v1'
++SCORE_COEFFICIENT = 2
++SCORE_DEFINITION = {
++    'metric': SCORE_METRIC, 'coefficient': SCORE_COEFFICIENT,
++    'horizon': 'resolved tick limit, otherwise the game job tick limit',
++    'terminal_credit': '1 for every declared winner, including shared and probability-stop wins; 0 for losses',
++    'tick_cap': 'no terminal tail',
++}
++
++
++def score_horizon(result, config=None):
++    """Use the actual absolute tick limit; never normalize by finishing time."""
++    value = (result.get('resolved') or {}).get('tick_limit')
++    if value is None:
++        horizons = set()
++        for team in result.get('teams', []):
++            cached = team.get('win_probability_log_integral')
++            if cached is not None:
++                if not isinstance(cached, dict):
++                    raise ValueError('invalid compact log probability integral')
++                if cached.get('horizon_ticks') is not None:
++                    if type(cached['horizon_ticks']) is not int or cached['horizon_ticks'] <= 0:
++                        raise ValueError('invalid compact score horizon')
++                    horizons.add(cached['horizon_ticks'])
++        if len(horizons) > 1:
++            raise ValueError('inconsistent compact score horizons')
++        if horizons:
++            value = horizons.pop()
++    if value is None and config is not None:
++        from .jobs import DEFAULT_GAME_TICKS
++        value = config.get('ticks', DEFAULT_GAME_TICKS)
++    if value is None:
++        return None
++    if type(value) is not int or value <= 0:
++        raise ValueError('probability score horizon must be a positive integer')
++    return value
++
++
++def log_integral_summary(team, expected_end_tick, horizon):
++    """Sufficient compact statistic for the standard score, before dropping history.
++
++    weighted_area is already divided by ln(1+c), so its units are score weight.
++    Raw engine area/mean remain untouched. Old compact area alone cannot recover
++    this statistic: missing curves are unavailable, never silently linearized.
++    """
++    import math
++    raw = summary(team, expected_end_tick)
++    value = {'metric': SCORE_METRIC, 'coefficient': SCORE_COEFFICIENT,
++             'horizon_ticks': horizon, 'model': raw['model'] if raw else None,
++             'start_tick': raw['start_tick'] if raw else None,
++             'end_tick': raw['end_tick'] if raw else None,
++             'weighted_area': None, 'available': False, 'unavailable_reason': None}
++    def missing(reason):
++        return value | {'unavailable_reason': reason}
++    if raw is None:
++        return missing('missing_probability')
++    if not raw['whole_game']:
++        return missing('incomplete_or_mixed_history')
++    if type(expected_end_tick) is not int or expected_end_tick <= 0:
++        return missing('missing_terminal_tick')
++    if horizon is None:
++        return missing('missing_horizon')
++    if expected_end_tick > horizon:
++        return missing('horizon_before_end')
++    points = team.get('win_probability_history')
++    if points is None:
++        cached = team.get('win_probability_log_integral')
++        if not cached:
++            return missing('missing_history')
++        if not isinstance(cached, dict):
++            raise ValueError('invalid compact log probability integral')
++        if cached.get('metric') != SCORE_METRIC or cached.get('coefficient') != SCORE_COEFFICIENT:
++            return missing('unsupported_cached_metric')
++        for key in ('horizon_ticks', 'model', 'start_tick', 'end_tick'):
++            if cached.get(key) != value[key]:
++                return missing('cached_coverage_mismatch')
++        if not cached.get('available'):
++            return missing(cached.get('unavailable_reason') or 'missing_history')
++        area = cached.get('weighted_area')
++        observed_weight = math.log1p(SCORE_COEFFICIENT * expected_end_tick / horizon) / math.log1p(SCORE_COEFFICIENT)
++        if (type(area) not in (int, float) or not math.isfinite(area)
++                or not -1e-12 <= area <= observed_weight + 1e-12):
++            raise ValueError('invalid compact log probability integral')
++    else:
++        if not isinstance(points, list) or len(points) < 2:
++            raise ValueError('invalid probability history')
++        previous = -1
++        for point in points:
++            if (not isinstance(point, (list, tuple)) or len(point) != 2
++                    or any(type(x) is not int for x in point)
++                    or not previous < point[0] <= expected_end_tick or not 0 <= point[1] <= 1000):
++                raise ValueError('invalid probability history')
++            previous = point[0]
++        if points[0][0] != 0 or points[-1][0] != expected_end_tick:
++            return missing('incomplete_history')
++        exact_area = sum((a[1] + b[1]) * (b[0] - a[0]) for a, b in zip(points, points[1:]))
++        if (exact_area != team['win_probability']['area_twice_permille_ticks']
++                or points[-1][1] != team['win_probability']['permille']):
++            raise ValueError('probability history disagrees with its summary')
++        tau = horizon / SCORE_COEFFICIENT
++        parts = []
++        for (start, first), (end, last) in zip(points, points[1:]):
++            duration = end - start
++            offset = start + tau
++            logarithm = math.log1p(duration / offset)
++            slope = (last - first) / (1000 * duration)
++            parts.append(first / 1000 * logarithm + slope * (duration - offset * logarithm))
++        area = math.fsum(parts) / math.log1p(SCORE_COEFFICIENT)
++    return value | {'weighted_area': area, 'available': True}
++
++
++def group_score(teams, result, config=None):
++    """Standard c=2 log-time score with actual or probability-stop outcome credit.
++
++    Allies share one trajectory, never a sum. Probability-stop credits are
++    explicitly tagged as predictions; tick-cap adjudication creates no tail.
++    """
++    import math
++    if not teams:
++        raise ValueError('probability score requires at least one team')
++    end = result.get('ticks')
++    horizon = score_horizon(result, config)
++    # Preserve the legacy alliance/model consistency check for raw predictions.
++    group_summary(teams, end)
++    values = [log_integral_summary(t, end, horizon) for t in teams]
++    first = values[0]
++    score = first | {'score': None, 'outcome_credit': None, 'outcome_source': None,
++                     'observed_weight': None, 'terminal_weight': None}
++    if any(not v['available'] for v in values):
++        unavailable = next(v for v in values if not v['available'])
++        return score | {'available': False, 'unavailable_reason': unavailable['unavailable_reason']}
++    if any(v != first for v in values[1:]):
++        raise ValueError('inconsistent alliance log probability integrals')
++    observed_weight = math.log1p(SCORE_COEFFICIENT * end / horizon) / math.log1p(SCORE_COEFFICIENT)
++    tail = math.log1p(SCORE_COEFFICIENT * (horizon - end) / (horizon + SCORE_COEFFICIENT * end)) / math.log1p(SCORE_COEFFICIENT)
++    termination = result.get('termination')
++    credit, source = None, None
++    if termination in ('engine_end', 'win_probability'):
++        winners = set(result.get('winning_teams', [])) | {t['team'] for t in result.get('teams', []) if t.get('outcome') == 'won'}
++        if winners:
++            credit = float(any(t['team'] in winners for t in teams))
++        elif all(t.get('outcome') == 'lost' for t in teams):
++            credit = 0.0
++        else:
++            return score | {'available': False, 'unavailable_reason': 'missing_terminal_outcome'}
++        source = 'probability_stop' if termination == 'win_probability' else 'engine'
++    elif termination == 'tick_cap' and end == horizon:
++        source = 'tick_cap'
++    else:
++        return score | {'available': False, 'unavailable_reason': 'unresolved_before_horizon'}
++    result_score = first['weighted_area'] + (credit or 0) * tail
++    if not math.isfinite(result_score) or not -1e-12 <= result_score <= 1 + 1e-12:
++        raise ValueError('invalid adjusted probability score')
++    return score | {'score': min(1.0, max(0.0, result_score)), 'outcome_credit': credit,
++                    'outcome_source': source, 'observed_weight': observed_weight,
++                    'terminal_weight': tail, 'available': True}
+diff --git a/tools/tournaments/worker.py b/tools/tournaments/worker.py
+index aacf282dcf..ba6f213260 100644
+--- a/tools/tournaments/worker.py
++++ b/tools/tournaments/worker.py
+@@ -72,15 +72,19 @@ def installed_bundle(path):
+     return manifest
+ 
+ 
+-def outcome_only(result):
++def outcome_only(result, config=None):
+     """Retain the authoritative outcome and every supported adjudication field."""
+     team_fields = ('team', 'alliance', 'outcome', 'alive', 'eliminated_tick',
+                    'prestige', 'units', 'buildings', 'warrior_attack', 'warrior_hp', 'warriors',
+                    'win_probability')
++    from .probability import log_integral_summary, score_horizon
++    horizon = score_horizon(result, config)
+     player_fields = ('player', 'team', 'ai')
+     return {key: result[key] for key in ('schema_version', 'status', 'ticks', 'termination', 'winning_teams', 'win_probability_permille')
+             if key in result} | {
+-        'teams': [{key: team[key] for key in team_fields if key in team} for team in result.get('teams', [])],
++        'teams': [{key: team[key] for key in team_fields if key in team}
++                  | {'win_probability_log_integral': log_integral_summary(team, result.get('ticks'), horizon)}
++                  for team in result.get('teams', [])],
+         'players': [{key: player[key] for key in player_fields if key in player} for player in result.get('players', [])],
+         **({'win_probability_permille': result['resolved']['rules']['winProbabilityPermille']}
+            if 'winProbabilityPermille' in result.get('resolved', {}).get('rules', {}) else {}),
+@@ -470,7 +474,7 @@ def execute(root, identity):
+                     elif code == 0 and status != 'completed':
+                         record['category'] = 'invalid_result'
+                     elif code == 0 and job['outputs'].get('result') == 'outcome':
+-                        record['result'] = outcome_only(record['result'])
++                        record['result'] = outcome_only(record['result'], job['config'])
+                 except (OSError, ValueError) as error:
+                     record['diagnostic'] = str(error)
+                     if code == 0:
+diff --git a/tools/tournaments_ai_leaderboard.py b/tools/tournaments_ai_leaderboard.py
+index 89fc4077a8..1193e5ad5b 100644
+--- a/tools/tournaments_ai_leaderboard.py
++++ b/tools/tournaments_ai_leaderboard.py
+@@ -25,6 +25,7 @@ from collections import defaultdict
+ import math
+ 
+ from tools.tournaments.analysis import observations, rate, bootstrap_ratings, probability_scores, POLICIES
++from tools.tournaments.probability import SCORE_DEFINITION
+ from tools.tournaments.results import Results
+ from tools.tournaments.duel_ratings import report as duel_report
+ 
+@@ -129,6 +130,8 @@ def main():
+     ratings = rate(rows, args.k)
+     total = len(rows)
+     report = {
++        "schema_version": 2,
++        "score_definition": dict(SCORE_DEFINITION),
+         "policy": args.policy,
+         "probability_scores": probability_scores(rows, args.draws, args.seed),
+         "k": args.k,
+@@ -189,12 +192,13 @@ def main():
+                 file=sys.stderr,
+             )
+ 
+-    print("\n| Format | Build | Variant | Competitor | Role | Stop (permille) | W / L / D | Mean win probability | 95% interval |", file=sys.stderr)
+-    print("| --- | --- | --- | --- | --- | ---: | --- | ---: | --- |", file=sys.stderr)
++    print("\n| Format | Build | Variant | Competitor | Role | Horizon | Stop (permille) | W / L / D | Scored / games | Actual / predicted / cap endings | Mean adjusted score (c=2) | 95% interval |", file=sys.stderr)
++    print("| --- | --- | --- | --- | --- | ---: | ---: | --- | ---: | --- | ---: | --- |", file=sys.stderr)
+     for score in sorted(report['probability_scores'], key=lambda s: (s['format'], s['build'], -(s['mean'] if s['mean'] is not None else -1))):
+         mean = f"{score['mean']:.4f}" if score['mean'] is not None else 'unavailable'
+-        print(f"| {score['format']} | {score['build'][:12]} | {score['variant']} | {score['competitor']} | {score['role']} | {score['win_probability_permille']} | "
+-              f"{score['wins']} / {score['losses']} / {score['draws']} | {mean} | {score['interval']} |", file=sys.stderr)
++        print(f"| {score['format']} | {score['build'][:12]} | {score['variant']} | {score['competitor']} | {score['role']} | {score['horizon_ticks']} | {score['win_probability_permille']} | "
++              f"{score['wins']} / {score['losses']} / {score['draws']} | {score['scored_games']} / {score['games']} | "
++              f"{score['outcome_credit_sources'].get('engine',0)} / {score['outcome_credit_sources'].get('probability_stop',0)} / {score['outcome_credit_sources'].get('tick_cap',0)} | {mean} | {score['interval']} |", file=sys.stderr)
+ 
+ 
+ if __name__ == "__main__":
