@@ -1,8 +1,14 @@
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, rmSync, readFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, sep } from 'node:path';
+import { join, sep, dirname } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { sourceErrors, browserSourceErrors, fixedLabelErrors } from '../scripts/source-contract.ts';
+import {
+  sourceErrors,
+  browserSourceErrors,
+  fixedLabelErrors,
+  fixedMetadataSourceErrors,
+  fixedMetadataSources,
+} from '../scripts/source-contract.ts';
 import { AI_TAGS } from '../../protocol/src/ais.ts';
 import english from '../locales/en.json' with { type: 'json' };
 
@@ -112,4 +118,39 @@ const end = '-->';
       'browser/shell.html:2: missing browser catalog key: Language',
     ]);
   });
+});
+
+describe('fixed UI metadata catalog contract', () => {
+  it('requires fixed display metadata even when JSX translates a variable', () => {
+    const english = JSON.parse(
+      readFileSync(new URL('../locales/en.json', import.meta.url), 'utf8'),
+    ) as Record<string, unknown>;
+    expect(fixedMetadataSourceErrors(english)).toEqual([]);
+    delete english.Rush;
+    const errors = fixedMetadataSourceErrors(english);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain(': missing fixed UI catalog key: Rush');
+  });
+});
+
+it('collects future metadata from declarations without requiring schema documentation', () => {
+  const root = mkdtempSync(join(tmpdir(), 'glob2-fixed-metadata-'));
+  try {
+    for (const file of new Set(fixedMetadataSources().map((entry) => entry.file))) {
+      const target = join(root, file);
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, readFileSync(new URL('../../../../' + file, import.meta.url)));
+    }
+    const path = join(root, 'platform/packages/protocol/src/ais.ts');
+    writeFileSync(
+      path,
+      readFileSync(path, 'utf8').replace("'Balanced',", "'Balanced', 'Future display label',") +
+        "\nconst schemaExample = Type.String({ description: 'Private schema documentation' });\n",
+    );
+    const sources = fixedMetadataSources(root).map((entry) => entry.source);
+    expect(sources).toContain('Future display label');
+    expect(sources).not.toContain('Private schema documentation');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });

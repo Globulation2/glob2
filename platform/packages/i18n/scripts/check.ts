@@ -1,7 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { locales } from '../src/locales.ts';
 import type { Catalog } from '../src/index.ts';
-import { sourceErrors, browserSourceErrors, fixedLabelErrors } from './source-contract.ts';
+import {
+  sourceErrors,
+  browserSourceErrors,
+  fixedLabelErrors,
+  fixedMetadataSourceErrors,
+} from './source-contract.ts';
 import { AI_TAGS } from '../../protocol/src/ais.ts';
 const read = (name: string): Catalog =>
   JSON.parse(readFileSync(new URL(`../locales/${name}.json`, import.meta.url), 'utf8')) as Catalog;
@@ -25,6 +30,7 @@ const errors: string[] = [
   ...sourceErrors(english),
   ...browserSourceErrors(english),
   ...fixedLabelErrors(english, AI_TAGS, 'AI tags'),
+  ...fixedMetadataSourceErrors(english),
 ];
 const game = readFileSync(new URL('../../../../data/texts.list.txt', import.meta.url), 'utf8')
   .trim()

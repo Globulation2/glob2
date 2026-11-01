@@ -571,8 +571,15 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               <label className="field">
                 {t('Reason')}
                 <select autoFocus value={reason} onChange={(e) => setReason(e.target.value)}>
-                  {['broken', 'offensive', 'copyright', 'other'].map((r) => (
-                    <option key={r}>{r}</option>
+                  {[
+                    ['broken', t('Broken')],
+                    ['offensive', t('Offensive')],
+                    ['copyright', t('Copyright')],
+                    ['other', t('Other')],
+                  ].map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -643,7 +650,9 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                   onChange={(e) => setVisibility(e.target.value as typeof visibility)}
                 >
                   {['public', 'unlisted', 'private'].map((x) => (
-                    <option key={x}>{x}</option>
+                    <option key={x} value={x}>
+                      {statusLabel(x)}
+                    </option>
                   ))}
                 </select>
               </label>

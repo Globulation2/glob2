@@ -91,6 +91,13 @@ describe('online locale resolution', () => {
     expect(runtime.getLocale()).toBe(locale.code);
     expect(runtime.hasMessage('Welcome to the colony')).toBe(true);
   });
+  it('selects Malay Rumi and skips explicit Jawi requests', () => {
+    for (const tag of ['ms', 'ms-MY', 'ms-Latn-MY', 'ms_MY', 'ms-u-nu-arab', 'ms-x-arab'])
+      expect(resolveLocale(tag)).toBe('ms');
+    expect(resolveLocale(['ms-Arab-MY', 'fr'])).toBe('fr');
+    expect(resolveLocale(['ms-Latn-Arab', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ms')).toBe('ms');
+  });
 });
 describe('message presentation', () => {
   it('interpolates safely as text and falls back to source', async () => {
@@ -157,9 +164,21 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains unique game catalog mappings', () => {
+  it('contains unique game catalog mappings including Malay', () => {
+    expect(locales).toContainEqual({
+      code: 'nb',
+      gameCode: 'nb',
+      name: 'Norsk bokmål',
+      dir: 'ltr',
+    });
     expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
     expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
+    expect(locales).toContainEqual({
+      code: 'ms',
+      gameCode: 'ms',
+      name: 'Bahasa Melayu',
+      dir: 'ltr',
+    });
   });
 });
 

@@ -232,7 +232,8 @@
   position: absolute;
   top: 120px;
   left: 50%;
-  transform: translateX(-50%);
+  /* Keep centering when the shared button pressed-state changes transform. */
+  translate: -50% 0;
   padding: 9px 18px !important;
   gap: 18px !important;
 }
@@ -748,11 +749,14 @@
 }
 .skin-shape-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 .skin-shape-grid button {
   flex-direction: column;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
   padding: 12px;
   border-color: var(--line);
 }
@@ -1022,9 +1026,9 @@
     width: 75px;
   }
   .skin-shape-button {
-    top: 75px;
+    top: 132px;
     left: 12px;
-    transform: none;
+    translate: none;
     font-size: 11px !important;
     padding: 5px 8px !important;
   }
@@ -1066,6 +1070,8 @@
     padding: 6px 12px 10px;
     gap: 6px 14px;
   }
+  .skin-tool-options > .skin-segment,
+  .skin-tool-options > .skin-material-groups,
   .skin-tool-options > details,
   .skin-tool-options > .skin-check {
     grid-column: 1 / -1;
@@ -1177,6 +1183,9 @@
   .skin-library-grid,
   .skin-copy-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .skin-shape-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .skin-shape-grid img {
     width: 65px;

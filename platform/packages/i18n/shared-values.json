@@ -82,7 +82,9 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Metal",
+    "Mineral"
   ],
   "sl": [
     " ({slot0})",
@@ -181,7 +183,9 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "{count} {status}"
+    "{count} {status}",
+    "Lava",
+    "Mineral"
   ],
   "hu": [
     " · ",
@@ -419,7 +423,12 @@
     "♥ {slot0} likes",
     "♥ {slot0} · {slot1}",
     "✕",
-    "＋"
+    "＋",
+    "1 week",
+    "Accounts",
+    "Audit",
+    "Cartoon",
+    "Lava"
   ],
   "ja": [
     " ({slot0})",
@@ -605,7 +614,9 @@
     "＋",
     "V",
     "{count} {status}",
-    "Expansion"
+    "Expansion",
+    "Lava",
+    "Mineral"
   ],
   "ru": [
     " ({slot0})",
@@ -788,7 +799,8 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "{count} {status}"
+    "{count} {status}",
+    "Metal"
   ],
   "uk": [
     " ({slot0})",
@@ -1152,7 +1164,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Audit"
   ],
   "pt-PT": [
     " · ",
@@ -1244,7 +1257,11 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "Experimental"
+    "Experimental",
+    "Coral",
+    "Lava",
+    "Metal",
+    "Mineral"
   ],
   "it": [
     " / {slot0}",
@@ -1340,7 +1357,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Lava"
   ],
   "zh-Hans": [
     " / {slot0}",
@@ -1533,7 +1551,10 @@
     "{slot0} · {count} image",
     "{slot0} · {count} images",
     "{value0} {value1} attention",
-    "Expansion"
+    "Expansion",
+    "Audit",
+    "Chrome",
+    "Finances"
   ],
   "el": [
     " · ",
@@ -1727,7 +1748,13 @@
     "⠿ {slot0}",
     "＋",
     "{count} credit",
-    "{count} {status}"
+    "{count} {status}",
+    "Audit",
+    "Coral",
+    "Experimental",
+    "Metal",
+    "Mineral",
+    "Organic"
   ],
   "ca": [
     " (provisional)",
@@ -1829,7 +1856,10 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "Experimental"
+    "Experimental",
+    "Finances",
+    "Lava",
+    "Mineral"
   ],
   "pt-BR": [
     " · ",
@@ -1924,7 +1954,11 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "Experimental"
+    "Experimental",
+    "Coral",
+    "Lava",
+    "Metal",
+    "Mineral"
   ],
   "ko": [
     " ({slot0})",
@@ -2449,7 +2483,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Audit"
   ],
   "id": [
     " · ",
@@ -2560,7 +2595,10 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Audit",
+    "Lava",
+    "Mineral"
   ],
   "da": [
     " · ",
@@ -2704,7 +2742,10 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Lava",
+    "Metal",
+    "Mineral"
   ],
   "sv": [
     " ({slot0})",
@@ -2820,7 +2861,9 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "Expansion"
+    "Expansion",
+    "Lava",
+    "Mineral"
   ],
   "es": [
     " / {slot0}",
@@ -2913,7 +2956,11 @@
     "✕",
     "⠿ {slot0}",
     "＋",
-    "Experimental"
+    "Experimental",
+    "Coral",
+    "Lava",
+    "Metal",
+    "Mineral"
   ],
   "ar": [
     " ({slot0})",
@@ -3351,7 +3398,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Lava"
   ],
   "bn": [
     " ({slot0})",
@@ -3539,6 +3587,107 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Fly",
+    "Lava",
+    "Mineral"
+  ],
+  "ms": [
+    " ({slot0})",
+    " / {slot0}",
+    " · ",
+    " · {slot0}",
+    " — ",
+    " → ",
+    "#{slot0}",
+    ".",
+    "/ais/favourites",
+    "/ais/mine",
+    "1.0.0",
+    "95%: {slot0}",
+    ": ",
+    "A · V{slot0}",
+    "AI",
+    "B{slot0}",
+    "CC BY",
+    "CC BY 4.0",
+    "CC BY-SA 4.0",
+    "CC-BY-4.0",
+    "CC-BY-SA-4.0",
+    "CC0",
+    "CC0 1.0",
+    "CC0-1.0",
+    "Cabino",
+    "Castor",
+    "Cortex",
+    "Econo",
+    "Globulation 2",
+    "HTTP {value0}",
+    "Hive Mind",
+    "Import",
+    "Import .js",
+    "Import JavaScript",
+    "JSON",
+    "JavaScript · {slot0}",
+    "Maxima",
+    "Moderator",
+    "Nicowar",
+    "Numbi",
+    "OK",
+    "Ping",
+    "Status",
+    "Status: {slot0}",
+    "Studio",
+    "Tag",
+    "Toubib",
+    "V",
+    "V{slot0} · {slot1}",
+    "Warrush",
+    "b-",
+    "public, max-age=604800",
+    "r{slot0} · {slot1}",
+    "text/html; charset=utf-8",
+    "v{slot0}",
+    "{count} {status}",
+    "{hours} {minutes}",
+    "{slot0} ({slot1}%)",
+    "{slot0} ({slot1})",
+    "{slot0} / {slot1}",
+    "{slot0} · {slot1}",
+    "{slot0} · {slot1} {slot2}",
+    "{slot0} · {slot1} · {slot2}",
+    "{slot0} · {slot1} · {slot2} × {slot3}",
+    "{slot0} · {slot1} · {slot2}{slot3}",
+    "{slot0} · {slot1}{slot2}",
+    "{slot0} ↗",
+    "{slot0}%",
+    "{slot0}/32",
+    "{slot0}: {slot1}",
+    "{slot0}: {slot1} · {slot2}",
+    "{slot0}{slot1} · ♥ {slot2}{slot3}",
+    "{slot0}°",
+    "{slot0}×{slot1}",
+    "{slot0}–{slot1}",
+    "×",
+    "–",
+    "•••",
+    "…",
+    "← {slot0}",
+    "↑",
+    "→",
+    "↗",
+    "−",
+    "⌄",
+    "◎",
+    "●",
+    "★",
+    "♥ {slot0}",
+    "♥ {slot0} · {slot1}",
+    "✕",
+    "⠿ {slot0}",
+    "＋",
+    "Audit",
+    "Lava",
+    "Mineral"
   ]
 }

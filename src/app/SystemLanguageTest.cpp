@@ -175,4 +175,28 @@ TEST_SUITE("SystemLanguage")
 		CHECK(startupLanguage("no-such-language") == "br");
 		CHECK(startupLanguage("fr") == "fr");
 	}
+	TEST_CASE("Malay selects Rumi without advertising Jawi coverage")
+	{
+		CHECK(code("ms") == "ms");
+		CHECK(code("ms", "MY") == "ms");
+		CHECK(code("ms-MY") == "ms");
+		CHECK(code("ms-Latn-MY") == "ms");
+		CHECK(code("ms_Arab_MY").empty());
+		CHECK(code("ms-Arab-Latn").empty());
+		CHECK(code("ms-u-nu-arab") == "ms");
+		CHECK(code("ms-x-arab") == "ms");
+		auto installed = [](const std::string &c) { return c == "ms" || c == "en"; };
+		CHECK(SystemLanguage::choose({{"ms-Arab", "MY"}, {"en", ""}}, installed) == "en");
+		CHECK(SystemLanguage::choose({{"ms-Latn", "MY"}, {"en", ""}}, installed) == "ms");
+	}
+
+	TEST_CASE("Malay startup preserves an explicit saved choice")
+	{
+		PreferredLocales locales("ms_MY,en_US");
+		CHECK(startupLanguage("") == "ms");
+		CHECK(startupLanguage("fr") == "fr");
+		CHECK(startupLanguage("ms") == "ms");
+	}
+
+
 }

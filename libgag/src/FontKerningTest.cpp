@@ -151,7 +151,7 @@ TEST_SUITE("FontKerning")
 		std::ofstream(files.path / "probe.keys.txt") << "[language-code]\n";
 		std::ofstream listing(files.path / "probe.list.txt");
 		listing << "probe.keys.txt\n";
-		for (const char *code : {"en", "hi", "bn", "nb", "ur", "sw", "gu", "pa-guru", "ar", "fa"})
+		for (const char *code : {"en", "hi", "bn", "nb", "ms", "ur", "sw", "gu", "pa-guru", "ar", "fa"})
 		{
 			listing << "probe." << code << ".txt\n";
 			std::ofstream(files.path / (std::string("probe.") + code + ".txt")) << "[language-code]\n" << code << '\n';
@@ -165,7 +165,7 @@ TEST_SUITE("FontKerning")
 			const int originalHeight = font.getStringHeight("");
 			auto original = font.rasterizeString("Menu", 1.f);
 			REQUIRE(original);
-			for (const char *code : {"hi", "bn", "nb", "ur", "sw", "gu", "pa-guru"})
+			for (const char *code : {"hi", "bn", "nb", "ms", "ur", "sw", "gu", "pa-guru"})
 			{
 				strings->setLang(strings->getLangCode(code));
 				const int lineHeight = font.getStringHeight("");
@@ -176,6 +176,7 @@ TEST_SUITE("FontKerning")
 				CHECK(menu->getH() == lineHeight);
 				CAPTURE(code); CAPTURE(size);
 				const char *sample = std::string(code) == "hi" ? "क्षत्रिय खिलाड़ी" :
+					std::string(code) == "ms" ? "sendiri dibekalkan dengan makanan dan buah-buahan untuk mengekalkan" :
 					std::string(code) == "bn" ? "ক্ষুদ্র শ্রমিকের প্রস্তুতি: ১২ / ১০০ Glob2" :
 					std::string(code) == "gu" ? "ગુજરાતી ખેલાડી" :
 					std::string(code) == "pa-guru" ? "ਪੰਜਾਬੀ ਖਿਡਾਰੀ" :

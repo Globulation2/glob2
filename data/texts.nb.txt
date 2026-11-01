@@ -6820,3 +6820,35 @@ Antall leirplasser
 
 [scenario messages]
 Meldinger ▸
+[stats topic overview]
+Oversikt
+[stats topic economy]
+Økonomi
+[stats topic world]
+Verden
+[stats work construction]
+Arbeid og bygging
+[stats defence]
+Forsvar
+[stats history]
+Vis historikk
+[stats waiting]
+Venter på statistikk…
+[stats unit details]
+Enhetsdetaljer
+[stats map overlays]
+Kartoverlegg
+[stats topic]
+Emne
+[stats full history]
+Åpne hele historikken
+[stats missing readings]
+— Ingen registrert avlesning ennå. Velg en statistikk for detaljer.
+[lush_grass]
+Frodig gress
+[dry_grass]
+Tørt gress
+[dune_sand]
+Dynesand
+[pale_sand]
+Blek sand

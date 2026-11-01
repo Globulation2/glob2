@@ -85,3 +85,15 @@ test('translated blocked-link labels isolate the technical URL from RTL text', (
   assert.equal(anchor.nodes[1].textContent, 'glob2.org/account');
   assert.equal(anchor.nodes[2].text, ' ↗');
 });
+
+test('Malay starts from the online choice with the core Latin font and preserves saved choices', () => {
+  const context = profile(null, 'ms');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'ms');
+  assert.equal(context.interfaceLanguage(), 'ms');
+  assert.equal(context.cjkInterface(), false);
+  const saved = profile('fr', 'ms');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'fr');
+});
