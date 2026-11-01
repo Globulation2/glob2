@@ -1,0 +1,126 @@
+128x128 t2 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+128x128 t2 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+128x128 t2 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+128x128 t3 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+128x128 t3 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+128x128 t3 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+128x128 t4 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+128x128 t4 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+128x128 t4 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+128x128 t6 s1: Map command: honeycomb-isle revision 5 seed 1 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t6 s2: Map command: honeycomb-isle revision 5 seed 2 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t6 s3: Map command: honeycomb-isle revision 5 seed 3 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t8 s1: Map command: honeycomb-isle revision 5 seed 1 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t8 s2: Map command: honeycomb-isle revision 5 seed 2 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t8 s3: Map command: honeycomb-isle revision 5 seed 3 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t12 s1: Map command: honeycomb-isle revision 5 seed 1 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t12 s2: Map command: honeycomb-isle revision 5 seed 2 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t12 s3: Map command: honeycomb-isle revision 5 seed 3 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t16 s1: Map command: honeycomb-isle revision 5 seed 1 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t16 s2: Map command: honeycomb-isle revision 5 seed 2 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x128 t16 s3: Map command: honeycomb-isle revision 5 seed 3 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x256 t2 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+128x256 t2 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+128x256 t2 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+128x256 t3 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+128x256 t3 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+128x256 t3 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+128x256 t4 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+128x256 t4 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+128x256 t4 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+128x256 t6 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+128x256 t6 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+128x256 t6 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+128x256 t8 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+128x256 t8 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+128x256 t8 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+128x256 t12 s1: Map command: honeycomb-isle revision 5 seed 1 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x256 t12 s2: Map command: honeycomb-isle revision 5 seed 2 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x256 t12 s3: Map command: honeycomb-isle revision 5 seed 3 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x256 t16 s1: Map command: honeycomb-isle revision 5 seed 1 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x256 t16 s2: Map command: honeycomb-isle revision 5 seed 2 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+128x256 t16 s3: Map command: honeycomb-isle revision 5 seed 3 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+256x128 t2 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x128 t2 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x128 t2 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x128 t3 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x128 t3 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x128 t3 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x128 t4 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x128 t4 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x128 t4 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x128 t6 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x128 t6 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x128 t6 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x128 t8 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x128 t8 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x128 t8 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x128 t12 s1: Map command: honeycomb-isle revision 5 seed 1 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+256x128 t12 s2: Map command: honeycomb-isle revision 5 seed 2 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+256x128 t12 s3: Map command: honeycomb-isle revision 5 seed 3 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+256x128 t16 s1: Map command: honeycomb-isle revision 5 seed 1 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+256x128 t16 s2: Map command: honeycomb-isle revision 5 seed 2 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+256x128 t16 s3: Map command: honeycomb-isle revision 5 seed 3 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+256x256 t2 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x256 t2 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x256 t2 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x256 t3 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x256 t3 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x256 t3 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x256 t4 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x256 t4 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x256 t4 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x256 t6 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x256 t6 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x256 t6 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x256 t8 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x256 t8 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x256 t8 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x256 t12 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x256 t12 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x256 t12 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+256x256 t16 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+256x256 t16 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+256x256 t16 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x256 t2 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x256 t2 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x256 t2 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x256 t3 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x256 t3 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x256 t3 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x256 t4 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x256 t4 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x256 t4 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x256 t6 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x256 t6 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x256 t6 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x256 t8 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x256 t8 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x256 t8 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x256 t12 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x256 t12 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x256 t12 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x256 t16 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x256 t16 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x256 t16 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x512 t2 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x512 t2 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x512 t2 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x512 t3 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x512 t3 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x512 t3 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x512 t4 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x512 t4 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x512 t4 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x512 t6 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x512 t6 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x512 t6 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x512 t8 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x512 t8 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x512 t8 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x512 t12 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x512 t12 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x512 t12 s3: honeycomb-isle revision 5 seed 3 [complete]: 
+512x512 t16 s1: honeycomb-isle revision 5 seed 1 [complete]: 
+512x512 t16 s2: honeycomb-isle revision 5 seed 2 [complete]: 
+512x512 t16 s3: honeycomb-isle revision 5 seed 3 [complete]: 
