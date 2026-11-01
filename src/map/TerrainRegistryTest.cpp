@@ -247,6 +247,15 @@ TEST_SUITE("TerrainRegistry")
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT_BEFORE_CATALOGUE - 1));
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT + 1));
 		CHECK(TerrainRegistry::deserialize(R"({"schemaVersion":1,"terrains":[]})", TERRAIN_COUNT_BEFORE_CATALOGUE) == builtin);
+
+		// Formats 146 to 186 number their definitions from 29, before the grass and sand looks.
+		auto beforeLooks = Json::parse(registry->serialize());
+		for (auto &item : beforeLooks["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_GROUND_LOOKS;
+		const auto vertex = TerrainRegistry::deserialize(beforeLooks.dump(), TERRAIN_COUNT_BEFORE_GROUND_LOOKS);
+		CHECK(vertex->serialize() == registry->serialize());
+		CHECK(vertex->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeLooks.dump()));
 	}
 	TEST_CASE("large registries compile equivalent definitions into bounded movement profiles")
 	{

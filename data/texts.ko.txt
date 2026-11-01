@@ -4884,6 +4884,30 @@ AI 원격 측정
 정리한 자원
 [stat cleared about]
 일꾼이 공간을 만들려고 정리 구역에서 제거한 자원입니다.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ AI 생성 아님
 구멍
 [chasm]
 깊은 틈
+[lush_grass]
+무성한 풀
+[dry_grass]
+마른 풀
+[dune_sand]
+사구 모래
+[pale_sand]
+밝은 모래
 [terrain group water]
 물
 [terrain group sand]

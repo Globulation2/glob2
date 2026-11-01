@@ -4884,6 +4884,30 @@ Eingeschlossene Einheiten ohne freies Feld zum Betreten.
 Gerodete Ressourcen
 [stat cleared about]
 Von Arbeitern in Rodungszonen entfernte Ressourcen, um Platz zu schaffen.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Dunkles Wasser
 Loch
 [chasm]
 Abgrund
+[lush_grass]
+Sattes Gras
+[dry_grass]
+Trockenes Gras
+[dune_sand]
+Dünensand
+[pale_sand]
+Heller Sand
 [terrain group water]
 Wasser
 [terrain group sand]

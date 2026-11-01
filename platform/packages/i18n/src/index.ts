@@ -69,6 +69,13 @@ export function resolveLocale(input: string | readonly string[]): Locale {
       const script = subtags.find((part) => /^[a-z]{4}$/.test(part));
       if (script && script !== writtenScript) continue;
     }
+    // Legacy no-nyn and no_NO_NY explicitly request Nynorsk, which has no catalog.
+    if (language === 'no') {
+      const extension = parts.findIndex((part) => part.length === 1);
+      const subtags = extension < 0 ? parts : parts.slice(0, extension);
+      if (subtags.includes('nyn') || (subtags.includes('no') && subtags.includes('ny'))) continue;
+      return 'nb';
+    }
     if (language === 'pt') return parts.includes('br') ? 'pt-BR' : 'pt-PT';
     if (language === 'zh')
       return parts.some((p) => ['hant', 'tw', 'hk', 'mo'].includes(p)) ? 'zh-Hant' : 'zh-Hans';
@@ -131,6 +138,7 @@ const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
   it: () => import('../locales/it.json', { with: { type: 'json' } }),
   ja: () => import('../locales/ja.json', { with: { type: 'json' } }),
   ko: () => import('../locales/ko.json', { with: { type: 'json' } }),
+  nb: () => import('../locales/nb.json', { with: { type: 'json' } }),
   nl: () => import('../locales/nl.json', { with: { type: 'json' } }),
   pl: () => import('../locales/pl.json', { with: { type: 'json' } }),
   'pt-BR': () => import('../locales/pt-BR.json', { with: { type: 'json' } }),

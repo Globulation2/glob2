@@ -1,6 +1,7 @@
 #include "tutorial/TutorialModel.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <iostream>
@@ -42,6 +43,7 @@ void GameGUI::openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog>
     // Panel icons must not destroy an operation before durable persistence ends.
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->isPersisting()) return;
+	if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
 	if (touch)
 		touch->cancel(true);
 	inGameMenu = menu;
@@ -95,6 +97,8 @@ std::unique_ptr<Glob2UI::InGameDialog> GameGUI::makeLeaveConfirmation() const
 
 void GameGUI::openChat()
 {
+    if (inGameMenu == IGM_STATISTICS) closeDialog();
+    if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
 	if (typingInputScreen)
 		return;
 	if (touch)
@@ -106,6 +110,8 @@ void GameGUI::openChat()
 
 void GameGUI::openCommander()
 {
+    if (inGameMenu == IGM_STATISTICS) closeDialog();
+    if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
  if(!hive || !hive->available() || !globalContainer->settings.hiveMindEnabled || typingInputScreen)return;
  if(touch)touch->cancel(true);
  typingCommander=true;
@@ -122,6 +128,8 @@ void GameGUI::closeChat()
 
 void GameGUI::toggleHistory()
 {
+    if (inGameMenu == IGM_STATISTICS) closeDialog();
+    if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
 	if (scrollableText)
 	{
 		scrollableText.reset();
@@ -154,7 +162,7 @@ void GameGUI::saveGameTo(LoadSaveDialog &dialog)
 bool GameGUI::processGameMenu(SDL_Event *event)
 {
     bool boundaryResult=false;
-    if (gameMenuScreen && parkForClient([&]{boundaryResult=processGameMenu(event);})) return boundaryResult;
+    if (gameMenuScreen && inGameMenu != IGM_STATISTICS && parkForClient([&]{boundaryResult=processGameMenu(event);})) return boundaryResult;
 	if (!gameMenuScreen)
 		return false;
 	bool consumed = false;
@@ -301,6 +309,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 		case IGM_HIVE:
 			closeDialog();return true;
+
+		case IGM_STATISTICS:
+            closeDialog();
+            if (statisticsPanel) statisticsPanel->restoreFocus();
+            return true;
 
 		case IGM_TELEMETRY:
 			closeDialog();

@@ -129,7 +129,7 @@ void GameGUI::processEvent(SDL_Event *event)
     // Live diagnostic dumps and dialog construction are exceptional owner work.
     const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
     const bool ownerDialog = gameMenuScreen && inGameMenu != IGM_TELEMETRY
-        && inGameMenu != IGM_ALLIANCE && inGameMenu != IGM_OBJECTIVES;
+        && inGameMenu != IGM_ALLIANCE && inGameMenu != IGM_OBJECTIVES && inGameMenu != IGM_STATISTICS;
     if ((diagnostic || ownerDialog || hive) && parkForClient([&]{processEvent(event);})) return;
     if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
     if (event->type == SDL_EVENT_MOUSE_WHEEL) {
@@ -139,6 +139,7 @@ void GameGUI::processEvent(SDL_Event *event)
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
     if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;
     if (tutorialGuidance && !activeDialog() && !typingInputScreen && tutorialGuidance->handle(*event)) return;
+    if (handleStatisticsEvent(*event)) return;
     if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_MIDDLE) ||
         ((event->type >= SDL_EVENT_WINDOW_FIRST && event->type <= SDL_EVENT_WINDOW_LAST) && event->type == SDL_EVENT_WINDOW_FOCUS_LOST))

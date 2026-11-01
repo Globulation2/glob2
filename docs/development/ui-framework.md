@@ -215,7 +215,9 @@ kit for API calls so both kits cannot spend the same remaining allowance.
 
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
-system tag alone must never enable an unfinished locale. Punjabi scripts use
+system tag alone must never enable an unfinished locale. Norwegian Bokmål uses
+`nb`; generic `no` selects Bokmål, while explicit `nn`, legacy `no-nyn` and
+`no-NO-NY` preferences fall through to the next supported language. Punjabi scripts use
 `pa-guru` and `pa-arab`; explicit scripts take precedence over country defaults.
 The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
 Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other
@@ -271,11 +273,13 @@ the real engine and menu dialog. Tutorial IDs must belong to the current shipped
 lesson catalog. The harness captures the actual briefing tab, opening it explicitly
 when the automatic briefing is absent, then dismisses it and captures the uncovered
 guidance panel. Its metadata distinguishes automatic and explicit opening.
-A published tutorial model alone does not prove that its text is visible. Inputs are
-`native.json` and `online.json` key/value objects plus `metadata.json` identifying
-the locale. Preserve the original text-catalog hashes in that metadata when
-converting formats. A small pilot is a font diagnostic, not evidence that the
-whole catalog was displayed.
+The gameplay preview also captures the win-probability statistics screen and its
+metric explanation, checking that drawing leaves the simulation checksum intact.
+> > > > > > > A published tutorial model alone does not prove that its text is visible. Inputs are
+> > > > > > > `native.json` and `online.json` key/value objects plus `metadata.json` identifying
+> > > > > > > the locale. Preserve the original text-catalog hashes in that metadata when
+> > > > > > > converting formats. A small pilot is a font diagnostic, not evidence that the
+> > > > > > > whole catalog was displayed.
 
 Tutorial captures also click the actual guidance controls to record the collapsed
 control and re-expanded instructions. Those UI actions and draws must leave the
@@ -304,14 +308,14 @@ words naturally in sentences rather than substituting labels mechanically.
 Hindi uses contemporary Devanagari, Urdu uses Arabic script with logical text
 order, and Swahili uses standard Latin-script Kiswahili.
 
-| Concept | Hindi (`hi`) | Urdu (`ur`) | Swahili (`sw`) |
-| --- | --- | --- | --- |
-| Worker | श्रमिक | کارکن | Mfanyakazi |
-| Explorer | खोजी | کھوجی | Mgunduzi |
-| Warrior | योद्धा | جنگجو | Shujaa |
-| Inn | सराय | سرائے | Nyumba ya wageni |
-| Swarm | छत्ता | چھتہ | Kiota |
-| Market | बाज़ार | بازار | Soko |
+| Concept  | Hindi (`hi`) | Urdu (`ur`) | Swahili (`sw`)   |
+| -------- | ------------ | ----------- | ---------------- |
+| Worker   | श्रमिक       | کارکن       | Mfanyakazi       |
+| Explorer | खोजी         | کھوجی       | Mgunduzi         |
+| Warrior  | योद्धा       | جنگجو       | Shujaa           |
+| Inn      | सराय         | سرائے       | Nyumba ya wageni |
+| Swarm    | छत्ता        | چھتہ        | Kiota            |
+| Market   | बाज़ार       | بازار       | Soko             |
 
 An assigned worker target requests workers; it does not count workers already
 present. Construction and operating supply use separate targets. Keep those
@@ -327,23 +331,23 @@ surfaces. The [Microsoft Tamil style guide](https://aka.ms/tamil-styleguide)
 provides software-localization guidance; the [Unicode Tamil chapter](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-12/#G12322)
 describes the script's vowel and puḷḷi behavior.
 
-| Concept | Tamil | Context |
-| --- | --- | --- |
-| Worker | தொழிலாளர் | Gathering and building unit |
-| Explorer | சாரணர் | Scout, rather than scientific researcher |
-| Warrior | போர்வீரர் | Fighting unit |
-| Player | ஆட்டக்காரர் | Person playing, distinct from a warrior unit |
-| Unit | அலகு | Any unit class |
-| Swarm | கூடு | Unit-producing hive building, rather than a crowd |
-| Inn | உணவகம் | Feeds units and attracts converts |
-| Barracks / Training Camp | படைமுகாம் | Same build-menu control and warrior-training building |
-| Colony | குடியிருப்பு | Settlement |
-| Clearing flag | வள அகற்றும் கொடி | Removes resources, rather than removing the flag |
-| Replay | மறுபதிவு | Recorded match playback |
-| Product credit | வரவு | Usage balance; distinct from debt or contributor acknowledgements |
-| Commander | கட்டளை உதவியாளர் | In-game AI assistance role; Hive Mind remains the product name |
-| Studio | படைப்பகம் | Online authoring workspace |
-| Online instance | சேவையகம் | Independent online service installation |
+| Concept                  | Tamil            | Context                                                           |
+| ------------------------ | ---------------- | ----------------------------------------------------------------- |
+| Worker                   | தொழிலாளர்        | Gathering and building unit                                       |
+| Explorer                 | சாரணர்           | Scout, rather than scientific researcher                          |
+| Warrior                  | போர்வீரர்        | Fighting unit                                                     |
+| Player                   | ஆட்டக்காரர்      | Person playing, distinct from a warrior unit                      |
+| Unit                     | அலகு             | Any unit class                                                    |
+| Swarm                    | கூடு             | Unit-producing hive building, rather than a crowd                 |
+| Inn                      | உணவகம்           | Feeds units and attracts converts                                 |
+| Barracks / Training Camp | படைமுகாம்        | Same build-menu control and warrior-training building             |
+| Colony                   | குடியிருப்பு     | Settlement                                                        |
+| Clearing flag            | வள அகற்றும் கொடி | Removes resources, rather than removing the flag                  |
+| Replay                   | மறுபதிவு         | Recorded match playback                                           |
+| Product credit           | வரவு             | Usage balance; distinct from debt or contributor acknowledgements |
+| Commander                | கட்டளை உதவியாளர் | In-game AI assistance role; Hive Mind remains the product name    |
+| Studio                   | படைப்பகம்        | Online authoring workspace                                        |
+| Online instance          | சேவையகம்         | Independent online service installation                           |
 
 Keep keyboard key names and protocol identifiers recognizable. Translate terrain
 controls from their effects, and preserve distinctions between requested workers
@@ -428,16 +432,16 @@ ordered input, release cleanup and capture after actual dispatch.
 `Presentation` is resolved once per frame from the graphic context and passed
 to `build()`:
 
-| Member | Meaning |
-| --- | --- |
-| `viewport`, `safe`, `dialog` | Whole surface; minus platform gutters; minus the onscreen keyboard. Content goes in `safe`, forms and dialogs in `dialog`. |
-| `unit`, `pt()` | Logical pixels per point and the conversion. |
-| `textScale` | Text enlargement over the fonts' authored size: the player's text size, times the theme's `touchTextScale` on touch hosts. |
-| `textGrowth`, `textPt()` | The player's text size alone (1 at 100%), and a length that grows with it, for widths that hold text such as a label column. |
-| `textUnit` | Logical pixels per authored font pixel, used by the text measurer and canvas: `unit × textScale` on touch hosts, `textScale` on pointer hosts. |
-| `touch`, `hover` | Touch capability (48-point targets) and pointer availability (tooltips). |
-| `compact()`, `expanded()` | Width class thresholds at 600 and 960 points. |
-| `phone()`, `landscape()`, `shortLandscape()` | Device shape helpers for structural choices. |
+| Member                                       | Meaning                                                                                                                                        |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `viewport`, `safe`, `dialog`                 | Whole surface; minus platform gutters; minus the onscreen keyboard. Content goes in `safe`, forms and dialogs in `dialog`.                     |
+| `unit`, `pt()`                               | Logical pixels per point and the conversion.                                                                                                   |
+| `textScale`                                  | Text enlargement over the fonts' authored size: the player's text size, times the theme's `touchTextScale` on touch hosts.                     |
+| `textGrowth`, `textPt()`                     | The player's text size alone (1 at 100%), and a length that grows with it, for widths that hold text such as a label column.                   |
+| `textUnit`                                   | Logical pixels per authored font pixel, used by the text measurer and canvas: `unit × textScale` on touch hosts, `textScale` on pointer hosts. |
+| `touch`, `hover`                             | Touch capability (48-point targets) and pointer availability (tooltips).                                                                       |
+| `compact()`, `expanded()`                    | Width class thresholds at 600 and 960 points.                                                                                                  |
+| `phone()`, `landscape()`, `shortLandscape()` | Device shape helpers for structural choices.                                                                                                   |
 
 ### Text size
 
@@ -452,8 +456,8 @@ desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
 
 - The player's preference (`Settings::textSizePercent`, 100–150%, in Settings
   > Display and the in-game options) sets `GAGCore::userTextScale` through
-  `Settings::setTextSizePercent()`. Every host picks it up on its next frame and
-  relayouts; screens need no code for it.
+  > `Settings::setTextSizePercent()`. Every host picks it up on its next frame and
+  > relayouts; screens need no code for it.
 - Themes carry the touch base (`Theme::touchTextScale`, 1.15 for the game's
   themes), so menus, dialogs over gameplay and the end-of-game sheet match.
 - Bespoke touch painters (the gameplay HUD, the phone editor) draw text at
@@ -551,6 +555,11 @@ bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
 
+Script-layout locales, Swahili and Norwegian Bokmål draw high-DPI text at the
+authored width used by wrapping and hit testing. The complete high-resolution
+bitmap is resampled into that destination: font hinting at a larger raster size
+must not make a fitted line overflow its layout.
+
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored
 resolution. The touch inspector's curved labels rasterize their source at twice
@@ -576,14 +585,14 @@ together in `src/render/overlay/MapZoomControls.h`.
 
 Every screen uses the same scale, so menus read alike:
 
-| Use | How |
-| --- | --- |
-| Page title | `pageTitle()` (Heading, left-aligned); `page()`, `menu()`, Settings, the hub and the room all use it |
-| Hero content | `title()` (Title): the main-menu wordmark fallback, the result banner, large numbers |
-| Section header | `heading()`, never a plain `label()` |
-| Body, list rows, fields, tabs, action buttons | Body (the default) |
-| Hints, help and notes | `hint()` (Support, muted) |
-| Small metadata | `caption()` |
+| Use                                           | How                                                                                                  |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Page title                                    | `pageTitle()` (Heading, left-aligned); `page()`, `menu()`, Settings, the hub and the room all use it |
+| Hero content                                  | `title()` (Title): the main-menu wordmark fallback, the result banner, large numbers                 |
+| Section header                                | `heading()`, never a plain `label()`                                                                 |
+| Body, list rows, fields, tabs, action buttons | Body (the default)                                                                                   |
+| Hints, help and notes                         | `hint()` (Support, muted)                                                                            |
+| Small metadata                                | `caption()`                                                                                          |
 
 Only the main menu's launch buttons use the Heading font for buttons.
 
@@ -629,15 +638,15 @@ compiled `light` and `dark` themes (`ThemeCatalog::builtinLight()` and
 
 ```json
 {
-	"schema": 1,
-	"id": "ocean",
-	"name": "Ocean",
-	"extends": "dark",
-	"palette": { "accent": "#ff8a65", "panel": "#0f2233f4" },
-	"hud": { "border": "#3fa7a0" },
-	"backdrop": { "kind": "colony", "veil": "#07131d70", "wordmark": "" },
-	"buttons": { "kind": "palette" },
-	"metrics": { "radius": 6, "focusRing": 2 }
+  "schema": 1,
+  "id": "ocean",
+  "name": "Ocean",
+  "extends": "dark",
+  "palette": { "accent": "#ff8a65", "panel": "#0f2233f4" },
+  "hud": { "border": "#3fa7a0" },
+  "backdrop": { "kind": "colony", "veil": "#07131d70", "wordmark": "" },
+  "buttons": { "kind": "palette" },
+  "metrics": { "radius": 6, "focusRing": 2 }
 }
 ```
 
@@ -872,3 +881,32 @@ preference fields or simulation state are introduced.
    `src/ui/UIPresentationHarness.cpp` and, for a reviewable capture, to
    `tools/MobileGalleryHarness.cpp` and `tools/mobile_gallery/catalog.json`.
 4. Expose semantic entry points for interaction tests instead of coordinates.
+
+### In-game statistics
+
+The Statistics view shares visible topic buttons and a scrollable metric list
+between the 200-pixel desktop sidebar and the mobile bottom sheet.
+The desktop minimap stays 128 pixels wide and is centered within the sidebar.
+Overview highlights population, growth, hunger, health, worker idleness, blocked
+buildings, warriors and intruders. Colony contains Population and Food; Economy
+contains Work, Materials and Buildings; Military contains Military; World contains
+Map and Score. Colony also retains the snapshot-only Unit details. Live spectators
+retain their existing win-chance display under World.
+
+Selecting a metric shows its current or watched team's history below that group.
+Labels and values use separate aligned columns; unavailable readings use a dash
+and one shared explanation. Larger text uses fewer topic buttons per row and
+puts readings below full-width labels. Open full history expands the chart into an in-game
+dialog while the match continues. Its Details disclosure explains the metric;
+short landscape layouts put the chart before its controls. Rate/total and averaging controls use the metric
+catalog's capabilities and defaults. Topic, per-topic scrolling and per-metric
+history choices last for the current match; they are not saved as preferences.
+Closing history restores focus to its metric. The former graph view is now Map
+overlays, retaining its tab position and the four overlay toggles.
+
+`InGameStatisticsPanel` holds immutable statistics/history leases rather than
+live simulation pointers. Visible statistics and history request the history
+component explicitly; hidden views release it. Waiting for publication, insufficient
+history and statistics not recorded in older saves have distinct messages, while
+recorded zeros remain numeric. The mobile sheet header handles downward dismissal;
+the embedded framework host handles scrolling so a content drag cannot dismiss it.

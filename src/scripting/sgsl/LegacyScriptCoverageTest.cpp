@@ -4,6 +4,9 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <array>
+#include <vector>
+#include <StringTable.h>
+#include <Toolkit.h>
 #include "AI.h"
 #include "Player.h"
 #include <nlohmann/json.hpp>
@@ -47,6 +50,98 @@ std::string save(MapScriptSGSL& script, Game& game)
 
 TEST_SUITE("LegacyScriptCoverage")
 {
+    TEST_CASE("catalog languages and quoted locale names preserve suspended story continuation")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        auto* strings=GAGCore::Toolkit::getStringTable();
+        struct RestoreLanguage
+        {
+            GlobalContainer& globals;
+            GAGCore::StringTable& strings;
+            std::string language;
+            int index;
+            ~RestoreLanguage() { globals.settings.language=language; strings.setLang(index); }
+        } restoreLanguage{*globals,*strings,globals->settings.language,strings->getLang()};
+        for (const bool includeNorwegian : {false, true})
+        {
+            CAPTURE(includeNorwegian);
+            // The first source was valid before Norwegian was registered. The
+            // second also exercises the newly supported presentation language.
+            const std::string source=
+                std::string("setArea(\"nb\",10,10,4) label(\"nb\") show(\"ancien\",fr) ") +
+                (includeNorwegian ? "show(\"ny\",nb) " : "") +
+                "wait(3) summonUnits(\"nb\",2,Worker,0,0) win(0)";
+            std::vector<Uint32> firstChecksums;
+            std::vector<Uint32> firstGameChecksums;
+            std::vector<std::string> firstSaves;
+            for (const std::string language : {"fr", "nb"})
+            {
+                CAPTURE(language);
+                globals->settings.language=language;
+                strings->setLang(strings->getLangCode(language));
+                REQUIRE(std::string(strings->getString("[language-code]")) == language);
+                World original, restored;
+                REQUIRE(original.compile(source).type == ErrorReport::ET_OK);
+                CHECK(original.script.stories.front().labels.count("nb") == 1);
+                int languageTokens=0;
+                for (const auto& token : original.script.stories.front().line)
+                    if (token.type == SGSLToken::LANG)
+                    {
+                        CHECK(token.value == strings->getLangCode(token.msg));
+                        ++languageTokens;
+                    }
+                CHECK(languageTokens == (includeNorwegian ? 2 : 1));
+                original.step();
+                CHECK(original.script.isTextShown == (language == "fr" || includeNorwegian));
+                if (original.script.isTextShown)
+                    CHECK(original.script.textShown == (language == "fr" ? "ancien" : "ny"));
+                else
+                    CHECK(original.script.textShown.empty());
+                REQUIRE(original.script.stories.front().internTimer > 0);
+                const auto bytes=save(original.script,original.world.game);
+                auto* gameBackend=new GAGCore::MemoryStreamBackend;
+                GAGCore::BinaryOutputStream gameOutput(gameBackend);
+                original.world.game.save(&gameOutput,false,"localized story continuation");
+                gameOutput.flush();
+                const auto gameBytes=gameBackend->takeContents();
+                GAGCore::BinaryInputStream gameInput(new GAGCore::MemoryStreamBackend(gameBytes.data(),gameBytes.size()));
+                gameInput.seekFromStart(0);
+                REQUIRE(restored.world.game.load(&gameInput));
+                GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+                input.seekFromStart(0);
+                REQUIRE(restored.script.load(&input,&restored.world.game));
+                for (unsigned tick=0;tick<6;++tick)
+                {
+                    CAPTURE(tick);
+                    CHECK(original.script.stories.front().lineSelector == restored.script.stories.front().lineSelector);
+                    CHECK(original.script.stories.front().random == restored.script.stories.front().random);
+                    CHECK(original.script.checkSum() == restored.script.checkSum());
+                    CHECK(original.world.game.checkSum() == restored.world.game.checkSum());
+                    const auto saved=save(original.script,original.world.game);
+                    CHECK(saved == save(restored.script,restored.world.game));
+                    if (language == "fr")
+                    {
+                        firstChecksums.push_back(original.script.checkSum());
+                        firstGameChecksums.push_back(original.world.game.checkSum());
+                        firstSaves.push_back(saved);
+                    }
+                    else
+                    {
+                        CHECK(original.script.checkSum() == firstChecksums[tick]);
+                        CHECK(original.world.game.checkSum() == firstGameChecksums[tick]);
+                        CHECK(saved == firstSaves[tick]);
+                    }
+                    original.step();
+                    restored.step();
+                }
+                CHECK(original.script.hasTeamWon(0));
+                CHECK(restored.script.hasTeamWon(0));
+                CHECK(units(original.world.game.teams[0]) == 2);
+                CHECK(units(restored.world.game.teams[0]) == 2);
+            }
+        }
+    }
+
     TEST_CASE("random legacy summons preserve story progress through full continuation")
     {
         glob2test::HeadlessGlobals globals;

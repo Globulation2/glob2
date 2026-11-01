@@ -4884,6 +4884,30 @@ FFmpeg није доступан, па је снимање искључено. �
 Очишћене сировине
 [stat cleared about]
 Сировине које су радници уклонили у областима чишћења да би направили места.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ FFmpeg није доступан, па је снимање искључено. �
 Рупа
 [chasm]
 Понор
+[lush_grass]
+Бујна трава
+[dry_grass]
+Сува трава
+[dune_sand]
+Песак дина
+[pale_sand]
+Светли песак
 [terrain group water]
 Вода
 [terrain group sand]

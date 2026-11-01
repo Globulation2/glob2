@@ -4884,6 +4884,30 @@ Yksiköt, jotka ovat saarroksissa ilman vapaata ruutua, jolle astua.
 Raivatut resurssit
 [stat cleared about]
 Työläisten raivausalueilta poistamat resurssit tilan tekemiseksi.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Tumma vesi
 Kuoppa
 [chasm]
 Kuilu
+[lush_grass]
+Rehevä ruoho
+[dry_grass]
+Kuiva ruoho
+[dune_sand]
+Dyynihiekka
+[pale_sand]
+Vaalea hiekka
 [terrain group water]
 Vesi
 [terrain group sand]

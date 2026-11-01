@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 190
+#define VERSION_MINOR 191
+// version 191 adds four built-in grass and sand looks; custom terrain IDs move up by four.
 // version 190 adds automatic, explicitly timestamped win-probability history.
 // version 189 stores Maxima's current-flag proximity preference.
 // version 188 persists dedicated Maxima forward-support intent constraints.

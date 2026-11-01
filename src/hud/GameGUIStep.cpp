@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "PowerOfTwo.h"
@@ -132,6 +133,10 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->pollPersistence())
         closeDialog();
+    if (statisticsPanel) {
+        if ((!activeDialog() && statisticsVisible()) || inGameMenu == IGM_STATISTICS) statistics().update(Uint32(now));
+        else statisticsPanel->suspend();
+    }
     if (auto *dialog = activeDialog())
         dialog->update(Uint32(now));
     // A dialog can finish without an SDL event (browser-native text editing
