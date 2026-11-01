@@ -52,7 +52,8 @@ class OnlineErrorBuildTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.output = Path(self.temp.name)
+        # SCons resolves filesystem aliases (notably /var -> /private/var on macOS).
+        self.output = Path(self.temp.name).resolve()
 
     def env(self):
         # Builder registration only. No SCons task or compiler is executed.
