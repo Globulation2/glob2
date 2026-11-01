@@ -230,9 +230,10 @@
 }
 .skin-shape-button {
   position: absolute;
+  z-index: 1;
   top: 120px;
   left: 50%;
-  transform: translateX(-50%);
+  translate: -50% 0;
   padding: 9px 18px !important;
   gap: 18px !important;
 }
@@ -752,6 +753,8 @@
   gap: 10px;
 }
 .skin-shape-grid button {
+  min-width: 0;
+  white-space: normal;
   flex-direction: column;
   padding: 12px;
   border-color: var(--line);
@@ -762,8 +765,12 @@
   object-fit: contain;
 }
 .skin-shape-grid small {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
   color: var(--ink-2);
   font-size: 11px;
+  line-height: 1.6;
 }
 .skin-library-grid {
   display: grid;
@@ -1022,9 +1029,9 @@
     width: 75px;
   }
   .skin-shape-button {
-    top: 75px;
+    top: 142px;
     left: 12px;
-    transform: none;
+    translate: none;
     font-size: 11px !important;
     padding: 5px 8px !important;
   }
@@ -1543,6 +1550,9 @@
   :root:lang(th) .skin-toolbox {
     width: 330px;
     max-width: calc(100% - 48px);
+  }
+  :root:lang(th) .skin-pattern-layout {
+    grid-template-columns: minmax(0, 1fr) 302px;
   }
 }
 @media (max-width: 700px) {
