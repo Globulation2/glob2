@@ -4884,6 +4884,30 @@ Unitats encaixonades sense cap casella lliure on anar.
 Recursos netejats
 [stat cleared about]
 Recursos que els treballadors han tret a les zones de neteja per fer lloc.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Aigua fosca
 Forat
 [chasm]
 Avenc
+[lush_grass]
+Herba frondosa
+[dry_grass]
+Herba seca
+[dune_sand]
+Sorra de duna
+[pale_sand]
+Sorra clara
 [terrain group water]
 Aigua
 [terrain group sand]

@@ -6788,3 +6788,35 @@ Jumlah ikan
 Mesej ▸
 [Camp-site amount]
 Jumlah tapak perkhemahan
+[stats topic overview]
+Gambaran keseluruhan
+[stats topic economy]
+Ekonomi
+[stats topic world]
+Dunia
+[stats work construction]
+Kerja & pembinaan
+[stats defence]
+Pertahanan
+[stats history]
+Lihat sejarah
+[stats waiting]
+Menunggu statistik…
+[stats unit details]
+Butiran unit
+[stats map overlays]
+Tindanan peta
+[stats topic]
+Topik
+[stats full history]
+Buka sejarah penuh
+[stats missing readings]
+— Belum ada bacaan direkodkan. Pilih statistik untuk butiran lanjut.
+[lush_grass]
+Rumput subur
+[dry_grass]
+Rumput kering
+[dune_sand]
+Pasir gumuk
+[pale_sand]
+Pasir pucat

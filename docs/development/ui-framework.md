@@ -200,9 +200,47 @@ are not linguistic approval. Review every entry through the independent passes
 below; do not publish the kit's cache, credentials or review working files.
 Run `python3 test/test_cloud_draft.py` when changing this runner.
 
+For Google Cloud machine drafts, prepare a scoped kit (for example,
+`prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
+network access:
+
+```sh
+python3 tools/localization/google_draft.py --output artifacts/norwegian/kit --locale nb
+```
+
+Authenticate `gcloud` to an existing project with Cloud Translation enabled. Pass
+`--project PROJECT_ID --execute --max-characters LIMIT` to make paid Translation
+v3 requests. `--price-per-million` changes the planning estimate; verify actual
+project pricing before interpreting it as a cost forecast. The runner queries
+supported languages and selects `nb` when available, otherwise Google's `no`
+target for the Bokmål catalog. `--batches BATCH_ID ...` limits the source-based
+pilot to selected manifest batches. Complete and review that pilot before running
+the full catalog.
+
+The runner protects substitutions, literal line breaks, authored markup and URLs
+(including standalone relative routes and `www` addresses)
+with non-translatable HTML spans and rejects changed tokens. Outer whitespace is
+restored for message fragments. These checks do not establish correct meaning or
+word order. Exact request/project/location matches reuse immutable provider
+responses under the kit's `google/LOCALE/responses/`; generated JSON catalogs live
+under `google/LOCALE/runs/PLAN_HASH/`. They never replace `drafts/`, registered
+catalogs or review records. Copy a selected machine draft into the editorial
+workspace only when intentionally beginning review.
+
+The cumulative character allowance counts every attempted translation request,
+including uncertain failures and retries, before dispatch. It conservatively
+counts the protected HTML payload and persists across resumed invocations. Run
+one writer per kit. Authentication tokens are cached in memory and never written
+to evidence. Requests use bounded retries. Invalid responses remain inspectable;
+`--retry-invalid-responses` archives them under `rejected/` before another paid
+attempt within the same allowance. Raising the allowance is an explicit budget
+change. Provider output remains a machine draft, never a linguistic sign-off.
+
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
-system tag alone must never enable an unfinished locale. Punjabi scripts use
+system tag alone must never enable an unfinished locale. Norwegian Bokmål uses
+`nb`; generic `no` selects Bokmål, while explicit `nn`, legacy `no-nyn` and
+`no-NO-NY` preferences fall through to the next supported language. Punjabi scripts use
 `pa-guru` and `pa-arab`; explicit scripts take precedence over country defaults.
 The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
 Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other
@@ -261,11 +299,13 @@ describe it as agent-reviewed and keep unverified platforms explicit.
 Build `translation-preview-harness` for unregistered catalog captures. Its
 `matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
 wrapper at several authored sizes and raster scales. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
+(`main`, `settings`, `settings-audio`, `settings-player`, `lobby` or `lobby-players`); `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
+The gameplay preview also captures the win-probability statistics screen and its
+metric explanation, checking that drawing leaves the simulation checksum intact.
 A published tutorial model alone does not prove that its text is visible. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when
@@ -530,10 +570,11 @@ bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
 
-Malay and Swahili draw high-DPI Latin text at its authored advance, matching the
-width used by wrapping, alignment and hit testing. Preserve the full hinted
-raster when scaling it into that destination; cropping it to the measured width
-would remove glyphs. Legacy Latin locales retain their existing geometry.
+Script-layout locales, Swahili, Norwegian Bokmål and Malay draw high-DPI text
+at the authored width used by wrapping and hit testing. The complete
+high-resolution bitmap is resampled into that destination; font hinting at a
+larger raster size must not make a fitted line overflow its layout. Legacy
+Latin locales retain their existing geometry.
 
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored
@@ -856,3 +897,32 @@ preference fields or simulation state are introduced.
    `src/ui/UIPresentationHarness.cpp` and, for a reviewable capture, to
    `tools/MobileGalleryHarness.cpp` and `tools/mobile_gallery/catalog.json`.
 4. Expose semantic entry points for interaction tests instead of coordinates.
+
+### In-game statistics
+
+The Statistics view shares visible topic buttons and a scrollable metric list
+between the 200-pixel desktop sidebar and the mobile bottom sheet.
+The desktop minimap stays 128 pixels wide and is centered within the sidebar.
+Overview highlights population, growth, hunger, health, worker idleness, blocked
+buildings, warriors and intruders. Colony contains Population and Food; Economy
+contains Work, Materials and Buildings; Military contains Military; World contains
+Map and Score. Colony also retains the snapshot-only Unit details. Live spectators
+retain their existing win-chance display under World.
+
+Selecting a metric shows its current or watched team's history below that group.
+Labels and values use separate aligned columns; unavailable readings use a dash
+and one shared explanation. Larger text uses fewer topic buttons per row and
+puts readings below full-width labels. Open full history expands the chart into an in-game
+dialog while the match continues. Its Details disclosure explains the metric;
+short landscape layouts put the chart before its controls. Rate/total and averaging controls use the metric
+catalog's capabilities and defaults. Topic, per-topic scrolling and per-metric
+history choices last for the current match; they are not saved as preferences.
+Closing history restores focus to its metric. The former graph view is now Map
+overlays, retaining its tab position and the four overlay toggles.
+
+`InGameStatisticsPanel` holds immutable statistics/history leases rather than
+live simulation pointers. Visible statistics and history request the history
+component explicitly; hidden views release it. Waiting for publication, insufficient
+history and statistics not recorded in older saves have distinct messages, while
+recorded zeros remain numeric. The mobile sheet header handles downward dismissal;
+the embedded framework host handles scrolling so a content drag cannot dismiss it.

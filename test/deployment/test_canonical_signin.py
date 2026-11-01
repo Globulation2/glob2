@@ -1,5 +1,6 @@
 """Exercise the real Caddy sign-in transition rules without TLS or a backend."""
 import http.client
+import json
 import os
 from pathlib import Path
 import shutil
@@ -14,6 +15,27 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @unittest.skipUnless(shutil.which('caddy'), 'Caddy is not installed')
 class CanonicalSigninTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which('docker'), 'Docker Compose is not installed')
+    def test_compose_redirect_defaults_provision_a_valid_caddy_config(self):
+        base_env = {key: value for key, value in os.environ.items()
+                    if not key.startswith('GLOB2_')}
+        base_env.update(POSTGRES_PASSWORD='fixture', GLOB2_ENV_FILE=os.devnull)
+        for settings, expected in [({}, 'auth-redirect.invalid'),
+                                   ({'GLOB2_AUTH_REDIRECT_DOMAIN': ''}, 'auth-redirect.invalid'),
+                                   ({'GLOB2_AUTH_REDIRECT_DOMAIN': 'app.glob2online.com'},
+                                    'app.glob2online.com')]:
+            with self.subTest(settings=settings):
+                result = subprocess.run(
+                    ['docker', 'compose', '--env-file', os.devnull, '-f',
+                     str(ROOT / 'deploy/compose.yaml'), 'config', '--format', 'json'],
+                    env={**base_env, **settings}, check=True, capture_output=True, text=True)
+                environment = json.loads(result.stdout)['services']['caddy']['environment']
+                self.assertEqual(environment['GLOB2_AUTH_REDIRECT_DOMAIN'], expected)
+                # Adapt alone accepts an empty host matcher; provisioning rejects it.
+                subprocess.run(['caddy', 'validate', '--config', str(ROOT / 'deploy/Caddyfile'),
+                                '--adapter', 'caddyfile'], env={**base_env, **environment},
+                               check=True, capture_output=True)
+
     def test_only_former_host_get_signin_moves_to_the_canonical_origin(self):
         source = (ROOT / 'deploy/Caddyfile').read_text()
         start = source.index('# Begin canonical sign-in redirect.')

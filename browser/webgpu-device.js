@@ -138,7 +138,7 @@ addToLibrary({
       if(!this.emptyMask){this.reserve(9);this.emptyMask={weights:this.device.createTexture({size:[1,1],format:'rgba16uint',usage:GPUTextureUsage.TEXTURE_BINDING}),selectors:this.device.createTexture({size:[1,1],format:'r8uint',usage:GPUTextureUsage.TEXTURE_BINDING})};this.maskBytes+=9;}
       const coverage=mask||this.emptyMask,images=[];for(let slot=0;slot<4;slot++){const image=u(128+slot*4)?this.resources.get(u(128+slot*4)):this.white;if(!image||image===target)throw Error('Invalid WebGPU terrain source');images.push({binding:slot*2,resource:this.textureView(image.texture)});}
       images.push({binding:8,resource:this.textureView(coverage.weights)},{binding:10,resource:this.textureView(coverage.selectors)});
-      const data=uniforms.slice(u(112),u(112)+144);
+      const data=uniforms.slice(u(112),u(112)+352);
       if(!raw.depth){this.reserve(size*size*4);raw.depth=this.device.createTexture({size:[size,size],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});this.scratchBytes+=size*size*4;}
       draw('terrain-compose',raw,divisor>1?[0,0,size,size]:rect,data,images);
       if(divisor>1)draw('terrain-reduce',target,rect,new Uint32Array([divisor|(pma?65536:0),0,0,0]),[{binding:0,resource:this.textureView(raw.texture)}]);

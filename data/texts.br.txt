@@ -4884,6 +4884,30 @@ Unidades cercadas, sem nenhuma casa livre para onde ir.
 Recursos limpos
 [stat cleared about]
 Recursos removidos pelos trabalhadores em áreas de limpeza para abrir espaço.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Prado primaveril
 Buraco
 [chasm]
 Abismo
+[lush_grass]
+Grama viçosa
+[dry_grass]
+Grama seca
+[dune_sand]
+Areia de duna
+[pale_sand]
+Areia clara
 [terrain group water]
 Água
 [terrain group sand]

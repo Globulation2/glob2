@@ -22,8 +22,8 @@ using namespace GAGCore;
 void SettingsScreen::buildGeneral()
 {
 	auto &s = globalContainer->settings;
-	auto rendererLabel = [](RendererBackend backend) {
-		// Translate descriptive labels while preserving graphics API names.
+	const auto rendererLabel = [](RendererBackend backend)
+	{
 		if (backend == RendererBackend::Auto) return tr("Automatic");
 		if (backend == RendererBackend::Software) return tr("Software");
 		return std::string(rendererBackendLabel(backend));
@@ -82,7 +82,7 @@ void SettingsScreen::buildGeneral()
 			info(FormattableString(tr("Current display %0 %1 %2 %3"))
 					 .arg(globalContainer->gfx->getDrawableW())
 					 .arg(globalContainer->gfx->getDrawableH())
-					 .arg(rendererLabel(globalContainer->gfx->backendSwitchStatus().active))
+                     .arg(rendererLabel(globalContainer->gfx->backendSwitchStatus().active))
 					 .arg(tr(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN
 								 ? "Fullscreen"
 								 : "Windowed")));

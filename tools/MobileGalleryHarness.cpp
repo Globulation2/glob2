@@ -35,6 +35,7 @@
 #include "FrontendTheme.h"
 #include "Engine.h"
 #include "GameGUITouch.h"
+#include "InGameStatistics.h"
 #include "GameGUIDialog.h"
 #include "LoadSaveDialog.h"
 #include "GameGUIInternal.h"
@@ -839,6 +840,23 @@ class MobileGalleryGameplay
 		gui.touch->lensOpen = true;
 		gui.touch->panelOpen = desktopPresentation || gui.touch->layout().persistentPanel;
 		capture("game-tactical-tools");
+		// Capture the real topic layout in every presentation before returning
+		// to the fixture's normal tools and overlay states.
+		gui.touch->lensOpen = false;
+		gui.touch->panelOpen = false;
+		gui.touch->statsOpen = !desktopPresentation;
+		for (const auto &[topic, name] : {
+			std::pair{InGameStatisticsPanel::Topic::Overview, "overview"},
+			std::pair{InGameStatisticsPanel::Topic::Colony, "colony"},
+			std::pair{InGameStatisticsPanel::Topic::Economy, "economy"},
+			std::pair{InGameStatisticsPanel::Topic::Military, "military"},
+			std::pair{InGameStatisticsPanel::Topic::World, "world"}})
+		{
+			gui.statistics().selectTopic(topic);
+			capture(std::string("game-statistics-topic-") + name);
+		}
+		gui.statistics().selectTopic(InGameStatisticsPanel::Topic::Overview);
+		gui.touch->statsOpen = false;
 		if (!desktopPresentation)
 		{
 			gui.touch->lensOpen = false;

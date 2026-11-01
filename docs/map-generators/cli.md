@@ -247,7 +247,8 @@ ridge `#626870`, outcrop `#6E706C`, dirt `#80684A`, clay `#9E7054`, gravel `#8A8
 flower meadow `#3C7E30`, mud `#604C38`, marsh `#4A604E`, deep snow `#DEE4EC`, scree
 `#767A80`, dirt track `#AA8E68`, boardwalk `#A48054`, lava `#BE501E`, ember field
 `#5A3426`, loam `#4A3E28`, moss `#2E602A`, spring meadow `#5C963A`, deep water
-`#0A3CA0`, dark water `#0E264E`, hole `#0A0A0E`, chasm `#18121A`). Import recognises
+`#0A3CA0`, dark water `#0E264E`, hole `#0A0A0E`, chasm `#18121A`, lush grass `#196531`,
+dry grass `#787B34`, dune sand `#CC9755`, pale sand `#D3CAA8`). Import recognises
 them **only by exact colour**: every other pixel classifies by nearest colour among
 the classic entries above, so existing images never acquire catalogue terrain or
 its experiment requirements by accident. Imported catalogue cells record their

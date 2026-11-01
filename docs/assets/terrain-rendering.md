@@ -159,19 +159,48 @@ The compositor does not bake a texture-by-mask-by-material-pair product.
 Textures are never cross-faded across a boundary; a wide fade averages unrelated
 textures into a smear. Instead the compositor tones a narrow contact band, as the
 original tiles did with a dark lip on sand under grass and a wet line along the
-shore. The resolver reports, per sample, the nearest other material and an
-estimate of the distance to it (the score gap grows by 12288 per Q8 pixel along a
-straight edge). Each material's optional `seam` object sets `height` (0–255, a
+shore. The resolver reports, per sample, the nearest other material and the
+distance to it: the Euclidean distance to the contour curve for contextual borders
+(also in their one-pixel cell-edge band), otherwise an estimate from the patch
+score gap, which grows by 12288 per Q8 pixel along a straight edge. Each material's optional `seam` object sets `height` (0–255, a
 stacking rank), `cast_q8` (0–256) and `cast_width_q8` (0–2048 Q8 pixels): a
 material darkens lower-ranked neighbors by up to `cast_q8`/256 at the contact,
 fading to nothing at that width. Equal ranks cast nothing, so sand beside sand
 of another variant is untouched. `fringe` (RGB), `fringe_q8` and
 `fringe_width_q8` tint any neighbor toward that color, which ice uses for a
 faint frost rim on grass. The shipped ranks place water highest so sand and
-grass take a wet band at the waterline, then ice, trail and grass, with sand
+grass take a dark contact line at the waterline, then ice, trail and grass, with sand
 lowest. Keep casts short
 (two to three pixels) and under about a third strength; the goal is a sense of
 thickness, not an outline.
+
+### Surf
+
+A liquid material's optional `surf` object animates its shoreline wherever it
+meets a material without surf; liquids beside each other (water and deep water)
+take none. On the liquid side, `shallow` (RGB) tints the water by up to
+`shallow_q8`/256 at the edge, fading over `shallow_width_q8`. On the land side,
+`wet_q8` darkens a wet band `wet_width_q8` wide. Every `period` animation ticks a
+wash climbs up to `reach_q8` onto the land, covering it with a thin sheet of the
+shallow color, and drains back; `foam` (RGB) at `foam_q8` marks its leading edge
+over `foam_width_q8` on either side. Washes rush up over the first 30% of the
+period and drain over the rest, staggered along the coast by a smooth world-space
+field whose 256- and 512-pixel wavelengths divide every map size, so the pattern
+wraps cleanly; another field breaks the foam line into patches.
+
+Surf reads the same per-sample distance as seams, which is exact only within
+eight logical pixels of the edge, so each band and `reach_q8` plus
+`foam_width_q8` must end within 2048. Water/sand edges use the `beach` profile,
+a low-roughness copy of `liquid`, so the waterline is a gentle curve the wash can
+follow instead of a row of teeth. A material with surf counts as
+animated: its pages re-blend whenever the wash advances, also without texture
+animation. The optional `ticks` (default 1, at most `period`) advances the wash
+only once per that many animation ticks; dark water uses 6, so its otherwise
+still pages re-blend about ten times a second instead of every frame. Water's
+pages already re-blend every frame for its texture crossfade, so it keeps
+`ticks` 1 for the smoothest wash. Surf is presentation only and never touches the
+simulation. `TerrainVisual::applySurf` is the integer reference that the
+`terrain-compose` shader mirrors exactly.
 
 ## Caches and compatibility
 

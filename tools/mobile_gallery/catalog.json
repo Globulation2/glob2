@@ -80,7 +80,7 @@
     },
     {
       "id": "settings-display-bottom",
-      "title": "Display \u00b7 bottom",
+      "title": "Display · bottom",
       "description": "After Page Down to the bottom; identical images mean all content already fits.",
       "group": "Settings"
     },
@@ -92,7 +92,7 @@
     },
     {
       "id": "settings-audio-bottom",
-      "title": "Audio \u00b7 bottom",
+      "title": "Audio · bottom",
       "description": "After Page Down to the bottom; identical images mean all content already fits.",
       "group": "Settings"
     },
@@ -104,7 +104,7 @@
     },
     {
       "id": "settings-gameplay-bottom",
-      "title": "Gameplay \u00b7 bottom",
+      "title": "Gameplay · bottom",
       "description": "After Page Down to the bottom; identical images mean all content already fits.",
       "group": "Settings"
     },
@@ -116,7 +116,7 @@
     },
     {
       "id": "settings-buildings-bottom",
-      "title": "Buildings \u00b7 bottom",
+      "title": "Buildings · bottom",
       "description": "After Page Down to the bottom; identical images mean all content already fits.",
       "group": "Settings"
     },
@@ -129,7 +129,7 @@
     },
     {
       "id": "settings-controls-bottom",
-      "title": "Controls \u00b7 bottom",
+      "title": "Controls · bottom",
       "description": "After Page Down to the bottom; identical images mean all content already fits.",
       "group": "Settings",
       "availability": "desktop"
@@ -142,19 +142,19 @@
     },
     {
       "id": "settings-player-bottom",
-      "title": "Player \u00b7 bottom",
+      "title": "Player · bottom",
       "description": "After Page Down to the bottom; identical images mean all content already fits.",
       "group": "Settings"
     },
     {
       "id": "setup-map",
-      "title": "Setup \u00b7 map tab",
+      "title": "Setup · map tab",
       "description": "Initial map setup state.",
       "group": "Custom game setup"
     },
     {
       "id": "setup-generated",
-      "title": "Setup \u00b7 generated map",
+      "title": "Setup · generated map",
       "description": "Generated-map controls and preview.",
       "group": "Custom game setup"
     },
@@ -166,25 +166,25 @@
     },
     {
       "id": "setup-players",
-      "title": "Setup \u00b7 players",
+      "title": "Setup · players",
       "description": "Colony controller and team controls.",
       "group": "Custom game setup"
     },
     {
       "id": "setup-controller",
-      "title": "Setup \u00b7 controller dropdown",
+      "title": "Setup · controller dropdown",
       "description": "Open controller choices for the first colony.",
       "group": "Custom game setup"
     },
     {
       "id": "setup-rules",
-      "title": "Setup \u00b7 rules",
+      "title": "Setup · rules",
       "description": "Ruleset and the Match rules, with any rule set away from Standard.",
       "group": "Custom game setup"
     },
     {
       "id": "setup-rules-all",
-      "title": "Setup \u00b7 all rules",
+      "title": "Setup · all rules",
       "description": "Every rule, grouped, starting from the Blitz ruleset.",
       "group": "Custom game setup"
     },
@@ -209,7 +209,7 @@
     },
     {
       "id": "setup-options",
-      "title": "Additional options \u00b7 multiplayer only",
+      "title": "Additional options · multiplayer only",
       "description": "Legacy options retained for multiplayer hosts and read-only guests. Outside the single-player setup flow.",
       "group": "Custom game setup"
     },
@@ -233,13 +233,13 @@
     },
     {
       "id": "game-build",
-      "title": "Build drawer \u00b7 top",
+      "title": "Build drawer · top",
       "description": "Construction palette at its initial scroll position. Phones show a rail rising from the thumb corner with the first choice nearest the thumb; Spacious tablets keep the side grid.",
       "group": "Gameplay"
     },
     {
       "id": "game-build-bottom",
-      "title": "Build drawer \u00b7 bottom",
+      "title": "Build drawer · bottom",
       "description": "Construction palette at its maximum scroll position; a phone rail that fits its space does not scroll.",
       "group": "Gameplay"
     },
@@ -251,7 +251,7 @@
     },
     {
       "id": "game-build-left-thumb",
-      "title": "Build drawer \u00b7 left thumb",
+      "title": "Build drawer · left thumb",
       "description": "The Thumb side setting mirrors the rail and placement bar into the bottom-left corner.",
       "group": "Gameplay",
       "availability": "mobile"
@@ -264,135 +264,135 @@
     },
     {
       "id": "game-inspector-0",
-      "title": "Inspector \u00b7 workers \u00b7 unified replacement",
+      "title": "Inspector · workers · unified replacement",
       "description": "Replaced by the unified contextual inspector on touch. Stable feedback ID retained; desktop keeps its original sidebar.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-1",
-      "title": "Inspector \u00b7 priority \u00b7 unified replacement",
+      "title": "Inspector · priority · unified replacement",
       "description": "Replaced by the unified contextual inspector on touch. Stable feedback ID retained; desktop keeps its original sidebar.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-3",
-      "title": "Inspector \u00b7 actions \u00b7 unified replacement",
+      "title": "Inspector · actions · unified replacement",
       "description": "Replaced by the unified contextual inspector on touch. Stable feedback ID retained; desktop keeps its original sidebar.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-4",
-      "title": "Inspector \u00b7 information \u00b7 unified replacement",
+      "title": "Inspector · information · unified replacement",
       "description": "Replaced by the unified contextual inspector on touch. Stable feedback ID retained; desktop keeps its original sidebar.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-production",
-      "title": "Inspector \u00b7 production",
+      "title": "Inspector · production",
       "description": "A real swarm selected to review production weights. Phones show workers on the outer arc, priority in the middle, three cycling ratio buttons on the third ring, and a circular trash button in the hollow center with destroy confirmation.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-inn",
-      "title": "Inspector \u00b7 Inn",
+      "title": "Inspector · Inn",
       "description": "A disposable level-one inn fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-hospital",
-      "title": "Inspector \u00b7 Hospital",
+      "title": "Inspector · Hospital",
       "description": "A disposable level-one hospital fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-racetrack",
-      "title": "Inspector \u00b7 Racetrack",
+      "title": "Inspector · Racetrack",
       "description": "A disposable level-one racetrack fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-swimmingpool",
-      "title": "Inspector \u00b7 Swimming pool",
+      "title": "Inspector · Swimming pool",
       "description": "A disposable level-one swimming pool fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-barracks",
-      "title": "Inspector \u00b7 Barracks",
+      "title": "Inspector · Barracks",
       "description": "A disposable level-one barracks fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-school",
-      "title": "Inspector \u00b7 School",
+      "title": "Inspector · School",
       "description": "A disposable level-one school fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-defencetower",
-      "title": "Inspector \u00b7 Defence tower",
+      "title": "Inspector · Defence tower",
       "description": "A disposable level-one defence tower fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-market",
-      "title": "Inspector \u00b7 Market",
+      "title": "Inspector · Market",
       "description": "A disposable level-one market fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-stonewall",
-      "title": "Inspector \u00b7 Stone wall",
+      "title": "Inspector · Stone wall",
       "description": "A disposable level-one stone wall fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-warflag",
-      "title": "Inspector \u00b7 War flag",
+      "title": "Inspector · War flag",
       "description": "A disposable level-one war flag fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-clearingflag",
-      "title": "Inspector \u00b7 Clearing flag",
+      "title": "Inspector · Clearing flag",
       "description": "A disposable level-one clearing flag fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-explorationflag",
-      "title": "Inspector \u00b7 Exploration flag",
+      "title": "Inspector · Exploration flag",
       "description": "A disposable level-one exploration flag fixture showing its contextual controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-unit",
-      "title": "Inspector \u00b7 Unit",
+      "title": "Inspector · Unit",
       "description": "Selected unit with the shared identity header and a separate scrollable statistics panel.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-dial-drag",
-      "title": "Inspector \u00b7 dial drag",
+      "title": "Inspector · dial drag",
       "description": "Mid-gesture on a phone: the thumb sweeps the worker ring and the requested count sits above the finger; releasing sends one order. Spacious tablets show their row inspector.",
       "group": "Gameplay",
       "availability": "mobile"
     },
     {
       "id": "game-inspector-left-thumb",
-      "title": "Inspector \u00b7 left thumb",
+      "title": "Inspector · left thumb",
       "description": "The Thumb side setting mirrors the dial and its chips into the bottom-left corner.",
       "group": "Gameplay",
       "availability": "mobile"
     },
     {
       "id": "game-inspector-enemy",
-      "title": "Inspector \u00b7 enemy",
+      "title": "Inspector · enemy",
       "description": "An opposing colony building; the touch inspector is read-only.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-damaged",
-      "title": "Inspector \u00b7 damaged building",
+      "title": "Inspector · damaged building",
       "description": "The selected building has half health in this explicit repair fixture.",
       "group": "Gameplay"
     },
@@ -506,20 +506,20 @@
     },
     {
       "id": "campaign-editor-maps",
-      "title": "Campaign editor \u00b7 mission list",
+      "title": "Campaign editor · mission list",
       "description": "Populated campaign mission list with overflow for finger scrolling.",
       "group": "Map & campaign editor"
     },
     {
       "id": "campaign-map-unlocking",
-      "title": "Campaign mission \u00b7 prerequisites",
+      "title": "Campaign mission · prerequisites",
       "description": "Retired: the campaign mission editor now shows unlocking controls and prerequisites inline in the campaign-map-entry capture.",
       "group": "Map & campaign editor",
       "availability": "retired"
     },
     {
       "id": "campaign-description-editing",
-      "title": "Campaign mission \u00b7 editing description",
+      "title": "Campaign mission · editing description",
       "description": "Native multiline description canvas after a touch tap. Native operating-system keyboard is not captured by the host renderer.",
       "group": "Map & campaign editor"
     },
@@ -531,59 +531,59 @@
     },
     {
       "id": "editor-map",
-      "title": "Map editor \u00b7 canvas",
+      "title": "Map editor · canvas",
       "description": "Bundled balanced map in the mobile editor.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-tools",
-      "title": "Map editor \u00b7 tools",
+      "title": "Map editor · tools",
       "description": "Initial tool palette.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-tools-bottom",
-      "title": "Map editor \u00b7 tools bottom",
+      "title": "Map editor · tools bottom",
       "description": "Tool palette at maximum scroll.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-dock-terrain",
-      "title": "Map editor \u00b7 dock terrain",
+      "title": "Map editor · dock terrain",
       "description": "Docked brush browser on the Terrain tab with a water brush selected: catalogue groups as collapsible sections of labelled swatch cards, brush shape and Paint/Erase below.",
       "group": "Map & campaign editor",
       "availability": "desktop"
     },
     {
       "id": "editor-dock-resources",
-      "title": "Map editor \u00b7 dock resources",
+      "title": "Map editor · dock resources",
       "description": "Resources tab with wheat selected; each card names the terrains the resource may be placed on.",
       "group": "Map & campaign editor",
       "availability": "desktop"
     },
     {
       "id": "editor-dock-obstacles",
-      "title": "Map editor \u00b7 dock obstacle terrain",
+      "title": "Map editor · dock obstacle terrain",
       "description": "Obstacle terrain opened by its palette action: all brushes are immediately selectable.",
       "group": "Map & campaign editor",
       "availability": "desktop"
     },
     {
       "id": "editor-dock-inspector",
-      "title": "Map editor \u00b7 dock inspector",
+      "title": "Map editor · dock inspector",
       "description": "A selected building edited in the dock: picture, team and level, and a stepper per editable property.",
       "group": "Map & campaign editor",
       "availability": "desktop"
     },
     {
       "id": "editor-pause",
-      "title": "Map editor \u00b7 menu",
+      "title": "Map editor · menu",
       "description": "Editor save, script, team and exit actions.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-area-name-keyboard",
-      "title": "Editor area name \u00b7 keyboard clearance",
+      "title": "Editor area name · keyboard clearance",
       "description": "Retired: the area-name dialog is a framework dialog whose keyboard clearance is checked by the UI presentation harness at every viewport and inset, not by a staged capture.",
       "group": "Map & campaign editor",
       "availability": "retired"
@@ -596,32 +596,32 @@
     },
     {
       "id": "editor-teams",
-      "title": "Map editor \u00b7 teams",
+      "title": "Map editor · teams",
       "description": "Team settings overlay.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-script",
-      "title": "Map editor \u00b7 script",
+      "title": "Map editor · script",
       "description": "Script editor overview, including objectives, briefing and hints.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-script-keyboard",
-      "title": "Script editor \u00b7 keyboard clearance",
+      "title": "Script editor · keyboard clearance",
       "description": "Retired: the script editor is a framework dialog whose keyboard clearance is checked by the UI presentation harness at every viewport and inset, not by a staged capture.",
       "group": "Map & campaign editor",
       "availability": "retired"
     },
     {
       "id": "editor-save",
-      "title": "Map editor \u00b7 save",
+      "title": "Map editor · save",
       "description": "Save-map dialog with illustrative filename; no save is submitted.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-load",
-      "title": "Map editor \u00b7 load",
+      "title": "Map editor · load",
       "description": "Load-map overlay.",
       "group": "Map & campaign editor"
     },
@@ -633,37 +633,37 @@
     },
     {
       "id": "editor-palette-flag",
-      "title": "Editor palette \u00b7 flags & units",
+      "title": "Editor palette · flags & units",
       "description": "Flag, zone and unit authoring tools.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-palette-terrain",
-      "title": "Editor palette \u00b7 terrain",
+      "title": "Editor palette · terrain",
       "description": "Terrain, resource and brush tools.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-palette-teams",
-      "title": "Editor palette \u00b7 teams",
+      "title": "Editor palette · teams",
       "description": "Team authoring tools.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-script-objectives",
-      "title": "Script editor \u00b7 objectives",
+      "title": "Script editor · objectives",
       "description": "Primary mission objective entries.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-script-briefing",
-      "title": "Script editor \u00b7 briefing",
+      "title": "Script editor · briefing",
       "description": "Mission briefing editor.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-script-hints",
-      "title": "Script editor \u00b7 hints",
+      "title": "Script editor · hints",
       "description": "Mission hint entries.",
       "group": "Map & campaign editor"
     },
@@ -767,49 +767,49 @@
     },
     {
       "id": "settings-building-detail",
-      "title": "Building defaults \u00b7 detail",
+      "title": "Building defaults · detail",
       "group": "Settings",
-      "description": "Building defaults \u00b7 detail",
+      "description": "Building defaults · detail",
       "availability": "phone"
     },
     {
       "id": "main-more",
-      "title": "Main menu \u00b7 More",
+      "title": "Main menu · More",
       "description": "Secondary utilities and platform-appropriate network/quit actions.",
       "group": "Menus & campaigns",
       "availability": "mobile"
     },
     {
       "id": "landscape-settings",
-      "title": "Landscape \u00b7 settings",
+      "title": "Landscape · settings",
       "description": "Retired: dimensions and colony count are inline in the landscape picker header on every size (see landscape-picker).",
       "group": "Custom game setup",
       "availability": "retired"
     },
     {
       "id": "setup-preview-loading",
-      "title": "Map preview \u00b7 loading",
+      "title": "Map preview · loading",
       "availability": "all",
       "description": "Explicit loading-state fixture, captured separately from settled previews.",
       "group": "Custom game setup"
     },
     {
       "id": "setup-preview-error",
-      "title": "Map preview \u00b7 error",
+      "title": "Map preview · error",
       "availability": "all",
       "description": "Explicit error-state fixture, captured separately from settled previews.",
       "group": "Custom game setup"
     },
     {
       "id": "start-quality-colony",
-      "title": "Start quality \u00b7 expanded colony",
+      "title": "Start quality · expanded colony",
       "availability": "phone",
       "description": "Measurements and contributions for the first colony.",
       "group": "Custom game setup"
     },
     {
       "id": "settings-flag-detail",
-      "title": "Building defaults \u00b7 flag detail",
+      "title": "Building defaults · flag detail",
       "description": "Exact unit and radius values; radius zero retains its Default meaning.",
       "group": "Settings",
       "availability": "phone"
@@ -822,14 +822,14 @@
     },
     {
       "id": "game-brush-rail",
-      "title": "Zone painting \u00b7 brush rail",
+      "title": "Zone painting · brush rail",
       "description": "Brush sizes as a rail on the thumb edge with the touched size magnified beside it, Paint/Erase at its foot and Pan at its head; zones and Done along the toolbar.",
       "group": "Gameplay",
       "availability": "mobile"
     },
     {
       "id": "game-brush-undo",
-      "title": "Zone painting \u00b7 undo",
+      "title": "Zone painting · undo",
       "description": "After a stroke the rail offers Undo for six seconds; it reverts only the cells that stroke changed.",
       "group": "Gameplay",
       "availability": "mobile"
@@ -856,6 +856,36 @@
       "availability": "mobile"
     },
     {
+      "id": "game-statistics-topic-overview",
+      "title": "In-game statistics: overview",
+      "description": "The real statistics overview topic in the desktop sidebar or compact phone sheet, using the shared production panel.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-statistics-topic-colony",
+      "title": "In-game statistics: colony",
+      "description": "The real statistics colony topic in the desktop sidebar or compact phone sheet, using the shared production panel.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-statistics-topic-economy",
+      "title": "In-game statistics: economy",
+      "description": "The real statistics economy topic in the desktop sidebar or compact phone sheet, using the shared production panel.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-statistics-topic-military",
+      "title": "In-game statistics: military",
+      "description": "The real statistics military topic in the desktop sidebar or compact phone sheet, using the shared production panel.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-statistics-topic-world",
+      "title": "In-game statistics: world",
+      "description": "The real statistics world topic in the desktop sidebar or compact phone sheet, using the shared production panel.",
+      "group": "Gameplay"
+    },
+    {
       "id": "game-zoom-drag",
       "title": "One-finger zoom",
       "description": "Mid-gesture: tap, then press again and drag. The zoom factor sits above the finger; releasing without travel restores 1:1.",
@@ -876,68 +906,68 @@
     },
     {
       "id": "game-results-filters",
-      "title": "Results \u00b7 team filters",
+      "title": "Results · team filters",
       "description": "Open team controls over the chart on phones; persistent filters on larger layouts.",
       "group": "Gameplay"
     },
     {
       "id": "game-results-value",
-      "title": "Results \u00b7 value inspection",
+      "title": "Results · value inspection",
       "description": "Populated historical curve with a selected time/value.",
       "group": "Gameplay"
     },
     {
       "id": "game-results-win-probability",
-      "title": "Results \u00b7 win probability",
+      "title": "Results · win probability",
       "description": "Alliance win-probability history with the localized metric title, axis and model limitations.",
       "group": "Gameplay"
     },
     {
       "id": "editor-palette-resources",
-      "title": "Editor \u00b7 resource palette",
+      "title": "Editor · resource palette",
       "group": "Map & campaign editor",
       "description": "Persistent resource choices beside the editable map; select a resource and paint a completed stroke."
     },
     {
       "id": "editor-inspector-building",
-      "title": "Editor \u00b7 selected building",
+      "title": "Editor · selected building",
       "description": "Existing building identity and grouped editable properties.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-inspector-unit",
-      "title": "Editor \u00b7 selected unit",
+      "title": "Editor · selected unit",
       "description": "Existing unit identity and grouped editable properties.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-brush-choices",
-      "title": "Editor \u00b7 brush choices",
+      "title": "Editor · brush choices",
       "description": "The brush rail on the thumb edge: sizes with the smallest nearest the thumb, the touched size magnified beside it, and Pan. Desktop shows its existing brush selector.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-map-peek",
-      "title": "Editor \u00b7 map peek",
+      "title": "Editor · map peek",
       "description": "The Map button in the far bottom corner opens a large minimap: drag to steer the view, zoom buttons beside or below it, Done or a tap outside closes it.",
       "group": "Map & campaign editor",
       "availability": "mobile"
     },
     {
       "id": "editor-brush-undo",
-      "title": "Editor \u00b7 brush undo",
+      "title": "Editor · brush undo",
       "description": "After a zone, script-area or no-growth stroke the rail offers Undo for a few seconds; terrain and delete strokes do not. Desktop shows its existing brush selector.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-script-load",
-      "title": "Script editor \u00b7 load file",
+      "title": "Script editor · load file",
       "description": "Child script file dialog using the same persistence model and explicit touch file view.",
       "group": "Map & campaign editor"
     },
     {
       "id": "editor-script-save",
-      "title": "Script editor \u00b7 save file",
+      "title": "Script editor · save file",
       "description": "Child script file dialog using the same persistence model and explicit touch file view.",
       "group": "Map & campaign editor"
     },
@@ -1177,43 +1207,43 @@
     },
     {
       "id": "game-inspector-destroy-confirmation",
-      "title": "Inspector \u00b7 destroy confirmation",
+      "title": "Inspector · destroy confirmation",
       "description": "The center trash action opens the existing separate Confirm Destroy and Cancel controls; no destruction order is sent before confirmation.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-barracks-construction",
-      "title": "Inspector \u00b7 Barracks construction",
+      "title": "Inspector · Barracks construction",
       "description": "Construction fixture showing active worker assignment and priority controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-hospital-construction",
-      "title": "Inspector \u00b7 Hospital construction",
+      "title": "Inspector · Hospital construction",
       "description": "Construction fixture showing active worker assignment and priority controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-racetrack-construction",
-      "title": "Inspector \u00b7 Racetrack construction",
+      "title": "Inspector · Racetrack construction",
       "description": "Construction fixture showing active worker assignment and priority controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-school-construction",
-      "title": "Inspector \u00b7 School construction",
+      "title": "Inspector · School construction",
       "description": "Construction fixture showing active worker assignment and priority controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-stonewall-construction",
-      "title": "Inspector \u00b7 Stonewall construction",
+      "title": "Inspector · Stonewall construction",
       "description": "Construction fixture showing active worker assignment and priority controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-swimmingpool-construction",
-      "title": "Inspector \u00b7 Swimmingpool construction",
+      "title": "Inspector · Swimmingpool construction",
       "description": "Construction fixture showing active worker assignment and priority controls.",
       "group": "Gameplay"
     }
@@ -1237,7 +1267,7 @@
     },
     {
       "title": "Presentation modes",
-      "reason": "The frontend adapts phone and tablet composition separately. Desktop captures use mouse controls at 1280\u00d7800 and 1920\u00d71080. Language variants, accessibility scales and device-specific input combinations remain outside this image matrix."
+      "reason": "The frontend adapts phone and tablet composition separately. Desktop captures use mouse controls at 1280×800 and 1920×1080. Language variants, accessibility scales and device-specific input combinations remain outside this image matrix."
     }
   ]
 }
