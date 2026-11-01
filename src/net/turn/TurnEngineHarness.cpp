@@ -2028,9 +2028,9 @@ TEST_SUITE("TurnEngineHarness")
     {
         glob2test::HeadlessGlobals globals(harnessGlobals());
         Online::SimVersion before;
-        // Exact upstream revision-112 golden identity, before Filipino registration.
+        // Exact upstream revision-113 golden identity, before Filipino registration.
         REQUIRE(Online::SimVersion::parseKey(
-            "191-73-9ce97439847adc396d7cf42390d2962c382a23f89363df4dd92c53dbc1f6c4d9", before));
+            "191-73-289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d", before));
         const auto current = Online::currentSimVersion();
         REQUIRE(before != current);
         const auto committed = Turn::MatchRecord::readFile(

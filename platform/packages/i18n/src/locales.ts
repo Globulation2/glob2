@@ -210,6 +210,12 @@ export const locales = [
     dir: 'rtl',
   },
   {
+    code: 'te',
+    gameCode: 'te',
+    name: 'తెలుగు',
+    dir: 'ltr',
+  },
+  {
     code: 'sw',
     gameCode: 'sw',
     name: 'Kiswahili',

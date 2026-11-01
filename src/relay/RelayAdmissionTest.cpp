@@ -91,15 +91,15 @@ TEST_SUITE("RelayAdmission")
             CHECK(directory.check(first, false, 10) == Admission::Join);
         }
     }
-    TEST_CASE("Filipino catalog registration separates revision 112 and 113 match admission")
+    TEST_CASE("Filipino catalog registration separates revision 113 and 114 match admission")
     {
         // Real simulation keys immediately before/after the registration: the
         // data inputs and 191/73 save/network versions are identical. Only
         // SIM_REVISION changes. Keep these historical boundary fixtures fixed.
         const SimVersion before{191, 73,
-            "9ce97439847adc396d7cf42390d2962c382a23f89363df4dd92c53dbc1f6c4d9"};
-        const SimVersion after{191, 73,
             "289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d"};
+        const SimVersion after{191, 73,
+            "cb71317a961766ae7d249e039c3f6ea8fcc6fb3b6d620e1cb69ae0cbae014e7a"};
         CHECK(before.key() != after.key());
         for (const bool newMatch : {false, true})
         {

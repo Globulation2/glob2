@@ -399,6 +399,9 @@ TEST_SUITE("EntityRandomLifecycle")
             }
             bytes.insert(position,flags);
         };
+        // Format 187 retired MapHeader's experiment requirements. Format 150
+        // still needs the empty section even though this fixture enables none.
+        addLegacyFlags({"Game","MapHeader"},"experiments\n{\ncount = 0;\n}\n");
         REQUIRE_FALSE(world.game.map.marketsV2Enabled());
         for (int team=0; team<world.game.teamsCount(); ++team)
             for (int swim=0; swim<LEGACY_SWIM_CLASS_COUNT; ++swim) {
