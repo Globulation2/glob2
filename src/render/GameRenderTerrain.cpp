@@ -168,27 +168,36 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
         pendingSprite = nullptr;
     };
 
-	for (int y=top; y<=bot; y++)
-		for (int x=left; x<=right; x++)
-			if ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
-				sceneMap.isMapPartiallyDiscovered(
-						x+viewportX-1,
-						y+viewportY-1,
-						x+viewportX+1,
-						y+viewportY+1,
-						visibleTeams))
+	const auto visible = [&](int x, int y)
+	{
+		return (drawOptions & DRAW_WHOLE_MAP) != 0 ||
+			   sceneMap.isMapPartiallyDiscovered(x + viewportX - 1, y + viewportY - 1,
+												 x + viewportX + 1, y + viewportY + 1,
+												 visibleTeams);
+	};
+	for (int y = top; y <= bot; ++y)
+	{
+		// Keep canonical row layering identical to cached GPU geometry: all
+		// terrain decorations, then all resources, preserving cell order.
+		for (int x = left; x <= right; ++x)
+			if (visible(x, y))
 			{
-                auto *decorSprite = compositor.decorSprite(sceneMap, x + viewportX, y + viewportY);
-				if (decorSprite)
+				auto *decorSprite = compositor.decorSprite(sceneMap, x + viewportX, y + viewportY);
+				const int frame = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
+				if (!decorSprite || frame < 0)
+					continue;
+				if (pendingSprite != decorSprite)
 				{
-					const int decor = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
-					if (decor >= 0)
-					{
-						if (pendingSprite != decorSprite) { flush(); pendingSprite = decorSprite; }
-						globalContainer->gfx->drawSprite((x << 5) - ((decorSprite->getW(decor) - 32) >> 1),
-							(y << 5) - ((decorSprite->getH(decor) - 32) >> 1), decorSprite, decor);
-					}
+					flush();
+					pendingSprite = decorSprite;
 				}
+				globalContainer->gfx->drawSprite((x << 5) - ((decorSprite->getW(frame) - 32) >> 1),
+												 (y << 5) - ((decorSprite->getH(frame) - 32) >> 1),
+												 decorSprite, frame);
+			}
+		for (int x = left; x <= right; ++x)
+			if (visible(x, y))
+			{
 				const auto& r = sceneMap.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
@@ -209,6 +218,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
 				}
 			}
+	}
 	flush();
 }
 

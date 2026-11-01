@@ -84,13 +84,13 @@ class Compositor
 	using CornerColors = std::array<const std::array<unsigned char, 3> *, 4>;
 	void composeOverview(const Recipe &, SDL_Surface *target, int x, int y,
 						 const CornerColors *cornerColors = nullptr) const;
-	// The shared decor sprite (every decor block names the same one), or null
-	// when the catalog has no decor; the renderer batches decor like resources.
+	// The shared sprite supports cached row batching; mixed custom sprites use
+	// the ordinary renderer. Material lookup also serves editor swatches.
 	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
     GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
     GAGCore::Sprite *decorSprite(const SceneMap &map, int x, int y) const;
-	// Decor frame drawn over cell (x, y), or -1. Cells with a neighbour of a
-	// different appearance use the smaller edge frames.
+	// Any undecorated corner suppresses raised objects. Decorated-only borders
+	// choose one material, weighted by corner count, using presentation hashing.
 	int decorFrame(const SceneMap &, int x, int y) const;
     struct PreparedMaterialView
     {
