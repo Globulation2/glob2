@@ -5,7 +5,8 @@
 // simulation computes from the same MatchSetup and orders, even when the save
 // format (VERSION_MINOR) and the network protocol (NET_PROTOCOL_VERSION) stay
 // the same: game rules, units, buildings, pathfinding, AI code and parameters,
-// order validation, map loading, random number use, scripting.
+// order validation, map loading, random number use, scripting (including the
+// installed catalog codes accepted as legacy SGSL language tokens).
 //
 // It feeds the sim version key (Online::SimVersion, see "Simulation version" in
 // docs/multiplayer/turn-protocol.md), which partitions rooms, queues, AI ratings
@@ -16,4 +17,4 @@
 //
 // Kept apart from Version.h so a bump recompiles only the sim version code.
 // deploy/sim_version.py reads this line.
-#define SIM_REVISION 112
+#define SIM_REVISION 114

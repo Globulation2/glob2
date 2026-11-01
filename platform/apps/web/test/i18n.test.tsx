@@ -3,7 +3,8 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
-import { statusLabel, artifactLabel, fixedCaption } from '../src/messages.ts';
+import { statusLabel, artifactLabel, fixedCaption, skinActionLabel } from '../src/messages.ts';
+import { ACTIONS } from '../src/skins/geometry.ts';
 import { ApiError } from '../src/api.ts';
 import {
   LocaleProvider,
@@ -31,6 +32,26 @@ afterEach(async () => {
   await setLocale('en');
 });
 describe('web localization', () => {
+  it('localizes pose captions without interpreting the empty swarm action as a word', async () => {
+    registerCatalog('fr', {
+      Walk: 'Marche',
+      Swim: 'Nage',
+      Harvest: 'Récolte',
+      Fight: 'Combat',
+      Fly: 'Vol',
+      'Static pose': 'Pose statique',
+    });
+    await setLocale('fr');
+    for (const actions of Object.values(ACTIONS)) {
+      for (const action of actions) {
+        expect(skinActionLabel(action)).toBeTruthy();
+        expect(skinActionLabel(action)).not.toBe(action);
+      }
+    }
+    expect(skinActionLabel('')).toBe('Pose statique');
+    await setLocale('en');
+    expect(skinActionLabel('walk')).toBe('Walk');
+  });
   it('localizes known system artifact captions while preserving authored titles', async () => {
     registerCatalog('fr', {
       'Generated layout': 'Disposition générée',

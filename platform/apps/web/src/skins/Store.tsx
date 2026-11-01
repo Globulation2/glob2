@@ -1,3 +1,5 @@
+import { skinProductLabel } from './labels.ts';
+import { displayMessage } from '../i18n.tsx';
 import { useFeatures } from '../features.tsx';
 import { statusLabel } from '../i18n.tsx';
 import { MessageError } from '../i18n.tsx';
@@ -51,7 +53,7 @@ function EnabledSkinStore({
   useLocale();
   const { account } = useSession();
   const [busy, setBusy] = useState(false),
-    [message, setMessage] = useState(() =>
+    [message, setMessage] = useState<string | Error>(() =>
       new URLSearchParams(window.location.search).has('purchase')
         ? t('Checkout returned. Check the payment below to confirm your purchase.')
         : '',
@@ -86,7 +88,7 @@ function EnabledSkinStore({
         throw new MessageError('Unexpected checkout address.');
       window.location.assign(checkout.url);
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : t('Checkout failed.'));
+      setMessage(e instanceof Error ? e : sourceMessage('Checkout failed.'));
       setBusy(false);
     }
   }
@@ -106,7 +108,7 @@ function EnabledSkinStore({
       purchases.reload();
       onChange();
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : t('Could not check payment.'));
+      setMessage(e instanceof Error ? e : sourceMessage('Could not check payment.'));
     } finally {
       setBusy(false);
     }
@@ -125,13 +127,16 @@ function EnabledSkinStore({
                 key={product.sku}
                 style={{ padding: 16, border: '1px solid currentColor', borderRadius: 12 }}
               >
-                <h3>{product.name}</h3>
+                <h3>{skinProductLabel(product.sku, product.name)}</h3>
                 <p>{price(product)}</p>
                 <button
                   disabled={busy || !product.available || account?.kind !== 'registered'}
                   onClick={() => void buy(product.sku)}
                 >
-                  <RichMessage source={'Buy {slot0}'} slots={{ slot0: product.name }} />
+                  <RichMessage
+                    source={'Buy {slot0}'}
+                    slots={{ slot0: skinProductLabel(product.sku, product.name) }}
+                  />
                 </button>
               </article>
             ))}
@@ -146,14 +151,14 @@ function EnabledSkinStore({
           />
         </p>
       )}
-      <p role="status">{message}</p>
+      <p role="status">{displayMessage(message)}</p>
       {purchases.status === 'ready' && purchases.data.items.length > 0 && (
         <>
           <h3>{t('Your purchases')}</h3>
           <ul>
             {purchases.data.items.map((p) => (
               <li key={p.id}>
-                {p.sku} {t(' — ')}
+                {skinProductLabel(p.sku, p.sku)} {t(' — ')}
                 {statusLabel(p.status)}{' '}
                 <button disabled={busy} onClick={() => void reconcile(p.id)}>
                   {t('Check payment')}

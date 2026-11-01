@@ -1,3 +1,4 @@
+import { skinModelLabel } from './labels.ts';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import { MeshPreview } from './MeshPreview.tsx';
@@ -46,7 +47,7 @@ export function CopyPaintDialog({
       <div className="skin-copy-grid">
         {MODELS.map((m) => (
           <div key={m.id}>
-            <h3>{t(m.name)}</h3>
+            <h3>{skinModelLabel(m.id)}</h3>
             <MeshPreview
               texture={canvas}
               materials={candidate.materials}

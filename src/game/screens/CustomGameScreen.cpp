@@ -1133,7 +1133,7 @@ Element CustomGameScreen::build(const Presentation &p)
 Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> left;
-	// Narrow pointer windows need the same bounded segments as touch layouts.
+	// The map pane can be narrow even when the window uses the desktop layout.
 	auto pills = [&](const std::string &key, const std::vector<std::string> &labels, const std::vector<fe::UIIcon> &icons,
 					 int selected, std::function<void(int)> change)
 	{
@@ -1152,7 +1152,13 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 											  fe::padding(fe::Insets::symmetric(p.pt(8), 0),
 														  fe::button(key + "/" + std::to_string(i), labels[std::size_t(i)], [change, i] { change(i); }, options))));
 		}
-		return fe::row(std::move(buttons), {p.pt(8), fe::CrossAlign::Center, fe::MainAlign::Start});
+		auto row = fe::row(std::move(buttons), {p.pt(8), fe::CrossAlign::Center, fe::MainAlign::Start});
+		return fe::adaptive([row, key, labels, selected, change, iconRefs](const fe::LayoutContext &ctx, fe::Size available)
+							{
+								if (row->measure(ctx, {}).w > available.w)
+									return fe::segments(key, labels, selected, change, {}, iconRefs);
+								return row;
+							});
 	};
 	left.push_back(pills("map/mode", localized({"Premade maps", "Random map"}), {fe::UIIcon::Map, fe::UIIcon::Dice}, setup.random, [this](int value) { setMapMode(value); }));
 	if (!setup.random)

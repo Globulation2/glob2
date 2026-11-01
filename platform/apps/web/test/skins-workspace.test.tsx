@@ -62,7 +62,7 @@ it('preserves the document, model and tool when opening and closing paint copyin
   fireEvent.click(screen.getByRole('button', { name: 'Warrior' }));
   fireEvent.click(screen.getByRole('button', { name: 'Eraser' }));
   fireEvent.click(screen.getByRole('button', { name: 'Copy paint to other models…' }));
-  expect(screen.getByText(/Copies the warrior texture and materials/)).toBeTruthy();
+  expect(screen.getByText(/Copies the warrior texture and materials/i)).toBeTruthy();
   expect(screen.getByRole('dialog')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Close Copy paint to all models' }));
   expect(screen.queryByRole('dialog')).toBeNull();

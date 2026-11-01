@@ -17,6 +17,12 @@
 .music-heading h1 {
   margin: 0;
 }
+.music-library button {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
 .music-filters {
   display: flex;
   flex-wrap: wrap;

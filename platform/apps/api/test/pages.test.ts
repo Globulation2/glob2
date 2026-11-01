@@ -122,6 +122,20 @@ describe('localized server pages', () => {
     expect(arabic.body()).toContain('<html lang="ar" dir="rtl">');
     expect(french.body()).toContain('<html lang="fr" dir="ltr">');
   });
+  it('renders Telugu server pages selected by browser preferences', () => {
+    const telugu = response();
+    setPageLocale(
+      { headers: { 'accept-language': 'te-Telu-IN,en;q=0.5' } } as FastifyRequest,
+      telugu.reply,
+    );
+    sendPage(telugu.reply, 'Sign in', pageHtml(telugu.reply)`<p>Sign in</p>`);
+    const catalog = JSON.parse(
+      readFileSync(new URL('../../../packages/i18n/locales/te.json', import.meta.url), 'utf8'),
+    ) as Record<string, string>;
+    expect(telugu.body()).toContain('<html lang="te" dir="ltr">');
+    expect(catalog['Sign in']).toMatch(/[\u0c00-\u0c7f]/);
+    expect(telugu.body()).toContain(`<p>${catalog['Sign in']}</p>`);
+  });
   it.each([
     ['Globulation 2', ''],
     ['Globulation 2 Online', ''],
@@ -140,6 +154,21 @@ describe('localized server pages', () => {
         p1: onInstance,
       }),
     ).toBe(`Mirelle আপনাকে${suffix} তাঁদের Globulation 2 রুমে আমন্ত্রণ জানিয়েছেন।`);
+  });
+  it('renders the shipped Marathi catalog on server pages using the saved preference', () => {
+    const marathi = response();
+    setPageLocale(
+      { headers: { cookie: 'glob2_locale=mr', 'accept-language': 'en' } } as FastifyRequest,
+      marathi.reply,
+    );
+    sendPage(marathi.reply, 'Sign in', pageHtml(marathi.reply)`<p>Sign in</p>`);
+    const catalog = JSON.parse(
+      readFileSync(new URL('../../../packages/i18n/locales/mr.json', import.meta.url), 'utf8'),
+    ) as Record<string, string>;
+    expect(catalog['Sign in']).toMatch(/[\u0900-\u097f]/u);
+    expect(marathi.body()).toContain('<html lang="mr" dir="ltr">');
+    expect(marathi.body()).toContain(`<p>${catalog['Sign in']}</p>`);
+    expect(marathi.body()).toContain('/signin/assets/script-fonts.css');
   });
   it('escapes values, preserves rich slots and entities, and leaves scripts alone', () => {
     const { reply } = response();

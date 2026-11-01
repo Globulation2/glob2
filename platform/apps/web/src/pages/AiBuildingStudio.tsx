@@ -212,7 +212,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
   const selectedRevision = thread?.revisions.find((r) => r.requestId === selected);
   const compared =
     compare !== selected ? thread?.revisions.find((r) => r.requestId === compare) : undefined;
-  const currentLabel = selectedRevision?.title ?? 'Current saved draft';
+  const currentLabel = selectedRevision?.title ?? t('Current saved draft');
   if (!account)
     return (
       <section>
@@ -292,17 +292,19 @@ function BuildingWorkspace({ id }: { id?: string }) {
           onSend={() => void action(create)}
           disabledReason={
             busy
-              ? 'Saving your project…'
+              ? t('Saving your project…')
               : !wallet?.enabled
-                ? 'Generation is unavailable.'
+                ? t('Generation is unavailable.')
                 : !wallet.available
-                  ? 'An available Building credit is needed to chat or build.'
+                  ? t('An available Building credit is needed to chat or build.')
                   : undefined
           }
           onBlocked={
             !busy && wallet?.enabled && !wallet.available ? () => setCreditsOpen(true) : undefined
           }
-          pricing="Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery."
+          pricing={t(
+            'Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.',
+          )}
           projects={
             <nav aria-label={t('Building projects')}>
               {projects.map((p) => (
@@ -622,7 +624,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
                   <h2>{t('Your building')}</h2>
                   <RevisionControls
                     viewed={currentLabel}
-                    target="current saved draft"
+                    target={t('Current saved draft')}
                     follow={selected ? () => setSelected('') : undefined}
                   />
                   {selectedRevision && (

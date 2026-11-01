@@ -23,6 +23,10 @@ the modification in its embedded metadata.
 The browser client starts with `browser/assets/sans-core.ttf`, this font without
 the appended CJK outlines, and downloads the full font later
 (`browser/derive_assets.py`). Regenerate that copy whenever this font changes.
+Registering a language also requires rerunning that script to refresh the
+language-name identity in `browser/assets/sources.json`, even when the subset
+font's bytes stay unchanged. Script-specific fonts supply names absent from the
+base font.
 
 ## Rebuild
 
@@ -51,13 +55,20 @@ an original-glyph regression comparison.
 
 The script-specific Noto Sans fonts in `scripts/` supplement the original font
 without modifying its outlines or layout tables. The renderer loads them lazily
-for supported script runs and uses HarfBuzz on logical text. Existing Arabic,
-Persian, Latin and CJK interfaces keep their original font and bidi route; the
-prospective Urdu, Shahmukhi Punjabi, Pashto and Sindhi locales use the Arabic
-script font when registered.
+for supported script runs and uses HarfBuzz on logical text. Telugu uses the
+bundled Noto Sans Telugu font. Existing Arabic, Persian, Latin and CJK interfaces
+keep their original font and bidi route; Urdu uses the Arabic script font, as do
+the prospective Shahmukhi Punjabi, Pashto and Sindhi locales when registered.
 Each newly supported complex-script locale also selects appropriate default
 line metrics, including for empty strings used to size UI rows. Language changes
 invalidate those metrics and cached text.
+
+Tamil (`ta`, தமிழ்) uses the pinned `NotoSansTamil-Regular.ttf` through this
+logical-text shaping path. Keep dependent vowels and puḷḷi in Unicode storage
+order; do not rearrange them to imitate their visual position. The FontKerning
+suite covers Tamil vowel combinations, equivalent composed/decomposed spellings,
+cluster-safe wrapping, fractional raster scales and language switching. Online
+pages and the launcher select the same pinned font through `:lang(ta)`.
 
 At high pixel densities, hinted script advances can differ from the authored
 layout size. Scaled drawing preserves the full raster while using the authored

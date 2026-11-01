@@ -35,6 +35,9 @@ data/texts.ko.txt
 data/texts.hi.txt
 data/texts.ur.txt
 data/texts.sw.txt
-data/texts.bn.txt
+data/texts.ta.txt
 data/texts.nb.txt
 data/texts.ms.txt
+data/texts.bn.txt
+data/texts.mr.txt
+data/texts.te.txt

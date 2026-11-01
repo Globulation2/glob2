@@ -210,9 +210,21 @@ export const locales = [
     dir: 'rtl',
   },
   {
+    code: 'te',
+    gameCode: 'te',
+    name: 'తెలుగు',
+    dir: 'ltr',
+  },
+  {
     code: 'sw',
     gameCode: 'sw',
     name: 'Kiswahili',
+    dir: 'ltr',
+  },
+  {
+    code: 'ta',
+    gameCode: 'ta',
+    name: 'தமிழ்',
     dir: 'ltr',
   },
   {
@@ -231,6 +243,12 @@ export const locales = [
     code: 'ms',
     gameCode: 'ms',
     name: 'Bahasa Melayu',
+    dir: 'ltr',
+  },
+  {
+    code: 'mr',
+    gameCode: 'mr',
+    name: 'मराठी',
     dir: 'ltr',
   },
 ] as const;

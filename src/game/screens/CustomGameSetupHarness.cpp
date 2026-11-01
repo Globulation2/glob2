@@ -323,7 +323,7 @@ struct CustomGameSetupHarness
         globalContainer->liveSpectating = true;
         world.gui.statistics().selectTopic(InGameStatisticsPanel::Topic::World);
         globalContainer->gfx->drawFilledRect(0, 0, 640, 480, 0, 0, 32);
-        world.gui.drawStatisticsPage(195);
+        world.gui.drawStatisticsPanel();
         const auto path = glob2test::artifactDir() / "probability-sixteen-colonies.png";
         REQUIRE(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), path.string().c_str()));
         globalContainer->liveSpectating = false;
@@ -860,6 +860,29 @@ struct CustomGameSetupHarness
 		}
 		picker.endExecute(0);
 		picker.finishExecution();
+	}
+
+	static void translatedMapModesFit()
+	{
+		GAGGUI::ScreenStack screens(*globalContainer->gfx);
+		CustomGameScreen screen(screens);
+		screen.beginExecution(globalContainer->gfx);
+		for (bool random : {true, false})
+		{
+			screen.setMapMode(random);
+			screen.paintFrame(SDL_GetTicks());
+			const auto pane = screen.host().bounds("lobby/map");
+			CHECK(pane.w > 0);
+			for (const char *key : {"map/mode/0", "map/mode/1"})
+			{
+				const auto button = screen.host().bounds(key);
+				CHECK(button.w > 0);
+				CHECK(button.x >= pane.x);
+				CHECK(button.x + button.w <= pane.x + pane.w);
+			}
+		}
+		screen.endExecute(0);
+		screen.finishExecution();
 	}
 
 	static void preferencesScreen(bool write)
@@ -2698,6 +2721,14 @@ static void commonChecks()
 
 TEST_SUITE("CustomGameSetup")
 {
+	TEST_CASE("Telugu map mode buttons fit the desktop map pane [display:800x600][writes-preferences]")
+	{
+		auto options = setupOptions(true, false, "te");
+		options.width = 800;
+		options.height = 600;
+		glob2test::HeadlessGlobals globals(options);
+		CustomGameSetupHarness::translatedMapModesFit();
+	}
     TEST_CASE("bulk AI choice shares semantic and human behavior and preserves excluded colonies")
     {
         glob2test::HeadlessGlobals globals(setupOptions(false));

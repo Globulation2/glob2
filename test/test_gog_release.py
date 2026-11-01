@@ -11,6 +11,7 @@ import stat
 import sys
 import tarfile
 import tempfile
+import subprocess
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -48,6 +49,33 @@ class GOGReleaseTests(unittest.TestCase):
         (self.depot / "unlisted").write_bytes(b"extra")
         with self.assertRaisesRegex(ValueError, "inventory"):
             verify_manifest(self.depot, "windows")
+
+    def test_mirror_localized_apple_resource_cannot_claim_public_tag_source(self):
+        source = self.root / 'source-guard'
+        source.mkdir()
+
+        def git(*args):
+            return subprocess.check_output(
+                ['git', '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=' + str(source / 'no-hooks'),
+                 '-c', 'user.name=Release test', '-c', 'user.email=tests@example.invalid', *args],
+                cwd=source, text=True).strip()
+
+        git('init', '-q')
+        (source / 'scons').mkdir()
+        (source / 'scons/build_layout.py').write_text('PACKAGE_VERSION = "0.11.0.0"\n')
+        resource = source / 'darwin/mr.lproj/InfoPlist.strings'
+        resource.parent.mkdir(parents=True)
+        resource.write_text('"NSLocalNetworkUsageDescription" = "मूळ मजकूर";\n', encoding='utf-8')
+        git('add', '.')
+        git('commit', '-qm', 'Public release source')
+        public = git('rev-parse', 'HEAD')
+        with patch('gog_release.ROOT', source):
+            self.assertEqual(preflight('v0.11.0.0', public)['source_commit'], public)
+            resource.write_text('"NSLocalNetworkUsageDescription" = "बदललेला मजकूर";\n', encoding='utf-8')
+            git('add', '.')
+            git('commit', '-qm', 'Mirror changes localized permission copy')
+            with self.assertRaisesRegex(ValueError, r'game source differs from public tag:.*\n.*darwin/mr.lproj/InfoPlist.strings'):
+                preflight('v0.11.0.0', public)
 
     def test_retired_tutorial_assets_are_rejected_even_when_inventoried(self):
         for name in ('campaigns/Tutorial_Campaign.txt', 'campaigns/tutorial-part1.map.gz',
