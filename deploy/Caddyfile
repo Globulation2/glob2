@@ -144,8 +144,6 @@
 		header @text Content-Type "text/plain; charset=utf-8"
 		@json path *.json
 		header @json Content-Type "application/json; charset=utf-8"
-		@text path *.txt
-		header @text Content-Type "text/plain; charset=utf-8"
 		@wasm path *.wasm
 		header @wasm Content-Type application/wasm
 		@data path *.data
