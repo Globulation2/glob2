@@ -217,6 +217,16 @@ checksum adapter remains available for diagnostic fixtures.
   apply their own obstacle/clearing policy and diagonal side checks. Both masks
   enter cache identities; reserved routes are revalidated before construction.
   Format 194 reads older records fully before discarding stale movement searches.
+- Terrain connection planes are compiled once per terrain epoch, rather than on
+  each AI scan. A separate bounded cache shares physical incoming masks between
+  searches with the same ground profile, team forbidden mask and interaction
+  policy. Terrain, resource presence/blocking, building occupancy and forbidden
+  edits invalidate the relevant epoch; stock amounts and moving units do not.
+  The map owns the current epochs and snapshots lease older ones. Cache misses
+  read their caller's frozen view, so an older snapshot can compile a previously
+  unused key after live edits without reading the live map. Completed grids own
+  their immutable masks independently of cache eviction. These are derived
+  caches; loading does not change search scheduling or saved field continuation.
 - `Map::terrainTypeAt` returns a cell's terrain when its corners agree and
   `MIXED_TERRAIN` otherwise. That sentinel is never stored; never index a table
   with it. The script-facing `getTerrainType` maps mixed cells to the unknown

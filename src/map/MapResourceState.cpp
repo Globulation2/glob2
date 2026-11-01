@@ -74,7 +74,8 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
     auto priorAdaptiveFields=std::move(gradientRuntime->adaptive.fields);
     gradientRuntime->adaptive={};
     gradientRuntime->marketTargets={};
-    terrainRegistryValue = std::move(terrain);
+	const bool terrainConnectionsChanged = terrainRegistryValue != terrain;
+	terrainRegistryValue = std::move(terrain);
     assetBundleValue = std::move(assets);
     resourceRegistryValue=next;
     bumpStaticMaterialSourceGeneration();
@@ -84,8 +85,8 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
     materialSourceCounts=counts;
     for (size_t i=0;i<cellCount();++i) resourceCells[i].resource=deposits[i];
     // The vertices keep their IDs; every cell is re-derived against the new catalogs.
-    rebuildTerrainCounts(std::move(rules));
-    resourceChanges.markAll();
+	rebuildTerrainCounts(std::move(rules), terrainConnectionsChanged);
+	resourceChanges.markAll();
     invalidateResourceSeeds();
     bumpTopologyGeneration();
     if (arraysBuilt) {
@@ -234,7 +235,8 @@ void Map::materialStockChanged(size_t index, MaterialMask before, MaterialMask b
 
 void Map::rebuildResourceState()
 {
-    resourceChanges.markAll();
+	invalidateMovementConnections(false);
+	resourceChanges.markAll();
     gradientRuntime->adaptive={};
     gradientRuntime->marketTargets={};
     bumpStaticMaterialSourceGeneration();
@@ -356,6 +358,8 @@ void Map::refreshLiveView()
     view.resources=resourceCells; view.occupancy=occupancyCells; view.areas=areaCells;
 	view.cellRules = cellRules;
 	view.vertices = vertexTerrain;
+	view.terrainConnections = terrainConnectionsValue.get();
+	view.movementConnections = movementConnectionsValue.get();
 	view.stockIndices=&resourceStockIndices; view.stocks=&resourceStocks; view.materialSourceCounts=materialSourceCounts;
     view.terrainRegistry=terrainRegistryValue.get(); view.resourceRegistry=resourceRegistryValue.get(); view.rules=cellRuleTable.get();
     liveCells=view;

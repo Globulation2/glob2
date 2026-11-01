@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "MovementConnectionCache.h"
 #include "field/Grid.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -61,6 +62,8 @@ bool Map::canTraverse(int x, int y, int dx, int dy, int movement, Uint32 teamMas
 
 std::uint8_t Map::terrainConnections(int x, int y, int movement) const
 {
+	if (movement != AIR_MOVEMENT_CLASS)
+		return (*MapState::terrainConnectionMasks(cellView(), movement))[coordToIndex(x, y)];
 	std::uint8_t mask = 0;
 	for (unsigned d = 0; d < field::Surrounding.size(); ++d)
 	{

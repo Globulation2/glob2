@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "MapStateView.h"
+#include "MovementConnectionCache.h"
 #include "field/Grid.h"
 #include <limits>
 
@@ -15,38 +16,10 @@ inline field::Grid movementGrid(const View &v, int movement, Uint32 team,
 	field::Grid grid(v.width, v.height);
 	if (movement == AIR_MOVEMENT_CLASS)
 		return grid;
-	constexpr std::uint8_t TerrainAccess = 1, PhysicalPassage = 2;
-	std::vector<std::uint8_t> passable(grid.cells());
-	for (int y = 0; y < v.height; ++y)
-		for (int x = 0; x < v.width; ++x)
-			passable[v.index(x, y)] =
-				(terrainAllowsMovement(v, v.index(x, y), movement) ? TerrainAccess : 0) |
-				(groundPassage(v, x, y, movement, team) ? PhysicalPassage : 0);
-	auto incoming = std::make_shared<std::vector<std::uint8_t>>(grid.cells(), 0);
-	for (int y = 0; y < v.height; ++y)
-		for (int x = 0; x < v.width; ++x)
-		{
-			const auto i = v.index(x, y);
-			const bool interaction =
-				interactionEndpoints && resourceInteractionEndpoint(v, i, movement);
-			if (!(passable[i] & TerrainAccess) && !interaction)
-				continue;
-			for (unsigned d = 0; d < field::Surrounding.size(); ++d)
-			{
-				const auto [dx, dy] = field::Surrounding[d];
-				if (!(passable[v.index(x + dx, y + dy)] & TerrainAccess))
-					continue;
-				// Reverse propagation checks the forward connection from predecessor
-				// to destination. Gathering is nonmoving and retains adjacent range.
-				const bool connected = terrainConnection(v, x + dx, y + dy, -dx, -dy, movement);
-				const bool sidesClear = !dx || !dy ||
-										((passable[v.index(x + dx, y)] & PhysicalPassage) &&
-										 (passable[v.index(x, y + dy)] & PhysicalPassage));
-				if (interaction || (connected && sidesClear))
-					(*incoming)[i] |= 1u << d;
-			}
-		}
-	return grid.withIncomingConnections(std::move(incoming));
+	return grid.withIncomingConnections(
+		v.movementConnections
+			? v.movementConnections->incoming(v, movement, team, interactionEndpoints)
+			: compileMovementConnections(v, movement, team, interactionEndpoints));
 }
 
 // Ascent follows the same edges as reverse propagation. Field seeds encode

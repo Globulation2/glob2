@@ -266,8 +266,10 @@ void Map::bindCellRules()
 	refreshLiveView();
 }
 
-void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table)
+void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table, bool terrainConnectionsChanged)
 {
+	if (terrainConnectionsChanged)
+		invalidateMovementConnections(true);
 	invalidateResourceSeeds();
 	// A fresh table numbers uniform rules by terrain ID and mixed ones in
 	// row-major order; a table passed in keeps the rules it already holds.
@@ -365,6 +367,8 @@ void Map::changeCellRule(size_t index, std::uint16_t rule)
 
 void Map::writeVertex(size_t index, TerrainType type)
 {
+	// Directional shore connections can change even when the canonical rule holds.
+	invalidateMovementConnections(true);
 	const auto old = vertexTerrain[index];
 	const auto &before = terrainRegistry().properties(old);
 	const auto &after = terrainRegistry().properties(type);
@@ -546,6 +550,7 @@ void Map::configureCompute(unsigned threads)
 
 void Map::clear()
 {
+	invalidateMovementConnections(true);
 	if (game) game->areaEffects.reset();
 	loadedHistoricalGrowthVersion = 0;
 	loadedLegacyGrowth144 = false;

@@ -113,6 +113,7 @@ class Map
 	friend struct ResourceGradientProbe;
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
+	void invalidateMovementConnections(bool terrain);
 	void seedMaterialGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
 	void seedMaterialGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
 	mutable ComputeExecutor compute;
@@ -128,6 +129,10 @@ class Map
 	// refreshLiveView() whenever an input is replaced. Per-cell queries read
 	// it directly instead of assembling a view on every call.
 	MapState::View liveCells;
+	// Epochs contain only derived connection masks. Snapshots lease the epoch;
+	// a physical edit forks it while unshared epochs reuse their cache storage.
+	std::shared_ptr<MapState::TerrainConnectionCache> terrainConnectionsValue;
+	std::shared_ptr<MapState::MovementConnectionCache> movementConnectionsValue;
 	// Per-array change tracking at chunk granularity; see MapChangeTracking.h.
 	MapState::ChunkGeometry chunkGeometry;
 	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
@@ -143,7 +148,13 @@ class Map
 	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); }
 	//! For fixtures that assign the cell arrays directly instead of calling
 	//! setSize: size the change trackers and bind the live view to the arrays.
-	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); rebuildPaintedAreaCounts(); }
+	void bindBootstrappedArrays()
+	{
+		resetChangeTracking();
+		invalidateMovementConnections(true);
+		refreshLiveView();
+		rebuildPaintedAreaCounts();
+	}
 	//! Size the trackers to the current dimensions; every chunk becomes dirty.
 	void resetChangeTracking()
 	{
@@ -211,7 +222,8 @@ class Map
 	void convertLegacyCellTerrain(const std::vector<TerrainType> &cells);
 	// Re-derives every cell rule from the vertices, with table or else a fresh
 	// table for the current registries, and recounts terrain and features.
-	void rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table = {});
+	void rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table = {},
+							  bool terrainConnectionsChanged = true);
 	unsigned terrainEditDepth = 0;
 	bool terrainEditChanged = false, terrainRoutesChanged = false;
 	bool terrainHealthEffects = false;
@@ -235,6 +247,14 @@ public:
 	EntityRandom& privateRandom(RandomDomain domain);
 	std::array<Uint64, 5> snapshotGenerations() const
 	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation}; }
+	std::shared_ptr<const MapState::TerrainConnectionCache> frozenTerrainConnections() const
+	{
+		return terrainConnectionsValue;
+	}
+	std::shared_ptr<const MapState::MovementConnectionCache> frozenMovementConnections() const
+	{
+		return movementConnectionsValue;
+	}
 	const MapState::ChunkGeometry& chunks() const { return chunkGeometry; }
 	const MapState::ChangeTracker& changes(MapState::TrackedArray array) const
 	{

@@ -20,6 +20,7 @@
 #include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/UniformTraversal.h"
+#include "map/MovementConnectionCache.h"
 #include "map/MovementConnections.h"
 #include "GameDiagnostics.h"
 #include "AITelemetryFields.h"
@@ -4516,6 +4517,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	const bool cachedFertility=fertility_cache.validFor(world.width,world.height);
 	const std::vector<uint32_t>& fertilityValues=fertility_cache.values();
 	const WoodReserve wood_reserve=select_wood_reserve(runtime);
+	const auto walkingConnections = MapState::terrainConnectionMasks(map->state(), 0);
+	const auto amphibiousConnections = MapState::terrainConnectionMasks(map->state(), 1);
 	for(int y=0;y<world.height;++y)for(int x=0;x<world.width;++x)
 	{
 		const int index=y*world.width+x;
@@ -4526,18 +4529,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		const auto& terrain=AIEngine::ObservationQueries::terrain((*map),index);
 		tile.walkable = map->terrainAllowsMovementAt(x, y, 0);
 		tile.swimmable = !tile.walkable && map->terrainAllowsMovementAt(x, y, 1);
-		tile.walkingConnections = tile.amphibiousConnections = 0;
-		for (unsigned d = 0; d < field::Surrounding.size(); ++d)
-		{
-			const auto [dx, dy] = field::Surrounding[d];
-			for (int movement : {0, 1})
-				if (map->terrainAllowsMovementAt(x + dx, y + dy, movement) &&
-					MapState::terrainConnection(map->state(), x, y, dx, dy, movement) &&
-					(!dx || !dy ||
-					 (map->terrainAllowsMovementAt(x + dx, y, movement) &&
-					  map->terrainAllowsMovementAt(x, y + dy, movement))))
-					(movement ? tile.amphibiousConnections : tile.walkingConnections) |= 1u << d;
-		}
+		tile.walkingConnections = (*walkingConnections)[index];
+		tile.amphibiousConnections = (*amphibiousConnections)[index];
 		tile.fertilitySource=terrainProvidesFertility(terrain);
 		tile.growthInhibiting=terrain.inhibitionQ8 != 0;
 		tile.buildable=terrain.buildable;tile.occupied=cell.building!=NOGBID;

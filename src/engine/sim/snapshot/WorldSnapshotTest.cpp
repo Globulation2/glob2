@@ -3,6 +3,7 @@
 #include "GradientFixture.h"
 #include "sim/snapshot/TeamRecords.h"
 #include "WorldSnapshot.h"
+#include "MovementConnectionCache.h"
 #include "SnapshotStore.h"
 #include "Building.h"
 #include "Unit.h"
@@ -1403,4 +1404,137 @@ TEST_SUITE("WorldSnapshot")
         CHECK(next.entities->buildings.front().maxUnitWorking==original);
         CHECK(game.snapshots().metrics.coreMaterializations==captures+2);
     }
+}
+
+TEST_SUITE("WorldSnapshot")
+{
+	TEST_CASE("movement epochs ignore stocks and transient units but track physical edits")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture({.loadDefaultRace = true});
+		auto &map = fixture.game.map;
+		map.setResourceByIndex(9, 9, WHEAT, 1);
+		const auto terrain = map.frozenTerrainConnections();
+		auto physical = map.frozenMovementConnections();
+		REQUIRE(terrain);
+		REQUIRE(physical);
+		const auto incoming = physical->incoming(map.cellView(), 0, 1, false);
+		const auto stock = map.materialAmountAt(map.coordToIndex(9, 9), MaterialId::Food);
+		map.setMaterialAmount(map.coordToIndex(9, 9), MaterialId::Food, stock == 1 ? 2 : 1);
+		auto *worker = fixture.addUnit(WORKER, 3, 3);
+		REQUIRE(worker);
+		map.setGroundUnit(3, 3, NOGUID);
+		map.setGroundUnit(4, 3, worker->gid);
+		worker->posX = 4;
+		map.setAreaMask(map.coordToIndex(5, 5), &Tile::guardArea, 1);
+		map.setAreaMask(map.coordToIndex(5, 5), &Tile::farmArea, 1);
+		CHECK(map.frozenMovementConnections() == physical);
+		CHECK(map.frozenTerrainConnections() == terrain);
+		CHECK(physical->incoming(map.cellView(), 0, 1, false) == incoming);
+
+		map.setAreaMask(map.coordToIndex(5, 5), &Tile::forbidden, 1);
+		REQUIRE(map.frozenMovementConnections() != physical);
+		CHECK(map.frozenTerrainConnections() == terrain);
+		CHECK(*map.frozenMovementConnections()->incoming(map.cellView(), 0, 1, false) != *incoming);
+		physical = map.frozenMovementConnections();
+		map.setBuilding(6, 6, 1, 1, 7);
+		CHECK(map.frozenMovementConnections() != physical);
+		physical = map.frozenMovementConnections();
+		map.setMaterialAmount(map.coordToIndex(9, 9), MaterialId::Food, 0);
+		CHECK(map.frozenMovementConnections() != physical);
+		CHECK(map.frozenTerrainConnections() == terrain);
+		CHECK(map.cellView().movementConnections == map.frozenMovementConnections().get());
+		CHECK(map.cellView().terrainConnections == terrain.get());
+	}
+
+	TEST_CASE("resource presence and catalog blockers refresh only the physical epoch")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture({.loadDefaultRace = true});
+		auto &map = fixture.game.map;
+		using Json = nlohmann::json;
+		auto custom = Json::parse(map.resourceRegistry().serialize())["resources"][WOOD];
+		custom["key"] = "test:nonblocking-deposit";
+		custom["properties"]["blocksGround"] = false;
+		const auto terrain = map.frozenTerrainConnections();
+		auto physical = map.frozenMovementConnections();
+		map.installResourceDefinitions(
+			Json{{"schemaVersion", 1}, {"resources", Json::array({custom})}}.dump());
+		CHECK(map.frozenTerrainConnections() == terrain);
+		CHECK(map.frozenMovementConnections() != physical);
+		const auto id = *map.resourceRegistry().find("test:nonblocking-deposit");
+		physical = map.frozenMovementConnections();
+		map.setResource(10, 10, id, 1);
+		REQUIRE(map.getResource(10, 10).type == resourceIndex(id));
+		CHECK(map.frozenMovementConnections() != physical);
+		physical = map.frozenMovementConnections();
+		custom["properties"]["blocksGround"] = true;
+		map.installResourceDefinitions(
+			Json{{"schemaVersion", 1}, {"resources", Json::array({custom})}}.dump());
+		CHECK(map.frozenMovementConnections() != physical);
+		CHECK(map.frozenTerrainConnections() == terrain);
+		physical = map.frozenMovementConnections();
+		map.setNoResource(10, 10, 1);
+		CHECK(map.frozenMovementConnections() != physical);
+	}
+
+	TEST_CASE("old snapshot epochs compile missing keys after live terrain and obstacle edits")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture({.loadDefaultRace = true});
+		auto &map = fixture.game.map;
+		const auto old = SimulationSnapshot::capture(
+			fixture.game, SimulationSnapshot::captureCatalog(fixture.game));
+		REQUIRE(old.terrainConnections);
+		REQUIRE(old.movementConnections);
+		CHECK(old.terrainConnections == map.frozenTerrainConnections());
+		CHECK(old.movementConnections == map.frozenMovementConnections());
+		AIEngine::AIWorldView ai(old.simulationView());
+		CHECK(ai.state().terrainConnections == old.terrainConnections.get());
+		CHECK(ai.state().movementConnections == old.movementConnections.get());
+		map.setAreaMask(map.coordToIndex(5, 5), &Tile::forbidden, 2);
+		map.setVertexTerrain(8, 8, OUTCROP);
+		CHECK(old.terrainConnections != map.frozenTerrainConnections());
+		CHECK(old.movementConnections != map.frozenMovementConnections());
+		auto uncached = old.view();
+		uncached.terrainConnections = nullptr;
+		uncached.movementConnections = nullptr;
+		const auto retained = old.movementConnections->incoming(old.view(), 0, 2, false);
+		CHECK(*retained == *MapState::compileMovementConnections(uncached, 0, 2, false));
+		CHECK(*retained != *map.frozenMovementConnections()->incoming(map.cellView(), 0, 2, false));
+		map.setSize(4, 4);
+		CHECK(*old.movementConnections->incoming(old.view(), 1, 4, true) ==
+			  *MapState::compileMovementConnections(uncached, 1, 4, true));
+	}
+
+	TEST_CASE("snapshot projections retain only connection epochs supported by their inputs")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture({.loadDefaultRace = true});
+		auto &map = fixture.game.map;
+		auto full = SimulationSnapshot::capture(fixture.game,
+												SimulationSnapshot::captureCatalog(fixture.game));
+		auto terrainOnly =
+			full.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
+		CHECK(terrainOnly.terrainConnections == full.terrainConnections);
+		CHECK_FALSE(terrainOnly.movementConnections);
+		CHECK_FALSE(full.growthView().movementConnections); // Areas are omitted.
+		CHECK_FALSE(full.turretView().movementConnections); // Resources/areas are omitted.
+		CHECK(full.buildingGradientView().movementConnections == full.movementConnections);
+		const auto physicalInputs =
+			SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain) |
+			SimulationSnapshot::bit(SimulationSnapshot::Component::Resources) |
+			SimulationSnapshot::bit(SimulationSnapshot::Component::Occupancy) |
+			SimulationSnapshot::bit(SimulationSnapshot::Component::Areas);
+		CHECK_FALSE(full.project(physicalInputs).movementConnections); // No resource catalog.
+		std::weak_ptr<const MapState::MovementConnectionCache> physical = full.movementConnections;
+		full = {};
+		CHECK(physical.use_count() == 1); // Only the live map owns this epoch.
+		const auto *uniqueEpoch = map.cellView().movementConnections;
+		map.setAreaMask(map.coordToIndex(5, 5), &Tile::forbidden, 1);
+		CHECK(map.cellView().movementConnections == uniqueEpoch); // Reuse an unleased epoch.
+		map.setVertexTerrain(5, 5, OUTCROP);
+		CHECK(terrainOnly.terrainConnections != map.frozenTerrainConnections());
+		CHECK(MapState::terrainConnectionMasks(terrainOnly.view(), 0)->size() == map.cellCount());
+	}
 }

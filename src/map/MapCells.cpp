@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Map.h"
+#include "MovementConnectionCache.h"
 #include "gradient/GradientRuntime.h"
 #include "gradient/GradientTargetCell.h"
 #include <bit>
@@ -26,8 +27,28 @@ void Map::rebuildPaintedAreaCounts()
     }
 }
 
+void Map::invalidateMovementConnections(bool terrain)
+{
+	if (terrain)
+	{
+		if (terrainConnectionsValue && terrainConnectionsValue.unique())
+			terrainConnectionsValue->clear();
+		else
+			terrainConnectionsValue = std::make_shared<MapState::TerrainConnectionCache>();
+		liveCells.terrainConnections = terrainConnectionsValue.get();
+	}
+	if (movementConnectionsValue && movementConnectionsValue.unique())
+		movementConnectionsValue->clear();
+	else
+		movementConnectionsValue = std::make_shared<MapState::MovementConnectionCache>();
+	liveCells.movementConnections = movementConnectionsValue.get();
+}
+
 void Map::resourceSeedChanged(size_t index, unsigned flags)
 {
+	if (flags &
+		(ResourceSeedCache::Terrain | ResourceSeedCache::Building | ResourceSeedCache::Forbidden))
+		invalidateMovementConnections(flags & ResourceSeedCache::Terrain);
 	gradientRuntime->resourceSeeds.changed(index, flags);
     if (flags & ResourceSeedCache::Terrain)
         gradientRuntime->directFlight.valid = false;
@@ -40,6 +61,7 @@ void Map::resourceSeedChanged(size_t index, unsigned flags)
 
 void Map::invalidateResourceSeeds()
 {
+	invalidateMovementConnections(false);
 	gradientRuntime->resourceSeeds.invalidate();
     gradientRuntime->directFlight.valid = false;
 	gradientRuntime->safety.invalidate(true, true);
@@ -50,6 +72,7 @@ void Map::replaceResource(size_t index, const Resource &resource, const std::arr
 	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
 		: std::optional{captureGradientTargetCell(index)};
 	const bool blockedGround = resourceBlocksGround(index);
+	const bool resourcePresent = resourceCells[index].resource.type != NO_RES_TYPE;
 	const bool blockedAir = resourceBlocksAir(index);
 	const auto before = resourceMaterialMaskAt(index);
     const auto beforeAvailable=materialMaskAt(index);
@@ -58,7 +81,10 @@ void Map::replaceResource(size_t index, const Resource &resource, const std::arr
 	markResource(index);
 	initializeResourceStock(index, stocks);
 	materialStockChanged(index, before, beforeAvailable, false);
-    if (blockedAir != resourceBlocksAir(index)) gradientRuntime->directFlight.valid = false;
+	if (resourcePresent != (resourceCells[index].resource.type != NO_RES_TYPE) ||
+		blockedGround != resourceBlocksGround(index))
+		invalidateMovementConnections(false);
+	if (blockedAir != resourceBlocksAir(index)) gradientRuntime->directFlight.valid = false;
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));
 	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);

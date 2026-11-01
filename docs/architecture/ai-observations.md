@@ -87,6 +87,15 @@ queries at diagnostic boundaries; do not add component or bounds checks to each
 inner-loop read. Use full tiles only when the consumer needs the combined fields,
 including derived farm eligibility.
 
+Terrain-only connection planes and physical movement masks have separate shared
+cache epochs. A terrain lease retains its connection planes; a complete movement
+view additionally leases the physical cache. Projection drops that lease when
+required components are absent. Unit movement and stock changes can create new
+observation buffers while retaining the same movement epoch. Physical edits fork
+a leased epoch, preserving both cached masks and later cache misses against old
+snapshot inputs. AI planner capture obtains terrain planes once per scan and
+copies their bytes alongside cell access, without recompiling edges per tile.
+
 Snapshot component buffers are plain shared pointers in a bounded pool
 (`src/engine/sim/snapshot/BufferPool.h`). A consumer holds a buffer through its
 pointer; the pool reuses a buffer once that pointer is the only one left, after an

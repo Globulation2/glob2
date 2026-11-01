@@ -172,6 +172,8 @@ struct Handle
 	std::shared_ptr<const Rules> rules;
 	std::shared_ptr<const ResourceFields> resourceFields;
 	std::shared_ptr<const Fertility::GrowthCache> growth;
+	std::shared_ptr<const MapState::TerrainConnectionCache> terrainConnections;
+	std::shared_ptr<const MapState::MovementConnectionCache> movementConnections;
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
 	std::array<Uint64, 5> mapGenerations{};

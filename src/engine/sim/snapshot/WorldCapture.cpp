@@ -596,7 +596,14 @@ Handle capture(const Game& game,
         }
         result->statisticsInputs = std::move(input);
     }
-    if (storage && storage->verify) verifyCapture(game, value);
+	// These leases own only derived masks, not copies of the live cell inputs.
+	// Stock and transient-unit changes can retain the same physical epoch.
+	if (result->terrain)
+		result->terrainConnections = game.map.frozenTerrainConnections();
+	if (result->terrain && result->resources && result->occupancy && result->areas &&
+		result->catalogs)
+		result->movementConnections = game.map.frozenMovementConnections();
+	if (storage && storage->verify) verifyCapture(game, value);
 	return value;
 }
 

@@ -281,6 +281,7 @@ CLIENT_SOURCES = (
     'map/Map.cpp',
     'map/TerrainRegistry.cpp',
     'map/CellRules.cpp',
+    'map/MovementConnectionCache.cpp',
     'map/MapAssetBundle.cpp',
     'map/MapSetImport.cpp',
     'map/editor/SetLibraryDialog.cpp',

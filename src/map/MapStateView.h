@@ -21,6 +21,8 @@
 // each cell query reads the same arrays directly on both sides.
 namespace MapState
 {
+class TerrainConnectionCache;
+class MovementConnectionCache;
 struct View
 {
 	int width = 0, height = 0;
@@ -32,6 +34,9 @@ struct View
 	// The rule index of each cell into rules (CellRules.h).
 	std::span<const Uint16> cellRules;
 	std::span<const TerrainType> vertices;
+	// Borrowed epochs: the live Map or captured Handle owns their lifetime.
+	const TerrainConnectionCache *terrainConnections = nullptr;
+	const MovementConnectionCache *movementConnections = nullptr;
 	// Multi-yield stock sidecar, referenced through its vectors: the live
 	// sidecar grows at runtime, and a cached view must follow it.
 	const std::vector<Uint32>* stockIndices = nullptr;

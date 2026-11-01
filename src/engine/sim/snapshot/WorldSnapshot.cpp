@@ -80,6 +80,10 @@ Handle Handle::project(Requirements requested) const
 	if (needs(requested, Component::Rules)) result.rules = rules;
 	if (needs(requested, Component::Growth)) { result.growth = growth; result.areaFertility=areaFertility; }
 	if (needs(requested, Component::ResourceFields)) result.resourceFields = resourceFields;
+	if (result.terrain)
+		result.terrainConnections = terrainConnections;
+	if (result.terrain && result.resources && result.occupancy && result.areas && result.catalogs)
+		result.movementConnections = movementConnections;
 	return result;
 }
 MapState::View Handle::view() const
@@ -100,6 +104,10 @@ MapState::View Handle::view() const
 		v.terrainRegistry = terrain->registry.get();
 	}
 	if (catalogs) v.resourceRegistry = catalogs->resources.get();
+	if (terrain)
+		v.terrainConnections = terrainConnections.get();
+	if (terrain && resources && occupancy && areas && catalogs)
+		v.movementConnections = movementConnections.get();
 	v.growth = growth.get();
 	if(areaFertility) v.areaFertility=areaFertility->values;
 	if (rules) { v.resourceGrowthDisabled = rules->values.resourceGrowthDisabled; v.resourceScarcityLevel = rules->configuration ? int(rules->configuration->getResourceScarcityLevel()) : 0; }
