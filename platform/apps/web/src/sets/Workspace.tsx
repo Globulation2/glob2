@@ -236,7 +236,9 @@ export function SetEditor({
       if (account) {
         const abort = new AbortController();
         queueMicrotask(() => {
-          if (!abort.signal.aborted) setPack(newPackage(account.displayName));
+          if (!abort.signal.aborted) {
+            setPack({ ...newPackage(account.displayName), title: t('New set') });
+          }
         });
         return () => abort.abort();
       }
@@ -368,14 +370,24 @@ export function SetEditor({
     const key = prefix + suffix;
     const source = RESOURCE_PRESETS.find((r) => r.key === resourcePreset) ?? RESOURCE_PRESETS[0];
     if (!source) return;
+    // Localize only new editable display names; stable keys and loaded names stay authored.
+    const label = kind === 'terrain' ? t('Terrain') : t('Resource');
+    const usedNames = new Set(
+      entries.map((existing) =>
+        String(kind === 'terrain' ? existing['name'] : object(existing['presentation'])['name']),
+      ),
+    );
+    let displaySuffix = 1;
+    while (usedNames.has(`${label} ${displaySuffix}`)) displaySuffix++;
+    const displayName = `${label} ${displaySuffix}`;
     const added: Entry =
       kind === 'terrain'
-        ? { key, name: 'Custom ' + name(preset), base: preset, appearance: preset, properties: {} }
+        ? { key, name: displayName, base: preset, appearance: preset, properties: {} }
         : {
             ...structuredClone(source),
             key,
             requiredExperiment: '',
-            presentation: { ...source.presentation, name: 'Custom ' + source.presentation.name },
+            presentation: { ...source.presentation, name: displayName },
           };
     change({ ...pack, [kind === 'terrain' ? 'terrains' : 'resources']: [...entries, added] });
     setSelected(entries.length);
@@ -597,7 +609,10 @@ export function SetEditor({
               </select>
             </label>
             <button disabled={busy || published} onClick={addEntry}>
-              <RichMessage source={'Add {slot0}'} slots={{ slot0: kind }} />
+              <RichMessage
+                source={'Add {slot0}'}
+                slots={{ slot0: kind === 'terrain' ? t('Terrain') : t('Resource') }}
+              />
             </button>
             <ul className="set-entry-list">
               {entries.map((e, i) => (

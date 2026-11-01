@@ -56,9 +56,12 @@ for (const locale of locales) {
     if (!themeChangeLabel || !defaultThemeLabel) {
       throw new Error(`Missing theme labels for ${locale.code}`);
     }
+    // The translation runtime isolates interpolated values in RTL messages.
+    const interpolatedThemeLabel =
+      locale.dir === 'rtl' ? `\u2068${defaultThemeLabel}\u2069` : defaultThemeLabel;
     await expect(page.getByTestId('theme-toggle')).toHaveAttribute(
       'aria-label',
-      themeChangeLabel.replace('{value0}', defaultThemeLabel),
+      themeChangeLabel.replace('{value0}', interpolatedThemeLabel),
     );
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();

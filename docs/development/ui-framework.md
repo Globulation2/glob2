@@ -135,7 +135,11 @@ built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
 bindings. Fixed studio copy passed through `ChatComposer`, `NewStudio`,
 `RevisionControls` and conversation/status props must be translated by the caller;
-project titles, prompts and generated responses remain user content. Newly
+project titles, prompts and generated responses remain user content. Fresh set
+workspaces start with the translated new-set title and category names with unused
+numeric suffixes for new entries. Empty skin-name fields use the translated
+new-skin label. This initialization leaves existing authored names, package UUIDs
+and executable preset/property identities unchanged. Newly
 cataloged legacy English UI may retain explicit English values and scoped
 `shared-values.json` exceptions in existing locales until translated; a completed
 new locale must translate those messages. Render representative screens in each language to check font

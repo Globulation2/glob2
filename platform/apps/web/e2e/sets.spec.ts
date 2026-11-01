@@ -20,7 +20,7 @@ test('custom definitions and PNG mappings survive save and reload', async ({
   await page
     .getByLabel('Title', { exact: true })
     .fill('Browser terrain ' + test.info().project.name);
-  await page.getByRole('button', { name: 'Add terrain', exact: true }).click();
+  await page.getByRole('button', { name: 'Add Terrain', exact: true }).click();
   await page.getByLabel('Name', { exact: true }).fill('Library moss');
   const chunk = (name: string, bytes: Buffer) => {
     const body = Buffer.concat([Buffer.from(name), bytes]);
@@ -105,7 +105,7 @@ test('custom definitions and PNG mappings survive save and reload', async ({
   if (process.env['SET_E2E_ENGINE'] === '1') {
     test.setTimeout(180000);
     await page.getByRole('button', { name: 'Resources', exact: true }).click();
-    await page.getByRole('button', { name: 'Add resource', exact: true }).click();
+    await page.getByRole('button', { name: 'Add Resource', exact: true }).click();
     await page
       .getByRole('combobox', { name: 'Spritesheet', exact: true })
       .selectOption('data/sets/' + hash);

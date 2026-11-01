@@ -310,7 +310,7 @@ function SkinStudio() {
                 disabled={disabled}
                 onChange={(e) => doc.edit({ name: e.target.value })}
                 onBlur={(e) => {
-                  const name = e.target.value.trim() || 'Untitled skin';
+                  const name = e.target.value.trim() || t('New skin');
                   if (name !== d.name) doc.edit({ name });
                 }}
               />
