@@ -1,0 +1,136 @@
+--- a/platform/apps/web/src/App.tsx
++++ b/platform/apps/web/src/App.tsx
+@@ -355,8 +355,14 @@
+   if (account === undefined) return null;
+   if (!account) {
+     return (
+-      <a className="btn primary small" href="/signin">
+-        {t('Sign in')}
++      <a
++        className="btn primary small sidebar-auth"
++        href="/signin"
++        aria-label={t('Sign in')}
++        title={t('Sign in')}
++      >
++        <Icon name="users" size={20} className="sidebar-auth-icon" aria-hidden="true" />
++        <span className="sidebar-auth-label">{t('Sign in')}</span>
+       </a>
+     );
+   }
+@@ -373,8 +379,14 @@
+           <bdi dir="auto">{account.displayName}</bdi>
+         </span>
+       </Link>
+-      <button className="small" onClick={() => void signOut()}>
+-        {t('Sign out')}
++      <button
++        className="small sidebar-auth"
++        onClick={() => void signOut()}
++        aria-label={t('Sign out')}
++        title={t('Sign out')}
++      >
++        <Icon name="x" size={20} className="sidebar-auth-icon" aria-hidden="true" />
++        <span className="sidebar-auth-label">{t('Sign out')}</span>
+       </button>
+     </>
+   );
+--- a/platform/apps/web/src/styles/layout.css
++++ b/platform/apps/web/src/styles/layout.css
+@@ -234,6 +234,9 @@
+ .sidebar-account.on .chip {
+   border-color: var(--accent);
+ }
++.sidebar-auth-icon {
++  display: none;
++}
+ main {
+   min-width: 0;
+ }
+@@ -348,12 +351,17 @@
+ .sidebar-collapsed .app-sidebar .sidebar-account .chip span {
+   display: none;
+ }
+-.sidebar-collapsed .app-sidebar .sidebar-account :is(button, .btn) {
+-  font-size: var(--text-xs);
+-  padding: 0 2px;
+-  max-width: 100%;
+-  white-space: normal;
+-  overflow-wrap: anywhere;
++.sidebar-collapsed .app-sidebar .sidebar-account .sidebar-auth {
++  width: 44px;
++  min-width: 44px;
++  min-height: 44px;
++  padding: 0;
++}
++.sidebar-collapsed .app-sidebar .sidebar-auth-icon {
++  display: block;
++}
++.sidebar-collapsed .app-sidebar .sidebar-auth-label {
++  display: none;
+ }
+ .sidebar-collapsed .app-sidebar .nav a:is(:hover, :focus-visible) .rail-tooltip {
+   display: block;
+@@ -421,12 +429,17 @@
+   .app-sidebar .sidebar-account .chip span {
+     display: none;
+   }
+-  .app-sidebar .sidebar-account :is(button, .btn) {
+-    font-size: var(--text-xs);
+-    padding: 0 2px;
+-    max-width: 100%;
+-    white-space: normal;
+-    overflow-wrap: anywhere;
++  .app-sidebar .sidebar-account .sidebar-auth {
++    width: 44px;
++    min-width: 44px;
++    min-height: 44px;
++    padding: 0;
++  }
++  .app-sidebar .sidebar-auth-icon {
++    display: block;
++  }
++  .app-sidebar .sidebar-auth-label {
++    display: none;
+   }
+   .app-sidebar .nav a:is(:hover, :focus-visible) .rail-tooltip {
+     display: block;
+--- a/platform/apps/web/e2e/i18n.spec.ts
++++ b/platform/apps/web/e2e/i18n.spec.ts
+@@ -86,6 +86,37 @@
+     expect(
+       await signIn.evaluate((element) => element.scrollWidth - element.clientWidth),
+     ).toBeLessThanOrEqual(1);
++    if (locale.code === 'bn' && (page.viewportSize()?.width ?? 1280) < 1100) {
++      // The narrow rail must use an icon, while retaining the full translated
++      // action name for assistive technology and expanded navigation.
++      const signInLabel = catalog['Sign in'];
++      if (!signInLabel) throw new Error('Missing Bengali sign-in label');
++      await expect(signIn).toHaveAccessibleName(signInLabel);
++      const icon = signIn.locator('.sidebar-auth-icon');
++      await expect(icon).toBeVisible();
++      await expect(signIn.locator('.sidebar-auth-label')).toBeHidden();
++      const buttonBounds = await signIn.boundingBox();
++      const iconBounds = await icon.boundingBox();
++      expect(buttonBounds).not.toBeNull();
++      expect(iconBounds).not.toBeNull();
++      if (!buttonBounds || !iconBounds) throw new Error('Missing sign-in icon geometry');
++      expect(buttonBounds.width).toBeGreaterThanOrEqual(44);
++      expect(buttonBounds.height).toBeGreaterThanOrEqual(44);
++      expect(iconBounds.x).toBeGreaterThanOrEqual(buttonBounds.x + 4);
++      expect(iconBounds.y).toBeGreaterThanOrEqual(buttonBounds.y + 4);
++      expect(iconBounds.x + iconBounds.width).toBeLessThanOrEqual(buttonBounds.x + buttonBounds.width - 4);
++      expect(iconBounds.y + iconBounds.height).toBeLessThanOrEqual(buttonBounds.y + buttonBounds.height - 4);
++      await page.locator('.rail-expand').click();
++      const navigation = page.locator('.navigation-drawer');
++      await expect(navigation).toBeVisible();
++      const expanded = navigation.locator('.sidebar-account a[href="/signin"]');
++      await expect(expanded).toHaveAccessibleName(signInLabel);
++      await expect(expanded.locator('.sidebar-auth-label')).toHaveText(signInLabel);
++      await expect(expanded.locator('.sidebar-auth-label')).toBeVisible();
++      await expect(expanded.locator('.sidebar-auth-icon')).toBeHidden();
++      await page.keyboard.press('Escape');
++      await expect(navigation).not.toBeVisible();
++    }
+     // Long translations and RTL layout must fit the viewport on phones as well as desktops.
+     const overflow = await page.evaluate(
+       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

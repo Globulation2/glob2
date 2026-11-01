@@ -1,0 +1,18 @@
+{
+  "dispatched_at": "2026-11-01T06:04:53.445892+00:00",
+  "owner": "/root/rendering_audit",
+  "branch": "codex/bengali-windows-validation-fda5e07",
+  "game_revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "game_git_tree": "6ecf7d8cdd678459c78d65243ef8f85801a8858d",
+  "game_parents": [
+    "d7fa724b0bb609c706bce163f4a1ae00ea10460f"
+  ],
+  "workflow_revision": "e4217e79024340478723cce400b0336ccd2fe6d4",
+  "workflow_path": ".github/workflows/bengali-windows-validation.yml",
+  "workflow_sha256": "da82d345e0f7ad142ec8ec9150d6cc5f94e670c3995f4a9a3d46ea26bb2d077a",
+  "trigger": "Single push to owned temporary validation branch; direct Windows job with no Ubuntu selector prerequisite",
+  "main_source_modified": false,
+  "default_full_suite": "Preserved separately; focused run does not relabel unrelated skipped or failed checks as passed",
+  "run_id": 41279360093,
+  "run_url": "https://github.com/Globulation2/glob2/actions/runs/41279360093"
+}

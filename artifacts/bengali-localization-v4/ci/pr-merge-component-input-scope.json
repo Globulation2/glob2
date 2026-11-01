@@ -1,0 +1,12 @@
+{
+  "head": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "actual_PR_merge": "6c4b0eb44b16bd68b4774ae20279741cdb7bfcd3",
+  "comparison_status": "ahead",
+  "changed_paths": [
+    "deploy/compose.yaml",
+    "docs/hosting/configuration.md",
+    "src/tutorial/IntroductionTest.cpp",
+    "test/deployment/test_canonical_signin.py"
+  ],
+  "production_input_scope": "Four differences are deployment configuration/docs, deployment test and IntroductionTest.cpp. No runtime app/renderer/font/catalog/build/dependency source changes. Actual merge producer identity must remain6c4b; GitRev diagnostic alias may differ. This is component input proof, not whole Git-tree equality."
+}

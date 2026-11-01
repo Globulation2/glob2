@@ -1,0 +1,55 @@
+{
+  "frozen_master": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "inherited_missing_keys_repaired_as_explicit_blank_rows": {
+    "hi": [
+      "lush_grass",
+      "dry_grass",
+      "dune_sand",
+      "pale_sand"
+    ],
+    "ur": [
+      "lush_grass",
+      "dry_grass",
+      "dune_sand",
+      "pale_sand"
+    ],
+    "sw": [
+      "lush_grass",
+      "dry_grass",
+      "dune_sand",
+      "pale_sand"
+    ],
+    "nb": [
+      "stats topic overview",
+      "stats topic economy",
+      "stats topic world",
+      "stats work construction",
+      "stats defence",
+      "stats history",
+      "stats waiting",
+      "stats unit details",
+      "stats map overlays",
+      "stats topic",
+      "stats full history",
+      "stats missing readings",
+      "lush_grass",
+      "dry_grass",
+      "dune_sand",
+      "pale_sand"
+    ]
+  },
+  "new_pending_keys": [
+    "lush_grass",
+    "dry_grass",
+    "dune_sand",
+    "pale_sand"
+  ],
+  "metadata_correction": "texts.nb.txt accurately marked incomplete; Bengali complete",
+  "non_bengali_translations_authored": false,
+  "source_hashes_match_v4": true,
+  "bengali_native_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "initial_failure_logs": [
+    "native-strict.log",
+    "translation-tests.log"
+  ]
+}

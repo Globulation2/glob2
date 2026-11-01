@@ -1,0 +1,26 @@
+{
+  "installed_revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "code_identity": {
+    "revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "5f74615725a2f947e0b13f84e0b3df5371ed6722fdb0751f8ccfd701587cee72"
+  },
+  "parents": [
+    "d7fa724b0bb609c706bce163f4a1ae00ea10460f"
+  ],
+  "source_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "source_files": {
+    "data/texts.keys.txt": "08f50d977155b2e202fb98637647e39f5700ed91216f49d7fd675cdf7287ce4b",
+    "data/texts.en.txt": "25ea91561d913e6ee1ada2bf5b38b698482de4b3f4303bbcc634f4bbb6285b5c",
+    "platform/packages/i18n/locales/en.json": "e91261322cacb21ecaacebdc24a8b2bda9c7d37e321050498f5fff7e5fa31d63",
+    "platform/packages/i18n/plural-sources.json": "5b53c737b981f4233c625a5f1ac7bb8b25c453df9a099cf4e9e567ed1502243b",
+    "platform/packages/i18n/invariants.json": "b4d55565ae0cb4ceb1885e3678db1b7448a04b97362bbed45756929fcde40b6a"
+  },
+  "catalog_sha256": {
+    "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "original_snapshot_provenance_sha256": "242ecba262e4817b4046386c5f74905b2d78e59cd1a659fcc2b9e15cf57f1c1a",
+  "snapshot_note": "Frozen exact native masterb34 plus branch7f online sources now installed in clean integrated merge d7fa and final WebGL-only alpha fix fda5. Actual code/build identities are recorded separately."
+}

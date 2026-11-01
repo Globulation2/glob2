@@ -1,0 +1,20 @@
+{
+  "id": 13074310861,
+  "node_id": "MDg6QXJ0aWZhY3QxMzA3NDMxMDg2MQ==",
+  "name": "ci-observation-selection",
+  "size_in_bytes": 5403,
+  "url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/13074310861",
+  "archive_download_url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/13074310861/zip",
+  "expired": false,
+  "digest": "sha256:0f08524a1ec28c7d4f0d8aeac45e65ab49d2a69a9b394fa5d526a2af0bccb736",
+  "created_at": "2026-11-01T06:52:03Z",
+  "updated_at": "2026-11-01T06:52:03Z",
+  "expires_at": "2027-01-30T06:03:47Z",
+  "workflow_run": {
+    "id": 41279287886,
+    "repository_id": 230307566,
+    "head_repository_id": 230307566,
+    "head_branch": "codex/bengali-localization",
+    "head_sha": "fda5e076eafc103b59b18136c137abdb6262d981"
+  }
+}

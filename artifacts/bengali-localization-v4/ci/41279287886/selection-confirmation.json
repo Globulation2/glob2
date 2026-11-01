@@ -1,0 +1,26 @@
+{
+  "actual_checkout": "6c4b0eb44b16bd68b4774ae20279741cdb7bfcd3",
+  "base": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "full_matrix": true,
+  "inventory_count": 64,
+  "executed_count_named_by_selector": 64,
+  "selector_conclusion": "success",
+  "execution_scope": "This is a selected-check plan, not downstream execution outcomes.",
+  "selection": {
+    "native": true,
+    "browser": true,
+    "map_generators": true,
+    "deployment": true,
+    "cross_platform": true,
+    "android": true,
+    "windows": true,
+    "compatibility": true,
+    "variants": true,
+    "coverage": true,
+    "tsan": true,
+    "macos": true,
+    "platform": true,
+    "platform_stack": true,
+    "music": true
+  }
+}

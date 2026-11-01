@@ -1,0 +1,37 @@
+[WebServer] (node:3236971) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:3238614) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium-desktop] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (5.1s)
+  ✓   2 [chromium-desktop] › platform/apps/web/e2e/i18n.spec.ts:148:1 › Bengali libraries, account and room invitations fit the viewport (11.1s)
+  ✓   3 [chromium-desktop] › platform/apps/web/e2e/i18n.spec.ts:309:3 › changing to bn updates the page without losing input (3.8s)
+(node:3239350) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [chromium-phone] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (6.1s)
+  ✓   5 [chromium-phone] › platform/apps/web/e2e/i18n.spec.ts:148:1 › Bengali libraries, account and room invitations fit the viewport (13.4s)
+  ✓   6 [chromium-phone] › platform/apps/web/e2e/i18n.spec.ts:309:3 › changing to bn updates the page without losing input (4.7s)
+(node:3240556) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [firefox-desktop] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (11.6s)
+  ✓   8 [firefox-desktop] › platform/apps/web/e2e/i18n.spec.ts:148:1 › Bengali libraries, account and room invitations fit the viewport (13.6s)
+  ✓   9 [firefox-desktop] › platform/apps/web/e2e/i18n.spec.ts:309:3 › changing to bn updates the page without losing input (4.9s)
+(node:3242089) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [firefox-phone] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (12.4s)
+  ✓  11 [firefox-phone] › platform/apps/web/e2e/i18n.spec.ts:148:1 › Bengali libraries, account and room invitations fit the viewport (12.9s)
+  ✓  12 [firefox-phone] › platform/apps/web/e2e/i18n.spec.ts:309:3 › changing to bn updates the page without losing input (6.6s)
+(node:3243905) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [webkit-desktop] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (26.1s)
+  ✓  14 [webkit-desktop] › platform/apps/web/e2e/i18n.spec.ts:148:1 › Bengali libraries, account and room invitations fit the viewport (19.6s)
+  ✓  15 [webkit-desktop] › platform/apps/web/e2e/i18n.spec.ts:309:3 › changing to bn updates the page without losing input (17.6s)
+(node:3246554) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  16 [webkit-phone] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (23.2s)
+  ✓  17 [webkit-phone] › platform/apps/web/e2e/i18n.spec.ts:148:1 › Bengali libraries, account and room invitations fit the viewport (17.9s)
+  ✓  18 [webkit-phone] › platform/apps/web/e2e/i18n.spec.ts:309:3 › changing to bn updates the page without losing input (24.5s)
+
+  18 passed (5.8m)

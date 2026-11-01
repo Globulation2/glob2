@@ -1,0 +1,50 @@
+{
+  "Overview": {
+    "translatedText": "সংক্ষিপ্ত বিবরণ"
+  },
+  "Economy": {
+    "translatedText": "অর্থনীতি"
+  },
+  "World": {
+    "translatedText": "বিশ্ব"
+  },
+  "Work & construction": {
+    "translatedText": "কাজ ও নির্মাণ"
+  },
+  "Defence": {
+    "translatedText": "প্রতিরক্ষা"
+  },
+  "View history": {
+    "translatedText": "ইতিহাস দেখুন"
+  },
+  "Waiting for statistics…": {
+    "translatedText": "পরিসংখ্যানের জন্য অপেক্ষা করছি…"
+  },
+  "Unit details": {
+    "translatedText": "ইউনিটের বিবরণ"
+  },
+  "Topic": {
+    "translatedText": "বিষয়"
+  },
+  "Open full history": {
+    "translatedText": "সম্পূর্ণ ইতিহাস খুলুন"
+  },
+  "— No recorded reading yet. Select a statistic for details.": {
+    "translatedText": "এখনো কোনো পাঠ রেকর্ড করা হয়নি। বিস্তারিত জানতে একটি পরিসংখ্যান নির্বাচন করুন।"
+  },
+  "Lush grass": {
+    "translatedText": "সবুজ ঘাস"
+  },
+  "Dry grass": {
+    "translatedText": "শুকনো ঘাস"
+  },
+  "Dune sand": {
+    "translatedText": "টিলার বালি"
+  },
+  "Pale sand": {
+    "translatedText": "ফ্যাকাশে বালি"
+  },
+  "Map overlays": {
+    "translatedText": "মানচিত্র ওভারলে"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "integration_commit": "d7fa724b0bb609c706bce163f4a1ae00ea10460f",
+  "parents": [
+    "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+    "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a"
+  ],
+  "bengali_native_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "bengali_online_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "live_source_mutations_by_this_agent_after_commit": false,
+  "push_performed": false,
+  "native_or_browser_builds_started": false,
+  "checks": {
+    "native_strict": {
+      "exit_code": 0,
+      "structural_errors": 0,
+      "log": "native-strict-repaired.log",
+      "log_sha256": "7c99bdfd0c2e20a15f679a447961cd9ece6440caa6bd104b1796af9b9c52fbcb"
+    },
+    "native_translation_tests": {
+      "exit_code": 0,
+      "tests": 10,
+      "log": "translation-tests-repaired.log",
+      "log_sha256": "80d9eb79d03367a9cb561de4cba8ba1242b0523c893b24f4021b0230d70141e1"
+    },
+    "translation_program_tests": {
+      "exit_code": 0,
+      "tests": 13,
+      "log": "translation-program-tests.log",
+      "log_sha256": "99c206cfb31c619e6c69b87894d3fea08500f6e95bf439cc46dbc168c467ba23"
+    },
+    "cloud_draft_tests": {
+      "exit_code": 0,
+      "tests": 16,
+      "log": "cloud-draft-tests.log",
+      "log_sha256": "ae8414e0508de6c9c3fc1193f2e7731c7ab426a5decc99437b5838e4b90f2bdf"
+    },
+    "upstream_google_draft_tests": {
+      "exit_code": 0,
+      "tests": 10,
+      "log": "google-draft-tests.log",
+      "log_sha256": "e0b03469e16c3c65fe8ac54b67d2b5127714f36320b8862e2602e642156065e0"
+    },
+    "online_catalog_and_generated_freshness": {
+      "exit_code": 0,
+      "locales": 38,
+      "source_keys": 2842,
+      "log": "online-contract.log",
+      "log_sha256": "6ea4367488fd34ea8f34c49d61c2f05cb7d53603b45af46710f54c3854f05837"
+    },
+    "online_unit_tests": {
+      "exit_code": 0,
+      "tests": 78,
+      "files": 4,
+      "log": "online-tests.log",
+      "log_sha256": "ea89e434baa4018380d97b19346c20268e3ccb14de0e6b17a2990827721ce3cd"
+    },
+    "platform_typecheck": {
+      "exit_code": 0,
+      "projects": 3,
+      "log": "typecheck.log",
+      "log_sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd"
+    },
+    "platform_format": {
+      "exit_code": 0,
+      "files": 5,
+      "log": "platform-format.log",
+      "log_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    "bengali_draft": {
+      "exit_code": 0,
+      "errors": 0,
+      "untranslated": 0,
+      "log": "bengali-draft-check.json",
+      "log_sha256": "9ba42c3adfceb1abafb8eebcc39b0942ca6bead0d22978320635f490a8e198e1"
+    },
+    "canonical_browser_generation": {
+      "exit_code": 0,
+      "locales": 38,
+      "log": "browser-generation.log",
+      "log_sha256": "fb2c8feac4786ef2afd16e3347ab7dd4f9f40aff8cb22b8c693ffaf9f1a429a2"
+    },
+    "canonical_derivative_generation": {
+      "exit_code": 0,
+      "asset_bytes_unchanged": true,
+      "only_change": "union languageNames metadata fingerprint",
+      "log": "derive-assets.log",
+      "log_sha256": "1a5f7555a1a2fdc3f15395f0101aab8d8a0197dddbcdadf08776613b57e43a5a"
+    },
+    "web_asset_suite_initial": {
+      "exit_code": 1,
+      "tests": 28,
+      "passed": 27,
+      "failure": "Roundtrip contents changed because repair row positions were finalized while test was already running; retained rather than relabeled passed.",
+      "log": "web-assets-tests.log",
+      "log_sha256": "faa5245faa769d7fb069ab8d004171898b787f86aadb28f22cd302d21e08d10a"
+    },
+    "web_asset_roundtrip_stable_retry": {
+      "state": "passed",
+      "pid": 3186462,
+      "result": "web-assets-roundtrip-stable.json",
+      "log": "web-assets-roundtrip-stable.log",
+      "input_scope": "package-test-code-context.json",
+      "exit_code": 0,
+      "inputs_stable": true,
+      "tests": 1,
+      "elapsed_seconds": 2148.746806449002,
+      "log_sha256": "38fe75f81d238055c0267529ab0f43270d6289cbc22b6bb6c4b89cd8555e7bd1",
+      "result_sha256": "d3fc86fbc0d67766f5afff8358f5170c34d27bd681c8fc1aedfbb564500b6726"
+    }
+  },
+  "retained_setup_attempts": {
+    "translation-tests.initial-command-error.log": "Incorrect unittest namespace resolved by direct script runs.",
+    "format.log": "Includes an out-of-platform generated JSON fixture that does not follow platform Prettier layout. No unrelated formatting imposed; scoped platform-format.log passes."
+  },
+  "inherited_non_bengali_gaps": "See inherited-catalog-repair.json: blank/pending repairs only; no non-Bengali translations authored.",
+  "all_assigned_static_checks_complete": true,
+  "post_test_code_and_declarations_unchanged": true
+}

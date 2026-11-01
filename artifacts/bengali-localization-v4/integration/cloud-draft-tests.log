@@ -1,0 +1,7 @@
+............../usr/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 403: 'private detail'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+..
+----------------------------------------------------------------------
+Ran 16 tests in 0.915s
+
+OK

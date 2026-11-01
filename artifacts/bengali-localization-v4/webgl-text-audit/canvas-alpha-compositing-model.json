@@ -1,0 +1,149 @@
+{
+  "Latin Hive Mind": {
+    "mean_absolute_channel_error": 0.7704623416318207,
+    "max_absolute_channel_error": 2.1652672972685707,
+    "channel_samples": 870,
+    "examples": [
+      {
+        "position": [
+          222,
+          485
+        ],
+        "software_rgb": [
+          132,
+          149,
+          129
+        ],
+        "actual_webgl_rgb": [
+          193,
+          210,
+          185
+        ],
+        "predicted_canvas_alpha_loss_rgb": [
+          192.24,
+          209.24,
+          185.24
+        ]
+      },
+      {
+        "position": [
+          222,
+          486
+        ],
+        "software_rgb": [
+          132,
+          149,
+          129
+        ],
+        "actual_webgl_rgb": [
+          193,
+          210,
+          185
+        ],
+        "predicted_canvas_alpha_loss_rgb": [
+          192.24,
+          209.24,
+          185.24
+        ]
+      }
+    ]
+  },
+  "Crown icon": {
+    "mean_absolute_channel_error": 0.39834717941451103,
+    "max_absolute_channel_error": 1.9343182059729997,
+    "channel_samples": 360,
+    "examples": [
+      {
+        "position": [
+          194,
+          490
+        ],
+        "software_rgb": [
+          133,
+          150,
+          129
+        ],
+        "actual_webgl_rgb": [
+          193,
+          210,
+          186
+        ],
+        "predicted_canvas_alpha_loss_rgb": [
+          193.25,
+          210.25,
+          185.25
+        ]
+      },
+      {
+        "position": [
+          201,
+          490
+        ],
+        "software_rgb": [
+          133,
+          150,
+          129
+        ],
+        "actual_webgl_rgb": [
+          193,
+          210,
+          186
+        ],
+        "predicted_canvas_alpha_loss_rgb": [
+          193.25,
+          210.25,
+          185.25
+        ]
+      }
+    ]
+  },
+  "Bengali sidebar": {
+    "mean_absolute_channel_error": 0.817146681603624,
+    "max_absolute_channel_error": 2.7769157189924556,
+    "channel_samples": 1698,
+    "examples": [
+      {
+        "position": [
+          299,
+          161
+        ],
+        "software_rgb": [
+          133,
+          150,
+          129
+        ],
+        "actual_webgl_rgb": [
+          193,
+          210,
+          186
+        ],
+        "predicted_canvas_alpha_loss_rgb": [
+          193.25,
+          210.25,
+          185.25
+        ]
+      },
+      {
+        "position": [
+          292,
+          162
+        ],
+        "software_rgb": [
+          131,
+          149,
+          128
+        ],
+        "actual_webgl_rgb": [
+          192,
+          209,
+          185
+        ],
+        "predicted_canvas_alpha_loss_rgb": [
+          191.22,
+          209.22,
+          184.23
+        ]
+      }
+    ]
+  }
+}

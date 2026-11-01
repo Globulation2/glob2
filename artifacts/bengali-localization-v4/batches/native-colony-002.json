@@ -1,0 +1,139 @@
+{
+  "id": "native-colony-002",
+  "source_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "surface": "native",
+  "domain": "colony",
+  "context": "Workers autonomously gather/build; explorers scout; warriors fight. Flags assign work or military attention, not direct unit movement.",
+  "entries": [
+    {
+      "id": "native:[library Loading building families]",
+      "key": "[library Loading building families]",
+      "source": "Loading building families"
+    },
+    {
+      "id": "native:[library No building families installed.]",
+      "key": "[library No building families installed.]",
+      "source": "No building families installed."
+    },
+    {
+      "id": "native:[library No public building families yet]",
+      "key": "[library No public building families yet]",
+      "source": "No public building families yet"
+    },
+    {
+      "id": "native:[library Opening building family]",
+      "key": "[library Opening building family]",
+      "source": "Opening building family"
+    },
+    {
+      "id": "native:[intro hint no scout flag]",
+      "key": "[intro hint no scout flag]",
+      "source": "No assigned Exploration Flag was found. Place one on the stone east of your base and request 1 explorer."
+    },
+    {
+      "id": "native:[intro hint no war flag]",
+      "key": "[intro hint no war flag]",
+      "source": "No assigned War Flag was found at the enemy base. Place one over the eastern enemy Swarm and request warriors."
+    },
+    {
+      "id": "native:[lesson warrior-training title]",
+      "key": "[lesson warrior-training title]",
+      "source": "Producing and training warriors"
+    },
+    {
+      "id": "native:[lesson warrior-training briefing]",
+      "key": "[lesson warrior-training briefing]",
+      "source": "Produce warriors at the Swarm, then train them at a Training Camp."
+    },
+    {
+      "id": "native:[lesson warrior-training complete]",
+      "key": "[lesson warrior-training complete]",
+      "source": "You controlled military production and trained warriors. Keep their food supply running; combat units still need to eat."
+    },
+    {
+      "id": "native:[lesson warrior-training produce hint]",
+      "key": "[lesson warrior-training produce hint]",
+      "source": "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors. Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run."
+    },
+    {
+      "id": "native:[lesson warrior-training produce title]",
+      "key": "[lesson warrior-training produce title]",
+      "source": "Produce two warriors"
+    },
+    {
+      "id": "native:[lesson warrior-training produce instruction]",
+      "key": "[lesson warrior-training produce instruction]",
+      "source": "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors."
+    },
+    {
+      "id": "native:[lesson warrior-training produce help]",
+      "key": "[lesson warrior-training produce help]",
+      "source": "Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run."
+    },
+    {
+      "id": "native:[lesson warrior-training produce marker]",
+      "key": "[lesson warrior-training produce marker]",
+      "source": "Produce two warriors"
+    },
+    {
+      "id": "native:[lesson warrior-training build hint]",
+      "key": "[lesson warrior-training build hint]",
+      "source": "Build a Training Camp in the clearing; assign builders. Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges."
+    },
+    {
+      "id": "native:[lesson warrior-training build title]",
+      "key": "[lesson warrior-training build title]",
+      "source": "Build a Training Camp"
+    },
+    {
+      "id": "native:[lesson warrior-training build instruction]",
+      "key": "[lesson warrior-training build instruction]",
+      "source": "Build a Training Camp in the clearing; assign builders."
+    },
+    {
+      "id": "native:[lesson warrior-training build help]",
+      "key": "[lesson warrior-training build help]",
+      "source": "Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges."
+    },
+    {
+      "id": "native:[lesson warrior-training build marker]",
+      "key": "[lesson warrior-training build marker]",
+      "source": "Build a Training Camp"
+    },
+    {
+      "id": "native:[lesson warrior-training train hint]",
+      "key": "[lesson warrior-training train hint]",
+      "source": "Let a warrior complete Training Camp practice. Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session."
+    },
+    {
+      "id": "native:[lesson warrior-training train title]",
+      "key": "[lesson warrior-training train title]",
+      "source": "Train your warriors"
+    },
+    {
+      "id": "native:[lesson warrior-training train instruction]",
+      "key": "[lesson warrior-training train instruction]",
+      "source": "Let a warrior complete Training Camp practice."
+    },
+    {
+      "id": "native:[lesson warrior-training train help]",
+      "key": "[lesson warrior-training train help]",
+      "source": "Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session."
+    },
+    {
+      "id": "native:[lesson warrior-training produce compact]",
+      "key": "[lesson warrior-training produce compact]",
+      "source": "Swarm → warriors only. Supply wheat for 2 warriors."
+    },
+    {
+      "id": "native:[lesson warrior-training build compact]",
+      "key": "[lesson warrior-training build compact]",
+      "source": "Build → Training Camp. Leave space around its edges."
+    },
+    {
+      "id": "native:[lesson warrior-training train compact]",
+      "key": "[lesson warrior-training train compact]",
+      "source": "Let a warrior finish Training Camp practice."
+    }
+  ]
+}

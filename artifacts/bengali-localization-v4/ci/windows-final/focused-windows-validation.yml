@@ -1,0 +1,146 @@
+{
+  "name": "Temporary focused Bengali Windows validation",
+  "on": {
+    "push": {
+      "branches": [
+        "codex/bengali-windows-validation-fda5e07"
+      ]
+    },
+    "workflow_dispatch": {}
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "env": {
+    "GLOB2_DEV_MODE": "isolated"
+  },
+  "jobs": {
+    "focused": {
+      "name": "Focused Bengali font locale and input runtime",
+      "runs-on": "windows-latest",
+      "env": {
+        "CCACHE": 1,
+        "CCACHE_DIR": "${{ github.workspace }}\\.ccache",
+        "CCACHE_COMPILERCHECK": "content",
+        "CCACHE_MAXSIZE": "5G"
+      },
+      "defaults": {
+        "run": {
+          "shell": "msys2 {0}"
+        }
+      },
+      "steps": [
+        {
+          "uses": "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "id": "asset_encoder_python",
+          "with": {
+            "python-version": "3.12"
+          }
+        },
+        {
+          "uses": "msys2/setup-msys2@v2",
+          "id": "msys2_setup_msys2_v2_1",
+          "with": {
+            "msystem": "MINGW64",
+            "update": true,
+            "install": "git make mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf mingw-w64-x86_64-python mingw-w64-x86_64-scons mingw-w64-x86_64-cmake mingw-w64-x86_64-freetype mingw-w64-x86_64-opusfile mingw-w64-x86_64-opus mingw-w64-x86_64-libogg mingw-w64-x86_64-speex mingw-w64-x86_64-zlib mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre mingw-w64-x86_64-openssl mingw-w64-x86_64-boost mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre mingw-w64-x86_64-nasm mingw-w64-x86_64-ccache"
+          }
+        },
+        {
+          "uses": "actions/checkout@v4",
+          "id": "actions_checkout_v4_1",
+          "with": {
+            "ref": "fda5e076eafc103b59b18136c137abdb6262d981"
+          }
+        },
+        {
+          "name": "Prepare pinned asset encoder",
+          "shell": "pwsh",
+          "run": "$encoder = & \"${{ steps.asset_encoder_python.outputs.python-path }}\" tools/package_assets.py --encoder-python\nif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }\n\"GLOB2_ASSET_ENCODER_PYTHON=$encoder\" >> $env:GITHUB_ENV\n"
+        },
+        {
+          "name": "Align Git newline handling for Windows builds",
+          "run": "git config --local core.autocrlf true"
+        },
+        {
+          "name": "Restore the compiler cache",
+          "id": "restore_the_compiler_cache",
+          "continue-on-error": true,
+          "uses": "actions/cache/restore@v4",
+          "with": {
+            "path": "${{ env.CCACHE_DIR }}",
+            "key": "ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}",
+            "restore-keys": "ccache-windows-"
+          }
+        },
+        {
+          "name": "Reset the cache statistics",
+          "id": "cache_ready",
+          "run": "ccache -z\necho \"CCACHE_RUN_START=$(date +%s)\" >> \"$GITHUB_ENV\"\n"
+        },
+        {
+          "name": "Record Windows checkout before compilation",
+          "run": "mkdir -p artifacts/windows-source\n{\n  command -v git\n  git --version\n  git config --show-origin --get-regexp '^core\\.(symlinks|filemode|autocrlf)$' || true\n  git status --porcelain=v1 --untracked-files=all\n} > artifacts/windows-source/before-build.log 2>&1\ncat artifacts/windows-source/before-build.log\n"
+        },
+        {
+          "name": "Retain Windows checkout diagnostics before compilation",
+          "uses": "actions/upload-artifact@v4",
+          "continue-on-error": true,
+          "with": {
+            "name": "windows-source-before-build",
+            "path": "artifacts/windows-source/before-build.log"
+          }
+        },
+        {
+          "uses": "./.github/actions/sdl3",
+          "with": {
+            "shell": "msys2 {0}",
+            "cc": "gcc",
+            "cxx": "g++"
+          }
+        },
+        {
+          "name": "Build glob2 and the regression harnesses",
+          "id": "build_glob2_and_the_regression_harnesses",
+          "run": "python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2\ncygpath -w \"$PWD/build/sdl3-ci/prefix/bin\" >> \"$GITHUB_PATH\"\nexport PATH=\"$PWD/build/sdl3-ci/prefix/bin:$PATH\"\nGLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 unit-tests engine-tests\n# MSYS2 starts each step with its own PATH; colocate the pinned\n# SDL DLLs so Windows can load the client and every harness directly.\nfor directory in build/mingw/client/release/src build/mingw/client/release/test; do\n  cp build/sdl3-ci/prefix/bin/*.dll \"$directory/\"\ndone\n"
+        },
+        {
+          "name": "Retain literal checkout and compiler identity",
+          "if": "${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}",
+          "run": "mkdir -p artifacts/bengali-windows\n{ git rev-parse HEAD; git status --porcelain=v1; gcc --version; g++ --version; } > artifacts/bengali-windows/producer.txt\nfind build/mingw/client/release/test -maxdepth 1 \\( -name '*.exe' -o -name '*.dll' \\) -exec sha256sum {} \\; > artifacts/bengali-windows/runtime-binaries.sha256\nsha256sum data/texts.bn.txt data/fonts/scripts/NotoSansBengali-Regular.ttf data/fonts/scripts/manifest.json data/fonts/LICENSE-Noto.txt > artifacts/bengali-windows/bengali-source-assets.sha256\n"
+        },
+        {
+          "name": "Execute focused unit layout metrics and Bengali byte character cases",
+          "id": "focused_unit",
+          "if": "${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}",
+          "continue-on-error": true,
+          "run": "python3 test/run_tests.py --binary unit --coverage-profile full --build-dir build/mingw/client/release --filter 'UILayout/*' --filter 'TextMetrics/*' --filter 'BidiText/*' --write-inventory artifacts/bengali-windows/unit.inventory.json --junit artifacts/bengali-windows/unit-junit.xml"
+        },
+        {
+          "name": "Execute focused engine font locale and username cases",
+          "id": "focused_engine",
+          "if": "${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}",
+          "continue-on-error": true,
+          "run": "python3 test/run_tests.py --binary engine --coverage-profile full --build-dir build/mingw/client/release --filter 'FontKerning/*' --filter 'SystemLanguage/*' --filter 'Settings/username byte limits*' --write-inventory artifacts/bengali-windows/engine.inventory.json --junit artifacts/bengali-windows/engine-junit.xml"
+        },
+        {
+          "name": "Retain focused Windows evidence",
+          "if": "${{ always() }}",
+          "uses": "actions/upload-artifact@v4",
+          "with": {
+            "name": "bengali-windows-focused",
+            "path": "artifacts/bengali-windows/",
+            "if-no-files-found": "warn"
+          }
+        },
+        {
+          "name": "Require both focused runtime groups",
+          "if": "${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}",
+          "shell": "pwsh",
+          "run": "if ('${{ steps.focused_unit.outcome }}' -ne 'success' -or '${{ steps.focused_engine.outcome }}' -ne 'success') { exit 1 }"
+        }
+      ],
+      "timeout-minutes": 120
+    }
+  }
+}

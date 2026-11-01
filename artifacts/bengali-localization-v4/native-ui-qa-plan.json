@@ -1,0 +1,23 @@
+{
+  "agent": "/root/bengali_author",
+  "scope": "Actual native redesigned statistics, desktop and compact Linux presentation; no Android/iOS/IME certification. No external peers or messages. No old executable launch.",
+  "guard": "Parent must supply expected-producer.json revision matching new clean native-app-build.json and actual executable hash. Current preparation does not launch executable.",
+  "source_layout_revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "routes": [
+    "Fresh Bengali main and settings; training introduction local match.",
+    "Open statistics via existing HUD statistics control, inspect new five topic tabs. Capture Overview initial and lower work/construction+defence headings.",
+    "Choose Economy, Military, World; capture labels and row wrapping. Select metric row to expose inline chart and full-history action.",
+    "Choose Colony, scroll to Unit details, expand actual unit counts/ability details; capture before and after expansion.",
+    "Open full-history from selected metric; capture chart, Details expanded, close with explicit Escape.",
+    "Repeat core overview/topic/inline/full-history/unit-details path in 412x839 compact Linux presentation; screenshots determine actual coordinates.",
+    "If readily available, map editor terrain selection shows lush/dry grass/dune/pale sand translated labels; keep optional coverage explicitly unexecuted if inaccessible.",
+    "Exit each local process through actual UI, record wrapper exit0 and screenshot/input/build/catalog/font digests."
+  ],
+  "notes": [
+    "New stats topic buttons are 2 or3 columns based on actual panel width. Do not assume old page cycler remains.",
+    "Statistic metric rows are clickable whole rows. Inline history inserted after selected group. Topic-specific body scroll keeps tabs fixed.",
+    "Overview has colony, food, work/construction and defence sections. Missing-reading hint may be present only before sufficient history. Waiting text may not be observable once data ready; do not force unavailable evidence.",
+    "Ctrl+Return commander in prior unsigned profile unavailable; not part of this statistics route.",
+    "Each action explicitly dispatched once, lease checked/acquired before input; no input autoretries."
+  ]
+}

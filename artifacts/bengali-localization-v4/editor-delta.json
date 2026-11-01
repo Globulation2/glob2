@@ -1,0 +1,225 @@
+{
+  "editor": "/root/bengali_online_author",
+  "identity": "/root/bengali_online_author",
+  "role": "original independent native editor; V4 sixteen-key delta",
+  "certification": "agent-reviewed; not native-human-certified",
+  "status": "pass",
+  "source_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "source_provenance_sha256": "242ecba262e4817b4046386c5f74905b2d78e59cd1a659fcc2b9e15cf57f1c1a",
+  "input_native_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "final_native_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "unchanged_online_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "examined_keys": [
+    "native:[lush_grass]",
+    "native:[dry_grass]",
+    "native:[dune_sand]",
+    "native:[pale_sand]",
+    "native:[stats topic overview]",
+    "native:[stats topic economy]",
+    "native:[stats topic world]",
+    "native:[stats work construction]",
+    "native:[stats defence]",
+    "native:[stats history]",
+    "native:[stats waiting]",
+    "native:[stats unit details]",
+    "native:[stats map overlays]",
+    "native:[stats topic]",
+    "native:[stats full history]",
+    "native:[stats missing readings]"
+  ],
+  "actual_examined_key_count": 16,
+  "entries": [
+    {
+      "id": "native:[lush_grass]",
+      "source": "Lush grass",
+      "input": "ঘন সবুজ ঘাস",
+      "target": "ঘন সবুজ ঘাস",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "ঘন সবুজ ঘাস is natural, compact appearance wording; ঘন distinguishes lush from ordinary grass without promising faster growth or fertility.",
+      "source_text_sha256": "a1b731e63e12a53a16bdbb4268c53295c37bcbf60c93ab5935d6e223167d722c",
+      "target_text_sha256": "cf01eb45f8f1c5e8622abc504e1c3b5e869e660340fd99b96a1b52ae86ac2213"
+    },
+    {
+      "id": "native:[dry_grass]",
+      "source": "Dry grass",
+      "input": "শুকনো ঘাস",
+      "target": "শুকনো ঘাস",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "শুকনো ঘাস is idiomatic standard Bengali and is concise for a terrain swatch.",
+      "source_text_sha256": "1f2204aea88c5fe039111d467e516d7b8dbabac4d4a494c44f6ffc3a404a1331",
+      "target_text_sha256": "7b9e7756a1fae961600cf6da524a3f44ba7b48f0208685ee8f9f5b0c6e7efc3c"
+    },
+    {
+      "id": "native:[dune_sand]",
+      "source": "Dune sand",
+      "input": "বালিয়াড়ির বালি",
+      "target": "বালিয়াড়ির বালি",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "বালিয়াড়ির বালি correctly uses established বালিয়াড়ি glossary and natural genitive; no generic-hill ambiguity.",
+      "source_text_sha256": "5d5e680cdd06b88128347d0dad06195658412586ea0e2ddea3e17f4ee9c561fd",
+      "target_text_sha256": "33d874200c56086d8d5992f743d7e764ba4a0bbec7407e8a787ca9adb16c23bd"
+    },
+    {
+      "id": "native:[pale_sand]",
+      "source": "Pale sand",
+      "input": "ফ্যাকাশে বালি",
+      "target": "ফ্যাকাশে বালি",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "ফ্যাকাশে বালি clearly describes a pale color; no terrain behavior or lighting mechanics added.",
+      "source_text_sha256": "3a046ad3c99deae861e97b95628e5fb6c27c604cf8279d6cae2a011695e6c377",
+      "target_text_sha256": "e2cbaa0643c59d988bb391de8c65eccef705a9b60444f060b5fa8c0c74213e1d"
+    },
+    {
+      "id": "native:[stats topic overview]",
+      "source": "Overview",
+      "input": "সংক্ষিপ্ত বিবরণ",
+      "target": "সংক্ষিপ্ত বিবরণ",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "সংক্ষিপ্ত বিবরণ matches existing [stat overview] exactly; conventional Bengali summary/topic wording.",
+      "source_text_sha256": "d4b1ea5708dd532930a85188b45aff6f0a3ed458500c7577e0127a538eb0d100",
+      "target_text_sha256": "58387da2533618c3cdc4a878781e872854f9df4971399113ba81e2fe3f5f2e4a"
+    },
+    {
+      "id": "native:[stats topic economy]",
+      "source": "Economy",
+      "input": "অর্থনীতি",
+      "target": "অর্থনীতি",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "অর্থনীতি matches existing [Economy] and broad work/material/building topic; no finance-only narrowing.",
+      "source_text_sha256": "c1d078d516dd7c8b81f32827069816db43529642eb82f071a8b2ffa261567dda",
+      "target_text_sha256": "9d7353c17b6e768faefd9e3147edf1fcc184a3bb5dd02aa2f51af03f3d6291af"
+    },
+    {
+      "id": "native:[stats topic world]",
+      "source": "World",
+      "input": "বিশ্ব",
+      "target": "বিশ্ব",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "বিশ্ব is concise and broad enough for world/environment statistics; no unsupported map-only restriction.",
+      "source_text_sha256": "78ae647dc5544d227130a0682a51e30bc7777fbb6d8a8f17007463a3ecd1d524",
+      "target_text_sha256": "26c22488bf2074ad7880eefbb9bda3fa226a0f9736f11430ec729f3123e6fb6e"
+    },
+    {
+      "id": "native:[stats work construction]",
+      "source": "Work & construction",
+      "input": "কাজ ও নির্মাণ",
+      "target": "কাজ ও নির্মাণ",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "কাজ ও নির্মাণ joins both concepts naturally with ও; construction noun agrees with existing glossary.",
+      "source_text_sha256": "5702a0215659b866f177f8e3a3a1e1b75ba3c2196ad8dbd2f9537c4a844a9c2a",
+      "target_text_sha256": "eca4768340009c4ffabe037564e731b6aabd6b1f14dc55eb58b214ffafb15968"
+    },
+    {
+      "id": "native:[stats defence]",
+      "source": "Defence",
+      "input": "প্রতিরক্ষা",
+      "target": "প্রতিরক্ষা",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "প্রতিরক্ষা is the established defense noun and fits the compact warriors/intruders section heading.",
+      "source_text_sha256": "53746849d11fed114204d98f3b8f4720a892293baf9ac6be805f2f1a0b04604b",
+      "target_text_sha256": "d44c01c5c0d4e03926b255e1d72ea393792670a2c9f4d065b4d3208ce944a0f7"
+    },
+    {
+      "id": "native:[stats history]",
+      "source": "View history",
+      "input": "ইতিহাস দেখুন",
+      "target": "ইতিহাস দেখুন",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "ইতিহাস দেখুন is a clear respectful imperative for the accessible chart label; actual statistics context disambiguates history.",
+      "source_text_sha256": "a5932bc4ce515954653e0dad67877c04cb83857605f1df7c16f276284a163357",
+      "target_text_sha256": "c6047fab4eb3efe16fc8a1ae625af1a93cc41583b89bf828216f7693869c743a"
+    },
+    {
+      "id": "native:[stats waiting]",
+      "source": "Waiting for statistics…",
+      "input": "পরিসংখ্যানের অপেক্ষায়…",
+      "target": "পরিসংখ্যানের অপেক্ষায়…",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "পরিসংখ্যানের অপেক্ষায়… is concise, idiomatic impersonal loading text with the original ellipsis; no unnecessary first-person voice.",
+      "source_text_sha256": "81d2fbb62b5e0d68ba472802df9aab055fcb3ebf84ac621a6397553ba3d6850c",
+      "target_text_sha256": "ce1a3ad816579a903c472aa1f8c216de713161a1164bf44428e3799f1615fe10"
+    },
+    {
+      "id": "native:[stats unit details]",
+      "source": "Unit details",
+      "input": "ইউনিটের বিবরণ",
+      "target": "ইউনিটের বিবরণ",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "ইউনিটের বিবরণ uses correct genitive and established ইউনিট; clear expandable details control.",
+      "source_text_sha256": "686617e59c113b1976f0e9cdd8b10c2618d83739dde482ffad68cf506f0c970b",
+      "target_text_sha256": "ac4644b17b8c304a08db39beb0a359d8f8fa42f58b931aab45099b70bc00d933"
+    },
+    {
+      "id": "native:[stats map overlays]",
+      "source": "Map overlays",
+      "input": "মানচিত্রের ওভারলে",
+      "target": "মানচিত্রের ওভারলে",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "মানচিত্রের ওভারলে has natural Bengali genitive and established ওভারলে loanword, matching existing No overlay wording.",
+      "source_text_sha256": "c7414585b69eee39a550bd203fe826207ad01583fe8800553ab8c85fc430db83",
+      "target_text_sha256": "49b7bd505fdf293cbc08fbf5b951ef81bc1c4ae5eee5a53639d0973ddd30ba87"
+    },
+    {
+      "id": "native:[stats topic]",
+      "source": "Topic",
+      "input": "বিষয়",
+      "target": "বিষয়",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "বিষয় is the natural concise noun for Topic. No actual consumer of this exact key is claimed.",
+      "source_text_sha256": "7e61847d61d65d9e3ac15c6281f7bfe0d80b8d79d3b53125e9fc2bfc25bb81e8",
+      "target_text_sha256": "d69b853806bfd5f65213f4eae6e2337f808e715528843c1a2927532b40cd7e24"
+    },
+    {
+      "id": "native:[stats full history]",
+      "source": "Open full history",
+      "input": "সম্পূর্ণ ইতিহাস খুলুন",
+      "target": "সম্পূর্ণ ইতিহাস খুলুন",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "সম্পূর্ণ ইতিহাস খুলুন is a natural respectful action label and preserves full versus inline chart scope.",
+      "source_text_sha256": "e183e19940ba63456a22dcad80f24b6980a4a492c8ea9b05fa431eda6542da14",
+      "target_text_sha256": "ffcb81ea7984a56d7cf3b014da08dcf529b2a6388a9b7daf3445037a194e243e"
+    },
+    {
+      "id": "native:[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "input": "— এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।",
+      "target": "— এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।",
+      "disposition": "retained after independent naturalness/context examination",
+      "rationale": "Entire hint read: পরিমাপ is a measurement rather than lesson পাঠ; এখনো ... হয়নি preserves no reading yet, and বিস্তারিত দেখতে ... বেছে নিন gives a clear respectful action. রেকর্ড is established practical software Bengali; em dash and both sentences retained.",
+      "source_text_sha256": "2fbdc66c80197d76ed2706db8a466c394e0fc6ccd07a8ff6ff70950c7493d1fd",
+      "target_text_sha256": "7103ff70ca700b0a6cfe93464c433e48c8cb1dc01a0a21dde8b16f03408af298"
+    }
+  ],
+  "changes": [],
+  "findings": [],
+  "resolutions": [],
+  "open_findings": [],
+  "unresolved_uncertainty": [],
+  "context_read": [
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "path": "src/hud/InGameStatistics.cpp",
+      "scope": "topicKeys, waiting fallbacks, inline accessible history, full-history button, unit-details toggle, overview sections and missing-reading hint"
+    },
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "path": "src/hud/draw/GameGUIDraw.cpp",
+      "scope": "live/replay map overlay group heading"
+    },
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "path": "src/map/TerrainTypeTable.h",
+      "scope": "four authored appearance names, preserving Grass and Sand groups"
+    },
+    {
+      "path": "artifacts/bengali-localization-v3/drafts/bn/texts.bn.txt",
+      "scope": "actual existing overview/economy/units/overlay/dune/military glossary entries compared"
+    }
+  ],
+  "carry_forward": {
+    "old_kit": "artifacts/bengali-localization-v3",
+    "mechanically_verified_unchanged_source_target_pairs": 6237,
+    "fresh_read_claim": false
+  },
+  "limits": "Actual fresh reading covers these sixteen entries only. Editorial wording/length assessment does not establish visual fitting; compact buttons/legacy heading and hint still require actual rendering evidence. Original semantic final recheck remains separate."
+}

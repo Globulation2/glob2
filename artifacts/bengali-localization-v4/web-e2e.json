@@ -1,0 +1,18 @@
+{
+  "code_identity": {
+    "revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "5f74615725a2f947e0b13f84e0b3df5371ed6722fdb0751f8ccfd701587cee72"
+  },
+  "command": [
+    "/home/bradley/.codex/worktrees/83ab/glob2/platform/node_modules/.bin/playwright",
+    "test",
+    "--config",
+    "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v4/web.config.cjs",
+    "--grep",
+    "bn|Bengali"
+  ],
+  "exit_code": 0,
+  "scope": "Production website build and actual Bengali i18n browser workflows against an isolated seeded local API; six desktop/phone browser projects, no physical device claim."
+}

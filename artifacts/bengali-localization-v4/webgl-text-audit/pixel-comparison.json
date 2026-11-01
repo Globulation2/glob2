@@ -1,0 +1,148 @@
+{
+  "webgl": {
+    "background": [
+      230,
+      231,
+      210
+    ],
+    "regions": {
+      "Hive text": {
+        "pixels_dark20": 209,
+        "min_rgb": [
+          36,
+          69,
+          49
+        ],
+        "mean_dark_rgb": [
+          121.42,
+          146.25,
+          123.68
+        ],
+        "dark80": 151,
+        "dark150": 114,
+        "total_contrast": 34639.47
+      },
+      "Crown icon": {
+        "pixels_dark20": 89,
+        "min_rgb": [
+          36,
+          69,
+          49
+        ],
+        "mean_dark_rgb": [
+          96.82,
+          124.45,
+          102.3
+        ],
+        "dark80": 80,
+        "dark150": 64,
+        "total_contrast": 18252.8
+      },
+      "Bengali heading": {
+        "pixels_dark20": 358,
+        "min_rgb": [
+          36,
+          69,
+          49
+        ],
+        "mean_dark_rgb": [
+          103.72,
+          130.34,
+          108.2
+        ],
+        "dark80": 290,
+        "dark150": 234,
+        "total_contrast": 69332.52
+      },
+      "Bengali sidebar label": {
+        "pixels_dark20": 371,
+        "min_rgb": [
+          36,
+          69,
+          49
+        ],
+        "mean_dark_rgb": [
+          118.08,
+          143.6,
+          120.89
+        ],
+        "dark80": 306,
+        "dark150": 229,
+        "total_contrast": 64009.51
+      }
+    }
+  },
+  "software": {
+    "background": [
+      230,
+      231,
+      210
+    ],
+    "regions": {
+      "Hive text": {
+        "pixels_dark20": 284,
+        "min_rgb": [
+          36,
+          69,
+          49
+        ],
+        "mean_dark_rgb": [
+          114.14,
+          134.2,
+          113.76
+        ],
+        "dark80": 226,
+        "dark150": 183,
+        "total_contrast": 51023.23
+      },
+      "Crown icon": {
+        "pixels_dark20": 120,
+        "min_rgb": [
+          36,
+          69,
+          49
+        ],
+        "mean_dark_rgb": [
+          99.03,
+          121.72,
+          101.25
+        ],
+        "dark80": 102,
+        "dark150": 88,
+        "total_contrast": 24274.44
+      },
+      "Bengali heading": {
+        "pixels_dark20": 454,
+        "min_rgb": [
+          36,
+          69,
+          49
+        ],
+        "mean_dark_rgb": [
+          97.87,
+          120.64,
+          100.33
+        ],
+        "dark80": 392,
+        "dark150": 305,
+        "total_contrast": 93063.41
+      },
+      "Bengali sidebar label": {
+        "pixels_dark20": 555,
+        "min_rgb": [
+          36,
+          69,
+          49
+        ],
+        "mean_dark_rgb": [
+          116.15,
+          135.86,
+          115.36
+        ],
+        "dark80": 427,
+        "dark150": 333,
+        "total_contrast": 98061.8
+      }
+    }
+  }
+}

@@ -1,0 +1,728 @@
+{
+  "purpose": "Expected failing negative control; no current-source acceptance claim",
+  "actualProducerRevision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "producerRecordSha256": "db89c0eabc083aea7a542b9dffb988be5192efb0416c02c22ca73494bb66efb7",
+  "catalogIdentity": "Frozen V3 native3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054; verified below in actual VFS",
+  "checkoutContext": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "checkoutStatusSha256": "3533f30c553da936f1d154725b93e42e6bc8e962a809ac7d428f6acb95f4532e",
+  "checkoutContextNote": "Parent is integrating b34 concurrently; mutable checkout not used as package/catalog input",
+  "archiveSha256": "f826d893696430e781df6c072c09c20c2bf5f0738cf9335fced87ead15acc9ed",
+  "packageMemberChecks": 130,
+  "checkerSha256": "84d265bed3bf7f6c2767146616c1022484e509435c59066876cb52870639a78c",
+  "pageErrors": [],
+  "startup": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "webgl2",
+    "renderContext": {
+      "width": 1280,
+      "height": 900,
+      "error": null
+    },
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "14MainMenuScreen",
+    "screenClass": "14MainMenuScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 0,
+    "frames": 0,
+    "loop": 628,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 1280,
+    "height": 900,
+    "heapBytes": 161087488,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "ready"
+    },
+    "opened": [],
+    "controls": {
+      "menu/3": {
+        "x": 88,
+        "y": 258,
+        "w": 320,
+        "h": 48,
+        "visible": {
+          "x": 88,
+          "y": 258,
+          "w": 320,
+          "h": 48
+        },
+        "enabled": true,
+        "label": "কাস্টম গেম",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/4": {
+        "x": 88,
+        "y": 312,
+        "w": 320,
+        "h": 42,
+        "visible": {
+          "x": 88,
+          "y": 312,
+          "w": 320,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "অনলাইনে খেলুন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/0": {
+        "x": 88,
+        "y": 360,
+        "w": 320,
+        "h": 42,
+        "visible": {
+          "x": 88,
+          "y": 360,
+          "w": 320,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "অভিযান",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/2": {
+        "x": 88,
+        "y": 408,
+        "w": 320,
+        "h": 42,
+        "visible": {
+          "x": 88,
+          "y": 408,
+          "w": 320,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "গেম লোড করুন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/1": {
+        "x": 88,
+        "y": 456,
+        "w": 320,
+        "h": 42,
+        "visible": {
+          "x": 88,
+          "y": 456,
+          "w": 320,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "প্রশিক্ষণ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/6": {
+        "x": 88,
+        "y": 540,
+        "w": 156,
+        "h": 34,
+        "visible": {
+          "x": 88,
+          "y": 540,
+          "w": 156,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "সেটিংস",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/7": {
+        "x": 252,
+        "y": 540,
+        "w": 156,
+        "h": 34,
+        "visible": {
+          "x": 252,
+          "y": 540,
+          "w": 156,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "সম্পাদক",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/8": {
+        "x": 88,
+        "y": 582,
+        "w": 156,
+        "h": 34,
+        "visible": {
+          "x": 88,
+          "y": 582,
+          "w": 156,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "অবদানকারীরা",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/discord": {
+        "x": 252,
+        "y": 582,
+        "w": 156,
+        "h": 34,
+        "visible": {
+          "x": 252,
+          "y": 582,
+          "w": 156,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "Discord সম্প্রদায়",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "menu/9": {
+        "x": 88,
+        "y": 624,
+        "w": 156,
+        "h": 34,
+        "visible": {
+          "x": 88,
+          "y": 624,
+          "w": 156,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "ছেড়ে দিন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      }
+    }
+  },
+  "nativeCatalogSha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+  "settings": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "webgl2",
+    "renderContext": {
+      "width": 1280,
+      "height": 900,
+      "error": null
+    },
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "14SettingsScreen",
+    "screenClass": "14SettingsScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 0,
+    "frames": 0,
+    "loop": 794,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 1280,
+    "height": 900,
+    "heapBytes": 161087488,
+    "artworkReady": true,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": false,
+    "persistence": "persisted",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "ready"
+    },
+    "opened": [],
+    "controls": {
+      "nav.0": {
+        "x": 180,
+        "y": 149,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 149,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "ডিসপ্লে এবং গ্রাফিক্স",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.1": {
+        "x": 180,
+        "y": 195,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 195,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "অডিও",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.2": {
+        "x": 180,
+        "y": 241,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 241,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "গেমপ্লে",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.3": {
+        "x": 180,
+        "y": 287,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 287,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "ভবনের পূর্বনির্ধারিত মান",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.4": {
+        "x": 180,
+        "y": 333,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 333,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "নিয়ন্ত্রণ",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.5": {
+        "x": 180,
+        "y": 379,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 379,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "ভাষা ও খেলোয়াড়",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.6": {
+        "x": 180,
+        "y": 425,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 425,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "অনলাইন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.7": {
+        "x": 180,
+        "y": 471,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 471,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "Hive Mind",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.8": {
+        "x": 180,
+        "y": 517,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 517,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "রেকর্ডিং",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.9": {
+        "x": 180,
+        "y": 563,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 563,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "পরীক্ষাগুলি",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.10": {
+        "x": 180,
+        "y": 609,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 609,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "কাস্টম এআই",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "nav.11": {
+        "x": 180,
+        "y": 655,
+        "w": 176,
+        "h": 42,
+        "visible": {
+          "x": 180,
+          "y": 655,
+          "w": 176,
+          "h": 42
+        },
+        "enabled": true,
+        "label": "মানচিত্র জেনারেটর",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "player.language": {
+        "x": 960,
+        "y": 185,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 960,
+          "y": 185,
+          "w": 140,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "বাংলা",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "player.name": {
+        "x": 960,
+        "y": 251,
+        "w": 140,
+        "h": 34,
+        "visible": {
+          "x": 960,
+          "y": 251,
+          "w": 140,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "web_user",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      },
+      "done": {
+        "x": 1020,
+        "y": 756,
+        "w": 70,
+        "h": 34,
+        "visible": {
+          "x": 1020,
+          "y": 756,
+          "w": 70,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "সম্পন্ন",
+        "surface": {
+          "w": 1280,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 900
+        }
+      }
+    }
+  },
+  "negativeControl": {
+    "renderer": "webgl2",
+    "executionMode": "serial",
+    "clip": {
+      "x": 180,
+      "y": 149,
+      "width": 176,
+      "height": 548
+    },
+    "maximumChannelDifference": 64,
+    "affectedPixels": 5659,
+    "totalAbsoluteChannelDifference": 670791,
+    "inferredMinimumOpaquePanelAlpha": 0.7490196078431373,
+    "passed": false,
+    "reason": "CSS behind an opaque presented panel must not change its text/icon pixels"
+  },
+  "expectedFailureObserved": true,
+  "packageMembersUnchangedAfter": true
+}

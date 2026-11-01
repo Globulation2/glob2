@@ -1,0 +1,19 @@
+{
+  "code_identity": {
+    "revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "5f74615725a2f947e0b13f84e0b3df5371ed6722fdb0751f8ccfd701587cee72"
+  },
+  "command": [
+    "npm",
+    "exec",
+    "--",
+    "vitest",
+    "run",
+    "apps/api/test/pages.test.ts"
+  ],
+  "cwd": "platform",
+  "exit_code": 0,
+  "scope": "Current invitation composition and actual shared bootstrap/font route/CSP tests"
+}

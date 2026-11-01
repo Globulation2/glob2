@@ -1,0 +1,48 @@
+127.0.0.1 - - [01/Nov/2026 01:53:17] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:18] "GET /index.html?threads=serial&renderer=webgl2 HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:18] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:18] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 01:53:18] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 01:53:18] "GET /presentation-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:18] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:18] "GET /loader.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /locales/bn.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /index.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /index.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /assets/core.17d718f0e9e2d4b9.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /index.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /assets/game-1.f3437702379c061a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:19] "GET /assets/game-2.d281b4111a0edd98.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:21] "GET /fonts/NotoSansBengali-Regular.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:21] "GET /fonts/NotoSansArabic-Regular.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:21] "GET /fonts/NotoSansDevanagari-Regular.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:21] "GET /assets/translations-1.e856598630ba65c2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:21] "GET /assets/translations-2.481702e0e44e706a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:21] "GET /assets/translations-3.dd91ca3a0b26d03f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:49] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:49] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:50] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:50] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:50] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:50] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:50] "GET /assets/hd-1.2ab05ddac28dc141.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:50] "GET /assets/hd-2.29aae6b876dcb845.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:50] "GET /assets/hd-3.79a790159a769c5c.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:50] "GET /assets/hd-4.0d492e7fc508ee1e.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:51] "GET /assets/hd-5.2fbf774619303964.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:51] "GET /assets/hd-6.a8971e02788dc23a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:51] "GET /assets/hd-7.eae58d4132a7b7fe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:51] "GET /assets/hd-8.f0d134c96480bf6f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:51] "GET /assets/hd-9.99a81f571e84626d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:52] "GET /assets/hd-10.1459b7e130ea125d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:52] "GET /assets/hd-11.9ad9141b85952647.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:52] "GET /assets/hd-12.e49603324c934f2c.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 01:53:52] "GET /assets/hd-13.29db692d3620b986.data HTTP/1.1" 200 -

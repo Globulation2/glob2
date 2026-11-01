@@ -1,0 +1,809 @@
+{
+  "id": "native-settings-002",
+  "source_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "surface": "native",
+  "domain": "settings",
+  "context": "Labels and help describe settings. Prefer short labels and explain their effect plainly.",
+  "entries": [
+    {
+      "id": "native:[settings Right]",
+      "key": "[settings Right]",
+      "source": "Right"
+    },
+    {
+      "id": "native:[settings Left]",
+      "key": "[settings Left]",
+      "source": "Left"
+    },
+    {
+      "id": "native:[settings Back]",
+      "key": "[settings Back]",
+      "source": "Back"
+    },
+    {
+      "id": "native:[settings Save the game automatically about every minute.]",
+      "key": "[settings Save the game automatically about every minute.]",
+      "source": "Save the game automatically about every minute."
+    },
+    {
+      "id": "native:[No other players have editable diplomatic settings in this match.]",
+      "key": "[No other players have editable diplomatic settings in this match.]",
+      "source": "No other players have editable diplomatic settings in this match."
+    },
+    {
+      "id": "native:[settings %0 · %1 Units]",
+      "key": "[settings %0 · %1 Units]",
+      "source": "%0 · %1 Units"
+    },
+    {
+      "id": "native:[settings Level %0]",
+      "key": "[settings Level %0]",
+      "source": "Level %0"
+    },
+    {
+      "id": "native:[settings Match the desktop %0]",
+      "key": "[settings Match the desktop %0]",
+      "source": "Match the desktop (%0)"
+    },
+    {
+      "id": "native:[settings Current display %0 %1 %2 %3]",
+      "key": "[settings Current display %0 %1 %2 %3]",
+      "source": "Current display: %0 × %1 · %2 · %3"
+    },
+    {
+      "id": "native:[settings Experiments]",
+      "key": "[settings Experiments]",
+      "source": "Experiments"
+    },
+    {
+      "id": "native:[settings Custom AIs]",
+      "key": "[settings Custom AIs]",
+      "source": "Custom AIs"
+    },
+    {
+      "id": "native:[settings Try features we are still testing. They can change balance and pacing.]",
+      "key": "[settings Try features we are still testing. They can change balance and pacing.]",
+      "source": "Try features we are still testing. They can change balance and pacing."
+    },
+    {
+      "id": "native:[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "key": "[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "source": "Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with."
+    },
+    {
+      "id": "native:[settings No experiments in this build.]",
+      "key": "[settings No experiments in this build.]",
+      "source": "No experiments in this build."
+    },
+    {
+      "id": "native:[settings Touch scrolling]",
+      "key": "[settings Touch scrolling]",
+      "source": "Touch scrolling"
+    },
+    {
+      "id": "native:[settings List momentum]",
+      "key": "[settings List momentum]",
+      "source": "List momentum"
+    },
+    {
+      "id": "native:[settings How far lists and panels keep scrolling after a flick.]",
+      "key": "[settings How far lists and panels keep scrolling after a flick.]",
+      "source": "How far lists and panels keep scrolling after a flick."
+    },
+    {
+      "id": "native:[settings List bounce]",
+      "key": "[settings List bounce]",
+      "source": "List bounce"
+    },
+    {
+      "id": "native:[settings How much lists and panels stretch past their ends and spring back.]",
+      "key": "[settings How much lists and panels stretch past their ends and spring back.]",
+      "source": "How much lists and panels stretch past their ends and spring back."
+    },
+    {
+      "id": "native:[settings Map momentum]",
+      "key": "[settings Map momentum]",
+      "source": "Map momentum"
+    },
+    {
+      "id": "native:[settings How far the map keeps panning after a flick.]",
+      "key": "[settings How far the map keeps panning after a flick.]",
+      "source": "How far the map keeps panning after a flick."
+    },
+    {
+      "id": "native:[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "key": "[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "source": "Touch scrolling feel. 0 turns an effect off; 50 is the default."
+    },
+    {
+      "id": "native:[settings Artwork]",
+      "key": "[settings Artwork]",
+      "source": "Artwork"
+    },
+    {
+      "id": "native:[settings Original]",
+      "key": "[settings Original]",
+      "source": "Original"
+    },
+    {
+      "id": "native:[settings High resolution]",
+      "key": "[settings High resolution]",
+      "source": "High resolution"
+    },
+    {
+      "id": "native:[settings Clouds]",
+      "key": "[settings Clouds]",
+      "source": "Clouds"
+    },
+    {
+      "id": "native:[settings Show cloud cover above the map.]",
+      "key": "[settings Show cloud cover above the map.]",
+      "source": "Show cloud cover above the map."
+    },
+    {
+      "id": "native:[settings Cloud shadows]",
+      "key": "[settings Cloud shadows]",
+      "source": "Cloud shadows"
+    },
+    {
+      "id": "native:[settings Show cloud shadows on the ground independently of cloud cover.]",
+      "key": "[settings Show cloud shadows on the ground independently of cloud cover.]",
+      "source": "Show cloud shadows on the ground independently of cloud cover."
+    },
+    {
+      "id": "native:[settings Building particles]",
+      "key": "[settings Building particles]",
+      "source": "Building particles"
+    },
+    {
+      "id": "native:[settings Show smoke and other building particles.]",
+      "key": "[settings Show smoke and other building particles.]",
+      "source": "Show smoke and other building particles."
+    },
+    {
+      "id": "native:[settings Magic effects]",
+      "key": "[settings Magic effects]",
+      "source": "Magic effects"
+    },
+    {
+      "id": "native:[settings Choose animated magic effects or a simple visible effect.]",
+      "key": "[settings Choose animated magic effects or a simple visible effect.]",
+      "source": "Choose animated magic effects or a simple visible effect."
+    },
+    {
+      "id": "native:[settings Simple]",
+      "key": "[settings Simple]",
+      "source": "Simple"
+    },
+    {
+      "id": "native:[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "key": "[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "source": "Requires the OpenGL renderer. Your saved choice is retained."
+    },
+    {
+      "id": "native:[settings Interface appearance]",
+      "key": "[settings Interface appearance]",
+      "source": "Interface appearance"
+    },
+    {
+      "id": "native:[settings Panels]",
+      "key": "[settings Panels]",
+      "source": "Panels"
+    },
+    {
+      "id": "native:[settings Choose translucent or opaque interface panels.]",
+      "key": "[settings Choose translucent or opaque interface panels.]",
+      "source": "Choose translucent or opaque interface panels."
+    },
+    {
+      "id": "native:[settings Opaque]",
+      "key": "[settings Opaque]",
+      "source": "Opaque"
+    },
+    {
+      "id": "native:[settings Translucent]",
+      "key": "[settings Translucent]",
+      "source": "Translucent"
+    },
+    {
+      "id": "native:[settings Advanced graphics]",
+      "key": "[settings Advanced graphics]",
+      "source": "Advanced graphics"
+    },
+    {
+      "id": "native:[settings Path lines]",
+      "key": "[settings Path lines]",
+      "source": "Path lines"
+    },
+    {
+      "id": "native:[settings Choose translucent or opaque unit path lines.]",
+      "key": "[settings Choose translucent or opaque unit path lines.]",
+      "source": "Choose translucent or opaque unit path lines."
+    },
+    {
+      "id": "native:[settings Smooth progress indicators]",
+      "key": "[settings Smooth progress indicators]",
+      "source": "Smooth progress indicators"
+    },
+    {
+      "id": "native:[settings Smooth the moving edges of progress indicators.]",
+      "key": "[settings Smooth the moving edges of progress indicators.]",
+      "source": "Smooth the moving edges of progress indicators."
+    },
+    {
+      "id": "native:[settings Decorative interface animation]",
+      "key": "[settings Decorative interface animation]",
+      "source": "Decorative interface animation"
+    },
+    {
+      "id": "native:[settings Animate victory artwork. Reduced motion also disables this animation.]",
+      "key": "[settings Animate victory artwork. Reduced motion also disables this animation.]",
+      "source": "Animate victory artwork. Reduced motion also disables this animation."
+    },
+    {
+      "id": "native:[settings Smooth unit motion]",
+      "key": "[settings Smooth unit motion]",
+      "source": "Smooth unit motion"
+    },
+    {
+      "id": "native:[settings Experimental: move and animate units between game ticks.]",
+      "key": "[settings Experimental: move and animate units between game ticks.]",
+      "source": "Experimental: move and animate units between game ticks."
+    },
+    {
+      "id": "native:[settings Smooth fog of war]",
+      "key": "[settings Smooth fog of war]",
+      "source": "Smooth fog of war"
+    },
+    {
+      "id": "native:[settings Fade the map into and out of the fog of war gradually.]",
+      "key": "[settings Fade the map into and out of the fog of war gradually.]",
+      "source": "Fade the map into and out of the fog of war gradually."
+    },
+    {
+      "id": "native:[settings Adaptive zoom detail]",
+      "key": "[settings Adaptive zoom detail]",
+      "source": "Adaptive zoom detail"
+    },
+    {
+      "id": "native:[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]",
+      "key": "[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]",
+      "source": "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in."
+    },
+    {
+      "id": "native:[settings Text size]",
+      "key": "[settings Text size]",
+      "source": "Text size"
+    },
+    {
+      "id": "native:[settings Enlarge interface text without changing the map scale.]",
+      "key": "[settings Enlarge interface text without changing the map scale.]",
+      "source": "Enlarge interface text without changing the map scale."
+    },
+    {
+      "id": "native:[settings Online]",
+      "key": "[settings Online]",
+      "source": "Online"
+    },
+    {
+      "id": "native:[settings Another server]",
+      "key": "[settings Another server]",
+      "source": "Another server"
+    },
+    {
+      "id": "native:[settings Check]",
+      "key": "[settings Check]",
+      "source": "Check"
+    },
+    {
+      "id": "native:[settings Checking…]",
+      "key": "[settings Checking…]",
+      "source": "Checking…"
+    },
+    {
+      "id": "native:[settings Choose which server you play on and how you sign in to it.]",
+      "key": "[settings Choose which server you play on and how you sign in to it.]",
+      "source": "Choose which server you play on and how you sign in to it."
+    },
+    {
+      "id": "native:[settings Connecting…]",
+      "key": "[settings Connecting…]",
+      "source": "Connecting…"
+    },
+    {
+      "id": "native:[settings Could not reach this server.]",
+      "key": "[settings Could not reach this server.]",
+      "source": "Could not reach this server."
+    },
+    {
+      "id": "native:[settings Display name saved.]",
+      "key": "[settings Display name saved.]",
+      "source": "Display name saved."
+    },
+    {
+      "id": "native:[settings Display name]",
+      "key": "[settings Display name]",
+      "source": "Display name"
+    },
+    {
+      "id": "native:[settings Download or delete my data]",
+      "key": "[settings Download or delete my data]",
+      "source": "Delete my account"
+    },
+    {
+      "id": "native:[settings Enter an https:// address.]",
+      "key": "[settings Enter an https:// address.]",
+      "source": "Enter an https:// address."
+    },
+    {
+      "id": "native:[settings Forget]",
+      "key": "[settings Forget]",
+      "source": "Forget"
+    },
+    {
+      "id": "native:[settings Guests keep a generated name; sign in to choose one.]",
+      "key": "[settings Guests keep a generated name; sign in to choose one.]",
+      "source": "Guests keep a generated name; sign in to choose one."
+    },
+    {
+      "id": "native:[settings Link]",
+      "key": "[settings Link]",
+      "source": "Link"
+    },
+    {
+      "id": "native:[settings Not a Globulation 2 server.]",
+      "key": "[settings Not a Globulation 2 server.]",
+      "source": "Not a Globulation 2 server."
+    },
+    {
+      "id": "native:[settings Not linked]",
+      "key": "[settings Not linked]",
+      "source": "Not linked"
+    },
+    {
+      "id": "native:[settings Not signed in.]",
+      "key": "[settings Not signed in.]",
+      "source": "Not signed in."
+    },
+    {
+      "id": "native:[settings Open]",
+      "key": "[settings Open]",
+      "source": "Open"
+    },
+    {
+      "id": "native:[settings Opens your account page on %0.]",
+      "key": "[settings Opens your account page on %0.]",
+      "source": "Opens your account page on %0, where you can delete it."
+    },
+    {
+      "id": "native:[settings Run by a community, a club or yourself. Paste its address.]",
+      "key": "[settings Run by a community, a club or yourself. Paste its address.]",
+      "source": "Run by a community, a club or yourself. Paste its address."
+    },
+    {
+      "id": "native:[settings Save]",
+      "key": "[settings Save]",
+      "source": "Save"
+    },
+    {
+      "id": "native:[settings Server]",
+      "key": "[settings Server]",
+      "source": "Server"
+    },
+    {
+      "id": "native:[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]",
+      "key": "[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]",
+      "source": "Shown in rooms, matches and the leaderboard. Change once every 30 days."
+    },
+    {
+      "id": "native:[settings Sign in with: %0 · queues: %1]",
+      "key": "[settings Sign in with: %0 · queues: %1]",
+      "source": "Sign in with: %0 · queues: %1"
+    },
+    {
+      "id": "native:[settings Sign out on this device]",
+      "key": "[settings Sign out on this device]",
+      "source": "Sign out on this device"
+    },
+    {
+      "id": "native:[settings Sign out]",
+      "key": "[settings Sign out]",
+      "source": "Sign out"
+    },
+    {
+      "id": "native:[settings Switch to this server]",
+      "key": "[settings Switch to this server]",
+      "source": "Switch to this server"
+    },
+    {
+      "id": "native:[settings The last sign-in method can't be unlinked.]",
+      "key": "[settings The last sign-in method can't be unlinked.]",
+      "source": "The last sign-in method can't be unlinked."
+    },
+    {
+      "id": "native:[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+      "key": "[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+      "source": "The official Globulation 2 server · ranked queues, leaderboards, map catalog"
+    },
+    {
+      "id": "native:[settings Unlink]",
+      "key": "[settings Unlink]",
+      "source": "Unlink"
+    },
+    {
+      "id": "native:[settings Unlinking is done on the account page.]",
+      "key": "[settings Unlinking is done on the account page.]",
+      "source": "Unlinking is done on the account page."
+    },
+    {
+      "id": "native:[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]",
+      "key": "[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]",
+      "source": "You'll be a new guest until you sign in again. Your account and matches stay on the server."
+    },
+    {
+      "id": "native:[settings Your account on %0]",
+      "key": "[settings Your account on %0]",
+      "source": "Your account on %0"
+    },
+    {
+      "id": "native:[settings compatible with this version]",
+      "key": "[settings compatible with this version]",
+      "source": "compatible with this version"
+    },
+    {
+      "id": "native:[settings connected]",
+      "key": "[settings connected]",
+      "source": "connected"
+    },
+    {
+      "id": "native:[settings connecting…]",
+      "key": "[settings connecting…]",
+      "source": "connecting…"
+    },
+    {
+      "id": "native:[settings guest]",
+      "key": "[settings guest]",
+      "source": "guest"
+    },
+    {
+      "id": "native:[settings linked]",
+      "key": "[settings linked]",
+      "source": "linked"
+    },
+    {
+      "id": "native:[settings plays another version]",
+      "key": "[settings plays another version]",
+      "source": "plays another version"
+    },
+    {
+      "id": "native:[settings trusted]",
+      "key": "[settings trusted]",
+      "source": "trusted"
+    },
+    {
+      "id": "native:[settings used before]",
+      "key": "[settings used before]",
+      "source": "used before"
+    },
+    {
+      "id": "native:[settings you were %0 there]",
+      "key": "[settings you were %0 there]",
+      "source": "you were %0 there"
+    },
+    {
+      "id": "native:[settings not connected]",
+      "key": "[settings not connected]",
+      "source": "not connected"
+    },
+    {
+      "id": "native:[settings Open Play online to connect.]",
+      "key": "[settings Open Play online to connect.]",
+      "source": "Open Play online to connect."
+    },
+    {
+      "id": "native:[settings %0 is no longer linked.]",
+      "key": "[settings %0 is no longer linked.]",
+      "source": "%0 is no longer linked."
+    },
+    {
+      "id": "native:[settings Show colony skins]",
+      "key": "[settings Show colony skins]",
+      "source": "Show colony skins"
+    },
+    {
+      "id": "native:[settings Turn off to use classic units, swarms and building colors on this device.]",
+      "key": "[settings Turn off to use classic units, swarms and building colors on this device.]",
+      "source": "Turn off to use classic units, swarms and building colors on this device."
+    },
+    {
+      "id": "native:[settings Hive Mind]",
+      "key": "[settings Hive Mind]",
+      "source": "Hive Mind"
+    },
+    {
+      "id": "native:[settings Enable commander shortcuts]",
+      "key": "[settings Enable commander shortcuts]",
+      "source": "Enable commander shortcuts"
+    },
+    {
+      "id": "native:[settings Command your colony without opening a menu.]",
+      "key": "[settings Command your colony without opening a menu.]",
+      "source": "Command your colony without opening a menu."
+    },
+    {
+      "id": "native:[settings Allow supervision for new commands]",
+      "key": "[settings Allow supervision for new commands]",
+      "source": "Allow supervision for new commands"
+    },
+    {
+      "id": "native:[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]",
+      "key": "[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]",
+      "source": "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits."
+    },
+    {
+      "id": "native:[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "key": "[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "source": "Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls."
+    },
+    {
+      "id": "native:[settings Commander account and credits]",
+      "key": "[settings Commander account and credits]",
+      "source": "Commander account and credits"
+    },
+    {
+      "id": "native:[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]",
+      "key": "[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]",
+      "source": "Manage credits and purchases in your browser. Commander assistance is permitted in ranked play."
+    },
+    {
+      "id": "native:[settings Recording]",
+      "key": "[settings Recording]",
+      "source": "Recording"
+    },
+    {
+      "id": "native:[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+      "key": "[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+      "source": "Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders."
+    },
+    {
+      "id": "native:[settings Record your games as MP4 videos with sound.]",
+      "key": "[settings Record your games as MP4 videos with sound.]",
+      "source": "Record your games as MP4 videos with sound."
+    },
+    {
+      "id": "native:[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "key": "[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "source": "Recording uses the full rendered resolution at 30 FPS."
+    },
+    {
+      "id": "native:[settings FFmpeg is ready.]",
+      "key": "[settings FFmpeg is ready.]",
+      "source": "FFmpeg is ready."
+    },
+    {
+      "id": "native:[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+      "key": "[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+      "source": "FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again."
+    },
+    {
+      "id": "native:[settings Check for FFmpeg again]",
+      "key": "[settings Check for FFmpeg again]",
+      "source": "Check for FFmpeg again"
+    },
+    {
+      "id": "native:[settings Checking for FFmpeg…]",
+      "key": "[settings Checking for FFmpeg…]",
+      "source": "Checking for FFmpeg…"
+    },
+    {
+      "id": "native:[settings Hotkey: %0. It also works in menus and the editor.]",
+      "key": "[settings Hotkey: %0. It also works in menus and the editor.]",
+      "source": "Hotkey: %0. It also works in menus and the editor."
+    },
+    {
+      "id": "native:[settings Change the hotkey]",
+      "key": "[settings Change the hotkey]",
+      "source": "Change the hotkey"
+    },
+    {
+      "id": "native:[settings Recordings are saved in %0]",
+      "key": "[settings Recordings are saved in %0]",
+      "source": "Recordings are saved in %0"
+    },
+    {
+      "id": "native:[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+      "key": "[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+      "source": "Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector."
+    },
+    {
+      "id": "native:[settings Music set]",
+      "key": "[settings Music set]",
+      "source": "Music set"
+    },
+    {
+      "id": "native:[settings Random each match]",
+      "key": "[settings Random each match]",
+      "source": "Choose Random to select a soundtrack at each match start."
+    },
+    {
+      "id": "native:[Sign in through Online settings to like and favourite AIs.]",
+      "key": "[Sign in through Online settings to like and favourite AIs.]",
+      "source": "Sign in through Online settings to like and favourite AIs."
+    },
+    {
+      "id": "native:[music 2–5 minutes]",
+      "key": "[music 2–5 minutes]",
+      "source": "2–5 minutes"
+    },
+    {
+      "id": "native:[music 5–15 minutes]",
+      "key": "[music 5–15 minutes]",
+      "source": "5–15 minutes"
+    },
+    {
+      "id": "native:[music AI-generated]",
+      "key": "[music AI-generated]",
+      "source": "AI-generated"
+    },
+    {
+      "id": "native:[music All music]",
+      "key": "[music All music]",
+      "source": "All music"
+    },
+    {
+      "id": "native:[music All open licences]",
+      "key": "[music All open licences]",
+      "source": "All open licences"
+    },
+    {
+      "id": "native:[music Any duration]",
+      "key": "[music Any duration]",
+      "source": "Any duration"
+    },
+    {
+      "id": "native:[music Audition each mood for eight seconds]",
+      "key": "[music Audition each mood for eight seconds]",
+      "source": "Audition each mood for eight seconds"
+    },
+    {
+      "id": "native:[music Back]",
+      "key": "[music Back]",
+      "source": "Back"
+    },
+    {
+      "id": "native:[music Browse]",
+      "key": "[music Browse]",
+      "source": "Browse"
+    },
+    {
+      "id": "native:[music Building]",
+      "key": "[music Building]",
+      "source": "Building"
+    },
+    {
+      "id": "native:[music Calm]",
+      "key": "[music Calm]",
+      "source": "Calm"
+    },
+    {
+      "id": "native:[music Calm → Building → Combat]",
+      "key": "[music Calm → Building → Combat]",
+      "source": "Calm → Building → Combat"
+    },
+    {
+      "id": "native:[music Choose Building]",
+      "key": "[music Choose Building]",
+      "source": "Choose Building"
+    },
+    {
+      "id": "native:[music Choose Calm]",
+      "key": "[music Choose Calm]",
+      "source": "Choose Calm"
+    },
+    {
+      "id": "native:[music Choose Combat]",
+      "key": "[music Choose Combat]",
+      "source": "Choose Combat"
+    },
+    {
+      "id": "native:[music Choose ZIP]",
+      "key": "[music Choose ZIP]",
+      "source": "Choose ZIP"
+    },
+    {
+      "id": "native:[music Choose a music file.]",
+      "key": "[music Choose a music file.]",
+      "source": "Choose a music file."
+    },
+    {
+      "id": "native:[music Combat]",
+      "key": "[music Combat]",
+      "source": "Combat"
+    },
+    {
+      "id": "native:[music Could not open this music set.]",
+      "key": "[music Could not open this music set.]",
+      "source": "Could not open this music set."
+    },
+    {
+      "id": "native:[music Credits, downloads and reporting]",
+      "key": "[music Credits, downloads and reporting]",
+      "source": "Credits, downloads and reporting"
+    },
+    {
+      "id": "native:[music Downloading music…]",
+      "key": "[music Downloading music…]",
+      "source": "Downloading music…"
+    },
+    {
+      "id": "native:[music Export recovery files]",
+      "key": "[music Export recovery files]",
+      "source": "Export recovery files"
+    },
+    {
+      "id": "native:[music Fade duration]",
+      "key": "[music Fade duration]",
+      "source": "Fade duration"
+    },
+    {
+      "id": "native:[music File selection cancelled or failed.]",
+      "key": "[music File selection cancelled or failed.]",
+      "source": "File selection cancelled or failed."
+    },
+    {
+      "id": "native:[music Import ZIP]",
+      "key": "[music Import ZIP]",
+      "source": "Import ZIP"
+    },
+    {
+      "id": "native:[music Import ZIP or three tracks]",
+      "key": "[music Import ZIP or three tracks]",
+      "source": "Import ZIP or three tracks"
+    },
+    {
+      "id": "native:[music Import music]",
+      "key": "[music Import music]",
+      "source": "Import music"
+    },
+    {
+      "id": "native:[music Import three tracks]",
+      "key": "[music Import three tracks]",
+      "source": "Import three tracks"
+    },
+    {
+      "id": "native:[music Includes AI-generated audio]",
+      "key": "[music Includes AI-generated audio]",
+      "source": "Includes AI-generated audio"
+    },
+    {
+      "id": "native:[music Install]",
+      "key": "[music Install]",
+      "source": "Install"
+    },
+    {
+      "id": "native:[music Install selected]",
+      "key": "[music Install selected]",
+      "source": "Install selected"
+    },
+    {
+      "id": "native:[music Installed]",
+      "key": "[music Installed]",
+      "source": "Installed"
+    },
+    {
+      "id": "native:[music Load more]",
+      "key": "[music Load more]",
+      "source": "Load more"
+    },
+    {
+      "id": "native:[music Loading music…]",
+      "key": "[music Loading music…]",
+      "source": "Loading music…"
+    },
+    {
+      "id": "native:[music Most downloaded]",
+      "key": "[music Most downloaded]",
+      "source": "Most downloaded"
+    }
+  ]
+}

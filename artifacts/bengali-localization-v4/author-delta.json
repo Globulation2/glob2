@@ -1,0 +1,250 @@
+{
+  "author": "/root/bengali_author",
+  "role": "Bengali native delta author",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "source_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "source_provenance_sha256": "242ecba262e4817b4046386c5f74905b2d78e59cd1a659fcc2b9e15cf57f1c1a",
+  "native_source_revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "draft_native_sha256": "852c1671e8e422187fc21de28c7b0d2f370d40803b00e7aaaa4efbabf19af7f9",
+  "final_native_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "unchanged_online_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "examined_keys": [
+    "native:[lush_grass]",
+    "native:[dry_grass]",
+    "native:[dune_sand]",
+    "native:[pale_sand]",
+    "native:[stats topic overview]",
+    "native:[stats topic economy]",
+    "native:[stats topic world]",
+    "native:[stats work construction]",
+    "native:[stats defence]",
+    "native:[stats history]",
+    "native:[stats waiting]",
+    "native:[stats unit details]",
+    "native:[stats map overlays]",
+    "native:[stats topic]",
+    "native:[stats full history]",
+    "native:[stats missing readings]"
+  ],
+  "entries": [
+    {
+      "id": "native:[lush_grass]",
+      "source": "Lush grass",
+      "actual_initial_google_output": "সবুজ ঘাস",
+      "draft_examined": "সবুজ ঘাস",
+      "final_authored": "ঘন সবুজ ঘাস",
+      "disposition": "edited after contextual author examination",
+      "rationale": "Distinguish lush appearance from generic grass without inventing gameplay fertility/growth effects; TerrainTypeTable keeps it in Grass group."
+    },
+    {
+      "id": "native:[dry_grass]",
+      "source": "Dry grass",
+      "actual_initial_google_output": "শুকনো ঘাস",
+      "draft_examined": "শুকনো ঘাস",
+      "final_authored": "শুকনো ঘাস",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Natural Bengali for the dry-looking Grass-group variant; no mechanical dryness rule added."
+    },
+    {
+      "id": "native:[dune_sand]",
+      "source": "Dune sand",
+      "actual_initial_google_output": "টিলার বালি",
+      "draft_examined": "টিলার বালি",
+      "final_authored": "বালিয়াড়ির বালি",
+      "disposition": "edited after contextual author examination",
+      "rationale": "Use established বালিয়াড়ি dune terminology; generic টিলা can mean an ordinary hill."
+    },
+    {
+      "id": "native:[pale_sand]",
+      "source": "Pale sand",
+      "actual_initial_google_output": "ফ্যাকাশে বালি",
+      "draft_examined": "ফ্যাকাশে বালি",
+      "final_authored": "ফ্যাকাশে বালি",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Correct concise pale-colored Sand-group look label."
+    },
+    {
+      "id": "native:[stats topic overview]",
+      "source": "Overview",
+      "actual_initial_google_output": "সংক্ষিপ্ত বিবরণ",
+      "draft_examined": "সংক্ষিপ্ত বিবরণ",
+      "final_authored": "সংক্ষিপ্ত বিবরণ",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Matches established native [stat overview] summary terminology."
+    },
+    {
+      "id": "native:[stats topic economy]",
+      "source": "Economy",
+      "actual_initial_google_output": "অর্থনীতি",
+      "draft_examined": "অর্থনীতি",
+      "final_authored": "অর্থনীতি",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Economy topic contains work/materials/buildings; অর্থনীতি is the correct noun."
+    },
+    {
+      "id": "native:[stats topic world]",
+      "source": "World",
+      "actual_initial_google_output": "বিশ্ব",
+      "draft_examined": "বিশ্ব",
+      "final_authored": "বিশ্ব",
+      "disposition": "retained after contextual author examination",
+      "rationale": "World topic groups map/environment statistics; retained generic বিশ্ব label."
+    },
+    {
+      "id": "native:[stats work construction]",
+      "source": "Work & construction",
+      "actual_initial_google_output": "কাজ ও নির্মাণ",
+      "draft_examined": "কাজ ও নির্মাণ",
+      "final_authored": "কাজ ও নির্মাণ",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Overview section covers idle workers and blocked buildings, preserving work plus construction."
+    },
+    {
+      "id": "native:[stats defence]",
+      "source": "Defence",
+      "actual_initial_google_output": "প্রতিরক্ষা",
+      "draft_examined": "প্রতিরক্ষা",
+      "final_authored": "প্রতিরক্ষা",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Overview military/defence section, not attack or armor alone."
+    },
+    {
+      "id": "native:[stats history]",
+      "source": "View history",
+      "actual_initial_google_output": "ইতিহাস দেখুন",
+      "draft_examined": "ইতিহাস দেখুন",
+      "final_authored": "ইতিহাস দেখুন",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Action/accessibility label on the inline statistic chart; consistent ইতিহাস দেখুন."
+    },
+    {
+      "id": "native:[stats waiting]",
+      "source": "Waiting for statistics…",
+      "actual_initial_google_output": "পরিসংখ্যানের জন্য অপেক্ষা করছি…",
+      "draft_examined": "পরিসংখ্যানের জন্য অপেক্ষা করছি…",
+      "final_authored": "পরিসংখ্যানের অপেক্ষায়…",
+      "disposition": "edited after contextual author examination",
+      "rationale": "Impersonal loading state replaces unnecessary first-person অপেক্ষা করছি; ellipsis preserved."
+    },
+    {
+      "id": "native:[stats unit details]",
+      "source": "Unit details",
+      "actual_initial_google_output": "ইউনিটের বিবরণ",
+      "draft_examined": "ইউনিটের বিবরণ",
+      "final_authored": "ইউনিটের বিবরণ",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Expandable unit-details panel; correct noun বিবরণ."
+    },
+    {
+      "id": "native:[stats map overlays]",
+      "source": "Map overlays",
+      "actual_initial_google_output": "মানচিত্র ওভারলে",
+      "draft_examined": "মানচিত্র ওভারলে",
+      "final_authored": "মানচিত্রের ওভারলে",
+      "disposition": "edited after contextual author examination",
+      "rationale": "Map overlay group/control, not a new terrain type; Bengali genitive improves grammar."
+    },
+    {
+      "id": "native:[stats topic]",
+      "source": "Topic",
+      "actual_initial_google_output": "বিষয়",
+      "draft_examined": "বিষয়",
+      "final_authored": "বিষয়",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Topic selection label; বিষয় accurately names the category control."
+    },
+    {
+      "id": "native:[stats full history]",
+      "source": "Open full history",
+      "actual_initial_google_output": "সম্পূর্ণ ইতিহাস খুলুন",
+      "draft_examined": "সম্পূর্ণ ইতিহাস খুলুন",
+      "final_authored": "সম্পূর্ণ ইতিহাস খুলুন",
+      "disposition": "retained after contextual author examination",
+      "rationale": "Action opens selected metric’s full history dialog from inline chart; no unrelated campaign/history meaning."
+    },
+    {
+      "id": "native:[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "actual_initial_google_output": "এখনো কোনো পাঠ রেকর্ড করা হয়নি। বিস্তারিত জানতে একটি পরিসংখ্যান নির্বাচন করুন।",
+      "draft_examined": "এখনো কোনো পাঠ রেকর্ড করা হয়নি। বিস্তারিত জানতে একটি পরিসংখ্যান নির্বাচন করুন।",
+      "final_authored": "— এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।",
+      "disposition": "edited after contextual author examination",
+      "rationale": "Reading means a recorded statistical measurement/value, not a lesson পাঠ. Restored source em dash and retained choose-statistic instruction."
+    }
+  ],
+  "cloud_accounting_sha256": "0e9cbf737aaf52ddff8edfb7a79b9665a7e264320a2a8b3e76e48a173a5b68aa",
+  "cloud_responses": [
+    {
+      "path": "cloud/bn/responses/00001.json",
+      "sha256": "50647fa4b1850aecb85cd5299f8ab43dc39c5ef40d7ee39e7bf868b575d8dd3d"
+    }
+  ],
+  "cloud_completed_attempts": 1,
+  "cloud_reserved_characters": 222,
+  "cloud_delta_estimated_usd_without_free_credit": "0.00444",
+  "context_read": [
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "path": "src/hud/InGameStatistics.cpp",
+      "scope": "topicKeys/topicFor, selected metrics, inlineHistory, unitDetails, overview sections and missing-reading hint; full-history button opens selected metric dialog."
+    },
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "path": "src/map/TerrainTypeTable.h",
+      "scope": "Four added authored looks retain Grass/Sand groups; labels must not invent growth/walkability changes."
+    },
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "scope": "Commit description explains IDs29–32 and appearance-only differences within each terrain group."
+    },
+    {
+      "path": "../bengali-localization/language-brief.json",
+      "scope": "Modern shared standard Bengali and respectful UI action register; old native labels for overview/economy/defence/history/units and dune terminology compared."
+    }
+  ],
+  "findings": [
+    {
+      "key": "native:[lush_grass]",
+      "severity": "minor",
+      "state": "resolved",
+      "before": "সবুজ ঘাস",
+      "after": "ঘন সবুজ ঘাস",
+      "reason": "Distinguish lush appearance from generic grass without inventing gameplay fertility/growth effects; TerrainTypeTable keeps it in Grass group."
+    },
+    {
+      "key": "native:[dune_sand]",
+      "severity": "minor",
+      "state": "resolved",
+      "before": "টিলার বালি",
+      "after": "বালিয়াড়ির বালি",
+      "reason": "Use established বালিয়াড়ি dune terminology; generic টিলা can mean an ordinary hill."
+    },
+    {
+      "key": "native:[stats waiting]",
+      "severity": "minor",
+      "state": "resolved",
+      "before": "পরিসংখ্যানের জন্য অপেক্ষা করছি…",
+      "after": "পরিসংখ্যানের অপেক্ষায়…",
+      "reason": "Impersonal loading state replaces unnecessary first-person অপেক্ষা করছি; ellipsis preserved."
+    },
+    {
+      "key": "native:[stats map overlays]",
+      "severity": "minor",
+      "state": "resolved",
+      "before": "মানচিত্র ওভারলে",
+      "after": "মানচিত্রের ওভারলে",
+      "reason": "Map overlay group/control, not a new terrain type; Bengali genitive improves grammar."
+    },
+    {
+      "key": "native:[stats missing readings]",
+      "severity": "major",
+      "state": "resolved",
+      "before": "এখনো কোনো পাঠ রেকর্ড করা হয়নি। বিস্তারিত জানতে একটি পরিসংখ্যান নির্বাচন করুন।",
+      "after": "— এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।",
+      "reason": "Reading means a recorded statistical measurement/value, not a lesson পাঠ. Restored source em dash and retained choose-statistic instruction."
+    }
+  ],
+  "prior_pairs_preserved": 6237,
+  "unresolved_uncertainty": [],
+  "status": "All16 delta pairs author-examined; independent semantic/editorial/recheck/adversarial passes still required. No runtime or release-gate claim."
+}

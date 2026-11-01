@@ -1,0 +1,67 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "status": "Confirmed renderer-wide WebGL canvas alpha defect; live source unchanged",
+  "actual_source": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "baseline_captures": [
+    "artifacts/bengali-localization/browser-runtime/attempt-004/threaded-desktop-webgl2-bengali-input.png",
+    "artifacts/bengali-localization/browser-runtime/attempt-001/serial-desktop-bengali-input.png"
+  ],
+  "cause": "Browser default WebGL2 chooses LegacyGL. GLState::blendFunc calls glBlendFunc(SRC_ALPHA, ONE_MINUS_SRC_ALPHA), applying the source alpha factor to stored framebuffer alpha. Over opaque background, glyph coverage a leaves output alpha a*a+(1-a), causing browser premultiplied canvas compositing to add CSS page background through missing coverage a*(1-a).",
+  "actual_pixel": {
+    "position": [
+      222,
+      485
+    ],
+    "software": [
+      132,
+      149,
+      129
+    ],
+    "WebGL": [
+      193,
+      210,
+      185
+    ],
+    "predicted_with_actual_CSS_background": [
+      192.24,
+      209.24,
+      185.24
+    ]
+  },
+  "competing_hypotheses": "Exact-coordinate model error below1 channel value mean for Latin/Bengali/icons excludes positioning, Bengali shaping and gamma as the main cause. Earlier alpha-squared coverage observation is explained by lost framebuffer alpha, not proven premultiplied upload.",
+  "minimal_patch": "webgl-alpha-preservation.patch",
+  "guard": "GLOB2_WEBGL2 only; desktop GL entry points and existing RGB factors unchanged. All current wrapper calls use source SRC_ALPHA or ONE and destination ONE_MINUS_SRC_ALPHA.",
+  "b34_overlap": "git diff7f..b34 confirms no changes to GraphicContext.cpp, GraphicContextCompound.cpp, DrawableSurface.cpp, RenderDevice.cpp, presentation-surface.js or shader generator. Upstream TrueTypeFont change only opts nb into authored advances, independent from defect.",
+  "regression": "Use actual fresh browser settings UI at viewport1280x900/DPR1. Compare fixed opaque navigation crop after changing ONLY canvas CSS background black\u2192white; any RGB change reveals false framebuffer alpha. Current captures analytically imply up to~64channel difference at50percent coverage; after correction require maxdiff<=2. Run same check with software control, both serial/threaded WebGL2, and compare final Bengali/Latin/icon contrast against software. Restore CSS in finally; retain PNGs, exact producer hashes and measured differences.",
+  "pending": "Patch must be applied after clean b34 integration, followed by fresh browser rebuild and actual pixel/visual recheck. No pass claim from source inspection or token assertions.",
+  "focused_actual_browser_probe": {
+    "path": "check-opaque-panel.cjs",
+    "status": "Syntax checked only; must execute against fresh actual browser build after patch",
+    "restore": "Original canvas style restored in finally",
+    "assertion": "Opaque navigation panel remains invariant under black/white CSS canvas background; maximumRGBchannelchange<=2; retained PNGs and full numeric report"
+  },
+  "actual_negative_control": {
+    "owner": "/root/cloud_runner",
+    "receipt": "negative-7f/receipt.json",
+    "receipt_sha256": "65f80852921a0b9b0acedb8850526aa5fb54ee721a112da90a869febfb0edb08",
+    "measured": {
+      "renderer": "webgl2",
+      "executionMode": "serial",
+      "clip": {
+        "x": 180,
+        "y": 149,
+        "width": 176,
+        "height": 548
+      },
+      "maximumChannelDifference": 64,
+      "affectedPixels": 5659,
+      "totalAbsoluteChannelDifference": 670791,
+      "inferredMinimumOpaquePanelAlpha": 0.7490196078431373,
+      "passed": false,
+      "reason": "CSS behind an opaque presented panel must not change its text/icon pixels"
+    },
+    "interpretation": "Actual old 7f WebGL2 opaque panel is sensitive to the CSS background. Maximum channel delta64 and inferred alpha0.749 match source-over alpha loss prediction0.75 at half coverage. This is expected failing baseline evidence, not acceptance."
+  },
+  "durable_regression_location": "browser/tests/responsive-presentation.spec.js, already executed by hosted WebGL responsive/startup group; shared helper in browser/tests/pixels.js; no CI/matrix changes",
+  "durable_case": "antialiased Bengali text and icons keep the presented panel opaque"
+}

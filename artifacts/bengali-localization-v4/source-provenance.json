@@ -1,0 +1,26 @@
+{
+  "preparation_revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "native_source_revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "online_source_revision": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+  "composition": "Frozen native English/key files from exact master snapshot and unchanged branch online English/plural/invariants, before integration. No runtime source or catalogs modified.",
+  "new_native_entries": {
+    "[lush_grass]": "Lush grass",
+    "[dry_grass]": "Dry grass",
+    "[dune_sand]": "Dune sand",
+    "[pale_sand]": "Pale sand",
+    "[stats topic overview]": "Overview",
+    "[stats topic economy]": "Economy",
+    "[stats topic world]": "World",
+    "[stats work construction]": "Work & construction",
+    "[stats defence]": "Defence",
+    "[stats history]": "View history",
+    "[stats waiting]": "Waiting for statistics…",
+    "[stats unit details]": "Unit details",
+    "[stats map overlays]": "Map overlays",
+    "[stats topic]": "Topic",
+    "[stats full history]": "Open full history",
+    "[stats missing readings]": "— No recorded reading yet. Select a statistic for details."
+  },
+  "prior_reviewed_pairs": 6237,
+  "expected_total": 6253
+}

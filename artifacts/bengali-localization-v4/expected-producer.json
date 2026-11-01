@@ -1,0 +1,14 @@
+{
+  "revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "code_identity": {
+    "revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "5f74615725a2f947e0b13f84e0b3df5371ed6722fdb0751f8ccfd701587cee72"
+  },
+  "source_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "catalog_sha256": {
+    "native": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  }
+}

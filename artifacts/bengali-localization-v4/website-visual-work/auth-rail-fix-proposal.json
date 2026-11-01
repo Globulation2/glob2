@@ -1,0 +1,29 @@
+{
+  "owner": "/root/rendering_audit",
+  "status": "Prepared only; live source unchanged",
+  "actual_finding": "Collapsed Bengali phone sign-in text spills across rounded button boundary in actual fda captures",
+  "changed_files": [
+    {
+      "path": "platform/apps/web/src/App.tsx",
+      "before_sha256": "53e82c02bd342b86754b3078ba6c91e090b85f4e3453beffbea3e71fb09ceebd",
+      "proposed_sha256": "5cd0124f69331770aaa636a9c9ca1e4bd9d7b7384cda518ace919c7a670694bc"
+    },
+    {
+      "path": "platform/apps/web/src/styles/layout.css",
+      "before_sha256": "bc7a1123bcea453cec1558c7505ddf83f8f305ada42a7302666edec99e0e34aa",
+      "proposed_sha256": "6c734d82e38a6ec7df160228edef09b5a101b7a576efae41747c34e17d8c40d2"
+    },
+    {
+      "path": "platform/apps/web/e2e/i18n.spec.ts",
+      "before_sha256": "383c986859ccad7930d6ca6dcd2ceb93ac7211cca368bf196d2550fe0bfbaf48",
+      "proposed_sha256": "3f91c56c081970da65f4b70a25ba60f2dac22e495076d8a5b7bb30a1ed96cfb4"
+    }
+  ],
+  "production_scope": "Website AccountChip and rail CSS only; existing users/x icons, translated accessible names/title, full labels in expanded navigation. Both sign-in and sign-out use same safe icon-only rail treatment. No wording, catalog, font or client code changes.",
+  "e2e_scope": "Existing actual Bengali phone home test verifies accessible name, visible contained icon with44px target, hidden rail label, and full label restored in opened navigation drawer; closes drawer before remaining screenshots.",
+  "pending": "Apply only after frozen native/browser producer cohort ends; run formatting/typecheck and actual three-browser phone regression, then recapture and visually inspect changed sidebar.",
+  "checks": {
+    "in_memory_TypeScript_transpile_syntax": "App.tsx and i18n.spec.ts: zero syntax diagnostics; not a full typecheck",
+    "git_apply_check": "passed against clean frozen fda; patch not applied"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "prior_review_record": "../bengali-localization-v3/reviews/bn.json",
+  "prior_review_sha256": "63587e705007718c1cf5b447278b4ed6bd76bd2814702e7aa1c93263b780fa39",
+  "prior_source_pairs": 6237,
+  "all_prior_source_texts_exactly_unchanged": true,
+  "new_pairs": 16,
+  "old_release_gates_not_carried": true,
+  "basis": "Only linguistic per-pair records may be inherited by exact English and target equality; pending or old runtime gates are not approved by source comparison."
+}

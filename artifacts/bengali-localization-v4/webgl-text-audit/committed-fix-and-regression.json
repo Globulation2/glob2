@@ -1,0 +1,57 @@
+{
+  "owner": "/root/rendering_audit",
+  "committed_at": "2026-11-01T06:03:11.590433+00:00",
+  "commit": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "parent": "d7fa724b0bb609c706bce163f4a1ae00ea10460f",
+  "source_clean": true,
+  "pushed_by_reviewer": false,
+  "builds_started_by_reviewer": false,
+  "tracked_changed_files": [
+    {
+      "path": "libgag/src/GraphicContext.cpp",
+      "sha256": "32dd000e76bafd3742b9874c4b7a458d8214bd297097fa7ca01dc574e7a9892a"
+    },
+    {
+      "path": "browser/tests/responsive-presentation.spec.js",
+      "sha256": "76408c4ded8901a719e16a34870ae554667f497154237164d048f73e047bc889"
+    },
+    {
+      "path": "browser/tests/pixels.js",
+      "sha256": "dfd6fb4235bb5772dc6994c92ad45c3f6926ffd8e2529ba5c6f9d4f467e1739c"
+    }
+  ],
+  "native_target_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "online_target_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "checks": {
+    "actual_edited_JS_node_check": "passed for both files",
+    "git_diff_check": "passed",
+    "actual_fixed_browser_execution": "PENDING fresh rebuild; not passed from syntax/source evidence"
+  },
+  "production_scope": "Only GLOB2_WEBGL2 changes GLState alpha factors to ONE/destination factor; RGB factors unchanged, native branch retains original glBlendFunc. All callsites were examined and use destination ONE_MINUS_SRC_ALPHA.",
+  "regression_location": "responsive-presentation.spec.js is already in hosted WebGL responsive/startup inventory; case skips unless GLOB2_TEST_RENDERER=webgl2. No CI/matrix/dependency changes.",
+  "meaningful_negative_control": {
+    "actual_source": "7fcb8a2216a8220dd753bba1f6cd04d1f8934fc9",
+    "immutable_archive_members_verified": 130,
+    "owned_runner": "/root/cloud_runner",
+    "receipt_sha256": "65f80852921a0b9b0acedb8850526aa5fb54ee721a112da90a869febfb0edb08",
+    "checker_sha256": "84d265bed3bf7f6c2767146616c1022484e509435c59066876cb52870639a78c",
+    "result": {
+      "renderer": "webgl2",
+      "executionMode": "serial",
+      "clip": {
+        "x": 180,
+        "y": 149,
+        "width": 176,
+        "height": 548
+      },
+      "maximumChannelDifference": 64,
+      "affectedPixels": 5659,
+      "totalAbsoluteChannelDifference": 670791,
+      "inferredMinimumOpaquePanelAlpha": 0.7490196078431373,
+      "passed": false,
+      "reason": "CSS behind an opaque presented panel must not change its text/icon pixels"
+    },
+    "linkage": "Same black/white CSS-background invariance behavior now checked by the tracked regression on an opaque native-settings navigation crop. Old executed checker used all nav rows; tracked test uses nav.0 through nav.7 to include Bengali, Latin and icons while avoiding dynamic field/caret/footer."
+  },
+  "pending_positive_command": "GLOB2_TEST_RENDERER=webgl2 npx playwright test responsive-presentation.spec.js --project=chromium --grep \"antialiased Bengali text and icons keep the presented panel opaque\""
+}

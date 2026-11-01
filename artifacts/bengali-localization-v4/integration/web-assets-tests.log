@@ -1,0 +1,20 @@
+..........F........./usr/lib/python3.14/json/decoder.py:361: ResourceWarning: unclosed file <_io.BufferedReader name='/home/bradley/.codex/worktrees/83ab/glob2/data/fonts/sans.ttf'>
+  obj, end = self.scan_once(s, idx)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+........
+======================================================================
+FAIL: test_packages_round_trip_and_are_content_addressed (__main__.WebAssetPackageTests.test_packages_round_trip_and_are_content_addressed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/build_system/test_web_assets.py", line 276, in test_packages_round_trip_and_are_content_addressed
+    self.assertEqual(blob[start:end], web_assets.contents(ROOT, entry['name'], path.lstrip('/'),
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          web_assets.derived_assets(ROOT)), path)
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'[%0[1185018 chars]be\n[scenario messages]\n\xe0\xa4\xb8\xe0\xa4\[111 chars]\n\n' != b'[%0[1185018 chars]be\n[lush_grass]\n\n[dry_grass]\n\n[dune_sand][111 chars]b8\n' : /data/texts.hi.txt
+
+----------------------------------------------------------------------
+Ran 28 tests in 252.524s
+
+FAILED (failures=1)
+web client: /tmp/tmpftizgojg/served (0 asset files)

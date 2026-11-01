@@ -1,0 +1,784 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "role": "Independent actual website visual reviewer",
+  "reviewed_at": "2026-11-01T06:30:12.963255+00:00",
+  "status": "NEEDS_FIX: one actual collapsed-phone-sidebar layout blocker; main page text/rendering accepted in captured states",
+  "actual_producer_revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "producer_identity": {
+    "revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "5f74615725a2f947e0b13f84e0b3df5371ed6722fdb0751f8ccfd701587cee72"
+  },
+  "build_receipt_sha256": "dde06ff1be8463c9ade6dc6950db5dadd1aa2d9f7e483aea142cccf4890b94ac",
+  "browser_execution_receipt_sha256": "c6259315f9f988163000f8a62064eecc84a1779bf8a37860f0ce0fa78c2ce8c4",
+  "browser_results_sha256": "57fbe68f1dbc8b13dd11bf195659f1e7eb6f66f77085852a0a1037c88d86a983",
+  "actual_executed_website_tests": {
+    "startTime": "2026-11-01T06:12:22.136Z",
+    "duration": 345986.15400000004,
+    "expected": 18,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "screenshot_count": 48,
+  "actually_viewed_count": 48,
+  "pages": [
+    "home",
+    "maps",
+    "ais",
+    "buildings",
+    "sets",
+    "account",
+    "signin",
+    "invite"
+  ],
+  "projects": [
+    "chromium-desktop",
+    "chromium-phone",
+    "firefox-desktop",
+    "firefox-phone",
+    "webkit-desktop",
+    "webkit-phone"
+  ],
+  "viewing_method": "All 24 desktop originals viewed. All 24 phone captures were viewed through complete sequential vertical strips normalized from DPR2 to actual CSS width412; every source content region included. Additional original-resolution phone footer crop examined. These are direct image examinations, not inferred from hashes/DOM tests.",
+  "captures": [
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-account.png",
+      "sha256": "e2aa91e3d4593a87cdbbfb5ec119df99ae92448ea195f458b2903b807983d731",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-account.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-ais.png",
+      "sha256": "30b976dc48f67cf6f2997e7f7f7b73f327e8bf3ff55fb48c7ac67607113ce9f9",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-ais.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-phone/bn-account.png",
+      "sha256": "637756e7d358f6849c929d1d0db25d20d9b1c70606786e8f2fb38af07a4d832c",
+      "dimensions": [
+        824,
+        1678
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/chromium-phone-bn-account.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-phone/bn-ais.png",
+      "sha256": "3d8c56f356f4e29ec313781ec79c87c50e5b062049354437151b8a395eb5543e",
+      "dimensions": [
+        824,
+        2562
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/chromium-phone-bn-ais.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-account.png",
+      "sha256": "7495da797ab3abb1199cd8c295fd5ad5b3f026dc362f92e5aa93dcfed57f1211",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-account.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-ais.png",
+      "sha256": "c49d194d8e04e8d85ea749e24dcd24103fff2609fb2f6be7b8c57dac47f36c97",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-ais.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-phone/bn-account.png",
+      "sha256": "0c08904cdae53eab576e44a69da09cd6b11beedec6259b5cc3a50db5facb6d80",
+      "dimensions": [
+        824,
+        1678
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/firefox-phone-bn-account.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-phone/bn-ais.png",
+      "sha256": "ff611e253cddb47da268e5c5869f90e98a6dd9dd88423353814998479746c5ca",
+      "dimensions": [
+        824,
+        2562
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/firefox-phone-bn-ais.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-account.png",
+      "sha256": "0224960b10c342a4f651854a3b0af3da722f3fda76dc363dd567912199e96e1a",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-account.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-ais.png",
+      "sha256": "fe6bbf5486e98d615af3433ac0ac363a2500d270032e6d4327d25e2d137dcbad",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-ais.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-phone/bn-account.png",
+      "sha256": "266fc1a4364f9d23838308692ba93caa78de2d7ac7a09a635451e0661d9d5985",
+      "dimensions": [
+        824,
+        1678
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/webkit-phone-bn-account.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-phone/bn-ais.png",
+      "sha256": "3981869969d63a347ddbaf0d3701679a2638e1a63741462dd8894855fdc579e7",
+      "dimensions": [
+        824,
+        2562
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/webkit-phone-bn-ais.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Bengali headings, body and action labels readable; no missing glyphs or main-content clipping. Account signed-out card fits. AI tabs, help, search, sorting, style chips and empty states fit on desktop and stack on phone.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-buildings.png",
+      "sha256": "9baeeeb28a67e061626ae4b8674acb2367b9d9c75f4096b2ee98dd49c144b032",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-buildings.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Building-library Bengali header/help/search/sort/reset and card metadata fit; English Community kitchen title/description are seeded user content. WebKit desktop shows loading rather than a loaded card, so card-state coverage is not claimed there.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-signin.png",
+      "sha256": "268abb6b16baef03da02810281af8c7d3d2523e04c72fb820d7d97118e774750",
+      "dimensions": [
+        1280,
+        1035
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-signin.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Sign-in/register fields, long username help, password help, guest-play paragraph and GPL footer render cleanly; phone layout wraps with adequate field/button heights and no glyph clipping.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-phone/bn-buildings.png",
+      "sha256": "d8cce90e62c2ecec6564ccc3853e6ca19e0c9ab13345ce19261b68b1e8de0f39",
+      "dimensions": [
+        824,
+        2096
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/chromium-phone-bn-buildings.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Building-library Bengali header/help/search/sort/reset and card metadata fit; English Community kitchen title/description are seeded user content. WebKit desktop shows loading rather than a loaded card, so card-state coverage is not claimed there.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-phone/bn-signin.png",
+      "sha256": "4e2ee122792d8f0fbd7bff31889071a2e8129b16ed668781c621332098df966e",
+      "dimensions": [
+        824,
+        2084
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/chromium-phone-bn-signin.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Sign-in/register fields, long username help, password help, guest-play paragraph and GPL footer render cleanly; phone layout wraps with adequate field/button heights and no glyph clipping.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-buildings.png",
+      "sha256": "34a22f3b53007298b32a6ef607d56d477ca662c00451ce8dcb5850e5615bd0e0",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-buildings.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Building-library Bengali header/help/search/sort/reset and card metadata fit; English Community kitchen title/description are seeded user content. WebKit desktop shows loading rather than a loaded card, so card-state coverage is not claimed there.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-signin.png",
+      "sha256": "f7bfc9b0930c9924a1eac5a28c8e321bf53c62140e38c899732c1119e96fa4da",
+      "dimensions": [
+        1280,
+        1035
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-signin.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Sign-in/register fields, long username help, password help, guest-play paragraph and GPL footer render cleanly; phone layout wraps with adequate field/button heights and no glyph clipping.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-phone/bn-buildings.png",
+      "sha256": "e302d6320b6e364fc8ce4f6ca11f62ac80679b65161fe0622f7b48356df322a4",
+      "dimensions": [
+        824,
+        2098
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/firefox-phone-bn-buildings.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Building-library Bengali header/help/search/sort/reset and card metadata fit; English Community kitchen title/description are seeded user content. WebKit desktop shows loading rather than a loaded card, so card-state coverage is not claimed there.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-phone/bn-signin.png",
+      "sha256": "d3d68accdf669a0363c9c83f998afd74f24878db6527d027b37529a7bcea0085",
+      "dimensions": [
+        824,
+        2084
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/firefox-phone-bn-signin.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Sign-in/register fields, long username help, password help, guest-play paragraph and GPL footer render cleanly; phone layout wraps with adequate field/button heights and no glyph clipping.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-buildings.png",
+      "sha256": "a0ed3c86dfa27cf1ea61aa1596077d866d2490f7cc7f866560cc5be53fe30543",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-buildings.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Building-library Bengali header/help/search/sort/reset and card metadata fit; English Community kitchen title/description are seeded user content. WebKit desktop shows loading rather than a loaded card, so card-state coverage is not claimed there.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-signin.png",
+      "sha256": "c92ad5daf3a2d30e413fb6ceee4bd9bbb5a62e2bb30d808e3685964a28950c7c",
+      "dimensions": [
+        1280,
+        1034
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-signin.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Sign-in/register fields, long username help, password help, guest-play paragraph and GPL footer render cleanly; phone layout wraps with adequate field/button heights and no glyph clipping.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-phone/bn-buildings.png",
+      "sha256": "32e08ff62db62e75e2917a3581e23166e6550096a8c59d12a7183d2da01c262e",
+      "dimensions": [
+        824,
+        2096
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/webkit-phone-bn-buildings.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Building-library Bengali header/help/search/sort/reset and card metadata fit; English Community kitchen title/description are seeded user content. WebKit desktop shows loading rather than a loaded card, so card-state coverage is not claimed there.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-phone/bn-signin.png",
+      "sha256": "e347723e26262662a79a2b57230bdcf342aab66875dd3e89379cb956eb31bdf3",
+      "dimensions": [
+        824,
+        2084
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/webkit-phone-bn-signin.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Sign-in/register fields, long username help, password help, guest-play paragraph and GPL footer render cleanly; phone layout wraps with adequate field/button heights and no glyph clipping.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-invite.png",
+      "sha256": "dd528291bfe302fd0581eb7e517a7476eae18d052099e4fde9d282c4996baf2c",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-invite.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Invite heading, mixed proper names/instance locative, launch buttons, explanatory paragraphs, join code and GPL footer remain readable and fit desktop/phone. Composite no doubled locative suffix.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-sets.png",
+      "sha256": "325632c367190b8331a30fd9ebbd862c967a6648775a962616f9045021880e30",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-sets.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Set-library title, tabs, Unicode search, subject/licence/sort selectors, reset and empty-state actions fit desktop; phone controls stack with readable Bengali labels.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-phone/bn-invite.png",
+      "sha256": "acbf7bd6e18e531c1d459eec1d7a742cb0ce3528410652d808cafde53287e8e1",
+      "dimensions": [
+        824,
+        1678
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/chromium-phone-bn-invite.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Invite heading, mixed proper names/instance locative, launch buttons, explanatory paragraphs, join code and GPL footer remain readable and fit desktop/phone. Composite no doubled locative suffix.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-phone/bn-sets.png",
+      "sha256": "cbf8d48bfac430f1ad0a96e4cc04fb63212b5ce75ec283a138935974da0c5488",
+      "dimensions": [
+        824,
+        2032
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/chromium-phone-bn-sets.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Set-library title, tabs, Unicode search, subject/licence/sort selectors, reset and empty-state actions fit desktop; phone controls stack with readable Bengali labels.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-invite.png",
+      "sha256": "2083e085249f842707535d057b256245004cc580368cc773870165f80943db19",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-invite.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Invite heading, mixed proper names/instance locative, launch buttons, explanatory paragraphs, join code and GPL footer remain readable and fit desktop/phone. Composite no doubled locative suffix.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-sets.png",
+      "sha256": "fe428c5d533a665e0fe9214cd72618a9f32d823ac8da0395d5ab2cdf1b0baada",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-sets.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Set-library title, tabs, Unicode search, subject/licence/sort selectors, reset and empty-state actions fit desktop; phone controls stack with readable Bengali labels.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-phone/bn-invite.png",
+      "sha256": "fa67b64afd249f1ab1fe204323e0983f6680cda607b07f3127bfbbc100e8a0d0",
+      "dimensions": [
+        824,
+        1678
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/firefox-phone-bn-invite.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Invite heading, mixed proper names/instance locative, launch buttons, explanatory paragraphs, join code and GPL footer remain readable and fit desktop/phone. Composite no doubled locative suffix.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-phone/bn-sets.png",
+      "sha256": "43378b4b69a14109cf37c81fe62cfe46293f863c26d308b09b4dec7a11d4d27e",
+      "dimensions": [
+        824,
+        2032
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/firefox-phone-bn-sets.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Set-library title, tabs, Unicode search, subject/licence/sort selectors, reset and empty-state actions fit desktop; phone controls stack with readable Bengali labels.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-invite.png",
+      "sha256": "2ff76c05b5e1785caaaf7a42d24c368fdfe185e1122c19ea9531db9dd88a2d25",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-invite.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Invite heading, mixed proper names/instance locative, launch buttons, explanatory paragraphs, join code and GPL footer remain readable and fit desktop/phone. Composite no doubled locative suffix.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-sets.png",
+      "sha256": "c8204319f434cfb3b3ad1a2cb67293eb78f2fdb159863a222611c12ee5de8727",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-sets.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Set-library title, tabs, Unicode search, subject/licence/sort selectors, reset and empty-state actions fit desktop; phone controls stack with readable Bengali labels.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-phone/bn-invite.png",
+      "sha256": "7631e0b54da8ae16975c7b85cf3bedb16ffad8caba8934b771cadb778c5b7756",
+      "dimensions": [
+        824,
+        1678
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/webkit-phone-bn-invite.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Invite heading, mixed proper names/instance locative, launch buttons, explanatory paragraphs, join code and GPL footer remain readable and fit desktop/phone. Composite no doubled locative suffix.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-phone/bn-sets.png",
+      "sha256": "36c23eae87f7d56455536a731fe4565a69e9d38923d143584e7e573e7305d2f1",
+      "dimensions": [
+        824,
+        2032
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/webkit-phone-bn-sets.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Set-library title, tabs, Unicode search, subject/licence/sort selectors, reset and empty-state actions fit desktop; phone controls stack with readable Bengali labels.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-home.png",
+      "sha256": "80dea2b53950d007c3589bc9c2a8e8d511b5ffbb94ea0000db7807666d31f681",
+      "dimensions": [
+        1280,
+        1990
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-home.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "All captured home content inspected: Bengali welcome/hero, play/download/invite controls, narrow phone status cards, recent matches, map cards, leaderboard metadata, newcomer and server cards. Headings and body wrap; clipped player names use ordinary responsive ellipsis. No missing Bengali glyphs or main-content overflow observed.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-maps.png",
+      "sha256": "cc42686d16dc17ddf4e86fcb0f58bd5ca3f7572dbd1fdef6c1f9d982d6ade53f",
+      "dimensions": [
+        1280,
+        1600
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/chromium-desktop/bn-maps.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Map title, explanatory copy, tabs, search/team/sort/reset and empty-state text fit; populated Firefox phone map cards have readable Bengali team metadata. Some other captures show loading/empty states and long blank tails, so populated-card coverage is not claimed for every project.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-phone/bn-home.png",
+      "sha256": "0c63c87e7b56bcb6d5495c3cfd465f1b4185d1cb2128f44e5db8cafbcf369fed",
+      "dimensions": [
+        824,
+        7482
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/chromium-phone-bn-home.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "All captured home content inspected: Bengali welcome/hero, play/download/invite controls, narrow phone status cards, recent matches, map cards, leaderboard metadata, newcomer and server cards. Headings and body wrap; clipped player names use ordinary responsive ellipsis. No missing Bengali glyphs or main-content overflow observed.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/chromium-phone/bn-maps.png",
+      "sha256": "7a5c30390ff9ebf990c4c9f05f3d89b46b94a09c5af0d1660ea3e9d66f88939e",
+      "dimensions": [
+        824,
+        7142
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/chromium-phone-bn-maps.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Map title, explanatory copy, tabs, search/team/sort/reset and empty-state text fit; populated Firefox phone map cards have readable Bengali team metadata. Some other captures show loading/empty states and long blank tails, so populated-card coverage is not claimed for every project.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-home.png",
+      "sha256": "88b2844d15303f5ee8b1ac8eb3f3553ba25c74cc518117617d36cde29aa0d297",
+      "dimensions": [
+        1280,
+        1991
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-home.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "All captured home content inspected: Bengali welcome/hero, play/download/invite controls, narrow phone status cards, recent matches, map cards, leaderboard metadata, newcomer and server cards. Headings and body wrap; clipped player names use ordinary responsive ellipsis. No missing Bengali glyphs or main-content overflow observed.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-maps.png",
+      "sha256": "d0e1188069d0d109b777e2e7b0a5d8a680333b1e971ad5b95b36efad74979c01",
+      "dimensions": [
+        1280,
+        860
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/firefox-desktop/bn-maps.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Map title, explanatory copy, tabs, search/team/sort/reset and empty-state text fit; populated Firefox phone map cards have readable Bengali team metadata. Some other captures show loading/empty states and long blank tails, so populated-card coverage is not claimed for every project.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-phone/bn-home.png",
+      "sha256": "77628e0b22cff9c82b9cda48a48d6e095cbe50532755131a08091c8aab996b8b",
+      "dimensions": [
+        824,
+        7482
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/firefox-phone-bn-home.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "All captured home content inspected: Bengali welcome/hero, play/download/invite controls, narrow phone status cards, recent matches, map cards, leaderboard metadata, newcomer and server cards. Headings and body wrap; clipped player names use ordinary responsive ellipsis. No missing Bengali glyphs or main-content overflow observed.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/firefox-phone/bn-maps.png",
+      "sha256": "a60aa23876718e085427f62f3c3fb4361288a9e69f63a55de77b6be1106a15ed",
+      "dimensions": [
+        824,
+        7142
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/firefox-phone-bn-maps.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Map title, explanatory copy, tabs, search/team/sort/reset and empty-state text fit; populated Firefox phone map cards have readable Bengali team metadata. Some other captures show loading/empty states and long blank tails, so populated-card coverage is not claimed for every project.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-home.png",
+      "sha256": "f994d9763cb71293e707b7776d47938e720b8aad381518418fecf037a90e21b2",
+      "dimensions": [
+        1280,
+        1990
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-home.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "All captured home content inspected: Bengali welcome/hero, play/download/invite controls, narrow phone status cards, recent matches, map cards, leaderboard metadata, newcomer and server cards. Headings and body wrap; clipped player names use ordinary responsive ellipsis. No missing Bengali glyphs or main-content overflow observed.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-maps.png",
+      "sha256": "c8fbcc04dac4b60fb32a944253e05e0ac88352b227d9f3dee695e2efa521e027",
+      "dimensions": [
+        1280,
+        1625
+      ],
+      "review_image": "artifacts/bengali-localization-v4/web-screens/webkit-desktop/bn-maps.png",
+      "preparation": "Original desktop image",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Map title, explanatory copy, tabs, search/team/sort/reset and empty-state text fit; populated Firefox phone map cards have readable Bengali team metadata. Some other captures show loading/empty states and long blank tails, so populated-card coverage is not claimed for every project.",
+      "findings": []
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-phone/bn-home.png",
+      "sha256": "cb04ee5267d4e2c03838cf744195ddf94981b4fc0598983e4302f99be07ee521",
+      "dimensions": [
+        824,
+        7480
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/webkit-phone-bn-home.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "All captured home content inspected: Bengali welcome/hero, play/download/invite controls, narrow phone status cards, recent matches, map cards, leaderboard metadata, newcomer and server cards. Headings and body wrap; clipped player names use ordinary responsive ellipsis. No missing Bengali glyphs or main-content overflow observed.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    },
+    {
+      "source": "artifacts/bengali-localization-v4/web-screens/webkit-phone/bn-maps.png",
+      "sha256": "c11c1f5aebad7f1d53fc2bf04da71b159e358523ee1ffab4e5b6f58dae374f35",
+      "dimensions": [
+        824,
+        1918
+      ],
+      "review_image": "artifacts/bengali-localization-v4/website-visual-work/webkit-phone-bn-maps.png",
+      "preparation": "DPR2 phone normalized to actual CSS width412, all vertical pixels arranged in sequential900-CSS-pixel strips; no source content omitted",
+      "actual_visual_read": true,
+      "reviewer": "/root/rendering_audit",
+      "observations": "Map title, explanatory copy, tabs, search/team/sort/reset and empty-state text fit; populated Firefox phone map cards have readable Bengali team metadata. Some other captures show loading/empty states and long blank tails, so populated-card coverage is not claimed for every project.",
+      "findings": [
+        "collapsed-sidebar-auth-label"
+      ]
+    }
+  ],
+  "original_capture_archive": {
+    "path": "artifacts/bengali-localization-v4/website-visual-work/fda-original-48-screens.zip",
+    "sha256": "190d19894671a77354a634400a20f11d072521c5ab461be91b845f592b74cef7",
+    "bytes": 23302787
+  },
+  "findings": [
+    {
+      "id": "collapsed-sidebar-auth-label",
+      "severity": "blocking visual layout",
+      "state": "unresolved",
+      "source": "platform/apps/web/src/styles/layout.css collapsed sidebar account control; AccountChip signed-out action",
+      "observation": "On the phone icon rail, the Bengali sign-in action wraps into three lines inside a narrow rounded gold button, spilling across its curved edges. Repeated in all 18 phone app-shell captures; standalone signin/invite pages have no sidebar and are unaffected.",
+      "detail_evidence": "website-visual-work/phone-account-footer-detail.png",
+      "proposed_fix": "Existing sign-in icon plus translated accessible name in collapsed rail; full text label in expanded navigation. No translation wording changes.",
+      "acceptance": "Fresh phone captures and an actual E2E assertion must verify the icon fits, remains named Sign in in Bengali, and full label is visible after expanded navigation."
+    }
+  ],
+  "other_observations": [
+    "Bengali text and conjuncts are legible in the captured main page content across all six projects; headings, cards, form help, buttons and selectors wrap appropriately.",
+    "Mixed English user names/map or building titles/descriptions and server queue display names are data content, not fresh missing-catalog claims.",
+    "Several map/building/library captures show loading, empty or pre-debounce content; do not claim every loaded-content state was visually checked in every browser.",
+    "Some WebKit full-page screenshot tails contain transparent pixels; diagnostic RGB normalization displays these as black. No text/content is present in those blank tails; not identified as a website glyph defect."
+  ],
+  "limits": [
+    "Actual 48 captured views only; not every online catalog key/state has pixel coverage.",
+    "No physical-device website execution claimed.",
+    "This review binds fda captures. Any later website fix requires new producer/source binding and actual reinspection of changed UI."
+  ],
+  "source_or_target_edits": false
+}

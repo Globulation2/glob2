@@ -1,0 +1,257 @@
+.FFFFFFFFFFFFFFFFFFFFFFFFFFFF........
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hi.txt', key='[lush_grass]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hi.txt', key='[dry_grass]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hi.txt', key='[dune_sand]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hi.txt', key='[pale_sand]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ur.txt', key='[lush_grass]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ur.txt', key='[dry_grass]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ur.txt', key='[dune_sand]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ur.txt', key='[pale_sand]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sw.txt', key='[lush_grass]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sw.txt', key='[dry_grass]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sw.txt', key='[dune_sand]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sw.txt', key='[pale_sand]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[lush_grass]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[dry_grass]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[dune_sand]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[pale_sand]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats topic overview]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats topic economy]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats topic world]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats work construction]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats defence]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats history]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats waiting]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats unit details]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats map overlays]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats topic]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats full history]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nb.txt', key='[stats missing readings]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/83ab/glob2/test/test_translations.py", line 48, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertIsNotNone(value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: unexpectedly None
+
+----------------------------------------------------------------------
+Ran 10 tests in 13.099s
+
+FAILED (failures=28)

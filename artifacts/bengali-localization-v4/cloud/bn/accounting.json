@@ -1,0 +1,32 @@
+{
+  "project": "bradley-personal-20261027",
+  "locale": "bn",
+  "source_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "usd_per_million_characters": "20",
+  "reserved_characters": 222,
+  "attempts": [
+    {
+      "characters": 222,
+      "request_sha256": "36329591839325e2c5e9267a8158e819b235c0f27645e6a22b77e0bee7d25098",
+      "sources": [
+        "Overview",
+        "Economy",
+        "World",
+        "Work & construction",
+        "Defence",
+        "View history",
+        "Waiting for statistics…",
+        "Unit details",
+        "Topic",
+        "Open full history",
+        "— No recorded reading yet. Select a statistic for details.",
+        "Lush grass",
+        "Dry grass",
+        "Dune sand",
+        "Pale sand",
+        "Map overlays"
+      ],
+      "status": "completed"
+    }
+  ]
+}

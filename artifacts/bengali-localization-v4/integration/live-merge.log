@@ -1,0 +1,26 @@
+Auto-merging browser/assets/sources.json
+CONFLICT (content): Merge conflict in browser/assets/sources.json
+Auto-merging browser/i18n.js
+CONFLICT (content): Merge conflict in browser/i18n.js
+Auto-merging browser/unit/language.test.js
+Auto-merging data/texts.incomplete.txt
+CONFLICT (content): Merge conflict in data/texts.incomplete.txt
+Auto-merging data/texts.list.txt
+CONFLICT (content): Merge conflict in data/texts.list.txt
+Auto-merging docs/development/ui-framework.md
+Auto-merging libgag/src/FontKerningTest.cpp
+CONFLICT (content): Merge conflict in libgag/src/FontKerningTest.cpp
+Auto-merging platform/apps/web/e2e/i18n.spec.ts
+CONFLICT (content): Merge conflict in platform/apps/web/e2e/i18n.spec.ts
+Auto-merging platform/packages/i18n/shared-values.json
+CONFLICT (content): Merge conflict in platform/packages/i18n/shared-values.json
+Auto-merging platform/packages/i18n/src/index.ts
+Auto-merging platform/packages/i18n/src/locales.ts
+CONFLICT (content): Merge conflict in platform/packages/i18n/src/locales.ts
+Auto-merging platform/packages/i18n/test/runtime.test.ts
+CONFLICT (content): Merge conflict in platform/packages/i18n/test/runtime.test.ts
+Auto-merging src/app/SystemLanguageTest.cpp
+CONFLICT (content): Merge conflict in src/app/SystemLanguageTest.cpp
+Auto-merging test/translation_shared_values.json
+CONFLICT (content): Merge conflict in test/translation_shared_values.json
+Automatic merge failed; fix conflicts and then commit the result.

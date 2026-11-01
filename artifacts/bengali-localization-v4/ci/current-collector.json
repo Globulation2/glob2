@@ -1,0 +1,348 @@
+{
+  "observed_at": "2026-11-01T06:52:56.074879+00:00",
+  "expected_head": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "actual_pr_head": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "head_matches": true,
+  "dispatch_hold": "Final fda V4 freeze includes b34 integration and WebGL canvas alpha fix. Direct focused Windows is dispatched on literal fda. Earlier942 platform results retain only their explicit old-source component scope.",
+  "historical_evidence_runs": [
+    41251891306,
+    41252835211,
+    41253888583,
+    41258418491,
+    41254569038,
+    41263022026,
+    41258317846,
+    41263370500
+  ],
+  "historical_scope": "Preserved actual failed/cancelled/excluded snapshots. Adversary owns later iOS execution and artifact collection.",
+  "runs": [
+    {
+      "run_id": 41279287886,
+      "sha": "fda5e076eafc103b59b18136c137abdb6262d981",
+      "expected_workflow_head": "fda5e076eafc103b59b18136c137abdb6262d981",
+      "workflow_head_matches": true,
+      "requested_game_revision": "6c4b0eb44b16bd68b4774ae20279741cdb7bfcd3",
+      "game_source_note": "Current final integrated V4 and WebGL alpha fix; verify actual producer checkout.",
+      "event": "pull_request",
+      "status": "queued",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41279287886",
+      "jobs": [
+        {
+          "id": 124768394801,
+          "name": "Select relevant checks",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124768394801",
+          "started_at": "2026-11-01T06:46:28Z",
+          "completed_at": "2026-11-01T06:52:06Z"
+        },
+        {
+          "id": 124777164918,
+          "name": "Native Clang coverage",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777164918",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777164928,
+          "name": "windows (mingw-w64)",
+          "status": "in_progress",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777164928",
+          "started_at": "2026-11-01T06:52:47Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777164948,
+          "name": "browser build (WebAssembly)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777164948",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777164950,
+          "name": "self-hosted platform stack",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777164950",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777164951,
+          "name": "linux variants (ubuntu:22.04)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777164951",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777164953,
+          "name": "music pipeline (Python)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777164953",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777164954,
+          "name": "platform (TypeScript)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777164954",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777164990,
+          "name": "Primary Linux programs / linux build (ubuntu:24.04, g++-13)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777164990",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165022,
+          "name": "Linux Clang compatibility / linux build (ubuntu:24.04, clang-18)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165022",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165066,
+          "name": "tsan / thread sanitizer (threaded games)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165066",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165070,
+          "name": "Linux GCC 11 build and tests / linux build (ubuntu:22.04, g++-11)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165070",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165073,
+          "name": "linux variants (ubuntu:24.04)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165073",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165125,
+          "name": "android / Android release APK (x86_64)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165125",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165149,
+          "name": "macos / native",
+          "status": "in_progress",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165149",
+          "started_at": "2026-11-01T06:52:26Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165173,
+          "name": "android / Android release APK (arm64-v8a)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165173",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165206,
+          "name": "android / Android release APK (armeabi-v7a)",
+          "status": "queued",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165206",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": null
+        },
+        {
+          "id": 124777165876,
+          "name": "Primary Linux programs / Reuse primary Linux build",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165876",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": "2026-11-01T06:52:06Z"
+        },
+        {
+          "id": 124777165980,
+          "name": "Linux Clang compatibility / Reuse primary Linux build",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777165980",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": "2026-11-01T06:52:06Z"
+        },
+        {
+          "id": 124777166113,
+          "name": "Golden-only build and checks (${{ matrix.runner }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777166113",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": "2026-11-01T06:52:06Z"
+        },
+        {
+          "id": 124777166273,
+          "name": "Linux GCC 11 build and tests / Reuse primary Linux build",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279287886/job/124777166273",
+          "started_at": "2026-11-01T06:52:06Z",
+          "completed_at": "2026-11-01T06:52:06Z"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13074310861,
+          "name": "ci-observation-selection",
+          "size_in_bytes": 5403,
+          "expired": false
+        }
+      ]
+    },
+    {
+      "run_id": 41279360093,
+      "sha": "e4217e79024340478723cce400b0336ccd2fe6d4",
+      "expected_workflow_head": "e4217e79024340478723cce400b0336ccd2fe6d4",
+      "workflow_head_matches": true,
+      "requested_game_revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+      "game_source_note": "Direct focused Windows; independent runtime groups, full provenance and actual case inventories required.",
+      "event": "push",
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41279360093",
+      "jobs": [
+        {
+          "id": 124774553452,
+          "name": "Focused Bengali font locale and input runtime",
+          "status": "in_progress",
+          "conclusion": null,
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41279360093/job/124774553452",
+          "started_at": "2026-11-01T06:40:58Z",
+          "completed_at": null
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13073129843,
+          "name": "windows-source-before-build",
+          "size_in_bytes": 226,
+          "expired": false
+        },
+        {
+          "id": 13072728406,
+          "name": "windows-source-before-build",
+          "size_in_bytes": 226,
+          "expired": false
+        }
+      ]
+    },
+    {
+      "run_id": 41266158452,
+      "sha": "2afe891014845d0c44447e09db08a2a67754323d",
+      "expected_workflow_head": "2afe891014845d0c44447e09db08a2a67754323d",
+      "workflow_head_matches": true,
+      "requested_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "game_source_note": "Full macOS literal942; old-source component scope only; it predates final V4 and WebGL alpha fix.",
+      "event": "workflow_dispatch",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41266158452",
+      "jobs": [
+        {
+          "id": 124729284298,
+          "name": "native",
+          "status": "completed",
+          "conclusion": "failure",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41266158452/job/124729284298",
+          "started_at": "2026-11-01T02:45:27Z",
+          "completed_at": "2026-11-01T03:53:56Z"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13069322220,
+          "name": "browser-determinism-macos",
+          "size_in_bytes": 419450,
+          "expired": false
+        },
+        {
+          "id": 13068634863,
+          "name": "native-macos-validation",
+          "size_in_bytes": 70733920,
+          "expired": false
+        },
+        {
+          "id": 13068594959,
+          "name": "generator-observations-macos",
+          "size_in_bytes": 28447,
+          "expired": false
+        }
+      ]
+    },
+    {
+      "run_id": 41266158472,
+      "sha": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+      "expected_workflow_head": "8aac893e0c312fe051addeefd3d66056c2bfa40b",
+      "workflow_head_matches": true,
+      "requested_game_revision": "942d138b609ad8e0c425d974042b6e3983a717a4",
+      "game_source_note": "Focused x86_64 Android literal942; workflow commit distinct. Unchanged main startup/fonts/package only.",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41266158472",
+      "jobs": [
+        {
+          "id": 124729280372,
+          "name": "android / Android release APK (x86_64)",
+          "status": "completed",
+          "conclusion": "failure",
+          "html_url": "https://github.com/Globulation2/glob2/actions/runs/41266158472/job/124729280372",
+          "started_at": "2026-11-01T03:29:56Z",
+          "completed_at": "2026-11-01T04:25:44Z"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13070336399,
+          "name": "android-x86_64-release-apk",
+          "size_in_bytes": 168421473,
+          "expired": false
+        },
+        {
+          "id": 13070222186,
+          "name": "android-x86_64-diagnostics",
+          "size_in_bytes": 30366,
+          "expired": false
+        }
+      ]
+    }
+  ]
+}

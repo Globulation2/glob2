@@ -1,0 +1,223 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "role": "Original independent Bengali semantic reviewer; distinct from author and editor",
+  "reviewed_at": "2026-11-01T05:05:38.359068+00:00",
+  "status": "PASS initial semantic review; editor and final independent semantic recheck still required",
+  "certification": "Agent semantic review, not Bengali native-human certification",
+  "source_revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "source_manifest_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "source_native_json_sha256": "2e8ecfd5117d4bce19aa250dd2aa652ea7a0f6a386bc182e5cccf2e30800df61",
+  "source_provenance_sha256": "242ecba262e4817b4046386c5f74905b2d78e59cd1a659fcc2b9e15cf57f1c1a",
+  "actual_reviewed_native_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "unchanged_online_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "examined_count": 16,
+  "examined_keys": [
+    "native:[lush_grass]",
+    "native:[dry_grass]",
+    "native:[dune_sand]",
+    "native:[pale_sand]",
+    "native:[stats topic overview]",
+    "native:[stats topic economy]",
+    "native:[stats topic world]",
+    "native:[stats work construction]",
+    "native:[stats defence]",
+    "native:[stats history]",
+    "native:[stats waiting]",
+    "native:[stats unit details]",
+    "native:[stats map overlays]",
+    "native:[stats topic]",
+    "native:[stats full history]",
+    "native:[stats missing readings]"
+  ],
+  "entries": [
+    {
+      "id": "native:[lush_grass]",
+      "source": "Lush grass",
+      "target": "ঘন সবুজ ঘাস",
+      "source_sha256": "a1b731e63e12a53a16bdbb4268c53295c37bcbf60c93ab5935d6e223167d722c",
+      "target_sha256": "cf01eb45f8f1c5e8622abc504e1c3b5e869e660340fd99b96a1b52ae86ac2213",
+      "pair_sha256": "cd130e8841bc6e805c0520b0b1c84bb9eb397ca666619fef04db6c9531f89e4c",
+      "semantic_verdict": "accepted",
+      "rationale": "Grass-group appearance name: ঘন সবুজ conveys lush density and green appearance without claiming fertility or faster growth."
+    },
+    {
+      "id": "native:[dry_grass]",
+      "source": "Dry grass",
+      "target": "শুকনো ঘাস",
+      "source_sha256": "1f2204aea88c5fe039111d467e516d7b8dbabac4d4a494c44f6ffc3a404a1331",
+      "target_sha256": "7b9e7756a1fae961600cf6da524a3f44ba7b48f0208685ee8f9f5b0c6e7efc3c",
+      "pair_sha256": "7061e587184f24d2e8aaa2f6235378b25d9023cf621920be8490a8a0d12e795d",
+      "semantic_verdict": "accepted",
+      "rationale": "Direct natural Bengali for a dry-looking Grass-group variant; no mechanics added."
+    },
+    {
+      "id": "native:[dune_sand]",
+      "source": "Dune sand",
+      "target": "বালিয়াড়ির বালি",
+      "source_sha256": "5d5e680cdd06b88128347d0dad06195658412586ea0e2ddea3e17f4ee9c561fd",
+      "target_sha256": "33d874200c56086d8d5992f743d7e764ba4a0bbec7407e8a787ca9adb16c23bd",
+      "pair_sha256": "23fb1e40416b78aada25226fb77fc5caebd7796804b33d63ba282479d020325e",
+      "semantic_verdict": "accepted",
+      "rationale": "বালিয়াড়ির specifies a sand dune, unlike a generic hill. Matches existing Bengali theme dune and Dunes and mesas terminology and French Sable de dune."
+    },
+    {
+      "id": "native:[pale_sand]",
+      "source": "Pale sand",
+      "target": "ফ্যাকাশে বালি",
+      "source_sha256": "3a046ad3c99deae861e97b95628e5fb6c27c604cf8279d6cae2a011695e6c377",
+      "target_sha256": "e2cbaa0643c59d988bb391de8c65eccef705a9b60444f060b5fa8c0c74213e1d",
+      "pair_sha256": "31a593515e589b8de24d227687c440beafa9db5ae93dc414156eeec9fa03e686",
+      "semantic_verdict": "accepted",
+      "rationale": "ফ্যাকাশে describes the pale Sand-group appearance; consistent with French Sable clair and distinct from dune shape."
+    },
+    {
+      "id": "native:[stats topic overview]",
+      "source": "Overview",
+      "target": "সংক্ষিপ্ত বিবরণ",
+      "source_sha256": "d4b1ea5708dd532930a85188b45aff6f0a3ed458500c7577e0127a538eb0d100",
+      "target_sha256": "58387da2533618c3cdc4a878781e872854f9df4971399113ba81e2fe3f5f2e4a",
+      "pair_sha256": "7376861ac5c144f4415ad3ec37b100fe2d04682eea1b314ff63a927e09bd40c7",
+      "semantic_verdict": "accepted",
+      "rationale": "The overview combines colony, food, work and defence summaries. Exact established Bengali stat overview wording is appropriate."
+    },
+    {
+      "id": "native:[stats topic economy]",
+      "source": "Economy",
+      "target": "অর্থনীতি",
+      "source_sha256": "c1d078d516dd7c8b81f32827069816db43529642eb82f071a8b2ffa261567dda",
+      "target_sha256": "9d7353c17b6e768faefd9e3147edf1fcc184a3bb5dd02aa2f51af03f3d6291af",
+      "pair_sha256": "360e0bdc9cb1b0004ce11abd0cd0800ed1888994a5755333d1f96b290b83158f",
+      "semantic_verdict": "accepted",
+      "rationale": "Topic groups Work, Materials and Buildings metrics; অর্থনীতি names the economy rather than money alone. Matches prior Economy terminology."
+    },
+    {
+      "id": "native:[stats topic world]",
+      "source": "World",
+      "target": "বিশ্ব",
+      "source_sha256": "78ae647dc5544d227130a0682a51e30bc7777fbb6d8a8f17007463a3ecd1d524",
+      "target_sha256": "26c22488bf2074ad7880eefbb9bda3fa226a0f9736f11430ec729f3123e6fb6e",
+      "pair_sha256": "98cfa46fd83c309deb958f17c72810b4d90062a3fa9381ea2ae245a4f7c31144",
+      "semantic_verdict": "accepted",
+      "rationale": "The World topic catches environmental/world metrics outside colony/economy/military. বিশ্ব preserves the broad source category without narrowing it to terrain."
+    },
+    {
+      "id": "native:[stats work construction]",
+      "source": "Work & construction",
+      "target": "কাজ ও নির্মাণ",
+      "source_sha256": "5702a0215659b866f177f8e3a3a1e1b75ba3c2196ad8dbd2f9537c4a844a9c2a",
+      "target_sha256": "eca4768340009c4ffabe037564e731b6aabd6b1f14dc55eb58b214ffafb15968",
+      "pair_sha256": "686cf2ed11314f3f3602bf9199f0392e906a5b774e123315192f0c580a301e48",
+      "semantic_verdict": "accepted",
+      "rationale": "Overview section presents idle workers and blocked buildings; কাজ ও নির্মাণ preserves both work and construction."
+    },
+    {
+      "id": "native:[stats defence]",
+      "source": "Defence",
+      "target": "প্রতিরক্ষা",
+      "source_sha256": "53746849d11fed114204d98f3b8f4720a892293baf9ac6be805f2f1a0b04604b",
+      "target_sha256": "d44c01c5c0d4e03926b255e1d72ea393792670a2c9f4d065b4d3208ce944a0f7",
+      "pair_sha256": "26a9e81ce7e2690f840557eaae589cd48bd7cbbd1c8efb9ae63595dfbe51f67b",
+      "semantic_verdict": "accepted",
+      "rationale": "Overview military section includes warriors and intruders. প্রতিরক্ষা expresses defence rather than attack strength or armor alone."
+    },
+    {
+      "id": "native:[stats history]",
+      "source": "View history",
+      "target": "ইতিহাস দেখুন",
+      "source_sha256": "a5932bc4ce515954653e0dad67877c04cb83857605f1df7c16f276284a163357",
+      "target_sha256": "c6047fab4eb3efe16fc8a1ae625af1a93cc41583b89bf828216f7693869c743a",
+      "pair_sha256": "f47bdafaa1dc5d23526aa2abbf6840819d64ab7aa0d0c198b27054e815c11e81",
+      "semantic_verdict": "accepted",
+      "rationale": "Used in inline chart accessibleText after the metric title; respectful দেখুন correctly expresses View history."
+    },
+    {
+      "id": "native:[stats waiting]",
+      "source": "Waiting for statistics…",
+      "target": "পরিসংখ্যানের অপেক্ষায়…",
+      "source_sha256": "81d2fbb62b5e0d68ba472802df9aab055fcb3ebf84ac621a6397553ba3d6850c",
+      "target_sha256": "ce1a3ad816579a903c472aa1f8c216de713161a1164bf44428e3799f1615fe10",
+      "pair_sha256": "b9c6a4fb4dd0c06673f1b5e6111961398e56f267a9d782cdc3f211b6f3953035",
+      "semantic_verdict": "accepted",
+      "rationale": "Used when statistics/history or latest snapshot is absent. Impersonal পরিসংখ্যানের অপেক্ষায়… is natural and retains the waiting ellipsis."
+    },
+    {
+      "id": "native:[stats unit details]",
+      "source": "Unit details",
+      "target": "ইউনিটের বিবরণ",
+      "source_sha256": "686617e59c113b1976f0e9cdd8b10c2618d83739dde482ffad68cf506f0c970b",
+      "target_sha256": "ac4644b17b8c304a08db39beb0a359d8f8fa42f58b931aab45099b70bc00d933",
+      "pair_sha256": "013779ca670ed581799eaf5137941eba912ce0e392cbb4e063943534e83e9d69",
+      "semantic_verdict": "accepted",
+      "rationale": "Expandable panel lists unit totals, worker/explorer/warrior details, health and abilities. ইউনিটের বিবরণ is precise and matches established ইউনিট."
+    },
+    {
+      "id": "native:[stats map overlays]",
+      "source": "Map overlays",
+      "target": "মানচিত্রের ওভারলে",
+      "source_sha256": "c7414585b69eee39a550bd203fe826207ad01583fe8800553ab8c85fc430db83",
+      "target_sha256": "49b7bd505fdf293cbc08fbf5b951ef81bc1c4ae5eee5a53639d0973ddd30ba87",
+      "pair_sha256": "7cf628f8d33b86c1402f839e28e1b7a40ff34f158d8205b31205b887b7bf6587",
+      "semantic_verdict": "accepted",
+      "rationale": "Legacy live/replay heading above starvation, damage, defence and fertility overlay checkboxes. Genitive মানচিত্রের ওভারলে is grammatical and matches existing ওভারলে labels."
+    },
+    {
+      "id": "native:[stats topic]",
+      "source": "Topic",
+      "target": "বিষয়",
+      "source_sha256": "7e61847d61d65d9e3ac15c6281f7bfe0d80b8d79d3b53125e9fc2bfc25bb81e8",
+      "target_sha256": "d69b853806bfd5f65213f4eae6e2337f808e715528843c1a2927532b40cd7e24",
+      "pair_sha256": "d8bbb44e4ad1a9c12fdbed70bd2c19568ed72cc55f16eab948e85db1f19e3238",
+      "semantic_verdict": "accepted",
+      "rationale": "বিষয় is the correct general noun for Topic. No direct b34 runtime consumer of this exact key was found; active topic buttons use the separate topic-name keys. No invented callsite claimed."
+    },
+    {
+      "id": "native:[stats full history]",
+      "source": "Open full history",
+      "target": "সম্পূর্ণ ইতিহাস খুলুন",
+      "source_sha256": "e183e19940ba63456a22dcad80f24b6980a4a492c8ea9b05fa431eda6542da14",
+      "target_sha256": "ffcb81ea7984a56d7cf3b014da08dcf529b2a6388a9b7daf3445037a194e243e",
+      "pair_sha256": "1d4509beab50c1b5744617bf3e5f3f80c82cb5ff40d3a19d19c90096934b2bdc",
+      "semantic_verdict": "accepted",
+      "rationale": "Button calls openMetric(id), opening the selected metric full history dialog. সম্পূর্ণ ইতিহাস খুলুন preserves the full-history action and respectful imperative."
+    },
+    {
+      "id": "native:[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "target": "— এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।",
+      "source_sha256": "2fbdc66c80197d76ed2706db8a466c394e0fc6ccd07a8ff6ff70950c7493d1fd",
+      "target_sha256": "7103ff70ca700b0a6cfe93464c433e48c8cb1dc01a0a21dde8b16f03408af298",
+      "pair_sha256": "cd49a2a5ee8b753cff6fc0a411f6222521287a2768b3b40dcded413ff168ef5f",
+      "semantic_verdict": "accepted",
+      "rationale": "Hint appears when at least one latestReading is unavailable. পরিমাপ means a measurement rather than a lesson; এখনও-no-recorded and select-a-statistic instruction both retained, with source em dash."
+    }
+  ],
+  "actual_context_examined": [
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "path": "src/hud/InGameStatistics.cpp",
+      "sha256": "c94be3fdb5bf6c804020258c6ae795d0864f2006de81408bf3c2936cc8791a14"
+    },
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "path": "src/hud/draw/GameGUIDraw.cpp",
+      "sha256": "e03a6d7da3b4e48ed726c745a40e97473dd3196b4e3d8f43ef0d8c610b2c1d67"
+    },
+    {
+      "revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+      "path": "src/map/TerrainTypeTable.h",
+      "sha256": "bdfb5a1cd40feed4119ef89aebb889201626febe1c5e60c8adb6d5a0ec9ef6da"
+    }
+  ],
+  "references": {
+    "new_terrain": "Actual French Herbe luxuriante / Herbe sèche / Sable de dune / Sable clair examined. Hindi, Urdu and Norwegian new terrain values unavailable.",
+    "new_statistics": "New statistics entries in hi/ur/fr are blank and absent in nb; they are not treated as translated semantic evidence.",
+    "prior_related": "Actually examined b34 hi/ur/fr stat overview, Economy, military, Units, grass/sand groups, No overlay, Dunes and mesas; compared established Bengali stat overview=সংক্ষিপ্ত বিবরণ, Economy=অর্থনীতি, Units=ইউনিট, overlay and dune terminology."
+  },
+  "findings": [],
+  "unresolved_uncertainty": [],
+  "rendering_followup": [
+    "Compact topic buttons, legacy overlay heading and longer missing-reading hint need actual integrated desktop/phone visual verification; semantic acceptance does not mark rendering gates passed."
+  ],
+  "carry_forward_acknowledgment": "Only these 16 additions were freshly read in this pass. Prior 6237 source-target pairs may carry only by exact equality proof; no fresh full-catalog reread claimed.",
+  "catalog_edits": false
+}

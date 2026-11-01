@@ -1,0 +1,185 @@
+{
+  "identity": "/root/bengali_adversary",
+  "role": "independent-adversarial-delta-review",
+  "status": "pass",
+  "verdict": "pass",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "source_sha256": "4ab1072eee3aa0c690f74e01ae2940a404766a8ce94e41a0b630906ab129bb81",
+  "native_catalog_sha256": "6a08cb16cf5a19f8858e59b7e54147d3d48f7a6121d395c01cbaa4d945c08201",
+  "online_catalog_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "actual_native_source_revision": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "native_keys": 3411,
+  "online_keys": 2842,
+  "freshly_examined_keys": 16,
+  "freshly_reviewed_pairs": [
+    {
+      "id": "native:[lush_grass]",
+      "key": "[lush_grass]",
+      "source": "Lush grass",
+      "target": "ঘন সবুজ ঘাস",
+      "assessment": "Healthy thick green terrain variant; natural ঘন সবুজ ঘাস preserves lush grass, not literal luxury.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[dry_grass]",
+      "key": "[dry_grass]",
+      "source": "Dry grass",
+      "target": "শুকনো ঘাস",
+      "assessment": "Dry grass terrain variant; শুকনো is natural shared Bengali, no medical or fiscal sense.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[dune_sand]",
+      "key": "[dune_sand]",
+      "source": "Dune sand",
+      "target": "বালিয়াড়ির বালি",
+      "assessment": "Dune terrain sand; বালিয়াড়ির correctly identifies dune association, not generic beach/desert substitution.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[pale_sand]",
+      "key": "[pale_sand]",
+      "source": "Pale sand",
+      "target": "ফ্যাকাশে বালি",
+      "assessment": "Light/pale sand variant; ফ্যাকাশে denotes pale visual colour and preserves distinction from dune sand.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats topic overview]",
+      "key": "[stats topic overview]",
+      "source": "Overview",
+      "target": "সংক্ষিপ্ত বিবরণ",
+      "assessment": "Overview tab summarises colony/food/work/defence; সংক্ষিপ্ত বিবরণ is appropriate concise register.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats topic economy]",
+      "key": "[stats topic economy]",
+      "source": "Economy",
+      "target": "অর্থনীতি",
+      "assessment": "Economy topic includes worker labour/materials/buildings; অর্থনীতি preserves game-economy meaning.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats topic world]",
+      "key": "[stats topic world]",
+      "source": "World",
+      "target": "বিশ্ব",
+      "assessment": "World topic aggregates remaining global/map/score groups; বিশ্ব is game-world category, not a claim about physical planet.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats work construction]",
+      "key": "[stats work construction]",
+      "source": "Work & construction",
+      "target": "কাজ ও নির্মাণ",
+      "assessment": "Section covers idle workers/blocked buildings; কাজ ও নির্মাণ preserves work/construction without claiming construction only.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats defence]",
+      "key": "[stats defence]",
+      "source": "Defence",
+      "target": "প্রতিরক্ষা",
+      "assessment": "Section covers warriors/intruders; প্রতিরক্ষা is correct defence noun and consistent with existing defence overlay.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats history]",
+      "key": "[stats history]",
+      "source": "View history",
+      "target": "ইতিহাস দেখুন",
+      "assessment": "Accessible chart action to view history; ইতিহাস দেখুন respectful imperative, matches displayed action.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats waiting]",
+      "key": "[stats waiting]",
+      "source": "Waiting for statistics…",
+      "target": "পরিসংখ্যানের অপেক্ষায়…",
+      "assessment": "No-statistics waiting state; পরিসংখ্যানের অপেক্ষায়… conveys ongoing wait and preserves ellipsis.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats unit details]",
+      "key": "[stats unit details]",
+      "source": "Unit details",
+      "target": "ইউনিটের বিবরণ",
+      "assessment": "Expands population/unit breakdown; ইউনিটের বিবরণ matches already-reviewed ইউনিট terminology, not apartment/unit-of-measure sense.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats map overlays]",
+      "key": "[stats map overlays]",
+      "source": "Map overlays",
+      "target": "মানচিত্রের ওভারলে",
+      "assessment": "Overlay controls for starvation/damage/defence/fertility maps; মানচিত্রের ওভারলে matches existing Bengali-script technical ওভারলে labels, with no raw English leakage.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats topic]",
+      "key": "[stats topic]",
+      "source": "Topic",
+      "target": "বিষয়",
+      "assessment": "Topic category label; বিষয় is natural neutral Bengali. Exact master source contains Topic; key appears reserved/unreferenced in this snapshot, so no invented live composition context claimed.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats full history]",
+      "key": "[stats full history]",
+      "source": "Open full history",
+      "target": "সম্পূর্ণ ইতিহাস খুলুন",
+      "assessment": "Action opens full metric history; সম্পূর্ণ ইতিহাস খুলুন respectful and consistent with View history.",
+      "verdict": "pass",
+      "findings": []
+    },
+    {
+      "id": "native:[stats missing readings]",
+      "key": "[stats missing readings]",
+      "source": "— No recorded reading yet. Select a statistic for details.",
+      "target": "— এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।",
+      "assessment": "Unavailable recorded measurement hint; পরিমাপ is measurement/statistical reading, not textual reading. Yet/recorded absence and instruction to select a statistic for details both preserved; বেছে নিন respectful.",
+      "verdict": "pass",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "unresolved_uncertainty": [],
+  "unresolved_uncertainties": [],
+  "mechanical_carry_forward": {
+    "pairs": 6237,
+    "native": 3395,
+    "online": 2842,
+    "all_prior_source_and_target_pairs_identical": true,
+    "mismatches": [],
+    "prior_adversarial_review_sha256": "97eb5e22b023c26f3d07cfd28cb5ef9d4df8fd6cf8658bef117cdca875b9d5f7",
+    "old_native_sha256": "3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054",
+    "scope": "Prior6237 exactpairs carried mechanically through actual independent review chain, not freshly reread."
+  },
+  "context_read": [
+    "masterb34 TerrainTypeTable.h authored Grass/Sand terrain definitions and surrounding variants",
+    "masterb34 InGameStatistics.cpp topic/group mapping, measurement availability, unitDetails, Overview work/defence sections, accessible history action and full-history button",
+    "masterb34 GameGUIDraw.cpp map-overlay switches for starvation/damage/defence/fertility in game and replay",
+    "Exact masterb34 English catalog values for all16; prior Bengali overlay terminology checked for consistency"
+  ],
+  "language_assessment": "Natural standard Bengali, shared regional vocabulary, respectful actions, consistent unit/economy/defence/overlay terms. No raw English leakage, reversed direction/target, unintended numerical promise or technical identifier change found.",
+  "limits": [
+    "Fresh textual16-key review only; no V4 rendering claim.",
+    "Topic key appears not live-referenced in examined snapshot; isolated label meaning is unambiguous.",
+    "No fresh6253pairreading or native-human certification."
+  ]
+}

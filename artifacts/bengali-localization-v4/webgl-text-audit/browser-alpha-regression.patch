@@ -1,0 +1,93 @@
+--- a/browser/tests/pixels.js
++++ b/browser/tests/pixels.js
+@@ -87,3 +87,33 @@
+   }, png.toString('base64'));
+ }
+ module.exports.hasClassicButton = hasClassicButton;
++
++// Compare screenshots after presentation; reading a WebGL drawing buffer can
++// race its non-preserved contents, especially in the application worker.
++async function comparePresentedRGB(page, firstPNG, secondPNG) {
++  return page.evaluate(async images => {
++    const read = async base64 => {
++      const bitmap = await createImageBitmap(await (await fetch('data:image/png;base64,' + base64)).blob());
++      const canvas = document.createElement('canvas');
++      canvas.width = bitmap.width; canvas.height = bitmap.height;
++      const context = canvas.getContext('2d');
++      context.drawImage(bitmap, 0, 0); bitmap.close();
++      return context.getImageData(0, 0, canvas.width, canvas.height);
++    };
++    const [first, second] = await Promise.all(images.map(read));
++    if (first.width !== second.width || first.height !== second.height)
++      throw new Error('Presented screenshot dimensions changed');
++    let maximumChannelDifference = 0, affectedPixels = 0;
++    for (let i = 0; i < first.data.length; i += 4) {
++      let affected = false;
++      for (let channel = 0; channel < 3; ++channel) {
++        const difference = Math.abs(first.data[i + channel] - second.data[i + channel]);
++        maximumChannelDifference = Math.max(maximumChannelDifference, difference);
++        affected ||= difference > 2;
++      }
++      if (affected) ++affectedPixels;
++    }
++    return {maximumChannelDifference, affectedPixels};
++  }, [firstPNG.toString('base64'), secondPNG.toString('base64')]);
++}
++module.exports.comparePresentedRGB = comparePresentedRGB;
+--- a/browser/tests/responsive-presentation.spec.js
++++ b/browser/tests/responsive-presentation.spec.js
+@@ -1,6 +1,6 @@
+ const {waitForMainMenu}=require('./main-menu');
+ const {test,expect}=require('@playwright/test');
+-const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl,control}=require('./main-menu');
++const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl,control,controlBox}=require('./main-menu');
+ const {clickCreateMap}=require('./editor-controls');
+ const snapshot=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
+ const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await snapshot(page)).screen).toContain(name);
+@@ -138,3 +138,46 @@
+     expect(await page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls).some(key=>key.startsWith('tray/')))).toBe(false);
+   });
+ });
++
++
++test.describe('opaque WebGL settings panel', () => {
++  test.use({viewport: {width: 1280, height: 900}, deviceScaleFactor: 1, locale: 'bn-BD'});
++  test('antialiased Bengali text and icons keep the presented panel opaque', async ({page}, info) => {
++    test.skip(process.env.GLOB2_TEST_RENDERER !== 'webgl2', 'Checks actual WebGL canvas compositing');
++    await page.goto(gameURL()); await screen(page, 'MainMenuScreen');
++    await clickMainMenu(page, 'settings'); await screen(page, 'SettingsScreen');
++    expect((await snapshot(page)).renderer).toBe('webgl2');
++    // Native labels confirm the script font has actually reached the screen.
++    expect((await snapshot(page)).controls['nav.0'].label).toMatch(/[\u0980-\u09ff]/);
++    const first = await controlBox(page, 'nav.0', {fullyVisible: true});
++    const last = await controlBox(page, 'nav.7', {fullyVisible: true});
++    const clip = {x: first.x, y: first.y, width: first.width,
++      height: last.y + last.height - first.y};
++    const {hasDarkText, comparePresentedRGB} = require('./pixels');
++    await expect.poll(() => hasDarkText(page, clip)).toBe(true);
++    await page.mouse.move(1, 1);
++    const canvas = page.locator('#canvas');
++    const original = await canvas.evaluate(element => ({
++      value: element.style.getPropertyValue('background-color'),
++      priority: element.style.getPropertyPriority('background-color'),
++    }));
++    const captures = [];
++    try {
++      // Background behind opaque UI must never bleed through glyph coverage.
++      // glBlendFunc used SRC_ALPHA for framebuffer alpha too, leaving 0.75
++      // alpha at a half-covered glyph and washing it out over the page.
++      for (const [name, color] of [['black', '#000'], ['white', '#fff']]) {
++        await canvas.evaluate((element, color) => element.style.setProperty('background-color', color), color);
++        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
++        captures.push(await page.screenshot({path: info.outputPath('opaque-panel-' + name + '.png'), clip}));
++      }
++    } finally {
++      await canvas.evaluate((element, original) => {
++        if (original.value) element.style.setProperty('background-color', original.value, original.priority);
++        else element.style.removeProperty('background-color');
++      }, original);
++    }
++    const difference = await comparePresentedRGB(page, captures[0], captures[1]);
++    expect(difference.maximumChannelDifference, JSON.stringify(difference)).toBeLessThanOrEqual(2);
++  });
++});

@@ -1,0 +1,39 @@
+{
+  "integration_commit": "d7fa724b0bb609c706bce163f4a1ae00ea10460f",
+  "test": "WebAssetPackageTests.test_packages_round_trip_and_are_content_addressed",
+  "code_and_declaration_sha256": {
+    "browser/derive_assets.py": "b043c7c833d654411a49565bbc9cd3ccd492c8d08aafa19dc2feed17904aa6ee",
+    "data/buildings/barracks.json": "6a8525c625ab57aa6cd709de49b54b0dea0fde6f56e671227cd30fd81a61da34",
+    "data/buildings/clearingflag.json": "7aefc9ee4bd41b1e98993d3d509b6ef37a5927df22fa2e4cb6f90a985657a237",
+    "data/buildings/defencetower.json": "3551a54633608caac3deb07b149e4568ef17dc2e610f167d9308b659b1caa0e2",
+    "data/buildings/explorationflag.json": "9364f6903ab43c3b098da329830d63f58a7edcab2930a53a648302cf45365773",
+    "data/buildings/hospital.json": "c8aa9d971d057131846e266262c38efa1b2069cb14521037f82e35d5fb48b0d5",
+    "data/buildings/inn.json": "c743272922ecac6d2b5ab6df339cd1bd431a110319016fef8779813c51ef262b",
+    "data/buildings/manifest.json": "56a70253190b7385af6d03bb29eef07afa5ab81c1e9d0bf3589c215a895f1d24",
+    "data/buildings/market.json": "05f7a56eae0210995296645e9df4a1800d22a51ed1b8be8d9916373c4f29ff1e",
+    "data/buildings/racetrack.json": "6a8b76a994e6f8f5b311daa9b4b35fabc1a7fd7f9cadbcfcf50defbb5fb75a61",
+    "data/buildings/school.json": "03dd347693be740b51e15e8cd25784730948ce3ee9b3e2cbd05b5fa7d94e7db0",
+    "data/buildings/stonewall.json": "1ef347e4a93d1831b424f4aadaf69b2e9c87af3449c2bdd5bf6338c71c601d3b",
+    "data/buildings/swarm.json": "8588d0fc31695bd31f018412b41e91f3b8c9f12067ccf3c151dda92670a9bb36",
+    "data/buildings/swimmingpool.json": "268be31c83ee2d333b30c42bab986323a416a479133fc7bd818c21a7f2ac41f5",
+    "data/buildings/warflag.json": "c238005635e5eac6a1c62ca93823d977d5ec7213a133702d8781f28d3f241428",
+    "data/resources/registry.json": "d59d554249feddadc5ad9405d437882f676fb800ad14ca8a58f28bb6a397abf2",
+    "data/terrain/tileset.json": "639617e76e584375130f8ef6a90fbc443860b499a564e8be7737af5097b0f63e",
+    "scons/web_assets.py": "167b14e2f547e764f18c8f3bd5c2746047767098621078ddfab21bfcf15a0b45",
+    "src/app/GlobalContainer.cpp": "2612524ff2f700fc155e673d641b929bcb520bd4471d7f10c945991fd23cfb26",
+    "src/building/types/BuildingTypesColony.cpp": "fd35b564b3f6aab0fd8c87bf54a5e9ff460c4ab80153eab3937759295b4be6d7",
+    "src/building/types/BuildingTypesDefence.cpp": "a458a6b8803a46d28bd59faf4b8ab51d34380caaf13e6ef63382c0feaaad2805",
+    "src/building/types/BuildingTypesFlags.cpp": "000b355267f2b08914de12650d209b4b6f03925d6386371de10004845dc98055",
+    "src/building/types/BuildingTypesUpgrade.cpp": "e986f1c88b0676f5b86aab812c145b11246e09f479f809040e3d7ca87d0ed93b",
+    "src/map/TerrainPresentation.h": "1e80b97b73dc16bd26140857ec4d7407826b2ab78a0a9b7389df4f4c39de7ae5",
+    "tools/package_assets.py": "43c5f4bbbeceb096ce28c1110ceab98505fe3d27f76c95c719dd0c28ee347465"
+  },
+  "concurrent_changes_explicitly_excluded_from_inputs": [
+    "libgag/src/GraphicContext.cpp",
+    "browser/tests/responsive-presentation.spec.js",
+    "browser/tests/pixels.js"
+  ],
+  "basis": "Package test and scons/web_assets.py read data/assets and these declarations. Neither renderer implementation, browser test helpers, nor Git revision is a package input. Catalog/font byte hashes are independently captured before/after in web-assets-roundtrip-stable.json.",
+  "post_test_code_and_declarations_unchanged": true,
+  "post_test_current_head": "fda5e076eafc103b59b18136c137abdb6262d981"
+}

@@ -1,0 +1,21 @@
+{
+  "productionRevision": "fda5e076eafc103b59b18136c137abdb6262d981",
+  "sourceBefore": {
+    "revision": "fda5e076eafc103b59b18136c137abdb6262d981",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "5f74615725a2f947e0b13f84e0b3df5371ed6722fdb0751f8ccfd701587cee72"
+  },
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "target=web",
+    "web_variant=both",
+    "emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39",
+    "-j4",
+    "web-package"
+  ],
+  "dependencySealSha256": "ea7aaee550ea46a7ade59502f33471babf42555b02aee47a491a471da566e88d",
+  "status": "building",
+  "ownedChildPid": 3220148
+}

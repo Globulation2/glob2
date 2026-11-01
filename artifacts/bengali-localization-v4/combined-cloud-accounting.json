@@ -1,0 +1,29 @@
+{
+  "project": "bradley-personal-20261027",
+  "locale": "bn",
+  "reserved_characters": 189106,
+  "attempts": 64,
+  "estimated_usd_without_free_credit": "3.78212",
+  "authorized_ceiling_usd": "10",
+  "ledgers": [
+    {
+      "path": "artifacts/bengali-localization/cloud/bn/accounting.json",
+      "sha256": "412d7d9b5dda6c6a7e1f9781de83046a7203b52532ae9ba57071d4614423c373",
+      "reserved_characters": 188634,
+      "attempts": 62
+    },
+    {
+      "path": "artifacts/bengali-localization-v3/cloud/bn/accounting.json",
+      "sha256": "1eb3f3e5d76f0b88a27f0bb441dec19a12e78d98abe68b22e1f32f72dab4a7f4",
+      "reserved_characters": 250,
+      "attempts": 1
+    },
+    {
+      "path": "artifacts/bengali-localization-v4/cloud/bn/accounting.json",
+      "sha256": "0e9cbf737aaf52ddff8edfb7a79b9665a7e264320a2a8b3e76e48a173a5b68aa",
+      "reserved_characters": 222,
+      "attempts": 1
+    }
+  ],
+  "new_delta": "16 new master labels,222 characters in one successful request; previous ledgers immutable."
+}

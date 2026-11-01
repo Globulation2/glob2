@@ -1,0 +1,13 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/83ab/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  01:16:20
+   Duration  11.04s (import 39%, tests 34%, transform 26%, worker 1%)
+
+  Transform  transforming modules took 2.38s · 26% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

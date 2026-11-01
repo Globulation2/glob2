@@ -1,0 +1,2170 @@
+{
+  "schema": 4,
+  "verification_mode": "affected",
+  "reused_run_id": null,
+  "selection": {
+    "native": true,
+    "browser": true,
+    "map_generators": true,
+    "deployment": true,
+    "cross_platform": true,
+    "android": true,
+    "windows": true,
+    "compatibility": true,
+    "variants": true,
+    "coverage": true,
+    "tsan": true,
+    "macos": true,
+    "platform": true,
+    "platform_stack": true,
+    "music": true
+  },
+  "event": "pull_request",
+  "sha": "6c4b0eb44b16bd68b4774ae20279741cdb7bfcd3",
+  "branch": "codex/bengali-localization",
+  "prediction_time": 1793515923.0618594,
+  "base_sha": "b34bcc19a7767d770b2b828a2d49e7aa9db53d0a",
+  "full_matrix": true,
+  "desired": {
+    "native": true,
+    "browser": true,
+    "map_generators": true,
+    "deployment": true,
+    "cross_platform": true,
+    "android": true,
+    "windows": true,
+    "compatibility": true,
+    "variants": true,
+    "coverage": true,
+    "tsan": true,
+    "macos": true,
+    "platform": true,
+    "platform_stack": true,
+    "music": true,
+    "reasons": [
+      {
+        "path": "browser/ApplicationHost.cpp",
+        "checks": [
+          "browser"
+        ]
+      },
+      {
+        "path": "browser/assets/sources.json",
+        "checks": [
+          "browser"
+        ]
+      },
+      {
+        "path": "browser/i18n.js",
+        "checks": [
+          "browser"
+        ]
+      },
+      {
+        "path": "browser/shell.html",
+        "checks": [
+          "browser"
+        ]
+      },
+      {
+        "path": "browser/tests/pixels.js",
+        "checks": [
+          "browser"
+        ]
+      },
+      {
+        "path": "browser/tests/responsive-presentation.spec.js",
+        "checks": [
+          "browser"
+        ]
+      },
+      {
+        "path": "browser/unit/language.test.js",
+        "checks": [
+          "browser"
+        ]
+      },
+      {
+        "path": "browser/unit/text-bridge.test.js",
+        "checks": [
+          "browser"
+        ]
+      },
+      {
+        "path": "data/texts.bn.txt",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "data/texts.hi.txt",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "data/texts.incomplete.txt",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "data/texts.list.txt",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "data/texts.nb.txt",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "data/texts.pending.txt",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "data/texts.sw.txt",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "data/texts.ur.txt",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "deploy/compose.yaml",
+        "checks": [
+          "browser",
+          "deployment"
+        ]
+      },
+      {
+        "path": "libgag/include/BrowserTextInput.h",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "libgag/include/ui/Controls.h",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "libgag/include/ui/TextLayout.h",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "libgag/src/ApplicationHost.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "libgag/src/FontKerningTest.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "libgag/src/GraphicContext.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "libgag/src/ui/Controls.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "libgag/src/ui/TextLayout.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "libgag/src/ui/UILayoutHarness.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "platform/apps/api/test/pages.test.ts",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/apps/web/e2e/i18n.spec.ts",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/apps/web/src/pages/Ais.tsx",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/apps/web/src/styles/layout.css",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/ar.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/bn.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/ca.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/cs.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/da.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/de.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/el.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/en.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/eo.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/es.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/eu.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/fa.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/fi.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/fr.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/hi.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/hu.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/id.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/it.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/ja.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/ko.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/nb.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/nl.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/pl.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/pt-BR.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/pt-PT.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/ro.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/ru.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/sk.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/sl.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/sr-Cyrl.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/sv.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/sw.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/tr.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/uk.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/ur.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/vi.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/zh-Hans.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/locales/zh-Hant.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/scripts/check.ts",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/scripts/source-contract.ts",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/shared-values.json",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/src/index.ts",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/src/locales.ts",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/test/runtime.test.ts",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "platform/packages/i18n/test/source-contract.test.ts",
+        "checks": [
+          "platform"
+        ]
+      },
+      {
+        "path": "src/app/Settings.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "src/app/Settings.h",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "src/app/SystemLanguageTest.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "src/hud/GameGUIDialog.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "android"
+        ]
+      },
+      {
+        "path": "src/online/InviteLink.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "src/online/InviteLinkTest.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "src/online/MapCatalog.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "src/online/MapCatalogTest.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "src/online/PlatformRoom.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "src/online/PlatformRoomTest.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "src/online/screens/OnlineHubScreen.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "android"
+        ]
+      },
+      {
+        "path": "src/online/screens/OnlineMapsScreen.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "android"
+        ]
+      },
+      {
+        "path": "src/online/screens/RoomScreen.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "android"
+        ]
+      },
+      {
+        "path": "src/tutorial/IntroductionTest.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "src/ui/OnlineWordingTest.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "src/ui/settings/SettingsScreen.cpp",
+        "checks": [
+          "native",
+          "browser",
+          "android"
+        ]
+      },
+      {
+        "path": "src/ui/settings/SettingsScreenTest.cpp",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "test/deployment/test_browser_font_types.py",
+        "checks": [
+          "browser",
+          "deployment"
+        ]
+      },
+      {
+        "path": "test/deployment/test_canonical_signin.py",
+        "checks": [
+          "browser",
+          "deployment"
+        ]
+      },
+      {
+        "path": "test/test_cloud_draft.py",
+        "checks": [
+          "native"
+        ]
+      },
+      {
+        "path": "test/translation_shared_values.json",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "tools/localization/cloud_draft.py",
+        "checks": [
+          "native",
+          "browser",
+          "map_generators",
+          "deployment",
+          "cross_platform",
+          "android",
+          "windows",
+          "compatibility",
+          "variants",
+          "coverage",
+          "tsan",
+          "macos",
+          "platform",
+          "platform_stack",
+          "music"
+        ]
+      },
+      {
+        "path": "deploy/compose.yaml",
+        "checks": [
+          "platform_stack"
+        ]
+      },
+      {
+        "path": "test/deployment/test_browser_font_types.py",
+        "checks": [
+          "platform_stack"
+        ]
+      },
+      {
+        "path": "test/deployment/test_canonical_signin.py",
+        "checks": [
+          "platform_stack"
+        ]
+      },
+      {
+        "label": "ci:android",
+        "reason": "explicit expansion"
+      },
+      {
+        "label": "ci:browsers",
+        "reason": "explicit expansion"
+      },
+      {
+        "label": "ci:windows",
+        "reason": "explicit expansion"
+      }
+    ]
+  },
+  "effective": {
+    "native": true,
+    "browser": true,
+    "map_generators": true,
+    "deployment": true,
+    "cross_platform": true,
+    "android": true,
+    "windows": true,
+    "compatibility": true,
+    "variants": true,
+    "coverage": true,
+    "tsan": true,
+    "macos": true,
+    "platform": true,
+    "platform_stack": true,
+    "music": true,
+    "browsers_all": true,
+    "android_arches": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64"
+    ]
+  },
+  "tiers_enabled": false,
+  "predictive_enabled": false,
+  "draft": true,
+  "paths": [
+    "browser/ApplicationHost.cpp",
+    "browser/assets/sources.json",
+    "browser/i18n.js",
+    "browser/shell.html",
+    "browser/tests/pixels.js",
+    "browser/tests/responsive-presentation.spec.js",
+    "browser/unit/language.test.js",
+    "browser/unit/text-bridge.test.js",
+    "data/texts.bn.txt",
+    "data/texts.hi.txt",
+    "data/texts.incomplete.txt",
+    "data/texts.list.txt",
+    "data/texts.nb.txt",
+    "data/texts.pending.txt",
+    "data/texts.sw.txt",
+    "data/texts.ur.txt",
+    "deploy/compose.yaml",
+    "docs/development/ui-framework.md",
+    "docs/hosting/configuration.md",
+    "libgag/include/BrowserTextInput.h",
+    "libgag/include/ui/Controls.h",
+    "libgag/include/ui/TextLayout.h",
+    "libgag/src/ApplicationHost.cpp",
+    "libgag/src/FontKerningTest.cpp",
+    "libgag/src/GraphicContext.cpp",
+    "libgag/src/ui/Controls.cpp",
+    "libgag/src/ui/TextLayout.cpp",
+    "libgag/src/ui/UILayoutHarness.cpp",
+    "platform/apps/api/test/pages.test.ts",
+    "platform/apps/web/e2e/i18n.spec.ts",
+    "platform/apps/web/src/pages/Ais.tsx",
+    "platform/apps/web/src/styles/layout.css",
+    "platform/packages/i18n/locales/ar.json",
+    "platform/packages/i18n/locales/bn.json",
+    "platform/packages/i18n/locales/ca.json",
+    "platform/packages/i18n/locales/cs.json",
+    "platform/packages/i18n/locales/da.json",
+    "platform/packages/i18n/locales/de.json",
+    "platform/packages/i18n/locales/el.json",
+    "platform/packages/i18n/locales/en.json",
+    "platform/packages/i18n/locales/eo.json",
+    "platform/packages/i18n/locales/es.json",
+    "platform/packages/i18n/locales/eu.json",
+    "platform/packages/i18n/locales/fa.json",
+    "platform/packages/i18n/locales/fi.json",
+    "platform/packages/i18n/locales/fr.json",
+    "platform/packages/i18n/locales/hi.json",
+    "platform/packages/i18n/locales/hu.json",
+    "platform/packages/i18n/locales/id.json",
+    "platform/packages/i18n/locales/it.json",
+    "platform/packages/i18n/locales/ja.json",
+    "platform/packages/i18n/locales/ko.json",
+    "platform/packages/i18n/locales/nb.json",
+    "platform/packages/i18n/locales/nl.json",
+    "platform/packages/i18n/locales/pl.json",
+    "platform/packages/i18n/locales/pt-BR.json",
+    "platform/packages/i18n/locales/pt-PT.json",
+    "platform/packages/i18n/locales/ro.json",
+    "platform/packages/i18n/locales/ru.json",
+    "platform/packages/i18n/locales/sk.json",
+    "platform/packages/i18n/locales/sl.json",
+    "platform/packages/i18n/locales/sr-Cyrl.json",
+    "platform/packages/i18n/locales/sv.json",
+    "platform/packages/i18n/locales/sw.json",
+    "platform/packages/i18n/locales/tr.json",
+    "platform/packages/i18n/locales/uk.json",
+    "platform/packages/i18n/locales/ur.json",
+    "platform/packages/i18n/locales/vi.json",
+    "platform/packages/i18n/locales/zh-Hans.json",
+    "platform/packages/i18n/locales/zh-Hant.json",
+    "platform/packages/i18n/scripts/check.ts",
+    "platform/packages/i18n/scripts/source-contract.ts",
+    "platform/packages/i18n/shared-values.json",
+    "platform/packages/i18n/src/index.ts",
+    "platform/packages/i18n/src/locales.ts",
+    "platform/packages/i18n/test/runtime.test.ts",
+    "platform/packages/i18n/test/source-contract.test.ts",
+    "src/app/Settings.cpp",
+    "src/app/Settings.h",
+    "src/app/SystemLanguageTest.cpp",
+    "src/hud/GameGUIDialog.cpp",
+    "src/online/InviteLink.cpp",
+    "src/online/InviteLinkTest.cpp",
+    "src/online/MapCatalog.cpp",
+    "src/online/MapCatalogTest.cpp",
+    "src/online/PlatformRoom.cpp",
+    "src/online/PlatformRoomTest.cpp",
+    "src/online/screens/OnlineHubScreen.cpp",
+    "src/online/screens/OnlineMapsScreen.cpp",
+    "src/online/screens/RoomScreen.cpp",
+    "src/tutorial/IntroductionTest.cpp",
+    "src/ui/OnlineWordingTest.cpp",
+    "src/ui/settings/SettingsScreen.cpp",
+    "src/ui/settings/SettingsScreenTest.cpp",
+    "test/deployment/test_browser_font_types.py",
+    "test/deployment/test_canonical_signin.py",
+    "test/test_cloud_draft.py",
+    "test/translation_shared_values.json",
+    "tools/localization/cloud_draft.py"
+  ],
+  "checkpoint": null,
+  "policy_fingerprint": "03adbf49eaaccb71522021090df4e33536e8ab67fa6c571b300353161392c091",
+  "inventory": {
+    "checks": [
+      "android/arm64-v8a",
+      "android/armeabi-v7a",
+      "android/x86_64",
+      "browser/chromium-1-5",
+      "browser/chromium-2-5",
+      "browser/chromium-3-5",
+      "browser/chromium-4-5",
+      "browser/chromium-5-5",
+      "browser/chromium-rendering",
+      "browser/chromium-serial-renderer-1-3",
+      "browser/chromium-serial-renderer-2-3",
+      "browser/chromium-serial-renderer-3-3",
+      "browser/chromium-settings-storage",
+      "browser/chromium-threaded-colony-skins",
+      "browser/chromium-threaded-renderer",
+      "browser/chromium-torus",
+      "browser/chromium-webgl2-damaged-load",
+      "browser/chromium-webgl2-input",
+      "browser/chromium-webgl2-match-reload",
+      "browser/chromium-webgl2-replay-reload",
+      "browser/chromium-webgl2-responsive-and-startup",
+      "browser/chromium-webgl2-viewport",
+      "browser/firefox",
+      "browser/firefox-replay-import-and-reload",
+      "browser/firefox-scripting",
+      "browser/firefox-wss-and-simulation",
+      "browser/lifecycle",
+      "browser/webkit",
+      "browser/webkit-replay-import-and-reload",
+      "browser/webkit-scripting",
+      "browser/webkit-wss-and-simulation",
+      "coverage",
+      "cross-platform",
+      "macos",
+      "music",
+      "native/clang/build",
+      "native/clang/regressions",
+      "native/gcc11/build",
+      "native/gcc11/generators-sweep-a",
+      "native/gcc11/generators-sweep-b",
+      "native/gcc11/generators-telemetry",
+      "native/gcc11/regressions",
+      "native/gcc11/shard-1",
+      "native/gcc11/shard-2",
+      "native/gcc11/shard-3",
+      "native/gcc11/shard-4",
+      "native/gcc13/build",
+      "native/gcc13/generators-sweep-a",
+      "native/gcc13/generators-sweep-b",
+      "native/gcc13/generators-telemetry",
+      "native/gcc13/regressions",
+      "native/gcc13/shard-1",
+      "native/gcc13/shard-2",
+      "native/gcc13/shard-3",
+      "native/gcc13/shard-4",
+      "platform",
+      "platform-stack",
+      "tsan",
+      "variants/ubuntu-22.04",
+      "variants/ubuntu-24.04",
+      "web-build",
+      "web-deploy",
+      "web-native",
+      "windows"
+    ],
+    "jobs": {
+      "native": true,
+      "browser": true,
+      "map_generators": true,
+      "deployment": true,
+      "cross_platform": true,
+      "android": true,
+      "windows": true,
+      "compatibility": true,
+      "variants": true,
+      "coverage": true,
+      "tsan": true,
+      "macos": true,
+      "platform": true,
+      "platform_stack": true,
+      "music": true
+    },
+    "browsers": [
+      {
+        "name": "chromium 1/5",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+      },
+      {
+        "name": "chromium 2/5",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+      },
+      {
+        "name": "chromium 3/5",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+      },
+      {
+        "name": "chromium 4/5",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+      },
+      {
+        "name": "chromium torus",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test torus.spec.js --project=chromium"
+      },
+      {
+        "name": "chromium 5/5",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+      },
+      {
+        "name": "chromium webgl2 match reload",
+        "browsers": "chromium",
+        "renderer": "webgl2",
+        "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'"
+      },
+      {
+        "name": "chromium webgl2 replay reload",
+        "browsers": "chromium",
+        "renderer": "webgl2",
+        "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'"
+      },
+      {
+        "name": "chromium webgl2 viewport",
+        "browsers": "chromium",
+        "renderer": "webgl2",
+        "command": "xvfb-run -a npx playwright test viewport.spec.js --project=chromium"
+      },
+      {
+        "name": "chromium webgl2 damaged load",
+        "browsers": "chromium",
+        "renderer": "webgl2",
+        "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'"
+      },
+      {
+        "name": "lifecycle",
+        "browsers": "chromium",
+        "command": "python3 ../test/ci_run_commands.py \\\n  --check 'browser unit tests' 'node --test unit/*.test.js' \\\n  --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \\\n  --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'\n"
+      },
+      {
+        "name": "chromium settings storage",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium"
+      },
+      {
+        "name": "chromium webgl2 responsive and startup",
+        "browsers": "chromium",
+        "renderer": "webgl2",
+        "command": "xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium"
+      },
+      {
+        "name": "webkit",
+        "browsers": "webkit",
+        "command": "xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=webkit"
+      },
+      {
+        "name": "webkit scripting",
+        "browsers": "webkit",
+        "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'"
+      },
+      {
+        "name": "chromium rendering",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test rendering.spec.js --project=chromium"
+      },
+      {
+        "name": "firefox",
+        "browsers": "firefox",
+        "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=firefox"
+      },
+      {
+        "name": "firefox WSS and simulation",
+        "browsers": "firefox",
+        "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'"
+      },
+      {
+        "name": "webkit WSS and simulation",
+        "browsers": "webkit",
+        "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'"
+      },
+      {
+        "name": "firefox scripting",
+        "browsers": "firefox",
+        "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'"
+      },
+      {
+        "name": "chromium webgl2 input",
+        "browsers": "chromium",
+        "renderer": "webgl2",
+        "command": "xvfb-run -a npx playwright test input.spec.js --project=chromium"
+      },
+      {
+        "name": "chromium threaded colony skins",
+        "browsers": "chromium",
+        "renderer": "webgl2",
+        "command": "GLOB2_SKIN_TEST_THREADS=threaded xvfb-run -a npx playwright test colony-skins.spec.js skin-assets.spec.js --project=chromium"
+      },
+      {
+        "name": "firefox replay import and reload",
+        "browsers": "firefox",
+        "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=firefox --grep='imports a complete replay|an active replay'"
+      },
+      {
+        "name": "webkit replay import and reload",
+        "browsers": "webkit",
+        "command": "xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=webkit --grep='imports a complete replay|an active replay'"
+      },
+      {
+        "name": "chromium serial renderer 1/3",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=1/3"
+      },
+      {
+        "name": "chromium serial renderer 2/3",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=2/3"
+      },
+      {
+        "name": "chromium serial renderer 3/3",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=3/3"
+      },
+      {
+        "name": "chromium threaded renderer",
+        "browsers": "chromium",
+        "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='threaded:' --workers=1"
+      }
+    ],
+    "android_arches": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64"
+    ]
+  },
+  "inventory_fingerprint": "495c9932b754f64f03d08946fe2d4e4ac128bff5649e192587c8d171d286fae7",
+  "execution_plan": {
+    "schema": 1,
+    "ranked_ids": [
+      "android/arm64-v8a",
+      "android/armeabi-v7a",
+      "android/x86_64",
+      "browser/chromium-1-5",
+      "browser/chromium-2-5",
+      "browser/chromium-3-5",
+      "browser/chromium-4-5",
+      "browser/chromium-5-5",
+      "browser/chromium-rendering",
+      "browser/chromium-serial-renderer-1-3",
+      "browser/chromium-serial-renderer-2-3",
+      "browser/chromium-serial-renderer-3-3",
+      "browser/chromium-settings-storage",
+      "browser/chromium-threaded-colony-skins",
+      "browser/chromium-threaded-renderer",
+      "browser/chromium-torus",
+      "browser/chromium-webgl2-damaged-load",
+      "browser/chromium-webgl2-input",
+      "browser/chromium-webgl2-match-reload",
+      "browser/chromium-webgl2-replay-reload",
+      "browser/chromium-webgl2-responsive-and-startup",
+      "browser/chromium-webgl2-viewport",
+      "browser/firefox",
+      "browser/firefox-replay-import-and-reload",
+      "browser/firefox-scripting",
+      "browser/firefox-wss-and-simulation",
+      "browser/lifecycle",
+      "browser/webkit",
+      "browser/webkit-replay-import-and-reload",
+      "browser/webkit-scripting",
+      "browser/webkit-wss-and-simulation",
+      "coverage",
+      "cross-platform",
+      "macos",
+      "music",
+      "native/clang/build",
+      "native/clang/regressions",
+      "native/gcc11/build",
+      "native/gcc11/generators-sweep-a",
+      "native/gcc11/generators-sweep-b",
+      "native/gcc11/generators-telemetry",
+      "native/gcc11/regressions",
+      "native/gcc11/shard-1",
+      "native/gcc11/shard-2",
+      "native/gcc11/shard-3",
+      "native/gcc11/shard-4",
+      "native/gcc13/build",
+      "native/gcc13/generators-sweep-a",
+      "native/gcc13/generators-sweep-b",
+      "native/gcc13/generators-telemetry",
+      "native/gcc13/regressions",
+      "native/gcc13/shard-1",
+      "native/gcc13/shard-2",
+      "native/gcc13/shard-3",
+      "native/gcc13/shard-4",
+      "platform",
+      "platform-stack",
+      "tsan",
+      "variants/ubuntu-22.04",
+      "variants/ubuntu-24.04",
+      "web-build",
+      "web-deploy",
+      "web-native",
+      "windows"
+    ],
+    "executed_ids": [
+      "android/arm64-v8a",
+      "android/armeabi-v7a",
+      "android/x86_64",
+      "browser/chromium-1-5",
+      "browser/chromium-2-5",
+      "browser/chromium-3-5",
+      "browser/chromium-4-5",
+      "browser/chromium-5-5",
+      "browser/chromium-rendering",
+      "browser/chromium-serial-renderer-1-3",
+      "browser/chromium-serial-renderer-2-3",
+      "browser/chromium-serial-renderer-3-3",
+      "browser/chromium-settings-storage",
+      "browser/chromium-threaded-colony-skins",
+      "browser/chromium-threaded-renderer",
+      "browser/chromium-torus",
+      "browser/chromium-webgl2-damaged-load",
+      "browser/chromium-webgl2-input",
+      "browser/chromium-webgl2-match-reload",
+      "browser/chromium-webgl2-replay-reload",
+      "browser/chromium-webgl2-responsive-and-startup",
+      "browser/chromium-webgl2-viewport",
+      "browser/firefox",
+      "browser/firefox-replay-import-and-reload",
+      "browser/firefox-scripting",
+      "browser/firefox-wss-and-simulation",
+      "browser/lifecycle",
+      "browser/webkit",
+      "browser/webkit-replay-import-and-reload",
+      "browser/webkit-scripting",
+      "browser/webkit-wss-and-simulation",
+      "coverage",
+      "cross-platform",
+      "macos",
+      "music",
+      "native/clang/build",
+      "native/clang/regressions",
+      "native/gcc11/build",
+      "native/gcc11/generators-sweep-a",
+      "native/gcc11/generators-sweep-b",
+      "native/gcc11/generators-telemetry",
+      "native/gcc11/regressions",
+      "native/gcc11/shard-1",
+      "native/gcc11/shard-2",
+      "native/gcc11/shard-3",
+      "native/gcc11/shard-4",
+      "native/gcc13/build",
+      "native/gcc13/generators-sweep-a",
+      "native/gcc13/generators-sweep-b",
+      "native/gcc13/generators-telemetry",
+      "native/gcc13/regressions",
+      "native/gcc13/shard-1",
+      "native/gcc13/shard-2",
+      "native/gcc13/shard-3",
+      "native/gcc13/shard-4",
+      "platform",
+      "platform-stack",
+      "tsan",
+      "variants/ubuntu-22.04",
+      "variants/ubuntu-24.04",
+      "web-build",
+      "web-deploy",
+      "web-native",
+      "windows"
+    ],
+    "dependency_ids": [],
+    "jobs": {
+      "android": true,
+      "macos": true,
+      "tsan": true,
+      "native-coverage": true,
+      "linux-gcc11": true,
+      "linux-gcc13-producer": true,
+      "linux-gcc13": true,
+      "linux-build": true,
+      "linux-clang": true,
+      "linux": true,
+      "linux-variants": true,
+      "linux-map-generators-standalone": false,
+      "linux-map-generators": true,
+      "windows": true,
+      "web-build": true,
+      "web-native": true,
+      "web-deploy": true,
+      "web-test": true,
+      "browser-determinism": true,
+      "platform": true,
+      "platform-stack": true,
+      "music": true
+    },
+    "options": {
+      "gcc11_shards": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "gcc11_generators": [
+        "sweep-a",
+        "sweep-b",
+        "telemetry"
+      ],
+      "gcc11_regressions": true,
+      "gcc13_shards": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "gcc13_generators": [
+        "sweep-a",
+        "sweep-b",
+        "telemetry"
+      ],
+      "gcc13_regressions": true,
+      "clang_regressions": true,
+      "browser_matrix": {
+        "include": [
+          {
+            "name": "chromium 1/5",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+          },
+          {
+            "name": "chromium 2/5",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+          },
+          {
+            "name": "chromium 3/5",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+          },
+          {
+            "name": "chromium 4/5",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+          },
+          {
+            "name": "chromium torus",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test torus.spec.js --project=chromium"
+          },
+          {
+            "name": "chromium 5/5",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+          },
+          {
+            "name": "chromium webgl2 match reload",
+            "browsers": "chromium",
+            "renderer": "webgl2",
+            "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'"
+          },
+          {
+            "name": "chromium webgl2 replay reload",
+            "browsers": "chromium",
+            "renderer": "webgl2",
+            "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'"
+          },
+          {
+            "name": "chromium webgl2 viewport",
+            "browsers": "chromium",
+            "renderer": "webgl2",
+            "command": "xvfb-run -a npx playwright test viewport.spec.js --project=chromium"
+          },
+          {
+            "name": "chromium webgl2 damaged load",
+            "browsers": "chromium",
+            "renderer": "webgl2",
+            "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'"
+          },
+          {
+            "name": "lifecycle",
+            "browsers": "chromium",
+            "command": "python3 ../test/ci_run_commands.py \\\n  --check 'browser unit tests' 'node --test unit/*.test.js' \\\n  --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \\\n  --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'\n"
+          },
+          {
+            "name": "chromium settings storage",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium"
+          },
+          {
+            "name": "chromium webgl2 responsive and startup",
+            "browsers": "chromium",
+            "renderer": "webgl2",
+            "command": "xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium"
+          },
+          {
+            "name": "webkit",
+            "browsers": "webkit",
+            "command": "xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=webkit"
+          },
+          {
+            "name": "webkit scripting",
+            "browsers": "webkit",
+            "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'"
+          },
+          {
+            "name": "chromium rendering",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test rendering.spec.js --project=chromium"
+          },
+          {
+            "name": "firefox",
+            "browsers": "firefox",
+            "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=firefox"
+          },
+          {
+            "name": "firefox WSS and simulation",
+            "browsers": "firefox",
+            "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'"
+          },
+          {
+            "name": "webkit WSS and simulation",
+            "browsers": "webkit",
+            "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'"
+          },
+          {
+            "name": "firefox scripting",
+            "browsers": "firefox",
+            "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'"
+          },
+          {
+            "name": "chromium webgl2 input",
+            "browsers": "chromium",
+            "renderer": "webgl2",
+            "command": "xvfb-run -a npx playwright test input.spec.js --project=chromium"
+          },
+          {
+            "name": "chromium threaded colony skins",
+            "browsers": "chromium",
+            "renderer": "webgl2",
+            "command": "GLOB2_SKIN_TEST_THREADS=threaded xvfb-run -a npx playwright test colony-skins.spec.js skin-assets.spec.js --project=chromium"
+          },
+          {
+            "name": "firefox replay import and reload",
+            "browsers": "firefox",
+            "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=firefox --grep='imports a complete replay|an active replay'"
+          },
+          {
+            "name": "webkit replay import and reload",
+            "browsers": "webkit",
+            "command": "xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=webkit --grep='imports a complete replay|an active replay'"
+          },
+          {
+            "name": "chromium serial renderer 1/3",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=1/3"
+          },
+          {
+            "name": "chromium serial renderer 2/3",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=2/3"
+          },
+          {
+            "name": "chromium serial renderer 3/3",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=3/3"
+          },
+          {
+            "name": "chromium threaded renderer",
+            "browsers": "chromium",
+            "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='threaded:' --workers=1"
+          }
+        ]
+      },
+      "android_arches": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "variants_matrix": {
+        "include": [
+          {
+            "image": "ubuntu:22.04",
+            "runner": "ubuntu-22.04",
+            "compiler": "g++-11"
+          },
+          {
+            "image": "ubuntu:24.04",
+            "runner": "ubuntu-24.04",
+            "compiler": "g++-13"
+          }
+        ]
+      }
+    },
+    "expected_checks": [
+      {
+        "id": "android/arm64-v8a",
+        "name": "Android release APK (arm64-v8a)",
+        "history_names": [
+          "Android release APK (arm64-v8a)"
+        ]
+      },
+      {
+        "id": "android/armeabi-v7a",
+        "name": "Android release APK (armeabi-v7a)",
+        "history_names": [
+          "Android release APK (armeabi-v7a)"
+        ]
+      },
+      {
+        "id": "android/x86_64",
+        "name": "Android release APK (x86_64)",
+        "history_names": [
+          "Android release APK (x86_64)"
+        ]
+      },
+      {
+        "id": "browser/chromium-1-5",
+        "name": "browser tests (chromium 1/5)",
+        "history_names": [
+          "browser tests (chromium 1/5)"
+        ]
+      },
+      {
+        "id": "browser/chromium-2-5",
+        "name": "browser tests (chromium 2/5)",
+        "history_names": [
+          "browser tests (chromium 2/5)"
+        ]
+      },
+      {
+        "id": "browser/chromium-3-5",
+        "name": "browser tests (chromium 3/5)",
+        "history_names": [
+          "browser tests (chromium 3/5)"
+        ]
+      },
+      {
+        "id": "browser/chromium-4-5",
+        "name": "browser tests (chromium 4/5)",
+        "history_names": [
+          "browser tests (chromium 4/5)"
+        ]
+      },
+      {
+        "id": "browser/chromium-5-5",
+        "name": "browser tests (chromium 5/5)",
+        "history_names": [
+          "browser tests (chromium 5/5)"
+        ]
+      },
+      {
+        "id": "browser/chromium-rendering",
+        "name": "browser tests (chromium rendering)",
+        "history_names": [
+          "browser tests (chromium rendering)"
+        ]
+      },
+      {
+        "id": "browser/chromium-serial-renderer-1-3",
+        "name": "browser tests (chromium serial renderer 1/3)",
+        "history_names": [
+          "browser tests (chromium serial renderer 1/3)"
+        ]
+      },
+      {
+        "id": "browser/chromium-serial-renderer-2-3",
+        "name": "browser tests (chromium serial renderer 2/3)",
+        "history_names": [
+          "browser tests (chromium serial renderer 2/3)"
+        ]
+      },
+      {
+        "id": "browser/chromium-serial-renderer-3-3",
+        "name": "browser tests (chromium serial renderer 3/3)",
+        "history_names": [
+          "browser tests (chromium serial renderer 3/3)"
+        ]
+      },
+      {
+        "id": "browser/chromium-settings-storage",
+        "name": "browser tests (chromium settings storage)",
+        "history_names": [
+          "browser tests (chromium settings storage)"
+        ]
+      },
+      {
+        "id": "browser/chromium-threaded-colony-skins",
+        "name": "browser tests (chromium threaded colony skins)",
+        "history_names": [
+          "browser tests (chromium threaded colony skins)"
+        ]
+      },
+      {
+        "id": "browser/chromium-threaded-renderer",
+        "name": "browser tests (chromium threaded renderer)",
+        "history_names": [
+          "browser tests (chromium threaded renderer)"
+        ]
+      },
+      {
+        "id": "browser/chromium-torus",
+        "name": "browser tests (chromium torus)",
+        "history_names": [
+          "browser tests (chromium torus)"
+        ]
+      },
+      {
+        "id": "browser/chromium-webgl2-damaged-load",
+        "name": "browser tests (chromium webgl2 damaged load)",
+        "history_names": [
+          "browser tests (chromium webgl2 damaged load)"
+        ]
+      },
+      {
+        "id": "browser/chromium-webgl2-input",
+        "name": "browser tests (chromium webgl2 input)",
+        "history_names": [
+          "browser tests (chromium webgl2 input)"
+        ]
+      },
+      {
+        "id": "browser/chromium-webgl2-match-reload",
+        "name": "browser tests (chromium webgl2 match reload)",
+        "history_names": [
+          "browser tests (chromium webgl2 match reload)"
+        ]
+      },
+      {
+        "id": "browser/chromium-webgl2-replay-reload",
+        "name": "browser tests (chromium webgl2 replay reload)",
+        "history_names": [
+          "browser tests (chromium webgl2 replay reload)"
+        ]
+      },
+      {
+        "id": "browser/chromium-webgl2-responsive-and-startup",
+        "name": "browser tests (chromium webgl2 responsive and startup)",
+        "history_names": [
+          "browser tests (chromium webgl2 responsive and startup)"
+        ]
+      },
+      {
+        "id": "browser/chromium-webgl2-viewport",
+        "name": "browser tests (chromium webgl2 viewport)",
+        "history_names": [
+          "browser tests (chromium webgl2 viewport)"
+        ]
+      },
+      {
+        "id": "browser/firefox",
+        "name": "browser tests (firefox)",
+        "history_names": [
+          "browser tests (firefox)"
+        ]
+      },
+      {
+        "id": "browser/firefox-replay-import-and-reload",
+        "name": "browser tests (firefox replay import and reload)",
+        "history_names": [
+          "browser tests (firefox replay import and reload)"
+        ]
+      },
+      {
+        "id": "browser/firefox-scripting",
+        "name": "browser tests (firefox scripting)",
+        "history_names": [
+          "browser tests (firefox scripting)"
+        ]
+      },
+      {
+        "id": "browser/firefox-wss-and-simulation",
+        "name": "browser tests (firefox WSS and simulation)",
+        "history_names": [
+          "browser tests (firefox WSS and simulation)"
+        ]
+      },
+      {
+        "id": "browser/lifecycle",
+        "name": "browser tests (lifecycle)",
+        "history_names": [
+          "browser tests (lifecycle)"
+        ]
+      },
+      {
+        "id": "browser/webkit",
+        "name": "browser tests (webkit)",
+        "history_names": [
+          "browser tests (webkit)"
+        ]
+      },
+      {
+        "id": "browser/webkit-replay-import-and-reload",
+        "name": "browser tests (webkit replay import and reload)",
+        "history_names": [
+          "browser tests (webkit replay import and reload)"
+        ]
+      },
+      {
+        "id": "browser/webkit-scripting",
+        "name": "browser tests (webkit scripting)",
+        "history_names": [
+          "browser tests (webkit scripting)"
+        ]
+      },
+      {
+        "id": "browser/webkit-wss-and-simulation",
+        "name": "browser tests (webkit WSS and simulation)",
+        "history_names": [
+          "browser tests (webkit WSS and simulation)"
+        ]
+      },
+      {
+        "id": "coverage",
+        "name": "Native Clang coverage",
+        "history_names": [
+          "Native Clang coverage"
+        ]
+      },
+      {
+        "id": "cross-platform",
+        "name": "browser/native simulation equivalence",
+        "history_names": [
+          "browser/native simulation equivalence"
+        ]
+      },
+      {
+        "id": "macos",
+        "name": "macOS native build and checks",
+        "history_names": [
+          "macOS native build and checks",
+          "macOS build and tests",
+          "native"
+        ]
+      },
+      {
+        "id": "music",
+        "name": "music pipeline (Python)",
+        "history_names": [
+          "music pipeline (Python)"
+        ]
+      },
+      {
+        "id": "native/clang/build",
+        "name": "linux build (ubuntu:24.04, clang-18)",
+        "history_names": [
+          "linux build (ubuntu:24.04, clang-18)"
+        ]
+      },
+      {
+        "id": "native/clang/regressions",
+        "name": "Linux CLI and compatibility evidence (clang-18)",
+        "history_names": [
+          "Linux CLI and compatibility evidence (clang-18)"
+        ]
+      },
+      {
+        "id": "native/gcc11/build",
+        "name": "linux build (ubuntu:22.04, g++-11)",
+        "history_names": [
+          "linux build (ubuntu:22.04, g++-11)"
+        ]
+      },
+      {
+        "id": "native/gcc11/generators-sweep-a",
+        "name": "Map generators (ubuntu-22.04, sweep-a)",
+        "history_names": [
+          "Map generators (ubuntu-22.04, sweep-a)"
+        ]
+      },
+      {
+        "id": "native/gcc11/generators-sweep-b",
+        "name": "Map generators (ubuntu-22.04, sweep-b)",
+        "history_names": [
+          "Map generators (ubuntu-22.04, sweep-b)"
+        ]
+      },
+      {
+        "id": "native/gcc11/generators-telemetry",
+        "name": "Map generators (ubuntu-22.04, telemetry)",
+        "history_names": [
+          "Map generators (ubuntu-22.04, telemetry)"
+        ]
+      },
+      {
+        "id": "native/gcc11/regressions",
+        "name": "Linux CLI and compatibility evidence (g++-11)",
+        "history_names": [
+          "Linux CLI and compatibility evidence (g++-11)"
+        ]
+      },
+      {
+        "id": "native/gcc11/shard-1",
+        "name": "Linux tests (ubuntu-22.04, shard 1/4)",
+        "history_names": [
+          "Linux tests (ubuntu-22.04, shard 1/4)"
+        ]
+      },
+      {
+        "id": "native/gcc11/shard-2",
+        "name": "Linux tests (ubuntu-22.04, shard 2/4)",
+        "history_names": [
+          "Linux tests (ubuntu-22.04, shard 2/4)"
+        ]
+      },
+      {
+        "id": "native/gcc11/shard-3",
+        "name": "Linux tests (ubuntu-22.04, shard 3/4)",
+        "history_names": [
+          "Linux tests (ubuntu-22.04, shard 3/4)"
+        ]
+      },
+      {
+        "id": "native/gcc11/shard-4",
+        "name": "Linux tests (ubuntu-22.04, shard 4/4)",
+        "history_names": [
+          "Linux tests (ubuntu-22.04, shard 4/4)"
+        ]
+      },
+      {
+        "id": "native/gcc13/build",
+        "name": "linux build (ubuntu:24.04, g++-13)",
+        "history_names": [
+          "linux build (ubuntu:24.04, g++-13)"
+        ]
+      },
+      {
+        "id": "native/gcc13/generators-sweep-a",
+        "name": "Map generators (ubuntu-24.04, sweep-a)",
+        "history_names": [
+          "Map generators (ubuntu-24.04, sweep-a)"
+        ]
+      },
+      {
+        "id": "native/gcc13/generators-sweep-b",
+        "name": "Map generators (ubuntu-24.04, sweep-b)",
+        "history_names": [
+          "Map generators (ubuntu-24.04, sweep-b)"
+        ]
+      },
+      {
+        "id": "native/gcc13/generators-telemetry",
+        "name": "Map generators (ubuntu-24.04, telemetry)",
+        "history_names": [
+          "Map generators (ubuntu-24.04, telemetry)"
+        ]
+      },
+      {
+        "id": "native/gcc13/regressions",
+        "name": "Linux CLI and compatibility evidence (g++-13)",
+        "history_names": [
+          "Linux CLI and compatibility evidence (g++-13)"
+        ]
+      },
+      {
+        "id": "native/gcc13/shard-1",
+        "name": "Linux tests (ubuntu-24.04, shard 1/4)",
+        "history_names": [
+          "Linux tests (ubuntu-24.04, shard 1/4)"
+        ]
+      },
+      {
+        "id": "native/gcc13/shard-2",
+        "name": "Linux tests (ubuntu-24.04, shard 2/4)",
+        "history_names": [
+          "Linux tests (ubuntu-24.04, shard 2/4)"
+        ]
+      },
+      {
+        "id": "native/gcc13/shard-3",
+        "name": "Linux tests (ubuntu-24.04, shard 3/4)",
+        "history_names": [
+          "Linux tests (ubuntu-24.04, shard 3/4)"
+        ]
+      },
+      {
+        "id": "native/gcc13/shard-4",
+        "name": "Linux tests (ubuntu-24.04, shard 4/4)",
+        "history_names": [
+          "Linux tests (ubuntu-24.04, shard 4/4)"
+        ]
+      },
+      {
+        "id": "platform",
+        "name": "platform (TypeScript)",
+        "history_names": [
+          "platform (TypeScript)"
+        ]
+      },
+      {
+        "id": "platform-stack",
+        "name": "self-hosted platform stack",
+        "history_names": [
+          "self-hosted platform stack"
+        ]
+      },
+      {
+        "id": "tsan",
+        "name": "ThreadSanitizer",
+        "history_names": [
+          "ThreadSanitizer",
+          "thread-sanitizer",
+          "Thread sanitizer",
+          "thread sanitizer (threaded games)"
+        ]
+      },
+      {
+        "id": "variants/ubuntu-22.04",
+        "name": "linux variants (ubuntu:22.04)",
+        "history_names": [
+          "linux variants (ubuntu:22.04)"
+        ]
+      },
+      {
+        "id": "variants/ubuntu-24.04",
+        "name": "linux variants (ubuntu:24.04)",
+        "history_names": [
+          "linux variants (ubuntu:24.04)"
+        ]
+      },
+      {
+        "id": "web-build",
+        "name": "browser build (WebAssembly)",
+        "history_names": [
+          "browser build (WebAssembly)"
+        ]
+      },
+      {
+        "id": "web-deploy",
+        "name": "browser self-hosting deployment",
+        "history_names": [
+          "browser self-hosting deployment"
+        ]
+      },
+      {
+        "id": "web-native",
+        "name": "browser native WSS server, router and transport",
+        "history_names": [
+          "browser native WSS server, router and transport"
+        ]
+      },
+      {
+        "id": "windows",
+        "name": "windows (mingw-w64)",
+        "history_names": [
+          "windows (mingw-w64)"
+        ]
+      }
+    ],
+    "mode": "affected",
+    "requested_budget": 0.12,
+    "predictor": null,
+    "exceptions": [],
+    "inventory_count": 64,
+    "ranked_count": 64,
+    "executed_count": 64,
+    "full_matrix": true
+  },
+  "checkpoint_eligible": false
+}
