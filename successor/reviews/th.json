@@ -26898,12 +26898,90 @@
       ]
     },
     "desktop_rendering": {
-      "passed": false,
-      "evidence": []
+      "passed": true,
+      "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+      "catalog_sha256": {
+        "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
+        "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
+      },
+      "scope": "Final native desktop main/settings/lobbies/gameplay/tutorial, requested font matrix, focused tests and independent visual review; actual online desktop/auth/rooms/studios font/accessibility/overflow checks. Representative software previews; other native OS/release/GPU coverage remains separate.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/rendering/final-native-verification.json",
+          "sha256": "2e15c74bff7348b3415065d73f80712102d7f186df1dbd09965866c19c106dc7"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/native-final/manifest.json",
+          "sha256": "a2e7df92a4a0311b8b2ca2e70c8a7870efeb7f7f1e543ca9e553a537c73e9652"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/checks/final-native-coordinator-visual.json",
+          "sha256": "5f0508f3ed99f536a2847e95c84622cd2de41439be4229dd1036a0e1a64ccabb"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/checks/qualification-only-head-equivalence.json",
+          "sha256": "71cd8f10a9db17d3ee1bfde92b9f47f3f68ee2102e55e7c7185626a7d10eef46"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/report.json",
+          "sha256": "b85f58d7f198318b02af43acc58edc8126a6092898a374edb6423ae06a473f1c"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/postbuild-studio-verification.json",
+          "sha256": "820b809362cb8462935d2cff973ff7fdd6f3297a730b1694ca6d095ff324675c"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/final-probes.json",
+          "sha256": "a8365849727ea8a542ccdb5c78fcbfb0fbddf79def08c9ae625cb300bcfe3b68"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/username-hint-final-report.json",
+          "sha256": "ab6e2333dba8f123ebbffcfbd0ce38ab2a131575abc2d19b1c772e86d882bda1"
+        }
+      ]
     },
     "phone_rendering": {
-      "passed": false,
-      "evidence": []
+      "passed": true,
+      "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+      "catalog_sha256": {
+        "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
+        "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
+      },
+      "scope": "Final actual390x844compact native main/settings/lobbies/gameplay/tutorial plus actual phone-sized online/SSR/studio font, accessibility, wrapping and overflow checks. Native OS devices/packages and compiled browser-game touch startup remain separately gated.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/rendering/final-native-verification.json",
+          "sha256": "2e15c74bff7348b3415065d73f80712102d7f186df1dbd09965866c19c106dc7"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/native-final/manifest.json",
+          "sha256": "a2e7df92a4a0311b8b2ca2e70c8a7870efeb7f7f1e543ca9e553a537c73e9652"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/checks/final-native-coordinator-visual.json",
+          "sha256": "5f0508f3ed99f536a2847e95c84622cd2de41439be4229dd1036a0e1a64ccabb"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/checks/qualification-only-head-equivalence.json",
+          "sha256": "71cd8f10a9db17d3ee1bfde92b9f47f3f68ee2102e55e7c7185626a7d10eef46"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/report.json",
+          "sha256": "b85f58d7f198318b02af43acc58edc8126a6092898a374edb6423ae06a473f1c"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/postbuild-studio-verification.json",
+          "sha256": "820b809362cb8462935d2cff973ff7fdd6f3297a730b1694ca6d095ff324675c"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/final-probes.json",
+          "sha256": "a8365849727ea8a542ccdb5c78fcbfb0fbddf79def08c9ae625cb300bcfe3b68"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/username-hint-final-report.json",
+          "sha256": "ab6e2333dba8f123ebbffcfbd0ce38ab2a131575abc2d19b1c772e86d882bda1"
+        }
+      ]
     },
     "browser_startup": {
       "passed": false,

@@ -3,6 +3,6 @@
   "full_native_catalog_path": "data/texts.fr.txt",
   "full_native_catalog_sha256": "b49ea67ddb88fe61e0d7c656f07b7d102f8ae32f243c09012f4a53dc3e58ef90",
   "full_online_catalog_path": "platform/packages/i18n/locales/fr.json",
-  "full_online_catalog_sha256": "f566190aae13406da136e1b370ca62acac364aaa6442dedb122bc890de72481d",
+  "full_online_catalog_sha256": "14ff93fcb447223fbdd049443553bf8689a6086aaf754adf35a033bee3d20646",
   "scope": "Full shipped catalog overlay; viewport/platform claims reported separately."
 }

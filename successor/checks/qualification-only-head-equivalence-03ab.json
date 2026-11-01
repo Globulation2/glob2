@@ -1,0 +1,44 @@
+{
+  "head": "03abf217c082d97f1512b2ac691ef64d3e30b065",
+  "producer_equivalence": {
+    "native_local_and_containers": {
+      "producer_revision": "cedcdb3926860e0ee5417f29d78c66e4e10a488b",
+      "changed_paths_since_producer": [
+        "browser/tests/thai-localization.spec.js",
+        "docs/mobile/verification.md",
+        "mobile/ios_localization_qa.py",
+        "test/test_ios_localization_qa.py"
+      ],
+      "all_changes_are_explicit_qualification_tests_fixtures_or_documentation": true
+    },
+    "desktop_hosted_request": {
+      "producer_revision": "178cbe8afd93b9d017444d0dbb9eb3a03904ca0b",
+      "changed_paths_since_producer": [
+        "browser/tests/thai-localization.spec.js",
+        "docs/mobile/verification.md",
+        "mobile/ios_localization_qa.py",
+        "mobile/smoke.py",
+        "test/build_system/test_mobile.py",
+        "test/test_ios_localization_qa.py"
+      ],
+      "all_changes_are_explicit_qualification_tests_fixtures_or_documentation": true
+    },
+    "ios_hosted_request": {
+      "producer_revision": "e0ccc8465c260b7582e3e92a1b982f2c48a86d12",
+      "changed_paths_since_producer": [
+        "browser/tests/thai-localization.spec.js"
+      ],
+      "all_changes_are_explicit_qualification_tests_fixtures_or_documentation": true
+    }
+  },
+  "current_files_sha256": {
+    "data/texts.th.txt": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
+    "platform/packages/i18n/locales/th.json": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
+    "data/fonts/scripts/NotoSansThai-Regular.ttf": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+    "libgag/src/TrueTypeFont.cpp": "438e35da75aebde01efdb725647d0b7bafbb37ddf75f2d0d8872b1156575b383",
+    "libgag/src/ui/TextLayout.cpp": "0e1980f7bc75f78c822e92419c4af6246e3c5f6bb9430ca4d0bef854731a044c",
+    "libgag/include/TextBreaks.h": "ef909748d4d718596bcb066a2b3a323cd3879cd3c38e9ca2c82575f391ea3a3d",
+    "tools/capture_localization_platform.py": "7648ee37cdf0747124fcdea77b7590b16817625aa5ef9f30fcacfab05e4dd851"
+  },
+  "limits": "Does not relabel tested binary revisions or mark any uncompleted run passed. iOS helper fixture changes require their own e0ccc retry; native runtime/catalog/font/packaging inputs remain unchanged after the listed native producers. Browser tests changed and require actual execution."
+}

@@ -1,0 +1,29 @@
+{
+  "reviewer": "root coordinator",
+  "producer_revision": "cedcdb3926860e0ee5417f29d78c66e4e10a488b",
+  "current_head": "4f68f521b6166247f2f8774ab0f3cc3b2f9cf431",
+  "result": "passed for the representative software-rendered views inspected",
+  "viewed_png_sha256": {
+    "1280x900-matrix/font-10-scale-2-page-001.png": "a46ef5864da23d016f816028df125942a03f18ed0be6a87a8e7110c3fe53b70f",
+    "1280x900-matrix/font-20-scale-1-page-002.png": "d3268bbcca80ad99801a5e21222ebaa2f2ef32cf03f28b24150556bde5f68275",
+    "1280x800-settings/settings.png": "953262994f4e72b35e8aad0f83c222c51dc5d7237235c3a2ce1a2672216c64ae",
+    "1280x800-gameplay/gameplay-dialog.png": "06d757a1fb515c0a54e877ce79c48578d5518b17b9f55e6ed73ef4842b453236",
+    "1280x800-tutorial/tutorial-introduction-dialog.png": "8b283c4724215af0abd21e162d4db87fe8bbd09661b971ee7f2d5e08ea325ee2",
+    "1280x800-tutorial/tutorial-introduction.png": "7cbde7265bca484c6632a4238ca4db44547059adc436be3eaf4000a3b52d5062",
+    "390x844-settings/settings.png": "8f73361aec30acd0e9aa8f3d3d684f82e80188d2bcb30950077e6a6f96421711",
+    "390x844-gameplay/gameplay-dialog.png": "5120e0bf6bc0982d197240ace0afc9b029098cf3af2a4a29b4db1f3337934a0a",
+    "390x844-tutorial/tutorial-introduction.png": "b5e9430e5d1408b7b8326293684533b316581aa7ae02daa9dbdbc619098128bf",
+    "390x844-lobby-players/lobby-players.png": "8553c8513680140309d9a030f28b5ea6b7b905513fb0d13df0a764e388ac7d66"
+  },
+  "findings": [],
+  "observations": [
+    "Thai tone/stacked-vowel marks remain clear, with no visible soft-break markers or glyph boxes.",
+    "Native settings use readable metrics and natural wrapping at390px; controls and footer remain inside their intended regions.",
+    "Native phone gameplay/menu and tutorial guidance fit; desktop settings/gameplay/tutorial remain readable.",
+    "Technical backend and product identifiers and user-authored player name remain unchanged as intended."
+  ],
+  "limits": [
+    "Representative agent visual inspection, not native-human certification or exhaustive per-string visual inspection.",
+    "Linux development binary, SDL dummy/software preview. Actual other operating systems, release packages, GPU/physical-device coverage remain separately gated."
+  ]
+}

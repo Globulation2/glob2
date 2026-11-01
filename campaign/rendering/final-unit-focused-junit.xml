@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="41" failures="0" errors="0" skipped="0"><testsuite name="BidiText"><testcase classname="BidiText" name="logical shaping runs preserve Arabic codepoints and numeric ratios" time="0.000563" status="run" />
+    <testcase classname="BidiText" name="logical shaping keeps both ends of spaced numeric brackets in one direction" time="0.005952" status="run" />
+    <testcase classname="BidiText" name="left-to-right text is unchanged" time="0" status="run" />
+    <testcase classname="BidiText" name="Arabic letters join and read right to left" time="0" status="run" />
+    <testcase classname="BidiText" name="numbers and Latin words keep their own order inside right-to-left text" time="0" status="run" />
+    <testcase classname="BidiText" name="matches fribidi on every Arabic and Persian catalog value" time="1.65719" status="run" />
+  </testsuite><testsuite name="TextMetrics"><testcase classname="TextMetrics" name="offscreen transformed text rasterizes at the requested resolution" time="0.151343" status="run" />
+    <testcase classname="TextMetrics" name="font metrics do not rasterize or evict rendered text" time="4.92501" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.001173" status="run" />
+    <testcase classname="UILayout" name="settings toggles keep captions left and the full row actionable" time="0.314024" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0.000135" status="run" />
+    <testcase classname="UILayout" name="wrap and ellipsis preserve shaping clusters" time="0.000241" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0.000126" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0.036463" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0.000616" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0.000953" status="run" />
+    <testcase classname="UILayout" name="native gestures retain fractions ownership and survive rebuilds" time="0.001115" status="run" />
+    <testcase classname="UILayout" name="native gesture bounds settle and external jumps cancel the tail" time="0.041934" status="run" />
+    <testcase classname="UILayout" name="native nested capture does not transfer to parent and missing owners consume tails" time="0.000412" status="run" />
+    <testcase classname="UILayout" name="native popup scrolling owns its tail after dismissal" time="0.005298" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.162858" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.039483" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.028256" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0.021011" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0.00134" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.055756" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0.000146" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0.000323" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0.01944" status="run" />
+    <testcase classname="UILayout" name="icon segments and choices" time="0.00033" status="run" />
+    <testcase classname="UILayout" name="text field" time="0.000109" status="run" />
+    <testcase classname="UILayout" name="list view" time="0.000121" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0.000348" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0.000137" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.256536" status="run" />
+  </testsuite></testsuites>

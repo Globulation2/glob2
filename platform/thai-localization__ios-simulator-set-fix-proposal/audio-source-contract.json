@@ -1,0 +1,6 @@
+{
+  "basis": "src/app/Application.cpp:194-198: GLOB2_MOBILE requires audioPreferenceChosen before MainMenuScreen; Settings default false. ios_smoke only accepts MainMenuScreen and does not drive setup.",
+  "runtime_failure_observed": false,
+  "fixture_only": "Mark audio chosen with mute=1 (silence), alongside existing hand/introduction fixture. Keep language unset to exercise locale detection.",
+  "disclosed_scope": "QA starts after setup; no claim OS audio preference interaction was tested."
+}

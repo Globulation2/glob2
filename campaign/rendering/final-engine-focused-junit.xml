@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="17" failures="0" errors="0" skipped="0"><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.200151" status="run" />
+  <testcase classname="FontKerning" name="Thai soft word hints affect wrapping without affecting raster or metrics" time="0.515185" status="run" />
+  <testcase classname="FontKerning" name="high-DPI Hindi wrapping width is preserved without cropping the raw raster" time="0.102781" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.322087" status="run" />
+  <testcase classname="FontKerning" name="language changes refresh default line height and Arabic shaping caches" time="1.78209" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.396369" status="run" />
+  <testcase classname="FontKerning" name="script fonts shape clusters and preserve measured raster sizes after reload" time="4.06662" status="run" />
+  <testcase classname="FontKerning" name="script run composition preserves straight-alpha antialiasing" time="0.084547" status="run" />
+  <testcase classname="FontKerning" name="shaping clusters keep conjuncts and combining marks together" time="0.147426" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.051493" status="run" />
+  </testsuite><testsuite name="SystemLanguage"><testcase classname="SystemLanguage" name="ISO locales map to the historical catalog codes" time="0.000251" status="run" />
+  <testcase classname="SystemLanguage" name="Thai starts from an installed catalog for system and saved preferences" time="36.8623" status="run" />
+  <testcase classname="SystemLanguage" name="expanded locales distinguish scripts and the precise Pulaar variety" time="0.000597" status="run" />
+  <testcase classname="SystemLanguage" name="languages without a catalog are not confused with catalog codes" time="0.000219" status="run" />
+  <testcase classname="SystemLanguage" name="regional and script variants pick the matching catalog" time="0.000111" status="run" />
+  <testcase classname="SystemLanguage" name="startup follows the system only when the profile has no usable language" time="36.4057" status="run" />
+  <testcase classname="SystemLanguage" name="the first available preference wins, then English" time="0.015917" status="run" />
+  </testsuite></testsuites>

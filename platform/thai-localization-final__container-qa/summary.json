@@ -1,0 +1,125 @@
+{
+  "status": "passed",
+  "build_requested_revision": "cedcdb3926860e0ee5417f29d78c66e4e10a488b",
+  "observed_final_revision": "e0ccc8465c260b7582e3e92a1b982f2c48a86d12",
+  "images": {
+    "platform": {
+      "tag": "glob2-thai-platform-qa:cedc",
+      "id": "sha256:dbfff2a124d148057c1ffcabd219e49b682cc3600a6027737645e7bc1fc49c6a",
+      "size_bytes": 151256948,
+      "user": "10001:10001",
+      "design_system_revision": "220b965b061e402df7531fa0f9ad5104bf29a638"
+    },
+    "caddy": {
+      "tag": "glob2-thai-caddy-qa:cedc",
+      "id": "sha256:8e9b6a7da86183c9c1fba0d251b7f70c80ff56a55eee0ae5ee9651b1ea6e4dc3",
+      "size_bytes": 172498758,
+      "user": "10001:10001",
+      "design_system_revision": "220b965b061e402df7531fa0f9ad5104bf29a638"
+    }
+  },
+  "platform_build_seconds": 121.90124940872192,
+  "caddy_build_seconds": 378.58425545692444,
+  "platform": {
+    "node": "v22.23.4",
+    "uid": 10001,
+    "checks": [
+      "Thai lazy import, th-TH negotiation, wrong-script rejection, translated string and plural",
+      "Server catalog import",
+      "Fastify injection SSR Thai LTR and translated account UI without listening",
+      "SSR font, rewritten CSS and Noto licence asset routes"
+    ],
+    "files": {
+      "NotoSansThai-Regular.ttf": {
+        "bytes": 37752,
+        "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+        "contentType": "font/ttf"
+      },
+      "LICENSE-Noto.txt": {
+        "bytes": 4377,
+        "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+        "contentType": "text/plain; charset=utf-8"
+      },
+      "script-fonts.css": {
+        "bytes": 3602,
+        "sha256": "3f95cf81d1b462fbc75cb77020e0be60fcac3c849e36590f2a4a1c1fbd203595",
+        "contentType": "text/css; charset=utf-8"
+      },
+      "packages/i18n/locales/th.json": {
+        "bytes": 349862,
+        "sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
+      },
+      "packages/i18n/script-fonts.css": {
+        "bytes": 3771,
+        "sha256": "593a96e3c346cacaf35f40bb2304703455f41a7e97d3cdd76e5290fe8b3bcf50"
+      }
+    }
+  },
+  "caddy": {
+    "checks": [
+      "Actual Caddy image extracted Thai dynamic chunk imports and matches all source catalog values",
+      "Index bundle references i18n loader with dynamic Thai chunk import",
+      "Hashed Noto Thai font matches source and CSS references it",
+      "Thai CSS locale selectors present",
+      "Noto licence copied exactly",
+      "Real music decoder JS packaged and WASM compiles"
+    ],
+    "entries": 2852,
+    "chunk": {
+      "path": "th-BSFAARBi.js",
+      "sha256": "dc88385ee57bd27a8e1f57dfde7b2f98942c67a9b6fe04e71832d9f08fc8a52b"
+    },
+    "font": {
+      "path": "NotoSansThai-Regular-B7bm4NDe.ttf",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+    },
+    "notice": {
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb"
+    }
+  },
+  "smoke_isolation": "--network none --read-only --cap-drop=ALL --security-opt no-new-privileges; no listeners or database; temporary owned containers removed",
+  "initial_harness_correction": "Initial static bundle check assumed Thai dynamic import lived in index chunk. Actual Vite i18n chunk was inspected; check corrected to require index→i18n loader→dynamic Thai import. Initial failure logs retained; final check passed. No product changes.",
+  "limits": [
+    "Native engine-agent/relay images not built by this focused online packaging task.",
+    "No full production compose stack, public HTTP service, live sign-in/provider/payment or browser rendering launched."
+  ],
+  "evidence": [
+    "platform-build.log.gz",
+    "platform-build.json",
+    "platform-smoke-command.json",
+    "platform-smoke.mjs",
+    "platform-smoke.stdout",
+    "platform-image-inspect.json",
+    "caddy-build.log.gz",
+    "caddy-build.json",
+    "caddy-smoke-command.json",
+    "caddy-smoke.mjs",
+    "caddy-smoke.stdout",
+    "caddy-image-inspect.json",
+    "provenance.json"
+  ],
+  "evidence_retention": "Owned Caddy image retained; complete extracted file inventory/hashes in caddy-web-inventory.json. Only files needed by Thai packaging smoke retained under caddy-web; unrelated skin models, other locales and source maps removed from artifact copy after successful full-image checks.",
+  "retained_web_files": [
+    "index.html",
+    "assets/Account-BY2xzm8t.css",
+    "assets/AiBuildingStudio-DcRBDZ1j.css",
+    "assets/Ais-Cl7SnRIn.css",
+    "assets/CodingStudio-BxPoZYIn.css",
+    "assets/MusicStudio-Bu9vl4DZ.css",
+    "assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+    "assets/Studio-B8AFNURH.css",
+    "assets/TerrainStudio-BTDnIWOD.css",
+    "assets/buildings-6h6IbQbV.css",
+    "assets/editor-Br_kD0ds.css",
+    "assets/i18n-BWaVDxha.js",
+    "assets/index-CweDB2Lm.js",
+    "assets/index-DIwZHyaD.css",
+    "assets/library-C5eXv-Ec.css",
+    "assets/sets-Z-XzXdoP.css",
+    "assets/studio-jx6z6FUz.css",
+    "assets/th-BSFAARBi.js",
+    "fonts/LICENSE-Noto.txt",
+    "music/decoder.js",
+    "music/decoder.wasm"
+  ]
+}

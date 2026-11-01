@@ -1,0 +1,72 @@
+[
+    {
+        "Id": "sha256:8e9b6a7da86183c9c1fba0d251b7f70c80ff56a55eee0ae5ee9651b1ea6e4dc3",
+        "RepoTags": [
+            "glob2-thai-caddy-qa:cedc"
+        ],
+        "RepoDigests": [
+            "glob2-thai-caddy-qa@sha256:8e9b6a7da86183c9c1fba0d251b7f70c80ff56a55eee0ae5ee9651b1ea6e4dc3"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-31T21:47:59.600793817-04:00",
+        "Config": {
+            "User": "10001:10001",
+            "ExposedPorts": {
+                "2019/tcp": {},
+                "443/tcp": {},
+                "443/udp": {},
+                "80/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "CADDY_VERSION=v2.11.4",
+                "XDG_CONFIG_HOME=/config",
+                "XDG_DATA_HOME=/data"
+            ],
+            "Cmd": [
+                "caddy",
+                "run",
+                "--config",
+                "/etc/caddy/Caddyfile",
+                "--adapter",
+                "caddyfile"
+            ],
+            "WorkingDir": "/srv",
+            "Labels": {
+                "org.glob2.design-system-revision": "220b965b061e402df7531fa0f9ad5104bf29a638",
+                "org.opencontainers.image.description": "a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go",
+                "org.opencontainers.image.documentation": "https://caddyserver.com/docs",
+                "org.opencontainers.image.licenses": "Apache-2.0",
+                "org.opencontainers.image.source": "https://github.com/caddyserver/caddy-docker",
+                "org.opencontainers.image.title": "Caddy",
+                "org.opencontainers.image.url": "https://caddyserver.com",
+                "org.opencontainers.image.vendor": "Light Code Labs",
+                "org.opencontainers.image.version": "v2.11.4"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 172498758,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:e63b02c2b5c761df2cb95e657d744f27d95da4e051235a13c80b88cd68eab188",
+                "sha256:c56ed5007fe949efbc262fb0cbf5dd1bb1c60954b423375e37b3fc6faa478d39",
+                "sha256:b5691abaf4ca50aadf0bb3d1ba4a044164bccaa0c8ec4fba98edb6b74c9d1f76",
+                "sha256:b772a028c043e792604569b2a9835c29bab7f909d4b16fd6b14cceac6efde5c7",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:96e7b554b52e5962de55ac8771668878ea0b59b5c5811dfe0b96d800fde84bb6",
+                "sha256:6f831604d907e32a795310e12d3c71787cf2b12421270c42d0043996edcacd0e",
+                "sha256:550e75e3587cd43a6a0fd67d2a3fb21a17807a1b3625f6d34a2228d38266866d"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-11-01T01:48:17.020247768Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:8e9b6a7da86183c9c1fba0d251b7f70c80ff56a55eee0ae5ee9651b1ea6e4dc3",
+            "size": 856
+        }
+    }
+]

@@ -1,0 +1,24 @@
+{
+  "compiled_producer_revision": "e100fe68d435784f98d0f51d62331d1ba74febea",
+  "current_revision": "cedcdb3926860e0ee5417f29d78c66e4e10a488b",
+  "changed_paths": [
+    ".github/workflows/build.yml",
+    ".github/workflows/ci-linux-build.yml",
+    ".github/workflows/ci-macos.yml",
+    "browser/tests/thai-localization.spec.js",
+    "docs/development/verification.md",
+    "docs/mobile/verification.md",
+    "mobile/ios.py",
+    "mobile/ios_localization_qa.py",
+    "mobile/smoke.py",
+    "platform/packages/i18n/locales/th.json",
+    "test/build_system/test_mobile.py",
+    "test/test_capture_localization_platform.py",
+    "test/test_ios_localization_qa.py",
+    "test/test_macos_localization_bundle.py",
+    "tools/capture_localization_platform.py",
+    "tools/check_macos_localization_bundle.py"
+  ],
+  "native_runtime_paths_changed": [],
+  "scope": "Native source/assets/font/catalog path equivalence only; OS packaging/browserQA changes remain separately qualified. Existing captured producer remains e100, never relabeled as current revision. Full final provenance relink remains planned."
+}

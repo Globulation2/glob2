@@ -1,0 +1,81 @@
+{
+  "artifact_id": 13066787392,
+  "zip_bytes": 169189599,
+  "downloaded_bytes": 1244734,
+  "range_requests": 57,
+  "selected_files": [
+    {
+      "name": "android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.sha256",
+      "bytes": 91
+    },
+    {
+      "name": "android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json",
+      "bytes": 89
+    },
+    {
+      "name": "mobile-smoke/activity.txt",
+      "bytes": 30561
+    },
+    {
+      "name": "mobile-smoke/logcat.txt",
+      "bytes": 144197
+    },
+    {
+      "name": "mobile-smoke/memory.txt",
+      "bytes": 2827
+    },
+    {
+      "name": "mobile-smoke/profile-after.txt",
+      "bytes": 378
+    },
+    {
+      "name": "mobile-smoke/profile-before.txt",
+      "bytes": 378
+    },
+    {
+      "name": "mobile-smoke/relaunched.png",
+      "bytes": 160297
+    },
+    {
+      "name": "mobile-smoke/result.json",
+      "bytes": 334
+    },
+    {
+      "name": "mobile-smoke/resumed.png",
+      "bytes": 182697
+    },
+    {
+      "name": "mobile-smoke/rotation-0.png",
+      "bytes": 147979
+    },
+    {
+      "name": "mobile-smoke/rotation-1.png",
+      "bytes": 152935
+    },
+    {
+      "name": "mobile-smoke/settings.png",
+      "bytes": 65598
+    },
+    {
+      "name": "mobile-smoke/startup.png",
+      "bytes": 161706
+    },
+    {
+      "name": "mobile-smoke/thai-apk-resources.txt",
+      "bytes": 1064
+    },
+    {
+      "name": "mobile-smoke/thai-localization.json",
+      "bytes": 2726
+    },
+    {
+      "name": "mobile-emulator.log",
+      "bytes": 8949
+    },
+    {
+      "name": "android-x86_64-build.log",
+      "bytes": 14444615
+    }
+  ],
+  "archives_or_app_binaries_downloaded": false
+}

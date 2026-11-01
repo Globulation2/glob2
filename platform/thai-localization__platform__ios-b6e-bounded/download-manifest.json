@@ -1,0 +1,33 @@
+{
+  "artifact_id": 13064859336,
+  "zip_bytes": 401056633,
+  "downloaded_bytes": 615128,
+  "range_requests": 21,
+  "selected_files": [
+    {
+      "name": "build.log",
+      "bytes": 22558063
+    },
+    {
+      "name": "commands.log",
+      "bytes": 1666
+    },
+    {
+      "name": "dependencies.log",
+      "bytes": 151415
+    },
+    {
+      "name": "result.json",
+      "bytes": 4887
+    },
+    {
+      "name": "toolchain.json",
+      "bytes": 1597
+    },
+    {
+      "name": "xcode-inventory.json",
+      "bytes": 344
+    }
+  ],
+  "archives_or_app_binaries_downloaded": false
+}

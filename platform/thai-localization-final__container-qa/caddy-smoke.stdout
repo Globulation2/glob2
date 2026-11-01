@@ -1,0 +1,22 @@
+{
+  "checks": [
+    "Actual Caddy image extracted Thai dynamic chunk imports and matches all source catalog values",
+    "Index bundle references i18n loader with dynamic Thai chunk import",
+    "Hashed Noto Thai font matches source and CSS references it",
+    "Thai CSS locale selectors present",
+    "Noto licence copied exactly",
+    "Real music decoder JS packaged and WASM compiles"
+  ],
+  "entries": 2852,
+  "chunk": {
+    "path": "th-BSFAARBi.js",
+    "sha256": "dc88385ee57bd27a8e1f57dfde7b2f98942c67a9b6fe04e71832d9f08fc8a52b"
+  },
+  "font": {
+    "path": "NotoSansThai-Regular-B7bm4NDe.ttf",
+    "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+  },
+  "notice": {
+    "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb"
+  }
+}

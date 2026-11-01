@@ -3,7 +3,7 @@
   "full_native_catalog_path": "data/texts.th.txt",
   "full_native_catalog_sha256": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
   "full_online_catalog_path": "platform/packages/i18n/locales/th.json",
-  "full_online_catalog_sha256": "8bc1380c2899c9bdc89fa9bb43fb67794c51a0f32d734fcdd1616eb408a94ab6",
+  "full_online_catalog_sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
   "scope": "Bounded diagnostic subset, not complete visual catalog coverage.",
   "selected_native_keys": [
     "[language]",

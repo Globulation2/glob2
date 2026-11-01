@@ -1,0 +1,28 @@
+{
+  "worktree_status": "",
+  "design_system_sha": "220b965b061e402df7531fa0f9ad5104bf29a638",
+  "host": "Linux x86_64",
+  "source_files": {
+    "deploy/Dockerfile": "e6a71f930618793892109f7831c6f97a95b047acc9c49fbe779e9612f6f60517",
+    "platform/package-lock.json": "97395497eef79bab58b489381e45056d25a6de1d2d1a553fc98c3aea74418392",
+    "platform/packages/i18n/locales/th.json": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
+    "platform/packages/i18n/src/index.ts": "8f3b8edf7f59155e411fdbac10679ccb94f956145399eeed5363614fe9ce01a6",
+    "platform/packages/i18n/src/server.ts": "7b65c6543468af99b7dd78000556967f77d6491a35557fac8a06ec9e777d9ab8",
+    "platform/packages/i18n/script-fonts.css": "593a96e3c346cacaf35f40bb2304703455f41a7e97d3cdd76e5290fe8b3bcf50",
+    "data/fonts/scripts/NotoSansThai-Regular.ttf": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+    "data/fonts/LICENSE-Noto.txt": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+    "browser/toolchain.json": "3c68309a9e41df83e7086a7415a99a07e727fe2c2a84c56e897bbeb5a74411d5",
+    "tools/music/build_web.py": "57674fdfc3100344bd129ec537de941cc979df871f428de6c5306aaf56dc8fb9"
+  },
+  "scope": "Actual existing deploy/Dockerfile platform and caddy targets; isolated no-network, read-only QA; no service listeners, database, external account or paid service. Does not establish native-engine packaging or deployment stack end-to-end behavior.",
+  "build_requested_revision": "cedcdb3926860e0ee5417f29d78c66e4e10a488b",
+  "observed_during_build_revision": "2abf4febe0dc9ed9d2661ad382868675585da145",
+  "revision_scope_note": "Platform build finished at requested cedc revision. HEAD advanced during Caddy build; subsequent commits change only iOS QA helper/tests/documentation, not any container, web, localization, font, runtime or build dependency input. Relevant image artifacts are verified against hashed source files.",
+  "observed_final_revision": "e0ccc8465c260b7582e3e92a1b982f2c48a86d12",
+  "changes_since_requested_revision": [
+    "docs/mobile/verification.md",
+    "mobile/ios_localization_qa.py",
+    "test/test_ios_localization_qa.py"
+  ],
+  "final_worktree_status": " M browser/tests/thai-localization.spec.js\n"
+}

@@ -1,0 +1,23 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--name",
+    "glob2-thai-caddy-smoke-cedc",
+    "--network",
+    "none",
+    "--read-only",
+    "--cap-drop=ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--mount",
+    "type=bind,src=/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/container-qa/caddy-smoke.mjs,dst=/tmp/caddy-smoke.mjs,readonly",
+    "--mount",
+    "type=bind,src=/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/container-qa/caddy-web,dst=/tmp/caddy-web,readonly",
+    "glob2-thai-platform-qa:cedc",
+    "node",
+    "/tmp/caddy-smoke.mjs"
+  ],
+  "exit_code": 0
+}

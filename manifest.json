@@ -1,14 +1,15 @@
 {
   "schema": 1,
   "branch": "codex/thai-localization-evidence",
-  "source_revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
-  "collection_time_utc": "2026-11-01T00:18:34.523020+00:00",
+  "source_revision": "03abf217c082d97f1512b2ac691ef64d3e30b065",
+  "collection_time_utc": "2026-11-01T02:20:04.891090+00:00",
   "status": "snapshot for coordinator review; platform captures and release evidence may still be incomplete",
   "limits": {
     "total_bytes": 100663296,
-    "single_source_file_bytes": 12582912
+    "single_source_file_bytes": 12582912,
+    "single_uncompressed_log_bytes": 41943040
   },
-  "total_bytes": 63754111,
+  "total_bytes": 87197273,
   "files": [
     {
       "source": "artifacts/thai-localization/manifest.json",
@@ -7922,6 +7923,24 @@
       "sha256": "6a5596533b95b4fd44c0aa1f43b12e13b36b8331727785bf2dbea96c8ecf89e6"
     },
     {
+      "source": "artifacts/thai-localization/checks/ios-e100-bundle-asset-audit.json",
+      "destination": "campaign/checks/ios-e100-bundle-asset-audit.json",
+      "category": "focused-checks",
+      "source_bytes": 4362,
+      "source_sha256": "2fdee284006cc61349c4fbc88d495a07a5f477b42219e008b18a8a784bb2d2c6",
+      "bytes": 4362,
+      "sha256": "2fdee284006cc61349c4fbc88d495a07a5f477b42219e008b18a8a784bb2d2c6"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/ios-second-bundle-qualification.json",
+      "destination": "campaign/checks/ios-second-bundle-qualification.json",
+      "category": "focused-checks",
+      "source_bytes": 1297,
+      "source_sha256": "89c7b056dec508062c7c6795c9d7060bf94d233f96561debcaf932188335aa17",
+      "bytes": 1297,
+      "sha256": "89c7b056dec508062c7c6795c9d7060bf94d233f96561debcaf932188335aa17"
+    },
+    {
       "source": "artifacts/thai-localization/checks/pr-checks-in-progress.json",
       "destination": "campaign/checks/pr-checks-in-progress.json",
       "category": "focused-checks",
@@ -7976,6 +7995,24 @@
       "sha256": "b36b24a1a3517b86b2b0c41293707da1a5016ac2660953d606b7e7b9772dee49"
     },
     {
+      "source": "artifacts/thai-localization/checks/android-diagnostics-download.log",
+      "destination": "campaign/checks/android-diagnostics-download.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/android-first-qualification-failure.log",
+      "destination": "campaign/checks/android-first-qualification-failure.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 8960,
+      "source_sha256": "d7fa24fe5eb87d5f051792ef0773805a22e123ee7555e7ac7ad617a5c844ae97",
+      "bytes": 1670,
+      "sha256": "9793aeac16a71c86174d1c607ea8b064a33ec23ae081c18bf79f4975c1af503e"
+    },
+    {
       "source": "artifacts/thai-localization/checks/android-qa-contracts.log",
       "destination": "campaign/checks/android-qa-contracts.log.gz",
       "category": "focused-checks",
@@ -7983,6 +8020,15 @@
       "source_sha256": "455a234a903f02c7d36882c9b036acc1ee7cca1176404082cfe9897ae40211f7",
       "bytes": 53,
       "sha256": "f35d88daec912fc29481aac14e24a31aace77e07b163c3802d71515ed4ce6a26"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/android-smoke-fix-contracts.log",
+      "destination": "campaign/checks/android-smoke-fix-contracts.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 2483,
+      "source_sha256": "23fb2def964b3cd99211b3f49a7f75b31843a5639285f18640d974506753d68f",
+      "bytes": 535,
+      "sha256": "29a7bd4960c4f2ff947221b2603cb98a1b138fc762662f63fa673927c45b9362"
     },
     {
       "source": "artifacts/thai-localization/checks/browser-derived-assets.log",
@@ -8030,6 +8076,15 @@
       "sha256": "543fd986a6d420fc8eb98e383bbe734887c3607fd680e28c6ca2c0e0ed64e629"
     },
     {
+      "source": "artifacts/thai-localization/checks/docs-dependencies.log",
+      "destination": "campaign/checks/docs-dependencies.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 208,
+      "source_sha256": "b985ab794711b0fee53fea12471927fae4fcd82da61f2a0d62ed7e98ab2e9ed3",
+      "bytes": 168,
+      "sha256": "80a9c8704198eebd3b3605be81c3b00ec19cd5aea9983a590da6ba9b60b6bdb4"
+    },
+    {
       "source": "artifacts/thai-localization/checks/final-break-tests.log",
       "destination": "campaign/checks/final-break-tests.log.gz",
       "category": "focused-checks",
@@ -8051,10 +8106,28 @@
       "source": "artifacts/thai-localization/checks/final-browser-unit-tests.log",
       "destination": "campaign/checks/final-browser-unit-tests.log.gz",
       "category": "focused-checks",
-      "source_bytes": 34068,
-      "source_sha256": "5a655e554917da24bd5b6cdc01d58f777bb067d5fbaf5cefd8329ee0d2fb8cc6",
-      "bytes": 7440,
-      "sha256": "265902e2476d940fe617d65d824426cdc61884f5a7a238ec029c8cc456bfbe06"
+      "source_bytes": 15800,
+      "source_sha256": "2c01808e260bec6fd8bdbdaf57f4c21a2ea4eae0f64eb560aabd7ce5ef261fc8",
+      "bytes": 5869,
+      "sha256": "59a47d86643a601560abf567aa1f51c317bbcc6cc6bf1291c0534b4db4dd06bd"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/final-doc-contracts.log",
+      "destination": "campaign/checks/final-doc-contracts.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 109,
+      "source_sha256": "1822e087313c63643806534667202591c83ac2d5a5db377f3c9f836e91dd8ad4",
+      "bytes": 55,
+      "sha256": "d8e6c633739de596de2af11a4c61a29b35b6d75efe4e89a5259696f001afd3a3"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/final-doc-links.log",
+      "destination": "campaign/checks/final-doc-links.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 61,
+      "source_sha256": "7b682a9db86b72a0e0d0521536a76e4d03a8f7ea727b3a28fa30eac804168f81",
+      "bytes": 79,
+      "sha256": "16348e6f85022e588b4ac76350ab5792ad33b2e5cb7b3400e54bff6569f9482f"
     },
     {
       "source": "artifacts/thai-localization/checks/final-font-coverage.log",
@@ -8118,6 +8191,24 @@
       "source_sha256": "c55d68ddfbb5a6a300cc85048dc3b50a6ce9d4f966bc2e7d3ee5b166653a41cf",
       "bytes": 55,
       "sha256": "d031960d4d16fa7e4234fd887bd20e96e318ed27708d6ab14c7b50802ebbc6cf"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/final-simulation-scope-branch.log",
+      "destination": "campaign/checks/final-simulation-scope-branch.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 100,
+      "source_sha256": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe",
+      "bytes": 98,
+      "sha256": "96512ec3af588f78e2c9834a6b1ee7e20a746dcfb288e694bff055b962a42057"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/final-simulation-scope.log",
+      "destination": "campaign/checks/final-simulation-scope.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 65,
+      "source_sha256": "9bc623ade0db47e88993574a2d72ded3b4df9f6b04b174609da1ae593ef25626",
+      "bytes": 85,
+      "sha256": "885851e46d1467b1b98dd66b945fd048ff9fb35719d118c45f1cdec068f07d3d"
     },
     {
       "source": "artifacts/thai-localization/checks/final-supplement-all-i18n-tests.log",
@@ -8300,6 +8391,24 @@
       "sha256": "6959490204167a666a96d8eceb5f0a10d4e537a6926c4ca28db14c919d4502cb"
     },
     {
+      "source": "artifacts/thai-localization/checks/ios-artifact-download.log",
+      "destination": "campaign/checks/ios-artifact-download.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/ios-final-fixture-tests.log",
+      "destination": "campaign/checks/ios-final-fixture-tests.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 107,
+      "source_sha256": "fdc0e9c9920ecbb0835572ec9f8a77d47bd2c7ee420a3a06fd3348a745064a12",
+      "bytes": 54,
+      "sha256": "989ecfb24e86da42bc52c8fec8d391eb6211a6d6af2fd1ab5d17b360154ac685"
+    },
+    {
       "source": "artifacts/thai-localization/checks/ios-first-hosted-failure.log",
       "destination": "campaign/checks/ios-first-hosted-failure.log.gz",
       "category": "focused-checks",
@@ -8309,6 +8418,15 @@
       "sha256": "fb0dd38afc7d75e2d2d69841d2dabf1468c0d06790a83a4b4df636ab91b19ce0"
     },
     {
+      "source": "artifacts/thai-localization/checks/ios-packaging-fix-tests.log",
+      "destination": "campaign/checks/ios-packaging-fix-tests.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 107,
+      "source_sha256": "5e20053429885b321412fba59395b63778b765d57c8453726a880f0d8216f040",
+      "bytes": 54,
+      "sha256": "aa18159a1157a133abd490af1730293efbb63891771b5abd38a079abd4bae276"
+    },
+    {
       "source": "artifacts/thai-localization/checks/ios-qa-contracts.log",
       "destination": "campaign/checks/ios-qa-contracts.log.gz",
       "category": "focused-checks",
@@ -8316,6 +8434,51 @@
       "source_sha256": "3947d56bc87323cfb373ddb17fcc4be07a0b8a81879aa3a5471a4b4e88f7166d",
       "bytes": 54,
       "sha256": "1e04d6ac6adce999c88bac02a9cfe268e2b0925c545ccef93dabc88ceaf61875"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/ios-qualification-failure.log",
+      "destination": "campaign/checks/ios-qualification-failure.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 4806,
+      "source_sha256": "bd7912b0192d2efc3636e2ca3dbcecd493611a36429a6828904634976dc724b9",
+      "bytes": 1002,
+      "sha256": "c0b11ee919f26df08dedff33db43417f11b4381a95b2c697c8d6ac7c375a0ec1"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/ios-second-live-job.log",
+      "destination": "campaign/checks/ios-second-live-job.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 27820409,
+      "source_sha256": "ecd9b759e659a19e141cdd5df2cb250bfb6849c93e47b239ee578ebb60982930",
+      "bytes": 1566756,
+      "sha256": "9a3dc90c0eed9d81fc95d6342f38f097e093e285e8478fe56a4eea02071e067b"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/ios-second-qualification-failure.log",
+      "destination": "campaign/checks/ios-second-qualification-failure.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/ios-simulator-set-tests.log",
+      "destination": "campaign/checks/ios-simulator-set-tests.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 107,
+      "source_sha256": "926ebff95ca850b36ade7e080fea8aa4ebeb903da97daf48b7a8dabcea0a4a4f",
+      "bytes": 54,
+      "sha256": "d4da08dc960206431c2709192a4bb0ecf181f4c7b3ef1d97d2435c368f7f558c"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/macos-package-contracts.log",
+      "destination": "campaign/checks/macos-package-contracts.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 100,
+      "source_sha256": "6745558e6ded2bb2dc402101cac307a4bdf00f16c5255c6cd09c39a4edeea57c",
+      "bytes": 53,
+      "sha256": "9272d6f10e010afa558ca503388b57106a3333af618985214a4273f207d9a6a8"
     },
     {
       "source": "artifacts/thai-localization/checks/master-baseline-replay-tests.log",
@@ -8390,6 +8553,15 @@
       "sha256": "df00b068dda36937dc9cab85363a8e1efd005f71d49fcbf3e95e44da2134ac0a"
     },
     {
+      "source": "artifacts/thai-localization/checks/thai-browser-test-inventory.log",
+      "destination": "campaign/checks/thai-browser-test-inventory.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 1595,
+      "source_sha256": "d67782b1f4f17fd5a6fb13a9ef21cf40cbc5d8badc70d1262482916d937206f4",
+      "bytes": 260,
+      "sha256": "7de5e529d58f06908b20aa4e296b7e684f7d0a466843310641fd23e7c07f5b58"
+    },
+    {
       "source": "artifacts/thai-localization/checks/thai-web-e2e.log",
       "destination": "campaign/checks/thai-web-e2e.log.gz",
       "category": "focused-checks",
@@ -8453,13 +8625,22 @@
       "sha256": "978bb87ebc4fe82b3fb1eab099dde890eaaec0d35db6bb3e4a1ddd42c5adf366"
     },
     {
+      "source": "artifacts/thai-localization/checks/username-hint-prettier.log",
+      "destination": "campaign/checks/username-hint-prettier.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 66,
+      "source_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "bytes": 82,
+      "sha256": "6cd316ae8e81df0ff79776205007450fac3d62e1ba8e884e169e326d7955ebe5"
+    },
+    {
       "source": "artifacts/thai-localization/checks/wasm-integrated-release-build.log",
       "destination": "campaign/checks/wasm-integrated-release-build.log.gz",
       "category": "focused-checks",
-      "source_bytes": 366281,
-      "source_sha256": "51c77c63b7dfb9979e309e454a8273e6de10ec34fd89a84ad49ecca238365458",
-      "bytes": 39064,
-      "sha256": "87ea34aaa9bd181235f57d4a1370cad6e0e765a7b951e7d546044185779e632f"
+      "source_bytes": 17495056,
+      "source_sha256": "6210fa0977adc114282acd77bc692490c4e574bad54dc31468238463aa38ef6f",
+      "bytes": 574050,
+      "sha256": "151002254815cb48bd528990e1b6db7d745132a5cb1e92b1940df982378343d7"
     },
     {
       "source": "artifacts/thai-localization/checks/wasm-release-build.log",
@@ -8480,6 +8661,15 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
+      "source": "artifacts/thai-localization/checks/evidence-fa57-credential-scan.txt",
+      "destination": "campaign/checks/evidence-fa57-credential-scan.txt",
+      "category": "focused-checks",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
       "source": "artifacts/thai-localization/checks/integrated-replay-baseline-diff.txt",
       "destination": "campaign/checks/integrated-replay-baseline-diff.txt",
       "category": "focused-checks",
@@ -8487,6 +8677,24 @@
       "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/ios-second-live-job-status.txt",
+      "destination": "campaign/checks/ios-second-live-job-status.txt",
+      "category": "focused-checks",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/ios-second-log-status.txt",
+      "destination": "campaign/checks/ios-second-log-status.txt",
+      "category": "focused-checks",
+      "source_bytes": 81,
+      "source_sha256": "a935b4b74e7bbcf3f4df4715d109be1017b0b8d8eec430a4e632836616953f66",
+      "bytes": 81,
+      "sha256": "a935b4b74e7bbcf3f4df4715d109be1017b0b8d8eec430a4e632836616953f66"
     },
     {
       "source": "artifacts/thai-localization/checks/replay-baseline-diff.txt",
@@ -8525,13 +8733,67 @@
       "sha256": "7a1ec342af83d0b2e86717520047c1165d69fe028f6a2378b831354a21a87830"
     },
     {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/commands.json",
+      "destination": "campaign/rendering/baseline-wrap/commands.json",
+      "category": "rendering-evidence",
+      "source_bytes": 45908,
+      "source_sha256": "6e11cc3a8ddc436db66c04f25e8e49ca94e9539258e75a71fffda7d4f0b1c3ba",
+      "bytes": 45908,
+      "sha256": "6e11cc3a8ddc436db66c04f25e8e49ca94e9539258e75a71fffda7d4f0b1c3ba"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/comparison.json",
+      "destination": "campaign/rendering/baseline-wrap/comparison.json",
+      "category": "rendering-evidence",
+      "source_bytes": 8119,
+      "source_sha256": "e748a17d156df2fa8cc385140cd8f867a9671039d96c62241d2d855fd1aff0cd",
+      "bytes": 8119,
+      "sha256": "e748a17d156df2fa8cc385140cd8f867a9671039d96c62241d2d855fd1aff0cd"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-matrix.json",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-matrix.json",
+      "category": "rendering-evidence",
+      "source_bytes": 193439,
+      "source_sha256": "c004cb9ef4533b048e66673f8902cd188c5508f539aa2a4f9dadd80152131db7",
+      "bytes": 193439,
+      "sha256": "c004cb9ef4533b048e66673f8902cd188c5508f539aa2a4f9dadd80152131db7"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-matrix.json",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-matrix.json",
+      "category": "rendering-evidence",
+      "source_bytes": 204261,
+      "source_sha256": "be68fcd9c45dfe0d39b242e7aa128761f6417ba410ad56c35d7f91f76bfaa29b",
+      "bytes": 204261,
+      "sha256": "be68fcd9c45dfe0d39b242e7aa128761f6417ba410ad56c35d7f91f76bfaa29b"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-matrix.json",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-matrix.json",
+      "category": "rendering-evidence",
+      "source_bytes": 197064,
+      "source_sha256": "a1bd00bbabdc19384bd55e60cbce61b370bf1d76aa5042bca3de52f24b77750a",
+      "bytes": 197064,
+      "sha256": "a1bd00bbabdc19384bd55e60cbce61b370bf1d76aa5042bca3de52f24b77750a"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-matrix.json",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-matrix.json",
+      "category": "rendering-evidence",
+      "source_bytes": 197965,
+      "source_sha256": "adcbb600ffcaa48c2e3bc7a0557a838b34405f3eeb29faa9b0ab32cb785c4f9c",
+      "bytes": 197965,
+      "sha256": "adcbb600ffcaa48c2e3bc7a0557a838b34405f3eeb29faa9b0ab32cb785c4f9c"
+    },
+    {
       "source": "artifacts/thai-localization/rendering/capture-inputs/en-source-matrix/metadata.json",
       "destination": "campaign/rendering/capture-inputs/en-source-matrix/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 441,
-      "source_sha256": "6800fbfa7238fe2e527a19ab6d593fa6ea0cfc327b8451cdd5f8b780f217b18d",
+      "source_sha256": "2ce2ead789a999b23bbfdcdbd77e06dd41b4181b4119b1c4b84398ce7333f2bf",
       "bytes": 441,
-      "sha256": "6800fbfa7238fe2e527a19ab6d593fa6ea0cfc327b8451cdd5f8b780f217b18d"
+      "sha256": "2ce2ead789a999b23bbfdcdbd77e06dd41b4181b4119b1c4b84398ce7333f2bf"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/en-source-matrix/native.json",
@@ -8556,9 +8818,9 @@
       "destination": "campaign/rendering/capture-inputs/fr-full/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 434,
-      "source_sha256": "97a9cc7eaf9080eebde83f779a49bf5fd874c64ce45a905b4d070d73f473f929",
+      "source_sha256": "a214d31032a2a81d9e1474e2cd7f757e495ac018e15ba92fb3818cf9ddc1570c",
       "bytes": 434,
-      "sha256": "97a9cc7eaf9080eebde83f779a49bf5fd874c64ce45a905b4d070d73f473f929"
+      "sha256": "a214d31032a2a81d9e1474e2cd7f757e495ac018e15ba92fb3818cf9ddc1570c"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/fr-full/native.json",
@@ -8573,19 +8835,19 @@
       "source": "artifacts/thai-localization/rendering/capture-inputs/fr-full/online.json",
       "destination": "campaign/rendering/capture-inputs/fr-full/online.json",
       "category": "rendering-evidence",
-      "source_bytes": 225062,
-      "source_sha256": "f566190aae13406da136e1b370ca62acac364aaa6442dedb122bc890de72481d",
-      "bytes": 225062,
-      "sha256": "f566190aae13406da136e1b370ca62acac364aaa6442dedb122bc890de72481d"
+      "source_bytes": 227226,
+      "source_sha256": "14ff93fcb447223fbdd049443553bf8689a6086aaf754adf35a033bee3d20646",
+      "bytes": 227226,
+      "sha256": "14ff93fcb447223fbdd049443553bf8689a6086aaf754adf35a033bee3d20646"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/fr-matrix/metadata.json",
       "destination": "campaign/rendering/capture-inputs/fr-matrix/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 1875,
-      "source_sha256": "d22340c7a92943c2ee3c8f1c7ff499f5356897a56ca5ee44b70b9950e742a01a",
+      "source_sha256": "0a6e3dba9fec6b884ea429e0b5fdd65a931e2c8b450e97d52b12ad645e2a0da3",
       "bytes": 1875,
-      "sha256": "d22340c7a92943c2ee3c8f1c7ff499f5356897a56ca5ee44b70b9950e742a01a"
+      "sha256": "0a6e3dba9fec6b884ea429e0b5fdd65a931e2c8b450e97d52b12ad645e2a0da3"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/fr-matrix/native.json",
@@ -8610,9 +8872,9 @@
       "destination": "campaign/rendering/capture-inputs/ja-full/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 434,
-      "source_sha256": "df7e3671bb1bad0c7dcd9a96e8bac18d78a6b615eb86acba3d6095f4b624c8e5",
+      "source_sha256": "06bf45b624b326a8e4997e945f804de30db143ca25b19befead2436fc7a30753",
       "bytes": 434,
-      "sha256": "df7e3671bb1bad0c7dcd9a96e8bac18d78a6b615eb86acba3d6095f4b624c8e5"
+      "sha256": "06bf45b624b326a8e4997e945f804de30db143ca25b19befead2436fc7a30753"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/ja-full/native.json",
@@ -8627,19 +8889,19 @@
       "source": "artifacts/thai-localization/rendering/capture-inputs/ja-full/online.json",
       "destination": "campaign/rendering/capture-inputs/ja-full/online.json",
       "category": "rendering-evidence",
-      "source_bytes": 239119,
-      "source_sha256": "431c022790fe3ee138d4f09182d248ebc78b6c57488d39b780538fb91ebe567e",
-      "bytes": 239119,
-      "sha256": "431c022790fe3ee138d4f09182d248ebc78b6c57488d39b780538fb91ebe567e"
+      "source_bytes": 241283,
+      "source_sha256": "2583812aac85b8e8511f63237ba19b68da01bb5181f298da2284371723530426",
+      "bytes": 241283,
+      "sha256": "2583812aac85b8e8511f63237ba19b68da01bb5181f298da2284371723530426"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/ja-matrix/metadata.json",
       "destination": "campaign/rendering/capture-inputs/ja-matrix/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 1875,
-      "source_sha256": "add6cf97dccd671095124c8b69513cfa2512ef96fa38b323fb6cf4ed8b42e970",
+      "source_sha256": "6187c077ead0c1f8ba782d7b6d900aad2b0703407b892ada09ffee583f225705",
       "bytes": 1875,
-      "sha256": "add6cf97dccd671095124c8b69513cfa2512ef96fa38b323fb6cf4ed8b42e970"
+      "sha256": "6187c077ead0c1f8ba782d7b6d900aad2b0703407b892ada09ffee583f225705"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/ja-matrix/native.json",
@@ -8664,9 +8926,9 @@
       "destination": "campaign/rendering/capture-inputs/th-full/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 434,
-      "source_sha256": "d0aff00c358f0d59f5c3bc1aa4c925e55e0528194fba4d6c5483d68f21e06272",
+      "source_sha256": "c182df152137fad71880c190af888288a54c4700c845298e1b53f7128625f2ef",
       "bytes": 434,
-      "sha256": "d0aff00c358f0d59f5c3bc1aa4c925e55e0528194fba4d6c5483d68f21e06272"
+      "sha256": "c182df152137fad71880c190af888288a54c4700c845298e1b53f7128625f2ef"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/th-full/native.json",
@@ -8681,19 +8943,19 @@
       "source": "artifacts/thai-localization/rendering/capture-inputs/th-full/online.json",
       "destination": "campaign/rendering/capture-inputs/th-full/online.json",
       "category": "rendering-evidence",
-      "source_bytes": 345987,
-      "source_sha256": "8bc1380c2899c9bdc89fa9bb43fb67794c51a0f32d734fcdd1616eb408a94ab6",
-      "bytes": 345987,
-      "sha256": "8bc1380c2899c9bdc89fa9bb43fb67794c51a0f32d734fcdd1616eb408a94ab6"
+      "source_bytes": 349862,
+      "source_sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
+      "bytes": 349862,
+      "sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/th-matrix/metadata.json",
       "destination": "campaign/rendering/capture-inputs/th-matrix/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 1875,
-      "source_sha256": "a92747e19ebda95f2c940f746b9e55dee1643a2b2d02b0d85c49ec3d5b1fdd68",
+      "source_sha256": "e08716b080ea61704261caaecf4fc596ec51bcffe7f6e2a61559f1a64435fa10",
       "bytes": 1875,
-      "sha256": "a92747e19ebda95f2c940f746b9e55dee1643a2b2d02b0d85c49ec3d5b1fdd68"
+      "sha256": "e08716b080ea61704261caaecf4fc596ec51bcffe7f6e2a61559f1a64435fa10"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/th-matrix/native.json",
@@ -8718,9 +8980,9 @@
       "destination": "campaign/rendering/capture-inputs/vi-full/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 434,
-      "source_sha256": "8f9d9b3314e124c436c198eaee0d038b59c9aea9426fc1f5486512b7b4650d77",
+      "source_sha256": "0388573acffce0457398c318daa24acfe83d844db47f4188bb9a3f65a3b0407f",
       "bytes": 434,
-      "sha256": "8f9d9b3314e124c436c198eaee0d038b59c9aea9426fc1f5486512b7b4650d77"
+      "sha256": "0388573acffce0457398c318daa24acfe83d844db47f4188bb9a3f65a3b0407f"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/vi-full/native.json",
@@ -8735,19 +8997,19 @@
       "source": "artifacts/thai-localization/rendering/capture-inputs/vi-full/online.json",
       "destination": "campaign/rendering/capture-inputs/vi-full/online.json",
       "category": "rendering-evidence",
-      "source_bytes": 237747,
-      "source_sha256": "3677487abd631dee9d14b415821a5fb417f5b856fac5666f4d15995c50f7a445",
-      "bytes": 237747,
-      "sha256": "3677487abd631dee9d14b415821a5fb417f5b856fac5666f4d15995c50f7a445"
+      "source_bytes": 239911,
+      "source_sha256": "aac984a050db188e5b81a5e19af5b900d56dfd10a47d4bb191fad2732cf18d88",
+      "bytes": 239911,
+      "sha256": "aac984a050db188e5b81a5e19af5b900d56dfd10a47d4bb191fad2732cf18d88"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/vi-matrix/metadata.json",
       "destination": "campaign/rendering/capture-inputs/vi-matrix/metadata.json",
       "category": "rendering-evidence",
       "source_bytes": 1875,
-      "source_sha256": "1098bc62ffacb253b6cde0ad32477106e12076b3eec021ad8084311d5e764f77",
+      "source_sha256": "1513db909bd2e08a100e1566ab67e4cfa44f9ae894b728a2112b1636553ca9e0",
       "bytes": 1875,
-      "sha256": "1098bc62ffacb253b6cde0ad32477106e12076b3eec021ad8084311d5e764f77"
+      "sha256": "1513db909bd2e08a100e1566ab67e4cfa44f9ae894b728a2112b1636553ca9e0"
     },
     {
       "source": "artifacts/thai-localization/rendering/capture-inputs/vi-matrix/native.json",
@@ -8766,6 +9028,51 @@
       "source_sha256": "9c1139e088b764bea0d25c7af275fa6d47622ee8924ab4a497cce1013f47d742",
       "bytes": 747,
       "sha256": "9c1139e088b764bea0d25c7af275fa6d47622ee8924ab4a497cce1013f47d742"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-engine-focused-inventory.json",
+      "destination": "campaign/rendering/final-engine-focused-inventory.json",
+      "category": "rendering-evidence",
+      "source_bytes": 196053,
+      "source_sha256": "49e1fc6e4e635cd813898cfebe511da6f562105a76ea4f2f1af249bcbc900859",
+      "bytes": 196053,
+      "sha256": "49e1fc6e4e635cd813898cfebe511da6f562105a76ea4f2f1af249bcbc900859"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-engine-provenance/build-provenance.json",
+      "destination": "campaign/rendering/final-engine-provenance/build-provenance.json",
+      "category": "rendering-evidence",
+      "source_bytes": 826,
+      "source_sha256": "a56481fd67995e721fdf8aa9e98885727e827c14067c61de3571259d3298ae3a",
+      "bytes": 826,
+      "sha256": "a56481fd67995e721fdf8aa9e98885727e827c14067c61de3571259d3298ae3a"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-native-verification.json",
+      "destination": "campaign/rendering/final-native-verification.json",
+      "category": "rendering-evidence",
+      "source_bytes": 17000,
+      "source_sha256": "2e15c74bff7348b3415065d73f80712102d7f186df1dbd09965866c19c106dc7",
+      "bytes": 17000,
+      "sha256": "2e15c74bff7348b3415065d73f80712102d7f186df1dbd09965866c19c106dc7"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-unit-focused/build-provenance.json",
+      "destination": "campaign/rendering/final-unit-focused/build-provenance.json",
+      "category": "rendering-evidence",
+      "source_bytes": 826,
+      "source_sha256": "a56481fd67995e721fdf8aa9e98885727e827c14067c61de3571259d3298ae3a",
+      "bytes": 826,
+      "sha256": "a56481fd67995e721fdf8aa9e98885727e827c14067c61de3571259d3298ae3a"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-unit-focused-inventory.json",
+      "destination": "campaign/rendering/final-unit-focused-inventory.json",
+      "category": "rendering-evidence",
+      "source_bytes": 103373,
+      "source_sha256": "cac33162da76c7f788d0b8b766d2c07046d4517aa149feeeb4d054d11aae65a3",
+      "bytes": 103373,
+      "sha256": "cac33162da76c7f788d0b8b766d2c07046d4517aa149feeeb4d054d11aae65a3"
     },
     {
       "source": "artifacts/thai-localization/rendering/font-test-syntax-evidence.json",
@@ -8838,6 +9145,15 @@
       "source_sha256": "8561e61633d457e4e1fc743d07e51e8cc67d1edb6ff059e8b9fc1cfdb2d7b12e",
       "bytes": 699,
       "sha256": "8561e61633d457e4e1fc743d07e51e8cc67d1edb6ff059e8b9fc1cfdb2d7b12e"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/native-runtime-equivalence-interim.json",
+      "destination": "campaign/rendering/native-runtime-equivalence-interim.json",
+      "category": "rendering-evidence",
+      "source_bytes": 1099,
+      "source_sha256": "05ceb24f67cdc998044aef3ca7a0f0217d8b91fce8781bbb52fcdb4d9da1cc5b",
+      "bytes": 1099,
+      "sha256": "05ceb24f67cdc998044aef3ca7a0f0217d8b91fce8781bbb52fcdb4d9da1cc5b"
     },
     {
       "source": "artifacts/thai-localization/rendering/priority-interrupted-evidence.json",
@@ -8928,6 +9244,402 @@
       "source_sha256": "c01c5b4fdd217ad3b6b613e20b4b0cf5463b1b6dd52b8b5da1b36c07e0ac9261",
       "bytes": 1148,
       "sha256": "c01c5b4fdd217ad3b6b613e20b4b0cf5463b1b6dd52b8b5da1b36c07e0ac9261"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-10-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-10-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 71509,
+      "source_sha256": "a7f638ff09c7c3a4fd996273f07587ce673942f96c265f9224f73cdf19d02189",
+      "bytes": 71509,
+      "sha256": "a7f638ff09c7c3a4fd996273f07587ce673942f96c265f9224f73cdf19d02189"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-10-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-10-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 9099,
+      "source_sha256": "b6136c2d04450b023295b39ed8bd72bb316cda37fbf96d20054b226ea24b6ae4",
+      "bytes": 9099,
+      "sha256": "b6136c2d04450b023295b39ed8bd72bb316cda37fbf96d20054b226ea24b6ae4"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-10-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-10-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 185972,
+      "source_sha256": "7e6e0d5ebd6f6f2ff7adcd12c2b26767218e79e2d73f1e7bf3dfa098ab7c285f",
+      "bytes": 185972,
+      "sha256": "7e6e0d5ebd6f6f2ff7adcd12c2b26767218e79e2d73f1e7bf3dfa098ab7c285f"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-10-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-10-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 28056,
+      "source_sha256": "0ef3c61e7e5bcfe41607dba9be0ec51372cd54f36904f22860c57b9eb04c33ab",
+      "bytes": 28056,
+      "sha256": "0ef3c61e7e5bcfe41607dba9be0ec51372cd54f36904f22860c57b9eb04c33ab"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-13-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-13-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 93285,
+      "source_sha256": "f1a6e8fec746fbda285f59250606620feff0e720715f5d8cbf1de2ba126d2253",
+      "bytes": 93285,
+      "sha256": "f1a6e8fec746fbda285f59250606620feff0e720715f5d8cbf1de2ba126d2253"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-13-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-13-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 21313,
+      "source_sha256": "bff39c162833e34447fafa94b0d8a4c232ec1d35aecec6308d0b98aa289aaedc",
+      "bytes": 21313,
+      "sha256": "bff39c162833e34447fafa94b0d8a4c232ec1d35aecec6308d0b98aa289aaedc"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-13-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-13-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 226611,
+      "source_sha256": "e3a85071a24ababa4b694c2f3b6c53bd0db42cba48cd2ea6ca80854c9dc93157",
+      "bytes": 226611,
+      "sha256": "e3a85071a24ababa4b694c2f3b6c53bd0db42cba48cd2ea6ca80854c9dc93157"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-13-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-13-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 58182,
+      "source_sha256": "68e59c5ac14205c0afec28935cdf35cc6c20b916a853f5a1ac8aac3fbeebf3b4",
+      "bytes": 58182,
+      "sha256": "68e59c5ac14205c0afec28935cdf35cc6c20b916a853f5a1ac8aac3fbeebf3b4"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-20-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-20-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 102215,
+      "source_sha256": "2c373d55032dc7b8fda048f79668e8dcd049111e21b98572d1212dc4bdf1c015",
+      "bytes": 102215,
+      "sha256": "2c373d55032dc7b8fda048f79668e8dcd049111e21b98572d1212dc4bdf1c015"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-20-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-20-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 101284,
+      "source_sha256": "d26541951280f2a26e8bae67eb5c47f9e2378a616400a7a2f10e59262fdb6b7f",
+      "bytes": 101284,
+      "sha256": "d26541951280f2a26e8bae67eb5c47f9e2378a616400a7a2f10e59262fdb6b7f"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-20-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-20-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 233623,
+      "source_sha256": "ffa22d19da0395affe8b2131f58ef31e50eb9b68d641b4b2c24592567fe39f6d",
+      "bytes": 233623,
+      "sha256": "ffa22d19da0395affe8b2131f58ef31e50eb9b68d641b4b2c24592567fe39f6d"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/font-20-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/font-20-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 229185,
+      "source_sha256": "3a395b5f1f9cadab4c3f4d16831210a1c1ed0aafb1af460e0c93cb9f31eb2d81",
+      "bytes": 229185,
+      "sha256": "3a395b5f1f9cadab4c3f4d16831210a1c1ed0aafb1af460e0c93cb9f31eb2d81"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-10-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-10-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 78301,
+      "source_sha256": "2011f00f50cfb0e3b786f3fa8d7a93ba307674d38b1693914964c700395186f2",
+      "bytes": 78301,
+      "sha256": "2011f00f50cfb0e3b786f3fa8d7a93ba307674d38b1693914964c700395186f2"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-10-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-10-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 13518,
+      "source_sha256": "17b1d812ac3bee885d9075f0c9c7fb813af7f3a3be061659db2520240f6ab1e5",
+      "bytes": 13518,
+      "sha256": "17b1d812ac3bee885d9075f0c9c7fb813af7f3a3be061659db2520240f6ab1e5"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-10-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-10-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 198857,
+      "source_sha256": "854c45e0212791de879405d4a3e339d49c9049ebf7fca3e7e64d86110681f53d",
+      "bytes": 198857,
+      "sha256": "854c45e0212791de879405d4a3e339d49c9049ebf7fca3e7e64d86110681f53d"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-10-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-10-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 37851,
+      "source_sha256": "a3bd8e5a565e610757aad1c3e20229f13e4c8ef3958e258887cb52d519b211b6",
+      "bytes": 37851,
+      "sha256": "a3bd8e5a565e610757aad1c3e20229f13e4c8ef3958e258887cb52d519b211b6"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-13-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-13-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 99921,
+      "source_sha256": "99c4572af678c04b52d950ef14c0613ee13524056690a188322e1d865704e7b6",
+      "bytes": 99921,
+      "sha256": "99c4572af678c04b52d950ef14c0613ee13524056690a188322e1d865704e7b6"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-13-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-13-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 29531,
+      "source_sha256": "7f0886185b155e61ea293f54d6a3e036f75df984492f2275340049fbcbc92289",
+      "bytes": 29531,
+      "sha256": "7f0886185b155e61ea293f54d6a3e036f75df984492f2275340049fbcbc92289"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-13-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-13-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 241447,
+      "source_sha256": "234136db8bfe3eada29b0ca5a6ddc8c3c8d91c38c93bdabc4757e1d2153586e2",
+      "bytes": 241447,
+      "sha256": "234136db8bfe3eada29b0ca5a6ddc8c3c8d91c38c93bdabc4757e1d2153586e2"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-13-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-13-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 75151,
+      "source_sha256": "5fcfefdb40e529e7a9a10cedad4b2da2b18996d025237261ef4e4bc332b7d268",
+      "bytes": 75151,
+      "sha256": "5fcfefdb40e529e7a9a10cedad4b2da2b18996d025237261ef4e4bc332b7d268"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-20-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-20-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 116505,
+      "source_sha256": "fbb6ab29c5271e498697c4946e4e2f94d839b9f529a0555de3b5d01fa69cb6b6",
+      "bytes": 116505,
+      "sha256": "fbb6ab29c5271e498697c4946e4e2f94d839b9f529a0555de3b5d01fa69cb6b6"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-20-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-20-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 110566,
+      "source_sha256": "d9b661bd8e5bf5d91534f71a771a7bb2423920c300e6a57ca253b84624c9f1ec",
+      "bytes": 110566,
+      "sha256": "d9b661bd8e5bf5d91534f71a771a7bb2423920c300e6a57ca253b84624c9f1ec"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-20-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-20-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 265320,
+      "source_sha256": "1cc3ef3095edcf9271a3cff500effb146264c00899a408edb9b038ab00adf9ad",
+      "bytes": 265320,
+      "sha256": "1cc3ef3095edcf9271a3cff500effb146264c00899a408edb9b038ab00adf9ad"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/font-20-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/font-20-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 249966,
+      "source_sha256": "c1e9d9d765d24e8380bf8fd875eaa78a56af364e60043b02608e7a9a53f6fecf",
+      "bytes": 249966,
+      "sha256": "c1e9d9d765d24e8380bf8fd875eaa78a56af364e60043b02608e7a9a53f6fecf"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-10-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-10-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 176474,
+      "source_sha256": "84fcc2b91b913cb666d0c0a119745979e9d2622e57fdca10cf6067b8ab3a9cc8",
+      "bytes": 176474,
+      "sha256": "84fcc2b91b913cb666d0c0a119745979e9d2622e57fdca10cf6067b8ab3a9cc8"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-10-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-10-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 428246,
+      "source_sha256": "0fd3e7d08be34ac80e2b4b45e160ece48bee076142f68868112367b7fc9c4f7d",
+      "bytes": 428246,
+      "sha256": "0fd3e7d08be34ac80e2b4b45e160ece48bee076142f68868112367b7fc9c4f7d"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-13-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-13-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 228292,
+      "source_sha256": "5ff18bced1728456f8d2cdacc15753dba39c2b6b3441b532edcaa546042ece08",
+      "bytes": 228292,
+      "sha256": "5ff18bced1728456f8d2cdacc15753dba39c2b6b3441b532edcaa546042ece08"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-13-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-13-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 39187,
+      "source_sha256": "4fb28c6310016251f2e41ba6f3c596dd53141a8311472ea4562fcbec9e4deebd",
+      "bytes": 39187,
+      "sha256": "4fb28c6310016251f2e41ba6f3c596dd53141a8311472ea4562fcbec9e4deebd"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-13-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-13-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 528995,
+      "source_sha256": "b112c11294192308adad23c3b8de8912052ec1fcfd346adca43ab2e48aa502b6",
+      "bytes": 528995,
+      "sha256": "b112c11294192308adad23c3b8de8912052ec1fcfd346adca43ab2e48aa502b6"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-13-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-13-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 96173,
+      "source_sha256": "7a89274d4b16123c44f7dc418de15d5753f8ae8e5dc23471da24e15cebcd9cc4",
+      "bytes": 96173,
+      "sha256": "7a89274d4b16123c44f7dc418de15d5753f8ae8e5dc23471da24e15cebcd9cc4"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-20-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-20-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 274981,
+      "source_sha256": "87e6485977a186a095853e93b5fabdef6b2ff74e8a04336db7b4e907af347ab6",
+      "bytes": 274981,
+      "sha256": "87e6485977a186a095853e93b5fabdef6b2ff74e8a04336db7b4e907af347ab6"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-20-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-20-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 176908,
+      "source_sha256": "7bf178c8742cf28f3fe3b6923a637d0ca517eb33c1360868b6fcc65f63420965",
+      "bytes": 176908,
+      "sha256": "7bf178c8742cf28f3fe3b6923a637d0ca517eb33c1360868b6fcc65f63420965"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-20-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-20-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 578954,
+      "source_sha256": "36fc98750266b8f2a8a6d5b78a785af9abf8e6db3575fc789de78f19297ec6ff",
+      "bytes": 578954,
+      "sha256": "36fc98750266b8f2a8a6d5b78a785af9abf8e6db3575fc789de78f19297ec6ff"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/font-20-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/font-20-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 376493,
+      "source_sha256": "9efe2678243dbfe4b7cbc0dd03702ca631c3e495beb3f837b7a0112b03d5632b",
+      "bytes": 376493,
+      "sha256": "9efe2678243dbfe4b7cbc0dd03702ca631c3e495beb3f837b7a0112b03d5632b"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-10-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-10-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 84976,
+      "source_sha256": "d76231ea0b8f863e724f759cc5ca5f21085928e1a49ba2dc71dd6d63891b4397",
+      "bytes": 84976,
+      "sha256": "d76231ea0b8f863e724f759cc5ca5f21085928e1a49ba2dc71dd6d63891b4397"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-10-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-10-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 218884,
+      "source_sha256": "89de56685ae56d1e1dd79dea38eae54f4d2ec1df2ad4b47374e0855b80c7e481",
+      "bytes": 218884,
+      "sha256": "89de56685ae56d1e1dd79dea38eae54f4d2ec1df2ad4b47374e0855b80c7e481"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-13-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-13-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 104352,
+      "source_sha256": "fbd2d2d3e4610c9746c462f38ad60d61eedb5e290e045b842163f1ecff42b607",
+      "bytes": 104352,
+      "sha256": "fbd2d2d3e4610c9746c462f38ad60d61eedb5e290e045b842163f1ecff42b607"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-13-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-13-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 24519,
+      "source_sha256": "81c8a50f8aeab5b8dfdc75b92b976dabd8588cacaac3c72c7deecce24c8384e8",
+      "bytes": 24519,
+      "sha256": "81c8a50f8aeab5b8dfdc75b92b976dabd8588cacaac3c72c7deecce24c8384e8"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-13-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-13-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 259645,
+      "source_sha256": "2dcd2f85a3b2752424307b69fece3d915b9a3cb5b83116c2930f8625d6563f55",
+      "bytes": 259645,
+      "sha256": "2dcd2f85a3b2752424307b69fece3d915b9a3cb5b83116c2930f8625d6563f55"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-13-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-13-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 65088,
+      "source_sha256": "6d79f48c4fee06e4d1d530de840292204665ba303aa3effbadca29128a420191",
+      "bytes": 65088,
+      "sha256": "6d79f48c4fee06e4d1d530de840292204665ba303aa3effbadca29128a420191"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-20-scale-1-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-20-scale-1-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 128668,
+      "source_sha256": "fa8062b3bbb0720fb1edc671d2fff4188e38b37bd1b7f6e43265c22330268471",
+      "bytes": 128668,
+      "sha256": "fa8062b3bbb0720fb1edc671d2fff4188e38b37bd1b7f6e43265c22330268471"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-20-scale-1-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-20-scale-1-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 102765,
+      "source_sha256": "f63371b46bafe9915d4ed955d6eccf24f909b0d13c9ce92ab418c100205e6c5a",
+      "bytes": 102765,
+      "sha256": "f63371b46bafe9915d4ed955d6eccf24f909b0d13c9ce92ab418c100205e6c5a"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-20-scale-2-page-001.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-20-scale-2-page-001.png",
+      "category": "rendering-evidence",
+      "source_bytes": 290383,
+      "source_sha256": "8cc7d16281a4fdad917dde84ee7b483068e0c9b4695d0f250170002a4264ea59",
+      "bytes": 290383,
+      "sha256": "8cc7d16281a4fdad917dde84ee7b483068e0c9b4695d0f250170002a4264ea59"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/font-20-scale-2-page-002.png",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/font-20-scale-2-page-002.png",
+      "category": "rendering-evidence",
+      "source_bytes": 232051,
+      "source_sha256": "1262b5c624eef53ad8382fe73c5cc8e2ce97ebfab4b9c01b25a644ca2c967446",
+      "bytes": 232051,
+      "sha256": "1262b5c624eef53ad8382fe73c5cc8e2ce97ebfab4b9c01b25a644ca2c967446"
     },
     {
       "source": "artifacts/thai-localization/rendering/probe-10-13-20.png",
@@ -9092,6 +9804,96 @@
       "sha256": "bf84fad28cd8378c4eba3f5fa68d3cd36c17aac5b53471e82257ffb10e4baa54"
     },
     {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/compile.log",
+      "destination": "campaign/rendering/baseline-wrap/compile.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/en-source-matrix/capture.log",
+      "destination": "campaign/rendering/baseline-wrap/en-source-matrix/capture.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/fr-matrix/capture.log",
+      "destination": "campaign/rendering/baseline-wrap/fr-matrix/capture.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/ja-matrix/capture.log",
+      "destination": "campaign/rendering/baseline-wrap/ja-matrix/capture.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/link.log",
+      "destination": "campaign/rendering/baseline-wrap/link.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/run.log",
+      "destination": "campaign/rendering/baseline-wrap/run.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 67,
+      "source_sha256": "e2409c511e4d23461584e3f6ac68b24aca3a69f703db1e8b6f76f919c89ab3ed",
+      "bytes": 53,
+      "sha256": "a87be1d047d21a679242b6dfc6b06367cd2525eb4f1ce6ca23e5bb42d610268a"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/baseline-wrap/vi-matrix/capture.log",
+      "destination": "campaign/rendering/baseline-wrap/vi-matrix/capture.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-capture-run.log",
+      "destination": "campaign/rendering/final-capture-run.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-engine-focused.log",
+      "destination": "campaign/rendering/final-engine-focused.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 1670,
+      "source_sha256": "f5ef4e12ad3917907ea3a6f4f62463f6b2f94abdf5f189caeadbac9a25e05b37",
+      "bytes": 806,
+      "sha256": "d706dfba84f6c749dac958492b087d1ffab546a8b81f083f4925d40944c3e9b6"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-engine-provenance.log",
+      "destination": "campaign/rendering/final-engine-provenance.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 1057,
+      "source_sha256": "6ae6677a77b130427e4868dfaa5eeaf195875af808ad2933a5eade9a6bc17d1a",
+      "bytes": 614,
+      "sha256": "9a5dda3bdca007fe6aa53c8df5ef935ddc22c5e6ca1401e2bf26b196e4c635e6"
+    },
+    {
       "source": "artifacts/thai-localization/rendering/final-priority-build.log",
       "destination": "campaign/rendering/final-priority-build.log.gz",
       "category": "rendering-evidence",
@@ -9099,6 +9901,15 @@
       "source_sha256": "cff27cf8f0d54f2b41f05196e181317dc0c5da02113fad265c14a9199aeeeff5",
       "bytes": 32525,
       "sha256": "95c577d8109f76e80a1796ad98edb43cc80a08c6c5bb652e26b30cfe62c1ea6e"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-provenance-build.log",
+      "destination": "campaign/rendering/final-provenance-build.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 118221,
+      "source_sha256": "4c41e4edc721d9d73aba42144539efadab2e5e4063e031c9366bd1287e3e1e3d",
+      "bytes": 15478,
+      "sha256": "c4c383e54b62b9518df05abe7912dea81e914b3924205a3e315482ecc8b35563"
     },
     {
       "source": "artifacts/thai-localization/rendering/final-unit-build.log",
@@ -9110,8 +9921,26 @@
       "sha256": "be4c2b756ad99373744407a3cceea3da83834ec147484dbdf77760a12a0b5b89"
     },
     {
+      "source": "artifacts/thai-localization/rendering/final-unit-focused.log",
+      "destination": "campaign/rendering/final-unit-focused.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 303,
+      "source_sha256": "4fe7099d4c37a8cfcb0810ebaa3e42ce5d4149102888450e370dbcf12761d9a8",
+      "bytes": 219,
+      "sha256": "903bfbd740d7ea92a418f9267d55e1d9325491f92988392f554c1788f8440822"
+    },
+    {
       "source": "artifacts/thai-localization/rendering/font-test-syntax.log",
       "destination": "campaign/rendering/font-test-syntax.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-capture-run.log",
+      "destination": "campaign/rendering/interim-capture-run.log.gz",
       "category": "rendering-evidence",
       "source_bytes": 0,
       "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -9126,6 +9955,15 @@
       "source_sha256": "1eb47b080632b45a8bdd4fb30603aba6960e6772d33c7f1ac58057ee00afb3ae",
       "bytes": 176,
       "sha256": "bfb151410cd14e5aa1c420b02f8fee339a2d7b71c7e5ac70348fc9889630ca4e"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-regression-capture-run.log",
+      "destination": "campaign/rendering/interim-regression-capture-run.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 284,
+      "source_sha256": "fea7218e2dcc7c133a19e5fea21765d87a0bd8564fed0953553d7e8fb3b3d6c2",
+      "bytes": 134,
+      "sha256": "23139d12cb9743df48fce41ac39f3f98df7bfcaf209e3cfcaae61447921cf4ea"
     },
     {
       "source": "artifacts/thai-localization/rendering/interim-text-metrics-tests.log",
@@ -9167,10 +10005,10 @@
       "source": "artifacts/thai-localization/rendering/preview-engine-build.log",
       "destination": "campaign/rendering/preview-engine-build.log.gz",
       "category": "rendering-evidence",
-      "source_bytes": 752727,
-      "source_sha256": "0342c6c81234b9f5d53f568a359fee431bbc83fb728b86aa49b91d4da449e562",
-      "bytes": 25575,
-      "sha256": "9dfbc3192f7d3456fb5ca6a1e5b2e94c21aa03b8a6bbf20c906e8dc0deaff0c6"
+      "source_bytes": 2011593,
+      "source_sha256": "f081e1d1d86821b10b028c9242d6744305897b96a3ba4e11fa2904e78b2b103e",
+      "bytes": 80197,
+      "sha256": "68ab52b5310f0c3b1d36bef1a7c3e186cc8f5b40dcc40b2111b156edeb1eab25"
     },
     {
       "source": "artifacts/thai-localization/rendering/sdl-build.log",
@@ -9189,6 +10027,51 @@
       "source_sha256": "d5775b1a6b8921351948fada454d513ba80115a1832f9144464c9ce9837ebe5b",
       "bytes": 577,
       "sha256": "440fcb3677921479ab861714f6831d02c3d35372cd8ef75a15b23696ea34dcfd"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-engine-focused-junit.xml",
+      "destination": "campaign/rendering/final-engine-focused-junit.xml",
+      "category": "rendering-evidence",
+      "source_bytes": 2570,
+      "source_sha256": "a0c67ae3db119ec3f7926c30eb82ef6b317895f8195c7fb99d4403cab84bf7d4",
+      "bytes": 2570,
+      "sha256": "a0c67ae3db119ec3f7926c30eb82ef6b317895f8195c7fb99d4403cab84bf7d4"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-unit-focused-junit.xml",
+      "destination": "campaign/rendering/final-unit-focused-junit.xml",
+      "category": "rendering-evidence",
+      "source_bytes": 4626,
+      "source_sha256": "21ac7aa1dd65ac10c2568090af29fb245f2ff3198234e9f2f19a04b29d6d7fa8",
+      "bytes": 4626,
+      "sha256": "21ac7aa1dd65ac10c2568090af29fb245f2ff3198234e9f2f19a04b29d6d7fa8"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-font-unit-junit.xml",
+      "destination": "campaign/rendering/interim-font-unit-junit.xml",
+      "category": "rendering-evidence",
+      "source_bytes": 916,
+      "source_sha256": "50d21e023f4a87a77a4016e358ef59556457cb80eb6a2af68d92ea2c6ca6cede",
+      "bytes": 916,
+      "sha256": "50d21e023f4a87a77a4016e358ef59556457cb80eb6a2af68d92ea2c6ca6cede"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-text-metrics-junit.xml",
+      "destination": "campaign/rendering/interim-text-metrics-junit.xml",
+      "category": "rendering-evidence",
+      "source_bytes": 422,
+      "source_sha256": "57eb72666fc93cf62b40a4c83a51f4a86e18f76895dd537f789bd57b5aba07fe",
+      "bytes": 422,
+      "sha256": "57eb72666fc93cf62b40a4c83a51f4a86e18f76895dd537f789bd57b5aba07fe"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-ui-layout-junit.xml",
+      "destination": "campaign/rendering/interim-ui-layout-junit.xml",
+      "category": "rendering-evidence",
+      "source_bytes": 3490,
+      "source_sha256": "8fcf13d8561f7e724074303fa6c203b8b34dfb26dbdb9474e05280a1508b657e",
+      "bytes": 3490,
+      "sha256": "8fcf13d8561f7e724074303fa6c203b8b34dfb26dbdb9474e05280a1508b657e"
     },
     {
       "source": "artifacts/thai-localization/browser-qa/desktop-EN-BASELINE-MOCKED-map-studio-chat.png",
@@ -12758,10 +13641,10 @@
       "source": "artifacts/thai-localization-final/reviews/th.json",
       "destination": "successor/reviews/th.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 1225425,
-      "source_sha256": "b6272e2c6b7b0ea2f86e4433e2f69b22f4773e115cc930bf815596a3dfa29f07",
-      "bytes": 1225425,
-      "sha256": "b6272e2c6b7b0ea2f86e4433e2f69b22f4773e115cc930bf815596a3dfa29f07"
+      "source_bytes": 1230430,
+      "source_sha256": "333280b267a3641b216c0cefc5269af743865f6b531695b4b78ad41a544aa533",
+      "bytes": 1230430,
+      "sha256": "333280b267a3641b216c0cefc5269af743865f6b531695b4b78ad41a544aa533"
     },
     {
       "source": "artifacts/thai-localization-final/reviews/username-carry-candidates/final-adversarial/online-online-001.json",
@@ -12872,6 +13755,15 @@
       "sha256": "6a4b704dbfe83dff0fa21f6194e0a5c412a01da705479d50c631d6878ff38663"
     },
     {
+      "source": "artifacts/thai-localization-final/checks/final-native-coordinator-visual.json",
+      "destination": "successor/checks/final-native-coordinator-visual.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 2231,
+      "source_sha256": "5f0508f3ed99f536a2847e95c84622cd2de41439be4229dd1036a0e1a64ccabb",
+      "bytes": 2231,
+      "sha256": "5f0508f3ed99f536a2847e95c84622cd2de41439be4229dd1036a0e1a64ccabb"
+    },
+    {
       "source": "artifacts/thai-localization-final/checks/independent-final-approvals.json",
       "destination": "successor/checks/independent-final-approvals.json",
       "category": "successor-source-current-proof",
@@ -12899,13 +13791,31 @@
       "sha256": "6a5596533b95b4fd44c0aa1f43b12e13b36b8331727785bf2dbea96c8ecf89e6"
     },
     {
+      "source": "artifacts/thai-localization-final/checks/qualification-only-head-equivalence-03ab.json",
+      "destination": "successor/checks/qualification-only-head-equivalence-03ab.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 2372,
+      "source_sha256": "b62c85cd924dec60cc1002d776d0b6aa357ecf0c86e220783f8962fe4747160a",
+      "bytes": 2372,
+      "sha256": "b62c85cd924dec60cc1002d776d0b6aa357ecf0c86e220783f8962fe4747160a"
+    },
+    {
+      "source": "artifacts/thai-localization-final/checks/qualification-only-head-equivalence.json",
+      "destination": "successor/checks/qualification-only-head-equivalence.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 2372,
+      "source_sha256": "71cd8f10a9db17d3ee1bfde92b9f47f3f68ee2102e55e7c7185626a7d10eef46",
+      "bytes": 2372,
+      "sha256": "71cd8f10a9db17d3ee1bfde92b9f47f3f68ee2102e55e7c7185626a7d10eef46"
+    },
+    {
       "source": "artifacts/thai-localization-final/checks/status.json",
       "destination": "successor/checks/status.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 396,
-      "source_sha256": "6d04000de70487ef6ce4037e0ecf27d072a03225526999e09bc486d42da464e5",
-      "bytes": 396,
-      "sha256": "6d04000de70487ef6ce4037e0ecf27d072a03225526999e09bc486d42da464e5"
+      "source_bytes": 286,
+      "source_sha256": "d41eb20534269d6dba69620307c1d911210ce81f2472f642211c4e878fc641d3",
+      "bytes": 286,
+      "sha256": "d41eb20534269d6dba69620307c1d911210ce81f2472f642211c4e878fc641d3"
     },
     {
       "source": "artifacts/thai-localization-final/checks/structural.json",
@@ -12915,6 +13825,24 @@
       "source_sha256": "3f6f547dbeb61e54d1f206205b85dec1e03bf94e2a5159808776b10c08d2e336",
       "bytes": 2853,
       "sha256": "3f6f547dbeb61e54d1f206205b85dec1e03bf94e2a5159808776b10c08d2e336"
+    },
+    {
+      "source": "artifacts/thai-localization-final/checks/thai-touchphone-static-review-a9955f95.json",
+      "destination": "successor/checks/thai-touchphone-static-review-a9955f95.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 5505,
+      "source_sha256": "93ae24b8932a89316580b3ca6df42d5125ef6d803b564eb2c7994982398c42fe",
+      "bytes": 5505,
+      "sha256": "93ae24b8932a89316580b3ca6df42d5125ef6d803b564eb2c7994982398c42fe"
+    },
+    {
+      "source": "artifacts/thai-localization-final/checks/thai-touchphone-static-review-resolved.json",
+      "destination": "successor/checks/thai-touchphone-static-review-resolved.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 1648,
+      "source_sha256": "f48b83d698b82cc1d63f838aa7701ece88b80b66de057c88d1ccc62312480aa7",
+      "bytes": 1648,
+      "sha256": "f48b83d698b82cc1d63f838aa7701ece88b80b66de057c88d1ccc62312480aa7"
     },
     {
       "source": "artifacts/thai-localization-final/checks/native-contract-tests.log",
@@ -12942,6 +13870,1243 @@
       "source_sha256": "ac330c99961f9d8053a742f85b8bd8d7146d8f6290ed9ca98ef2a6ada8b3080d",
       "bytes": 1528,
       "sha256": "ac330c99961f9d8053a742f85b8bd8d7146d8f6290ed9ca98ef2a6ada8b3080d"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-gameplay/capture.log",
+      "destination": "platform/thai-localization__native-final/1280x800-gameplay/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 142,
+      "source_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e",
+      "bytes": 137,
+      "sha256": "10d14b292843168d044352e55f4d70a9d004890e872fbc8ea921dbf8a2b7960f"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-gameplay/gameplay-dialog.png",
+      "destination": "platform/thai-localization__native-final/1280x800-gameplay/gameplay-dialog.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 426726,
+      "source_sha256": "06d757a1fb515c0a54e877ce79c48578d5518b17b9f55e6ed73ef4842b453236",
+      "bytes": 426726,
+      "sha256": "06d757a1fb515c0a54e877ce79c48578d5518b17b9f55e6ed73ef4842b453236"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-gameplay/gameplay-zoom-fit.png",
+      "destination": "platform/thai-localization__native-final/1280x800-gameplay/gameplay-zoom-fit.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 62576,
+      "source_sha256": "dbcb70ee1627f7b1d39e49b07f3478de8f012904c1cb4926c5c9cecee2d5a2b8",
+      "bytes": 62576,
+      "sha256": "dbcb70ee1627f7b1d39e49b07f3478de8f012904c1cb4926c5c9cecee2d5a2b8"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-gameplay/gameplay-zoom-plus.png",
+      "destination": "platform/thai-localization__native-final/1280x800-gameplay/gameplay-zoom-plus.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 624750,
+      "source_sha256": "a2da51ac805fbe31cc0fd45299c7b39bc887e512c96c251d91ed2eb1775c55d2",
+      "bytes": 624750,
+      "sha256": "a2da51ac805fbe31cc0fd45299c7b39bc887e512c96c251d91ed2eb1775c55d2"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-gameplay/gameplay.json",
+      "destination": "platform/thai-localization__native-final/1280x800-gameplay/gameplay.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14675,
+      "source_sha256": "da30fe563e0c0bfc276a0211cb8b11131808f3d127678b158b74e9522fff28a9",
+      "bytes": 14675,
+      "sha256": "da30fe563e0c0bfc276a0211cb8b11131808f3d127678b158b74e9522fff28a9"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-gameplay/gameplay.png",
+      "destination": "platform/thai-localization__native-final/1280x800-gameplay/gameplay.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 578231,
+      "source_sha256": "9f3790655f003c1f94498d19cb6d29086227c6009e3899b44c4a269fb96af5c3",
+      "bytes": 578231,
+      "sha256": "9f3790655f003c1f94498d19cb6d29086227c6009e3899b44c4a269fb96af5c3"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-lobby/capture.log",
+      "destination": "platform/thai-localization__native-final/1280x800-lobby/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 60,
+      "source_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 80,
+      "sha256": "5d331affe7ca7ffe4f8a4c6a93e1f59a2da40177d8397c709ac9bb619b20a722"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-lobby/lobby.json",
+      "destination": "platform/thai-localization__native-final/1280x800-lobby/lobby.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14712,
+      "source_sha256": "0c1139dc2ea69eb1ea929b732747216d81a820160bc080dca0c7fd27977fbb46",
+      "bytes": 14712,
+      "sha256": "0c1139dc2ea69eb1ea929b732747216d81a820160bc080dca0c7fd27977fbb46"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-lobby/lobby.png",
+      "destination": "platform/thai-localization__native-final/1280x800-lobby/lobby.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 217408,
+      "source_sha256": "f305df05deca89e45fe878d1dcda0c69bcaaea8584a73c00cd6a6811716c48a6",
+      "bytes": 217408,
+      "sha256": "f305df05deca89e45fe878d1dcda0c69bcaaea8584a73c00cd6a6811716c48a6"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-lobby-players/capture.log",
+      "destination": "platform/thai-localization__native-final/1280x800-lobby-players/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 60,
+      "source_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 80,
+      "sha256": "5d331affe7ca7ffe4f8a4c6a93e1f59a2da40177d8397c709ac9bb619b20a722"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-lobby-players/lobby-players.json",
+      "destination": "platform/thai-localization__native-final/1280x800-lobby-players/lobby-players.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14998,
+      "source_sha256": "9abb43ca7287c370b7c9b77589b628f3c7e286e6b346d1b70900d8ebb8bbebb2",
+      "bytes": 14998,
+      "sha256": "9abb43ca7287c370b7c9b77589b628f3c7e286e6b346d1b70900d8ebb8bbebb2"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-lobby-players/lobby-players.png",
+      "destination": "platform/thai-localization__native-final/1280x800-lobby-players/lobby-players.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 217948,
+      "source_sha256": "c7df71ea5a1fc59fc53fa8d800a39238b3b4751c78a5299346d3316118523a32",
+      "bytes": 217948,
+      "sha256": "c7df71ea5a1fc59fc53fa8d800a39238b3b4751c78a5299346d3316118523a32"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-main/capture.log",
+      "destination": "platform/thai-localization__native-final/1280x800-main/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 60,
+      "source_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 80,
+      "sha256": "5d331affe7ca7ffe4f8a4c6a93e1f59a2da40177d8397c709ac9bb619b20a722"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-main/main.json",
+      "destination": "platform/thai-localization__native-final/1280x800-main/main.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 13637,
+      "source_sha256": "dd260654710b3794919dfb67e36b84efbe7cadf028926b7e81d82e74923e6686",
+      "bytes": 13637,
+      "sha256": "dd260654710b3794919dfb67e36b84efbe7cadf028926b7e81d82e74923e6686"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-main/main.png",
+      "destination": "platform/thai-localization__native-final/1280x800-main/main.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1168512,
+      "source_sha256": "065a474c9733362575160a1971253664ed57efeab15b5b2cb887c844fdc83a50",
+      "bytes": 1168512,
+      "sha256": "065a474c9733362575160a1971253664ed57efeab15b5b2cb887c844fdc83a50"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-settings/capture.log",
+      "destination": "platform/thai-localization__native-final/1280x800-settings/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 60,
+      "source_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 80,
+      "sha256": "5d331affe7ca7ffe4f8a4c6a93e1f59a2da40177d8397c709ac9bb619b20a722"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-settings/settings.json",
+      "destination": "platform/thai-localization__native-final/1280x800-settings/settings.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 17332,
+      "source_sha256": "84bc7760bc3e4c2f404ef2357d804dd9670b0da61d82cb4fd4952e15dcaf1d7c",
+      "bytes": 17332,
+      "sha256": "84bc7760bc3e4c2f404ef2357d804dd9670b0da61d82cb4fd4952e15dcaf1d7c"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-settings/settings.png",
+      "destination": "platform/thai-localization__native-final/1280x800-settings/settings.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 576239,
+      "source_sha256": "953262994f4e72b35e8aad0f83c222c51dc5d7237235c3a2ce1a2672216c64ae",
+      "bytes": 576239,
+      "sha256": "953262994f4e72b35e8aad0f83c222c51dc5d7237235c3a2ce1a2672216c64ae"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-tutorial/capture.log",
+      "destination": "platform/thai-localization__native-final/1280x800-tutorial/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 142,
+      "source_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e",
+      "bytes": 137,
+      "sha256": "10d14b292843168d044352e55f4d70a9d004890e872fbc8ea921dbf8a2b7960f"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-tutorial/tutorial-introduction-dialog.png",
+      "destination": "platform/thai-localization__native-final/1280x800-tutorial/tutorial-introduction-dialog.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 416338,
+      "source_sha256": "8b283c4724215af0abd21e162d4db87fe8bbd09661b971ee7f2d5e08ea325ee2",
+      "bytes": 416338,
+      "sha256": "8b283c4724215af0abd21e162d4db87fe8bbd09661b971ee7f2d5e08ea325ee2"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-tutorial/tutorial-introduction.json",
+      "destination": "platform/thai-localization__native-final/1280x800-tutorial/tutorial-introduction.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14164,
+      "source_sha256": "582c701430ed8c210d1a8e1d8b541e772afd4935bf07a217273a4e41fe38bde6",
+      "bytes": 14164,
+      "sha256": "582c701430ed8c210d1a8e1d8b541e772afd4935bf07a217273a4e41fe38bde6"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x800-tutorial/tutorial-introduction.png",
+      "destination": "platform/thai-localization__native-final/1280x800-tutorial/tutorial-introduction.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 778663,
+      "source_sha256": "7cbde7265bca484c6632a4238ca4db44547059adc436be3eaf4000a3b52d5062",
+      "bytes": 778663,
+      "sha256": "7cbde7265bca484c6632a4238ca4db44547059adc436be3eaf4000a3b52d5062"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/capture.log",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-10-scale-1-page-001.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-10-scale-1-page-001.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 44178,
+      "source_sha256": "6e6098d1107771af47325ca473aa115bd31e7dcf386018debf8e5715f95efdf8",
+      "bytes": 44178,
+      "sha256": "6e6098d1107771af47325ca473aa115bd31e7dcf386018debf8e5715f95efdf8"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-10-scale-1-page-002.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-10-scale-1-page-002.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 55994,
+      "source_sha256": "1d957d11bde9b2e5ba28e4812320030a7773b5399814e960687341b864e97b97",
+      "bytes": 55994,
+      "sha256": "1d957d11bde9b2e5ba28e4812320030a7773b5399814e960687341b864e97b97"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-10-scale-2-page-001.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-10-scale-2-page-001.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 185721,
+      "source_sha256": "a46ef5864da23d016f816028df125942a03f18ed0be6a87a8e7110c3fe53b70f",
+      "bytes": 185721,
+      "sha256": "a46ef5864da23d016f816028df125942a03f18ed0be6a87a8e7110c3fe53b70f"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-10-scale-2-page-002.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-10-scale-2-page-002.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 228280,
+      "source_sha256": "cb423424db96d7b42f7e4f9d374a1ad379282d840655a3af7874137ebc3be57c",
+      "bytes": 228280,
+      "sha256": "cb423424db96d7b42f7e4f9d374a1ad379282d840655a3af7874137ebc3be57c"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-13-scale-1-page-001.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-13-scale-1-page-001.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 55717,
+      "source_sha256": "4cbcaf7a711e008d73d374116045c077506374d2feafbb44cedbaf1fa61795a3",
+      "bytes": 55717,
+      "sha256": "4cbcaf7a711e008d73d374116045c077506374d2feafbb44cedbaf1fa61795a3"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-13-scale-1-page-002.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-13-scale-1-page-002.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 56903,
+      "source_sha256": "7675dc98eb272a79641d178b9fcded0f7d7e1a790c0c1fbf0d9693cd62a141cb",
+      "bytes": 56903,
+      "sha256": "7675dc98eb272a79641d178b9fcded0f7d7e1a790c0c1fbf0d9693cd62a141cb"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-13-scale-1-page-003.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-13-scale-1-page-003.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 33880,
+      "source_sha256": "6f27234f363908efe5cffd6c07c7390af64eac7c408376d951565c13fb5bc9e6",
+      "bytes": 33880,
+      "sha256": "6f27234f363908efe5cffd6c07c7390af64eac7c408376d951565c13fb5bc9e6"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-13-scale-2-page-001.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-13-scale-2-page-001.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 233824,
+      "source_sha256": "7de7b36f39fa44042030d7fd24d91f53bc244ee2379f380c84e23bfc6431aba7",
+      "bytes": 233824,
+      "sha256": "7de7b36f39fa44042030d7fd24d91f53bc244ee2379f380c84e23bfc6431aba7"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-13-scale-2-page-002.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-13-scale-2-page-002.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 215401,
+      "source_sha256": "a9e3d79dbc9e5aa9d7f724097edd17c5a6ef2e138b86e17b7f9bfdd2e41bd28d",
+      "bytes": 215401,
+      "sha256": "a9e3d79dbc9e5aa9d7f724097edd17c5a6ef2e138b86e17b7f9bfdd2e41bd28d"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-13-scale-2-page-003.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-13-scale-2-page-003.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 156800,
+      "source_sha256": "d9d53246cb31c6bac0dfcfb72a0178d0ed3984ddae33813e2aa651c6f463f6d3",
+      "bytes": 156800,
+      "sha256": "d9d53246cb31c6bac0dfcfb72a0178d0ed3984ddae33813e2aa651c6f463f6d3"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-20-scale-1-page-001.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-20-scale-1-page-001.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 76183,
+      "source_sha256": "72a8be84bfdf8d2a5dc1ff995cb75745ede9424089c77c511de80e75e67c01c9",
+      "bytes": 76183,
+      "sha256": "72a8be84bfdf8d2a5dc1ff995cb75745ede9424089c77c511de80e75e67c01c9"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-20-scale-1-page-002.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-20-scale-1-page-002.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 48841,
+      "source_sha256": "d3268bbcca80ad99801a5e21222ebaa2f2ef32cf03f28b24150556bde5f68275",
+      "bytes": 48841,
+      "sha256": "d3268bbcca80ad99801a5e21222ebaa2f2ef32cf03f28b24150556bde5f68275"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-20-scale-1-page-003.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-20-scale-1-page-003.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 90005,
+      "source_sha256": "850533513d03e9b9d0af71b1340f507ec02bb046e5ed7cec5ab0dd78b70ab975",
+      "bytes": 90005,
+      "sha256": "850533513d03e9b9d0af71b1340f507ec02bb046e5ed7cec5ab0dd78b70ab975"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-20-scale-1-page-004.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-20-scale-1-page-004.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14970,
+      "source_sha256": "e084cb2fc528f6a251cd0c2a21a79f628179c7f403a72ec47b01fb7b01671a2a",
+      "bytes": 14970,
+      "sha256": "e084cb2fc528f6a251cd0c2a21a79f628179c7f403a72ec47b01fb7b01671a2a"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-20-scale-2-page-001.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-20-scale-2-page-001.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 296714,
+      "source_sha256": "3b798f1132bc8a44162850a1f198ba52434418e44bcb3b941b6fb337ae59864f",
+      "bytes": 296714,
+      "sha256": "3b798f1132bc8a44162850a1f198ba52434418e44bcb3b941b6fb337ae59864f"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-20-scale-2-page-002.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-20-scale-2-page-002.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 143165,
+      "source_sha256": "7096de5808965439fd204d3a0571ff44a30770d8e14e8ff99e3fc3ffb48d219d",
+      "bytes": 143165,
+      "sha256": "7096de5808965439fd204d3a0571ff44a30770d8e14e8ff99e3fc3ffb48d219d"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-20-scale-2-page-003.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-20-scale-2-page-003.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 410607,
+      "source_sha256": "9351706cd17be1d3adf938cfacfee88fcb9555518e329c02595300a9d0629116",
+      "bytes": 410607,
+      "sha256": "9351706cd17be1d3adf938cfacfee88fcb9555518e329c02595300a9d0629116"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-20-scale-2-page-004.png",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-20-scale-2-page-004.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 71443,
+      "source_sha256": "483208c8f7e4050da9a3628491bfd870cd0400aa3dba1bacc59e09256ce2c8bc",
+      "bytes": 71443,
+      "sha256": "483208c8f7e4050da9a3628491bfd870cd0400aa3dba1bacc59e09256ce2c8bc"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/1280x900-matrix/font-matrix.json",
+      "destination": "platform/thai-localization__native-final/1280x900-matrix/font-matrix.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 292006,
+      "source_sha256": "c619bb764a2e680ad1e6b95d86cb2c9ba913f0f73ae6f12cc428bfad64ce597f",
+      "bytes": 292006,
+      "sha256": "c619bb764a2e680ad1e6b95d86cb2c9ba913f0f73ae6f12cc428bfad64ce597f"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-gameplay/capture.log",
+      "destination": "platform/thai-localization__native-final/390x844-gameplay/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 142,
+      "source_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e",
+      "bytes": 137,
+      "sha256": "10d14b292843168d044352e55f4d70a9d004890e872fbc8ea921dbf8a2b7960f"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-gameplay/gameplay-dialog.png",
+      "destination": "platform/thai-localization__native-final/390x844-gameplay/gameplay-dialog.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 42231,
+      "source_sha256": "5120e0bf6bc0982d197240ace0afc9b029098cf3af2a4a29b4db1f3337934a0a",
+      "bytes": 42231,
+      "sha256": "5120e0bf6bc0982d197240ace0afc9b029098cf3af2a4a29b4db1f3337934a0a"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-gameplay/gameplay.json",
+      "destination": "platform/thai-localization__native-final/390x844-gameplay/gameplay.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 13896,
+      "source_sha256": "55724063d971b72b340e1b3e9c985e3834eeaf23d026962ed991a674c1fd4eb1",
+      "bytes": 13896,
+      "sha256": "55724063d971b72b340e1b3e9c985e3834eeaf23d026962ed991a674c1fd4eb1"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-gameplay/gameplay.png",
+      "destination": "platform/thai-localization__native-final/390x844-gameplay/gameplay.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 202609,
+      "source_sha256": "a874054d316defebbbad98bd43a6b09dc4933064e03cab487092ca0a6929b9d1",
+      "bytes": 202609,
+      "sha256": "a874054d316defebbbad98bd43a6b09dc4933064e03cab487092ca0a6929b9d1"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-lobby/capture.log",
+      "destination": "platform/thai-localization__native-final/390x844-lobby/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 60,
+      "source_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 80,
+      "sha256": "5d331affe7ca7ffe4f8a4c6a93e1f59a2da40177d8397c709ac9bb619b20a722"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-lobby/lobby.json",
+      "destination": "platform/thai-localization__native-final/390x844-lobby/lobby.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14716,
+      "source_sha256": "e87eeab992769617e3453fd66b3b8ea818dd1b0005f7845a54e2b050ce2f41dc",
+      "bytes": 14716,
+      "sha256": "e87eeab992769617e3453fd66b3b8ea818dd1b0005f7845a54e2b050ce2f41dc"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-lobby/lobby.png",
+      "destination": "platform/thai-localization__native-final/390x844-lobby/lobby.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 37068,
+      "source_sha256": "abe4427232c9b59aeb6de478debcbb27851a2b53ac5c67c33487aced720198a6",
+      "bytes": 37068,
+      "sha256": "abe4427232c9b59aeb6de478debcbb27851a2b53ac5c67c33487aced720198a6"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-lobby-players/capture.log",
+      "destination": "platform/thai-localization__native-final/390x844-lobby-players/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 60,
+      "source_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 80,
+      "sha256": "5d331affe7ca7ffe4f8a4c6a93e1f59a2da40177d8397c709ac9bb619b20a722"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-lobby-players/lobby-players.json",
+      "destination": "platform/thai-localization__native-final/390x844-lobby-players/lobby-players.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14991,
+      "source_sha256": "bd344d31a0dcfbc5378ef7304f3bb63a0698f74ccb094e932f5ce6c596b138d0",
+      "bytes": 14991,
+      "sha256": "bd344d31a0dcfbc5378ef7304f3bb63a0698f74ccb094e932f5ce6c596b138d0"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-lobby-players/lobby-players.png",
+      "destination": "platform/thai-localization__native-final/390x844-lobby-players/lobby-players.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 37417,
+      "source_sha256": "8553c8513680140309d9a030f28b5ea6b7b905513fb0d13df0a764e388ac7d66",
+      "bytes": 37417,
+      "sha256": "8553c8513680140309d9a030f28b5ea6b7b905513fb0d13df0a764e388ac7d66"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-main/capture.log",
+      "destination": "platform/thai-localization__native-final/390x844-main/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 60,
+      "source_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 80,
+      "sha256": "5d331affe7ca7ffe4f8a4c6a93e1f59a2da40177d8397c709ac9bb619b20a722"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-main/main.json",
+      "destination": "platform/thai-localization__native-final/390x844-main/main.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 13090,
+      "source_sha256": "82b821e3b6f752161db171c13a2095602b882ea7e37770368361fe1737c00b0d",
+      "bytes": 13090,
+      "sha256": "82b821e3b6f752161db171c13a2095602b882ea7e37770368361fe1737c00b0d"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-main/main.png",
+      "destination": "platform/thai-localization__native-final/390x844-main/main.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 344893,
+      "source_sha256": "f98f7117245cad8f4bb118f18063cd47188695387560cb45763ff84f5d096418",
+      "bytes": 344893,
+      "sha256": "f98f7117245cad8f4bb118f18063cd47188695387560cb45763ff84f5d096418"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-settings/capture.log",
+      "destination": "platform/thai-localization__native-final/390x844-settings/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 60,
+      "source_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 80,
+      "sha256": "5d331affe7ca7ffe4f8a4c6a93e1f59a2da40177d8397c709ac9bb619b20a722"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-settings/settings.json",
+      "destination": "platform/thai-localization__native-final/390x844-settings/settings.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 15968,
+      "source_sha256": "8ae776a2b3e11b67e648fa006dfce92251db558ae070404e3b26c992ba9b459b",
+      "bytes": 15968,
+      "sha256": "8ae776a2b3e11b67e648fa006dfce92251db558ae070404e3b26c992ba9b459b"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-settings/settings.png",
+      "destination": "platform/thai-localization__native-final/390x844-settings/settings.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 58696,
+      "source_sha256": "8f73361aec30acd0e9aa8f3d3d684f82e80188d2bcb30950077e6a6f96421711",
+      "bytes": 58696,
+      "sha256": "8f73361aec30acd0e9aa8f3d3d684f82e80188d2bcb30950077e6a6f96421711"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-tutorial/capture.log",
+      "destination": "platform/thai-localization__native-final/390x844-tutorial/capture.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 142,
+      "source_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8",
+      "bytes": 137,
+      "sha256": "b2acd0751b10851e8651809689809130df92be8d764908bca335f875218f3b30"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-tutorial/tutorial-introduction-dialog.png",
+      "destination": "platform/thai-localization__native-final/390x844-tutorial/tutorial-introduction-dialog.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 71244,
+      "source_sha256": "d690fa9cea7925bf31524e51db1ba78672bdfe25e778b9d13dec99e917136cff",
+      "bytes": 71244,
+      "sha256": "d690fa9cea7925bf31524e51db1ba78672bdfe25e778b9d13dec99e917136cff"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-tutorial/tutorial-introduction.json",
+      "destination": "platform/thai-localization__native-final/390x844-tutorial/tutorial-introduction.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14161,
+      "source_sha256": "3d762d1b51f6c1cdf729afa49559d205a7b12da3262f32f87a48f11adc658718",
+      "bytes": 14161,
+      "sha256": "3d762d1b51f6c1cdf729afa49559d205a7b12da3262f32f87a48f11adc658718"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/390x844-tutorial/tutorial-introduction.png",
+      "destination": "platform/thai-localization__native-final/390x844-tutorial/tutorial-introduction.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 285832,
+      "source_sha256": "b5e9430e5d1408b7b8326293684533b316581aa7ae02daa9dbdbc619098128bf",
+      "bytes": 285832,
+      "sha256": "b5e9430e5d1408b7b8326293684533b316581aa7ae02daa9dbdbc619098128bf"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/inputs/full/metadata.json",
+      "destination": "platform/thai-localization__native-final/inputs/full/metadata.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2522,
+      "source_sha256": "4b3411d830506b69cbe393bd3ea5151d9c338cd176c2d571f2b9e0500454e992",
+      "bytes": 2522,
+      "sha256": "4b3411d830506b69cbe393bd3ea5151d9c338cd176c2d571f2b9e0500454e992"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/inputs/full/native.json",
+      "destination": "platform/thai-localization__native-final/inputs/full/native.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 444794,
+      "source_sha256": "c6e7325eab207d440a0ce662c197509e04042fbda017525fe032868a465483fc",
+      "bytes": 444794,
+      "sha256": "c6e7325eab207d440a0ce662c197509e04042fbda017525fe032868a465483fc"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/inputs/full/online.json",
+      "destination": "platform/thai-localization__native-final/inputs/full/online.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 349862,
+      "source_sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
+      "bytes": 349862,
+      "sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/inputs/matrix/metadata.json",
+      "destination": "platform/thai-localization__native-final/inputs/matrix/metadata.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2522,
+      "source_sha256": "4b3411d830506b69cbe393bd3ea5151d9c338cd176c2d571f2b9e0500454e992",
+      "bytes": 2522,
+      "sha256": "4b3411d830506b69cbe393bd3ea5151d9c338cd176c2d571f2b9e0500454e992"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/inputs/matrix/native.json",
+      "destination": "platform/thai-localization__native-final/inputs/matrix/native.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 4071,
+      "source_sha256": "7f0b2c95dcc6659151388aae2d0be1b4526312096164e60f7bdbe1d2783ef630",
+      "bytes": 4071,
+      "sha256": "7f0b2c95dcc6659151388aae2d0be1b4526312096164e60f7bdbe1d2783ef630"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/inputs/matrix/online.json",
+      "destination": "platform/thai-localization__native-final/inputs/matrix/online.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 4167,
+      "source_sha256": "6bf2f608fb2496df311cf9179ba00d09fd66c49d8b71fbefd916a46c42bc0ae5",
+      "bytes": 4167,
+      "sha256": "6bf2f608fb2496df311cf9179ba00d09fd66c49d8b71fbefd916a46c42bc0ae5"
+    },
+    {
+      "source": "artifacts/thai-localization/native-final/manifest.json",
+      "destination": "platform/thai-localization__native-final/manifest.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 15325,
+      "source_sha256": "a2e7df92a4a0311b8b2ca2e70c8a7870efeb7f7f1e543ca9e553a537c73e9652",
+      "bytes": 15325,
+      "sha256": "a2e7df92a4a0311b8b2ca2e70c8a7870efeb7f7f1e543ca9e553a537c73e9652"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-unit-focused/build-provenance.json",
+      "destination": "platform/thai-localization__rendering__final-unit-focused/build-provenance.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 826,
+      "source_sha256": "a56481fd67995e721fdf8aa9e98885727e827c14067c61de3571259d3298ae3a",
+      "bytes": 826,
+      "sha256": "a56481fd67995e721fdf8aa9e98885727e827c14067c61de3571259d3298ae3a"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/final-engine-provenance/build-provenance.json",
+      "destination": "platform/thai-localization__rendering__final-engine-provenance/build-provenance.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 826,
+      "source_sha256": "a56481fd67995e721fdf8aa9e98885727e827c14067c61de3571259d3298ae3a",
+      "bytes": 826,
+      "sha256": "a56481fd67995e721fdf8aa9e98885727e827c14067c61de3571259d3298ae3a"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-build.json",
+      "destination": "platform/thai-localization-final__container-qa/caddy-build.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 727,
+      "source_sha256": "13d98beb9bde1b8003ced4e285add1128cb2262d93bf8e441227a5b4e13565eb",
+      "bytes": 727,
+      "sha256": "13d98beb9bde1b8003ced4e285add1128cb2262d93bf8e441227a5b4e13565eb"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-build.log.gz",
+      "destination": "platform/thai-localization-final__container-qa/caddy-build.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 62595,
+      "source_sha256": "9ce1bf3ac68014811c30e1c85902c72e407b3dce07ce6e9f901987a29f35245b",
+      "bytes": 62595,
+      "sha256": "9ce1bf3ac68014811c30e1c85902c72e407b3dce07ce6e9f901987a29f35245b",
+      "uncompressed_bytes": 223090,
+      "uncompressed_sha256": "11ca6316b0a925387de5b80a4fe268d4dc561567cb6256bf232122d54d819a5d"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-image-inspect.json",
+      "destination": "platform/thai-localization-final__container-qa/caddy-image-inspect.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 3169,
+      "source_sha256": "9905715d50affd5a30682c433476f693a2737596d9a824310c9ec5a4ca99f362",
+      "bytes": 3169,
+      "sha256": "9905715d50affd5a30682c433476f693a2737596d9a824310c9ec5a4ca99f362"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-smoke-command.json",
+      "destination": "platform/thai-localization-final__container-qa/caddy-smoke-command.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 656,
+      "source_sha256": "cdee005abfe621cfb848121db4e73784df82aec2c30bb70324e216bee62df28b",
+      "bytes": 656,
+      "sha256": "cdee005abfe621cfb848121db4e73784df82aec2c30bb70324e216bee62df28b"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-smoke-initial-harness-assumption-command.json",
+      "destination": "platform/thai-localization-final__container-qa/caddy-smoke-initial-harness-assumption-command.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 656,
+      "source_sha256": "91730642e32873fee036cce216ca19ac2bc0ff2682e6b330177255ff031c5785",
+      "bytes": 656,
+      "sha256": "91730642e32873fee036cce216ca19ac2bc0ff2682e6b330177255ff031c5785"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-smoke-initial-harness-assumption.stderr",
+      "destination": "platform/thai-localization-final__container-qa/caddy-smoke-initial-harness-assumption.stderr",
+      "category": "explicit-platform-proof",
+      "source_bytes": 367,
+      "source_sha256": "494bd8ab4d887ae17e01610b3048448bf8d9d05726b28159af5b8e0cf85c326d",
+      "bytes": 367,
+      "sha256": "494bd8ab4d887ae17e01610b3048448bf8d9d05726b28159af5b8e0cf85c326d"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-smoke-initial-harness-assumption.stdout",
+      "destination": "platform/thai-localization-final__container-qa/caddy-smoke-initial-harness-assumption.stdout",
+      "category": "explicit-platform-proof",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-smoke.mjs",
+      "destination": "platform/thai-localization-final__container-qa/caddy-smoke.mjs",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2195,
+      "source_sha256": "84c16582a584c73bde35166032c72d9b95ed2d00e8333b3bc6e861f2231483ab",
+      "bytes": 2195,
+      "sha256": "84c16582a584c73bde35166032c72d9b95ed2d00e8333b3bc6e861f2231483ab"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-smoke.stderr",
+      "destination": "platform/thai-localization-final__container-qa/caddy-smoke.stderr",
+      "category": "explicit-platform-proof",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-smoke.stdout",
+      "destination": "platform/thai-localization-final__container-qa/caddy-smoke.stdout",
+      "category": "explicit-platform-proof",
+      "source_bytes": 789,
+      "source_sha256": "e3b1eb43ffa549fa0bebe3978a289227709da216029fb378def8f6433e2ca1a5",
+      "bytes": 789,
+      "sha256": "e3b1eb43ffa549fa0bebe3978a289227709da216029fb378def8f6433e2ca1a5"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/caddy-web-inventory.json",
+      "destination": "platform/thai-localization-final__container-qa/caddy-web-inventory.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 72271,
+      "source_sha256": "f15792cd70d5bc1b11994ab9f3076088dbfed205805a2d632f8f3bcb8bc45f5c",
+      "bytes": 72271,
+      "sha256": "f15792cd70d5bc1b11994ab9f3076088dbfed205805a2d632f8f3bcb8bc45f5c"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/platform-build.json",
+      "destination": "platform/thai-localization-final__container-qa/platform-build.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 402,
+      "source_sha256": "0005959bd66ebcf07ef9ecbc3871653fd266bd8f224b0e963f0a8b8a526fb4ac",
+      "bytes": 402,
+      "sha256": "0005959bd66ebcf07ef9ecbc3871653fd266bd8f224b0e963f0a8b8a526fb4ac"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/platform-build.log.gz",
+      "destination": "platform/thai-localization-final__container-qa/platform-build.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 5651,
+      "source_sha256": "a8b4117a387135c5686a78636653e6b6533f4c10d3b783085726984f9f0020c5",
+      "bytes": 5651,
+      "sha256": "a8b4117a387135c5686a78636653e6b6533f4c10d3b783085726984f9f0020c5",
+      "uncompressed_bytes": 23862,
+      "uncompressed_sha256": "90689107b2c5051ffd58f42e383e2e67c8a5de971a222cf987bd7016e3d65405"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/platform-image-inspect.json",
+      "destination": "platform/thai-localization-final__container-qa/platform-image-inspect.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 3448,
+      "source_sha256": "7968091b3ede142897917399ffa87165204da21ffcc75023e56dd8c4f50c68e9",
+      "bytes": 3448,
+      "sha256": "7968091b3ede142897917399ffa87165204da21ffcc75023e56dd8c4f50c68e9"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/platform-smoke-command.json",
+      "destination": "platform/thai-localization-final__container-qa/platform-smoke-command.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 505,
+      "source_sha256": "8d1ed79bb390698f27e00522770a1ac681df72d4d3f40266f55711689221cb20",
+      "bytes": 505,
+      "sha256": "8d1ed79bb390698f27e00522770a1ac681df72d4d3f40266f55711689221cb20"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/platform-smoke.mjs",
+      "destination": "platform/thai-localization-final__container-qa/platform-smoke.mjs",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2760,
+      "source_sha256": "ddd21483a62ba6546c8a006e496ab1fcd331a6f143d54af93611a0e4ab21053f",
+      "bytes": 2760,
+      "sha256": "ddd21483a62ba6546c8a006e496ab1fcd331a6f143d54af93611a0e4ab21053f"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/platform-smoke.stderr",
+      "destination": "platform/thai-localization-final__container-qa/platform-smoke.stderr",
+      "category": "explicit-platform-proof",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/platform-smoke.stdout",
+      "destination": "platform/thai-localization-final__container-qa/platform-smoke.stdout",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1199,
+      "source_sha256": "ac0b6b5705479bda6da4cd8ccaac6d3b31b48342c0004fb25f2de31ed05d4af0",
+      "bytes": 1199,
+      "sha256": "ac0b6b5705479bda6da4cd8ccaac6d3b31b48342c0004fb25f2de31ed05d4af0"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/provenance.json",
+      "destination": "platform/thai-localization-final__container-qa/provenance.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2257,
+      "source_sha256": "3725bad3b90c81188edf8923287908370a0b81877eb68a6ea0da961e4a989c71",
+      "bytes": 2257,
+      "sha256": "3725bad3b90c81188edf8923287908370a0b81877eb68a6ea0da961e4a989c71"
+    },
+    {
+      "source": "artifacts/thai-localization-final/container-qa/summary.json",
+      "destination": "platform/thai-localization-final__container-qa/summary.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 5100,
+      "source_sha256": "e6a18e3381db8cc534b1beac6e0d2836efc8dc03c404981185c2b6aacccd8ac1",
+      "bytes": 5100,
+      "sha256": "e6a18e3381db8cc534b1beac6e0d2836efc8dc03c404981185c2b6aacccd8ac1"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-e100/build.log",
+      "destination": "platform/thai-localization__platform__ios-e100/build.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 22558237,
+      "source_sha256": "f69bc6d046fb53bf3284dcd6a6e023229d995ff0eb81dee8223498adb3c52e61",
+      "bytes": 552502,
+      "sha256": "42166ad663b077cdca31270bb01dfac30cd25bf14ea6ae169c38eed85eb4dc98"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-e100/commands.log",
+      "destination": "platform/thai-localization__platform__ios-e100/commands.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1071,
+      "source_sha256": "2bfaefcd37226a55c1f8c3b621c6da210055f177b8dec25e4f5cd141e8f34d80",
+      "bytes": 363,
+      "sha256": "8d9ebae0f0f99d4797f4e5e5361fa5ffcfa7943b9a5ebcc07efe386e14cd46b8"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-e100/dependencies.log",
+      "destination": "platform/thai-localization__platform__ios-e100/dependencies.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 151426,
+      "source_sha256": "1db39fb39435b95bdfd5f4f5513ddeb4ac761a31e31984c3392801a3a4544b73",
+      "bytes": 18164,
+      "sha256": "c8168011f6f4b319ec97d2ac86545274b40dfb8748e68bbdcf62ce2c927658ea"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-e100/result.json",
+      "destination": "platform/thai-localization__platform__ios-e100/result.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 3736,
+      "source_sha256": "5e54fc45447d4a754550716758112b394b9e8dd02e89e4d59bdd367b3dbf09bc",
+      "bytes": 3736,
+      "sha256": "5e54fc45447d4a754550716758112b394b9e8dd02e89e4d59bdd367b3dbf09bc"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-e100/toolchain.json",
+      "destination": "platform/thai-localization__platform__ios-e100/toolchain.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1597,
+      "source_sha256": "35aa08fdbf10f0638dfcbf5e0210345a68a9483107e034f2eb1a677d6a0cbc0d",
+      "bytes": 1597,
+      "sha256": "35aa08fdbf10f0638dfcbf5e0210345a68a9483107e034f2eb1a677d6a0cbc0d"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-e100/xcode-inventory.json",
+      "destination": "platform/thai-localization__platform__ios-e100/xcode-inventory.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 344,
+      "source_sha256": "df003429e6f25a70fd247feffa18937fe6c99075e9120492e9002cda7256acd5",
+      "bytes": 344,
+      "sha256": "df003429e6f25a70fd247feffa18937fe6c99075e9120492e9002cda7256acd5"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-b6e-bounded/build.log",
+      "destination": "platform/thai-localization__platform__ios-b6e-bounded/build.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 22558063,
+      "source_sha256": "b68be62ce289b99267c7f596c409853a97a901cd90784dad76e16b9083cc6329",
+      "bytes": 546244,
+      "sha256": "a1bb1293aa0e44ded502161663e9947ee51e4f52247b2a6671505882fa5de2d8"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-b6e-bounded/commands.log",
+      "destination": "platform/thai-localization__platform__ios-b6e-bounded/commands.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1666,
+      "source_sha256": "4c4fc4d93bb7772c1c96c456bd07563f11782ee3d3c3e04f6feaabbeb57547ba",
+      "bytes": 561,
+      "sha256": "1465989126816798de596746da22edd74443c9409a1dac9bd413308e0258e08f"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-b6e-bounded/dependencies.log",
+      "destination": "platform/thai-localization__platform__ios-b6e-bounded/dependencies.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 151415,
+      "source_sha256": "02711515c1222d77229a672c6acd3f0cb8a39ee4b7138289cc4fda325b1adab0",
+      "bytes": 18148,
+      "sha256": "c69060b7af1514595074496753ec0068523d59dc2127d301d99bbac16ca59eb3"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-b6e-bounded/download-manifest.json",
+      "destination": "platform/thai-localization__platform__ios-b6e-bounded/download-manifest.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 580,
+      "source_sha256": "c93342394712c2c9fa9d717a8d986a50e96e9a58071a49a03998a7fe8c2e0ef4",
+      "bytes": 580,
+      "sha256": "c93342394712c2c9fa9d717a8d986a50e96e9a58071a49a03998a7fe8c2e0ef4"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-b6e-bounded/result.json",
+      "destination": "platform/thai-localization__platform__ios-b6e-bounded/result.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 4887,
+      "source_sha256": "f6cb02fda3ebc11e17b9005edf7dc7b9c9b39ba479f5e859e41b345e980541a5",
+      "bytes": 4887,
+      "sha256": "f6cb02fda3ebc11e17b9005edf7dc7b9c9b39ba479f5e859e41b345e980541a5"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-b6e-bounded/toolchain.json",
+      "destination": "platform/thai-localization__platform__ios-b6e-bounded/toolchain.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1597,
+      "source_sha256": "35aa08fdbf10f0638dfcbf5e0210345a68a9483107e034f2eb1a677d6a0cbc0d",
+      "bytes": 1597,
+      "sha256": "35aa08fdbf10f0638dfcbf5e0210345a68a9483107e034f2eb1a677d6a0cbc0d"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/ios-b6e-bounded/xcode-inventory.json",
+      "destination": "platform/thai-localization__platform__ios-b6e-bounded/xcode-inventory.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 344,
+      "source_sha256": "df003429e6f25a70fd247feffa18937fe6c99075e9120492e9002cda7256acd5",
+      "bytes": 344,
+      "sha256": "df003429e6f25a70fd247feffa18937fe6c99075e9120492e9002cda7256acd5"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-e100-runtime/mobile-smoke/activity.txt",
+      "destination": "platform/thai-localization__platform__android-e100-runtime__mobile-smoke/activity.txt",
+      "category": "explicit-platform-proof",
+      "source_bytes": 29797,
+      "source_sha256": "53f0ac2fdc8d0277a0d83f5d58e366f845c120f2da080a143b46be84bc39d296",
+      "bytes": 29797,
+      "sha256": "53f0ac2fdc8d0277a0d83f5d58e366f845c120f2da080a143b46be84bc39d296"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-e100-runtime/mobile-smoke/failure.png",
+      "destination": "platform/thai-localization__platform__android-e100-runtime__mobile-smoke/failure.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 115154,
+      "source_sha256": "2a7ace0412642d01959fc8a0d6d8c84f67c2abb55083c29d398b7ffc74c3ea77",
+      "bytes": 115154,
+      "sha256": "2a7ace0412642d01959fc8a0d6d8c84f67c2abb55083c29d398b7ffc74c3ea77"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-e100-runtime/mobile-smoke/logcat.txt",
+      "destination": "platform/thai-localization__platform__android-e100-runtime__mobile-smoke/logcat.txt",
+      "category": "explicit-platform-proof",
+      "source_bytes": 62328,
+      "source_sha256": "17654849f4e8bb9658977dd819afd4dce59df014c20be69c3efb56661342b05a",
+      "bytes": 62328,
+      "sha256": "17654849f4e8bb9658977dd819afd4dce59df014c20be69c3efb56661342b05a"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-e100-runtime/mobile-smoke/memory.txt",
+      "destination": "platform/thai-localization__platform__android-e100-runtime__mobile-smoke/memory.txt",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2913,
+      "source_sha256": "21dc87e4fb83c290b8f9dd4beb39f7a1ea7602bc152e13406eba588842d0baf3",
+      "bytes": 2913,
+      "sha256": "21dc87e4fb83c290b8f9dd4beb39f7a1ea7602bc152e13406eba588842d0baf3"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-e100-runtime/mobile-smoke/result.json",
+      "destination": "platform/thai-localization__platform__android-e100-runtime__mobile-smoke/result.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 148,
+      "source_sha256": "c541fbb2805b80166abd48dc42b23fa1a9104bd9b7d8708c6ccd19755ce85a75",
+      "bytes": 148,
+      "sha256": "c541fbb2805b80166abd48dc42b23fa1a9104bd9b7d8708c6ccd19755ce85a75"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-e100-runtime/mobile-smoke/thai-apk-resources.txt",
+      "destination": "platform/thai-localization__platform__android-e100-runtime__mobile-smoke/thai-apk-resources.txt",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1064,
+      "source_sha256": "685013a503e283954df82e9a35904df9f6955a91ef87e4e3f2831018ee68a3c7",
+      "bytes": 1064,
+      "sha256": "685013a503e283954df82e9a35904df9f6955a91ef87e4e3f2831018ee68a3c7"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-e100-runtime/mobile-smoke/thai-localization.json",
+      "destination": "platform/thai-localization__platform__android-e100-runtime__mobile-smoke/thai-localization.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2726,
+      "source_sha256": "424d1b290f88c6f33ad3210f0a44f373b187c71e74cbda8ee2e840def86c5f52",
+      "bytes": 2726,
+      "sha256": "424d1b290f88c6f33ad3210f0a44f373b187c71e74cbda8ee2e840def86c5f52"
+    },
+    {
+      "source": "artifacts/thai-localization/ios-packaging-fix-proposal/diagnosis.json",
+      "destination": "platform/thai-localization__ios-packaging-fix-proposal/diagnosis.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1298,
+      "source_sha256": "97110711097646aa727e885bfad883a70210f4d66b3784b6981590ce6b430efc",
+      "bytes": 1298,
+      "sha256": "97110711097646aa727e885bfad883a70210f4d66b3784b6981590ce6b430efc"
+    },
+    {
+      "source": "artifacts/thai-localization/ios-simulator-set-fix-proposal/audio-source-contract.json",
+      "destination": "platform/thai-localization__ios-simulator-set-fix-proposal/audio-source-contract.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 500,
+      "source_sha256": "8b7e840594b0548c39b303b09c36a429386a61dc4ad61f92930e1f638585da58",
+      "bytes": 500,
+      "sha256": "8b7e840594b0548c39b303b09c36a429386a61dc4ad61f92930e1f638585da58"
+    },
+    {
+      "source": "artifacts/thai-localization/ios-simulator-set-fix-proposal/diagnosis.json",
+      "destination": "platform/thai-localization__ios-simulator-set-fix-proposal/diagnosis.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 816,
+      "source_sha256": "4bf6b982fbb2b3771dec8916d1e3aefb9546bed06208aa2296da47eaa2e17008",
+      "bytes": 816,
+      "sha256": "4bf6b982fbb2b3771dec8916d1e3aefb9546bed06208aa2296da47eaa2e17008"
+    },
+    {
+      "source": "artifacts/thai-localization/android-smoke-fix-proposal/diagnosis.json",
+      "destination": "platform/thai-localization__android-smoke-fix-proposal/diagnosis.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 867,
+      "source_sha256": "94ab7f3735626b17f637ee0b82b8086fd1a5db483ee701aa3413971f7e9d2838",
+      "bytes": 867,
+      "sha256": "94ab7f3735626b17f637ee0b82b8086fd1a5db483ee701aa3413971f7e9d2838"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/master-baseline-80596/browser/tests/fixtures/generator-studio-trace.json",
+      "destination": "platform/thai-localization__checks__master-baseline-80596/browser/tests/fixtures/generator-studio-trace.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 609,
+      "source_sha256": "ac17d312ce1d882b36889d12a5da1a9431c19741e38516bf456b012dfb816ff1",
+      "bytes": 609,
+      "sha256": "ac17d312ce1d882b36889d12a5da1a9431c19741e38516bf456b012dfb816ff1"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/master-baseline-80596/browser/tests/fixtures/studio-trace.json",
+      "destination": "platform/thai-localization__checks__master-baseline-80596/browser/tests/fixtures/studio-trace.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 497,
+      "source_sha256": "32f77e2323e8154732f501438a93868221b5c0847fcfcc35ee3e058c0354cd1d",
+      "bytes": 497,
+      "sha256": "32f77e2323e8154732f501438a93868221b5c0847fcfcc35ee3e058c0354cd1d"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/master-baseline-80596/provenance.json",
+      "destination": "platform/thai-localization__checks__master-baseline-80596/provenance.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 197,
+      "source_sha256": "aa8d094170f3240c1b749c0525bb760ba8775c68f46189c159bca475c902fdc4",
+      "bytes": 197,
+      "sha256": "aa8d094170f3240c1b749c0525bb760ba8775c68f46189c159bca475c902fdc4"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/master-baseline-80596/replay-tests.log",
+      "destination": "platform/thai-localization__checks__master-baseline-80596/replay-tests.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 3340,
+      "source_sha256": "5ebc14ff05e3451842e6580724ecf0dfd8028cb122229faa52d8b72455f726ef",
+      "bytes": 785,
+      "sha256": "a33726ea6f59388068ea078c53e4818757d5780ef0739fbc49218b0a137b9d20"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 89,
+      "source_sha256": "02dec8c136fc0f62f8181caf8354b7ec6859230984c7d6a5c054790d3b8f72c3",
+      "bytes": 89,
+      "sha256": "02dec8c136fc0f62f8181caf8354b7ec6859230984c7d6a5c054790d3b8f72c3"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/android-x86_64-build.log",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/android-x86_64-build.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 14444615,
+      "source_sha256": "b102829503e867f6b57d54c0795014c83628784347b4ade7306d88be77005166",
+      "bytes": 300420,
+      "sha256": "76f21db327941be6284f2450581a33cb5294647167ecac2e5cc57efa5b6e0990"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/download-manifest.json",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/download-manifest.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1772,
+      "source_sha256": "3c41fce3eb6cebf24f680eb9197f4c28854dea1844a4a37c91f3678b5590bfa0",
+      "bytes": 1772,
+      "sha256": "3c41fce3eb6cebf24f680eb9197f4c28854dea1844a4a37c91f3678b5590bfa0"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-emulator.log",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-emulator.log.gz",
+      "category": "explicit-platform-proof",
+      "source_bytes": 8949,
+      "source_sha256": "89356dd30cb353cc48368eb6028c2de24fc97e566b41b97fefe2c155f55564a8",
+      "bytes": 3193,
+      "sha256": "cc8eddeefd2af4b5f70c6fe289dffad1927ed008e0ec70377443c35781531a5d"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/activity.txt",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/activity.txt",
+      "category": "explicit-platform-proof",
+      "source_bytes": 30561,
+      "source_sha256": "6ac031a06b5fa36e19f4a6df1c93afeff3110b5283104425122dd359f901dc83",
+      "bytes": 30561,
+      "sha256": "6ac031a06b5fa36e19f4a6df1c93afeff3110b5283104425122dd359f901dc83"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/logcat.txt",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/logcat.txt",
+      "category": "explicit-platform-proof",
+      "source_bytes": 144197,
+      "source_sha256": "bee12326cd12afbe86b3a82fc1f1eeafb68abbae2fd6e039777f82bd75567fb7",
+      "bytes": 144197,
+      "sha256": "bee12326cd12afbe86b3a82fc1f1eeafb68abbae2fd6e039777f82bd75567fb7"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/memory.txt",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/memory.txt",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2827,
+      "source_sha256": "4f9de1cca1acb2adc4e82036bb44920b841fc4a221ad051451eb1d6c219ca078",
+      "bytes": 2827,
+      "sha256": "4f9de1cca1acb2adc4e82036bb44920b841fc4a221ad051451eb1d6c219ca078"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/relaunched.png",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/relaunched.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 160297,
+      "source_sha256": "a3ca37b983e4014974f9b9491258d4a37a8056983bc50554acb8ad6232a0a924",
+      "bytes": 160297,
+      "sha256": "a3ca37b983e4014974f9b9491258d4a37a8056983bc50554acb8ad6232a0a924"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/result.json",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/result.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 334,
+      "source_sha256": "fcc8f4870efc1c8384ca223d12f5e487ab9fc032ebb05b0c529cdd72a659ea93",
+      "bytes": 334,
+      "sha256": "fcc8f4870efc1c8384ca223d12f5e487ab9fc032ebb05b0c529cdd72a659ea93"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/resumed.png",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/resumed.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 182697,
+      "source_sha256": "baa62e8aff687cd2c8dbfdf566ca42e58dbd8db54ad8ac9590f78eff99f91acb",
+      "bytes": 182697,
+      "sha256": "baa62e8aff687cd2c8dbfdf566ca42e58dbd8db54ad8ac9590f78eff99f91acb"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/rotation-0.png",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/rotation-0.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 147979,
+      "source_sha256": "6925d335c01eb1effa119ad89cb87d8fe2499a4e0a15b5bc3f94a4d6dfe83969",
+      "bytes": 147979,
+      "sha256": "6925d335c01eb1effa119ad89cb87d8fe2499a4e0a15b5bc3f94a4d6dfe83969"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/rotation-1.png",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/rotation-1.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 152935,
+      "source_sha256": "8880686412d20ccafd98937376640a3594a8cc8a6fec2257020d34158f0caec2",
+      "bytes": 152935,
+      "sha256": "8880686412d20ccafd98937376640a3594a8cc8a6fec2257020d34158f0caec2"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/settings.png",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/settings.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 65598,
+      "source_sha256": "8a8983780fe07338c4a182ce01b02b2485e975362c81183f112c42c9c8d69309",
+      "bytes": 65598,
+      "sha256": "8a8983780fe07338c4a182ce01b02b2485e975362c81183f112c42c9c8d69309"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/startup.png",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/startup.png",
+      "category": "explicit-platform-proof",
+      "source_bytes": 161706,
+      "source_sha256": "5265d045f9ae6d3a8977c7a790158cc4eecaacfd61dfdcf7ecdaff214f87c521",
+      "bytes": 161706,
+      "sha256": "5265d045f9ae6d3a8977c7a790158cc4eecaacfd61dfdcf7ecdaff214f87c521"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/thai-apk-resources.txt",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/thai-apk-resources.txt",
+      "category": "explicit-platform-proof",
+      "source_bytes": 1064,
+      "source_sha256": "685013a503e283954df82e9a35904df9f6955a91ef87e4e3f2831018ee68a3c7",
+      "bytes": 1064,
+      "sha256": "685013a503e283954df82e9a35904df9f6955a91ef87e4e3f2831018ee68a3c7"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/mobile-smoke/thai-localization.json",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/mobile-smoke/thai-localization.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2726,
+      "source_sha256": "5f0e65d6ab48cec6f5e73a1cf9c2ce219f5bc8dd14d52fa59212504e450ebe22",
+      "bytes": 2726,
+      "sha256": "5f0e65d6ab48cec6f5e73a1cf9c2ce219f5bc8dd14d52fa59212504e450ebe22"
+    },
+    {
+      "source": "artifacts/thai-localization/platform/android-cedc-bounded/visual-review.json",
+      "destination": "platform/thai-localization__platform__android-cedc-bounded/visual-review.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 5055,
+      "source_sha256": "46cbd3b93fa87d3696cd4c5e53bb14a8ad6689872532a2206f7d41cb25c8b048",
+      "bytes": 5055,
+      "sha256": "46cbd3b93fa87d3696cd4c5e53bb14a8ad6689872532a2206f7d41cb25c8b048"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/master-baseline-80596/source-hashes.json",
+      "destination": "platform/thai-localization__checks__master-baseline-80596/source-hashes.json",
+      "category": "explicit-platform-proof",
+      "source_bytes": 2768,
+      "source_sha256": "72ddaf005e42fdbac972b2475399d1972b12c327eb59b1c90e58eeb3fd42af28",
+      "bytes": 2768,
+      "sha256": "72ddaf005e42fdbac972b2475399d1972b12c327eb59b1c90e58eeb3fd42af28"
     }
   ],
   "source_revision_file_sha256": {
@@ -12954,7 +15119,10 @@
     "libgag/src/TrueTypeFont.cpp": "438e35da75aebde01efdb725647d0b7bafbb37ddf75f2d0d8872b1156575b383",
     "libgag/include/TextBreaks.h": "ef909748d4d718596bcb066a2b3a323cd3879cd3c38e9ca2c82575f391ea3a3d",
     "libgag/src/ui/TextLayout.cpp": "0e1980f7bc75f78c822e92419c4af6246e3c5f6bb9430ca4d0bef854731a044c",
-    "mobile/ios.py": "22a90ba8b271ee1f5d0fb6ef3c3f254e9f2c77bd4ece371b64a1755bb6924608",
+    "mobile/ios.py": "cb838458d474d6a3a92ac3e34ddc8a146a11190adf59c352dc1c1fb7553aa5a2",
+    "mobile/ios_localization_qa.py": "6abc891bc695efc071d1224a5ad7a1e2be742902605b7abda451cf79fdde9b5f",
+    "mobile/smoke.py": "191ef9037618ea913d4ab577a7142aed06df63505d6046c5e0e3b28c892d1fba",
+    "tools/check_macos_localization_bundle.py": "995e6da096a78d115f8e11e6887f99fa98c685d4893ade7f5955ccea25f08c67",
     "mobile/ios/Info.plist.in": "0dcfaeac9dd2a8399967399bb2d5b53f37e396c7fe761e87f39f569257401ddb",
     "mobile/ios/th.lproj/InfoPlist.strings": "fca355c21427f646c55f3366fb2278a714e7f2237e3ca2af8f2f01549c39f347",
     "mobile/android/app/src/main/res/values-th/strings.xml": "bc8ab1a8057fe99b025e4347fbfa8df43f3fc3f6038fdc6052de51cc473dd6cb",
@@ -12973,9 +15141,9 @@
     "tools/capture_localization_platform.py": "7648ee37cdf0747124fcdea77b7590b16817625aa5ef9f30fcacfab05e4dd851",
     "test/test_capture_localization_platform.py": "367d7064f61cfb4ccfbc76a34d881a97fa8d211d1c411b8e400ee66f50d42822",
     ".github/workflows/build.yml": "c50a63d85cb22d38aecd4c489a54064271d1665ef91c710b1bbbe55dfdf74304",
-    ".github/workflows/ci-macos.yml": "2cf206ca1441b44bc872596e7dd83ac836ff6509e6ad8f55af60179c1be71bcc",
+    ".github/workflows/ci-macos.yml": "061fc00a0dbd51fd6b471755aef6df5cd5c8834409ed279f3ba9fef7ea192065",
     ".github/workflows/ci-linux-build.yml": "367e36e2f4cd6c55d2f2a898f9e476dd4cc77a22c24f3d8a01c0e7d7c2458d25",
-    "browser/tests/thai-localization.spec.js": "0daae786182c4f6443c68652793f6c120d18a24ec4d6464125bad17be5995b3a"
+    "browser/tests/thai-localization.spec.js": "8b39b193a80ac99504f51ec857fe06751944273e09a91690538a5e0f76e75484"
   },
   "exclusions": [
     "SDKs and dependency trees",
@@ -12987,7 +15155,7 @@
   ],
   "publishing": "No ref update or network operation performed. Coordinator must review this manifest before publishing.",
   "repository_url": "https://github.com/Globulation2/glob2",
-  "source_url": "https://github.com/Globulation2/glob2/commit/fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+  "source_url": "https://github.com/Globulation2/glob2/commit/03abf217c082d97f1512b2ac691ef64d3e30b065",
   "provider_usage": {
     "actual_response_cache_files": 97,
     "attempts": 97,
@@ -13005,10 +15173,11 @@
     "primary-terminology": 4,
     "reviewed-catalog-snapshot": 179,
     "catalog-reconciliation": 14,
-    "focused-checks": 75,
-    "rendering-evidence": 77,
+    "focused-checks": 98,
+    "rendering-evidence": 152,
     "browser-evidence": 74,
-    "successor-source-current-proof": 343
+    "successor-source-current-proof": 348,
+    "explicit-platform-proof": 137
   },
   "browser_capture_status": "Mixed explicitly scoped captures: original28-view collection is interim;20 e100 studio views cover unchanged studio components only;2 fresh fa57 username-hint SSR views have exact revised-target hashes and visual review. Inspect each report for its own source/build/scope; no claim all captures used the latest binary.",
   "evidence_scope_links": {
@@ -13016,15 +15185,48 @@
     "unchanged_native_rendered_inputs": "successor/checks/native-rendered-input-equivalence.json",
     "display_scope_inventory": "campaign/reviews/display-scope-audit.json",
     "exact_source_and_target_approvals": "successor/checks/independent-final-approvals.json",
-    "prior_username_approval_history": "successor/reviews/pre-username"
+    "prior_username_approval_history": "successor/reviews/pre-username",
+    "native_development_verification": "campaign/rendering/final-native-verification.json",
+    "native_actual_PNGs": "platform/thai-localization__native-final/manifest.json",
+    "platform_and_Caddy_container_QA": "platform/thai-localization-final__container-qa/summary.json",
+    "iOS_second_failure_and_bundle_pass": "platform/thai-localization__platform__ios-b6e-bounded/result.json",
+    "Android_first_failure": "platform/thai-localization__platform__android-e100-runtime__mobile-smoke/result.json",
+    "latest_QA_only_source_equivalence": "successor/checks/qualification-only-head-equivalence-03ab.json",
+    "actual_Android_release_emulator_review": "platform/thai-localization__platform__android-cedc-bounded/visual-review.json",
+    "latest_master_fixture_reproduction": "platform/thai-localization__checks__master-baseline-80596/provenance.json",
+    "latest_master_exact_source_hashes": "platform/thai-localization__checks__master-baseline-80596/source-hashes.json"
   },
   "pending_release_gates": [
-    "desktop_rendering",
-    "phone_rendering",
     "browser_startup",
     "native_platforms",
     "browser_platforms",
     "mobile_platforms"
   ],
-  "successor_source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29"
+  "successor_source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "snapshot_derivation": {
+    "prior_manifest_sha256": "4edd83cd31ed82a4a7961bf5e07bfa85ed0ec5becc85c598ec4e228844fcc5d5",
+    "method": "Reused byte-verified immutable03ab partial payload, added actual Android success evidence and latest805 baseline source hashes. Existing producer revisions and capture scopes unchanged."
+  },
+  "completed_scope_summary": {
+    "native_development": {
+      "producer_revision": "cedcdb3926860e0ee5417f29d78c66e4e10a488b",
+      "verification_revision": "4f68f521b6166247f2f8774ab0f3cc3b2f9cf431",
+      "scope": "Linux native development build, CPU/HarfBuzz/software-SDL, desktop and touch layouts; separate release/platform gates remain pending",
+      "focused_tests_passed": 58,
+      "PNGs": 36,
+      "font_matrix_measurements": 360,
+      "closed_gates": [
+        "desktop_rendering",
+        "phone_rendering"
+      ]
+    },
+    "containers": {
+      "scope": "Actual platform and Caddy images built and smoke-tested, source/build provenance retained; engine container still pending",
+      "evidence": "platform/thai-localization-final__container-qa/summary.json"
+    },
+    "mobile": {
+      "scope": "Actual Android cedc release-emulator qualification passed;6 screenshots agent-reviewed, exact Thai resources and lifecycle/profile persistence checked. Two old iOS failures retained; latest iOS retry still running.",
+      "aggregate_mobile_release_gate_passed": false
+    }
+  }
 }

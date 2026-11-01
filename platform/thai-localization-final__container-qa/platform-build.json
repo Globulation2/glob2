@@ -1,0 +1,19 @@
+{
+  "command": [
+    "docker",
+    "build",
+    "--progress=plain",
+    "--target",
+    "platform",
+    "--build-arg",
+    "GLOB2_DESIGN_SYSTEM_SHA=220b965b061e402df7531fa0f9ad5104bf29a638",
+    "-f",
+    "deploy/Dockerfile",
+    "-t",
+    "glob2-thai-platform-qa:cedc",
+    "."
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 121.90124940872192,
+  "revision": "cedcdb3926860e0ee5417f29d78c66e4e10a488b"
+}

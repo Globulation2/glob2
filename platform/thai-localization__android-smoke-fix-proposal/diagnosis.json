@@ -1,0 +1,18 @@
+{
+  "run_id": 41252859958,
+  "diagnosis": "First-run introduction offer is an unhandled smoke state. Native screens advance audio->hand->introduction, then wait for user action; no observed app crash.",
+  "observed_native_screens": [
+    "21AudioPreferenceScreen",
+    "20HandPreferenceScreen",
+    "23IntroductionOfferScreen"
+  ],
+  "viewed_failure_png": true,
+  "minimal_fix": "Use actual Escape Return to main menu action, preserving introduction preference; keep timeout and native-ready checks.",
+  "runtime_source_changes": false,
+  "requires_actual_emulator_retry": true,
+  "evidence_sha256": {
+    "logcat.txt": "17654849f4e8bb9658977dd819afd4dce59df014c20be69c3efb56661342b05a",
+    "failure.png": "2a7ace0412642d01959fc8a0d6d8c84f67c2abb55083c29d398b7ffc74c3ea77",
+    "result.json": "c541fbb2805b80166abd48dc42b23fa1a9104bd9b7d8708c6ccd19755ce85a75"
+  }
+}

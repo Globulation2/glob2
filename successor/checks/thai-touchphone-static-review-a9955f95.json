@@ -1,0 +1,76 @@
+{
+  "reviewer": "online_adversarial",
+  "reviewed_revision": "a9955f95d081971086c61dc0b6d5dd7dd987851d",
+  "scope": "Independent read-only static review of dedicated Thai touch-phone browser cases and actual control/presentation/DOM helpers. No tests executed and no compiled-bundle result claimed.",
+  "source_sha256": {
+    "browser/tests/thai-localization.spec.js": "44cc8bb81af4de193d254e7ef52ab2834a92c42c2ddacf8e4d383cdba1b050cb",
+    "browser/tests/main-menu.js": "15bda955d941567db8d6a7d7a2aface1233d6e62d9c3ba030f18e2e1d8b4518f",
+    "browser/playwright.config.js": "98cdd75f6e1acbbf861a9409ce8f1c63cba38b7893cf9907ff53085031db3396",
+    "browser/shell.html": "556ba59567d5f685797d1ecb840313ce5500d818fb38606c004fec5b46e2c4af",
+    "browser/ApplicationHost.cpp": "bf7b46760c12016c0a0af3ab28aa9c1119866d7d21cab3122b4c0f8aa62ea6f6",
+    "browser/tests/viewport.spec.js": "f51aa0c1c2ed13e83a27dbf96c3203193223ce2fefb8e340c903d762cf1dfce1",
+    "src/ui/settings/SettingsScreen.cpp": "efb4ff90107a7f74914bf0d02086980e4cb6496f08978b2a377b8c9ef504e990",
+    "libgag/src/ui/Host.cpp": "35672214310c05c9ecf63a8ee21c17a53cff3796f561d56b896b14caa05028ef",
+    "src/ui/screens/AudioPreferenceScreen.cpp": "dc0e0844cf1af057b037f6b881031e70a36ed21a7fa047b6d3e8f8c4a8e6efad",
+    "src/ui/screens/HandPreferenceScreen.cpp": "d3fe8e95271f5ecbefb21aa874a0d45846e61daf966ec25917be3ace19786519",
+    "src/ui/screens/IntroductionOfferScreen.h": "8fe12f2298f9e3be780bb689ae99e0dfce9508a77a70091b55885343444f04a2"
+  },
+  "findings": [
+    {
+      "id": "phone-settings-compact-category",
+      "severity": "major",
+      "file": "browser/tests/thai-localization.spec.js",
+      "line": 93,
+      "reason": "nav.5 exists only in sidebar navigation. At 390 CSS px phone Settings publishes nav.current choice, so tapControl(nav.5) waits for an absent key then times out. Touch categories omit Controls; Player is popup index 4.",
+      "evidence": [
+        "src/ui/settings/SettingsScreen.cpp:198-215 visibleCategories",
+        "src/ui/settings/SettingsScreen.cpp:680 touchLayout=p.touch",
+        "src/ui/settings/SettingsScreen.cpp:512-552 categoryNavigation",
+        "src/ui/settings/SettingsScreen.cpp:751 sidebar threshold",
+        "libgag/src/ui/Host.cpp:923 popup/{index}"
+      ],
+      "minimal_fix": "await tapControl(page, 'nav.current');\n// Touch categories omit Controls, so Language & player is the fifth entry.\nawait tapControl(page, 'popup/4');"
+    },
+    {
+      "id": "phone-css-vs-backing-dimensions",
+      "severity": "major",
+      "file": "browser/tests/thai-localization.spec.js",
+      "line": 84,
+      "reason": "Snapshot width/height report drawing buffer or canvas backing dimensions, not CSS viewport. A real 2x backing surface is 780x1688 for this viewport; waiting for 390x844 can time out when requested density works. Existing high-density viewport test explicitly expects doubled backing size.",
+      "evidence": [
+        "browser/shell.html:591 snapshot backing dimensions",
+        "browser/ApplicationHost.cpp:66-69 GL drawingBufferWidth/Height",
+        "browser/tests/viewport.spec.js:95-106 high density expectations"
+      ],
+      "minimal_fix": "Assert Module.presentationMetrics.width,height for CSS viewport; assert actual devicePixelRatio===2 and independently assert backing snapshot dimensions [780,1688]."
+    },
+    {
+      "id": "phone-firefox-density-not-verified",
+      "severity": "minor",
+      "file": "browser/tests/thai-localization.spec.js",
+      "line": 69,
+      "reason": "Configured deviceScaleFactor=2 does not establish actual density after navigation. Existing viewport test documents Firefox COOP process navigation resetting emulated density. Current test can silently run at 1x and pass the incorrect CSS-size backing assertion.",
+      "evidence": [
+        "browser/tests/viewport.spec.js:98-101 documented viewport reapplication"
+      ],
+      "minimal_fix": "After page.goto, reapply page.setViewportSize(page.viewportSize()) and assert devicePixelRatio===2, as the existing high-density fixture does. Reassert after reload if density then is part of the claim."
+    },
+    {
+      "id": "phone-rotation-await",
+      "severity": "minor",
+      "file": "browser/tests/thai-localization.spec.js",
+      "line": 102,
+      "reason": "The old portrait field bounds may already fit the landscape rectangle before a game frame processes resize; bounding-box check alone does not prove rotation completed.",
+      "minimal_fix": "After resize, await Module.presentationMetrics.width,height == [844,390] and backing dimensions [1688,780] before input/bounds/screenshot assertions; optionally assert input remains focused."
+    }
+  ],
+  "checked_without_new_findings": [
+    "hasTouch:true/deviceScaleFactor:2 nested test.use applies to serial/threaded cases in all chromium/firefox/webkit projects",
+    "Audio and hand first-run footer control keys exist and persist their explicit choices",
+    "Introduction intro/menu key exists; storage-failure continuation is outside expected successful persistence path",
+    "Main-menu settings helper detects phone menu/settings and uses bounds conversion",
+    "Native text bridge publishes requested data-i18n-aria and translated aria-label; fill raises input and preferences poll waits for native save",
+    "Module.storage.flush promise awaited before reload; cookies/context retained across reload; context isolation supplies fresh cases"
+  ],
+  "status": "changes-requested-before-execution"
+}

@@ -1,0 +1,40 @@
+{
+  "identity": {
+    "target": "ios",
+    "role": "client",
+    "toolchain": "ios",
+    "mode": "release",
+    "arch": "arm64",
+    "environment": "simulator",
+    "api": "15.0",
+    "client_profile": "free",
+    "distribution": "app_store",
+    "client_features": {
+      "commander": false,
+      "authoring_links": false,
+      "community_ai": false,
+      "community_generators": false
+    }
+  },
+  "output": "build/ios/simulator/arm64/15.0/client/release",
+  "toolchain": {
+    "cc": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+    "cxx": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+    "ar": "/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar",
+    "cflags": [
+      "-target",
+      "arm64-apple-ios15.0-simulator",
+      "-isysroot",
+      "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk"
+    ],
+    "ldflags": [
+      "-target",
+      "arm64-apple-ios15.0-simulator",
+      "-isysroot",
+      "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk"
+    ],
+    "fingerprint": "7cb87de72584a53fe9f178cd0e288b6560a677574a15dcffeeec0d03e612e025",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "sdk": "27.0"
+  }
+}
