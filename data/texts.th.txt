@@ -139,7 +139,7 @@ Backspace
 [break]
 Break
 [briefing]
-การ​บรรยายสรุป
+การ​บรรยาย​สรุป
 [build %0 level %1]
 สร้าง %0 ระดับ %1
 [Build]

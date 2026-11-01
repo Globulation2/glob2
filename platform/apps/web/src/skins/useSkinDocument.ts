@@ -1,6 +1,7 @@
 import { MessageError, translateError } from '../messages.ts';
 import { message as sourceMessage } from '../messages.ts';
 import { t } from '../messages.ts';
+import { skinCopyName } from './skinNames.ts';
 /* Canvas contexts are checked by paintCanvas; dimensions are fixed. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
@@ -58,7 +59,7 @@ async function readColour(src: string) {
 export function useSkinDocument(accountId: string | undefined) {
   const [canvas] = useState(() => paintCanvas());
   const [initial] = useState<SkinData>(() => ({
-    name: 'My colony',
+    name: t('My colony'),
     building: '#ed9252',
     swarmMesh: 'classic',
     swarmViewAngle: 0,
@@ -494,7 +495,7 @@ export function useSkinDocument(accountId: string | undefined) {
     await run(async () => {
       const local = cloneSkin(current.current);
       const { design } = await request<{ design: SkinDesign }>('POST', '/api/v1/skins/designs', {
-        body: { id: crypto.randomUUID(), name: `${local.name.slice(0, 59)} copy` },
+        body: { id: crypto.randomUUID(), name: skinCopyName(local.name) },
       });
       draftRevision.current = design.revision;
       current.current = { ...local, skinId: design.skinId, name: design.name };

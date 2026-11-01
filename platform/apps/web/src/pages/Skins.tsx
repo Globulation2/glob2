@@ -1,4 +1,5 @@
 import { skinLabel } from '../skins/labels.ts';
+import { skinCopyName } from '../skins/skinNames.ts';
 import { message as sourceMessage } from '../messages.ts';
 import { statusLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
@@ -269,9 +270,7 @@ function SkinStudio() {
           }}
           onUse={(skin) => void applySelection(skin)}
           onNew={() => void create()}
-          onDuplicate={(id, name) =>
-            void create(t('{value0} copy', { value0: name.slice(0, 59) }), id)
-          }
+          onDuplicate={(id, name) => void create(skinCopyName(name), id)}
           onDelete={(skin) => {
             setDeleting(skin);
             showDialog('delete');
