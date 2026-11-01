@@ -1,0 +1,22 @@
+[
+  {
+    "file": "merge-result.json",
+    "sha256": "48d932eeb1f913b29a2360a5fc6ab4ca3acf23c410c9a170e9dc06b3d90dd440"
+  },
+  {
+    "file": "post-merge-integration/tests.xml",
+    "sha256": "571dbed29e9d4d59bea88a78b202d292ece5e011fd9623406016ff81c69904ca"
+  },
+  {
+    "file": "post-merge-integration/run.log",
+    "sha256": "489ad9386ad9ae9aed1b75633d45ed874fe7ea2cdf59dc929690b2579358a839"
+  },
+  {
+    "file": "post-merge-integration/cases/build-provenance.json",
+    "sha256": "f8cfa4526b781aa9fc897c14bd46cda02943cc49581aece815b3d341d67d8434"
+  },
+  {
+    "file": "post-merge-integration/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+    "sha256": "a7e9551708ff72922ae5bbd1ec01c832ac01ca4630ce96e9c55f2c73b0a19963"
+  }
+]

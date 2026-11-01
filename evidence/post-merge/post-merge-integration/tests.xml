@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/bradley/.codex/worktrees/7ed0/glob2/build/linux/client/release/test/glob2-engine-tests" errors="0" failures="0" tests="2045352" time="0.80135" timestamp="2026-11-01T13:46:17Z" doctest_version="2.4.11">
+    <testcase classname="src/map/TerrainResourcesHarness.cpp" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="0.80135" status="run"/>
+  </testsuite>
+</testsuites>

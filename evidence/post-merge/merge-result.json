@@ -1,0 +1,39 @@
+{
+  "status": "MERGED with runtime-source identity verified",
+  "PR": "https://github.com/Globulation2/glob2/pull/1321",
+  "merged_commit": "f36de73aea50901a93d0c931bdd0fdb64c9d864c",
+  "tested_commit": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+  "merged_tree_equals_tested_tree": false,
+  "all_game_online_browser_package_runtime_code_fonts_catalogs_identical": true,
+  "only_intervening_changes": [
+    ".github/workflows/build.yml",
+    "docs/development/verification.md",
+    "src/map/gradient/DelayedGradientPublicationHarness.cpp",
+    "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+    "src/unit/EntityRandomLifecycleTest.cpp",
+    "test/fixtures/resources/seeded-compositions-units.trace",
+    "test/maxima/fixtures/save-continuation/expected-units-30000-30512.json",
+    "test/support/LegacyPopulationOutput.h"
+  ],
+  "intervening_commits": [
+    "9dcfd7baf2 (test-fixture repairs #1334)",
+    "a0898428b0 (WebAssembly CI timeout #1335)"
+  ],
+  "post_merge_resource_case": {
+    "exit_code": 0,
+    "command": [
+      "/home/bradley/.codex/worktrees/7ed0/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--test-suite=RuntimeResources",
+      "--test-case=frozen seeded resource compositions*",
+      "--reporters=junit",
+      "--out=/home/bradley/.codex/worktrees/7ed0/glob2/artifacts/localization-telugu/source-update-0a5d/post-merge-integration/tests.xml"
+    ],
+    "actual_binary_producer": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+    "actual_binary_sha256": "3a7f258985e0c194b8c2529d7bfd4a0ac58fa991629003d7c6c67df0bb42925a",
+    "fixture_from": "f36de73aea50901a93d0c931bdd0fdb64c9d864c",
+    "scope": "Actual unchanged compiled resource composition case passes against merged correctedfixture; original source/case exactlyunchanged. This refreshes integration for upstream-onlyfixture repair without relabeling binaries or claiming fullmergedtesttree tested."
+  },
+  "hosted_full_CI": "Incomplete atmerge; never claimed passed",
+  "cloud_reserved_usd": 4.94088,
+  "evidence": "https://github.com/Globulation2/glob2/tree/45469f0338c8f1a8585a20031e360a6ddf91a7ca"
+}

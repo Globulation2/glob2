@@ -51,3 +51,7 @@ Current manifests: [archive inventory](evidence/integrated-manifest.json), [fina
 ## Final current packaging checks
 
 [Exact commands/results](evidence/current-checks/current-packaging-regressions.json) record twelve additional current-source packaging/MIME tests at `5b2421e8`, including actual Caddy serving the final Telugu JSON and thirteen pinned fonts. All passed. [File hashes](evidence/current-checks/manifest.json) and raw logs are adjacent. The immutable final audit and all three direct image previews were verified publicly accessible (HTTP200). No source or existing packet changed.
+
+## Verified merge
+
+PR1321 merged as `f36de73aea50901a93d0c931bdd0fdb64c9d864c`. [Merge/runtime-source verification](evidence/post-merge/merge-result.json) proves all game/online/browser/package runtime code, catalogs and fonts match tested5b exactly. The fulltrees differ only by8 upstream test/fixture/CI/doc repairs (#1334/#1335), which arrived beforemerge. The actual unchanged compiled resourcecase was rerun against the corrected mergedfixture and passed; its rawreport/log/trace are adjacent. The original pre-repair failure remains truthfully recorded in earlier evidence. Full hostedCI was incomplete atmerge.
