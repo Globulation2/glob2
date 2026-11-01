@@ -1,0 +1,34 @@
+[
+  {
+    "file": "evidence/previews/native-main.png",
+    "source": "native-release-smoke/u4-release-main.png",
+    "actual_producer": "a43402ce84d4a111b7c55cc98da128ddaf8fb1b0",
+    "caption": "Optimized native Telugu menu",
+    "sha256": "814e322354adbf4faed96270be54c7f1f39e8d8d7b01286708a87819291e0016",
+    "bytes": 1061963
+  },
+  {
+    "file": "evidence/previews/tutorial-before.png",
+    "source": "modal-highlight-fix/unfixed-swimming-800/tutorial-swimming-briefing.png",
+    "actual_producer": "9fb134665c5082238e1cfad9541891499e8a4a72 +dirty diagnostic harness",
+    "caption": "Actual pre-fix briefing overlap",
+    "sha256": "5fd7e3cf68e02d5727d78a9085ba790d0cb55f861e8339938d9d3c1ff61e4e8a",
+    "bytes": 489286
+  },
+  {
+    "file": "evidence/previews/tutorial-after.png",
+    "source": "source-update-bc8/rendering/tutorials-2eafc9df/14-tutorial-swimming-800x600/tutorial-swimming-briefing.png",
+    "actual_producer": "2eafc9df2c7a3fd9a2ea00c24f61af287a48812d",
+    "caption": "Actual corrected briefing",
+    "sha256": "7c08d698d93e22b40b866e312ca3e70552323c57b56009f2993f3daeb2cc9d1c",
+    "bytes": 486975
+  },
+  {
+    "file": "evidence/previews/online-phone.png",
+    "source": "online-integration-d48/screenshots/phone/te-upload.png",
+    "actual_producer": "d48ceb5978e803bc742fc51beacd94606a636574",
+    "caption": "Actual online phone map form; unchanged platform inputs carry to final head",
+    "sha256": "03599e478f009692303d3081abf2a42e3cbb52cb165ea79470a6ee2b079370e2",
+    "bytes": 415725
+  }
+]

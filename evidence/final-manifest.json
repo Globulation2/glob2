@@ -1,0 +1,38 @@
+{
+  "source_revision": "2eafc9df2c7a3fd9a2ea00c24f61af287a48812d",
+  "phase": "final audited Telugu localization",
+  "archives": [
+    {
+      "source_revision": "2eafc9df2c7a3fd9a2ea00c24f61af287a48812d",
+      "phase": "final audited Telugu localization",
+      "part": 1,
+      "parts": 3,
+      "file": "telugu-final-release-evidence.tar.xz",
+      "bytes": 52465760,
+      "sha256": "0ab9549bdb6eeed3a92bbb8f91a9034b108b02e190dc4968ee9ac77f8120d87a",
+      "files": 374
+    },
+    {
+      "source_revision": "2eafc9df2c7a3fd9a2ea00c24f61af287a48812d",
+      "phase": "final audited Telugu localization",
+      "part": 2,
+      "parts": 3,
+      "file": "telugu-final-release-evidence-2.tar.xz",
+      "bytes": 36660364,
+      "sha256": "f8afdc428571c559633d276b71f436a38bec4d014f1233cec388877a5104c8fc",
+      "files": 457
+    },
+    {
+      "source_revision": "2eafc9df2c7a3fd9a2ea00c24f61af287a48812d",
+      "phase": "final audited Telugu localization",
+      "part": 3,
+      "parts": 3,
+      "file": "telugu-final-release-evidence-3.tar.xz",
+      "bytes": 14419644,
+      "sha256": "44fc90fa69d4c26b5524673d61225bba26661b065fdb2c43232bf2838b01b265",
+      "files": 301
+    }
+  ],
+  "files": 1132,
+  "bytes": 103545768
+}
