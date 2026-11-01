@@ -139,13 +139,13 @@ strandstørrelse
 [break]
 Break
 [briefing]
-Orientering
+Oversikt
 [build %0 level %1]
 Bygg %0 nivå %1
 [Build]
 Bygg
 [Building Defaults]
-Standardinnstillinger for bygninger
+Standardvalg for bygg
 [building settings]
 Bygningsinnstillinger
 [building site]
@@ -1413,7 +1413,7 @@ Trekk på nytt
 [Randomize]
 Velg tilfeldig
 [Reset to defaults]
-Tilbakestill til standardinnstillinger
+Tilbakestill
 [Ruleset]
 Regelsett
 [Select a map from the library.]
@@ -1453,7 +1453,7 @@ Tilordne Escape
 [settings Building]
 Bygging
 [settings Building defaults]
-Standardinnstillinger for bygninger
+Standardvalg for bygg
 [settings Cancel]
 Avbryt
 [settings Changes saved automatically]

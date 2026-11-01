@@ -47,12 +47,14 @@ for (const locale of locales) {
       '/buildings',
       '/music',
     ]);
+    const themeChangeLabel = catalog['{value0}. Change theme'];
+    const defaultThemeLabel = catalog['Theme: same as this device'];
+    if (!themeChangeLabel || !defaultThemeLabel) {
+      throw new Error(`Missing theme labels for ${locale.code}`);
+    }
     await expect(page.getByTestId('theme-toggle')).toHaveAttribute(
       'aria-label',
-      catalog['{value0}. Change theme']!.replace(
-        '{value0}',
-        catalog['Theme: same as this device']!,
-      ),
+      themeChangeLabel.replace('{value0}', defaultThemeLabel),
     );
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();
@@ -73,7 +75,8 @@ for (const locale of locales) {
         const placeholderStyle = getComputedStyle(input, '::placeholder');
         const inputStyle = getComputedStyle(input);
         const canvas = document.createElement('canvas');
-        const drawing = canvas.getContext('2d')!;
+        const drawing = canvas.getContext('2d');
+        if (!drawing) throw new Error('A 2D canvas is required to measure the placeholder');
         drawing.font = `${placeholderStyle.fontWeight} ${placeholderStyle.fontSize} ${placeholderStyle.fontFamily}`;
         const letterSpacing = Number.parseFloat(placeholderStyle.letterSpacing) || 0;
         return {
