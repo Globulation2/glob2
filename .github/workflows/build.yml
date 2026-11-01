@@ -104,7 +104,11 @@ jobs:
           ref: ${{ inputs.revision || github.sha }}
           fetch-depth: 0
       - name: Test shared build-system contracts once
-        run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s test/build_system -v'
+        run: |
+          encoder_python="$(python3 tools/package_assets.py --encoder-python)"
+          "$encoder_python" -m venv artifacts/build-contract-venv
+          artifacts/build-contract-venv/bin/python -m pip install -r test/build_system/requirements.txt
+          artifacts/build-contract-venv/bin/python -m unittest discover -s test/build_system -v
       - name: Test CI runners and failure reporting
         run: |
           python3 test/ci_run_commands.py \

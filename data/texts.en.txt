@@ -6822,15 +6822,39 @@ Topic
 Open full history
 [stats missing readings]
 — No recorded reading yet. Select a statistic for details.
-[script compile success]
-Compilation success
 [script error at %0:%1: %2]
 Error at %0:%1: %2
-[script compile failure %0:%1:(%2):%3]
+[script compilation success]
+Compilation success
+[script compilation failure %0:%1:(%2):%3]
 Compilation failure : %0:%1:(%2):%3
-[script load failed %0]
+[script compilation failed %0]
+Compilation failed: %0
+[script loading failed %0]
 Loading script from %0 failed
-[script save failed %0]
+[script saving failed %0]
 Saving script to %0 failed
-[script cursor %0 %1]
+[script line %0 column %1]
 Line: %0 Col: %1
+[game stopped %0]
+Game stopped: %0
+[game stopped script help]
+Review the embedded JavaScript and its resource use before restarting this game.
+[missing map generator %0]
+Missing map generator: %0. A native landscape was selected.
+[hive standing order paused]
+A standing order needs attention and has been paused.
+[hive connection changed orders paused]
+The connection changed. Review your paused standing orders before resuming.
+[hive standing order fresh instruction]
+A standing order needs a fresh instruction after reconnecting. You can cancel it or ask the commander to replace it.
+[hive order confirmation failed]
+An order could not be confirmed. Review your standing orders before resuming.
+[hive previous order sending]
+Your previous order is still sending. This message has been kept; open the commander to send it again.
+[hive order received %0]
+Order received: %0
+[hive order not confirmed]
+Order not confirmed. Open the commander to retry; your message has been kept.
+[hive standing order update failed]
+Standing order update failed. Your order is paused locally; retry the control.

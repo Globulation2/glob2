@@ -73,6 +73,7 @@ class GameGUITouch
 
   private:
 	friend class GameGUITouchHarness;
+	friend struct TranslationPreviewAccess;
 	friend class MobileGalleryGameplay;
 	friend struct TranslationPreviewAccess;
 	GameGUI &gui;

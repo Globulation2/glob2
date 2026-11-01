@@ -147,7 +147,6 @@ def main():
         write_if_changed(metadata,json.dumps(provenance,indent=2)+'\n')
         lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(metadata)+')',
                   'set_source_files_properties('+cmake_quote(metadata)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)']
-    lines += localized_resource_lines(ROOT/'mobile/ios')
     # Xcode compiles the catalog and merges its icon metadata into Info.plist.
     icons=ROOT/'mobile/ios/Assets.xcassets'
     lines += [

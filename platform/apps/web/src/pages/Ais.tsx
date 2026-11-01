@@ -1,4 +1,4 @@
-import { statusLabel } from '../i18n.tsx';
+import { statusLabel, aiTagLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
@@ -123,7 +123,7 @@ function Tags({ value, onChange }: { value: string[]; onChange: (tags: string[])
             )
           }
         >
-          {t(tag)}
+          {aiTagLabel(tag)}
         </button>
       ))}
     </div>
@@ -336,7 +336,7 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                         <div className="ai-tags">
                           {ai.tags.map((tag) => (
                             <span className="badge" key={tag}>
-                              {t(tag)}
+                              {aiTagLabel(tag)}
                             </span>
                           ))}
                         </div>
@@ -485,7 +485,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
           <div className="ai-tags">
             {ai.tags.map((tag) => (
               <span className="badge" key={tag}>
-                {t(tag)}
+                {aiTagLabel(tag)}
               </span>
             ))}
           </div>

@@ -5679,7 +5679,7 @@ Tørt gress
 [dune_sand]
 Dynesand
 [pale_sand]
-Blek sand
+Lys sand
 [terrain group water]
 Vann
 [terrain group sand]
@@ -6819,18 +6819,42 @@ Kartoverlegg
 [stats topic]
 Emne
 [stats full history]
-Åpne hele historikken
-[script compile success]
-
+Åpne full historikk
 [script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
+Feil ved %0:%1: %2
 [stats missing readings]
-— Ingen registrert avlesning ennå. Velg en statistikk for detaljer.
+— Ingen måling er registrert ennå. Velg en statistikk for detaljer.
+[game stopped %0]
+Spillet stoppet: %0
+[game stopped script help]
+Se gjennom det innebygde JavaScript-skriptet og ressursbruken før du starter dette spillet på nytt.
+[hive connection changed orders paused]
+Tilkoblingen ble endret. Se gjennom de midlertidig stansede stående ordrene før du fortsetter.
+[hive order confirmation failed]
+En ordre kunne ikke bekreftes. Se gjennom de stående ordrene før du fortsetter.
+[hive order not confirmed]
+Ordren er ikke bekreftet. Åpne kommandøren for å prøve igjen; meldingen din er bevart.
+[hive order received %0]
+Ordre mottatt: %0
+[hive previous order sending]
+Den forrige ordren din sendes fortsatt. Denne meldingen er bevart; åpne kommandøren for å sende den på nytt.
+[hive standing order fresh instruction]
+En stående ordre trenger en ny instruksjon etter at tilkoblingen er gjenopprettet. Du kan avbryte den eller be kommandøren om å erstatte den.
+[hive standing order paused]
+En stående ordre trenger oppmerksomhet og er midlertidig stanset.
+[hive standing order update failed]
+Oppdateringen av den stående ordren mislyktes. Ordren er midlertidig stanset lokalt; prøv handlingen på nytt.
+[missing map generator %0]
+Kartgenerator mangler: %0. Et innebygd landskap ble valgt.
+[script compilation failed %0]
+Kompilering mislyktes: %0
+[script compilation failure %0:%1:(%2):%3]
+Kompileringsfeil: %0:%1:(%2):%3
+[script compilation success]
+Kompilering fullført
+[script line %0 column %1]
+Linje: %0 Kol.: %1
+[script loading failed %0]
+Kunne ikke laste skriptet fra %0
+[script saving failed %0]
+Kunne ikke lagre skriptet i %0

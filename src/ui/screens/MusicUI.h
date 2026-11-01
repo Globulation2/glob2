@@ -1,11 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ui/FrontendUI.h"
+#include <iostream>
 inline std::string musicText(const std::string &text)
 {
 	const auto key = "[music " + text + "]";
 	const auto translated = Glob2UI::tr(key);
 	return translated == key ? text : translated;
+}
+
+// Transport/decoder diagnostics are developer text. Keep them in the log;
+// the player sees a catalog message even when a remote service sends English.
+inline std::string musicError(const std::string &detail)
+{
+	std::clog << "Music library: " << detail << '\n';
+	const auto key = "[music " + detail + "]";
+	const auto translated = Glob2UI::tr(key);
+	return translated == key ? musicText("Music request failed.") : translated;
 }
 
 inline Glob2UI::Element musicPlaceholder(int pixels)

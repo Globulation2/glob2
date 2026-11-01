@@ -98,7 +98,7 @@ std::string LanRoom::describeClose(const std::string& reason, const std::string&
 		return text("[lan host lost]");
 	if (reason == "unreachable")
 		return detail.empty() ? text("[lan connection unavailable]")
-		                      : std::string(GAGCore::FormattableString(text("[lan connection verification failed %0]")).arg(detail));
+		                      : std::string(GAGCore::FormattableString(text("[lan connection verification failed %0]")).arg(closeDiagnostic(detail)));
 	if (reason == "version")
 		return GAGCore::FormattableString(text("[lan version mismatch %0]")).arg(detail);
 	if (reason == "full")
@@ -107,7 +107,7 @@ std::string LanRoom::describeClose(const std::string& reason, const std::string&
 		return text("[Can't join game, game has started]");
 	if (reason == "left")
 		return {};
-	return GAGCore::FormattableString(text("[lan connection verification failed %0]")).arg(detail.empty() ? reason : detail);
+	return GAGCore::FormattableString(text("[lan connection verification failed %0]")).arg(closeDiagnostic(detail.empty() ? reason : detail));
 }
 
 void LanRoom::update()

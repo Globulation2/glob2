@@ -15,6 +15,11 @@ its exact revision and policy.
 Release packaging first runs the full development matrix on the exact candidate
 revision through `build.yml`'s `revision` workflow-call input.
 
+The selector runs shared build-system contracts in a dedicated
+`artifacts/build-contract-venv`, created with the pinned asset encoder's Python.
+It installs `test/build_system/requirements.txt` there, including the asset
+requirements and SCons, without modifying the shared encoder environment.
+
 CI measurements batch completed runs hourly using trusted default-branch code and
 inert artifacts. Cancellations do not create measurement workflows, and cheap-only
 observations are excluded. Explicitly requested verification on drafts is included.

@@ -585,7 +585,7 @@ def main():
             BUNDLE_SYMBOL_DIR=bdir+"/symbols",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts",
-                                 "darwin/en.lproj", "darwin/mr.lproj", "darwin/ta.lproj", "darwin/te.lproj", "darwin/th.lproj"],
+                                 "darwin/en.lproj", "darwin/mr.lproj", "darwin/ta.lproj", "darwin/te.lproj", "darwin/bg.lproj", "darwin/th.lproj"],
             BUNDLE_PLIST="darwin/Info.plist",
             BUNDLE_ICON="darwin/Glob2.icns" )
         # Go through the builders rather than calling their actions directly.

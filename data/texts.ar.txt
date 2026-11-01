@@ -6818,19 +6818,43 @@ GL فقط
 كمية الأسماك
 [scenario messages]
 الرسائل ▸
-[script compile success]
-
 [script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
+خطأ في %0:%1: %2
 [Camp-site amount]
 عدد المخيمات
+[script compilation success]
+نجاح تصريف النص البرمجي
+[script compilation failure %0:%1:(%2):%3]
+فشل التصريف: %0:%1:(%2):%3
+[script compilation failed %0]
+فشل التصريف: %0
+[script loading failed %0]
+فشل تحميل النص البرمجي من %0
+[script saving failed %0]
+فشل حفظ النص البرمجي في %0
+[script line %0 column %1]
+السطر: %0 العمود: %1
+[game stopped %0]
+توقفت اللعبة: %0
+[game stopped script help]
+راجع شيفرة JavaScript المدمجة واستخدامها للموارد قبل إعادة تشغيل هذه اللعبة.
+[missing map generator %0]
+مولد الخرائط مفقود: %0. تم اختيار مشهد طبيعي مدمج.
+[hive standing order paused]
+هناك أمر دائم يحتاج إلى اهتمام وقد تم إيقافه مؤقتًا.
+[hive connection changed orders paused]
+لقد تغير الاتصال. يرجى مراجعة أوامرك الدائمة المتوقفة مؤقتًا قبل استئنافها.
+[hive standing order fresh instruction]
+يتطلب الأمر الدائم تعليمات جديدة بعد إعادة الاتصال. يمكنك إلغاؤه أو طلب استبداله من القائد.
+[hive order confirmation failed]
+تعذر تأكيد أمر. راجع أوامرك الدائمة قبل استئنافها.
+[hive previous order sending]
+لا يزال أمرك السابق قيد الإرسال. تم الاحتفاظ بهذه الرسالة؛ افتح القائد لإرسالها مجددًا.
+[hive order received %0]
+تم استلام الأمر: %0
+[hive order not confirmed]
+لم يتم تأكيد الأمر. افتح القائد لإعادة المحاولة؛ تم الاحتفاظ برسالتك.
+[hive standing order update failed]
+فشل تحديث الأمر الدائم. أمرك متوقف مؤقتًا على هذا الجهاز؛ أعد المحاولة باستخدام عنصر التحكم المعني.
 [AI for all computer colonies]
 الذكاء الاصطناعي لكل المستعمرات التي يديرها الحاسوب

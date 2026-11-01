@@ -321,7 +321,10 @@ Element mapPreview(const std::string &key, ::MapPreview &preview, double points,
 {
 	CanvasOptions options;
 	options.keepAspect = true;
-	options.accessibleText = "map preview";
+	auto *strings = GAGCore::Toolkit::getStringTable();
+	options.accessibleText = strings && strings->doesStringExist("[language-code]")
+		&& strings->getString("[language-code]") == "bg"
+		? strings->getString("[Preview]") : "map preview";
 	auto *widget = &preview;
 	auto forward = [widget](PointerPhase phase, Point local, Host &)
 	{

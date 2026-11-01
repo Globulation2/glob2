@@ -24,6 +24,8 @@ export {
   statusLabel,
   artifactLabel,
   fixedCaption,
+  aiTagLabel,
+  musicMoodLabel,
 } from './messages.ts';
 const LocaleContext = createContext('en');
 export function useLocale() {

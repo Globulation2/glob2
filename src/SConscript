@@ -34,6 +34,9 @@ if not env.get('wss', True):
 if env.get('target', 'native') not in ('web', 'android', 'ios') and not env.get('server'):
     source_files += ['mcp/Tools.cpp', 'mcp/Protocol.cpp', 'mcp/HttpServer.cpp']
 local = env.Clone()
+from online_error_catalog import configure as configure_online_error_catalog, bind_objects as bind_online_error_objects, bind_consumer as bind_online_error_consumer
+from pathlib import Path
+online_error_catalog = configure_online_error_catalog(local, Path(Dir('#').abspath) / env['BUILDDIR'] / 'include')
 from skin_render import configure as configure_skin_render
 configure_skin_render(local)
 platform_trust_sources = []
@@ -60,6 +63,7 @@ ordinary_sources = [source for source in source_files if isinstance(source, str)
 ordinary_mapping = development_objects(local, ordinary_sources,
     lambda source: local.File(source.removeprefix('#src/')[:-4] + '.o').abspath)
 strict_objects.update({source: ordinary_mapping[source] for source in ordinary_sources})
+bind_online_error_objects(local, ordinary_mapping, online_error_catalog)
 def development_program(target, sources):
     from build_timing import record
     return record(local, local.Program(target, unique([strict_objects.get(source, source) if isinstance(source, str) else source for source in sources])), "link")
@@ -88,7 +92,7 @@ client_object_by_source = dict(zip(client_cpp_sources, client_objects))
 client_objects = unique(client_objects)
 client_objects += platform_trust_sources
 client_libs = [local.File(source) for source in source_files if isinstance(source, str) and not source.endswith('.cpp')]
-Export('client_objects', 'client_object_by_source', 'client_libs')
+Export('client_objects', 'client_object_by_source', 'client_libs', 'online_error_catalog')
 
 
 lan_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']

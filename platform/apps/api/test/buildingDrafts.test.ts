@@ -18,6 +18,35 @@ afterAll(async () => {
   other?.client.close();
   await harness?.close();
 });
+it('validates initial names and preserves the legacy default and existing draft metadata', async () => {
+  const app = instance.app,
+    headers = { authorization: `Bearer ${owner.accessToken}` },
+    url = '/api/v1/building-drafts';
+  const before = (await app.inject({ url, headers })).json().items.length;
+  for (const name of ['', '   ', 'x'.repeat(129), 42, null, 'bad\0name']) {
+    const rejected = await app.inject({ method: 'POST', url, headers, payload: { name } });
+    expect(rejected.statusCode, JSON.stringify({ name, body: rejected.body })).toBe(400);
+  }
+  expect((await app.inject({ url, headers })).json().items).toHaveLength(before);
+  const legacy = await app.inject({ method: 'POST', url, headers });
+  expect(legacy.statusCode, legacy.body).toBe(201);
+  const existing = legacy.json<BuildingDraft>();
+  expect(existing.name).toBe('New building family');
+  const empty = await app.inject({ method: 'POST', url, headers, payload: {} });
+  expect(empty.statusCode, empty.body).toBe(201);
+  expect(empty.json<BuildingDraft>().name).toBe('New building family');
+  const created = await app.inject({
+    method: 'POST',
+    url,
+    headers,
+    payload: { name: '  Ново семейство сгради  ' },
+  });
+  expect(created.statusCode, created.body).toBe(201);
+  const localized = created.json<BuildingDraft>();
+  expect(localized.name).toBe('Ново семейство сгради');
+  expect((await app.inject({ url: url + '/' + localized.id, headers })).json()).toEqual(localized);
+  expect((await app.inject({ url: url + '/' + existing.id, headers })).json()).toEqual(existing);
+});
 it('keeps drafts private and rejects concurrent or forged writes atomically', async () => {
   const app = instance.app,
     headers = { authorization: `Bearer ${owner.accessToken}` };

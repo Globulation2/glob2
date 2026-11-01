@@ -6822,15 +6822,39 @@ Buhangin ng burol
 Maputlang buhangin
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
-[script compile success]
-
 [script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
+Error sa linyang %0, kolum %1: %2
+[script compilation success]
+Matagumpay ang pag-compile
+[script compilation failure %0:%1:(%2):%3]
+Nabigo ang pag-compile: %0:%1:(%2):%3
+[script compilation failed %0]
+Nabigo ang pag-compile: %0
+[script loading failed %0]
+Nabigo ang paglo-load ng script mula sa %0
+[script saving failed %0]
+Nabigo ang pag-save ng script sa %0
+[script line %0 column %1]
+Linya: %0 Kolum: %1
+[game stopped %0]
+Itinigil ang laro: %0
+[game stopped script help]
+Suriin ang naka-embed na JavaScript at ang paggamit ng resource nito bago simulan muli ang larong ito.
+[missing map generator %0]
+Nawawala ang generator ng mapa: %0. Isang built-in na tanawin ang napili.
+[hive standing order paused]
+May standing order na nangangailangan ng atensyon at pansamantalang na-pause.
+[hive connection changed orders paused]
+Nagbago ang koneksyon. Suriin ang iyong mga naka-pause na standing order bago magpatuloy.
+[hive standing order fresh instruction]
+May standing order na nangangailangan ng bagong tagubilin pagkatapos mong kumonekta muli. Maaari mo itong kanselahin o hilingin sa kumander na palitan ito.
+[hive order confirmation failed]
+Hindi nakumpirma ang isang utos. Suriin ang iyong mga standing order bago magpatuloy.
+[hive previous order sending]
+Ipinapadala pa rin ang iyong nakaraang utos. Nai-save ang mensaheng ito; buksan ang kumander para ipadala itong muli.
+[hive order received %0]
+Natanggap ang utos: %0
+[hive order not confirmed]
+Hindi nakumpirma ang utos. Buksan ang kumander para subukan muli; napanatili ang iyong mensahe.
+[hive standing order update failed]
+Nabigo ang pag-update ng standing order. Naka-pause ang iyong utos sa device na ito; gamitin muli ang kaukulang kontrol.

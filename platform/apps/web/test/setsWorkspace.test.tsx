@@ -1,7 +1,11 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { SetDraft, SetPackage } from '@glob2/protocol';
+import { MATERIALS, newPackage } from '@glob2/protocol';
+import { getLocale, registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
+import bg from '../../../packages/i18n/locales/bg.json';
+import { LocaleProvider } from '../src/i18n.tsx';
 import { SetWorkspace } from '../src/sets/Workspace.tsx';
 import { SetDetail, SetLibrary } from '../src/sets/Library.tsx';
 import { RouterProvider, Link, useRouter } from '../src/router.tsx';
@@ -10,7 +14,8 @@ const mock = vi.hoisted(() => ({ request: vi.fn() }));
 vi.mock('../src/api.ts', () => ({ request: mock.request }));
 vi.mock('../src/state.tsx', async () => {
   const actual = await vi.importActual('../src/state.tsx');
-  return { ...actual, useSession: () => ({ account: { id: 'author', displayName: 'Author' } }) };
+  const account = { id: 'author', displayName: 'Author' };
+  return { ...actual, useSession: () => ({ account }) };
 });
 const ID = '11111111-1111-4111-8111-111111111111';
 let draft: SetDraft | null;
@@ -24,9 +29,11 @@ function Routes() {
 function open() {
   window.history.replaceState(null, '', '/sets/new');
   return render(
-    <RouterProvider>
-      <Routes />
-    </RouterProvider>,
+    <LocaleProvider>
+      <RouterProvider>
+        <Routes />
+      </RouterProvider>
+    </LocaleProvider>,
   );
 }
 beforeEach(() => {
@@ -70,6 +77,27 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+});
+
+it('adds terrain and resource entries to their canonical package collections', async () => {
+  open();
+  fireEvent.click(await screen.findByRole('button', { name: 'Add Terrain' }));
+  const terrainName = screen.getByLabelText('Name', { exact: true }) as HTMLInputElement;
+  expect(terrainName.value).toBe('Terrain: grass');
+  fireEvent.change(terrainName, { target: { value: 'Authored terrain' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Resources' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Add Resource' }));
+  const resourceName = screen.getByLabelText('Name', { exact: true }) as HTMLInputElement;
+  expect(resourceName.value).toBe('Resource: trees');
+  fireEvent.change(resourceName, { target: { value: 'Authored resource' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Save draft' }));
+  await waitFor(() => expect(draft?.package.terrains).toHaveLength(1));
+  expect(draft?.package.resources).toHaveLength(1);
+  expect(draft?.package.terrains[0]?.['base']).toBe('grass');
+  expect(draft?.package.terrains[0]?.['name']).toBe('Authored terrain');
+  expect(draft?.package.resources[0]?.['presentation']).toMatchObject({
+    name: 'Authored resource',
+  });
 });
 
 it('does not reuse a remaining terrain key after deletion and addition', async () => {
@@ -184,7 +212,19 @@ it('appends draft pages and keeps older unpublished drafts discoverable', async 
 
 it('shows read-only entry properties and custom terrain frame mappings', async () => {
   const pack = {
-    terrains: [{ key: 'test:moss', name: 'Moss', base: 'grass', properties: { walkable: false } }],
+    terrains: [
+      {
+        key: 'test:moss',
+        name: 'Moss',
+        base: 'grass',
+        properties: {
+          walkable: false,
+          groundSpeedQ8: 256,
+          unknownVelocityQ8: 384,
+          constructor: 'authored constructor',
+        },
+      },
+    ],
     resources: [],
     assets: { terrains: { 'test:moss': { variants: [{ frame: 3, weight: 1 }] } } },
   };
@@ -206,7 +246,168 @@ it('shows read-only entry properties and custom terrain frame mappings', async (
   );
   fireEvent.click(await screen.findByRole('button', { name: 'Inspect latest release' }));
   await screen.findByText('Terrain · Moss');
-  expect(screen.getByText('walkable')).toBeTruthy();
+  for (const key of ['walkable', 'groundSpeedQ8', 'unknownVelocityQ8', 'constructor'])
+    expect(screen.getByText(key).tagName).toBe('CODE');
+  expect(screen.getByText('256')).toBeTruthy();
+  expect(screen.getByText('384')).toBeTruthy();
+  expect(screen.getByText('authored constructor')).toBeTruthy();
+  expect(screen.queryByText('ground Speed Q8')).toBeNull();
   expect(screen.getByText('false')).toBeTruthy();
   expect(screen.getByText(/"frame": 3/)).toBeTruthy();
+});
+
+it('uses audited Bulgarian resource captions while retaining material and schema identifiers', async () => {
+  const previous = getLocale();
+  registerCatalog('bg', bg);
+  const materials = [...MATERIALS];
+  try {
+    await setLocale('bg');
+    open();
+    fireEvent.click(await screen.findByRole('button', { name: bg.Resources }));
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: bg['Add {slot0}'].replace('{slot0}', bg.Resource),
+      }),
+    );
+    const material = screen.getByRole('textbox', { name: bg['Main material'] });
+    expect((material as HTMLInputElement).value).toBe('wood');
+    const growth = screen.getAllByRole('spinbutton', { name: new RegExp('^' + bg['Growth rate']) });
+    expect(growth).toHaveLength(2); // resource properties and enabled wood yield
+    expect(
+      screen.getByRole('spinbutton', { name: new RegExp('^' + bg['Spread rate']) }),
+    ).toBeTruthy();
+    expect(screen.getByRole('checkbox', { name: bg['Can be farmed'] })).toBeTruthy();
+    for (const key of [
+      'ecology',
+      'stockBranchDivisor',
+      'capacity',
+      'consumption',
+      'animationFrames',
+      'animationTicks',
+      'animationStride',
+      'minimap',
+    ]) {
+      expect(screen.getByText(key, { exact: true }).tagName).toBe('CODE');
+    }
+    expect(
+      screen.getByRole('checkbox', { name: 'wood' }).parentElement?.querySelector('code')
+        ?.textContent,
+    ).toBe('wood');
+    expect(screen.queryByText('Primary Material')).toBeNull();
+    expect(screen.queryByText('Growth Rate')).toBeNull();
+    fireEvent.change(material, { target: { value: 'stone' } });
+    fireEvent.change(growth[0]!, { target: { value: '98304' } });
+    await act(async () => setLocale('en'));
+    expect(screen.getByRole('textbox', { name: 'Main material' })).toBeTruthy();
+    await act(async () => setLocale('bg'));
+    fireEvent.click(screen.getByRole('button', { name: bg['Save draft'] }));
+    await waitFor(() => expect(draft?.package.resources).toHaveLength(1));
+    expect(draft!.package.resources[0]?.['properties']).toMatchObject({
+      primaryMaterial: 'stone',
+      growthRate: 98304,
+    });
+    expect(draft!.package.resources[0]?.['yields']).toMatchObject({
+      wood: { growthRate: 196608, consumption: 'all' },
+    });
+    expect(MATERIALS).toEqual(materials);
+  } finally {
+    cleanup();
+    await setLocale(previous);
+  }
+});
+
+it('translates safe terrain captions and override options while custom fields remain exact code', async () => {
+  const previous = getLocale();
+  registerCatalog('bg', bg);
+  const key = 'fixture:terrain';
+  const basePack = newPackage('Author');
+  draft = {
+    id: ID,
+    revision: 1,
+    validation: null,
+    publishedVersionId: null,
+    package: {
+      ...basePack,
+      assets: { ...basePack.assets, terrains: { [key]: { sprite: 'data/gfx/terrain-grass' } } },
+      terrains: [
+        {
+          key,
+          name: 'Authored terrain',
+          base: 'grass',
+          properties: {
+            resourcesGrow: true,
+            buildable: true,
+            groundSpeedQ8: 256,
+            walkable: true,
+            customGrowthRate: 33,
+            toString: 'custom identifier value',
+            constructor: 'custom constructor value',
+            ['__proto__']: 'custom prototype value',
+          },
+        },
+      ],
+    },
+  } as SetDraft;
+  try {
+    await setLocale('bg');
+    window.history.replaceState(null, '', '/sets/drafts/' + ID);
+    render(
+      <LocaleProvider>
+        <RouterProvider>
+          <Routes />
+        </RouterProvider>
+      </LocaleProvider>,
+    );
+    await screen.findByRole('checkbox', { name: bg['Resource growth enabled'] });
+    expect(screen.getByRole('checkbox', { name: bg['Buildings allowed'] })).toBeTruthy();
+    expect(
+      screen.getByRole('spinbutton', { name: new RegExp('^' + bg['Ground movement']) }),
+    ).toBeTruthy();
+    for (const field of [
+      'walkable',
+      'customGrowthRate',
+      'toString',
+      'constructor',
+      '__proto__',
+      'animation_frames',
+      'animation_ticks',
+      'animation_stride',
+    ]) {
+      expect(screen.getByText(field, { exact: true }).tagName).toBe('CODE');
+    }
+    const overrides = screen.getByRole('combobox', {
+      name: bg['Add a property override'],
+    });
+    for (const [wire, caption] of [
+      ['groundHealthQ8', 'Ground health change'],
+      ['airHealthQ8', 'Air health change'],
+      ['growthQ8', 'Resource growth'],
+    ] as const) {
+      expect(
+        within(overrides).getByRole('option', { name: bg[caption] }).getAttribute('value'),
+      ).toBe(wire);
+    }
+    expect(within(overrides).getByRole('option', { name: 'swimmable' }).getAttribute('value')).toBe(
+      'swimmable',
+    );
+    fireEvent.change(overrides, { target: { value: 'groundHealthQ8' } });
+    const health = screen.getByRole('spinbutton', {
+      name: new RegExp('^' + bg['Ground health change']),
+    });
+    fireEvent.change(health, { target: { value: '-512' } });
+    fireEvent.click(screen.getByRole('button', { name: bg['Save draft'] }));
+    await waitFor(() => expect(draft?.revision).toBe(2));
+    expect(draft!.package.terrains[0]?.['properties']).toMatchObject({
+      groundHealthQ8: -512,
+      walkable: true,
+      customGrowthRate: 33,
+      toString: 'custom identifier value',
+      constructor: 'custom constructor value',
+      ['__proto__']: 'custom prototype value',
+    });
+    expect(draft!.package.terrains[0]?.['name']).toBe('Authored terrain');
+  } finally {
+    cleanup();
+    await setLocale(previous);
+  }
 });

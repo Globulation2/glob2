@@ -6822,15 +6822,39 @@ MCP सर्व्हर सक्षम करा
 फिकट वाळू
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
-[script compile success]
-Compilation success
 [script error at %0:%1: %2]
-Error at %0:%1: %2
-[script compile failure %0:%1:(%2):%3]
-Compilation failure : %0:%1:(%2):%3
-[script load failed %0]
-Loading script from %0 failed
-[script save failed %0]
-Saving script to %0 failed
-[script cursor %0 %1]
-Line: %0 Col: %1
+ओळ %0, स्तंभ %1 येथे त्रुटी: %2
+[script compilation success]
+संकलन यशस्वी
+[script compilation failure %0:%1:(%2):%3]
+संकलन अयशस्वी: %0:%1:(%2):%3
+[script compilation failed %0]
+संकलन अयशस्वी झाले: %0
+[script loading failed %0]
+%0 वरून स्क्रिप्ट लोड करता आली नाही.
+[script saving failed %0]
+%0 येथे स्क्रिप्ट जतन करता आली नाही.
+[script line %0 column %1]
+ओळ: %0 स्तंभ: %1
+[game stopped %0]
+खेळ थांबला: %0
+[game stopped script help]
+हा गेम पुन्हा सुरू करण्यापूर्वी, एम्बेडेड JavaScript आणि त्याच्या संसाधनांच्या वापराचे पुनरावलोकन करा.
+[missing map generator %0]
+नकाशा जनरेटर सापडला नाही: %0. अंगभूत भूदृश्य निवडले गेले.
+[hive standing order paused]
+एका स्थायी आदेशाकडे लक्ष देण्याची गरज असल्याने तो थांबवण्यात आला आहे.
+[hive connection changed orders paused]
+कनेक्शन बदलले आहे. पुन्हा सुरू करण्यापूर्वी, थांबवलेल्या तुमच्या स्थायी आदेशांचे पुनरावलोकन करा.
+[hive standing order fresh instruction]
+पुन्हा कनेक्ट केल्यानंतर स्थायी आदेशासाठी नवीन सूचना आवश्यक आहे. तुम्ही तो रद्द करू शकता किंवा कमांडरला तो बदलण्यास सांगू शकता.
+[hive order confirmation failed]
+एका आदेशाची पुष्टी करता आली नाही. पुन्हा सुरू करण्यापूर्वी तुमच्या स्थायी आदेशांचे पुनरावलोकन करा.
+[hive previous order sending]
+तुमचा मागील आदेश अजूनही पाठवला जात आहे. हा संदेश जतन करून ठेवण्यात आला आहे; तो पुन्हा पाठवण्यासाठी कमांडर उघडा.
+[hive order received %0]
+आदेश प्राप्त झाला: %0
+[hive order not confirmed]
+आदेशाची पुष्टी झाली नाही. पुन्हा प्रयत्न करण्यासाठी कमांडर उघडा; तुमचा संदेश जतन करून ठेवण्यात आला आहे.
+[hive standing order update failed]
+स्थायी आदेश अद्ययावत करता आला नाही. तुमचा आदेश या उपकरणावर थांबवण्यात आला आहे; संबंधित नियंत्रण पुन्हा वापरा.

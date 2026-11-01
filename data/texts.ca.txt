@@ -6818,19 +6818,43 @@ Corriols d’animals
 Quantitat de peixos
 [scenario messages]
 Missatges ▸
-[script compile success]
-
 [script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
+Error a %0:%1: %2
 [Camp-site amount]
 Nombre de campaments
+[script compilation success]
+Compilació correcta
+[script compilation failure %0:%1:(%2):%3]
+Error de compilació: %0:%1:(%2):%3
+[script compilation failed %0]
+Ha fallat la compilació: %0
+[script loading failed %0]
+Ha fallat la càrrega de l'script des de %0.
+[script saving failed %0]
+No s'ha pogut desar l'script a %0.
+[script line %0 column %1]
+Línia: %0 Columna: %1
+[game stopped %0]
+Joc aturat: %0
+[game stopped script help]
+Revisa el JavaScript incrustat i el seu ús de recursos abans de reiniciar aquest joc.
+[missing map generator %0]
+Falta el generador de mapes: %0. S'ha seleccionat un paisatge integrat.
+[hive standing order paused]
+Una ordre permanent necessita atenció i s'ha posat en pausa.
+[hive connection changed orders paused]
+La connexió ha canviat. Revisa les teves ordres permanents en pausa abans de reprendre-les.
+[hive standing order fresh instruction]
+Una ordre permanent necessita una nova instrucció després de tornar a connectar. Pots cancel·lar-la o demanar al comandant que la substitueixi.
+[hive order confirmation failed]
+No s'ha pogut confirmar una ordre. Revisa les teves ordres permanents abans de reprendre-les.
+[hive previous order sending]
+La teva ordre anterior encara s'està enviant. Aquest missatge s'ha desat; obre el comandant per tornar-lo a enviar.
+[hive order received %0]
+Ordre rebuda: %0
+[hive order not confirmed]
+Ordre no confirmada. Obre el comandant per tornar-ho a intentar; el teu missatge s'ha desat.
+[hive standing order update failed]
+L'actualització de l'ordre permanent ha fallat. La teva ordre està en pausa en aquest dispositiu; torna-ho a intentar amb el control corresponent.
 [AI for all computer colonies]
 IA per a totes les colònies controlades per l’ordinador

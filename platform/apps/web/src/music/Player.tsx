@@ -1,4 +1,4 @@
-import { t, useLocale, RichMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage, musicMoodLabel } from '../i18n.tsx';
 import { useEffect, type CSSProperties } from 'react';
 import type { MusicRelease } from '@glob2/protocol';
 import {
@@ -8,9 +8,7 @@ import {
 } from './useMusicPlayback.ts';
 export const MOODS = ['Calm', 'Building', 'Combat'];
 // Display context is separate from the stable mood and upload identifiers.
-export function musicMoodLabel(mood: string | undefined) {
-  return mood === 'Building' ? t('Building (music mood)') : t(mood);
-}
+export { musicMoodLabel };
 const MOOD_DESCRIPTIONS = ['Room to breathe', 'A colony takes shape', 'Into the fray'];
 export function MoodIcon({ mood }: { mood: number }) {
   useLocale();

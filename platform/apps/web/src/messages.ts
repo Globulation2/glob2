@@ -1,4 +1,37 @@
 import * as localization from '../../../packages/i18n/src/index.ts';
+
+/** The music phase is construction; Building elsewhere names a structure. */
+export function musicMoodLabel(mood: string | undefined): string {
+  return t(
+    mood === 'Building'
+      ? localization.getLocale() === 'bg'
+        ? 'Build'
+        : 'Building (music mood)'
+      : mood,
+  );
+}
+
+/** Canonical protocol tags stay in English; only their visible labels change. */
+export function aiTagLabel(tag: string): string {
+  switch (tag) {
+    case 'Balanced':
+      return t('Balanced');
+    case 'Rush':
+      return t('Rush');
+    case 'Defensive':
+      return t('Defensive');
+    case 'Economy':
+      return t('Economy');
+    case 'Expansion':
+      return t('Expansion');
+    case 'Experimental':
+      return t('Experimental');
+    case 'Beginner-friendly':
+      return t('Beginner-friendly');
+    default:
+      return tag;
+  }
+}
 function displayParams(
   params?: Record<string, unknown>,
 ): Record<string, string | number> | undefined {

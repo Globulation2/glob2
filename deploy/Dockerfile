@@ -130,6 +130,9 @@ COPY examples/javascript /app/examples/javascript
 COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
 COPY data/fonts/scripts /app/data/fonts/scripts
 COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
+COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt
+COPY data/fonts/LICENSE-Droid.txt /app/data/fonts/LICENSE-Droid.txt
+COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libgag/shaders /app/libgag/shaders
 # Set authoring and Terrain Studio import the shared resource registry.
@@ -155,6 +158,9 @@ COPY platform/apps/ai-building-worker apps/ai-building-worker
 # Server-rendered account and invite pages use the approved script fonts.
 COPY data/fonts/scripts /app/data/fonts/scripts
 COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
+COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt
+COPY data/fonts/LICENSE-Droid.txt /app/data/fonts/LICENSE-Droid.txt
+COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -173,6 +179,7 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
 COPY examples/javascript /app/examples/javascript
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
@@ -223,6 +230,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
 COPY examples/javascript /app/examples/javascript
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
@@ -342,6 +350,7 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
     mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
 # Shared protocol set-authoring imports the registry when the worker starts.
 COPY data/resources/registry.json /app/data/resources/registry.json
 ENV NODE_ENV=production BLOB_STORE=fs BLOB_DIR=/var/lib/glob2/blobs

@@ -6818,19 +6818,43 @@ Skalnati griči
 Količina rib
 [scenario messages]
 Sporočila ▸
-[script compile success]
-
 [script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
+Napaka pri %0:%1: %2
 [Camp-site amount]
 Število taborišč
+[script compilation success]
+Prevajanje je uspelo
+[script compilation failure %0:%1:(%2):%3]
+Napaka pri prevajanju: %0:%1:(%2):%3
+[script compilation failed %0]
+Prevajanje ni uspelo: %0
+[script loading failed %0]
+Nalaganje skripte iz %0 ni uspelo
+[script saving failed %0]
+Shranjevanje skripte v %0 ni uspelo
+[script line %0 column %1]
+Vrstica: %0 Stolpec: %1
+[game stopped %0]
+Igra je bila ustavljena: %0
+[game stopped script help]
+Pred ponovnim zagonom igre preglejte vgrajeno kodo JavaScript in njeno porabo virov.
+[missing map generator %0]
+Manjka generator zemljevidov: %0. Izbrana je bila vgrajena pokrajina.
+[hive standing order paused]
+Trajni ukaz zahteva pozornost in je bil začasno ustavljen.
+[hive connection changed orders paused]
+Povezava se je spremenila. Pred nadaljevanjem preglejte začasno ustavljene trajne ukaze.
+[hive standing order fresh instruction]
+Trajni ukaz po ponovni vzpostavitvi povezave potrebuje novo navodilo. Lahko ga prekličete ali prosite poveljnika, da ga nadomesti.
+[hive order confirmation failed]
+Ukaza ni bilo mogoče potrditi. Pred nadaljevanjem preglejte svoje trajne ukaze.
+[hive previous order sending]
+Vaš prejšnji ukaz se še vedno pošilja. To sporočilo je bilo shranjeno; odprite poveljnika, da ga ponovno pošljete.
+[hive order received %0]
+Prejet ukaz: %0
+[hive order not confirmed]
+Ukaz ni potrjen. Odprite poveljnika za ponovni poskus; vaše sporočilo je bilo shranjeno.
+[hive standing order update failed]
+Posodobitev trajnega ukaza ni uspela. Vaš ukaz je začasno ustavljen na tej napravi; poskusite znova z ustreznim kontrolnikom.
 [AI for all computer colonies]
 Umetna inteligenca za vse računalniško vodene kolonije

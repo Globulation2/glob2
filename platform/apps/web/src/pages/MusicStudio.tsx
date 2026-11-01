@@ -318,8 +318,8 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
           onClick={() => setCredits(!credits)}
           aria-expanded={credits}
         >
-          <Icon name="coins" size={18} /> {wallet?.available ?? '…'}{' '}
-          <span>{t('Music credits')}</span>
+          <Icon name="coins" size={18} />
+          <span>{t('{value0} Music credits', { value0: wallet?.available ?? '…' })}</span>
         </button>
       </StudioHeader>
       {payment === 'returned' && (

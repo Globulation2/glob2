@@ -6818,19 +6818,43 @@ Zvieracie chodníky
 Množstvo rýb
 [scenario messages]
 Správy ▸
-[script compile success]
-
 [script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
+Chyba na riadku %0, v stĺpci %1: %2
 [Camp-site amount]
 Počet táborísk
+[script compilation success]
+Úspešná kompilácia
+[script compilation failure %0:%1:(%2):%3]
+Zlyhanie kompilácie: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilácia zlyhala: %0
+[script loading failed %0]
+Načítanie skriptu z %0 zlyhalo
+[script saving failed %0]
+Uloženie skriptu do %0 zlyhalo
+[script line %0 column %1]
+Riadok: %0 Stĺpec: %1
+[game stopped %0]
+Hra zastavená: %0
+[game stopped script help]
+Pred opätovným spustením tejto hry skontrolujte vložený kód JavaScript a jeho využitie zdrojov.
+[missing map generator %0]
+Chýba generátor máp: %0. Bola vybraná vstavaná krajina.
+[hive standing order paused]
+Trvalý príkaz vyžaduje pozornosť a bol pozastavený.
+[hive connection changed orders paused]
+Pripojenie sa zmenilo. Pred obnovením si skontrolujte pozastavené trvalé príkazy.
+[hive standing order fresh instruction]
+Trvalý príkaz vyžaduje po opätovnom pripojení nový pokyn. Môžete ho zrušiť alebo požiadať veliteľa o jeho nahradenie.
+[hive order confirmation failed]
+Príkaz sa nepodarilo potvrdiť. Pred obnovením skontrolujte svoje trvalé príkazy.
+[hive previous order sending]
+Váš predchádzajúci príkaz sa stále odosiela. Táto správa bola uložená; otvorte veliteľa a odošlite ju znova.
+[hive order received %0]
+Príkaz prijatý: %0
+[hive order not confirmed]
+Príkaz nebol potvrdený. Otvorte veliteľa a skúste to znova; vaša správa bola uložená.
+[hive standing order update failed]
+Aktualizácia trvalého príkazu zlyhala. Váš príkaz je na tomto zariadení pozastavený; skúste to znovu pomocou príslušného ovládacieho prvku.
 [AI for all computer colonies]
 UI pre všetky kolónie ovládané počítačom

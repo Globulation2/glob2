@@ -6818,19 +6818,43 @@ MCP 服务器
 鱼类数量
 [scenario messages]
 消息 ▸
-[script compile success]
-
 [script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
+第 %0 行、第 %1 列出错：%2
 [Camp-site amount]
 营地数量
+[script compilation success]
+编译成功
+[script compilation failure %0:%1:(%2):%3]
+编译失败：%0:%1:(%2):%3
+[script compilation failed %0]
+编译失败：%0
+[script loading failed %0]
+从 %0 加载脚本失败
+[script saving failed %0]
+保存脚本到 %0 失败
+[script line %0 column %1]
+行：%0 列：%1
+[game stopped %0]
+游戏停止：%0
+[game stopped script help]
+在重新启动游戏之前，请检查嵌入的 JavaScript 代码及其资源使用情况。
+[missing map generator %0]
+缺少地图生成器：%0。已选择内置地貌。
+[hive standing order paused]
+一项长期指令需要处理，现已暂停。
+[hive connection changed orders paused]
+连接已更改。请在恢复之前检查已暂停的长期指令。
+[hive standing order fresh instruction]
+重新连接后，一项长期指令需要新的指示。您可以取消该指令，或请指挥官将其替换。
+[hive order confirmation failed]
+无法确认一项指令。请在恢复之前检查您的长期指令。
+[hive previous order sending]
+您之前的指令仍在发送中。此消息已保存；请打开指挥官重新发送。
+[hive order received %0]
+已收到指令：%0
+[hive order not confirmed]
+指令未确认。请打开指挥官重试；您的消息已保存。
+[hive standing order update failed]
+长期指令更新失败。您的指令已在此设备上暂停；请使用相应的控件重试。
 [AI for all computer colonies]
 所有电脑控制殖民地的 AI

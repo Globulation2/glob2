@@ -1051,6 +1051,17 @@
       "release %0",
       "sim %0",
       "–"
+    ],
+    "texts.bg.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "%0 s",
+      "256 × 256",
+      "CPU %0%",
+      "FFA",
+      "HP ≤25/50/75%",
+      "P %0/%1/%2",
+      "–"
     ]
   },
   "standard_names_and_key_legends": [

@@ -4,9 +4,11 @@ import { randomUUID } from 'node:crypto';
 import { sql } from 'kysely';
 import type { FastifyInstance } from 'fastify';
 import sharp from 'sharp';
+import { Type } from 'typebox';
 import {
   BUILDING_PACKAGE_LIMITS,
   SaveBuildingDraftRequest,
+  Strict,
   buildingNamespacePrefix,
   checkBuildingPackage,
   type BuildingDraft,
@@ -130,6 +132,12 @@ export async function buildingDraftRoutes(app: FastifyInstance, identity: Identi
   });
   app.post('/api/v1/building-drafts', async (r, reply) => {
     const account = await signed(r);
+    const input = body(
+      Strict({ name: Type.Optional(SaveBuildingDraftRequest.properties.name) }),
+      r.body,
+    );
+    const name = input.name === undefined ? 'New building family' : input.name.trim();
+    if (!name || name.includes('\0')) throw apiError('bad_request', 'Choose a family name.');
     await enforce(saves, account.id, reply, 'Too many draft saves.');
     // The account lock also serializes first saves and the workspace quota.
     const row = await db.transaction().execute(async (trx) => {
@@ -185,7 +193,7 @@ export async function buildingDraftRoutes(app: FastifyInstance, identity: Identi
         .insertInto('building_drafts')
         .values({
           owner_account_id: account.id,
-          name: 'New building family',
+          name,
           archive,
         })
         .returningAll()

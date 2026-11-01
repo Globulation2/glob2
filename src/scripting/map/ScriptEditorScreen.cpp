@@ -16,6 +16,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <sstream>
 
 namespace fe = Glob2UI;
 using fe::Element;
@@ -24,6 +25,52 @@ using namespace GAGCore;
 
 namespace
 {
+Element scriptTouchButtons(std::vector<Element> buttons, std::vector<std::string> labels,
+                           const Presentation &p, fe::FontRole role, int maxColumns)
+{
+    return fe::adaptive([buttons=std::move(buttons), labels=std::move(labels), role,
+                         gap=p.pt(6), minimum=p.pt(150), maxColumns](const fe::LayoutContext &ctx, fe::Size) {
+        int width=minimum;
+        for (const auto &label : labels) {
+            std::istringstream words(label);
+            for (std::string word; words >> word;)
+                width=std::max(width,ctx.text.width(role,word)+2*ctx.metrics.padding);
+        }
+        return fe::wrap(buttons,{gap,width,maxColumns});
+    });
+}
+class ScriptCursorCaption : public fe::Node
+{
+	std::function<std::string()> current;
+	std::string format;
+	std::size_t digits;
+  public:
+	ScriptCursorCaption(std::function<std::string()> current, std::string format, std::size_t digits)
+		: current(std::move(current)), format(std::move(format)), digits(digits) { key = "script/cursor"; }
+	std::string accessibleText() const override { return current(); }
+	fe::Size measure(const fe::LayoutContext &ctx, fe::Constraints constraints) override
+	{
+		int width = ctx.text.width(fe::FontRole::Caption, current());
+		std::string reserve = current();
+		for (char digit = '0'; digit <= '9'; ++digit)
+		{
+			const std::string bound(digits, digit);
+			const auto text = Glob2UI::literalSurfaceFormat(format, {bound, bound});
+			if (ctx.text.width(fe::FontRole::Caption, text) > width) { width = ctx.text.width(fe::FontRole::Caption, text); reserve = text; }
+		}
+		const auto block = fe::layoutText(ctx.text, fe::FontRole::Caption, reserve, std::min(width, constraints.maxW), 0);
+		return constraints.clamp({block.width, block.height});
+	}
+	void paint(fe::Frame &frame) override
+	{
+		int y = bounds.y;
+		for (const auto &line : fe::wrapText(frame.layout.text, fe::FontRole::Caption, current(), bounds.w))
+		{
+			frame.canvas.text({bounds.x, y}, fe::FontRole::Caption, line, frame.layout.theme.palette.muted);
+			y += frame.layout.text.lineHeight(fe::FontRole::Caption);
+		}
+	}
+};
 bool loadText(const std::string &filename, std::string &text)
 {
 	std::unique_ptr<StreamBackend> stream(
@@ -145,7 +192,7 @@ bool ScriptEditorScreen::testCompile()
 		{
 			Script::makeRuntime()->validate(script);
 			compiled = true;
-			compilation = fe::tr("[script compile success]");
+			compilation = Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success");
 		}
 		else if (selectedLanguage == Language::USL)
 		{
@@ -155,16 +202,16 @@ bool ScriptEditorScreen::testCompile()
 			if (candidate.compileCode())
 			{
 				compiled = true;
-				compilation = fe::tr("[script compile success]");
+				compilation = Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success");
 			}
 			else
 			{
 				MapScriptError error = candidate.getError();
 				compiled = false;
-				compilation = FormattableString(fe::tr("[script error at %0:%1: %2]"))
+				compilation = FormattableString(Glob2UI::nativeSurfaceText("[script error at %0:%1: %2]", "Error at %0:%1: %2"))
 								  .arg(error.getLine())
 								  .arg(error.getColumn())
-								  .arg(error.getMessage());
+								  .arg(compilationDiagnostic(error.getMessage()));
 			}
 		}
 		else
@@ -174,16 +221,16 @@ bool ScriptEditorScreen::testCompile()
 			if (er.type == ErrorReport::ET_OK)
 			{
 				compiled = true;
-				compilation = fe::tr("[script compile success]");
+				compilation = Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success");
 			}
 			else
 			{
 				compiled = false;
-				compilation = FormattableString(fe::tr("[script compile failure %0:%1:(%2):%3]"))
+				compilation = FormattableString(Glob2UI::nativeSurfaceText("[script compilation failure %0:%1:(%2):%3]", "Compilation failure : %0:%1:(%2):%3"))
 								  .arg(er.line + 1)
 								  .arg(er.col)
 								  .arg(er.pos)
-								  .arg(er.getErrorString());
+								  .arg(compilationDiagnostic(er.getErrorString()));
 				host().state("script").cursor =
 					std::min<std::size_t>(std::size_t(std::max(0, int(er.pos))), script.size());
 			}
@@ -192,7 +239,7 @@ bool ScriptEditorScreen::testCompile()
 	catch (const std::exception& error)
 	{
 		compiled = false;
-		compilation = error.what();
+		compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.what())}) : error.what();
 	}
 
 	invalidate();
@@ -213,7 +260,7 @@ void ScriptEditorScreen::confirm()
 											 ? MapScript::JavaScript : MapScript::USL, script, error))
 			{
 				compiled = false;
-				compilation = error.getMessage();
+				compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getMessage())}) : error.getMessage();
 				invalidate();
 				return;
 			}
@@ -226,7 +273,7 @@ void ScriptEditorScreen::confirm()
 			if (error.type != ErrorReport::ET_OK)
 			{
 				compiled = false;
-				compilation = error.getErrorString();
+				compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getErrorString())}) : error.getErrorString();
 				invalidate();
 				return;
 			}
@@ -241,7 +288,7 @@ void ScriptEditorScreen::confirm()
 				if (!emptyUSL)
 				{
 					compiled = false;
-					compilation = error.getMessage();
+					compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getMessage())}) : error.getMessage();
 					invalidate();
 					return;
 				}
@@ -255,7 +302,7 @@ void ScriptEditorScreen::confirm()
 	catch (const std::exception& error)
 	{
 		compiled = false;
-		compilation = error.what();
+		compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.what())}) : error.what();
 		invalidate();
 		return;
 	}
@@ -387,7 +434,7 @@ void ScriptEditorScreen::finishFileDialog()
 			{
 				compiled = false;
 				compilation =
-					FormattableString(fe::tr("[script load failed %0]")).arg(dialog->getName());
+					FormattableString(Glob2UI::nativeSurfaceText("[script loading failed %0]", "Loading script from %0 failed")).arg(dialog->getName());
 			}
 			else
 				testCompile();
@@ -395,7 +442,7 @@ void ScriptEditorScreen::finishFileDialog()
 		else if (!saveText(dialog->getFileName(), script))
 		{
 			compiled = false;
-			compilation = FormattableString(fe::tr("[script save failed %0]")).arg(dialog->getName());
+			compilation = FormattableString(Glob2UI::nativeSurfaceText("[script saving failed %0]", "Saving script to %0 failed")).arg(dialog->getName());
 		}
 	}
 	invalidate();
@@ -412,10 +459,9 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	resultStyle.role = fe::FontRole::Support;
 	if (!compilation.empty())
 		resultStyle.color = compiled ? theme().palette.success : theme().palette.danger;
-	auto position =
-		fe::canvas("script/cursor", {p.pt(120), p.pt(16)},
-				   [this](fe::Canvas &c, fe::Rect r, const fe::Frame &frame)
-				   {
+	const auto cursorTemplate = Glob2UI::nativeSurfaceText("[script line %0 column %1]", "Line: %0 Col: %1");
+	auto cursorText = [this, cursorTemplate]()
+	{
 					   std::size_t cursor = 0;
 					   if (const auto *state = host().states().find("script"))
 						   cursor = std::min(state->cursor, script.size());
@@ -428,12 +474,15 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 						   }
 						   else
 							   ++column;
-					   c.text({r.x, r.y}, fe::FontRole::Caption,
-							  FormattableString(fe::tr("[script cursor %0 %1]")).arg(line).arg(column),
-							  frame.layout.theme.palette.muted);
-				   });
-	auto status = fe::row({fe::expanded(fe::label(compilation, resultStyle)), position},
-						  {p.pt(8), fe::CrossAlign::Center});
+		return Glob2UI::literalSurfaceFormat(cursorTemplate, {std::to_string(line), std::to_string(column)});
+	};
+	// Reserve measured localized text for the largest possible coordinates, and
+	// wrap in compact/enlarged layouts instead of clipping a fixed 120px canvas.
+	auto position = std::make_shared<ScriptCursorCaption>(cursorText, cursorTemplate,
+		std::to_string(script.size() + 1).size());
+	auto status = p.compact() || p.textGrowth > 1.2
+		? fe::column({fe::paragraph(compilation, resultStyle), position}, {p.pt(4)})
+		: fe::row({fe::expanded(fe::label(compilation, resultStyle)), position}, {p.pt(8), fe::CrossAlign::Center});
 	auto language = fe::field(fe::tr("[language-tr]"),
 							  fe::choice("script/language", {"SGSL", "USL", "JavaScript"},
 										 static_cast<int>(selectedLanguage), [this](int index)
@@ -442,8 +491,23 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	tools.push_back({"compile", fe::tr("[Compile]"), [this] { testCompile(); }});
 	tools.push_back({"load", fe::tr("[load]"), [this] { loadSave(true); }});
 	tools.push_back({"save", fe::tr("[Save]"), [this] { loadSave(false); }});
+    Element toolActions;
+    if (!p.touch) toolActions=fe::actions(std::move(tools),p);
+    else {
+        std::vector<Element> buttons;
+        std::vector<std::string> labels;
+        for (const auto &item : tools) {
+            fe::ButtonOptions options;
+            options.primary=item.primary; options.shortcut=item.shortcut;
+            options.enabled=item.enabled; options.icon=item.icon;
+            options.minHeight=48; options.role=fe::FontRole::Heading;
+            buttons.push_back(fe::button(item.key,item.label,item.action,options));
+            labels.push_back(item.label);
+        }
+        toolActions=scriptTouchButtons(std::move(buttons),std::move(labels),p,fe::FontRole::Heading,0);
+    }
 	return fe::column(
-		{language, editor, status, fe::actions(std::move(tools), p)},
+		{language, editor, status, toolActions},
 		{p.pt(6)});
 }
 
@@ -476,6 +540,16 @@ Element ScriptEditorScreen::build(const Presentation &p)
 			selected = i;
 	auto header =
 		fe::segments("tab", tabs, selected, [this, ids](int index) { showTab(ids[index]); });
+    if (p.touch) {
+        std::vector<Element> buttons;
+        for (int i=0;i<4;++i) {
+            fe::ButtonOptions options;
+            options.selected=i==selected; options.minHeight=44;
+            buttons.push_back(fe::button("tab/"+std::to_string(i),tabs[i],
+                [this,id=ids[i]] { showTab(id); },options));
+        }
+        header=scriptTouchButtons(std::move(buttons),tabs,p,fe::FontRole::Body,2);
+    }
 	Element body;
 	if (page == TAB_SCRIPT)
 		body = scriptTab(p);

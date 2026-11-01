@@ -1,14 +1,13 @@
 import { statusLabel } from '../i18n.tsx';
-import { displayMessage, message as sourceMessage } from '../i18n.tsx';
 import { translateError } from '../i18n.tsx';
-import { t, useLocale, RichMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage, musicMoodLabel, getLocale } from '../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
-import type { MusicMetadata, MusicRelease } from '@glob2/protocol';
+import type { ErrorBody, MusicMetadata, MusicRelease } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 import { MusicValidation } from './Validation.tsx';
-import { MOODS, MusicPlayer, musicMoodLabel } from './Player.tsx';
+import { MOODS, MusicPlayer } from './Player.tsx';
 import { useMusicCatalogue } from './useMusicCatalogue.ts';
 
 import {
@@ -29,8 +28,22 @@ const UPLOADS = [
   ['combat', 'Combat'],
   ['cover', 'Cover'],
 ] as const;
-function errorText(error: unknown) {
-  return error instanceof Error ? error.message : String(error);
+type MusicNotice = { kind: 'success'; source: 'Saved' } | { kind: 'error'; error: unknown } | null;
+function musicErrorText(error: unknown): string {
+  if (getLocale() !== 'bg' && getLocale() !== 'th')
+    return error instanceof Error ? error.message : String(error);
+  // Raw diagnostics are never display keys. Only explicit API metadata identifies one.
+  if (
+    error &&
+    typeof error === 'object' &&
+    'body' in error &&
+    error.body &&
+    typeof error.body === 'object' &&
+    'messageKey' in error.body &&
+    typeof error.body.messageKey === 'string'
+  )
+    return translateError(error);
+  return t('Something went wrong. Please try again.');
 }
 function PreviewDialog({ release, close }: { release: MusicRelease; close: () => void }) {
   useLocale();
@@ -77,7 +90,7 @@ export function MusicLibrary() {
     [mine, setMine] = useState(false);
   const [selected, setSelected] = useState<Map<string, string>>(new Map());
   const [preview, setPreview] = useState<MusicRelease | null>(null),
-    [notice, setNotice] = useState(''),
+    [notice, setNotice] = useState<MusicNotice>(null),
     [busy, setBusy] = useState(false);
   const filters = new URLSearchParams({
     q: appliedQuery,
@@ -92,7 +105,7 @@ export function MusicLibrary() {
   const { items, setItems, next, loading, error, more, reload } = useMusicCatalogue(filters);
   async function downloadSelected() {
     setBusy(true);
-    setNotice('');
+    setNotice(null);
     try {
       const response = await fetch('/api/v1/music/download', {
         method: 'POST',
@@ -100,8 +113,8 @@ export function MusicLibrary() {
         body: JSON.stringify({ ids: [...selected.keys()] }),
       });
       if (!response.ok) {
-        const error = (await response.json()) as { message?: string };
-        throw new Error(error.message ?? sourceMessage('Download failed.'));
+        const error = (await response.json()) as ErrorBody;
+        throw Object.assign(new Error(error.message ?? 'Download failed.'), { body: error });
       }
       const url = URL.createObjectURL(await response.blob());
       const a = document.createElement('a');
@@ -110,7 +123,7 @@ export function MusicLibrary() {
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 60_000);
     } catch (e) {
-      setNotice(errorText(e));
+      setNotice({ kind: 'error', error: e });
     } finally {
       setBusy(false);
     }
@@ -123,7 +136,7 @@ export function MusicLibrary() {
       );
       setItems((old) => old.map((r) => (r.id === updated.id ? updated : r)));
     } catch (e) {
-      setNotice(errorText(e));
+      setNotice({ kind: 'error', error: e });
     }
   }
   const reset = () => {
@@ -240,7 +253,11 @@ export function MusicLibrary() {
           {t('Reset filters')}
         </button>
       </LibraryFilters>
-      {notice && <p role="alert">{displayMessage(notice)}</p>}
+      {notice && (
+        <p role="alert">
+          {notice.kind === 'error' ? musicErrorText(notice.error) : t(notice.source)}
+        </p>
+      )}
       {busy && <p role="status">{t('Loading…')}</p>}
       <LibraryResults
         count={(data) => data.length}
@@ -303,7 +320,7 @@ export function MusicLibrary() {
                       <button
                         disabled={account?.kind !== 'registered' || release.status !== 'published'}
                         aria-label={t('{value0} {value1} · {value2} likes', {
-                          value0: release.liked ? 'Unlike' : 'Like',
+                          value0: release.liked ? t('Unlike') : t('Like'),
                           value1: release.metadata.title,
                           value2: release.likes,
                         })}
@@ -405,7 +422,7 @@ export function MusicDetail({ id }: { id: string }) {
     (signal) => request<MusicRelease>('GET', `/api/v1/music/${id}`, { signal }),
     [id],
   );
-  const [notice, setNotice] = useState(''),
+  const [notice, setNotice] = useState<MusicNotice>(null),
     [reason, setReason] = useState('');
   const [repair, setRepair] = useState('none'),
     [master, setMaster] = useState(false);
@@ -423,15 +440,15 @@ export function MusicDetail({ id }: { id: string }) {
     try {
       await request(method, `/api/v1/music/${id}${suffix}`, { body });
       data.reload();
-      setNotice('Saved');
+      setNotice({ kind: 'success', source: 'Saved' });
     } catch (e) {
-      setNotice(errorText(e));
+      setNotice({ kind: 'error', error: e });
     } finally {
       setBusy(false);
     }
   }
   if (data.status === 'loading') return <p role="status">{t('Loading music…')}</p>;
-  if (data.status === 'error') return <p role="alert">{translateError(data.error)}</p>;
+  if (data.status === 'error') return <p role="alert">{musicErrorText(data.error)}</p>;
   const release = data.data,
     owner = account?.id === release.ownerId;
   return (
@@ -458,7 +475,11 @@ export function MusicDetail({ id }: { id: string }) {
             </p>
           </div>
         </div>
-        {notice && <p role="status">{displayMessage(notice)}</p>}
+        {notice && (
+          <p role={notice.kind === 'success' ? 'status' : 'alert'}>
+            {notice.kind === 'success' ? t(notice.source) : musicErrorText(notice.error)}
+          </p>
+        )}
         {release.error && <p role="alert">{release.error}</p>}
         {release.status !== 'published' && (
           <p className="music-release-state">
@@ -653,7 +674,7 @@ export function MusicCreate() {
   });
   const [sources, setSources] = useState(''),
     [tags, setTags] = useState(''),
-    [notice, setNotice] = useState(''),
+    [notice, setNotice] = useState<MusicNotice>(null),
     [busy, setBusy] = useState(false);
   if (!account || account.kind !== 'registered')
     return (
@@ -689,7 +710,7 @@ export function MusicCreate() {
             },
           })
             .then((release) => navigate(`/music/${release.id}`))
-            .catch((e) => setNotice(errorText(e)))
+            .catch((e) => setNotice({ kind: 'error', error: e }))
             .finally(() => setBusy(false));
         }}
       >
@@ -748,7 +769,11 @@ export function MusicCreate() {
           {t(' I can share these recordings and artwork under the selected licence.')}
         </label>
         <button disabled={busy}>{t('Continue to uploads')}</button>
-        {notice && <p role="alert">{displayMessage(notice)}</p>}
+        {notice && (
+          <p role="alert">
+            {notice.kind === 'error' ? musicErrorText(notice.error) : t(notice.source)}
+          </p>
+        )}
       </form>
     </main>
   );

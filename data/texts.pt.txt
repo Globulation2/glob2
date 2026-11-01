@@ -6818,19 +6818,43 @@ Trilhos de animais
 Quantidade de peixes
 [scenario messages]
 Mensagens ▸
-[script compile success]
-
 [script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
+Erro em %0:%1: %2
 [Camp-site amount]
 Número de acampamentos
+[script compilation success]
+Compilação concluída com êxito
+[script compilation failure %0:%1:(%2):%3]
+Falha na compilação: %0:%1:(%2):%3
+[script compilation failed %0]
+Falha na compilação: %0
+[script loading failed %0]
+Falha ao carregar o script de %0
+[script saving failed %0]
+Falha ao guardar o script em %0
+[script line %0 column %1]
+Linha: %0 Coluna: %1
+[game stopped %0]
+Jogo interrompido: %0
+[game stopped script help]
+Antes de reiniciar o jogo, verifique o código JavaScript incorporado e a sua utilização de recursos.
+[missing map generator %0]
+Gerador de mapas em falta: %0. Foi selecionada uma paisagem integrada.
+[hive standing order paused]
+Uma ordem permanente precisa de atenção e foi colocada em pausa.
+[hive connection changed orders paused]
+A ligação foi alterada. Verifique as suas ordens permanentes pausadas antes de as retomar.
+[hive standing order fresh instruction]
+Uma ordem permanente necessita de uma nova instrução após restabelecer a ligação. Pode cancelá-la ou pedir ao comandante para a substituir.
+[hive order confirmation failed]
+Não foi possível confirmar uma ordem. Verifique as suas ordens permanentes antes de as retomar.
+[hive previous order sending]
+A sua ordem anterior ainda está a ser enviada. Esta mensagem foi guardada; abra o comandante para a enviar novamente.
+[hive order received %0]
+Ordem recebida: %0
+[hive order not confirmed]
+Ordem não confirmada. Abra o comandante para tentar novamente; a sua mensagem foi guardada.
+[hive standing order update failed]
+A atualização da ordem permanente falhou. A sua ordem está em pausa neste dispositivo; tente novamente com o controlo correspondente.
 [AI for all computer colonies]
 IA para todas as colónias controladas pelo computador
