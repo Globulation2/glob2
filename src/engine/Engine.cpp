@@ -12,6 +12,7 @@
 #include "hive/HiveClient.h"
 #include "OnlineServices.h"
 #include "GameDiagnostics.h"
+#include "WarriorTacticsTrace.h"
 #include "TurnMatchPresenter.h"
 #include "sim/SimulationRunner.h"
 #include "sim/presentation/ScenePreparation.h"

@@ -48,7 +48,9 @@ enum DevelopmentPurpose
 	/// executor destroys the old one once the replacement is completed.
 	Relocation,
 	/// Spend spare construction capacity only after ordinary development.
-	Fortification
+	Fortification,
+    /// A separate forward feeding/healing pathway, never ordinary colony siting.
+    ForwardSupport
 };
 
 // Catalog-generated identities exceed the named styles; preserve the signed
@@ -327,6 +329,7 @@ struct DevelopmentIntent
 	bool emergency;
 	/// Relocation only: the building this intent replaces.
 	int replacesBuildingId;
+    int supportX=-1,supportY=-1,supportDistance=24;
 };
 
 struct DevelopmentLimits
