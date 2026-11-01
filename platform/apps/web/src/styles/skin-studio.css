@@ -242,7 +242,8 @@
   z-index: 1;
   top: 120px;
   left: 50%;
-  transform: translateX(-50%);
+  /* Keep centering when the shared button :active rule changes transform. */
+  translate: -50% 0;
   padding: 9px 18px !important;
   gap: 18px !important;
 }
@@ -308,6 +309,15 @@
   flex-direction: column;
   gap: 15px;
 }
+.skin-tool-options > button {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  grid-column: 1 / -1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
 .skin-tool-options label,
 .skin-pattern-controls > label {
   display: block;
@@ -356,7 +366,8 @@
 }
 .skin-material-group h4 {
   margin: 0 0 1px;
-  font-size: 9px;
+  font-size: 10px;
+  line-height: 1.5;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -379,14 +390,14 @@
 .skin-materials > div {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .skin-materials button {
   aspect-ratio: 1;
   padding: 0 1px 2px;
   min-width: 0;
   min-height: 0;
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.5;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -395,9 +406,14 @@
   text-align: center;
   border: 1px solid transparent;
   border-radius: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(36px, 1fr) auto;
 }
 .skin-materials button span {
   /* Wrapped labels need a readable band over the swatch's lower edge. */
+  grid-row: 2;
+  min-height: 3em;
   background: var(--surface);
   border-radius: 3px;
   padding: 1px 2px;
@@ -1041,6 +1057,7 @@
   .skin-shape-button {
     top: 75px;
     left: 12px;
+    translate: none;
     transform: none;
     font-size: 11px !important;
     padding: 5px 8px !important;
@@ -1099,10 +1116,10 @@
     font-size: 11px;
   }
   .skin-materials > div {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .skin-materials button {
-    font-size: 8px;
+    font-size: 10px;
   }
   .skin-pose-strip {
     bottom: 31px;

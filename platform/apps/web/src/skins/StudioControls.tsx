@@ -139,7 +139,7 @@ export function StudioDialog({
   );
 }
 const SWATCH = 128;
-const SWATCH_COLUMNS = 4;
+const SWATCH_COLUMNS = 2;
 const swatchRows = (count: number) => Math.ceil(count / SWATCH_COLUMNS);
 const SWATCH_HEIGHT =
   SWATCH * MATERIAL_GROUPS.reduce((n, g) => n + swatchRows(g.materials.length), 0);

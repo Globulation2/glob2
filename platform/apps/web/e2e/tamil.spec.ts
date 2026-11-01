@@ -46,7 +46,7 @@ async function capture(
   expect(
     await page
       .locator(
-        '.ms-prompt-ideas button, .mu-prompt, .ms-credit-button, .mu-inspector-heading button, .studio-compose-actions button, .skin-tools button, .skin-models button, .skin-materials button, .skin-shape-grid button',
+        '.ms-prompt-ideas button, .mu-prompt, .ms-credit-button, .mu-inspector-heading button, .studio-compose-actions button, .skin-tools button, .skin-models button, .skin-materials button, .skin-shape-grid button, .skin-tool-options > button',
       )
       .evaluateAll((elements) =>
         elements.flatMap((element) => {
@@ -406,6 +406,22 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
       await expect(
         materials.getByRole('radio', { name: text(material.name), exact: true }),
       ).toHaveCount(1);
+    expect(
+      await materials.getByRole('radio').evaluateAll((buttons) =>
+        buttons.flatMap((button) => {
+          const label = button.querySelector('span');
+          if (!label) return ['Missing material label'];
+          const cell = button.getBoundingClientRect();
+          const text = label.getBoundingClientRect();
+          return text.top < cell.top - 1 ||
+            text.bottom > cell.bottom + 1 ||
+            label.scrollWidth > label.clientWidth + 1
+            ? [label.textContent]
+            : [];
+        }),
+      ),
+      'Material captions stay inside their swatches',
+    ).toEqual([]);
     await page.locator('.skin-toolbox, .skin-tool-options').evaluateAll((elements) => {
       for (const element of elements) element.scrollTop = 0;
     });
