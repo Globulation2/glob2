@@ -734,10 +734,11 @@ const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string t
 		// create key
 		CacheData data;
 		// New locales opt into authored advances; preserve the existing Latin
-		// geometry for legacy locales. Swahili uses the original Latin font,
+		// geometry for legacy locales. Swahili and Bokmål use the original Latin font,
 		// not the script-font/bidi composition path.
-		data.authoredDrawWidth = scripts || std::string(SDL_GetStringProperty(
-			TTF_GetFontProperties(font), "glob2.script-language", "")) == "sw";
+		const std::string language = SDL_GetStringProperty(
+			TTF_GetFontProperties(font), "glob2.script-language", "");
+		data.authoredDrawWidth = scripts || language == "sw" || language == "nb";
 		data.lastAccessed = now;
 		data.s = new DrawableSurface(temp);
 		assert(data.s);

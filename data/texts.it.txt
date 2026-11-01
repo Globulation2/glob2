@@ -4884,6 +4884,30 @@ Unità circondate senza alcuna casella libera su cui spostarsi.
 Risorse rimosse
 [stat cleared about]
 Risorse rimosse dagli operai nelle aree di raccolta per fare spazio.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Acqua scura
 Buco
 [chasm]
 Abisso
+[lush_grass]
+Erba rigogliosa
+[dry_grass]
+Erba secca
+[dune_sand]
+Sabbia di duna
+[pale_sand]
+Sabbia chiara
 [terrain group water]
 Acqua
 [terrain group sand]

@@ -22,6 +22,17 @@ test('the online choice supplies a first-visit SDL hint and startup language', (
   assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'pt_BR');
   assert.equal(context.interfaceLanguage(), 'pt-BR');
 });
+test('Norwegian online startup uses the core font and preserves the saved game choice', () => {
+  const context = profile(null, 'nb');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'nb');
+  assert.equal(context.interfaceLanguage(), 'nb');
+  assert.equal(context.cjkInterface(), false);
+  const saved = profile('nb', 'de');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'nb');
+});
 test('a saved game language takes priority and receives no online override', () => {
   const context = profile('de', 'zh-Hant');
   context.applyOnlineLanguage();

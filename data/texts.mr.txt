@@ -6788,3 +6788,35 @@ MCP सर्व्हर सक्षम करा
 छावणीच्या जागांचे प्रमाण
 [scenario messages]
 संदेश ▸
+[stats topic overview]
+आढावा
+[stats topic economy]
+अर्थव्यवस्था
+[stats topic world]
+जग
+[stats work construction]
+काम आणि बांधकाम
+[stats defence]
+संरक्षण
+[stats history]
+इतिहास पहा
+[stats waiting]
+आकडेवारीची प्रतीक्षा…
+[stats unit details]
+युनिटचे तपशील
+[stats map overlays]
+नकाशावरील आच्छादने
+[stats topic]
+विषय
+[stats full history]
+संपूर्ण इतिहास उघडा
+[stats missing readings]
+— अद्याप मोजमापाची नोंद नाही. तपशील पाहण्यासाठी आकडेवारीतील एखादा घटक निवडा.
+[lush_grass]
+हिरवेगार गवत
+[dry_grass]
+कोरडे गवत
+[dune_sand]
+वाळूच्या टेकड्यांतील वाळू
+[pale_sand]
+फिकट वाळू

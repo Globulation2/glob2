@@ -4884,6 +4884,30 @@ Jednostki zamknięte bez wolnego pola, na które mogłyby wejść.
 Usunięte zasoby
 [stat cleared about]
 Zasoby usunięte przez robotników w obszarach oczyszczania, aby zrobić miejsce.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Ciemna woda
 Dziura
 [chasm]
 Przepaść
+[lush_grass]
+Bujna trawa
+[dry_grass]
+Sucha trawa
+[dune_sand]
+Piasek wydmowy
+[pale_sand]
+Jasny piasek
 [terrain group water]
 Woda
 [terrain group sand]

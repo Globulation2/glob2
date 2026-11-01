@@ -5454,6 +5454,49 @@ void Maxima::development_cycle(Context& runtime)
 				std::chrono::duration_cast<std::chrono::microseconds>(
 					std::chrono::steady_clock::now()-profileStarted).count()));
 }
+
+
+// The ledger already measures wheat-route quality; larger distances are worse.
+// Rank completed inns and swarms separately and leave the odd building normal.
+void Maxima::update_worker_priorities(Context& runtime,
+    const AIMaximaPlacement::WorldState& world,
+    const AIMaximaFoodLedger::Result& ledger)
+{
+    auto ownerObservation=runtime.scopeOwnerObservation();
+    std::vector<const AIMaximaFoodLedger::ConsumerResult*> groups[2];
+    for(const auto& value:ledger.consumers)
+    {
+        const auto* building=world.building(value.key);
+        if(!building || building->site || building->upgrading)continue;
+        if(profile_serves(building->buildingType,AIMaximaBuildings::Feeding,building->level))
+            groups[0].push_back(&value);
+        else if(profile_serves(building->buildingType,AIMaximaBuildings::Production,building->level))
+            groups[1].push_back(&value);
+    }
+    auto setPriority=[&](int id,int priority)
+    {
+        const auto* building=runtime.get_building_register().get_building(id);
+        if(building && building->priority!=priority)
+            runtime.add_management_order(new ChangePriority(priority,id));
+    };
+    for(auto& group:groups)
+    {
+        std::sort(group.begin(),group.end(),[](const auto* a,const auto* b)
+        {
+            return a->quality!=b->quality ? a->quality>b->quality : a->key<b->key;
+        });
+        for(size_t i=0;i<group.size();++i)
+            setPriority(group[i]->key,i<group.size()/2 ? -1 : 0);
+    }
+    // Upgrades keep their existing high-priority lifecycle. Ordinary inn sites
+    // recruit first only while the current director budget reports a food crisis.
+    for(const auto& building:world.buildings)
+        if(building.site && !building.upgrading
+           && profile_serves(building.buildingType,AIMaximaBuildings::Feeding,building.level))
+            setPriority(building.id,budget.food_emergency ? 1 : 0);
+}
+
+
 void Maxima::update_food_retirement(Context& runtime,
 	const AIMaximaPlacement::WorldState& world)
 {
@@ -5463,6 +5506,7 @@ void Maxima::update_food_retirement(Context& runtime,
 		development_planner.evaluateFoodLedger(world);
 	const AIMaximaPlacement::PlacementPolicy& policy=development_planner.policy();
 	food_ledger_valid=true;
+    update_worker_priorities(runtime,world,ledger);
 
 	const std::set<int> establishing=establishing_colony_buildings();
 

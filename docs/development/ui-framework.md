@@ -183,39 +183,68 @@ for the flat iOS bundle). Keep `en.lproj` and `CFBundleDevelopmentRegion=en` as
 the fallback. Packaging contract tests verify copied files and resource paths;
 they do not establish Apple permission-dialog behavior on a device.
 
-For a Google Cloud comparison draft, use the development-only helper after
-preparing the kit and blank draft:
+The development-only Google Cloud helper has two draft workflows. Both default
+to an unpaid estimate and authenticate with `gcloud auth print-access-token`:
 
 ```sh
+# HTML-protected plan: separate machine-run output, selected pilot batches optional.
+python3 tools/localization/google_draft.py --output artifacts/norwegian/kit --locale nb
+# Text/plain blank-fill: representative 100-message pilot.
 python3 tools/localization/google_draft.py --output artifacts/translation-program --locale mr --project PROJECT_ID --pilot
 ```
 
-The default is a dry-run estimate. Add `--run` to translate the representative
-100-message pilot; omit `--pilot` for the remaining blank entries after reviewing
-the pilot. Authentication uses `gcloud auth print-access-token`; credentials are
-never saved in the kit. The helper uses explicit English-to-target NMT requests,
-protects format tokens and literal invariants, and rejects damaged responses.
-It retains raw responses, request provenance and a resumable response cache.
-It fills only blank entries and supplies no linguistic sign-offs. Keep the helper
-as the exclusive catalog writer while it runs. It captures catalog hashes before
-reading entries and checks them before each write; detected external edits abort
-the run while preserving disk edits and cached paid responses. These checks do
-not make independent editors participate in its lock.
+Prepare a scoped translation kit and blank draft first. In HTML-plan mode,
+`--project PROJECT_ID --execute --max-characters LIMIT` makes paid Translation v3
+requests; `--batches BATCH_ID ...` selects a source-based pilot. Review that pilot
+before translating the remaining catalog. Bokmål uses provider `nb` when supported,
+otherwise `no`. This mode protects substitutions, literal line breaks, authored
+markup, URLs, relative routes and `www` addresses with non-translatable HTML
+spans. It rejects physical LF/CR/tab source characters before dispatch; use the
+blank-fill workflow for exact segmented multiline preservation. Immutable
+responses live under `google/LOCALE/responses/`, and machine catalogs under
+`google/LOCALE/runs/PLAN_HASH/`; they never replace editorial drafts or registered
+catalogs. Invalid-response retries require `--retry-invalid-responses` and retain
+rejected responses.
 
-`--budget-usd` defaults to 9 and cannot exceed US$9. The ledger reserves each
-request before dispatch at US$20 per million submitted characters, without
-assuming free credit. Failed or uncertain attempts remain reserved; reruns can
-incur another charge if no cached response exists. On POSIX, reservation writes
-flush both the file and its directory after atomic replacement before dispatch;
-durability errors abort the request. Windows flushes file contents but has no
-portable directory-flush equivalent, so its reservation durability guarantee
-covers process failures, not OS crashes. The ceiling bounds this kit's
-requests, not unrelated project spending. Verify current provider pricing before
-use and keep one kit for the campaign so its ledger covers all attempts.
+In blank-fill mode, add `--run` for paid text/plain requests; omit `--pilot` after
+reviewing the pilot to process the remaining blank entries. `--mode blank-fill`
+selects its unpaid estimate explicitly; `--run`, `--pilot`, `--limit` and `--surface`
+also select this workflow. It preserves nonempty reviewed values, protects format
+tokens and literal invariants, segments authored newlines, rejects damaged
+responses and retains valid siblings plus cached paid responses. Keep the helper
+as the exclusive catalog writer while it runs. It captures draft hashes before
+reading and checks them before replacement; detected external edits abort while
+preserving disk edits and cached responses. Independent editors do not participate
+in its lock.
+
+Both paid paths share the kit's `google-budget.json` and exclusive writer lock.
+`--budget-usd` defaults to 9 and cannot exceed US$9, reserving every submitted
+protected payload code point at US$20 per million before dispatch without assuming
+free credit. Uncertain failures, authentication retries and requested invalid-output
+retries each reserve an attempt; historical HTML-plan attempt files are adopted
+once without rewriting old response caches. The ledger itself also locks and
+reloads for low-level callers. HTML `--max-characters` is an additional allowance;
+`--price-per-million` changes its planning estimate, not the enforced ledger rate.
+Verify current provider pricing before use: this ceiling bounds the campaign's
+accounted requests, not unrelated project spending or an exported billing invoice.
+
+POSIX reservation writes flush both the file and its directory after atomic
+replacement; durability errors abort dispatch. Windows flushes file contents but
+has no portable directory-flush equivalent, so its guarantee covers process
+failures rather than OS crashes. All disk text uses UTF-8. Authentication tokens
+remain in memory and are never saved in evidence. Provider output is an initial
+draft, never a linguistic sign-off.
+
+Keep one ledger for the campaign across refreshed source kits. Low-level callers
+can supply `Budget(explicit_campaign_path, project, ceiling)` and `fetch` with an
+explicit shared response cache under the campaign root's `kit_lock`. A symlink to
+a ledger is insufficient because atomic replacement replaces the link itself.
 
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
-system tag alone must never enable an unfinished locale. Punjabi scripts use
+system tag alone must never enable an unfinished locale. Norwegian Bokmål uses
+`nb`; generic `no` selects Bokmål, while explicit `nn`, legacy `no-nyn` and
+`no-NO-NY` preferences fall through to the next supported language. Punjabi scripts use
 `pa-guru` and `pa-arab`; explicit scripts take precedence over country defaults.
 The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
 Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other
@@ -270,6 +299,8 @@ wrapper at several authored sizes and raster scales. `screen` adds a screen name
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
+The gameplay preview also captures the win-probability statistics screen and its
+metric explanation, checking that drawing leaves the simulation checksum intact.
 A published tutorial model alone does not prove that its text is visible. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when
@@ -513,6 +544,11 @@ replacement/reload clears these metrics. Layout measurement neither creates
 bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
+
+Script-layout locales, Swahili and Norwegian Bokmål draw high-DPI text at the
+authored width used by wrapping and hit testing. The complete high-resolution
+bitmap is resampled into that destination: font hinting at a larger raster size
+must not make a fitted line overflow its layout.
 
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored
@@ -835,3 +871,32 @@ preference fields or simulation state are introduced.
    `src/ui/UIPresentationHarness.cpp` and, for a reviewable capture, to
    `tools/MobileGalleryHarness.cpp` and `tools/mobile_gallery/catalog.json`.
 4. Expose semantic entry points for interaction tests instead of coordinates.
+
+### In-game statistics
+
+The Statistics view shares visible topic buttons and a scrollable metric list
+between the 200-pixel desktop sidebar and the mobile bottom sheet.
+The desktop minimap stays 128 pixels wide and is centered within the sidebar.
+Overview highlights population, growth, hunger, health, worker idleness, blocked
+buildings, warriors and intruders. Colony contains Population and Food; Economy
+contains Work, Materials and Buildings; Military contains Military; World contains
+Map and Score. Colony also retains the snapshot-only Unit details. Live spectators
+retain their existing win-chance display under World.
+
+Selecting a metric shows its current or watched team's history below that group.
+Labels and values use separate aligned columns; unavailable readings use a dash
+and one shared explanation. Larger text uses fewer topic buttons per row and
+puts readings below full-width labels. Open full history expands the chart into an in-game
+dialog while the match continues. Its Details disclosure explains the metric;
+short landscape layouts put the chart before its controls. Rate/total and averaging controls use the metric
+catalog's capabilities and defaults. Topic, per-topic scrolling and per-metric
+history choices last for the current match; they are not saved as preferences.
+Closing history restores focus to its metric. The former graph view is now Map
+overlays, retaining its tab position and the four overlay toggles.
+
+`InGameStatisticsPanel` holds immutable statistics/history leases rather than
+live simulation pointers. Visible statistics and history request the history
+component explicitly; hidden views release it. Waiting for publication, insufficient
+history and statistics not recorded in older saves have distinct messages, while
+recorded zeros remain numeric. The mobile sheet header handles downward dismissal;
+the embedded framework host handles scrolling so a content drag cannot dismiss it.

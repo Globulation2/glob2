@@ -4884,6 +4884,30 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Розчищено ресурсів
 [stat cleared about]
 Ресурси, прибрані робітниками на ділянках розчищення, щоб звільнити місце.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Провалля
 [chasm]
 Прірва
+[lush_grass]
+Соковита трава
+[dry_grass]
+Суха трава
+[dune_sand]
+Пісок дюн
+[pale_sand]
+Світлий пісок
 [terrain group water]
 Вода
 [terrain group sand]

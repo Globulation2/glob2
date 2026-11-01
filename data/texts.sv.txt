@@ -4884,6 +4884,30 @@ Inringade enheter utan någon ledig ruta att kliva till.
 Röjda resurser
 [stat cleared about]
 Resurser som arbetare tagit bort i röjningsområden för att skapa utrymme.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Mörkt vatten
 Hål
 [chasm]
 Avgrund
+[lush_grass]
+Frodigt gräs
+[dry_grass]
+Torrt gräs
+[dune_sand]
+Dynsand
+[pale_sand]
+Ljus sand
 [terrain group water]
 Vatten
 [terrain group sand]

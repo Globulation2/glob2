@@ -4884,6 +4884,30 @@ Inguratuta dauden unitateak, zapaltzeko lauki librerik gabe.
 Garbitutako baliabideak
 [stat cleared about]
 Langileek garbiketa-eremuetan lekua egiteko kendutako baliabideak.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Ur iluna
 Zuloa
 [chasm]
 Leizea
+[lush_grass]
+Belar oparoa
+[dry_grass]
+Belar lehorra
+[dune_sand]
+Duna-harea
+[pale_sand]
+Hare argia
 [terrain group water]
 Ura
 [terrain group sand]

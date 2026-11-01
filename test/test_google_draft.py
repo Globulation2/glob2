@@ -2,6 +2,8 @@
 """Paid calls must remain bounded, resumable and safe for format contracts."""
 import importlib.util
 import json
+import io
+from urllib.error import HTTPError
 import os
 import subprocess
 import sys
@@ -215,6 +217,22 @@ assert paths['native'].read_text(encoding='utf-8') == '[edited]\n' + filled + '\
 assert json.loads(paths['online'].read_text(encoding='utf-8')) == {'Edited': filled, 'Hello': translated}
 assert filled.encode('utf-8') in paths['online'].read_bytes()
 assert len(json.loads((root / 'google-budget.json').read_text(encoding='utf-8'))['attempts']) == 1
+# Exercise the independent HTML-plan cache under the same ASCII locale too.
+class Client:
+    project = 'project'
+    location = 'global'
+    calls = 0
+    def call(self, method, payload):
+        self.calls += 1
+        return {'translations': [{'translatedText': translated}]}
+client = Client()
+plan = {'locale': 'nb', 'source_sha256': 'frozen', 'chunks': [['Hello']],
+        'entries': [{'surface': 'native', 'key': '[hello]', 'variant': '', 'source': 'Hello'}]}
+run = draft.translate(plan, root, client, 'nb', 10000)
+assert json.loads((run / 'native.json').read_text(encoding='utf-8')) == {'[hello]': translated}
+draft.translate(plan, root, client, 'nb', 1)
+assert client.calls == 1
+assert len(json.loads((root / 'google-budget.json').read_text(encoding='utf-8'))['attempts']) == 2
 """
         environment = dict(os.environ, PYTHONUTF8='0', PYTHONCOERCECLOCALE='0', LC_ALL='C')
         result = subprocess.run([sys.executable, '-c', script, str(SPEC.origin), str(self.root)],
@@ -267,6 +285,258 @@ assert len(json.loads((root / 'google-budget.json').read_text(encoding='utf-8'))
         self.assertEqual(len(run['entries']), 4)
         DRAFT.run(self.root, 'mr', 'project', execute=True, translate=translate)
         self.assertEqual(len(calls), 1)
+
+
+
+
+class FakeClient:
+    project = 'test-project'
+    location = 'global'
+
+    def __init__(self):
+        self.calls = []
+
+    def call(self, method, payload):
+        self.calls.append((method, payload))
+        return {'translations': [{'translatedText': value.replace('Hello', 'Hei')}
+                                 for value in payload['contents']]}
+
+
+class GooglePlanDraftTest(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.output = Path(self.temporary.name)
+        self.client = FakeClient()
+        self.plan = {'locale': 'nb', 'source_sha256': 'source-hash',
+                     'chunks': [['Hello {name}', 'Hello %0']], 'entries': [
+                         {'surface': 'native', 'key': '[hello %0]', 'variant': '', 'source': 'Hello %0'},
+                         {'surface': 'online', 'key': 'Hello {name}', 'variant': '', 'source': 'Hello {name}'}]}
+
+    def test_protection_preserves_placeholders_markup_urls_and_fragments(self):
+        source = r'  Hello %0 / {slot0}: <b>https://globulation2.org/help</b>\n  '
+        result = DRAFT.restore(source, DRAFT.protect(source).replace('Hello', 'Hei'))
+        self.assertEqual(result, source.replace('Hello', 'Hei'))
+        with self.assertRaisesRegex(ValueError, 'protected tokens'):
+            DRAFT.restore(source, DRAFT.protect(source).replace('%0', '%1'))
+        with self.assertRaisesRegex(ValueError, 'protected tokens'):
+            DRAFT.restore('Hello {name}', 'Hei')
+        self.assertEqual(DRAFT.restore(' / ', '/'), ' / ')
+        self.assertEqual(DRAFT.restore('', ''), '')
+
+    def test_bare_protocol_allows_norwegian_compound_suffix_without_becoming_url(self):
+        source = 'Enter an https:// address.'
+        self.assertEqual(DRAFT.restore(source, 'Skriv inn en https://-adresse.'),
+                         'Skriv inn en https://-adresse.')
+        # Bare scheme payload is unchanged, preserving previously paid cache keys.
+        self.assertEqual(DRAFT.protect(source), source)
+        with self.assertRaisesRegex(ValueError, 'protected tokens'):
+            DRAFT.restore(source, 'Skriv inn en http://-adresse.')
+        with self.assertRaisesRegex(ValueError, 'protected tokens'):
+            DRAFT.restore('Open https://globulation2.org/help',
+                          'Åpne https://globulation2.org/hjelp')
+        self.assertEqual(DRAFT.restore('Open https://[::1]/help',
+                                      'Åpne https://[::1]/help'), 'Åpne https://[::1]/help')
+
+    def test_relative_routes_and_bare_web_addresses_cannot_be_translated(self):
+        for source, altered in [('/ais/favourites', '/ais/favoritter'),
+                                ('www.globulation2.org', 'www.globulation2.no'),
+                                ('/play/?mode=serial', '/spill/?mode=serial')]:
+            with self.subTest(source=source):
+                protected = DRAFT.protect(source)
+                self.assertIn('translate="no"', protected)
+                self.assertEqual(DRAFT.restore(source, protected), source)
+                with self.assertRaisesRegex(ValueError, 'protected tokens'):
+                    DRAFT.restore(source, altered)
+        self.assertEqual(DRAFT.protect('front/back application/octet-stream'),
+                         'front/back application/octet-stream')
+
+    def test_resume_reuses_exact_request_without_touching_editorial_work(self):
+        editorial = self.output / 'drafts/nb/texts.nb.txt'
+        editorial.parent.mkdir(parents=True)
+        editorial.write_text('Independently edited')
+        run = DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+        second_run = DRAFT.translate(self.plan, self.output, self.client, 'nb', 1)
+        self.assertEqual(run, second_run)
+        self.assertEqual(len(self.client.calls), 1)
+        self.assertEqual(editorial.read_text(), 'Independently edited')
+        self.assertEqual(json.loads((run / 'native.json').read_text()), {'[hello %0]': 'Hei %0'})
+        # Target differences must never reuse a response from another translation request.
+        DRAFT.translate(self.plan, self.output, self.client, 'no', 10000)
+        self.assertEqual(len(self.client.calls), 2)
+
+    def test_budget_is_checked_before_network_and_counts_uncertain_attempts(self):
+        with self.assertRaisesRegex(ValueError, 'budget exhausted'):
+            DRAFT.translate(self.plan, self.output, self.client, 'nb', 1)
+        self.assertEqual(self.client.calls, [])
+        size = sum(len(DRAFT.protect(text)) for text in self.plan['chunks'][0])
+        self.client.call = lambda *_: (_ for _ in ()).throw(HTTPError('url', 503, 'busy', {}, None))
+        with patch.object(DRAFT.time, 'sleep'):
+            with self.assertRaisesRegex(ValueError, 'budget exhausted'):
+                DRAFT.translate(self.plan, self.output, self.client, 'nb', size)
+        attempts = list((self.output / 'google/nb/attempts').glob('*.json'))
+        self.assertEqual(len(attempts), 1)
+        self.assertEqual(json.loads(attempts[0].read_text())['characters'], size)
+
+    def test_damaged_output_is_retained_but_never_emitted_as_a_catalog(self):
+        self.client.call = lambda *_: {'translations': [{'translatedText': 'Hei'}, {'translatedText': 'Hei'}]}
+        with self.assertRaisesRegex(ValueError, 'protected tokens'):
+            DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+        self.assertEqual(len(list((self.output / 'google/nb/responses').glob('*.json'))), 1)
+        self.assertFalse((self.output / 'google/nb/runs').exists())
+
+    def test_invalid_cache_requires_explicit_retry_and_preserves_rejected_output(self):
+        self.client.call = lambda *_: {'translations': [{'translatedText': 'Hei'}, {'translatedText': 'Hei'}]}
+        with self.assertRaises(ValueError):
+            DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+        replacement = FakeClient()
+        with self.assertRaisesRegex(ValueError, 'retry-invalid-responses'):
+            DRAFT.translate(self.plan, self.output, replacement, 'nb', 10000)
+        self.assertEqual(replacement.calls, [])
+        DRAFT.translate(self.plan, self.output, replacement, 'nb', 10000, retry_invalid=True)
+        self.assertEqual(len(replacement.calls), 1)
+        self.assertEqual(len(list((self.output / 'google/nb/rejected').glob('*.json'))), 1)
+        self.assertEqual(len(list((self.output / 'google/nb/attempts').glob('*.json'))), 2)
+
+    def test_auth_token_is_cached_and_refreshed_once_on_unauthorized(self):
+        client = DRAFT.GoogleClient('test-project')
+        responses = [io.StringIO('{}'), HTTPError('url', 401, 'expired', {}, io.BytesIO()),
+                     io.StringIO('{}'), io.StringIO('{}')]
+        with patch.object(DRAFT.subprocess, 'check_output', side_effect=['token-a', 'token-b']) as auth:
+            with patch.object(DRAFT, 'urlopen', side_effect=responses) as network:
+                client.call('translateText', {})
+                client.call('translateText', {})
+                client.call('translateText', {})
+        self.assertEqual(auth.call_count, 2)
+        self.assertEqual(network.call_count, 4)
+
+    def test_provider_bokmal_code_prefers_nb_and_falls_back_to_no(self):
+        client = DRAFT.GoogleClient('test-project')
+        with patch.object(client, 'request', return_value={'languages': [
+                {'languageCode': 'no', 'supportTarget': True}]}):
+            self.assertEqual(client.target('nb'), 'no')
+        with patch.object(client, 'request', return_value={'languages': [
+                {'languageCode': 'no', 'supportTarget': True},
+                {'languageCode': 'nb', 'supportTarget': True}]}):
+            self.assertEqual(client.target('nb'), 'nb')
+
+    def test_plural_forms_and_deduplication_keep_key_mapping(self):
+        DRAFT.PROGRAM.write_json(self.output / 'manifest.json', {
+            'locales': ['nb'], 'source_sha256': 'frozen',
+            'batches': [{'id': 'online-001', 'path': 'batches/online-001.json'}]})
+        DRAFT.PROGRAM.write_json(self.output / 'batches/online-001.json', {
+            'source_sha256': 'frozen', 'surface': 'online', 'entries': [
+                {'key': '{count} item', 'source': {'one': '{count} item', 'other': '{count} items'}},
+                {'key': 'same source', 'source': '{count} item'}]})
+        plan = DRAFT.make_plan(self.output, 'nb')
+        self.assertEqual(len(plan['entries']), 3)
+        self.assertEqual(sum(map(len, plan['chunks'])), 2)
+        with self.assertRaisesRegex(ValueError, 'Unknown batch'):
+            DRAFT.make_plan(self.output, 'nb', ['missing'])
+
+
+
+class GoogleMergedApiTest(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.output = Path(self.temporary.name)
+        self.client = FakeClient()
+        self.plan = {'locale': 'nb', 'source_sha256': 'frozen',
+                     'chunks': [['Hello']], 'entries': [
+                         {'surface': 'native', 'key': '[hello]', 'variant': '', 'source': 'Hello'}]}
+
+    def test_plan_and_blank_fill_share_existing_campaign_usd_ceiling(self):
+        budget = DRAFT.Budget(self.output / 'google-budget.json', self.client.project, '0.0001')
+        DRAFT.fetch(self.client.project, {'contents': ['abcd']}, self.output / 'google-responses',
+                    budget, lambda *_: {'translations': [{'translatedText': 'old'}]})
+        with self.assertRaisesRegex(ValueError, 'exceed'):
+            DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000, ceiling='0.0001')
+        self.assertEqual(self.client.calls, [])
+        ledger = json.loads(budget.path.read_text(encoding='utf-8'))
+        self.assertEqual(sum(a['characters'] for a in ledger['attempts']), 4)
+
+    def test_existing_upstream_paid_cache_and_attempts_adopt_once_without_network(self):
+        payload = {'sourceLanguageCode': 'en', 'targetLanguageCode': 'nb',
+                   'mimeType': 'text/html', 'contents': ['Hello']}
+        folder = self.output / 'google/nb'
+        key = DRAFT.cache_key(payload, self.client.project, self.client.location)
+        DRAFT.atomic_json(folder / 'attempts/old.json', {
+            'request_sha256': key, 'characters': 5, 'project': self.client.project,
+            'location': self.client.location, 'attempt': 1})
+        cached = folder / 'responses' / (key + '.json')
+        DRAFT.atomic_json(cached, {'request': payload, 'project': self.client.project,
+            'location': self.client.location, 'response': {'translations': [{'translatedText': 'Hei'}]}})
+        previous = cached.read_bytes()
+        for _ in range(2):
+            DRAFT.translate(self.plan, self.output, self.client, 'nb', 1)
+        self.assertEqual(self.client.calls, [])
+        self.assertEqual(cached.read_bytes(), previous)
+        ledger = json.loads((self.output / 'google-budget.json').read_text(encoding='utf-8'))
+        self.assertEqual(len(ledger['attempts']), 1)
+        self.assertEqual(ledger['attempts'][0]['characters'], 5)
+
+    def test_shared_kit_lock_blocks_both_apis_before_dispatch_or_catalog_reads(self):
+        with DRAFT.kit_lock(self.output):
+            with self.assertRaises(OSError):
+                DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+            with self.assertRaises(OSError):
+                DRAFT.run(self.output, 'mr', self.client.project, execute=True)
+        self.assertEqual(self.client.calls, [])
+        self.assertFalse((self.output / 'google-budget.json').exists())
+
+    def test_html_physical_control_contract_fails_before_paid_dispatch(self):
+        for source in ('Hello\nworld', 'Hello\rworld', 'Hello\tworld'):
+            with self.subTest(source=source):
+                with self.assertRaisesRegex(ValueError, 'blank-fill'):
+                    DRAFT.protect(source)
+                with self.assertRaisesRegex(ValueError, 'blank-fill'):
+                    DRAFT.restore(source, 'Hei world')
+                plan = dict(self.plan, chunks=[[source]])
+                with self.assertRaisesRegex(ValueError, 'blank-fill'):
+                    DRAFT.translate(plan, self.output, self.client, 'nb', 10000)
+        self.assertEqual(self.client.calls, [])
+        self.assertFalse((self.output / 'google-budget.json').exists())
+
+    def test_stale_low_level_budget_instances_cannot_overspend_shared_ledger(self):
+        path = self.output / 'google-budget.json'
+        first = DRAFT.Budget(path, self.client.project, '0.0001')
+        stale = DRAFT.Budget(path, self.client.project, '0.0001')
+        DRAFT.fetch(self.client.project, {'contents': ['hello']}, self.output / 'cache', first,
+                    lambda *_: {'translations': [{'translatedText': 'Hei'}]})
+        calls = []
+        with self.assertRaisesRegex(ValueError, 'exceed'):
+            DRAFT.fetch(self.client.project, {'contents': ['again']}, self.output / 'cache', stale,
+                        lambda *args: calls.append(args))
+        self.assertEqual(calls, [])
+        self.assertEqual(len(json.loads(path.read_text(encoding='utf-8'))['attempts']), 1)
+
+    def test_plan_directory_fsync_failure_prevents_network(self):
+        with patch.object(DRAFT, 'fsync_directory', side_effect=OSError('no durable directory')):
+            with self.assertRaisesRegex(OSError, 'no durable directory'):
+                DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+        self.assertEqual(self.client.calls, [])
+
+    def test_auth_retry_reserves_before_each_post_and_obeys_cap(self):
+        client = DRAFT.GoogleClient('test-project')
+        with patch.object(DRAFT.subprocess, 'check_output', return_value='not-a-real-token'):
+            with patch.object(DRAFT, 'urlopen', side_effect=HTTPError('url', 401, 'expired', {}, io.BytesIO())) as network:
+                with self.assertRaisesRegex(ValueError, 'budget exhausted'):
+                    DRAFT.translate(self.plan, self.output, client, 'nb', 5)
+        self.assertEqual(network.call_count, 1)
+        ledger = json.loads((self.output / 'google-budget.json').read_text(encoding='utf-8'))
+        self.assertEqual(len(ledger['attempts']), 1)
+        self.assertEqual(ledger['attempts'][0]['state'], 'dispatched_or_uncertain')
+
+    def test_new_plan_cache_hash_detects_mutation_without_dispatch(self):
+        DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+        cached = next((self.output / 'google/nb/responses').glob('*.json'))
+        record = json.loads(cached.read_text(encoding='utf-8'))
+        record['response']['translations'][0]['translatedText'] = 'tampered but token-valid'
+        DRAFT.atomic_json(cached, record)
+        with self.assertRaisesRegex(ValueError, 'Corrupt'):
+            DRAFT.translate(self.plan, self.output, self.client, 'nb', 10000)
+        self.assertEqual(len(self.client.calls), 1)
 
 
 if __name__ == '__main__':
