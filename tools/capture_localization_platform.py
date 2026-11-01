@@ -69,8 +69,10 @@ def main():
              '[inn explanation]','[swarm explanation]','[swarm]','[Width]','[Height]','[River width]',
              '[Sound or silence?]','[Sound]','[settings Resolution]','[settings High-resolution artwork]',
              '[settings High resolution]','[settings Missing font]','[play online]','[quit]']
-    samples += ['[stats topic overview]', '[stats topic economy]', '[stats topic world]', '[stats work construction]', '[stats defence]', '[stats history]', '[stats waiting]', '[stats unit details]', '[stats map overlays]', '[stats topic]', '[stats full history]', '[stats missing readings]', '[stat win probability]', '[stat win probability about]', '[script compile success]', '[script error at %0:%1: %2]', '[script compile failure %0:%1:(%2):%3]', '[script load failed %0]', '[script save failed %0]', '[script cursor %0 %1]']
+    samples += ['[stats topic overview]', '[stats topic economy]', '[stats topic world]', '[stats work construction]', '[stats defence]', '[stats history]', '[stats waiting]', '[stats unit details]', '[stats map overlays]', '[stats topic]', '[stats full history]', '[stats missing readings]', '[stat win probability]', '[stat win probability about]', '[script compilation success]', '[script error at %0:%1: %2]', '[script compilation failure %0:%1:(%2):%3]', '[script loading failed %0]', '[script saving failed %0]', '[script line %0 column %1]']
     samples += ['[lush_grass]', '[dry_grass]', '[dune_sand]', '[pale_sand]']
+    # Current integration messages need real shaping/wrapping evidence too.
+    samples += ['[script compilation failed %0]', '[game stopped %0]', '[game stopped script help]', '[missing map generator %0]', '[hive standing order paused]', '[hive connection changed orders paused]', '[hive standing order fresh instruction]', '[hive order confirmation failed]', '[hive previous order sending]', '[hive order received %0]', '[hive order not confirmed]', '[hive standing order update failed]']
     web_samples=['Saving your project…','Generation is unavailable.','Wait for the current request to finish.',
                  'Generation is unavailable. Saved projects remain accessible.',
                  'Generation is unavailable. Saved music remains accessible.',
@@ -79,7 +81,7 @@ def main():
                  'Choose a valid request cap.',' · comparing','The last build did not complete.',
                  'Project title','Current saved draft','New map','Request cap']
     web_samples+=sorted(k for k in online if k.startswith('Discussion spends no credits; 1 available ') and 'Creation requests build automatically' in k)
-    if len(samples)!=64 or len(web_samples)!=20:raise ValueError('Update the explicitly bounded representative sample inventory')
+    if len(samples)!=76 or len(web_samples)!=20:raise ValueError('Update the explicitly bounded representative sample inventory')
     for folder,values,web in [(full,native,online),(matrix,{k:native[k] for k in samples},{k:online[k] for k in web_samples})]:
         folder.mkdir();(folder/'native.json').write_text(json.dumps(values,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
         (folder/'online.json').write_text(json.dumps(web,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
@@ -87,7 +89,7 @@ def main():
     report={'platform':platform.platform(),'machine':platform.machine(),'executable_sha256':sha(binary),
             'revision':revision,'kind':'registered-catalog-input-snapshot','committed_source_file_sha256':committed_hashes,'checkout_source_file_sha256':checkout_hashes,
             'catalogs':metadata,'native_keys':len(native),'online_keys':len(online),'commands':[],'passed':False,
-            'scope':'Native-platform production font/shaping/layout via SDL dummy driver and software renderer. Matrix covers10/13/20 pixels at1x/2x. No GPU, physical monitor, mobile OS or complete catalog visual-coverage claim.',
+            'scope':'Native-platform production font/shaping/layout via SDL dummy driver and software renderer. Matrix covers10/13/20 pixels at1x/1.5x/2x. No GPU, physical monitor, mobile OS or complete catalog visual-coverage claim.',
             'visual_review_required':True,'dynamic_libraries':{p.name:sha(p) for p in binary.parent.glob('*.dll')}}
     # The harness reads pilot.parent.parent/manifest.json; preserve the actual
     # committed registered-source revision there before any native capture.
