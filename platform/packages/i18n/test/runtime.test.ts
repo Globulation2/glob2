@@ -196,10 +196,8 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 40 unique game catalog mappings including Thai, Bengali and Malay', () => {
-    expect(locales).toHaveLength(40);
-  it('contains 41 unique game catalog mappings including Tamil, Bengali, Malay and Marathi', () => {
-    expect(locales).toHaveLength(41);
+  it('contains 42 unique game catalog mappings including Thai, Tamil, Bengali, Malay and Marathi', () => {
+    expect(locales).toHaveLength(42);
     expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
     expect(locales).toContainEqual({ code: 'bn', gameCode: 'bn', name: 'বাংলা', dir: 'ltr' });
     expect(locales).toContainEqual({
