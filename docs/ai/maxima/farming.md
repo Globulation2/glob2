@@ -20,8 +20,12 @@
 The runtime policy follows a plan/reconcile pipeline rather than incrementally
 editing shared masks:
 
-1. `build_farming_protection_plan` classifies wheat roles, then allocates the
-   renewable wood capacity reserve. Building reservations retain priority.
+1. `build_wheat_protection_plan` owns the wheat layout and management-radius
+   rules. `build_farming_protection_plan` allocates wood against that wheat plan
+   and composes the final masks. Building reservations retain priority. Placement
+   and clearing use the same read-only reserve query. Each query shares validated
+   terrain inputs across both phases; a cold query rebuilds them locally once
+   without changing area ownership or adding serialized state.
 2. `resolve_wheat_invasion_clearing` gives wood beside the final protected wheat
    mask the same hard clearing priority used by maintenance. It uses this pass's
    wheat mask, so new and revoked obligations do not depend on stale maintenance.
@@ -193,8 +197,9 @@ spread rate and material yield. Stock quantities and passing units do not change
 it. Wheat contributes through harvestable, compatible neighboring outlets of
 protected live wheat. Shared wheat outlets count once, using the strongest
 neighboring donor. Each reserved wood seed guarantees one distinct harvest
-outlet; its capacity uses the same units. Assigning an outlet to wood removes
-any wheat capacity previously counted there. Telemetry retains the common
+outlet; its capacity uses the same units. Live protected wheat donors are never
+used as wood outlets. Assigning another outlet to wood removes any wheat capacity
+previously counted there. Telemetry retains the common
 eight-direction denominator on both sides of the ratio.
 
 Selection stops when the wood target is reached or no viable pairs remain.
@@ -245,8 +250,10 @@ minimum_wood_fertility = 15% + round(10% * wood_clear_pressure / 100)
 ```
 
 The historical cutoff ranges from 15% through 25%, with neutral pressure
-producing 20%. It remains in strategy/save compatibility and telemetry, but
-wood protection now follows the capacity quota. Wood pressure still controls
+producing 20%. The two fertility parameters remain accepted for strategy/save
+compatibility and diagnostics; the schema groups them under `compatibility`,
+with low impact, rather than advertising active wood-protection controls.
+Wood protection now follows the capacity quota. Wood pressure still controls
 discretionary clearing. Remote forests are not actively cleared merely because
 they fall outside the reserve.
 Buildings do not suppress nearby farm protection; only exact planner footprints,

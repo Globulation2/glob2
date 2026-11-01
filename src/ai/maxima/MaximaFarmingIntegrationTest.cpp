@@ -440,15 +440,28 @@ void woodReserveTracksWheatCapacity(int woodSpreadRate)
     // diagonal frontier cells are protected. 100 wheat outlets need 12 equal
     // wood outlets, or four outlets producing wood three times as fast.
     REQUIRE(reserve.seeds==(woodSpreadRate==65536?12:4));
-    REQUIRE(reserve.targetCapacity==(reserve.wheatCapacity+8)/9);
-    REQUIRE(reserve.capacity>=reserve.targetCapacity);
-    const auto onePair=bootstrap.capacity;
-    REQUIRE(reserve.capacity-reserve.targetCapacity<onePair);
-    REQUIRE(Uint64(reserve.seeds)==(reserve.targetCapacity+onePair-1)/onePair);
+    REQUIRE(reserve.targetWoodCapacity==(reserve.wheatCapacity+8)/9);
+    REQUIRE(reserve.woodCapacity>=reserve.targetWoodCapacity);
+    const auto onePair=bootstrap.woodCapacity;
+    REQUIRE(reserve.woodCapacity-reserve.targetWoodCapacity<onePair);
+    REQUIRE(Uint64(reserve.seeds)==(reserve.targetWoodCapacity+onePair-1)/onePair);
     // All wood protection belongs to the quota, not an uncapped forest pattern.
     for(int i=0;i<64*64;++i)
         if(map.materialAmountAt(i,MaterialId::Wood))
             REQUIRE(bool(ai.farm_protection_mask[i])==(reserve.cells[i]==1));
+    // A cold read-only query rebuilds local terrain inputs without reclaiming
+    // area masks or emitting orders. Placement can take this path after load.
+    const auto ownedAreas=ai.applied_farm_protection_mask;
+    const auto wheatAreas=ai.wheat_farm_protection_mask;
+    const auto ordersBefore=ai.context.managementOrders.size();
+    ai.fertility_cache=AIMaxima::Farming::ExactFertilityCache();
+    ai.farming_shoreline_mask.clear();
+    REQUIRE(ai.select_wood_reserve(ai.context).cells==reserve.cells);
+    REQUIRE(ai.applied_farm_protection_mask==ownedAreas);
+    REQUIRE(ai.wheat_farm_protection_mask==wheatAreas);
+    REQUIRE(ai.context.managementOrders.size()==ordersBefore);
+    REQUIRE(ai.farming_shoreline_mask.empty());
+    REQUIRE(!ai.fertility_cache.validFor(64,64));
     // Harvest amounts and filling an outlet do not move the protected donors.
     for(int y=5;y<=21;y+=4)for(int x=5;x<=21;x+=4)
         map.setResourceAmount(map.coordToIndex(x,y),5);
@@ -469,7 +482,7 @@ void woodReserveTracksWheatCapacity(int woodSpreadRate)
         if(i!=lastSeed && map.materialAmountAt(i,MaterialId::Wood)) map.setNoResource(i%64,i/64,0);
     auto scarce=ai.select_wood_reserve(ai.context);
     REQUIRE(scarce.seeds==1);
-    REQUIRE(scarce.capacity<scarce.targetCapacity);
+    REQUIRE(scarce.woodCapacity<scarce.targetWoodCapacity);
     f.game.gameHeader.setResourceGrowthDisabled(true);
     REQUIRE(ai.select_wood_reserve(ai.context).seeds==0);
     f.game.gameHeader.setResourceGrowthDisabled(false);
@@ -478,6 +491,30 @@ void woodReserveTracksWheatCapacity(int woodSpreadRate)
         map.setNoResource(x,y,0);
     ai.update_farming(ai.context);applyAreaContracts(f);
     REQUIRE(ai.select_wood_reserve(ai.context).seeds==1);
+}
+
+void woodReservePreservesLiveWheatDonors()
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;auto& ai=*f.ai;auto& map=f.game.map;
+    for(int i=0;i<64*64;++i) map.setResourcesGrow(i%64,i/64,0);
+    for(int y=0;y<64;++y)for(int x=0;x<12;++x) map.paintCell(x,y,WATER);
+    const int wheat=19*64+20,wood=20*64+20,outlet=21*64+20;
+    setYoungResource(map,20,19,WHEAT); // off-lattice live wheat bootstrap
+    setYoungResource(map,20,20,WOOD);
+    for(int i:{wheat,18*64+21,outlet}) map.setResourcesGrow(i%64,i/64,1);
+    REQUIRE(f.game.addUnit(23,20,0,WORKER,0,0,0,0));
+    configurePattern(f);ai.budget.farming_management_radius=0;
+    for(int cycle=0;cycle<3;++cycle)
+    {
+        ai.update_farming(ai.context);applyAreaContracts(f);
+        const auto reserve=ai.select_wood_reserve(ai.context);
+        REQUIRE(ai.wheat_farm_protection_mask[wheat]);
+        REQUIRE(reserve.cells[wheat]==0);
+        REQUIRE(reserve.cells[wood]==1);
+        REQUIRE(reserve.cells[outlet]==2);
+        REQUIRE(reserve.wheatCapacity>0);
+    }
 }
 
 void woodReserveSurvivesOwnFarmProtection()
@@ -816,6 +853,7 @@ TEST_SUITE("Maxima.FarmingIntegration")
 
 TEST_SUITE("Maxima.FarmingIntegration")
 {
+    TEST_CASE("wood reserve preserves live wheat donors") { woodReservePreservesLiveWheatDonors(); }
     TEST_CASE("wood reserve tracks ten percent of renewable capacity")
     {
         for(int woodSpreadRate:{65536,196608})

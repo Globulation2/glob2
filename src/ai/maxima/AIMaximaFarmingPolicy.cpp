@@ -149,6 +149,12 @@ namespace
                 ? Uint64(yield.initial!=0) : yield.initial);
     }
 
+    Uint64 wood_capacity_target(Uint64 wheatCapacity)
+    {
+        // Wood/(wheat+wood)=10%, hence wood=wheat/9. Avoid overflow when rounding.
+        return wheatCapacity/9+(wheatCapacity%9!=0);
+    }
+
 	bool is_empty_growth_cell(const AIEngine::AIWorldView* map, std::size_t index)
 	{
 		const auto resource=map->resourceAt(index);
@@ -166,8 +172,8 @@ namespace
         });
 	}
 
-	///Semantic roles a single resource tile can play in the shared wheat/wood
-	///layout. Classification is descriptive; policy priority is applied later.
+	///Semantic roles in the wheat layout. Wood allocation is a separate phase;
+	///classification here does not create wood protection.
 	struct FarmTileClassification
 	{
 		bool frontier;
@@ -185,11 +191,12 @@ namespace
 		}
 	};
 
-	FarmTileClassification classify_farm_tile(MapInfo& mi, const AIEngine::AIWorldView* map,
+	FarmTileClassification classify_wheat_tile(const AIEngine::AIWorldView* map,
 		const Farming::ExactFertilityCache& fertility_cache,
 		const std::vector<Uint8>& wheat_exterior, const std::vector<Uint8>& seedEligibility,
-		bool shoreline_backed, int x, int y, int resource_type, Uint32 minimum_fertility)
+		bool shoreline_backed, int x, int y, Uint32 minimum_fertility)
 	{
+		constexpr int resource_type=materialIndex(MaterialId::Food);
 		FarmTileClassification pattern;
 		const int w=(*map).width;
 		const int h=(*map).height;
@@ -203,7 +210,7 @@ namespace
 		// reserve unrelated empty coast. Keep the exemption after growth too:
 		// protecting an empty tile then exposing its new wheat would defeat it.
 		const bool fertile=fertility>=minimum_fertility
-			|| (resource_type==materialIndex(MaterialId::Food) && shoreline_backed);
+			|| shoreline_backed;
 		if(is_empty_growth_cell(*map,x,y))
 		{
 			bool adjacent_resource=false;
@@ -218,7 +225,7 @@ namespace
 			// Protection follows the expansion lattice only. A shoreline run
 			// must stay porous by construction; it is never a sealed contour.
 			pattern.frontier=adjacent_resource && expansion_lattice
-				&& (resource_type!=materialIndex(MaterialId::Food) || wheat_exterior[index] || seed_lattice);
+				&& (wheat_exterior[index] || seed_lattice);
 		}
 		if(resource && (fertile || !uses_land_fertility(*map,x,y)))
 		{
@@ -226,11 +233,9 @@ namespace
 				for(int dx=-1; dx<=1; ++dx)
 				{
 					if(!dx && !dy) continue;
-					const auto neighborIndex=map->tileIndex(x+dx, y+dy);
 					const bool eligible=can_seed_target(seedEligibility,*map,x,y,x+dx,y+dy,resource_type)
 						&& (fertility_cache.at(x+dx,y+dy)>=minimum_fertility || !uses_land_fertility(*map,x,y))
-						&& (resource_type!=materialIndex(MaterialId::Food)
-							|| wheat_exterior[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)]);
+						&& wheat_exterior[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)];
 					pattern.edge_candidate=pattern.edge_candidate || eligible;
 				}
 			pattern.edge=pattern.edge_candidate && expansion_lattice;
@@ -255,6 +260,41 @@ namespace
 		return pattern;
 	}
 }
+
+// Inputs live for one read-only planning query. Borrow validated terrain caches,
+// or own one cold rebuild after load, without resetting area-ownership masks.
+struct Maxima::FarmTerrainInputs
+{
+    Farming::ExactFertilityCache rebuiltFertility;
+    const Farming::ExactFertilityCache* fertility;
+    std::vector<Uint8> rebuiltShoreline;
+    const std::vector<Uint8>* shoreline;
+
+    FarmTerrainInputs(const FarmTerrainInputs&)=delete;
+    FarmTerrainInputs& operator=(const FarmTerrainInputs&)=delete;
+
+    FarmTerrainInputs(const AIEngine::AIWorldView& map,
+        const Farming::ExactFertilityCache& cachedFertility,
+        const std::vector<Uint8>& cachedShoreline):
+        fertility(&cachedFertility), shoreline(&cachedShoreline)
+    {
+        const int w=map.width,h=map.height;
+        const bool cached=cachedFertility.validFor(w,h,map.terrainRevision);
+        if(!cached)
+        {
+            rebuiltFertility.assign(map.growth->landField(),map.terrainRevision);
+            fertility=&rebuiltFertility;
+        }
+        if(!cached || cachedShoreline.size()!=size_t(w*h))
+        {
+            const auto backing=shoreline_backing(&map);
+            rebuiltShoreline.resize(w*h);
+            for(int y=0;y<h;++y)for(int x=0;x<w;++x)
+                rebuiltShoreline[y*w+x]=touches_shoreline_backing(backing,w,h,x,y);
+            shoreline=&rebuiltShoreline;
+        }
+    }
+};
 
 ///Complete desired output of one farming-policy evaluation. Nothing in the
 ///classification stage mutates map areas; only apply_farming_protection does.
@@ -1038,36 +1078,32 @@ bool Maxima::has_hard_farming_contract(int index) const
 		|| development_planner.isCirculationReserved(index);
 }
 
-Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime,
-    const std::vector<Uint8>* seedEligibility, const std::vector<Uint8>* protectedWheat) const
+Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime) const
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
-	const AIEngine::AIWorldView* map=&runtime.observation();
-	const int w=(*map).width, h=(*map).height;
-	WoodReserve reserve(w*h);
-	// No regrowth: protecting seed cells would permanently withhold finite wheat.
-	if(runtime.observation().configuration->isResourceGrowthDisabled()
-		|| !budget.farming_enabled || !budget.farming_protection_enabled) return reserve;
-    // Every caller (placement, campaigns and maintenance included) derives the
-    // same wheat plan, without depending on the previous applied-area mask.
-    Farming::ExactFertilityCache rebuilt;
-    const auto* fertility=&fertility_cache;
-    if(!fertility_cache.validFor(w,h,map->terrainRevision))
-    {
-        rebuilt.assign(map->growth->landField(),map->terrainRevision);
-        fertility=&rebuilt;
-    }
-    std::vector<Uint8> wheat;
-    if(!protectedWheat)
-    {
-        wheat=build_farming_protection_plan(runtime,false).protected_wheat;
-        protectedWheat=&wheat;
-    }
+    const auto& map=runtime.observation();
+    if(map.configuration->isResourceGrowthDisabled()
+        || !budget.farming_enabled || !budget.farming_protection_enabled)
+        return WoodReserve(map.width*map.height);
+    const FarmTerrainInputs terrain(map,fertility_cache,farming_shoreline_mask);
+    const auto wheat=build_wheat_protection_plan(runtime,terrain);
+    return select_wood_reserve(runtime,wheat.protected_wheat,terrain);
+}
+
+Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime,
+    const std::vector<Uint8>& protectedWheat, const FarmTerrainInputs& terrain) const
+{
+    const AIEngine::AIWorldView* map=&runtime.observation();
+    const int w=map->width,h=map->height;
+    WoodReserve reserve(w*h);
+    const auto* fertility=terrain.fertility;
+    // Derive capacity from this query's wheat plan. Area ownership and worker
+    // reachability still distinguish our previous protection from external bans.
     const auto reachable=worker_reachable_circulation(runtime,true);
     // Count each harvest outlet once even when several protected wheat donors
     // can replenish it. Full stacks can be harvested again; stock is not land.
     std::vector<Uint64> wheatOutlets(w*h,0);
-    for(int seed=0;seed<w*h;++seed) if((*protectedWheat)[seed])
+    for(int seed=0;seed<w*h;++seed) if(protectedWheat[seed])
     {
         if(!AIEngine::ObservationQueries::discovered(*map,seed%w,seed/w,runtime.observedTeam().mask)) continue;
         const Uint64 capacity=renewable_outlet_capacity(*map,seed,MaterialId::Food);
@@ -1077,7 +1113,7 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime,
             const int next=map->tileIndex(seed%w+dx,seed/w+dy);
             const auto type=map->resourceAt(seed).resource.type;
             const auto targetType=map->resourceAt(next).resource.type;
-            if(!reachable[next] || (*protectedWheat)[next] || has_hard_farming_contract(next)
+            if(!reachable[next] || protectedWheat[next] || has_hard_farming_contract(next)
                || map->occupancyAt(next).building!=NOGBID
                || !MapState::resourcesMayGrow(map->state(),next)
                || !MapState::terrainSupportsResourceSlot(map->state(),next,type)
@@ -1088,9 +1124,8 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime,
         }
     }
     for(Uint64 capacity:wheatOutlets) reserve.wheatCapacity+=capacity;
-    // Wood/(wheat+wood)=10%, hence wood=wheat/9. Round the target up;
-    // selection itself rounds to whole viable seed/outlet pairs.
-    reserve.targetCapacity=reserve.wheatCapacity/9+(reserve.wheatCapacity%9!=0);
+    // Round selection to whole viable seed/outlet pairs.
+    reserve.targetWoodCapacity=wood_capacity_target(reserve.wheatCapacity);
 	const auto managed=farm_management_area(runtime,budget.farming_management_radius);
 	auto eligible=[&](int i,bool donor=false)
 	{
@@ -1109,7 +1144,7 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime,
 	std::vector<int> candidates;
 	for(int i=0;i<w*h;++i)
 		if(eligible(i,true) && MapState::hasMaterial(map->state(),map->tileIndex(powerOfTwoRemainder(i, w),i/w),MaterialId::Wood)
-		   && (seedEligibility ? ((*seedEligibility)[i]&2)!=0 : is_spreading_seed(*map,powerOfTwoRemainder(i, w),i/w,materialIndex(MaterialId::Wood)))
+		   && is_spreading_seed(*map,powerOfTwoRemainder(i, w),i/w,materialIndex(MaterialId::Wood))
 		   && !externally_forbidden(i) && (fertility->at(powerOfTwoRemainder(i, w),i/w)>0 || !uses_land_fertility(*map,powerOfTwoRemainder(i, w),i/w)))
 			candidates.push_back(i);
 	// Fixed terrain scores avoid moving the reserve on every harvest or refill.
@@ -1122,7 +1157,7 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime,
 	});
 	for(int seed:candidates)
 	{
-		if(reserve.seeds && reserve.capacity>=reserve.targetCapacity) break;
+		if(reserve.seeds && reserve.woodCapacity>=reserve.targetWoodCapacity) break;
 		if(reserve.cells[seed]) continue;
         const Uint64 capacity=renewable_outlet_capacity(*map,seed,MaterialId::Wood);
         if(!capacity) continue;
@@ -1140,6 +1175,9 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime,
 			const int x=(*map).normalizeX(powerOfTwoRemainder(seed, w)+dx),y=(*map).normalizeY(seed/w+dy),i=y*w+x;
 			// Keep harvest outlets off the seed lattice. This also prevents
 			// an outlet growing wood from displacing its own aligned donor.
+            // A live wheat donor also supplies neighboring harvest outlets.
+            // Preserve it rather than dropping its output from the wheat plan.
+            if(protectedWheat[i] && MapState::hasMaterial(map->state(),size_t(i),MaterialId::Food)) continue;
 			if(Farming::isExpansionCell(x,y) || reserve.cells[i]
 			   || !eligible(i) || externally_forbidden(i)
                    || !MapState::terrainSupportsResource(map->state(),size_t(i),static_cast<ResourceId>(map->resourceAt(size_t(seed)).resource.type))) continue;
@@ -1156,11 +1194,11 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime,
 		reserve.cells[seed]=1;
 		reserve.cells[outlet]=2;
 		++reserve.seeds;
-        reserve.capacity+=capacity;
+        reserve.woodCapacity+=capacity;
         // A harvest outlet assigned to wood cannot also fund the wheat side.
         reserve.wheatCapacity-=wheatOutlets[seed]+wheatOutlets[outlet];
         wheatOutlets[seed]=wheatOutlets[outlet]=0;
-        reserve.targetCapacity=reserve.wheatCapacity/9+(reserve.wheatCapacity%9!=0);
+        reserve.targetWoodCapacity=wood_capacity_target(reserve.wheatCapacity);
 	}
 	return reserve;
 }
@@ -1187,36 +1225,16 @@ bool Maxima::wheat_invasion_clearing_required(Context& runtime, int index,
     return false;
 }
 
-Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtime, bool reserveWood) const
+Maxima::FarmProtectionPlan Maxima::build_wheat_protection_plan(Context& runtime,
+    const FarmTerrainInputs& terrain) const
 {
-    auto ownerObservation=runtime.scopeOwnerObservation();
-	const AIEngine::AIWorldView* map=&runtime.observation();
-	MapInfo map_info(runtime);
-	const int w=(*map).width;
-	const int h=(*map).height;
-    // Placement may query before farming initialization after loading. Rebuild
-    // terrain-only inputs locally so a read-only query never resets area state.
-    Farming::ExactFertilityCache rebuilt;
-    const bool cached=fertility_cache.validFor(w,h,map->terrainRevision);
-    const auto* fertility=&fertility_cache;
-    if(!cached)
-    {
-        rebuilt.assign(map->growth->landField(),map->terrainRevision);
-        fertility=&rebuilt;
-    }
-    std::vector<Uint8> rebuiltShoreline;
-    const auto* shoreline=&farming_shoreline_mask;
-    if(!cached || shoreline->size()!=size_t(w*h))
-    {
-        const auto backing=shoreline_backing(map);
-        rebuiltShoreline.resize(w*h);
-        for(int y=0;y<h;++y) for(int x=0;x<w;++x)
-            rebuiltShoreline[y*w+x]=touches_shoreline_backing(backing,w,h,x,y);
-        shoreline=&rebuiltShoreline;
-    }
+    const AIEngine::AIWorldView* map=&runtime.observation();
+    const int w=map->width,h=map->height;
+    const auto* fertility=terrain.fertility;
+    const auto* shoreline=terrain.shoreline;
 	FarmProtectionPlan plan(w*h);
 	// The plan is read-only with respect to deposits and ecology. Snapshot the
-    // two relevant eligibility bits once, rather than querying growth for every
+    // wheat eligibility once, rather than querying growth for every
     // neighboring classifier and component edge. This cache never survives a plan.
     std::vector<Uint8> seedEligibility(w*h,0);
     for(int index=0;index<w*h;++index)
@@ -1227,15 +1245,11 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
         if(!properties.spreadRate) continue;
         if((properties.materialMask&materialBit(MaterialId::Food))
             && is_spreading_seed(*map,powerOfTwoRemainder(index, w),index/w,materialIndex(MaterialId::Food))) seedEligibility[index]|=1;
-        if((properties.materialMask&materialBit(MaterialId::Wood))
-            && is_spreading_seed(*map,powerOfTwoRemainder(index, w),index/w,materialIndex(MaterialId::Wood))) seedEligibility[index]|=2;
     }
-	plan.wood_pressure=budget.farming_wood_pressure;
-	plan.wood_fertility=budget.farming_minimum_wood_fertility;
 
 	const std::vector<Uint8> wheat_exterior=wheat_farm_exterior(map);
 
-	// Record which empty tiles can extend a live wheat or wood resource. This
+	// Record which empty tiles can extend a live wheat resource. This
 	// avoids running the more expensive classifier for unrelated map cells.
     const auto adjacent_resource_mask=FarmGeometry::adjacentSeeds(seedEligibility,w,h);
 
@@ -1253,8 +1267,8 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 
 			FarmTileClassification wheat_role;
             if(wheat || (empty_growth && (adjacent&1)))
-                wheat_role=classify_farm_tile(map_info,map,*fertility,wheat_exterior,seedEligibility,
-                    (*shoreline)[index]!=0,x,y,materialIndex(MaterialId::Food),
+                wheat_role=classify_wheat_tile(map,*fertility,wheat_exterior,seedEligibility,
+                    (*shoreline)[index]!=0,x,y,
                     Uint32(budget.farming_wheat_fertility_min));
 			const bool wheat_farm=wheat_role.protected_tile();
 			if(!wheat && !wheat_farm) continue;
@@ -1355,9 +1369,20 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 		}
 	}
 
-    if(reserveWood) plan.wood_reserve=select_wood_reserve(runtime,&seedEligibility,&plan.protected_wheat);
+    return plan;
+}
+
+Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtime) const
+{
+    auto ownerObservation=runtime.scopeOwnerObservation();
+    const auto& map=runtime.observation();
+    const FarmTerrainInputs terrain(map,fertility_cache,farming_shoreline_mask);
+    FarmProtectionPlan plan=build_wheat_protection_plan(runtime,terrain);
+    plan.wood_pressure=budget.farming_wood_pressure;
+    plan.wood_fertility=budget.farming_minimum_wood_fertility;
+    plan.wood_reserve=select_wood_reserve(runtime,plan.protected_wheat,terrain);
 	// The capacity allocation precedes wheat expansion and clearing campaigns.
-	for(int i=0;i<w*h;++i)if(plan.wood_reserve.cells[i])
+	for(size_t i=0;i<plan.wood_reserve.cells.size();++i)if(plan.wood_reserve.cells[i])
 	{
 		plan.forbidden[i]=plan.wood_reserve.cells[i]==1;
 		if(plan.wood_reserve.cells[i]==2) plan.protected_wheat[i]=0;
@@ -1492,8 +1517,8 @@ void Maxima::update_farming(Context& runtime)
 		emit_telemetry(runtime, "farming_policy",
 		"\tmicroseconds="+telemetryText(elapsed)
 		+"\twood_reserve_seeds="+telemetryText(plan.wood_reserve.seeds)
-        +"\twood_reserve_capacity="+telemetryText(plan.wood_reserve.capacity)
-        +"\twood_reserve_target="+telemetryText(plan.wood_reserve.targetCapacity)
+        +"\twood_reserve_capacity="+telemetryText(plan.wood_reserve.woodCapacity)
+        +"\twood_reserve_target="+telemetryText(plan.wood_reserve.targetWoodCapacity)
         +"\twheat_renewable_capacity="+telemetryText(plan.wood_reserve.wheatCapacity)
 		+"\tprotected_seeds="+telemetryText(plan.protected_seeds)
 		+"\tprotected_frontier="+telemetryText(plan.protected_frontier)
