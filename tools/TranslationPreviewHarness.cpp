@@ -727,10 +727,47 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             liveCapture("colony");
             reveal("stats/unit-details");
             liveCapture("unit-details-collapsed");
+            auto detailsGroup = [&](auto &&self, const GAGGUI::ui::Node *node) -> const GAGGUI::ui::Node * {
+                if (!node) return nullptr;
+                if (!node->children.empty() && node->children.front()->key == "stats/unit-details") return node;
+                for (const auto &child : node->children) if (const auto *found = self(self, child.get())) return found;
+                return nullptr;
+            };
+            const auto *collapsedGroup = detailsGroup(detailsGroup, panel.host().root());
+            require(collapsedGroup && collapsedGroup->children.size() == 1, "Actual unit details are collapsed");
             const auto details = panel.host().bounds("stats/unit-details");
             require(details.w > 0 && details.h > 0, "Live unit details action has bounds");
             panel.host().tapAt(details.center());
+            require(draw(), "Layout expanded unit details");
+            panel.host().scrollToTop("stats/unit-details");
+            require(draw(), "Expose expanded unit details rows");
+            const auto *expandedGroup = detailsGroup(detailsGroup, panel.host().root());
+            require(expandedGroup && expandedGroup->children.size() > 1, "Expanded unit details contain actual additional rows");
+            const auto detailsViewport = panel.host().bounds("stats/scroll/1");
+            const auto firstDetailRow = expandedGroup->children[1]->bounds;
+            require(!firstDetailRow.empty() && detailsViewport.contains(firstDetailRow), "First actual expanded detail row is fully visible");
+            const Json detailsProbe = {{"expanded_rows", expandedGroup->children.size() - 1},
+                {"first_row", {firstDetailRow.x, firstDetailRow.y, firstDetailRow.w, firstDetailRow.h}},
+                {"viewport", {detailsViewport.x, detailsViewport.y, detailsViewport.w, detailsViewport.h}},
+                {"first_row_fully_visible", true}};
             liveCapture("unit-details-expanded");
+            auto *scroll = panel.host().find("stats/scroll/1");
+            require(scroll && scroll->scrollable(), "Actual colony statistics scroll container available");
+            scroll->scrollTo(scroll->scrollMaximum(), panel.host());
+            require(draw(), "Expose actual missing-readings hint");
+            const std::string missingText = Glob2UI::tr("[stats missing readings]");
+            auto hintNode = [&](auto &&self, const GAGGUI::ui::Node *node) -> const GAGGUI::ui::Node * {
+                if (!node) return nullptr;
+                if (node->accessibleText() == missingText) return node;
+                for (const auto &child : node->children) if (const auto *found = self(self, child.get())) return found;
+                return nullptr;
+            };
+            const auto *hint = hintNode(hintNode, panel.host().root());
+            require(hint && !hint->bounds.empty() && panel.host().bounds("stats/scroll/1").contains(hint->bounds),
+                "Entire actual missing-readings hint is visible within the scroll viewport");
+            const Json hintProbe = {{"text", missingText}, {"bounds", {hint->bounds.x, hint->bounds.y, hint->bounds.w, hint->bounds.h}},
+                {"fully_visible", true}};
+            liveCapture("unit-details-bottom");
             for (const auto &[topic, name] : {
                     std::pair{InGameStatisticsPanel::Topic::Economy, "economy"},
                     std::pair{InGameStatisticsPanel::Topic::Military, "military"},
@@ -745,6 +782,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             TranslationPreviewAccess::closeLiveStatistics(gui);
             require(before == gui.game.checkSum(), "Closing live statistics must preserve simulation state");
             result["live_statistics_probe"] = {{"states", states}, {"simulation_checksum", before},
+                {"unit_details_visibility", detailsProbe}, {"missing_readings_visibility", hintProbe},
                 {"phone_opened_via_tools_keyboard_route", GAGCore::phonePresentationRequested()},
                 {"limits", "Actual production live statistics UI on the frozen published preview frame. Recorded-history availability is reported per state; no simulation or history data is fabricated."}};
         }
