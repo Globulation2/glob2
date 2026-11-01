@@ -707,7 +707,7 @@ Platform: all.
 | `--resource-growth-delay` | integer; ticks; 1..16 | Resource scheduling delay in ticks. |
 | `--ai-order-delay` | integer; ticks; 0..8 | AI order delay in ticks. |
 | `--save` | string | Snapshot: initial, final, or every:N. Repeatable. |
-| `--telemetry` | checksums, team-timeline, maxima | Additional telemetry. Repeatable. |
+| `--telemetry` | checksums, team-timeline, maxima, warrior-tactics | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
 | `--benchmark-tick-profile` | flag; default false | Export tick timings and the 1024 slowest ticks' phase/wait attribution; requires benchmark-warmup. |
