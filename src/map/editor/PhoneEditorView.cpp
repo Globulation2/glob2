@@ -265,7 +265,11 @@ bool PhoneEditor::showsMapButton() const
 // In the content's bottom corner away from the thumb, clear of the brush rail.
 ViewRect PhoneEditor::mapButton() const
 {
-	const double u = globalContainer->gfx->logicalUnitsPerPoint(), w = 88 * u, h = InGameTouchTheme::target * u;
+	auto *gfx = globalContainer->gfx;
+	const double u = gfx->logicalUnitsPerPoint(), h = InGameTouchTheme::target * u;
+	const double captionWidth = globalContainer->standardFont->getStringWidth(translated("[Minimap]")) *
+		gfx->textUnitsPerPoint() + 8 * u;
+	const double w = std::min(std::max(88 * u, captionWidth), std::max(1., content.w - 16 * u));
 	return {ThumbSide::left() ? content.x + content.w - 8 * u - w : content.x + 8 * u, content.y + content.h - 8 * u - h,
 			w, h};
 }

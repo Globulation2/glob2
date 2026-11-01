@@ -385,18 +385,23 @@ class MachineDraftTest(TranslationProgramTest):
         self.assertEqual(self.manifest['locales'], list(PROGRAM.LOCALES))
         selected = PROGRAM.prepare(self.output / 'legacy', 1, self.root, locales=('cs', 'pt-PT', 'sr-Cyrl'))
         self.assertEqual(selected['locales'], ['cs', 'pt-PT', 'sr-Cyrl'])
-        self.assertEqual(set(PROGRAM.NMT_TARGETS), set(PROGRAM.LEGACY_NATIVE_LOCALES) | {'bg', 'ms', 'bn', 'mr', 'ta', 'te'})
+        self.assertEqual(set(PROGRAM.NMT_TARGETS), set(PROGRAM.LEGACY_NATIVE_LOCALES) | {'bg', 'ms', 'bn', 'mr', 'ta', 'te', 'fil'})
         # Game filenames are aliases, not canonical Intl/manifest language choices.
         for invalid in ('br', 'cz', 'dk', 'gr', 'si', 'sr', 'pt', 'zh-cn', 'zh-tw'):
             with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'supported draft locales'):
                 PROGRAM.prepare(self.output / ('invalid-' + invalid), 1, self.root, locales=(invalid,))
+
+    def test_filipino_uses_explicit_canonical_target_not_guessed_alias(self):
+        self.assertEqual(PROGRAM.NMT_TARGETS['fil'], 'fil')
+        self.assertEqual(PROGRAM.game_code('fil'), 'fil')
+        self.assertNotIn('tl', PROGRAM.SUPPORTED_DRAFT_LOCALES)
 
     def test_legacy_native_aliases_use_reviewed_explicit_nmt_targets(self):
         cases = {'cs': ('cz', 'cs'), 'da': ('dk', 'da'), 'el': ('gr', 'el'),
                  'sl': ('si', 'sl'), 'sr-Cyrl': ('sr', 'sr'),
                  'zh-Hans': ('zh-cn', 'zh-CN'), 'zh-Hant': ('zh-tw', 'zh-TW'),
                  'pt-PT': ('pt', 'pt-PT'), 'pt-BR': ('br', 'pt-BR'), 'ms': ('ms', 'ms'), 'bn': ('bn', 'bn'),
-                 'mr': ('mr', 'mr'), 'ta': ('ta', 'ta'), 'te': ('te', 'te')}
+                 'mr': ('mr', 'mr'), 'ta': ('ta', 'ta'), 'te': ('te', 'te'), 'fil': ('fil', 'fil')}
         output = self.output / 'aliases'
         PROGRAM.prepare(output, 1, self.root, locales=tuple(cases))
         for locale, (native, target) in cases.items():

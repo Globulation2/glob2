@@ -234,6 +234,12 @@ export const locales = [
     dir: 'ltr',
   },
   {
+    code: 'fil',
+    gameCode: 'fil',
+    name: 'Filipino',
+    dir: 'ltr',
+  },
+  {
     code: 'nb',
     gameCode: 'nb',
     name: 'Norsk bokmål',

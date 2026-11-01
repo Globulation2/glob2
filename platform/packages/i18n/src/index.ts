@@ -62,6 +62,8 @@ export function resolveLocale(input: string | readonly string[]): Locale {
         ur: 'arab',
         sw: 'latn',
         ms: 'latn',
+        fil: 'latn',
+        tl: 'latn',
         te: 'telu',
         ta: 'taml',
       } as Record<string, string>
@@ -84,6 +86,7 @@ export function resolveLocale(input: string | readonly string[]): Locale {
       return parts.some((p) => ['hant', 'tw', 'hk', 'mo'].includes(p)) ? 'zh-Hant' : 'zh-Hans';
     if (language === 'sr') return 'sr-Cyrl';
     if (language === 'in') return 'id';
+    if (language === 'tl') return 'fil';
     const base = locales.find((l) => l.code === language);
     if (base) return base.code;
   }
@@ -120,6 +123,7 @@ export function hasMessage(source: string, locale = selected): boolean {
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
   bg: () => import('../locales/bg.json', { with: { type: 'json' } }),
+  fil: () => import('../locales/fil.json', { with: { type: 'json' } }),
   bn: () => import('../locales/bn.json', { with: { type: 'json' } }),
   ms: () => import('../locales/ms.json', { with: { type: 'json' } }),
   hi: () => import('../locales/hi.json', { with: { type: 'json' } }),

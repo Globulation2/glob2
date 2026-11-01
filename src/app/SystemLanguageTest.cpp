@@ -170,6 +170,29 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("sd-Deva").empty());
 	}
 
+	TEST_CASE("Filipino aliases accept only the shipped Latin script")
+	{
+		CHECK(code("fil") == "fil");
+		CHECK(code("fil-PH") == "fil");
+		CHECK(code("tl") == "fil");
+		CHECK(code("tl-PH") == "fil");
+		CHECK(code("fil-Latn-PH") == "fil");
+		CHECK(code("tl-Latn", "PH") == "fil");
+		CHECK(code("fil-Tglg").empty());
+		CHECK(code("tl-Tglg", "PH").empty());
+		CHECK(code("fil-Arab").empty());
+		CHECK(code("tl-Cyrl").empty());
+		CHECK(code("fil-Latn-Tglg").empty());
+		CHECK(code("tl-Latn-Arab").empty());
+		CHECK(code("fil-u-nu-latn") == "fil");
+		CHECK(code("tl-x-arab") == "fil");
+		CHECK(code("en", "PH") == "en");
+		CHECK(code("ceb", "PH").empty());
+		auto latinOnly = [](const std::string &c) { return c == "fil"; };
+		CHECK(SystemLanguage::choose({{"tl", "PH"}, {"de", ""}}, latinOnly) == "fil");
+		CHECK(SystemLanguage::choose({{"fil", "PH"}}, [](const std::string &) { return false; }) == "en");
+	}
+
 	TEST_CASE("Tamil accepts regional tags only in the supported written script")
 	{
 		CHECK(code("ta") == "ta");
@@ -193,6 +216,14 @@ TEST_SUITE("SystemLanguage")
 		CHECK(SystemLanguage::choose({{"de", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
 	}
 
+	TEST_CASE("Filipino startup accepts the Tagalog alias and preserves a saved language")
+	{
+		PreferredLocales locales("tl_PH,en_US");
+		CHECK(startupLanguage("") == "fil");
+		CHECK(startupLanguage("no-such-language") == "fil");
+		CHECK(startupLanguage("fr") == "fr");
+		CHECK(startupLanguage("fil") == "fil");
+	}
 	TEST_CASE("startup selects installed Tamil and preserves an explicit saved choice")
 	{
 		PreferredLocales locales("ta_LK,en_US");

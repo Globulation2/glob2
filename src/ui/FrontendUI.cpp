@@ -275,7 +275,7 @@ Element actions(std::vector<MenuAction> items, const Presentation &p)
 	for (const auto &item : items)
 		buttons.push_back(actionButton(item, p.touch));
 	WrapOptions grid;
-	grid.minChildWidth = p.pt(150);
+	grid.minChildWidth = p.textPt(150);
 	return wrap(std::move(buttons), grid);
 }
 
