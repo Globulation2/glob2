@@ -24,7 +24,7 @@ class Order;
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
 //! the reader still accepts. Version 187 retires terrain experiment flags and
 //! script metadata; older scripted decisions may depend on those observations.
-//! Version 188 adds diagnostic probability history without changing replay execution.
+//! Version 190 adds diagnostic probability history without changing replay execution.
 //! Save compatibility has a separate floor in Version.h.
 static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 187;
 

@@ -198,8 +198,14 @@ static std::unique_ptr<GameGUI> roundTrip(Game& game)
 class LocatedOutput : public GAGCore::BinaryOutputStream
 {
 public:
+  using BinaryOutputStream::writeEnterSection;
   size_t statsPosition = 0, smoothingPosition = 0, coveragePosition = 0,
-		 measurementCountPosition = 0;
+		 measurementCountPosition = 0, probabilityPosition = 0;
+  void writeEnterSection(std::string_view name) override
+  {
+      if (name == "winProbability") probabilityPosition = getPosition();
+      BinaryOutputStream::writeEnterSection(name);
+  }
   void writeUint32(Uint32 value, std::string_view name) override
   {
 	  if (name == "coverageStartTick")
@@ -856,7 +862,9 @@ static void measurementReplayBoundaries()
 	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_MAINLINE_TERRAINS
             && REPLAY_MINIMUM_VERSION_MINOR <= VERSION_MINOR && NET_PROTOCOL_VERSION == 73,
 			"integrated simulation preserves the replay floor and current network gates");
-	for (int version : std::initializer_list<int>{98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, REPLAY_MINIMUM_VERSION_MINOR, VERSION_MINOR-1, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : std::initializer_list<int>{98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, REPLAY_MINIMUM_VERSION_MINOR,
+            FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT, FILE_FORMAT_VERSION_MAXIMA_FLAG_PROXIMITY,
+            VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -1313,6 +1321,38 @@ TEST_CASE("clearing telemetry counts operations once by configured primary mater
 
 TEST_SUITE("TeamStatsSave")
 {
+    TEST_CASE("probability save section preserves Maxima-era statistics layouts [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        auto *bytes=new GAGCore::MemoryStreamBackend;
+        LocatedOutput writer(bytes);
+        world.team->stats.recordWinProbability(0,500,"layout-model");
+        world.team->stats.save(&writer);
+        writer.flush();
+        REQUIRE(writer.probabilityPosition>0);
+
+        // Formats 188/189 changed Maxima state, not TeamStats. Dropping the
+        // appended probability section reproduces their statistics payload.
+        for (const int version : {FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT,
+                                  FILE_FORMAT_VERSION_MAXIMA_FLAG_PROXIMITY})
+        {
+            GAGCore::BinaryInputStream legacy(new GAGCore::MemoryStreamBackend(
+                bytes->getBuffer(),writer.probabilityPosition));
+            legacy.seekFromStart(0);
+            TeamStats loaded;
+            REQUIRE(loaded.load(&legacy,version));
+            CHECK(legacy.getPosition()==writer.probabilityPosition);
+            CHECK(loaded.getWinProbabilityHistory().empty());
+            CHECK(loaded.getWinProbabilityModel().empty());
+        }
+
+        GAGCore::BinaryInputStream missing(new GAGCore::MemoryStreamBackend(
+            bytes->getBuffer(),writer.probabilityPosition));
+        missing.seekFromStart(0);
+        TeamStats incomplete;
+        CHECK_THROWS_AS(incomplete.load(&missing,FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY),std::runtime_error);
+    }
     TEST_CASE("probability history rejects samples beyond the saved game tick [save-format]")
     {
         glob2test::HeadlessGlobals globals;
