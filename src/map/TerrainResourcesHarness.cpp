@@ -718,28 +718,42 @@ TEST_CASE("bounded wood rescue preserves the walking approach to existing food")
 	glob2test::HeadlessGame fixture({.loadDefaultRace = true});
 	auto &map = fixture.game.map;
 	const MapGeneration::Torus torus(map);
-	std::vector<unsigned char> walls(torus.size(), 1), allowed(torus.size(), 0);
-	for (int y = 0; y < map.getH(); ++y)
-		for (int x = 0; x < map.getW(); ++x)
-			if (y == 8 && x >= 8 && x <= 12)
-				walls[map.coordToIndex(x, y)] = 0;
-			else
-				map.setResourceByIndex(x, y, STONE, 1);
-	map.setResourceByIndex(12, 8, WHEAT, 1);
-	allowed[map.coordToIndex(10, 8)] = 1;
+	map.fillTerrain(OUTCROP);
+	{
+		auto edit = map.editTerrain();
+		for (int y = 8; y <= 9; ++y)
+			for (int x = 8; x <= 17; ++x)
+				map.setVertexTerrain(x, y, GRASS);
+	}
+	// These vertices form exactly one walking row. A wood deposit midway
+	// along it would leave food beyond harvesting range across the blockage.
+	map.setResourceByIndex(16, 8, WHEAT, 1);
+	REQUIRE(map.getResource(16, 8).type == WHEAT);
+	const auto accessibleCrops = [&]
+	{
+		const auto reach = MapGeneration::floodFrom(
+			map, MapGeneration::tileMask(torus, {int(map.coordToIndex(8, 8))}),
+			MapGeneration::groundUnitTiles(map), 12);
+		return MapGeneration::cropsBesideReach(map, reach.steps);
+	};
+	REQUIRE(accessibleCrops().food);
+	map.setResourceByIndex(12, 8, WOOD, 1);
+	REQUIRE(map.getResource(12, 8).type == WOOD);
+	REQUIRE_FALSE(accessibleCrops().food);
+	map.setNoResource(12, 8, 1);
+	REQUIRE(accessibleCrops().food);
+	std::vector<unsigned char> allowed(torus.size(), 0);
+	allowed[map.coordToIndex(12, 8)] = 1;
 	GenerationRequest request;
 	request.nbTeams = 1;
 	GenerationContext context(request);
 	context.bootX[0] = 8;
 	context.bootY[0] = 8;
-	MapGeneration::guaranteeStartingResources(fixture.game, context, 12, 12, 0, &walls, &allowed);
-	const auto reach =
-		MapGeneration::floodFrom(map, MapGeneration::tileMask(torus, {int(map.coordToIndex(8, 8))}),
-								 MapGeneration::groundUnitTiles(map), 12);
-	const auto crops = MapGeneration::cropsBesideReach(map, reach.steps);
+	MapGeneration::guaranteeStartingResources(fixture.game, context, 12, 12, 0, nullptr, &allowed);
+	const auto crops = accessibleCrops();
 	CHECK(crops.food);
 	CHECK_FALSE(crops.wood);
-	CHECK(map.getResource(10, 8).type == NO_RES_TYPE);
+	CHECK(map.getResource(12, 8).type == NO_RES_TYPE);
 }
 
 TEST_CASE("starter guarantees use prospective boots only before workers exist")
