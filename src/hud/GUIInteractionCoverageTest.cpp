@@ -907,7 +907,7 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
     // waiting status inside the real narrow chart, including its second line.
     strings->setLang(strings->getLangCode("ta")); GAGCore::userTextScale=textScale;
     auto pendingHistory=fixture;
-    pendingHistory.world.history.reset(); pendingHistory.panels.localStats.reset();
+    pendingHistory.world.history.reset();
     gui.setPublishedScene(&pendingHistory);
     panel.invalidate(); draw("statistics-desktop-tamil-waiting.bmp");
     REQUIRE(panel.history()==nullptr);

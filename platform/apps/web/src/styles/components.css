@@ -366,3 +366,11 @@
     line-height: 1.5;
   }
 }
+
+.admin-finances > button {
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
