@@ -115,19 +115,7 @@ for (const locale of locales) {
         .locator('.app-sidebar .nav a')
         .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
     ).toEqual(destinations);
-    ).toEqual(
-      expect.arrayContaining([
-        '/',
-        '/leaderboard',
-        '/players',
-        '/matches',
-        '/maps',
-        '/sets',
-        '/ais',
-        '/buildings',
-        '/music',
-      ]),
-    );
+
     const themeChangeLabel = catalog['{value0}. Change theme'];
     const defaultThemeLabel = catalog['Theme: same as this device'];
     if (!themeChangeLabel || !defaultThemeLabel) {
