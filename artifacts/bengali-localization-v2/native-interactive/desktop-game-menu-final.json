@@ -1,0 +1,32 @@
+{
+  "method": "ui_key",
+  "arguments": {
+    "key": "Escape",
+    "capture_after": true
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"available\": true, \"controlled\": false, \"controller\": \"None\", \"dispatched\": false, \"error\": \"Controller lease lost or token invalid\", \"frame_id\": 11194, \"height\": 860, \"input_started\": false, \"viewport_id\": 1, \"width\": 1280}",
+          "type": "text"
+        }
+      ],
+      "isError": true,
+      "structuredContent": {
+        "available": true,
+        "controlled": false,
+        "controller": "None",
+        "dispatched": false,
+        "error": "Controller lease lost or token invalid",
+        "frame_id": 11194,
+        "height": 860,
+        "input_started": false,
+        "viewport_id": 1,
+        "width": 1280
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "verdict": "no_blocking_issues_found",
+  "reviewed_parent": "cb9440538a",
+  "reviewed_commit": "fee00ba65ede3aa261ab3d2af8ab7b43fbcd59e5",
+  "method": "Independent full8-file diff and actual callsite/bridge-contract inspection, with retained exact old-production-method C++ reproducer. No new native test execution claim.",
+  "old_method_reproducer": {
+    "path": "artifacts/bengali-localization-v2/native-username-boundary/reproduction.json",
+    "sha256": "33027c084b9bc6a0afa6f486663f06dde8600fe65949c57dc5e1b09aca3dcd32"
+  },
+  "reviewed_files": [
+    {
+      "path": "browser/unit/text-bridge.test.js",
+      "git_blob": "a5d2ac53452a7988e89a7003098d9daccf98d998"
+    },
+    {
+      "path": "libgag/include/ui/Controls.h",
+      "git_blob": "60b65da765d253fccca1e8588a277da30b3d73f3"
+    },
+    {
+      "path": "libgag/src/ui/Controls.cpp",
+      "git_blob": "53aef7f6fa3a7f8125c66b42db443a0e651e0b86"
+    },
+    {
+      "path": "libgag/src/ui/UILayoutHarness.cpp",
+      "git_blob": "37b59920fdc2e5320fb2279fec2a50fd524641e8"
+    },
+    {
+      "path": "src/app/Settings.cpp",
+      "git_blob": "23538c0ae4ce205d3f64e6a1d12a5360ef291d89"
+    },
+    {
+      "path": "src/app/Settings.h",
+      "git_blob": "48ce02a7b717c856bc671f86c6c44af254421e04"
+    },
+    {
+      "path": "src/ui/settings/SettingsScreen.cpp",
+      "git_blob": "165a56211d226d5e1f6528606a99988935759dd5"
+    },
+    {
+      "path": "src/ui/settings/SettingsScreenTest.cpp",
+      "git_blob": "59d90d180083c7ed4d7f13db8ad4c983140bbacb"
+    }
+  ],
+  "findings": [],
+  "observations": [
+    "Native commit rejects an oversized edit before its own draft/model/preview/cursor assignment; textInput may reset cursor to0 before calling commit when selectAll is active, so exact caret retention is not asserted. Selection and previous draft/model remain intact.",
+    "Optional maxBytes defaults0; only username opts into inclusive32 bytes, preserving existing generic maxLength semantics and all32 ASCII bytes.",
+    "Settings rejects oversized whole names instead of taking a byte or codepoint prefix, avoiding invalid UTF-8 and partial Bengali conjunct output.",
+    "Browser limit33 correctly represents an inclusive32-byte username in the existing exclusive-bound bridge; its grapheme-safe prefix behavior is intentionally distinct from native whole-edit rejection.",
+    "Tests exercise rejected native paste/no preview/model change, valid Bengali Enter, ASCII32 and direct setter/DOM boundary behavior.",
+    "Raw preference loading is unchanged; no claim to repair already-malformed legacy names."
+  ],
+  "scope": "Review approval; native focused checks and a fresh latest-source iOS package/runtime check remain separate validation responsibilities."
+}

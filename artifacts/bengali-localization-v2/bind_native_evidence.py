@@ -18,7 +18,16 @@ for folder in ['native/desktop','native/phone','native/phone-text150','native/fr
  for p in sorted((kit/folder).glob('*.json')):
   d=load(p);e=d.get('evidence_identity')
   if not e:continue
-  assert not bp.build_issues(e['producer'],source),str(p)
+  issues=bp.build_issues(e['producer'],source)
+  if issues:
+   carry=load(kit/'production-input-carry-forward.json')
+   assert carry['current_code_identity']==source
+   assert carry['old_revision']==e['producer']['revision'] and not e['producer']['dirty']
+   assert carry['old_clean_source_tree_sha256']==e['producer']['sourceTreeSha256']
+   import subprocess
+   assert subprocess.check_output(['git','diff','--name-only',carry['old_revision'],source['revision']],cwd=root,text=True).splitlines()==carry['changed_paths']==['src/app/SystemLanguageTest.cpp']
+   assert carry['production_catalog_font_shader_harness_build_dependency_inputs_identical']
+   assert carry['unit_test_sources_identical']
   assert e['input_metadata']['catalog_sha256']==original_hashes
   assert e['input_metadata']['source_sha256']==meta['source_sha256']
   assert sha(Path(e['executable']))==e['executable_sha256']
@@ -39,5 +48,5 @@ for folder in ['native/desktop','native/phone','native/phone-text150','native/fr
     assert sample['has_glyphs']
     assert all(l['drawn_fits_width'] and l['drawn_fits_height'] for l in sample['lines'])
   records.append({'path':str(p.relative_to(kit)),'sha256':sha(p),'producer_revision':e['producer']['revision'],'producer_source_tree_sha256':e['producer']['sourceTreeSha256'],'scope':'complete catalog overlay' if folder.startswith('native/') else 'selected pilot font diagnostic' if folder=='font-matrix' else 'synthetic shaping probes; not catalog translations'})
-result={'source_revision':source['revision'],'source_identity':source,'source_sha256':meta['source_sha256'],'original_catalog_sha256':original_hashes,'converted_catalog_sha256':converted_hashes,'conversion':'The harness reads key/value JSON; its evidence_identity.catalog_sha256 hashes the converted preview files, not native alternating-line text. input_metadata.catalog_sha256 retains original installed catalog file hashes. Exact per-key equality is checked for both complete surfaces.','records':records,'limitations':'Only captures actually listed are validated. This binding does not assert complete screen coverage, linguistic approval, native test completion, shipping-release readiness or unexecuted platforms.'}
+result={'source_revision':source['revision'],'source_identity':source,'source_sha256':meta['source_sha256'],'original_catalog_sha256':original_hashes,'converted_catalog_sha256':converted_hashes,'conversion':'The harness reads key/value JSON; its evidence_identity.catalog_sha256 hashes the converted preview files, not native alternating-line text. input_metadata.catalog_sha256 retains original installed catalog file hashes. Exact per-key equality is checked for both complete surfaces.','records':records,'production_input_carry_forward':{'path':'production-input-carry-forward.json','sha256':sha(kit/'production-input-carry-forward.json')},'limitations':'Only captures actually listed are validated. This binding does not assert complete screen coverage, linguistic approval, native test completion, shipping-release readiness or unexecuted platforms.'}
 (kit/'preview-binding.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n');print('Bound',len(records),'actual records to',source['revision'])

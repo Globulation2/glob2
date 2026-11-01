@@ -1,0 +1,276 @@
+{
+  "current_code_identity": {
+    "revision": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "be7c2ef78c76ff53ecaa89fa5536e665b990c3f3acf6afe60eb7624e077e34f5"
+  },
+  "passed_cases": 52,
+  "failed_cases": 0,
+  "skipped_cases": 0,
+  "retained_prior_passed_cases": [
+    {
+      "suite": "TextMetrics",
+      "name": "offscreen transformed text rasterizes at the requested resolution"
+    },
+    {
+      "suite": "TextMetrics",
+      "name": "font metrics do not rasterize or evict rendered text"
+    },
+    {
+      "suite": "UILayout",
+      "name": "icons and tooltips"
+    },
+    {
+      "suite": "UILayout",
+      "name": "settings toggles keep captions left and the full row actionable"
+    },
+    {
+      "suite": "UILayout",
+      "name": "geometry"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text"
+    },
+    {
+      "suite": "UILayout",
+      "name": "wrap and ellipsis preserve shaping clusters"
+    },
+    {
+      "suite": "UILayout",
+      "name": "column and flex"
+    },
+    {
+      "suite": "UILayout",
+      "name": "row cross align"
+    },
+    {
+      "suite": "UILayout",
+      "name": "paragraph wraps with width"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text fields retain the touch target with compact control metrics"
+    },
+    {
+      "suite": "UILayout",
+      "name": "wrap columns"
+    },
+    {
+      "suite": "UILayout",
+      "name": "footer folds"
+    },
+    {
+      "suite": "UILayout",
+      "name": "scroll clamp and wheel"
+    },
+    {
+      "suite": "UILayout",
+      "name": "tap versus pan"
+    },
+    {
+      "suite": "UILayout",
+      "name": "native gestures retain fractions ownership and survive rebuilds"
+    },
+    {
+      "suite": "UILayout",
+      "name": "native gesture bounds settle and external jumps cancel the tail"
+    },
+    {
+      "suite": "UILayout",
+      "name": "native nested capture does not transfer to parent and missing owners consume tails"
+    },
+    {
+      "suite": "UILayout",
+      "name": "native popup scrolling owns its tail after dismissal"
+    },
+    {
+      "suite": "UILayout",
+      "name": "fling continues after release"
+    },
+    {
+      "suite": "UILayout",
+      "name": "overscroll springs back"
+    },
+    {
+      "suite": "UILayout",
+      "name": "touch wheel and programmatic scroll stop a fling"
+    },
+    {
+      "suite": "UILayout",
+      "name": "scrollbar press stops a fling"
+    },
+    {
+      "suite": "UILayout",
+      "name": "mouse drag does not fling"
+    },
+    {
+      "suite": "UILayout",
+      "name": "list and text overscroll"
+    },
+    {
+      "suite": "UILayout",
+      "name": "press survives resize"
+    },
+    {
+      "suite": "UILayout",
+      "name": "focus and keyboard"
+    },
+    {
+      "suite": "UILayout",
+      "name": "choice popup"
+    },
+    {
+      "suite": "UILayout",
+      "name": "icon segments and choices"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text field"
+    },
+    {
+      "suite": "UILayout",
+      "name": "list view"
+    },
+    {
+      "suite": "UILayout",
+      "name": "copy field"
+    },
+    {
+      "suite": "UILayout",
+      "name": "adaptive and field"
+    },
+    {
+      "suite": "UILayout",
+      "name": "invariants"
+    },
+    {
+      "suite": "UILayout",
+      "name": "text stays inside its control at every size"
+    }
+  ],
+  "prior_tested_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "fresh_current_revision_cases": [
+    {
+      "suite": "SystemLanguage",
+      "name": "Bengali regions share the Bengali script catalog"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "Bengali startup respects the system and saved language"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "ISO locales map to the historical catalog codes"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "expanded locales distinguish scripts and the precise Pulaar variety"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "languages without a catalog are not confused with catalog codes"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "regional and script variants pick the matching catalog"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "startup follows the system only when the profile has no usable language"
+    },
+    {
+      "suite": "SystemLanguage",
+      "name": "the first available preference wins, then English"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "Arabic and Persian visual-order text is not reordered again by SDL_ttf"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "high-DPI Hindi wrapping width is preserved without cropping the raw raster"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "kerned words have no gap wider than the same words unkerned"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "language changes refresh default line height and Arabic shaping caches"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "pair advances equal the glyph advances plus kerning"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "script fonts shape clusters and preserve measured raster sizes after reload"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "script run composition preserves straight-alpha antialiasing"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "shaping clusters keep conjuncts and combining marks together"
+    },
+    {
+      "suite": "FontKerning",
+      "name": "the bundled SDL3_ttf moves the pen for kerned pairs"
+    }
+  ],
+  "provenance_note": "35 unchanged UILayout/TextMetrics cases retain their actual31ef execution; all17FontKerning/SystemLanguage cases freshly executed using the rebuilt36c2 engine binary. Unit test sources and every production input are byte-identical under the independent carry-forward proof. Original failed startup fixture run is preserved and not counted passed.",
+  "profile": "Linux GCC13.4.0 full-feature fast development build; not a shipping binary/performance claim.",
+  "evidence": [
+    {
+      "path": "native-tests.xml",
+      "sha256": "3ec068323cca655c720371f8f53edd97c5efde65cb2674e110df9fcb57564481"
+    },
+    {
+      "path": "native-focused.log",
+      "sha256": "1fecefd466d04a02991514a4f04e4d9b1e0d1821b9e511f94d53567dd4fe400e"
+    },
+    {
+      "path": "native-language-tests.xml",
+      "sha256": "5416c3b69f10f8f12addaab137efa3b6d0ecfc85a959aa1a65c7d61a74ff2fe4"
+    },
+    {
+      "path": "native-language-final.log",
+      "sha256": "35f5d64914c40f821d330f63343b248449be45cf20024db7450450e7dd8b5df8"
+    },
+    {
+      "path": "native-font-final.xml",
+      "sha256": "a90747179bf1589d95d42572d7f03c637604fd618fc40a8758c58faafc69933a"
+    },
+    {
+      "path": "native-font-final.log",
+      "sha256": "35c68f788e854f42cf856d9c3133dc41298e164984937e756a8279922a872752"
+    },
+    {
+      "path": "native-engine-identity/executable.json",
+      "sha256": "4be3ac27b88dbbc6e900825794cd0b9df74236d7989a628a02f878a717c75f9b"
+    },
+    {
+      "path": "native-engine-identity/build-provenance.json",
+      "sha256": "523ac9d59528aca579d60ebadcacc77f49ae320a34856208f2a100f2a6e280bb"
+    },
+    {
+      "path": "native-unit-identity/executable.json",
+      "sha256": "1cf031b60d0f57bb55e83c59cf0157f24300592e216c8f5e8f5bc9d08adc6f9b"
+    },
+    {
+      "path": "native-unit-identity/build-provenance.json",
+      "sha256": "171fdd532bd444c18c7599a6b1135f6f059da782235a376e9b155d7a61339b54"
+    },
+    {
+      "path": "production-input-carry-forward.json",
+      "sha256": "754a27c26b7a655ef6c495236fd4ac32dfe8e54140a19cedf3bdbc47781b8e38"
+    },
+    {
+      "path": "adversarial-production-carry-forward.json",
+      "sha256": "4e3282cf8c2e4ae5d0fbae6ade57ec7116901628669d0a9f3063045620c918c8"
+    }
+  ]
+}

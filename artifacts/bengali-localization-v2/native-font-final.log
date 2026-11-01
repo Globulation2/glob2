@@ -1,0 +1,12 @@
+PASS FontKerning/script run composition preserves straight-alpha antialiasing (0.3s)
+PASS FontKerning/shaping clusters keep conjuncts and combining marks together (0.4s)
+PASS FontKerning/language changes refresh default line height and Arabic shaping caches (2.2s)
+PASS FontKerning/high-DPI Hindi wrapping width is preserved without cropping the raw raster (0.5s)
+PASS FontKerning/script fonts shape clusters and preserve measured raster sizes after reload (2.5s)
+PASS FontKerning/Arabic and Persian visual-order text is not reordered again by SDL_ttf (0.4s)
+PASS FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs (0.3s)
+PASS FontKerning/pair advances equal the glyph advances plus kerning (0.5s)
+PASS FontKerning/kerned words have no gap wider than the same words unkerned (0.5s)
+
+9 passed, 0 failed, 0 skipped (7.6s of test time)
+[run_tests] JUnit report: artifacts/bengali-localization-v2/native-font-final.xml (9 cases)

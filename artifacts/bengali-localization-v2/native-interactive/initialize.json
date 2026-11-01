@@ -1,0 +1,18 @@
+{
+  "method": "initialize",
+  "arguments": {},
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "capabilities": {
+        "tools": {}
+      },
+      "protocolVersion": "2025-11-25",
+      "serverInfo": {
+        "name": "globulation2-ui",
+        "version": "1.0"
+      }
+    }
+  }
+}

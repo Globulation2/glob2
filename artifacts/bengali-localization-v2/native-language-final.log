@@ -1,0 +1,11 @@
+PASS SystemLanguage/ISO locales map to the historical catalog codes (0.3s)
+PASS SystemLanguage/languages without a catalog are not confused with catalog codes (0.4s)
+PASS SystemLanguage/expanded locales distinguish scripts and the precise Pulaar variety (0.3s)
+PASS SystemLanguage/Bengali regions share the Bengali script catalog (0.4s)
+PASS SystemLanguage/regional and script variants pick the matching catalog (0.4s)
+PASS SystemLanguage/the first available preference wins, then English (0.4s)
+PASS SystemLanguage/startup follows the system only when the profile has no usable language (44.6s)
+PASS SystemLanguage/Bengali startup respects the system and saved language (50.7s)
+
+8 passed, 0 failed, 0 skipped (97.5s of test time)
+[run_tests] JUnit report: artifacts/bengali-localization-v2/native-language-tests.xml (8 cases)

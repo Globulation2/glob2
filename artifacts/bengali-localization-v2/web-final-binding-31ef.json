@@ -1,0 +1,29 @@
+{
+  "tested_revision": "60887383753dc130dfdb41621682ac7c1a00c469",
+  "current_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "changed_paths": [
+    "browser/assets/sources.json",
+    "docs/development/ui-framework.md"
+  ],
+  "platform_inputs_identical": true,
+  "game_font_and_image_bytes_identical": true,
+  "scope": "All tracked platform sources, catalogs, website fonts, dependencies and build inputs are unchanged. Browser game font-derivative metadata correction is separate and needs updated packaging verification. No claim that a new full-tree build was executed at the current revision.",
+  "successful_records": {
+    "web-build": {
+      "record_sha256": "d79ef040c41f215a1ba6da0d24bc389e334ac6fe5bcdee4bce15ae546a5cebb8",
+      "log_sha256": "8a520548ac82ec4f28c09ba74f1631aae579e99acaacf3bcd91cf7f827b984d6"
+    },
+    "web-chromium": {
+      "record_sha256": "3bdfde19e040aa6018ba5bebde3c5e820eb0f3166f1a33924c721f8a0af06371",
+      "log_sha256": "b60e9968b10906a3b33af68b46912fd31932a30ee9413fb9c087459aef46ae04"
+    },
+    "web-cross": {
+      "record_sha256": "f5847cfeb59b9cc62d849411dbb0c424e7888d760fbc4c25e7965d251c86d934",
+      "log_sha256": "ae35e32ff44367355fad17b8f6303fa2a6a7dde7cdd66ec13a74d203f1075969"
+    },
+    "typecheck": {
+      "record_sha256": "115ee51aaf59061f692d89b366db24b43072aa852a97898a5c23ba460697a862",
+      "log_sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd"
+    }
+  }
+}

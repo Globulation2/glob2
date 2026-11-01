@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="SystemLanguage"><testcase classname="SystemLanguage" name="Bengali regions share the Bengali script catalog" time="0.000226" status="run" />
+  <testcase classname="SystemLanguage" name="Bengali startup respects the system and saved language" time="50.2318" status="run" />
+  <testcase classname="SystemLanguage" name="ISO locales map to the historical catalog codes" time="0.000239" status="run" />
+  <testcase classname="SystemLanguage" name="expanded locales distinguish scripts and the precise Pulaar variety" time="0.000353" status="run" />
+  <testcase classname="SystemLanguage" name="languages without a catalog are not confused with catalog codes" time="0.00021" status="run" />
+  <testcase classname="SystemLanguage" name="regional and script variants pick the matching catalog" time="0.000103" status="run" />
+  <testcase classname="SystemLanguage" name="startup follows the system only when the profile has no usable language" time="44.1423" status="run" />
+  <testcase classname="SystemLanguage" name="the first available preference wins, then English" time="0.000272" status="run" />
+  </testsuite></testsuites>

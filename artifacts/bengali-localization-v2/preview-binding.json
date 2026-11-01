@@ -1,10 +1,10 @@
 {
-  "source_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "source_revision": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
   "source_identity": {
-    "revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+    "revision": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
     "dirty": false,
     "sourceStatus": [],
-    "sourceTreeSha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039"
+    "sourceTreeSha256": "be7c2ef78c76ff53ecaa89fa5536e665b990c3f3acf6afe60eb7624e077e34f5"
   },
   "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
   "original_catalog_sha256": {
@@ -172,5 +172,9 @@
       "scope": "synthetic shaping probes; not catalog translations"
     }
   ],
+  "production_input_carry_forward": {
+    "path": "production-input-carry-forward.json",
+    "sha256": "754a27c26b7a655ef6c495236fd4ac32dfe8e54140a19cedf3bdbc47781b8e38"
+  },
   "limitations": "Only captures actually listed are validated. This binding does not assert complete screen coverage, linguistic approval, native test completion, shipping-release readiness or unexecuted platforms."
 }

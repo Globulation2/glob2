@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="51" failures="2" errors="0" skipped="0"><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.458836" status="run" />
+  <testcase classname="FontKerning" name="high-DPI Hindi wrapping width is preserved without cropping the raw raster" time="0.364622" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.477403" status="run" />
+  <testcase classname="FontKerning" name="language changes refresh default line height and Arabic shaping caches" time="2.62221" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.369696" status="run" />
+  <testcase classname="FontKerning" name="script fonts shape clusters and preserve measured raster sizes after reload" time="3.63721" status="run" />
+  <testcase classname="FontKerning" name="script run composition preserves straight-alpha antialiasing" time="0.149485" status="run" />
+  <testcase classname="FontKerning" name="shaping clusters keep conjuncts and combining marks together" time="0.215442" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.026432" status="run" />
+  </testsuite><testsuite name="SystemLanguage"><testcase classname="SystemLanguage" name="Bengali regions share the Bengali script catalog" time="0.000266" status="run" />
+  <testcase classname="SystemLanguage" name="ISO locales map to the historical catalog codes" time="0.000354" status="run" />
+  <testcase classname="SystemLanguage" name="expanded locales distinguish scripts and the precise Pulaar variety" time="0.000326" status="run" />
+  <testcase classname="SystemLanguage" name="languages without a catalog are not confused with catalog codes" time="0.00019" status="run" />
+  <testcase classname="SystemLanguage" name="regional and script variants pick the matching catalog" time="0.000111" status="run" />
+  <testcase classname="SystemLanguage" name="startup follows the system only when the profile has no usable language" time="47.4756" status="run">
+      <failure message="hi == br" type="CHECK">
+src/app/SystemLanguageTest.cpp:132:
+CHECK( startupLanguage("") == "br" ) is NOT correct!
+  values: CHECK( hi == br )
+
+      </failure>
+      <failure message="hi == br" type="CHECK">
+src/app/SystemLanguageTest.cpp:133:
+CHECK( startupLanguage("no-such-language") == "br" ) is NOT correct!
+  values: CHECK( hi == br )
+
+      </failure>
+    </testcase>
+  <testcase classname="SystemLanguage" name="the first available preference wins, then English" time="0.000289" status="run" />
+  </testsuite><testsuite name="TextMetrics"><testcase classname="TextMetrics" name="offscreen transformed text rasterizes at the requested resolution" time="0.214722" status="run" />
+    <testcase classname="TextMetrics" name="font metrics do not rasterize or evict rendered text" time="12.1713" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.008308" status="run" />
+    <testcase classname="UILayout" name="settings toggles keep captions left and the full row actionable" time="0.191246" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap and ellipsis preserve shaping clusters" time="0.012731" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0.012518" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0.000524" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0.002489" status="run" />
+    <testcase classname="UILayout" name="native gestures retain fractions ownership and survive rebuilds" time="0.008113" status="run" />
+    <testcase classname="UILayout" name="native gesture bounds settle and external jumps cancel the tail" time="0.030005" status="run" />
+    <testcase classname="UILayout" name="native nested capture does not transfer to parent and missing owners consume tails" time="0.014603" status="run" />
+    <testcase classname="UILayout" name="native popup scrolling owns its tail after dismissal" time="0.001317" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.157368" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.038622" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.02097" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0.022908" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0.001116" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.162092" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0.0001" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0.000611" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0.000508" status="run" />
+    <testcase classname="UILayout" name="icon segments and choices" time="0.000432" status="run" />
+    <testcase classname="UILayout" name="text field" time="0.000229" status="run" />
+    <testcase classname="UILayout" name="list view" time="0.02274" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0.000106" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0.000389" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0.000132" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.250695" status="run" />
+  </testsuite></testsuites>

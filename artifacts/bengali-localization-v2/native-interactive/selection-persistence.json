@@ -1,0 +1,13 @@
+{
+  "language": "bn",
+  "username": "বাংলা১",
+  "profile_sha256": "3fbecdc0d33928798088392845b4f183ecc530076172ec175e24b1838bc8b563",
+  "ui_switch_sequence": [
+    "bn",
+    "en",
+    "bn"
+  ],
+  "persisted_username_utf8_exact": true,
+  "observed_english_stage_saved": true,
+  "scope": "Actual UI clicks and saved preferences, not a new-process restart yet."
+}

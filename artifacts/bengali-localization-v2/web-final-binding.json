@@ -1,13 +1,23 @@
 {
   "tested_revision": "60887383753dc130dfdb41621682ac7c1a00c469",
-  "current_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "current_revision": "fee00ba65ede3aa261ab3d2af8ab7b43fbcd59e5",
   "changed_paths": [
     "browser/assets/sources.json",
-    "docs/development/ui-framework.md"
+    "browser/shell.html",
+    "browser/unit/text-bridge.test.js",
+    "docs/development/ui-framework.md",
+    "libgag/include/ui/Controls.h",
+    "libgag/src/ui/Controls.cpp",
+    "libgag/src/ui/UILayoutHarness.cpp",
+    "src/app/Settings.cpp",
+    "src/app/Settings.h",
+    "src/app/SystemLanguageTest.cpp",
+    "src/ui/settings/SettingsScreen.cpp",
+    "src/ui/settings/SettingsScreenTest.cpp"
   ],
   "platform_inputs_identical": true,
   "game_font_and_image_bytes_identical": true,
-  "scope": "All tracked platform sources, catalogs, website fonts, dependencies and build inputs are unchanged. Browser game font-derivative metadata correction is separate and needs updated packaging verification. No claim that a new full-tree build was executed at the current revision.",
+  "scope": "All tracked platform sources, catalogs, website fonts, dependencies and build inputs are exactly unchanged since the actual608 website build/tests/typecheck/lint. Native username guards and browser-game bridge changes are separate components and require new execution; this record carries no browser-game or native-runtime pass.",
   "successful_records": {
     "web-build": {
       "record_sha256": "d79ef040c41f215a1ba6da0d24bc389e334ac6fe5bcdee4bce15ae546a5cebb8",
@@ -25,5 +35,10 @@
       "record_sha256": "115ee51aaf59061f692d89b366db24b43072aa852a97898a5c23ba460697a862",
       "log_sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd"
     }
+  },
+  "source_component_proof": {
+    "method": "git diff tested_revision current_revision -- platform is empty",
+    "platform_tree_blob_at_test": "e2bd321cbc7148e0bb2fe1044fdf6b2cf4dd78ff",
+    "platform_tree_blob_at_current": "e2bd321cbc7148e0bb2fe1044fdf6b2cf4dd78ff"
   }
 }

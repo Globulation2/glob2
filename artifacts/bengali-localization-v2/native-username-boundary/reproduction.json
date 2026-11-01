@@ -1,0 +1,29 @@
+{
+  "verdict": "confirmed_invalid_utf8_from_current_production_setter",
+  "source_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "method": "Compiled and executed exact unchanged Settings::setUsername method extracted from immutable source in a minimal C++ wrapper; not a full application/UI execution. TextField acceptance separately established by reading glyphCount/maxLength code.",
+  "exact_production_method": "void Settings::setUsername(std::string s) { username.assign(s, 0, BasePlayer::MAX_NAME_LENGTH); }",
+  "probe": "ককককককককক্ষ",
+  "input_utf8_bytes": 33,
+  "input_unicode_codepoints": 11,
+  "text_field_max_length": 32,
+  "current_ui_admits_input": true,
+  "stored_bytes": 32,
+  "stored_hex": "e0a695e0a695e0a695e0a695e0a695e0a695e0a695e0a695e0a695e0a78de0a6",
+  "strict_utf8_decode_error": "'utf-8' codec can't decode bytes in position 30-31: unexpected end of data",
+  "cpp_stdout": "33 32\ne0a695e0a695e0a695e0a695e0a695e0a695e0a695e0a695e0a695e0a78de0a6\n",
+  "save_load_contract": [
+    "SettingsScreen.cpp602 sets only maxLength=32; Controls.cpp711 compares glyphCount(next).",
+    "SettingsScreen.cpp608/614 previews and commits through setUsername.",
+    "Settings.cpp112 truncates bytes; Settings.cpp371 writes raw username using %s.",
+    "Settings.cpp165 loads raw username without repair."
+  ],
+  "recommendation": "Optional TextFieldOptions.maxBytes with inclusive32 limit for username, plus Settings::setUsername rejecting any whole input above32 bytes. Preserve existing generic maxLength code-point semantics and ASCII32. Reject rather than truncate, including at codepoint boundaries, to avoid splitting Bengali conjuncts.",
+  "meaningful_checks": [
+    "33-byte Bengali conjunct paste is rejected and previous draft/name remains intact.",
+    "32-byte ASCII stays accepted; a below32-byte complete Bengali name is saved/reloaded exactly.",
+    "Direct oversized CLI/setter input cannot create malformed stored bytes.",
+    "DOM bridge uses byteLimit33 if its existing bound is exclusive, alongside independent codepoint maxLength."
+  ],
+  "source_sha256": "319ad1a8225789e189ac2f2e2ad0004189cfab2735cc8e5c80f67c8ee04e58dd"
+}

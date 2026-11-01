@@ -1,0 +1,29 @@
+{
+  "old_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "current_revision": "fee00ba65ede3aa261ab3d2af8ab7b43fbcd59e5",
+  "changed_paths": [
+    "browser/shell.html",
+    "browser/unit/text-bridge.test.js",
+    "libgag/include/ui/Controls.h",
+    "libgag/src/ui/Controls.cpp",
+    "libgag/src/ui/UILayoutHarness.cpp",
+    "src/app/Settings.cpp",
+    "src/app/Settings.h",
+    "src/app/SystemLanguageTest.cpp",
+    "src/ui/settings/SettingsScreen.cpp",
+    "src/ui/settings/SettingsScreenTest.cpp"
+  ],
+  "catalogs_and_fonts_identical": true,
+  "old_visual_evidence_scope": "Retained actual31ef screen/matrix/history and input workflows. These retain their original producer identities. They do not test the new byte-limit guard. Complete current-revision native tests and focused actual input/persistence QA are required before release.",
+  "production_inputs_identical": false,
+  "new_paths_requiring_execution": [
+    "native text-field byte limit and username setter",
+    "browser text-field byte limit and exclusive32-byte bridge handoff"
+  ],
+  "pending": [
+    "current native build/focused suites/actual boundary workflow",
+    "current serial and threaded browser package/cold startup",
+    "final native and mobile platform checks"
+  ],
+  "preserved_review_certification": "Agent-reviewed; not native-human-certified"
+}

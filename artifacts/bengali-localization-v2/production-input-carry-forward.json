@@ -1,0 +1,24 @@
+{
+  "old_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "current_revision": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
+  "old_clean_source_tree_sha256": "69f1bcd7f8cd36ca7177e869f2741ce132871451c0c1d72a6a27e1e97a334039",
+  "current_code_identity": {
+    "revision": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "be7c2ef78c76ff53ecaa89fa5536e665b990c3f3acf6afe60eb7624e077e34f5"
+  },
+  "changed_paths": [
+    "src/app/SystemLanguageTest.cpp"
+  ],
+  "changed_file_old_blob": "7ebc95d15d82743b21c2d9d93ac97fc88d3b8c13",
+  "changed_file_new_blob": "5f753466fc229ad583c984ec7bb835a2f2bbc11d",
+  "unchanged_tracked_paths": 21942,
+  "production_catalog_font_shader_harness_build_dependency_inputs_identical": true,
+  "unit_test_sources_identical": true,
+  "scope": "Only an engine test fixture changed: unsupported Hindi replaced with private unknown locale, plus Bengali startup/saved-choice assertions. Existing31ef executables/images retain their actual producer identity. They cover identical production inputs; they do not execute the changed engine test. New engine test must be compiled and run separately at36c2.",
+  "catalog_sha256": {
+    "native": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  }
+}

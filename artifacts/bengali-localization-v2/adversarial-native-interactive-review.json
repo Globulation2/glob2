@@ -1,0 +1,355 @@
+{
+  "verdict": "pass_with_documented_dynamic_identity_content_limit",
+  "reviewer": "independent Bengali adversarial agent, not native-human certification",
+  "producer": {
+    "revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+    "command": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1280x900x24",
+      "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "play",
+      "--mute",
+      "--renderer",
+      "software",
+      "--no-fullscreen",
+      "--resizable",
+      "--window-size",
+      "1280x860",
+      "--compute-threads",
+      "2"
+    ],
+    "port": 53047,
+    "profile": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v2/native-interactive/profile",
+    "executable_sha256": "a0ade20f0b2923c0754578d017bd1c8d39f3744e162602bd0bb8c5cbb7efa29b",
+    "scope": "Actual graphical game, local loopback input/capture only, seeded Bengali profile; not first-visit system-locale detection.",
+    "wrapper_pid": 1970373
+  },
+  "images": [
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/bengali-backspace.png",
+      "sha256": "bd7ffd875a3d60acf8e126681fc0c1cc986b2ad8d2ce59f0e6ecea1d7fd37daf",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/bengali-digit-restored.png",
+      "sha256": "52512bfdaf386335c0e33f1b029854eba0190e64d4523b8f34c8590ee45fadec",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/bengali-text-entered.png",
+      "sha256": "1510da4f564a9b4c220b1a1baf5ae4e125c82faf93c1d8c7255eb00d762f6fc7",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/bengali-username.png",
+      "sha256": "2f0ff737ac2de10c74a26925213ffb4cb04f93e44e1be2b736a3a08c092ffe52",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/chat-entry-open.png",
+      "sha256": "3815cdfc05cc9c0e35d9302d871564692c0ed7c7ee3e08f68e7430ab4254859e",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/desktop-final-main.png",
+      "sha256": "a613868a212cb9903958cb30adb2a541fbf3dada068a09d317c6023340936b4b",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/desktop-game-menu-verified.png",
+      "sha256": "99d4197efaae6f6920b7fa8a224efead656aaefffc9d5d757fcee8f1a69fe89d",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/desktop-quit-game.png",
+      "sha256": "eec267bc42c0107a7046cb629190edec3b94243e3438649773e591be059f7e0e",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/desktop-results-leave.png",
+      "sha256": "88a3173b5566f9ec146e04d56a1d26b6650e42718e9e227a8cff5e675c081a25",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/desktop-settings-done.png",
+      "sha256": "98c1d5625ce60d4e0456f2a39e96c3d69fb616dffac5dc50b6212d1b47f64dd9",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/history-bengali-message.png",
+      "sha256": "344c63c7a32c37128daf898e9d9aeda6dbdc6b6a8683b9499f282478f975a5e4",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/history-closed.png",
+      "sha256": "9f893f701e005038c045989eb5878be68e5bb9395353d5d002e547965f3aca5e",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/history-message-closed.png",
+      "sha256": "30cb163e88b02a7920886e076b286278b2097412556695cfea100a1204fb0455",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/history-open.png",
+      "sha256": "8187a47cc730751dad0809cd9b7b4aba52eae6d8efa7e12f0528bb0d12713bb5",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/initial-main.png",
+      "sha256": "355c6da7e3b2af8cfa42eb1fd6e9f503a5a1384b9da362c9ce0a2458b73724d3",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/interactive-game-menu.png",
+      "sha256": "6f18af8aede81539b1a6c269e45ab1d48cad8ab2dd1869809bfc72cf32b26927",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/interactive-settings.png",
+      "sha256": "a6f094adcb257f9c0ac7a07bcdf4155b3885e327124af9bb58ad769894820387",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/interactive-tutorial-start.png",
+      "sha256": "56ed1b3665ad1d24b11b8d9053eb848aeb61d13d6705f09d31d53bdde7b0cbaf",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/language-picker-bottom.png",
+      "sha256": "61eb5d55f6ca92b00677dd5759892d9fc08e307161b1e083f004c6541a62e2f3",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/language-picker-open.png",
+      "sha256": "0b40bb004806efd414b9f20f9e5a6ea401d3a00498857e17c40dec88df31e3a8",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/language-picker-top.png",
+      "sha256": "f01bc22834106a822db1567a396b2abb6d14fc4e1d9a3482b26cecbee56f1032",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/language-player-settings.png",
+      "sha256": "58a8259ad95ce124af824f44c5f29fe45e4927c118d383de710f2637ac8242ce",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/offline-self-message.png",
+      "sha256": "7cbe61a183322156106e52b4ad611f727ed9649861be5d99dce4a3d2360a69df",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/switched-back-bengali.png",
+      "sha256": "644d24436eae67271e9bdd9c530474f31177c8710c5dd7458ff8c6517141fa55",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/switched-to-english.png",
+      "sha256": "e80b6e4e09c95ab224b54519907dc30770be6e51ae3963b5614f501e50898364",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/training-menu.png",
+      "sha256": "88b7eeee736b0629ce56762ea814d848b450b5dd5de1d0d3db60064b239d0296",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive/tutorial-ready.png",
+      "sha256": "9f4049a8ed0a6e0bef7f48e5198b6ecab76c7bd61dcad4a656bf74ca98e2df91",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/persisted-bengali-phone.png",
+      "sha256": "2066a967951673ab13f5efe918feb15a3d0b636ccd0f3d9bef15b353296159db",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-actual-main-bottom.png",
+      "sha256": "f93f3e790402fadb602bbe7519f3305d46ad83499cf23d68cd79ef59906f02a3",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-back-main.png",
+      "sha256": "7a2bee55fb72cd7a5049179c7339f58025537ad21ea12076f9484313d858042d",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-bengali-text.png",
+      "sha256": "8c6eeec04dd35d823db8535b8c9019f6e2b6d201aeba11ef37ced5afa5cb8bec",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-chat-entry.png",
+      "sha256": "b93558c9c98db03e359eaa7f2556860606065a6912e45e9dedde2119247af8c9",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-game-menu.png",
+      "sha256": "eb1ed200326b78a19f44f1e554be008dbdb42204152ade1a04d10fc14a2f8dac",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-history-bengali.png",
+      "sha256": "077b8aeaa839e0669baabbac701db210c5861e5674511bc35b3bff831e7c16dd",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-main-bottom.png",
+      "sha256": "d348259123816c315ca0b889e8d6c82c9d1abe549ee73c14e3c87025fb7f0ce8",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-more-menu.png",
+      "sha256": "ce4574fa4f7dfe37ad8af5e2776683e9b454132dd788ea033dd11b4c09fe3321",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-offline-self-message.png",
+      "sha256": "4f34db5a23b61f5c68decd03add4c5d881ad8fa7f14310c87c3a85f0bc10fd9e",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-quit-game.png",
+      "sha256": "bb432d8f476299ce89f1613dddaaef32934b318fb95330c73c2d10b1f039c269",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-training-list.png",
+      "sha256": "7a2bee55fb72cd7a5049179c7339f58025537ad21ea12076f9484313d858042d",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-tutorial-launch.png",
+      "sha256": "705f6de63ec4286a51aecd3f990b10c63994db963d58095891fb30c6c47e2d30",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/native-interactive-phone/phone-tutorial-ready.png",
+      "sha256": "a5e8a70a437fc0bf846061118f70cdcc432ef37e2be463ee8558686c1f71c6fb",
+      "visually_reviewed": true
+    }
+  ],
+  "actual_images_reviewed": 41,
+  "observations": [
+    "All27 desktop and14 compact-phone PNGs actually visually read; prior16 hashes unchanged.",
+    "Live Bengali input, digit backspace/restoration, local self-message and history preserve readable Bengali conjuncts/marks/digits on desktop and compactphone.",
+    "Bengali→English→Bengali settings changes shown; Bengali username remains readable and unchanged through switches. Saved profile language=bn and username match in desktop and freshly launched phone process.",
+    "Phone source profile was copied with only layout/listener-port changes, as recorded by producer run.json; no first-visit system-locale-detection claim.",
+    "Menu, training, results and exit/return flows fit captured desktop/phone viewports; table names intentionally ellipsize on narrowphone.",
+    "phone-main-bottom.png actually shows training-list bottom; phone-actual-main-bottom.png is the distinct real main-menu-bottom capture. Coverage follows actual image content.",
+    "Stored stock identities Your colony/Practice colony remain English in history/results. They are authored scenario defaults, not missing catalog translations or user-authored names; preserve raw dynamic identity without a generic string-equality localization heuristic."
+  ],
+  "history_identity_assessment": {
+    "verdict": "preserve actual player identity; no catalog/display heuristic fix in this PR",
+    "actual_prefix": "Your colony",
+    "origin": "Shipped tutorial default stored player name, copied into ChatMessage.senderName by Game_orders.cpp165 and shown raw by GameGUIOrders.cpp175. EngineInit.cpp60–62 preserves map players or campaign player chosen name. MapCommand.cpp715 also authors this default into generated scenarios.",
+    "distinction": "The default is stock authored content, not user-authored. It remains a dynamic player-identity value rather than the independent [Your colony] UI caption.",
+    "risk": "A string-equality localization heuristic could rename arbitrary player/map identities and diverge from recipient/quit/history names. Changing serialized identity in simulation or map files would expand compatibility scope.",
+    "limitation": "Stock scenario identity remains English in history; describe this concrete limitation rather than claiming every visible word is Bengali. Explicit authored display-name localization metadata would be a separately scoped improvement.",
+    "references": [
+      "src/game/Game_orders.cpp:165",
+      "src/hud/GameGUIOrders.cpp:175",
+      "src/engine/EngineInit.cpp:60",
+      "src/engine/EngineInit.cpp:62",
+      "src/app/cli/MapCommand.cpp:715",
+      "src/hud/touch/GameGUITouchView.cpp:878"
+    ]
+  },
+  "findings": [],
+  "scope": "Visual review of actual full-app local offline interaction captures produced by root; no independent re-execution or external-message claim.",
+  "state": "final_quiescent_desktop_phone_interactive_review",
+  "producer_runs": {
+    "native-interactive": {
+      "revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x900x24",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "play",
+        "--mute",
+        "--renderer",
+        "software",
+        "--no-fullscreen",
+        "--resizable",
+        "--window-size",
+        "1280x860",
+        "--compute-threads",
+        "2"
+      ],
+      "port": 53047,
+      "profile": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v2/native-interactive/profile",
+      "executable_sha256": "a0ade20f0b2923c0754578d017bd1c8d39f3744e162602bd0bb8c5cbb7efa29b",
+      "scope": "Actual graphical game, local loopback input/capture only, seeded Bengali profile; not first-visit system-locale detection.",
+      "wrapper_pid": 1970373,
+      "exit_code": 0
+    },
+    "native-interactive-phone": {
+      "revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+      "runtime_checkout_revision": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x900x24",
+        "/home/bradley/.codex/worktrees/83ab/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "play",
+        "--mute",
+        "--renderer",
+        "software",
+        "--no-fullscreen",
+        "--resizable",
+        "--compute-threads",
+        "2"
+      ],
+      "port": 38621,
+      "profile": "/home/bradley/.codex/worktrees/83ab/glob2/artifacts/bengali-localization-v2/native-interactive-phone/profile",
+      "source_saved_profile_sha256": "3fbecdc0d33928798088392845b4f183ecc530076172ec175e24b1838bc8b563",
+      "layout_adjustments": [
+        "screenWidth",
+        "screenHeight",
+        "interfacePresentation",
+        "mcpPort"
+      ],
+      "language_and_username_copied_unchanged": true,
+      "executable_sha256": "a0ade20f0b2923c0754578d017bd1c8d39f3744e162602bd0bb8c5cbb7efa29b",
+      "scope": "Fresh native process loads actual saved Bengali selection/name copied from UI profile; compact presentation on Linux, not Android/iOS. Only layout and task-owned listener port changed.",
+      "wrapper_pid": 2091286,
+      "exit_code": 0
+    }
+  },
+  "coverage_exact_match": true,
+  "saved_profile_checks": {
+    "language": "bn",
+    "bengali_username": "বাংলা১",
+    "desktop_profile_sha256": "3fbecdc0d33928798088392845b4f183ecc530076172ec175e24b1838bc8b563",
+    "phone_profile_sha256": "ae95282ea15617f2daa49be199f99fa3a4a539f883166a3ca789a864a0e492aa",
+    "comparison": "language and username exactly equal; profile/layout changes recorded separately by producer"
+  },
+  "rejected_action": {
+    "path": "artifacts/bengali-localization-v2/native-interactive/desktop-game-menu-final.json",
+    "sha256": "59f6a7f8d4511f908d26a30a1526412d7491485416ac1d6faf4bfc74ffbf5729",
+    "input_started": false,
+    "dispatched": false,
+    "note": "Expired controller lease; no corresponding screenshot or successful-input claim. Separate reacquisition then desktop-game-menu-verified action and actual screenshot reviewed."
+  },
+  "current_revision_compatibility": {
+    "actual_producer_revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+    "runtime_checkout_revision": "36c2bf395d6484fa5ad388b1b21976a6987d0781",
+    "independent_carry_forward_proof": "artifacts/bengali-localization-v2/adversarial-production-carry-forward.json",
+    "sha256": "4e3282cf8c2e4ae5d0fbae6ade57ec7116901628669d0a9f3063045620c918c8",
+    "scope": "Only test source changed; identical production/runtime inputs. Images retain actual31ef producer, not relabeled36c2."
+  },
+  "limits": [
+    "Independent visual review of root-produced local offline full-app interactions; no independent re-execution claim.",
+    "No physical mobile device, nativeIME/keyboard, or complex multi-codepoint cluster deletion certification.",
+    "Seeded/persisted Bengali profile; system-locale startup is separate focused-test evidence.",
+    "Not exhaustive UI/catalog coverage; private-session.json is excluded and must never be published.",
+    "Agent linguistic review, not native-human certification."
+  ]
+}
