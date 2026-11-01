@@ -266,7 +266,6 @@ bool acceptMapPlayText(const std::string &input)
 		(!mode.empty() && mode != "local" && mode != "multiplayer"))
 		return false;
 	request.origin = currentOrigin(*normalized);
-	request.map.title.resize(std::min<std::size_t>(request.map.title.size(), 128));
 	std::transform(request.map.hash.begin(), request.map.hash.end(), request.map.hash.begin(), [](unsigned char c) { return char(std::tolower(c)); });
 	request.mode = mode == "local" ? MapPlayRequest::Mode::Local : MapPlayRequest::Mode::Multiplayer;
 	setPendingMapPlay(request);
@@ -293,7 +292,7 @@ void acceptLaunchRequest(const Cli::Request &request)
         setPendingJoin(*invite);
     } else if(request.command=="online play-map" || request.command=="online host-map") {
         RoomMapChoice choice;
-        choice.mapId=request.positionals.at(0);choice.hash=request.get("--hash");choice.title=request.get("--title").substr(0,128);
+        choice.mapId=request.positionals.at(0);choice.hash=request.get("--hash");choice.title=request.get("--title");
         const auto normalized=normalizeOrigin(request.get("--instance",OFFICIAL_INSTANCE_ORIGIN));
         if(!normalized || !validCatalogMap(choice)) throw std::invalid_argument("Invalid catalog map or instance origin");
         std::transform(choice.hash.begin(),choice.hash.end(),choice.hash.begin(),[](unsigned char c){return char(std::tolower(c));});

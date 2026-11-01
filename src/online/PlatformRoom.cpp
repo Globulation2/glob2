@@ -72,7 +72,8 @@ std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, MapCa
 	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps, &storage));
 	room->automaticMap = automaticMap && !catalogMap;
 	room->listen();
-	Json params{{"name", name.substr(0, 64)}, {"visibility", listed ? "public" : "link"}};
+	// Protocol limits count characters; byte slices can corrupt valid UTF-8.
+	Json params{{"name", name}, {"visibility", listed ? "public" : "link"}};
 	if (catalogMap && catalogMap->scriptDescriptor)
 		params["map"] =
 			Json{{"kind", "scripted"}, {"generator", Json::parse(*catalogMap->scriptDescriptor)}};
@@ -749,7 +750,7 @@ void PlatformRoom::sendChat(const std::string &line)
 {
 	if (state.is_null() || line.empty())
 		return;
-	call("room.chat", Json{{"roomId", state["id"]}, {"text", line.substr(0, 500)}});
+	call("room.chat", Json{{"roomId", state["id"]}, {"text", line}});
 }
 
 std::string PlatformRoom::experimentsLabel() const
@@ -1011,7 +1012,7 @@ void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, cons
 	}
 	std::string path = Api::uploads("map", SimVersion::local().key());
 	if (!title.empty())
-		path += "&fileName=" + urlEncode(title.substr(0, 120) + ".map");
+		path += "&fileName=" + urlEncode(title + ".map");
 	calls->restRaw(
 		HttpFetch::Method::Post, path, std::move(bytes), "application/octet-stream",
 		[this, title, rules = matchRules(setup), teams = setupTeams(setup)](const PlatformClient::Response &response) {

@@ -15,6 +15,11 @@ namespace GAGCore
 	class DrawableSurface;
 }
 
+namespace GAGGUI::ui
+{
+class Host;
+}
+
 namespace GAGGUI
 {
 	//! transform an ucs 16 unicode char to an utf8 one
@@ -53,6 +58,7 @@ namespace GAGGUI
 		Screen();
 		virtual ~Screen();
 		virtual const char *recordingId() const { return "screen"; }
+		virtual std::vector<ui::Host *> inspectionHosts() { return {}; }
 
 		//! Method called for each timer's tick
 		virtual void onTimer(Uint32 tick) { }

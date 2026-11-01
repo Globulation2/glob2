@@ -22,6 +22,7 @@
 // TurnSession) and is never simulated, networked or saved.
 
 #include <GraphicContext.h>
+#include <ui/PositionedControls.h>
 #include <SDL3/SDL.h>
 
 #include <cstdint>
@@ -120,6 +121,22 @@ class ConnectionOverlay
 	/// Clicks and taps on the panel, the details and the cards; true when consumed.
 	bool handle(const SDL_Event &event);
 	bool detailsOpen() const { return details; }
+	bool blocksGameplay() const { return bool(source) && (details || snapshot.card!=ConnectionSnapshot::Card::None); }
+	std::vector<GAGGUI::ui::PositionedControl> describeControls(bool touch, SDL_Rect area, double unit);
+	// One source snapshot owns an entire input transaction, including semantic
+	// target revalidation. A changing network card cannot expose controls behind it.
+	class InputSnapshot
+	{
+		std::shared_ptr<bool> frozen;
+		bool previous=false;
+	  public:
+		explicit InputSnapshot(ConnectionOverlay *owner);
+		~InputSnapshot();
+		InputSnapshot(const InputSnapshot &)=delete;
+		InputSnapshot &operator=(const InputSnapshot &)=delete;
+	};
+
+
 	/// Where the panel was last drawn (drawable pixels; empty before the first
 	/// frame), so the message list starts below it instead of under its header.
 	SDL_Rect panelBounds() const { return panelRect; }
@@ -132,6 +149,17 @@ class ConnectionOverlay
 	static std::string delayLine(const ConnectionSnapshot &snapshot);
 
   private:
+	std::shared_ptr<bool> inputSnapshotFrozen=std::make_shared<bool>(false);
+	void refreshSnapshot();
+	struct PanelLayout;
+	struct DetailsLayout;
+	struct CardLayout;
+	PanelLayout panelLayout(bool touch, SDL_Rect area, double unit) const;
+	DetailsLayout detailsLayout(bool touch, SDL_Rect area, double unit) const;
+	CardLayout cardLayout(bool touch, SDL_Rect area, double unit) const;
+	bool lastTouch=false;
+	SDL_Rect lastArea{};
+	double lastUnit=1;
 	void observe(const ConnectionSnapshot &next);
 	void drawPanel(bool touch, SDL_Rect area, double unit);
 	void drawDetails(bool touch, SDL_Rect area, double unit);

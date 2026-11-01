@@ -2,6 +2,10 @@
 #pragma once
 #include "ui/FrontendUI.h"
 #include "TutorialModel.h"
+#include <ui/PositionedControls.h>
+#include <sstream>
+#include <iomanip>
+#include <limits>
 #include <algorithm>
 #include <functional>
 #include <set>
@@ -26,6 +30,11 @@ class Guidance : public Glob2UI::InGameDialog
         if (mobileArea == area) return;
         mobileArea=area; invalidate();
     }
+    void cancelInteraction()
+    {
+        capturedFingers.clear(); capturedMouseButtons.clear();
+        cancelInput(); host().focus("");
+    }
     void model(std::shared_ptr<const Model> next)
     {
         if (lesson==next) return;
@@ -36,6 +45,23 @@ class Guidance : public Glob2UI::InGameDialog
         lesson=std::move(next);invalidate();
     }
     Glob2UI::Element build(const Glob2UI::Presentation &p) override
+    {
+        // Stable control keys belong to this lesson step. A newly published
+        // destination or restart map must not change a queued command's meaning.
+        std::ostringstream context;
+        context << "tutorial:";
+        if(lesson)
+        {
+            const auto field=[&](const std::string &value){context << value.size() << ':' << value;};
+            field(lesson->lessonId);field(lesson->stepId);field(lesson->restartMap);
+            context << ':' << lesson->version << ':' << lesson->index;
+            if(lesson->destination)
+                context << ':' << std::setprecision(std::numeric_limits<double>::max_digits10)
+                    << lesson->destination->x << ':' << lesson->destination->y;
+        }
+        return GAGGUI::ui::semanticContext(content(p),context.str());
+    }
+    Glob2UI::Element content(const Glob2UI::Presentation &p)
     {
         using namespace Glob2UI;
         if (!lesson) return empty();
@@ -51,7 +77,13 @@ class Guidance : public Glob2UI::InGameDialog
                     .flat=true,.minHeight=44,.tooltip=tr(name),.accessibleLabel=tr(name),
                     .icon=uiIcon(icon),.iconSize=18}));
             };
-            auto heading=row({expanded(paragraph(title,{FontRole::Support,true})),
+            // A collapsed title must not grow into a multi-line instruction card.
+            // label() ellipsizes at shaped-cluster boundaries and retains its full
+            // accessible text; expanding restores the complete wrapping title.
+            auto headingTitle=collapsed ? label(title,{FontRole::Support,true}) :
+                paragraph(title,{FontRole::Support,true});
+            headingTitle->key="intro/title";
+            auto heading=row({expanded(headingTitle),
                 lesson->destination ? action("intro/destination","[intro show destination]",UIIcon::Map,[this]{navigate(ShowDestination);}) : Element{},
                 action("intro/help","[intro help]",UIIcon::Info,[this]{help=!help; collapsed=false; invalidate();}),
                 width(p.pt(44),button("intro/collapse",collapsed ? "+" : "−",[this]{collapsed=!collapsed; help=false; invalidate();},
@@ -95,6 +127,11 @@ class Guidance : public Glob2UI::InGameDialog
         }
         return column({heading, height(p.pt(p.touch ? (p.safe.h>p.pt(560) ? 196 : 112) : 160), scroll("intro/body/"+std::to_string(current), column(std::move(body))))});
     }
+    void cancelInput()
+    {
+        capturedFingers.clear();capturedMouseButtons.clear();
+        Glob2UI::InGameDialog::cancelInput();
+    }
     bool handle(const SDL_Event &e)
     {
         if (e.type==SDL_EVENT_KEY_DOWN && (e.key.key==SDLK_TAB ||
@@ -106,12 +143,13 @@ class Guidance : public Glob2UI::InGameDialog
             host().focus("");
         }
         if (e.type==SDL_EVENT_WINDOW_FOCUS_LOST) {
-            capturedFingers.clear(); capturedMouseButtons.clear(); cancelInput(); host().focus(""); return false;
+            cancelInteraction(); return false;
         }
         if (e.type == SDL_EVENT_FINGER_DOWN || e.type == SDL_EVENT_FINGER_MOTION || e.type == SDL_EVENT_FINGER_UP) {
             const auto key=std::make_pair(e.tfinger.touchID,e.tfinger.fingerID);
             const GAGGUI::ui::Point point{int(e.tfinger.x*presentation().viewport.w),int(e.tfinger.y*presentation().viewport.h)};
             if (e.type==SDL_EVENT_FINGER_DOWN) {
+                capturedFingers.erase(key);
                 if (panelBounds().contains(point)) capturedFingers.insert(key);
                 else host().focus("");
             }
@@ -123,6 +161,7 @@ class Guidance : public Glob2UI::InGameDialog
             const auto key=std::make_pair(e.button.which,e.button.button);
             const GAGGUI::ui::Point point{int(e.button.x),int(e.button.y)};
             if (e.type==SDL_EVENT_MOUSE_BUTTON_DOWN) {
+                capturedMouseButtons.erase(key);
                 if (panelBounds().contains(point)) capturedMouseButtons.insert(key);
                 else host().focus("");
             }

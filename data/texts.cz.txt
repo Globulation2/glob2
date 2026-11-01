@@ -6820,3 +6820,5 @@ Množství ryb
 Zprávy ▸
 [Camp-site amount]
 Počet tábořišť
+[AI for all computer colonies]
+AI pro všechny počítačem řízené kolonie

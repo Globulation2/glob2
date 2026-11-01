@@ -109,7 +109,8 @@ jobs:
             --check 'terrain ecology analysis contracts' 'python3 tools/test_terrain_ecology.py' \
             --check 'gradient benchmark contracts' 'python3 tools/test_gradient_benchmark.py' \
             --check 'resource benchmark contracts' "python3 -m unittest discover -s test -p 'test_*benchmark*.py' -v" \
-            --check 'recording extraction contracts' 'python3 test/test_recording_tool.py'
+            --check 'recording extraction contracts' 'python3 test/test_recording_tool.py' \
+            --check 'MCP launcher contracts' 'python3 test/test_mcp_stdio.py'
       - name: Check that the sim version follows the simulation
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}

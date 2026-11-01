@@ -12,3 +12,7 @@
 [stats topic]
 [stats full history]
 [stats missing readings]
+[lush_grass]
+[dry_grass]
+[dune_sand]
+[pale_sand]

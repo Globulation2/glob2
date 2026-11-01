@@ -808,13 +808,30 @@
       "Sep",
       "–"
     ],
-    "texts.mr.txt": [
+    "texts.bn.txt": [
       "%0 / %1 HP · %2",
       "%0 KB",
+      "%0/%1  >",
+      "256 × 256",
       "CPU %0%",
+      "FFA",
+      "Globulation 2 Discord",
       "HP ≤25/50/75%",
       "Hive Mind",
+      "L",
       "P %0/%1/%2",
+      "W",
+      "down",
+      "equals",
+      "left",
+      "left meta",
+      "left windows key",
+      "right",
+      "right meta",
+      "right windows key",
+      "sim %0",
+      "space",
+      "up",
       "–"
     ],
     "texts.nb.txt": [
@@ -917,6 +934,15 @@
       "Tutorial",
       "Veteran",
       "sim %0",
+      "–"
+    ],
+    "texts.mr.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "CPU %0%",
+      "HP ≤25/50/75%",
+      "Hive Mind",
+      "P %0/%1/%2",
       "–"
     ]
   }

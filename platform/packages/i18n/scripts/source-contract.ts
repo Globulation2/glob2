@@ -3,6 +3,17 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
+/** Computed system labels need keys even when the call site uses an enum value. */
+export function fixedLabelErrors(
+  english: Record<string, unknown>,
+  labels: readonly string[],
+  family: string,
+): string[] {
+  return labels
+    .filter((label) => !Object.hasOwn(english, label))
+    .map((label) => `${family}: missing catalog key: ${label}`);
+}
+
 /** Contributor check: user-facing JSX and literal message calls must stay localized. */
 export function sourceErrors(
   english: Record<string, unknown>,

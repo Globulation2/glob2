@@ -6820,3 +6820,5 @@ Fischmenge
 Nachrichten ▸
 [Camp-site amount]
 Anzahl der Lagerplätze
+[AI for all computer colonies]
+KI für alle computergesteuerten Kolonien

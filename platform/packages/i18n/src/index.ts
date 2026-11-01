@@ -56,11 +56,13 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     const writtenScript =
       language === 'hi' || language === 'mr'
         ? 'deva'
-        : language === 'ur'
-          ? 'arab'
-          : language === 'sw' || language === 'ms'
-            ? 'latn'
-            : undefined;
+        : language === 'bn'
+          ? 'beng'
+          : language === 'ur'
+            ? 'arab'
+            : language === 'sw' || language === 'ms'
+              ? 'latn'
+              : undefined;
     if (writtenScript) {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);
@@ -114,6 +116,7 @@ export function hasMessage(source: string, locale = selected): boolean {
   return !!catalog && Object.hasOwn(catalog, source);
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
+  bn: () => import('../locales/bn.json', { with: { type: 'json' } }),
   ms: () => import('../locales/ms.json', { with: { type: 'json' } }),
   hi: () => import('../locales/hi.json', { with: { type: 'json' } }),
   mr: () => import('../locales/mr.json', { with: { type: 'json' } }),

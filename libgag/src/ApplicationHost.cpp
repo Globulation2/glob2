@@ -9,6 +9,7 @@
 #include <mutex>
 #include <atomic>
 #include <thread>
+#include <utility>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -233,5 +234,9 @@ void focusBrowserTextInput(const void*) {}
 bool hasBrowserTextInput(const void*) { return false; }
 void beginBrowserTextFrame() {}
 void endBrowserTextFrame() {}
-void browserTextInput(const void*,SDL_Rect,int,int,const std::string&,bool,size_t,BrowserTextChange,const SDL_Rect*,bool) {}
+void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
+    bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip,bool selectAll) {
+    browserTextInput(owner,rect,width,height,value,password,maximum,std::move(changed),clip,selectAll,0);
+}
+void browserTextInput(const void*,SDL_Rect,int,int,const std::string&,bool,size_t,BrowserTextChange,const SDL_Rect*,bool,size_t) {}
 }

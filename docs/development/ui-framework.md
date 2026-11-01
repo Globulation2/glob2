@@ -145,7 +145,13 @@ retain a 20-pixel minimum advance; touch instructions use the shared cluster-awa
 wrapper and a 24-point minimum advance. The touch cache includes language, font,
 width and text-size inputs. Drawing, scroll limits and hit areas share the same
 measured footer and collapsed-label bounds. Test both expanded instructions and
-the collapsed control when changing fonts or text-size behavior.
+the collapsed control when changing fonts or text-size behavior. The collapsed
+mobile tutorial uses cluster-safe title ellipsis; expanding it restores the full
+wrapped title. Mobile statistics, the Tools strip and map peek temporarily own
+foreground painting and input. They cancel tutorial pointer and keyboard focus
+without changing its lesson or collapsed state; statistics paint above the minimap.
+Collapsed browser account actions retain their complete translated accessible
+names and show an icon in a 44-pixel target.
 
 ### Preparing independently reviewed locales
 
@@ -369,6 +375,54 @@ exchange fruits. Translate ambiguous terrain terms from their control's effect,
 not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
+
+### Cloud Translation drafts
+
+Prepare a Bengali kit with `prepare --locales bn --output
+artifacts/bengali-localization` and `draft --locale bn --output
+artifacts/bengali-localization` using the translation-program tool above. Then
+`python3 tools/localization/cloud_draft.py --project PROJECT_ID` estimates a
+Bengali pilot without sending a paid request. Add
+`--execute` to request the pilot through Translation API v3 using the active
+`gcloud` credentials. Review the pilot before running `--phase bulk
+--pilot-reviewed --execute`. `--output` selects the kit and `--locale` selects its
+language. Existing translations are never overwritten.
+
+The runner defaults to a US$10 ceiling and accounts conservatively at US$20 per
+million NMT input characters without assuming free credits. Every request attempt
+is reserved before transmission, including retries whose outcome may be unknown.
+Verify the current [NMT tariff](https://cloud.google.com/products/translate/pricing)
+before requesting paid drafts; update the accounting rate if it changes.
+Successful responses are cached and checkpointed. Protected-token failures retain
+the response and block retransmission until a reviewer supplies a correction;
+formatting-only templates bypass translation. Keep the accounting and response
+files with the kit when resuming. A leftover runner lock needs investigation
+before removal. Credentials are never written into the kit.
+
+### Bengali conventions
+
+Bengali (`bn`, বাংলা) uses contemporary standard written Bengali for readers in
+Bangladesh and West Bengal, in Bengali script and logical left-to-right order.
+Use respectful আপনি/করুন forms and concise familiar wording, with consistent
+terms across lessons, game controls and the online platform. Preserve product
+names, code, filenames, shortcuts and formatting tokens. Dynamic online numbers
+continue to use the existing locale formatting functions.
+
+The concept anchors are শ্রমিক (Worker), অনুসন্ধানকারী (Explorer), যোদ্ধা
+(Warrior), সরাইখানা (Inn), মৌচাক (the Swarm building), বাজার (Market), and পতাকা
+(Flag). A moving swarm may be a ঝাঁক; the unit-producing building is a মৌচাক.
+Describe assignment targets as requested workers rather than workers already
+present. Terrain passes mean গিরিপথ, while river banks mean নদীর পাড়.
+
+The pinned Noto Sans Bengali asset supplies shaping tables for HarfBuzz in the
+game and the shared browser font CSS. Retain those tables and the OFL licence in
+packages. Check conjuncts, reph, vowel signs, mixed Latin text and Bengali digits
+at small sizes; glyph coverage alone does not establish correct shaping or fit.
+Explicit non-Bengali script tags must not select the Bengali-script catalog.
+After adding or changing a language's displayed name, regenerate the checked-in
+browser assets with the pinned exporter command in `browser/derive_assets.py`.
+Its font fingerprint includes the language-name inventory even when the resulting
+subset font bytes stay identical.
 
 ### Malay terminology
 
@@ -945,6 +999,72 @@ preference fields or simulation state are introduced.
    `tools/MobileGalleryHarness.cpp` and `tools/mobile_gallery/catalog.json`.
 4. Expose semantic entry points for interaction tests instead of coordinates.
 
+## Typed inspection and semantic actions
+
+`ui/Inspection.h` defines transport-independent `SurfaceSnapshot`, `ControlSnapshot`,
+`ControlValue` and `SemanticAction` types. `Host::inspect()` describes the tree and
+popup, including clipped bounds, roles, labels, values, selection, focus and supported
+actions. Coordinates are logical pixels. A popup blocks its underlying tree. The
+screen receiving input supplies `Screen::inspectionHosts()`; modal owners expose
+only the active dialog. Native file pickers are outside this interface.
+
+`Host::act(key, action, error)` validates visibility, enablement and popup ownership.
+Standard buttons/toggles activate, choices/lists select an integer index, numeric
+controls set an integer value, text controls set a string, and scrollable nodes scroll
+by a signed logical-pixel delta. Draft text fields retain their usual Enter/blur commit
+and Escape cancellation. Password values remain masked. Custom nodes extend
+`controlValue()`, `supportedActions()` and `perform()` alongside ordinary input.
+Callbacks must remain application-thread work.
+
+Surface instances are lifetime identities. Each keyed control has a monotonic target
+revision that changes when its own description, geometry, value or availability changes,
+or when it disappears and returns. Focus and unrelated children do not change that
+control's revision. Surface revisions include changes to the hierarchy. The browser's
+flattened diagnostic JSON comes from `diagnosticJSON()` over this same snapshot.
+
+`SemanticDispatch` carries an owned command through ordinary additional input using
+an opaque event ID. The host checks the instance and target revision when it consumes
+the event. Retired commands cannot leave borrowed pointers in deferred event queues.
+Screen owners must route semantic events to the same dialog/host that owns human
+input. Returning a host from inspection without routing its events is incomplete.
+
+Custom-rendered controls use `ui::PositionedControl` and `positionedControls`: the
+domain model supplies logical bounds, clipping, state, supported actions and shared
+callbacks before painting or hit testing. Paint and human input consume the same
+geometry; inspection is not a second coordinate map. Build a fresh model at action
+consumption, and read gameplay presentation from the published Scene. A paint scope
+may retain one immutable model for the duration of a draw to avoid rebuilding every
+control's callbacks for every field.
+
+Compound building edits read the same pending presentation values for human and
+semantic input. An execution receipt does not imply that the displayed Scene already
+contains its result: retain the pending field until `executedOrderRevision` reaches
+that receipt. Reconcile only fields with pending values, and retire their receipts
+on building removal or session initialization.
+
+Stable keys alone do not distinguish a reused entity slot or a changed construction
+preview. Override `Node::semanticIdentity()` or wrap a subtree with `semanticContext`
+using the domain's object generation and relevant action context. That identity is
+inherited by descendants and participates in their revisions without being exposed
+as transport data. Include context that changes the meaning of a callback; do not
+include frame ticks or unrelated counters. Host assigns popup lifetimes automatically,
+so closing and reopening an identical popup invalidates its earlier targets. Surface
+owners must enforce popup/modal ownership across separate hosts at consumption as
+well as inspection; an inspectable covered control must never receive input.
+Choices bind their full catalog identity and enabled state. Owned popups also bind
+their opener's semantic context; changing or retiring the opener closes the popup
+before a stale selection can reach a replacement callback.
+
+Surface owners can set `Host::setBlockedRegions` from higher surfaces' visible
+panels. Blocks affect inspection, semantic dispatch, pointer acquisition and keyboard
+actions. Rectangular occlusion conservatively blocks an entire target on any visible
+overlap; shaped or partly covered controls can require dismissing the covering panel.
+Uncovered sibling rows remain actionable. Changing a blocker cancels only newly
+covered gestures, preserving unrelated presses and scrolling. Suspended text drafts
+are retained, and Tab can move focus to uncovered controls. Legacy compact keyboard
+focus is mirrored into the Host so typed focused state and actual keyboard targeting
+agree.
+
 ### In-game statistics
 
 The Statistics view shares visible topic buttons and a scrollable metric list
@@ -966,6 +1086,11 @@ catalog's capabilities and defaults. Topic, per-topic scrolling and per-metric
 history choices last for the current match; they are not saved as preferences.
 Closing history restores focus to its metric. The former graph view is now Map
 overlays, retaining its tab position and the four overlay toggles.
+
+`GameGUI::statisticsHost()` exposes the panel's embedded Host for painting, human
+input, typed inspection and semantic dispatch. `statisticsBounds()` supplies shared
+desktop and compact geometry. Team and viewing context participate in target
+revisions, so a command cannot act on a replacement watched team.
 
 `InGameStatisticsPanel` holds immutable statistics/history leases rather than
 live simulation pointers. Visible statistics and history request the history

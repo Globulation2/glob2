@@ -6820,3 +6820,5 @@ Quantità di pesci
 Messaggi ▸
 [Camp-site amount]
 Numero di accampamenti
+[AI for all computer colonies]
+IA per tutte le colonie controllate dal computer

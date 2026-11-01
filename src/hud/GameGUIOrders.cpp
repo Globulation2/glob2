@@ -33,7 +33,77 @@
 using std::shared_ptr;
 using std::static_pointer_cast;
 
-void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order>& order)
+namespace
+{
+std::optional<Uint16> reconciledBuildingGid(Order &order)
+{
+	switch (order.getOrderType())
+	{
+	case ORDER_MOVE_FLAG:
+		return static_cast<const OrderMoveFlag &>(order).gid;
+	case ORDER_MODIFY_BUILDING:
+		return static_cast<const OrderModifyBuilding &>(order).gid;
+	case ORDER_MODIFY_FLAG:
+		return static_cast<const OrderModifyFlag &>(order).gid;
+	case ORDER_CHANGE_PRIORITY:
+		return static_cast<const OrderChangePriority &>(order).gid;
+	case ORDER_MODIFY_CLEARING_FLAG:
+		return static_cast<const OrderModifyClearingFlag &>(order).gid;
+	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
+		return static_cast<const OrderModifyMinLevelToFlag &>(order).gid;
+	case ORDER_MODIFY_SWARM:
+		return static_cast<const OrderModifySwarm &>(order).gid;
+	default:
+		return {};
+	}
+}
+bool hasPendingBuildingField(const BuildingGuiStateMap &states, Order &order)
+{
+	const auto gid = reconciledBuildingGid(order);
+	if (!gid)
+		return false;
+	const auto it = states.find(*gid);
+	if (it == states.end())
+		return false;
+	const auto &state = it->second;
+	switch (order.getOrderType())
+	{
+	case ORDER_MOVE_FLAG:
+		return bool(state.pendingPosX || state.pendingPosY);
+	case ORDER_MODIFY_BUILDING:
+		return bool(state.pendingMaxUnitWorking);
+	case ORDER_MODIFY_FLAG:
+		return bool(state.pendingUnitStayRange);
+	case ORDER_CHANGE_PRIORITY:
+		return bool(state.pendingPriority);
+	case ORDER_MODIFY_CLEARING_FLAG:
+		return bool(state.pendingClearingResources);
+	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
+		return bool(state.pendingMinLevelToFlag || state.pendingMinWorkerLevelToFlag ||
+					state.pendingExplorersRequireBombing);
+	case ORDER_MODIFY_SWARM:
+		return bool(state.pendingRatio);
+	default:
+		return false;
+	}
+}
+} // namespace
+
+void GameGUI::reconcilePublishedBuildingGuiState()
+{
+	// Execution receipts can arrive before the corresponding presentation frame.
+	// Keep optimistic compound values until the frame used by the next human or
+	// semantic edit actually includes those orders.
+	while (!pendingBuildingReconciliations.empty() &&
+		   pendingBuildingReconciliations.front().first <= drawnScene().executedOrderRevision)
+	{
+		auto order = std::move(pendingBuildingReconciliations.front().second);
+		pendingBuildingReconciliations.pop();
+		reconcileBuildingGuiState(order);
+	}
+}
+
+void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order> &order)
 {
 	// When an order executes that updates the authoritative Building state,
 	// drop the corresponding pending shadow so the display falls back to
@@ -217,8 +287,11 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::OrderExecuted>)
 		{
-			reconcileBuildingGuiState(e.order);
-            toolManager.acknowledgePaint(*e.order,e.revision);
+			if (e.revision > drawnScene().executedOrderRevision && hasPendingBuildingField(buildingGuiState, *e.order))
+				pendingBuildingReconciliations.emplace(e.revision, e.order);
+			else
+				reconcileBuildingGuiState(e.order);
+			toolManager.acknowledgePaint(*e.order, e.revision);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::BuildingRemoved>)
 		{
@@ -229,6 +302,16 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 			// a freshly placed flag reusing the gid would render at the dead flag's
 			// position while the simulation used the real posX/posY.
 			buildingGuiState.erase(e.gid);
+			// A removed slot may be reused before its old receipt's frame arrives.
+			decltype(pendingBuildingReconciliations) retained;
+			while (!pendingBuildingReconciliations.empty())
+			{
+				auto pending = std::move(pendingBuildingReconciliations.front());
+				pendingBuildingReconciliations.pop();
+				if (reconciledBuildingGid(*pending.second) != e.gid)
+					retained.push(std::move(pending));
+			}
+			pendingBuildingReconciliations = std::move(retained);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::UnitConverted>)
 		{
