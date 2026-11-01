@@ -1,10 +1,11 @@
-name: Temporary Bengali iOS Simulator integration validation
+name: Temporary Bengali iOS runtime recovery
 'on':
   push:
     branches:
     - codex/bengali-ios-validation-31efbe8
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: bengali-ios-validation-31efbe8
   cancel-in-progress: false
@@ -13,7 +14,7 @@ env:
 jobs:
   simulator:
     runs-on: xcode-27
-    timeout-minutes: 180
+    timeout-minutes: 30
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
@@ -22,17 +23,20 @@ jobs:
     - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
       with:
         python-version: 3.14.8
-    - name: Install pinned build drivers
+    - name: Download immutable release app checkpoint
+      uses: actions/download-artifact@v4
+      with:
+        name: bengali-ios-simulator-final-v3-942d138
+        path: build/ios-recovery-input
+        github-token: ${{ github.token }}
+        repository: Globulation2/glob2
+        run-id: 41266250711
+    - name: Verify and run retained Bengali iOS app without rebuilding
       run: |
-        python3 -m venv "$RUNNER_TEMP/ios-build-tools"
-        "$RUNNER_TEMP/ios-build-tools/bin/pip" install scons==4.11.1 cmake==4.4.3
-        echo "$RUNNER_TEMP/ios-build-tools/bin" >> "$GITHUB_PATH"
-    - name: Build and exercise Bengali iOS Simulator app
-      run: |
-        python3 - <<'IOSVALIDATION'
+        python3 - <<'IOSRECOVERY'
         import subprocess, os, json, hashlib, gzip, time, threading, tarfile, sys
         from pathlib import Path
-        root=Path.cwd(); proof=root/'build/ios-bengali-proof'; proof.mkdir(parents=True,exist_ok=True)
+        root=Path.cwd(); proof=root/'build/ios-bengali-recovery'; proof.mkdir(parents=True,exist_ok=True)
         records=[]; selected=None; device_set=root/'build/mobile-tools/ios-simulators'
         def run(label,args,timeout=300):
             print('RUN',label,repr(args),flush=True)
@@ -56,7 +60,7 @@ jobs:
                 raise RuntimeError(str(record))
             return b''.join(lines).decode(errors='replace')
         def sim(label,*args,timeout=300):return run(label,['xcrun','simctl','--set',str(device_set),*args],timeout)
-        summary={'passed':False,'source':'942d138b609ad8e0c425d974042b6e3983a717a4','workflow_commit':os.environ['GITHUB_SHA'],'scope':'actual iOS arm64 Simulator release build; seeded Bengali profile; startup/background/resume/relaunch; no physical-device, first-visit-onboarding, keyboard, comprehensive gameplay or determinism claim'}
+        summary={'passed':False,'source':'942d138b609ad8e0c425d974042b6e3983a717a4','workflow_commit':os.environ['GITHUB_SHA'],'scope':'Runtime-only recovery of retained exact942 release app; no app/dependency rebuild; seeded Bengali SDL preference profile; startup/background/resume/relaunch; no physical-device, first-visit-onboarding, keyboard, comprehensive gameplay or determinism claim'}
         try:
             actual=run('source',['git','rev-parse','HEAD']).strip(); assert actual==summary['source']
             source_catalogs={}
@@ -85,6 +89,7 @@ jobs:
             available=[x for x in available if 'arm64' in x.get('supportedArchitectures',[]) and any(t['name'].startswith('iPhone') for t in x.get('supportedDeviceTypes',[]))]
             assert available,'No arm64 iOS runtime with explicitly supported iPhone types'
             runtime=sorted(available,key=lambda x:(x['version']==sdk_version,tuple(int(t) for t in x['version'].split('.'))))[-1]
+            assert runtime['version']=='27.0' and runtime['buildversion']=='24A434','Recovery requires exact original iOS27.0 runtime build'
             phones=[x for x in runtime['supportedDeviceTypes'] if x['name'].startswith('iPhone')]
             assert phones
             device_type=next(x for x in types if x['identifier']==phones[0]['identifier'])
@@ -92,77 +97,59 @@ jobs:
             selected=sim('create','create','Glob2-Mobile',device_type['identifier'],runtime['identifier']).strip()
             summary['simulator']={'uuid':selected,'runtime':runtime,'device_type':device_type}
             sim('boot','boot',selected);sim('boot-wait','bootstatus',selected,'-b',timeout=600)
-            run('dependencies',['python3','mobile/dependencies.py','--target','ios','--environment','simulator','--release','--jobs','2'],3600)
-            run('build',['python3','mobile/ios.py','build','--environment','simulator','--release','--jobs','2'],7200)
-            app=root/'build/ios/simulator/arm64/15.0/client/release/xcode-project/build/Release-iphonesimulator/Glob2.app'
-            assert app.is_dir()
-            run('codesign',['codesign','--verify','--deep','--strict',str(app)])
-            run('codesign-detail',['codesign','-dvv',str(app)])
-            run('executable-identity',['file',str(app/'Glob2')])
-            inventory=[]
-            for path in sorted(app.rglob('*')):
-                if path.is_file():inventory.append({'path':str(path.relative_to(app)),'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
-            (proof/'app-inventory.json').write_text(json.dumps(inventory,indent=2))
-            important=['data/texts.bn.txt','data/texts.list.txt','data/fonts/sans.ttf','data/fonts/scripts/NotoSansBengali-Regular.ttf','data/fonts/scripts/manifest.json','data/fonts/LICENSE-Noto.txt']
-            identities=[]
-            for name in important:
-                source=root/name; bundled=app/name
-                assert source.is_file() and bundled.is_file(),name
-                a=hashlib.sha256(source.read_bytes()).hexdigest();b=hashlib.sha256(bundled.read_bytes()).hexdigest();assert a==b,name
-                identities.append({'path':name,'source_sha256':a,'app_sha256':b})
-            assert next(x['app_sha256'] for x in identities if x['path']=='data/texts.bn.txt')=='3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054'
-            (proof/'critical-bundle-identities.json').write_text(json.dumps(identities,indent=2))
-            font_closure=[]
-            for bundled in sorted((app/'data/fonts').rglob('*')):
-                if not bundled.is_file():continue
-                name=str(bundled.relative_to(app)); source=root/name
-                assert source.is_file(),name
-                a=hashlib.sha256(source.read_bytes()).hexdigest(); b=hashlib.sha256(bundled.read_bytes()).hexdigest();assert a==b,name
-                font_closure.append({'path':name,'bytes':bundled.stat().st_size,'source_sha256':a,'app_sha256':b})
-            assert font_closure
-            (proof/'font-bundle-closure.json').write_text(json.dumps(font_closure,indent=2))
-            manifests=[]
-            for path in (root/'build').rglob('manifest.json'):
-                if path.stat().st_size<4*1024*1024:
-                    try:
-                        content=json.loads(path.read_text())
-                        if isinstance(content,dict) and 'toolchain' in content and 'archives' in content:manifests.append({'path':str(path.relative_to(root)),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'manifest':content})
-                    except (ValueError,OSError): pass
-            assert manifests,'No dependency manifest retained'
-            (proof/'dependency-manifests.json').write_text(json.dumps(manifests,indent=2))
-            # Retain one bounded immutable build checkpoint before app runtime tests.
-            cap=250*1024*1024
-            assert sum(x['bytes'] for x in inventory)<cap,'App exceeds checkpoint byte allowance'
-            archive=proof/'built-app.tar.gz'
-            class CappedWriter:
-                def __init__(self,stream):self.stream=stream
-                def write(self,data):
-                    if self.stream.tell()+len(data)>cap:raise RuntimeError('App checkpoint exceeded250MiB allowance')
-                    return self.stream.write(data)
-                def flush(self):return self.stream.flush()
-            with archive.open('wb') as raw:
-                with tarfile.open(fileobj=CappedWriter(raw),mode='w:gz',compresslevel=3) as package:package.add(app,arcname='Glob2.app')
+            checkpoint_root=root/'build/ios-recovery-input'
+            checkpoint=json.loads((checkpoint_root/'build-checkpoint.json').read_text())
+            assert checkpoint['source_identity']['revision']==summary['source'] and not checkpoint['source_identity']['dirty']
+            archive=checkpoint_root/'built-app.tar.gz'
+            assert archive.stat().st_size==169216316
+            assert hashlib.sha256(archive.read_bytes()).hexdigest()=='c3e1143f9dbd0a89f94c2291fdac0cc827ae83690ae211ae9ee3aa0eed0415b3'
+            assert checkpoint['archive']['sha256']=='c3e1143f9dbd0a89f94c2291fdac0cc827ae83690ae211ae9ee3aa0eed0415b3'
+            assert json.loads(doctor)['toolchain']['fingerprint']==checkpoint['toolchain']['toolchain']['fingerprint']
             sys.path.insert(0,str(root/'test'))
             from build_provenance import source_identity
-            producer=source_identity(root);assert producer['revision']==summary['source'] and not producer['dirty']
-            checkpoint={'source_identity':producer,'build_command':next(x for x in records if x['label']=='build'),'release':True,'environment':'simulator','architecture':'arm64','toolchain':json.loads(doctor),'archive':{'path':archive.name,'sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),'bytes':archive.stat().st_size,'limit_bytes':cap},'app_inventory_sha256':hashlib.sha256((proof/'app-inventory.json').read_bytes()).hexdigest(),'critical_identities_sha256':hashlib.sha256((proof/'critical-bundle-identities.json').read_bytes()).hexdigest(),'dependency_manifests_sha256':hashlib.sha256((proof/'dependency-manifests.json').read_bytes()).hexdigest(),'actual_compile_flags_evidence':'build.log.gz contains actual compiler and linker command lines; doctor toolchain records SDK/compiler/fingerprint; commands.json records release invocation','runtime_not_yet_executed':True}
-            (proof/'build-checkpoint.json').write_text(json.dumps(checkpoint,indent=2))
-
-            run('install',['python3','mobile/ios.py','install','--environment','simulator','--release','--device',selected],300)
+            assert source_identity(root)==checkpoint['source_identity']
+            expected={x['path']:x for x in json.loads((checkpoint_root/'app-inventory.json').read_text())}
+            assert len(expected)==7938
+            output=root/'build/ios-recovery-app';output.mkdir(parents=True,exist_ok=True)
+            with tarfile.open(archive,'r:gz') as package:
+                for member in package:
+                    relative=Path(member.name)
+                    assert relative.parts[0]=='Glob2.app' and not relative.is_absolute() and '..' not in relative.parts
+                    assert member.isfile() or member.isdir(),'Unexpected archive member type'
+                package.extractall(output,filter='data')
+            app=output/'Glob2.app';actual_files={str(x.relative_to(app)):x for x in app.rglob('*') if x.is_file()}
+            assert set(actual_files)==set(expected)
+            for name,path in actual_files.items():
+                assert path.stat().st_size==expected[name]['bytes'] and hashlib.sha256(path.read_bytes()).hexdigest()==expected[name]['sha256'],name
+            for receipt in ['app-inventory.json','critical-bundle-identities.json','font-bundle-closure.json','source-catalogs.json','dependency-manifests.json','build-checkpoint.json']:
+                (proof/('original-'+receipt)).write_bytes((checkpoint_root/receipt).read_bytes())
+            closure=json.loads((checkpoint_root/'font-bundle-closure.json').read_text())
+            for entry in closure:
+                name=entry['path'];assert hashlib.sha256((root/name).read_bytes()).hexdigest()==entry['source_sha256']==hashlib.sha256((app/name).read_bytes()).hexdigest()
+            assert hashlib.sha256((app/'data/texts.bn.txt').read_bytes()).hexdigest()=='3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054'
+            run('codesign',['codesign','--verify','--deep','--strict',str(app)])
+            run('executable-identity',['file',str(app/'Glob2')])
+            summary['verified_checkpoint']={'producer_run':41266250711,'archive_sha256':checkpoint['archive']['sha256'],'app_files_verified':len(expected),'toolchain_fingerprint_matches':True,'no_build_commands_executed':True}
+            sim('install','install',selected,str(app),timeout=300)
             container=Path(sim('app-data','get_app_container',selected,'org.globulation2.glob2','data').strip())
-            profile=container/'.glob2';profile.mkdir(parents=True,exist_ok=True)
+            # Pinned SDL3.4.16 cocoa SDL_SYS_GetPrefPath: NSApplicationSupportDirectory/org/app.
+            # initializeMobilePaths always chooses this directory, overriding custom environment.
+            assert json.loads((root/'scons/vcpkg-ports/sdl3/vcpkg.json').read_text())['version']=='3.4.16'
+            assert 'SDL_GetPrefPath("Globulation2","glob2")' in (root/'mobile/MobilePaths.cpp').read_text()
+            profile=container/'Library/Application Support/Globulation2/glob2';profile.mkdir(parents=True,exist_ok=True)
             prefs='version=2\nlanguage=bn\naudioPreferenceChosen=1\nthumbSideChosen=1\nintroductionOffered=1\nmute=1\n'
+            assert prefs.count('\n')==6
             (profile/'preferences.txt').write_text(prefs);(proof/'seeded-preferences.txt').write_text(prefs)
-            help_text=run('launch-help',['xcrun','simctl','help','launch']);assert 'SIMCTL_CHILD_' in help_text
-            os.environ['SIMCTL_CHILD_GLOB2_USER_DATA_DIR']=str(profile)
-            summary['seeded_profile']={'path':str(profile),'forwarded_environment':'SIMCTL_CHILD_GLOB2_USER_DATA_DIR','reason':'Explicit production FileManager override; do not depend on Simulator HOME conventions','sha256':hashlib.sha256(prefs.encode()).hexdigest()}
-
-            run('lifecycle',['python3','mobile/ios_smoke.py','--device',selected,'--output','build/ios-bengali-proof/lifecycle'],900)
+            summary['actual_profile']={'relative_to_owned_app_container':'Library/Application Support/Globulation2/glob2','source':'Pinned SDL3.4.16 Cocoa SDL_SYS_GetPrefPath and production initializeMobilePaths','seed_sha256':hashlib.sha256(prefs.encode()).hexdigest()}
+            run('lifecycle',['python3','mobile/ios_smoke.py','--device',selected,'--output','build/ios-bengali-recovery/lifecycle'],900)
             saved=profile/'preferences.txt'
             if saved.exists(): (proof/'persisted-preferences.txt').write_bytes(saved.read_bytes())
             lifecycle=json.loads((proof/'lifecycle/result.json').read_text());assert lifecycle['passed']
             summary['passed']=True
         except Exception as error:
+            if 'container' in locals():
+                summary['owned_container_preferences_paths']=[str(x.relative_to(container)) for x in container.rglob('preferences.txt')]
+                summary['expected_profile_exists']=(profile/'preferences.txt').is_file() if 'profile' in locals() else False
             summary['error']=str(error);raise
         finally:
             if selected:
@@ -170,12 +157,12 @@ jobs:
                 except Exception as error:summary['cleanup_error']=str(error)
             (proof/'result.json').write_text(json.dumps(summary,indent=2))
 
-        IOSVALIDATION
-    - name: Retain bounded proof and actual screenshots
+        IOSRECOVERY
+    - name: Retain bounded recovery proof and actual screenshots
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: bengali-ios-simulator-final-v3-942d138
-        path: build/ios-bengali-proof/
+        name: bengali-ios-runtime-recovery-942d138
+        path: build/ios-bengali-recovery/
         if-no-files-found: error
         retention-days: 14
