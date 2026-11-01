@@ -162,6 +162,10 @@
 .upload-form {
   max-width: 640px;
 }
+.upload-form :is(input, select, textarea) {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
 
 .map-owner-tools input,
 .map-owner-tools select,

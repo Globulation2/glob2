@@ -25,6 +25,7 @@ namespace glob2test
 // fixtures instead; silently dropping their state would weaken continuation tests.
 // PreservePending explicitly supports representable 164–168 warm-field jobs,
 // retaining every private array and deadline while rejecting new cold/cache state.
+// The appended probability history is omitted from pre-190 TeamStats records.
 // Other historical field differences remain the fixture author's responsibility.
 class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 {
@@ -40,7 +41,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_MAINLINE_TERRAINS || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
+    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY || formatVersion<FILE_FORMAT_VERSION_MAINLINE_TERRAINS || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
@@ -157,6 +158,10 @@ public:
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
+        if (formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY && name=="winProbability") {
+            suppressedAt=sections.size();
+            return;
+        }
         if (formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
             && (name=="adaptiveGradients" || name=="adaptiveCapture")) {
             suppressedAt=sections.size();

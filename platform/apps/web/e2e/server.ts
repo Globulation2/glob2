@@ -9,6 +9,7 @@
 //
 // Env: PORT (default 4280), GLOB2_WEB_CLIENT_DIR (browser game build, default
 // <repo>/build/emscripten/client/release), SEED_OUT (write the seed ids as JSON).
+// SKINS_E2E_ENABLED=1 enables the local designer fixture with sales disabled.
 // Needs the test Postgres of packages/db/test/support.ts.
 import { createReadStream, existsSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { createServer, request as httpRequest, type ServerResponse } from 'node:http';
@@ -123,6 +124,9 @@ const api = await harness.start({
   origin,
   instance: {
     name: 'Glob2 Online (test)',
+    ...(process.env['SKINS_E2E_ENABLED'] === '1'
+      ? { skinDesigner: { enabled: true, salesEnabled: false } }
+      : {}),
     // Full language sweeps reload every page twice; keep the fixture independent of throttling.
     limits: {
       apiPerMinute: 10_000,
