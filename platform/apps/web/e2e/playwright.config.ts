@@ -29,6 +29,6 @@ export default defineConfig({
     url: `http://127.0.0.1:${port}/api/v1/instance`,
     reuseExistingServer: !process.env['CI'],
     timeout: 120_000,
-    env: { PORT: String(port) },
+    env: { PORT: String(port), SKINS_E2E_ENABLED: '1' },
   },
 });

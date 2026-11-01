@@ -329,4 +329,57 @@ test('Telugu renders shared online pages, authentication, invites and errors', a
   const visibility = catalog['Unlisted: anyone with the link'];
   expect(visibility).toBeTruthy();
   await expect(page.locator('.upload-form option[value="unlisted"]')).toHaveText(visibility ?? '');
+
+  // Exercise the actual long instruction after opening a real, locally enabled
+  // designer. Checking text ranges catches clipping hidden by stage overflow.
+  await page.goto('/skins');
+  await page.getByRole('button', { name: catalog['New skin'] ?? '', exact: true }).click();
+  const hint = page.locator('.skin-stage-hint');
+  await hint.waitFor({ state: 'visible' });
+  await expect(hint).toHaveText(
+    catalog['Drag to paint · Rotate tool to turn · scroll or pinch to zoom'] ?? '',
+  );
+  await page.evaluate(() => document.fonts.ready);
+  const bounds = await hint.evaluate((element) => {
+    const stage = element.closest('.skin-stage');
+    const pose = stage?.querySelector('.skin-pose-strip');
+    if (!stage || !pose)
+      throw new Error('The actual designer stage and pose controls are required');
+    const rectangle = (r: DOMRect) => ({
+      left: r.left,
+      right: r.right,
+      top: r.top,
+      bottom: r.bottom,
+    });
+    const stageBox = stage.getBoundingClientRect();
+    const hintBox = element.getBoundingClientRect();
+    const poseBox = pose.getBoundingClientRect();
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    return {
+      stage: rectangle(stageBox),
+      text: [...range.getClientRects()].map(rectangle),
+      fontSize: parseFloat(getComputedStyle(element).fontSize),
+      overlap:
+        Math.max(0, Math.min(hintBox.right, poseBox.right) - Math.max(hintBox.left, poseBox.left)) *
+        Math.max(0, Math.min(hintBox.bottom, poseBox.bottom) - Math.max(hintBox.top, poseBox.top)),
+    };
+  });
+  expect(bounds.text.length).toBeGreaterThan(0);
+  expect(bounds.fontSize).toBeGreaterThanOrEqual(10);
+  expect(bounds.overlap, 'The full hint must stay separate from pose controls').toBe(0);
+  for (const row of bounds.text) {
+    expect(row.left).toBeGreaterThanOrEqual(bounds.stage.left - 1);
+    expect(row.right).toBeLessThanOrEqual(bounds.stage.right + 1);
+    expect(row.top).toBeGreaterThanOrEqual(bounds.stage.top - 1);
+    expect(row.bottom).toBeLessThanOrEqual(bounds.stage.bottom + 1);
+  }
+  const directory = process.env.SCREENSHOT_DIR;
+  await info.attach('te-skin-hint', {
+    body: await page.screenshot({
+      fullPage: true,
+      path: directory ? resolve(directory, info.project.name, 'te-skin-hint.png') : undefined,
+    }),
+    contentType: 'image/png',
+  });
 });

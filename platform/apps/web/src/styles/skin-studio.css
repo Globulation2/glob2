@@ -172,6 +172,9 @@
 }
 .skin-stage {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto;
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -440,11 +443,11 @@
   color: var(--ink-2);
 }
 .skin-pose-strip {
+  grid-row: 2;
+  justify-self: center;
+  margin: 0 auto 8px;
   width: max-content;
-  position: absolute;
-  bottom: 43px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -482,13 +485,17 @@
   min-width: 32px;
 }
 .skin-stage-hint {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  grid-row: 3;
+  justify-self: center;
+  inline-size: max-content;
+  max-inline-size: calc(100% - 24px);
+  margin: 0 auto 14px;
   font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
   color: var(--ink-2);
-  white-space: nowrap;
+  white-space: normal;
   pointer-events: none;
 }
 /* A two-tone cursor stays visible over arbitrary painted skin colors. */
@@ -536,10 +543,10 @@
   font-size: 22px;
 }
 .skin-final-view {
-  position: absolute;
-  bottom: 44px;
-  left: 50%;
-  transform: translateX(-50%);
+  grid-row: 2;
+  justify-self: center;
+  margin: 0 auto 8px;
+  position: relative;
   padding: 18px 22px;
   width: 440px;
   max-width: calc(100% - 24px);
@@ -1094,7 +1101,6 @@
     font-size: 8px;
   }
   .skin-pose-strip {
-    bottom: 31px;
     width: calc(100% - 24px);
     gap: 4px;
     justify-content: center;
@@ -1127,8 +1133,8 @@
     min-width: 28px;
   }
   .skin-stage-hint {
-    font-size: 8px;
-    bottom: 10px;
+    font-size: 10px;
+    margin-bottom: 10px;
   }
   .skin-reference {
     right: 12px;
@@ -1203,7 +1209,6 @@
     top: 125px;
   }
   .skin-final-view {
-    bottom: 30px;
     padding: 14px;
   }
   .skin-final-view h2 {
