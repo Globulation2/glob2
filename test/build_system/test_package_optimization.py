@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
 from build_layout import build_identity, default_directory, prepare_directory
+from size_optimization import release_defaults
 
 from tools.release.archives import MIB, choose_xz, linux_archives, zip_archive
 from tools.release.benchmark_profiles import repeatable_slowdown
@@ -17,6 +18,23 @@ from tools.release.check_profile_platforms import verify
 
 
 class PackageOptimizationTests(unittest.TestCase):
+    def test_release_defaults_preserve_literal_rpaths_and_distro_optimization(self):
+        from SCons.Script import Environment
+
+        for optimization in (None, "-O2", "-Os"):
+            with self.subTest(optimization=optimization):
+                env = Environment(tools=[])
+                rpath = env.Literal("-Wl,-rpath,$ORIGIN/../lib/glob2")
+                env["CXXFLAGS"] = ["-Wall"] + ([optimization] if optimization else [])
+                env["LINKFLAGS"] = [rpath] + ([optimization] if optimization else [])
+                release_defaults(env)
+                self.assertIs(env["LINKFLAGS"][0], rpath)
+                self.assertEqual(str(env["LINKFLAGS"][0]), "-Wl,-rpath,$ORIGIN/../lib/glob2")
+                expected = optimization or "-O3"
+                for name in ("CXXFLAGS", "LINKFLAGS"):
+                    self.assertEqual([str(flag) for flag in env[name]
+                                      if str(flag).startswith("-O")], [expected])
+
     def test_distro_symbols_keep_release_profile_and_isolate_stripped_outputs(self):
         ordinary = build_identity({'release': '1'}, host='linux')
         symbols = build_identity({'release': '1', 'retain_symbols': '1'}, host='linux')

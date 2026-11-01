@@ -522,9 +522,8 @@ def main():
     if env['release']:
         # Distro flags may select -O2/-Os and must take precedence over our
         # release default. Strict simulation flags are appended separately.
-        for flags in ('CXXFLAGS', 'LINKFLAGS'):
-            if not any(flag.startswith('-O') for flag in env[flags]):
-                env.Append(**{flags: ['-O3']})
+        from size_optimization import release_defaults
+        release_defaults(env)
         if not isDarwinPlatform:
             env.Append(LINKFLAGS=["-fwhole-program"])
             if not env['retain_symbols']:
