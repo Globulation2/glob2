@@ -3397,6 +3397,7 @@
 [Fish amount]
 [Camp-site amount]
 [scenario messages]
+[AI for all computer colonies]
 [stats topic overview]
 [stats topic economy]
 [stats topic world]

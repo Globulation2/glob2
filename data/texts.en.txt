@@ -6856,3 +6856,5 @@ Order received: %0
 Order not confirmed. Open the commander to retry; your message has been kept.
 [hive standing order update failed]
 Standing order update failed. Your order is paused locally; retry the control.
+[AI for all computer colonies]
+AI for all computer colonies

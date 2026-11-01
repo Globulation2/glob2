@@ -1,6 +1,7 @@
 #include "ui/DiagnosticText.h"
 #include "tutorial/TutorialModel.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "hive/HiveDialog.h"
 #include "GameSessionScreen.h"
 #include "Engine.h"
 #include "scripting/javascript/ScriptRuntime.h"
@@ -357,4 +358,9 @@ void GameSessionScreen::suspendExecution()
 	}
 	cancelScreenInputReceipt(); input.clear();
 	resetClock = true;
+}
+
+std::vector<GAGGUI::ui::Host *> GameSessionScreen::inspectionHosts()
+{
+	return engine ? engine->inspectionHosts() : std::vector<GAGGUI::ui::Host *>{};
 }

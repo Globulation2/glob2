@@ -6856,3 +6856,5 @@ Emir alındı: %0
 Emir onaylanmadı. Tekrar denemek için komutanı açın; mesajınız saklandı.
 [hive standing order update failed]
 Kalıcı emir güncellenemedi. Emriniz bu cihazda duraklatıldı; ilgili denetimi kullanarak tekrar deneyin.
+[AI for all computer colonies]
+Bilgisayar kontrollü tüm koloniler için yapay zekâ

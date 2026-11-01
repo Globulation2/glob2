@@ -6856,3 +6856,5 @@ Ordin primit: %0
 Ordinul nu a fost confirmat. Deschideți comandantul pentru a încerca din nou; mesajul dvs. a fost păstrat.
 [hive standing order update failed]
 Actualizarea ordinului permanent a eșuat. Ordinul dvs. este pus pe pauză pe acest dispozitiv; încercați din nou folosind controlul corespunzător.
+[AI for all computer colonies]
+IA pentru toate coloniile controlate de calculator

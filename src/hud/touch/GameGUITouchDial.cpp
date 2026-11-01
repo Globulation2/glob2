@@ -400,11 +400,7 @@ void GameGUITouch::tapDial(const SceneBuildingPanel &b, const DialRegion &region
 	const auto &row = region.action;
 	if (row.kind == 0 && region.part == DialRegion::RatioButton)
 	{
-		const int current = gui.displayedRatio(b)[row.value];
-		// Existing saves may have other weights: advance to the next preset.
-		const std::array<int, 5> presets{0, 1, 2, 3, 5};
-		const auto next = std::upper_bound(presets.begin(), presets.end(), current);
-		setRatio(b, row.value, next == presets.end() ? 0 : *next);
+		cycleRatio(b, row.value);
 		return;
 	}
 
@@ -594,4 +590,24 @@ void GameGUITouch::drawDial()
         }
     }
 
+}
+
+GAGCore::ViewRect GameGUITouch::dialRegionBounds(const DialRegion &region) const
+{
+	if (region.ring < 0) return region.box;
+	const auto geometry = dialLayout(layout()).geometry;
+	const auto ring = geometry.rings[region.ring];
+	// Every sector stays in the monotone quarter-circle sweep. Its extrema
+	// are the four radial endpoints; focus boxes remain thumb-sized separately.
+	double left = geometry.center.x, right = left, top = geometry.center.y, bottom = top;
+	bool first = true;
+	for (const double radius : {ring.inner, ring.outer})
+		for (const double angle : {region.from, region.to})
+		{
+			const auto p = TouchDial::point(geometry, radius, angle);
+			if (first) { left = right = p.x; top = bottom = p.y; first = false; }
+			left = std::min(left, p.x); right = std::max(right, p.x);
+			top = std::min(top, p.y); bottom = std::max(bottom, p.y);
+		}
+	return {left, top, right - left, bottom - top};
 }

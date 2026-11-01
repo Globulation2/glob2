@@ -6856,3 +6856,5 @@ Agindua jaso da: %0
 Agindua ez da berretsi. Ireki komandantea berriro saiatzeko; zure mezua gorde da.
 [hive standing order update failed]
 Agindu iraunkorra eguneratzeak huts egin du. Zure agindua gailu honetan pausatuta dago; saiatu berriro dagokion kontrola erabiliz.
+[AI for all computer colonies]
+AA ordenagailuak kontrolatutako kolonia guztientzat

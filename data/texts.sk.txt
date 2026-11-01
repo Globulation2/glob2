@@ -6856,3 +6856,5 @@ Príkaz prijatý: %0
 Príkaz nebol potvrdený. Otvorte veliteľa a skúste to znova; vaša správa bola uložená.
 [hive standing order update failed]
 Aktualizácia trvalého príkazu zlyhala. Váš príkaz je na tomto zariadení pozastavený; skúste to znovu pomocou príslušného ovládacieho prvku.
+[AI for all computer colonies]
+UI pre všetky kolónie ovládané počítačom

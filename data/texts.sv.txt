@@ -6856,3 +6856,5 @@ Order mottagen: %0
 Ordern har inte bekräftats. Öppna befälhavaren för att försöka igen; ditt meddelande har sparats.
 [hive standing order update failed]
 Uppdateringen av den stående ordern misslyckades. Din order är pausad på den här enheten; försök igen med motsvarande kontroll.
+[AI for all computer colonies]
+AI för alla datorstyrda kolonier

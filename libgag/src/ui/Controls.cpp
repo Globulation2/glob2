@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ui/Controls.h>
 #include <ui/Host.h>
+#include <ui/PositionedControls.h>
 #include <BrowserTextInput.h>
 #include <GraphicContext.h>
 #include <algorithm>
@@ -9,8 +10,55 @@
 
 namespace GAGGUI::ui
 {
+void detail::PositionedNode::tap(Point point, Host &host)
+{
+	if (control.tap)
+	{
+		auto callback = control.tap;
+		host.invalidate();
+		callback(point);
+	}
+	else if (control.perform && std::find(control.actions.begin(), control.actions.end(),
+											ActionKind::Activate) != control.actions.end())
+		perform({ActionKind::Activate, {}}, host);
+}
+bool detail::PositionedNode::perform(const SemanticAction &action, Host &host)
+{
+	if (control.perform)
+	{
+		auto callback = control.perform;
+		host.invalidate();
+		return callback(action);
+	}
+	if (action.kind == ActionKind::Activate && control.tap)
+	{
+		auto callback = control.tap;
+		const auto at = control.bounds.center();
+		host.invalidate();
+		callback(at);
+		return true;
+	}
+	return false;
+}
+void detail::PositionedNode::scrollBy(int pixels, Host &host)
+{
+	perform({ActionKind::Scroll, pixels}, host);
+}
 namespace
 {
+// Index-based actions must bind the entire catalog, including entries that are
+// not selected or visible. Length prefixes make labels unambiguous without a hash.
+std::string catalogIdentity(const std::vector<std::string> &items, const std::vector<bool> &enabled)
+{
+	std::string identity = "catalog:" + std::to_string(items.size()) + ":";
+	for (std::size_t i = 0; i < items.size(); ++i)
+	{
+		identity += std::to_string(items[i].size()) + ":" + items[i];
+		identity += enabled.empty() || enabled[i] ? "1" : "0";
+	}
+	return identity;
+}
+
 GAGCore::Color inkFor(const Frame &frame, bool enabled, bool muted)
 {
 	const auto &p = frame.layout.theme.palette;
@@ -101,6 +149,8 @@ class Button : public Node
 		if (options.icon && !options.icon->available() && this->text.empty())
 			this->text = options.accessibleLabel;
 	}
+	bool selected() const override { return options.selected; }
+
 	const char *name() const override { return "button"; }
 	std::string accessibleText() const override { return text.empty() ? options.accessibleLabel : text; }
 	std::string tooltipText() const override { return options.tooltip; }
@@ -223,6 +273,24 @@ class Toggle : public Node
 			children = {captionNode};
 		}
 	}
+	ControlValue controlValue() const override { return value; }
+	bool selected() const override { return value; }
+	std::vector<ActionKind> supportedActions() const override
+	{
+		return {ActionKind::Activate, ActionKind::SetValue};
+	}
+	bool perform(const SemanticAction &action, Host &host) override
+	{
+		if (action.kind != ActionKind::SetValue)
+			return Node::perform(action, host);
+		const auto *next = std::get_if<bool>(&action.value);
+		if (!next)
+			return false;
+		if (*next != value)
+			tap(bounds.center(), host);
+		return true;
+	}
+
 	const char *name() const override { return "toggle"; }
 	std::string accessibleText() const override { return (value ? "[x] " : "[ ] ") + text; }
 	bool interactive() const override { return true; }
@@ -365,16 +433,43 @@ class Choice : public Disclosure
 		  options(std::move(options)), selected(selected), change(std::move(change)), extra(std::move(extra))
 	{
 	}
+	ControlValue controlValue() const override { return selected; }
+	std::string semanticIdentity() const override { return catalogIdentity(options, extra.enabled); }
+	std::vector<ActionKind> supportedActions() const override
+	{
+		return {ActionKind::Activate, ActionKind::Select};
+	}
+	bool perform(const SemanticAction &action, Host &host) override
+	{
+		if (action.kind != ActionKind::Select)
+			return Node::perform(action, host);
+		const auto *index = std::get_if<int>(&action.value);
+		if (!index || *index < 0 || *index >= int(options.size()) ||
+			(!extra.enabled.empty() && !extra.enabled[*index]))
+			return false;
+		pick(host, *index);
+		return true;
+	}
+	void pick(Host &host, int index)
+	{
+		auto callback = change;
+		host.invalidate();
+		if (callback)
+			callback(index);
+	}
+
 	const char *name() const override { return "choice"; }
 	void tap(Point, Host &host) override
 	{
 		PopupSpec spec;
+		spec.ownerKey = key;
 		spec.anchor = bounds;
 		spec.options = options;
 		spec.enabled = extra.enabled;
 		spec.icons = extra.icons;
 		spec.selected = std::max(0, selected);
 		spec.help = extra.help;
+		// Keep callback ownership independent of rebuilt nodes.
 		auto callback = change;
 		spec.pick = [callback, &host](int index)
 		{
@@ -400,10 +495,7 @@ class Choice : public Disclosure
 		}
 		if (next != selected && (extra.enabled.empty() || extra.enabled[next]))
 		{
-			auto callback = change;
-			host.invalidate();
-			if (callback)
-				callback(next);
+			pick(host, next);
 		}
 	}
 
@@ -442,14 +534,26 @@ class Stepper : public Node
 	{
 		this->key = std::move(key);
 	}
+	ControlValue controlValue() const override { return value; }
+	std::vector<ActionKind> supportedActions() const override { return {ActionKind::SetValue}; }
+	bool perform(const SemanticAction &action, Host &host) override
+	{
+		const auto *next = std::get_if<int>(&action.value);
+		if (action.kind != ActionKind::SetValue || !next || *next < minimum || *next > maximum)
+			return false;
+		set(host, *next);
+		return true;
+	}
+
 	const char *name() const override { return "stepper"; }
 	std::string accessibleText() const override { return valueText(); }
 	std::string valueText() const { return options.valueText.empty() ? std::to_string(value) : options.valueText; }
 	bool interactive() const override { return true; }
 	bool enabled() const override { return options.enabled; }
-	void step(Host &host, int direction)
+	void step(Host &host, int direction) { set(host, value + direction * options.step); }
+	void set(Host &host, int requested)
 	{
-		const int next = std::clamp(value + direction * options.step, minimum, maximum);
+		const int next = std::clamp(requested, minimum, maximum);
 		if (next == value)
 			return;
 		auto callback = change;
@@ -528,6 +632,17 @@ class Slider : public Node
 	{
 		this->key = std::move(key);
 	}
+	ControlValue controlValue() const override { return value; }
+	std::vector<ActionKind> supportedActions() const override { return {ActionKind::SetValue}; }
+	bool perform(const SemanticAction &action, Host &host) override
+	{
+		const auto *next = std::get_if<int>(&action.value);
+		if (action.kind != ActionKind::SetValue || !next || *next < minimum || *next > maximum)
+			return false;
+		set(host, *next);
+		return true;
+	}
+
 	const char *name() const override { return "slider"; }
 	std::string accessibleText() const override { return options.valueText.empty() ? std::to_string(value) : options.valueText; }
 	bool interactive() const override { return true; }
@@ -638,6 +753,26 @@ class TextField : public Node
 		}
 		selectAll = state.highlight == 1;
 	}
+	ControlValue controlValue() const override { return accessibleText(); }
+	std::vector<ActionKind> supportedActions() const override
+	{
+		return options.selectForCopy
+				   ? std::vector<ActionKind>{ActionKind::Activate}
+				   : std::vector<ActionKind>{ActionKind::Activate, ActionKind::SetValue};
+	}
+	bool perform(const SemanticAction &action, Host &host) override
+	{
+		if (action.kind != ActionKind::SetValue)
+			return Node::perform(action, host);
+		const auto *text = std::get_if<std::string>(&action.value);
+		if (!text || options.selectForCopy ||
+			(options.maxLength && glyphCount(*text) > options.maxLength))
+			return false;
+		tap(bounds.center(), host);
+		commit(host, *text, text->size());
+		return true; // Draft fields still require Enter/blur to commit or Escape to cancel.
+	}
+
 	const char *name() const override { return "textfield"; }
 	bool autoFocus() const { return options.autoFocus; }
 	std::string accessibleText() const override { return options.password ? masked(value) : value; }
@@ -708,7 +843,8 @@ class TextField : public Node
 	}
 	void commit(Host &host, std::string next, std::size_t nextCursor)
 	{
-		if (options.maxLength && glyphCount(next) > options.maxLength)
+		if ((options.maxLength && glyphCount(next) > options.maxLength) ||
+			(options.maxBytes && next.size() > options.maxBytes))
 			return;
 		cursor = std::min(nextCursor, next.size());
 		auto &state = host.state(key);
@@ -874,7 +1010,9 @@ class TextField : public Node
 			SDL_Rect area{bounds.x, bounds.y, bounds.w, bounds.h};
 			SDL_Rect limit{clip.x, clip.y, clip.w, clip.h};
 			// Browser hosts edit natively; native hosts ignore this.
-			GAGCore::browserTextInput(this->browserOwner, area, surface->getW(), surface->getH(), value, options.password, options.maxLength, browserChange, &limit, options.selectForCopy);
+			// Bytes and Unicode codepoints have independent limits.
+			const std::size_t maximum = options.maxBytes ? options.maxBytes + 1 : 0;
+			GAGCore::browserTextInput(this->browserOwner, area, surface->getW(), surface->getH(), value, options.password, maximum, browserChange, &limit, options.selectForCopy, options.maxLength);
 		}
 		if (shown.empty() && !active)
 		{
@@ -925,8 +1063,13 @@ class TextField : public Node
 		Host *h = &host;
 		const bool deferred = options.commitOnSubmit;
 		const std::string original = committed;
-		browserChange = [h, k, callback, submit, preview, deferred, original](const std::string &text, std::size_t at, int action)
+		const std::size_t maxBytes = options.maxBytes;
+		const std::size_t maxCharacters = options.maxLength;
+		browserChange = [h, k, callback, submit, preview, deferred, original, maxBytes, maxCharacters](const std::string &text, std::size_t at, int action)
 		{
+			if ((maxBytes && text.size() > maxBytes) ||
+				(maxCharacters && glyphCount(text) > maxCharacters))
+				return;
 			// Mirror commit(): the typed text is the draft (restored across rebuilds)
 			// and, for commit-on-submit fields, reaches the model on Enter or blur.
 			auto &state = h->state(k);
@@ -976,6 +1119,25 @@ class TextEditor : public Node
 		this->key = std::move(key);
 		cursor = this->value.size();
 	}
+	ControlValue controlValue() const override { return value; }
+	std::vector<ActionKind> supportedActions() const override
+	{
+		return options.readOnly ? std::vector<ActionKind>{ActionKind::Scroll}
+								: std::vector<ActionKind>{ActionKind::Activate,
+														  ActionKind::SetValue, ActionKind::Scroll};
+	}
+	bool perform(const SemanticAction &action, Host &host) override
+	{
+		if (action.kind != ActionKind::SetValue)
+			return Node::perform(action, host);
+		const auto *text = std::get_if<std::string>(&action.value);
+		if (!text || options.readOnly)
+			return false;
+		host.beginEditing(key);
+		commit(host, *text, text->size());
+		return true;
+	}
+
 	const char *name() const override { return "texteditor"; }
 	std::string accessibleText() const override { return value; }
 	bool interactive() const override { return !options.readOnly; }
@@ -1174,6 +1336,21 @@ class TextEditor : public Node
 	{
 		lines.clear();
 		const int limit = std::max(1, width);
+		// Preserve the original byte offsets for editing while wrapping only at
+		// shaped boundaries. In particular, Bengali vowel signs and conjuncts
+		// must not become separate lines. Segment explicit paragraphs separately
+		// so a newline always remains a hard break, even if font layout fails.
+		std::vector<std::size_t> clusterEnds;
+		for (std::size_t paragraph = 0; paragraph < value.size();)
+		{
+			const auto newline = value.find('\n', paragraph);
+			const auto end = newline == std::string::npos ? value.size() : newline;
+			for (const auto offset : shapingClusterEnds(m, FontRole::Body, value.substr(paragraph, end - paragraph)))
+				clusterEnds.push_back(paragraph + offset);
+			if (end == value.size()) break;
+			clusterEnds.push_back(end + 1);
+			paragraph = end + 1;
+		}
 		std::size_t start = 0;
 		while (start <= value.size())
 		{
@@ -1181,7 +1358,7 @@ class TextEditor : public Node
 			std::size_t lastBreak = std::string::npos;
 			while (end < value.size() && value[end] != '\n')
 			{
-				const std::size_t next = nextGlyph(value, end);
+				const std::size_t next = *std::upper_bound(clusterEnds.begin(), clusterEnds.end(), end);
 				if (end > start && m.width(FontRole::Body, value.substr(start, next - start)) > limit)
 				{
 					if (lastBreak != std::string::npos && lastBreak > start)
@@ -1189,7 +1366,7 @@ class TextEditor : public Node
 					break;
 				}
 				if (value[end] == ' ')
-					lastBreak = end + 1;
+					lastBreak = next;
 				end = next;
 			}
 			lines.push_back({value.substr(start, end - start), start});
@@ -1320,6 +1497,32 @@ class ListView : public Node
 	{
 		this->key = std::move(key);
 	}
+	ControlValue controlValue() const override { return selected; }
+	std::string semanticIdentity() const override
+	{
+		auto identity = catalogIdentity(items, options.enabled);
+		identity += options.checked.empty() ? ":plain:" : ":checked:";
+		for (bool checked : options.checked)
+			identity += checked ? '1' : '0';
+		identity += options.toggle ? ":toggle" : ":no-toggle";
+		identity += options.activate ? ":activate" : ":no-activate";
+		return identity;
+	}
+	std::vector<ActionKind> supportedActions() const override
+	{
+		return {ActionKind::Activate, ActionKind::Select, ActionKind::Scroll};
+	}
+	bool perform(const SemanticAction &action, Host &host) override
+	{
+		if (action.kind != ActionKind::Select)
+			return Node::perform(action, host);
+		const auto *index = std::get_if<int>(&action.value);
+		if (!index || *index < 0 || *index >= int(items.size()) || !rowEnabled(*index))
+			return false;
+		choose(host, *index);
+		return true;
+	}
+
 	const char *name() const override { return "list"; }
 	std::string accessibleText() const override
 	{
@@ -1377,7 +1580,8 @@ class ListView : public Node
 		{
 			const Rect row{bounds.x, bounds.y + i * rowHeight - offset - over, bounds.w, rowHeight};
 			if (row.bottom() > bounds.y && row.y < bounds.bottom())
-				rows.push_back({std::to_string(i), row, items[std::size_t(i)]});
+				rows.push_back(
+					{std::to_string(i), row, items[std::size_t(i)], rowEnabled(i), i == selected});
 		}
 		return rows;
 	}
@@ -1684,6 +1888,22 @@ class CanvasNode : public Node
 	{
 		this->key = std::move(key);
 	}
+	std::vector<ActionKind> supportedActions() const override
+	{
+		std::vector<ActionKind> actions;
+		if (options.tap)
+			actions.push_back(ActionKind::Activate);
+		if (options.wheel)
+			actions.push_back(ActionKind::Scroll);
+		return actions;
+	}
+	bool perform(const SemanticAction &action, Host &host) override
+	{
+		if (action.kind == ActionKind::Scroll)
+			lastHover = bounds.center();
+		return Node::perform(action, host);
+	}
+
 	const char *name() const override { return "canvas"; }
 	std::string accessibleText() const override { return options.accessibleText; }
 	bool interactive() const override { return bool(options.tap) || bool(options.pointer); }
@@ -1808,7 +2028,7 @@ Element segments(const std::string &key, const std::vector<std::string> &options
 			b.icon = icons[i];
 		parts.push_back(expanded(button(key + "/" + std::to_string(i), options[i], [change, i] { if (change) change(int(i)); }, b)));
 	}
-	return row(std::move(parts), {-1, CrossAlign::Stretch});
+	return semanticContext(row(std::move(parts), {-1, CrossAlign::Stretch}), catalogIdentity(options, enabled));
 }
 Element stepper(const std::string &key, int value, int minimum, int maximum, std::function<void(int)> change, StepperOptions options)
 {
@@ -1818,7 +2038,8 @@ Element slider(const std::string &key, int value, int minimum, int maximum, std:
 {
 	return std::make_shared<Slider>(key, value, minimum, maximum, std::move(change), options);
 }
-Element textField(const std::string &key, const std::string &value, std::function<void(const std::string &)> change, TextFieldOptions options)
+Element textField(const std::string &key, const std::string &value,
+				  std::function<void(const std::string &)> change, TextFieldOptions options)
 {
 	return std::make_shared<TextField>(key, value, std::move(change), std::move(options));
 }

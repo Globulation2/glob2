@@ -6856,3 +6856,5 @@ GL 전용
 명령이 확인되지 않았습니다. 다시 시도하려면 지휘관을 여세요. 메시지는 저장되었습니다.
 [hive standing order update failed]
 상시 명령 업데이트에 실패했습니다. 명령은 이 장치에서 일시 중지되었습니다. 해당 컨트롤을 사용하여 다시 시도하세요.
+[AI for all computer colonies]
+모든 컴퓨터 제어 식민지의 AI

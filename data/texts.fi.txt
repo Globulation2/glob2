@@ -6856,3 +6856,5 @@ Käsky vastaanotettu: %0
 Käskyä ei vahvistettu. Avaa komentaja yrittääksesi uudelleen; viestisi on säilytetty.
 [hive standing order update failed]
 Pysyvän käskyn päivitys epäonnistui. Käskysi on keskeytetty tällä laitteella; yritä uudelleen samalla toiminnolla.
+[AI for all computer colonies]
+Tekoäly kaikille tietokoneen ohjaamille siirtokunnille

@@ -8,6 +8,9 @@ Json capture(Script::Observations &observations, Game &game, int team)
 {
 	if (team < 0 || team >= game.mapHeader.getNumberOfTeams())
 		throw std::runtime_error("Invalid player team");
+	// All queries in this invocation share one immutable world. Without this
+	// scope, each tile query captures the entire world again (quadratic work).
+	auto observation = observations.captureObservation();
 	observations.observe();
 	Json snapshot = {{"team", team},
 					 {"tick", game.stepCounter},

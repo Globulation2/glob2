@@ -6856,3 +6856,5 @@ Orden recibida: %0
 Orden no confirmada. Abre el comandante para intentarlo de nuevo; tu mensaje se ha guardado.
 [hive standing order update failed]
 La actualización de la orden permanente falló. Tu orden está pausada en este dispositivo; vuelve a intentarlo con el control correspondiente.
+[AI for all computer colonies]
+IA para todas las colonias controladas por ordenador

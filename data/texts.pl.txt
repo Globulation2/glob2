@@ -6856,3 +6856,5 @@ Otrzymano rozkaz: %0
 Rozkaz niepotwierdzony. Otwórz dowódcę, aby spróbować ponownie. Twoja wiadomość została zachowana.
 [hive standing order update failed]
 Aktualizacja stałego rozkazu nie powiodła się. Twój rozkaz jest wstrzymany na tym urządzeniu. Spróbuj ponownie za pomocą odpowiedniej kontrolki.
+[AI for all computer colonies]
+SI dla wszystkich kolonii sterowanych przez komputer

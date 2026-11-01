@@ -6856,3 +6856,5 @@ Lệnh trước của bạn vẫn đang được gửi. Tin nhắn này đã đ�
 Lệnh chưa được xác nhận. Mở chỉ huy để thử lại; tin nhắn của bạn đã được lưu giữ.
 [hive standing order update failed]
 Cập nhật lệnh thường trực không thành công. Lệnh của bạn đang tạm dừng trên thiết bị này; hãy thử lại bằng thành phần điều khiển tương ứng.
+[AI for all computer colonies]
+AI cho mọi thuộc địa do máy tính điều khiển

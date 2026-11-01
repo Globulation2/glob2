@@ -6856,3 +6856,5 @@ Perintah diterima: %0
 Perintah belum dikonfirmasi. Buka komandan untuk mencoba lagi; pesan Anda telah disimpan.
 [hive standing order update failed]
 Pembaruan perintah tetap gagal. Perintah Anda dijeda pada perangkat ini; coba lagi menggunakan kontrol yang sesuai.
+[AI for all computer colonies]
+AI untuk semua koloni yang dikendalikan komputer

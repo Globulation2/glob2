@@ -6856,3 +6856,5 @@ Ordine ricevuto: %0
 Ordine non confermato. Apri il comandante per riprovare; il tuo messaggio è stato conservato.
 [hive standing order update failed]
 Aggiornamento dell'ordine permanente non riuscito. Il tuo ordine è sospeso su questo dispositivo; riprova con il controllo corrispondente.
+[AI for all computer colonies]
+IA per tutte le colonie controllate dal computer

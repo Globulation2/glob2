@@ -385,7 +385,7 @@ class MachineDraftTest(TranslationProgramTest):
         self.assertEqual(self.manifest['locales'], list(PROGRAM.LOCALES))
         selected = PROGRAM.prepare(self.output / 'legacy', 1, self.root, locales=('cs', 'pt-PT', 'sr-Cyrl'))
         self.assertEqual(selected['locales'], ['cs', 'pt-PT', 'sr-Cyrl'])
-        self.assertEqual(set(PROGRAM.NMT_TARGETS), set(PROGRAM.LEGACY_NATIVE_LOCALES) | {'bg', 'ms'})
+        self.assertEqual(set(PROGRAM.NMT_TARGETS), set(PROGRAM.LEGACY_NATIVE_LOCALES) | {'bg', 'ms', 'bn'})
         # Game filenames are aliases, not canonical Intl/manifest language choices.
         for invalid in ('br', 'cz', 'dk', 'gr', 'si', 'sr', 'pt', 'zh-cn', 'zh-tw'):
             with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'supported draft locales'):
@@ -395,7 +395,7 @@ class MachineDraftTest(TranslationProgramTest):
         cases = {'cs': ('cz', 'cs'), 'da': ('dk', 'da'), 'el': ('gr', 'el'),
                  'sl': ('si', 'sl'), 'sr-Cyrl': ('sr', 'sr'),
                  'zh-Hans': ('zh-cn', 'zh-CN'), 'zh-Hant': ('zh-tw', 'zh-TW'),
-                 'pt-PT': ('pt', 'pt-PT'), 'pt-BR': ('br', 'pt-BR'), 'ms': ('ms', 'ms')}
+                 'pt-PT': ('pt', 'pt-PT'), 'pt-BR': ('br', 'pt-BR'), 'ms': ('ms', 'ms'), 'bn': ('bn', 'bn')}
         output = self.output / 'aliases'
         PROGRAM.prepare(output, 1, self.root, locales=tuple(cases))
         for locale, (native, target) in cases.items():

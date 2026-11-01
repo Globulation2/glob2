@@ -6856,3 +6856,5 @@ Ordre modtaget: %0
 Ordren er ikke bekræftet. Åbn kommandøren for at prøve igen; din besked er blevet gemt.
 [hive standing order update failed]
 Opdatering af stående ordre mislykkedes. Din ordre er sat på pause på denne enhed; prøv igen med det relevante betjeningselement.
+[AI for all computer colonies]
+AI for alle computerstyrede kolonier

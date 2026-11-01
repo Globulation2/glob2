@@ -2,6 +2,8 @@
 #include "app/ClientFeatures.h"
 #include "HiveClient.h"
 #include "HiveObservation.h"
+#include "WorkerProcess.h"
+#include "ProgramSchedule.h"
 #include "GameGUI.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -25,7 +27,6 @@ namespace Hive
 {
 namespace
 {
-std::string executable;
 std::string uuid()
 {
 	std::random_device rd;
@@ -39,70 +40,7 @@ std::string uuid()
 	}
 	return out;
 }
-#ifndef __EMSCRIPTEN__
-Json runWorker(const Json &input)
-{
-	const char *args[] = {executable.c_str(), "dev", "hive-worker", nullptr};
-	SDL_PropertiesID props = SDL_CreateProperties();
-	auto *environment = SDL_CreateEnvironment(false);
-	SDL_SetPointerProperty(props, SDL_PROP_PROCESS_CREATE_ARGS_POINTER, const_cast<char **>(args));
-	SDL_SetPointerProperty(props, SDL_PROP_PROCESS_CREATE_ENVIRONMENT_POINTER, environment);
-	SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDIN_NUMBER, SDL_PROCESS_STDIO_APP);
-	SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDOUT_NUMBER, SDL_PROCESS_STDIO_APP);
-	SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDERR_NUMBER, SDL_PROCESS_STDIO_NULL);
-	auto *process = SDL_CreateProcessWithProperties(props);
-	SDL_DestroyProperties(props);
-	SDL_DestroyEnvironment(environment);
-	if (!process)
-		return {{"ok", false}};
-	std::string wire = input.dump() + "\n", output;
-	auto *stdinStream = SDL_GetProcessInput(process);
-	auto *stdoutStream = SDL_GetProcessOutput(process);
-	// SDL process input is nonblocking; pump both pipes so large observations cannot deadlock.
-	std::size_t sent = 0;
-	const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
-	bool complete = false;
-	int exitCode = 0;
-	while (std::chrono::steady_clock::now() < deadline)
-	{
-		if (sent < wire.size())
-			sent += SDL_WriteIO(stdinStream, wire.data() + sent, wire.size() - sent);
-		char bytes[8192];
-		auto n = SDL_ReadIO(stdoutStream, bytes, sizeof(bytes));
-		if (n)
-			output.append(bytes, n);
-		if (output.size() > 2 * 1024 * 1024)
-			break;
-		if (output.find('\n') != std::string::npos)
-		{
-			complete = true;
-			break;
-		}
-		if (SDL_WaitProcess(process, false, &exitCode))
-			break;
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
-	SDL_KillProcess(process, true);
-	SDL_WaitProcess(process, true, &exitCode);
-	SDL_DestroyProcess(process);
-	if (!complete)
-		return {{"ok", false}};
-	try
-	{
-		return Json::parse(output);
-	}
-	catch (...)
-	{
-		return {{"ok", false}};
-	}
-}
-#else
-#endif
 } // namespace
-void setExecutable(const char *path)
-{
-	executable = std::filesystem::absolute(path).string();
-}
 std::uint64_t Client::now() const
 {
 	return environment.now ? environment.now() : SDL_GetTicks();
@@ -542,27 +480,25 @@ void Client::update(bool caughtUp)
 	if (!working && current.empty() && pendingResult.empty() && ready && !lease.empty() &&
 		timestamp - lastLeaseAck < 10000)
 	{
-		for (auto &[id, p] : programs)
-			if (!p.paused && gui.game.stepCounter >= p.nextTick)
+		const auto id = scheduleDue(programs, gui.game.stepCounter);
+		if (!id.empty())
+		{
+			auto &p = programs.at(id);
+			currentProgram = id;
+			current = Json::object();
+			try
 			{
-				p.nextTick =
-					gui.game.stepCounter + p.definition.at("intervalTicks").get<unsigned>();
-				currentProgram = id;
-				current = Json::object();
-				try
-				{
-					start({{"source", p.definition.at("source")},
-						   {"state", p.state},
-						   {"initialized", p.initialized},
-						   {"random", p.random},
-						   {"snapshot", snapshot()}});
-				}
-				catch (...)
-				{
-					finish({{"ok", false}});
-				}
-				break;
+				start({{"source", p.definition.at("source")},
+					   {"state", p.state},
+					   {"initialized", p.initialized},
+					   {"random", p.random},
+					   {"snapshot", snapshot()}});
 			}
+			catch (...)
+			{
+				finish({{"ok", false}});
+			}
+		}
 	}
 }
 void Client::deliverResult()

@@ -6856,3 +6856,5 @@ MCP 伺服器
 指令未確認。請開啟指揮官重試；您的訊息已儲存。
 [hive standing order update failed]
 常駐指令更新失敗。您的指令已在此裝置上暫停；請使用對應的控制項重試。
+[AI for all computer colonies]
+所有電腦控制殖民地的 AI

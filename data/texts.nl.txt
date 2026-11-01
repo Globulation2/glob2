@@ -6856,3 +6856,5 @@ Bevel ontvangen: %0
 Bevel niet bevestigd. Open de commandant om het opnieuw te proberen; uw bericht is bewaard.
 [hive standing order update failed]
 Het bijwerken van het vaste bevel is mislukt. Uw bevel is op dit apparaat gepauzeerd; probeer het opnieuw met het betreffende bedieningselement.
+[AI for all computer colonies]
+AI voor alle computergestuurde kolonies

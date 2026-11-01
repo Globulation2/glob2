@@ -6856,3 +6856,5 @@ Prejet ukaz: %0
 Ukaz ni potrjen. Odprite poveljnika za ponovni poskus; vaše sporočilo je bilo shranjeno.
 [hive standing order update failed]
 Posodobitev trajnega ukaza ni uspela. Vaš ukaz je začasno ustavljen na tej napravi; poskusite znova z ustreznim kontrolnikom.
+[AI for all computer colonies]
+Umetna inteligenca za vse računalniško vodene kolonije

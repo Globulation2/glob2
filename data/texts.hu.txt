@@ -6856,3 +6856,5 @@ Parancs fogadva: %0
 A parancs nincs megerősítve. Nyisd meg a parancsnokot az újrapróbálkozáshoz; az üzeneted megmaradt.
 [hive standing order update failed]
 Az állandó parancs frissítése sikertelen. A parancsod ezen az eszközön szünetel; próbáld újra a megfelelő vezérlőelemmel.
+[AI for all computer colonies]
+MI minden számítógép vezérelte kolóniához

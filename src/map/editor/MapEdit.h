@@ -575,6 +575,7 @@ public:
 	// legacy sidebar width when neither dock nor phone presentation exists.
 	int dockWidth() const;
 	EditorDock *editorDock() const { return dock.get(); }
+	std::vector<GAGGUI::ui::Host *> inspectionHosts();
 	// Map status strip (bottom-left of the map): pointer coordinates plus the
 	// transient status from showStatus().
 	const std::string &coordinatesText() const { return coordinates; }
@@ -582,6 +583,7 @@ private:
 	friend class EditorDock;
 	friend InspectorModel buildInspectorModel(MapEdit &editor);
 	std::unique_ptr<EditorDock> dock;
+	std::unique_ptr<GAGGUI::ui::Host> mapControlsHost;
 	// Dock sections the author collapsed ("<section>/<group>"), kept across
 	// dock rebuilds and presentation switches.
 	std::set<std::string> dockCollapsed;

@@ -913,13 +913,13 @@ MapShareScreen::~MapShareScreen() = default;
 
 void MapShareScreen::setTitle(const std::string &value)
 {
-	title = value.substr(0, 128);
+	title = value;
 	invalidate();
 }
 
 void MapShareScreen::setDescription(const std::string &value)
 {
-	description = value.substr(0, 4000);
+	description = value;
 	invalidate();
 }
 

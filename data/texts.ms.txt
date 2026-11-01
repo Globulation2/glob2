@@ -6856,3 +6856,5 @@ Arahan diterima: %0
 Arahan belum disahkan. Buka komander untuk mencuba semula; mesej anda telah disimpan.
 [hive standing order update failed]
 Kemas kini arahan tetap gagal. Arahan anda dijeda secara setempat; cuba semula melalui kawalan berkenaan.
+[AI for all computer colonies]
+AI untuk semua koloni komputer

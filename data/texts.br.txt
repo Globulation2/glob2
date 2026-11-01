@@ -6856,3 +6856,5 @@ Ordem recebida: %0
 Ordem não confirmada. Abra o comandante para tentar novamente; sua mensagem foi salva.
 [hive standing order update failed]
 A atualização da ordem permanente falhou. Sua ordem está pausada neste dispositivo; tente novamente com o controle correspondente.
+[AI for all computer colonies]
+IA evit an holl drevadennoù meret gant an urzhiataer

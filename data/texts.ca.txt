@@ -6856,3 +6856,5 @@ Ordre rebuda: %0
 Ordre no confirmada. Obre el comandant per tornar-ho a intentar; el teu missatge s'ha desat.
 [hive standing order update failed]
 L'actualització de l'ordre permanent ha fallat. La teva ordre està en pausa en aquest dispositiu; torna-ho a intentar amb el control corresponent.
+[AI for all computer colonies]
+IA per a totes les colònies controlades per l’ordinador

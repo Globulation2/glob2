@@ -6856,3 +6856,5 @@ Befehl empfangen: %0
 Befehl nicht bestätigt. Öffnen Sie den Kommandanten, um es erneut zu versuchen; Ihre Nachricht wurde gespeichert.
 [hive standing order update failed]
 Die Aktualisierung Ihres Dauerauftrags ist fehlgeschlagen. Ihr Auftrag ist auf diesem Gerät pausiert; versuchen Sie es mit dem entsprechenden Bedienelement erneut.
+[AI for all computer colonies]
+KI für alle computergesteuerten Kolonien

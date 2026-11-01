@@ -42,11 +42,13 @@ subscriptions.
 
 Call `ui_acquire_control` and retain its opaque token. Acquisition fails when another
 controller owns the lease. Input tools and `ui_release_control` require that token. A
-valid controller call renews its 60-second idle lease. Individual keys and buttons
+valid controller call renews its five-minute idle lease. Token-bearing inspection and explicit renewal also extend it; anonymous reads do not. Individual keys and buttons
 expire after five seconds; refresh a hold with another down call. `ui_release_inputs`
 releases held inputs; `ui_release_control` also frees the lease. **Revoke control**,
 disablement, expiry, listener replacement and shutdown cancel pending controller work
-and release remote-owned inputs. Release tools also work while the window is
+and release remote-owned inputs. Window focus loss releases held inputs and cancels
+pending controller actions while preserving the lease, so switching to the MCP client
+does not require reacquisition. Release tools also work while the window is
 unavailable, so clients can relinquish held input when the game is minimized or a native
 dialog opens.
 
@@ -74,6 +76,18 @@ not depend on the OS pointer position.
 | ui_key | SDL scancode name; press (default), down or up; optional modifier scancode names. |
 | ui_type_text | UTF-8 via the focused game's text-input path, up to 65536 bytes. |
 | ui_release_inputs | Release remote-held mouse buttons and keys. |
+| ui_inspect | Typed hierarchy; optional surface/subtree filters and bounded screenshot. |
+| ui_act | Activate, select, set a value or scroll an inspected control; target revision required. |
+| ui_wait | Observe a screen, control state or revision; default 10 seconds, maximum 30. |
+| ui_renew_control | Renew the current token's five-minute control lease. |
+| hive_status | Local scripting availability, match-session identity and limits. |
+| hive_api | Shared player JavaScript API and authoritative local control contract. |
+| hive_run | Queue one bounded script invocation with a deduplicated operation key. |
+| hive_result | Inspect an operation's output, errors and order-submission result. |
+| hive_program | List/inspect/install/replace/pause/resume/cancel local standing orders. |
+
+The [local Hive guide](../multiplayer/hive-mind.md#local-human-match-scripting-through-mcp)
+describes script ownership, lifecycle and standing-order management.
 
 Input tools accept capture_after (default false). Success means the actual input
 consumer dispatched the operation; it does not establish that loading or other
@@ -167,3 +181,114 @@ harnesses relevant to the renderer/platform. Keep generated logs, images and cli
 transcripts under ignored `artifacts/`, and publish accessible evidence with the
 [verification template](verification.md#local-and-vm-pr-verification). Desktop platform
 and renderer checks are separate from simulation/save/replay continuity.
+
+## Typed interaction and scaled captures
+
+`ui_inspect` accepts `surface` (an instance ID), `subtree` (a stable key), `token`
+(optional) and `screenshot` (default false). Controls report their own `revision`.
+Snapshot bounds use the owning surface's logical pixels; `viewport` records that
+space. They can differ from native screenshot pixels under interface scaling or
+HiDPI. Prefer semantic actions for controls and captured-image coordinates for
+spatial gestures instead of feeding logical bounds directly to coordinate tools.
+Use `ui_act` with `surface`, `key`, `revision`, `action` and optional `value`:
+
+```json
+{"token":"CONTROL_TOKEN","surface":1,"key":"start","revision":7,"action":"activate"}
+```
+
+Actions are `activate`, `select` (integer index), `set_value` (a control's typed
+value) and `scroll` (signed logical-pixel delta). A stale, hidden, disabled or blocked
+target fails. Commands traverse the deferred-input receipts and revalidate at actual
+consumption. Unrelated counters do not invalidate a button. Successful `ui_act`
+receipts include the current `inspection`, avoiding another read to discover the next
+control. A queued screen transition may still need `ui_wait`. If inspection itself
+fails after input was consumed, `inspection_error` reports that separately;
+`dispatched: true` still records delivery, so do not replay the action.
+
+`ui_wait` accepts `timeout_ms` (default 10000, maximum 30000) and `condition`.
+A condition can name `screen`, `key`, `enabled`, `selected`, `focused`, `blocked`,
+`visible`, `value`, and/or `revision_after`. It may use the same surface/subtree
+filters. Waits do not occupy the action queue. Timeout returns the latest relevant
+inspection with `satisfied: false`. At most eight waits may remain pending; excess
+waits fail immediately with an actionable error. This leaves HTTP connections and
+request capacity available for actions and inspections that can satisfy observers.
+Token-bearing waits renew control while observed.
+`ui_renew_control` explicitly renews the current token's five-minute lease.
+`ui_acquire_control` optionally accepts `inspect: true` to return the current hierarchy
+with the granted token. Its default response is unchanged. A failed optional read
+returns `inspection_error` alongside the valid token; renew or use that token rather
+than acquiring control again.
+
+Screenshot requests and input `capture_after` accept `max_width` and `max_height`.
+Images preserve aspect ratio within integer rounding and never upscale. Native readback
+is owned by the request; resizing and PNG encoding run on the HTTP worker. Each image
+has `capture_id`, returned-image `width`/`height`, native dimensions and `viewport_id`.
+Pass `capture_id` to coordinate tools to use that image's pixel coordinates. The service
+retains eight capture transforms; retirement or a viewport change requires a new image.
+Omitting it preserves native-pixel coordinates.
+
+The screen owner composes declarative menus, gameplay HUD and Hive cards, spectator
+controls, desktop/compact editor controls, and active dialogs. Popups and modal
+connection cards own input across their covered hosts; a queued action cannot bypass
+that ownership. Building/editor targets bind entity generations, and compact placement
+confirmation binds the construction type and world position. Informational unit and
+resource panels remain read-only. Map, minimap and replay progress are canvas controls;
+use captured-image coordinates for spatial gestures and Hive for player-visible world
+records. Native OS dialogs remain outside this interface.
+
+## Linux stdio launcher
+
+`python3 tools/mcp_stdio.py` connects to the default loopback endpoint, reusing a
+compatible running game or starting `glob2` from `PATH`. Enable Settings → MCP server
+in the game profile first. Startup defaults to one 30-second budget (maximum 120),
+including the initial probe and capability discovery. A listening but unresponsive or
+incompatible endpoint fails without starting a second game; only connection refusal
+starts the configured executable. Override the
+executable, working directory, URL and argument list explicitly:
+
+```sh
+python3 tools/mcp_stdio.py --executable /opt/glob2/bin/glob2 --cwd /opt/glob2 \
+  --url http://127.0.0.1:27202/mcp -- play --data-dir /opt/glob2/share/glob2
+```
+
+The launcher uses only Python's standard library and inherits the desktop environment,
+including display and audio variables. Stdout carries newline-delimited MCP JSON only;
+diagnostics and child logs go to stderr. Up to eight waits forward independently;
+mutations retain stdin order, so a wait cannot hold up the action that satisfies it.
+It never retries forwarded requests. Delivery
+may be uncertain after a disconnect; inspect results before issuing another mutation.
+
+Codex filters a stdio server's environment before starting it. Configure desktop
+variable forwarding explicitly; inheriting the launcher's environment alone cannot
+restore variables removed by the client. For example, with an installed launcher:
+
+```toml
+[mcp_servers.glob2]
+command = "python3"
+args = ["/opt/glob2/tools/mcp_stdio.py", "--executable", "/opt/glob2/bin/glob2", "--cwd", "/opt/glob2", "--", "play", "--data-dir", "/opt/glob2/share/glob2"]
+env_vars = ["DISPLAY", "XAUTHORITY", "WAYLAND_DISPLAY", "XDG_RUNTIME_DIR", "XDG_SESSION_TYPE", "DBUS_SESSION_BUS_ADDRESS", "PULSE_SERVER", "PULSE_COOKIE", "PIPEWIRE_REMOTE"]
+startup_timeout_sec = 45
+tool_timeout_sec = 40
+required = true
+default_tools_approval_mode = "approve"
+```
+
+`XAUTHORITY` is needed when the X11 server uses a separate authorization file,
+including isolated Xvfb sessions. Preserve the user's display/audio configuration;
+do not hard-code a display number or override audio drivers in the launcher.
+Headless Linux hosts still need an active display server. Run a persistent Xvfb
+session independently of Codex, then configure that server's `DISPLAY`, `XAUTHORITY`
+and `SDL_VIDEO_DRIVER=x11` in the client's environment. Wrapping the stdio launcher
+in `xvfb-run` ties the display's lifetime to the client and can terminate the game's
+display connection on disconnect. Virtual X11 verification does not establish
+physical-monitor, Wayland or hardware HiDPI coverage.
+Marking the server required makes an initialization failure visible before a task
+runs without the game tools. See the [Codex MCP configuration guide](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)
+for current client options. Verify a native Codex call to `ui_inspect` and a bounded
+screenshot after registration; `mcp list` only confirms configuration, not a working
+connection or successful discovery.
+The approval setting above preauthorizes this local game server's tools. Without
+it, the client's automatic tool policy may still require confirmation for mutations,
+even when the session's approval policy is `never`; those calls are then rejected
+before delivery. Use a prompting policy instead when interactive confirmation is
+preferred.

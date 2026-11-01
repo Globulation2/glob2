@@ -6856,3 +6856,5 @@ Enhetsdetaljer
 Venter på statistikk…
 [stats work construction]
 Arbeid og bygging
+[AI for all computer colonies]
+KI for alle datastyrte kolonier

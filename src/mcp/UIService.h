@@ -8,6 +8,7 @@
 #include <mutex>
 #include <optional>
 #include <set>
+#include <ui/Host.h>
 namespace MCP
 {
 class HttpServer;
@@ -31,6 +32,19 @@ class UIService : public ExecutionContext
 	std::mutex mutex;
 	std::deque<std::shared_ptr<Request>> queue;
 	std::shared_ptr<Request> active;
+	std::deque<std::shared_ptr<Request>> observers;
+	std::shared_ptr<GAGGUI::ui::SemanticDispatch> semantic;
+	struct CapturedViewport
+	{
+		std::uint64_t id, viewport;
+		int width, height, nativeWidth, nativeHeight;
+	};
+	std::deque<CapturedViewport> captures;
+	std::uint64_t nextCapture = 0;
+	bool coordinatesConverted = false;
+	Json inspection(const Json &arguments);
+	bool addInspection(Result &result, const Json &arguments = Json::object());
+	void observe();
 	bool accepting = false, enabled = false, dispatched = false, capturing = false,
 		 uiAvailable = false, awaitingDispatch = false;
 	// Generation and actual consumption differ for staged cleanup/buffered input.
@@ -64,11 +78,16 @@ class UIService : public ExecutionContext
 	void maintainListener();
 	void observeHumanInput(std::vector<SDL_Event> &);
 	void expireInputs(Clock::time_point);
+    void cancelControllerWork(const std::string &reason);
 	void advanceRequest(std::vector<SDL_Event> &, bool available);
 	void advanceDrag(const Json &, std::vector<SDL_Event> &, Clock::time_point);
 	void dispatchKey(const Json &, std::vector<SDL_Event> &);
 
   public:
+	// Called only at the application's UI boundary; supplied by the owning screen stack.
+	std::function<std::vector<GAGGUI::ui::Host *>()> inspectionHosts;
+	std::function<std::string()> inspectionScreen;
+	std::function<Result(const std::string &, const Json &)> domainHandler;
 	explicit UIService(GAGCore::GraphicContext &,
 					   std::function<void(ToolRegistry &)> extensions = {});
 	~UIService() override;

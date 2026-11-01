@@ -14,7 +14,7 @@ test/build_system/test_web_assets.py fails.
 - Menu images use the shared pinned lossy/lossless WebP selection policy. The wordmark
   keeps the menu crop plus a margin; the unseen area is a flat fill.
 
-Needs fontTools 4.66.1 and the pinned exporter interpreter:
+Needs fontTools 4.66.1 (requirements-dev.txt) and the pinned exporter interpreter:
 
     "$(python3 tools/package_assets.py --encoder-python)" browser/derive_assets.py
 """

@@ -8,6 +8,10 @@
 #include "MapEdit.h"
 #include "MapEditInspector.h"
 #include "Race.h"
+#include "render/overlay/MapZoomControls.h"
+#include <TrueTypeFont.h>
+#include <StringTable.h>
+#include <Toolkit.h>
 #include <nlohmann/json.hpp>
 #include <SDL3/SDL.h>
 #include <algorithm>
@@ -374,4 +378,92 @@ TEST_SUITE("EditorDockLayout")
 		frame(editor);
 		CHECK_FALSE(host.find("dock/inspect/hp"));
 	}
+	TEST_CASE("a dock popup owns the map surface as well as the dock [display]")
+	{
+		using namespace GAGGUI::ui;
+		glob2test::HeadlessGlobals globals(window(1280, 720));
+		MapEdit editor;
+		blank(editor);
+		frame(editor); // Build the visible dock before asking for an anchor rectangle.
+		const auto owners = editor.inspectionHosts();
+		REQUIRE(owners.size() == 2);
+		auto *map = owners.front();
+		REQUIRE(map->find("editor/zoom/in"));
+		const auto snapshot = map->inspect();
+		auto command = semanticDispatch();
+		command->surface = snapshot.instance;
+		command->key = "editor/zoom/in";
+		command->action = {ActionKind::Activate, {}};
+		std::function<void(const std::vector<ControlSnapshot> &)> find = [&](const auto &nodes)
+		{
+			for (const auto &node : nodes)
+			{
+				if (node.key == command->key) command->revision = node.revision;
+				find(node.children);
+			}
+		};
+		find(snapshot.controls);
+		REQUIRE(command->revision > 0);
+		const double zoom = editor.camera.zoom;
+		auto &dock = editor.dock->host();
+		// Current dock selectors are buttons; explicitly open a framework popup
+		// to verify ownership of the composed host surfaces, including future choices.
+		dock.openPopup({.anchor = dock.bounds("dock/menu"), .options = {"First", "Second"}});
+		const auto modalOwners = editor.inspectionHosts();
+		REQUIRE(modalOwners.size() == 1);
+		CHECK(modalOwners.front() == &dock);
+		auto event = command->event();
+		editor.processEvent(event);
+		CHECK_FALSE(command->consumed);
+		CHECK(editor.camera.zoom == zoom);
+		dock.closePopup();
+		CHECK(editor.inspectionHosts().size() == 2);
+	}
+
+	TEST_CASE("translated zoom controls use the same measured bounds for semantic and pointer actions [display]")
+	{
+		auto options = window(1280, 720);
+		options.loadStrings = true;
+		glob2test::HeadlessGlobals globals(options);
+		MapEdit editor;
+		blank(editor);
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		GAGCore::TrueTypeFont font("data/fonts/sans.ttf", 26);
+		struct Restore {
+			GAGCore::Font *font = globalContainer->littleFont;
+			int language = GAGCore::Toolkit::getStringTable()->getLang();
+			~Restore() { globalContainer->littleFont = font; GAGCore::Toolkit::getStringTable()->setLang(language); }
+		} restore;
+		globalContainer->littleFont = &font;
+		for (const auto *language : {"en", "hi", "ur", "sw"})
+		{
+			INFO(language);
+			const int id = strings->getLangCode(language);
+			REQUIRE(id >= 0);
+			strings->setLang(id);
+			editor.camera.zoom = 1;
+			const auto box = mapZoomControlsLayout(editor.camera, false, true);
+			REQUIRE(box.height > 22);
+			const auto buttons = mapZoomControls(editor.camera, "probe", [&](int index) {
+				const auto point = mapZoomControlBounds(editor.camera, false, true)[index].center();
+				REQUIRE(clickMapZoomControls(editor.camera, point.x, point.y, false, true));
+			}, false, true);
+			REQUIRE(buttons.size() == 3);
+			for (const auto &button : buttons)
+			{
+				CHECK(button.bounds.y == box.y);
+				CHECK(button.bounds.h == box.height);
+				CHECK(button.bounds.bottom() == globalContainer->gfx->getH() - 4);
+			}
+			CHECK(buttons[1].bounds.w == box.middleWidth);
+			buttons[2].tap(buttons[2].bounds.center());
+			const double semanticZoom = editor.camera.zoom;
+			CHECK(semanticZoom > 1);
+			editor.camera.zoom = 1;
+			const auto point = buttons[2].bounds.center();
+			REQUIRE(clickMapZoomControls(editor.camera, point.x, point.y, false, true));
+			CHECK(editor.camera.zoom == doctest::Approx(semanticZoom));
+		}
+	}
+
 }

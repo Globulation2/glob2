@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <atomic>
+#include <mutex>
+#include <nlohmann/json.hpp>
 #include <ui/Host.h>
 #include <ui/Containers.h>
 #include <ui/Controls.h>
@@ -6,6 +9,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <stdexcept>
+#include <tuple>
 
 namespace GAGGUI::ui
 {
@@ -20,7 +24,12 @@ bool touchMouse(const SDL_Event &event)
 }
 } // namespace
 
-Host::Host(const Theme &theme, Builder build) : themeValue(theme), build(std::move(build))
+namespace
+{
+std::atomic<std::uint64_t> nextSurface{0};
+}
+Host::Host(const Theme &theme, Builder build)
+	: instance(++nextSurface), themeValue(theme), build(std::move(build))
 {
 	availableFn = [](const Presentation &p, const Metrics &) { return p.safe; };
 	placeFn = [](Size, Rect available) { return available; };
@@ -39,6 +48,81 @@ void Host::setMeasurer(const TextMeasurer *value)
 {
 	measurer = value;
 	needsLayout = true;
+}
+
+void Host::setBlockedRegions(std::vector<Rect> regions)
+{
+	regions.erase(std::remove_if(regions.begin(), regions.end(), [](Rect r) { return r.empty(); }),
+				  regions.end());
+	std::sort(regions.begin(), regions.end(), [](Rect a, Rect b)
+			  { return std::tie(a.x, a.y, a.w, a.h) < std::tie(b.x, b.y, b.w, b.h); });
+	regions.erase(std::unique(regions.begin(), regions.end()), regions.end());
+	if (regions == blockedRegions)
+		return;
+	blockedRegions = std::move(regions);
+	refreshBlockedGeometry();
+}
+bool Host::inputBlockedAt(Point point) const
+{
+	return bool(popup) || std::any_of(blockedRegions.begin(), blockedRegions.end(),
+									  [&](Rect region) { return region.contains(point); });
+}
+bool Host::obscures(Rect visible) const
+{
+	if (visible.empty())
+		return false;
+	return std::any_of(blockedRegions.begin(), blockedRegions.end(),
+					   [&](Rect region) { return region.intersects(visible); });
+}
+void Host::refreshBlockedGeometry()
+{
+	effectiveBounds.clear();
+	if (blockedRegions.empty())
+		return;
+	auto collect = [&](auto &&self, const Node &node, Rect clip) -> void
+	{
+		if (node.clipsChildren())
+			clip = clip.intersect(node.bounds);
+		effectiveBounds.emplace(&node, node.bounds.intersect(clip));
+		for (const auto &child : node.children)
+			if (child)
+				self(self, *child, clip);
+	};
+	if (tree)
+		collect(collect, *tree, current.viewport);
+	if (popup && popup->tree)
+		collect(collect, *popup->tree, current.viewport);
+	auto covered = [&](const std::string &key)
+	{
+		const auto *node = key.empty() ? nullptr : find(key);
+		return node && externallyBlocked(*node);
+	};
+	// pressedNode is an identity token for unkeyed nodes. Never dereference a
+	// retained pointer here: a layout rebuild may have replaced its tree.
+	const auto pressed = effectiveBounds.find(pressedNode);
+	if (covered(capturedKey) || covered(pressedKey) || covered(panKey) ||
+		(pressed != effectiveBounds.end() && obscures(pressed->second)) ||
+		(scrolling && covered(scrolling->key)))
+		cancelInput();
+}
+bool Host::externallyBlocked(const Node &node) const
+{
+	if (blockedRegions.empty())
+		return false;
+	const auto found = effectiveBounds.find(&node);
+	return found != effectiveBounds.end() && obscures(found->second);
+}
+bool Host::externallyBlockedAt(const Node &node, Point point) const
+{
+	if (!externallyBlocked(node))
+		return false;
+	// A list is one interactive node with separately addressable rows. A partly
+	// covered row must not disable all of its uncovered siblings.
+	const auto found = effectiveBounds.find(&node);
+	for (const auto &part : node.subTargets())
+		if (part.bounds.contains(point))
+			return found == effectiveBounds.end() || obscures(part.bounds.intersect(found->second));
+	return true;
 }
 
 void Host::setPresentation(const Presentation &presentation)
@@ -102,6 +186,7 @@ void Host::layoutIfNeeded()
 	if (dirty)
 	{
 		saveStates();
+        pressedNode=nullptr; // retire unkeyed identity before destroying the old tree
 		tree = build(current);
 		if (!tree)
 			tree = empty();
@@ -141,6 +226,8 @@ void Host::layoutIfNeeded()
 		if (popup)
 			layoutPopup();
 	}
+    if(laidOut)refreshBlockedGeometry();
+	validatePopupOwner();
 	if (laidOut && layoutListener)
 		layoutListener();
 }
@@ -184,7 +271,7 @@ std::vector<std::string> Host::focusOrder() const
 		root->visit(
 			[&](Node &node)
 			{
-				if (node.focusable() && !node.key.empty())
+				if (node.focusable() && !node.key.empty() && !externallyBlocked(node))
 					out.push_back(node.key);
 			});
 	return out;
@@ -198,7 +285,8 @@ void Host::focus(const std::string &key, bool keyboard)
 
 Node *Host::focusedNode() const
 {
-	return focusKey.empty() ? nullptr : find(focusKey);
+	auto *node=focusKey.empty()?nullptr:find(focusKey);
+    return node && !externallyBlocked(*node)?node:nullptr;
 }
 
 void Host::beginEditing(const std::string &key)
@@ -302,7 +390,7 @@ Node *Host::interactiveAt(Point point) const
 		return nullptr;
 	if (popup && !popup->bounds.contains(point))
 		return nullptr;
-	return root->hitTest(point, [](const Node &n) { return n.interactive() && n.enabled(); });
+	return root->hitTest(point, [&](const Node &n) { return n.interactive() && n.enabled() && !externallyBlockedAt(n,point); });
 }
 
 Node *Host::scrollableAt(Point point) const
@@ -310,7 +398,7 @@ Node *Host::scrollableAt(Point point) const
 	auto *root = activeRoot();
 	if (!root)
 		return nullptr;
-	return root->hitTest(point, [](const Node &n) { return n.scrollable(); });
+	return root->hitTest(point, [&](const Node &n) { return n.scrollable() && !externallyBlocked(n); });
 }
 
 void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point, std::uint64_t device)
@@ -411,6 +499,7 @@ void Host::pointer(PointerPhase phase, Point point, std::uint64_t device, std::u
 			auto *under = scrollableAt(point);
 			swallowTap = scrolling && under && under->key == scrolling->key;
 		}
+        if(obscures({point.x,point.y,1,1}))return;
 		if (popup && !popup->bounds.contains(point))
 		{
 			closePopup();
@@ -418,7 +507,7 @@ void Host::pointer(PointerPhase phase, Point point, std::uint64_t device, std::u
 			return;
 		}
 		auto *root = activeRoot();
-		Node *capture = root ? root->hitTest(point, [&](const Node &n) { return n.capturesPointer(point); }) : nullptr;
+		Node *capture = root ? root->hitTest(point, [&](const Node &n) { return n.capturesPointer(point) && !externallyBlockedAt(n,point); }) : nullptr;
 		if (capture && !capture->key.empty())
 		{
 			capturedKey = capture->key;
@@ -466,9 +555,34 @@ void Host::tapAt(Point point)
 	pointer(PointerPhase::Up, point, SDL_MOUSE_TOUCHID, 0, lastTick);
 }
 
+namespace
+{
+std::shared_ptr<SemanticDispatch> commandFor(const SDL_Event &event);
+}
 bool Host::event(const SDL_Event &event)
 {
 	layoutIfNeeded();
+	if (isSemanticEvent(event))
+	{
+		auto command = commandFor(event);
+		if (!command || command->consumed || command->surface != instance)
+			return false;
+		command->consumed = true;
+		const auto snapshot = inspect();
+		auto it = inspected.find(command->key);
+		if (it == inspected.end() || it->second.revision != command->revision)
+			command->error = "Stale control target; inspect again";
+		else
+			try
+			{
+				act(command->key, command->action, command->error);
+			}
+			catch (const std::exception &error)
+			{
+				command->error = error.what();
+			}
+		return true;
+	}
 	if (touchMouse(event))
 		return true;
 	const GAGCore::Ticks time = (event.common.timestamp / SDL_NS_PER_MS);
@@ -549,6 +663,7 @@ bool Host::event(const SDL_Event &event)
 	case SDL_EVENT_KEY_DOWN:
 		return keyDown({event.key.key, event.key.mod, event.key.repeat != 0});
 	case SDL_EVENT_TEXT_EDITING:
+        if(auto *node=find(editingKey);node && externallyBlocked(*node))return false;
 		// Provisional IME text is shown, never committed; Return while composing
 		// picks a candidate and must not submit the control.
 		if (editingKey.empty())
@@ -559,7 +674,7 @@ bool Host::event(const SDL_Event &event)
 	case SDL_EVENT_TEXT_INPUT:
 		preedit.clear();
 		if (!editingKey.empty())
-			if (auto *node = find(editingKey))
+			if (auto *node = find(editingKey);node && !externallyBlocked(*node))
 				return node->textInput(event.text.text, *this);
 		return false;
 	case SDL_EVENT_WINDOW_RESIZED:
@@ -588,7 +703,7 @@ void Host::activateShortcut(SDL_Keycode sym)
 	tree->visit(
 		[&](Node &node)
 		{
-			if (!match && node.enabled() && node.shortcut() == sym)
+			if (!match && node.enabled() && !externallyBlocked(node) && node.shortcut() == sym)
 				match = &node;
 		});
 	if (match)
@@ -616,10 +731,23 @@ bool Host::keyDown(const KeyEvent &key)
 {
 	if (popup)
 		return popupKey(key);
-	if (!editingKey.empty())
+	auto *editing = editingKey.empty() ? nullptr : find(editingKey);
+	if (editing && externallyBlocked(*editing) && key.sym == SDLK_TAB)
 	{
-		auto *node = find(editingKey);
-		if (!preedit.empty() && (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER || key.sym == SDLK_ESCAPE))
+		// Suspend the stored draft without blur/commit. Activating the field
+		// after it is uncovered resumes that draft with its original baseline.
+		editing->save(store.get(editingKey));
+		editingKey.clear();
+		preedit.clear();
+		SDL_StopTextInput(SDL_GetKeyboardFocus());
+		moveFocus(key.shift() ? -1 : 1);
+		return true;
+	}
+	if (!editingKey.empty() && (!editing || !externallyBlocked(*editing)))
+	{
+		auto *node = editing;
+		if (!preedit.empty() &&
+			(key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER || key.sym == SDLK_ESCAPE))
 		{
 			if (key.sym == SDLK_ESCAPE)
 				preedit.clear();
@@ -645,11 +773,15 @@ bool Host::keyDown(const KeyEvent &key)
 		return true;
 	}
 	auto *focused = focusedNode();
+	if (!focused && ((editing && externallyBlocked(*editing)) ||
+					 (!focusKey.empty() && find(focusKey) && externallyBlocked(*find(focusKey)))))
+		return true; // suspended UI focus must not trigger background shortcuts
 	if (focused && keyboardFocus)
 	{
 		if (focused->keyDown(key, *this))
 			return true;
-		if (!key.repeat && (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER || key.sym == SDLK_SPACE))
+		if (!key.repeat &&
+			(key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER || key.sym == SDLK_SPACE))
 		{
 			focused->activate(*this, 0);
 			return true;
@@ -678,7 +810,8 @@ bool Host::keyDown(const KeyEvent &key)
 			tree->visit(
 				[&](Node &node)
 				{
-					if (!target && node.scrollable() && node.scrollMaximum() > 0)
+					if (!target && node.scrollable() && node.scrollMaximum() > 0 &&
+						!externallyBlocked(node))
 						target = &node;
 				});
 		if (target && !target->scrollable())
@@ -695,7 +828,8 @@ bool Host::keyDown(const KeyEvent &key)
 		tree->visit(
 			[&](Node &node)
 			{
-				if (!match && node.enabled() && node.shortcut() == normalized)
+				if (!match && node.enabled() && !externallyBlocked(node) &&
+					node.shortcut() == normalized)
 					match = &node;
 			});
 	if (match)
@@ -932,10 +1066,18 @@ Element Host::buildPopup(const PopupSpec &spec)
 
 void Host::openPopup(PopupSpec spec)
 {
-	cancelGestures();
+	layoutIfNeeded();
+	const auto owner =
+		spec.ownerKey.empty() ? std::optional<ControlSnapshot>{} : popupOwner(spec.ownerKey);
+	if (!spec.ownerKey.empty() && !owner)
+		return;
+	cancelInput();
+	++popupGeneration;
 	popup = std::make_unique<Popup>();
 	popup->spec = std::move(spec);
-	popup->highlight = std::clamp(popup->spec.selected, 0, std::max(0, int(popup->spec.options.size()) - 1));
+	popup->owner = owner;
+	popup->highlight =
+		std::clamp(popup->spec.selected, 0, std::max(0, int(popup->spec.options.size()) - 1));
 	popup->tree = buildPopup(popup->spec);
 	store.erase("popup/scroll");
 	layoutPopup();
@@ -966,14 +1108,16 @@ void Host::layoutPopup()
 	y = std::clamp(y, safe.y + margin, std::max(safe.y + margin, safe.bottom() - measured.h - margin));
 	popup->bounds = {x, y, width, measured.h};
 	popup->tree->arrange(ctx, popup->bounds);
+    refreshBlockedGeometry();
 	if (layoutListener)
 		layoutListener();
 }
 
 void Host::closePopup()
 {
-	if (popup) cancelGestures();
+	if (popup) cancelInput();
 	popup.reset();
+    refreshBlockedGeometry();
 	store.erase("popup/scroll");
 	if (layoutListener)
 		layoutListener();
@@ -981,12 +1125,49 @@ void Host::closePopup()
 
 void Host::pickPopup(int index)
 {
+	layoutIfNeeded();
 	if (!popup)
 		return;
 	auto pick = popup->spec.pick;
 	closePopup();
 	if (pick)
 		pick(index);
+}
+
+std::optional<ControlSnapshot> Host::popupOwner(const std::string &key) const
+{
+	auto snapshot = inspect();
+	std::optional<ControlSnapshot> owner;
+	int matches = 0;
+	auto findOwner = [&](auto &&self, const ControlSnapshot &item) -> void
+	{
+		if (item.key == key)
+		{
+			owner = item;
+			++matches;
+		}
+		for (const auto &child : item.children)
+			self(self, child);
+	};
+	// Search the underlying owner tree, never the popup's own rows.
+	if (!snapshot.controls.empty())
+		findOwner(findOwner, snapshot.controls.front());
+	if (matches != 1 || !owner->enabled || owner->visible.empty() || obscures(owner->visible))
+		return {};
+	owner->children.clear();
+	owner->revision = 0;
+	owner->focused = false;
+	owner->blocked = false; // Its own popup covers the owner by design.
+	return owner;
+}
+
+void Host::validatePopupOwner()
+{
+	if (!popup || popup->spec.ownerKey.empty())
+		return;
+	const auto owner = popupOwner(popup->spec.ownerKey);
+	if (!owner || owner != popup->owner)
+		closePopup();
 }
 
 bool Host::popupKey(const KeyEvent &key)
@@ -1023,11 +1204,354 @@ bool Host::popupKey(const KeyEvent &key)
 	if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER || key.sym == SDLK_SPACE)
 	{
 		if (count && (popup->spec.enabled.empty() || popup->spec.enabled[popup->highlight]))
-			pickPopup(popup->highlight);
+		{
+			auto *target = popup->tree->find("popup/" + std::to_string(popup->highlight));
+			if (target && !externallyBlocked(*target))
+				pickPopup(popup->highlight);
+		}
 		return true;
 	}
 	if (key.sym == SDLK_TAB)
 		return true;
 	return true;
+}
+
+namespace
+{
+std::mutex semanticMutex;
+std::map<std::uint32_t, std::weak_ptr<SemanticDispatch>> semanticCommands;
+std::atomic<std::uint32_t> nextCommand{0};
+Uint32 semanticEventType()
+{
+	static const Uint32 type = SDL_RegisterEvents(2) + 1;
+	return type;
+}
+std::shared_ptr<SemanticDispatch> commandFor(const SDL_Event &event)
+{
+	if (!isSemanticEvent(event))
+		return {};
+	std::lock_guard lock(semanticMutex);
+	auto it = semanticCommands.find(std::uint32_t(event.user.code));
+	return it == semanticCommands.end() ? nullptr : it->second.lock();
+}
+} // namespace
+bool isSemanticEvent(const SDL_Event &event)
+{
+	return event.type == semanticEventType();
+}
+std::shared_ptr<SemanticDispatch> semanticDispatch()
+{
+	auto command = std::make_shared<SemanticDispatch>();
+	command->id = ++nextCommand;
+	std::lock_guard lock(semanticMutex);
+	semanticCommands[command->id] = command;
+	return command;
+}
+SemanticDispatch::~SemanticDispatch()
+{
+	std::lock_guard lock(semanticMutex);
+	semanticCommands.erase(id);
+}
+SDL_Event SemanticDispatch::event()
+{
+	SDL_Event event{};
+	event.type = semanticEventType();
+	event.user.code = Sint32(id);
+	return event;
+}
+const char *actionName(ActionKind kind)
+{
+	switch (kind)
+	{
+	case ActionKind::Activate:
+		return "activate";
+	case ActionKind::Select:
+		return "select";
+	case ActionKind::SetValue:
+		return "set_value";
+	case ActionKind::Scroll:
+		return "scroll";
+	}
+	return "unknown";
+}
+bool Node::perform(const SemanticAction &action, Host &host)
+{
+	if (action.kind == ActionKind::Activate && interactive())
+	{
+		activate(host, 0);
+		return true;
+	}
+	if (action.kind == ActionKind::Scroll && scrollable())
+		if (const auto *pixels = std::get_if<int>(&action.value))
+		{
+			if (*pixels == 0)
+				return true;
+			const int offset = scrollOffset();
+			const auto next =
+				std::clamp(static_cast<long long>(offset) + *pixels,
+						   static_cast<long long>(INT_MIN), static_cast<long long>(INT_MAX));
+			scrollBy(static_cast<int>(next - offset), host);
+			return true;
+		}
+
+	return false;
+}
+SurfaceSnapshot Host::inspect() const
+{
+	SurfaceSnapshot result;
+	result.instance = instance;
+	result.viewport = current.viewport;
+	result.bounds = rootRect;
+	auto collect = [&](auto &&self, const Node &node, Rect clip, bool blocked,
+					   bool enabled, const std::string &context) -> ControlSnapshot
+	{
+		// A node's own clip applies to its parts as well as its children.
+		if (node.clipsChildren())
+			clip = clip.intersect(node.bounds);
+		ControlSnapshot item;
+		item.key = node.key;
+		item.role = node.name();
+		item.label = node.accessibleText();
+		item.value = node.controlValue();
+		const auto identity = node.semanticIdentity();
+		item.actionIdentity = context;
+		if (!identity.empty())
+			item.actionIdentity += std::to_string(identity.size()) + ":" + identity;
+		item.bounds = node.bounds;
+		item.visible = node.bounds.intersect(clip);
+		item.interactive = node.interactive();
+		item.enabled = enabled && node.enabled();
+		item.selected = node.selected();
+		item.focused = !node.key.empty() && node.key == focusKey;
+		item.blocked = blocked || obscures(item.visible);
+		item.actions = node.supportedActions();
+		for (const auto &part : node.subTargets())
+		{
+			ControlSnapshot target;
+			target.key = node.key + "/" + part.suffix;
+			target.role = "option";
+			target.label = part.label;
+			target.actionIdentity = item.actionIdentity;
+			target.bounds = part.bounds;
+			target.visible = part.bounds.intersect(clip);
+			target.interactive = true;
+			target.enabled = item.enabled && part.enabled;
+			target.selected = part.selected;
+			target.blocked = blocked || obscures(target.visible);
+			target.actions = {ActionKind::Activate};
+			item.children.push_back(std::move(target));
+		}
+		for (const auto &child : node.children)
+			if (child)
+				item.children.push_back(self(self, *child, clip, blocked, item.enabled, item.actionIdentity));
+		return item;
+	};
+	if (tree)
+		result.controls.push_back(collect(collect, *tree, current.viewport, bool(popup), true, {}));
+	if (popup)
+	{
+		auto controls = collect(collect, *popup->tree, current.viewport, false, true, {});
+		// Reopening an identical-looking popup can bind different callbacks. Its
+		// lifetime must participate in every target revision, even when no
+		// inspection observed the closed state between the two popups.
+		auto identify = [&](auto &&self, ControlSnapshot &item) -> void
+		{
+			item.actionIdentity = "popup:" + std::to_string(popupGeneration) + ":" + item.actionIdentity;
+			for (auto &child : item.children)
+				self(self, child);
+		};
+		identify(identify, controls);
+		result.controls.push_back(std::move(controls));
+	}
+	// Revisions are per target. A counter elsewhere in the HUD never changes a
+	// button's revision; removal/recreation does, even with identical content.
+	std::map<std::string, ControlSnapshot> next;
+	auto revise = [&](auto &&self, std::vector<ControlSnapshot> &items) -> void
+	{
+		for (auto &item : items)
+		{
+			if (!item.key.empty())
+			{
+				auto own = item;
+				own.children.clear();
+				own.focused = false;
+				own.revision = 0;
+				auto old = inspected.find(item.key);
+				std::uint64_t revision = 0;
+				if (old != inspected.end())
+				{
+					auto before = old->second;
+					revision = before.revision;
+					before.revision = 0;
+					if (before != own)
+						revision = 0;
+				}
+				own.revision = revision ? revision : ++inspectionRevision;
+				item.revision = own.revision;
+				next.emplace(item.key, std::move(own));
+			}
+			self(self, item.children);
+		}
+	};
+	revise(revise, result.controls);
+	if (result.controls != previousInspection)
+		++inspectionRevision;
+	previousInspection = result.controls;
+	inspected = std::move(next);
+	result.revision = inspectionRevision;
+	return result;
+}
+std::optional<ControlSnapshot> Host::actionTarget(const std::string &key, ActionKind kind,
+												  std::string &error)
+{
+	layoutIfNeeded();
+	error.clear();
+	auto snapshot = inspect();
+	ControlSnapshot *target = nullptr;
+	int matches = 0;
+	auto search = [&](auto &&self, std::vector<ControlSnapshot> &items) -> void
+	{
+		for (auto &item : items)
+		{
+			if (item.key == key)
+			{
+				target = &item;
+				++matches;
+			}
+			self(self, item.children);
+		}
+	};
+	search(search, snapshot.controls);
+	if (matches > 1)
+		error = "Ambiguous control key; fix duplicate keys in this surface";
+	else if (!target)
+		error = "Unknown control; inspect the current surface";
+	else if (target->blocked)
+		error = "Control blocked by a popup or higher input surface";
+	else if (!target->enabled)
+		error = "Control disabled";
+	else if (target->visible.empty())
+		error = "Control hidden; scroll its container first";
+	else if (std::find(target->actions.begin(), target->actions.end(), kind) ==
+			 target->actions.end())
+		error = "Action unsupported by control";
+	else
+	{
+		target->children.clear();
+		return std::move(*target);
+	}
+	return {};
+}
+bool Host::actionAllowed(const std::string &key, ActionKind kind, std::string &error)
+{
+	return bool(actionTarget(key, kind, error));
+}
+bool Host::act(const std::string &key, const SemanticAction &action, std::string &error)
+{
+	auto target = actionTarget(key, action.kind, error);
+	if (!target)
+		return false;
+
+	{
+		// Keep the tree alive: a callback may invalidate or dismiss a popup.
+		auto retained = popup ? popup->tree : tree;
+		Node *node = retained ? retained->find(key) : nullptr;
+		if (node)
+		{
+			if (action.kind != ActionKind::Scroll && !editingKey.empty() && editingKey != key)
+				endEditing();
+			if (action.kind != ActionKind::Scroll)
+				focus(key);
+			if (node->perform(action, *this))
+				return true;
+			error = "Invalid action value";
+		}
+		else if (action.kind == ActionKind::Activate)
+		{
+			// Parts (list rows) share the node's ordinary hit-testing and tap path.
+			tapAt(target->visible.center());
+			return true;
+		}
+		else
+			error = "Unknown control";
+	}
+	return false;
+}
+std::string inspectionJSON(const SurfaceSnapshot &snapshot)
+{
+	using Json = nlohmann::json;
+	auto rect = [](Rect r) { return Json{{"x", r.x}, {"y", r.y}, {"w", r.w}, {"h", r.h}}; };
+	auto encode = [&](auto &&self, const ControlSnapshot &item) -> Json
+	{
+		Json actions = Json::array(), children = Json::array(), value;
+		for (auto action : item.actions)
+			actions.push_back(actionName(action));
+		for (const auto &child : item.children)
+			children.push_back(self(self, child));
+		std::visit(
+			[&](const auto &v)
+			{
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (!std::is_same_v<T, std::monostate>)
+					value = v;
+			},
+			item.value);
+		return {{"key", item.key},
+				{"revision", item.revision},
+				{"role", item.role},
+				{"label", item.label},
+				{"value", value},
+				{"bounds", rect(item.bounds)},
+				{"visible", rect(item.visible)},
+				{"enabled", item.enabled},
+				{"selected", item.selected},
+				{"focused", item.focused},
+				{"blocked", item.blocked},
+				{"actions", actions},
+				{"children", children}};
+	};
+	Json controls = Json::array();
+	for (const auto &item : snapshot.controls)
+		controls.push_back(encode(encode, item));
+	return Json{{"instance", snapshot.instance},
+				{"revision", snapshot.revision},
+				{"viewport", rect(snapshot.viewport)},
+				{"bounds", rect(snapshot.bounds)},
+				{"controls", controls}}
+		.dump(-1, ' ', false, Json::error_handler_t::replace);
+}
+std::string diagnosticJSON(const SurfaceSnapshot &snapshot)
+{
+	using Json = nlohmann::json;
+	// Legacy browser diagnostics flattened control characters to spaces. Keep
+	// that contract here while typed snapshots retain the actual text/value.
+	auto legacyText = [](std::string value)
+	{
+		for (auto &c : value)
+			if (static_cast<unsigned char>(c) < 0x20)
+				c = ' ';
+		return value;
+	};
+	auto rect = [](Rect r) { return Json{{"x", r.x}, {"y", r.y}, {"w", r.w}, {"h", r.h}}; };
+	Json output = {{"surface", {{"w", snapshot.viewport.w}, {"h", snapshot.viewport.h}}},
+				   {"root", rect(snapshot.bounds)},
+				   {"controls", Json::object()}};
+	auto append = [&](auto &&self, const std::vector<ControlSnapshot> &items) -> void
+	{
+		for (const auto &item : items)
+		{
+			if (!item.key.empty() && item.interactive)
+			{
+				auto value = rect(item.bounds);
+				value["visible"] = rect(item.visible);
+				value["enabled"] = item.enabled;
+				value["label"] = legacyText(item.label);
+				output["controls"][legacyText(item.key)] = std::move(value);
+			}
+			self(self, item.children);
+		}
+	};
+	append(append, snapshot.controls);
+	return output.dump(-1, ' ', false, Json::error_handler_t::replace);
 }
 } // namespace GAGGUI::ui

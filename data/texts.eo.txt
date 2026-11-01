@@ -6856,3 +6856,5 @@ Ordono ricevita: %0
 Ordono ne konfirmita. Malfermu la komandanton por reprovi; via mesaĝo estas konservita.
 [hive standing order update failed]
 Ĝisdatigo de daŭra ordono malsukcesis. Via ordono estas paŭzita sur ĉi tiu aparato; reprovu per la koncerna regilo.
+[AI for all computer colonies]
+AI por ĉiuj komputile regataj kolonioj

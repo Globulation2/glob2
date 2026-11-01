@@ -29,6 +29,7 @@ InspectorModel buildInspectorModel(MapEdit &editor)
 			return model;
 		model.kind = InspectorModel::Kind::Building;
 		model.identity = editor.selectedBuildingGID;
+		model.generation = building->scriptIdentity;
 		model.building = building;
 		model.title = buildingDisplayName(*frame.entities.type(*building));
 		model.detail = GAGCore::FormattableString(fe::tr("[Team %0 / Level %1]"))
@@ -76,6 +77,7 @@ InspectorModel buildInspectorModel(MapEdit &editor)
 			return model;
 		model.kind = InspectorModel::Kind::Unit;
 		model.identity = 65536 + editor.selectedUnitGID;
+		model.generation = unit->scriptIdentity;
 		model.unit = unit;
 		model.title = getUnitName(unit->typeNum);
 		model.detail = GAGCore::FormattableString(fe::tr("[Team %0]")).arg(unit->team + 1);

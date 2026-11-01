@@ -177,6 +177,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         provenance_header = register_test_provenance(env, output)
     env['BUILDDIR'] = str(output)
     online_error_catalog = configure_online_error_catalog(env, output / 'include')
+    from hive_api import configure as configure_hive_api
+    hive_contract = configure_hive_api(env, output)
     configure_development(env, identity)
     if ccache.enabled():
         ccache.enable(env)

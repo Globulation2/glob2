@@ -6856,3 +6856,5 @@ Rozkaz přijat: %0
 Rozkaz nebyl potvrzen. Otevřete velitele a zkuste to znovu; vaše zpráva byla uložena.
 [hive standing order update failed]
 Aktualizace trvalého rozkazu selhala. Váš rozkaz je na tomto zařízení pozastaven; zkuste to znovu pomocí příslušného ovládacího prvku.
+[AI for all computer colonies]
+AI pro všechny počítačem řízené kolonie
