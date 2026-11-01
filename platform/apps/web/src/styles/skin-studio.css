@@ -748,11 +748,14 @@
 }
 .skin-shape-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 .skin-shape-grid button {
   flex-direction: column;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
   padding: 12px;
   border-color: var(--line);
 }
@@ -1177,6 +1180,9 @@
   .skin-library-grid,
   .skin-copy-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .skin-shape-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .skin-shape-grid img {
     width: 65px;
