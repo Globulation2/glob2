@@ -478,24 +478,21 @@ void fillInResource(Map &map, GenerationContext &context, std::vector<MapGenerat
 
 namespace
 {
-// Ground units can't walk onto a tile carrying a resource (Map::isHardSpaceForGroundUnit
-// excludes them), so a solid, unbroken band from the noise-band resource painting can wall a
-// team's boot tile off from the rest of an otherwise perfectly connected landmass. floodReach
-// walks that real, resource-respecting space; dist is kept (not just aggregated) so a caller
-// can compare it against a wall-blind flood and find exactly where such a wall runs.
+// Ground-blocking deposits can enclose workers on otherwise connected terrain.
+// This physical flood starts at the actual workers and retains distances so
+// repairs can compare resource-respecting and hypothetical cleared access.
 struct ReachResult
 {
 	int foodSourceDistance = -1, woodDist = -1;
 	std::vector<MapGeneratorPoint> closeGrass, farGrass;
 	std::vector<int> dist;
 };
-ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int closeRange,
+ReachResult floodReach(Map &map, const std::vector<int> &sources, int exploreLimit, int closeRange,
 					   int clearRadius)
 {
 	const Torus t(map);
 	ReachResult r;
-	const Flood flood =
-		floodFrom(t, tileMask(t, {bootY * t.w + bootX}), groundUnitTiles(map), exploreLimit);
+	const Flood flood = floodFrom(map, tileMask(t, sources), groundUnitTiles(map), exploreLimit);
 	r.dist = flood.steps;
 	for (int p : flood.visited)
 	{
@@ -524,12 +521,13 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 	return r;
 }
 
-// The same flood, but blocked only by water — as if resources didn't exist. Diffing this
+// The same physical flood with removable resources ignored. Terrain connections
+// and building footprints still constrain passage. Diffing this
 // against floodReach's result isolates exactly which tiles a resource wall blocks: reachable
 // here, not reachable there, adjacent to what is. Clearing only those tiles (rather than an
 // entire neighborhood) opens the way while disturbing nothing else nearby. Protected walls are
 // part of the terrain, so they block this flood as well.
-std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit,
+std::vector<int> terrainOnlyReach(Map &map, const std::vector<int> &sources, int limit,
 								  const std::vector<unsigned char> *protectedWalls)
 {
 	const Torus t(map);
@@ -537,10 +535,11 @@ std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit,
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		open.at(i) =
-			map.terrainPropertiesAt(i).walkable && !(protectedWalls && (*protectedWalls).at(i));
+		open.at(i) = map.terrainAllowsMovementAt(t.remainderX(i), i / t.w, 0) &&
+					 map.getBuilding(t.remainderX(i), i / t.w) == NOGBID &&
+					 !(protectedWalls && (*protectedWalls).at(i));
 	}
-	return floodFrom(t, tileMask(t, {bootY * t.w + bootX}), open, limit).steps;
+	return floodFrom(map, tileMask(t, sources), open, limit).steps;
 }
 
 // Clears the resource tiles directly responsible for a team's cramped pocket: exactly the
@@ -718,15 +717,14 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 	// nothing bigger on the other side to reach at all. Only the first is fixable, and only its
 	// exact wall tiles are cleared, so a genuinely small spot is correctly left untouched.
 	const int minPocketTiles = 60;
+	const auto workers = unitTilesByTeam(map, context.request.nbTeams);
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
 		::MapGeneration::generationCheckpoint();
-		// A caller can hand over a boot tile it has not wrapped onto the map yet: the height-field
-		// generators' fallback site search does, before placeStarts normalizes it. The floods below
-		// index by it directly.
-		int bootX = map.normalizeX(context.bootX[team]),
-			bootY = map.normalizeY(context.bootY[team]);
-		ReachResult reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
+		// Supply must be reachable by the actual starting workers, not by a
+		// geometric flood beginning inside the occupied swarm footprint.
+		const auto &sources = workers.at(team);
+		ReachResult reach = floodReach(map, sources, exploreLimit, closeRange, clearRadius);
 		context.telemetry.measure("resources.starting_wheat.before_distance",
 								  reach.foodSourceDistance, team);
 		context.telemetry.measure("resources.starting_wood.before_distance", reach.woodDist, team);
@@ -751,12 +749,11 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 			 ++attempt)
 		{
 			::MapGeneration::generationCheckpoint();
-			std::vector<int> open =
-				terrainOnlyReach(map, bootX, bootY, exploreLimit, protectedWalls);
+			std::vector<int> open = terrainOnlyReach(map, sources, exploreLimit, protectedWalls);
 			if (!clearResourceWall(map, reach.dist, open, /*minGain=*/1, protectedWalls))
 				break;
 			++wallClearRounds;
-			reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
+			reach = floodReach(map, sources, exploreLimit, closeRange, clearRadius);
 			underServed = reach.foodSourceDistance < 0 || reach.foodSourceDistance > wheatRange ||
 						  reach.woodDist < 0 || reach.woodDist > woodRange;
 		}
@@ -814,8 +811,13 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 		context.telemetry.measure("resources.starting_wheat.topup_needed", needsWheat, team);
 		context.telemetry.measure("resources.starting_wood.topup_needed", needsWood, team);
 		if (needsWheat)
+		{
 			placeReachable(WHEAT, MaterialId::Food);
-		if (needsWood)
+			// The first new clump can close a narrow shore route. Re-evaluate
+			// before choosing the second crop's physical gathering face.
+			reach = floodReach(map, sources, exploreLimit, closeRange, clearRadius);
+		}
+		if (needsWood || reach.woodDist < 0 || reach.woodDist > woodRange)
 			placeReachable(WOOD, MaterialId::Wood);
 	}
 }
@@ -873,9 +875,8 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 		int clearedTiles = 0, clearedRings = 0;
 		// Rings measured with resources ignored, so they walk out through the wall itself instead
 		// of stopping at its inner face the way the colony's own flood does.
-		const int bootX = map.normalizeX(context.bootX[team]),
-				  bootY = map.normalizeY(context.bootY[team]);
-		const std::vector<int> open = terrainOnlyReach(map, bootX, bootY, range, protectedWalls);
+		const auto sources = unitTilesByTeam(map, team + 1).at(team);
+		const std::vector<int> open = terrainOnlyReach(map, sources, range, protectedWalls);
 		std::vector<std::vector<int>> rings(size_t(range) + 1);
 		for (int p = 0; p < w * h; ++p)
 		{

@@ -14,6 +14,7 @@
 #include "Roads.h"
 #include "Settlements.h"
 #include "Sketch.h"
+#include "Topology.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -505,6 +506,43 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 		ground[i] = ground[i] && !frontage[i];
 	secureStartingCrops(game, context, t, 24, 32, 0, nullptr, &ground);
+	// A frontage ring alone does not connect a grove to its island after broad
+	// ambient crop patches fill the bank. Open a physical gathering approach to
+	// each permanent component, clearing crops only and preserving its budget.
+	const auto workers = unitTilesByTeam(map, context.request.nbTeams);
+	std::vector<unsigned char> permanent(t.size());
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int type = map.getResource(i).type;
+		permanent[i] = type == STONE || (type >= CHERRY && type <= PRUNE);
+	}
+	for (int type : {STONE, CHERRY, ORANGE, PRUNE})
+	{
+		std::vector<unsigned char> deposits(t.size());
+		for (int i = 0; i < t.size(); ++i)
+			deposits[i] = map.getResource(i).type == type;
+		const auto labels = connectedRegions(deposits, t.w, t.h, true, GridNeighbors::Cardinal);
+		const int count = *std::max_element(labels.begin(), labels.end()) + 1;
+		for (int group = 0; group < count; ++group)
+		{
+			std::vector<unsigned char> faces(t.size());
+			for (int i = 0; i < t.size(); ++i)
+				if (labels[i] == group)
+					for (const auto &step : kCardinalSteps)
+					{
+						const int face = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
+						faces[face] =
+							!permanent[face] &&
+							map.terrainAllowsMovementAt(t.remainderX(face), face / t.w, 0) &&
+							map.getBuilding(t.remainderX(face), face / t.w) == NOGBID;
+					}
+			if (!openRoad(map, t, workers.front(), faces, &permanent))
+			{
+				context.detail = "A delta resource island has no physical gathering approach.";
+				return false;
+			}
+		}
+	}
 	return true;
 }
 

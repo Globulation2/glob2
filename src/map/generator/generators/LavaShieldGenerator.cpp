@@ -307,6 +307,14 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		}
 		strokePath(int(f) < o.tongues ? live : cooled, t, corners);
 	}
+	// The circuit is a tile reservation. Keep every one of its four corners
+	// clear of the broad lava roots; a single hot corner blocks walking too.
+	// Clipping the roots to this reserved lane preserves the crater and flows
+	// outside it instead of opening accidental mixed-lava shortcuts.
+	const auto circuitCorners = tileCorners(t, L.rim);
+	for (int i = 0; i < t.size(); ++i)
+		if (circuitCorners[i])
+			live[i] = cooled[i] = 0;
 	// A long tongue reaches the sea, so it gets one ford: every live vertex within
 	// kFordHalfLength tiles, along the flow, of a point partway down.
 	auto &cooling = context.stream("lava-cooling");
@@ -461,7 +469,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		}
 		L.hot[i] = hot > 0;
 		L.wall[i] = hot == 4;
-		L.fords[i] = forded && hot < 4;
+		L.fords[i] = forded && hot == 0;
 	}
 	for (const auto &cut : fordVertices)
 	{
@@ -1129,7 +1137,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (L.wall[i] && game.map.terrainPropertiesAt(x, y).walkable)
 			return "Lava shield lost part of a lava flow or its crater.";
 		if (L.rim[i] && !game.map.isHardSpaceForGroundUnit(x, y, false, 0))
-			return "Lava shield's reserved crater circuit is blocked.";
+			return "Lava shield's reserved crater circuit is blocked at (" + std::to_string(x) +
+				   ", " + std::to_string(y) + ").";
 	}
 	const auto walk =
 		walkFromFirstColony(game.map, context.request.nbTeams, "Lava shield", "via the crater rim");
@@ -1179,7 +1188,9 @@ GeneratorDefinition lavaShieldDefinition()
 			// gravel, stone is a crust along the flows, the rim is loam, roads are dirt tracks and
 			// the open sea is deep water.
 			// Revision 7: the crater is uninterrupted lava, without void vents.
-			7,
+			// Revision 8: reserved circuit tiles protect all four corners from
+			// broad lava roots; ford proofs require completely cooled cells.
+			8,
 			false,
 			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
 				 .withSearchRange(4, 7),

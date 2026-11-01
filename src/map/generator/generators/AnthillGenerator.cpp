@@ -118,9 +118,9 @@ constexpr int kQueenExtra = 3, kQueenGrowthLimit = 400;
 // eroding a rough outline by a tile takes more than a tile from its notches, and with one a queen
 // chamber held a tenth fewer 4x4 sites than revision 5's.
 constexpr double kFace = 1.5;
-// Tunnels likewise: the open tile beside the rock is drawn half rock, so a tunnel stroked to its
-// width read a tile narrower than it (first previews of revision 6). Each side is dug this much
-// further, so a tunnel looks `tunnel-width` across; it walks about a tile wider than revision 5's.
+// The nominal tunnel outline includes its rock-face margin. A separate minimum
+// walking core below protects complete cells and diagonal side clearance where
+// the wandering outline narrows; the width control still shapes the wider dug walls.
 constexpr double kTunnelFace = 0.5;
 // A quarry chamber (REVISION 2026-10-26) is dug to a farm chamber's size but has no pond: a stone
 // deposit of radius kQuarryRadius at its middle at the default stone amount, its roads stopping
@@ -289,6 +289,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.open.assign(n, 0);
 	L.water.assign(n, 0);
 	L.road.assign(n, 0);
+	std::vector<unsigned char> tunnelCentre(n, 0);
 	std::mt19937 &tunnels = context.stream("anthill-tunnels");
 	for (int edge = 0; edge < int(openEdge.size()); ++edge)
 	{
@@ -300,6 +301,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			wanderingPath(t, {a.x + 0.5, a.y + 0.5}, {b.x + 0.5, b.y + 0.5}, o.tunnelWidth / 2.0 + kTunnelFace,
 						  kWanderShare * o.chamberSpacing, kWidthJitter, tunnels);
 		strokePath(L.open, t, path);
+		tracePath(tunnelCentre, t, path);
 		if (!o.sandRoads)
 			continue;
 		// The road: the path's points beyond each end's pond and beach.
@@ -311,6 +313,23 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (road.size() >= 2)
 			tracePath(L.road, t, road);
 	}
+	// Rock is stamped from every closed tile's four corners. A traversable
+	// cell therefore needs its entire 3x3 tile neighborhood carved. Preserve a
+	// minimum centreline, including both sides of each diagonal turn, before
+	// adding that face clearance; jitter must not pinch an intended door shut.
+	auto walkingCore = tunnelCentre;
+	for (int i = 0; i < n; ++i)
+		if (tunnelCentre[i])
+			for (int dy : {-1, 1})
+				for (int dx : {-1, 1})
+					if (tunnelCentre[t.at(t.remainderX(i) + dx, i / t.w + dy)])
+					{
+						walkingCore[t.at(t.remainderX(i) + dx, i / t.w)] = 1;
+						walkingCore[t.at(t.remainderX(i), i / t.w + dy)] = 1;
+					}
+	const auto minimumTunnel = dilate(t, walkingCore, 1);
+	for (int i = 0; i < n; ++i)
+		L.open[i] |= minimumTunnel[i];
 	const RadialShape chamber(o.chamberSize + kFace, 0.3, context, "anthill-chambers");
 	const RadialShape farm(o.chamberSize + kFarmExtra + kFace, 0.3, context, "anthill-chambers");
 	const RadialShape queen(o.chamberSize + kQueenExtra + kFace, 0.25, context, "anthill-chambers");
@@ -434,8 +453,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.homeOf[i] = k;
 	// The terrain (REVISION 2026-10-26): ponds, dirt-track roads and scree spoil on open ground, and
 	// rock on every vertex of a closed tile, so a closed tile is rock on all four corners and as
-	// impassable as the stone was, while an open tile against the rock face is mixed: walkable, but
-	// holding no building and no crop.
+	// impassable as the stone was. Mixed cells against a rock face are blocked;
+	// the reserved walking core stays fully clear of those border cells.
 	{
 		std::vector<unsigned char> closed(n, 0);
 		for (int i = 0; i < n; ++i)
@@ -684,7 +703,7 @@ GeneratorDefinition anthillDefinition()
 		"anthill",
 		32,
 		"Anthill",
-		6,
+		7,
 		false,
 		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
 		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4

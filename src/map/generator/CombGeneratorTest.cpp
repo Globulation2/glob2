@@ -409,6 +409,146 @@ TEST_SUITE("CombGenerator")
 
 TEST_SUITE("GeneratorGroundConnectivity")
 {
+	TEST_CASE("legal shore roads retain water under chopping and ford policies")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (int waterCost : {-1, 25})
+		{
+			CAPTURE(waterCost);
+			glob2test::HeadlessGame world(
+				{.wDec = 4, .hDec = 4, .teams = 2, .loadDefaultRace = true, .header = true});
+			REQUIRE(world.addBuilding("swarm", 1, 1, 0, 0));
+			REQUIRE(world.addBuilding("swarm", 9, 1, 0, 1));
+			auto &map = world.game.map;
+			const Torus t(map);
+			map.fillTerrain(WATER);
+			for (int y = 0; y <= 6; ++y)
+				for (int x = 0; x < t.w; ++x)
+					map.setVertexTerrain(x, y, GRASS);
+			std::vector<unsigned char> keep(t.size());
+			for (int x : {6, 14})
+				for (int y = 0; y < t.h; ++y)
+				{
+					keep[t.at(x, y)] = y != 6;
+					if (map.terrainAllowsMovementAt(x, y, 0))
+					{
+						const int resource = map.terrainPropertiesAt(x, y).shoreline ? ALGA : WOOD;
+						REQUIRE(map.terrainSupportsResourceAtByIndex(x, y, resource));
+						map.setResourceByIndex(x, y, resource, 1);
+						REQUIRE(map.resourceBlocksGround(t.at(x, y)));
+					}
+				}
+			GenerationRequest request;
+			request.wDec = request.hDec = 4;
+			request.nbTeams = 2;
+			GenerationContext context(request);
+			context.bootX[0] = context.bootY[0] = context.bootY[1] = 1;
+			context.bootX[1] = 9;
+			std::vector<TerrainType> before(t.size());
+			for (int i = 0; i < t.size(); ++i)
+				before[i] = map.vertexTerrainAt(t.remainderX(i), i / t.w);
+			REQUIRE(
+				openColonyRoutes(map, context, t, StepCosts{1, 3, -1, waterCost, -1}, 0, &keep));
+			for (int i = 0; i < t.size(); ++i)
+				CHECK(map.vertexTerrainAt(t.remainderX(i), i / t.w) == before[i]);
+			const auto open = groundUnitTiles(map);
+			const auto distance =
+				stepsFrom(map, tileMask(t, colonyGroundExits(world.game, 0, open)), open);
+			bool reached = false;
+			for (int i : colonyGroundExits(world.game, 1, open))
+				reached |= distance[i] >= 0;
+			CHECK(reached);
+		}
+	}
+
+	TEST_CASE("Anthill minimum tunnels stay connected with and without dirt roads")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto &definition =
+			GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("anthill"));
+		for (unsigned seed : {1u, 3u})
+			for (int roads : {0, 1})
+			{
+				CAPTURE(seed, roads);
+				GenerationRequest request;
+				request.setMethodDefaults(definition.legacyId);
+				request.wDec = request.hDec = 8;
+				request.nbTeams = 4;
+				request.seed = seed;
+				request.options["tunnel-width"] = 2;
+				request.options["sand-roads"] = roads;
+				Game world(nullptr);
+				const auto result = GenerationService().generate(world, request, false);
+				REQUIRE_MESSAGE(bool(result), result.diagnostic());
+				CHECK(walkFromFirstColony(world.map, request.nbTeams, "anthill",
+										  "through minimum tunnels")
+						  .error.empty());
+				GenerationContext check(request);
+				CHECK(definition.validateWorld(world, check).empty());
+			}
+	}
+
+	TEST_CASE("road clearing respects side obstacles and fords create complete walking cells")
+	{
+		glob2test::HeadlessGlobals globals;
+		{
+			glob2test::HeadlessGame world({.wDec = 4, .hDec = 4, .header = true});
+			auto &map = world.game.map;
+			const Torus t(map);
+			map.fillTerrain(OUTCROP);
+			for (int y = 4; y <= 5; ++y)
+				for (int x = 4; x <= 5; ++x)
+					map.paintCell(x, y, GRASS);
+			map.setResourceByIndex(5, 4, WOOD, 1);
+			map.setResourceByIndex(4, 5, WOOD, 1);
+			CHECK_FALSE(map.canTraverse(4, 4, 1, 1, 0, 0));
+			REQUIRE(openRoad(map, t, {t.at(4, 4)}, tileMask(t, {t.at(5, 5)})));
+			CHECK(stepsFrom(map, tileMask(t, {t.at(4, 4)}), groundUnitTiles(map))[t.at(5, 5)] >= 0);
+			CHECK((map.getResource(5, 4).type == NO_RES_TYPE ||
+				   map.getResource(4, 5).type == NO_RES_TYPE));
+		}
+		{
+			glob2test::HeadlessGame world(
+				{.wDec = 4, .hDec = 4, .teams = 2, .loadDefaultRace = true, .header = true});
+			REQUIRE(world.addBuilding("swarm", 1, 1, 0, 0));
+			REQUIRE(world.addBuilding("swarm", 9, 1, 0, 1));
+			auto &map = world.game.map;
+			const Torus t(map);
+			map.fillTerrain(WATER);
+			for (int y = 0; y <= 5; ++y)
+				for (int x = 0; x <= 5; ++x)
+				{
+					map.paintCell(x, y, GRASS);
+					map.paintCell(x + 8, y, GRASS);
+				}
+			GenerationRequest request;
+			request.wDec = request.hDec = 4;
+			request.nbTeams = 2;
+			GenerationContext context(request);
+			context.bootX[0] = context.bootY[0] = context.bootY[1] = 1;
+			context.bootX[1] = 9;
+			std::vector<TerrainType> before(t.size());
+			for (int i = 0; i < t.size(); ++i)
+				before[i] = map.vertexTerrainAt(t.remainderX(i), i / t.w);
+			const auto start = colonyGroundExits(world.game, 0, groundUnitTiles(map));
+			const auto targets = colonyGroundExits(world.game, 1, groundUnitTiles(map));
+			const auto disconnected = stepsFrom(map, tileMask(t, start), groundUnitTiles(map));
+			for (int target : targets)
+				CHECK(disconnected[target] < 0);
+			REQUIRE(openColonyRoutes(map, context, t, StepCosts{1, 3, -1, 25, -1}));
+			const auto connected =
+				stepsFrom(map, tileMask(t, colonyGroundExits(world.game, 0, groundUnitTiles(map))),
+						  groundUnitTiles(map));
+			bool reached = false;
+			for (int target : colonyGroundExits(world.game, 1, groundUnitTiles(map)))
+				reached |= connected[target] >= 0;
+			CHECK(reached);
+			for (int i = 0; i < t.size(); ++i)
+				if (before[i] == GRASS)
+					CHECK(map.vertexTerrainAt(t.remainderX(i), i / t.w) == GRASS);
+		}
+	}
+
 	TEST_CASE(
 		"physical floods reject a diagonal rock seam while geometric masks stay eight connected")
 	{

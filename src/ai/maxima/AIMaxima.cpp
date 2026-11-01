@@ -4566,10 +4566,11 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			|(tile.permanentResource?16u:0u)
 			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u)|(tile.woodReserve?256u:0u)
 			|(tile.walkable?512u:0u)|(tile.fertilitySource?1024u:0u)|(tile.resourceBlocksGround?2048u:0u);
+		// Keep the captured-world hash in WorldState::computeSignature field order.
 		add_preemptive_hash(worldSignature,flags);
+		add_preemptive_hash(worldSignature,Uint32(tile.materialType+1)); add_preemptive_hash(worldSignature,tile.materialSources);
 		add_preemptive_hash(worldSignature, tile.walkingConnections);
 		add_preemptive_hash(worldSignature, tile.amphibiousConnections);
-		add_preemptive_hash(worldSignature,Uint32(tile.materialType+1)); add_preemptive_hash(worldSignature,tile.materialSources);
 		// Resource amounts fluctuate on virtually every harvest. Placement routes,
 		// legality and blocked intents depend on resource presence, not stack size;
 		// keep live amounts for scoring without invalidating topology caches.

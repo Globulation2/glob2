@@ -163,39 +163,59 @@ std::vector<int> cheapestRoute(const Torus &t, const std::vector<int> &sources,
 bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
 			  const std::vector<unsigned char> &goal, const std::vector<unsigned char> *alsoBlocked)
 {
-	const int n = t.w * t.h;
-	std::vector<unsigned char> blocked(n), costly(n);
+	const int n = t.size();
+	std::vector<unsigned char> possible(n), costly(n), clear(n);
 	for (int i = 0; i < n; ++i)
 	{
-		::MapGeneration::generationCheckpoint();
-		const int x = t.remainderX(i), y = i / t.w;
-		blocked.at(i) = !map.terrainAllowsMovementAt(x, y, 0) || map.getBuilding(x, y) != NOGBID ||
-						(alsoBlocked && (*alsoBlocked).at(i));
-		costly.at(i) = map.isResource(x, y);
+		generationCheckpoint();
+		possible[i] = map.terrainAllowsMovementAt(t.remainderX(i), i / t.w, 0) &&
+					  map.getBuilding(t.remainderX(i), i / t.w) == NOGBID &&
+					  !(alsoBlocked && (*alsoBlocked)[i]);
+		costly[i] = map.isResource(t.remainderX(i), i / t.w);
 	}
-	const std::vector<int> route = cheapestRoute(t, sources, goal, blocked, costly);
+	// Clearable side deposits are part of the proposal and its cost, rather
+	// than allowing a cheap diagonal whose sides remain physically obstructed.
+	const auto route =
+		cheapestWalk(t, GridNeighbors::Eight, sources, goal,
+					 [&](int from, int to, int dx, int dy)
+					 {
+						 const int x = t.remainderX(from), y = from / t.w;
+						 if (!groundConnection(map, possible, x, y, dx, dy))
+							 return -1;
+						 return int(costly[to]) +
+								(dx && dy ? costly[t.at(x + dx, y)] + costly[t.at(x, y + dy)] : 0);
+					 });
 	if (route.empty())
 		return false;
-	for (int i : route)
+	for (size_t k = 0; k < route.size(); ++k)
 	{
-		::MapGeneration::generationCheckpoint();
-		if (map.isResource(t.remainderX(i), i / t.w))
+		clear[route[k]] = 1;
+		if (k + 1 == route.size())
+			continue;
+		const int from = route[k + 1], to = route[k];
+		const int x = t.remainderX(from), y = from / t.w;
+		const int dx = t.offsetX(x, t.remainderX(to)), dy = t.offsetY(y, to / t.w);
+		if (dx && dy)
+			clear[t.at(x + dx, y)] = clear[t.at(x, y + dy)] = 1;
+	}
+	for (int i = 0; i < n; ++i)
+	{
+		generationCheckpoint();
+		if (clear[i] && costly[i])
 			map.setNoResource(t.remainderX(i), i / t.w, 1);
 	}
-	// cheapestRoute is a geometric clearing proposal. Corner/shore geometry
-	// and unremoved side deposits can still invalidate it; never report success
-	// until the finished map admits an actual ground route.
 	auto open = groundUnitTiles(map);
 	if (alsoBlocked)
 		for (int i = 0; i < n; ++i)
-			if ((*alsoBlocked).at(i))
-				open.at(i) = 0;
+			if ((*alsoBlocked)[i])
+				open[i] = 0;
 	const auto reached = stepsFrom(map, tileMask(t, sources), open);
 	for (int i = 0; i < n; ++i)
-		if (goal.at(i) && reached.at(i) >= 0)
+		if (goal[i] && reached[i] >= 0)
 			return true;
 	return false;
 }
+
 int connectColonies(Map &map, int teams, const std::vector<unsigned char> *alsoBlocked,
 					std::string &detail)
 {
@@ -321,42 +341,67 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 		}
 		const std::vector<int> route = cheapestWalk(
 			t, GridNeighbors::Cardinal, reachable, target,
-			[&](int, int to, int, int)
+			[&](int from, int to, int dx, int dy)
 			{
-				if ((!map.terrainPropertiesAt(to).walkable && map.terrainTypeAt(to) != WATER) ||
-					map.getBuilding(t.remainderX(to), to / t.w) != NOGBID || (keep && (*keep).at(to)))
+				if (map.getBuilding(t.remainderX(to), to / t.w) != NOGBID || (keep && (*keep)[to]))
+					return -1;
+				if (!map.terrainAllowsMovementAt(t.remainderX(to), to / t.w,
+												 costs.water >= 0 ? 1 : 0))
+					return -1;
+				if (costs.water < 0 &&
+					!MapState::terrainConnection(map.cellView(), t.remainderX(from), from / t.w, dx,
+												 dy, 0))
 					return -1;
 				return stepCost(map, t.remainderX(to), to / t.w, costs);
 			});
 		if (radius > 0)
 			clearRoute(map, t, route, radius, keep);
-		// Fords are written once the whole route is walked, so every tile on it is judged by the
-		// terrain the route was planned on.
+		// Preserve already legal beaches. A ford is needed only for an
+		// originally blocked cell or an otherwise wet shared edge, and only
+		// when this construction policy explicitly permits water conversion.
+		std::vector<unsigned char> fordCells(n, 0);
+		if (costs.water >= 0)
+		{
+			for (int i : route)
+				fordCells[i] = !map.terrainAllowsMovementAt(t.remainderX(i), i / t.w, 0);
+			for (size_t k = 0; k + 1 < route.size(); ++k)
+			{
+				const int from = route[k + 1], to = route[k];
+				const int x = t.remainderX(from), y = from / t.w;
+				const int dx = t.offsetX(x, t.remainderX(to)), dy = t.offsetY(y, to / t.w);
+				if (!fordCells[from] && !fordCells[to] &&
+					!MapState::terrainConnection(map.cellView(), x, y, dx, dy, 0))
+					fordCells[to] = 1;
+			}
+		}
+		// Batch writes keep every decision on the original terrain.
 		std::vector<std::pair<int, int>> fords;
 		for (int i : route)
 		{
-			::MapGeneration::generationCheckpoint();
+			generationCheckpoint();
 			const int x = t.remainderX(i), y = i / t.w;
-			if (map.isWater(x, y))
-			{
-				// A one-corner ford is only a terrain proposal. Final physical
-				// validation below rejects isolated tips or water-side crossings.
-				fords.push_back({x, y});
-				for (int dy = -1; dy <= 0; ++dy)
-				{
-					::MapGeneration::generationCheckpoint();
-					for (int dx = -1; dx <= 0; ++dx)
+			if (fordCells[i])
+				for (int oy = 0; oy <= 1; ++oy)
+					for (int ox = 0; ox <= 1; ++ox)
 					{
-						::MapGeneration::generationCheckpoint();
-						if (map.isResource(t.x(x + dx), t.y(y + dy)))
-							map.setNoResource(t.x(x + dx), t.y(y + dy), 1);
+						const auto &terrain =
+							map.terrainRegistry().properties(map.vertexTerrainAt(x + ox, y + oy));
+						if (terrain.walkable || !terrain.swimmable)
+							continue;
+						// A ford must support a complete walking cell. Convert only
+						// its water corners, preserving dry material and protected crops.
+						fords.push_back({t.x(x + ox), t.y(y + oy)});
+						for (int dy = -1; dy <= 0; ++dy)
+							for (int dx = -1; dx <= 0; ++dx)
+							{
+								const int nearby = t.at(x + ox + dx, y + oy + dy);
+								if (!(keep && (*keep)[nearby]) &&
+									map.isResource(t.remainderX(nearby), nearby / t.w))
+									map.setNoResource(t.remainderX(nearby), nearby / t.w, 1);
+							}
 					}
-				}
-			}
-			else if (map.isResource(x, y))
-			{
+			if (map.isResource(x, y))
 				map.setNoResource(x, y, 1);
-			}
 			changed = true;
 		}
 		if (!fords.empty())

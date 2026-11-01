@@ -1248,7 +1248,9 @@ GeneratorDefinition marchlandDefinition()
 		"marchland",
 		61,
 		"Marchland",
-		3,
+		// Physical shoreline/diagonal costs can change prize fairness; the
+		// final-world check remains authoritative over the pre-prize solve.
+		4,
 		false,
 		// Levelling controls the search for contested, evenly shared prizes. Zero keeps
 		// the initial random selection; telemetry records the result at every setting.

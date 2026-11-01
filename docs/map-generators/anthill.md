@@ -11,7 +11,11 @@ buildings, and growing means taking the next chamber down the tunnel.
   cells the graph (`cellGraph` over `siteNeighbours`); a spanning tree through every chamber but the
   queens' (`carveSpanningTree`), one door into each queen chamber, and `loops` percent (0-60, 20) of
   the chambers' count in extra tunnels. Every open edge is a wandering tunnel `tunnel-width` wide as drawn (2-4,
-  3; dug half a tile further each side, since the tile beside the rock is drawn half rock) between its chambers' middles (`wanderingPath`), with a dirt-track road traced down its middle that
+  3; with a rock-face margin) between its chambers' middles (`wanderingPath`). A
+  minimum rasterized walking core reserves complete cells and both side cells at
+  diagonal bends, then adds the one-tile face clearance needed by the rock-corner
+  rules. Narrow jittered doors therefore stay connected without allowing units
+  through mixed rock borders. A dirt-track road is traced down each tunnel and
   stops on the pond's beach at each end (`sand-roads`, on). The road is one vertex wide, so it never
   makes a pure dirt-track tile: the tiles either side are mixed, which walk at grass speed and hold
   no building and no crop, so nothing can be built across a tunnel (first play had AIs walling
@@ -41,9 +45,9 @@ buildings, and growing means taking the next chamber down the tunnel.
 - **Rock.** Every vertex of an uncarved tile is ridge rock or outcrop,
   so an uncarved tile is as impassable as the stone it replaced, and towers still shoot over it.
   Outcrop takes the face where smooth noise is high and thins out behind it, so walls read broken at
-  the face and solid within. Open tiles against the face are mixed: walkable, no building, no crop,
-  so every chamber is dug a tile and a half wider than its size and keeps the room it had with
-  stone walls.
+  the face and solid within. Mixed rock-face cells block ground movement, building and crop
+  growth. Chambers retain their rock-face margin; the reserved tunnel core provides complete
+  walking cells and clear side cells through narrow turns.
   `openColonyRoutes` only clears crops in a tunnel; it never cuts rock, and the validator checks that
   the finished terrain is the design's vertex for vertex.
 - **Experiments.** A generated map declares the ridge, rough (scree) and path (dirt track) terrain

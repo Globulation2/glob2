@@ -1866,3 +1866,29 @@ TEST_CASE("contact costs follow custom deposit obstruction and removal propertie
         }
     }
 }
+
+TEST_CASE("Anthill and Lava Shield default passages survive conservative terrain connections" *
+		  doctest::test_suite("MapGeneratorDefaults"))
+{
+	glob2test::HeadlessGlobals globals;
+	for (const char *key : {"anthill", "lava-shield"})
+		for (unsigned seed : {1u, 3u})
+		{
+			CAPTURE(key);
+			CAPTURE(seed);
+			GenerationRequest request;
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(key));
+			request.wDec = request.hDec = 8;
+			request.nbTeams = 4;
+			request.seed = seed;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request);
+			INFO(result.diagnostic());
+			REQUIRE(result);
+			GenerationContext proof(request);
+			CHECK(GeneratorRegistry::builtins()
+					  .at(request.method)
+					  .validateWorld(game, proof)
+					  .empty());
+		}
+}

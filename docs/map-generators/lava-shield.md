@@ -39,7 +39,9 @@ walkable. Short tongues stop inland and leave a broad coastal gap, as before. Th
 crater is an uninterrupted lava lake, with ash between the lake and the rim
 circuit, and loam and moss on the rim. All colonies still meet on foot, over the rim,
 the fords and the short tongues' gaps; swimming adds coastal approaches. No colony
-requires swimming to survive or meet rivals.
+requires swimming to survive or meet rivals. Every reserved circuit cell protects all four
+terrain corners from live and cooled root strokes. A ford is classified as open only when none
+of its corners is hot; a partly cooled lava edge cannot satisfy the walking proof.
 
 ## Construction and validation
 

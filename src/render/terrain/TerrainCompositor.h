@@ -88,35 +88,20 @@ class Compositor
 	// the ordinary renderer. Material lookup also serves editor swatches.
 	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
 	GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
-	struct Decoration
-	{
-		MaterialId material = 0;
-		GAGCore::Sprite *sprite = nullptr;
-		int frame = -1, offsetX = 0, offsetY = 0;
-		unsigned corners = 0;
-	};
-	struct Decorations
-	{
-		std::array<Decoration, 4> samples{};
-		unsigned count = 0;
-		bool empty() const { return count == 0; }
-		unsigned size() const { return count; }
-		const Decoration *begin() const { return samples.data(); }
-		const Decoration *end() const { return samples.data() + count; }
-		const Decoration &operator[](unsigned i) const { return samples[i]; }
-	};
 	// Any undecorated corner suppresses raised objects. Decorated-only borders
-	// retain each material's own edge/foliage mask, with deterministic variation.
-	Decorations decorations(const SceneMap &, int x, int y) const;
+	// choose one material, weighted by corner count, using presentation hashing.
+	GAGCore::Sprite *decorSprite(const SceneMap &, int x, int y) const;
+	int decorFrame(const SceneMap &, int x, int y) const;
+
 	struct PreparedMaterialView
-    {
-        unsigned variant = 0;
+	{
+		unsigned variant = 0;
         std::uint64_t revision = 0;
         int size = 0;
         std::span<const std::array<unsigned char, 4>> pixels;
         int step = 0;
-    };
-    // Valid until prepare() changes this material. Uploaders copy the canonical
+	};
+	// Valid until prepare() changes this material. Uploaders copy the canonical
     // animation/HD pixels into owned revisions before retaining or queueing them.
     PreparedMaterialView preparedMaterial(const Recipe &, MaterialId) const;
     // Published material revisions own only composition data. A later prepare
@@ -181,6 +166,7 @@ class Compositor
 	bool hasContextualProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
+	std::pair<MaterialId, unsigned> decorMaterial(const SceneMap &, int x, int y) const;
 	void describeShoreCalm(const SceneMap &, Recipe &) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;

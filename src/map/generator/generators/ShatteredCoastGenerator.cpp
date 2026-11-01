@@ -983,6 +983,9 @@ static bool generate(Game &game, GenerationContext &context)
 	openStartsBuriedByResources(game, context);
 	context.stage = "expansion resources";
 	expansionResources(game, context, options);
+	// Expansion clumps are the last obstacle layer. Preserve the opening's
+	// physical gathering faces after they have all been planted.
+	guaranteeStartingResources(game, context, 24, 32);
 	return true;
 }
 

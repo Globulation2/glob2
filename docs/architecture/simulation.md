@@ -197,9 +197,9 @@ checksum adapter remains available for diagnostic fixtures.
   Vertex (x,y) is the top-left corner of cell (x,y); `cellCorners(x, y)` returns the
   top-left, top-right, bottom-left and bottom-right corners. A cell's rules come
   from its corners through `combineCornerRules` (`TerrainPropertiesLayout.h`):
-  equal corners keep their terrain's exact profile. The combined habitat and
-  placement properties retain the historical corner rules: mixed cells are never
-  buildable, block projectiles and count as shoreline when any corner does, with
+  matching corner profiles keep that exact profile even when terrain identities
+  differ. Transitions between different profiles retain the historical aggregate
+  rules: they are unbuildable, block projectiles and count as shoreline when any corner does, with
   speed and ground damage from walkable corners. These aggregate properties do
   not decide ground movement. Separate access profiles admit ordinary shores
   with connected walkable corners, reject impassable corners, and compile walking,

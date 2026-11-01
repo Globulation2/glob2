@@ -110,13 +110,15 @@ A material opts in with a `decor` block:
   material. Any grass, sand, water or other undecorated corner suppresses all
   raised objects in that cell, preserving a clear border against open ground.
   Eligibility follows rendered material bindings, including custom materials.
-- A uniform material keeps its existing `full` or connected mask-15 frame and
-  interior variants. A border between decorated materials retains every
-  material, including a material represented by just one corner. Each uses its
-  `edge` frame or its own `connected` corner mask; ordinary edge objects lean
-  toward their material's corner centroid, while connected foliage retains its
-  authored anchor. Decorated barriers therefore have no misleading empty strip
-  where outcrops meet ridges or hedges meet thickets.
+- Uniform cells keep their existing `full` or connected mask-15 frames and
+  interior variants. A border between decorated materials draws just one
+  material's ornament: a deterministic coordinate/terrain-seed hash chooses a
+  corner, so two-plus-two corners give each material equal odds and three-plus-one
+  corners give a three-to-one split. This uses no simulation random numbers.
+- Mixed decorated cells use the selected material's `edge` frames, including
+  when it occupies just one corner. Connected foliage retains its authored
+  corner geometry; adjacent connected foliage materials join into one crown of
+  the selected material. No overlapping ornaments or new artwork are needed.
 - Connected arrays have 16 mask groups with equal variant counts (top-left bit 1,
   top-right bit 2, bottom-left bit 4, bottom-right bit 8). `connected_corners`
   retains its seeded corner-colour variants; `connected_interior` supplies

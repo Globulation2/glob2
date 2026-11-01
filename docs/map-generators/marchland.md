@@ -118,9 +118,21 @@ building sites each.
 
 ## Envelope
 
-Swept over seven shapes (64² to 512², plus 64×256, 512×128 and 128×512) against 2–8 colonies, four
-seeds a cell: every one of the 196 attempts either produced a valid map or was **refused up front
-with a reason**. No combination generates a map and then fails its own validator. Refused up front:
+A historical sweep over seven shapes (64² to 512², plus 64×256, 512×128 and 128×512)
+against 2–8 colonies, four seeds a cell, produced 196 valid maps or up-front refusals.
+That sweep predates the current physical shoreline and diagonal connections and is
+not a guarantee that every accepted request or seed passes final validation.
+
+Revision 4 retains the same solver, prize layout and fairness limits, but measures
+walking with the shared physical connections. The solver evaluates candidate ground
+before permanent groves and quarries are placed; the final validator measures the
+completed world, where those obstacles can change routes and contention. For example,
+the 256×256, eight-colony seed-1 fixture is rejected because one colony can contest
+four prizes and another only one, exceeding the allowed difference of two. This
+nondefault colony count needs another seed or future tuning of the final prize layout;
+its unfair layout is not accepted by weakening the movement or fairness rules.
+
+Request checks still refuse these configurations up front:
 
 - fewer than two colonies (a march needs a country on each side);
 - fewer than 3000 tiles of map per colony;

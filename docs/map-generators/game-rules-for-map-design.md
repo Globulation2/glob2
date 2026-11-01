@@ -26,8 +26,9 @@
   `terrainTypeAt` returns `MIXED_TERRAIN` on a transition.
 
 - **Beaches are a convention, not a rule.** Grass directly against water is legal: the cells
-  between are unbuildable and require amphibious movement, as sand/water cells do. The shipped
-  maps keep sand between grass and water. `Map::layBeaches()` turns every grass vertex next to
+  between are unbuildable. Connected land edges remain walkable, as on ordinary sand/water
+  beaches; isolated tips and water-side crossings require swimming. The shipped maps keep
+  sand between grass and water. `Map::layBeaches()` turns every grass vertex next to
   water, and every water vertex next to grass, into sand, reading the terrain as it was, so the
   result does not depend on scan order; the designed generators apply the same rule to their
   `TerrainSketch` with `layBeaches` before `writeVertices`. `Map::paintVertices` and
@@ -38,15 +39,18 @@
   of farmable grass means four rows of grass laid down.
 - **Buildings need buildable tiles.** `Map::isFreeForBuilding` requires buildable terrain, no
   resource and no unit on every tile of the footprint (`Map::checkTile`). Among the classic
-  terrains only pure grass is buildable, and a mixed tile never is, so a map's building room is
-  its pure grass, not its land. A swarm is 4×4; the start scorer counts free 4×4 footprints as a
+  terrains only grass is buildable. Corners with different property profiles form unbuildable
+  transitions; different grass looks with matching profiles can still build. Measure actual
+  buildable footprints rather than land area. A swarm is 4×4; the start scorer counts free 4×4 footprints as a
   colony's room (`StartQuality`).
-- **Water blocks walking until a colony can swim.** Ground units cannot enter water
-  or mixed water/land cells until they have trained at a swimming pool. Every island map, strait
+- **Deep water and water-side crossings require swimming.** Walking units cannot enter full
+  water, isolated land tips or opposite-corner land saddles. Ordinary connected beaches remain
+  walkable; crossing a water-covered shared edge or diagonal vertex requires swimming. Every island map, strait
   and moat is therefore a *timing* rule: it separates colonies early and opens once pools are
   built. Sand and grass are both walkable.
-- **Resources block movement and building.** A unit cannot stand on a tile with a resource on it
-  (`isFreeForGroundUnit` rejects resources), and nothing can be built on one. Wheat, wood and algae
+- **Default resources block movement and building.** A unit cannot stand on a default deposit
+  (`isFreeForGroundUnit` checks obstruction), and nothing can be built on one. Custom catalogs
+  define ground, air and building obstruction separately. Wheat, wood and algae
   are *clearable* by clearing flags; stone and fruit are not. A band of deposits across a passage
   closes it until it is cleared, which is why generators keep lanes and roads clear and run
   `openRoad` after placing deposits.

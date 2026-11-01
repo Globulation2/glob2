@@ -659,16 +659,27 @@ TEST_SUITE("VertexTerrain")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world(
 			{.wDec = 5, .hDec = 5, .loadDefaultRace = true, .header = true});
-		auto *inn = world.addBuilding("inn", 10, 8);
-		REQUIRE(inn);
 		auto &map = world.game.map;
+		// Author the fixture before attaching it to a running match.
+		map.game = nullptr;
 		map.importTerrainDefinitions(
 			R"({"schemaVersion":1,"terrains":[{"key":"fixture:exit-no-fly","name":"No fly","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
+		map.setGame(&world.game);
+		auto *inn = world.addBuilding("inn", 10, 8);
+		REQUIRE(inn);
 		const auto noFly = map.terrainRegistry().find("fixture:exit-no-fly");
 		REQUIRE(noFly);
 		for (int y = inn->posY; y < inn->posY + inn->type->height; ++y)
 			for (int x = inn->posX; x < inn->posX + inn->type->width; ++x)
 				map.paintCell(x, y, *noFly);
+		// Keep the perimeter flyable while every footprint cell still touches
+		// an interior no-fly vertex: exterior access is not an air exit.
+		for (int y = inn->posY - 1; y <= inn->posY + inn->type->height; ++y)
+			for (int x = inn->posX - 1; x <= inn->posX + inn->type->width; ++x)
+				if (x < inn->posX || x >= inn->posX + inn->type->width || y < inn->posY ||
+					y >= inn->posY + inn->type->height)
+					map.paintCell(x, y, GRASS);
+		REQUIRE(map.terrainPropertiesAt(inn->posX, inn->posY - 1).flyable);
 		int x = 0, y = 0, dx = 0, dy = 0;
 		CHECK_FALSE(inn->findAirExit(&x, &y, &dx, &dy));
 		CHECK(inn->findGroundExit(&x, &y, &dx, &dy, false, true));

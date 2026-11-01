@@ -122,8 +122,9 @@ std::vector<int> reserveSandRoute(TerrainSketch &, const Torus &, const std::vec
 /// be able to walk. This keeps one way open: the cheapest walk from the sources to the goal
 /// (deposits cost one, open ground nothing; water, buildings and `alsoBlocked` are impassable),
 /// with only the deposits on it cleared. Almost always nothing is in the way and nothing is
-/// cleared. The route proposal is geometric; success requires a physical Map
-/// flood after clearing. False when the proposed clearing does not establish a route.
+/// cleared. Planning follows physical terrain connections and includes any
+/// diagonal side deposits that must be removed. Success is verified on the
+/// finished map; false means no physical clearing route was established.
 bool openRoad(Map &, const Torus &, const std::vector<int> &sources,
 			  const std::vector<unsigned char> &goal,
 			  const std::vector<unsigned char> *alsoBlocked = nullptr);
@@ -146,16 +147,16 @@ int clearRoute(Map &, const Torus &, const std::vector<int> &route, int radius,
 /// Every colony must be able to walk to colony 0 at the start. Where a map's growth, water or walls box
 /// one in, the cheapest way from anything colony 0's doorstep reaches to that colony's doorstep (the
 /// open ring round its swarm) is opened under `costs`, four-connected: deposits on it are cleared, and
-/// water on it becomes a sand ford (one sand corner per water tile, clearing deposits on the four tiles
-/// it spoils). Returns whether anything changed; unsuccessful physical verification
+/// permitted water crossings become complete walking cells by converting only
+/// necessary water corners to sand. Already legal beach steps retain their terrain. Returns whether anything changed; unsuccessful physical verification
 /// raises GenerationFailure rather than accepting a diagonal/shoreline shortcut. The
 /// terrain is rebuilt when a ford was laid. Everglades' backstop, and any map whose design can close.
 ///
 /// With `radius` above 0 the deposits within that many steps of the route are cleared too
 /// (clearRoute), so a pass cut through a range or a forest takes a column of units and does not
 /// close on the first regrowth. Tiles of `keep` are never entered and never cleared: a designed wall
-/// the route must go round, whatever `costs` says a deposit costs. The construction
-/// proposal retains its original shape; final acceptance enforces current movement rules.
+/// the route must go round, whatever `costs` says a deposit costs. Planned cells
+/// and any necessary ford corners must satisfy the current movement rules.
 bool openColonyRoutes(Map &, const GenerationContext &, const Torus &, const StepCosts &costs,
 					  int radius = 0, const std::vector<unsigned char> *keep = nullptr);
 

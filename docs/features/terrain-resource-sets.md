@@ -31,9 +31,11 @@ accepted because their movement decisions used different rules.
 
 Raised terrain decor is suppressed when any corner resolves to an undecorated
 material, keeping rock and foliage clear of borders against grass, beaches and
-water. Borders between decorated materials retain both appearances (or every
-appearance when more than two meet), so a ridge–outcrop boundary still reads as
-a solid barrier. Ground textures retain their natural boundaries.
+water. Borders between decorated materials draw one ornament, chosen
+reproducibly from the corner materials using the terrain seed and cell
+coordinates, weighted by corner count. Ridge–outcrop boundaries still read as
+barriers without stacking physically overlapping ornaments. Ground textures
+retain their natural boundaries.
 
 ## Themed terrain and resource sets
 
