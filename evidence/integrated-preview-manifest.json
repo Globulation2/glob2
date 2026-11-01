@@ -1,0 +1,26 @@
+[
+  {
+    "file": "evidence/previews/native-final.png",
+    "source": "native-release-smoke/u9-release-main.png",
+    "actual_producer": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+    "caption": "Actual optimized Linux Telugu menu",
+    "bytes": 1062973,
+    "sha256": "6ca33431f6a1e14dc16c560d96a2333fedf29a2cd2c7136ba139f9e8874cfd8d"
+  },
+  {
+    "file": "evidence/previews/tutorial-final.png",
+    "source": "source-update-0a5d/rendering/focused-5b2421e8/07-game-800x600-tutorial-swimming/tutorial-swimming-briefing.png",
+    "actual_producer": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+    "caption": "Actual current Telugu briefing; real-arrow probe changes zero interior pixels",
+    "bytes": 486945,
+    "sha256": "7d596ae347a7a6b357a890d7c1439c6eed95e4245d5a3ae65cc4a70f3b0d5607"
+  },
+  {
+    "file": "evidence/previews/online-phone-final.png",
+    "source": "source-update-0a5d/online-final/screenshots/phone/te-skin-hint.png",
+    "actual_producer": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+    "caption": "Actual phone skin editor with readable two-line Telugu hint",
+    "bytes": 797902,
+    "sha256": "338a6b140941ba733ce05a75c612e1c5699813704a98386b1ebe7f509eb50fca"
+  }
+]

@@ -1,0 +1,98 @@
+{
+  "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+  "phase": "source-current supplemental audited Telugu localization",
+  "archives": [
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 1,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence.tar.xz",
+      "bytes": 50963892,
+      "sha256": "2c7674e666b151bfb553ad43a454a7b41d526d0d60fd577444ae20e443edc4a7",
+      "files": 333
+    },
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 2,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence-2.tar.xz",
+      "bytes": 44769440,
+      "sha256": "39257743a30288958861936e6e0384619def1038b5cb7be6f7f8128733945335",
+      "files": 208
+    },
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 3,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence-3.tar.xz",
+      "bytes": 22366052,
+      "sha256": "b47b1296165a321c2c9b7d172825a7acbbf4b4f1617da7e598ef44a889dcfd21",
+      "files": 382
+    },
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 4,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence-4.tar.xz",
+      "bytes": 38705496,
+      "sha256": "51353b8f3e79a8085bc67f2769fb8502e93e7e305ac00680768c32a7af414b14",
+      "files": 322
+    },
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 5,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence-5.tar.xz",
+      "bytes": 23911904,
+      "sha256": "150f2972b1796680bad070d3b8b860698b14e5ec0f41847aa85155649ed614ad",
+      "files": 215
+    },
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 6,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence-6.tar.xz",
+      "bytes": 25895504,
+      "sha256": "b30a50fbaddb2e8f15210a7c9e7c594b6ffd9c52cb5ad9ceae71685d609fb1e6",
+      "files": 432
+    },
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 7,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence-7.tar.xz",
+      "bytes": 48944500,
+      "sha256": "c660d3967096b7c9a3759cf480e350bc10a5998f166360def8b2415e1ea7f0fc",
+      "files": 248
+    },
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 8,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence-8.tar.xz",
+      "bytes": 35596656,
+      "sha256": "fbe134e304f704e467d69caf1b447d44a9cdb1145227cbe684e9eaf3a94151c6",
+      "files": 98
+    },
+    {
+      "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+      "phase": "source-current supplemental audited Telugu localization",
+      "part": 9,
+      "parts": 9,
+      "file": "telugu-integrated-release-evidence-9.tar.xz",
+      "bytes": 13176,
+      "sha256": "537bf148d9994424f1b76a4241a28c2fbfdf475265b887f7cff8d9e72d1489f4",
+      "files": 3
+    }
+  ],
+  "files": 2241,
+  "bytes": 291166620
+}

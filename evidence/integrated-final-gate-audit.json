@@ -1,0 +1,31 @@
+{
+  "status": "PASS all9 final evidencegates",
+  "source_revision": "5b2421e8510f85b7538fcaed19fb58c90db71a50",
+  "source_sha256": "013211b6f2bee9da8f4e9bb990d49fb18c99fedec710ed23603d12875f0960c5",
+  "catalog_sha256": {
+    "native": "6b0f6ea5a3d88fbbcd5c5819a9c9f10cd0e19b6ca3016ea3910f58506cabd730",
+    "online": "d97c8871ed79806884220397c1087579a8281776faafbb2dd8e36da13f0d1c83"
+  },
+  "catalog_keys": 6390,
+  "supplemental_OS_keys": 3,
+  "required_font_tuples_composed": 77040,
+  "fresh_font_tuples": 612,
+  "gates": {
+    "language_brief": true,
+    "source_based_pilot": true,
+    "structural": true,
+    "desktop_rendering": true,
+    "phone_rendering": true,
+    "browser_startup": true,
+    "native_platforms": true,
+    "browser_platforms": true,
+    "mobile_platforms": true
+  },
+  "review_record_sha256": "314dbdb0992190b24fdfb47f9377b4a326e15021ecc1c0b2d31259807ded72e1",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "baseline_failures": [
+    "SixincomingMR E2E non-null lintassertions unchangedmaster.",
+    "Browserunitfixtures148pass/3staleversionfail unchangedmaster.",
+    "Resourcegolden150rows differonlyexisting186→191headerdelta; actualtestFAILrecorded, notcalledpassed."
+  ]
+}
