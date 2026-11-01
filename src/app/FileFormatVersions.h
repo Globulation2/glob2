@@ -340,3 +340,6 @@ static constexpr int FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT = 188;
 
 // Saved Maxima strategies include the bounded current-flag proximity preference.
 static constexpr int FILE_FORMAT_VERSION_MAXIMA_FLAG_PROXIMITY = 189;
+
+// Automatic timestamped alliance win-probability history.
+static constexpr int FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY = 190;

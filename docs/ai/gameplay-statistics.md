@@ -249,6 +249,15 @@ which a colony lost its last unit, lost a unit in combat, or had a building
 destroyed; these are derived from the 512-tick samples, so they are accurate to
 about 20 seconds. The chart painter is `TeamStatChart`.
 
+The Score group also includes **Win probability**, an alliance-wide estimate on
+a fixed 0–100% axis. It is recorded automatically every 512 ticks, with explicit
+coverage ticks and a final partial interval; older saves have a gap before new
+samples start. It uses hidden opponent state, so ordinary players see it only in
+post-game results; their live touch sheet excludes it. Spectators retain the live
+chance panel. See the [model guide](architecture/win-probability-model.md) for its
+inputs and limitations, and [tournament scoring](../tools/tournaments.md#whole-game-probability-scores)
+for the integrated probability metric.
+
 In a match, the text-statistics panel pages through the colony summary and then
 one page per catalog group (click the page line to advance), giving each
 metric's current value: counters as their rate per minute over the last two

@@ -2437,6 +2437,8 @@
 [stat stranded about]
 [stat cleared]
 [stat cleared about]
+[stat win probability]
+[stat win probability about]
 [stat prestige]
 [stat prestige about]
 [stat band combat]

@@ -412,6 +412,28 @@ TEST_SUITE("MetricCatalog worker time and defence")
 
 TEST_SUITE("MetricCatalog")
 {
+    TEST_CASE("Win probability charts retain explicit coverage, zero chances and fractional percentages")
+    {
+        const auto &metric = Stats::metricById("win probability");
+        Stats::TeamHistory team;
+        team.team = 3;
+        team.winProbability = {{512, 125}, {1024, 951}, {1100, 0}};
+        const auto chart = Stats::buildChart(metric, Stats::defaultView(metric), {team});
+        REQUIRE(chart.teams.size() == 1);
+        CHECK(chart.percent);
+        CHECK(chart.decimals);
+        CHECK(chart.any);
+        CHECK(chart.teams[0].team == 3);
+        CHECK(chart.teams[0].ticks == std::vector<Uint32>{512,1024,1100});
+        CHECK(chart.teams[0].values[0] == std::vector<double>{12.5,95.1,0});
+        team.winProbability = {{512, 0}, {1024, 0}};
+        CHECK(Stats::buildChart(metric, Stats::defaultView(metric), {team}).any);
+        team.winProbability.clear();
+        const auto legacy = Stats::buildChart(metric, Stats::defaultView(metric), {team});
+        CHECK(legacy.teams[0].ticks.empty());
+        CHECK_FALSE(legacy.any);
+    }
+
 	TEST_CASE("Every metric has a unique id, a group and a source for its value")
 	{
 		std::set<std::string> ids;
@@ -420,7 +442,7 @@ TEST_SUITE("MetricCatalog")
 			CAPTURE(m.id);
 			CHECK(ids.insert(m.id).second);
 			CHECK(int(m.group) < int(Stats::Group::Count));
-			CHECK((m.sampled >= 0 || m.value));
+			CHECK((m.sampled >= 0 || m.value || m.winProbability));
 			for (const auto &band : m.bands)
 				CHECK((!band.labelKey.empty() && band.value));
 			// A composition opens split, as percentages, and stays split.

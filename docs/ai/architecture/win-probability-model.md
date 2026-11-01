@@ -185,7 +185,11 @@ test asserts it.
 
 ## The winning condition
 
-Off by default. A normal game is unchanged: the model has no say in the outcome.
+Off by default in the game UI. The structured tournament CLI (`game run`) and
+standard Python experiment planners use 95% by default, with an explicit zero
+opt-out. Loaded games retain their saved conditions. Probability statistics are
+collected automatically in every game regardless of whether the rule is enabled;
+collecting them does not give the model a say in the outcome.
 
 Turned on from the custom game rules, the match ends as soon as the model is
 sure enough. It is evaluated on the 512-tick boundary `TeamStats` already samples
@@ -194,16 +198,40 @@ opening samples can look lopsided for reasons that mean nothing. It is placed
 last among the winning conditions, so an actual elimination or prestige win is
 always the reason a game ended when one is available on the same tick.
 
-Live spectators can open a fourth statistics page showing each side's chance,
+Live spectators can open an additional, last statistics page showing each side's chance,
 whether the rule is on or off. The separate page fits up to sixteen colonies. Allies share one figure, because the model
 rates the alliance. Players do not see the panel during a normal game.
+
+The end-game metric picker includes **Win probability**, on a fixed 0–100% axis.
+Its history is sampled every 512 ticks and includes a final partial interval.
+Allies share one prediction. An early victory retains the probability that
+triggered the rule, rather than showing a manufactured 100% after its losses are
+assigned. Saved games preserve the trace; saves predating format 190 show only
+the newly observed portion after loading.
+
+Headless results automatically include the trace and an exact integer
+trapezoidal-area summary. Detailed `GLOB2_WINPROB` log records still require
+`--telemetry team-timeline`; the automatic summary does not. The tournament
+framework uses final probability for its default cap adjudication and reports
+normalized whole-game probability separately from outcomes. See
+[whole-game scores](../../tools/tournaments.md#whole-game-probability-scores).
+The original calibration labels and measurements above used the historical
+economic adjudication, not this new default; these changes do not refit the model.
+
+When validating or refitting the probability model itself, collect games with
+`--win-probability 0` (tournament setting `win_probability_permille: 0`) and use
+independent outcome labels. The fitting helpers reject probability-ended games
+and `win_probability` adjudication, including in previously cached datasets:
+training or measuring calibration against the model's own calls would make its
+reported accuracy misleading. The extraction default remains the historical
+`prestige` policy for tick-capped games; natural engine victories remain authoritative.
 
 The threshold is the only dial:
 
 | Threshold | Compute saved | Games ended on the wrong side |
 | --- | ---: | ---: |
-| 95% | 27.1% | 3.8% |
-| **97%** (default) | **19.7%** | **2.3%** |
+| **95% (tournament default)** | **27.1%** | **3.8%** |
+| 97% | 19.7% | 2.3% |
 | 99% | 9.9% | 0.8% |
 
 Measured over the 1,110 games, cross-fitted so no game is scored by a model that

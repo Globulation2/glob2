@@ -75,12 +75,15 @@ def installed_bundle(path):
 def outcome_only(result):
     """Retain the authoritative outcome and every supported adjudication field."""
     team_fields = ('team', 'alliance', 'outcome', 'alive', 'eliminated_tick',
-                   'prestige', 'units', 'buildings', 'warrior_attack', 'warrior_hp', 'warriors')
+                   'prestige', 'units', 'buildings', 'warrior_attack', 'warrior_hp', 'warriors',
+                   'win_probability')
     player_fields = ('player', 'team', 'ai')
-    return {key: result[key] for key in ('schema_version', 'status', 'ticks', 'termination', 'winning_teams')
+    return {key: result[key] for key in ('schema_version', 'status', 'ticks', 'termination', 'winning_teams', 'win_probability_permille')
             if key in result} | {
         'teams': [{key: team[key] for key in team_fields if key in team} for team in result.get('teams', [])],
         'players': [{key: player[key] for key in player_fields if key in player} for player in result.get('players', [])],
+        **({'win_probability_permille': result['resolved']['rules']['winProbabilityPermille']}
+           if 'winProbabilityPermille' in result.get('resolved', {}).get('rules', {}) else {}),
         **{key: result[key] for key in ('compute_threads', 'compute_resolved_threads',
                                        'compute_requested_threads', 'gpu_requested', 'resource_plan') if key in result},
     }

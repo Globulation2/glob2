@@ -4884,6 +4884,10 @@ Unità circondate senza alcuna casella libera su cui spostarsi.
 Risorse rimosse
 [stat cleared about]
 Risorse rimosse dagli operai nelle aree di raccolta per fare spazio.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestigio
 [stat prestige about]
