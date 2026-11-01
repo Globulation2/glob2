@@ -118,6 +118,9 @@ class QAThresholds:
     calm_percussive_max: float = 0.15
     calm_onset_rate_max: float = 5.0
 
+    # -- transition (warn only; provisional prompt to audition local changes) ---
+    transition_level_warn_db: float = 6.0
+
     # -- noise ----------------------------------------------------------------
     # 10th-percentile energy above 6 kHz relative to the median frame level, dB.
     hf_floor_warn_db: float = -35.0

@@ -6,20 +6,25 @@ set. The tools that build and check sets are described in the
 [music pipeline guide](music-pipeline.md).
 
 Taste decides, and measurements only support it. A set that passes every automatic
-check can still be wrong for the game. Every set in the game was approved by a
-maintainer who listened to it.
+check can still be wrong for the game. The initial sets were approved by a
+maintainer who listened to them; revisions need renewed listening in gameplay.
 
 ## How the game uses music
 
 A set is three loops of equal length in `data/zik/<set>/`. `a1.opus` is calm,
 `a2.opus` is building and `a3.opus` is combat. The mixer (`src/audio/SoundMixer.cpp`)
 switches mood by crossfading into another file at the same playback position, and
-every file loops forever. So:
+every file loops forever.
+
+The fade lasts about 0.37 seconds. Judge transitions at that duration with the
+pipeline's default preview and in gameplay, including returns to calm and changes
+during sparse passages. Matching whole-song LUFS does not prevent local jumps.
+The `transition` QA check warns about those jumps, but it cannot judge feel.
 
 - **The three moods are one piece.** They must share tempo, beat grid and
   harmony, so that a crossfade at any moment sounds like the arrangement changing,
-  not like a different song. The safest ways to get this are one score orchestrated
-  three ways, or one recording mixed three ways from its stems.
+  not like a different song. New shipped sets must use one explicit score
+  orchestrated three ways, with direct control over every note and instrument.
 - **Each file must loop seamlessly.** The wrap needs no click and no gap, and
   reverb tails should carry over it. The last bar should lead naturally into the
   first, for example a dominant chord resolving onto bar 1.
@@ -32,14 +37,16 @@ The maintainer approved these:
 
 | Set | Approach | Why it works |
 |---|---|---|
-| Woodland | A human-composed track (CC BY 4.0) remixed from the composer's own instrument tracks | Real musicianship and real stems. Woodwinds, strings and choir give it a gentle, warm colour |
-| Apple Cider | A human-composed track (CC0) separated with Demucs | A cozy, steady, warm texture that suits long sessions |
 | Moss Lanterns | An original score played on CC0 orchestral samples | Melody with counter-lines, a section that develops and returns, and a dynamic arc. Woodwinds, harp and glockenspiel feel whimsical without being childish |
 | Thistle Waltz | An original score played on CC0 folk samples | Recorder, kalimba and folk harp give it an organic, handmade character, and the 3/4 time keeps it light |
 | Glass Garden | An original score played on synth sounds designed for it (Surge XT), heavily filtered | A soft FM bell lead over a dark, filtered pad. Electronic, but warm and smooth |
 | Bramble Jig | An original score in 6/8 on CC0 samples | Flute, clarinet and glockenspiel over pizzicato strings. Combat is a real re-arrangement (galloping low riff, horns, drum line), not just louder |
 | Fennel Mist | An original slow pastoral score (E Dorian, 72 BPM) on CC0 samples | Bassoon and horn with a flute descant and harp. Misty and unhurried. Combat hands the tune to horn over driving strings |
-| Curious Critters | A human-composed CC BY 3.0 track separated with Demucs, reworked for contrast | Calm strips to the melody over a reverb bed. Combat adds soft synthesised taiko and timpani on the beat, kept quiet and simple to stay downtempo |
+
+Woodland, Apple Cider and Curious Critters were subsequently withdrawn after
+listening in gameplay. Their transitions did not preserve the intended feel,
+including after attempts to improve continuity. They are not approved references
+for future sets. The original soundtrack remains the benchmark for feel.
 
 **The target feel is downtempo:** the relaxed, unhurried music of "chill" or "cozy"
 games, not action-game scoring. Broadly, it is the calm, pleasant background music
@@ -75,6 +82,7 @@ Rejected by ear, with the reason heard and what the measurements showed:
 
 | Rejected | What was heard | What was measured |
 |---|---|---|
+| Woodland, Apple Cider and Curious Critters (adapted recordings) | Mood transitions did not preserve the desired gameplay feel | Local jumps could be reduced numerically, but the continuity remixes were still rejected by listening |
 | General MIDI renders of note lists coded in Python (the first generated sets) | Loopy, cheap, "AI slop" | About 20 s of material repeated 3–4 times per file (repetition r 0.97–1.00). Every note equally loud, notes locked to the grid, stock GM instrument sounds, four-chord vamps |
 | Steel drums, lounge electric piano and other genre clichés | Don't fit the game | Taste, not measurable |
 | Toy Soldiers | Busy and bright | 5.5+ onsets per second and 2.4–2.8 kHz brightness. Calm still busy |
@@ -84,11 +92,12 @@ Rejected by ear, with the reason heard and what the measurements showed:
 
 ## Practical rules
 
-1. **Start from music, not from a loop.** Write or choose a through-composed piece
+1. **Start from music, not from a loop.** Write a through-composed piece
    of 50–120 s. Repeating a short bar pattern is the fastest route to "AI slop".
-2. **Arrange the three moods from one source.** Use one score or one set of stems.
-   Separate generations or re-rendering from a prompt drift in tempo and harmony,
-   so they cannot be crossfaded.
+2. **Arrange the three moods from one score.** Use explicit note sequences with
+   shared timing and controlled instruments, rendered with samples or synths.
+   Decomposing a finished recording does not give enough control over the
+   arrangements and their transitions; do not use that method for new shipped sets.
 3. **Keep the sound clean.** Filter synths; the first synth renders failed because their
    filters were never switched on. Avoid broadband noise layers, aliasing waveforms and
    added treble boost. Check the quiet passages for hiss.
@@ -99,13 +108,10 @@ Rejected by ear, with the reason heard and what the measurements showed:
    its percussive share went only 0.02 → 0.03 → 0.09. Combat needs low end and
    percussion, and ideally its own figures (riffs, ostinatos), on the same timeline.
    Calm should strip back to a lead and a soft bed.
-6. **Prefer human authorship.** Human-composed open-licensed music or human-shaped
-   scores are the most robust choice for quality, for licensing (stems give clean
-   moods; CC BY requires credit, a link to the licence and a note of the changes,
-   which each set's generated `LICENSE.txt` carries; CC0 requires nothing, though we
-   credit anyway), and for how the community will receive it.
-   AI-generated audio must be disclosed (Steam, itch.io) and is likely not
-   copyrightable. Use it sparingly, and only when it clearly earns its place.
+6. **Keep authorship and rendering controllable.** Shape the composition as a
+   score that can be edited note by note. Use pinned, licensed samples or designed
+   synth sounds. Finished-song generation and stem separation are not supported
+   authoring paths.
 7. **Normalise loudness consistently.** Aim for about −18/−17/−16 LUFS for
    calm/building/combat, with a true peak of at most −1 dBTP, so sets sit at similar
    levels and switching sets is not jarring.

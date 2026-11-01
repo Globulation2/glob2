@@ -421,27 +421,16 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(restored.game.map.getTerrainType(8,8)==GRASS);
     }
 
-    TEST_CASE("terrain experiments independently gate whole-cell brushes [display]")
+    TEST_CASE("terrain brushes are available without experiments [display]")
     {
         glob2test::HeadlessGlobals globals({.display=true,.width=1024,.height=768,
             .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
-        MapEdit disabled; blank(disabled);
-        CHECK(disabled.additionalTerrainSelectors.empty());
-        disabled.performAction("select grass");
-        disabled.performAction("select ice");
-        CHECK(disabled.terrainType==TerrainSelector::Grass);
-        disabled.performAction("select road");
-        CHECK(disabled.terrainType==TerrainSelector::Grass);
-        globals->settings.experiments.set(ExperimentId::IceTerrain,true);
         MapEdit editor;blank(editor);
-        REQUIRE(editor.additionalTerrainSelectors.size()==1);
+        CHECK_FALSE(editor.additionalTerrainSelectors.empty());
         editor.performAction("select ice");editor.brush.setFigure(0);
         cursor(editor,8,8);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
         CHECK(editor.game.map.vertexTerrainAt(8,8)==ICE);
         CHECK(editor.game.map.vertexTerrainAt(7,8)==GRASS);
-        editor.performAction("select road");
-        CHECK(editor.terrainType==TerrainSelector::Ice);
-        globals->settings.experiments.set(ExperimentId::TrailTerrain,true);
         editor.performAction("select road");
         cursor(editor,8,8);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
         CHECK(editor.game.map.vertexTerrainAt(8,8)==TRAIL);
@@ -457,28 +446,21 @@ TEST_SUITE("EditorActionCoverage")
     {
         glob2test::HeadlessGlobals globals({.display=true,.width=1024,.height=768,
             .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
-        globals->settings.experiments.set(ExperimentId::IceTerrain,true);
-        globals->settings.experiments.set(ExperimentId::TrailTerrain,true);
         MapEdit editor;blank(editor);
-        REQUIRE(editor.additionalTerrainSelectors.size()==2);
+        REQUIRE(editor.additionalTerrainSelectors.size()==TERRAIN_GROUP_COUNT-3);
         editor.performAction("select road");editor.brush.setFigure(6);
         const auto generation=editor.game.map.topologyGeneration;
         cursor(editor,8,8);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
         CHECK(editor.game.map.topologyGeneration==generation+1);
         CHECK(editor.game.map.vertexTerrainAt(8,8)==TRAIL);
         CHECK(editor.game.map.vertexTerrainAt(7,8)==TRAIL);
-        // Catalogue brushes are gated by their group's experiment, not listed in the side panel.
-        editor.performAction("select boulders");
-        CHECK(editor.terrainType==TerrainSelector::Trail);
-        globals->settings.experiments.set(ExperimentId::ObstacleTerrain,true);
+        // Catalogue brushes are available directly and through their group.
         editor.performAction("select boulders");
         CHECK(editor.terrainType==TerrainSelector::selectorFor(BOULDERS));
         editor.performAction("select hedge");
         CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
         cursor(editor,20,20);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
         CHECK(editor.game.map.vertexTerrainAt(20,20)==HEDGE);
-        CHECK(editor.game.map.requiredTerrainExperiments().has(ExperimentId::ObstacleTerrain));
-        globals->settings.experiments.set(ExperimentId::ObstacleTerrain,false);
         editor.performAction("select road");
         for (auto invalid : {static_cast<TerrainSelector::TerrainType>(-1),
                 static_cast<TerrainSelector::TerrainType>(TerrainSelector::RegisteredBegin+TERRAIN_COUNT),
@@ -508,14 +490,11 @@ TEST_SUITE("EditorActionCoverage")
 	{
 		glob2test::HeadlessGlobals globals({.display=true,.width=1024,.height=768,
 			.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
-		globals->settings.experiments.set(ExperimentId::IceTerrain,true);
-		globals->settings.experiments.set(ExperimentId::TrailTerrain,true);
-		globals->settings.experiments.set(ExperimentId::ObstacleTerrain,true);
 		MapEdit editor; blank(editor);
 		REQUIRE(editor.dock);
 		// The legacy group selectors (kept for the phone tray) still route through
 		// "open terrain palette <group>", which now opens the dock's section.
-		REQUIRE(editor.additionalTerrainSelectors.size()==3);
+		REQUIRE(editor.additionalTerrainSelectors.size()==TERRAIN_GROUP_COUNT-3);
 		auto *obstacles = dynamic_cast<TerrainGroupSelector*>(editor.additionalTerrainSelectors[2]);
 		REQUIRE(obstacles);
 		CHECK(obstacles->catalogueGroup==TerrainGroup::Obstacles);
@@ -534,18 +513,18 @@ TEST_SUITE("EditorActionCoverage")
 		const auto heading = host.bounds("dock/section/terrain/obstacles");
 		CHECK(heading.y >= scrollBounds.y);
 		CHECK(heading.y <= scrollBounds.y + 4);
-		// Every enabled brush is listed; disabled experiments are absent.
+		// Every terrain brush is listed.
 		for (const char *key : {"brush/terrain/hedge","brush/terrain/boulders","brush/terrain/ice",
 								"brush/terrain/water","brush/terrain/road"})
 			CHECK(host.find(key));
-		// Rough terrain is off: its brushes are shown locked and cannot be chosen.
+		// Rough terrain is selectable without enabling anything for this map.
 		REQUIRE(host.find("brush/terrain/mud"));
 		host.scrollIntoView("brush/terrain/mud");
 		host.layoutIfNeeded();
 		const auto mud = host.bounds("brush/terrain/mud");
 		host.tapAt({mud.x + mud.w / 2, mud.y + mud.h / 2});
-		CHECK(editor.currentBrushId()=="terrain/road");
-		CHECK(host.find("dock/enable/terrain/rough"));
+		CHECK(editor.currentBrushId()=="terrain/mud");
+		CHECK_FALSE(host.find("dock/enable/terrain/rough"));
 		editor.draw(SDL_GetTicks());
 		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/dock-terrain-obstacles.bmp");
 		globals->gfx->nextFrame();

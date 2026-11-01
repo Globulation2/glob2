@@ -25,6 +25,12 @@ void text(const SessionStorage &storage, const std::string &path, const std::str
 		throw std::runtime_error("Cannot write recording metadata");
 	file->flush();
 }
+constexpr std::size_t MaxQueuedJournalEntries = 1024;
+struct JournalEntry
+{
+	std::int64_t time;
+	std::string fields;
+};
 struct Chapter
 {
 	std::int64_t start, end;
@@ -58,6 +64,7 @@ SessionStorage nativeSessionStorage()
 void recoverRecording(const std::string &path, const SessionStorage &storage)
 {
 	const auto work = path+".recording/";
+	const auto extension = utf8(std::filesystem::u8path(path).extension());
 	// Alternating checkpoints preserve the previous valid metadata when a write
 	// is interrupted or storage fills. Read one bounded candidate at a time.
 	nlohmann::json manifest;
@@ -84,7 +91,7 @@ void recoverRecording(const std::string &path, const SessionStorage &storage)
 	if (manifest.is_null()) throw std::runtime_error("No valid recording recovery metadata remains");
 	if (manifest.at("version") != 1 || manifest.at("video") != utf8(std::filesystem::u8path(path).filename()))
 		throw std::runtime_error("Recording recovery metadata does not match its output");
-	auto duration = MediaWriter::duration(work+"capture.mp4",storage.open);
+	auto duration = MediaWriter::duration(work+"capture"+extension,storage.open);
 	std::vector<MediaChapter> chapters;
 	for (const auto &c : manifest.at("chapters"))
 	{
@@ -94,7 +101,7 @@ void recoverRecording(const std::string &path, const SessionStorage &storage)
 		if (end > start) chapters.push_back({start,end,c.at("title").get<std::string>()});
 	}
 	if (!chapters.empty()) chapters.back().endUs = duration;
-	MediaWriter::finalize(work+"capture.mp4",work+"final.mp4",chapters,storage.open);
+	MediaWriter::finalize(work+"capture"+extension,work+"final"+extension,chapters,storage.open);
 	manifest["duration_us"] = duration; manifest["complete"] = true; manifest["error"] = ""; manifest["recovered"] = true;
 	auto &list = manifest["chapters"];
 	while (!list.empty() && list.back()["start_us"].get<std::int64_t>() >= duration) list.erase(list.size()-1);
@@ -115,6 +122,11 @@ struct Session::Impl
 	std::unique_ptr<VideoEncoder> encoder, external;
 	std::unique_ptr<MediaWriter> media;
 	std::unique_ptr<RecordingFile> journal;
+	// Session-relative times let future controls cross a resize boundary without
+	// changing their timestamps or entering the segment that just closed.
+	std::deque<JournalEntry> journalEntries;
+	std::int64_t lastJournalTime = -1;
+	enum class SegmentEnd { Continue, EncoderFailure, Stop };
 	std::deque<CaptureFrame> frames;
 	std::optional<CaptureFrame> latest, resize;
 	std::int64_t origin = 0, segmentStart = 0, next = 0, stopped = 0, resizeSince = 0;
@@ -133,12 +145,30 @@ struct Session::Impl
 		status.path = base; status.state = State::Starting; status.segment = 1;
 		this->report(status);
 	}
-	void line(const std::string &s)
+	void line(std::int64_t time, std::string fields)
 	{
 		if (!journal) return;
-		if (journal->write(reinterpret_cast<const unsigned char *>(s.data()), int(s.size())) != int(s.size()))
-			throw std::runtime_error("Cannot write recording journal");
-		journal->flush();
+		if (time < segmentStart || time < lastJournalTime)
+			throw std::runtime_error("Recording event arrived after its journal interval was committed");
+		if (journalEntries.size() == MaxQueuedJournalEntries)
+			throw std::runtime_error("Recording event journal queue exceeded its budget");
+		auto position = std::upper_bound(journalEntries.begin(),journalEntries.end(),time,
+			[](std::int64_t time,const JournalEntry &entry) { return time < entry.time; });
+		journalEntries.insert(position,JournalEntry{time,std::move(fields)});
+	}
+	void flushJournal(std::optional<std::int64_t> before = {})
+	{
+		if (!journal) return;
+		bool wrote = false;
+		while (!journalEntries.empty() && (!before || journalEntries.front().time < *before))
+		{
+			const auto &entry = journalEntries.front();
+			auto value = "{\"time_us\":"+std::to_string(entry.time-segmentStart)+","+entry.fields+"}\n";
+			if (journal->write(reinterpret_cast<const unsigned char *>(value.data()), int(value.size())) != int(value.size()))
+				throw std::runtime_error("Cannot write recording journal");
+			lastJournalTime = entry.time; journalEntries.pop_front(); wrote = true;
+		}
+		if (wrote) journal->flush();
 	}
 	void manifest(bool complete, std::int64_t duration)
 	{
@@ -152,7 +182,7 @@ struct Session::Impl
 			<< ",\"width\":" << status.width << ",\"height\":" << status.height
 			<< ",\"crf\":" << options.crf << ",\"encoder\":" << json(status.encoder)
 			<< ",\"fallback_reason\":" << json(status.fallbackReason)
-			<< ",\"video_codec\":\"h264\",\"audio_codec\":\"aac\",\"dropped_frames\":" << status.droppedFrames
+			<< ",\"video_codec\":" << json(VideoCodec) << ",\"audio_codec\":" << json(AudioCodec) << ",\"dropped_frames\":" << status.droppedFrames
 			<< ",\"dropped_audio_samples\":" << status.droppedAudioSamples << ",\"chapters\":[";
 		for (std::size_t i=0; i<chapters.size(); ++i)
 		{
@@ -175,7 +205,7 @@ struct Session::Impl
 		{
 			auto p = std::filesystem::u8path(base); std::ostringstream suffix;
 			suffix << ".part" << std::setw(4) << std::setfill('0') << status.segment;
-			path = utf8(p.parent_path() / (utf8(p.stem()) + suffix.str() + ".mp4"));
+			path = utf8(p.parent_path() / (utf8(p.stem()) + suffix.str() + utf8(p.extension())));
 			storage.reserve(path);
 		}
 		work = path + ".recording/";
@@ -186,7 +216,7 @@ struct Session::Impl
 		const auto &description = encoder->description();
 		status.encoder = description.encoder;
 		if (!description.fallbackReason.empty()) status.fallbackReason = description.fallbackReason;
-		media = std::make_unique<MediaWriter>(work+"capture.mp4",description,storage.open);
+		media = std::make_unique<MediaWriter>(work+"capture"+Extension,description,storage.open);
 		journal = storage.open(work+"events.jsonl",true);
 		latest = std::move(frame); chapters.clear(); packets = 0;
 		status.state = State::Recording; report(status);
@@ -197,9 +227,10 @@ struct Session::Impl
 		VideoPacket packet;
 		while (encoder->receive(packet)) { media->video(packet); ++packets; }
 	}
-	bool finish(std::int64_t end, bool encoderFailed = false)
+	bool finish(std::int64_t end, SegmentEnd reason = SegmentEnd::Continue)
 	{
 		if (!media) return true;
+		bool encoderFailed = reason == SegmentEnd::EncoderFailure;
 		auto duration = std::max<std::int64_t>(1,end-segmentStart);
 		if (!chapters.empty()) chapters.back().end = duration;
 		if (!encoderFailed)
@@ -207,12 +238,13 @@ struct Session::Impl
 			try { bool flushed = encoder->finish(); drain(); if (!flushed) return false; }
 			catch (const std::exception &e)
 			{
-				if (status.encoder == "libx264") throw;
+				if (status.encoder == SoftwareEncoder) throw;
 				status.fallbackReason = e.what(); forceSoftware = true; encoderFailed = true;
 			}
 		}
 		if (encoderFailed && !packets)
 		{
+			flushJournal(end);
 			media.reset(); encoder.reset(); journal.reset();
 			auto error = status.error; status.error = status.fallbackReason;
 			manifest(false,duration); status.error = error;
@@ -220,10 +252,17 @@ struct Session::Impl
 		}
 		media->finish(duration);
 		media.reset(); encoder.reset();
+		if (reason == SegmentEnd::Stop)
+		{
+			if (!journalEntries.empty() && journalEntries.back().time > end)
+				throw std::runtime_error("Recording events extend past the final video interval");
+			flushJournal();
+		}
+		else flushJournal(end);
 		manifest(false,duration);
 		std::vector<MediaChapter> navigation;
 		for (const auto &c : chapters) navigation.push_back({c.start,c.end,c.context.title(options.chapterTicks)});
-		MediaWriter::finalize(work+"capture.mp4",work+"final.mp4",navigation,storage.open);
+		MediaWriter::finalize(work+"capture"+Extension,work+"final"+Extension,navigation,storage.open);
 		manifest(true,duration); journal.reset();
 		storage.publish(work,path);
 		completed.emplace_back(path,segmentStart); status.outputs.push_back(path);
@@ -285,15 +324,15 @@ void Session::audio(const std::int16_t *samples, std::size_t count, std::int64_t
 }
 void Session::event(std::int64_t time, const std::string &kind, const std::string &value)
 {
-	impl->line("{\"time_us\":"+std::to_string(std::max<std::int64_t>(0,time-impl->origin-impl->segmentStart))+
-		",\"kind\":"+json(kind)+",\"value\":"+json(value)+"}\n");
+	impl->line(std::max<std::int64_t>(0,time-impl->origin),
+		"\"kind\":"+json(kind)+",\"value\":"+json(value));
 }
 void Session::drops(std::uint64_t frames, std::uint64_t audio)
 {
 	frames += impl->inputDrops;
 	if (frames != impl->status.droppedFrames || audio != impl->status.droppedAudioSamples)
 	{
-		impl->line("{\"time_us\":"+std::to_string(impl->next-impl->segmentStart)+",\"kind\":\"capture_gap\",\"dropped_frames\":"+std::to_string(frames-impl->status.droppedFrames)+",\"dropped_audio_samples\":"+std::to_string(audio-impl->status.droppedAudioSamples)+"}\n");
+		impl->line(impl->next,"\"kind\":\"capture_gap\",\"dropped_frames\":"+std::to_string(frames-impl->status.droppedFrames)+",\"dropped_audio_samples\":"+std::to_string(audio-impl->status.droppedAudioSamples));
 		impl->status.droppedFrames = frames; impl->status.droppedAudioSamples = audio;
 		impl->report(impl->status);
 	}
@@ -302,6 +341,7 @@ void Session::stop(std::int64_t time) { impl->stopped = time; }
 void Session::fail(const std::string &error)
 {
 	impl->status.error = error; impl->status.state = State::Failed;
+	try { impl->flushJournal(); } catch (...) {}
 	try { impl->manifest(false,std::max<std::int64_t>(0,impl->next-impl->segmentStart)); } catch (...) {}
 	impl->report(impl->status); impl->done = true;
 }
@@ -322,7 +362,7 @@ bool Session::step(std::int64_t time)
 	if (s.next > target && !s.stopped) return false;
 	if (target-s.next > 250000)
 	{
-		event(time,"background_gap",std::to_string(target-s.next));
+		event(s.origin+target,"background_gap",std::to_string(target-s.next));
 		s.nextSlot = target*s.options.fps/1000000;
 		s.next = s.nextSlot*1000000/s.options.fps;
 	}
@@ -337,41 +377,44 @@ bool Session::step(std::int64_t time)
 	}
 	if (s.resize && s.resize->width == s.observedWidth && s.resize->height == s.observedHeight && time-s.resizeSince >= 250000)
 	{
-		event(time,"resize",std::to_string(s.resize->width)+"x"+std::to_string(s.resize->height));
 		if (!s.finish(s.next)) return false;
 		++s.status.segment;
 		auto frame = std::move(*s.resize); s.resize.reset(); s.begin(std::move(frame),s.next);
+		event(s.origin+s.next,"resize",std::to_string(s.latest->width)+"x"+std::to_string(s.latest->height));
 	}
 	if (s.stopped && s.next >= target && !s.chapters.empty())
 	{
 		s.status.state = State::Finalizing; s.report(s.status);
-		if (!s.finish(s.next)) return false;
+		if (!s.finish(s.next,Impl::SegmentEnd::Stop)) return false;
 		s.index(); s.status.state = State::Complete; s.report(s.status); s.done = true; return true;
 	}
 	const auto relative = s.next-s.segmentStart;
 	if (!s.encoder->ready()) return false;
-	if (s.chapters.empty() || s.chapters.back().context.key(s.options.chapterTicks) != s.latest->context.key(s.options.chapterTicks))
-	{
-		if (!s.chapters.empty()) s.chapters.back().end = relative;
-		s.chapters.push_back({relative,relative,s.latest->context,s.latest->context.tick});
-		s.line("{\"time_us\":"+std::to_string(relative)+",\"kind\":\"chapter\",\"id\":"+std::to_string(s.chapters.size())+","+s.latest->context.fields(s.options.chapterTicks)+"}\n");
-	}
-	s.chapters.back().lastTick = s.latest->context.tick;
 	try
 	{
 		s.encoder->submit(s.latest->rgba.data(),s.latest->width,s.latest->height,relative); s.drain();
 	}
 	catch (const std::exception &e)
 	{
-		if (s.status.encoder == "libx264") throw;
+		if (s.status.encoder == SoftwareEncoder) throw;
 		s.status.fallbackReason = e.what(); s.forceSoftware = true;
-		s.finish(s.next,true); ++s.status.segment;
+		s.finish(s.next,Impl::SegmentEnd::EncoderFailure); ++s.status.segment;
 		auto frame = std::move(*s.latest); s.latest.reset(); s.begin(std::move(frame),s.next);
 		return false;
 	}
+	if (s.chapters.empty() || s.chapters.back().context.key(s.options.chapterTicks) != s.latest->context.key(s.options.chapterTicks))
+	{
+		if (!s.chapters.empty()) s.chapters.back().end = relative;
+		s.chapters.push_back({relative,relative,s.latest->context,s.latest->context.tick});
+		s.line(s.next,"\"kind\":\"chapter\",\"id\":"+std::to_string(s.chapters.size())+","+s.latest->context.fields(s.options.chapterTicks));
+	}
+	s.chapters.back().lastTick = s.latest->context.tick;
 	// Leave room for device callbacks before filling muted/stopped audio with silence.
 	if (relative > 250000) s.media->silenceThrough((relative-250000)*AudioSampleRate/1000000);
 	s.next = (++s.nextSlot)*1000000/s.options.fps;
+	// Control events use the capture clock, while chapters follow video slots.
+	// Commit only times before the next slot, after the current chapter is known.
+	s.flushJournal(s.next);
 	if (s.next >= s.checkpoint) { s.media->checkpoint(); s.manifest(false,s.next-s.segmentStart); s.checkpoint = s.next+1000000; }
 	return false;
 }

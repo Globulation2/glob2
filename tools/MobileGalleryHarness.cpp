@@ -13,6 +13,7 @@
 #include "CampaignMainMenu.h"
 #include "CampaignSelectorScreen.h"
 #include "CampaignMenuScreen.h"
+#include "tutorial/LessonCatalogScreen.h"
 #include "CampaignEditor.h"
 #include "Campaign.h"
 #include "AINames.h"
@@ -197,7 +198,7 @@ struct MobileGallerySetup
   private:
 	static void captureCampaigns(GAGGUI::ScreenStack &stack)
 	{
-		auto owned = std::make_unique<CampaignEditor>("campaigns/Tutorial_Campaign.txt", stack);
+		auto owned = std::make_unique<CampaignEditor>("test/fixtures/campaign/Browser_Test_Campaign.txt", stack);
 		auto *editor = owned.get();
 		// Extra missions make list navigation and prerequisite overflow visible.
 		for (int i = 0; i < 10; ++i)
@@ -322,7 +323,7 @@ struct MobileGallerySetup
 		screenShot(stack, "campaign-select", std::make_unique<CampaignSelectorScreen>());
 		screenShot(stack, "campaign-saves", std::make_unique<CampaignSelectorScreen>(true));
 		screenShot(stack, "tutorial-missions",
-				   std::make_unique<CampaignMenuScreen>("campaigns/Tutorial_Campaign.txt", stack));
+				   std::make_unique<Tutorial::LessonCatalogScreen>());
 		captureCampaigns(stack);
 		screenShot(stack, "editor-menu", std::make_unique<EditorMainMenu>(stack));
 		captureMapCreation(stack);
@@ -744,7 +745,7 @@ class MobileGalleryGameplay
 		std::cout << "FIXTURE_CHECKSUM " << gui.game.checkSum() << std::endl;
 		gui.scriptText = "Build an inn to feed your workers. Select Build, choose an inn, then "
 						 "place it beside your colony. Confirm the preview to begin construction.";
-		capture("game-tutorial");
+		capture("game-scenario-message");
 		gui.scriptText.clear();
 		gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
 		gui.touch->panelOpen = true;
@@ -1506,17 +1507,16 @@ class MobileGalleryGameplay
 		if (editor.dock)
 		{
 			// The desktop/tablet dock: a terrain brush, a resource brush with its
-			// placement rule, and a locked experiment group offering to enable it.
+			// placement rule, and the immediately available obstacle terrain group.
 			editor.dock->showTab(EditorDock::Tab::Terrain);
 			editor.performAction("select terrain water");
 			editCapture("editor-dock-terrain");
 			editor.dock->showTab(EditorDock::Tab::Resources);
 			editor.performAction("select resource wheat");
 			editCapture("editor-dock-resources");
-			// Bundled maps carry no foundation resources, so show a locked terrain
-			// group instead (the gallery runs with experiments off).
+			// Terrain groups are available with experiments off.
 			editor.performAction("open terrain palette obstacles");
-			editCapture("editor-dock-locked");
+			editCapture("editor-dock-obstacles");
 		}
 
 		// Existing-object inspection has its own composition, separate from the

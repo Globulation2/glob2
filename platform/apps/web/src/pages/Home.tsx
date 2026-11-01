@@ -188,7 +188,9 @@ function LadderTeaser({ queue }: { queue: QueueInfo }) {
   return (
     <div className="card" data-testid="ladder-teaser">
       <div className="card-head">
-        <h3>{queue.name}</h3>
+        <h3>
+          <bdi dir="auto">{queue.name}</bdi>
+        </h3>
         <Link to={`/leaderboard/${queue.id}`} className="caption">
           {t('Full leaderboard')}
         </Link>

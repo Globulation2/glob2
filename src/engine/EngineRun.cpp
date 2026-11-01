@@ -15,9 +15,11 @@
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "tutorial/TutorialModel.h"
 #include "sim/snapshot/SnapshotChecksum.h"
 #include "hive/HiveClient.h"
 #include "GameDiagnostics.h"
+#include "WarriorTacticsTrace.h"
 #include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
@@ -380,6 +382,7 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
         OwnerTickProfile::Scope ownerCapture(OwnerTickProfile::Phase::CaptureWorld);
         return gui.game.observeCompletedWorld(options);
     }();
+    if(warriorTactics) warriorTactics->capture(world);
     {
         OwnerTickProfile::Scope ownerSubmit(OwnerTickProfile::Phase::SubmitChecksum);
         checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
@@ -429,6 +432,7 @@ void Engine::flushChecksums()
     collectChecksums(true);
     // The normal stop path may leave its terminal completed world unobserved.
     const auto& world=gui.game.observeCompletedWorld();
+    if(warriorTactics) warriorTactics->capture(world);
     checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
     collectChecksums(true);
 }
@@ -1405,7 +1409,14 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     if (!session) throw std::logic_error("No active engine session");
     stopSimulationThread();
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
+    // Capture the partial interval on the owner, after joining it. Results
+    // screens only read history. The structured driver does this after writing
+    // continuation saves, so a report endpoint cannot change resumed sampling.
+    if (!globalContainer->structuredHeadless) gui.game.winProbabilitySyncStep(true);
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
+    const auto &scene=gui.drawnScene();
+    const auto lesson=scene.world.session ? Tutorial::view(*scene.world.session) : gui.game.mapscript.tutorialView();
+    const bool campaign=lesson && lesson->restartMap==gui.toLoadGameFileName;
     teardownSession();
     auto &perf = PerformanceTelemetry::collector();
 	// Structured runs may still write their requested final save after run().
@@ -1424,14 +1435,14 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     // The outgoing end screen will not be shown; finalize its replay before
     // a cooperative initializer creates the next session's writer.
     globalContainer->replayWriter.reset();
-    return PendingLoad{filename, globalContainer->replaying};
+    return PendingLoad{filename, globalContainer->replaying,campaign};
 }
 
 bool Engine::finishSession()
 {
     const auto request = finishSessionForHost();
     if (!request) return false;
-    return (request->replay ? loadReplay(request->filename) : initCustom(request->filename)) == EE_NO_ERROR;
+    return (request->replay ? loadReplay(request->filename) : request->campaign ? initCampaign(request->filename) : initCustom(request->filename)) == EE_NO_ERROR;
 }
 
 void Engine::runOneGameSession(bool& doRunOnceAgain)

@@ -81,6 +81,40 @@ selected catalog revision until a new landscape is selected. Packages appear in 
 landscape picker and the map editor. The online library also publishes exact releases
 for local installation and server-controlled generation in custom rooms.
 
+### Authored scenario maps
+
+Generation callbacks also expose creation-only helpers:
+
+```javascript
+c.canPlaceBuilding(team, "inn", 0, x, y); // read-only placement check
+c.placeBuilding(team, "inn", 0, x, y, {workers: 2, stocked: 1});
+c.placeUnit(team, 0, 0, x, y, {healthPercent: 25, swim: 1});
+c.defineArea("home", x, y, width, height);
+c.discover(team, x, y, width, height);
+```
+
+`canPlaceBuilding` is available during generation and validation and includes
+resource, occupancy and same-team flag conflicts.
+
+Building options include worker targets, `stocked` (0/1, all supported materials),
+flag `range`, and `production0`/`production1`/`production2`. Unit options include
+health percentage and `walk`, `swim`, `build`, `harvest`, `attackSpeed`, and
+`attackStrength` levels. Calls reject unknown options, occupied sites and invalid
+values. Areas use the existing nine saved slots; names must be unique. These calls
+are unavailable during inspection and read-only validation. They do not grant
+runtime scenario scripts arbitrary mutation privileges. Normal generation still
+validates colony and worker counts.
+
+`map generate --scenario SCRIPT.js` embeds a compiled map script. Optional
+`--scenario-config FILE.json` supplies `name`, `briefing`, ordered `objectives`
+(string array) and `hints` (string array). Optional `localTeam` selects the learner
+and creates no-op AI controllers for the other colonies. `victory: "scenario"`
+retains death/defeat but leaves completion to the scenario instead of normal
+prestige or opponent-elimination wins. The default is `"standard"`. Configuration is an
+authoring input; generated maps and saves retain their world and embedded script.
+The shared training package is a fixed teaching landscape, not a general random
+match generator; unsupported dimensions, colony counts and worker counts are refused.
+
 ## Publish and discover online
 
 The online map library has **Maps** and **Generators** tabs. On the website, choose

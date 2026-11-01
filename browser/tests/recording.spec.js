@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test:base,expect}=require('@playwright/test');
 const os=require('node:os'),path=require('node:path');
@@ -17,7 +18,7 @@ async function clickControl(page,key) {
  }
  return clickPublishedControl(page,key);
 }
-const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen),{timeout:120000}).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen),{timeout:120000}).toContain(name);
 for (const variant of ['serial','threaded']) {
  test(`${variant} recording segments full framebuffer and exports OPFS files`,async({page},info)=>{
   const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',variant);

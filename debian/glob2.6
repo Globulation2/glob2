@@ -54,7 +54,7 @@ Player name Type: string.
 Map editor script language Default: preferences. Allowed: sgsl, usl. Type: enum.
 .TP
 .B \-\-record
-Record menus and gameplay to MP4; refuses existing files Type: file.
+Record menus and gameplay; refuses existing files Type: file.
 .TP
 .B \-\-videoshot
 Record to videoshots/NAME.mp4 Type: string.
@@ -66,7 +66,7 @@ Recording frames per second Default: 30. Type: integer. Units: frames/second. Ra
 Embedded encoder selection Default: auto. Allowed: auto, software. Type: enum.
 .TP
 .B \-\-record\-crf
-Software H.264 quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
+Software video quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
 .TP
 .B \-\-record\-chapter\-ticks
 Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range: 1..1000000000.
@@ -170,7 +170,7 @@ Player name Type: string.
 Map editor script language Default: preferences. Allowed: sgsl, usl. Type: enum.
 .TP
 .B \-\-record
-Record menus and gameplay to MP4; refuses existing files Type: file.
+Record menus and gameplay; refuses existing files Type: file.
 .TP
 .B \-\-videoshot
 Record to videoshots/NAME.mp4 Type: string.
@@ -182,7 +182,7 @@ Recording frames per second Default: 30. Type: integer. Units: frames/second. Ra
 Embedded encoder selection Default: auto. Allowed: auto, software. Type: enum.
 .TP
 .B \-\-record\-crf
-Software H.264 quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
+Software video quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
 .TP
 .B \-\-record\-chapter\-ticks
 Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range: 1..1000000000.
@@ -287,6 +287,12 @@ Detailed map JSON report Type: file.
 .TP
 .B \-\-config
 KEY=VALUE configuration; CLI settings override it Type: file.
+.TP
+.B \-\-scenario
+JavaScript scenario source to embed Type: file.
+.TP
+.B \-\-scenario\-config
+Scenario name, briefing, objectives and hints JSON Type: file.
 .TP
 .B \-\-map\-image
 Export categorical terrain PNG Type: file.
@@ -710,7 +716,7 @@ Alliance per team Type: integer. Range: 1..16. Repeatable.
 Winning condition Allowed: death, allies, prestige, opponents, script. Type: enum. Repeatable.
 .TP
 .B \-\-win\-probability
-Early\-victory threshold in permille Type: integer. Range: 501..1000.
+New\-game early\-victory threshold: 0 off, or 501..1000 permille Default: 950. Type: integer. Range: 0..1000.
 .TP
 .B \-\-experiment
 Enable a registered experiment Type: string. Repeatable.
@@ -737,7 +743,7 @@ AI order delay in ticks Type: integer. Units: ticks. Range: 0..8.
 Snapshot: initial, final, or every:N Type: string. Repeatable.
 .TP
 .B \-\-telemetry
-Additional telemetry Allowed: checksums, team\-timeline, maxima. Type: enum. Repeatable.
+Additional telemetry Allowed: checksums, team\-timeline, maxima, warrior\-tactics. Type: enum. Repeatable.
 .TP
 .B \-\-write\-replay
 Write game.replay Default: false.
@@ -878,7 +884,7 @@ Player name Type: string.
 Map editor script language Default: preferences. Allowed: sgsl, usl. Type: enum.
 .TP
 .B \-\-record
-Record menus and gameplay to MP4; refuses existing files Type: file.
+Record menus and gameplay; refuses existing files Type: file.
 .TP
 .B \-\-videoshot
 Record to videoshots/NAME.mp4 Type: string.
@@ -890,7 +896,7 @@ Recording frames per second Default: 30. Type: integer. Units: frames/second. Ra
 Embedded encoder selection Default: auto. Allowed: auto, software. Type: enum.
 .TP
 .B \-\-record\-crf
-Software H.264 quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
+Software video quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
 .TP
 .B \-\-record\-chapter\-ticks
 Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range: 1..1000000000.
@@ -1025,7 +1031,7 @@ Player name Type: string.
 Map editor script language Default: preferences. Allowed: sgsl, usl. Type: enum.
 .TP
 .B \-\-record
-Record menus and gameplay to MP4; refuses existing files Type: file.
+Record menus and gameplay; refuses existing files Type: file.
 .TP
 .B \-\-videoshot
 Record to videoshots/NAME.mp4 Type: string.
@@ -1037,7 +1043,7 @@ Recording frames per second Default: 30. Type: integer. Units: frames/second. Ra
 Embedded encoder selection Default: auto. Allowed: auto, software. Type: enum.
 .TP
 .B \-\-record\-crf
-Software H.264 quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
+Software video quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
 .TP
 .B \-\-record\-chapter\-ticks
 Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range: 1..1000000000.
@@ -1144,7 +1150,7 @@ Player name Type: string.
 Map editor script language Default: preferences. Allowed: sgsl, usl. Type: enum.
 .TP
 .B \-\-record
-Record menus and gameplay to MP4; refuses existing files Type: file.
+Record menus and gameplay; refuses existing files Type: file.
 .TP
 .B \-\-videoshot
 Record to videoshots/NAME.mp4 Type: string.
@@ -1156,7 +1162,7 @@ Recording frames per second Default: 30. Type: integer. Units: frames/second. Ra
 Embedded encoder selection Default: auto. Allowed: auto, software. Type: enum.
 .TP
 .B \-\-record\-crf
-Software H.264 quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
+Software video quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
 .TP
 .B \-\-record\-chapter\-ticks
 Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range: 1..1000000000.
@@ -1269,7 +1275,7 @@ Player name Type: string.
 Map editor script language Default: preferences. Allowed: sgsl, usl. Type: enum.
 .TP
 .B \-\-record
-Record menus and gameplay to MP4; refuses existing files Type: file.
+Record menus and gameplay; refuses existing files Type: file.
 .TP
 .B \-\-videoshot
 Record to videoshots/NAME.mp4 Type: string.
@@ -1281,7 +1287,7 @@ Recording frames per second Default: 30. Type: integer. Units: frames/second. Ra
 Embedded encoder selection Default: auto. Allowed: auto, software. Type: enum.
 .TP
 .B \-\-record\-crf
-Software H.264 quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
+Software video quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
 .TP
 .B \-\-record\-chapter\-ticks
 Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range: 1..1000000000.
@@ -1562,7 +1568,7 @@ Player name Type: string.
 Map editor script language Default: preferences. Allowed: sgsl, usl. Type: enum.
 .TP
 .B \-\-record
-Record menus and gameplay to MP4; refuses existing files Type: file.
+Record menus and gameplay; refuses existing files Type: file.
 .TP
 .B \-\-videoshot
 Record to videoshots/NAME.mp4 Type: string.
@@ -1574,7 +1580,7 @@ Recording frames per second Default: 30. Type: integer. Units: frames/second. Ra
 Embedded encoder selection Default: auto. Allowed: auto, software. Type: enum.
 .TP
 .B \-\-record\-crf
-Software H.264 quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
+Software video quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
 .TP
 .B \-\-record\-chapter\-ticks
 Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range: 1..1000000000.
@@ -1719,7 +1725,7 @@ Player name Type: string.
 Map editor script language Default: preferences. Allowed: sgsl, usl. Type: enum.
 .TP
 .B \-\-record
-Record menus and gameplay to MP4; refuses existing files Type: file.
+Record menus and gameplay; refuses existing files Type: file.
 .TP
 .B \-\-videoshot
 Record to videoshots/NAME.mp4 Type: string.
@@ -1731,7 +1737,7 @@ Recording frames per second Default: 30. Type: integer. Units: frames/second. Ra
 Embedded encoder selection Default: auto. Allowed: auto, software. Type: enum.
 .TP
 .B \-\-record\-crf
-Software H.264 quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
+Software video quality; lower means higher quality Default: 23. Type: integer. Range: 0..51.
 .TP
 .B \-\-record\-chapter\-ticks
 Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range: 1..1000000000.

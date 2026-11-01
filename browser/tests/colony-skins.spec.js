@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const fs = require('node:fs');
 const path = require('node:path');
 const {test, expect} = require('@playwright/test');
@@ -106,7 +107,7 @@ test('live colony meshes render through WebGL2 and survive context restoration',
     if (errors.length) throw new Error(errors.join('\n'));
     return page.evaluate(() => glob2Diagnostics.snapshot());
   };
-  await expect.poll(async () => (await state()).screen, {timeout:120000}).toContain('MainMenuScreen');
+  await waitForMainMenu(page);
   expect((await state()).renderer).toBe('webgl2');
   expect(await page.evaluate(() => Module.executionMode)).toBe(executionMode);
   await clickMainMenu(page, 'custom');

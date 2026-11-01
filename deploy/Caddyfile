@@ -48,6 +48,7 @@
 		host {$GLOB2_AUTH_REDIRECT_DOMAIN:auth-redirect.invalid}
 		method GET
 		path /signin /signin/* /auth/*/start
+		not path_regexp ^/signin/assets/
 	}
 	redir @formerSignin {$GLOB2_PUBLIC_ORIGIN:https://localhost:8443}{uri} 302
 	# End canonical sign-in redirect.
@@ -71,6 +72,21 @@
 			stream_close_delay 5m
 		}
 	}
+
+	# Begin shared sign-in bootstrap.
+	# API-rendered pages use the same qualified bootstrap as the SPA. Keep this
+	# exact stable URL revalidating while all other API assets remain proxied.
+	@signinBootstrap {
+		method GET HEAD
+		path_regexp ^/signin/assets/bootstrap[.]js$
+	}
+	handle @signinBootstrap {
+		root * /srv/web
+		rewrite * /theme.js
+		header Cache-Control "public, max-age=0, must-revalidate"
+		file_server
+	}
+	# End shared sign-in bootstrap.
 
 	@platform path /api/* /realtime /signin /signin/* /auth/* /.well-known/* /j/*
 	handle @platform {
@@ -120,6 +136,12 @@
 		header @html Content-Type "text/html; charset=utf-8"
 		@js path *.js
 		header @js Content-Type "text/javascript; charset=utf-8"
+		@css path *.css
+		header @css Content-Type "text/css; charset=utf-8"
+		@font path *.ttf
+		header @font Content-Type font/ttf
+		@json path *.json
+		header @json Content-Type "application/json; charset=utf-8"
 		@wasm path *.wasm
 		header @wasm Content-Type application/wasm
 		@data path *.data

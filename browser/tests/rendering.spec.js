@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 const {clickCreateMap}=require('./editor-controls');
 const {test, expect} = require('@playwright/test');
 const {clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl,control}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await state(page)).screen).toContain(name);
 
 test('WebGL2 draws a playable match and resizes its drawing buffer', async ({page}, info) => {
   test.setTimeout(120000);

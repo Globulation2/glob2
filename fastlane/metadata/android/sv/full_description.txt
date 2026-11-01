@@ -1,0 +1,16 @@
+Bygg en blomstrande koloni i omtvistat territorium.
+
+Globulation 2 är ett realtidsstrategispel där mat, arbetare och utrymme formar din expansion. Utveckla en vidsträckt koloni, balansera dess konkurrerande behov och tävla mot rivaler om mark och resurser. Dina varelser agerar autonomt och låter dig styra kolonin som helhet.
+
+Skapa en ekonomi som kan upprätthålla dina ambitioner.
+Mat, byggnation och utbildning konkurrerar om din arbetskraft. Bestäm var arbetskraft behövs och balansera nya ambitioner med behoven hos den koloni du redan har.
+
+Gör kartan till en del av din strategi.
+Olika kartor kräver olika strategier. Anpassa din expansion till terrängen, välj vad du ska försvara och hitta de rutter och resurser din koloni behöver.
+
+Försvara det du har byggt upp.
+Din ekonomi stöder både tillväxt och försvar. Balansera din kolonis behov medan rivaler tävlar om mark och resurser, och förbered dig på konflikter som kan avgöra matchen.
+
+Globulation 2 är gratis och har öppen källkod.
+
+Den här Android-utgåvan ger dig det klassiska skrivbordsspelet till pekskärmar.

@@ -2968,5 +2968,6 @@
   "More filters": "Več filtrov",
   "Clear filters": "Počisti filtre",
   "No results match these filters.": "Noben rezultat ne ustreza tem filtrom.",
-  "Results: {value0}": "Rezultati: {value0}"
+  "Results: {value0}": "Rezultati: {value0}",
+  "Game text field": "Besedilno polje v igri"
 }

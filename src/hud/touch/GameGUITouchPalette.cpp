@@ -7,6 +7,7 @@
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "BuildingType.h"
+#include "IntBuildingType.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
@@ -110,7 +111,10 @@ void GameGUITouch::drawBuildPalette()
 							items[i].enabled ? InGameTouchTheme::field() : InGameTouchTheme::paper());
 		gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
 		if (items[i].name.starts_with("zone:"))
-		{
+        {
+            const int zone=items[i].name.back()-'0';
+            const int anchor=zone==0 ? GameGUI::HighlightForbiddenZoneOnPanel : zone==1 ? GameGUI::HighlightGuardZoneOnPanel : GameGUI::HighlightClearingZoneOnPanel;
+            if(gui.highlights.count(anchor)) gfx->drawRect(int(rect.x+2),int(rect.y+2),int(rect.w-4),int(rect.h-4),Color(255,220,80));
 			const std::string zones[] = {Toolkit::getStringTable()->getString("[Forbid]"),
 										 Toolkit::getStringTable()->getString("[Guard]"),
 										 Toolkit::getStringTable()->getString("[Clear]"),
@@ -132,9 +136,11 @@ void GameGUITouch::drawBuildPalette()
 			gfx->drawSprite(0, 0, sprite, frame);
 			gfx->setUITransform();
 		}
-	}
-	gfx->setClipRect();
-	if (placement && !placement->dragging)
+        if(type && gui.highlights.count(int(GameGUI::HighlightBuildingOnPanel)+type->shortTypeNum))
+            gfx->drawRect(int(rect.x+2),int(rect.y+2),int(rect.w-4),int(rect.h-4),Color(255,220,80));
+    }
+    gfx->setClipRect();
+    if (placement && !placement->dragging)
 	{
 		const ViewRect help{content.x, std::max(layout().safe.y, content.y - 48 * unit), content.w,
 							48 * unit};

@@ -7,11 +7,12 @@
 <title>Globulation 2</title>
 <script src="/theme.js"></script>
 <script src="i18n.js"></script>
+<link rel="stylesheet" href="script-fonts.css">
 <style>
 /* Match the website's Meadow / Night colony tokens and shared brand assets. */
 @font-face{font-family:'Nunito Variable';src:url('/signin/assets/nunito.woff2') format('woff2-variations');font-weight:200 1000;font-display:swap}
 :root{color-scheme:light;--bg:#f1f1e1;--surface:#fbfbf3;--surface-2:#eaedda;--ink:#1d4530;--ink-2:#4b604c;--line:#ccd5bf;--accent:#e3c077;--accent-hover:#ecce8f;--accent-edge:#c69e4c;--accent-ink:#142a1f;--focus:#9a5a0c;
-  font-family:'Nunito Variable',ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif}
+  font-family:var(--glob2-script-body,'Nunito Variable',ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif)}
 @media (prefers-color-scheme:dark){:root:not([data-theme='light']){color-scheme:dark;--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--accent-hover:#ecd08f;--accent-edge:#c7a557;--accent-ink:#1e1228;--focus:#ffd678}}
 :root[data-theme='dark']{color-scheme:dark;--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--accent-hover:#ecd08f;--accent-edge:#c7a557;--accent-ink:#1e1228;--focus:#ffd678}
 html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg)}
@@ -112,7 +113,7 @@ function refreshBrowserLanguage() {
 if (globalThis.Glob2I18n) {
   for (const locale of Glob2I18n.locales) {
     const option = document.createElement('option');
-    option.value = locale.code; option.textContent = locale.name; option.dir = locale.dir;
+    option.value = locale.code; option.textContent = locale.name; option.dir = locale.dir; option.lang = locale.code;
     languagePicker.append(option);
   }
   Glob2I18n.initialize().then(refreshBrowserLanguage);
@@ -653,8 +654,10 @@ Module.textBridge = (() => {
         const element=document.createElement('input');
         element.type=password ? 'password' : 'text';
         element.autocomplete='off';element.spellcheck=false;
-        element.setAttribute('aria-label',password ? 'Password' : 'Game text field');
-        element.style.cssText='position:fixed;z-index:2;box-sizing:border-box;min-width:0;border:1px solid #657363;border-radius:3px;padding:4px 8px;background:#e8edcf;color:#173226;font:16px system-ui';
+        element.dir='auto';
+        element.dataset.i18nAria=password ? 'Password' : 'Game text field';
+        element.setAttribute('aria-label',password ? browserText('Password') : browserText('Game text field'));
+        element.style.cssText='position:fixed;z-index:2;box-sizing:border-box;min-width:0;border:1px solid #657363;border-radius:3px;padding:4px 8px;background:#e8edcf;color:#173226;font:16px var(--glob2-script-body,system-ui)';
         field={element,dirty:false,composing:false,seen:true,maximum};fields.set(id,field);
         const update=() => {
           if (!field.composing && field.maximum) {

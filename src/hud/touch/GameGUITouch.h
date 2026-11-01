@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include <utility>
+#include <array>
 namespace GAGGUI::ui
 {
 class UIDialog;
@@ -21,6 +22,7 @@ namespace GAGCore
 {
 class DrawableSurface;
 class Sprite;
+class Font;
 }
 #include "sim/EntityRef.h"
 class GameGUI;
@@ -34,6 +36,8 @@ class GameGUITouch
 {
   public:
     bool needsStatisticsHistory() const { return statsOpen; }
+    void closeStatistics() { statsOpen = false; }
+    GAGCore::ViewRect statisticsContentRect() const { return statsLayout().body; }
 	explicit GameGUITouch(GameGUI &gui);
 	~GameGUITouch();
 	bool process(SDL_Event &event);
@@ -47,6 +51,8 @@ class GameGUITouch
 	void dismissMapPanels();
 	bool scrollAnimating() const;
 	void prepareDraw();
+	// Share the cached trophy artwork with the compact desktop statistics bar.
+	void drawPrestigeIcon(GAGCore::ViewPoint center, double logicalSize);
 	void drawControls();
 	void drawKeyboardFocus();
 	bool active() const { return touchActive || usesHUD(); }
@@ -175,15 +181,13 @@ class GameGUITouch
 	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in (thumb side last).
 	void navigatePeek(GAGCore::ViewPoint point);
 	void drawPeek();
-	// Compact statistics: a bottom sheet with the team's history chart (the
-	// end-game chart, own team only), a metric switcher and current counters.
+	// Statistics uses the same topics and metric list as the desktop sidebar.
+	// The header owns dismissal; the embedded host owns body scrolling.
 	bool statsOpen = false;
-	int statsMetric = 0;
-	std::vector<Stats::Metric> statsCatalog;
 	double statsDrag = 0;
 	struct StatsLayout
 	{
-		GAGCore::ViewRect sheet, close, previous, next, title, counters, chart;
+		GAGCore::ViewRect sheet, close, title, body;
 	};
 	StatsLayout statsLayout() const;
 	void drawStats();
@@ -265,7 +269,21 @@ class GameGUITouch
 	bool confirmDestroy = false;
 	BuildingRef lastInspectedBuilding;
 	void drawPointLabel(GAGCore::ViewRect rect, const std::string &text, double textScale = 1.15,
-						bool leading = false);
+						bool leading = false, int lineHeight = 0);
+	std::string navigationLabel(int index) const;
+	int navigationLabelLineHeight(const std::vector<std::string> &lines) const;
+	double navigationLabelHeight(double width) const;
+	GAGCore::ViewRect navigationLabelRect(const GAGCore::MobileLayout &ui, int index) const;
+	struct NavigationMeasurement
+	{
+		const GAGCore::Font *font = nullptr;
+		double width = 0, unit = 0, growth = 0, height = 0;
+		int language = -1, lineHeight = 0;
+		bool replay = false;
+		std::array<std::string, 6> labels;
+		std::array<std::pair<int, int>, 6> metrics;
+	};
+	mutable std::optional<NavigationMeasurement> navigationMeasurement;
 	BuildingRef ownerBuilding;
 	const void *ownerDialog = nullptr;
 	bool panelOpen = false;
@@ -274,13 +292,18 @@ class GameGUITouch
 	int previousDisplayMode = 0;
 	bool swallowMouseRelease = false, ignoreTouchSequence = false;
 	double panelScroll = 144;
-	bool tutorialCollapsed = false;
-	std::string tutorialText;
-	std::vector<std::string> tutorialLines;
-	double tutorialWidth = 0, tutorialScroll = 0;
-	GAGCore::ViewRect tutorialRect() const;
-	void prepareTutorial();
-	void drawTutorial();
+	bool scenarioMessageCollapsed = false;
+	std::string scenarioMessageText;
+	std::vector<std::string> scenarioMessageLines;
+	double scenarioMessageWidth = 0, scenarioMessageScroll = 0;
+	const GAGCore::Font *scenarioMessageFont = nullptr;
+	int scenarioMessageLanguage = -1, scenarioMessageFontHeight = 0, scenarioMessageTextWidth = 0, scenarioMessageTextHeight = 0;
+	int scenarioMessageLineStep = 24; // authored font pixels; converted to points by scenarioMessagePitch()
+	double scenarioMessagePitch() const;
+	double scenarioMessageFooterHeight() const;
+	GAGCore::ViewRect scenarioMessageRect() const;
+	void prepareScenarioMessage();
+	void drawScenarioMessage();
 	GAGCore::MobileLayout layout() const;
 	// Edge-hugging controls the host is asked to keep free of system gestures;
 	// synchronised only when the set changes.
@@ -290,16 +313,16 @@ class GameGUITouch
 	void clampScroll();
 	// HUD panel offsets with momentum and bounce; clampScroll() keeps them and
 	// the plain scroll variables in step.
-	GAGCore::TrackedScrollAxis panelAxis, actionAxis, tutorialAxis;
+	GAGCore::TrackedScrollAxis panelAxis, actionAxis, scenarioMessageAxis;
 	GAGCore::GestureScrollController nativeScroll;
 	Uint64 nativeSequence = 0;
-	int nativePanel = 0; // 1 palette, 2 inspector actions, 3 tutorial; retained for cancelled tails
+	int nativePanel = 0; // 1 palette, 2 inspector actions, 3 scenario message; retained for cancelled tails
 	bool nativeScrolling = false;
-	GAGCore::TrackedScrollAxis &nativeAxis() { return nativePanel == 3 ? tutorialAxis : nativePanel == 2 ? actionAxis : panelAxis; }
-	double &nativeOffset() { return nativePanel == 3 ? tutorialScroll : nativePanel == 2 ? actionScroll : panelScroll; }
+	GAGCore::TrackedScrollAxis &nativeAxis() { return nativePanel == 3 ? scenarioMessageAxis : nativePanel == 2 ? actionAxis : panelAxis; }
+	double &nativeOffset() { return nativePanel == 3 ? scenarioMessageScroll : nativePanel == 2 ? actionScroll : panelScroll; }
 	GAGCore::ScrollMotion mapMotion;
 	Uint64 mapDragStartTime = 0;
-	double tutorialMaximum() const;
+	double scenarioMessageMaximum() const;
 	Uint64 lastStepTime = 0;
 	// Momentum only follows real fingers; the synthetic mouse finger drags.
 	bool fingerIsTouch = false;

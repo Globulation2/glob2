@@ -32,6 +32,11 @@ TEST_CASE("offscreen transformed text rasterizes at the requested resolution" *
 		REQUIRE(expected);
 		CHECK(bitmap->getW() == expected->getW());
 		CHECK(bitmap->getH() == expected->getH());
+		// Existing Latin/legacy Arabic retains its raw physical raster geometry,
+		// including fractional-size rounding. Only new script layout normalizes X.
+		const auto drawn = font.getStringDrawSize(text, scale);
+		CHECK(drawn.first == doctest::Approx(float(expected->getW()) / scale));
+		CHECK(drawn.second == doctest::Approx(float(expected->getH()) / scale));
 		const auto *actualPixels = bitmap->getSDLSurface();
 		const auto *expectedPixels = expected->getSDLSurface();
 		REQUIRE(actualPixels->format == expectedPixels->format);

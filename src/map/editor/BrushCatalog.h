@@ -156,13 +156,8 @@ constexpr bool terrainGroupIsClassic(TerrainGroup group)
 {
 	return group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass;
 }
-// The experiment key gating a terrain type, if any (built-in catalogue types only).
-std::optional<std::string> terrainExperimentKey(TerrainType type);
-// Whether the editor offers a type: selectable, and its experiment (if any) enabled.
-bool terrainBrushOffered(const TerrainRegistry &registry, TerrainType type, const ExperimentGate &enabled);
-// The offered built-in members of a catalogue group, in table order.
-std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group,
-											   const ExperimentGate &enabled);
+// The selectable built-in members of a catalogue group, in table order.
+std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group);
 // One line of plain rules read from the properties, so a brush tells the author
 // what it does without a per-type string. `translate` maps string-table keys.
 std::string terrainRuleSummary(const TerrainProperties &properties,

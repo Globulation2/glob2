@@ -170,7 +170,6 @@ TEST_SUITE("EditorDockLayout")
 		for (const auto &[w, h] : sizes)
 		{
 			glob2test::HeadlessGlobals globals(window(w, h));
-			globals->settings.experiments.set(ExperimentId::ObstacleTerrain, true);
 			MapEdit editor;
 			blank(editor);
 			REQUIRE(editor.dock);
@@ -303,7 +302,6 @@ TEST_SUITE("EditorDockLayout")
 	TEST_CASE("palette actions switch tabs expand the group and scroll it to the top [display]")
 	{
 		glob2test::HeadlessGlobals globals(window(1024, 600));
-		globals->settings.experiments.set(ExperimentId::ObstacleTerrain, true);
 		MapEdit editor;
 		blank(editor);
 		REQUIRE(editor.dock);
@@ -320,6 +318,11 @@ TEST_SUITE("EditorDockLayout")
 		CHECK(heading.y >= scroll.y);
 		CHECK(heading.y <= scroll.y + 4);
 		CHECK(scroll.contains(host.bounds("brush/terrain/hedge")));
+		CHECK_FALSE(host.find("dock/enable/terrain/obstacles"));
+		tap(editor, "brush/terrain/hedge");
+		CHECK(editor.currentBrushId() == "terrain/hedge");
+		CHECK(editor.game.gameHeader.getExperiments().empty());
+		capture(editor, "terrain-mainline");
 		// Section headers collapse and expand their group.
 		tap(editor, "dock/section/terrain/obstacles");
 		frame(editor);

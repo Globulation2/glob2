@@ -141,6 +141,8 @@ _glob2() {
       '--output[output]:value:_files' \
       '--report-file[report-file]:value:_files' \
       '--config[config]:value:_files' \
+      '--scenario[scenario]:value:_files' \
+      '--scenario-config[scenario-config]:value:_files' \
       '--map-image[map-image]:value:_files' \
       '--export-generator-package[export-generator-package]:value:_files' \
       '--help[help]' \
@@ -265,7 +267,7 @@ _glob2() {
       '--resource-growth-delay[resource-growth-delay]:value:' \
       '--ai-order-delay[ai-order-delay]:value:' \
       '*--save[save]:value:' \
-      '*--telemetry[telemetry]:value:(checksums team-timeline maxima)' \
+      '*--telemetry[telemetry]:value:(checksums team-timeline maxima warrior-tactics)' \
       '--write-replay[write-replay]' \
       '--benchmark-warmup[benchmark-warmup]:value:' \
       '--benchmark-tick-profile[benchmark-tick-profile]' \

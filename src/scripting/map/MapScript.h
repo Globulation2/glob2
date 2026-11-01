@@ -80,6 +80,7 @@ public:
 
 	void restorePresentation(ClientCommandSink& client) const;
 	Uint32 checkSum() const;
+    std::shared_ptr<const Tutorial::Model> tutorialView() const { return mode==JavaScript ? javascript.tutorialView() : nullptr; }
 	bool buildingAllowed(const std::string& name,bool flag) const;
 
 private:

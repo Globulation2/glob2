@@ -24,7 +24,6 @@ namespace GAGCore
 class MapHeader
 {
 public:
-	ExperimentSet requiredTerrainExperiments;
 	ExperimentSet requiredResourceExperiments;
 	std::vector<CatalogExperimentDefinition> resourceExperimentDefinitions;
 	std::vector<std::string> resourceExperimentKeys() const

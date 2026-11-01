@@ -2941,5 +2941,6 @@
   "More filters": "Mai multe filtre",
   "Clear filters": "Șterge filtrele",
   "No results match these filters.": "Niciun rezultat nu corespunde acestor filtre.",
-  "Results: {value0}": "Rezultate: {value0}"
+  "Results: {value0}": "Rezultate: {value0}",
+  "Game text field": "Câmp de text în joc"
 }

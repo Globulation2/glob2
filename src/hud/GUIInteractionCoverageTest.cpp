@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "ui/TutorialText.h"
-#include <BinaryStream.h>
-#include <FileManager.h>
+#include "InGameStatistics.h"
 #include "EngineFixtures.h"
 #include "GameGUIViewport.h"
+#include "MapZoomControls.h"
 #include "GameGUIInternal.h"
 #include "touch/GameGUITouch.h"
 #include <nlohmann/json.hpp>
@@ -17,10 +16,10 @@
 #include "MapEditDialog.h"
 #include <SDLGraphicContext.h>
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #include <ScopedEnvironment.h>
 #include <InterfacePresentation.h>
 #include <algorithm>
-#include <iterator>
 #include <set>
 
 namespace
@@ -41,6 +40,58 @@ Uint64 renderPanel(GameGUI& gui)
         for (int x=left*SDL_BYTESPERPIXEL(frame->format); x<frame->w*SDL_BYTESPERPIXEL(frame->format); ++x)
             hash=(hash^pixels[y*frame->pitch+x])*1099511628211ull;
     return hash;
+}
+// A frozen presentation fixture exercises non-empty series without advancing or
+// modifying the simulation during UI input. The owning frame pins every sample.
+PresentationFrame statisticsHistoryFixture(GameGUI &gui)
+{
+    auto frame = gui.drawnScene();
+    auto samples = std::make_shared<TeamStats>();
+    samples->initializeMeasurements(0);
+    for (unsigned i = 0; i <= 16; ++i) {
+        samples->endOfGameStats.emplace_back(60 + 4*i, 10 + i/4, 0, 1000 + 50*i, 30 + 5*i, 20 + 3*i);
+        GameplayMeasurements m; m.configureUnits(NB_UNIT_TYPE); m.tick = i * 512;
+        m.births[WORKER] = i * 5; m.deaths[WORKER][0] = i;
+        m.lowFood[0][WORKER] = 1 + i%3;
+        m.lowFood[1][WORKER] = m.lowFood[0][WORKER] + 5 + i%4;
+        m.lowFood[2][WORKER] = m.lowFood[1][WORKER] + 15 + i%5;
+        m.lowHP[0][WORKER] = 1; m.lowHP[1][WORKER] = 3; m.lowHP[2][WORKER] = 8;
+        m.consumed[0][0] = i * 8;
+        m.consumed[3][3] = i * i * 3;
+        m.labour[GameplayMeasurements::IDLE] = i * 100;
+        m.labour[GameplayMeasurements::OTHER_ACTIVITY] = i * 400;
+        samples->measurementHistory.push_back(std::move(m));
+    }
+    auto *latest = samples->getLatestStat(); latest->totalUnit = 124;
+    latest->numberUnitPerType[WORKER] = 84; latest->numberUnitPerType[EXPLORER] = 16; latest->numberUnitPerType[WARRIOR] = 24;
+    latest->isFree[WORKER] = 8; latest->totalNeeded = 4;
+    auto history = std::make_shared<SimulationSnapshot::History>(); history->teams.push_back(samples);
+    frame.world.history = history; frame.panels.localStats = samples; frame.tick = 16 * 512;
+    return frame;
+}
+
+void captureStatisticsFrame(GameGUI &gui, std::filesystem::path output)
+{
+    auto *gfx = globalContainer->gfx;
+    std::shared_ptr<SDL_Surface> pixels;
+    std::string error;
+    // completedFrame() may be only the software backing store on GPU hosts.
+    // Request readback before presentation to capture the actual rendered UI.
+    const auto capture = gfx->requestMemoryCapture([&](auto image, auto, auto why) { pixels = std::move(image); error = why; });
+    REQUIRE(capture);
+    glob2test::drawGUI(gui, 0); gfx->nextFrame();
+    if (!pixels) gfx->cancelMemoryCapture(capture);
+    INFO(error); REQUIRE(pixels);
+    bool visible = false;
+    for (int y = 0; y < pixels->h; y += std::max(1, pixels->h/16))
+    for (int x = 0; x < pixels->w; x += std::max(1, pixels->w/16)) {
+        Uint8 r, g, b, a;
+        REQUIRE(SDL_ReadSurfacePixel(pixels.get(), x, y, &r, &g, &b, &a));
+        visible |= r || g || b;
+    }
+    REQUIRE(visible);
+    output.replace_extension(".png");
+    REQUIRE(IMG_SavePNG(pixels.get(), output.string().c_str()));
 }
 }
 TEST_SUITE("GUIInteractionCoverage")
@@ -167,11 +218,12 @@ TEST_SUITE("GUIInteractionCoverage")
                 unsigned markerPixels=0;
                 for(int x=0;x<image->w;++x)
                 {
-                    Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(image,x,rowY+3,&r,&g,&b,&a));
+                    Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(image,x,(rowY+3)*image->h/gfx->getH(),&r,&g,&b,&a));
                     if(r==63&&g==111&&b==149)++markerPixels;
                     // The existing smooth marker has a +/-2px halo, including at
                     // the right endpoint one pixel past the128px rectangle.
-                    if(instant || x<left-2 || x>left+128+2)
+                    const int logicalX=x*gfx->getW()/image->w;
+                    if(instant || logicalX<left-2 || logicalX>left+128+2)
                         CHECK((r==24&&g==35&&b==28));
                 }
                 CHECK((markerPixels>0)==!instant);CHECK(world.checksum()==checksum);
@@ -689,7 +741,7 @@ TEST_CASE("resource inspectors show infinity only for stocked infinite yields [d
 }
 
 
-TEST_CASE("Tutorial messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" * doctest::test_suite("TutorialLocalization"))
+TEST_CASE("Scenario messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" * doctest::test_suite("ScenarioMessages"))
 {
     glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
     glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
@@ -720,59 +772,179 @@ TEST_CASE("Tutorial messages wrap unspaced UTF-8 text and continuation indents w
     CHECK(world.gui.orderQueue.empty());
 }
 
-
-TEST_CASE("Old tutorial localization preserves script bytes and matches ordinary save-load state [display][artifacts]" * doctest::test_suite("TutorialLocalization"))
+TEST_CASE("statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" * doctest::test_suite("GUIInteractionCoverage"))
 {
-    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
-    GameGUI original(false);
-    {
-        GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(*GAGCore::Toolkit::getFileManager(), "campaigns/tutorial-part1.map.gz"));
-        REQUIRE(original.load(&input));
-    }
-    REQUIRE(original.legacyTutorialScript);
-    const auto source = original.game.sgslScript.sourceCode;
-    const auto checksum = original.game.checkSum();
-    const auto orders = original.orderQueue.snapshot();
-    const auto baselineSave = (glob2test::artifactDir() / "tutorial-localization-baseline.game").string();
-    const auto writeSave = [&](const std::string& path) {
-        GAGCore::BinaryOutputStream output(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(path));
-        original.save(&output, "Tutorial localization round trip");
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto &gui = world.gui;
+    gui.init(); gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=world.team;
+    gui.clearSelection(); gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+    gui.prepareLocalPresentation(gui.frameScene);
+    auto fixture = statisticsHistoryFixture(gui); gui.setPublishedScene(&fixture);
+    auto draw=[&](const std::string &name) {
+        captureStatisticsFrame(gui, glob2test::artifactDir()/name);
     };
-    writeSave(baselineSave);
-    CHECK(original.game.checkSum() == checksum);
-
-    const auto alias = std::find_if(std::begin(Glob2UI::tutorialTextAliases),
-        std::end(Glob2UI::tutorialTextAliases), [&](const auto& entry) {
-            return source.find(entry.first) != std::string::npos;
-        });
-    REQUIRE(alias != std::end(Glob2UI::tutorialTextAliases));
-    CHECK(Glob2UI::tutorialText(std::string(alias->first), original.legacyTutorialScript) ==
-        GAGCore::Toolkit::getStringTable()->getString(std::string(alias->second)));
-    CHECK(original.game.sgslScript.sourceCode == source);
-    CHECK(original.game.checkSum() == checksum);
-    CHECK(original.orderQueue.snapshot() == orders);
-
-    const auto save = (glob2test::artifactDir() / "tutorial-localization-roundtrip.game").string();
-    writeSave(save);
-    CHECK(original.game.checkSum() == checksum);
-    // Loading a newly saved legacy map can heal old coordinates and rebuild
-    // derived state. Compare against the same ordinary save/load without the
-    // display lookup, rather than requiring legacy migration to be a no-op.
-    GameGUI baselineRestored(false);
-    {
-        GAGCore::BinaryInputStream input(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(baselineSave));
-        REQUIRE(baselineRestored.load(&input));
+    draw("statistics-overview.bmp");
+    auto &panel=gui.statistics();
+    CHECK(panel.topic()==InGameStatisticsPanel::Topic::Overview);
+    CHECK(panel.host().rootBounds().w==200);
+    CHECK(gui.minimap.originX() - panel.host().rootBounds().x == (200-128)/2);
+    CHECK(gui.minimap.originX()+128 == panel.host().rootBounds().right()-(200-128)/2);
+    CHECK(panel.host().rootBounds().bottom() < mapZoomControlsLayout(gui.camera, true, true).y);
+    REQUIRE(panel.host().find("stats/metric/population"));
+    CHECK(panel.host().find("stats/metric/population")->accessibleText().find("124") != std::string::npos);
+    REQUIRE(panel.host().find("stats/metric/blocked buildings"));
+    CHECK(panel.host().find("stats/metric/blocked buildings")->accessibleText().ends_with("\n0"));
+    panel.host().tapAt(panel.host().bounds("stats/topic/1").center());
+    CHECK(panel.topic()==InGameStatisticsPanel::Topic::Colony);
+    panel.selectTopic(InGameStatisticsPanel::Topic::Overview);panel.update(0);
+    CHECK(gui.sceneRequest(false).includeHistory);
+    auto waiting = gui.drawnScene();
+    waiting.world.history.reset();
+    panel.sync(waiting, 0, false, false); panel.update(0);
+    REQUIRE(panel.host().find("stats/metric/population"));
+    CHECK(panel.host().find("stats/metric/population")->accessibleText().ends_with("\n—"));
+    gui.statistics(); panel.update(0);
+    const auto checksum=world.game.checkSum();
+    std::set<std::string> seen;
+    for(int topic=1;topic<=4;++topic) {
+        panel.selectTopic(InGameStatisticsPanel::Topic(topic)); panel.update(0);
+        for(const auto &m:panel.metrics()) {
+            constexpr int expectedTopics[] = {1, 1, 2, 2, 2, 3, 4, 4};
+            static_assert(std::size(expectedTopics) == std::size_t(Stats::Group::Count));
+            const bool belongs=expectedTopics[int(m.group)]==topic;
+            CHECK(bool(panel.host().find("stats/metric/"+std::string(m.id)))==belongs);
+            if(belongs)seen.insert(m.id);
+        }
     }
-    CHECK(baselineRestored.legacyTutorialScript);
-    CHECK(baselineRestored.game.sgslScript.sourceCode == source);
-    GameGUI restored(false);
-    {
-        GAGCore::BinaryInputStream input(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(save));
-        REQUIRE(restored.load(&input));
+    CHECK(seen.size()==panel.metrics().size());
+    CHECK_FALSE(seen.count("win probability"));
+    panel.selectTopic(InGameStatisticsPanel::Topic::Economy); panel.update(0);
+    panel.host().scrollIntoView("stats/metric/spending"); panel.update(0);
+    REQUIRE(panel.host().find("stats/scroll/2")->scrollOffset() > 0);
+    draw("statistics-economy.bmp");
+    const auto metricBounds=panel.host().bounds("stats/metric/spending");
+    SDL_Event click{};click.type=SDL_EVENT_MOUSE_BUTTON_DOWN;click.button.button=SDL_BUTTON_LEFT;
+    click.button.x=metricBounds.center().x;click.button.y=metricBounds.center().y;
+    gui.processEvent(&click);click.type=SDL_EVENT_MOUSE_BUTTON_UP;gui.processEvent(&click);
+    CHECK(gui.inGameMenu==GameGUI::IGM_NONE);
+    CHECK(panel.selectedMetric()=="spending");
+    panel.update(0);
+    REQUIRE(panel.host().find("stats/inline/chart"));
+    panel.host().scrollIntoView("stats/full-history/spending"); panel.update(0);
+    draw("statistics-inline-history.bmp");
+    const auto position=panel.host().find("stats/scroll/2")->scrollOffset();
+    panel.host().tapAt(panel.host().bounds("stats/full-history/spending").center());
+    REQUIRE(gui.inGameMenu==GameGUI::IGM_STATISTICS);
+    REQUIRE(gui.gameMenuScreen);
+    CHECK_FALSE(gui.gamePaused);
+    gui.gameMenuScreen->update(0);
+    auto *history=static_cast<InGameStatisticsHistory*>(gui.gameMenuScreen.get());
+    auto view=Stats::defaultView(*panel.metric("spending")); view.total=true;
+    history->setView(view); history->update(0);
+    draw("statistics-history.bmp");
+    const auto chart = history->host().bounds("stats/history/chart");
+    REQUIRE_FALSE(chart.empty());
+    history->host().tapAt(chart.center());
+    CHECK(history->hoverX >= 0); CHECK(history->hoverY >= 0);
+    draw("statistics-history-inspected.bmp");
+    history->host().tapAt(history->host().bounds("stats/history/details").center());history->update(0);
+    CHECK(history->detailsOpen);
+    history->host().tapAt(history->host().bounds("stats/history/details").center());history->update(0);
+    CHECK_FALSE(history->detailsOpen);
+    SDL_Event escape{};escape.type=SDL_EVENT_KEY_DOWN;escape.key.key=SDLK_ESCAPE;
+    gui.processEvent(&escape);
+    CHECK(gui.inGameMenu==GameGUI::IGM_NONE);
+    CHECK(panel.topic()==InGameStatisticsPanel::Topic::Economy);
+    CHECK(panel.host().find("stats/scroll/2")->scrollOffset()==position);
+    CHECK(panel.views.at("spending").total);
+    CHECK_FALSE(gui.gamePaused);
+    draw("statistics-return.bmp");
+    CHECK(gui.orderQueue.empty()); CHECK(world.game.checkSum()==checksum);
+    gui.displayMode=GameGUI::STAT_GRAPH_VIEW;
+    CHECK_FALSE(gui.sceneRequest(false).includeHistory);
+    gui.handleMenuClick(16, YPOS_BASE_STAT+29, SDL_BUTTON_LEFT);
+    CHECK(gui.showStarvingMap); CHECK_FALSE(gui.showDamagedMap);
+    gui.handleMenuClick(16, YPOS_BASE_STAT+53, SDL_BUTTON_LEFT);
+    CHECK(gui.showDamagedMap); CHECK_FALSE(gui.showStarvingMap);
+    CHECK(world.game.checkSum()==checksum);
+    gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+    auto *strings=GAGCore::Toolkit::getStringTable();
+    const auto language=strings->getLang();
+    const auto textScale=GAGCore::userTextScale;
+    strings->setLang(strings->getLangCode("de"));GAGCore::userTextScale=1.5;
+    panel.invalidate();draw("statistics-desktop-large-german.bmp");
+    for(const auto *node:panel.host().interactiveNodes()) {
+        CHECK(node->bounds.x>=panel.host().rootBounds().x);
+        CHECK(node->bounds.right()<=panel.host().rootBounds().right());
     }
-    CHECK(restored.legacyTutorialScript);
-    CHECK(restored.game.sgslScript.sourceCode == source);
-    CHECK(restored.game.checkSum() == baselineRestored.game.checkSum());
-    restored.init();
-    CHECK_FALSE(restored.legacyTutorialScript);
+    strings->setLang(language);GAGCore::userTextScale=textScale;
+    gui.setPublishedScene(nullptr);
+    gui.init(); CHECK_FALSE(gui.statisticsPanel);
+}
+
+TEST_CASE("statistics sheet scroll stays open and fits phone rotations [display][artifacts]" * doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=360,.height=720,
+        .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto &gui=world.gui; auto *gfx=globals->gfx;
+    gui.init(); gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+    gui.clearSelection();gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+    gfx->setResponsiveViewport(true,800,600);
+    gui.prepareLocalPresentation(gui.frameScene);
+    auto fixture = statisticsHistoryFixture(gui); gui.setPublishedScene(&fixture);
+    struct Restore { double value=GAGCore::userTextScale; ~Restore(){GAGCore::userTextScale=value;} } restore;
+    const auto checksum=world.game.checkSum();
+    Uint64 time=100000000;
+    for(const auto [width,height]:{std::pair{360,720},std::pair{720,360}})
+    for(double text:{1.,1.5}) {
+        REQUIRE(SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height));
+        REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+        SDL_Event resize{};resize.type=SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+        GAGCore::GraphicContext::translateMouseEvent(&resize);
+        GAGCore::userTextScale=text;
+        gui.touch->statsOpen=true;
+        gui.prepareLocalPresentation(gui.frameScene);
+        auto draw=[&](const std::string &name) {
+            captureStatisticsFrame(gui, glob2test::artifactDir()/name);
+        };
+        auto &panel=gui.statistics();panel.selectTopic(InGameStatisticsPanel::Topic::Colony);
+        const auto suffix=std::to_string(width)+"-"+std::to_string(int(text*100))+".bmp";
+        draw("statistics-mobile-"+suffix);
+        const auto bounds=panel.host().rootBounds();
+        CHECK(bounds.x>=0); CHECK(bounds.right()<=gfx->getW());
+        CHECK(bounds.y>=0); CHECK(bounds.bottom()<=gfx->getH());
+        panel.host().scrollIntoView("stats/metric/starvation");panel.update(0);
+        auto finger=[&](Uint32 kind,int y) {
+            SDL_Event event{};event.type=kind;event.tfinger.touchID=901;event.tfinger.fingerID=902;
+            event.tfinger.timestamp=(time+=20000000);
+            event.tfinger.x=float(bounds.center().x)/gfx->getW();event.tfinger.y=float(y)/gfx->getH();
+            gui.processEvent(&event);
+        };
+        const int y=bounds.bottom()-20;
+        finger(SDL_EVENT_FINGER_DOWN,y);finger(SDL_EVENT_FINGER_MOTION,y-60);finger(SDL_EVENT_FINGER_UP,y-60);
+        CHECK(gui.touch->statsOpen); CHECK(gui.inGameMenu==GameGUI::IGM_NONE);
+        panel.host().scrollIntoView("stats/metric/hunger");panel.update(0);
+        panel.host().tapAt(panel.host().bounds("stats/metric/hunger").center());panel.update(0);
+        CHECK(panel.selectedMetric()=="hunger");
+        panel.host().scrollIntoView("stats/inline/chart");panel.update(0);
+        draw("statistics-mobile-inline-"+suffix);
+        panel.host().tapAt(panel.host().bounds("stats/inline/chart").center());
+        CHECK(panel.inlineHoverX>=0);CHECK(panel.inlineHoverY>=0);
+        CHECK(gui.touch->statsOpen);CHECK(gui.inGameMenu==GameGUI::IGM_NONE);
+        panel.host().scrollIntoView("stats/full-history/hunger");panel.update(0);
+        panel.host().tapAt(panel.host().bounds("stats/full-history/hunger").center());
+        REQUIRE(gui.gameMenuScreen);gui.gameMenuScreen->update(0);
+        draw("statistics-mobile-history-"+suffix);
+        auto *history=static_cast<InGameStatisticsHistory*>(gui.gameMenuScreen.get());
+        history->host().scrollIntoView("stats/history/chart");history->update(0);
+        history->host().tapAt(history->host().bounds("stats/history/chart").center());
+        CHECK(history->hoverX >= 0);CHECK(history->hoverY >= 0);
+        SDL_Event back{};back.type=SDL_EVENT_KEY_DOWN;back.key.key=width>height ? SDLK_AC_BACK : SDLK_ESCAPE;gui.processEvent(&back);
+        CHECK(gui.touch->statsOpen);CHECK_FALSE(gui.gamePaused);
+        CHECK(world.game.checkSum()==checksum);CHECK(gui.orderQueue.empty());
+    }
+    gui.setPublishedScene(nullptr);
 }

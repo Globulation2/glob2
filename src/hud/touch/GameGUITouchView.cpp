@@ -1,4 +1,3 @@
-#include "ui/TutorialText.h"
 #include "render/ResourceSprites.h"
 #include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -28,6 +27,7 @@
 #include <TouchText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <ui/TextLayout.h>
 using namespace GAGCore;
 
 void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected, double points)
@@ -109,6 +109,11 @@ void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected,
 			std::max(1, int(2 * unit)), accent);
 	gfx->drawSurface(float(center.x - points / 2 * unit), float(center.y - points / 2 * unit), float(points * unit),
 		float(points * unit), navigationIcons[icon].get());
+}
+
+void GameGUITouch::drawPrestigeIcon(ViewPoint center, double logicalSize)
+{
+	drawNavigationIcon(9, center, false, logicalSize / globalContainer->gfx->logicalUnitsPerPoint());
 }
 
 void GameGUITouch::drawControls()
@@ -464,7 +469,7 @@ void GameGUITouch::drawHUD()
 
 	if (!activeDialog())
 	{
-		drawTutorial();
+		drawScenarioMessage();
 		drawPanel();
 	}
 	if (statsOpen && !activeDialog())
@@ -483,8 +488,6 @@ void GameGUITouch::drawHUD()
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION ||
 		gui.selectionMode == GameGUI::BRUSH_SELECTION)
 		return; // Active tools own this strip.
-	const std::string labels[] = {globalContainer->replaying ? "[Pause]" : "[Build]",
-		globalContainer->replaying ? "[Speed]" : "[Flags]", "[Editor tools]", "[Goals]", "[Teams]", "[Menu]"};
 	gfx->drawFilledRect(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), int(ui.actions.h),
 		InGameTouchTheme::paper());
 	gfx->drawHorzLine(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), InGameTouchTheme::border());
@@ -495,16 +498,90 @@ void GameGUITouch::drawHUD()
 			: i == 1 ? panelOpen && !inspecting() && !inspectingReadOnly() && gui.displayMode == GameGUI::FLAG_VIEW
 			: i == 2 && (lensOpen || (panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW));
 		const int icon = globalContainer->replaying && i < 2 ? (i == 1 ? 8 : gui.gamePaused ? 7 : 6) : i;
+        bool guided=false;
+        for(int anchor:gui.tutorialHighlights) {
+            if(i==0 && anchor>=GameGUI::HighlightBuildingOnPanel && anchor<GameGUI::HighlightBuildingOnMap &&
+                anchor!=GameGUI::HighlightBuildingOnPanel+8 && anchor!=GameGUI::HighlightBuildingOnPanel+9 && anchor!=GameGUI::HighlightBuildingOnPanel+10) guided=true;
+            if(i==1 && ((anchor>=GameGUI::HighlightForbiddenZoneOnPanel && anchor<=GameGUI::HighlightBrushSelector) ||
+                anchor==GameGUI::HighlightBuildingOnPanel+8 || anchor==GameGUI::HighlightBuildingOnPanel+9 || anchor==GameGUI::HighlightBuildingOnPanel+10)) guided=true;
+        }
+        if(guided) gfx->drawRect(int(x+2*unit),int(ui.actions.y+2*unit),int(width-4*unit),int(ui.actions.h-4*unit),Color(255,220,80));
 		drawNavigationIcon(icon, {x + width / 2, ui.actions.y + 17 * unit}, selected);
-		drawPointLabel({x + 2 * unit, ui.actions.y + 32 * unit, width - 4 * unit, 16 * unit},
-			Toolkit::getStringTable()->getString(labels[i]), .86);
+		const auto rect = navigationLabelRect(ui, i);
+		const auto text = navigationLabel(i);
+		drawPointLabel(rect, text, .86, false,
+			navigationLabelLineHeight(pointLines(text, rect.w, .86)));
 	}
 
 }
 
-ViewRect GameGUITouch::tutorialRect() const
+std::string GameGUITouch::navigationLabel(int index) const
 {
-	if (tutorialLines.empty())
+	const char *keys[] = {globalContainer->replaying ? "[Pause]" : "[Build]",
+		globalContainer->replaying ? "[Speed]" : "[Flags]", "[Editor tools]", "[Goals]", "[Teams]", "[Menu]"};
+	return Toolkit::getStringTable()->getString(keys[index]);
+}
+int GameGUITouch::navigationLabelLineHeight(const std::vector<std::string> &lines) const
+{
+	auto *font = globalContainer->standardFont;
+	InGameTouchTheme::TextStyle style(font);
+	int height = std::max(font->getStringHeight(""), font->getStringHeight("Ag"));
+	for (const auto &line : lines)
+		height = std::max(height, font->getStringHeight(line));
+	return height;
+}
+double GameGUITouch::navigationLabelHeight(double width) const
+{
+	const auto unit = globalContainer->gfx->logicalUnitsPerPoint();
+	auto *font = globalContainer->standardFont;
+	InGameTouchTheme::TextStyle style(font);
+	NavigationMeasurement next;
+	next.font = font;
+	next.width = width;
+	next.unit = unit;
+	next.growth = InGameTouchTheme::textGrowth();
+	next.language = Toolkit::getStringTable()->getLang();
+	next.replay = globalContainer->replaying;
+	next.lineHeight = std::max(font->getStringHeight(""), font->getStringHeight("Ag"));
+	// Whole-label metrics use the font's bounded metrics cache. Probe them
+	// before reusing the last layout so reloading the same font object also
+	// invalidates wrapping when its advances or line metrics change.
+	for (int i = 0; i < 6; ++i)
+	{
+		next.labels[i] = navigationLabel(i);
+		next.metrics[i] = {font->getStringWidth(next.labels[i]), font->getStringHeight(next.labels[i])};
+	}
+	if (navigationMeasurement)
+	{
+		const auto &last = *navigationMeasurement;
+		if (last.font == next.font && last.width == next.width && last.unit == next.unit &&
+			last.growth == next.growth && last.language == next.language &&
+			last.replay == next.replay && last.lineHeight == next.lineHeight &&
+			last.labels == next.labels && last.metrics == next.metrics)
+			return last.height;
+	}
+	double height = 16;
+	for (int i = 0; i < 6; ++i)
+	{
+		const auto lines = pointLines(next.labels[i], width * unit, .86);
+		height = std::max(height, lines.size() * navigationLabelLineHeight(lines) *
+			.86 * InGameTouchTheme::textGrowth());
+	}
+	next.height = std::ceil(height);
+	navigationMeasurement = std::move(next); // One bounded last result per HUD.
+	return navigationMeasurement->height;
+}
+ViewRect GameGUITouch::navigationLabelRect(const MobileLayout &ui, int index) const
+{
+	const auto unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const auto width = ui.actions.w / 6;
+	return {ui.actions.x + index * width + 2 * unit, ui.actions.y + 32 * unit,
+		width - 4 * unit, std::max(0.0, ui.actions.h - (ui.actions.h > 48 * unit ? 36 : 32) * unit)};
+}
+
+ViewRect GameGUITouch::scenarioMessageRect() const
+{
+	if (scenarioMessageLines.empty())
 		return {};
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	auto rect = layout().world;
@@ -512,16 +589,21 @@ ViewRect GameGUITouch::tutorialRect() const
 	rect.y = minimapRect().y + minimapRect().h + 8 * unit;
 	rect.w = std::min(rect.w - 16 * unit, 560 * unit);
 	rect.h = std::max(0.0, layout().actions.y - rect.y);
-	rect.h = tutorialCollapsed ? 48 * unit
-							   : std::min(rect.h, (std::min<size_t>(3, tutorialLines.size()) *
-														   InGameTouchTheme::tutorialPitch() +
-													   16 + (gui.swallowSpaceKey ? 48 : 0)) *
+	InGameTouchTheme::TextStyle textStyle(globalContainer->standardFont);
+	const int labelHeight = globalContainer->standardFont->getStringHeight(
+		Toolkit::getStringTable()->getString("[scenario messages]"));
+	// drawPointLabel uses a 1.15 text scale. Its collapsed target must grow
+	// with the actual translated label too, not clip a tall script at 48pt.
+	rect.h = scenarioMessageCollapsed ? std::max(48.0, labelHeight * 1.15 * InGameTouchTheme::textGrowth() + 16) * unit
+							   : std::min(rect.h, (std::min<size_t>(3, scenarioMessageLines.size()) *
+														   scenarioMessagePitch() +
+													   16 + scenarioMessageFooterHeight()) *
 													  unit);
 	return rect;
 }
-void GameGUITouch::prepareTutorial()
+void GameGUITouch::prepareScenarioMessage()
 {
-	std::string text = Glob2UI::tutorialText(gui.drawnScene().panels.hud.state().legacyScriptText, gui.legacyTutorialScript);
+	std::string text = gui.drawnScene().panels.hud.state().legacyScriptText;
 	if (!gui.scriptText.empty())
 	{
 		if (!text.empty())
@@ -531,98 +613,97 @@ void GameGUITouch::prepareTutorial()
 	const double width =
 		(std::min(layout().world.w / globalContainer->gfx->logicalUnitsPerPoint() - 16, 560.0) - 64) /
 		InGameTouchTheme::textGrowth();
-	if (text == tutorialText && width == tutorialWidth)
-		return;
-	tutorialCollapsed = false;
-	tutorialText = text;
-	tutorialWidth = width;
-	tutorialLines.clear();
-	tutorialScroll = 0;
-	std::string line;
 	auto *font = globalContainer->standardFont;
 	InGameTouchTheme::TextStyle textStyle(font);
-	// Break at whitespace when possible, otherwise at UTF-8 character boundaries.
-	for (size_t at = 0; at < text.size();)
+	const int language = Toolkit::getStringTable()->getLang();
+	const int fontHeight = font->getStringHeight("");
+	const int textWidth = font->getStringWidth(text), textHeight = font->getStringHeight(text);
+	if (text == scenarioMessageText && width == scenarioMessageWidth && font == scenarioMessageFont &&
+		language == scenarioMessageLanguage && fontHeight == scenarioMessageFontHeight &&
+		textWidth == scenarioMessageTextWidth && textHeight == scenarioMessageTextHeight)
+		return;
+
+	scenarioMessageCollapsed = false;
+	scenarioMessageText = text;
+	scenarioMessageWidth = width;
+	scenarioMessageFont = font;
+	scenarioMessageLanguage = language;
+	scenarioMessageFontHeight = fontHeight;
+	scenarioMessageTextWidth = textWidth;
+	scenarioMessageTextHeight = textHeight;
+	scenarioMessageLines.clear();
+	scenarioMessageScroll = 0;
+	scenarioMessageLineStep = std::max(int(InGameTouchTheme::scenarioMessageLine), fontHeight);
+	if (text.empty()) return;
+	struct TutorialMeasurer final : GAGGUI::ui::TextMeasurer
 	{
-		size_t end = at + 1;
-		while (end < text.size() && (static_cast<unsigned char>(text[end]) & 0xc0) == 0x80)
-			++end;
-		if (text[at] == '\n')
-		{
-			tutorialLines.push_back(line);
-			line.clear();
-			at = end;
-			continue;
-		}
-		const std::string next = text.substr(at, end - at);
-		if (!line.empty() && font->getStringWidth(line + next) * 1.0 > width)
-		{
-			const auto space = line.find_last_of(' ');
-			if (space != std::string::npos)
-			{
-				tutorialLines.push_back(line.substr(0, space));
-				line.erase(0, space + 1);
-			}
-			else
-			{
-				tutorialLines.push_back(line);
-				line.clear();
-			}
-		}
-		line += next;
-		at = end;
-	}
-	if (!line.empty())
-		tutorialLines.push_back(line);
+		Font *font;
+		explicit TutorialMeasurer(Font *value) : font(value) {}
+		int width(GAGGUI::ui::FontRole, const std::string &line) const override
+		{ return font->getStringWidth(line); }
+		int lineHeight(GAGGUI::ui::FontRole) const override
+		{ return font->getStringHeight(""); }
+		std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &line) const override
+		{ return font->getStringClusterEnds(line); }
+	} measurer(font);
+	// Tutorial prose uses the shared word/cluster wrapper. Explicit paragraph
+	// breaks remain; a conjunct wider than its slot stays whole rather than
+	// splitting a combining mark from its base.
+	scenarioMessageLines = GAGGUI::ui::wrapText(measurer, GAGGUI::ui::FontRole::Body, text,
+		std::max(1, int(std::floor(width))));
+	for (const auto &line : scenarioMessageLines)
+		scenarioMessageLineStep = std::max(scenarioMessageLineStep, font->getStringHeight(line));
 }
-void GameGUITouch::drawTutorial()
+void GameGUITouch::drawScenarioMessage()
 {
-	InGameTouchTheme::TextStyle tutorialStyle(globalContainer->standardFont);
-	auto rect = tutorialRect();
+	InGameTouchTheme::TextStyle scenarioMessageStyle(globalContainer->standardFont);
+	auto rect = scenarioMessageRect();
 	if (rect.w <= 0 || rect.h <= 0)
 		return;
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint();
 	gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
 						InGameTouchTheme::paper());
-	if (tutorialCollapsed)
+	if (scenarioMessageCollapsed)
 	{
-		drawPointLabel(rect, GAGCore::Toolkit::getStringTable()->getString("[Tutorial ▸]"));
+		drawPointLabel(rect, GAGCore::Toolkit::getStringTable()->getString("[scenario messages]"));
 		return;
 	}
-	const double footerHeight = gui.swallowSpaceKey ? 48 * unit : 0;
+	const double footerHeight = scenarioMessageFooterHeight() * unit;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w - 48 * unit),
 				  int(std::max(0.0, rect.h - footerHeight))};
-	// Lines are tutorialLine authored pixels apart and drawn at the text unit,
-	// so they sit tutorialPitch() points apart.
-	const double pitch = InGameTouchTheme::tutorialPitch();
-	const size_t first = std::min(tutorialLines.size(), size_t(std::max(0.0, tutorialScroll) / pitch));
+	// The cached font-aware step is in authored pixels; pitch converts it
+	// to the same point units used by layout and scrolling.
+	const double pitch = scenarioMessagePitch();
+	const size_t first = std::min(scenarioMessageLines.size(), size_t(std::max(0.0, scenarioMessageScroll) / pitch));
 	gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 8 * unit,
-						rect.y + (8 - tutorialScroll + first * pitch) * unit, &clip);
-	const size_t end = std::min(tutorialLines.size(), first + size_t(rect.h / unit / pitch) + 1);
+						rect.y + (8 - scenarioMessageScroll + first * pitch) * unit, &clip);
+	const size_t end = std::min(scenarioMessageLines.size(), first + size_t(rect.h / unit / pitch) + 1);
 	for (size_t i = first; i < end; ++i)
-		gfx->drawString(0, int((i - first) * InGameTouchTheme::tutorialLine), globalContainer->standardFont,
-						tutorialLines[i]);
+		gfx->drawString(0, int((i - first) * scenarioMessageLineStep), globalContainer->standardFont,
+						scenarioMessageLines[i]);
 	gfx->setUITransform();
 	gfx->setClipRect();
 	const double textHeight = std::max(1.0, rect.h - footerHeight),
-				 content = tutorialLines.size() * pitch * unit;
+				 content = (scenarioMessageLines.size() * pitch + 16) * unit;
 	if (content > textHeight)
 	{
 		gfx->drawFilledRect(int(rect.x + rect.w - 3 * unit),
-							int(rect.y + std::clamp(tutorialScroll * unit, 0.0, content - textHeight) * textHeight / content),
+							int(rect.y + std::clamp(scenarioMessageScroll * unit, 0.0, content - textHeight) * textHeight / content),
 							std::max(1, int(2 * unit)), int(textHeight * textHeight / content),
 							Color(170, 185, 190));
 	}
 	drawPointLabel({rect.x + rect.w - 48 * unit, rect.y, 48 * unit, 48 * unit}, "−", 1.2);
 	if (gui.swallowSpaceKey)
 	{
-		gfx->drawFilledRect(int(rect.x), int(rect.y + rect.h - 48 * unit), int(rect.w),
-							int(48 * unit), InGameTouchTheme::selected());
-		SDL_Rect footer{int(rect.x), int(rect.y + rect.h - 48 * unit), int(rect.w), int(48 * unit)};
-		// 16 points below the footer's top at the authored size, centred as text grows.
+		gfx->drawFilledRect(int(rect.x), int(rect.y + rect.h - footerHeight), int(rect.w),
+							int(footerHeight), InGameTouchTheme::selected());
+		SDL_Rect footer{int(rect.x), int(rect.y + rect.h - footerHeight), int(rect.w), int(footerHeight)};
+		// Keep the original 48-point target for smaller fonts, but allow taller
+		// script text and accessibility sizes to grow it. Hit testing shares it.
 		gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 12 * unit,
-							rect.y + rect.h - (24 + 8 * InGameTouchTheme::textGrowth()) * unit, &footer);
+							rect.y + rect.h - footerHeight +
+							(footerHeight - scenarioMessageFontHeight * gfx->textUnitsPerPoint()) / 2, &footer);
 		gfx->drawString(0, 0, globalContainer->standardFont,
 						Toolkit::getStringTable()->getString("[ok]"));
 		gfx->setUITransform();
@@ -674,7 +755,7 @@ std::vector<std::string> GameGUITouch::pointLines(const std::string &text, doubl
 						 width / (textScale * globalContainer->gfx->textUnitsPerPoint()) - 8);
 }
 void GameGUITouch::drawPointLabel(ViewRect rect, const std::string &text, double textScale,
-								  bool leading)
+								  bool leading, int lineHeight)
 {
 	auto *gfx = globalContainer->gfx;
 	const double unit = textScale * gfx->textUnitsPerPoint();
@@ -692,7 +773,7 @@ void GameGUITouch::drawPointLabel(ViewRect rect, const std::string &text, double
 	auto *font = globalContainer->standardFont;
 	InGameTouchTheme::TextStyle textStyle(font);
 	const auto lines = pointLines(text, rect.w, textScale);
-	const int height = font->getStringHeight("Ag");
+	const int height = lineHeight > 0 ? lineHeight : font->getStringHeight("Ag");
 	gfx->setUITransform(unit, rect.x,
 						rect.y + std::max(0.0, (rect.h / unit - lines.size() * height) / 2) * unit,
 						&clip);

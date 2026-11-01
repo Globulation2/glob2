@@ -26,26 +26,21 @@
   multiplayer lobby's side panel and its **Other options** dialog ("Experiments set
   by the host: …", read-only for every player), and the load screen's details for a
   saved game that carries any.
-- Terrain experiments control which brushes the editor offers. A map containing
-  experimental terrain declares that requirement and enables it when played, even
-  if the local editor switch is off. Ice and Trail have separate switches; every
-  other terrain group (`src/map/TerrainGroup.h`) has one switch shared by all of
-  its visual variants.
+- All terrain brushes are available by default in the editor. Their rules apply
+  to every map without an experiment setting.
 - [Resource catalogs](resource-catalogs.md) can declare experiments with the same
   stable key, label and help fields as building catalogs. The editor dock shows
   gated resources locked, with a map-local **Enable for this map** action. Maps preserve their declarations and
   required keys, so joiners and saved games do not need the original installed
   catalog. The `foundation-resources` experiment exposes gold ore, iron ore, silica
   and cotton in the editor without adding them to stock generators or buildings.
-- Experiments can change balance and pacing. A map without experimental terrain
-  does not acquire new terrain when a switch is enabled.
+- Experiments can change balance and pacing.
 
 ## Compatibility
 
 `Engine::applyLocalExperiments` (`src/engine/EngineInit.cpp`) is the one place the
 new-game rule lives: it filters settings to built-in keys and the destination
-building catalog, then adds required terrain experiments to the header unless the
-map is a saved game. The local-preference entry points above call it. A hosted multiplayer game sends its
+building catalog, unless the map is a saved game. The local-preference entry points above call it. A hosted multiplayer game sends its
 header with the map, so joiners see the set in the lobby.
 
 The set lives in `GameHeader` (`src/game/GameHeader.h`) as an `ExperimentSet`
@@ -53,8 +48,8 @@ The set lives in `GameHeader` (`src/game/GameHeader.h`) as an `ExperimentSet`
 save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replays
 and the match setup every peer of a game starts from, so every peer runs the same
 set. Adding the field changed the header's wire
-format and introduced network protocol 47. Terrain format 134 adds required
-experiments to `MapHeader`. Building format 137 embeds the building catalog and
+format and introduced network protocol 47. Terrain format 134 added a terrain-requirements list to `MapHeader`; format 187
+omits it, while the loader still consumes it in older files. Building format 137 embeds the building catalog and
 its experiment definitions; network protocol 57 and replay floor 137 separate the
 current simulation from earlier clients. The supported save floor remains 58.
 
@@ -67,9 +62,15 @@ experiment was removed. When an experiment graduates into default behaviour,
 remove its entry and its gate together: old saves that named it load and play the
 now-default rules.
 
-Required terrain keys are stricter: an unknown required key or unknown terrain ID
-rejects the map instead of silently changing its behavior. A save containing
-experimental terrain must already carry the matching enabled experiments.
+Retired terrain keys are consumed and discarded when reading older map and game
+headers. A key explicitly declared by an embedded building, resource or unit
+catalog remains a catalog experiment, even if it reuses a retired terrain name.
+Unknown required keys or unknown terrain IDs still reject a map. Terrain
+authoring flags no longer appear in settings, lobbies or saved game requirements.
+Version 187 also removes the terrain registry's script `experiment` field. The
+replay floor is 187 because older scripted decisions may depend on that field;
+the save floor stays 58. Protocol 73 covers the shorter map header. Online clients
+remain separated by simulation version.
 
 Preferences store the set as `experiments=<key>,<key>` in `preferences.txt`;
 unknown keys are dropped there too. Installed building-catalog experiment
@@ -95,25 +96,14 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | --- | --- | --- |
 | `guard-area-balancing` | Guard-area balancing | Free warriors spread between painted guard areas by crowding instead of all taking the nearest one. Design and measurements: [guard-area balancing](guard-area-balancing.md). |
 | `farm-areas` | Farm areas | A fourth painted area: a harvest inside it draws from the ripest tile of the connected field and keeps one grain on every tile, and wood growing into it is cleared. Design: [farm areas](farm-areas.md). |
-| `ice-terrain` | Ice terrain | Enables the ice editor brush. Ice halves ground movement speed and costs an exposed ground unit one HP per 32 ticks; flying units are unaffected. Ice supports neither buildings nor resources. |
-| `road-terrain` | Trail terrain | Enables the Trail editor brush. Weathered trails double ground movement speed, permit buildings, and support no resources. Flying units are unaffected. |
 | `markets-v2` | Markets V2 | Workers fetch shared market stock; upgrades add wheat and wood, then all resources. [Markets V2](markets-v2.md). |
-| `obstacle-terrain` | Obstacle terrain | Boulders, hedge and thicket brushes: impassable on the ground, stop projectiles, passable by fliers; no buildings or resources. |
-| `ridge-terrain` | Ridge terrain | Ridge and outcrop brushes: impassable on the ground, but towers shoot over them and fliers pass. |
-| `barren-terrain` | Barren ground | Dirt, clay, gravel and flower-meadow brushes: buildable, inhibit growth like sand, never count as shoreline. |
-| `rough-terrain` | Rough ground | Mud, marsh, deep-snow and scree brushes: ground units move at 160/256 speed; no buildings or resources. |
-| `path-terrain` | Path terrain | Dirt-track and boardwalk brushes with Trail's rules: double ground speed, buildable, nothing grows. |
-| `lava-terrain` | Lava terrain | Lava and ember-field brushes: impassable on the ground, fliers lose 64/256 HP per tick, projectiles pass. |
-| `fertile-terrain` | Fertile ground | Loam, moss and spring-meadow brushes: buildable crop land that is a fertility source three times as strong as water. |
-| `deep-water-terrain` | Deep water | Deep-water and dark-water brushes: swimmable at 192/256 speed, no algae, still a fertility source. |
-| `void-terrain` | Void terrain | Hole and chasm brushes: nothing crosses, not even fliers; projectiles stop at the edge. |
 
 Each terrain group is one `TerrainProperties` profile in `src/map/TerrainGroup.h`;
 `src/map/TerrainTypeTable.h` lists its members and
 [terrain materials](../assets/terrain-materials.md) covers their artwork.
 
-Trail retains the legacy experiment key `road-terrain`, terrain ID `4`, and
-external terrain name `road`. Existing preferences, maps, saves, scripts, map
+Trail retains terrain ID `4` and
+external terrain name `road`. Existing maps, saves, scripts, map
 reports and `select road` editor actions keep working. The Trail artwork replaces
 the former cobblestone frames without changing movement, ecology or building
 rules. Its generated source and classic-frame recipe are recorded in
@@ -145,12 +135,7 @@ For a built-in engine experiment:
 1. Append an `ExperimentId` before `Count` in `src/game/ExperimentalFeatures.h` and add
    its definition (stable key, English label and help) to the table in
    `src/game/ExperimentalFeatures.cpp`. Keys are lowercase letters, digits and hyphens.
-2. For terrain, add the group to `TerrainGroup.h` (one property profile), list its
-   types in `TerrainTypeTable.h`, and associate the group with the experiment in
-   `TerrainExperiments.h`; the editor gates every member of the group through that
-   one switch. Simulation always reads the terrain properties; local
-   preferences must never change an existing map cell's behavior. For other features,
-   gate the simulation on `game->gameHeader.hasExperiment(ExperimentId::X)` (from a
+2. Gate the simulation on `game->gameHeader.hasExperiment(ExperimentId::X)` (from a
    unit, `owner->game->gameHeader`). The path with the experiment off must stay
    byte-identical to the game before your change: existing replays and the
    checksum fixtures under `test/maxima/fixtures/` guard this. Consuming

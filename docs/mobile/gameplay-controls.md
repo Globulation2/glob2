@@ -267,7 +267,7 @@ testing and slider geometry.
 - `GameGUITouchPalette.cpp` reads available building/flag choices and draws artwork
   in the opposite-thumb rail (compact) or the side grid (Spacious). Zone entries enter painting mode instead of placement.
 - `GameGUITouchView.cpp` draws independently bounded HUD components, the minimap,
-  tutorial, tactical panel and contextual headers. It shares primitives, not the
+  scenario messages, tactical panel and contextual headers. It shares primitives, not the
   desktop sidebar composition.
 - `TouchInteractionSession.h` holds pointer identity, the originating palette,
   preview ownership, and buffered world-space stroke points. It contains no artwork,

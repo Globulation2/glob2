@@ -32,6 +32,17 @@
 
 #include "ReplayWriter.h"
 
+namespace
+{
+// Simulation-generated orders have no local presentation player. Their area
+// changes still enter authoritative map state, but do not paint a HUD cache.
+bool isLocalTeam(const Game& game, int localPlayer, int team)
+{
+    return localPlayer >= 0 && localPlayer < game.gameHeader.getNumberOfPlayers()
+        && game.players[localPlayer] && game.players[localPlayer]->teamNumber == team;
+}
+}
+
 Building* Game::lookupBuilding(Uint16 gid) const
 {
 	// Central order boundary: GIDtoID is modulo MAX_COUNT, but the decoded
@@ -46,7 +57,7 @@ Building* Game::lookupBuilding(Uint16 gid) const
 	return teams[team]->myBuildings[id];
 }
 
-bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
+bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer, bool recordInput)
 {
 	const auto finish = [&](bool accepted) {
         if (accepted && order && order->getOrderType()!=ORDER_NULL
@@ -58,7 +69,7 @@ bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 	if (!order || order->sender < 0 || order->sender >= gameHeader.getNumberOfPlayers() ||
 		!players[order->sender] || !players[order->sender]->team) return finish(false);
 
-	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
+	if (recordInput && globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
 		globalContainer->replayWriter->pushOrder(order);
 	}
@@ -66,7 +77,7 @@ bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 	// Mirror the order into the AI-trainer dataset if requested via
 	// GLOB2_DATASET_PATH. One record per executed order, tagged with
 	// the current order boundary, before its live simulation advancement.
-	if (globalContainer->datasetWriter && globalContainer->datasetWriter->isValid())
+	if (recordInput && globalContainer->datasetWriter && globalContainer->datasetWriter->isValid())
 	{
 		globalContainer->datasetWriter->writeRecord((Uint32)stepCounter, *order, *this);
 	}
@@ -245,7 +256,7 @@ bool Game::executeCreate(const OrderCreate& oc, int localPlayer)
 			for (int x=posX; x<posX+w; x++)
 			{
 				map.addForbidden(x, y, oc.teamNumber);
-				if (oc.teamNumber == players[localPlayer]->teamNumber)
+				if (isLocalTeam(*this, localPlayer, oc.teamNumber))
 					map.displayedForbiddenView.set(map.coordToIndex(x, y), true);
 			}
 		map.updateForbiddenGradient(oc.teamNumber);
@@ -411,7 +422,7 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				if (adding) map.addForbidden(x, y, oaa.teamNumber);
 				else map.removeForbidden(x, y, oaa.teamNumber);
 			}
-			if (oaa.teamNumber == players[localPlayer]->teamNumber)
+			if (isLocalTeam(*this, localPlayer, oaa.teamNumber))
 				map.displayedForbiddenView.set(map.coordToIndex(x, y), adding);
 		}
 	if (!changed) return true;
@@ -486,7 +497,7 @@ bool Game::isValidAlterArea(const OrderAlterArea& oaa) const
 bool Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer)
 {
 	if (!isValidAlterArea(oaa)) return false;
-	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
+	alterAreaMask(map, oaa, isLocalTeam(*this, localPlayer, oaa.teamNumber),
 		&Tile::guardArea, map.displayedGuardAreaView, anyTile);
 	map.updateGuardAreasGradient(oaa.teamNumber);
 
@@ -496,7 +507,7 @@ bool Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer
 bool Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer)
 {
 	if (!isValidAlterArea(oaa)) return false;
-	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
+	alterAreaMask(map, oaa, isLocalTeam(*this, localPlayer, oaa.teamNumber),
 		&Tile::clearArea, map.displayedClearAreaView, anyTile);
 	map.updateClearAreasGradient(oaa.teamNumber);
 
@@ -510,7 +521,7 @@ bool Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 bool Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
 {
 	if (!gameHeader.hasExperiment(ExperimentId::FarmAreas) || !isValidAlterArea(oaa)) return false;
-	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
+	alterAreaMask(map, oaa, isLocalTeam(*this, localPlayer, oaa.teamNumber),
 		&Tile::farmArea, map.displayedFarmAreaView,
 		[this](int x, int y) { return map.canPaintFarmArea(x, y); });
 	// A farm is a clearing goal for everything it does not grow.

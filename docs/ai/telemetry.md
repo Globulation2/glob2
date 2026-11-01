@@ -243,4 +243,102 @@ These options apply to `game run`, including loaded games, and require a Maxima
 controller. Interactive captures and environment-variable aliases are not
 provided. See [whole-map rendering](../map-generators/cli.md#render-a-whole-game).
 
+## Warrior travel and contact
+
+For offline tactical analysis, run a game with `--telemetry warrior-tactics`
+and `--telemetry maxima`. The first option writes four versioned CSV sidecars:
+
+- `warrior-episodes.csv`: consecutive intervals of combat contact, flag travel,
+  flag patrol, seeking food or healing, training, service occupancy and idle time.
+  The last assigned flag remains recorded after a warrior leaves for service.
+- `warrior-journeys.csv`: each flag assignment, its first arrival inside the
+  circular flag radius, first combat contact, and how the assignment ended.
+  Moving the flag closes the old journey even when its identity is unchanged.
+- `warrior-flags.csv`: creation, movement, range or staffing changes, and removal
+  of virtual attraction flags. Join warrior assignments or Maxima's offense
+  records to select the flags serving combat units.
+- `warrior-windows.csv`: exact warrior-tick totals in 512-tick windows, with a
+  final partial window. Endpoint observations include population, health-weighted
+  melee power, buildings and cumulative melee damage dealt. Window schema 2
+  appends cumulative combat deaths, starvation deaths and conversions in/out for
+  catalog classes carrying the melee capability. These class totals can include
+  untrained units; they are not restricted to the current offensive cohort.
+
+The collector reads completed immutable simulation snapshots once per tick.
+Intervals are half-open and use their initial state; duplicate observations add
+no time. Unit and building generations distinguish recycled slots. Disappearance,
+reassignment and the tick limit remain explicit journey outcomes; they must not
+be treated as successful short trips. Disappearance includes death and conversions
+that replace the unit identity; the snapshot collector cannot distinguish those
+causes. A team change retaining the same identity is recorded as conversion. Loaded games start a new
+left-censored trace. Nothing from this collector is saved or consulted by AI.
+
+Combat contact means `MOV_ATTACKING_TARGET`, which is distinct from approaching
+an enemy. Flag travel means `DIS_GOING_TO_FLAG`; pursuit within the flag radius
+is flag patrol, while adjacent combat during travel is combat contact.
+`moved_ticks` counts coordinate changes and cannot establish blocked time. Arrival measures geometric entry into a flag's radius, so a fight on
+the route does not count as arrival. Food and healing categories include seeking
+a provider; service occupancy is separate, with the service purpose recorded.
+Distance counts wrapped Chebyshev tile displacement between observations and
+excludes building entry and exit transitions. It is not a pathfinding estimate.
+
+Maxima's `offense_state` and `offense_flag` decision records join controller
+intent to actual flag identities and distinguish gathering, advancing and
+streaming. Their AI observation tick can precede application of a move order;
+use the flag sidecar for the time its position actually changed. The collector
+also observes other teams. Hidden enemy strength in these files is **offline
+ground truth only**, separate from the AI's fog-limited estimates.
+
+`offense_state` also reports `flag_proximity_distance` and
+`flag_proximity_penalty` for the selected objective at planning time. Distance
+is wrapped Chebyshev distance from the existing primary offensive flag; `-1`
+means no such anchor or selected objective. The penalty is capped at 32 tiles
+times `tactics.flag_proximity_weight`, and is zero when the preference is disabled.
+
+On emergency cancellation, `recall_local_unit` records Maxima's own melee/magic
+units and currently visible enemy equivalents, including position, health,
+effective attack clocks, medical/service state and offensive enrollment. These
+records help compare nearby defense with a distant offensive force. They use the
+AI's current observation; proximity and melee power alone do not establish that
+defenders can reach a raid or survive its towers and spells.
+
+`tools/analyze_warrior_tactics.py MANIFEST --output REPORT` checks episode/window
+accounting and summarizes matched games. Its manifest lists each run's `id`,
+`pair`, `arm`, `cluster`, Maxima `team`, and output `directory` relative to the
+manifest. Each terrain seed is one bootstrap cluster: keep all seat and game-seed
+replicates together. Missing pairs are errors, unavailable measurements remain
+unavailable, and a single cluster has no reported confidence interval. Report
+unconditional army duty alongside advantage-conditioned results, because a
+strategy change can alter which games reach an advantage in the first place.
+
+The report distinguishes Maxima's elimination from a match that remains
+unresolved after its elimination. Forward-provider use joins both building ID
+and generation to service episodes. Medical sorties require an observed departure
+from an offensive flag; a remembered flag on an unrelated later visit is
+insufficient. Returned-only travel summaries exclude disappearances, conversions
+and trips censored by the end of the match, so read them alongside those outcomes.
+The service destination distinguishes food and healing visits from training even
+when the unit's medical status clears before it reaches the building.
+Attrition deltas require a real initial counter sample. Missing older columns or
+unavailable event counters remain unavailable, rather than becoming zero. Class
+totals do not identify which individual medical departures caused those losses.
+
+Army-advantage annotations require health-weighted melee power at 512-tick window
+endpoints over 4,096 ticks, with at least 12 warriors. They do not observe brief
+changes between endpoints. The primary proxy requires 1.5 times the strongest
+living rival, and a stricter FFA check requires 1.25 times their combined power.
+Neither proxy accounts for enemy towers, magic, army position or terrain, and
+neither establishes that a win was assured. A zero-width empirical bootstrap
+interval when every observed pair ties does not establish equivalence.
+
 Related: [AI documentation](README.md).
+
+Forward support issue records include the selected placement mode, standoff and
+objective coordinates. With telemetry enabled, both geometric and corridor
+policies report objective-apron route distance, safe supply-route distance,
+route detour, supply-building identity, common warrior swimming capability and
+whether the site satisfies the corridor policy. Unavailable routes use -1.
+These observations supplement service entry and return-to-combat measurements;
+route proximity alone does not establish that support improved a campaign.
+Provider snapshots also record requested and assigned carriers, occupants and
+food stock, so service entry can be distinguished from a stocked recovery base.

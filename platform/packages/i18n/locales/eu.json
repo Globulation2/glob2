@@ -2914,5 +2914,6 @@
   "More filters": "Iragazki gehiago",
   "Clear filters": "Garbitu iragazkiak",
   "No results match these filters.": "Ez dago iragazki hauekin bat datorren emaitzarik.",
-  "Results: {value0}": "Emaitzak: {value0}"
+  "Results: {value0}": "Emaitzak: {value0}",
+  "Game text field": "Jokoaren testu-eremua"
 }

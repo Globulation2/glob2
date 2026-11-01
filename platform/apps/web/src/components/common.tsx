@@ -250,16 +250,20 @@ export function MatchRow({
         </div>
       </div>
       <span className="caption hide-phone" style={{ width: 120 }}>
-        {match.origin === 'queue'
-          ? queueName(instance?.queues, match.queueId, match.queueName)
-          : t('Room')}
+        <bdi dir="auto">
+          {match.origin === 'queue'
+            ? queueName(instance?.queues, match.queueId, match.queueName)
+            : t('Room')}
+        </bdi>
       </span>
       <span className="caption num hide-phone" style={{ width: 70 }}>
         {duration(match.durationTicks)}
       </span>
       <span className="num" style={{ minWidth: 72 }}>
         {change !== undefined ? (
-          <span className={change >= 0 ? 'up' : 'dn'}>{signed(change)}</span>
+          <bdi dir="ltr" className={change >= 0 ? 'up' : 'dn'}>
+            {signed(change)}
+          </bdi>
         ) : (
           <>
             <StatusBadge match={match} /> <VerificationBadge match={match} />

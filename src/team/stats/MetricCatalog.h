@@ -4,9 +4,8 @@
 // shown. The end-of-game results and the in-game statistics panels all read this
 // catalog, so a metric has one name, one explanation and one definition.
 //
-// Everything here reads history the simulation already records
-// (GameplayMeasurements and EndOfGameStat, TeamStat.h); nothing is collected or
-// saved for the catalog.
+// Everything here reads history the game already records (GameplayMeasurements,
+// EndOfGameStat and WinProbabilitySample, TeamStat.h); the catalog only reads it.
 #pragma once
 #include "TeamStat.h"
 #include <functional>
@@ -119,6 +118,8 @@ struct Metric
 	//! A split metric whose bands are better read as shares of their whole than
 	//! in their own units: it opens as percentages.
 	bool percentByDefault = false;
+    //! Alliance probability has its own explicit ticks, independent of delayed statistics.
+    bool winProbability = false;
 	//! Text key of the control that splits it into its bands ("By material").
 	const char *splitKey = "[stat view split]";
 
@@ -184,6 +185,7 @@ struct TeamHistory
 	Uint32 extendedCoverageStartTick = 0;
 	//! The same for worker time use and what was added with it (Metric::labour).
 	Uint32 labourCoverageStartTick = 0;
+    std::vector<WinProbabilitySample> winProbability;
 };
 //! A team's sampled values and measurements joined by tick. The pointers refer
 //! into `stats`, which must outlive the history and not record meanwhile.
@@ -205,7 +207,7 @@ struct Chart
 	bool decimals = false; //!< Values are averages or ratios, not whole counts.
 	bool global = false;   //!< One series for the whole map rather than one per team.
 	bool ordered = false;  //!< Bands run from worst to best (hunger), not unrelated kinds.
-	bool any = false;	   //!< Some value is not zero: there is something to see.
+	bool any = false;	   //!< Data worth displaying (including a recorded 0% chance).
 	std::vector<bool> bandLabelLiteral;
 	std::vector<std::string> bandKeys; //!< Text keys of the bands; empty unless stacked.
 	std::vector<TeamSeries> teams;	   //!< A single entry when `global`.

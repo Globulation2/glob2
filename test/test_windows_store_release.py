@@ -49,6 +49,109 @@ class WindowsStoreReleaseTest(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "missing.dll"):
                     release.stage_dlls(root / "glob2.exe", root, root)
 
+    def test_reported_store_license_files_keep_all_bytes_with_safe_extensions(self):
+        reported = (
+            "binutils/COPYING.LIB", "binutils/COPYING3.LIB",
+            "gettext-runtime/intl/COPYING.LIB", "gettext-runtime/libasprintf/COPYING.LIB",
+            "libiconv/COPYING.LIB", "libiconv/libcharset/COPYING.LIB",
+            "libquadmath/COPYING.LIB", "libunistring/LICENSE.LIB",
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary)
+            licenses = destination / "licenses"
+            contents = {}
+            for index, name in enumerate(reported):
+                path = licenses / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                contents[name] = ("GNU license notice ©\r\n" + name + "\n\f").encode("utf-8")
+                if index == 0:
+                    contents[name] = b"\xef\xbb\xbf" + contents[name]
+                path.write_bytes(contents[name])
+            ordinary = licenses / "COPYING.txt"
+            ordinary.write_bytes(b"Unchanged copyright notice\n")
+            real_library = destination / "actual.lib"
+            real_library.write_bytes(b"!<arch>\nA real library outside license notices")
+
+            release.normalize_store_license_filenames(destination)
+
+            for name, data in contents.items():
+                self.assertFalse((licenses / name).exists())
+                self.assertEqual((licenses / (name + ".txt")).read_bytes(), data)
+            self.assertEqual(ordinary.read_bytes(), b"Unchanged copyright notice\n")
+            self.assertTrue(real_library.read_bytes().startswith(b"!<arch>\n"))
+
+    def test_store_license_target_collision_fails_before_any_rename(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary)
+            licenses = destination / "licenses"
+            first = licenses / "a/COPYING.LIB"
+            second = licenses / "z/COPYING.LIB"
+            for path in (first, second):
+                path.parent.mkdir(parents=True)
+                path.write_bytes(b"License notice\n")
+            collision = second.with_name("copying.lib.TXT")
+            collision.write_bytes(b"Existing different notice\n")
+
+            with self.assertRaisesRegex(RuntimeError, "Case-insensitive.*collision"):
+                release.normalize_store_license_filenames(destination)
+
+            self.assertEqual(first.read_bytes(), b"License notice\n")
+            self.assertEqual(second.read_bytes(), b"License notice\n")
+            self.assertEqual(collision.read_bytes(), b"Existing different notice\n")
+            self.assertFalse(first.with_name(first.name + ".txt").exists())
+
+    def test_store_license_binary_or_empty_notice_fails_before_renaming(self):
+        for payload in (b"!<arch>\narchive", b"!<thin>\narchive", b"MZbinary", b"\x00", b"\xff", b""):
+            with self.subTest(payload=payload), tempfile.TemporaryDirectory() as temporary:
+                destination = Path(temporary)
+                first = destination / "licenses/a/COPYING.LIB"
+                first.parent.mkdir(parents=True)
+                first.write_bytes(b"Valid license notice\n")
+                bad = destination / "licenses/z/COPYING.LIB"
+                bad.parent.mkdir(parents=True)
+                bad.write_bytes(payload)
+                with self.assertRaisesRegex(RuntimeError, "Non-text Store license"):
+                    release.normalize_store_license_filenames(destination)
+                self.assertEqual(first.read_bytes(), b"Valid license notice\n")
+                self.assertEqual(bad.read_bytes(), payload)
+
+    def test_store_license_extension_matching_is_case_insensitive(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary)
+            source = destination / "licenses/copying.lIb"
+            source.parent.mkdir()
+            source.write_bytes(b"Copyright notice\n")
+            release.normalize_store_license_filenames(destination)
+            self.assertEqual(source.with_name("copying.lIb.txt").read_bytes(), b"Copyright notice\n")
+
+    def test_main_normalizes_notices_after_runtime_staging(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            executable = root / "build/glob2.exe"
+            executable.parent.mkdir()
+            executable.write_bytes(b"executable")
+            dll_dir = root / "mingw"
+            dll_dir.mkdir()
+            destination = root / "content"
+
+            def runtime_notices(*args):
+                notice = destination / "licenses/binutils/COPYING.LIB"
+                notice.parent.mkdir(parents=True)
+                notice.write_bytes(b"All license bytes preserved\r\n")
+
+            command = [str(SCRIPT), "--root", str(root), "--exe", str(executable),
+                       "--dll-dir", str(dll_dir), "--dest", str(destination),
+                       "--identity-name", "Example.Glob2", "--publisher", "CN=Example",
+                       "--publisher-display-name", "Example", "--store-id", "9ABCDEFGHIJK",
+                       "--version", "1.11.400.0", "--commit", "0" * 40]
+            with patch("sys.argv", command), patch.object(release, "stage_assets"), \
+                    patch.object(release, "stage_dlls", side_effect=runtime_notices), \
+                    patch.object(release, "write_shell_images"):
+                release.main()
+            renamed = destination / "licenses/binutils/COPYING.LIB.txt"
+            self.assertEqual(renamed.read_bytes(), b"All license bytes preserved\r\n")
+            self.assertFalse(renamed.with_name("COPYING.LIB").exists())
+
     def test_game_config_uses_partner_center_identity_without_xbox_services(self):
         with tempfile.TemporaryDirectory() as temporary:
             destination = Path(temporary)
