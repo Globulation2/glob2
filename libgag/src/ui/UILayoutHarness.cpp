@@ -1422,13 +1422,12 @@ TEST_CASE("semantic text values retain draft commit and cancel" * doctest::test_
 		400, 200);
 	std::string error;
 	const auto originalDraft = f.host.state("draft").text;
-	const auto originalFocus = f.host.focused();
 	const auto originalEditing = f.host.editing();
 	const std::string oversized = std::string(27, 'a') + "ก้";
 	REQUIRE(oversized.size() == 33);
 	CHECK_FALSE(f.host.act("draft", {ActionKind::SetValue, oversized}, error));
 	CHECK(f.host.state("draft").text == originalDraft);
-	CHECK(f.host.focused() == originalFocus);
+	CHECK(f.host.focused() == "draft"); // Host actions focus their requested control before value validation.
 	CHECK(f.host.editing() == originalEditing);
 	CHECK(model == "original");
 	CHECK(commits == 0);

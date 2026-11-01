@@ -79,6 +79,11 @@ struct TranslationPreviewAccess
         if (bounds.x != int(area.x) || bounds.y != int(area.y) ||
             bounds.w != int(area.w) || bounds.h != int(area.h))
             throw std::runtime_error("Phone statistics component bounds differ from the touch content area");
+        if (gui.activeDialog())
+            throw std::runtime_error("Isolated phone statistics component requires no active dialog");
+        // This capture deliberately isolates the production panel without
+        // opening the touch lens; other surfaces do not own this component.
+        gui.statisticsHost().setBlockedRegions({});
         gui.drawStatisticsPanel();
     }
     static void rebaseViewport(GameGUI &gui) {
@@ -741,6 +746,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                     {"history_available", panel.history() != nullptr}, {"published_sample_tick", panel.tick()}});
                 TranslationPreviewAccess::closeMenu(gui);
                 phoneStatisticsComponent = phone;
+                require(draw(), "Refresh statistics ownership after history closes");
             }
             phoneStatisticsComponent = false;
             TranslationPreviewAccess::restoreDisplayMode(gui, previousMode);
